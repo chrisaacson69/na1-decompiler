@@ -106,7 +106,7 @@
   <span>⑤ the spine / map</span>
 </div>
 
-<p class="lead">This is the <b>spine</b> of the game. One routine — <code>vm_bootstrap $A778</code> — sequences every season: it runs the per-season tick, reshuffles who acts, and hands each fief to the command driver, looping out to the combat engine whenever a war is declared. The <b>command palette</b> (21 pages) and the <b>battle engine</b> are its two big branches; this page is the index above them, and the status badges are the remaining-work map.</p>
+<p class="lead">This is the <b>spine</b> of the game. One routine — <code>vm_bootstrap $A778</code> — sequences every season: it runs the per-season tick, reshuffles who acts, and hands each fief to the command driver, looping out to the combat engine whenever a war is declared. The <b>command palette</b> (21 pages) and the <b>battle engine</b> are its two big branches; this page is the index above them, and the status badges are the remaining-work map. For the enemy AI specifically — how a daimyo plays its whole turn, consolidated — see <a href="./ai.html">How the AI Plays</a>.</p>
 
 <h2>The loop at a glance</h2>
 <p class="sub">One pass = one season. After <code>init</code> (once), phases 1–6 repeat. <span class="st st-inline">dived</span> = explained here · <span class="st st-page">has page</span> = its own deep dive · <span class="st st-stub">to do</span> = known entry point, not yet walked.</p>
@@ -114,7 +114,7 @@
   <li><span class="addr">$89A3 · bank 0</span><span class="st st-page">has page</span><a href="#init">init_new_game_state</a><span class="gloss">One-time new-game setup — the front-end wizard: scenario, players, daimyo, skill level.</span></li>
   <li><span class="addr">$A455 · bank 0</span><span class="st st-page">has page</span><a href="#planner">ai_strategic_turn_planner</a><span class="gloss">The per-season tick — save, calendar, the season-phased economy update, and the random-event engine.</span></li>
   <li><span class="addr">$A5E6 · bank 0</span><span class="st st-inline">dived</span><a href="#uprising">spawn_zealot_uprising_force_from_province</a><span class="gloss">Ikkō-ikki / zealot uprising — builds a one-off attacking army in the $7515 slot.</span></li>
-  <li><span class="addr">$AFE1 · bank 2</span><span class="st st-stub">to do</span><a href="#combat">resolve staged combat</a><span class="gloss">call_bank_wrap(2) → the bank-2 battle engine. The other big branch — its own epic.</span></li>
+  <li><span class="addr">$AFE1 · bank 2</span><span class="st st-page">has page</span><a href="#combat">resolve staged combat</a><span class="gloss">call_bank_wrap(2) → the bank-2 battle engine. The other big branch — its own epic.</span></li>
   <li><span class="addr">$A742 · bank 0</span><span class="st st-inline">dived</span><a href="#shuffle">shuffle_fief_turn_order_array</a><span class="gloss">Re-randomize who acts when this season — Fisher-Yates-style over $6F1B.</span></li>
   <li><span class="addr">$B89B · bank 1</span><span class="st st-page">has page</span><a href="#command">ai_per_fief_command_driver</a><span class="gloss">The command pass — each fief, in turn order, picks and executes one command.</span></li>
   <li><span class="addr">$8003 · bank 0</span><span class="st st-page">has page</span><a href="#gameover">display_fullscreen_graphic_sequence</a><span class="gloss">Win/lose screen, then restart — reached when the abort bit (ai_turn_flags &amp; 128) is set.</span></li>
@@ -150,9 +150,9 @@
 </div>
 <div class="phase" id="combat">
   <div class="bank">Phase 3 · bank 2</div>
-  <h3><span class="st st-stub">to do</span>resolve staged combat <span class="addr">$AFE1</span></h3>
-  <p>Any battle staged this season (a war declared during the previous command pass, or the uprising above) is resolved by handing control to the bank-2 combat engine (<code>battle_init_driver $AFE1</code>): tactical map, the 4-quadrant {1,2,4,7} damage model, the 31-day commander-resolution loop, ravage &amp; spoils. This is the second large branch off the spine and gets its own deep-dive page.</p>
-<div class="branch"><b>Branch:</b> <span style="color:var(--dim);font-weight:600">The combat engine</span> <span class="bank">— deep page TBD</span></div>
+  <h3><span class="st st-page">has page</span>resolve staged combat <span class="addr">$AFE1</span></h3>
+  <p>Any battle staged this season (a war declared during the previous command pass, or the uprising above) is resolved by handing control to the bank-2 combat engine (<code>battle_init_driver $AFE1</code>): deploy by compass approach, a 31-day loop where each side moves units and fights — <b>kills</b> by relative-strength %, <b>capture</b> by a charisma contest, and a per-day <b>rice</b> drain — then a terminator (commander / rice / annihilation / timeout) and the spoils-and-conquest aftermath. The second large branch off the spine; full page below.</p>
+<div class="branch"><b>Branch:</b> <a href="./turn-loop-combat.html">→ The combat engine</a> <span class="bank">— deep page</span></div>
 </div>
 <div class="phase" id="shuffle">
   <div class="bank">Phase 4 · bank 0</div>
@@ -163,6 +163,7 @@
   <div class="bank">Phase 5 · bank 1</div>
   <h3><span class="st st-page">has page</span>ai_per_fief_command_driver <span class="addr">$B89B</span></h3>
   <p>Walks <code>daimyo_turn_order</code> in order; for each fief, <code>selected_province_idx = daimyo_turn_order[ai_per_fief_loop_index]</code>, then dispatches on <code>province_ai_state</code> (the six Grant policies — Home / Industrial / Military / Balanced / Farming / Direct) into the matching AI econ handler, and finally <code>issue_province_command</code> executes it. Resting daimyo are skipped via <code>rest_turns_remaining</code>. <b>This is the “command palette” branch</b> — all 21 command pages are the leaves of this one node.</p>
+<div class="branch"><b>Deep dive:</b> <a href="./turn-loop-command.html">→ ai_per_fief_command_driver — full page</a></div>
 <div class="branch"><b>Branch:</b> <a href="./commands/index.html">→ The command palette — 21 command pages</a> <span class="bank">— branch complete</span></div>
 </div>
 <div class="phase" id="gameover">

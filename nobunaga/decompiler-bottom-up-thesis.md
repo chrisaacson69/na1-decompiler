@@ -130,9 +130,14 @@ Likely first atoms, by the cross-tab: **branch-to-terminal guard** (clears the `
 cluster) and **switch-case inline** (clears the `shared-ret = 0` cluster). Two atoms may clear most
 of the 59.
 
-Optional parallel PoC: `tcc`/`lcc`/Small-C, compile `if/else/while/switch/&&/early-return`, read the
-emitted jump patterns — that *is* the inverse-lowering table, finite and complete. The census proved
-the target obeys it.
+Parallel PoC: **DONE 2026-06-05** — see the sibling project [lowering-atlas](../lowering-atlas/README.md)
+([atom-table.md](../lowering-atlas/atom-table.md)). Compiled `if/else/while/for/switch/&&/||/?:/break/
+continue/early-return/guard-chain` through GCC `-O0 -fdump-tree-cfg` and catalogued the CFG signature
+each leaves — that *is* the inverse-lowering table, finite and complete. Confirmed atoms 1 (continue =
+multi-latch; GCC's own latch-finder returns `None`) and 2 (multi-level break = goto) are real forward
+constructs; reproduced atom-4's shared-switch-exit shape (`M=post-dom(S)` broken by a guard edge, =
+`$9C84`); flagged `for`≡`while` and `?:`≡`if/else` as graph-indistinguishable. **The atom table now
+lives there — point at it, don't re-derive the lowering shapes here.**
 
 ## Tags
 [reverse-engineering](../../../tags/reverse-engineering.md)

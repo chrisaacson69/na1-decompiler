@@ -99,14 +99,15 @@ NODES = [
               "special-casing): each stat field seeded as <code>pct_op(rng%20+40, source_field)</code>, plus "
               "men/rice drawn from the host province. The marker values (header 9999, extreme loyalty/morale, "
               "tiny skill/arms) are what make it recognisable in a save dump."),
-  dict(id="combat", no="3", title="resolve staged combat", addr=0xAFE1, bank=2, status="stub",
+  dict(id="combat", no="3", title="resolve staged combat", addr=0xAFE1, bank=2, status="page",
        gloss="call_bank_wrap(2) → the bank-2 battle engine. The other big branch — its own epic.",
        detail="Any battle staged this season (a war declared during the previous command pass, or the uprising "
               "above) is resolved by handing control to the bank-2 combat engine "
-              "(<code>battle_init_driver $AFE1</code>): tactical map, the 4-quadrant {1,2,4,7} damage model, the "
-              "31-day commander-resolution loop, ravage &amp; spoils. This is the second large branch off the "
-              "spine and gets its own deep-dive page.",
-       branch=("The combat engine", "combat.html", "deep page TBD")),
+              "(<code>battle_init_driver $AFE1</code>): deploy by compass approach, a 31-day loop where each side "
+              "moves units and fights — <b>kills</b> by relative-strength %, <b>capture</b> by a charisma contest, "
+              "and a per-day <b>rice</b> drain — then a terminator (commander / rice / annihilation / timeout) and "
+              "the spoils-and-conquest aftermath. The second large branch off the spine; full page below.",
+       branch=("The combat engine", "turn-loop-combat.html", "deep page")),
   dict(id="shuffle", no="4", title="shuffle_fief_turn_order_array", addr=0xA742, bank=0, status="inline",
        gloss="Re-randomize who acts when this season — Fisher-Yates-style over $6F1B.",
        detail="Each season the turn order is reshuffled: <code>scenario_fief_count</code> random transpositions "
@@ -115,6 +116,7 @@ NODES = [
               "at <code>daimyo_turn_order $6F1B</code> (see the find below — it is <i>not</i> at $6F0B as the "
               "labels long claimed)."),
   dict(id="command", no="5", title="ai_per_fief_command_driver", addr=0xB89B, bank=1, status="page",
+       page="turn-loop-command.html",
        gloss="The command pass — each fief, in turn order, picks and executes one command.",
        detail="Walks <code>daimyo_turn_order</code> in order; for each fief, "
               "<code>selected_province_idx = daimyo_turn_order[ai_per_fief_loop_index]</code>, then dispatches on "
@@ -289,6 +291,136 @@ PHASE_PAGES = {
     sources="<code>decompiled/bank_00.c</code> ($8003) · <code>count_6da2_set $D628</code> · "
             "<code>appendix-asset-extraction.md</code> (for the bank-6 end-screen art).",
   ),
+  "combat": dict(
+    no="3", title="The Combat Engine", sub="battle_init_driver $AFE1 (bank 2) — deploy, fight 31 days, resolve.",
+    steps_caption="One battle, end to end — every stage grounded in the bank-2 bytecode of "
+                  "<code>battle_init_driver $AFE1</code>:",
+    intro=(
+      "When a war is declared or an uprising spawns, the season loop hands control to the bank-2 battle engine. "
+      "<code>battle_init_driver $AFE1</code> is the <b>whole battle</b> — not a per-day step, as older notes had it: "
+      "it loads the tactical map, deploys both armies <i>once</i>, then runs a <b>31-day loop</b> of movement and "
+      "fighting, and exits through a single resolution handler. Re-reading it against the now-clean decompile "
+      "overturned the project’s long-standing “4-quadrant {1,2,4,7} damage formula” — that turned out not to be "
+      "damage at all (below) — and resolved the real model into <b>three decoupled mechanisms</b> plus a four-way "
+      "terminator. The combat math is now fully decoded."),
+    steps=[
+      (0xAFE1, "<b>Battle init.</b> Set input mode, load the defender’s tactical map "
+               "(<code>map_populate</code>), render the arena, clear the per-fief battle fields."),
+      (0x9B08, "<b>Deploy both armies — once.</b> <code>deploy_both_sides_units_loop</code>: each side’s men are "
+               "split into <b>5 unit-type slots</b> (<code>$6FBC</code>) by the province’s composition table "
+               "<code>$76A9</code> (set by the Assign command); then "
+               "<code>set_combat_arena_rect_by_approach $9675</code> picks the attacker’s entry edge from the "
+               "<b>compass bearing between the two fiefs on the strategic map</b>, and units are placed."),
+      (0xB05B, "<b>Day loop top.</b> “Day&nbsp;%2d”. The loop counter runs 1 → 31."),
+      (0xB06D, "<b>Rice check (per side).</b> A signed <code>rice ≤ 0</code> test on <code>unit_record+2</code>; "
+               "if a side is out of rice the battle ends here → resolution code <b>4</b> (“out of rice”)."),
+      (0xADD6, "<b>Both sides act.</b> <code>run_both_sides_combat_turn</code>: each side (AI or player) moves every "
+               "unit and resolves attacks — <b>kills</b> and <b>captures</b> happen here. A decisive result "
+               "(commander down / annihilation) returns its outcome code and the battle ends."),
+      (0xB09F, "<b>Daily rice drain.</b> <code>consume_daily_battle_rice</code>: <code>rice −= live_men / 30</code> "
+               "(+ carried remainder) for each side — the supply clock."),
+      (0xB0B8, "<b>Day 31.</b> If neither side broke first, the loop exhausts → resolution code <b>3</b> "
+               "(“your men are exhausted!”)."),
+    ],
+    sections=[
+      ("What we thought it was — and what it is",
+       "<p>For a year the project carried a “combat damage formula”: sub <code>$9675</code> reading two attribute "
+       "tables, a four-quadrant branch, and damage magnitudes <code>{1,2,4,7}</code>. Reading the clean code "
+       "decompile — and confirming on the emulator (<code>tools/probe-combat-arena.py</code>) — overturned all of "
+       "it. <code>$9675</code> (now <code>set_combat_arena_rect_by_approach</code>) computes <b>no damage</b>. The "
+       "“attribute tables” were <code>strategic_map_fief_x/y</code> (fief coordinates); the “magnitudes” were the "
+       "corners of a <b>rectangle</b>; and the function only ever returns an edge code, never a number that hits a "
+       "unit. The four words <code>$6FF6–$6FFC</code> are the tactical arena’s bounding box, and the very next "
+       "routine (<code>is_coord_in_combat_rect</code>) reads them as exactly that. A clean lesson in re-verifying a "
+       "“solved” result after the toolchain improves.</p>"),
+      ("Deployment: the strategic map decides your edge",
+       "<p>The default arena is the full <b>11×5</b> grid <code>(0,0)–(10,4)</code>. "
+       "<code>set_combat_arena_rect_by_approach</code> shrinks it to the strip the attacker enters from, chosen by "
+       "the compass bearing between the two fiefs’ overworld coordinates — so <b>where you attack from on the map "
+       "decides where your units start in the battle</b>:</p>"
+       "<table>\n  <tr><th>Approach (atk vs def)</th><th>Arena rect</th><th>Entry strip</th><th>edge code</th></tr>\n"
+       "  <tr><td>East</td><td>x ∈ [7,10]</td><td>east edge</td><td>4</td></tr>\n"
+       "  <tr><td>West</td><td>x ∈ [0,3]</td><td>west edge</td><td>3</td></tr>\n"
+       "  <tr><td>North</td><td>y ∈ [0,2]</td><td>north edge</td><td>1</td></tr>\n"
+       "  <tr><td>South</td><td>y ∈ [2,4]</td><td>south edge</td><td>2</td></tr>\n</table>\n"
+       "<p class='sub'>The per-side battle record <code>$6F7D + 6·side</code> is a <b>{gold, rice, men}</b> triple "
+       "(the “Gold/Rice/Men” display reads it): <code>+0</code> gold, <code>+2</code> rice, <code>+4</code> men.</p>"),
+      ("Three ways to lose a soldier",
+       "<p>Combat damage is not one number — it’s three decoupled mechanisms:</p>"
+       "<p><b>1 · The rice/supply clock</b> (<code>consume_daily_battle_rice $830B</code>). The legendary “/30”: "
+       "each day an army of <i>men</i> eats <code>men/30</code> rice. Starting rice ≈ men, so it empties at "
+       "~day 30 — the real basis of the “31-day limit” and the rice-exhaustion / doughnut-fief defence.</p>"
+       "<pre>rice(+2) −= live_men(+4) / 30        <span class='k'># per day, + carried remainder</span></pre>"
+       "<p class='sub'>Cross-dump proof (<code>tools/probe-combat-bleed.py</code>): between two saves of one "
+       "battle, rice drained <i>men-proportionally</i> (−12 and −8 = the 32:21 men ratio) while men and the visible "
+       "slot strengths held constant — a supply drain, not a kill.</p>"
+       "<p><b>2 · Kills</b> (<code>apply_pct_reduction_to_unit_strength $9D03</code>). When two units clash, 100% of "
+       "the damage is split between them by relative strength:</p>"
+       "<pre>share = math32_2arg(A, B) = 100·A / (A+B)\ndefender loses share% of its slot · attacker loses (100−share)%</pre>"
+       "<p><b>3 · Capture</b> (<code>resolve_attack_apply_casualties $9E73</code>) — a morale + charisma contest, "
+       "emulator-confirmed (<code>tools/probe-combat-casualty.py</code>):</p>"
+       "<pre>atk = rng(6−skill) + morale(atk) + charisma(atk daimyo)\ndef =               morale(def) + charisma(def daimyo) + 2·skill\nif atk &gt; def:  captured = pct_op( math32_2arg(atk, atk−def), enemy_slot_strength )\n               <span class='k'># those men DEFECT to the attacker’s slot 0 (cap 9999)</span></pre>"
+       "<p>So a winning attack <b>converts</b> enemy soldiers rather than only killing them — and a strong leader’s "
+       "<b>charisma can win battles outright</b>: in a real Oda matchup the attacker prevailed at every morale from "
+       "40 to 120 on charisma alone.</p>"),
+      ("How a battle ends",
+       "<p>The 31-day loop exits to <code>dispatch_battle_resolution $AF3B</code> with an <b>outcome code</b> that "
+       "selects the end message. There are four conditions plus retreat:</p>"
+       "<table>\n  <tr><th>code</th><th>Condition</th><th>Message</th></tr>\n"
+       "  <tr><td>3</td><td>day-31 timeout</td><td>“your men are exhausted!”</td></tr>\n"
+       "  <tr><td>4</td><td>rice ≤ 0</td><td>“supply reports… out of rice”</td></tr>\n"
+       "  <tr><td>5</td><td><b>commander (unit type 0) killed</b></td><td>“the command unit has been destroyed!”</td></tr>\n"
+       "  <tr><td>6</td><td>annihilation (5 with no units left)</td><td>“not a single soldier remains”</td></tr>\n"
+       "  <tr><td>—</td><td>Flee command</td><td>“%s has retreated”</td></tr>\n</table>\n"
+       "<p class='sub'><b>Unit type 0 is the commander</b> — <code>check_commander_alive_both_sides</code> runs after "
+       "every single unit action, so losing it ends the battle instantly. (The familiar “You have no rice/soldiers!” "
+       "strings are the <i>strategic</i> pre-battle affordability checks in bank 1, not these tactical terminators.)</p>"),
+      ("The aftermath: spoils, pillage, conquest",
+       "<p>On an attacker win, <code>apply_conquest_outcome $E03C</code> settles the province:</p>"
+       "<table>\n  <tr><th>Step</th><th>Effect</th></tr>\n"
+       "  <tr><td><b>Spoils</b></td><td>the conquered fief absorbs <b>both sides’</b> surviving gold + rice + men "
+       "(<code>atk + def</code>) — the capture mechanic’s payoff, realised at the strategic layer</td></tr>\n"
+       "  <tr><td><b>Pillage</b></td><td><code>output −= pct_op(rng(10)+10, output)</code> — a random "
+       "<b>10–19% output hit</b></td></tr>\n"
+       "  <tr><td><b>Ownership</b></td><td>arms + daimyo transferred; the defeated daimyo’s <i>other</i> fiefs are "
+       "neutralised (<code>province_ai_state = −1</code>); a new daimyo installed if eliminated — the empire is "
+       "dismantled in one resolution</td></tr>\n</table>\n"),
+      ("What each daimyo stat does in battle",
+       "<p>The stats split into two roles: <b>charisma drives the damage; the rest drive the AI’s decision to "
+       "engage.</b> The engagement score (<code>ai_sum_battle_strength</code>) is a weighted attacker-vs-defender "
+       "tally — for each stat the side that wins it adds that weight "
+       "(<code>battle_strength_stat_weights $B5B1</code>):</p>"
+       "<table>\n  <tr><th>Stat</th><th>field</th><th>Damage role</th><th>AI-score weight</th></tr>\n"
+       "  <tr><td>Health</td><td>+1</td><td>—</td><td>5</td></tr>\n"
+       "  <tr><td>Drive</td><td>+2</td><td>—</td><td>10</td></tr>\n"
+       "  <tr><td>Luck</td><td>+3</td><td>—</td><td>10</td></tr>\n"
+       "  <tr><td><b>Charisma</b></td><td>+4</td><td><b>decisive — the capture contest</b></td><td>5</td></tr>\n"
+       "  <tr><td>IQ</td><td>+5</td><td>—</td><td><b>20 — top daimyo stat</b></td></tr>\n"
+       "  <tr><td>skill (<code>const_two</code>)</td><td>—</td><td>rng(6−skill), +2·skill</td><td>(province) 25</td></tr>\n"
+       "  <tr><td>morale</td><td>prov +18</td><td>contest term</td><td>10</td></tr>\n</table>\n"
+       "<p class='sub'>So <b>IQ</b> most influences <i>whether</i> the AI attacks, while <b>charisma</b> decides "
+       "<i>how the battle goes</i> once joined — and province <b>skill</b> (weight 25) is the single biggest term.</p>"),
+    ],
+    finds=[
+      ("The “4-quadrant damage formula” was the deployment rectangle.",
+       "<code>$9675</code> sets the tactical arena’s bounding box (<code>$6FF6–$6FFC</code>) to the attacker’s "
+       "entry edge by compass approach; it returns an edge code, never damage. Oracle-confirmed — the {1,2,4,7} "
+       "“magnitudes” were rectangle corners."),
+      ("The legendary “/30” is the rice clock, not a damage divisor.",
+       "<code>consume_daily_battle_rice</code> drains <code>men/30</code> rice per day. It unifies the “/30”, the "
+       "31-day limit, the “out of rice” terminator, and the rice-exhaustion strategy into one routine — cross-dump "
+       "proven men-proportional, decoupled from kills."),
+      ("Combat converts soldiers, and charisma can win outright.",
+       "The attack is a morale + charisma contest; the winner’s margin <i>captures</i> enemy men to its own side. "
+       "A strong leader’s charisma can win regardless of morale — the decisive combat stat."),
+      ("Unit type 0 is the commander; losing it ends the battle.",
+       "<code>check_commander_alive_both_sides</code> runs after every unit action; an absent type-0 unit triggers "
+       "the code-5 “command unit destroyed” terminator."),
+    ],
+    sources="<code>decompiled/bank_02.c</code> ($AFE1, $9B08, $9675, $9E73, $9D03, $830B, $AF3B) · "
+            "<code>decompiled/bank_15.c</code> ($E03C) · <code>tools/probe-combat-{arena,casualty,bleed}.py</code> · "
+            "memory <code>project_nobunaga_combat_engine_decoded</code>.",
+  ),
   "planner": dict(
     no="1", title="The Season Tick", sub="ai_strategic_turn_planner $A455 — turn setup and the random-event engine.",
     intro=(
@@ -377,6 +509,157 @@ PHASE_PAGES = {
             "<code>driver_tax $99A6</code> · <code>fief_tax_rate $6D2D</code> · "
             "memory <code>project_nobunaga_main_turn_loop</code> · <code>tools/run-animation.py</code> (event anims).",
   ),
+  "command": dict(
+    no="5", title="ai_per_fief_command_driver", sub="$B89B (bank 1) — how the AI plays each fief’s turn.",
+    steps_caption="The command pass, fief by fief — every stage grounded in the bytecode of "
+                  "<code>ai_per_fief_command_driver $B89B</code>:",
+    intro=(
+      "The planner ticks the world and the shuffle decides who moves; <b>this</b> is where each daimyo actually "
+      "<i>plays</i>. <code>ai_per_fief_command_driver</code> walks the turn order and, for every fief, dispatches "
+      "on one number — <code>province_ai_state</code>, the <b>Grant policy</b> the governing daimyo was assigned "
+      "(0–5). That number selects one of six handlers, each biased toward a different command. <b>Here’s the twist "
+      "we confirmed by save-state census:</b> those six policies are a <i>player</i> affordance — a delegation menu "
+      "so you don’t micromanage. The AI never uses them. Every AI fief sits permanently at state 0 (Home), which "
+      "routes to the RNG-weighted Balanced loop. So the handlers below describe the full Grant menu, but the enemy "
+      "only ever runs one of them. They share a small kit of economic helpers and a single war routine, and they "
+      "all spend against a budget that <b>grows with the game year</b>. We re-walked the whole pass against the "
+      "post-fix decompile (the earlier notes were stale) and <b>asked the ROM directly</b> — both which enemy the "
+      "AI attacks (overturning one of our labels) and whether the AI picks a style at all (it doesn’t)."),
+    steps=[
+      (0xB8B1, "<b>Per-season turn flag.</b> Clear <code>ai_turn_flags</code> bit 0, then set it iff "
+               "<code>rng%100 ≥ 55 − skill×5</code> — a difficulty-scaled coin-flip (skill 1 ≈ 50%, skill 5 ≈ 70%) "
+               "that gates this season’s <b>merchant/trade</b> availability."),
+      (0xB90E, "<b>Pick the fief.</b> <code>selected_province_idx = daimyo_turn_order[i]</code> — the shuffled order "
+               "from phase 4. The redraw shows “Turn %d / fief %d”."),
+      (0xB943, "<b>Resting?</b> If <code>rest_turns_remaining[fief]</code> is non-zero the daimyo is recovering "
+               "(illness / post-battle) and the turn is skipped."),
+      (0xB94C, "<b>Dispatch on the Grant policy.</b> <code>switch (province_ai_state[fief])</code> → one of six "
+               "handlers (table below). This single byte is the AI’s entire “personality” for the fief."),
+      (0xB989, "<b>Execute &amp; show.</b> <code>issue_province_command</code> commits the chosen command and draws "
+               "it. Player-controlled fiefs (state 5 / <i>Direct</i>) reach the interactive command menu here "
+               "instead; AI fiefs just display what the handler already did."),
+      (0xB996, "<b>Resume marker.</b> The loop index is persisted to <code>ai_per_fief_loop_index $6001</code> so a "
+               "war declared mid-pass can drop into the bank-2 combat engine and the pass can <b>resume at the next "
+               "fief</b> afterward — the keystone the spine page calls out."),
+    ],
+    sections=[
+      ("The six Grant policies — the player’s delegation menu",
+       "<p>Each policy is a handler with a different command bias. They are <b>not</b> hard scripts — every one "
+       "leans on RNG and the fief’s resource surplus — but the lean is real. <b>These are what the player picks "
+       "with the Grant command</b> to auto-run a fief; the enemy AI uses only state 0 (see the census below):</p>"
+       "<table>\n  <tr><th>state</th><th>Grant policy</th><th>Handler</th><th>What the fief does</th></tr>\n"
+       "  <tr><td>0</td><td>Home</td><td><code>ai_econ_action_state0 $B875</code></td>"
+       "<td>General econ dispatch + a random daimyo-stat nudge; ~25% chance it also bumps arms.</td></tr>\n"
+       "  <tr><td>1</td><td>Industrial</td><td><code>ai_develop_town_handler $B3AB</code></td>"
+       "<td>Commerce: convert gold↔rice toward balance, ship surplus to other fiefs, then grow.</td></tr>\n"
+       "  <tr><td>2</td><td>Military</td><td><code>ai_state2_recruit_arm_train $B4D5</code></td>"
+       "<td><b>Try war first</b> (below); otherwise hire men, buy arms, and train.</td></tr>\n"
+       "  <tr><td>3</td><td>Balanced</td><td><code>ai_econ_command_dispatch $B64B</code></td>"
+       "<td>The general dispatcher — an RNG-weighted pick across recruit / town / dam-and-grow.</td></tr>\n"
+       "  <tr><td>4</td><td>Farming</td><td><code>ai_develop_dam_and_grow $B42B</code></td>"
+       "<td>Agriculture: build dams while output &lt; ceiling, then grow output.</td></tr>\n"
+       "  <tr><td>5</td><td>Direct</td><td>— (interactive menu)</td>"
+       "<td>Player-controlled (or fully manual) — no AI handler; <code>issue_province_command</code> opens the menu.</td></tr>\n</table>\n"
+       "<p class='sub'>State 0 (Home) is the important one: it calls <code>ai_econ_command_dispatch</code> — the "
+       "same routine as state 3 (Balanced) — so the AI’s universal policy is the all-around probabilistic mix that "
+       "can recruit, develop, <i>or</i> go to war on any given turn.</p>"),
+      ("Does the AI pick a style? No — it’s always Home",
+       "<p>The dispatch reads <code>province_ai_state[fief]</code> fresh every turn, so whatever is stored is what "
+       "runs. We took a census of that byte across every save dump "
+       "(<code>tools/probe-ai-policy-distribution.py</code>) — and the AI never varies:</p>"
+       "<table>\n  <tr><th>save</th><th>province_ai_state histogram</th></tr>\n"
+       "  <tr><td>every ordinary mid-game save</td><td><b>Home ×49, Direct ×1</b></td></tr>\n"
+       "  <tr><td>blockade-complete (player owns ~7)</td><td>Home ×37, Military ×1, Balanced ×5, Direct ×7</td></tr>\n"
+       "  <tr><td>post-victory (player owns ~17)</td><td>Home ×33, Balanced ×10, Direct ×7</td></tr>\n</table>\n"
+       "<p>Every AI fief sits at <b>0 (Home)</b>; the lone <b>Direct (5)</b> is the human’s own fief. States 1–4 "
+       "show up <i>only</i> in saves where the player has conquered and granted policies to their <i>own</i> fiefs — "
+       "and they scale with how much the player owns. New-game seeds <b>all</b> fiefs to 0 "
+       "(<code>$89F9</code>); character-creation stamps the player fief to 5; conquered AI fiefs stay 0. So the "
+       "“six personalities” are entirely a player convenience. <b>The enemy is monomorphic:</b> it runs the Home / "
+       "Balanced dispatcher on every fief, and the variety you see between AI fiefs comes from their differing "
+       "<b>resource surplus, RNG, and daimyo stats</b> — never from a chosen policy.</p>"),
+      ("How a fief decides what it can afford",
+       "<p>Before spending, every econ handler computes a <b>surplus</b> with "
+       "<code>ai_calc_men_surplus_over_gold_and_rice $B2EF</code>: <code>gold − men</code> and "
+       "<code>rice − men</code>, both floored at 0. In this engine a fief’s standing <b>army size is the unit of "
+       "account</b> — you only have “spare” gold or rice once it exceeds the men you must feed. That surplus is "
+       "what gets shipped, grown, or spent on troops.</p>"
+       "<p>And the spending ceilings <b>scale with the calendar</b>. Every cap is of the form "
+       "<code>(current_game_year − 1559) × N</code>, so an AI fief in 1582 may commit far more per command than the "
+       "same fief in 1560:</p>"
+       "<table>\n  <tr><th>Handler</th><th>Cap (per command)</th></tr>\n"
+       "  <tr><td>Industrial — ship gold</td><td><code>min(ceiling, (year−1559)×100 + 100)</code></td></tr>\n"
+       "  <tr><td>Farming — grow output</td><td><code>min(ceiling, (year−1559)×50 + 250)</code></td></tr>\n"
+       "  <tr><td>Military — hire men</td><td><code>min(ceiling, (year−1559)×100)</code></td></tr>\n"
+       "  <tr><td>Military — buy arms</td><td><code>min(ceiling, (year−1559)×40)</code></td></tr>\n</table>\n"
+       "<p class='sub'>This is a deliberate ramp: the AI plays small early and escalates, so the late game gets "
+       "more aggressive on its own even before territory snowballs.</p>"),
+      ("The war decision",
+       "<p>The militarist handler opens with <code>ai_try_war_attack $949A</code>. It is a filter, not a gamble — "
+       "most turns it returns “no war” at one of three gates, and the rest pick a target carefully:</p>"
+       "<ol class='flow'>\n"
+       "  <li><span class='addr'>$94B3</span><b>Self-gate.</b> Bail if the attacker’s own daimyo carries the "
+       "<code>daimyo_weakness_flag</code> (a low-health mark set by the planner), or has no men, or no gold.</li>\n"
+       "  <li><span class='addr'>$DAD7</span><b>Build the candidate list.</b> <code>combat_helper_dad7</code> seeds "
+       "<code>deduped_owner_list $6F4F</code> from the fief’s <b>adjacency table</b> (<code>$8004</code>, ≤4 "
+       "neighbours), then <code>combat_helper_dd3a</code> keeps only the <i>active, enemy-owned</i> ones. The AI can "
+       "only attack a neighbour — geography is hard-coded into the target set.</li>\n"
+       "  <li><span class='addr'>$93B3</span><b>Default target = the weakest neighbour.</b> "
+       "<code>pick_weakest_men_fief</code> returns the adjacent enemy with the <b>fewest provisioned men</b> "
+       "(see the ROM check below). A fief that is <b>out of rice counts as zero men</b> "
+       "(<code>fief_men_if_provisioned $9382</code>) — starve a fief and the AI reads it as defenceless.</li>\n"
+       "  <li><span class='addr'>$945D</span><b>Grudge override.</b> If a designated rival "
+       "(<code>$6E7F</code>) owns an adjacent fief <i>weaker than the attacker</i>, that fief becomes the target "
+       "instead.</li>\n"
+       "  <li><span class='addr'>$9423</span><b>Diplomatic pick.</b> Among targets the attacker isn’t at good "
+       "relations with — and only if its daimyo’s <b>Drive ≥ 50</b> — it again prefers the weakest; a roughly-matched "
+       "such target can replace the default.</li>\n"
+       "  <li><span class='addr'>$90BB</span><b>Commit gate.</b> <code>ai_commit_attack_deduct_resources</code> "
+       "musters <code>≈ 60–89% of min(gold, men, rice×2)</code> and attacks <b>only if that force ≥ the defender’s "
+       "weaker of {men, rice}</b>. So target <i>selection</i> is weakest-prey, but the final go/no-go is a genuine "
+       "strength check — the AI rarely throws itself at a fief it can’t out-muster on at least one axis.</li>\n</ol>"),
+      ("Asking the ROM: which enemy does it attack?",
+       "<p>The target-pickers all compare armies through <code>fief_men_ratio_pct</code>, and the decompiled C "
+       "displays its arguments <b>reverse-pushed</b> — so reading the C naively inverts every “who’s bigger” test. "
+       "Rather than hand-trace the VM’s frame ABI, we ran the picker in the emulator "
+       "(<code>tools/probe-ai-war-target.py</code>): a synthetic candidate list of three fiefs with known army "
+       "sizes, executed straight off the ROM.</p>"
+       "<table>\n  <tr><th>candidate fiefs (men)</th><th>fief returned</th><th>verdict</th></tr>\n"
+       "  <tr><td>200, 50, 120</td><td>the <b>50</b> fief</td><td>fewest men</td></tr>\n"
+       "  <tr><td>50, 200, 120 (reordered)</td><td>the <b>50</b> fief</td><td>fewest men</td></tr>\n</table>\n"
+       "<p>The routine returns the <b>weakest</b> adjacent enemy in both orderings — so our own label "
+       "<code>pick_fief_with_most_men</code> was <b>backwards</b>. Corrected to <code>pick_weakest_men_fief</code> "
+       "in <code>mesen-labels.toml</code> (and the reverse-push direction is now annotated on "
+       "<code>fief_men_ratio_pct $939D</code> for every other caller). This both confirms the old “attacks the "
+       "weakest neighbour” intuition <i>and</i> fixes the code that says so.</p>"),
+    ],
+    finds=[
+      ("The Grant policies are a player tool; the AI is monomorphic.",
+       "<code>province_ai_state</code> (0–5) selects the per-fief handler, but a save-state census "
+       "(<code>probe-ai-policy-distribution.py</code>) shows every AI fief permanently at <b>0 (Home)</b> — states "
+       "1–4 appear only where the player granted them. The enemy doesn’t pick a style; it always runs Home, which "
+       "is the RNG-weighted Balanced dispatcher (<code>ai_econ_action_state0 → ai_econ_command_dispatch</code>). "
+       "Per-fief variety is resource state + RNG + daimyo stats, not policy."),
+      ("The AI plays bigger as the years pass.",
+       "Every spending cap is <code>(year − 1559) × N</code>. The opponent escalates on a calendar ramp, "
+       "independent of how much land it holds — a built-in difficulty curve over time."),
+      ("Attacks the weakest adjacent enemy — ROM-confirmed, and our label was wrong.",
+       "<code>pick_weakest_men_fief $93B3</code> returns the neighbour with the fewest provisioned men "
+       "(<code>probe-ai-war-target.py</code>); the prior name <code>pick_fief_with_most_men</code> read the "
+       "reverse-pushed comparison backwards. A rice-starved fief reads as zero men, so supply attrition makes a fief "
+       "a target."),
+      ("Weakest-prey selection, but a real strength gate at commit.",
+       "Selection prefers the weakest neighbour, yet <code>ai_commit_attack_deduct_resources</code> only attacks if "
+       "the mustered force beats the defender’s weaker of {men, rice}. The AI isn’t reckless — it picks soft targets "
+       "<i>and</i> checks it can win, which is why under-strength AI attacks are uncommon, not the rule."),
+    ],
+    sources="<code>decompiled/bank_01.c</code> ($B89B, $B875–$B64B handlers, $949A war, $93B3/$9423/$945D pickers, "
+            "$904C commit) · <code>decompiled/bank_15.c</code> ($DAD7/$DD3A candidate list, $D972 weakness gate) · "
+            "<code>tools/probe-ai-war-target.py</code> (target-direction oracle) · "
+            "<code>tools/probe-ai-policy-distribution.py</code> (policy census) · adjacency table "
+            "<code>$8004</code> · labels <code>province_ai_state</code>, <code>pick_weakest_men_fief</code>, "
+            "<code>fief_men_ratio_pct</code>, <code>daimyo_weakness_flag</code>.",
+  ),
 }
 
 
@@ -393,8 +676,7 @@ def render_phase_page(pid):
       '<div class="skills">\n  <span>① decompiler → C</span>\n  <span>② data-walk labels</span>\n'
       '  <span>③ bytecode-verified flow</span>\n  <span>④ emulator-probed formula</span>\n</div>\n\n'
       f'<p class="lead">{p["intro"]}</p>\n\n'
-      f'<h2>The steps</h2>\n<p class="sub">The wizard, in order — each step grounded in the '
-      f'<code>$89A3</code> bytecode:</p>\n<ol class="flow">\n{steps}\n</ol>\n\n'
+      f'<h2>The steps</h2>\n<p class="sub">{p.get("steps_caption", "The wizard, in order — each step grounded in the <code>$89A3</code> bytecode:")}</p>\n<ol class="flow">\n{steps}\n</ol>\n\n'
       f'{secs}'
       f'<h2>What it pinned down</h2>\n{finds}\n'
       f'<footer>\n  ← <a href="./turn-loop.html">back to the turn-loop map</a> &nbsp;·&nbsp; '
@@ -468,7 +750,9 @@ def render():
       '<code>vm_bootstrap $A778</code> — sequences every season: it runs the per-season tick, reshuffles who '
       'acts, and hands each fief to the command driver, looping out to the combat engine whenever a war is '
       'declared. The <b>command palette</b> (21 pages) and the <b>battle engine</b> are its two big branches; '
-      'this page is the index above them, and the status badges are the remaining-work map.</p>\n\n'
+      'this page is the index above them, and the status badges are the remaining-work map. '
+      'For the enemy AI specifically — how a daimyo plays its whole turn, consolidated — see '
+      '<a href="./ai.html">How the AI Plays</a>.</p>\n\n'
       '<h2>The loop at a glance</h2>\n'
       '<p class="sub">One pass = one season. After <code>init</code> (once), phases 1–6 repeat. '
       '<span class="st st-inline">dived</span> = explained here · '
