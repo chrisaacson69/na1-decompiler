@@ -815,10 +815,18 @@ def _structure_switch(S, ctx, loop):
     CFG matches the raw witness the same way V1's inline does, so the gate accepts it."""
     d = ctx.switches[S]
     body_end = d['body_end']
-    after = ctx.block_of(body_end) if body_end is not None else vm_cfg.EXIT
+    M = d.get('merge')
+    # atom 4: an EMPTY default whose target IS the shared merge M. Then M is the switch EXIT
+    # (pulled out past the `}`; the walk resumes there), NOT a case body; each case renders
+    # `break;` to it. dim gates the whole break-conversion path (else: legacy goto-inline).
+    dim = bool(d.get('default_is_merge')) and d.get('break_target') is not None
+    after = M if dim else (ctx.block_of(body_end) if body_end is not None else vm_cfg.EXIT)
+    goto_m = f"goto L_{M:04X};" if dim else None
     # target block -> the case-label lines to emit before it, in key-declaration order.
     by_target = {}
     for key, tgt in d['key_targets']:
+        if dim and key is None and tgt == M:
+            continue                           # omit the empty default's label (implicit -> M)
         by_target.setdefault(tgt, []).append('default:' if key is None else f'case {key}:')
 
     rel = []                                   # (addr, rel_indent, text)
@@ -834,8 +842,10 @@ def _structure_switch(S, ctx, loop):
         if vm_cfg._RE_SWITCH_OPEN.match(t):
             opener_seen = True
     # --- enclosed case bodies: every leader strictly between S and body_end, address order.
+    # In the dim path the merge M is EXCLUDED (it's pulled out past the `}`).
     enclosed = [L for L in d['enclosed'] if L != S
-                and (body_end is None or L < body_end)]
+                and (body_end is None or L < body_end)
+                and not (dim and L == M)]
     consumed = {S} | set(enclosed)
     labeled = set()
     for L in sorted(enclosed):
@@ -843,9 +853,23 @@ def _structure_switch(S, ctx, loop):
             for lab in by_target[L]:
                 rel.append((L, 1, lab))           # case label aligns one in from `switch`
             labeled.add(L)
-        for addr, _i, text in ctx.buckets[L]:
+        body = list(ctx.buckets[L])
+        emitted_break = False
+        for j, (addr, _i, text) in enumerate(body):
             t = text.strip()
-            rel.append((addr, 2, t))              # case body one deeper than its label
+            if dim and t == goto_m and j == len(body) - 1:
+                rel.append((addr, 2, 'break;'))   # case exits to the merge -> break
+                emitted_break = True
+            else:
+                rel.append((addr, 2, t))          # case body one deeper than its label
+        # a case body that FALLS to the merge with no explicit terminator gets a break too
+        # (e.g. $A30D case 0: per_turn_age() then falls into A381). A body that falls to the
+        # NEXT case (real C fall-through) or ends in return/other-goto is left as-is.
+        if dim and not emitted_break and ctx.full_cfg.get(L) == frozenset({M}):
+            lastt = body[-1][2].strip() if body else ''
+            cl, _t = vm_cfg._classify_stmt(lastt) if body else ('plain', None)
+            if cl == 'plain':
+                rel.append((body[-1][0] if body else L, 2, 'break;'))
     # --- empty trailing cases: a key pointing at the merge (== body_end) has no enclosed
     #     block; emit it as an empty case that falls off the `}` (== break / fall-to-merge).
     for tgt in sorted(t for t in by_target if t not in labeled):

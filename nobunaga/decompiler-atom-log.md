@@ -26,7 +26,7 @@ whose goto-count dropped because of THIS atom — the generalization signal.
 | 1 | multi-latch `while(1)`-with-`continue`s | each `continue` → jump-to-header (extra back-edge) | `vm_bootstrap $A778` | 2 (`$88AC`, `$D59D`) + enables #2 | part of −20 | ✅ landed `3c10cf6` |
 | 2 | multi-level break = honest goto | nested-loop break to a far target → goto (C has only 1-level break) | `vm_bootstrap $A778` | 1 (`$A778` 14→1) | part of −20 | ✅ landed `3c10cf6` |
 | 3 | routing-block absorption (adjacent) | a fall-through between regions → a standalone `goto L_X` forwarding block | `init_new_game_state $89A3` | **7** (`$89A3` 16→0, `$83E2` 34→30, `$813C` 6→0, `$90E8`/`$911E` 5→1, `$A066` 1→0, `$840B` 2→0) | **−37** (1025→988) | ✅ generalized |
-| 4 | switch convergence/shared-merge folding | the VM's `switch` (`$D5`/`$D9`) with fall-through cases + a SHARED merge/exit | `$A30D`, `$9C84`, … (36 switch subs) | TBD — **multi-shape, hard** | ~365 in all switch subs, but **only ~59 / 8 subs are BEHIND V1** (probe below) | 🔬 deep-dive done, not implemented |
+| 4 | switch shared-merge — **empty-default == merge slice** (`if(x){…break…}` per case) | the VM `switch` where the `default` target IS the post-dom merge M (empty default; every case → M) — M is the shared EXIT, interleaved by address | `$A30D` (atlas-sourced: `06_switch_shared_merge` `sm_default_preswitch_share`) | **4** (V2; **0 worse**; `$A30D` 8→0) | **V2 −16** (899→883) | ✅ landed (default==merge shape; other switch shapes still 🔬) |
 | 5 | multi-statement terminal-block duplication | N branches to a shared block that ENDS in `return`/`break` → duplicate it into each arm (`$AD38`). 1-statement case already inlines; ≥2-statement needs gate change | `$AD38`, `$8FF8`, `$918D` … | ~54 / 14 subs (probe below) | blocked by address-based gate | 🔬 not implemented |
 | 6 | **forward-sink as merge (Track A, family-1)** | a branch to a SHARED TERMINAL sink (`→EXIT`, incl. multi-statement) emitted ONCE as the address-tail fall-through — invert the base lowering where guards converge on a trailing `return` | `$9F04` | **4** (`$9F04` 1→0, `$A003` 4→2, `$A068` 4→2, `$A113` 5→2) | **−8** (988→980) | ✅ landed |
 | 7 | **incremental peephole** (emit-quality, not an inverse-lowering) | a real bytecode `goto L_h; // $a` whose header is the emit-next line (pre-test loop entry-jump, routing stub) — clip it when the gate agrees | `$A30D` | clips the head-goto/stub on any sub where a SOUND goto-to-next was batched with an unsound one | **−2** (980→978) | ✅ landed |
@@ -633,3 +633,46 @@ the atom folds **beyond its intended purpose** (Chris's bar for "real issue, not
 
 **▶ NEXT (the natural successors):** mixed `(a&&b)||c` (a guard that does NOT branch straight to body — a
 later detector pass), and atom 4 (switch shared-merge). Both are now clearly atlas-sourceable shapes.
+
+## Atom 4 (FIRST SHAPE) — switch with empty-default == merge  ✅ (2026-06-05, ATLAS-SOURCED)
+The long-deferred switch mini-epic, attacked on the canonical sub `per_period_fief_daimyo_update_driver
+$A30D` (Chris's target). Landed the **default-target == post-dom-merge M** shape — the most common
+switch residue.
+
+**Forward source of truth + a correctness catch.** Chris's first-pass desired output had `case 0: …; break;`,
+which I flagged as a possible fall-through (the decompiled TEXT shows `L_A37E`/`L_A385` adjacent with no
+goto). **The bytecode settled it: `A37E → {A381}`** — case 0 jumps to the merge, NOT to case 1; the adjacency
+is the flushed-call display artifact (the `L_A381:` label even prints between them). So **case 0 breaking is
+correct**; my fall-through worry was wrong. The atlas `06_switch_shared_merge.sm_default_preswitch_share`
+confirms GCC lowers `switch{…default:break;}` to exactly this (each case → merge, empty default → merge).
+
+**The architecture gap, and why V1 "folds" it but reads WRONG.** `switch_dispatches` detects the switch but
+sets `break_target=None` because M=`$A381` is INTERLEAVED (`A381 < brace_close A391` — it sits between case
+bodies by address). So the cases couldn't render `break`. Worse, V1 emits `case 0: default: L_A381:
+per_turn_age(); goto L_A3A0;` — gate-equivalent (the gate reads address tags) but it READS as "default runs
+per_turn_age," which is FALSE. A gate-equivalent-yet-mis-reading fold — exactly the "C must read as game
+logic" gap a single structural metric misses.
+
+**The fix (3 coordinated changes; the gate change is the keystone).**
+1. **`switch_dispatches`**: detect `default_is_merge` (default target == M) and set `break_target = M` even
+   when M is interleaved (M < brace_close) — the label-aware gate tolerates the out-of-address-order merge.
+2. **`_structure_switch`**: when `default_is_merge`, EXCLUDE M from the inlined case bodies (it's pulled out
+   past the `}`), OMIT the empty default's label, convert each case's trailing `goto M` → `break;` (and a
+   case that FALLS to M with no terminator — `$A30D` case 0 — gets an appended `break;`; a case that falls to
+   the NEXT case keeps real C fall-through), and resume the walk at M.
+3. **gate `lower_struct_cfg`** (the keystone, kept INERT until #1/#2 emit breaks): (a) model `break` inside a
+   switch → the post-switch merge (today `break` resolved only in LOOP context; split into `break_exit`
+   [innermost loop OR switch] vs `continue_hdr` [innermost loop, skipping switches] = C semantics); (b) an
+   inlined no-default switch's unmatched-selector fall = the LEXICAL merge (block after `}`), not
+   `next_leader[sb]` (which is case 0 in an inlined switch).
+
+**Result.** `$A30D` 8→0 gotos — folds to the EXACT clean form (each case `break;`, empty default omitted, both
+`while` loops + the switch reading as game logic). V2 **899 → 883 (−16, 4 subs, 0 worse)**; V1 unchanged
+(`decompiled/*.c` byte-identical — this is a V2-reducer + gate change, not a decoder fold). All gates green:
+witness 495/495, structuring 495/495, soundness 114/114, drift clean, disasm 0 BAD, deterministic. The gate
+change is the reusable keystone: switch-`break` now models correctly, so the remaining switch shapes
+(shared-RETURN merge `$9C84`, pre-switch-shared `$9ED9`, non-empty default) compose on top of it.
+
+**▶ NEXT switch shapes:** shared-return merge (`$9C84`: the merge is a `return` reached by an early guard too)
+and non-empty default — both now have the break-modeling foundation; they need the merge-identification to
+handle a merge that is a return/has-content rather than empty-routing.

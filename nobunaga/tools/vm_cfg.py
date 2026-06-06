@@ -696,7 +696,16 @@ def switch_dispatches(instructions):
         enclosed = sorted(L for L in leaders if sa < L <= brace_close)
         if not all(S in dom.get(L, set()) for L in enclosed):
             continue
-        break_target = M if (M is not EXIT and M in lead_set and M > brace_close) else None
+        # default_is_merge: the `default` target IS the switch's post-dom merge M — i.e. an
+        # EMPTY default (the `$A30D`/atom-4 shape: every case body → M, default → M directly).
+        # Then M is the shared switch EXIT, not a case body: the cases render `break;` and M is
+        # pulled out past the `}`. break_target is set to M even when M is INTERLEAVED by address
+        # (M < brace_close) — the label-aware gate (merge_after / switch break-context) tolerates
+        # the out-of-address-order placement, which is the whole point of atom 4.
+        default_tgt = next((t for k, t in key_targets if k is None), None)
+        default_is_merge = has_default and default_tgt == M and M is not EXIT
+        break_target = (M if (M is not EXIT and M in lead_set
+                              and (M > brace_close or default_is_merge)) else None)
         # body_end = the leader where the territory ENDS (the first leader past the last
         # enclosed BLOCK). The braces enclose every line up to but not including it; None =>
         # the territory runs to the end of the function. (brace_close is the last enclosed
@@ -708,6 +717,7 @@ def switch_dispatches(instructions):
             'switch_addr': sa, 'S': S, 'key_targets': key_targets,
             'has_default': has_default, 'enclosed': enclosed, 'brace_close': brace_close,
             'body_end': body_end, 'merge': M, 'break_target': break_target,
+            'default_is_merge': default_is_merge,
         })
     return out
 
@@ -1025,7 +1035,24 @@ def lower_struct_cfg(lines, leaders, orient=None):
         if tgts:
             succ = set(tgts)
             if not has_default:
-                succ.add(next_leader[sb])
+                # no-default fall = the MERGE (first block after the switch `}`), NOT
+                # next_leader[sb]: an inlined switch lays its case bodies right after the
+                # header, so the header's unmatched-selector fall-through is the post-switch
+                # block, not the first case. Label-aware (a pulled-out merge is labelled);
+                # dedent / unlabelled-plain falls back to next_leader (the former behaviour).
+                m = None
+                for k in range(sh_close + 1, len(lines)):
+                    tt = lines[k][2].strip()
+                    if not tt or tt.startswith('//') or _RE_CASE_LABEL.match(tt):
+                        continue
+                    if _RE_LABEL.match(tt):
+                        m = int(tt[2:6], 16)
+                    elif tt == '}' or tt == '} else {' or _RE_DOWHILE_CLOSE.match(tt):
+                        m = None
+                    elif _opens_block(tt) or not _is_scaffold(tt):
+                        m = block_of(lines[k][0])
+                    break
+                succ.add(m if m is not None else next_leader[sb])
             switch_edges[sb] = succ
 
     header_edges, back_edges, tail_redirect, dowhile_edges = {}, {}, {}, {}
@@ -1210,13 +1237,30 @@ def lower_struct_cfg(lines, leaders, orient=None):
         # cased via dowhile_edges before the scan).
         loop_meta.append((close_idx - _do_idx, hb, exit_blk, frozenset(dbls)))
 
-    # Map each body block to its INNERMOST enclosing loop (largest span first so the
-    # smallest/innermost overwrites) — the context a `break`/`continue` resolves against:
-    # break -> that loop's exit block, continue -> its header block.
-    loop_ctx = {}
-    for _span, hb_, exit_, bls_ in sorted(loop_meta, key=lambda m: -m[0]):
-        for L in bls_:
-            loop_ctx[L] = (hb_, exit_)
+    # `break` resolves to the innermost enclosing loop OR SWITCH exit; `continue` skips
+    # switches to the innermost LOOP header (C semantics). Build both maps, innermost (smallest
+    # span) overwriting. switch_meta: (span, merge, body_leaders) — merge = the block after the
+    # switch `}` where a `case …; break;` lands (label-aware via merge_after, so a pulled-out /
+    # interleaved switch merge — atom 4 — resolves even when it's a lower address).
+    switch_meta = []
+    for sh_addr, sh_idx, sh_close in switches:
+        sb = block_of(sh_addr)
+        sm = merge_after(sh_close)
+        if sm is None:
+            sm = first_real_block(sh_close + 1, len(lines))
+        if sm is None:
+            sm = EXIT
+        sbls = _loop_body_leaders(lines, sh_idx, sh_close, block_of, leaders)
+        sbls.discard(sb)
+        switch_meta.append((sh_close - sh_idx, sm, frozenset(sbls)))
+    break_exit, continue_hdr = {}, {}
+    constructs = ([('loop', sp, hb_, ex_, bl_) for sp, hb_, ex_, bl_ in loop_meta]
+                  + [('switch', sp, None, mg_, bl_) for sp, mg_, bl_ in switch_meta])
+    for typ, _sp, hb_, ex_, bl_ in sorted(constructs, key=lambda m: -m[1]):
+        for L in bl_:
+            break_exit[L] = ex_
+            if typ == 'loop':
+                continue_hdr[L] = hb_
 
     blocks = {L: [] for L in leaders}
     for addr, _ind, text in lines:
@@ -1259,10 +1303,9 @@ def lower_struct_cfg(lines, leaders, orient=None):
                 mcnd = re.match(r'if \((.+)\) goto', t)
                 _record_orient(orient, L, mcnd.group(1), block_of(tgt), fall_thru)
             elif cl in ('break', 'continue', 'ifbreak', 'ifcontinue'):
-                ctx = loop_ctx.get(L)
-                if ctx is not None:
-                    hb_, exit_ = ctx
-                    jmp = exit_ if cl in ('break', 'ifbreak') else hb_
+                is_brk = cl in ('break', 'ifbreak')
+                jmp = break_exit.get(L) if is_brk else continue_hdr.get(L)
+                if jmp is not None:
                     if cl in ('break', 'continue'):
                         succ = {jmp}
                     else:
