@@ -676,3 +676,28 @@ change is the reusable keystone: switch-`break` now models correctly, so the rem
 **▶ NEXT switch shapes:** shared-return merge (`$9C84`: the merge is a `return` reached by an early guard too)
 and non-empty default — both now have the break-modeling foundation; they need the merge-identification to
 handle a merge that is a return/has-content rather than empty-routing.
+
+## Atom 5 retry (2026-06-05) — naive terminal-bypass gate is UNSOUND; sound path identified. REVERTED.
+Took "my pick" (`$AD38`, the cross-jump / multi-statement terminal duplication) now that atom B's
+lexical-merge gate landed. Confirmed the shape: `AD58` (4 stmts ending `return`) is reached from `AD47`
+(fall) and `AD67` (goto) — GCC cross-jumped it; the clean inverse DUPLICATES `AD58` into both arms.
+
+**Tried the cheap gate change — the negative tests killed it in seconds (the discipline working).** Made
+`contract()` bypass a terminal SINK (sole successor EXIT) even when observable, so a duplicated terminal
+would match the shared-sink witness. Result: **5 soundness tests FAILED** — `guard inversion (then/else swap)
+REJECTED` (`$862B`, `$87F0`) and `dropped case (dispatch edge lost) REJECTED` (`$B09D`, `$9BB4`, `$DE78`).
+Root cause: bypassing a terminal sink COLLAPSES distinct `return A`/`return B` arms (and distinct switch
+cases) to a single `EXIT`, so the gate can no longer tell a then/else swap or a dropped case from the
+original — it loses orientation + dispatch fidelity. (V2 also "dropped" 883→759, but that was the gate
+WRONGLY accepting, not a real win.) **Reverted; the gate stays pristine.**
+
+**The sound path (for a future focused session).** Don't bypass in `contract` (content-blind). DUPLICATE the
+terminal as a BYTECODE-side pre-contraction (the value-diamond playbook): `bytecode_cfg`, `lower_raw`
+(decoder), and `lower_struct` (reducer) ALL duplicate the shared terminal into each predecessor CONSISTENTLY
+(re-tagged to the predecessor's address range), so the three views agree at full fidelity — orientation/
+dispatch preserved because the copies are distinct content-bearing blocks, not a collapsed EXIT. Plus a
+**copies == in-edges guard** (every predecessor that reached the sink gets a copy → no path silently drops
+its content, the guarantee `contract` can't carry). This is the "rearchitecture" the earlier `$AD38`
+dissections flagged — NOT a one-line gate tweak. **Lesson reaffirmed (correctness-over-results): the push-pull
+negative tests are the backstop; a cheap gate relaxation that "improves" the goto count is exactly what they
+exist to reject.**
