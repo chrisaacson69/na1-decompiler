@@ -864,3 +864,28 @@ bare-return block and inlined as the early-return idiom (both `_is_return_block`
 `$8327` 1→0 (clean if/else, each arm `return arg1`). V2 875→874, behind 54→53, 114/114, both hard gates
 495/495, deterministic. (The broad forward-merge MAJORITY — ~148 non-sink gotos across loops / multi-way /
 acyclic shared merges — remains its own focused epic; several of those subs V1 itself can't fully fold.)
+
+### Terminal-exit un-sharing — theory TESTED, sound, 0 yield (2026-06-06). Machinery REVERTED, finding banked.
+Chris's hypothesis: a shared terminal exit is compile-time-shared code; un-share it (give each path its own
+exit copy) and test if it collapses — generalizing atom 5 + the early-return inline into one mechanism. Built
+the clean version that handles the case the address-based gate couldn't before (a guard inlining a
+MULTI-statement shared tail, `if(c){ tail }`): copies emitted at a SYNTHETIC address (≥0x100000) so N copies
+don't collide on the sink's address; `lower_struct_cfg` self-augments its leader set with synth addrs; `then_true`
+read lexically (synth-aware); `contract()` bypasses synth terminals; `_dupable_sink` + a guard-arm dup path +
+`copies==in-edges` guard (visited-based) + dup_count rollback on arm-probe bail. All SOUND: 114/114, both hard
+gates 495/495, `$AD38` still folds.
+
+**Result: V2 874 → 874 — ZERO additional subs.** Characterized why on every candidate:
+- `$9E73`: the dup fires on 1 of `$9F46`'s 3 preds; the other 2 split across spine regions, so `copies==in-edges`
+  fails (incomplete) → rejected. And the whole-sub never validates anyway (its gotos are non-terminal merges
+  `$9F37`/`$9FC7`, not the sink).
+- `$8FF8`, `$A9FB`: the dup-guard never fires — the sink is reached as a MERGE / loop-edge, not a clean
+  single-sided `if(c) goto sink` guard.
+
+**Conclusion (theory confirmed by construction + measurement): the terminal-exit slice is EXHAUSTED at `$AD38`.**
+Every remaining "terminal sink" lives inside a function whose gotos come from non-terminal shared merges and
+loop continue/break — which duplication cannot touch (the cone isn't empty; duplicating it explodes). So the
+residue bottleneck is definitively NON-TERMINAL merges + loops (the ledger's long-standing "77% non-sink"
+finding, now proven by building the terminal lever and measuring it dry). Reverted the synth machinery (don't
+land inert complexity); the design is banked here for re-application IF the non-terminal/loop blockers are ever
+cleared. The real lever remains forward shared-merge folding + loop continue/break recognition.
