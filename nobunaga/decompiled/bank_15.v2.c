@@ -64,7 +64,6 @@ word is_digit(word arg1) {
 word strlen(word arg1) {
     local11 = 0;    // $CA84
     while (*(byte*)(arg1)) {    // $CA90
-L_CA88:
         arg1 = (arg1 + 1);    // $CA8A
         local11 = (local11 + 1);    // $CA8E
     }
@@ -76,7 +75,6 @@ L_CA88:
 
 word fill_bytes_ca97(word arg1, word arg2, word arg3) {
     while (arg2) {    // $CAAB
-L_CA9F:
         arg1 = (arg1 + 1);    // $CAA1
         *(byte*)(((arg1 + 1) - 1)) = *(byte*)&arg3;    // $CAA7
         arg2 = (arg2 - 1);    // $CAAA
@@ -89,7 +87,6 @@ L_CA9F:
 
 word strcmp(word arg1, word arg2) {
     while ((*(byte*)(arg1) == *(byte*)(arg2))) {    // $CAC7
-L_CAB8:
         if (!(*(byte*)(arg1))) return 0;    // $CABA
         arg1 = (arg1 + 1);    // $CAC1
         arg2 = (arg2 + 1);    // $CAC5
@@ -115,7 +112,6 @@ word strcpy(word arg1, word arg2) {
 
 word memchr(word arg1, word arg2, word arg3) {
     while (arg3) {    // $CB0B
-L_CAF8:
         if ((*(byte*)(arg1) == *(byte*)&arg2)) return arg1;    // $CB00
         arg1 = (arg1 + 1);    // $CB07
         arg3 = (arg3 - 1);    // $CB0A
@@ -447,7 +443,6 @@ word num_to_ascii(word arg1, word arg2, word arg3) {
 word atoi_decimal(word arg1) {
     local11 = 0;    // $CFDA
     while (((*(byte*)(*(word*)(arg1)) + -48) < 10)) {    // $CFED
-L_CFDE:
         local11 = (digit + (local11 * 10));    // $CFE7
         *(word*)(arg1) = (*(word*)(arg1) + 1);    // $CFEC
         digit = (*(byte*)(*(word*)(arg1)) + -48);    // $CFF2
@@ -845,7 +840,6 @@ L_D573:
 
 word count_div_iterations_d586(word arg1) {
     while (arg1) {    // $D596
-L_D58F:
         arg1 = (arg1 / 10);    // $D593
         local11 = (local11 + 1);    // $D596
     }
@@ -862,7 +856,6 @@ word select_province_by_cursor(word arg1, word arg2) {
     while (1) {    // $D5B0
         ui_helper_cc7b(local9, local8);    // $D5B2
         while ((local10 < local11)) {    // $D5C2
-L_D5BA:
             char_advance_width(32);    // $D5BC
             local10 = (local10 + 1);    // $D5C2
         }
@@ -905,7 +898,6 @@ word count_6da2_set(void) {
     local10 = 0;    // $D62E
     local11 = 0;    // $D62F
     while (((unsigned)local10 < (unsigned)scenario_fief_count)) {    // $D64E
-L_D633:
         if (fief_is_daimyo_capital[local10]) goto L_D648;    // $D639
         if ((get_province_ai_state(local10) == 255)) {    // $D645
 L_D648:
@@ -1098,7 +1090,6 @@ word cap_fief_stats(word fief) {
     fief_rec = ((fief * 26) + 0x7001);    // $D843
     rec_base = fief_rec;    // $D845
     while (((unsigned)field_ptr < (unsigned)(rec_base + 24))) {    // $D863
-L_D849:
         *(word*)(field_ptr) = min_word(*(word*)(field_ptr), *(word*)((fief_rec + 24)));    // $D856
         if ((*(word*)(field_ptr) < 0)) {    // $D85B
             *(word*)(field_ptr) = 0;    // $D860
@@ -1110,7 +1101,6 @@ L_D849:
     daimyo_rec = fief_to_daimyo_record_addr(fief);    // $D883
     daimyo_byte_ptr = fief_to_daimyo_record_addr(fief);    // $D884
     while (((unsigned)i < (unsigned)6)) {    // $D8A9
-L_D888:
         if ((*(byte*)(daimyo_byte_ptr) > 235)) {    // $D88E
             *(byte*)(daimyo_byte_ptr) = 0;    // $D893
         }
@@ -1295,7 +1285,6 @@ word combat_helper_dad7(void) {
     src = 0x6F4F;    // $DAE6
     dst = 0x6F4F;    // $DAE7
     while ((*(byte*)(src) != 255)) {    // $DB04
-L_DAEB:
         if ((get_province_ai_state(*(byte*)(src)) != 255)) {    // $DAF6
             dst = (dst + 1);    // $DAFB
             *(byte*)(((dst + 1) - 1)) = *(byte*)(src);    // $DB00
@@ -1355,7 +1344,6 @@ L_DBA7:
     local11 = 0;    // $DBDF
     local8 = 1;    // $DBE1
     while (((unsigned)local11 < (unsigned)local9)) {    // $DBF6
-L_DBE5:
         if ((*(word*)(((local11 << 1) + 0x6EB1)) == local10)) {    // $DBEE
             local8 = 0;    // $DBF2
         }
@@ -1387,7 +1375,6 @@ word list_remove_6e7f(word arg1) {
     local10 = 0x6E7F;    // $DC44
     local11 = 0;    // $DC46
     while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $DC5D
-L_DC4A:
         if ((*(byte*)(local10) == arg1)) {    // $DC4E
             *(byte*)(local10) = -1;    // $DC54
         }
@@ -1439,7 +1426,6 @@ L_DCB7:
     *(byte*)((local9 + 1)) = 0;    // $DCFB
     local8 = 0;    // $DCFD
     while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $DD1C
-L_DD02:
         if (!(strcmp(&name_buf, ((local11 * 9) + 0x77A8)))) {    // $DD12
             local8 = 1;    // $DD16
             break;    // $DD15
@@ -1456,7 +1442,6 @@ L_DD02:
 word combat_helper_dd3a(word match_enemy, word out_list) {
     write_ptr = &buf;    // $DD42
     while ((*(byte*)(src_ptr) != 255)) {    // $DD67
-L_DD47:
         if (!((is_enemy_owned(*(byte*)(src_ptr)) ^ match_enemy))) {    // $DD50
             if (!(province_state_is_FF(*(byte*)(src_ptr)))) {    // $DD5A
                 write_ptr = (write_ptr + 1);    // $DD5F
@@ -1476,7 +1461,6 @@ word init_new_daimyo_province_stats(word arg1) {
     *(byte*)(fief_to_daimyo_record_addr(arg1)) = (rng_mod(20) + 20);    // $DD94
     local10 = (fief_to_daimyo_record_addr(arg1) + 1);    // $DD9B
     while (((unsigned)local11 <= (unsigned)(local10 + 4))) {    // $DDC8
-L_DD9F:
         *(byte*)(local11) = pct_op(*(byte*)(local11), (rng_mod(20) + 50));    // $DDB0
         *(byte*)(local11) = (*(byte*)(local11) + ((*(byte*)(local11) < 30) ? 30 : 0));    // $DDC5
         local11 = (local11 + 1);    // $DDC8
@@ -1534,7 +1518,6 @@ word reassign_fiefs_to_conqueror(void) {
     list_op_6e4a(ui_helper_d772(battle_winner_province_sel));    // $DEE9
     list_remove_6e7f(local9);    // $DEEE
     while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $DF33
-L_DEF6:
         if ((ui_helper_d772(local11) == local9)) {    // $DEFD
             if (!(province_state_is_FF(local11))) {    // $DF05
                 fief_to_daimyo_map[local11] = local10;    // $DF0F
@@ -1586,7 +1569,6 @@ word transfer_force_triplet(void) {
 word clamp_field_6d2d_to_30(void) {
     local11 = battle_defending_province;    // $DFC4
     while (((unsigned)battle_defending_province < (unsigned)scenario_fief_count)) {    // $DFEC
-L_DFC9:
         if (tax_helper_db12()) {    // $DFCC
             if ((fief_tax_rate[battle_defending_province] > 30)) {    // $DFDA
                 fief_tax_rate[battle_defending_province] = 30;    // $DFE7
@@ -1657,7 +1639,6 @@ L_E120:
                     list_op_6e4a(*(byte*)(local10));    // $E136
                     list_remove_6e7f(*(byte*)(local10));    // $E13D
                     while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $E165
-L_E145:
                         if ((ui_helper_d772(local11) == *(byte*)(local10))) {    // $E14F
                             if ((local11 != battle_defending_province)) {    // $E157
                                 *(byte*)(province_ai_state_addr(local11)) = -1;    // $E162
@@ -1693,7 +1674,6 @@ L_E145:
 word clear_fief_pair_6193(word arg1) {
     call_bank10_entry(29);    // $E1EE
     while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $E211
-L_E1F6:
         *(byte*)((((local11 * 54) + arg1) + 0x6193)) = 0;    // $E20D
         *(byte*)((((arg1 * 54) + local11) + 0x6193)) = 0;    // $E20E
         local11 = (local11 + 1);    // $E211
@@ -1736,7 +1716,6 @@ word copy_arms_record_5(word arg1, word arg2) {
     local10 = 0;    // $E2B5
     local11 = ((arg1 * 5) + 0x76A9);    // $E2BD
     while (((unsigned)local10 < (unsigned)5)) {    // $E2CF
-L_E2C1:
         local11 = (local11 + 1);    // $E2C3
         arg2 = (arg2 + 1);    // $E2C8
         *(byte*)(((local11 + 1) - 1)) = *(byte*)(((arg2 + 1) - 1));    // $E2CB
@@ -1824,7 +1803,6 @@ word find_fiefs_of_owner(word arg1) {
     arg1 = ui_helper_d772(arg1);    // $E42F
     list_remove_6e7f(arg1);    // $E431
     while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $E44A
-L_E439:
         if ((ui_helper_d772(local11) == arg1)) {    // $E440
             neutralize_fief(local11);    // $E444
         }
@@ -1855,7 +1833,6 @@ word build_owned_fief_list_6f89(void) {
     saved_fief = selected_province_idx;    // $E4AA
     write_ptr = 0x6F89;    // $E4AE
     while (((unsigned)selected_province_idx < (unsigned)scenario_fief_count)) {    // $E4C6
-L_E4B3:
         if (get_6da2_cur()) {    // $E4B6
             write_ptr = (write_ptr + 1);    // $E4BB
             *(byte*)(((write_ptr + 1) - 1)) = selected_province_idx;    // $E4C1
@@ -1874,7 +1851,6 @@ word marry_helper_e4dc(word arg1) {
     build_owned_fief_list_6f89();    // $E4E1
     local10 = 0x6F89;    // $E4E7
     while ((*(byte*)(local11) != 255)) {    // $E501
-L_E4EB:
         if ((ui_helper_d772(*(byte*)(local11)) != arg1)) {    // $E4F4
             local10 = (local10 + 1);    // $E4F9
             *(byte*)(((local10 + 1) - 1)) = *(byte*)(local11);    // $E4FE
@@ -1892,7 +1868,6 @@ word ui_helper_e510(word arg1) {
     local9 = 0x6F89;    // $E518
     local10 = 0;    // $E51A
     while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $E545
-L_E51F:
         if (!(province_state_is_FF(local11))) {    // $E524
             if (!((is_enemy_owned(local11) ^ arg1))) {    // $E52E
                 if ((selected_province_idx != local11)) {    // $E536
@@ -1947,7 +1922,6 @@ word map_helper_e5f2(word arg1) {
     syscall16_sram_wrap(4, ((arg1 * 34) + find_record_data_9e3c), &record_buf, 34);    // $E652
     cursor = &record_buf;    // $E659
     while ((*(byte*)(cursor) != 255)) {    // $E67E
-L_E65E:
         cursor = (cursor + 1);    // $E661
         ui_window_col = *(byte*)(((cursor + 1) - 1));    // $E665
         cursor = (cursor + 1);    // $E66B

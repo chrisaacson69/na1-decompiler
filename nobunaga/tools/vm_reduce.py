@@ -1382,6 +1382,13 @@ def _label_reordered_falls(out, block_of):
         if ts == '}' or ts == '} else {' or vm_cfg._RE_DOWHILE_CLOSE.match(ts):
             prev, prev_falls = None, False
             continue
+        if vm_cfg._opens_block(ts):
+            # A construct OPENER (`while/if/switch/do {`): its body entry is resolved by the
+            # construct (header_edges / body_entry), NOT a lexical fall — so the opener must not
+            # mark the body as a backward fall target (the spurious `L_xxxx:` after `while(p()){`
+            # on a rotated loop, where the body addr < the bottom-test header addr).
+            prev, prev_falls = block_of(a), False
+            continue
         if (vm_cfg._is_scaffold(ts) and not vm_cfg._opens_block(ts)) \
                 or vm_cfg._RE_CASE_LABEL.match(ts):
             continue

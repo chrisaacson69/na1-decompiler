@@ -43,7 +43,6 @@ word build_blit_fief_tile_block(word dst_col, word dst_row) {
         i = 0;    // $81A1
         src_ptr = ((fief_to_mapid(active_province_idx_copy) * 36) + build_blit_fief_tile_blo_data_b144);    // $81B1
         while (((unsigned)i < (unsigned)36)) {    // $81DD
-L_81B6:
             syscall16_sram_wrap(8, src_ptr, &tile_byte, 1);    // $81BE
             *(byte*)((i + &tile_buf)) = (tile_byte + 36);    // $81D0
             i = (i + 1);    // $81D4
@@ -55,7 +54,6 @@ L_81B6:
         i = 0;    // $81F1
         src_ptr = &tile_buf;    // $81F6
         while (((unsigned)i < (unsigned)36)) {    // $8210
-L_81FB:
             *(byte*)(src_ptr) = (*(byte*)(src_ptr) + 36);    // $8203
             i = (i + 1);    // $8207
             src_ptr = (src_ptr + 1);    // $820D
@@ -887,7 +885,6 @@ word draw_combat_roster_window(void) {
     local11 = 0;    // $8DF4
     local10 = 6;    // $8DF6
     while (((unsigned)local11 < (unsigned)18)) {    // $8E29
-L_8DFA:
         switch (local11) {    // $8DFB
             case 65531:
             default:
@@ -925,7 +922,6 @@ word ai_sum_battle_strength(void) {
     defender_stat_ptr = (fief_to_daimyo_record_addr(battle_defending_province) + 1);    // $8E75
     weight_ptr = battle_strength_stat_weights;    // $8E79
     while ((i < 5)) {    // $8EA5
-L_8E7E:
         weight_ptr = (weight_ptr + 1);    // $8E80
         defender_stat_ptr = (defender_stat_ptr + 1);    // $8E86
         attacker_stat_ptr = (attacker_stat_ptr + 1);    // $8E8C
@@ -1080,7 +1076,6 @@ word build_daimyo_province_list(word fief) {
     target_owner = ui_helper_d772(fief);    // $90C5
     dst_ptr = &out_buf;    // $90C9
     while ((*(byte*)(src_cursor) != 255)) {    // $90F0
-L_90D0:
         if (!(province_state_is_FF(*(byte*)(src_cursor)))) {    // $90D7
             if ((ui_helper_d772(*(byte*)(src_cursor)) == target_owner)) {    // $90E3
                 dst_ptr = (dst_ptr + 1);    // $90E8
@@ -1114,7 +1109,6 @@ word paged_flee_fief_list_display(void) {
     local10 = 0;    // $913A
     local9 = 0x6F4F;    // $913E
     while ((*(byte*)(local9) != 255)) {    // $9188
-L_9142:
         local10 = 1;    // $9143
         local9 = (local9 + 1);    // $9146
         ui_helper_d134(msg_fmt__2d_b5fd, (*(byte*)(((local9 + 1) - 1)) + 1));    // $914E
@@ -1141,7 +1135,6 @@ word prompt_select_province_from_list(void) {
     if (!(select_province_by_cursor(1, scenario_fief_count))) return 255;    // $91B3
     local11 = (local11 - 1);    // $91B8
     while ((*(byte*)(local10) != 255)) {    // $91C8
-L_91BC:
         if ((*(byte*)(local10) == local11)) return local11;    // $91C0
         local10 = (local10 + 1);    // $91C7
     }
@@ -1178,7 +1171,6 @@ word distribute_damage_across_unit_types(void) {
         if (((local11 - local10) > 0)) {    // $9250
             local7 = 0;    // $9254
             while ((local11 > 0)) {    // $9273
-L_9258:
                 local7 = ((unsigned)local7 % (unsigned)5);    // $925C
                 if (*(byte*)((((unsigned)local7 % (unsigned)5) + local6))) {    // $9260
                     *(word*)(((local7 << 1) + local9)) = (*(word*)(((local7 << 1) + local9)) + 1);    // $926A
@@ -1799,7 +1791,6 @@ word ai_province_stat_diff_term(word side, word unit_field) {
     i = 0;    // $9C2D
     total = 0;    // $9C2E
     while (((unsigned)i < (unsigned)3)) {    // $9C5F
-L_9C32:
         ref_fief = (ref_fief + 2);    // $9C34
         fief = (fief + 2);    // $9C3B
         stat_diff = (*(word*)(((fief + 2) + -2)) - *(word*)(((ref_fief + 2) + -2)));    // $9C41
@@ -1965,7 +1956,6 @@ L_9F46:
 word unit_type_count_gt3_and_equals_arg1(word arg1) {
     local11 = 0;    // $A020
     while (((unsigned)local10 < (unsigned)5)) {    // $A034
-L_A024:
         if (test_unit_type_present_flag(cur_combat_side, local10)) {    // $A02C
             local11 = (local11 + 1);    // $A031
         }
@@ -2026,7 +2016,6 @@ word build_reachable_enemy_target_list(word unit_x, word unit_y, word out_buf) {
     out_ptr = out_buf;    // $A0F9
     dir_idx = 0;    // $A0FB
     while (((unsigned)dir_idx < (unsigned)6)) {    // $A140
-L_A0FF:
         *(byte*)(out_ptr) = -1;    // $A102
         cur_x = unit_x;    // $A104
         cur_y = unit_y;    // $A106
@@ -2053,7 +2042,6 @@ word find_flagged_present_unit_type(word arg1) {
     local10 = 255;    // $A150
     local11 = 0;    // $A152
     while (((unsigned)local11 < (unsigned)6)) {    // $A18C
-L_A156:
         if ((*(byte*)(arg1) < 5)) {    // $A15A
             if (((unsigned)local10 < (unsigned)5)) {    // $A160
             } else {
@@ -2239,7 +2227,6 @@ word ai_select_weak_reachable_enemy_target(void) {
         list_cursor = &target_list_buf;    // $A458
         i = 0;    // $A45A
         while (((unsigned)i < (unsigned)6)) {    // $A47D
-L_A45E:
             if ((*(byte*)(list_cursor) < 5)) {    // $A462
                 if (!(ai_battle_strength_ratio_below_50(*(byte*)(list_cursor)))) {    // $A46C
                     chosen_target_type = *(byte*)(list_cursor);    // $A471
@@ -2253,7 +2240,6 @@ L_A45E:
             list_cursor = &target_list_buf;    // $A48C
             i = 0;    // $A48E
             while (((unsigned)i < (unsigned)6)) {    // $A4A7
-L_A492:
                 if ((*(byte*)(list_cursor) < 5)) {    // $A496
                     chosen_target_type = *(byte*)(list_cursor);    // $A49B
                     break;    // $A499
@@ -2275,7 +2261,6 @@ word find_strongest_unit_type_by_strength(word arg1, word arg2) {
     local10 = 0;    // $A4C2
     local9 = 0;    // $A4C3
     while (((unsigned)local10 < (unsigned)6)) {    // $A4E8
-L_A4C7:
         if ((*(byte*)(arg1) < 5)) {    // $A4CB
             local8 = calc_battle_strength_pct_one_side(*(byte*)(arg1));    // $A4D5
             if ((calc_battle_strength_pct_one_side(*(byte*)(arg1)) > local9)) {    // $A4D8
@@ -2296,7 +2281,6 @@ word max_enemy_unit_type_strength_pct(word arg1) {
     local10 = 100;    // $A503
     local11 = 0;    // $A505
     while (((unsigned)local11 < (unsigned)6)) {    // $A527
-L_A509:
         if ((*(byte*)(arg1) < 5)) {    // $A50D
             local9 = calc_battle_strength_pct_one_side(*(byte*)(arg1));    // $A517
             if (((unsigned)calc_battle_strength_pct_one_side(*(byte*)(arg1)) < (unsigned)local10)) {    // $A51A
@@ -2414,7 +2398,6 @@ word ai_rng_resolve_combat_apply_casualties(void) {
     unit_type = 0;    // $A79B
     max_strength = 0;    // $A79C
     while (((unsigned)unit_type < (unsigned)5)) {    // $A7C4
-L_A7A0:
         if (test_unit_type_present_flag(enemy_side, unit_type)) {    // $A7A6
             if ((max_strength < *(word*)(unit_word_field_ptr_6fbc(enemy_side, unit_type)))) {    // $A7B4
                 strongest_unit_type = unit_type;    // $A7B8
@@ -2435,7 +2418,6 @@ word ai_test_own_double_ge_enemy_total_strength(void) {
     i = 0;    // $A80E
     enemy_strength_total = 0;    // $A80F
     while (((unsigned)i < (unsigned)6)) {    // $A83A
-L_A813:
         if ((*(byte*)(target_ptr) < 5)) {    // $A817
             if (test_unit_type_present_flag(enemy_side, *(byte*)(target_ptr))) {    // $A822
                 enemy_strength_total = (enemy_strength_total + *(word*)(unit_word_field_ptr_6fbc(enemy_side, *(byte*)(target_ptr))));    // $A831
@@ -2680,7 +2662,6 @@ word ai_run_all_units_combat_actions(word battle_phase) {
     unit_iter = 0;    // $ABC0
     battle_over_flag = 0;    // $ABC1
     while (((unsigned)cur_combat_unit_slot < (unsigned)5)) {    // $AC72
-L_ABC5:
         if (test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot)) {    // $ABCF
             combat_unit_window_refresh();    // $ABD2
             if (!(is_no_province_selected())) goto L_ABF4;    // $ABD8
@@ -2725,7 +2706,6 @@ word combat_command_dispatch_loop_per_unit(void) {
     cur_combat_unit_slot = 0;    // $AC85
     battle_over = 0;    // $AC88
     while (((unsigned)cur_combat_unit_slot < (unsigned)5)) {    // $AD2E
-L_AC8C:
         if (!(test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot))) {    // $AC96
             cur_combat_unit_slot = (cur_combat_unit_slot + 1);    // $BD2700
             continue;    // $BD2700

@@ -985,3 +985,11 @@ via the loop structure, not a lexical fall. Gate-harmless but hurts readability 
 fix folded. ▶ Fix: exclude loop-body-entry / loop-header targets from `_label_reordered_falls`. More tractable
 next wins than `$9778`'s exact stack: (a) that dangling-label cleanup; (b) the switch family (`$9C84`
 shared-return merge, non-empty default, `$A2D2`). New forward primitives banked as regression tests.
+
+### Dangling loop-entry label FIXED (2026-06-06, readability). V2 829 unchanged (cosmetic).
+`_label_reordered_falls` was treating a construct OPENER (`while/if/switch/do {`) as a falling predecessor, so
+on a rotated loop (bottom-test header addr > body addr) it labeled the body entry as a spurious backward-fall
+target — a dangling `L_xxxx:` printed right after `while(p()){`. Fixed: an opener's body is resolved by the
+construct (header_edges / body_entry), not lex_fall, so it no longer marks the body as a fall target. Removes
+the dangling labels on every loop the convergent-exit fix folded (`rot_incr_break`, `$AC7F`, …). V2 829
+unchanged (gate ignores labels), all 19 forward primitives fold clean, 114/114, V1 + V2 hard gates 495/495.
