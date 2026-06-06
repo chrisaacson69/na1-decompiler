@@ -569,9 +569,20 @@ it off to dodge a greedy-seam regression). So the reducer never GENERATES a back
 now-permissive gate. Tested re-enabling it (`_REGION_COMBOS = _COMBOS`) → V2 **929 → 931** (the exact greedy
 seam atom 8 logged: a leaner `merge_nonadj` fold for region i blocks region j). Reverted.
 
-**▶ NEXT (chase V2 — Chris's call):** the **GLOBAL region assignment** atom 8 deferred. Replace the
-region-fallback's greedy per-region commit (`reduce()` step 2, `vm_reduce.py:1089-1102`) with a joint pick
-(try per-region `_COMBOS` combinations together, keep the globally fewest-goto VALIDATING assignment), THEN
-re-enable `merge_nonadj` in the fallback. With the gate now lexical, the backward merges will validate and V2
-should drop below 929. The spot-checked non-merge residue (`$9A5D` goto-into-block `||`, `$9C22` rotated-for
-with increment-in-else) is separate reducer-shape work, untouched by this.
+**▶ CHASE-V2 ATTEMPT (2026-06-05) — GLOBAL region assignment + merge_nonadj-in-fallback: PROVEN INERT for
+V2. REVERTED.** Built the atom-8 deferred work to let the now-lexical gate pay off in the reducer: replaced
+the region-fallback's GREEDY per-region commit (`reduce()` step 2) with a **coordinate-descent GLOBAL
+assignment** (each region picks the candidate that lowers the WHOLE-sub validated goto count given the others;
+monotonic from all-flat so it can't regress), and widened the fallback to the full `_COMBOS` grid
+(merge_nonadj on). First cut used a cheap no-peephole rank → V2 929→930 (a peephole-sensitive misrank, +1);
+fixing the rank to the exact peephole-aware `_validates` → **V2 929→929, byte-identical** (folded 351, behind
+57 — same as gate-only HEAD). So with the gate reorder-invariant AND the reducer free to use merge_nonadj
+globally, V2 captures **ZERO** new wins. Reverted (inert + ~2× runtime + complexity, against
+high-quality-not-more-code).
+**CONCLUSION — the gate was NOT V2's wall.** atom-8 already harvested the forward non-adjacent merges in the
+whole-sub trial; the remaining behind-V1 residue is NOT backward-merges the fallback can now fold — it is
+**shape-specific**: goto-into-block short-circuit `||` (`$9A5D`: `if(a) goto L; if(b){ L: body }` =
+`if(a||b){body}` — a region tree can't jump into a sibling's then-body; likely a missed `boolean_regions`
+shape), rotated-for with the increment in an `else` arm (`$9C22`), and the switch shared-merge (atom 4). The
+NEXT V2 lever is one of THOSE atoms (start with the `||` goto-into-block as a `boolean_regions` extension, or
+atom-4 switch), NOT merge/gate/region-assignment work — that lane is now exhausted.
