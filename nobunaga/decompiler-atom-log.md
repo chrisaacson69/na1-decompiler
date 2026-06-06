@@ -9,7 +9,7 @@ created: 2026-06-05
 > atom that only ever clears its discovery sub is a smell — it means we pattern-matched a shape
 > instead of inverting a compiler lowering.
 
-**Links:** [decompiler-bottom-up-thesis](./decompiler-bottom-up-thesis.md) · [ROADMAP](./ROADMAP.md) (CFG epic) · **forward atom table → [lowering-atlas/atom-table.md](../lowering-atlas/atom-table.md)** (compile-and-catalog PoC: which inversions exist, sourced forward) · tools: `vm_reduce.py` · `v2-corpus.py` · `probe-cfg-reducibility.py`
+**Links:** [decompiler-bottom-up-thesis](./decompiler-bottom-up-thesis.md) · [decompiler-method](./decompiler-method.md) (push/pull + atlas grounding, the lessons, and the **emit-order working section** — the next lever) · [ROADMAP](./ROADMAP.md) (CFG epic) · **forward atom table → [lowering-atlas/atom-table.md](../lowering-atlas/atom-table.md)** (compile-and-catalog PoC: which inversions exist, sourced forward) · tools: `vm_reduce.py` · `v2-corpus.py` · `probe-cfg-reducibility.py`
 
 ## How to read this
 
