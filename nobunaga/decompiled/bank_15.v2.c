@@ -970,21 +970,9 @@ word math32_3arg(word arg1, word arg2, word arg3) {
 // (body @ $D6E3)
 
 word math32_2arg(word arg1, word arg2) {
-    if (!(arg1)) {    // $D6E4
-        if (!(arg2)) return 0;    // $D6E8
-    }
-    // ext_op clear_a_high16
-    // ext_op push_a32_to_vm_stack
-    // ext_op clear_a_high16
-    // ext_op pop_b32_from_vm_stack
-    // ext_op add32
-    // ext_op push_a32_to_vm_stack
-    // ext_op clear_a_high16
-    // ext_op umul32
-    // ext_op pop_b32_from_vm_stack
-    // ext_op sdiv32
-    // ext_op ext_op_nop
-    return arg1;    // $D70C
+    if (arg1) return arg1;    // $D6E4
+    if (arg2) return arg1;    // $D6E8
+    return 0;    // $D6EB
 }
 
 // $D70D pct_op

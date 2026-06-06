@@ -259,14 +259,23 @@ class _Ctx:
         self.merge_nonadj = False
 
 
+def _real_stmts(stmts):
+    """Block stmts minus cosmetic COMMENT lines (`// ext_op …` provenance the decompiler emits
+    for 32-bit math helpers). Comments carry no control and no effect, so they must not inflate a
+    block's statement count — else a `return X;` block padded with an ext_op nop comment is read as
+    multi-statement and the early-return inline ($8327's $8354) misses it."""
+    return [s for s in stmts if not s[1].lstrip().startswith('//')]
+
+
 def _is_return_block(L, ctx):
     """A leaf that is just `return …;` (-> EXIT). Such a block is INLINED at each jump to it
     (the early-return idiom: `if (C) return X;`) instead of being a shared merge — which is
     both how the C reads and CFG-neutral (contract() bypasses bare-return blocks anyway), so
     several branches converging on one `return` don't force an irreducible shared tail."""
     stmts, rawcond, _b, _g, sw = ctx.info[L]
-    return (rawcond is None and not sw and len(stmts) == 1
-            and stmts[0][1].startswith('return')
+    real = _real_stmts(stmts)
+    return (rawcond is None and not sw and len(real) == 1
+            and real[0][1].startswith('return')
             and ctx.full_cfg[L] == frozenset({vm_cfg.EXIT}))
 
 
@@ -357,7 +366,7 @@ def _terminal(b, loop, ctx):
         if b is not vm_cfg.EXIT and b in ctx.far_by_loop.get(h, ()):
             return f'goto L_{b:04X}'
     if b is not vm_cfg.EXIT and _is_return_block(b, ctx):
-        return ctx.info[b][0][0][1].rstrip(';')
+        return _real_stmts(ctx.info[b][0])[0][1].rstrip(';')   # the return stmt (skip nop comments)
     return None
 
 

@@ -3111,7 +3111,17 @@ word math32_muladddiv(word rate, word amount) {
 // (body @ PRG $0432C)
 
 word scale_div10_capcheck(word arg1, word arg2, word arg3) {
-    if (!((math32_muladddiv(arg1, arg2) > arg3))) goto L_p04340;    // PRG $04334 -> bank1 $8303
+    if ((math32_muladddiv(arg1, arg2) > arg3)) {    // PRG $04334 -> bank1 $8303
+        return arg1;    // PRG $04337
+    } else {
+        // ext_op sign_extend16_to_32
+        // ext_op push_a32_to_vm_stack
+        // ext_op sign_extend16_to_32
+        // ext_op pop_b32_from_vm_stack
+        // ext_op umul32
+        // ext_op sdiv32
+        return arg1;    // PRG $04340
+    }
     // ext_op ext_op_nop
     return arg1;    // PRG $04356
 }
@@ -10445,21 +10455,9 @@ word math32_3arg(word arg1, word arg2, word arg3) {
 // (body @ PRG $3D6E3)
 
 word math32_2arg(word arg1, word arg2) {
-    if (!(arg1)) {    // PRG $3D6E4
-        if (!(arg2)) return 0;    // PRG $3D6E8
-    }
-    // ext_op clear_a_high16
-    // ext_op push_a32_to_vm_stack
-    // ext_op clear_a_high16
-    // ext_op pop_b32_from_vm_stack
-    // ext_op add32
-    // ext_op push_a32_to_vm_stack
-    // ext_op clear_a_high16
-    // ext_op umul32
-    // ext_op pop_b32_from_vm_stack
-    // ext_op sdiv32
-    // ext_op ext_op_nop
-    return arg1;    // PRG $3D70C
+    if (arg1) return arg1;    // PRG $3D6E4
+    if (arg2) return arg1;    // PRG $3D6E8
+    return 0;    // PRG $3D6EB
 }
 
 // ===== bank15 $D70D  (PRG $3D70D) =====

@@ -856,3 +856,11 @@ is COMPLETE.** The cross-jump terminal-duplication inverse is implemented, sound
 ($AD38, 0 gotos). The remaining "terminal" residue belongs to other atoms — forward-merge folding (the
 non-sink majority, ~148 gotos, the real lever), guard short-circuit/early-return, the switch family, and
 cosmetic noise-return cleanup — none of which are cross-jump duplication.
+
+### Noise-return cleanup (2026-06-06) — comment lines no longer block early-return inline. V2 875→874.
+Forward-merge-adjacent: `_real_stmts` filters cosmetic `// ext_op …` provenance comments from a block's
+statement count, so a `return X;` tail padded with an ext_op nop comment ($8327's $8354) is recognized as a
+bare-return block and inlined as the early-return idiom (both `_is_return_block` and `_terminal` updated).
+`$8327` 1→0 (clean if/else, each arm `return arg1`). V2 875→874, behind 54→53, 114/114, both hard gates
+495/495, deterministic. (The broad forward-merge MAJORITY — ~148 non-sink gotos across loops / multi-way /
+acyclic shared merges — remains its own focused epic; several of those subs V1 itself can't fully fold.)

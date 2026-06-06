@@ -206,7 +206,17 @@ word math32_muladddiv(word rate, word amount) {
 // (body @ $832C)
 
 word scale_div10_capcheck(word arg1, word arg2, word arg3) {
-    if (!((math32_muladddiv(arg1, arg2) > arg3))) goto L_8340;    // $8334
+    if ((math32_muladddiv(arg1, arg2) > arg3)) {    // $8334
+        return arg1;    // $8337
+    } else {
+        // ext_op sign_extend16_to_32
+        // ext_op push_a32_to_vm_stack
+        // ext_op sign_extend16_to_32
+        // ext_op pop_b32_from_vm_stack
+        // ext_op umul32
+        // ext_op sdiv32
+        return arg1;    // $8340
+    }
     // ext_op ext_op_nop
     return arg1;    // $8356
 }
