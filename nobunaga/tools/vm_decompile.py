@@ -828,9 +828,22 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             breg_cond_branch[ba] = (r, cb)
         breg_merge[r['merge']] = r
         breg_jump[r['jump_addr']] = r
+    # Short-circuit CONTROL regions: `if (c1 || c2 …) { body }`. Capture each guard's condition
+    # at its branch (suppressing the individual `if(ci) goto body` lines), then at the TAIL guard
+    # emit ONE compound guard `if (!(c1 || c2 …)) goto skip` — the existing if-then structurer
+    # then folds the fall-through body into `if (c1 || c2 …) { body }`. bytecode_cfg contracts the
+    # same chain (entry -> {body, skip}) so the gate stays consistent.
+    cregions = _vmcfg.control_shortcircuits(instructions)
+    cs_cond_branch = {}         # guard branch addr -> (region, guard block)
+    cs_skip_targets = set()     # skip blocks the synthetic compound goto jumps to (need labels)
+    for r in cregions:
+        for ba, cb in r['cond_branch_addrs'].items():
+            cs_cond_branch[ba] = (r, cb)
+        cs_skip_targets.add(r['skip'])
+
     # A label is dead once its only branch source is a suppressed diamond/region branch.
     suppressed_src = (set(dia_by_head) | dia_fall_jump
-                      | set(breg_cond_branch) | set(breg_jump))
+                      | set(breg_cond_branch) | set(breg_jump) | set(cs_cond_branch))
 
     # First pass: find branch targets (need labels) — EXCLUDING suppressed diamond branches,
     # so a taken-arm label (solely the head's target) and a merge label (solely the fall
@@ -847,12 +860,14 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             # Every case + default target (from the decoded "SWITCH …" comment).
             for t in re.findall(r'=>\$([0-9A-Fa-f]{4})', ins['comment']):
                 branch_targets.add(int(t, 16))
+    branch_targets |= cs_skip_targets    # the synthetic compound-guard goto needs its skip label
 
     # Second pass: decompile
     dia_active = None          # the value-diamond currently being folded (None = not in one)
     dia_cond = dia_vt = None   # its captured condition expr + the fall-arm (true-path) value
     breg_active = None         # the boolean-region currently being folded
     breg_cond_expr, breg_val = {}, {}   # captured per-cond conditions + per-value values
+    cs_cond_expr = {}          # control short-circuit: captured per-guard condition exprs
     for ins in instructions:
         state.cur_addr = ins['addr']
         mnem = ins['mnemonic']
@@ -870,6 +885,20 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         # Label for branch targets
         if ins['addr'] in branch_targets:
             state.lines.append((ins['addr'], 0, f"L_{ins['addr']:04X}:"))
+
+        # === Short-circuit CONTROL folding (`if (c1 || c2 …) { body }`) ===
+        # Capture each guard's condition at its branch (suppressing the individual
+        # `if(ci) goto body`); at the TAIL guard emit ONE compound `if (!(c1||c2…)) goto skip`,
+        # which the if-then structurer folds into `if (c1||c2…) { body }`. The guard blocks must
+        # be side-effect-free (detector-enforced) so hoisting the conditions is sound.
+        if ins['addr'] in cs_cond_branch:
+            region, guard = cs_cond_branch[ins['addr']]
+            cs_cond_expr[guard] = state.regA
+            if guard == region['tail']:
+                formula = _vmcfg.recover_bool_formula(region, cs_cond_expr, region['body'])
+                state.emit(f"if (!({formula})) goto L_{region['skip']:04X};")
+                cs_cond_expr = {}
+            continue
 
         # === Short-circuit boolean-region folding (K>=2 conditions) ===
         # Capture each cond block's condition at its branch (READ consumes a pending call),

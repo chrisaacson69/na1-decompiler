@@ -463,9 +463,7 @@ L_86A8:
     ui_window_col = (local6 - 1);    // $86D8
     view_window_redraw_by_6da2_flag(*(byte*)(local11));    // $86DE
     local10 = (local10 + 1);    // $86E4
-    if (((local10 + 1) == 4)) goto L_86F4;    // $86E7
-    if (!((*(byte*)((local11 + 1)) == 255))) goto L_8703;    // $86F1
-L_86F4:
+    if (!((((local10 + 1) == 4) || (*(byte*)((local11 + 1)) == 255)))) goto L_8703;    // $86F1
     marry_helper_cc35(0);    // $86F5
     if ((ui_prompt_redraw() == 2)) goto L_870F;    // $86FE
     local10 = 0;    // $8702
@@ -1086,9 +1084,7 @@ L_9284:
     confirm_prompt();    // $9288
 L_9290:
     ui_helper_e80c(1);    // $928C
-    if ((230 > *(byte*)(local4))) goto L_92A0;    // $9298
-    if (*(byte*)(local4)) goto L_92F2;    // $929D
-L_92A0:
+    if (!(((230 > *(byte*)(local4)) || !(*(byte*)(local4))))) goto L_92F2;    // $929D
     if (local9) goto L_92F2;    // $92A1
     *(byte*)(local4) = 0;    // $92A6
     if (!(fief_is_daimyo_capital[battle_defending_province])) goto L_92D9;    // $92AF
@@ -1245,12 +1241,7 @@ L_9496:
 word ai_try_war_attack(void) {
     attacker_idx = selected_province_idx;    // $94A2
     fief = ((selected_province_idx * 26) + 0x7001);    // $94AD
-    if (war_helper_d972(attacker_idx)) goto L_94C3;    // $94B3
-    if (!(*(word*)((fief + 16)))) goto L_94C3;    // $94BA
-    if (*(word*)((fief + 6))) goto L_94C5;    // $94C0
-L_94C3:
-    return 0;    // $94C4
-L_94C5:
+    if (!(!((war_helper_d972(attacker_idx) || (!(*(word*)((fief + 16))) || !(*(word*)((fief + 6)))))))) return 0;    // $94C0
     combat_helper_dad7();    // $94C5
     combat_helper_dd3a(0, deduped_owner_list);    // $94CC
     target_idx = pick_weakest_men_fief(deduped_owner_list);    // $94D7
@@ -1603,9 +1594,7 @@ L_9B22:
     }
 L_9B2C:
     confirm_prompt();    // $9B29
-    if (local11) goto L_9B34;    // $9B2D
-    if (local10) {    // $9B31
-L_9B34:
+    if ((local11 || local10)) {    // $9B31
     redraw_window(msg_is_this_ok_bbe3);    // $9B37
     if (ui_helper_d3a7()) {    // $9B3E
     *(word*)(local6) = (*(word*)(local6) + local11);    // $9B47
@@ -2663,11 +2652,7 @@ word commit_arms_record_from_buffer(word arg1, word arg2) {
 L_ABE1:
         local11 = (local11 + 1);    // $ABE3
     } while (((unsigned)local11 < (unsigned)5));    // $ABE7
-    if (arg2) goto L_ABF2;    // $ABEB
-    if (local9) goto L_ABF4;    // $ABEF
-L_ABF2:
-    return 0;    // $ABF3
-L_ABF4:
+    if (!(!((arg2 || !(local9))))) return 0;    // $ABEF
     local11 = 0;    // $ABF5
     do {    // $ABF6
         *(byte*)((local10 + local11)) = *(word*)(((local11 << 1) + arg1));    // $ABFF
@@ -2721,9 +2706,7 @@ L_AC7B:
         goto L_AC67;    // $AC8F
 L_AC92:
         if (!(units_delta)) continue;    // $AC93
-        if ((field_idx != 2)) goto L_ACB2;    // $AC99
-        if ((*(word*)(((field_idx << 1) + &edit_buffer)) < ((*(word*)(arms_field_ptr) / 50) + 20))) {    // $ACAF
-L_ACB2:
+        if (((field_idx != 2) || (*(word*)(((field_idx << 1) + &edit_buffer)) < ((*(word*)(arms_field_ptr) / 50) + 20)))) {    // $ACAF
         units_delta = (units_delta - 1);    // $ACB4
         *(word*)(((field_idx << 1) + &edit_buffer)) = (*(word*)(((field_idx << 1) + &edit_buffer)) + 1);    // $ACC0
         }

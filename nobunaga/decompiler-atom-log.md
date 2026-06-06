@@ -32,7 +32,9 @@ whose goto-count dropped because of THIS atom — the generalization signal.
 | 7 | **incremental peephole** (emit-quality, not an inverse-lowering) | a real bytecode `goto L_h; // $a` whose header is the emit-next line (pre-test loop entry-jump, routing stub) — clip it when the gate agrees | `$A30D` | clips the head-goto/stub on any sub where a SOUND goto-to-next was batched with an unsound one | **−2** (980→978) | ✅ landed |
 | 8 | **non-adjacent forward merge (Track B)** + global acceptance | a forward shared-merge that is NOT the address-next leader, lowered as an honest `goto L_merge` — build the `if` anyway (suppress `merge_not_adjacent`) when the whole-sub self-validates leaner | corpus-wide (the 77%-non-sink majority) | **11** (`per_turn_age…` 13→0, `issue_province_command` 11→0, `dispatch_battle_resolution` 5→0, `ai_resolve_province_takeover_attempt` 4→0, …) | **−49** (978→929) | ✅ landed |
 
-Corpus: atom-3 start **V2 1025** → 988; **atom-6 988 → 980**; **atom-7 980 → 978**; **atom-8 978 → 929** vs V1 1151; behind-V1 59 → 57 → 53 → **51**. Atom 6 is the FORWARD slice of the sink family; atom 7 the per-clip-validated peephole; atom 8 the Track-B non-adjacent-merge fold (`merge_nonadj`) in the WHOLE-SUB trial, gated by global goto-count acceptance. V2 is now **222 gotos ahead of V1** overall; the 51 still-behind subs (208 excess gotos) are the BACKWARD non-sink remainder + the switch shared-merge mini-epic (atom 4).
+| 9 | **control short-circuit `if(c1\|\|c2…){body}`** (the `\|\|` goto-into-block) | a `\|\|` condition → a guard CHAIN that all short-circuit INTO one body block; the body gets a 2nd entry edge, which a region tree reads as a cross-edge and bails (`$9A5D` residue) | `$9A5D` (atlas-sourced: GCC `b_or`); generalized corpus-wide | **13** (V2; **0 worse**) | **V2 −30** (929→899), V1 −42, raw −36 | ✅ landed (gate change era) |
+
+Corpus: atom-3 start **V2 1025** → 988; **atom-6 988 → 980**; **atom-7 980 → 978**; **atom-8 978 → 929** vs V1 1151; behind-V1 59 → 57 → 53 → **51**. Atom 6 is the FORWARD slice of the sink family; atom 7 the per-clip-validated peephole; atom 8 the Track-B non-adjacent-merge fold (`merge_nonadj`) in the WHOLE-SUB trial, gated by global goto-count acceptance. **Atom 9 (control `||`) is the first ATLAS-SOURCED atom: V2 929 → 899 (−30, 13 subs, 0 worse), V1 1080 → 1038, raw 2032.** V2 is now well ahead of V1 overall; the still-behind subs are the BACKWARD non-sink remainder + the switch shared-merge mini-epic (atom 4) + mixed `&&/||` (atom-9's successor).
 
 ---
 
@@ -586,3 +588,49 @@ whole-sub trial; the remaining behind-V1 residue is NOT backward-merges the fall
 shape), rotated-for with the increment in an `else` arm (`$9C22`), and the switch shared-merge (atom 4). The
 NEXT V2 lever is one of THOSE atoms (start with the `||` goto-into-block as a `boolean_regions` extension, or
 atom-4 switch), NOT merge/gate/region-assignment work — that lane is now exhausted.
+
+## Atom 9 — control short-circuit `if(c1||c2…){body}`  ✅ (2026-06-05, ATLAS-SOURCED)
+**The method test (Chris): is the atlas-driven approach real, or more goto-chasing?** Verdict: **real** —
+it sourced a generalizing atom forward, deductively, and the inverse folds far beyond its discovery sub.
+
+**Forward source of truth (lowering-atlas `b_or`).** GCC lowers `if(a||b){r=1;}` to: `bb2: if(a) goto bb4;
+else bb3 / bb3: if(b) goto bb4; else bb5 / bb4: r=1 (BODY) / bb5: merge`. The BODY (`bb4`) is reached from
+BOTH the `a`-true and `b`-true edges — a second entry. `$9A5D`'s bytecode is identical
+(`9B2C→{9B30,9B34}`, `9B30→{9B34,9B7C}`, body `9B34` reached from both). So the goto-into-block residue is a
+real `||`, not irreducibility.
+
+**The architecture gap it named.** `boolean_regions` only inverts the VALUE diamond (K conds + 2 value-LOAD
+arms → `cond ? a : b`). A control `||` (`if(a||b){statements}`) had NO inverse — the body's 2nd entry edge
+reads as a cross-edge and the reducer bails. Missing *rule*, located by the forward catalog. (This is the
+"understand the mechanism → know the architecture is correct" path, not a `+/- gotos` poke.)
+
+**The atom (`vm_cfg.control_shortcircuits` + `bytecode_cfg` contraction + decoder fold).** Detector: a BODY
+with ≥2 conditional preds (the `||` convergence signature) where those guards form an address-contiguous,
+single-entry chain with exactly two external exits {body, skip}, the tail FALLS into the body (clean if-then
+layout). Reuses `recover_bool_formula` (body & skip as its two terminals) to get the compound condition.
+`bytecode_cfg` contracts the chain to one branch `entry → {body, skip}` (the middle guards' addresses absorb
+into the entry block); the decoder captures each guard's condition (suppressing the individual
+`if(ci) goto body` lines) and emits ONE `if(!(c1||c2…)) goto skip` at the tail, which the existing if-then
+structurer folds into `if(c1||c2…){body}`. So the reducer needs NO new rule — same playbook as value-diamonds.
+
+**Two soundness traps caught (both gate-invisible — the lesson re-confirmed):**
+1. **Side-effect hoist.** A non-entry guard is only evaluated when the earlier ones short-circuit false;
+   hoisting its block before the compound branch would run it (and a call-valued condition) UNCONDITIONALLY.
+   The CFG gate can't see this (it's structural, not data) → the detector REQUIRES every non-entry guard
+   block side-effect-free (no store/call/switch/syscall).
+2. **Layout / witness break.** First cut emitted `if(!formula) goto skip` assuming the body is the
+   fall-through; on 19 subs the tail's fall-through layout differed, so `lower_raw` diverged from the
+   contracted `bytecode_cfg` — the WITNESS gate (`lower(raw)==bytecode`, the foundation) broke. Fixed by
+   requiring the tail to fall into the body AND the chain to be address-contiguous `[entry, body)` (so the
+   contraction makes `body` the entry's fall) + non-entry guards reached only from inside the chain (else a
+   removed middle guard dangles an external edge → reducer KeyError).
+
+**Result.** V2 **929 → 899 (−30, 13 subs better, 0 worse)** — the FIRST atlas-sourced atom AND the first
+real V2 drop since the merge/gate lane was exhausted; V1 1080 → 1038 (−42), raw 2068 → 2032 (−36). All gates
+green: witness 495/495, structuring 495/495, soundness 114/114, drift clean, disasm 0 BAD ×4, deterministic;
+`decompiled/*.c` regenerated (`$9A5D` now reads `if ((local11 || local10)) { … }`). The discovery sub `$9A5D`
+itself only went 13→12 in V2 (its OTHER regions still flat-span) — the −30 is almost entirely OTHER subs, i.e.
+the atom folds **beyond its intended purpose** (Chris's bar for "real issue, not chasing": met).
+
+**▶ NEXT (the natural successors):** mixed `(a&&b)||c` (a guard that does NOT branch straight to body — a
+later detector pass), and atom 4 (switch shared-merge). Both are now clearly atlas-sourceable shapes.

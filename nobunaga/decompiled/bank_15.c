@@ -569,9 +569,7 @@ L_D0FC:
     if ((((pad - 1) + 1) > 0)) goto L_D0F4;    // $D104
 L_D107:
     if (!(*(byte*)(out_cursor))) goto L_D018;    // $D10A
-    if (!(has_precision)) goto L_D119;    // $D10F
-    if ((width > 0)) {    // $D116
-L_D119:
+    if ((!(has_precision) || (width > 0))) {    // $D116
     arg2 = (arg2 + 1);    // $D11B
     *(byte*)(((arg2 + 1) - 1)) = *(byte*)(out_cursor);    // $D121
     width = (width - 1);    // $D125
@@ -1715,11 +1713,9 @@ L_E080:
 L_E0A2:
 L_E0A6:
     daimyo_stat_transfer(battle_defending_province, selected_province_idx);    // $E0A2
-    if ((ai_turn_flags & 32)) goto L_E0B3;    // $E0AC
-    if (local8) goto L_E0B7;    // $E0B0
-L_E0B3:
-    goto L_E0B8;    // $E0B4
-L_E0B7:
+    if (((ai_turn_flags & 32) || !(local8))) {    // $E0B0
+    } else {
+    }
 L_E0B8:
     local7 = 1;    // $E0B8
     if (local7) {    // $E0BA
@@ -1774,6 +1770,7 @@ L_E1C7:
     if (local8) goto L_E1E6;    // $E1DC
 L_E1E6:
     return cap_fief_stats(selected_province_idx);    // $E1E6
+    }
     }
     }
 }

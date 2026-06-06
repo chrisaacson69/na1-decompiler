@@ -170,7 +170,8 @@ def bytecode_cfg(instructions):
     cfg, leaders = _bytecode_cfg_raw(instructions)
     diamonds = value_diamonds(instructions)
     regions = boolean_regions(instructions)
-    if not diamonds and not regions:
+    creg = control_shortcircuits(instructions)
+    if not diamonds and not regions and not creg:
         return cfg, leaders
     block_of = _block_of_fn(leaders)
     cfg = dict(cfg)
@@ -178,9 +179,16 @@ def bytecode_cfg(instructions):
     for d in diamonds:                       # 1-condition: head -> merge, drop both arms
         cfg[block_of(d['head'])] = frozenset({d['merge']})
         removed |= {d['taken_block'], d['fall_block']}
-    for r in regions:                        # K-condition short-circuit: entry -> merge
+    for r in regions:                        # K-condition value short-circuit: entry -> merge
         cfg[r['entry']] = frozenset({r['merge']})
         removed |= (r['cond'] | r['value_blocks']) - {r['entry']}
+    for r in creg:                           # CONTROL short-circuit `if(c1||c2…){body}`: the
+        # guard chain collapses to ONE branch entry -> {body, skip}; the middle guards drop
+        # (their addresses absorb into the entry block). Unlike the value cases this does NOT
+        # collapse to the merge — the body still executes conditionally; only the compound
+        # condition is recovered (decoder emits `if(!(c1||c2…)) goto skip`).
+        cfg[r['entry']] = frozenset({r['body'], r['skip']})
+        removed |= r['cond'] - {r['entry']}
     for b in removed:
         cfg.pop(b, None)
     return cfg, [L for L in leaders if L not in removed]
@@ -400,6 +408,120 @@ def recover_bool_formula(region, cond_expr, target):
         memo[block] = r = _combine_bool(cond_expr[block], rec(ci['true']), rec(ci['false']))
         return r
     return rec(entry)
+
+
+def control_shortcircuits(instructions):
+    """Short-circuit CONTROL regions: `if (c1 || c2 || …) { body }` — a guard CHAIN of K>=2
+    two-way conditional blocks that converge on a single BODY block, with exactly one other
+    exit (the SKIP / continuation). Distinct from boolean_regions (value-diamonds: K conds +
+    2 value-LOAD arms → `cond ? a : b`); HERE the two arms are CONTROL destinations (the body
+    runs statements; the skip bypasses), so the inverse is a compound `if`, not a ternary.
+
+    This is the forward shape `if(a||b){…}` lowers to (lowering-atlas `b_or`): the body block
+    gets a SECOND entry edge from the chain, which a plain region tree reads as a cross-edge
+    and bails — leaving the goto-into-block residue (`$9A5D`). The fix is to recover the
+    compound condition (reusing `recover_bool_formula`, with {body, skip} as its two terminals)
+    and contract the chain to a single `entry → {body, skip}` branch in `bytecode_cfg`, exactly
+    as boolean_regions/value_diamonds are contracted, so the gate stays consistent.
+
+    Returns region dicts {entry, body, skip, cond, cinfo, value_blocks, cond_branch_addrs} for
+    the decoder + bytecode_cfg. Same soundness guards as boolean_regions: a single chain entry,
+    every chain branch stays in {chain, body, skip}, and FORWARD layout (entry = min, the two
+    exits past the chain) so the fold is address-monotonic. Mutually exclusive with the value /
+    boolean regions (a chain whose body is a value-arm is theirs)."""
+    cfg, leaders = _bytecode_cfg_raw(instructions)
+    block_of = _block_of_fn(leaders)
+    bmap = {L: [] for L in leaders}
+    for ins in instructions:
+        bmap[block_of(ins['addr'])].append(ins)
+    preds = _predecessors(cfg)
+
+    def is_cond(b):
+        blk = bmap.get(b, [])
+        return bool(blk) and blk[-1]['mnemonic'] in ('branch_z_abs', 'branch_nz_abs') \
+            and len(cfg.get(b, ())) == 2
+
+    # blocks already owned by a value/boolean region — those are expression folds, not control.
+    taken_value = set()
+    for d in value_diamonds(instructions):
+        taken_value |= {block_of(d['head']), d['taken_block'], d['fall_block']}
+    for r in boolean_regions(instructions):
+        taken_value |= r['cond'] | r['value_blocks']
+
+    regions, used = [], set()
+    for body in leaders:
+        if body in used or body in taken_value:
+            continue
+        # PURE || : every guard short-circuits DIRECTLY to the body, so the chain is exactly
+        # body's conditional predecessors (no BFS — bounded, and it won't swallow an upstream
+        # cond the way a predecessor-walk would). (Mixed (a&&b)||c, where an inner guard does
+        # NOT branch straight to body, is a separate, later atom.)
+        chain = {p for p in preds.get(body, ()) if is_cond(p) and not (p in taken_value)}
+        if len(chain) < 2:
+            continue
+        # Each guard's OTHER successor (besides body) must be another guard or the single skip.
+        nonbody = {c: next(s for s in cfg[c] if s != body) for c in chain}
+        skips = {nonbody[c] for c in chain if nonbody[c] not in chain}
+        if len(skips) != 1:
+            continue
+        (skip,) = tuple(skips)
+        if skip is EXIT:                              # keep the merge a real leader for now
+            continue
+        # Linear chain: exactly one entry (not the fall-target of another guard); the rest are
+        # each some guard's fall-target. A guard branching to body twice (body == nonbody) can't
+        # happen (cfg[c] has 2 distinct succs).
+        targeted = {nonbody[c] for c in chain} & chain
+        entries = [c for c in chain if c not in targeted]
+        if len(entries) != 1 or len(targeted) != len(chain) - 1:
+            continue
+        entry = entries[0]
+        # Non-entry guards must be reached ONLY from inside the chain — bytecode_cfg removes them,
+        # so an external predecessor would dangle (boolean_regions' "value arm reached from outside"
+        # guard, for the control case).
+        if any(p not in chain for c in chain if c != entry for p in preds.get(c, ())):
+            continue
+        # FORWARD layout only (address-monotonic fold): entry first, the two exits past the chain.
+        if entry != min(chain) or body <= max(chain) or skip <= max(chain):
+            continue
+        # SOUNDNESS (gate-invisible): a NON-entry guard is only evaluated when the earlier ones
+        # short-circuited false; folding hoists its block before the compound branch, so it would
+        # run UNCONDITIONALLY. Reject unless every non-entry guard block is side-effect-free (no
+        # store / call / switch / syscall — incl. a call-valued condition). The entry guard runs
+        # unconditionally either way, so its side effects are fine.
+        def _pure(b):
+            return all(('store' not in i['mnemonic'] and 'call' not in i['mnemonic']
+                        and not i['mnemonic'].startswith('syscall') and i['mnemonic'] != 'switch')
+                       for i in bmap.get(b, [])[:-1])
+        if not all(_pure(c) for c in chain if c != entry):
+            continue
+        cinfo = {}
+        for c in chain:
+            br = bmap[c][-1]
+            tgt = block_of(_target(br))
+            fall = next(s for s in cfg[c] if s != tgt)
+            # branch_z (JUMPF) jumps when cond FALSE; branch_nz (JUMPT) when TRUE.
+            tsucc, fsucc = (fall, tgt) if br['mnemonic'] == 'branch_z_abs' else (tgt, fall)
+            cinfo[c] = {'branch_addr': br['addr'], 'true': tsucc, 'false': fsucc}
+        tail = next(c for c in chain if nonbody[c] == skip)   # guard whose other exit is skip
+        # The tail must FALL THROUGH to the body (standard `if(!last) goto skip; body…` layout),
+        # and the chain must be address-contiguous [entry, body) — so after bytecode_cfg removes
+        # the middle guards, `body` becomes the entry block's fall-through (next leader) and the
+        # decoder's compound `if(!(c1||…)) goto skip` re-lowers to exactly entry→{body, skip}.
+        # Without this, lower_raw diverges from the contraction (the witness gate breaks).
+        ti = leaders.index(tail)
+        orig_next_tail = leaders[ti + 1] if ti + 1 < len(leaders) else EXIT
+        if orig_next_tail != body:
+            continue
+        if {L for L in leaders if entry <= L < body} != chain:
+            continue
+        used |= chain
+        regions.append({
+            'entry': entry, 'body': body, 'skip': skip, 'cond': chain, 'cinfo': cinfo,
+            'tail': tail, 'tail_branch_addr': cinfo[tail]['branch_addr'],
+            'value_blocks': {body, skip},          # recover_bool_formula's two terminals
+            'cond_branch_addrs': {cinfo[c]['branch_addr']: c for c in chain},
+        })
+    return regions
 
 
 def unknown_control_mnemonics(instructions):
