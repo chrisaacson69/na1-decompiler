@@ -78,17 +78,47 @@ learn the forward mechanism and invert THAT — output-clues are a confession yo
 
 ## 3. The emit-order problem (the working section)
 
-> **UPDATE (2026-06-06): approach B (gate side) + reducer-honesty repair LANDED — V2 883→878, both hard
-> gates 495/495, 114/114.** `vm_cfg.lower_struct_cfg` now resolves the else-arm entry lexically and the
-> general fall-through via a BACKWARD label-anchored `lex_fall` walk (the inert-on-flush key: flush only
-> delays a body forward, a real inversion is backward). It EXPOSED 2 gate-laundered mis-reads (`$ADF6`,
-> `$CEC4` — the reducer reordered a plain block past its real successor with no goto); `vm_reduce._honest_repair`
-> fixes them by emitting a compensating `goto` at the seam (kept the surrounding structure → net −5, not the
-> +7 of a wholesale flat fallback). **The `$AD38` layout now resolves; only the ≥2-pred terminal-sink bypass +
-> the reducer emitting the dup remain to land atom 5.** See [decompiler-atom-log] "approach-B gate built" +
-> "LANDED". The original analysis below is retained for context.
+> ### CURRENT STATE (2026-06-06): V2 = 829 gotos; 46 subs behind V1. Method validated; goto-count DROPPED as a target.
+> This session reframed the whole effort (Chris). The arc, and what each step taught:
+>
+> 1. **Emit-order gate (approach B) + reducer honesty — 883→878.** `lower_struct_cfg` resolves else-arm entry +
+>    general fall-through lexically (`lex_fall`, BACKWARD-only = inert on flush). It EXPOSED 2 gate-laundered
+>    mis-reads (`$ADF6`,`$CEC4` — reordered fall reading wrong); `_honest_repair` emits a compensating goto at
+>    the seam. **Lesson: the address-based gate had been laundering wrong-reading folds; the emit-order gate is
+>    a CORRECTNESS upgrade, not a goto trick.**
+> 2. **Atom 5 (cross-jump terminal dup) — 878→875.** `$AD38` → the clean duplicated form (≥2-pred terminal-sink
+>    contract bypass + copies==in-edges guard + reordered-fall labels). The cross-jump family beyond `$AD38` is
+>    NOT cross-jump (forward merges / short-circuit / noise-returns) — atom 5 is complete at its clean shape.
+> 3. **Terminal-exit un-sharing theory — TESTED, sound, 0 yield, reverted.** Built the general guard→sink dup
+>    (synthetic leaders). **Lesson (Chris): reverting it on the goto-metric was the trap — "inert" had collapsed
+>    to "doesn't move the number." We weren't navigating to readable structure; we were hill-climbing a proxy,
+>    which CANNOT escape a local minimum.**
+> 4. **The reframe → forward-primitive validation.** Stop chasing gotos / "behind V1" (a corrupt altimeter — V1
+>    launders too). Instead FORWARD-test: author each known source primitive as its collapsed goto/label form
+>    and ask "can the structurer put it back?" (`tools/probe-primitives.py`). Result: **the model recovers EVERY
+>    primitive + pairwise combination** — the gap is COMPOSITION, not primitives.
+> 5. **The two decisions (Chris's frame).** Structure recovery makes two choices the compiler erased:
+>    **(a) IF POLARITY** (invert or not) and **(b) LOOP CONDITIONAL PLACEMENT** (`while`(top-test) /
+>    `do-while`(bottom-test) / `while(1)`+breaks). The residue is (b): a bottom-test puts the loop's exit at a
+>    LOWER address (address-inverted), and the loop is multi-exit convergent at a shared return.
+> 6. **`_structure_loop` convergent-exit fix + continue-prologue un-sharing — 874→829 (−45, the biggest drop).**
+>    Run `_convergent_exit` over ALL exits BEFORE the `nonreturn` filter (so a `body_work` shim isn't picked as a
+>    phantom exit); the continue-prologue (shared loop-update block) un-shares into each guard
+>    (`if(c){incr();continue;}`, synthetic-leader copies). **goto-count fell out as a CONSEQUENCE of putting the
+>    erased boundaries back — exactly the method working.**
+>
+> **THE METHOD, distilled:** the compiler SHARES/collapses boundaries (merge targets, loop updates, brace
+> closes); recovery = put them back (duplicate / synthesize boundaries — "phantom gotos") so the structurer can
+> compose, and judge by READABILITY (forward-primitive recovery + reads-as-game-logic), never goto-count. The
+> equivalence gate keeps it sound; the forward primitives keep us honest about what the model can/can't do.
+>
+> **NEXT (residue at 829, `probe-residue-cause.py` / `--bails`):** `neither`/cross-edge-layout = 31 subs / 113
+> gotos (the new majority — likely more loop-family + non-terminal shared merges now reachable); `switch` = 6-7
+> subs / 25-48 (atom-4 follow-ons: shared-return `$9C84`, non-empty default, `$A2D2`); `terminal` = 8 subs / 31.
+> Cosmetic: a dangling reordered-fall label (`L_AC8C`) on some folded loops. The original analysis below predates
+> the reframe — kept for context but goto-count framing there is superseded.
 
-**Status (2026-06-05): V2 = 883 gotos; 56 subs behind V1.** Residue by cause (`probe-residue-cause.py`):
+**Status (2026-06-05, SUPERSEDED — see CURRENT STATE above): V2 = 883 gotos; 56 subs behind V1.** Residue by cause:
 
 ```
 terminal-dup (atom 5)        11 subs   ≤56 gotos   (blocked: address-inverted arm)
