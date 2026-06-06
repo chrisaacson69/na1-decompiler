@@ -46,20 +46,25 @@ def _structure_whole(lines, leaders):
     best, best_g = None, None
     for sm in (False, True):
         for mn in (False, True):
-            ctx = vm_reduce._Ctx(cfg, info, block_of, nxt, loops, latches, buckets, switches)
-            ctx.sink_merge, ctx.merge_nonadj = sm, mn
-            try:
-                seq, _u = vm_reduce._structure(leaders[0], vm_cfg.EXIT, pdom, ctx, None)
-            except vm_reduce._NotReducible:
-                continue
-            out = []
-            vm_reduce._emit(seq, 0, out)
-            out = vm_reduce._insert_labels(out, block_of)
-            if not vm_cfg.structured_equivalent(lines, out, leaders)[0]:
-                continue
-            g = sum(1 for _a, _i, t in out if vm_reduce._RE_GOTO_TGT.search(t))
-            if best is None or g < best_g:
-                best, best_g = out, g
+            for dp in (False, True):
+                ctx = vm_reduce._Ctx(cfg, info, block_of, nxt, loops, latches, buckets, switches)
+                ctx.sink_merge, ctx.merge_nonadj, ctx.dup_terminals = sm, mn, dp
+                try:
+                    seq, _u = vm_reduce._structure(leaders[0], vm_cfg.EXIT, pdom, ctx, None)
+                except vm_reduce._NotReducible:
+                    continue
+                if dp and not all(ctx.dup_count[T] + (1 if T in ctx.visited else 0)
+                                  == len(ctx.preds[T]) for T in ctx.dup_count):
+                    continue
+                out = []
+                vm_reduce._emit(seq, 0, out)
+                out = vm_reduce._insert_labels(out, block_of)
+                out = vm_reduce._label_reordered_falls(out, block_of)
+                if not vm_cfg.structured_equivalent(lines, out, leaders)[0]:
+                    continue
+                g = sum(1 for _a, _i, t in out if vm_reduce._RE_GOTO_TGT.search(t))
+                if best is None or g < best_g:
+                    best, best_g = out, g
     if best is not None:
         return best, True, best_g
     # flat fallback

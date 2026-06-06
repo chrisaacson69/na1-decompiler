@@ -915,3 +915,30 @@ if(b){incr();continue;} body(); break; }`, 0 gotos. So the lever is duplication 
 (cone ends at the header / a continue point). Reverting the synth-leader machinery on the goto-metric was the
 mistake the forward method exposes. ▶ NEXT: restore synth-leaders + extend dup to bounded non-terminal cones;
 `rot_incr_break` is the regression test.
+
+## Two decisions + the loop-conditional-placement diagnosis (2026-06-06, Chris's frame)
+Chris's frame: structure recovery makes TWO choices the compiler erased — (1) IF POLARITY (invert or not:
+`if(c){body}` vs `if(!c){…}`), and (2) LOOP CONDITIONAL PLACEMENT (where the test is: `while(c){}` top-test vs
+`do{}while(c)` bottom-test vs `while(1){…break…}`). The `$9C22`/`rot_incr_break` residue is decision (2).
+
+Traced `rot_incr_break` (the minimal `$9C22` loop) through `_structure_loop` — it's a THREE-LAYER composition,
+each an address-order/loop-form gap:
+1. **Bottom-test ⇒ address-inverted exit.** The compiler put the test at the BOTTOM (`$9C7A`), so the loop's
+   exit/body sits at a LOWER address than the test. The exit-adjacency check `ctx.nxt[max(region)] != e`
+   (ADDRESS-based) bails to flat — same wall approach B fixed for if-merges, now in the loop exit. (Relaxing
+   it alone is NOT enough — layer 2 still blocks.)
+2. **Genuinely multi-exit, convergent at a shared return.** The loop exits two ways — the test→shared return,
+   AND a full guard-pass→`body_work`→that same return. `_convergent_exit` is built to handle exactly this
+   (treat `body_work` as a shim, the shared return as the real exit) BUT the `nonreturn` exit filter drops the
+   return-exit first, leaving a single wrong target (`body_work`), so convergent detection never runs.
+3. **Continue-prologue un-sharing** (the shared `incr` block the guards funnel through). The capability is
+   BUILT (synthetic-leader copies, gate self-augment + bypass + then_true lexical, `_dupable_prologue`, the
+   `ifdup` guard path, copies==in-edges guard) and SOUND + inert (874/114/gate-clean) — but it can't fire until
+   the loop folds (layers 1+2), because the guards live in the loop body and `_structure_loop` bails first.
+
+**So the model recovers every primitive; `rot_incr_break` is a dense composition of (1) address-inverted loop
+exit + (2) convergent multi-exit (return-filter pre-empts the shim logic) + (3) continue-prologue.** The next
+real step is the `_structure_loop` exit rework: let the convergent-exit logic see the shared return through the
+nonreturn filter, and read the exit emit-order (lexical) not address — then the continue-prologue un-sharing
+(built, banked in the working tree) composes on top. Forward-primitive harness (`probe-primitives.py`) has
+`rot_incr_break` + the layered variants as permanent regression targets.
