@@ -223,19 +223,7 @@ L_8445:
     local10 = (local10 + 1);    // $8455
     if (((unsigned)local10 < (unsigned)10)) goto L_8445;    // $8459
     if ((scenario_fief_count != 50)) goto L_8507;    // $8462
-    if ((local11 == 5)) goto L_84B5;    // $8468
-    if ((local11 == 9)) goto L_84B5;    // $846E
-    if ((local11 == 13)) goto L_84B5;    // $8474
-    if ((local11 == 14)) goto L_84B5;    // $847A
-    if ((local11 == 19)) goto L_84B5;    // $8481
-    if ((local11 == 23)) goto L_84B5;    // $8488
-    if ((local11 == 26)) goto L_84B5;    // $848F
-    if ((local11 == 21)) goto L_84B5;    // $8496
-    if ((local11 == 38)) goto L_84B5;    // $849D
-    if ((local11 == 42)) goto L_84B5;    // $84A4
-    if ((local11 == 49)) goto L_84B5;    // $84AB
-    if ((local11 != 24)) goto L_858E;    // $84B2
-L_84B5:
+    if (!(((local11 == 5) || ((local11 == 9) || ((local11 == 13) || ((local11 == 14) || ((local11 == 19) || ((local11 == 23) || ((local11 == 26) || ((local11 == 21) || ((local11 == 38) || ((local11 == 42) || ((local11 == 49) || (local11 == 24)))))))))))))) goto L_858E;    // $84B2
     if (!(rng_mod(2))) goto L_858E;    // $84BA
     *(word*)(((local9 << 1) + &boosted_fief_list)) = local11;    // $84C7
     local9 = (local9 + 1);    // $84CA
@@ -245,14 +233,7 @@ L_84B5:
     *(word*)(((local11 * 26) + 0x7013)) = (*(word*)(((local11 * 26) + 0x7013)) * 2);    // $8502
     goto L_8581;    // $8504
 L_8507:
-    if ((local11 == 1)) goto L_8532;    // $850A
-    if ((local11 == 2)) goto L_8532;    // $8510
-    if ((local11 == 4)) goto L_8532;    // $8516
-    if ((local11 == 7)) goto L_8532;    // $851C
-    if ((local11 == 10)) goto L_8532;    // $8522
-    if ((local11 == 15)) goto L_8532;    // $8528
-    if ((local11 != 16)) goto L_858E;    // $852F
-L_8532:
+    if (!(((local11 == 1) || ((local11 == 2) || ((local11 == 4) || ((local11 == 7) || ((local11 == 10) || ((local11 == 15) || (local11 == 16))))))))) goto L_858E;    // $852F
     if (!(rng_mod(2))) goto L_858E;    // $8537
     *(word*)(((local9 << 1) + &boosted_fief_list)) = local11;    // $8544
     local9 = (local9 + 1);    // $8547
@@ -1034,8 +1015,7 @@ L_92F5:
 // (body @ $92FE)
 
 word random_ravage_province_field(word arg1) {
-    if (rng_mod(2)) return 0;    // $9303
-    if ((*(word*)(arg1) <= 0)) return 0;    // $930A
+    if ((rng_mod(2) || (*(word*)(arg1) <= 0))) return 0;    // $930A
     *(word*)(arg1) = pct_op(*(word*)(arg1), (rng_mod(30) + 40));    // $9320
     return 1;    // $9322
 }
@@ -1980,25 +1960,19 @@ word per_period_fief_daimyo_update_driver(void) {
     process_fiefs_with_state_ff();    // $A364
     battle_defender_province_staging = -1;    // $A369
     switch (current_season) {    // $A36F
-    case 0: goto L_A37E;    // $A36F
-    case 1: goto L_A385;    // $A36F
-    case 2: goto L_A38B;    // $A36F
-    case 3: goto L_A391;    // $A36F
-    default: goto L_A381;    // $A36F
-    }    // $A36F
-L_A37E:
-    per_turn_age_daimyo_decay_health_and_province_stats();    // $A37E
-L_A385:
-    init_province_highwater_from_records();    // $A385
-    goto L_A381;    // $A388
-L_A38B:
-    harvest_income_sweep_all_fiefs();    // $A38B
-    goto L_A381;    // $A38E
-L_A391:
-    normalize_relations_matrix_lower(2);    // $A392
-L_A381:
-    goto L_A3A0;    // $A382
-L_A3A0:
+        case 0:
+            per_turn_age_daimyo_decay_health_and_province_stats();    // $A37E
+            break;    // $A37E
+        case 1:
+            init_province_highwater_from_records();    // $A385
+            break;    // $A388
+        case 2:
+            harvest_income_sweep_all_fiefs();    // $A38B
+            break;    // $A38E
+        case 3:
+            normalize_relations_matrix_lower(2);    // $A392
+            break;    // $A396
+    }
     while (((unsigned)fief_idx < (unsigned)scenario_fief_count)) {    // $A3A0
         check_and_process_daimyo_natural_death(fief_idx);    // $A39A
         fief_idx = (fief_idx + 1);    // $A3A0
