@@ -87,6 +87,7 @@ are proven FIRST, before any rule can introduce a bug.
 
 
 import re
+from collections import defaultdict
 
 import vm_cfg
 
@@ -229,13 +230,24 @@ class _Ctx:
                  so the edge is kept as an honest `goto L_t` inside the body instead of a
                  structured break, and excluded from the loop's exit set (_structure_loop)."""
     __slots__ = ("full_cfg", "info", "block_of", "nxt", "loops", "latches",
-                 "buckets", "switches", "visited", "far_by_loop", "sink_merge", "merge_nonadj")
+                 "buckets", "switches", "visited", "far_by_loop", "sink_merge", "merge_nonadj",
+                 "dup_terminals", "preds", "dup_count")
 
     def __init__(self, full_cfg, info, block_of, nxt, loops, latches, buckets, switches):
         self.full_cfg, self.info, self.block_of, self.nxt = full_cfg, info, block_of, nxt
         self.loops, self.latches = loops, latches
         self.buckets, self.switches, self.visited = buckets, switches, set()
         self.far_by_loop = {}
+        # atom 5 — cross-jump terminal DUPLICATION. OFF by default; reduce() trials it on/off and
+        # keeps the fewest-goto validating fold. preds = block -> set of CFG predecessors (the
+        # WITNESS in-edges, used both to gate the dup to genuine >=2-pred shared sinks and for the
+        # copies==in-edges content guard). dup_count = sink -> number of DUPLICATE copies emitted.
+        self.dup_terminals = False
+        self.preds = defaultdict(set)
+        for _u, _ss in full_cfg.items():
+            for _s in _ss:
+                self.preds[_s].add(_u)
+        self.dup_count = defaultdict(int)
         # Track A (family-1) sink-as-merge atom; OFF by default. reduce() runs the structuring
         # both ways and keeps whichever validates with FEWER gotos (goto-count-aware acceptance),
         # so the atom never regresses a sub that folds better without it (e.g. $A853).
@@ -434,6 +446,20 @@ def _structure(entry, stop, pdom, ctx, loop):
                 # it. Both FORWARD and BACKWARD cuts are allowed: reduce() self-validates, so a
                 # cut that reverses lexical-vs-address order self-gates cleanly (reverts to flat
                 # / region-fallback) while one that holds is kept. CFG-faithful by construction.
+                #
+                # ATOM 5 — cross-jump terminal DUPLICATION. When s is a TERMINAL SINK (-> EXIT) with
+                # >=2 witness preds (the genuine cross-jumped shared tail, e.g. $AD38's $AD58), the
+                # honest inverse of GCC's cross-jump is to DUPLICATE s's content into THIS arm rather
+                # than goto it — recovering the -O0 form (each arm ends in its own copy of the tail).
+                # The copy is re-tagged to n's block (block_of -> n) so the gate sees n -> EXIT (not a
+                # shared AD58), while the FIRST predecessor keeps the original copy. The contract()
+                # >=2-pred terminal-sink bypass (structured_equivalent) makes both sides agree; the
+                # copies==in-edges guard (reduce) is the content backstop the routing gate is blind to.
+                if (ctx.dup_terminals and ctx.full_cfg[s] == frozenset({vm_cfg.EXIT})
+                        and len(ctx.preds[s]) >= 2 and not ctx.info[s][4]):   # not a switch block
+                    seq.append(('dup', n, s, ctx.info[s][0]))   # ('dup', host, sink, sink_stmts)
+                    ctx.dup_count[s] += 1
+                    break
                 seq.append(('goto', n, s))
                 break
             n = s
@@ -938,6 +964,14 @@ def _emit(seq, indent, out):
             # addr so the gate attributes the edge to that block; label via _insert_labels).
             _, src, tgt = item
             out.append((src, indent, f"goto L_{tgt:04X};"))
+        elif kind == 'dup':
+            # atom 5: a DUPLICATED terminal sink, inlined into host block `src`. Re-tag every copied
+            # line to src's leader addr so block_of maps the copy to src (NOT the shared sink) — the
+            # host arm then ends in its OWN copy of the tail (-> EXIT), recovering the un-cross-jumped
+            # form. (src has its own stmts emitted just before this node.)
+            _, src, _sink, stmts = item
+            for _a, text in stmts:
+                out.append((src, indent, text))
         elif kind in ('switchspan', 'flatspan'):
             for addr, rel_indent, text in item[1]:
                 out.append((addr, indent + rel_indent, text))
@@ -1012,20 +1046,33 @@ def reduce(lines, instructions):
     loops = {hh: frozenset(s) for hh, s in loops.items()}
     pdom = vm_cfg.post_dominators(cfg)
 
-    def _fresh_ctx(sink_merge=False, merge_nonadj=False):
+    def _fresh_ctx(sink_merge=False, merge_nonadj=False, dup=False):
         c = _Ctx(cfg, info, block_of, nxt, loops, latches, buckets, switches)
         c.sink_merge = sink_merge
         c.merge_nonadj = merge_nonadj
+        c.dup_terminals = dup
         return c
 
-    def _structure_region(entry, stop, sink_merge=False, merge_nonadj=False):
+    def _dup_guard_ok(ctx):
+        """atom-5 content backstop: every DUPLICATED terminal sink T must have exactly as many copies
+        (1 original + dup_count) as it has WITNESS in-edges — so no path silently dropped T's content
+        (the routing gate is BLIND to this: contract() bypasses T, so a missing copy reads the same to
+        it). 1 + dup_count[T] == |preds(T)|. (The original copy is emitted on the first predecessor's
+        walk; each later predecessor that cross-edge-cuts onto T adds one dup.)"""
+        return all(1 + ctx.dup_count[T] == len(ctx.preds[T]) for T in ctx.dup_count)
+
+    def _structure_region(entry, stop, sink_merge=False, merge_nonadj=False, dup=False):
         """Structure the single-entry/single-exit region [entry, stop) into a seq (AST items),
-        or None on a structural bail. Fresh visited per call (regions are disjoint)."""
+        or None on a structural bail. Fresh visited per call (regions are disjoint). When `dup`
+        duplicated a sink, returns None unless the copies==in-edges content guard holds."""
+        ctx = _fresh_ctx(sink_merge, merge_nonadj, dup)
         try:
-            seq, _u = _structure(entry, stop, pdom, _fresh_ctx(sink_merge, merge_nonadj), None)
-            return seq
+            seq, _u = _structure(entry, stop, pdom, ctx, None)
         except _NotReducible:
             return None
+        if dup and not _dup_guard_ok(ctx):
+            return None                 # an incomplete duplication — unsound, reject
+        return seq
 
     def _seq_gotos(seq):
         """goto count of an emitted (validated) line list — the goto-count-aware tie-breaker."""
@@ -1035,13 +1082,26 @@ def reduce(lines, instructions):
         out = []
         _emit(seq, 1, out)
         out = _insert_labels(out, block_of)
+        out = _label_reordered_falls(out, block_of)   # approach B: anchor backward fall targets
         if not vm_cfg.structured_equivalent(lines, out, leaders)[0]:
-            return None
+            # REDUCER HONESTY: a reordered fall-through seam reads wrong (the emit-order gate caught
+            # it). Repair the seam with an explicit goto and keep the rest of the fold, rather than
+            # discarding the whole structuring. Re-label (the new goto needs its target label) and
+            # re-validate; if the repair doesn't fully resolve it, fall through to the old fallback.
+            rep = _honest_repair(out, cfg, leaders, block_of)
+            if rep is None:
+                return None
+            rep = _label_reordered_falls(_insert_labels(rep, block_of), block_of)
+            if not vm_cfg.structured_equivalent(lines, rep, leaders)[0]:
+                return None
+            out = rep
         # CFG-neutral peephole (drop redundant goto-to-fall-through + dead labels). Each goto-drop
         # is validated on its own (emit-order adjacency can disagree with the gate at a reordered
         # flat-span boundary — a per-clip check keeps every sound drop and reverts only the unsound
         # ones). The final wholesale re-check is the backstop (dead-label removal is gate-neutral).
+        # Re-anchor backward fall labels after (peephole's dead-label sweep may drop a goto-less one).
         peeled = _peephole(out, validate=lambda s: vm_cfg.structured_equivalent(lines, s, leaders)[0])
+        peeled = _label_reordered_falls(peeled, block_of)
         return peeled if vm_cfg.structured_equivalent(lines, peeled, leaders)[0] else out
 
     # GLOBAL goto-count acceptance (atom 8). The whole-sub structuring and the region-level
@@ -1058,9 +1118,13 @@ def reduce(lines, instructions):
     #    Track A (sink_merge) helps the forward-sink subs ($9F04, …); Track B (merge_nonadj) the
     #    non-adjacent forward shared-merge majority; a few subs fold leaner under neither ($A853).
     #    First-valid-wins would lock in a worse fold (the gate proves equivalence, not goto-count).
+    #    atom 5 (dup): each combo is also trialled with terminal-DUPLICATION on; the fewest-goto
+    #    validating fold wins, so the dup only sticks where it actually removes cross-jump gotos.
     whole_best = None
     for _sm, _mn in _COMBOS:
-        whole = _structure_region(leaders[0], vm_cfg.EXIT, sink_merge=_sm, merge_nonadj=_mn)
+      for _dup in (False, True):
+        whole = _structure_region(leaders[0], vm_cfg.EXIT,
+                                  sink_merge=_sm, merge_nonadj=_mn, dup=_dup)
         if whole is None:
             continue
         out = _validates(whole)
@@ -1112,6 +1176,8 @@ def reduce(lines, instructions):
         flat_g = [_gotos_of(seq) for seq in flat]
         for i, (Pi, Pj) in enumerate(regions):
             # Try the whole _COMBOS grid (sink_merge × merge_nonadj); take the leaner valid one.
+            # (Terminal-dup is trialled in the WHOLE-SUB pass only — the cross-jump shapes it owns
+            # fold there; adding it to the greedy per-region grid gave 0 corpus gain for extra cost.)
             cands = [r for r in (_structure_region(Pi, Pj, sink_merge=sm, merge_nonadj=mn)
                                  for (sm, mn) in _REGION_COMBOS) if r is not None]
             s = min(cands, key=_gotos_of) if cands else None
@@ -1147,6 +1213,122 @@ def reduce(lines, instructions):
 _RE_GOTO_TGT = re.compile(r'goto L_([0-9A-Fa-f]{4})')
 
 
+def _honest_repair(out, cfg, leaders, block_of):
+    """REDUCER HONESTY (approach B, the reducer side). A candidate fold can place a PLAIN
+    single-successor block so that it physically falls through to a NON-successor (the tree walk /
+    region seam emitted a reordered block next, and the block carried no terminator). The old
+    address-based gate laundered this — it read the fall as the ADDRESS-next leader, which happened
+    to match the CFG — but the emitted C READS WRONG (control visibly falls into the wrong block,
+    e.g. $ADF6's `*(fp-45)=1;` falling into the `ppu_blit` of $AE2A instead of $AE78). The
+    emit-order gate now rejects it. Rather than discard the whole (otherwise-correct) fold, repair
+    the seam: emit an explicit `goto L_<succ>` after the offending block so the C reads correctly
+    and the surrounding structure is kept.
+
+    Invoked ONLY after a fold fails `structured_equivalent`; the caller re-labels + re-validates, so
+    an incomplete repair just falls through to the old fallback. Conservative by construction — it
+    touches ONLY a plain block whose EMIT-order successor (lower_struct_cfg, the gate's own view)
+    differs from its single CFG successor, so a clean fold (or a CORRECT reorder like atom-5's dup
+    arm, whose emit successor DOES match) is never given a spurious goto. `<succ>` is the CFG
+    successor chased through EMPTY (line-less, single-succ) blocks to the first one that carries an
+    emitted line, so the goto's `L_xxxx:` label has somewhere to land."""
+    EXIT = vm_cfg.EXIT
+    cfg_str = vm_cfg.lower_struct_cfg(out, leaders)
+    has_content, last_line = set(), {}
+    for i, (a, ind, t) in enumerate(out):
+        ts = t.strip()
+        if vm_cfg._RE_LABEL.match(ts):
+            continue
+        if vm_cfg._is_scaffold(ts) and not vm_cfg._opens_block(ts):
+            continue
+        L = block_of(a)
+        has_content.add(L)
+        last_line[L] = (i, ind, a)              # block L's last emitted occupying line
+
+    def chase(t):
+        seen = set()
+        while t is not EXIT and t not in has_content and t not in seen:
+            seen.add(t)
+            s = cfg.get(t)
+            if s and len(s) == 1:
+                (t,) = tuple(s)
+            else:
+                break
+        return t
+
+    inserts = {}
+    for L in leaders:
+        true_s, emit_s = cfg.get(L), cfg_str.get(L)
+        if not true_s or len(true_s) != 1 or not emit_s or len(emit_s) != 1:
+            continue
+        (ts_,), (es_,) = tuple(true_s), tuple(emit_s)
+        if ts_ is EXIT or ts_ == es_:           # correct fall (incl. a sound backward reorder)
+            continue
+        li = last_line.get(L)
+        if li is None:
+            continue
+        i, ind, a = li
+        if vm_cfg._classify_stmt(out[i][2].strip())[0] != 'plain':   # only a pure fall-through seam
+            continue
+        tgt = chase(ts_)
+        if tgt is EXIT or tgt not in has_content:
+            continue
+        inserts[i] = (ind, a, tgt)
+    if not inserts:
+        return None
+    res = []
+    for i, line in enumerate(out):
+        res.append(line)
+        if i in inserts:
+            ind, a, tgt = inserts[i]
+            res.append((a, ind, f"goto L_{tgt:04X};"))    # tagged with L's addr -> gate keys L->tgt
+    return res
+
+
+def _label_reordered_falls(out, block_of):
+    """approach B (reducer side): label a BACKWARD fall target. When the emit places a block X
+    physically right after a fall-through block P but X has a LOWER address than P (an address-
+    inverted arm — e.g. atom-5's dup puts $AD67's body after the $AD7B guard, and $AD67 < $AD7B),
+    the emit-order gate resolves P's fall by X's LABEL (lex_fall keys on labels — flush-safe). The
+    dup removed the `goto` that used to label X, so nothing references it; emit an explicit `L_X:`
+    so the gate can anchor the reordered fall. INERT on address-ordered emit (X is always > P
+    there, forward), so a normal fold gains no label. Idempotent (skips already-labelled blocks)."""
+    existing = {int(t.strip()[2:6], 16) for _a, _i, t in out
+                if vm_cfg._RE_LABEL.match(t.strip())}
+    to_label, prev, prev_falls = set(), None, False
+    for a, _ind, text in out:
+        ts = text.strip()
+        if vm_cfg._RE_LABEL.match(ts):
+            prev, prev_falls = int(ts[2:6], 16), False
+            continue
+        if ts == '}' or ts == '} else {' or vm_cfg._RE_DOWHILE_CLOSE.match(ts):
+            prev, prev_falls = None, False
+            continue
+        if (vm_cfg._is_scaffold(ts) and not vm_cfg._opens_block(ts)) \
+                or vm_cfg._RE_CASE_LABEL.match(ts):
+            continue
+        X = block_of(a)
+        if X != prev:
+            if prev is not None and prev_falls and X < prev and X not in existing:
+                to_label.add(X)
+            prev = X
+        prev_falls = vm_cfg._classify_stmt(ts)[0] in (
+            'plain', 'ifgoto', 'ifreturn', 'ifbreak', 'ifcontinue')
+    if not to_label:
+        return out
+    res, placed = [], set()
+    for a, ind, text in out:
+        ts = text.strip()
+        if not (vm_cfg._RE_LABEL.match(ts)
+                or (vm_cfg._is_scaffold(ts) and not vm_cfg._opens_block(ts))
+                or vm_cfg._RE_CASE_LABEL.match(ts)):
+            X = block_of(a)
+            if X in to_label and X not in placed:
+                res.append((X, 0, f"L_{X:04X}:"))
+                placed.add(X)
+        res.append((a, ind, text))
+    return res
+
+
 def _insert_labels(out, block_of):
     """Re-insert `L_xxxx:` labels for any honest goto the structured emit produced (rung-6
     self-gotos / edge cuts). The structured tree strips labels — clean folds emit zero gotos
@@ -1159,7 +1341,10 @@ def _insert_labels(out, block_of):
             targets.add(int(m.group(1), 16))
     if not targets:
         return out
-    result, placed = [], set()
+    # Idempotent: a label already present (from an earlier pass — the honesty-repair re-label)
+    # counts as placed, so a second call never duplicates `L_xxxx:`.
+    placed = {int(t.strip()[2:6], 16) for _a, _i, t in out if vm_cfg._RE_LABEL.match(t.strip())}
+    result = []
     for addr, ind, text in out:
         if targets and addr and block_of(addr) in targets and block_of(addr) not in placed:
             T = block_of(addr)

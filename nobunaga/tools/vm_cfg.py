@@ -1016,6 +1016,44 @@ def lower_struct_cfg(lines, leaders, orient=None):
     block_of = _block_of_fn(leaders)
     next_leader = {leaders[i]: (leaders[i + 1] if i + 1 < len(leaders) else EXIT)
                    for i in range(len(leaders))}
+
+    # EMIT-ORDER fall-through (approach B — the general case of atom B's merge_after). The
+    # address-based `next_leader[L]` is correct ONLY when emit order == address order. When the
+    # reducer emits a block OUT of address order (a correct structuring of address-inverted code —
+    # a cross-jump dup's reordered arm, a tail-merge), the address-next leader is the WRONG fall
+    # target. The reducer's invariant: a reordered block is LABELLED (flush-safe — a label line's
+    # addr IS the leader). So a forward walk records, for block L, the LEXICALLY-next block when it
+    # is introduced by a LABEL that differs from next_leader[L] — that (and only that) overrides the
+    # address fall. In-address-order emit (all of V1, all current V2) labels every block at its
+    # address-next position, so `lex_fall` stays EMPTY and the lowering is unchanged — INERT until a
+    # reordered emit needs it. Dedents (`}`) reset the run: an arm tail falls to its MERGE (handled
+    # by merge_after / tail_redirect), not to a sibling block after the brace.
+    lex_fall = {}
+    _prev = None
+    for _addr, _ind, _text in lines:
+        _t = _text.strip()
+        if _RE_LABEL.match(_t):
+            _cur = int(_t[2:6], 16)
+            # Record ONLY a BACKWARD reordered target (_cur < _prev). A genuine address-inverted
+            # fall (the reducer emitting a lower-address block later — $AD38's AD7B->AD67) is always
+            # backward; FLUSH only ever DELAYS a block's content FORWARD past a label (so the label
+            # appears early, e.g. $A778's L_A7AD before A7A8's flushed body), which would mis-record
+            # a forward target. The `< _prev` guard keeps the walk inert on flush-interleaved
+            # address-ordered emit (raw / V1) while catching the real inversion (V2).
+            if (_prev is not None and _prev is not EXIT and _prev not in lex_fall
+                    and _cur < _prev):
+                lex_fall[_prev] = _cur            # reordered (backward), label-anchored fall target
+            _prev = _cur
+            continue
+        if _t == '}' or _t == '} else {' or _RE_DOWHILE_CLOSE.match(_t):
+            _prev = None                          # scope close: arm tail -> merge, not a sibling
+            continue
+        if _is_scaffold(_t) and not _opens_block(_t):
+            continue                              # blanks / comments / case labels
+        _cur = block_of(_addr)                    # opener (reliable leader) or plain statement
+        if _cur != _prev:
+            _prev = _cur
+
     ifs, whiles, dowhiles, switches = _match_constructs(lines)
 
     # Phase-3 INLINED switches: the `switch (E) {` header block's successors are the
@@ -1137,7 +1175,14 @@ def lower_struct_cfg(lines, leaders, orient=None):
                 tail_redirect[then_top] = merge        # then-tail -> merge (may be backward)
         else:
             then_top = _span_max_leader(lines, h_idx + 1, else_idx, block_of)
-            else_start = next_leader[then_top] if then_top is not None else next_leader[hb]
+            # else-start, EMIT-ORDER (approach B): the FIRST block emitted after `} else {`, read
+            # lexically. The address-based `next_leader[then_top]` is wrong when the else-arm is
+            # internally address-inverted (its entry is a higher address than its body — e.g.
+            # $AD38's else `AD7B` guard before its `AD67` body), where next_leader[then_top] lands
+            # on the interior block. For an address-ordered arm the two agree (inert).
+            else_start = first_real_block(else_idx + 1, close_idx)
+            if else_start is None:
+                else_start = next_leader[then_top] if then_top is not None else next_leader[hb]
             else_top = _span_max_leader(lines, else_idx + 1, close_idx, block_of)
             if lex_merge is not None:
                 merge = lex_merge
@@ -1285,8 +1330,10 @@ def lower_struct_cfg(lines, leaders, orient=None):
         succ = None
         sw_targets, sw_has_default, is_switch = set(), False, False
         # The block's fall-through (not-taken / no-terminator) edge: the loop header if L
-        # is a body tail, else the address-next leader. (goto/jmp TARGETS are unaffected.)
-        fall_thru = tail_fall_to_header.get(L, next_leader[L])
+        # is a body tail, else the EMITTED-next block (lex_fall, label-anchored — approach B)
+        # when the reducer reordered it, else the address-next leader. (goto/jmp TARGETS are
+        # unaffected.)
+        fall_thru = tail_fall_to_header.get(L, lex_fall.get(L, next_leader[L]))
         for t in blocks[L]:
             mc = _RE_SWITCH_CASE.match(t)
             if mc:
@@ -1359,7 +1406,7 @@ def observable_blocks(lines, leaders):
     return obs
 
 
-def contract(cfg, observable, entry, orient=None):
+def contract(cfg, observable, entry, orient=None, crossjump=None):
     """Normalise a CFG by bypassing pure-routing blocks: any non-entry, non-observable
     block with a SINGLE successor (goto-only / empty fall-through / bare-`return`→EXIT)
     is removed and its predecessors rewired through it. Applied identically to both
@@ -1368,6 +1415,16 @@ def contract(cfg, observable, entry, orient=None):
     collapses a routing diamond) while still distinguishing any MISROUTE between
     observable (side-effecting) blocks. Returns the contracted CFG.
 
+    `crossjump` (atom 5): a set of TERMINAL-SINK blocks (→EXIT) that are bypassed EVEN THOUGH
+    observable. The decompiler inverts GCC's cross-jumping by DUPLICATING such a shared tail into
+    each predecessor arm; the original and the duplicate are distinct blocks but carry the SAME
+    content, so to compare the duplicated struct against the un-duplicated raw witness, BOTH sides
+    bypass the sink (a →EXIT block routes nowhere — bypassing it preserves every arm's orientation
+    toward EXIT). Restricted to ≥2-predecessor sinks by the caller: a 1-pred terminal arm (`return
+    A` vs `return B`) must NOT be bypassed — collapsing those to EXIT would hide a then/else swap,
+    the unsoundness the 114-suite catches. The copies==in-edges guard (vm_reduce) covers the
+    content the routing-only bypass is blind to.
+
     If `orient` (a {cond_block: (taken, fall)} map of true/false edge labels) is given, it
     is rewired IN LOCKSTEP with the edges — each removed B->t bypass replaces B with t in
     every label too. Conditional blocks have 2 successors so are never themselves removed,
@@ -1375,11 +1432,12 @@ def contract(cfg, observable, entry, orient=None):
     Doing this through contract() (not a separate resolver) is what keeps the orientation
     consistent with the contracted CFG on loop tails / mid-contraction self-loops."""
     g = {L: set(s) for L, s in cfg.items()}
+    crossjump = crossjump or frozenset()
     changed = True
     while changed:
         changed = False
         for B in list(g):
-            if B is EXIT or B == entry or B in observable:
+            if B is EXIT or B == entry or (B in observable and B not in crossjump):
                 continue
             succ = g.get(B)
             if succ is None or len(succ) != 1:
@@ -1414,8 +1472,20 @@ def structured_equivalent(raw_lines, struct_lines, leaders):
     or_raw, or_str = {}, {}
     cfg_raw = lower_goto_cfg(raw_lines, leaders, orient=or_raw)
     cfg_str = lower_struct_cfg(struct_lines, leaders, orient=or_str)
-    n_raw = contract(cfg_raw, observable_blocks(raw_lines, leaders), entry, orient=or_raw)
-    n_str = contract(cfg_str, observable_blocks(struct_lines, leaders), entry, orient=or_str)
+    # atom 5: cross-jump terminal sinks (→EXIT with ≥2 WITNESS preds) — bypassed on BOTH sides so a
+    # DUPLICATED tail (struct) compares equal to the shared tail (raw). Computed from the raw witness
+    # (the ground truth), so the set is identical for both contractions. The ≥2-pred restriction is
+    # the soundness key (a 1-pred return arm stays distinct → then/else swaps still caught).
+    _pred_n = {}
+    for _u, _ss in cfg_raw.items():
+        for _s in _ss:
+            _pred_n[_s] = _pred_n.get(_s, 0) + 1
+    crossjump = frozenset(T for T, ss in cfg_raw.items()
+                          if ss == frozenset({EXIT}) and _pred_n.get(T, 0) >= 2)
+    n_raw = contract(cfg_raw, observable_blocks(raw_lines, leaders), entry,
+                     orient=or_raw, crossjump=crossjump)
+    n_str = contract(cfg_str, observable_blocks(struct_lines, leaders), entry,
+                     orient=or_str, crossjump=crossjump)
     if n_raw != n_str:
         return False, n_raw, n_str
     # true/false edge-label check: contract() rewired each conditional's (taken, fall) to

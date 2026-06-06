@@ -78,6 +78,16 @@ learn the forward mechanism and invert THAT — output-clues are a confession yo
 
 ## 3. The emit-order problem (the working section)
 
+> **UPDATE (2026-06-06): approach B (gate side) + reducer-honesty repair LANDED — V2 883→878, both hard
+> gates 495/495, 114/114.** `vm_cfg.lower_struct_cfg` now resolves the else-arm entry lexically and the
+> general fall-through via a BACKWARD label-anchored `lex_fall` walk (the inert-on-flush key: flush only
+> delays a body forward, a real inversion is backward). It EXPOSED 2 gate-laundered mis-reads (`$ADF6`,
+> `$CEC4` — the reducer reordered a plain block past its real successor with no goto); `vm_reduce._honest_repair`
+> fixes them by emitting a compensating `goto` at the seam (kept the surrounding structure → net −5, not the
+> +7 of a wholesale flat fallback). **The `$AD38` layout now resolves; only the ≥2-pred terminal-sink bypass +
+> the reducer emitting the dup remain to land atom 5.** See [decompiler-atom-log] "approach-B gate built" +
+> "LANDED". The original analysis below is retained for context.
+
 **Status (2026-06-05): V2 = 883 gotos; 56 subs behind V1.** Residue by cause (`probe-residue-cause.py`):
 
 ```

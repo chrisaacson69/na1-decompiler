@@ -737,3 +737,94 @@ emit-order-aware for reordered (address-inverted) arms, the way `merge_after` di
 label to anchor on. That is the real multi-session rearchitecture; the dup machinery above re-applies on top of
 it. **Grounding scorecard (Chris's "all forms"): routing = the ≥2-pred bypass (sound, 114/114); content =
 copies==in-edges guard + atlas -O0 oracle (sound); the gap is purely LAYOUT (emit-order fall-through).**
+
+## Atom 5 — approach-B gate built (else_start + lex_fall); it EXPOSES gate-laundered mis-reads (2026-06-06)
+Built the emit-order gate (method.md §3.5 approach B) test-first against a HAND-BUILT ideal `$AD38` dup
+form. Two coordinated changes in `vm_cfg.lower_struct_cfg`:
+
+1. **`else_start` lexical** — the if-then-else else entry is read as `first_real_block(else_idx+1, close)`
+   (the FIRST block emitted after `} else {`), not `next_leader[then_top]`. `$AD38`'s else is internally
+   address-inverted (entry `AD7B` guard > body `AD67`), so the address read landed on the interior `AD67`;
+   the lexical read gives `AD7B`. **INERT on the corpus (V2 883 unchanged), 114/114** — for an address-
+   ordered arm the two agree.
+2. **`lex_fall` (the general fall-through)** — a one-pass forward walk records, for block L, a BACKWARD
+   label-anchored emit-next (`L_X:` with `X < prev`) as L's fall, overriding `next_leader[L]`. Backward-only
+   is the soundness key: a genuine address-inverted fall (the reducer emitting a lower-addr block later —
+   `AD7B→AD67`) is always backward, while FLUSH only ever DELAYS a block's body FORWARD past a label (e.g.
+   `$A778`'s `L_A7AD` printed before `A7A8`'s flushed body), which a forward record would mis-catch. The
+   `< prev` guard keeps the walk inert on flush-interleaved address-ordered emit (raw/V1).
+
+**Result on the hand form:** both `$AD38` inversions resolve — `AD3D→{AD47,AD7B}` and `AD7B→{AD67,EXIT}` now
+match raw. The ONLY remaining hand-form gap is the DUP itself (`AD67→{AD58}` raw vs `→{EXIT}` struct) — needs
+the ≥2-pred terminal-sink bypass (retry #2's sound version) + the reducer actually emitting the dup.
+
+**THE FINDING (the fork): `lex_fall` is sound but NOT inert — it costs +7 (V2 883→890) on `$ADF6` (+6) and
+`$CEC4` (+1), and the reason is a CORRECTNESS bug it EXPOSES, not a gate bug.** Dissected `$ADF6`: bytecode
+`AE74 (flag=1) → AE77(empty) → AE78`. The reducer REORDERED `AE2A` to sit physically right after `AE74` and
+emitted NO compensating `goto` — so the shipped C reads `*(fp-45)=1; <falls into> L_AE2A: ppu_blit(); goto
+AEA2;` which is the WRONG successor (correct is `AE78`). The faithful RAW witness has `AE75 flag=1; L_AE77:;
+L_AE78: …` (correct fall). The address-based gate laundered the reorder (`next_leader[AE74]=AE77→AE78` ✓);
+the emit-order gate reads the TRUE physical fall (`AE74→AE2A`) and rejects → the sub falls back to honest
+goto (+gotos). **This is Lesson 2 ("gate-equivalent ≠ reads-correctly") caught by a tool, not by eye.**
+
+**Reframe.** Approach B is not merely the atom-5 dup enabler — it is a CORRECTNESS upgrade: the reducer is
+currently allowed to emit reordered single-successor blocks WITHOUT the compensating `goto`, and the
+address gate accepts the resulting mis-read. The reducer side of approach B (emit `goto L_<real-succ>` — or a
+proper labelled reorder — whenever a block's emit-next ≠ its CFG successor) is the FOUNDATION; it fixes these
+mis-reads AND is what the dup re-applies on top of. State left: gate code in place, 114/114, hard gate CLEAN
+(the 2 exposed subs fall back honestly — no corruption), V2 = 890 pending the reducer honesty fix.
+
+### LANDED (2026-06-06): emit-order gate + reducer-honesty repair — V2 883→878, 2 mis-reads FIXED
+Chris's call: **reducer honesty first.** Added `_honest_repair` (vm_reduce) wired into `_validates`: when a
+fold fails the (now emit-order) gate because a PLAIN single-successor block physically falls into a
+NON-successor (the reorder seam), insert an explicit `goto L_<succ>` after that block (succ chased through
+empty blocks to a labelable target) and keep the rest of the structuring — instead of collapsing the whole
+sub to flat. Invoked ONLY on a validation failure, touches ONLY a plain fall whose emit-successor differs
+from its single CFG successor (a clean fold / sound backward reorder is never given a spurious goto), and the
+caller re-labels + re-validates. Also made `_insert_labels` idempotent (pre-seed `placed` with existing
+labels) so the double-label-pass leaves no `L_x: L_x:`.
+
+**Result:** `$ADF6` now reads `*(fp-45)=1; goto L_AE78;` (CORRECT) instead of falling into `$AE2A` (wrong);
+`$CEC4` likewise. The honest forms cost +1 each ($ADF6 20→21, $CEC4 6→7), but the emit-order gate also lets
+several previously-rejected-but-CORRECT reorders validate → **net V2 883 → 878 (−5), folded 351→353, behind
+56→55.** All gates green: 114/114 soundness, V1 hard gate 495/495, V2 hard gate 495/495, deterministic. The
+emit-order foundation (method.md §3 approach B) is DONE and net-positive; atom-5's terminal-dup re-applies on
+top of it next (the `$AD38` hand form's layout already resolves; only the ≥2-pred terminal-sink bypass + the
+reducer emitting the dup remain).
+
+## Atom 5 LANDED (2026-06-06) — cross-jump terminal DUPLICATION on the emit-order foundation. V2 878→875.
+With the emit-order gate + honesty repair in place, re-applied the reverted retry-#2 dup machinery — and
+this time it LANDS (the address-inverted-arm wall is gone). Five coordinated pieces:
+
+1. **`contract()` ≥2-pred terminal-sink bypass** (`vm_cfg`, the keystone). A terminal sink (→EXIT) with ≥2
+   WITNESS preds is bypassed on BOTH sides even though observable, so a DUPLICATED tail (struct) compares
+   equal to the shared tail (raw). The set is computed from the raw witness so it's identical for both
+   contractions. The ≥2-pred restriction is the soundness key (a 1-pred `return A`/`return B` arm stays
+   distinct → then/else-swap + dropped-case negative tests still REJECT — 114/114 held).
+2. **The dup at the cross-edge cut** (`vm_reduce._structure`). When a strand cross-edge-cuts onto an
+   already-emitted block `s` that is a ≥2-pred terminal sink (not a switch), DUPLICATE `s`'s stmts into the
+   host arm (`('dup', host, s, stmts)`) instead of `goto L_s`; the copy is re-tagged to the host's block
+   (`block_of → host`) so the host arm ends in its OWN tail (→EXIT) while the first predecessor keeps the
+   original. Trialled on/off in the whole-sub `_COMBOS` grid (fewest-goto validating wins → dup sticks only
+   where it removes gotos).
+3. **`copies == in-edges` content guard** (`_dup_guard_ok`) — `1 + dup_count[T] == |preds(T)|` per duplicated
+   sink, the per-arm content check the routing gate is BLIND to (contract bypasses T, so a dropped copy reads
+   identical to it). A fold that duplicated incompletely is rejected.
+4. **`_label_reordered_falls`** (approach B, reducer side) — the dup removes the `goto L_s` that used to label
+   the reordered body block ($AD67), so the emit-order gate (lex_fall keys on labels) couldn't anchor
+   $AD7B→$AD67. Emit an explicit `L_X:` on any BACKWARD fall target (X physically after a fall-through block P
+   but X < P). INERT on address-ordered emit (X always forward). Run after _insert_labels AND after _peephole
+   (its dead-label sweep would drop a goto-less anchor).
+5. Region-fallback dup was trialled but gave 0 corpus gain → NOT landed (whole-sub dup owns the shape).
+
+**Result:** `$AD38` folds to the EXACT §3.2 clean form — `if(ai_state(def)){…;return} else { if(!ai_state(sel))
+return…; L_AD67: …; <AD58 dup>; return }`, **0 gotos** (was 3), both arms ending in their own copy of the
+`redraw;redraw;return` tail, reading as game logic. **V2 878→875 (−3); behind 55→54.** All gates green:
+114/114 soundness (incl. the swap/dispatch negatives the ≥2-pred restriction protects), V1 + V2 hard gates
+495/495 each, deterministic. The `L_AD67:` anchor label is a (harmless) cosmetic artifact of the emit-order
+gate. **Session total: V2 883→875 (−8) + 2 latent mis-reads fixed.**
+
+**Still open (the cross-jump family beyond $AD38):** ~32 subs / ~43 sink-recoverable gotos (probe-inversion-
+sink) carry the SAME optimization but in DIFFERENT shapes (sink reached as an if-merge, via switch case-tails
+`$A2D2`, etc.) — the cross-edge-cut dup only owns the guard→block→cut shape. Each remaining shape is a
+follow-on dup insertion point on this same foundation.
