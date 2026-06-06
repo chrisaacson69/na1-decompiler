@@ -231,7 +231,7 @@ class _Ctx:
                  structured break, and excluded from the loop's exit set (_structure_loop)."""
     __slots__ = ("full_cfg", "info", "block_of", "nxt", "loops", "latches",
                  "buckets", "switches", "visited", "far_by_loop", "sink_merge", "merge_nonadj",
-                 "dup_terminals", "preds", "dup_count")
+                 "dup_terminals", "preds", "dup_count", "synth_next")
 
     def __init__(self, full_cfg, info, block_of, nxt, loops, latches, buckets, switches):
         self.full_cfg, self.info, self.block_of, self.nxt = full_cfg, info, block_of, nxt
@@ -248,6 +248,7 @@ class _Ctx:
             for _s in _ss:
                 self.preds[_s].add(_u)
         self.dup_count = defaultdict(int)
+        self.synth_next = defaultdict(int)   # original-block -> next copy index (synth addr alloc)
         # Track A (family-1) sink-as-merge atom; OFF by default. reduce() runs the structuring
         # both ways and keeps whichever validates with FEWER gotos (goto-count-aware acceptance),
         # so the atom never regresses a sub that folds better without it (e.g. $A853).
@@ -277,6 +278,27 @@ def _is_return_block(L, ctx):
     return (rawcond is None and not sw and len(real) == 1
             and real[0][1].startswith('return')
             and ctx.full_cfg[L] == frozenset({vm_cfg.EXIT}))
+
+
+def _dupable_prologue(b, loop, ctx):
+    """A bounded shared block reached via a guard that should be UN-SHARED (duplicated into the guard
+    arm) rather than reached by `goto`. Currently a CONTINUE-PROLOGUE: a single-successor content
+    block (the loop's increment/update) whose successor IS the loop header, with ≥2 preds — the
+    `$9C22`/`rot_incr_break` shape where several continue-guards funnel through one shared update
+    block. Returns its stmts (to emit as `if(c){ stmts; continue; }`), else None. The compiler shared
+    this update across the guards; un-sharing puts the boundary back so each guard composes cleanly."""
+    if loop is None or b is vm_cfg.EXIT:
+        return None
+    h, _e = loop
+    succ = ctx.full_cfg.get(b)
+    if not succ or len(succ) != 1 or next(iter(succ)) != h:   # single-succ -> the loop header
+        return None
+    if len(ctx.preds[b]) < 2:
+        return None
+    stmts, rawcond, _ba, _gt, sw = ctx.info[b]
+    if sw or rawcond is not None or not _real_stmts(stmts):    # plain content block, no branch
+        return None
+    return stmts
 
 
 def _has_effect(seq):
@@ -495,6 +517,29 @@ def _structure(entry, stop, pdom, ctx, loop):
                     used.add(fall)               # inlined return occupies its address span
                 n = goto_block
                 continue
+            # --- UN-SHARING: a guard to a bounded shared CONTINUE-PROLOGUE (a loop's shared update
+            # block several guards funnel through). Duplicate it into the guard arm — `if(c){ incr();
+            # continue; }` — so the boundary the compiler shared is put back and the body composes.
+            # The copy is emitted at a synthetic addr so N copies don't collide; the gate bypasses
+            # copies + the original; the copies==in-edges guard covers content.
+            if ctx.dup_terminals and gt is None and ft is None:
+                gp, fp = _dupable_prologue(goto_block, loop, ctx), _dupable_prologue(fall, loop, ctx)
+                if gp is not None and fp is None:
+                    seq.append(('block', n, stmts))
+                    s_addr = vm_cfg._SYNTH_BASE + (goto_block << 8) + ctx.synth_next[goto_block]
+                    ctx.synth_next[goto_block] += 1
+                    seq.append(('ifdup', baddr, rawcond, goto_block, s_addr, gp, 'continue'))
+                    ctx.dup_count[goto_block] += 1
+                    n = fall
+                    continue
+                if fp is not None and gp is None:
+                    seq.append(('block', n, stmts))
+                    s_addr = vm_cfg._SYNTH_BASE + (fall << 8) + ctx.synth_next[fall]
+                    ctx.synth_next[fall] += 1
+                    seq.append(('ifdup', baddr, vm_cfg._neg(rawcond), fall, s_addr, fp, 'continue'))
+                    ctx.dup_count[fall] += 1
+                    n = goto_block
+                    continue
             if gt is not None and ft is not None:
                 # both arms leave the region. This is the body TAIL (we break the walk after),
                 # so an arm that `continue`s is just the implicit fall-off back to the header —
@@ -524,6 +569,7 @@ def _structure(entry, stop, pdom, ctx, loop):
             # arm walks mutate ctx.visited as they probe; snapshot + restore it so the blocks
             # they touched are re-walked (and properly emitted) on the linear continuation.
             saved_visited = set(ctx.visited)
+            saved_dup = dict(ctx.dup_count)    # arm probes may fire un-sharing dups; roll back on bail
             try:
                 if fall is vm_cfg.EXIT:
                     raise _NotReducible('header_falls_off')  # header falls off the end — rare
@@ -606,6 +652,8 @@ def _structure(entry, stop, pdom, ctx, loop):
                 # first (the failed arm probes marked blocks visited that must be re-walked).
                 ctx.visited.clear()
                 ctx.visited.update(saved_visited)
+                ctx.dup_count.clear()
+                ctx.dup_count.update(saved_dup)
                 if goto_block is vm_cfg.EXIT:
                     raise
                 ctx.visited.add(n)
@@ -663,31 +711,40 @@ def _structure_loop(h, ctx, outer_loop):
         far = frozenset()
     ctx.far_by_loop[h] = far
     all_exits -= far
-    nonreturn = {s for s in all_exits if not _is_return_block(s, ctx)}
-    if nonreturn:
-        exit_targets = nonreturn
-    elif all_exits:
-        # Every exit is a return block. The loop's NATURAL exit is the header's own non-body
-        # successor (the pre-test fall-out, e.g. $91A1's `return 255` tail); any OTHER return
-        # exit is a body early return the walk inlines. Use the header-exit as primary when it's
-        # unique; otherwise (post-test latch exit, or ambiguous) keep all so the count bails.
-        header_exit = all_exits & ctx.full_cfg[h]
-        exit_targets = header_exit if len(header_exit) == 1 else all_exits
-    else:
-        exit_targets = all_exits
     shims = set()        # convergent-exit shim blocks pulled into the body (rung-6)
-    if len(exit_targets) > 1:
-        # CONVERGENT multi-exit: the targets may still funnel to one block (the others are
-        # loop-private exit shims that flow to it) -> that block is the real single exit and
-        # the shims become in-body break paths. Only genuinely-divergent exits bail.
-        c = _convergent_exit(exit_targets, loop, ctx)
-        if c is None:
-            # Genuinely-divergent multi-exit loop: no single construct owns it. Keep the LOOP as
-            # a flat honest-goto span (rung-6 region-local fallback) and structure everything
-            # around it — the surrounding regions still fold. Continue at the address-next block.
-            return _flat_span(loop, ctx, ctx.nxt[max(loop)])
-        shims = exit_targets - {c}      # walked in the body; extend the loop's emitted region
-        exit_targets = {c}
+    # CONVERGENT-FIRST: if every loop exit funnels to ONE block (even a shared RETURN), that block is
+    # the single real exit and the others are in-body break SHIMS — checked BEFORE the nonreturn
+    # filter, which would otherwise pick a shim (a non-return block that itself flows to the shared
+    # return) as a PHANTOM exit and mis-fold. This is the `$9C22`/`rot_incr_break` shape: the test
+    # exits to a shared return AND a full guard-pass exits to `body_work` which flows to that same
+    # return — the return is the exit, `body_work` is a shim pulled into the body (then it breaks).
+    conv = _convergent_exit(all_exits, loop, ctx) if len(all_exits) > 1 else None
+    if conv is not None:
+        shims = all_exits - {conv}
+        exit_targets = {conv}
+    else:
+        nonreturn = {s for s in all_exits if not _is_return_block(s, ctx)}
+        if nonreturn:
+            exit_targets = nonreturn
+        elif all_exits:
+            # Every exit is a return block. The loop's NATURAL exit is the header's own non-body
+            # successor (the pre-test fall-out, e.g. $91A1's `return 255` tail); any OTHER return
+            # exit is a body early return the walk inlines. Use the header-exit as primary when it's
+            # unique; otherwise (post-test latch exit, or ambiguous) keep all so the count bails.
+            header_exit = all_exits & ctx.full_cfg[h]
+            exit_targets = header_exit if len(header_exit) == 1 else all_exits
+        else:
+            exit_targets = all_exits
+        if len(exit_targets) > 1:
+            # Still multi-exit after filtering: the targets may funnel to one block (the others are
+            # loop-private exit shims). Only genuinely-divergent exits bail.
+            c = _convergent_exit(exit_targets, loop, ctx)
+            if c is None:
+                # Genuinely-divergent multi-exit loop: no single construct owns it. Keep the LOOP as
+                # a flat honest-goto span (rung-6 region-local fallback) and structure around it.
+                return _flat_span(loop, ctx, ctx.nxt[max(loop)])
+            shims = exit_targets - {c}      # walked in the body; extend the loop's emitted region
+            exit_targets = {c}
     e = next(iter(exit_targets)) if exit_targets else None
     # The shims are walked inside the body, so the loop's emitted address span runs up to the
     # highest shim, not just max(loop) — the adjacency / consumed accounting below uses this.
@@ -981,6 +1038,17 @@ def _emit(seq, indent, out):
             _, src, _sink, stmts = item
             for _a, text in stmts:
                 out.append((src, indent, text))
+        elif kind == 'ifdup':
+            # UN-SHARING: a guard duplicating a bounded shared block into its arm, `if(cond){ copy;
+            # term; }`. The copy's lines go at a SYNTHETIC addr (so N copies don't collide) and end in
+            # `term` (continue / break) so the synth block routes like the shared original.
+            _, baddr, cond, _orig, s_addr, stmts, term = item
+            out.append((baddr, indent, f"if ({cond}) {{"))
+            for _a, text in stmts:
+                out.append((s_addr, indent + 1, text))
+            if term:
+                out.append((s_addr, indent + 1, f"{term};"))
+            out.append((0, indent, "}"))
         elif kind in ('switchspan', 'flatspan'):
             for addr, rel_indent, text in item[1]:
                 out.append((addr, indent + rel_indent, text))
@@ -1063,12 +1131,14 @@ def reduce(lines, instructions):
         return c
 
     def _dup_guard_ok(ctx):
-        """atom-5 content backstop: every DUPLICATED terminal sink T must have exactly as many copies
-        (1 original + dup_count) as it has WITNESS in-edges — so no path silently dropped T's content
-        (the routing gate is BLIND to this: contract() bypasses T, so a missing copy reads the same to
-        it). 1 + dup_count[T] == |preds(T)|. (The original copy is emitted on the first predecessor's
-        walk; each later predecessor that cross-edge-cuts onto T adds one dup.)"""
-        return all(1 + ctx.dup_count[T] == len(ctx.preds[T]) for T in ctx.dup_count)
+        """Content backstop for un-sharing: every DUPLICATED shared block T must have exactly as many
+        copies as it has WITNESS in-edges — so no path silently dropped T's content (the routing gate
+        is BLIND to this: contract() bypasses T + its copies, so a missing copy reads the same). copies
+        = dup_count[T] + (1 if T's ORIGINAL was emitted, i.e. T ∈ visited, else 0). The cross-edge dup
+        keeps the original (T visited) + 1 dup; a guard un-shares ALL preds (T never walked → 0
+        original). Either way copies must == |preds(T)|."""
+        return all(ctx.dup_count[T] + (1 if T in ctx.visited else 0) == len(ctx.preds[T])
+                   for T in ctx.dup_count)
 
     def _structure_region(entry, stop, sink_merge=False, merge_nonadj=False, dup=False):
         """Structure the single-entry/single-exit region [entry, stop) into a seq (AST items),

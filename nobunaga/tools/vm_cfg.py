@@ -40,6 +40,21 @@ import re
 
 EXIT = "EXIT"   # sentinel successor: control leaves the sub (return / fall off end)
 
+# UN-SHARING (composition fix): the compiler SHARES a block that several constructs converge on
+# (a terminal tail, or a loop's continue-prologue/increment). To recover the nesting we must put the
+# lost boundary back — DUPLICATE the shared block per predecessor. A copy is emitted at a SYNTHETIC
+# address that encodes which real block it copies: synth = _SYNTH_BASE + (original << 8) + idx. The
+# struct lowering self-augments its leader set with synth addrs (each copy is its own block); the
+# gate bypasses each synth copy AND its decoded original on both sides (a known duplicate routes the
+# same as the shared original), and the copies==in-edges guard (vm_reduce) covers content. This is
+# the general form of atom 5 (terminal sink, cone=∅) extended to bounded non-terminal cones.
+_SYNTH_BASE = 0x100000
+
+
+def _synth_origin(addr):
+    """The real block a synthetic copy was made from (None if `addr` isn't synthetic)."""
+    return ((addr - _SYNTH_BASE) >> 8) if addr >= _SYNTH_BASE else None
+
 
 # --- branch/switch/return recognition on the decoded bytecode -----------------
 # Mirrors the control opcodes vm_decompile.decompile() emits: branch_z/nz_abs ->
@@ -1013,6 +1028,12 @@ def lower_struct_cfg(lines, leaders, orient=None):
     absorbs the routing blocks). Non-header blocks fall back to the per-block scan."""
     if not leaders:
         return {}
+    # UN-SHARING: self-augment the leader set with any SYNTHETIC copy addresses in the structured
+    # lines. They sort above every real addr, so real blocks' block_of / next_leader are unchanged
+    # (inert when no copies exist); each duplicated copy becomes its own block.
+    _synth = {a for a, _i, _t in lines if a >= _SYNTH_BASE}
+    if _synth:
+        leaders = sorted(set(leaders) | _synth)
     block_of = _block_of_fn(leaders)
     next_leader = {leaders[i]: (leaders[i + 1] if i + 1 < len(leaders) else EXIT)
                    for i in range(len(leaders))}
@@ -1162,7 +1183,12 @@ def lower_struct_cfg(lines, leaders, orient=None):
         # right after the header). ONLY the MERGE is read lexically (merge_after, label-based)
         # so a BACKWARD shared merge resolves by its label instead of the address-next leader.
         hb = block_of(header_addr)
-        then_true = next_leader[hb]                     # then-body starts right after header
+        # then-body entry: address-next (flush-safe) normally; but a SYNTHETIC then-body (an
+        # un-shared duplicated cone, `if(c){ copy }`) sits at a synth addr, read lexically. Inert
+        # otherwise (only a synth first-block overrides; a real then-body keeps the address entry).
+        _then_end = else_idx if else_idx is not None else close_idx
+        _then_fb = first_real_block(h_idx + 1, _then_end)
+        then_true = _then_fb if (_then_fb is not None and _then_fb >= _SYNTH_BASE) else next_leader[hb]
         _ifcond = _RE_IF_OPEN.match(lines[h_idx][2].strip())
         _ifcond = _ifcond.group(1) if _ifcond else ''
         lex_merge = merge_after(close_idx)
@@ -1480,8 +1506,17 @@ def structured_equivalent(raw_lines, struct_lines, leaders):
     for _u, _ss in cfg_raw.items():
         for _s in _ss:
             _pred_n[_s] = _pred_n.get(_s, 0) + 1
-    crossjump = frozenset(T for T, ss in cfg_raw.items()
-                          if ss == frozenset({EXIT}) and _pred_n.get(T, 0) >= 2)
+    # UN-SHARING bypass: (a) ≥2-pred TERMINAL sinks (cross-jump tails — atom 5); plus, when the struct
+    # DUPLICATED a shared block, (b) every SYNTHETIC copy on the struct side AND (c) the real ORIGINAL
+    # each copy was made from (decoded from its synth addr) — so the un-shared form (a copy in each
+    # arm) compares equal to the shared witness. Each copy/original is single-successor (a tail →EXIT
+    # or a continue-prologue →header), so contract bypasses it cleanly; the copies==in-edges guard
+    # (vm_reduce) covers the per-arm content the routing-only bypass is blind to.
+    _synth_copies = [T for T in cfg_str if T >= _SYNTH_BASE]
+    crossjump = frozenset(
+        [T for T, ss in cfg_raw.items() if ss == frozenset({EXIT}) and _pred_n.get(T, 0) >= 2]
+        + _synth_copies
+        + [_synth_origin(T) for T in _synth_copies])
     n_raw = contract(cfg_raw, observable_blocks(raw_lines, leaders), entry,
                      orient=or_raw, crossjump=crossjump)
     n_str = contract(cfg_str, observable_blocks(struct_lines, leaders), entry,

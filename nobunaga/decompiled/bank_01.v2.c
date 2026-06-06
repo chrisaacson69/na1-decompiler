@@ -99,29 +99,27 @@ L_8163:
 word count_eligible_targets(word arg1, word arg2, word arg3) {
     local10 = 0;    // $8178
     local11 = 0;    // $817A
-    goto L_81EE;    // $817A
+    while ((*(byte*)(((arg2 + 1) - 1)) != 255)) {    // $81EE
 L_817E:
-    if (!(target_eligible_by_cmd(arg1, *(byte*)((arg2 - 1))))) goto L_81EE;    // $8187
-    if (!((*(byte*)((*(byte*)((arg2 - 1)) + 0x6CF7)) != 255))) goto L_81EE;    // $8196
-    local11 = (local11 + 1);    // $819B
-    if (!(arg3)) goto L_81EE;    // $819D
-    ui_helper_d134(msg_fmt__2d_ba65, (*(byte*)((arg2 - 1)) + 1));    // $81A8
-    local10 = (local10 + 1);    // $81AE
-    if ((local10 == 18)) goto L_81C7;    // $81B3
-    char_advance_width((((unsigned)local10 % (unsigned)6) ? 32 : 10));    // $81C3
-L_81C7:
-    if ((local10 != 18)) goto L_81EE;    // $81CB
-    if (!((*(byte*)(arg2) != 255))) goto L_81EE;    // $81D4
-    if (!((ui_prompt_redraw() == 2))) goto L_81E4;    // $81DC
-    local11 = 0;    // $81E0
-    goto L_81FA;    // $81E1
-L_81E4:
-    prompt_message_and_redraw(arg1, count_eligible_targets_data_ba69);    // $81E8
-    local10 = 0;    // $81ED
-L_81EE:
-    arg2 = (arg2 + 1);    // $81F0
-    if ((*(byte*)(((arg2 + 1) - 1)) != 255)) goto L_817E;    // $81F7
-L_81FA:
+        if (!(target_eligible_by_cmd(arg1, *(byte*)((arg2 - 1))))) continue;    // $8187
+        if (!((*(byte*)((*(byte*)((arg2 - 1)) + 0x6CF7)) != 255))) continue;    // $8196
+        local11 = (local11 + 1);    // $819B
+        if (!(arg3)) continue;    // $819D
+        ui_helper_d134(msg_fmt__2d_ba65, (*(byte*)((arg2 - 1)) + 1));    // $81A8
+        local10 = (local10 + 1);    // $81AE
+        if ((local10 != 18)) {    // $81B3
+            char_advance_width((((unsigned)local10 % (unsigned)6) ? 32 : 10));    // $81C3
+        }
+        if ((local10 != 18)) continue;    // $81CB
+        if (!((*(byte*)(arg2) != 255))) continue;    // $81D4
+        if ((ui_prompt_redraw() == 2)) {    // $81DC
+            local11 = 0;    // $81E0
+            break;    // $81DF
+        }
+        prompt_message_and_redraw(arg1, count_eligible_targets_data_ba69);    // $81E8
+        local10 = 0;    // $81ED
+        arg2 = (arg2 + 1);    // $81F0
+    }
     return local11;    // $81FB
 }
 
@@ -1133,18 +1131,16 @@ L_942E:
 // (body @ $9462)
 
 word find_fief_by_owner_men_minority(word arg1, word arg2) {
-    if ((arg2 == 255)) goto L_9496;    // $9467
+    if ((arg2 == 255)) return 255;    // $9467
     local11 = *(byte*)(arg1);    // $946C
-    goto L_948D;    // $946D
+    while ((*(byte*)(arg1) != 255)) {    // $948D
 L_9470:
-    if (!((ui_helper_d772(local11) == arg2))) goto L_948A;    // $9477
-    if (!(((unsigned)fief_men_ratio_pct(local11, selected_province_idx) >= (unsigned)50))) goto L_9496;    // $9485
-    return local11;    // $9489
-L_948A:
-    arg1 = (arg1 + 1);    // $948C
-L_948D:
-    if ((*(byte*)(arg1) != 255)) goto L_9470;    // $9493
-L_9496:
+        if ((ui_helper_d772(local11) == arg2)) {    // $9477
+            if (!(((unsigned)fief_men_ratio_pct(local11, selected_province_idx) >= (unsigned)50))) break;    // $9485
+            return local11;    // $9488
+        }
+        arg1 = (arg1 + 1);    // $948C
+    }
     return 255;    // $9499
 }
 

@@ -1393,15 +1393,14 @@ L_9878:
 // (body @ $987E)
 
 word mark_6f89_list_entry_by_value(word arg1) {
-    goto L_9898;    // $9881
+    while ((*(byte*)(local11) != 255)) {    // $9898
 L_9884:
-    if (!((*(byte*)(local11) == *(byte*)&arg1))) goto L_9896;    // $988C
-    *(byte*)(local11) = -56;    // $9892
-    goto L_98A2;    // $9893
-L_9898:
-    local11 = (local11 + 1);    // $9898
-    if ((*(byte*)(local11) != 255)) goto L_9884;    // $989F
-L_98A2:
+        if ((*(byte*)(local11) == *(byte*)&arg1)) {    // $988C
+            *(byte*)(local11) = -56;    // $9892
+            break;    // $988F
+        }
+        local11 = (local11 + 1);    // $9898
+    }
     return (*(byte*)(local11) != 255);    // $98A2
 }
 
@@ -1603,19 +1602,19 @@ word marry_transfer_gold_between_provinces(void) {
 // (body @ $9BEA)
 
 word ai_event_marry_random_eligible_fief(void) {
-    goto L_9C18;    // $9BEB
+    while (((unsigned)attempt_i < (unsigned)scenario_fief_count)) {    // $9C18
 L_9BEE:
-    candidate_fief = rng_mod(scenario_fief_count);    // $9BF5
-    if (get_province_ai_state(candidate_fief)) goto L_9C16;    // $9BFB
-    set_6da1_bit7_if_no_ai_state5_province_found();    // $9BFE
-    if (rest_turns_remaining[ui_helper_d77e()]) goto L_9C16;    // $9C09
-    battle_defending_province = candidate_fief;    // $9C0D
-    marry_transfer_gold_between_provinces();    // $9C10
-    goto L_9C21;    // $9C13
-L_9C18:
-    attempt_i = (attempt_i + 1);    // $9C18
-    if (((unsigned)attempt_i < (unsigned)scenario_fief_count)) goto L_9BEE;    // $9C1E
-L_9C21:
+        candidate_fief = rng_mod(scenario_fief_count);    // $9BF5
+        if (!(get_province_ai_state(candidate_fief))) {    // $9BFB
+            set_6da1_bit7_if_no_ai_state5_province_found();    // $9BFE
+            if (!(rest_turns_remaining[ui_helper_d77e()])) {    // $9C09
+                battle_defending_province = candidate_fief;    // $9C0D
+                marry_transfer_gold_between_provinces();    // $9C10
+                break;    // $9C0C
+            }
+        }
+        attempt_i = (attempt_i + 1);    // $9C18
+    }
     return ((unsigned)attempt_i < (unsigned)scenario_fief_count);    // $9C21
 }
 
@@ -1624,23 +1623,24 @@ L_9C21:
 
 word random_ravage_sweep_bounded_fiefs(void) {
     local10 = 0;    // $9C28
-    if (!(rng_mod(2))) goto L_9C83;    // $9C2E
-    goto L_9C7A;    // $9C32
+    if (!(rng_mod(2))) return ((unsigned)local11 < (unsigned)scenario_fief_count);    // $9C2E
+    while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $9C7A
 L_9C35:
-    if (!((rng_mod(20) < 3))) goto L_9C78;    // $9C3D
-    if (get_province_ai_state(local11)) goto L_9C78;    // $9C45
-    local10 = (local10 + 1);    // $9C50
-    if (!(((unsigned)((local10 + 1) - 1) < (unsigned)(8 - ai_player_count)))) goto L_9C78;    // $9C54
-    set_6da1_bit7_if_no_ai_state5_province_found();    // $9C57
-    battle_defending_province = local11;    // $9C5B
-    swap_word(battle_defending_province, selected_province_idx);    // $9C64
-    ravage_defending_province_sweep();    // $9C68
-    swap_word(battle_defending_province, selected_province_idx);    // $9C71
-    goto L_9C83;    // $9C75
-L_9C7A:
-    local11 = (local11 + 1);    // $9C7A
-    if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_9C35;    // $9C80
-L_9C83:
+        if ((rng_mod(20) < 3)) {    // $9C3D
+            if (!(get_province_ai_state(local11))) {    // $9C45
+                local10 = (local10 + 1);    // $9C50
+                if (((unsigned)((local10 + 1) - 1) < (unsigned)(8 - ai_player_count))) {    // $9C54
+                    set_6da1_bit7_if_no_ai_state5_province_found();    // $9C57
+                    battle_defending_province = local11;    // $9C5B
+                    swap_word(battle_defending_province, selected_province_idx);    // $9C64
+                    ravage_defending_province_sweep();    // $9C68
+                    swap_word(battle_defending_province, selected_province_idx);    // $9C71
+                    break;    // $9C57
+                }
+            }
+        }
+        local11 = (local11 + 1);    // $9C7A
+    }
     return ((unsigned)local11 < (unsigned)scenario_fief_count);    // $9C83
 }
 

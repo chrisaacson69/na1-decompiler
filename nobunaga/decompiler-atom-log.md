@@ -942,3 +942,26 @@ real step is the `_structure_loop` exit rework: let the convergent-exit logic se
 nonreturn filter, and read the exit emit-order (lexical) not address — then the continue-prologue un-sharing
 (built, banked in the working tree) composes on top. Forward-primitive harness (`probe-primitives.py`) has
 `rot_incr_break` + the layered variants as permanent regression targets.
+
+## LANDED (2026-06-06): loop convergent-exit fix + continue-prologue un-sharing. V2 874→829 (−45).
+The `_structure_loop` rework Chris's loop-conditional-placement frame pointed to. Two coordinated landings:
+
+1. **Convergent-exit FIRST (the −45 bulk).** Run `_convergent_exit` over ALL loop exits BEFORE the `nonreturn`
+   filter. The filter used to pick a non-return SHIM (a block that itself flows to the shared return) as a
+   phantom exit, so the convergent logic never ran and the loop bailed to flat. Now a loop whose test exits to
+   a shared return AND whose full-pass exits to `body_work`→that-same-return folds: the return is the single
+   exit, `body_work` is a shim pulled into the body (then breaks). Also fixes layer-1 for free — with the right
+   exit, it IS address-next, so the adjacency check passes. (`rot_incr_break` + `c9c22_exact` primitives → 0
+   gotos; the whole `$9C22`/`$9E73`/loop family unlocks.)
+2. **Continue-prologue un-sharing (the built capability, now firing).** A guard whose goto-arm is a shared
+   single-succ block →loop-header (the loop's increment/update) is duplicated into the guard arm as
+   `if(c){ incr(); continue; }` at a SYNTHETIC address (gate self-augments leaders + bypasses synth copies and
+   their decoded originals + `then_true` lexical; `_dupable_prologue`; copies==in-edges guard). Fires on `$AC7F`
+   → 0 gotos, reading as a for-loop increment (`if(!present){ slot++; continue; }` + the slot++ at the tail).
+
+**Result: V2 874→829 (−45), behind 53→46, ALL 16 forward primitives fold (incl. the two that failed),
+114/114 soundness, V1 + V2 hard gates 495/495 each, deterministic.** The forward-primitive method (Chris's
+reframe — stop chasing gotos, validate the model + un-share the boundaries the compiler erased) drove the
+whole thing: it proved the primitives sound, isolated `rot_incr_break` as the minimal dense composition, and
+pinned the culprit to `_structure_loop`'s exit handling. Cosmetic follow-up: a dangling reordered-fall label on
+some folded loops (`L_AC8C`), gate-harmless.
