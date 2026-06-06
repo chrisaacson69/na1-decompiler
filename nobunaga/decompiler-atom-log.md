@@ -701,3 +701,39 @@ its content, the guarantee `contract` can't carry). This is the "rearchitecture"
 dissections flagged — NOT a one-line gate tweak. **Lesson reaffirmed (correctness-over-results): the push-pull
 negative tests are the backstop; a cheap gate relaxation that "improves" the goto count is exactly what they
 exist to reject.**
+
+## Atom 5 retry #2 (2026-06-05) — the SOUND duplication WORKS; the wall is the address-inverted ARM, not the dup
+Built the layered-grounding version Chris asked for and it is SOUND — but it pinpointed the real blocker much
+more sharply than before.
+
+**What landed (then reverted as inert):** (1) a TARGETED gate bypass — `contract()` bypasses a terminal sink
+only when it has ≥2 preds in the WITNESS (the genuine cross-jump merge target); the ≥2-pred restriction keeps
+1-pred terminal arms intact, so the then/else-swap + dropped-case negative tests STILL pass (114/114) — fixing
+the unsoundness of retry #1's blanket bypass. (2) `_is_crossjump_terminal` + a `dup_terminals` reducer flag
+that DUPLICATES the shared tail into each arm at the cross-edge cut, re-tagged to the predecessor's address.
+(3) the **`copies == in-edges` guard** (`1 + dup_count[T] == |preds(T)|`) — the per-arm content check the
+routing gate is blind to (Chris's layered grounding). (4) the lowering-atlas `06`/`07` -O0 form as the content
+oracle.
+
+**Proven on `$AD38`: the duplication produces the EXACT clean form** — `if(ai_state(def)){…; return} else {
+if(!ai_state(sel)) return…; …; return}`, 0 gotos, `dup_count={AD58:1}`, guard satisfied. So the dup half is
+correct and sound.
+
+**But the gate REJECTS it — and NOT because of the dup.** Contracted CFGs diverge at the ELSE-ARM: `$AD38`'s
+correct form is ADDRESS-INVERTED — `AD67` (0xAD67) is emitted AFTER `AD7B` (0xAD7B) yet has a LOWER address, so
+`lower_struct`'s address-based fall-through computes `AD7B → next_leader = AD85` instead of the emitted
+`AD7B → AD67`. The terminal dup is fine; the blocker is the **guard/ifreturn fall-through still being
+address-based**. Atom B fixed exactly this for if-MERGES (label-based `merge_after`), but the general
+fall-through is harder — `AD67` is reached by FALL (no label), so a label-based fix doesn't reach it.
+
+**Corpus: V2 883 → 883 (INERT).** Every cross-jump sub has the same address-inverted arm, so the gate rejects
+every dup'd form (reduce() self-validates → falls back). Reverted — sound but inert, same call as the
+chase-V2 region assignment (no inert complexity).
+
+**SHARPENED conclusion.** Atom 5 = terminal-dup (DONE, sound, banked here) **+** lexical fall-through for
+guards/ifreturns (the remaining wall). The latter is the broad EMIT-ORDER gate the `$AD38` dissections kept
+naming — now pinned to one concrete mechanism: `lower_struct`'s `fall_thru = next_leader[L]` must become
+emit-order-aware for reordered (address-inverted) arms, the way `merge_after` did for merges, but without a
+label to anchor on. That is the real multi-session rearchitecture; the dup machinery above re-applies on top of
+it. **Grounding scorecard (Chris's "all forms"): routing = the ≥2-pred bypass (sound, 114/114); content =
+copies==in-edges guard + atlas -O0 oracle (sound); the gap is purely LAYOUT (emit-order fall-through).**
