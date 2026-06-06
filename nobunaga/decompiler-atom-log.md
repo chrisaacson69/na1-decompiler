@@ -828,3 +828,31 @@ gate. **Session total: V2 883→875 (−8) + 2 latent mis-reads fixed.**
 sink) carry the SAME optimization but in DIFFERENT shapes (sink reached as an if-merge, via switch case-tails
 `$A2D2`, etc.) — the cross-edge-cut dup only owns the guard→block→cut shape. Each remaining shape is a
 follow-on dup insertion point on this same foundation.
+
+### A5 completion investigation (2026-06-06) — the cross-jump dup is DONE at $AD38; the rest of the "terminal" residue is NOT cross-jump
+Dissected all 10 remaining `shared_terminal` subs (probe-residue-cause) to finish atom 5. Result: the genuine
+cross-jump shape — a BACKWARD (address-inverted) terminal sink reached via a single-succ cut, where the host
+strand →EXIT after the dup — is essentially UNIQUE to $AD38. The others are different idioms:
+
+| sub | sink | preds | classification |
+|---|---|---|---|
+| $A95E, $9DC4 | A9A6 / 9EAB,9EFF | 2 FORWARD cut | **forward shared-merge** (emit once after the if) — atom-6/Track-A gap, not dup |
+| $93BF | 944E | 8 (6 guard+2) | **short-circuit-OR / early-return** guard chain — duping = 7 copies, wrong inverse |
+| $8FF8, $918D, $9E73, $A9FB | — | 3–5, guard-heavy | guard chains (same) |
+| $8327 | 8354 | 2 cut | **noise-return**: `return arg1` + an `// ext_op` nop comment counted as a 2nd stmt |
+| $A2D2 | — | switch | switch case-tails (the switch family, atom-4 follow-on) |
+
+**Two architectural facts that bound A5:**
+1. **The cross-edge dup fires only when a predecessor's SOLE successor is the sink** (the host strand then
+   →EXIT after the dup, giving a valid re-tag target — $AD38's $AD67). A GUARD pred (`if(c) goto sink`) does
+   NOT →EXIT (it continues to its fall), so the address-based gate has NO leader to re-tag a nested
+   `if(c){dup}` copy to — multiple guard-dups of one sink all collide on the sink's address. Guard-goto dup
+   needs a gate-model change (label-keyed dup blocks), not just a new emit site.
+2. The forward shared-merge cases want MERGE-folding (emit the sink once after the if — Track A/atom 6), not
+   duplication; duping them would be wrong (they're not cross-jumped).
+
+**Conclusion (matches the ledger's own "residue is 77% non-sink, sink is a minority lever" finding): atom 5
+is COMPLETE.** The cross-jump terminal-duplication inverse is implemented, sound, and lands its clean case
+($AD38, 0 gotos). The remaining "terminal" residue belongs to other atoms — forward-merge folding (the
+non-sink majority, ~148 gotos, the real lever), guard short-circuit/early-return, the switch family, and
+cosmetic noise-return cleanup — none of which are cross-jump duplication.
