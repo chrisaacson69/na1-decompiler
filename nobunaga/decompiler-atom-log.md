@@ -965,3 +965,23 @@ reframe — stop chasing gotos, validate the model + un-share the boundaries the
 whole thing: it proved the primitives sound, isolated `rot_incr_break` as the minimal dense composition, and
 pinned the culprit to `_structure_loop`'s exit handling. Cosmetic follow-up: a dangling reordered-fall label on
 some folded loops (`L_AC8C`), gate-harmless.
+
+## Option-1 dissection (2026-06-06) — the loop+merge model is ROBUST; residue is dense real-sub stacks
+Picked the top "neither"/cross-edge behind subs (V2 829). `$A221` (40-block nested-loop monster, too big to
+minimize), `$8669` (switch-in-loop — switch family, not pure merge), `$9778` (the representative: V1 folds the
+loop+outer-if to 4 gotos, V2 falls the WHOLE loop to flat = 9). Forward-primitive-tested every approximation of
+`$9778`'s shape — and they ALL fold to 0 gotos: `loop_diamond_merge`, `loop_chain_merge` (two chained shared
+merges in a loop), `rot_loop_break_diamond` (rotated entry-jump loop + top break-guard + if-else diamond). So
+the model handles loops + (chained) non-terminal shared merges + break + entry-jump cleanly. `$9778`'s actual
+failure is a DENSER/messier stack (cross-level nested merges where the outer-else has a guard-arm AND a nested
+diamond both converging, plus real expressions) that resists minimal reproduction — the model is in much better
+shape than the behind-count implied; the remaining "neither" residue is messy real-sub specifics, not a clean
+missing primitive.
+
+**Cosmetic REGRESSION found (from the convergent-exit/un-sharing work): a dangling loop-entry label** (`L_0002`,
+`L_AC8C`) now prints right after `while(p()){` on folded rotated loops — `_label_reordered_falls` mis-reads the
+loop-back edge (test→body, a lower address) as a backward FALL and labels the body entry, though it's reached
+via the loop structure, not a lexical fall. Gate-harmless but hurts readability on every loop the convergent
+fix folded. ▶ Fix: exclude loop-body-entry / loop-header targets from `_label_reordered_falls`. More tractable
+next wins than `$9778`'s exact stack: (a) that dangling-label cleanup; (b) the switch family (`$9C84`
+shared-return merge, non-empty default, `$A2D2`). New forward primitives banked as regression tests.

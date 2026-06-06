@@ -335,6 +335,66 @@ def _rot_incr_break_outerif():
     ), [0x00, 0x02, 0x04, 0x06, 0x0A, 0x10, 0x12])
 
 
+@prim("loop_diamond_merge", "while loop, body = if-else diamond merging at a NON-terminal block that continues")
+def _loop_diamond_merge():
+    return (_L(
+        (0x00, "if (!(p())) goto L_0030;"),     # H -> body / exit
+        (0x02, "if (!(a())) goto L_0010;"),     # body: if(a){t}else{f}
+        (0x04, "t();"),
+        (0x06, "goto L_0014;"),
+        (0x10, "L_0010:"),
+        (0x10, "f();"),
+        (0x14, "L_0014:"),
+        (0x14, "m();"),                          # shared merge (2 preds), non-terminal -> loop back
+        (0x16, "goto L_0000;"),
+        (0x30, "L_0030:"),
+        (0x30, "return 0;"),
+    ), [0x00, 0x02, 0x04, 0x10, 0x14, 0x30])
+
+
+@prim("loop_chain_merge", "while loop, body = TWO chained shared merges (m1->if->m2), $9778's shape")
+def _loop_chain_merge():
+    return (_L(
+        (0x00, "if (!(p())) goto L_0040;"),     # H -> body / exit
+        (0x02, "if (!(a())) goto L_0010;"),     # if1: t/f -> m1
+        (0x04, "t();"),
+        (0x06, "goto L_0014;"),
+        (0x10, "L_0010:"),
+        (0x10, "f();"),
+        (0x14, "L_0014:"),
+        (0x14, "m1();"),                         # merge1 (2 preds) -> if2
+        (0x16, "if (!(b())) goto L_0024;"),     # if2: u/v -> m2
+        (0x18, "u();"),
+        (0x1A, "goto L_0028;"),
+        (0x24, "L_0024:"),
+        (0x24, "v();"),
+        (0x28, "L_0028:"),
+        (0x28, "m2();"),                         # merge2 (2 preds) -> loop back
+        (0x2A, "goto L_0000;"),
+        (0x40, "L_0040:"),
+        (0x40, "return 0;"),
+    ), [0x00, 0x02, 0x04, 0x10, 0x14, 0x16, 0x18, 0x24, 0x28, 0x40])
+
+
+@prim("rot_loop_break_diamond", "rotated (entry-jump) loop + top break-guard + if-else diamond + merge ($9778-ish)")
+def _rot_loop_break_diamond():
+    return (_L(
+        (0x00, "goto L_0030;"),                  # entry jump to bottom test
+        (0x02, "if (e()) goto L_0040;"),         # body: break-guard at top
+        (0x04, "if (!(a())) goto L_0010;"),      # if-else diamond
+        (0x06, "t();"),
+        (0x08, "goto L_0014;"),
+        (0x10, "L_0010:"),
+        (0x10, "f();"),
+        (0x14, "L_0014:"),
+        (0x14, "m();"),                          # merge -> falls to bottom test (loop back)
+        (0x30, "L_0030:"),
+        (0x30, "if (p()) goto L_0002;"),         # bottom test -> body / fall exit
+        (0x40, "L_0040:"),
+        (0x40, "return 0;"),
+    ), [0x00, 0x02, 0x04, 0x06, 0x10, 0x14, 0x30, 0x40])
+
+
 def main():
     names = [sys.argv[1]] if len(sys.argv) > 1 else list(PRIMS)
     for name in names:
