@@ -923,33 +923,6 @@ def lower_struct_cfg(lines, leaders, orient=None):
         top = _span_max_leader(lines, lo, hi, block_of)
         return next_leader[top] if top is not None else next_leader[header_block]
 
-    for header_addr, h_idx, else_idx, close_idx in ifs:
-        hb = block_of(header_addr)
-        then_true = next_leader[hb]                    # then-body starts right after header
-        _ifcond = _RE_IF_OPEN.match(lines[h_idx][2].strip())
-        _ifcond = _ifcond.group(1) if _ifcond else ''
-        if else_idx is None:
-            merge = span_after(h_idx + 1, close_idx, hb)   # block past the whole if
-            header_edges[hb] = {then_true, merge}
-            _record_orient(orient, hb, _ifcond, then_true, merge)
-        else:
-            then_top = _span_max_leader(lines, h_idx + 1, else_idx, block_of)
-            else_start = next_leader[then_top] if then_top is not None else next_leader[hb]
-            # merge = the block past the ELSE body (which begins at else_start). An empty
-            # else contributes no leader of its own, so fall back to else_start itself.
-            else_top = _span_max_leader(lines, else_idx + 1, close_idx, block_of)
-            if else_top is None:
-                else_top = else_start
-            merge = next_leader[else_top]
-            header_edges[hb] = {then_true, else_start}
-            _record_orient(orient, hb, _ifcond, then_true, else_start)
-            # structure_lines stripped the then-body's trailing `goto L_merge`, so its
-            # tail block must JUMP to the merge, not fall lexically into the else.
-            if then_top is not None and then_top != hb:
-                tail_redirect[then_top] = merge
-
-    loop_meta = []   # (span, header_block, exit_block, frozenset(body_leaders)) per loop
-
     def first_real_block(lo, hi):
         """Block of the first block-occupying line in lines[lo:hi], else None."""
         for k in range(lo, hi):
@@ -963,6 +936,76 @@ def lower_struct_cfg(lines, leaders, orient=None):
             if _occupies_block(lines[k][2].strip()):
                 return block_of(lines[k][0])
         return None
+
+    def merge_after(close_idx):
+        """The if's merge block, read LEXICALLY from the FIRST significant line after the
+        if's closing brace. This is what makes the gate reorder-invariant for if/else — the
+        merge is wherever it is EMITTED, not the address-next leader, so a BACKWARD
+        (lower-address) shared merge resolves correctly. The cases:
+          * a LABEL `L_M:`  -> M. A join is labelled (the stripped then-arm `goto L_M` and
+            any backward edge reference it), and the label is the leader DIRECTLY — flush-safe,
+            unlike block_of() on the first statement line, which a flushed-call's out-of-order
+            address would misattribute (the $885E redraw-after-L_88D2 trap). Backward merges
+            are ALWAYS labelled (you cannot fall backward, only goto), so this is exactly the
+            case B needs.
+          * an OPENER (`if/while/switch/do {`) -> its block (a construct header is a reliable
+            leader; not subject to flush reordering).
+          * a dedent (`}`, `} else {`, `} while`) -> None: the if ended its enclosing scope.
+          * an unlabelled plain statement -> None: a forward/adjacent continuation, for which
+            the caller's ADDRESS-based fallback is already correct (and flush-safe).
+        Returns EXIT when nothing follows. Returning the FIRST significant token inherently
+        cannot leak past an enclosing `}` (the 'leaks across scope' bug of the earlier crack):
+        a dedent token short-circuits to None."""
+        for k in range(close_idx + 1, len(lines)):
+            t = lines[k][2].strip()
+            if not t or t.startswith('//') or _RE_CASE_LABEL.match(t):
+                continue                       # blanks / comments / case labels: skip
+            if _RE_LABEL.match(t):
+                return int(t[2:6], 16)         # join label = the merge leader (flush-safe)
+            if t == '}' or t == '} else {' or _RE_DOWHILE_CLOSE.match(t):
+                return None                    # dedent: if ended its enclosing scope
+            if _opens_block(t):
+                return block_of(lines[k][0])   # merge is a nested construct header
+            return None                        # unlabelled plain continuation -> addr fallback
+        return EXIT
+
+    for header_addr, h_idx, else_idx, close_idx in ifs:
+        # MERGE-ONLY lexical change (approach B, minimal): then_true / else_start stay
+        # ADDRESS-based (next_leader — flush-safe and always-forward: the then-body is laid
+        # right after the header). ONLY the MERGE is read lexically (merge_after, label-based)
+        # so a BACKWARD shared merge resolves by its label instead of the address-next leader.
+        hb = block_of(header_addr)
+        then_true = next_leader[hb]                     # then-body starts right after header
+        _ifcond = _RE_IF_OPEN.match(lines[h_idx][2].strip())
+        _ifcond = _ifcond.group(1) if _ifcond else ''
+        lex_merge = merge_after(close_idx)
+        if else_idx is None:
+            then_top = _span_max_leader(lines, h_idx + 1, close_idx, block_of)
+            merge = lex_merge if lex_merge is not None else span_after(h_idx + 1, close_idx, hb)
+            header_edges[hb] = {then_true, merge}
+            _record_orient(orient, hb, _ifcond, then_true, merge)
+            if then_top is not None and then_top != hb:
+                tail_redirect[then_top] = merge        # then-tail -> merge (may be backward)
+        else:
+            then_top = _span_max_leader(lines, h_idx + 1, else_idx, block_of)
+            else_start = next_leader[then_top] if then_top is not None else next_leader[hb]
+            else_top = _span_max_leader(lines, else_idx + 1, close_idx, block_of)
+            if lex_merge is not None:
+                merge = lex_merge
+            else:
+                et = else_top if else_top is not None else else_start
+                merge = next_leader[et]                # address fallback (former behaviour)
+            header_edges[hb] = {then_true, else_start}
+            _record_orient(orient, hb, _ifcond, then_true, else_start)
+            # both arms' tails JUMP to the merge (structure_lines stripped their trailing
+            # `goto L_merge`); the merge may be a lower address than the arm, so redirect via
+            # the highest leader of each arm span (counts label-only / folded trailing blocks).
+            if then_top is not None and then_top != hb:
+                tail_redirect[then_top] = merge
+            if else_top is not None and else_top != hb:
+                tail_redirect[else_top] = merge
+
+    loop_meta = []   # (span, header_block, exit_block, frozenset(body_leaders)) per loop
 
     def tail_falls_off(lo, hi):
         """True if the body's last statement can FALL off the bottom `}` (back to the

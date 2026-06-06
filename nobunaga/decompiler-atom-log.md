@@ -527,3 +527,51 @@ emit-order gate work — `merge_nonadj` only reaches the FORWARD slice (a backwa
 which the address-based gate rejects). And the greedy region-fallback could become a GLOBAL region
 assignment (try all per-region combos jointly) to let `merge_nonadj` help there too — deferred, low marginal
 value vs the switch mini-epic (atom 4).
+
+## GATE CHANGE — reorder-invariant if/else merge (approach B, 2026-06-05) — LANDED, sound, V1 −71. V2 enabler.
+> The ROADMAP recalibration's bet: stop grinding emitter atoms; make the GATE reorder-invariant so backward
+> merges validate as-is. Tested it. The bet is **half-right** — the gate WAS rejecting valid backward/shared
+> merges, but only the EMITTER that produces them (V1 templates) benefits; the V2 reducer is INERT until it
+> learns to emit them. B *enables*; the emitter (C) must *exploit*. Not alternatives — complementary.
+
+**The wall, exactly.** `vm_cfg.lower_struct_cfg` derived an if/else's MERGE from ADDRESS order
+(`next_leader` / `_span_max_leader`) — but the while/do-while/switch handling right beside it already read
+boundaries LEXICALLY (`first_real_block`/`last_real_block` over the brace span). So a structuring whose merge
+sits at a LOWER address than the if-body (a backward/shared merge) computed the wrong merge edge → gate
+REJECT, even though the structuring is CFG-correct.
+
+**The fix (`lower_struct_cfg`, MERGE-only).** New `merge_after(close_idx)`: read the merge LEXICALLY from the
+first significant line after the if's `}` — and resolve it by its **LABEL** (`L_M:` → M), not `block_of(first
+statement)`. The label is the flush-safe leader: a join is always labelled (the stripped then-arm `goto L_M`
+referenced it), and a BACKWARD merge is ALWAYS labelled (you cannot fall backward, only goto) — exactly the
+case B needs. The `$885E` trap proved why label-not-statement: `redraw_window` is a flushed call tagged
+`$88CE` but emitted after `L_88D2:`, so `block_of(stmt)` mis-attributes it; the label `L_88D2` is correct.
+`then_true`/`else_start` stay ADDRESS-based (the then-body is always laid right after the header — flush-safe
+and never backward); only the merge target + the two arm-tail redirects (`_span_max_leader`, counts a trailing
+empty merge-of-inner-gotos block — `last_real_block` skips it and over-shoots, the 1st-try `$9778` bug) use
+the lexical merge. A dedent/unlabelled-plain continuation → None → ADDRESS fallback (former behaviour, no
+regression on forward/scope-ending ifs).
+
+**Why this is SOUND (more faithful, not more permissive-by-fudge).** Reading the merge by its label IS the
+true C semantics (control flows to the lexical continuation after an if). The OLD address-based merge was the
+*approximation* (correct only when emit-order == address-order). So the change can only REMOVE false rejects,
+never ADD false accepts. Confirmed: 114/114 incl. the inject-a-misroute negative tests; hard gate 495/495 +
+495/495 both paths; witness `lower(raw)==bytecode` 495/495 (untouched — only `lower_struct_cfg` changed);
+disasm 0 BAD ×4; drift-guard clean; regen deterministic.
+
+**Measured.** V1 templates **1151 → 1080 (−71 gotos, fallbacks 35 → 15)**; `decompiled/*.c` gained real
+structure (73 gotos → `if`/`while`, e.g. `if (x != 24) goto L_merge` → `if (x == 24) { … }`). **V2 reducer
+929 → 929 (INERT).** behind-V1 51 → 57 (rose only because V1 improved; V2 still leads 929 < 1080).
+
+**Why V2 is inert (the actionable finding).** The behind-V1 subs FAIL the whole-sub trial (other improper
+regions) and route to the **region-fallback**, whose `_REGION_COMBOS` DISABLES `merge_nonadj` (atom 8 turned
+it off to dodge a greedy-seam regression). So the reducer never GENERATES a backward-merge candidate for the
+now-permissive gate. Tested re-enabling it (`_REGION_COMBOS = _COMBOS`) → V2 **929 → 931** (the exact greedy
+seam atom 8 logged: a leaner `merge_nonadj` fold for region i blocks region j). Reverted.
+
+**▶ NEXT (chase V2 — Chris's call):** the **GLOBAL region assignment** atom 8 deferred. Replace the
+region-fallback's greedy per-region commit (`reduce()` step 2, `vm_reduce.py:1089-1102`) with a joint pick
+(try per-region `_COMBOS` combinations together, keep the globally fewest-goto VALIDATING assignment), THEN
+re-enable `merge_nonadj` in the fallback. With the gate now lexical, the backward merges will validate and V2
+should drop below 929. The spot-checked non-merge residue (`$9A5D` goto-into-block `||`, `$9C22` rotated-for
+with increment-in-else) is separate reducer-shape work, untouched by this.

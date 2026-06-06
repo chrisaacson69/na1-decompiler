@@ -770,7 +770,8 @@ L_8B5F:
     local9 = 0;    // $8B60
 L_8B61:
     local11 = *(byte*)(unit_field_ptr_6fd0(local10, local9));    // $8B68
-    if (!(is_cell_valid_for_phase(local11))) goto L_8B77;    // $8B6E
+    if (is_cell_valid_for_phase(local11)) {    // $8B6E
+    }
 L_8B77:
     draw_unit_count_digits(local10, local9);    // $8B73
     local9 = (local9 + 1);    // $8B79
@@ -1608,13 +1609,13 @@ word test_cur_unit_slot_present(void) {
 word ai_place_unit_in_free_slot_resolve_coords(word max_slots) {
     goto L_9855;    // $9816
 L_9819:
-    if (!(test_cur_unit_slot_present())) goto L_9829;    // $981C
+    if (test_cur_unit_slot_present()) {    // $981C
     cur_combat_unit_slot = (cur_combat_unit_slot + 1);    // $9823
-    goto L_9853;    // $9826
-L_9829:
+    } else {
     tile_x = *(byte*)(unit_field_ptr_6fd0(cur_combat_side, 0));    // $9832
     tile_y = *(byte*)(unit_field_ptr_6fda(cur_combat_side, 0));    // $983C
     if (!(sub_8003(&tile_x, &tile_y, slot_idx))) goto L_9853;    // $984A
+    }
 L_9853:
     commit_unit_move_and_redraw_count(tile_x, tile_y);    // $984F
 L_9855:
@@ -1623,6 +1624,7 @@ L_9855:
     if (((unsigned)cur_combat_unit_slot < (unsigned)max_slots)) goto L_9819;    // $9861
 L_9864:
     return ((unsigned)cur_combat_unit_slot < (unsigned)max_slots);    // $9864
+    }
 }
 
 // $9865 ai_advance_units_when_attacker_stronger
@@ -1742,10 +1744,9 @@ L_99C8:
 
 word ai_place_combat_units_random_or_smart(word arena_rect) {
     cur_combat_unit_slot = 0;    // $99D8
-    if (!(cur_combat_side)) goto L_99E7;    // $99DE
+    if (cur_combat_side) {    // $99DE
     ai_advance_units_when_attacker_stronger();    // $99E1
-    goto L_9A0F;    // $99E4
-L_99E7:
+    } else {
     rng_search_combat_rect_for_unit_cell(arena_rect);    // $99E8
     goto L_9A0F;    // $99EC
 L_99EF:
@@ -1753,10 +1754,12 @@ L_99EF:
     goto L_9A0F;    // $99F6
 L_99F9:
     if (test_cur_unit_slot_present()) goto L_99EF;    // $99FC
+    }
 L_9A0F:
     commit_unit_move_and_redraw_count(rng_mod(11), rng_mod(5));    // $9A0B
     if (((unsigned)cur_combat_unit_slot < (unsigned)5)) goto L_99F9;    // $9A14
     return ((unsigned)cur_combat_unit_slot < (unsigned)5);    // $9A17
+    }
 }
 
 // $9A18 player_interactive_unit_move_loop
@@ -2008,14 +2011,16 @@ word resolve_attack_apply_casualties(word arg1, word arg2) {
     if (combat_casualty_skip_flag_7bf3) goto L_9F37;    // $9EE0
     if ((local11 <= local10)) goto L_9F37;    // $9EE6
     arg2 = (arg2 / *(word*)(unit_word_field_ptr_6fbc(local7, arg1)));    // $9EF3
-    if ((arg2 <= 0)) goto L_9FCE;    // $9EF7
+    if ((arg2 > 0)) {    // $9EF7
     local11 = pct_op(*(word*)(unit_word_field_ptr_6fbc(local7, arg1)), math32_2arg((local11 - local10), local11));    // $9F10
-    if (!(((*(word*)((unit_record_ptr(cur_combat_side) + 4)) + local11) > 0x270F))) goto L_9F33;    // $9F20
+    if (((*(word*)((unit_record_ptr(cur_combat_side) + 4)) + local11) > 0x270F)) {    // $9F20
     local11 = (0x270F - *(word*)((unit_record_ptr(cur_combat_side) + 4)));    // $9F32
+    }
 L_9F33:
     if (local11) goto L_9F58;    // $9F34
 L_9F37:
-    if (!(get_province_ai_state(local9))) goto L_9F46;    // $9F3C
+    if (get_province_ai_state(local9)) {    // $9F3C
+    }
 L_9F46:
     message_display(mem_B1CE);    // $9F42
     draw_unit_count_digits(local7, arg1);    // $9F48
@@ -2028,28 +2033,33 @@ L_9F58:
     *(word*)(unit_word_field_ptr_6fbc(cur_combat_side, 0)) = (*(word*)(unit_word_field_ptr_6fbc(cur_combat_side, 0)) + local11);    // $9F83
     *(word*)((unit_record_ptr(cur_combat_side) + 4)) = (*(word*)((unit_record_ptr(cur_combat_side) + 4)) + local11);    // $9F91
     draw_unit_stat_field(cur_combat_side, 2);    // $9F96
-    if (!(get_province_ai_state(local8))) goto L_9FA9;    // $9F9F
+    if (get_province_ai_state(local8)) {    // $9F9F
+    }
 L_9FA9:
     message_display(mem_B19A);    // $9FA5
-    if (!(get_province_ai_state(local9))) goto L_9FC7;    // $9FAE
+    if (get_province_ai_state(local9)) {    // $9FAE
     message_display(jumptab_b196);    // $9FB4
     ui_helper_d134(msg_fmt__d_b9e9, local11);    // $9FBC
+    }
 L_9FC7:
     redraw_window(mem_B198);    // $9FC3
     combat_casualty_skip_flag_7bf3 = 1;    // $9FC8
     goto L_9F46;    // $9FCB
+    }
 L_9FCE:
-    if (!(get_province_ai_state(local9))) goto L_9FDE;    // $9FD3
-    goto L_9FE1;    // $9FDB
-L_9FDE:
+    if (get_province_ai_state(local9)) {    // $9FD3
+    } else {
+    }
 L_9FE1:
     *(word*)(((local8 * 26) + 0x7013)) = (*(word*)(((local8 * 26) + 0x7013)) - const_two);    // $9FEE
-    if (!((*(word*)(((local8 * 26) + 0x7013)) <= 0))) goto L_A008;    // $9FFA
+    if ((*(word*)(((local8 * 26) + 0x7013)) <= 0)) {    // $9FFA
     *(word*)(((local8 * 26) + 0x7013)) = 0;    // $A007
+    }
 L_A008:
     if (!(get_province_ai_state(local9))) goto L_9FC7;    // $A00D
     message_display(mem_B1CA);    // $A013
     goto L_9FC7;    // $A017
+    }
 }
 
 // $A01A unit_type_count_gt3_and_equals_arg1
