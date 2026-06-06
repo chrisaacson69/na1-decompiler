@@ -889,3 +889,29 @@ residue bottleneck is definitively NON-TERMINAL merges + loops (the ledger's lon
 finding, now proven by building the terminal lever and measuring it dry). Reverted the synth machinery (don't
 land inert complexity); the design is banked here for re-application IF the non-terminal/loop blockers are ever
 cleared. The real lever remains forward shared-merge folding + loop continue/break recognition.
+
+## Forward-primitive MODEL VALIDATION (2026-06-06) — model recovers all primitives; gap is COMPOSITION, fix is un-sharing
+Chris's reframe: stop steering by goto-count / "behind V1" (metric-chasing); instead forward-test — author each
+known source primitive as its COLLAPSED goto/label form and ask "can the structurer put it back?" Built
+`tools/probe-primitives.py` (synthetic raw line-lists → lower_goto_cfg → whole-sub structurer → recovered C +
+self-validation). No instructions/assembly needed (the gate runs on lines+leaders).
+
+**The model is SOUND on every primitive AND every pairwise combination, all 0 gotos:** nested ifs (3 deep —
+the shared-merge case), if-else, sequential diamonds, code-after-inner-if, pre-test while, break, continue,
+2-guard (continue+break), rotated entry-jump loop, shared-increment loop, break-to-shared-tail. So the residue
+is NOT a missing primitive — the recovery logic works.
+
+**The gap is COMPOSITION DENSITY.** Reconstructing `$9C22`'s exact CFG (outer-if + rotated loop + shared incr +
+break) FAILS (flat, 7 gotos) though each piece folds alone. Bisected to the minimal breaker — `rot_incr_break`
+(no outer if needed): **a loop whose body has BOTH a continue-via-SHARED-prologue (guards → a shared `incr`
+block → header) AND a break (body → exit).** The single-pass-walk + post-dom-merge structurer can't compose
+"continue to a shared block (not the header)" with "break" in one body — it hits the shared `incr` as a
+cross-edge and cuts to goto.
+
+**The fix is UN-SHARING, exactly the reverted synthetic-leader capability — now aimed at a NON-terminal bounded
+cone.** Duplicating the 1-block `incr` prologue into each guard gives clean `while(c){ if(a){incr();continue;}
+if(b){incr();continue;} body(); break; }`, 0 gotos. So the lever is duplication of a bounded shared block
+(Chris's "phantom boundaries"), generalizing atom 5 from terminal sinks (cone=∅) to bounded non-terminal cones
+(cone ends at the header / a continue point). Reverting the synth-leader machinery on the goto-metric was the
+mistake the forward method exposes. ▶ NEXT: restore synth-leaders + extend dup to bounded non-terminal cones;
+`rot_incr_break` is the regression test.
