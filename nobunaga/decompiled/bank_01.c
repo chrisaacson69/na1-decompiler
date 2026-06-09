@@ -165,16 +165,16 @@ word helper_82AC(word arg1) {
 
 word effect_tax(word stat, word tax_delta) {
     is_decrease = (tax_delta < 0);    // $82DE
-    if ((tax_delta < 0)) {    // $82DF
-    abs16(tax_delta);    // $82E3
-    } else {
-    }
+    if ((tax_delta >= 0)) goto L_82EA;    // $82DF
+    phi_push_82eb = abs16(tax_delta);    // $82E7
+    goto L_82EB;    // $82E7
+L_82EA:
+    phi_push_82eb = tax_delta;    // $82EB
 L_82EB:
-    local10 = pct_op(stat, tax_delta);    // $82F1
+    local10 = pct_op(stat, phi_push_82eb);    // $82F1
     dsel_8300 = is_decrease;    // $8300
     local10 = (dsel_8300 ? (stat - local10) : (local10 + stat));    // $8300
     return local10;    // $8302
-    }
 }
 
 // $8303 math32_muladddiv
@@ -303,12 +303,15 @@ word effect_view_a(word arg1) {
     local6 = fief_is_daimyo_capital[arg1];    // $8492
     if (get_province_ai_state(arg1)) {    // $8498
     dsel_84a9 = local6;    // $84A9
+    phi_push_84b5 = *(word*)((((dsel_84a9 ? 0 : province_ai_state[arg1]) << 1) + effect_view_a_data_f7d4));    // $84AF
     goto L_84B5;    // $84AF
 L_84B2:
+    phi_push_84b5 = msg_home_fief;    // $84B5
 L_84B5:
-    phi_84c6_0 = msg_home_fief;    // $84B6
+    phi_84c6_0 = phi_push_84b5;    // $84B6
     } else {
     if (local6) goto L_84B2;    // $84BA
+    phi_push_84b5 = msg_direct;    // $84C0
     goto L_84B5;    // $84C0
 L_84C3:
     phi_84c6_0 = msg_empty;    // $84C6
@@ -976,10 +979,12 @@ L_9070:
     if ((!((min_word(*(word*)(((battle_defending_province * 26) + 0x7007)), *(word*)(((battle_defending_province * 26) + 0x7011))) <= attack_budget)))) return 0;    // $90BB
     if (!(!(relations_rng_predicate(battle_defending_province, selected_province_idx)))) return 0;    // $90CA
     if (war_side_state_flag) goto L_90E0;    // $90D2
+    phi_push_90e8 = (rng_mod(20) + 50);    // $90DD
     goto L_90E8;    // $90DD
 L_90E0:
+    phi_push_90e8 = (rng_mod(30) + 60);    // $90E8
 L_90E8:
-    spend_amount = pct_op(attack_budget, (rng_mod(30) + 60));    // $90EE
+    spend_amount = pct_op(attack_budget, phi_push_90e8);    // $90EE
     war_attacker_men = spend_amount;    // $90F0
     war_attacker_gold = spend_amount;    // $90F3
     *(word*)(local11) = (*(word*)(local11) - spend_amount);    // $90FC

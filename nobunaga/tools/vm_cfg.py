@@ -756,6 +756,76 @@ def return_phis(instructions):
     return out
 
 
+def push_phis(instructions):
+    """Find PUSH-PHI merges: a block whose FIRST op is `pushA` (push regA onto the data stack),
+    reached by >=2 preds that leave with a DIFFERENT regA, and name the temp each pred materialises.
+
+    Same root cause as `return_phis`, with the consumer a `pushA` instead of `vm_return`. The
+    decoder is a single LINEAR sweep, so the shared push emits only the regA of the textually
+    adjacent (fall-through) pred and the JUMPing preds' regA LEAKS and is DROPPED. The pushed
+    value then usually feeds a multi-pred consuming CALL (`consuming_phis`), so the two chain:
+    push_phis fixes the value at the shared push, consuming_phis carries it to the call.
+    ($83FA effect_view_a's $84B5: a 3-way push of {table-lookup, msg_home_fief, msg_direct} into
+    a shared `redraw_window` -- the AI-state-true table-lookup arm was dropped and every path
+    rendered `redraw_window(msg_home_fief)`. value_diamonds can't fold it: it's a 3-way merge,
+    not a 2-way head.)
+
+    Returns `{site_addr: merge}` PLUS, as the decoder needs both, callers read `set(values())` for
+    the merge set (the `pushA` there pushes `phi_push_<merge>`, not the linearly-stale regA). At
+    each site -- a JUMPing pred's jump, or the `pushA` address itself for the fall-through pred --
+    the decoder stores regA into `phi_push_<merge>`. All preds write the SAME name, so the linear
+    leak is harmless and each value is carried under its own control -- sound, no re-evaluation.
+
+    GUARDS (mirror return_phis): the merge block's FIRST op is `pushA`; >=2 preds; each leaves by an
+    unconditional jump or fall-through (a conditional-branch pred is skipped); preds' blocks are NOT
+    all identical (>=2 distinct signatures -> regA genuinely differs); and NOT a value-diamond /
+    boolean merge (those fold to a ternary -- the better rendering, and a 2-way regA diamond ending
+    in a push is already handled there)."""
+    cfg, leaders = _bytecode_cfg_raw(instructions)
+    block_of = _block_of_fn(leaders)
+    bmap = {L: [] for L in leaders}
+    for ins in instructions:
+        bmap[block_of(ins['addr'])].append(ins)
+    preds = _predecessors(cfg)
+    folded_merges = ({d['merge'] for d in value_diamonds(instructions)}
+                     | {r['merge'] for r in boolean_regions(instructions)})
+
+    def blk_sig(p):
+        return tuple((i['mnemonic'], i.get('operand', '') or '') for i in bmap.get(p, []))
+
+    out = {}
+    for M in leaders:
+        if M in folded_merges:                                     # handled by the ternary fold
+            continue
+        blk = bmap.get(M, [])
+        if not blk or blk[0]['mnemonic'] != 'pushA':               # consumer must be a regA push
+            continue
+        ps = [p for p in preds.get(M, ()) if p is not EXIT]
+        if len(ps) < 2:
+            continue
+        if len({blk_sig(p) for p in ps}) < 2:                      # all preds identical -> same regA
+            continue
+        sites, ok = {}, True
+        for p in ps:
+            pb = bmap.get(p, [])
+            if not pb:
+                ok = False
+                break
+            last = pb[-1]
+            if last['mnemonic'] == 'jump_abs' and _target(last) == M:
+                sites[last['addr']] = M                             # capture before the jump flushes
+            elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
+                sites[blk[0]['addr']] = M                           # fall-through: capture at the pushA
+            else:
+                ok = False
+                break
+        if not ok:
+            continue
+        for addr in sites:
+            out[addr] = M
+    return out
+
+
 def unknown_control_mnemonics(instructions):
     """Expose any unrecognised control-shaped mnemonics for the gate to report."""
     if not instructions:

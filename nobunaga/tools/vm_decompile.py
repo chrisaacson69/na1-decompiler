@@ -825,6 +825,11 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     # ret_phi_sites: site_addr -> merge_leader; the merge's vm_return then returns phi_ret_<merge>.
     ret_phi_sites = _vmcfg.return_phis(instructions)
     ret_phi_merges = set(ret_phi_sites.values())
+    # push_phi: same repair for regA at a shared `pushA` merge (the pushed value usually feeds a
+    # consuming-call merge, so push_phis + consuming_phis chain). push_phi_sites: site -> merge;
+    # the merge's pushA pushes phi_push_<merge>. See vm_cfg.push_phis ($83FA $84B5).
+    push_phi_sites = _vmcfg.push_phis(instructions)
+    push_phi_merges = set(push_phi_sites.values())
     diamonds = _vmcfg.value_diamonds(instructions)
     dia_by_head = {d['head']: d for d in diamonds}
     dia_fall_jump = {d['fall_jump_addr'] for d in diamonds if d['fall_jump_addr'] is not None}
@@ -935,6 +940,19 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             if _rv != _rnm:
                 state.emit(f"{_rnm} = {_rv};")
             state.regA = _rnm
+
+        # === Push (regA) PHI materialisation (pre-dispatch) ===
+        # At a pred's EXIT to a shared `pushA` merge (its jump, or the pushA itself for the
+        # fall-through pred), capture regA into phi_push_<merge> so the push carries the temp
+        # instead of dropping every JUMPing pred's regA. Reading regA consumes a pending call
+        # exactly once; all preds write the SAME name. See vm_cfg.push_phis.
+        if ins['addr'] in push_phi_sites:
+            _pm = push_phi_sites[ins['addr']]
+            _pnm = f"phi_push_{_pm:04x}"
+            _pv = state.regA                              # consume any pending call exactly once
+            if _pv != _pnm:
+                state.emit(f"{_pnm} = {_pv};")
+            state.regA = _pnm
 
         # Label for branch targets — AFTER the phi materialise (see note above) so a jump arm's
         # `goto L_<merge>` lands below the fall-through pred's `phi = …` instead of clobbering on it.
@@ -1083,7 +1101,12 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
 
         # === Stack ===
         elif mnem == 'pushA':
-            state.stack.append(state.regA)
+            # A push-phi merge pushes its temp (set by whichever pred control-flowed here), not
+            # the linearly-stale regA — see push_phi_sites above (mirrors the return-phi merge).
+            if ins['addr'] in push_phi_merges:
+                state.stack.append(f"phi_push_{ins['addr']:04x}")
+            else:
+                state.stack.append(state.regA)
         elif mnem == 'popB':
             if state.stack:
                 state.regB = state.stack.pop()

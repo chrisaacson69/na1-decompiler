@@ -1545,36 +1545,43 @@ L_DD65:
 word init_new_daimyo_province_stats(word arg1) {
     *(byte*)(fief_to_daimyo_record_addr(arg1)) = (rng_mod(20) + 20);    // $DD94
     local10 = (fief_to_daimyo_record_addr(arg1) + 1);    // $DD9B
-    while (((unsigned)local11 <= (unsigned)(local10 + 4))) {    // $DDC8
-        *(byte*)(local11) = pct_op(*(byte*)(local11), (rng_mod(20) + 50));    // $DDB0
-        *(byte*)(local11) = (*(byte*)(local11) + ((*(byte*)(local11) < 30) ? 30 : 0));    // $DDC5
-        local11 = (local11 + 1);    // $DDC8
-    }
+    goto L_DDC8;    // $DD9C
+L_DD9F:
+    *(byte*)(local11) = pct_op(*(byte*)(local11), (rng_mod(20) + 50));    // $DDB0
+    *(byte*)(local11) = (*(byte*)(local11) + ((*(byte*)(local11) < 30) ? 30 : 0));    // $DDC5
+L_DDC8:
+    local11 = (local11 + 1);    // $DDC8
+    if (((unsigned)local11 <= (unsigned)(local10 + 4))) goto L_DD9F;    // $DDCF
     local8 = ((arg1 * 26) + 0x7001);    // $DDDA
-    while (((unsigned)local9 < (unsigned)(local8 + 24))) {    // $DE45
-        if (!((((arg1 * 26) + 0x7017) == local9))) goto L_DE0A;    // $DDE8
-        *(word*)(local9) = pct_op(*(word*)(local9), (rng_mod(31) + 50));    // $DDFC
-        if (!((*(word*)(local9) < 50))) goto L_DE3B;    // $DE02
-        goto L_DE3C;    // $DE07
+    goto L_DE45;    // $DDDB
+L_DDDE:
+    if (!((((arg1 * 26) + 0x7017) == local9))) goto L_DE0A;    // $DDE8
+    *(word*)(local9) = pct_op(*(word*)(local9), (rng_mod(31) + 50));    // $DDFC
+    if (!((*(word*)(local9) < 50))) goto L_DE3B;    // $DE02
+    phi_push_de3c = 50;    // $DE07
+    goto L_DE3C;    // $DE07
 L_DE0A:
-        if (fief_is_daimyo_capital[arg1]) {    // $DE11
-        } else {
-        }
+    if (!(fief_is_daimyo_capital[arg1])) goto L_DE1F;    // $DE11
+    phi_push_de27 = (rng_mod(20) + 50);    // $DE1C
+    goto L_DE27;    // $DE1C
+L_DE1F:
+    phi_push_de27 = (rng_mod(30) + 30);    // $DE27
 L_DE27:
-        *(word*)(local9) = pct_op(*(word*)(local9), (rng_mod(30) + 30));    // $DE2F
-        if ((*(word*)(local9) < 10)) {    // $DE34
-        } else {
-        }
+    *(word*)(local9) = pct_op(*(word*)(local9), phi_push_de27);    // $DE2F
+    if (!((*(word*)(local9) < 10))) goto L_DE3B;    // $DE34
+    phi_push_de3c = 10;    // $DE38
+    goto L_DE3C;    // $DE38
+L_DE3B:
+    phi_push_de3c = 0;    // $DE3C
 L_DE3C:
-        *(word*)(local9) = (*(word*)(local9) + 0);    // $DE42
-        local9 = (local9 + 2);    // $DE45
-    }
+    *(word*)(local9) = (*(word*)(local9) + phi_push_de3c);    // $DE42
+L_DE45:
+    local9 = (local9 + 2);    // $DE45
+    if (((unsigned)local9 < (unsigned)(local8 + 24))) goto L_DDDE;    // $DE4D
     *(word*)(((arg1 * 26) + 0x700D)) = (*(word*)(((arg1 * 26) + 0x700D)) + 50);    // $DE5E
     *(word*)(((arg1 * 26) + 0x7013)) = (*(word*)(((arg1 * 26) + 0x7013)) + 50);    // $DE6D
     fief_tax_rate[arg1] = 20;    // $DE76
     return 20;    // $DE77
-        }
-        }
 }
 
 // $DE78 select_message_string_de78
@@ -2088,11 +2095,13 @@ L_E7A7:
     syscall16_sram_wrap(8, descriptor_ptr, &descriptor_buf, 4);    // $E7BE
     descriptor_ptr = &descriptor_buf;    // $E7C5
     ppu_upload_block_wrap(*(byte*)(descriptor_ptr), *(word*)((descriptor_ptr + 2)), 0x15B0, *(byte*)((descriptor_ptr + 1)));    // $E7D8
+    phi_push_e7fa = ((fief_to_mapid(active_province_idx_copy) * 36) + jumptab_b144);    // $E7EB
     goto L_E7FA;    // $E7EB
 L_E7EE:
     unpack_composite_face_record(&face_buf);    // $E7F2
+    phi_push_e7fa = &face_buf;    // $E7FA
 L_E7FA:
-    ppu_blit_from_bank_wrap(col, row, (col + 5), (row + 5), &face_buf, 8);    // $E803
+    ppu_blit_from_bank_wrap(col, row, (col + 5), (row + 5), phi_push_e7fa, 8);    // $E803
     ui_pending_flag_7fc7 = 1;    // $E808
     return 1;    // $E80B
 }
