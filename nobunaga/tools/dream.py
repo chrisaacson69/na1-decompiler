@@ -361,6 +361,15 @@ def _emits(seq, nxt):
     return bool(probe)
 
 
+def _min_addr(seq, nxt):
+    """Lowest real (addr>0) line a seq emits, or None. Used to keep the then-arm = the
+    LOWER-address arm so emit stays address-ascending (what the address-anchored gate wants)."""
+    probe = []
+    _emit_ast(seq, 0, probe, nxt)
+    addrs = [a for a, _i, _t in probe if a]
+    return min(addrs) if addrs else None
+
+
 def _emit_ast(ast, indent, out, nxt):
     for node in ast:
         k = node[0]
@@ -378,20 +387,22 @@ def _emit_ast(ast, indent, out, nxt):
             fall_has, goto_has = _emits(fall_seq, nxt), _emits(goto_seq, nxt)
             if not fall_has and not goto_has:
                 continue                              # empty diamond — nothing to guard
-            if not fall_has:
-                # empty fall arm (a guard idiom `if(c) goto body; merge`) -> FLIP so the
-                # goto-side body is the then-arm: reads better and the body block is the
-                # address-next leader the gate expects, where empty-then mis-routed.
-                out.append((Lpiv, indent, f"if ({to_c(piv)}) {{"))
-                _emit_ast(goto_seq, indent + 1, out, nxt)
-                out.append((0, indent, "}"))
+            # The gate is address-anchored, so the then-arm should be the LOWER-address arm
+            # (emit ascending). FLIP to the goto side as `then` when the fall arm is empty (a
+            # guard idiom `if(c) goto body; merge`) OR the goto body simply sits at a lower
+            # address than the fall body (arm-order inversion — `$8008`).
+            fm, gm = _min_addr(fall_seq, nxt), _min_addr(goto_seq, nxt)
+            flip = (not fall_has) or (goto_has and (fm is None or gm < fm))
+            if flip:
+                then_seq, else_seq, cond, else_has = goto_seq, fall_seq, piv, fall_has
             else:
-                out.append((Lpiv, indent, f"if ({to_c(neg(piv))}) {{"))   # then = fall side
-                _emit_ast(fall_seq, indent + 1, out, nxt)
-                if goto_has:
-                    out.append((0, indent, "} else {"))
-                    _emit_ast(goto_seq, indent + 1, out, nxt)
-                out.append((0, indent, "}"))
+                then_seq, else_seq, cond, else_has = fall_seq, goto_seq, neg(piv), goto_has
+            out.append((Lpiv, indent, f"if ({to_c(cond)}) {{"))
+            _emit_ast(then_seq, indent + 1, out, nxt)
+            if else_has:
+                out.append((0, indent, "} else {"))
+                _emit_ast(else_seq, indent + 1, out, nxt)
+            out.append((0, indent, "}"))
 
 
 def dream_structure(lines, instructions):
