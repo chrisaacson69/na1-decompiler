@@ -199,6 +199,160 @@ def reaching_conditions(tc, header):
 
 
 # --------------------------------------------------------------------------- #
+# RUNG 1 (SPIKE A) — condition-based refinement -> nested if/else, ADDRESS-CONSTRAINED.
+# The gate (vm_cfg.lower_struct_cfg) is address-anchored: an if's then-arm must be the
+# address-NEXT block. So we emit the fall-through side as `then`, the goto side as `else`,
+# in ascending address order, choosing the pivot = the lowest-address 2-way branch whose
+# predicate factors the reaching conditions. Merges (a node reached from BOTH arms -> its
+# cr is an OR, unfactorable by the pivot) drop to `rest` and emit AFTER the if/else, i.e.
+# the continuation. Eligible = acyclic + no switch (loops/switch are later rungs); anything
+# else passes through unchanged. The CFG-equivalence gate is the backstop.
+# --------------------------------------------------------------------------- #
+def _has_backedge(cfg, header):
+    """DFS gray-node test: True iff a back edge is reachable from header (loop present)."""
+    color = {header: 1}
+    stack = [(header, iter(cfg.get(header, ())))]
+    while stack:
+        node, it = stack[-1]
+        try:
+            s = next(it)
+        except StopIteration:
+            color[node] = 2
+            stack.pop()
+            continue
+        if s == vm_cfg.EXIT:
+            continue
+        c = color.get(s, 0)
+        if c == 1:
+            return True
+        if c == 0:
+            color[s] = 1
+            stack.append((s, iter(cfg.get(s, ()))))
+    return False
+
+
+def eligible(tc, header):
+    """Rung-1 scope: acyclic CFG, no switch dispatch."""
+    if any(k == 'switch' for k in tc['kind'].values()):
+        return False
+    return not _has_backedge(tc['cfg'], header)
+
+
+def _lit_of(tc, L):
+    """The goto-condition literal of a 2-way block (None otherwise)."""
+    if tc['kind'].get(L) != '2way':
+        return None
+    rawcond = tc['info'][L][1]
+    return lit(rawcond) if rawcond is not None else None
+
+
+def _factor(cond, piv):
+    """Divide `piv` (a positive literal) out of `cond` if it's a top-level conjunct.
+    Returns ('pos', residual) if piv⊆cond, ('neg', residual) if !piv⊆cond, else None."""
+    n = neg(piv)
+    if cond == piv:
+        return ('pos', TRUE)
+    if cond == n:
+        return ('neg', TRUE)
+    if cond[0] == 'and':
+        s = cond[1]
+        if piv in s:
+            return ('pos', _and(*(s - {piv})))
+        if n in s:
+            return ('neg', _and(*(s - {n})))
+    return None
+
+
+def refine(tc, items):
+    """items = ordered [(cond, leader)]. Recursively factor by the lowest-address branch
+    predicate into nested if/else. Returns an emit AST (list of nodes)."""
+    items = [(c, L) for c, L in items if c != FALSE]
+    if not items:
+        return []
+    piv = Lpiv = None
+    for _c, L in sorted(items, key=lambda x: x[1]):
+        lt = _lit_of(tc, L)
+        if lt is None:
+            continue
+        p = ('lit', lt[1], True)                      # normalize to positive polarity
+        rest = [x for x in items if x[1] != L]
+        if any(_factor(cc, p) for cc, _ in rest):
+            piv, Lpiv = p, L
+            break
+    if piv is None:                                   # no factorable branch: guard the residue
+        out = []
+        for c, L in sorted(items, key=lambda x: x[1]):
+            payload = ('block', L, tc['info'][L][0])
+            out.append(payload if c == TRUE else ('guard', c, payload))
+        return out
+    cpiv = dict((L, c) for c, L in items)[Lpiv]
+    head = ('block', Lpiv, tc['info'][Lpiv][0])
+    head_emit = head if cpiv == TRUE else ('guard', cpiv, head)
+    then_i, else_i, rest_i = [], [], []               # then = fall side, else = goto side
+    for c, L in items:
+        if L == Lpiv:
+            continue
+        f = _factor(c, piv)
+        if f is None:
+            rest_i.append((c, L))
+        elif f[0] == 'pos':                           # piv(goto-cond) TRUE -> goto arm
+            else_i.append((f[1], L))
+        else:                                         # !piv -> fall arm
+            then_i.append((f[1], L))
+    node = ('if', Lpiv, piv, refine(tc, then_i), refine(tc, else_i))
+    return [head_emit, node] + refine(tc, rest_i)
+
+
+def _emit_ast(ast, indent, out):
+    for node in ast:
+        k = node[0]
+        if k == 'block':
+            for a, t in node[2]:
+                out.append((a, indent, t))
+        elif k == 'guard':
+            _, cond, payload = node
+            baddr = payload[1] if payload[0] == 'block' else 0
+            out.append((baddr, indent, f"if ({to_c(cond)}) {{"))
+            _emit_ast([payload], indent + 1, out)
+            out.append((0, indent, "}"))
+        else:  # 'if'
+            _, Lpiv, piv, then_seq, else_seq = node
+            if not then_seq and not else_seq:
+                continue                              # pure branch, no bodies — nothing to guard
+            if not then_seq:
+                # empty then (a guard idiom `if(c) goto body; merge`) -> FLIP so the goto-side
+                # body is the then-arm. Reads better AND the body block is the address-next
+                # leader the gate expects, where the empty-then form mis-routed.
+                out.append((Lpiv, indent, f"if ({to_c(piv)}) {{"))
+                _emit_ast(else_seq, indent + 1, out)
+                out.append((0, indent, "}"))
+            else:
+                out.append((Lpiv, indent, f"if ({to_c(neg(piv))}) {{"))   # then = fall side
+                _emit_ast(then_seq, indent + 1, out)
+                if else_seq:
+                    out.append((0, indent, "} else {"))
+                    _emit_ast(else_seq, indent + 1, out)
+                out.append((0, indent, "}"))
+
+
+def dream_structure(lines, instructions):
+    """Top-level rung-1 structurer (Spike A). Returns address-constrained structured lines,
+    or the input unchanged when out of scope (loop/switch)."""
+    tc = tagged_cfg(lines, instructions)
+    leaders = tc['leaders']
+    if not leaders:
+        return list(lines)
+    header = leaders[0]
+    if not eligible(tc, header):
+        return list(lines)
+    cr = reaching_conditions(tc, header)
+    items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
+    out = []
+    _emit_ast(refine(tc, items), 0, out)
+    return out
+
+
+# --------------------------------------------------------------------------- #
 # PoC harness: capture one sub's (lines, instructions) via the structure_v2 hook
 # and dump its tagged CFG + reaching conditions.
 # --------------------------------------------------------------------------- #
@@ -254,7 +408,104 @@ def _dump(bank, sub_addr_hex):
             print(f"  ${L:X}: {to_c(cr[L])}")
 
 
+def _capture_all(bank):
+    """Capture (raw_lines, instructions) for EVERY sub in a bank via the structure_v2 hook."""
+    import importlib.util
+    import pathlib
+    import tempfile
+    here = pathlib.Path(__file__).parent
+    spec = importlib.util.spec_from_file_location("decompile_all", here / "decompile-all.py")
+    da = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(da)
+    import vm_decompile
+    grab = {}
+
+    def cap(lines, instructions):
+        a0 = instructions[0]['addr'] if instructions else None
+        grab[a0] = (list(lines), instructions)
+        return list(lines)
+
+    vm_decompile.structure_v2 = cap
+    vm_decompile.STRUCTURE = True
+    vm_decompile.STRUCTURE_V2 = True
+    with tempfile.TemporaryDirectory() as td:
+        da.bank_subs(bank, pathlib.Path(td))
+    return grab
+
+
+def _gotos(lines):
+    return sum(1 for _a, _i, t in lines if 'goto ' in t)
+
+
+def _check(bank, verbose=False):
+    """Spike-A measurement: run dream_structure over every sub in `bank`, gate each vs its
+    raw witness, and tally folded / gate-rejected / passthrough + goto deltas."""
+    import vm_cfg
+    grab = _capture_all(bank)
+    elig = folded = rejected = passthrough = 0
+    g_raw_e = g_dream_e = 0                            # goto totals over ELIGIBLE-and-validated
+    rej_list, win_list = [], []
+    for a0, (raw, instrs) in sorted(grab.items(), key=lambda x: (x[0] is None, x[0])):
+        if not instrs:
+            continue
+        tc = tagged_cfg(raw, instrs)
+        leaders = tc['leaders']
+        if not leaders or not eligible(tc, leaders[0]):
+            passthrough += 1
+            continue
+        elig += 1
+        dream = dream_structure(raw, instrs)
+        try:
+            ok = vm_cfg.structured_equivalent(raw, dream, leaders)[0]
+        except Exception:
+            ok = False                                # malformed emit the gate can't lower = reject
+        if ok:
+            folded += 1
+            gr, gd = _gotos(raw), _gotos(dream)
+            g_raw_e += gr
+            g_dream_e += gd
+            if gd < gr:
+                win_list.append((a0, gr, gd))
+        else:
+            rejected += 1
+            rej_list.append(a0)
+    print(f"=== DREAM rung-1 spike A — bank {bank} ===")
+    print(f"  subs total       : {sum(1 for _a,(r,i) in grab.items() if i)}")
+    print(f"  passthrough      : {passthrough}  (loop/switch — out of rung-1 scope)")
+    print(f"  eligible (acyclic, no switch): {elig}")
+    print(f"    validated (gate-green): {folded}")
+    print(f"    gate-rejected         : {rejected}")
+    if folded:
+        print(f"  gotos over validated  : raw {g_raw_e} -> dream {g_dream_e}  (delta {g_dream_e-g_raw_e})")
+        print(f"  subs strictly improved: {len(win_list)}")
+    if verbose and rej_list:
+        print("  rejected: " + ' '.join('$%X' % a for a in rej_list[:40]))
+    return folded, rejected, elig
+
+
+def _emit_one(bank, sub_addr_hex):
+    """Dump the structured C dream_structure produces for one sub + the gate verdict."""
+    import vm_cfg
+    lines, instrs = _capture_sub(bank, sub_addr_hex)
+    tc = tagged_cfg(lines, instrs)
+    leaders = tc['leaders']
+    if not eligible(tc, leaders[0]):
+        print(f"sub ${sub_addr_hex}: OUT OF SCOPE (loop or switch) — passthrough")
+        return
+    dream = dream_structure(lines, instrs)
+    ok, nr, ns = vm_cfg.structured_equivalent(lines, dream, leaders)
+    print(f"=== DREAM structured C — bank {bank} @ ${sub_addr_hex}  [gate: {'PASS' if ok else 'REJECT'}] ===")
+    for a, ind, t in dream:
+        print(f"  {('$%04X'%a) if a else '     '}  {'  '*ind}{t}")
+    print(f"  gotos: raw {_gotos(lines)} -> dream {_gotos(dream)}")
+
+
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        sys.exit("usage: dream.py <bank> <sub_addr_hex>")
-    _dump(int(sys.argv[1]), sys.argv[2])
+    if len(sys.argv) >= 2 and sys.argv[1] == "--check":
+        _check(int(sys.argv[2]), verbose="-v" in sys.argv)
+    elif len(sys.argv) >= 2 and sys.argv[1] == "--emit":
+        _emit_one(int(sys.argv[2]), sys.argv[3])
+    elif len(sys.argv) == 3:
+        _dump(int(sys.argv[1]), sys.argv[2])
+    else:
+        sys.exit("usage: dream.py <bank> <addr> | --emit <bank> <addr> | --check <bank> [-v]")

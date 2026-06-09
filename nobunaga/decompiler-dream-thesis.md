@@ -77,9 +77,36 @@ Each rung lands gate-green + measured on the corpus (the same discipline as V2's
 5. **Stronger simplifier** — keep growing condition formulas readable. Where DREAM wins or loses on readability vs V2.
 6. **Bake-off + cutover decision** — full-corpus V2 vs DREAM, gate-green, goto-count + spot-read readability → decide displace / parallel / seed-back.
 
+## Spike A vs B — the decision (2026-06-08)
+
+Chris's call was "spike both, then decide." Built **Spike A** (address-constrained emit) fully and probed **Spike B**'s (forward-reorder gate) necessity. Result:
+
+**Spike A WORKS and carries rung 1.** Across all 4 code banks, condition-based refinement → nested if/else, emitted address-constrained, validated through the *unchanged* gate:
+
+| bank | eligible (acyclic, no switch) | validated gate-green | rejected | gotos over validated |
+|---|---|---|---|---|
+| 15 | 94 | 87 | 7 | 43 → **0** |
+| 0 | 52 | 43 | 9 | 32 → **0** |
+| 1 | 98 | 54 | 44 | 46 → **0** |
+| 2 | 66 | 52 | 14 | 39 → **0** |
+| **tot** | **310** | **236 (76%)** | **74** | **160 → 0** |
+
+**Every validated sub is FULLY goto-free**, and spot-reads as game logic (`$CA36` → `if (x < 0) { x = 0; }`, a clamp). One emitter refinement (the empty-then FLIP: a guard idiom `if(c) goto body; merge` emits as `if(c){body}` not `if(!c){}else{body}`) lifted the validated count by ~40 across banks and improved readability.
+
+**Spike B is NOT yet justified by evidence.** I emitted every reject class I could find (bank 15 `$CE86`/`$CF9D`, bank 1 `$8008`/`$82DB`) looking for a reject that genuinely *needs* forward code motion the address-gate forbids — **found none.** The 74 rejects are dominated by EMITTER/SIMPLIFIER bugs, all fixable WITHIN address-constrained Spike A:
+  1. **Arm-order** (`$8008`): the goto-target block sits at a *lower* address than the fall block, so "then = fall side" inverts the gate's address order → flip arms when `else_min_addr < then_min_addr`.
+  2. **Empty-arm pruning** (`$82DB`): a both-empty nested `if(!c){}else{}` isn't dropped because the emptiness test is on the AST list, not the emitted output.
+  3. **Weak boolean simplifier**: merge guards like `(!c2&&!c1)||(!c1&&c2)` should reduce to `!c1` (consensus/distribution `_and`/`_or` don't do yet) — this is rung 5, surfacing early.
+  4. **Merge-after-early-return** (`$CE86`): when one arm `return`s, the continuation's reaching condition is non-trivial (`!c1`) but should hoist to unconditional; pure-cr over-guards it.
+
+**RECOMMENDATION: pursue Spike A as rung 1 proper; PARK Spike B** until a reject is found that genuinely requires forward code motion (none yet). The address-anchored gate is not the wall for rung 1 — the emitter/simplifier is. If/when the paper's semantics-preserving REORDERING transforms (rung 4) hit the wall, revisit the forward-`lex_fall` gate change then, with a concrete failing case to justify it.
+
 ## Build log
 
 *(one entry per session; newest first)*
 
+- **2026-06-08 — SPIKE A built + measured, SPIKE B probed (see the decision section above).** `tools/dream.py` gained: `eligible`/`_has_backedge` (acyclic+no-switch scope), `refine` (condition-based factoring by the lowest-address branch predicate), `_emit_ast` (address-constrained if/else, then=fall-side, empty-then flip), `dream_structure` (top-level, passthrough out of scope), and a `--check <bank>` / `--emit <bank> <addr>` harness. 236/310 eligible subs validate fully goto-free; rejects are emitter/simplifier bugs, not the gate. dream.py is a standalone fork tool — NOT wired into `decompile()`, so the default `decompiled/*.c` is untouched. **Next (rung 1 cont.): arm-order flip → empty-arm pruning (post-emit) → consensus simplifier → early-return merge hoist; re-measure each.**
+
 - **2026-06-07 — PoC foundation committed (`a5f311e`).** Boolean layer + `tagged_cfg` + `reaching_conditions` + capture harness, both verified against ground truth. No structured C yet.
+- **2026-06-08 — ⚠ GATE CONSTRAINT FOUND (shapes the whole approach).** Read `vm_cfg.lower_struct_cfg` + `structured_equivalent` (the gate DREAM must pass). **The gate is ADDRESS-ANCHORED:** it lowers the structured C to a CFG by *address*, not by parsing the condition. For `if(C){then}` the then-arm is forced to `next_leader(header)` (the address-NEXT block); merge/else resolve by address-after-span. `C` is cosmetic (orientation is checked separately against the raw witness). The ONLY reorder escape hatches are a BACKWARD label-anchored fall (`lex_fall`, fires only when a label's addr `< prev`) and SYNTHETIC duplicate addresses (`_SYNTH_BASE`). **Implication:** DREAM's reaching-condition refinement reorders freely by boolean grouping, and the paper's headline power — semantics-preserving transforms that REORDER/DUPLICATE to go fully goto-free — is exactly what a forward-address-anchored gate rejects. This is the same "address-ordered emitter" wall the V2 epic documented. So rung 1 forks: **(A)** address-constrained emit (then=fall-through; prove the pipeline, DREAM converges toward V2's behaviour, reorder power deferred); or **(B)** first generalize the gate's `lex_fall` to FORWARD label-anchored reorders so DREAM can emit its natural goto-free form and validate (the V2 epic's flagged-but-untried "reorder-invariant gate"; DREAM is the forcing function). **DECISION PENDING with Chris.**
 - **2026-06-08 — baseline re-run on `char_classify` ($CDCF, bank 15) + the rung-1 insight.** The dump confirms the foundation works AND surfaces the design key for rung 1: the per-node `cr` formulas LOOK exploded (`$CE11` is a screenful) but every one is built from the **same shared subexpressions** — `cr($CDF4)` appears verbatim inside `cr($CDE6)`, `cr($CDFD)`, `cr($CE11)`, … . So the "blowup" is redundancy, and **factoring shared `cr(pred)` terms back out IS the nesting recovery** (`$CDF4` becomes one `if`, its dependants nest inside). Refinement (rung 1) and the simplifier (rung 5) are the same lever attacked from two ends: don't re-expand a predecessor's condition, REFERENCE it. **Next: rung 1 — condition-based refinement → nested if/else, diffed against V2 through the gate.**
