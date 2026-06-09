@@ -101,11 +101,58 @@ def _or(*args):
             return TRUE
         s.add(t)
     s = {t for t in s if not any(o != t and o[0] == 'and' and t in o[1] for o in s)}
+    s = _consensus(s)
     if not s:
         return FALSE
     if len(s) == 1:
         return next(iter(s))
     return ('or', frozenset(s))
+
+
+def _terms(e):
+    """The conjunct set of `e` as an AND (a bare literal/expr is a 1-element conjunction)."""
+    return set(e[1]) if e[0] == 'and' else {e}
+
+
+def _consensus(s):
+    """Reduce a disjunction term-set toward a normal form, to fixpoint:
+      (X∧a) ∨ (X∧¬a)  ->  X        [consensus: the two and-terms differ in one polarity]
+      a     ∨ (¬a∧X)  ->  a ∨ X    [a absorbs the ¬a in the other term]
+    Without this, reaching conditions of merge blocks (reached from both arms of a branch)
+    stay as bloated ORs like `(!c1&&!c2)||(!c1&&c2)` instead of collapsing to `!c1`."""
+    s = set(s)
+    changed = True
+    while changed:
+        changed = False
+        items = list(s)
+        for i in range(len(items)):
+            for j in range(i + 1, len(items)):
+                a, b = items[i], items[j]
+                ta, tb = _terms(a), _terms(b)
+                # consensus: identical but for one complementary literal
+                diff = ta ^ tb
+                if len(diff) == 2:
+                    d = list(diff)
+                    if d[0] == neg(d[1]) and (ta & tb):
+                        merged = _and(*(ta & tb))
+                        s.discard(a)
+                        s.discard(b)
+                        s.add(merged)
+                        changed = True
+                        break
+                # absorption of a complementary literal: a ∨ (¬a ∧ X) -> a ∨ X
+                for lit_t, other in ((a, b), (b, a)):
+                    if lit_t[0] == 'lit' and other[0] == 'and' and neg(lit_t) in other[1]:
+                        reduced = _and(*(set(other[1]) - {neg(lit_t)}))
+                        s.discard(other)
+                        s.add(reduced)
+                        changed = True
+                        break
+                if changed:
+                    break
+            if changed:
+                break
+    return s
 
 
 def to_c(e):
@@ -288,7 +335,7 @@ def refine(tc, items):
     cpiv = dict((L, c) for c, L in items)[Lpiv]
     head = ('block', Lpiv, tc['info'][Lpiv][0])
     head_emit = head if cpiv == TRUE else ('guard', cpiv, head)
-    then_i, else_i, rest_i = [], [], []               # then = fall side, else = goto side
+    fall_i, goto_i, rest_i = [], [], []               # fall side (!piv) / goto side (piv) / merge
     for c, L in items:
         if L == Lpiv:
             continue
@@ -296,14 +343,25 @@ def refine(tc, items):
         if f is None:
             rest_i.append((c, L))
         elif f[0] == 'pos':                           # piv(goto-cond) TRUE -> goto arm
-            else_i.append((f[1], L))
+            goto_i.append((f[1], L))
         else:                                         # !piv -> fall arm
-            then_i.append((f[1], L))
-    node = ('if', Lpiv, piv, refine(tc, then_i), refine(tc, else_i))
+            fall_i.append((f[1], L))
+    goto_target = tc['info'][Lpiv][3]
+    t_succ = tc['block_of'](goto_target) if goto_target is not None else None
+    f_succ = next((s for s in tc['cfg'][Lpiv] if s != vm_cfg.EXIT and s != t_succ), vm_cfg.EXIT)
+    node = ('if', Lpiv, piv, f_succ, t_succ, refine(tc, fall_i), refine(tc, goto_i))
     return [head_emit, node] + refine(tc, rest_i)
 
 
-def _emit_ast(ast, indent, out):
+def _emits(seq, nxt):
+    """Does this AST seq produce any emitted line? (post-emit emptiness, not list-empty —
+    a seq can hold a both-empty nested `if` that yields nothing.)"""
+    probe = []
+    _emit_ast(seq, 0, probe, nxt)
+    return bool(probe)
+
+
+def _emit_ast(ast, indent, out, nxt):
     for node in ast:
         k = node[0]
         if k == 'block':
@@ -313,25 +371,26 @@ def _emit_ast(ast, indent, out):
             _, cond, payload = node
             baddr = payload[1] if payload[0] == 'block' else 0
             out.append((baddr, indent, f"if ({to_c(cond)}) {{"))
-            _emit_ast([payload], indent + 1, out)
+            _emit_ast([payload], indent + 1, out, nxt)
             out.append((0, indent, "}"))
         else:  # 'if'
-            _, Lpiv, piv, then_seq, else_seq = node
-            if not then_seq and not else_seq:
-                continue                              # pure branch, no bodies — nothing to guard
-            if not then_seq:
-                # empty then (a guard idiom `if(c) goto body; merge`) -> FLIP so the goto-side
-                # body is the then-arm. Reads better AND the body block is the address-next
-                # leader the gate expects, where the empty-then form mis-routed.
+            _, Lpiv, piv, f_succ, t_succ, fall_seq, goto_seq = node
+            fall_has, goto_has = _emits(fall_seq, nxt), _emits(goto_seq, nxt)
+            if not fall_has and not goto_has:
+                continue                              # empty diamond — nothing to guard
+            if not fall_has:
+                # empty fall arm (a guard idiom `if(c) goto body; merge`) -> FLIP so the
+                # goto-side body is the then-arm: reads better and the body block is the
+                # address-next leader the gate expects, where empty-then mis-routed.
                 out.append((Lpiv, indent, f"if ({to_c(piv)}) {{"))
-                _emit_ast(else_seq, indent + 1, out)
+                _emit_ast(goto_seq, indent + 1, out, nxt)
                 out.append((0, indent, "}"))
             else:
                 out.append((Lpiv, indent, f"if ({to_c(neg(piv))}) {{"))   # then = fall side
-                _emit_ast(then_seq, indent + 1, out)
-                if else_seq:
+                _emit_ast(fall_seq, indent + 1, out, nxt)
+                if goto_has:
                     out.append((0, indent, "} else {"))
-                    _emit_ast(else_seq, indent + 1, out)
+                    _emit_ast(goto_seq, indent + 1, out, nxt)
                 out.append((0, indent, "}"))
 
 
@@ -347,8 +406,10 @@ def dream_structure(lines, instructions):
         return list(lines)
     cr = reaching_conditions(tc, header)
     items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
+    real = [L for L in leaders if L != vm_cfg.EXIT]   # next_leader by address (gate's then-arm rule)
+    nxt = {real[i]: (real[i + 1] if i + 1 < len(real) else vm_cfg.EXIT) for i in range(len(real))}
     out = []
-    _emit_ast(refine(tc, items), 0, out)
+    _emit_ast(refine(tc, items), 0, out, nxt)
     return out
 
 
