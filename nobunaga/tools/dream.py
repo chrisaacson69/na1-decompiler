@@ -321,10 +321,13 @@ def refine(tc, items):
         lt = _lit_of(tc, L)
         if lt is None:
             continue
-        p = ('lit', lt[1], True)                      # normalize to positive polarity
+        # PIVOT = the block's actual goto-cond literal, WITH its real polarity. Normalizing to
+        # positive swaps the pos/neg factoring vs the edge tags when rawcond is `!(...)`, so the
+        # goto-side nodes land in the fall arm (the emit flip compensated, but the AST gate's
+        # orientation check — read from rawcond — exposed it). With the real literal, pos==goto.
         rest = [x for x in items if x[1] != L]
-        if any(_factor(cc, p) for cc, _ in rest):
-            piv, Lpiv = p, L
+        if any(_factor(cc, lt) for cc, _ in rest):
+            piv, Lpiv = lt, L
             break
     if piv is None:                                   # no factorable branch: guard the residue
         out = []
@@ -332,12 +335,20 @@ def refine(tc, items):
             payload = ('block', L, tc['info'][L][0])
             out.append(payload if c == TRUE else ('guard', c, payload))
         return out
+    # PRE-PIVOT TRUNK: every block at a LOWER address than the pivot is on the linear entry
+    # chain before the first branch (Lpiv is the lowest-address branch, so nothing below it
+    # branches → all are unconditional `cr==TRUE` trunk). Emit them in address order BEFORE the
+    # if. (Previously they fell into `rest` and were emitted AFTER the branch — the address-based
+    # gate masked the misplacement via addresses; the reorder-tolerant AST gate exposed it.)
+    pre = sorted((x for x in items if x[1] < Lpiv), key=lambda x: x[1])
+    pre_set = {L for _c, L in pre}
+    pre_nodes = [('block', L, tc['info'][L][0]) for _c, L in pre]
     cpiv = dict((L, c) for c, L in items)[Lpiv]
     head = ('block', Lpiv, tc['info'][Lpiv][0])
     head_emit = head if cpiv == TRUE else ('guard', cpiv, head)
     fall_i, goto_i, rest_i = [], [], []               # fall side (!piv) / goto side (piv) / merge
     for c, L in items:
-        if L == Lpiv:
+        if L == Lpiv or L in pre_set:
             continue
         f = _factor(c, piv)
         if f is None:
@@ -350,7 +361,7 @@ def refine(tc, items):
     t_succ = tc['block_of'](goto_target) if goto_target is not None else None
     f_succ = next((s for s in tc['cfg'][Lpiv] if s != vm_cfg.EXIT and s != t_succ), vm_cfg.EXIT)
     node = ('if', Lpiv, piv, f_succ, t_succ, refine(tc, fall_i), refine(tc, goto_i))
-    return [head_emit, node] + refine(tc, rest_i)
+    return pre_nodes + [head_emit, node] + refine(tc, rest_i)
 
 
 def _emits(seq, nxt):
@@ -405,23 +416,106 @@ def _emit_ast(ast, indent, out, nxt):
             out.append((0, indent, "}"))
 
 
+def dream_ast(lines, instructions):
+    """Build the refinement AST (+ tc + the address next_leader map) for an eligible sub,
+    or None when out of scope (loop/switch). Shared by the emitter and the AST-native gate."""
+    tc = tagged_cfg(lines, instructions)
+    leaders = tc['leaders']
+    if not leaders or not eligible(tc, leaders[0]):
+        return None
+    cr = reaching_conditions(tc, leaders[0])
+    items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
+    real = [L for L in leaders if L != vm_cfg.EXIT]
+    nxt = {real[i]: (real[i + 1] if i + 1 < len(real) else vm_cfg.EXIT) for i in range(len(real))}
+    return refine(tc, items), tc, nxt
+
+
 def dream_structure(lines, instructions):
     """Top-level rung-1 structurer (Spike A). Returns address-constrained structured lines,
     or the input unchanged when out of scope (loop/switch)."""
-    tc = tagged_cfg(lines, instructions)
-    leaders = tc['leaders']
-    if not leaders:
+    built = dream_ast(lines, instructions)
+    if built is None:
         return list(lines)
-    header = leaders[0]
-    if not eligible(tc, header):
-        return list(lines)
-    cr = reaching_conditions(tc, header)
-    items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
-    real = [L for L in leaders if L != vm_cfg.EXIT]   # next_leader by address (gate's then-arm rule)
-    nxt = {real[i]: (real[i + 1] if i + 1 < len(real) else vm_cfg.EXIT) for i in range(len(real))}
+    ast, _tc, nxt = built
     out = []
-    _emit_ast(refine(tc, items), 0, out, nxt)
+    _emit_ast(ast, 0, out, nxt)
     return out
+
+
+def _ast_cfg(ast, tc):
+    """Build the structured CFG DIRECTLY from the DREAM AST — identity = the real block each
+    node owns, edges = the tree's nesting (an `if`'s two arms; a block's lexical continuation).
+    This is the AST-native gate's core: because the tree KNOWS each block's identity, there is
+    no text to parse and no address to honour, so flushed-call reordering and address-inverted
+    merges are irrelevant by construction (the wall V2 hit, and the flush-fragility of the
+    synth-renumber first cut, both vanish). Returns (edges, orient, entry), or None if the AST
+    contains a node that can't be placed in a block-CFG."""
+    EXIT = vm_cfg.EXIT
+    edges, orient = {}, {}
+
+    def build(seq, fall):
+        cont = fall
+        for node in reversed(seq):
+            cont = build_node(node, cont)
+        return cont
+
+    def build_node(node, cont):
+        k = node[0]
+        if k == 'block':
+            L = node[1]
+            if L not in edges:                        # a branch head's `if` node already set it
+                rs = tc['cfg'][L]
+                edges[L] = frozenset({EXIT}) if EXIT in rs else frozenset({cont})
+            return L
+        if k == 'guard':
+            # `if(cr){block}` where cr is a residual reaching condition. CFG-TRANSPARENT: the
+            # real branching that reaches `block` is the upstream `if` nodes (their empty goto
+            # arms route here via `cont`); the guard cond is emit-only and correct-by-
+            # construction (it IS the reaching condition). So process the payload as a block.
+            return build_node(node[2], cont)
+        # 'if'
+        _, Lpiv, piv, _f, _t, fall_seq, goto_seq = node
+        entry_fall = build(fall_seq, cont)
+        entry_goto = build(goto_seq, cont)
+        edges[Lpiv] = frozenset({entry_fall, entry_goto})
+        vm_cfg._record_orient(orient, Lpiv, tc['info'][Lpiv][1], entry_goto, entry_fall)
+        return Lpiv
+
+    entry = build(ast, EXIT)
+    return edges, orient, entry
+
+
+def dream_equivalent_ast(raw_lines, ast, tc, leaders):
+    """AST-native reorder-tolerant gate: lower the DREAM AST to a CFG via `_ast_cfg` (identity
+    from the tree, NOT from emitted text), then compare to the raw witness exactly as
+    `structured_equivalent` does (contract + TRUE/FALSE orientation). No renumbering, no text
+    re-parse → immune to flush + address inversion. Sound for the same reason as the synth
+    version: DREAM carries each block verbatim, so CFG-match + orientation ⇒ behaviour-match."""
+    EXIT = vm_cfg.EXIT
+    real = [L for L in leaders if L != EXIT]
+    if not real:
+        return True
+    built = _ast_cfg(ast, tc)
+    if built is None:
+        return False
+    cfg_str, or_str, _entry = built
+    or_raw = {}
+    cfg_raw = vm_cfg.lower_goto_cfg(raw_lines, real, orient=or_raw)
+    obs = vm_cfg.observable_blocks(raw_lines, real)
+    entry = real[0]
+    pred_n = {}
+    for _u, ss in cfg_raw.items():
+        for s in ss:
+            pred_n[s] = pred_n.get(s, 0) + 1
+    crossjump = frozenset(T for T, ss in cfg_raw.items()
+                          if ss == frozenset({EXIT}) and pred_n.get(T, 0) >= 2)
+    n_raw = vm_cfg.contract(cfg_raw, obs, entry, orient=or_raw, crossjump=crossjump)
+    n_str = vm_cfg.contract(cfg_str, obs, entry, orient=or_str, crossjump=crossjump)
+    if n_raw != n_str:
+        return False
+    fo_raw = {L: tf for L, tf in or_raw.items() if tf[0] != tf[1]}
+    fo_str = {L: tf for L, tf in or_str.items() if tf[0] != tf[1]}
+    return fo_raw == fo_str
 
 
 # --------------------------------------------------------------------------- #
@@ -604,10 +698,11 @@ def _check(bank, verbose=False):
             continue
         elig += 1
         dream = dream_structure(raw, instrs)
+        ast = dream_ast(raw, instrs)[0]
         try:
-            ok = vm_cfg.structured_equivalent(raw, dream, leaders)[0]
+            ok = dream_equivalent_ast(raw, ast, tc, leaders)   # the AST-native reorder-tolerant gate
         except Exception:
-            ok = False                                # malformed emit the gate can't lower = reject
+            ok = False                                # malformed AST the gate can't lower = reject
         if ok:
             folded += 1
             gr, gd = _gotos(raw), _gotos(dream)
@@ -686,8 +781,52 @@ def _check2(bank):
     return old_ok, new_ok
 
 
+def _check3(bank, verbose=False):
+    """Measure the AST-NATIVE gate (`dream_equivalent_ast`) vs the OLD address-anchored gate
+    over a bank's eligible subs. Reports validated counts, the reorder wins (newly passing),
+    and any REGRESSION (old-pass / new-fail — should be empty if the AST gate is sound)."""
+    import vm_cfg
+    grab = _capture_all(bank)
+    old_ok = new_ok = elig = guard = 0
+    newly, regress = [], []
+    for a0, (raw, instrs) in sorted(grab.items(), key=lambda x: (x[0] is None, x[0])):
+        if not instrs:
+            continue
+        built = dream_ast(raw, instrs)
+        if built is None:
+            continue
+        ast, tc, nxt = built
+        leaders = tc['leaders']
+        elig += 1
+        out = []
+        _emit_ast(ast, 0, out, nxt)
+        try:
+            o = vm_cfg.structured_equivalent(raw, out, leaders)[0]
+        except Exception:
+            o = False
+        try:
+            nw = dream_equivalent_ast(raw, ast, tc, leaders)
+        except Exception:
+            nw = False
+        if _ast_cfg(ast, tc) is None:
+            guard += 1
+        old_ok += o
+        new_ok += nw
+        if nw and not o:
+            newly.append(a0)
+        if o and not nw:
+            regress.append(a0)
+    print(f"=== bank {bank}: eligible {elig} | OLD {old_ok} | AST-native {new_ok} | guard-bail {guard} ===")
+    print(f"  reorder wins (new pass, old fail): {len(newly)}  " + ' '.join('$%X' % a for a in newly[:40]))
+    if regress:
+        print(f"  ⚠ REGRESSIONS (old pass, new fail): {len(regress)}  " + ' '.join('$%X' % a for a in regress[:40]))
+    return old_ok, new_ok, len(regress)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) >= 2 and sys.argv[1] == "--check2":
+    if len(sys.argv) >= 2 and sys.argv[1] == "--check3":
+        _check3(int(sys.argv[2]), verbose="-v" in sys.argv)
+    elif len(sys.argv) >= 2 and sys.argv[1] == "--check2":
         _check2(int(sys.argv[2]))
     elif len(sys.argv) >= 2 and sys.argv[1] == "--check":
         _check(int(sys.argv[2]), verbose="-v" in sys.argv)
