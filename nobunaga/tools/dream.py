@@ -44,6 +44,27 @@ def lit(cond_text):
     return ('lit', s, pol)
 
 
+# A branch predicate that READS MUTABLE STATE — a function CALL or a memory DEREFERENCE (`*`) — is
+# IMPURE: two textually-identical occurrences at different branch blocks are two DISTINCT evaluations
+# with independent truth values, so they must be DIFFERENT literals. Else the reaching-condition
+# algebra entangles them: asserting branch A's predicate true makes branch B's identical-text
+# false-arm contradictory, dropping a real edge — `prompt_yes_no()` at `$AAD3`+`$AB04` (`$AAAC`),
+# `test_6f65_bit7(...)` at `$A858`+`$A8A6` (`$A852`), `*(byte*)(local9+0x6DA2)` at `$9855`+`$9937`
+# (`$9855`). We append a per-block sentinel to the literal's base; `to_c` strips it so the emitted
+# condition stays clean. (Bare scalar predicates — `cur_combat_unit_slot`, `(local10 <= 0)`, `arg1`
+# — keep shared identity: uniquifying them would needlessly de-factor clean structure.)
+_DISAMBIG = '\x1f'
+_IMPURE_RE = re.compile(r'[A-Za-z_]\w*\(|\*')        # a call `name(` or a pointer deref `*`
+
+
+def _branch_lit(rawcond, block_addr):
+    """`lit(rawcond)` but an IMPURE predicate (call or memory deref) is made unique to its block."""
+    e = lit(rawcond)
+    if e[0] == 'lit' and _IMPURE_RE.search(e[1]):
+        return ('lit', '%s%s%X' % (e[1], _DISAMBIG, block_addr), e[2])
+    return e
+
+
 def neg(e):
     k = e[0]
     if k == 'T':
@@ -163,7 +184,8 @@ def to_c(e):
     if k == 'F':
         return '0'
     if k == 'lit':
-        return e[1] if e[2] else '!(%s)' % e[1]
+        base = e[1].split(_DISAMBIG, 1)[0]             # strip the impure-call disambiguator
+        return base if e[2] else '!(%s)' % base
     inner = sorted(to_c(x) for x in e[1])
     op = ' && ' if k == 'and' else ' || '
     return '(' + op.join(inner) + ')'
@@ -197,7 +219,7 @@ def tagged_cfg(lines, instructions):
                 tag[(L, t_succ)] = TRUE
             else:
                 kind[L] = '2way'
-                c = lit(rawcond)
+                c = _branch_lit(rawcond, L)
                 tag[(L, t_succ)] = c
                 tag[(L, f_succ)] = neg(c)
         else:
@@ -246,18 +268,19 @@ def _reconvergences(cfg, header, rpo):
     success-exit) drive every strict post-dominator to EXIT (e.g. `$9A62`: all 18 pivots → EXIT,
     nothing extracted, tail duplicated 34x). The reconvergence `m` of branch `Lpiv` is the lowest-rpo
     node reached by BOTH arms such that EVERY path from Lpiv either reaches `m` or first hits a
-    DEDICATED EARLY-RETURN SINK (succ=={EXIT}, in-degree 1) before `m` — i.e. `m` post-dominates
-    Lpiv once guard-style early returns are exempted. (Plain `reachable-from-both` is WRONG: it can
-    pick an arm-internal node a sibling path bypasses — `$9A1B`'s `$9A2D` — dropping that branch.)"""
+    RETURN SINK positioned BEFORE `m` (rpo < rpo(m)) — i.e. `m` post-dominates Lpiv once early
+    returns that terminate ahead of it are exempted. The rpo test is the right discriminator: a
+    sink that returns BEFORE m's position is a guard-style early-out (exempt); a sink AT-OR-PAST m
+    means a path overtook m, so m isn't the reconvergence. (Plain `reachable-from-both` is WRONG —
+    it picks an arm-internal node a sibling path bypasses, `$9A1B`'s `$9A2D`, dropping that branch;
+    an in-degree heuristic is WRONG too — `$AAAC`'s `return 0` early-out has in-degree 2 yet must be
+    exempt so the dominant `return 1` exit `$AB35` can be the continuation.)"""
     EXIT = vm_cfg.EXIT
     reach = _reachable(cfg, header)
-    indeg = {}
-    for u in cfg:
-        for v in cfg[u]:
-            indeg[v] = indeg.get(v, 0) + 1
 
     def valid(Lpiv, m, succs):
         """True iff `m` post-dominates Lpiv modulo exempt early returns (see docstring)."""
+        rm = rpo.get(m, 1 << 30)
         stack, seen = list(succs), set()
         while stack:
             n = stack.pop()
@@ -266,9 +289,9 @@ def _reconvergences(cfg, header, rpo):
             seen.add(n)
             outs = cfg.get(n, ())
             if tuple(outs) == (EXIT,):                 # a return sink reached before m
-                if indeg.get(n, 0) <= 1:
-                    continue                           # dedicated early return — exempt
-                return False                           # a shared merge-exit bypassing m
+                if rpo.get(n, 1 << 30) < rm:
+                    continue                           # terminated BEFORE m's position — exempt
+                return False                           # overtook m → m isn't the reconvergence
             for t in outs:
                 if t == m:
                     continue                           # this path reaches m — good
@@ -358,7 +381,7 @@ def _lit_of(tc, L):
     if tc['kind'].get(L) != '2way':
         return None
     rawcond = tc['info'][L][1]
-    return lit(rawcond) if rawcond is not None else None
+    return _branch_lit(rawcond, L) if rawcond is not None else None
 
 
 def _factor(cond, piv):
