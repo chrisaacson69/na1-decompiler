@@ -113,9 +113,34 @@ The address-ordered emitter wall is **the exact local optimum V2 could never cli
 
 **Looming concern beyond the wall — logical vs structural equivalence.** The current gate proves *structural* (CFG-isomorphism) equivalence. DREAM's semantics-preserving transforms can produce code that is *logically* equivalent but NOT CFG-isomorphic to the witness (a refactored condition, a hoisted/duplicated block, a `&&`-merged guard). A structural gate will reject those even when they're correct. So the equivalence oracle itself may need to climb from structural to logical (e.g. SAT/BDD equivalence on the reaching-condition formulas, which DREAM already has in algebraic form) — a known future concern to design for, not yet hit.
 
+## Worked example — `$D2A2` (why it's hard; what the verification layer must check)
+
+Hand-decompiled from bytecode (2026-06-08). Faithful C:
+```c
+ui_timer_gate_flag = arg1 ? (arg1 - 1) : 2;        // value-diamond, store at low-addr $D2AC
+if (arg1 == 0) {
+    syscall_dispatch(12, 3, 0, 248, 248, 0, 2);
+    return syscall_dispatch(2, 19);                // return = SYSCALL result here
+}
+int a,b,c,d;
+if (arg1 == 1) { a=2; b=0; c=248; d=248; }
+else /*>=2*/   { a=ui_timer_gate_flag; b=0; c=(ui_cursor_row<<3)-1; d=(ui_window_col<<3); }
+syscall_dispatch(12, a, b, c, d, 0, 3);            // STACK-PHI join at $D2EC
+frame_counter = 200;
+return 200;
+```
+It has **three value-merge points**, only one of which is a control join:
+1. **Value-diamond `$D2AC`** — the two arms set the L register, the store merges them; the store sits at a LOWER address than its arms. DREAM dropped the `arg1-1` arm and emitted a bare `ui_timer_gate_flag = 2` at the bottom. Needs the **value-diamond pre-contraction** (as V2 does at the expression layer) BEFORE structuring.
+2. **Stack-phi `$D2EC`** — the `==1` and `>=2` arms push DIFFERENT call arguments, then share one `CALL`. No goto-free C without temporaries; DREAM dropped the `==1` sub-case.
+3. **Return-phi `$D2F8`** — `RETURN` returns L = the syscall result on `arg1==0`, but `200` otherwise.
+
+**Consequence for the new verification layer:** a structural CFG-isomorphism gate CANNOT catch #2 and #3 — two structurings can share a CFG yet differ on which value reaches the call/return. So the verification can't be "AST→block-CFG, compare edges"; it must also check **value/stack identity at merges** (this is the logical-vs-structural-equivalence concern, made concrete). New assumptions (reorder-free, value-aware) ⇒ new verification.
+
 ## Build log
 
 *(one entry per session; newest first)*
+
+- **2026-06-08 — hand-decompiled `$D2A2` (Chris's ask): it's a triple value-merge (value-diamond + stack-phi + return-phi), not a simple inverted merge.** See the worked example above. Reframes the verification-layer build: structural CFG-equivalence is necessary but NOT sufficient (it misses stack/return phis); and `dream.py` needs value-diamond pre-contraction before structuring. NEXT: build the AST-native / pseudo-address verification layer WITH value-merge awareness.
 
 - **2026-06-08 (cont.) — QUICK EXPERIMENT (emit merge labels) FAILED; pseudo-address / AST-native gate is the radical path (Chris).** The gate's `merge_after` reads an if's merge lexically from a `L_M:` label after the `}` (else address fallback), so the cheap test was: have DREAM emit `L_D2AC:` before address-inverted merges. **Result: net −2 (274→272), `$D2A2` still rejected.** Two findings: (1) `$D2A2` is more complex than a pure inverted-merge (10 leaders; the emit collapses several), and (2) naive labels REGRESSED passing subs — the existing label machinery (`merge_after` if-merges only, `lex_fall` backward-only, `tail_redirect`) is fragile + special-cased, so a label fires those heuristics in ways that break correct subs. Reverted (back to 274). **That fragility is the evidence FOR Chris's radical idea: PSEUDO-ADDRESSES** (`$D2A2.0`, `$D2A2.1`, …) — a synthetic address whose *integer part is the real block it belongs to* (identity, for the CFG compare via `block_of`) and whose *suffix is a per-emit uniquifier* (so duplicated/reordered/inserted control gets a unique label and an explicit emit position). This **decouples identity from position**, which is the root fix: the address-anchored gate conflates "which block is this" with "where does it sit," and synthetic control has no native address for the latter. **Cleanest realization:** DREAM already HOLDS the structure tree, so rather than serialize-to-text-then-reparse (the address-anchored `lower_struct_cfg`), lower the AST DIRECTLY to a CFG (identity = real leader, edges = tree structure) and compare to the raw `lower_goto_cfg` via the existing `contract` + orientation check. **KNOWN SUBTLETY to design around (found while scoping it):** DREAM's `guard` nodes and disjunctive merge re-guards do NOT map to a single CFG branch block (their condition is a reaching-condition formula, not one block's predicate), so an AST→block-CFG comparison needs to model those as multi-predicate or contract them — this is the part to get right before trusting it as an oracle ([[feedback_foundation_discipline_early]]: a wrong verification primitive corrupts silently). **NEXT: green-light + build the AST-native (pseudo-address) gate as a DREAM-specific checker, leaving V2's shared gate untouched.**
 - **2026-06-08 (cont.) — REACHED THE WALL: the 36 remaining rejects characterized (resume point).** Sampled across banks; the leftover rejects are NO LONGER emitter bugs — they're the two genuine DREAM-frontier classes Chris predicted:
