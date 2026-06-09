@@ -234,6 +234,42 @@ def walk_sub(mem, body, end, labels):
     return instrs, pc, targets
 
 
+def emit_sub(out, stub, end, mem, labels):
+    """Append one subroutine's listing (header + walked instructions) to `out`.
+    Returns True if the walk MIS-ALIGNED (overran its bound, or stalled without an
+    unconditional terminator) — the built-in wrong-length detector."""
+    body = stub + 5
+    instrs, final_pc, targets = walk_sub(mem, body, end, labels)
+    fo = frame_off(mem, stub)
+    out.append("; " + "=" * 60)
+    out.append(f"; sub ${stub:04X}   (frame_off={fo:+d}, body @ ${body:04X})")
+    out.append("; " + "=" * 60)
+    for ins in instrs:
+        mark = ">" if ins["addr"] in targets else " "
+        byts = " ".join(f"{b:02X}" for b in ins["bytes"])
+        # keep raw-byte column short so it stays readable; truncate huge tables
+        if len(ins["bytes"]) > 12:
+            byts = " ".join(f"{b:02X}" for b in ins["bytes"][:12]) + " ..."
+        line = (f" {mark}${ins['addr']:04X}  {byts:<26} {ins['mnem']:<22} "
+                f"{ins['operand']:<26}")
+        if ins["comment"]:
+            line = line.rstrip() + f"   ; {ins['comment']}"
+        out.append(line.rstrip())
+    last_op = instrs[-1]["op"] if instrs else None
+    out.append("")
+    return final_pc > end or (final_pc < end and last_op not in UNCOND_TERMINATORS)
+
+
+def sub_at(stubs, base, size, addr):
+    """The stub whose span [body, next_stub) contains `addr` (accepts the stub addr, the
+    body addr, or any interior instruction address). Returns (stub, end) or (None, None)."""
+    bounds = stubs + [base + size]
+    for i, stub in enumerate(stubs):
+        if stub <= addr < bounds[i + 1]:
+            return stub, bounds[i + 1]
+    return None, None
+
+
 def render(bank, stubs, mem, labels, n_labels):
     base, size = bank_range(bank)
     out = []
@@ -250,28 +286,7 @@ def render(bank, stubs, mem, labels, n_labels):
     bounds = stubs + [base + size]
     misaligned = 0
     for i, stub in enumerate(stubs):
-        body = stub + 5
-        end = bounds[i + 1]
-        instrs, final_pc, targets = walk_sub(mem, body, end, labels)
-        fo = frame_off(mem, stub)
-        out.append("; " + "=" * 60)
-        out.append(f"; sub ${stub:04X}   (frame_off={fo:+d}, body @ ${body:04X})")
-        out.append("; " + "=" * 60)
-        for ins in instrs:
-            mark = ">" if ins["addr"] in targets else " "
-            byts = " ".join(f"{b:02X}" for b in ins["bytes"])
-            # keep raw-byte column short so it stays readable; truncate huge tables
-            if len(ins["bytes"]) > 12:
-                byts = " ".join(f"{b:02X}" for b in ins["bytes"][:12]) + " ..."
-            line = (f" {mark}${ins['addr']:04X}  {byts:<26} {ins['mnem']:<22} "
-                    f"{ins['operand']:<26}")
-            if ins["comment"]:
-                line = line.rstrip() + f"   ; {ins['comment']}"
-            out.append(line.rstrip())
-        last_op = instrs[-1]["op"] if instrs else None
-        if final_pc > end or (final_pc < end and last_op not in UNCOND_TERMINATORS):
-            misaligned += 1
-        out.append("")
+        misaligned += emit_sub(out, stub, bounds[i + 1], mem, labels)
     return "\n".join(out) + "\n", misaligned
 
 
@@ -307,6 +322,9 @@ def main():
     ap.add_argument("--stdout", action="store_true", help="print listing to stdout")
     ap.add_argument("--check", action="store_true",
                     help="run the exact-tiling correctness test and report")
+    ap.add_argument("--sub", type=lambda x: int(x, 16),
+                    help="dump ONLY the sub containing this hex address (fetch-at-will, "
+                         "from the ROM via the canonical decoder — never the stale *_vm.asm)")
     args = ap.parse_args()
 
     vm = NobunagaVM()
@@ -314,6 +332,17 @@ def main():
     mem, labels = vm.mem, {a: n for a, (n, _c) in vm.labels.items()}
     base, size = bank_range(args.bank)
     stubs = find_stubs(mem, base, size)
+
+    if args.sub is not None:
+        stub, end = sub_at(stubs, base, size, args.sub)
+        if stub is None:
+            sys.exit(f"no bytecode sub in bank {args.bank} contains ${args.sub:04X}")
+        out = []
+        bad = emit_sub(out, stub, end, mem, labels)
+        sys.stdout.write("\n".join(out) + "\n")
+        if bad:
+            sys.stderr.write(f"WARNING: sub ${stub:04X} did not tile exactly\n")
+        return
 
     if args.check:
         tiled, clean_early, bad = check_tiling(args.bank, stubs, mem)
