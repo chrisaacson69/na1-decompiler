@@ -317,12 +317,9 @@ word prompt_select_player_daimyo(word arg1) {
     map_helper_e5f2(((scenario_fief_count == 50) ? 2 : 0));    // $86A8
     ui_input_prompt_active_flag = 1;    // $86AD
     local11 = 2;    // $86B1
-L_86B2:
     do {    // $86B2
         display_prompt_message_b900(arg1);    // $86B3
-L_86F1:
         while ((number_input(1, scenario_fief_count) <= 0)) {    // $86F1
-L_86BA:
             ui_cursor_row = (ui_cursor_row - 1);    // $86BE
             if ((local10 != 1)) continue;    // $86C5
             if ((scenario_fief_count == 50)) {    // $86CE
@@ -330,15 +327,15 @@ L_86BA:
                 if (((unsigned)(local11 + 1) >= (unsigned)9)) {    // $86D6
                     local11 = 2;    // $86DA
                 }
+                phi_86ed = local11;    // $86DB
             } else {
-L_86DF:
                 local11 = (local11 + 1);    // $86E1
                 if (((unsigned)(local11 + 1) >= (unsigned)4)) {    // $86E4
                     local11 = 2;    // $86E8
                 }
+                phi_86ed = (local11 + -2);    // $86EC
             }
-L_86ED:
-            map_helper_e5f2((local11 + -2));    // $86ED
+            map_helper_e5f2(phi_86ed);    // $86ED
             local10 = number_input(1, scenario_fief_count);    // $86F9
         }
         local10 = (local10 - 1);    // $8701
@@ -354,38 +351,6 @@ L_86ED:
         }
 L_873E:
     } while ((local11 != 9));    // $873E
-    ui_input_prompt_active_flag = 0;    // $8745
-    province_ai_state[local10] = 5;    // $874F
-    selected_province_idx = local10;    // $8751
-    selected_province_idx_latch_7fdd = local10;    // $8755
-    *(byte*)((arg1 + 0x7FD4)) = ui_helper_d77e();    // $8761
-    return ui_helper_d77e();    // $8762
-    ui_cursor_row = (ui_cursor_row - 1);    // $86BE
-    if ((local10 != 1)) goto L_86F1;    // $86C5
-    if ((scenario_fief_count != 50)) goto L_86DF;    // $86CE
-    local11 = (local11 + 1);    // $86D3
-    if (!(((unsigned)(local11 + 1) >= (unsigned)9))) goto L_86DB;    // $86D6
-    local11 = 2;    // $86DA
-L_86DB:
-    goto L_86ED;    // $86DC
-    local11 = (local11 + 1);    // $86E1
-    if (!(((unsigned)(local11 + 1) >= (unsigned)4))) goto L_86E9;    // $86E4
-    local11 = 2;    // $86E8
-    map_helper_e5f2((local11 + -2));    // $86ED
-    local10 = number_input(1, scenario_fief_count);    // $86F9
-    if ((number_input(1, scenario_fief_count) <= 0)) goto L_86BA;    // $86FC
-    local10 = (local10 - 1);    // $8701
-    if ((*(byte*)(((local10 - 1) + 0x6CF7)) != 5)) {    // $8709
-        message_display(msg_is);    // $870F
-        redraw_window(((local10 * 9) + 0x77A8));    // $871B
-        ui_helper_d134(msg_of_fief_2d_ok, (local10 + 1));    // $8725
-        if (!(ui_helper_d3a7())) goto L_873E;    // $872C
-        local11 = 9;    // $8730
-    } else {
-        message_display(msg_that_daimyo_is_already_taken);    // $8737
-        confirm_prompt();    // $873B
-    }
-    if ((local11 != 9)) goto L_86B2;    // $8741
     ui_input_prompt_active_flag = 0;    // $8745
     province_ai_state[local10] = 5;    // $874F
     selected_province_idx = local10;    // $8751
@@ -1162,10 +1127,13 @@ word announce_provinces_by_ai_state_mode(word arg1) {
     case 2: goto L_94E9;    // $94B7
     default: goto L_94CE;    // $94B7
     }    // $94B7
+L_94C4:
+    phi_94c7 = msg_summer_this_year_brings_typhoo;    // $94C4
 L_94C7:
-    message_display(msg_summer_this_year_brings_typhoo);    // $94C7
+    message_display(phi_94c7);    // $94C7
     confirm_prompt();    // $94CB
 L_94E9:
+    phi_94c7 = msg_lord_plague_has_come;    // $94E9
     goto L_94C7;    // $94EC
 L_94CE:
     local11 = 0;    // $94CF

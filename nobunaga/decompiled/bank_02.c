@@ -855,6 +855,7 @@ L_8CCB:
             build_blit_fief_tile_block(12, 20);    // $8CDA
             goto L_8D38;    // $8CDE
 L_8CE1:
+            phi_8d0e = 0xB595;    // $8CE1
             goto L_8D0E;    // $8CE4
         case 65536:
         case 65537:
@@ -868,11 +869,12 @@ L_8CE1:
             local10 = (local10 + 2);    // $8D00
             goto L_8CC4;    // $8D08
 L_8D0B:
+            phi_8d0e = 0xB5A2;    // $8D0B
 L_8D0E:
         default:
         }
 L_8D12:
-        redraw_window(0xB5A2);    // $8D0E
+        redraw_window(phi_8d0e);    // $8D0E
         ui_cursor_row = (ui_cursor_row + 1);    // $8D16
     } while (((unsigned)ui_cursor_row < (unsigned)18));    // $8D1F
     if (!(arg1)) goto L_8CCB;    // $8D23
@@ -2677,10 +2679,12 @@ word combat_command_select_target_resolve_attack(void) {
     message_display(mem_B4F4);    // $AA0B
     char_advance_width(10);    // $AA10
     if (!((is_no_province_selected() || (ai_turn_planner_resume_flag == 1)))) goto L_AA32;    // $AA1F
+    phi_aa25 = mem_B1D4;    // $AA22
 L_AA25:
-    redraw_window(mem_B1D4);    // $AA25
+    redraw_window(phi_aa25);    // $AA25
     goto L_AA62;    // $AA29
 L_AA2C:
+    phi_aa25 = mem_B1B8;    // $AA2C
     goto L_AA25;    // $AA2F
 L_AA32:
     if (cur_combat_unit_slot) goto L_AA2C;    // $AA35
@@ -2690,14 +2694,16 @@ L_AA32:
     target_idx = (target_idx - 1);    // $AA4B
     enemy_side = (cur_combat_side ^ 1);    // $AA52
     if (test_unit_type_present_flag((cur_combat_side ^ 1), (target_idx - 1))) goto L_AA67;    // $AA58
+    phi_aa5e = mem_B1C2;    // $AA5B
 L_AA5E:
 L_AA62:
-    message_display(mem_B1C2);    // $AA5E
+    message_display(phi_aa5e);    // $AA5E
     ui_draw_window_d31a();    // $AA62
     return 1;    // $AA66
 L_AA67:
     local11 = (*(word*)(unit_record_ptr(cur_combat_side)) - *(word*)((unit_record_ptr(cur_combat_side) + 4)));    // $AA7B
     if (!((local11 <= 0))) goto L_AA88;    // $AA7F
+    phi_aa5e = mem_B1CC;    // $AA82
     goto L_AA5E;    // $AA85
 L_AA88:
     message_display(mem_B1C8);    // $AA8B
@@ -2893,13 +2899,15 @@ L_AD36:
 word display_morale_falling_message(void) {
     if (get_province_ai_state(battle_defending_province)) {    // $AD44
     message_display(display_morale_falling_m_data_ba2b);    // $AD4A
+    phi_ad58 = msg_our;    // $AD55
 L_AD58:
     draw_daimyo_name(battle_defending_province);    // $AD51
-    redraw_window(msg_our);    // $AD58
+    redraw_window(phi_ad58);    // $AD58
     redraw_window(msg_morale_is_falling);    // $AD5F
     return ui_draw_window_d31a();    // $AD66
 L_AD67:
     message_display(display_morale_falling_m_data_ba31);    // $AD6A
+    phi_ad58 = msg_enemy;    // $AD75
     draw_daimyo_name(selected_province_idx);    // $AD71
     goto L_AD58;    // $AD78
     }

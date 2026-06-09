@@ -809,6 +809,10 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     # fall-arm jump emit NO line; the bytecode CFG side contracts the same diamonds
     # (vm_cfg.bytecode_cfg) so the gate's `lower(raw) == bytecode_cfg` stays valid.
     import vm_cfg as _vmcfg
+    # Consuming-call STACK-PHI repair: each arm's phi-push -> the merge temp it materialises
+    # into (so the shared call pops a named temp instead of dropping all but the fall-through
+    # pred's push — the silent-message-drop bug). See vm_cfg.consuming_phis.
+    phi_push_temp = _vmcfg.consuming_phis(instructions)
     diamonds = _vmcfg.value_diamonds(instructions)
     dia_by_head = {d['head']: d for d in diamonds}
     dia_fall_jump = {d['fall_jump_addr'] for d in diamonds if d['fall_jump_addr'] is not None}
@@ -1217,6 +1221,20 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         # === Misc ===
         else:
             state.emit(f"// TODO: {mnem} {operand}".strip())
+
+        # === Consuming-call STACK-PHI materialisation (post-dispatch) ===
+        # This instruction just pushed a value that a multi-predecessor MERGE block's call
+        # consumes (a stack-phi the linear sweep otherwise drops all but one of). Materialise
+        # it into the merge's temp: emit `temp = <value>;` and leave the temp NAME on the
+        # stack, so the merge's call pops the temp (all arms write the SAME name -> the leak
+        # is harmless) and each arm's assignment carries its real value under its own control.
+        # Sound, no re-evaluation. Net stack Δ 0 (pop the value, push the name) -> the
+        # SELF_CHECK depth trace (recorded at the TOP of each instr) is unaffected.
+        if ins['addr'] in phi_push_temp and state.stack:
+            _phi_val = state.stack.pop()
+            _phi_tmp = phi_push_temp[ins['addr']]
+            state.emit(f"{_phi_tmp} = {_phi_val};")
+            state.stack.append(_phi_tmp)
 
     if SELF_CHECK:           # terminal marker: closes this sub's trace (Δ of its last op)
         _STACK_TRACE.append((None, len(state.stack)))

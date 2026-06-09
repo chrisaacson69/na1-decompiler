@@ -924,16 +924,20 @@ word draw_window_f6c4(void) {
 word redraw_window_f6c7(void) {
     switch (current_season) {    // $D68F
         case 0:
+            phi_d6a1 = 0xF6C7;    // $D69E
 L_D6A1:
             break;    // $D6A1
         case 1:
+            phi_d6a1 = 0xF6CE;    // $D6A6
             goto L_D6A1;    // $D6A9
         case 2:
+            phi_d6a1 = 0xF6D5;    // $D6AC
             goto L_D6A1;    // $D6AF
         case 3:
+            phi_d6a1 = 0xF6DA;    // $D6B2
             goto L_D6A1;    // $D6B5
     }
-    return redraw_window(0xF6C7);    // $D6A5
+    return redraw_window(phi_d6a1);    // $D6A5
 }
 
 // $D6B8 math32_3arg
@@ -1325,11 +1329,13 @@ word draw_owner_name(word arg1) {
 
 word draw_window_f706(word arg1) {
     if ((province_ai_state[arg1] != 255)) {    // $DB7D
-        return redraw_window(msg_no_lord);    // $DB80
+        phi_db92 = ((ui_helper_d772(arg1) * 9) + 0x77A8);    // $DB8B
+        return redraw_window(phi_db92);    // $DB80
     } else {
-        return redraw_window(msg_no_lord);    // $DB8F
+        phi_db92 = msg_no_lord;    // $DB8F
+        return redraw_window(phi_db92);    // $DB8F
     }
-    return redraw_window(msg_no_lord);    // $DB96
+    return redraw_window(phi_db92);    // $DB96
 }
 
 // $DB97 assign_unique_daimyo_face_code

@@ -416,106 +416,12 @@ def _emit_ast(ast, indent, out, nxt):
             out.append((0, indent, "}"))
 
 
-# --------------------------------------------------------------------------- #
-# RUNG 2 (value-aware) — CONSUMING-CALL STACK-PHI reconstruction.
-# The inherited front-end is a single LINEAR sweep over one shared data stack with no
-# phi reconciliation at control-flow merges. When a value pushed in one block is consumed
-# by a CALL in a merge block reached from several predecessors that each push a DIFFERENT
-# value (e.g. two arms each `push msg; …`, shared `redraw_window(msg)` at the join), the
-# call pops only the fall-through pred's push — the other preds' pushes LEAK and are
-# silently DROPPED (confirmed: `msg_storehouse_full` etc. never appear in any output).
-# A structural gate can't see this (two structurings share a CFG yet differ on the value
-# at the merge). DREAM already holds the per-block REACHING CONDITION, which is exactly
-# what selects the right value: arrive via pred p ⇒ cr(p) ⇒ p's pushed value. So rebuild
-# the dropped arg as `cr(kept) ? kept_val : other_val`. This is rung-1's `cr` engine doing
-# double duty (control + values); the real fix belongs in the front-end (where the stack is
-# live, so V1/V2 benefit too) — this DREAM cut proves the cr-based reconstruction first.
-# --------------------------------------------------------------------------- #
-def _block_instr_map(tc, instructions):
-    """leader -> the instructions owned by that block (largest leader <= addr)."""
-    ls = [L for L in tc['leaders'] if L != vm_cfg.EXIT]
-    byL = {}
-    for ins in instructions:
-        owner = max((L for L in ls if L <= ins['addr']), default=None)
-        byL.setdefault(owner, []).append(ins)
-    return byL
-
-
-def _pred_push_const(byL, p):
-    """The C token a predecessor block pushes as its LAST stack op before its terminator
-    (the call argument it contributes to a downstream consuming merge). Prototype scope:
-    a constant `push_imm_word` (the message-phi case). None for a non-constant/no push."""
-    import vm_stack_effect as vse
-    for ins in reversed(byL.get(p, [])):
-        e = vse.STACK_EFFECT.get(ins['bytes'][0])
-        d = (e.pushes - e.pops) if e else 0
-        if d > 0:
-            if ins['mnemonic'] == 'push_imm_word':
-                m = re.search(r'\(([A-Za-z_]\w*)\)', ins.get('operand', '') or '')
-                return m.group(1) if m else None
-            return None
-        if d < 0:
-            return None
-    return None
-
-
-def apply_consuming_phis(tc, cr, instructions):
-    """Repair values dropped at consuming-call stack-phi merges (see the section note).
-    For a merge M reached from exactly two preds that push DISTINCT constants, where the
-    front-end kept one in M's leading call, rebuild that arg as `cr(kept) ? kept : other`
-    so the dropped value reappears, conditioned on which path reached the merge. Mutates
-    tc['info'][M] in place. Returns the list of (M, rebuilt_text) repaired (for measure)."""
-    EXIT = vm_cfg.EXIT
-    cfg = tc['cfg']
-    preds = {}
-    for u in cfg:
-        for v in cfg[u]:
-            if v != EXIT:
-                preds.setdefault(v, []).append(u)
-    byL = _block_instr_map(tc, instructions)
-    repaired = []
-    for M, ps in preds.items():
-        ps = [p for p in ps if p != EXIT]
-        if len(ps) != 2:                                  # prototype: clean 2-pred phi
-            continue
-        vals = [(p, _pred_push_const(byL, p)) for p in ps]
-        vals = [(p, v) for p, v in vals if v]
-        if len(vals) != 2 or vals[0][1] == vals[1][1]:    # need two DISTINCT constants
-            continue
-        stmts = tc['info'][M][0]
-        if not stmts:
-            continue
-        addr0, text0 = stmts[0]
-        kept = next(((p, v) for p, v in vals if v in text0), None)
-        if kept is None:                                  # neither survived — not this shape
-            continue
-        pk, vk = kept
-        po, vo = next(x for x in vals if x[0] != pk)
-        if pk not in cr or po not in cr:
-            continue
-        # Condition on the MINIMAL distinguishing predicate — the conjuncts where the two
-        # reaching conditions DIFFER — not the full cr(kept). The shared prefix is common to
-        # both arms (redundant for a 2-way mutually-exclusive selection) and may contain
-        # SIDE-EFFECTING predicates (e.g. number_input/$999F) whose re-evaluation inside a
-        # ternary would double-execute them. Factoring to the differing part keeps the
-        # selector pure wherever the diverging branch itself is pure.
-        distinct = _terms(cr[pk]) - _terms(cr[po])
-        sel = _and(*distinct) if distinct else cr[pk]
-        sel_c = to_c(sel)
-        # PURITY GUARD: the original tested this predicate ONCE at a branch; rendering it as a
-        # ternary RE-EVALUATES it. A pure selector (comparisons, memory reads — no `name(`) is
-        # identical on re-eval, so sound. A CALL in the selector would double-execute (a getter
-        # is likely benign, but we can't prove it here). Skip those — the front-end port reuses
-        # the branch's CAPTURED value (no re-eval) and handles them soundly. (gate-invisible
-        # trap: a structural gate can't see a doubled call, so guard it at the source.)
-        if re.search(r'[A-Za-z_]\w*\(', sel_c):
-            continue
-        ite = f"(({sel_c}) ? {vk} : {vo})"
-        new0 = text0.replace(vk, ite, 1)
-        tc['info'][M] = ([(addr0, new0)] + list(stmts[1:]),) + tuple(tc['info'][M][1:])
-        repaired.append((M, new0))
-    return repaired
-
+# RUNG 2 (value-aware) — CONSUMING-CALL STACK-PHI repair now lives in the FRONT-END
+# (`vm_cfg.consuming_phis` + `vm_decompile`'s post-dispatch materialisation), where the live
+# data stack lets it stay sound (each arm's CAPTURED value, no re-evaluation) and it fixes
+# V1/V2's canonical output too. This DREAM-only `cr`-based ternary prototype proved the
+# mechanism (6/8 eligible repaired, gate-green) and is now superseded — DREAM inherits the
+# front-end's phi temps (`phi_<merge> = <value>;` per arm; the merge call reads the temp).
 
 def dream_ast(lines, instructions):
     """Build the refinement AST (+ tc + the address next_leader map) for an eligible sub,
@@ -525,7 +431,6 @@ def dream_ast(lines, instructions):
     if not leaders or not eligible(tc, leaders[0]):
         return None
     cr = reaching_conditions(tc, leaders[0])
-    apply_consuming_phis(tc, cr, instructions)    # rung-2: repair dropped stack-phi values
     items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
     real = [L for L in leaders if L != vm_cfg.EXIT]
     nxt = {real[i]: (real[i + 1] if i + 1 < len(real) else vm_cfg.EXIT) for i in range(len(real))}

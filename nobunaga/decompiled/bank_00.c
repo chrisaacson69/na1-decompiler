@@ -338,15 +338,17 @@ L_86BA:
     if (!(((unsigned)(local11 + 1) >= (unsigned)9))) goto L_86DB;    // $86D6
     local11 = 2;    // $86DA
 L_86DB:
+    phi_86ed = local11;    // $86DB
     goto L_86ED;    // $86DC
 L_86DF:
     local11 = (local11 + 1);    // $86E1
     if (!(((unsigned)(local11 + 1) >= (unsigned)4))) goto L_86E9;    // $86E4
     local11 = 2;    // $86E8
 L_86E9:
+    phi_86ed = (local11 + -2);    // $86EC
 L_86ED:
 L_86F1:
-    map_helper_e5f2((local11 + -2));    // $86ED
+    map_helper_e5f2(phi_86ed);    // $86ED
     local10 = number_input(1, scenario_fief_count);    // $86F9
     if ((number_input(1, scenario_fief_count) <= 0)) goto L_86BA;    // $86FC
     local10 = (local10 - 1);    // $8701
@@ -1178,13 +1180,17 @@ word avg_daimyo_charisma_over_fief_list(void) {
 
 word announce_provinces_by_ai_state_mode(word arg1) {
     switch (arg1) {    // $94B7
-    case 1:
+        case 1: goto L_94C4;    // $94B7
+        case 2: goto L_94E9;    // $94B7
+        default: goto L_94CE;    // $94B7
+    }    // $94B7
+L_94C4:
+    phi_94c7 = msg_summer_this_year_brings_typhoo;    // $94C4
 L_94C7:
-        message_display(msg_summer_this_year_brings_typhoo);    // $94C7
-    default:
-        confirm_prompt();    // $94CB
-        local11 = 0;    // $94CF
-    }
+    message_display(phi_94c7);    // $94C7
+L_94CE:
+    confirm_prompt();    // $94CB
+    local11 = 0;    // $94CF
     while ((*(byte*)((((local11 + 1) - 1) + 0x7BAD)) != 255)) {    // $951D
         if (!(get_province_ai_state(local10))) continue;    // $94D8
         switch (arg1) {    // $94DC
@@ -1193,6 +1199,7 @@ L_94C7:
             default: goto L_951D;    // $94DC
         }    // $94DC
 L_94E9:
+        phi_94c7 = msg_lord_plague_has_come;    // $94E9
         goto L_94C7;    // $94EC
 L_94EF:
         message_display(announce_provinces_by_ai_data_bc2a);    // $94F2

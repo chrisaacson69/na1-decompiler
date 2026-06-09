@@ -539,6 +539,71 @@ def control_shortcircuits(instructions):
     return regions
 
 
+def consuming_phis(instructions):
+    """Find consuming-call STACK-PHI merges, and name the temp each arm's push materialises into.
+
+    The decoder is a single LINEAR address-order sweep over ONE shared data stack with no phi
+    reconciliation at control-flow joins. When a value pushed in one block is consumed by a CALL
+    in a merge block reached from several predecessors that each push a DIFFERENT value (two arms
+    each `push msg; …`, a shared `redraw_window(msg)` at the join), the call pops only the
+    fall-through pred's push and the JUMPing preds' pushes LEAK and are silently DROPPED
+    (confirmed: `msg_storehouse_full` etc. never appear in any output). A structural gate can't
+    see it (two structurings share a CFG yet differ on the value at the merge).
+
+    FIX (phi destruction via a temp): materialise each arm's push into a per-merge TEMP, so the
+    merge's call pops the temp. All arms write the SAME name, so the linear leak is harmless, and
+    each arm's assignment carries its own value under its own control — sound, no re-evaluation
+    (unlike a reaching-condition ternary, which would re-run a call-valued branch predicate).
+
+    Returns `{push_addr: temp_name}`: every predecessor's phi-push address mapped to the merge's
+    temp. The decoder, at each such push, emits `temp = <value>;` and pushes `temp` instead.
+
+    CONSERVATIVE GUARDS (only the genuine drop is touched): the merge's FIRST op is an arity-1
+    consuming `host_call` (bytes-popped == 2, the message-display idiom); EVERY predecessor ends
+    in a net +1 push (the call's sole arg is uniformly the phi); and those pushes are DISTINCT
+    (so a working same-value merge is left untouched). Mutually exclusive with value/boolean/
+    short-circuit regions by construction (their merges aren't a leading consuming call)."""
+    import vm_stack_effect as vse
+    cfg, leaders = _bytecode_cfg_raw(instructions)
+    block_of = _block_of_fn(leaders)
+    bmap = {L: [] for L in leaders}
+    for ins in instructions:
+        bmap[block_of(ins['addr'])].append(ins)
+    preds = _predecessors(cfg)
+
+    def terminal_push(blk):
+        """(addr, signature) of the block's last net-+1 push before its terminator, or None."""
+        for ins in reversed(blk):
+            e = vse.STACK_EFFECT.get(ins['bytes'][0])
+            d = (e.pushes - e.pops) if e else 0
+            if d > 0:
+                return ins['addr'], (ins['mnemonic'], ins.get('operand', '') or '')
+            if d < 0:
+                return None
+        return None
+
+    out = {}
+    for M in leaders:
+        ps = [p for p in preds.get(M, ()) if p is not EXIT]
+        if len(ps) < 2:
+            continue
+        blk = bmap.get(M, [])
+        if not blk or blk[0]['mnemonic'] not in ('host_call', 'host_call_simple'):
+            continue
+        bp = re.search(r',\s*\$([0-9A-Fa-f]+)\s*$', blk[0].get('operand', '') or '')
+        if not bp or int(bp.group(1), 16) != 2:        # arity-1 consuming call only
+            continue
+        tp = [terminal_push(bmap.get(p, [])) for p in ps]
+        if any(t is None for t in tp):                 # every pred must push the phi'd arg
+            continue
+        if len({sig for _a, sig in tp}) < 2:           # distinct values only (the real drop)
+            continue
+        temp = f"phi_{M:04x}"
+        for addr, _sig in tp:
+            out[addr] = temp
+    return out
+
+
 def unknown_control_mnemonics(instructions):
     """Expose any unrecognised control-shaped mnemonics for the gate to report."""
     if not instructions:
