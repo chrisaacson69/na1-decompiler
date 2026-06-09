@@ -814,6 +814,10 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     # instead of dropping all but the fall-through pred's pushes (the silent value-drop bug).
     # phi_mat: materialise_addr -> (merge_leader, arity). See vm_cfg.consuming_phis.
     phi_mat = _vmcfg.consuming_phis(instructions)
+    # ret_phi: same repair for the RETURN VALUE (regA) at a shared bare `vm_return` merge.
+    # ret_phi_sites: site_addr -> merge_leader; the merge's vm_return then returns phi_ret_<merge>.
+    ret_phi_sites = _vmcfg.return_phis(instructions)
+    ret_phi_merges = set(ret_phi_sites.values())
     diamonds = _vmcfg.value_diamonds(instructions)
     dia_by_head = {d['head']: d for d in diamonds}
     dia_fall_jump = {d['fall_jump_addr'] for d in diamonds if d['fall_jump_addr'] is not None}
@@ -887,9 +891,11 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         if SELF_CHECK:
             _STACK_TRACE.append((opcode, len(state.stack)))
 
-        # Label for branch targets
-        if ins['addr'] in branch_targets:
-            state.lines.append((ins['addr'], 0, f"L_{ins['addr']:04X}:"))
+        # PHI materialisation (below) runs BEFORE the branch-target label, so a fall-through
+        # pred's `phi = <fall value>` lands ABOVE `L_<merge>:` — inside the fall-through block.
+        # A JUMPing pred's `goto L_<merge>` then targets the label and BYPASSES that assignment,
+        # so its own `phi = <jump value>` (emitted at its jump site) survives to the consumer.
+        # Emitting the materialise after the label clobbers every jump arm with the fall value.
 
         # === Consuming-call STACK-PHI materialisation (pre-dispatch) ===
         # We are at a predecessor's EXIT to a multi-pred merge (its unconditional jump, or the
@@ -909,6 +915,24 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
                         state.emit(f"{_phi_names[_k]} = {_v};")
                 for _nm in reversed(_phi_names):              # push back so pop order = arg1..argN
                     state.stack.append(_nm)
+
+        # === Return-value (regA) PHI materialisation (pre-dispatch) ===
+        # At a pred's EXIT to a shared bare `vm_return` (its jump, or the RETURN itself for the
+        # fall-through pred), capture regA into phi_ret_<merge> so the return reads the temp instead
+        # of dropping every JUMPing pred's value. Reading state.regA consumes a pending call exactly
+        # once (no re-eval); all preds write the SAME name. See vm_cfg.return_phis.
+        if ins['addr'] in ret_phi_sites:
+            _rm = ret_phi_sites[ins['addr']]
+            _rnm = f"phi_ret_{_rm:04x}"
+            _rv = state.regA                              # consume any pending call exactly once
+            if _rv != _rnm:
+                state.emit(f"{_rnm} = {_rv};")
+            state.regA = _rnm
+
+        # Label for branch targets — AFTER the phi materialise (see note above) so a jump arm's
+        # `goto L_<merge>` lands below the fall-through pred's `phi = …` instead of clobbering on it.
+        if ins['addr'] in branch_targets:
+            state.lines.append((ins['addr'], 0, f"L_{ins['addr']:04X}:"))
 
         # === Short-circuit CONTROL folding (`if (c1 || c2 …) { body }`) ===
         # Capture each guard's condition at its branch (suppressing the individual
@@ -1083,7 +1107,12 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             state.flush_pending()  # goto doesn't read regA — emit a pending call before it
             state.emit(f"goto L_{tgt:04X};")
         elif mnem == 'vm_return':
-            state.emit(f"return {state.regA};")
+            # A return-phi merge returns its temp (set by whichever pred control-flowed here),
+            # not the linearly-stale regA — see ret_phi_sites above.
+            if ins['addr'] in ret_phi_merges:
+                state.emit(f"return phi_ret_{ins['addr']:04x};")
+            else:
+                state.emit(f"return {state.regA};")
         elif mnem == 'switch':
             # vm-disasm decoded the jump table into the comment:
             #   "SWITCH <key>=>$<tgt> ... default=>$<tgt>"

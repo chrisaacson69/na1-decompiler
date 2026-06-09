@@ -686,6 +686,73 @@ def consuming_phis(instructions):
     return out
 
 
+def return_phis(instructions):
+    """Find RETURN-PHI merges: a bare `vm_return` block reached by >=2 preds that leave with a
+    DIFFERENT regA (the return value), and name the temp each pred materialises it into.
+
+    Same root cause as `consuming_phis`, on regA at the return instead of a call's stack args.
+    The decoder is a single LINEAR sweep: `return {regA}` at a shared bare RETURN emits only the
+    value of whichever pred is TEXTUALLY adjacent (the fall-through), and the JUMPing preds' regA
+    is dropped ($D2A2's $D2F8: the arg1==0 arm `return syscall_dispatch(19)` collapses to the
+    fall arm's `return 200`). One arm here is CALL-valued, so it must be captured at the pred's
+    exit (a temp), never re-evaluated at the return.
+
+    Returns `{site_addr: merge}`. At each site -- a JUMPing pred's jump (where that pred's regA
+    is textually live), or the RETURN address itself for the fall-through pred -- the decoder
+    stores regA into `phi_ret_<merge>` and the merge's `vm_return` returns that temp. All preds
+    write the SAME name, so the linear leak is harmless and each value is under its own control.
+
+    GUARDS (mirror consuming_phis): the merge block is a BARE `vm_return` (so regA is carried in,
+    not recomputed in-block); >=2 preds; each leaves by an unconditional jump or fall-through (a
+    conditional-branch pred is skipped); and the preds' blocks are NOT all identical (>=2 distinct
+    signatures -> the returned regA genuinely differs; identical preds return the same value)."""
+    cfg, leaders = _bytecode_cfg_raw(instructions)
+    block_of = _block_of_fn(leaders)
+    bmap = {L: [] for L in leaders}
+    for ins in instructions:
+        bmap[block_of(ins['addr'])].append(ins)
+    preds = _predecessors(cfg)
+    # A value-diamond / boolean-region merge can ALSO be a bare RETURN (min_word returns
+    # `(a<b)?a:b`); those fold to a ternary, the BETTER rendering, so leave them to that pass.
+    folded_merges = ({d['merge'] for d in value_diamonds(instructions)}
+                     | {r['merge'] for r in boolean_regions(instructions)})
+
+    def blk_sig(p):
+        return tuple((i['mnemonic'], i.get('operand', '') or '') for i in bmap.get(p, []))
+
+    out = {}
+    for M in leaders:
+        if M in folded_merges:                                     # handled by the ternary fold
+            continue
+        blk = bmap.get(M, [])
+        if len(blk) != 1 or blk[0]['mnemonic'] != 'vm_return':     # bare RETURN block only
+            continue
+        ps = [p for p in preds.get(M, ()) if p is not EXIT]
+        if len(ps) < 2:
+            continue
+        if len({blk_sig(p) for p in ps}) < 2:                      # all preds identical -> same regA
+            continue
+        sites, ok = {}, True
+        for p in ps:
+            pb = bmap.get(p, [])
+            if not pb:
+                ok = False
+                break
+            last = pb[-1]
+            if last['mnemonic'] == 'jump_abs' and _target(last) == M:
+                sites[last['addr']] = M                             # capture before the jump flushes
+            elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
+                sites[blk[0]['addr']] = M                           # fall-through: capture at the RETURN
+            else:
+                ok = False
+                break
+        if not ok:
+            continue
+        for addr in sites:
+            out[addr] = M
+    return out
+
+
 def unknown_control_mnemonics(instructions):
     """Expose any unrecognised control-shaped mnemonics for the gate to report."""
     if not instructions:
