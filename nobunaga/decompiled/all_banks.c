@@ -3648,49 +3648,37 @@ word helper_8A4E(word arg1) {
     local9 = ui_cursor_row;    // PRG $04A5A
     ui_window_col = 26;    // PRG $04A5D
     switch (arg1) {    // PRG $04A61
-        case 0: goto L_p04A74;    // PRG $04A61
-        case 1: goto L_p04ABC;    // PRG $04A61
-        case 2: goto L_p04AAA;    // PRG $04A61
-        case 3: goto L_p04AE6;    // PRG $04A61
-        case 4: goto L_p04AD4;    // PRG $04A61
-        case 5: goto L_p04AF8;    // PRG $04A61
-        default: goto L_p04A94;    // PRG $04A61
-    }    // PRG $04A61
-L_p04A74:
-    loan_rate = (loan_rate + 1);    // PRG $04A78
-    if ((loan_rate > 15)) {    // PRG $04A80
-    loan_rate = rng_mod(15);    // PRG $04A88 -> bank15 $CA52
-    }
+    case 0:
+        loan_rate = (loan_rate + 1);    // PRG $04A78
+        if ((loan_rate > 15)) {    // PRG $04A80
+        loan_rate = rng_mod(15);    // PRG $04A88 -> bank15 $CA52
+        }
 L_p04A8B:
-    ui_cursor_row = 21;    // PRG $04A8D
+        ui_cursor_row = 21;    // PRG $04A8D
 L_p04A93:
-    local11 = loan_rate;    // PRG $04A93
-L_p04A94:
-    ui_helper_d134(0xBB36, (local11 / 10), (local11 % 10));    // PRG $04A9F -> bank15 $D134
-    return ui_helper_cc7b(local10, local9);    // PRG $04AA9 -> bank15 $CC7B
-L_p04AAA:
+        local11 = loan_rate;    // PRG $04A93
+    default:
+        ui_helper_d134(0xBB36, (local11 / 10), (local11 % 10));    // PRG $04A9F -> bank15 $D134
+        return ui_helper_cc7b(local10, local9);    // PRG $04AA9 -> bank15 $CC7B
+    case 2:
 L_p04AAE:
-    gold_rice_exchange_rate = (gold_rice_exchange_rate + 1);    // PRG $04AAE
-    ui_cursor_row = 22;    // PRG $04AB3
-    goto L_p04A93;    // PRG $04AB9
-L_p04ABC:
-    if ((gold_rice_exchange_rate <= 1)) {    // PRG $04AC1
-    } else {
-    }
-L_p04ACC:
-    goto L_p04AAE;    // PRG $04AD1
-L_p04AD4:
-    gold_men_hire_rate = (gold_men_hire_rate + 1);    // PRG $04AD8
-    ui_cursor_row = 24;    // PRG $04ADD
-    goto L_p04A93;    // PRG $04AE3
-L_p04AE6:
-    arms_buy_price_rate = (arms_buy_price_rate + 1);    // PRG $04AEA
-    ui_cursor_row = 23;    // PRG $04AEF
-    goto L_p04A93;    // PRG $04AF5
-L_p04AF8:
-    hire_gold_rate = (hire_gold_rate + 1);    // PRG $04AFC
-    ui_cursor_row = 25;    // PRG $04B01
-    goto L_p04A93;    // PRG $04B07
+        gold_rice_exchange_rate = (gold_rice_exchange_rate + 1);    // PRG $04AAE
+        ui_cursor_row = 22;    // PRG $04AB3
+        goto L_p04A93;    // PRG $04AB9
+    case 1:
+        goto L_p04AAE;    // PRG $04AD1
+    case 4:
+        gold_men_hire_rate = (gold_men_hire_rate + 1);    // PRG $04AD8
+        ui_cursor_row = 24;    // PRG $04ADD
+        goto L_p04A93;    // PRG $04AE3
+    case 3:
+        arms_buy_price_rate = (arms_buy_price_rate + 1);    // PRG $04AEA
+        ui_cursor_row = 23;    // PRG $04AEF
+        goto L_p04A93;    // PRG $04AF5
+    case 5:
+        hire_gold_rate = (hire_gold_rate + 1);    // PRG $04AFC
+        ui_cursor_row = 25;    // PRG $04B01
+        goto L_p04A93;    // PRG $04B07
     }
 }
 
@@ -5141,22 +5129,14 @@ L_p0636C:
 L_p063BF:
         ui_helper_e80c(28);    // PRG $063C1 -> bank15 $E80C
         drain_amount = hire_stat_drain_rng(arg1->loyalty, unit_count);    // PRG $063CE -> bank1 $A255
-        if ((arg1->loyalty >= drain_amount)) {    // PRG $063D4
-        } else {
-        }
-L_p063DE:
-        drain_amount = arg1->loyalty;    // PRG $063DE
+        drain_amount = ((arg1->loyalty >= drain_amount) ? drain_amount : arg1->loyalty);    // PRG $063DE
         if (drain_amount) {    // PRG $063E0
         arg1->loyalty = (arg1->loyalty - drain_amount);    // PRG $063EA
         }
 L_p063F1:
         report_fief_stat_decline(12, drain_amount);    // PRG $063ED -> bank1 $A274
         drain_amount = hire_stat_drain_rng(arg1->wealth, unit_count);    // PRG $063FA -> bank1 $A255
-        if ((arg1->wealth >= drain_amount)) {    // PRG $06400
-        } else {
-        }
-L_p0640A:
-        drain_amount = arg1->wealth;    // PRG $0640A
+        drain_amount = ((arg1->wealth >= drain_amount) ? drain_amount : arg1->wealth);    // PRG $0640A
         if (drain_amount) {    // PRG $0640C
         arg1->wealth = (arg1->wealth - drain_amount);    // PRG $06416
 L_p06419:
@@ -5179,11 +5159,7 @@ L_p0643B:
         return 1;    // PRG $06459
     case 65536:
         drain_amount = hire_stat_drain_rng(arg1->morale, unit_count);    // PRG $06464 -> bank1 $A255
-        if ((arg1->morale >= drain_amount)) {    // PRG $0646B
-        } else {
-        }
-L_p06476:
-        drain_amount = arg1->morale;    // PRG $06476
+        drain_amount = ((arg1->morale >= drain_amount) ? drain_amount : arg1->morale);    // PRG $06476
         if (drain_amount) goto L_p06483;    // PRG $06478
         effect_hire_pay_gold(local8, unit_count);    // PRG $0647D -> bank1 $A29B
         return 1;    // PRG $06482
@@ -5201,22 +5177,14 @@ L_p06483:
 L_p064AB:
         ui_helper_e80c(30);    // PRG $064AD -> bank15 $E80C
         drain_amount = hire_stat_drain_rng(arg1->dams, unit_count);    // PRG $064BA -> bank1 $A255
-        if ((arg1->dams >= drain_amount)) {    // PRG $064C0
-        } else {
-        }
-L_p064CA:
-        drain_amount = arg1->dams;    // PRG $064CA
+        drain_amount = ((arg1->dams >= drain_amount) ? drain_amount : arg1->dams);    // PRG $064CA
         if (drain_amount) {    // PRG $064CC
         arg1->dams = (arg1->dams - drain_amount);    // PRG $064D6
         }
 L_p064DD:
         report_fief_stat_decline(11, drain_amount);    // PRG $064D9 -> bank1 $A274
         drain_amount = hire_stat_drain_rng(arg1->rice, unit_count);    // PRG $064E6 -> bank1 $A255
-        if ((arg1->rice >= drain_amount)) {    // PRG $064EC
-        } else {
-        }
-L_p064F6:
-        drain_amount = arg1->rice;    // PRG $064F6
+        drain_amount = ((arg1->rice >= drain_amount) ? drain_amount : arg1->rice);    // PRG $064F6
         if (!(drain_amount)) goto L_p0641D;    // PRG $064F8
         arg1->rice = (arg1->rice - drain_amount);    // PRG $06502
         phi_a419_0 = 9;    // PRG $06505
@@ -5227,11 +5195,7 @@ L_p064F6:
         goto L_p0641D;    // PRG $0650D
     case 65539:
         drain_amount = hire_stat_drain_rng(arg1->town, unit_count);    // PRG $06519 -> bank1 $A255
-        if ((arg1->town >= drain_amount)) {    // PRG $0651F
-        } else {
-        }
-L_p06529:
-        drain_amount = arg1->town;    // PRG $06529
+        drain_amount = ((arg1->town >= drain_amount) ? drain_amount : arg1->town);    // PRG $06529
         if (drain_amount) goto L_p06536;    // PRG $0652B
         effect_hire_pay_gold(local8, unit_count);    // PRG $06530 -> bank1 $A29B
         return 1;    // PRG $06535
@@ -5247,12 +5211,6 @@ L_p06549:
     return 1;    // PRG $06550
 L_p06551:
     return 0;    // PRG $06552
-    }
-    }
-    }
-    }
-    }
-    }
 }
 
 // ===== bank1 $A553  (PRG $06553) =====
@@ -5312,23 +5270,21 @@ L_p06635:
 
 word driver_train(void) {
     local11 = ((selected_province_idx * 26) + 0x7001);    // PRG $06646
-    if (!((*(word*)((local11 + 20)) < *(word*)((local11 + 24))))) goto L_p066A7;    // PRG $06652
-    if (!((*(word*)((local11 + 16)) <= 0))) goto L_p06671;    // PRG $0665B
+    if ((*(word*)((local11 + 20)) < *(word*)((local11 + 24)))) {    // PRG $06652
+    if ((*(word*)((local11 + 16)) <= 0)) {    // PRG $0665B
     redraw_window(msg_you_have_no_soldiers);    // PRG $06661 -> bank15 $CEC4
     province_clear_fields_d815(selected_province_idx);    // PRG $06668 -> bank15 $D815
     confirm_prompt();    // PRG $0666C -> bank15 $D766
     return 0;    // PRG $06670
+    }
 L_p06671:
     ui_helper_e80c(10);    // PRG $06672 -> bank15 $E80C
     effect_train();    // PRG $06676 -> bank1 $9586
-    if (!((*(word*)((local11 + 20)) > *(word*)((local11 + 24))))) goto L_p06691;    // PRG $06688
-    goto L_p06694;    // PRG $0668E
-L_p06691:
-L_p06694:
-    *(word*)((local11 + 20)) = *(word*)((local11 + 20));    // PRG $06695
+    *(word*)((local11 + 20)) = *(word*)(((*(word*)((local11 + 20)) > *(word*)((local11 + 24))) ? (local11 + 24) : (local11 + 20)));    // PRG $06695
     ui_helper_d134(msg_skill_is_now_d, *(word*)((local11 + 20)));    // PRG $0669E -> bank15 $D134
     confirm_prompt();    // PRG $066A2 -> bank15 $D766
     return 1;    // PRG $066A6
+    }
 L_p066A7:
     message_display(msg_the_men_can_t_train_any_furthe);    // PRG $066AA -> bank15 $D326
     confirm_prompt();    // PRG $066AE -> bank15 $D766
@@ -5473,11 +5429,7 @@ L_p068D2:
 // (body @ PRG $068D8)
 
 word give_transfer_apply(word arg1, word arg2, word arg3) {
-    if ((arg2 == 1)) {    // PRG $068DB
-    } else {
-    }
-L_p068E4:
-    local11 = (arg1 + 6);    // PRG $068E4
+    local11 = ((arg2 == 1) ? arg1 : (arg1 + 6));    // PRG $068E4
     message_display(msg_give_how_much);    // PRG $068E8 -> bank15 $D326
     local10 = number_input(1, *(word*)(local11));    // PRG $068F4 -> bank15 $D5E9
     if (number_input(1, *(word*)(local11))) {    // PRG $068F5 -> bank15 $D5E9
@@ -5492,7 +5444,6 @@ L_p0691A:
     return 1;    // PRG $0691B
 L_p0691C:
     return 0;    // PRG $0691D
-    }
     }
     }
 }
@@ -10039,12 +9990,7 @@ L_p3CB4B:
 // (body @ PRG $3CB51)
 
 word abs16(word arg1) {
-    if ((arg1 < 0)) {    // PRG $3CB54
-    } else {
-    }
-L_p3CB5D:
-    return arg1;    // PRG $3CB5D
-    }
+    return ((arg1 < 0) ? (-arg1) : arg1);    // PRG $3CB5D
 }
 
 // ===== bank15 $CB5E  (PRG $3CB5E) =====
@@ -10395,14 +10341,11 @@ word palette_write_wrap(word arg1, word arg2) {
 // (body @ PRG $3CF9D)
 
 word num_to_ascii(word arg1, word arg2, word arg3) {
-    if (!(((unsigned)arg2 < (unsigned)arg3))) goto L_p3CFBC;    // PRG $3CFA0
+    if (((unsigned)arg2 < (unsigned)arg3)) {    // PRG $3CFA0
     *(word*)(arg1) = (*(word*)(arg1) + 1);    // PRG $3CFA7
-    if (!(((unsigned)arg2 < (unsigned)10))) goto L_p3CFB6;    // PRG $3CFAD
-    goto L_p3CFB9;    // PRG $3CFB3
-L_p3CFB6:
-L_p3CFB9:
-    *(byte*)(((*(word*)(arg1) + 1) - 1)) = (arg2 + 55);    // PRG $3CFB9
+    *(byte*)(((*(word*)(arg1) + 1) - 1)) = (((unsigned)arg2 < (unsigned)10) ? (arg2 + 48) : (arg2 + 55));    // PRG $3CFB9
     return 1;    // PRG $3CFBB
+    }
 L_p3CFBC:
     local11 = num_to_ascii(arg1, ((unsigned)arg2 / (unsigned)arg3), arg3);    // PRG $3CFC6 -> bank15 $CF98
     num_to_ascii(arg1, ((unsigned)arg2 % (unsigned)arg3), arg3);    // PRG $3CFCD -> bank15 $CF98
@@ -10615,11 +10558,7 @@ word wait_button_edge(void) {
 // (body @ PRG $3D2A2)
 
 word read_frame_timer(word arg1) {
-    if (arg1) {    // PRG $3D2A3
-    } else {
-    }
-L_p3D2AC:
-    ui_timer_gate_flag_7fe7 = 2;    // PRG $3D2AC
+    ui_timer_gate_flag_7fe7 = (arg1 ? (arg1 - 1) : 2);    // PRG $3D2AC
     if (arg1) goto L_p3D2CA;    // PRG $3D2B0
     syscall_set_sprite(0, 248, 248, 0, 2);    // PRG $3D2BD -> bank15 $C2CB
     syscall_wait_for_nmi();    // PRG $3D2C3 -> bank15 $C1B8
@@ -10633,7 +10572,6 @@ L_p3D2EC:
     frame_counter = 200;    // PRG $3D2F5
 L_p3D2F8:
     return 200;    // PRG $3D2F8
-    }
     }
 }
 

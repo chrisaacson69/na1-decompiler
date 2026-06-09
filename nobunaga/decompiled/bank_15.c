@@ -145,12 +145,7 @@ L_CB4B:
 // (body @ $CB51)
 
 word abs16(word arg1) {
-    if ((arg1 < 0)) {    // $CB54
-    } else {
-    }
-L_CB5D:
-    return arg1;    // $CB5D
-    }
+    return ((arg1 < 0) ? (-arg1) : arg1);    // $CB5D
 }
 
 // $CB5E min_word
@@ -473,14 +468,11 @@ word palette_write_wrap(word arg1, word arg2) {
 // (body @ $CF9D)
 
 word num_to_ascii(word arg1, word arg2, word arg3) {
-    if (!(((unsigned)arg2 < (unsigned)arg3))) goto L_CFBC;    // $CFA0
+    if (((unsigned)arg2 < (unsigned)arg3)) {    // $CFA0
     *(word*)(arg1) = (*(word*)(arg1) + 1);    // $CFA7
-    if (!(((unsigned)arg2 < (unsigned)10))) goto L_CFB6;    // $CFAD
-    goto L_CFB9;    // $CFB3
-L_CFB6:
-L_CFB9:
-    *(byte*)(((*(word*)(arg1) + 1) - 1)) = (arg2 + 55);    // $CFB9
+    *(byte*)(((*(word*)(arg1) + 1) - 1)) = (((unsigned)arg2 < (unsigned)10) ? (arg2 + 48) : (arg2 + 55));    // $CFB9
     return 1;    // $CFBB
+    }
 L_CFBC:
     local11 = num_to_ascii(arg1, ((unsigned)arg2 / (unsigned)arg3), arg3);    // $CFC6
     num_to_ascii(arg1, ((unsigned)arg2 % (unsigned)arg3), arg3);    // $CFCD
@@ -687,11 +679,7 @@ word wait_button_edge(void) {
 // (body @ $D2A2)
 
 word read_frame_timer(word arg1) {
-    if (arg1) {    // $D2A3
-    } else {
-    }
-L_D2AC:
-    ui_timer_gate_flag_7fe7 = 2;    // $D2AC
+    ui_timer_gate_flag_7fe7 = (arg1 ? (arg1 - 1) : 2);    // $D2AC
     if (arg1) goto L_D2CA;    // $D2B0
     syscall_set_sprite(0, 248, 248, 0, 2);    // $D2BD
     syscall_wait_for_nmi();    // $D2C3
@@ -705,7 +693,6 @@ L_D2EC:
     frame_counter = 200;    // $D2F5
 L_D2F8:
     return 200;    // $D2F8
-    }
     }
 }
 

@@ -682,49 +682,37 @@ word helper_8A4E(word arg1) {
     local9 = ui_cursor_row;    // $8A5A
     ui_window_col = 26;    // $8A5D
     switch (arg1) {    // $8A61
-        case 0: goto L_8A74;    // $8A61
-        case 1: goto L_8ABC;    // $8A61
-        case 2: goto L_8AAA;    // $8A61
-        case 3: goto L_8AE6;    // $8A61
-        case 4: goto L_8AD4;    // $8A61
-        case 5: goto L_8AF8;    // $8A61
-        default: goto L_8A94;    // $8A61
-    }    // $8A61
-L_8A74:
-    loan_rate = (loan_rate + 1);    // $8A78
-    if ((loan_rate > 15)) {    // $8A80
-    loan_rate = rng_mod(15);    // $8A88
-    }
+    case 0:
+        loan_rate = (loan_rate + 1);    // $8A78
+        if ((loan_rate > 15)) {    // $8A80
+        loan_rate = rng_mod(15);    // $8A88
+        }
 L_8A8B:
-    ui_cursor_row = 21;    // $8A8D
+        ui_cursor_row = 21;    // $8A8D
 L_8A93:
-    local11 = loan_rate;    // $8A93
-L_8A94:
-    ui_helper_d134(0xBB36, (local11 / 10), (local11 % 10));    // $8A9F
-    return ui_helper_cc7b(local10, local9);    // $8AA9
-L_8AAA:
+        local11 = loan_rate;    // $8A93
+    default:
+        ui_helper_d134(0xBB36, (local11 / 10), (local11 % 10));    // $8A9F
+        return ui_helper_cc7b(local10, local9);    // $8AA9
+    case 2:
 L_8AAE:
-    gold_rice_exchange_rate = (gold_rice_exchange_rate + 1);    // $8AAE
-    ui_cursor_row = 22;    // $8AB3
-    goto L_8A93;    // $8AB9
-L_8ABC:
-    if ((gold_rice_exchange_rate <= 1)) {    // $8AC1
-    } else {
-    }
-L_8ACC:
-    goto L_8AAE;    // $8AD1
-L_8AD4:
-    gold_men_hire_rate = (gold_men_hire_rate + 1);    // $8AD8
-    ui_cursor_row = 24;    // $8ADD
-    goto L_8A93;    // $8AE3
-L_8AE6:
-    arms_buy_price_rate = (arms_buy_price_rate + 1);    // $8AEA
-    ui_cursor_row = 23;    // $8AEF
-    goto L_8A93;    // $8AF5
-L_8AF8:
-    hire_gold_rate = (hire_gold_rate + 1);    // $8AFC
-    ui_cursor_row = 25;    // $8B01
-    goto L_8A93;    // $8B07
+        gold_rice_exchange_rate = (gold_rice_exchange_rate + 1);    // $8AAE
+        ui_cursor_row = 22;    // $8AB3
+        goto L_8A93;    // $8AB9
+    case 1:
+        goto L_8AAE;    // $8AD1
+    case 4:
+        gold_men_hire_rate = (gold_men_hire_rate + 1);    // $8AD8
+        ui_cursor_row = 24;    // $8ADD
+        goto L_8A93;    // $8AE3
+    case 3:
+        arms_buy_price_rate = (arms_buy_price_rate + 1);    // $8AEA
+        ui_cursor_row = 23;    // $8AEF
+        goto L_8A93;    // $8AF5
+    case 5:
+        hire_gold_rate = (hire_gold_rate + 1);    // $8AFC
+        ui_cursor_row = 25;    // $8B01
+        goto L_8A93;    // $8B07
     }
 }
 
@@ -2122,22 +2110,14 @@ L_A36C:
 L_A3BF:
         ui_helper_e80c(28);    // $A3C1
         drain_amount = hire_stat_drain_rng(arg1->loyalty, unit_count);    // $A3CE
-        if ((arg1->loyalty >= drain_amount)) {    // $A3D4
-        } else {
-        }
-L_A3DE:
-        drain_amount = arg1->loyalty;    // $A3DE
+        drain_amount = ((arg1->loyalty >= drain_amount) ? drain_amount : arg1->loyalty);    // $A3DE
         if (drain_amount) {    // $A3E0
         arg1->loyalty = (arg1->loyalty - drain_amount);    // $A3EA
         }
 L_A3F1:
         report_fief_stat_decline(12, drain_amount);    // $A3ED
         drain_amount = hire_stat_drain_rng(arg1->wealth, unit_count);    // $A3FA
-        if ((arg1->wealth >= drain_amount)) {    // $A400
-        } else {
-        }
-L_A40A:
-        drain_amount = arg1->wealth;    // $A40A
+        drain_amount = ((arg1->wealth >= drain_amount) ? drain_amount : arg1->wealth);    // $A40A
         if (drain_amount) {    // $A40C
         arg1->wealth = (arg1->wealth - drain_amount);    // $A416
 L_A419:
@@ -2160,11 +2140,7 @@ L_A43B:
         return 1;    // $A459
     case 65536:
         drain_amount = hire_stat_drain_rng(arg1->morale, unit_count);    // $A464
-        if ((arg1->morale >= drain_amount)) {    // $A46B
-        } else {
-        }
-L_A476:
-        drain_amount = arg1->morale;    // $A476
+        drain_amount = ((arg1->morale >= drain_amount) ? drain_amount : arg1->morale);    // $A476
         if (drain_amount) goto L_A483;    // $A478
         effect_hire_pay_gold(local8, unit_count);    // $A47D
         return 1;    // $A482
@@ -2182,22 +2158,14 @@ L_A483:
 L_A4AB:
         ui_helper_e80c(30);    // $A4AD
         drain_amount = hire_stat_drain_rng(arg1->dams, unit_count);    // $A4BA
-        if ((arg1->dams >= drain_amount)) {    // $A4C0
-        } else {
-        }
-L_A4CA:
-        drain_amount = arg1->dams;    // $A4CA
+        drain_amount = ((arg1->dams >= drain_amount) ? drain_amount : arg1->dams);    // $A4CA
         if (drain_amount) {    // $A4CC
         arg1->dams = (arg1->dams - drain_amount);    // $A4D6
         }
 L_A4DD:
         report_fief_stat_decline(11, drain_amount);    // $A4D9
         drain_amount = hire_stat_drain_rng(arg1->rice, unit_count);    // $A4E6
-        if ((arg1->rice >= drain_amount)) {    // $A4EC
-        } else {
-        }
-L_A4F6:
-        drain_amount = arg1->rice;    // $A4F6
+        drain_amount = ((arg1->rice >= drain_amount) ? drain_amount : arg1->rice);    // $A4F6
         if (!(drain_amount)) goto L_A41D;    // $A4F8
         arg1->rice = (arg1->rice - drain_amount);    // $A502
         phi_a419_0 = 9;    // $A505
@@ -2208,11 +2176,7 @@ L_A4F6:
         goto L_A41D;    // $A50D
     case 65539:
         drain_amount = hire_stat_drain_rng(arg1->town, unit_count);    // $A519
-        if ((arg1->town >= drain_amount)) {    // $A51F
-        } else {
-        }
-L_A529:
-        drain_amount = arg1->town;    // $A529
+        drain_amount = ((arg1->town >= drain_amount) ? drain_amount : arg1->town);    // $A529
         if (drain_amount) goto L_A536;    // $A52B
         effect_hire_pay_gold(local8, unit_count);    // $A530
         return 1;    // $A535
@@ -2228,12 +2192,6 @@ L_A549:
     return 1;    // $A550
 L_A551:
     return 0;    // $A552
-    }
-    }
-    }
-    }
-    }
-    }
 }
 
 // $A553 effect_hire_variant_pay
@@ -2290,23 +2248,21 @@ L_A635:
 
 word driver_train(void) {
     local11 = ((selected_province_idx * 26) + 0x7001);    // $A646
-    if (!((*(word*)((local11 + 20)) < *(word*)((local11 + 24))))) goto L_A6A7;    // $A652
-    if (!((*(word*)((local11 + 16)) <= 0))) goto L_A671;    // $A65B
+    if ((*(word*)((local11 + 20)) < *(word*)((local11 + 24)))) {    // $A652
+    if ((*(word*)((local11 + 16)) <= 0)) {    // $A65B
     redraw_window(msg_you_have_no_soldiers);    // $A661
     province_clear_fields_d815(selected_province_idx);    // $A668
     confirm_prompt();    // $A66C
     return 0;    // $A670
+    }
 L_A671:
     ui_helper_e80c(10);    // $A672
     effect_train();    // $A676
-    if (!((*(word*)((local11 + 20)) > *(word*)((local11 + 24))))) goto L_A691;    // $A688
-    goto L_A694;    // $A68E
-L_A691:
-L_A694:
-    *(word*)((local11 + 20)) = *(word*)((local11 + 20));    // $A695
+    *(word*)((local11 + 20)) = *(word*)(((*(word*)((local11 + 20)) > *(word*)((local11 + 24))) ? (local11 + 24) : (local11 + 20)));    // $A695
     ui_helper_d134(msg_skill_is_now_d, *(word*)((local11 + 20)));    // $A69E
     confirm_prompt();    // $A6A2
     return 1;    // $A6A6
+    }
 L_A6A7:
     message_display(msg_the_men_can_t_train_any_furthe);    // $A6AA
     confirm_prompt();    // $A6AE
@@ -2447,11 +2403,7 @@ L_A8D2:
 // (body @ $A8D8)
 
 word give_transfer_apply(word arg1, word arg2, word arg3) {
-    if ((arg2 == 1)) {    // $A8DB
-    } else {
-    }
-L_A8E4:
-    local11 = (arg1 + 6);    // $A8E4
+    local11 = ((arg2 == 1) ? arg1 : (arg1 + 6));    // $A8E4
     message_display(msg_give_how_much);    // $A8E8
     local10 = number_input(1, *(word*)(local11));    // $A8F4
     if (number_input(1, *(word*)(local11))) {    // $A8F5
@@ -2466,7 +2418,6 @@ L_A91A:
     return 1;    // $A91B
 L_A91C:
     return 0;    // $A91D
-    }
     }
     }
 }

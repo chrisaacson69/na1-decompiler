@@ -218,18 +218,66 @@ def _predecessors(cfg):
     return preds
 
 
+# Pure register/ALU mnemonics — update regA/regB ONLY, emit no statement, touch no data
+# stack. A value-diamond arm may be ANY straight-line run of these, not just a bare load:
+# the decompiler tracks regA SYMBOLICALLY through them (`decA` -> `(A - 1)`, `shl` -> `(A << B)`),
+# so snapshotting state.regA at the arm boundary reproduces the whole expression. This is what
+# lets a COMPUTED arm fold — e.g. `arg1 ? (arg1 - 1) : 2` ($D2A2), where the true arm decrements
+# rather than loading a constant (the case the load-only check used to drop).
+_PURE_REGB_OPS = frozenset((
+    'loadB_local_pos', 'loadB_local_neg', 'loadB_imm_word', 'loadB_imm_byte',
+    'loadB_imm_sbyte', 'loadB_mem_word', 'setB_imm4',
+))
+_PURE_REGA_OPS = frozenset((
+    'loadA_local_pos', 'loadA_local_neg', 'loadA_imm_word', 'loadA_imm_byte',
+    'loadA_imm_sbyte', 'loadA_mem_word', 'loadA_imm4', 'addA_imm4', 'addA_imm_sbyte',
+    'incA', 'decA', 'aslA', 'lsrA', 'is_zero', 'op_CB', 'loadA_ind_byte', 'loadA_ind_word',
+    'swap_AB', 'add', 'sub', 'mul', 'div_signed', 'mod_signed', 'div', 'div_unsigned',
+    'mod_unsigned', 'bitand', 'bitor', 'bitxor',
+    'shl_by_regB', 'shr_by_regB', 'ashr_by_regB', 'lshr_by_regB',
+    'cmp_slt', 'cmp_sgt', 'cmp_sle', 'cmp_sge', 'cmp_eq', 'cmp_ne',
+    'cmp_uge', 'cmp_ule', 'cmp_ugt', 'cmp_ult',
+))
+_PURE_VALUE_OPS = _PURE_REGA_OPS | _PURE_REGB_OPS
+
+
 def _value_arm(instrs):
-    """A diamond ARM block: all instructions LOAD regA (a value) with no side effect, plus
-    an optional trailing unconditional `jump_abs`. Returns (is_arm, jump_addr_or_None)."""
+    """A diamond ARM block: a side-effect-free register COMPUTATION that leaves a value in
+    regA (loads + pure ALU ops, e.g. `arg1 - 1` or `(col << 3)` — not just a bare load), plus
+    an optional trailing unconditional `jump_abs`. Emits no statement and touches no data
+    stack, so capturing state.regA at the arm boundary reproduces the full expression.
+    Returns (is_arm, jump_addr_or_None)."""
     if not instrs:
         return False, None
     jump_addr = None
     body = instrs
     if instrs[-1]['mnemonic'] == 'jump_abs':
         jump_addr, body = instrs[-1]['addr'], instrs[:-1]
-    if not body or not all(i['mnemonic'].startswith('loadA_') for i in body):
+    if not body or not all(i['mnemonic'] in _PURE_VALUE_OPS for i in body):
+        return False, None
+    if not any(i['mnemonic'] in _PURE_REGA_OPS for i in body):  # arm must PRODUCE a regA value
         return False, None
     return True, jump_addr
+
+
+def _arm_exit_regb(arm_instrs):
+    """A signature of the arm's EXIT regB. The value-diamond fold builds `regA = cond ? a : b`
+    and lets the merge run ONCE with all OTHER state shared — sound iff regA is the only thing
+    that differs between the arms. If the arms leave DIFFERENT regB, the merge may consume that
+    regB (the $AF46 trap: two arms load the same regA but a different `province_to_map_section`
+    into regB, merged by a later `add` — folding regA-only silently drops the regB difference).
+    So `value_diamonds` rejects the fold unless both arms' signatures match. None = regB
+    untouched (carried in identically). `swap_AB` makes regB depend on the arm's regA, so it
+    poisons the signature (unique per arm) to force rejection."""
+    body = arm_instrs[:-1] if arm_instrs and arm_instrs[-1]['mnemonic'] == 'jump_abs' else arm_instrs
+    sig = None
+    for i in body:
+        m = i['mnemonic']
+        if m == 'swap_AB':
+            return ('swap', i['addr'])                          # never matches the other arm
+        if m in _PURE_REGB_OPS:
+            sig = (m, i.get('operand', ''), tuple(i.get('bytes', ()))[:1])   # opcode byte disambiguates setB nibble
+    return sig
 
 
 def value_diamonds(instructions):
@@ -272,6 +320,10 @@ def value_diamonds(instructions):
         ok_t, jmp_t = _value_arm(bmap.get(taken, []))
         ok_f, jmp_f = _value_arm(bmap.get(fall, []))
         if not (ok_t and ok_f):
+            continue
+        # The regA-only ternary is sound only if regA is the SOLE per-arm difference; reject
+        # when the arms leave a different regB (which the merge could consume — the $AF46 trap).
+        if _arm_exit_regb(bmap.get(taken, [])) != _arm_exit_regb(bmap.get(fall, [])):
             continue
         if preds.get(taken) != {H} or preds.get(fall) != {H}:
             continue
