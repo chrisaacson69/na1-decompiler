@@ -419,10 +419,13 @@ def refine(tc, items):
             payload = ('block', L, tc['info'][L][0])
             out.append(payload if c == TRUE else ('guard', c, payload))
         return out
-    # PRE-PIVOT TRUNK: every block at a LOWER address than the pivot is on the linear entry
-    # chain before the first branch (all unconditional `cr==TRUE` trunk). Emit in address order
-    # BEFORE the if (else the reorder-tolerant AST gate sees them misplaced after the branch).
-    pre = sorted((x for x in items if x[1] < Lpiv), key=lambda x: x[1])
+    # PRE-PIVOT TRUNK: the UNCONDITIONAL linear entry chain before the first branch — blocks at a
+    # lower address than the pivot AND with reaching condition TRUE (always executed in this context).
+    # Emit in address order BEFORE the if (else the reorder-tolerant AST gate sees them misplaced).
+    # The `c == TRUE` guard is load-bearing: a CONDITIONAL block can sit at a lower address than the
+    # branch that guards it (address-inverted arm body — `$AD3D`'s `$AD67` under `if(sel)` at `$AD7B`);
+    # without it that block emits as unconditional trunk, flowing into the branch and corrupting the CFG.
+    pre = sorted((x for x in items if x[1] < Lpiv and x[0] == TRUE), key=lambda x: x[1])
     pre_set = {L for _c, L in pre}
     pre_nodes = [('block', L, tc['info'][L][0]) for _c, L in pre]
     cpiv = dict((L, c) for c, L in items)[Lpiv]
