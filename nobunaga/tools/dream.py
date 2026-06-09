@@ -224,6 +224,61 @@ def _reverse_postorder(cfg, header):
     return list(reversed(post))
 
 
+def _ipostdom(cfg, header):
+    """Immediate post-dominator of each node (EXIT-rooted), via dominators on the REVERSE graph
+    (Cooper–Harvey–Kennedy). `ipd[n]` is the first node ALL paths from n reach before EXIT — the
+    reconvergence point of a branch. Used by `refine` to emit a branch's continuation ONCE
+    (as the structural fall-through) instead of DUPLICATING it into every arm: distribution
+    alone makes a wide reconvergent tail blow up combinatorially (a line repeated 198× on
+    `$949F`); pulling the post-dominator out keeps each block emitted ~once."""
+    EXIT = vm_cfg.EXIT
+    rpo = _reverse_postorder(cfg, header)             # entry-first topological order
+    succ = {n: [s for s in cfg.get(n, ())] for n in rpo}
+    # postorder of the REVERSE graph from EXIT (preds in the original become successors)
+    preds = {}
+    for u in rpo:
+        for v in succ[u]:
+            preds.setdefault(v, []).append(u)
+    seen, post = set(), []
+
+    def dfs(n):
+        seen.add(n)
+        for p in preds.get(n, ()):
+            if p not in seen:
+                dfs(p)
+        post.append(n)
+
+    dfs(EXIT)
+    order = list(reversed(post))                      # EXIT first
+    idx = {n: i for i, n in enumerate(order)}
+    ipd = {EXIT: EXIT}
+
+    def inter(a, b):
+        while a != b:
+            while idx[a] > idx[b]:
+                a = ipd[a]
+            while idx[b] > idx[a]:
+                b = ipd[b]
+        return a
+
+    changed = True
+    while changed:
+        changed = False
+        for n in order:
+            if n == EXIT:
+                continue
+            cand = [s for s in succ.get(n, ()) if s in ipd]   # successors = reverse-preds
+            if not cand:
+                continue
+            new = cand[0]
+            for s in cand[1:]:
+                new = inter(new, s)
+            if ipd.get(n) != new:
+                ipd[n] = new
+                changed = True
+    return ipd
+
+
 def reaching_conditions(tc, header):
     """cr(header, n) for every node in the ACYCLIC graph reachable from header.
     cr(h,n) = OR over preds v of cr(h,v) & tag(v,n), in reverse-postorder so every
@@ -310,58 +365,85 @@ def _factor(cond, piv):
     return None
 
 
+def _assert(e, piv, truth):
+    """Simplify `e` under the assumption that the pivot literal `piv` has truth value `truth`
+    (substitute piv's base everywhere and fold). Used to split each item's reaching condition
+    into its goto-arm part (piv true) and fall-arm part (piv false). A block reachable in only
+    one arm yields FALSE in the other (lands in one arm — what `_factor` did); a SHARED MERGE
+    (cr = an OR spanning piv and !piv) yields non-FALSE in BOTH (it is DUPLICATED into each arm,
+    where the recursion places it at the depth its residual condition becomes TRUE — un-sharing
+    the merge so the structurer folds it goto-free instead of emitting a flat reject guard)."""
+    k = e[0]
+    if k == 'lit' and e[1] == piv[1]:                 # same predicate base as the pivot
+        base_true = piv[2] if truth else (not piv[2])  # base's value given piv == truth
+        return TRUE if (e[2] == base_true) else FALSE
+    if k == 'and':
+        return _and(*[_assert(x, piv, truth) for x in e[1]])
+    if k == 'or':
+        return _or(*[_assert(x, piv, truth) for x in e[1]])
+    return e
+
+
 def refine(tc, items):
-    """items = ordered [(cond, leader)]. Recursively factor by the lowest-address branch
-    predicate into nested if/else. Returns an emit AST (list of nodes)."""
+    """items = ordered [(cond, leader)]. Recursively split by the lowest-address branch
+    predicate into nested if/else, DUPLICATING shared merges into each arm (via `_assert`) so
+    they fold goto-free rather than dropping to a flat reject guard. Returns an emit AST."""
     items = [(c, L) for c, L in items if c != FALSE]
     if not items:
         return []
     piv = Lpiv = None
     for _c, L in sorted(items, key=lambda x: x[1]):
+        # PIVOT = the lowest-address 2-way branch's goto-cond literal, WITH its real polarity
+        # (normalizing to positive swaps pos/neg vs the edge tags when rawcond is `!(...)`).
         lt = _lit_of(tc, L)
-        if lt is None:
-            continue
-        # PIVOT = the block's actual goto-cond literal, WITH its real polarity. Normalizing to
-        # positive swaps the pos/neg factoring vs the edge tags when rawcond is `!(...)`, so the
-        # goto-side nodes land in the fall arm (the emit flip compensated, but the AST gate's
-        # orientation check — read from rawcond — exposed it). With the real literal, pos==goto.
-        rest = [x for x in items if x[1] != L]
-        if any(_factor(cc, lt) for cc, _ in rest):
+        if lt is not None:
             piv, Lpiv = lt, L
             break
-    if piv is None:                                   # no factorable branch: guard the residue
+    if piv is None:                                   # no branch left: emit the residue
         out = []
-        for c, L in sorted(items, key=lambda x: x[1]):
+        rank = tc.get('rpo', {})                       # topological order, NOT address (see dream_ast)
+        for c, L in sorted(items, key=lambda x: (rank.get(x[1], 0), x[1])):
             payload = ('block', L, tc['info'][L][0])
             out.append(payload if c == TRUE else ('guard', c, payload))
         return out
     # PRE-PIVOT TRUNK: every block at a LOWER address than the pivot is on the linear entry
-    # chain before the first branch (Lpiv is the lowest-address branch, so nothing below it
-    # branches → all are unconditional `cr==TRUE` trunk). Emit them in address order BEFORE the
-    # if. (Previously they fell into `rest` and were emitted AFTER the branch — the address-based
-    # gate masked the misplacement via addresses; the reorder-tolerant AST gate exposed it.)
+    # chain before the first branch (all unconditional `cr==TRUE` trunk). Emit in address order
+    # BEFORE the if (else the reorder-tolerant AST gate sees them misplaced after the branch).
     pre = sorted((x for x in items if x[1] < Lpiv), key=lambda x: x[1])
     pre_set = {L for _c, L in pre}
     pre_nodes = [('block', L, tc['info'][L][0]) for _c, L in pre]
     cpiv = dict((L, c) for c, L in items)[Lpiv]
     head = ('block', Lpiv, tc['info'][Lpiv][0])
     head_emit = head if cpiv == TRUE else ('guard', cpiv, head)
-    fall_i, goto_i, rest_i = [], [], []               # fall side (!piv) / goto side (piv) / merge
+    # CONTINUATION: the pivot branch's reconvergence (immediate post-dominator) is reached by
+    # all its non-returning arm-paths, so emit it ONCE after the if (the structural fall-through)
+    # rather than DUPLICATING it into both arms — distribution alone makes a wide reconvergent
+    # tail blow up combinatorially. Split: [< cont in topo order] distributes into the arms;
+    # [>= cont] is the continuation, refined once with cont forced unconditional (TRUE).
+    rpo, ipd = tc['rpo'], tc.get('ipd', {})
+    item_ls = {L for _c, L in items}
+    cont = ipd.get(Lpiv)
+    if cont in (None, vm_cfg.EXIT) or cont not in item_ls or cont == Lpiv or cont in pre_set:
+        cont = None
+    rc = rpo.get(cont, 1 << 30) if cont is not None else (1 << 30)
+    fall_i, goto_i, cont_i = [], [], []               # fall side / goto side / continuation
     for c, L in items:
         if L == Lpiv or L in pre_set:
             continue
-        f = _factor(c, piv)
-        if f is None:
-            rest_i.append((c, L))
-        elif f[0] == 'pos':                           # piv(goto-cond) TRUE -> goto arm
-            goto_i.append((f[1], L))
-        else:                                         # !piv -> fall arm
-            fall_i.append((f[1], L))
+        if cont is not None and rpo.get(L, 1 << 30) >= rc:
+            cont_i.append((TRUE if L == cont else c, L))   # reached once, after the if
+            continue
+        cg = _assert(c, piv, True)                    # this block's condition on the goto arm
+        cf = _assert(c, piv, False)                   #                       ... the fall arm
+        if cg != FALSE:
+            goto_i.append((cg, L))
+        if cf != FALSE:                               # non-FALSE in both -> a duplicated merge
+            fall_i.append((cf, L))
     goto_target = tc['info'][Lpiv][3]
     t_succ = tc['block_of'](goto_target) if goto_target is not None else None
     f_succ = next((s for s in tc['cfg'][Lpiv] if s != vm_cfg.EXIT and s != t_succ), vm_cfg.EXIT)
     node = ('if', Lpiv, piv, f_succ, t_succ, refine(tc, fall_i), refine(tc, goto_i))
-    return pre_nodes + [head_emit, node] + refine(tc, rest_i)
+    return pre_nodes + [head_emit, node] + refine(tc, cont_i)
 
 
 def _emits(seq, nxt):
@@ -430,6 +512,12 @@ def dream_ast(lines, instructions):
     leaders = tc['leaders']
     if not leaders or not eligible(tc, leaders[0]):
         return None
+    # Topological (reverse-postorder) rank: a block ranks before the blocks it flows to. Used
+    # to order an arm's branch-free residue by DATA dependency (so each block falls into its
+    # successor) instead of by address — the gate is reorder-tolerant, and a merge can sit at a
+    # LOWER address than its predecessor (`$93C4`: $944E < $9453), which address order misplaces.
+    tc['rpo'] = {L: i for i, L in enumerate(_reverse_postorder(tc['cfg'], leaders[0]))}
+    tc['ipd'] = _ipostdom(tc['cfg'], leaders[0])      # for emit-once continuation extraction
     cr = reaching_conditions(tc, leaders[0])
     items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
     real = [L for L in leaders if L != vm_cfg.EXIT]
@@ -687,14 +775,30 @@ def dream_equivalent(raw_lines, dream_lines, leaders):
     return fo_raw == fo_dr
 
 
+# Readability cap on merge-DUPLICATION. Un-sharing a merge duplicates it into each reaching arm
+# (un-shared so the structure folds goto-free); the post-dominator continuation keeps that ~once,
+# but a region reached from MANY paths with early returns (so ipd=EXIT) still duplicates a lot —
+# inherently, because a goto-free + structurally-CFG-isomorphic form of an N-way shared region
+# MUST duplicate or use a goto. Past this factor the emit reads worse than V2's honest goto, so we
+# DON'T count it a DREAM win (it stays an honest reject) — DREAM takes the subs it folds READABLY.
+DUP_CAP = 4
+
+
+def _max_dup(lines):
+    """Most times any single real-address line is emitted (merge-duplication factor)."""
+    from collections import Counter
+    c = Counter(a for a, _i, _t in lines if a)
+    return max(c.values()) if c else 1
+
+
 def _check(bank, verbose=False):
     """Spike-A measurement: run dream_structure over every sub in `bank`, gate each vs its
-    raw witness, and tally folded / gate-rejected / passthrough + goto deltas."""
+    raw witness, and tally folded / gate-rejected / over-duplicated / passthrough + goto deltas."""
     import vm_cfg
     grab = _capture_all(bank)
-    elig = folded = rejected = passthrough = 0
+    elig = folded = rejected = overdup = passthrough = 0
     g_raw_e = g_dream_e = 0                            # goto totals over ELIGIBLE-and-validated
-    rej_list, win_list = [], []
+    rej_list, win_list, dup_list = [], [], []
     for a0, (raw, instrs) in sorted(grab.items(), key=lambda x: (x[0] is None, x[0])):
         if not instrs:
             continue
@@ -710,6 +814,10 @@ def _check(bank, verbose=False):
             ok = dream_equivalent_ast(raw, ast, tc, leaders)   # the AST-native reorder-tolerant gate
         except Exception:
             ok = False                                # malformed AST the gate can't lower = reject
+        if ok and _max_dup(dream) > DUP_CAP:          # CFG-correct but reads worse than honest goto
+            overdup += 1
+            dup_list.append((a0, _max_dup(dream)))
+            continue
         if ok:
             folded += 1
             gr, gd = _gotos(raw), _gotos(dream)
@@ -726,11 +834,14 @@ def _check(bank, verbose=False):
     print(f"  eligible (acyclic, no switch): {elig}")
     print(f"    validated (gate-green): {folded}")
     print(f"    gate-rejected         : {rejected}")
+    print(f"    over-duplicated (>{DUP_CAP}x, kept honest): {overdup}")
     if folded:
         print(f"  gotos over validated  : raw {g_raw_e} -> dream {g_dream_e}  (delta {g_dream_e-g_raw_e})")
         print(f"  subs strictly improved: {len(win_list)}")
     if verbose and rej_list:
         print("  rejected: " + ' '.join('$%X' % a for a in rej_list[:40]))
+    if verbose and dup_list:
+        print("  over-dup: " + ' '.join('$%X(%dx)' % (a, n) for a, n in dup_list))
     return folded, rejected, elig
 
 
