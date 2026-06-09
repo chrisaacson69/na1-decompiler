@@ -99,7 +99,17 @@ Chris's call was "spike both, then decide." Built **Spike A** (address-constrain
   3. **Weak boolean simplifier**: merge guards like `(!c2&&!c1)||(!c1&&c2)` should reduce to `!c1` (consensus/distribution `_and`/`_or` don't do yet) — this is rung 5, surfacing early.
   4. **Merge-after-early-return** (`$CE86`): when one arm `return`s, the continuation's reaching condition is non-trivial (`!c1`) but should hoist to unconditional; pure-cr over-guards it.
 
-**RECOMMENDATION: pursue Spike A as rung 1 proper; PARK Spike B** until a reject is found that genuinely requires forward code motion (none yet). The address-anchored gate is not the wall for rung 1 — the emitter/simplifier is. If/when the paper's semantics-preserving REORDERING transforms (rung 4) hit the wall, revisit the forward-`lex_fall` gate change then, with a concrete failing case to justify it.
+**RECOMMENDATION: pursue Spike A as rung 1 proper; Spike B is the DESTINATION, not a discard.** For rung 1 specifically the address-anchored gate is not yet the wall — the emitter/simplifier is — so the immediate work is in A. But B must not be filed as "optional revisit": see the reframing below.
+
+### The wall = V2's local optimum, and it IS the point of DREAM (Chris, 2026-06-08)
+
+The address-ordered emitter wall is **the exact local optimum V2 could never climb out of.** Across ~200 sessions the V2 epic kept hitting "address-ordered / address-inverted layout" as *the* recurring blocker (atom-4 switch, atom-5 terminal-dup, atom-6 inverted-sink, the `$AD38` family, the 130-goto "neither" bucket, the 22 `self_gate` improper regions V1 only beats "by physically nesting the goto-target inside a sibling's else — flat-text trickery a control-flow-following reducer structurally cannot do"). V2's whole convergence story bottomed out there.
+
+**Getting over that wall is the WHOLE POINT of the DREAM architecture.** Reaching conditions are reorder-agnostic *by construction* — DREAM derives "what must be true to reach this code," not "what block sits at the next address," so the layout that traps V2 simply isn't part of DREAM's model. That is why DREAM is the right architecture and not just a second pattern-matcher.
+
+**The struggle is an impedance mismatch DREAM's paper glossed:** DREAM *assumes* a backend free to reorder and duplicate code (its semantics-preserving transforms do exactly that). Our gate is address-anchored, so the paper's superpower lands on a backend that rejects it. Realizing DREAM's advantage therefore *requires* the reorder-tolerant gate (Spike B / the V2-flagged "reorder-invariant gate") — that work is the destination of this epic, met head-on at rung 4 where the reordering transforms live, with the concrete improper-region cases ($AD38, $A2D2, the 22 self_gate subs) as its test corpus.
+
+**Looming concern beyond the wall — logical vs structural equivalence.** The current gate proves *structural* (CFG-isomorphism) equivalence. DREAM's semantics-preserving transforms can produce code that is *logically* equivalent but NOT CFG-isomorphic to the witness (a refactored condition, a hoisted/duplicated block, a `&&`-merged guard). A structural gate will reject those even when they're correct. So the equivalence oracle itself may need to climb from structural to logical (e.g. SAT/BDD equivalence on the reaching-condition formulas, which DREAM already has in algebraic form) — a known future concern to design for, not yet hit.
 
 ## Build log
 
