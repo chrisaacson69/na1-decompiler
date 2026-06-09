@@ -591,6 +591,12 @@ def control_shortcircuits(instructions):
     return regions
 
 
+# Immediate pushes safe to treat as a SHARED prefix ahead of a consuming call (path-independent
+# constants — value can't differ by which pred reached the merge). pushA/local/global pushes are
+# excluded: those can carry a per-arm value, so they must be phi'd, not shared.
+_SHARED_PREFIX_PUSHES = frozenset(('push_imm4', 'push_imm_word', 'push_imm_sbyte', 'op_8D_sbyte'))
+
+
 def consuming_phis(instructions):
     """Find consuming-call STACK-PHI merges, and name the temp each arm's push materialises into.
 
@@ -635,10 +641,23 @@ def consuming_phis(instructions):
         if len(ps) < 2:
             continue
         blk = bmap.get(M, [])
-        if not blk or blk[0]['mnemonic'] not in ('host_call', 'host_call_simple'):
+        if not blk:
             continue
-        bp = re.search(r',\s*\$([0-9A-Fa-f]+)\s*$', blk[0].get('operand', '') or '')
-        n = int(bp.group(1), 16) // 2 if bp else 0     # arity = words popped
+        # The consuming call may sit behind a SHARED-ARG PREFIX: a run of IMMEDIATE pushes in the
+        # merge block that build the call's TOP args. These execute ONCE in M (after the join), so
+        # they are identical on every path — only the args BELOW them are phi'd per arm ($D2A2's
+        # $D2EE: `push 0; push 3; syscall_dispatch(…,$0C)` — selector+arg shared, 4 args phi'd).
+        # Immediates only: a `pushA`/local/global prefix could carry a per-arm value, so skip those
+        # (the call must then BE the first op, the original arity-N-at-block-start case).
+        call_i = next((j for j, i in enumerate(blk)
+                       if i['mnemonic'] in ('host_call', 'host_call_simple')), None)
+        if call_i is None:
+            continue
+        if any(blk[j]['mnemonic'] not in _SHARED_PREFIX_PUSHES for j in range(call_i)):
+            continue
+        shared_k = call_i                              # each prefix op pushes exactly one word
+        bp = re.search(r',\s*\$([0-9A-Fa-f]+)\s*$', blk[call_i].get('operand', '') or '')
+        n = (int(bp.group(1), 16) // 2 if bp else 0) - shared_k   # per-arm arity = total - shared
         if n < 1:
             continue
         if len({blk_sig(p) for p in ps}) < 2:          # all preds identical -> same args, no phi

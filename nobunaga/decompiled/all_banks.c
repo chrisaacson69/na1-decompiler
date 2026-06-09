@@ -10565,10 +10565,18 @@ word read_frame_timer(word arg1) {
     goto L_p3D2F8;    // PRG $3D2C7
 L_p3D2CA:
     if ((arg1 == 1)) {    // PRG $3D2CD
+    phi_d2ec_0 = 248;    // PRG $3D2D8
+    phi_d2ec_1 = 248;    // PRG $3D2D8
+    phi_d2ec_2 = 0;    // PRG $3D2D8
+    phi_d2ec_3 = 2;    // PRG $3D2D8
     } else {
     }
 L_p3D2EC:
-    syscall_set_sprite(0, (ui_window_col << 3), ((ui_cursor_row << 3) - 1), 0, ui_timer_gate_flag_7fe7);    // PRG $3D2EE -> bank15 $C2CB
+    phi_d2ec_0 = (ui_window_col << 3);    // PRG $3D2EC
+    phi_d2ec_1 = ((ui_cursor_row << 3) - 1);    // PRG $3D2EC
+    phi_d2ec_2 = 0;    // PRG $3D2EC
+    phi_d2ec_3 = ui_timer_gate_flag_7fe7;    // PRG $3D2EC
+    syscall_set_sprite(0, phi_d2ec_0, phi_d2ec_1, phi_d2ec_2, phi_d2ec_3);    // PRG $3D2EE -> bank15 $C2CB
     frame_counter = 200;    // PRG $3D2F5
 L_p3D2F8:
     return 200;    // PRG $3D2F8
