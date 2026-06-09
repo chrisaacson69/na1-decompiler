@@ -841,7 +841,9 @@ L_D469:
         }
 L_D485:
 L_D492:
-        ui_helper_d134(0xF6A1, *(word*)(((local4 << 1) + &local6)));    // $D492
+        phi_d492_0 = 0xF6A1;    // $D492
+        phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D492
+        ui_helper_d134(phi_d492_0, phi_d492_1);    // $D492
         ui_window_col = (ui_window_col - 1);    // $D49A
         read_frame_timer(0);    // $D49E
         delay_loop(2);    // $D4A3
@@ -853,6 +855,8 @@ L_D4AF:
         *(word*)(((local4 << 1) + &local6)) = 9;    // $D4CA
         }
 L_D4CB:
+        phi_d492_0 = 0xF6A4;    // $D4D8
+        phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D4D8
         goto L_D492;    // $D4D8
 L_D4DB:
         if (!(local4)) goto L_D460;    // $D4DC
@@ -982,18 +986,18 @@ word draw_window_f6c4(void) {
 word redraw_window_f6c7(void) {
     switch (current_season) {    // $D68F
     case 0:
-        phi_d6a1 = 0xF6C7;    // $D69E
 L_D6A1:
+        phi_d6a1_0 = 0xF6C7;    // $D6A1
     default:
-        return redraw_window(phi_d6a1);    // $D6A5
+        return redraw_window(phi_d6a1_0);    // $D6A5
     case 1:
-        phi_d6a1 = 0xF6CE;    // $D6A6
+        phi_d6a1_0 = 0xF6CE;    // $D6A9
         goto L_D6A1;    // $D6A9
     case 2:
-        phi_d6a1 = 0xF6D5;    // $D6AC
+        phi_d6a1_0 = 0xF6D5;    // $D6AF
         goto L_D6A1;    // $D6AF
     case 3:
-        phi_d6a1 = 0xF6DA;    // $D6B2
+        phi_d6a1_0 = 0xF6DA;    // $D6B5
         goto L_D6A1;    // $D6B5
     }
 }
@@ -1416,12 +1420,12 @@ L_DB6D:
 
 word draw_window_f706(word arg1) {
     if ((province_ai_state[arg1] != 255)) {    // $DB7D
-    phi_db92 = ((ui_helper_d772(arg1) * 9) + 0x77A8);    // $DB8B
+    phi_db92_0 = ((ui_helper_d772(arg1) * 9) + 0x77A8);    // $DB8C
     } else {
-    phi_db92 = msg_no_lord;    // $DB8F
     }
 L_DB92:
-    return redraw_window(phi_db92);    // $DB96
+    phi_db92_0 = msg_no_lord;    // $DB92
+    return redraw_window(phi_db92_0);    // $DB96
     }
 }
 
@@ -1714,11 +1718,15 @@ L_E080:
     transfer_force_triplet();    // $E084
     update_arms_table_dffe(battle_defending_province, local6);    // $E08B
     if (local9) {    // $E090
+    phi_e0a2_0 = selected_province_idx;    // $E099
+    phi_e0a2_1 = battle_defending_province;    // $E099
     } else {
     }
 L_E0A2:
+    phi_e0a2_0 = battle_defending_province;    // $E0A2
+    phi_e0a2_1 = selected_province_idx;    // $E0A2
 L_E0A6:
-    daimyo_stat_transfer(battle_defending_province, selected_province_idx);    // $E0A2
+    daimyo_stat_transfer(phi_e0a2_0, phi_e0a2_1);    // $E0A2
     if (((ai_turn_flags & 32) || !(local8))) {    // $E0B0
     } else {
     }

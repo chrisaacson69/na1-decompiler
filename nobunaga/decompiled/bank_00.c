@@ -338,17 +338,17 @@ L_86BA:
     if (!(((unsigned)(local11 + 1) >= (unsigned)9))) goto L_86DB;    // $86D6
     local11 = 2;    // $86DA
 L_86DB:
-    phi_86ed = local11;    // $86DB
+    phi_86ed_0 = local11;    // $86DC
     goto L_86ED;    // $86DC
 L_86DF:
     local11 = (local11 + 1);    // $86E1
     if (!(((unsigned)(local11 + 1) >= (unsigned)4))) goto L_86E9;    // $86E4
     local11 = 2;    // $86E8
 L_86E9:
-    phi_86ed = (local11 + -2);    // $86EC
 L_86ED:
+    phi_86ed_0 = (local11 + -2);    // $86ED
 L_86F1:
-    map_helper_e5f2(phi_86ed);    // $86ED
+    map_helper_e5f2(phi_86ed_0);    // $86ED
     local10 = number_input(1, scenario_fief_count);    // $86F9
     if ((number_input(1, scenario_fief_count) <= 0)) goto L_86BA;    // $86FC
     local10 = (local10 - 1);    // $8701
@@ -1185,9 +1185,9 @@ word announce_provinces_by_ai_state_mode(word arg1) {
         default: goto L_94CE;    // $94B7
     }    // $94B7
 L_94C4:
-    phi_94c7 = msg_summer_this_year_brings_typhoo;    // $94C4
 L_94C7:
-    message_display(phi_94c7);    // $94C7
+    phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // $94C7
+    message_display(phi_94c7_0);    // $94C7
 L_94CE:
     confirm_prompt();    // $94CB
     local11 = 0;    // $94CF
@@ -1199,17 +1199,21 @@ L_94CE:
             default: goto L_951D;    // $94DC
         }    // $94DC
 L_94E9:
-        phi_94c7 = msg_lord_plague_has_come;    // $94E9
+        phi_94c7_0 = msg_lord_plague_has_come;    // $94EC
         goto L_94C7;    // $94EC
 L_94EF:
         message_display(announce_provinces_by_ai_data_bc2a);    // $94F2
         daimyo_name_width(local10);    // $94F7
+        phi_9516_0 = msg_a_typhoon_has_struck_fief_2d;    // $9501
+        phi_9516_1 = (local10 + 1);    // $9501
         goto L_9516;    // $9501
 L_9504:
         message_display(announce_provinces_by_ai_data_bc4b);    // $9507
         daimyo_name_width(local10);    // $950C
 L_9516:
-        ui_helper_d134(msg_plague_has_come_to_fief_2d, (local10 + 1));    // $9516
+        phi_9516_0 = msg_plague_has_come_to_fief_2d;    // $9516
+        phi_9516_1 = (local10 + 1);    // $9516
+        ui_helper_d134(phi_9516_0, phi_9516_1);    // $9516
         confirm_prompt();    // $951A
         local11 = (local11 + 1);    // $951F
         local10 = *(byte*)((((local11 + 1) - 1) + 0x7BAD));    // $9526

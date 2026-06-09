@@ -555,15 +555,18 @@ def consuming_phis(instructions):
     each arm's assignment carries its own value under its own control — sound, no re-evaluation
     (unlike a reaching-condition ternary, which would re-run a call-valued branch predicate).
 
-    Returns `{push_addr: temp_name}`: every predecessor's phi-push address mapped to the merge's
-    temp. The decoder, at each such push, emits `temp = <value>;` and pushes `temp` instead.
+    Returns `{materialise_addr: (merge, arity)}`. At each predecessor's EXIT to the merge (its
+    unconditional jump, or — for the fall-through pred — the merge's call address), the decoder
+    stores the top `arity` stack entries (the call's args, fully built — works for COMPUTED args,
+    not just constant/load pushes) into per-merge temps `phi_<merge>_<k>` and leaves the temp
+    names on the stack, so the merge's call pops the temps. All preds write the SAME names, so the
+    linear leak is harmless and each arg is carried under its own control — sound, no re-eval.
 
-    CONSERVATIVE GUARDS (only the genuine drop is touched): the merge's FIRST op is an arity-1
-    consuming `host_call` (bytes-popped == 2, the message-display idiom); EVERY predecessor ends
-    in a net +1 push (the call's sole arg is uniformly the phi); and those pushes are DISTINCT
-    (so a working same-value merge is left untouched). Mutually exclusive with value/boolean/
-    short-circuit regions by construction (their merges aren't a leading consuming call)."""
-    import vm_stack_effect as vse
+    CONSERVATIVE GUARDS (only a genuine multi-path arg-merge is touched): the merge's FIRST op is a
+    consuming `host_call`; ≥2 predecessors whose blocks are NOT all identical (else same args, no
+    phi); and every pred leaves to the merge by an unconditional jump or fall-through (a pred
+    ending in a conditional branch is skipped). Mutually exclusive with value/boolean/short-circuit
+    regions by construction (their merges aren't a leading consuming call)."""
     cfg, leaders = _bytecode_cfg_raw(instructions)
     block_of = _block_of_fn(leaders)
     bmap = {L: [] for L in leaders}
@@ -571,16 +574,8 @@ def consuming_phis(instructions):
         bmap[block_of(ins['addr'])].append(ins)
     preds = _predecessors(cfg)
 
-    def terminal_push(blk):
-        """(addr, signature) of the block's last net-+1 push before its terminator, or None."""
-        for ins in reversed(blk):
-            e = vse.STACK_EFFECT.get(ins['bytes'][0])
-            d = (e.pushes - e.pops) if e else 0
-            if d > 0:
-                return ins['addr'], (ins['mnemonic'], ins.get('operand', '') or '')
-            if d < 0:
-                return None
-        return None
+    def blk_sig(p):
+        return tuple((i['mnemonic'], i.get('operand', '') or '') for i in bmap.get(p, []))
 
     out = {}
     for M in leaders:
@@ -591,16 +586,32 @@ def consuming_phis(instructions):
         if not blk or blk[0]['mnemonic'] not in ('host_call', 'host_call_simple'):
             continue
         bp = re.search(r',\s*\$([0-9A-Fa-f]+)\s*$', blk[0].get('operand', '') or '')
-        if not bp or int(bp.group(1), 16) != 2:        # arity-1 consuming call only
+        n = int(bp.group(1), 16) // 2 if bp else 0     # arity = words popped
+        if n < 1:
             continue
-        tp = [terminal_push(bmap.get(p, [])) for p in ps]
-        if any(t is None for t in tp):                 # every pred must push the phi'd arg
+        if len({blk_sig(p) for p in ps}) < 2:          # all preds identical -> same args, no phi
             continue
-        if len({sig for _a, sig in tp}) < 2:           # distinct values only (the real drop)
+        # Each pred must leave to M either by an UNCONDITIONAL jump or by FALL-THROUGH (its args
+        # are then fully built on the stack at that exit). Skip a merge whose pred ends in a
+        # conditional branch (args may be mid-expression / the other edge complicates it).
+        sites, ok = {}, True
+        for p in ps:
+            pb = bmap.get(p, [])
+            if not pb:
+                ok = False
+                break
+            last = pb[-1]
+            if last['mnemonic'] == 'jump_abs' and _target(last) == M:
+                sites[last['addr']] = M                # materialise just before the jump
+            elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
+                sites[blk[0]['addr']] = M              # fall-through: materialise at the merge call
+            else:
+                ok = False
+                break
+        if not ok:
             continue
-        temp = f"phi_{M:04x}"
-        for addr, _sig in tp:
-            out[addr] = temp
+        for addr in sites:
+            out[addr] = (M, n)                         # (merge, arity) -> materialise top-N into temps
     return out
 
 
