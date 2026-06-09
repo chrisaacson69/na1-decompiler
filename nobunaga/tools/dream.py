@@ -224,59 +224,72 @@ def _reverse_postorder(cfg, header):
     return list(reversed(post))
 
 
-def _ipostdom(cfg, header):
-    """Immediate post-dominator of each node (EXIT-rooted), via dominators on the REVERSE graph
-    (Cooper–Harvey–Kennedy). `ipd[n]` is the first node ALL paths from n reach before EXIT — the
-    reconvergence point of a branch. Used by `refine` to emit a branch's continuation ONCE
-    (as the structural fall-through) instead of DUPLICATING it into every arm: distribution
-    alone makes a wide reconvergent tail blow up combinatorially (a line repeated 198× on
-    `$949F`); pulling the post-dominator out keeps each block emitted ~once."""
+def _reachable(cfg, header):
+    """Forward-reachable set of every node (INCLUSIVE of the node, EXIT excluded) in the acyclic
+    CFG. Computed successors-first (reverse of reverse-postorder) so each node unions sets already
+    built. Feeds `_reconvergences`."""
     EXIT = vm_cfg.EXIT
-    rpo = _reverse_postorder(cfg, header)             # entry-first topological order
-    succ = {n: [s for s in cfg.get(n, ())] for n in rpo}
-    # postorder of the REVERSE graph from EXIT (preds in the original become successors)
-    preds = {}
-    for u in rpo:
-        for v in succ[u]:
-            preds.setdefault(v, []).append(u)
-    seen, post = set(), []
+    reach = {}
+    for n in reversed(_reverse_postorder(cfg, header)):
+        s = {n}
+        for t in cfg.get(n, ()):
+            if t != EXIT:
+                s |= reach.get(t, {t})
+        reach[n] = s
+    return reach
 
-    def dfs(n):
-        seen.add(n)
-        for p in preds.get(n, ()):
-            if p not in seen:
-                dfs(p)
-        post.append(n)
 
-    dfs(EXIT)
-    order = list(reversed(post))                      # EXIT first
-    idx = {n: i for i, n in enumerate(order)}
-    ipd = {EXIT: EXIT}
+def _reconvergences(cfg, header, rpo):
+    """Continuation map for `refine`: for each 2-way branch, the node where its arms RE-MEET. This
+    is the EXIT-rooted immediate post-dominator (Cooper–Harvey–Kennedy) in a SINGLE-exit region,
+    but survives MULTI-exit functions where that collapses: early `return`s (and a separate
+    success-exit) drive every strict post-dominator to EXIT (e.g. `$9A62`: all 18 pivots → EXIT,
+    nothing extracted, tail duplicated 34x). The reconvergence `m` of branch `Lpiv` is the lowest-rpo
+    node reached by BOTH arms such that EVERY path from Lpiv either reaches `m` or first hits a
+    DEDICATED EARLY-RETURN SINK (succ=={EXIT}, in-degree 1) before `m` — i.e. `m` post-dominates
+    Lpiv once guard-style early returns are exempted. (Plain `reachable-from-both` is WRONG: it can
+    pick an arm-internal node a sibling path bypasses — `$9A1B`'s `$9A2D` — dropping that branch.)"""
+    EXIT = vm_cfg.EXIT
+    reach = _reachable(cfg, header)
+    indeg = {}
+    for u in cfg:
+        for v in cfg[u]:
+            indeg[v] = indeg.get(v, 0) + 1
 
-    def inter(a, b):
-        while a != b:
-            while idx[a] > idx[b]:
-                a = ipd[a]
-            while idx[b] > idx[a]:
-                b = ipd[b]
-        return a
-
-    changed = True
-    while changed:
-        changed = False
-        for n in order:
-            if n == EXIT:
+    def valid(Lpiv, m, succs):
+        """True iff `m` post-dominates Lpiv modulo exempt early returns (see docstring)."""
+        stack, seen = list(succs), set()
+        while stack:
+            n = stack.pop()
+            if n == m or n in seen:
                 continue
-            cand = [s for s in succ.get(n, ()) if s in ipd]   # successors = reverse-preds
-            if not cand:
-                continue
-            new = cand[0]
-            for s in cand[1:]:
-                new = inter(new, s)
-            if ipd.get(n) != new:
-                ipd[n] = new
-                changed = True
-    return ipd
+            seen.add(n)
+            outs = cfg.get(n, ())
+            if tuple(outs) == (EXIT,):                 # a return sink reached before m
+                if indeg.get(n, 0) <= 1:
+                    continue                           # dedicated early return — exempt
+                return False                           # a shared merge-exit bypassing m
+            for t in outs:
+                if t == m:
+                    continue                           # this path reaches m — good
+                if t == EXIT:
+                    return False                       # fell off without m / exempt sink
+                stack.append(t)
+        return True
+
+    cont = {}
+    for n in cfg:
+        succs = [s for s in cfg[n] if s != EXIT]
+        if len(succs) < 2:
+            continue
+        common = set.intersection(*[reach.get(s, set()) for s in succs])
+        common.discard(n)
+        cands = sorted(common, key=lambda x: rpo.get(x, 1 << 30))
+        for m in cands:
+            if valid(n, m, succs):
+                cont[n] = m
+                break
+    return cont
 
 
 def reaching_conditions(tc, header):
@@ -420,18 +433,27 @@ def refine(tc, items):
     # rather than DUPLICATING it into both arms — distribution alone makes a wide reconvergent
     # tail blow up combinatorially. Split: [< cont in topo order] distributes into the arms;
     # [>= cont] is the continuation, refined once with cont forced unconditional (TRUE).
-    rpo, ipd = tc['rpo'], tc.get('ipd', {})
+    rpo, cont_map = tc['rpo'], tc.get('cont_map', {})
     item_ls = {L for _c, L in items}
-    cont = ipd.get(Lpiv)
+    cont = cont_map.get(Lpiv)
     if cont in (None, vm_cfg.EXIT) or cont not in item_ls or cont == Lpiv or cont in pre_set:
         cont = None
-    rc = rpo.get(cont, 1 << 30) if cont is not None else (1 << 30)
+    # The continuation is a FRESH sub-problem rooted at `cont`: recompute reaching conditions with
+    # `cont` as header so each continuation block's condition is RELATIVE to cont, not the header.
+    # For a strict single-exit post-dominator cr(cont)≡TRUE, so this is a no-op; for a multi-exit
+    # reconvergence (early returns) cr(cont) is a real OR — dividing it out here is what stops the
+    # continuation blocks from carrying an unreducible prefix guard (which otherwise SPLITS a block
+    # into a guarded-body copy + a pivot copy, duplicating it and breaking the AST→CFG gate). Its
+    # KEYS are exactly the nodes reachable FROM cont — the precise continuation region. (An rpo
+    # threshold is too crude: a PARALLEL exit like `$97BB` ranks past cont yet isn't reached through
+    # it, so a threshold would steal it from its arm and sever the branch that guards it.)
+    cr_cont = reaching_conditions(tc, cont) if cont is not None else None
     fall_i, goto_i, cont_i = [], [], []               # fall side / goto side / continuation
     for c, L in items:
         if L == Lpiv or L in pre_set:
             continue
-        if cont is not None and rpo.get(L, 1 << 30) >= rc:
-            cont_i.append((TRUE if L == cont else c, L))   # reached once, after the if
+        if cont is not None and L in cr_cont:         # reachable through cont → the continuation
+            cont_i.append((TRUE if L == cont else cr_cont[L], L))   # reached once, after the if
             continue
         cg = _assert(c, piv, True)                    # this block's condition on the goto arm
         cf = _assert(c, piv, False)                   #                       ... the fall arm
@@ -517,7 +539,9 @@ def dream_ast(lines, instructions):
     # successor) instead of by address — the gate is reorder-tolerant, and a merge can sit at a
     # LOWER address than its predecessor (`$93C4`: $944E < $9453), which address order misplaces.
     tc['rpo'] = {L: i for i, L in enumerate(_reverse_postorder(tc['cfg'], leaders[0]))}
-    tc['ipd'] = _ipostdom(tc['cfg'], leaders[0])      # for emit-once continuation extraction
+    # Multi-exit-aware reconvergence (NOT the strict EXIT-rooted post-dominator: early returns
+    # collapse that to EXIT, defeating continuation extraction — see `_reconvergences`).
+    tc['cont_map'] = _reconvergences(tc['cfg'], leaders[0], tc['rpo'])   # emit-once continuation map
     cr = reaching_conditions(tc, leaders[0])
     items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
     real = [L for L in leaders if L != vm_cfg.EXIT]
@@ -776,10 +800,11 @@ def dream_equivalent(raw_lines, dream_lines, leaders):
 
 
 # Readability cap on merge-DUPLICATION. Un-sharing a merge duplicates it into each reaching arm
-# (un-shared so the structure folds goto-free); the post-dominator continuation keeps that ~once,
-# but a region reached from MANY paths with early returns (so ipd=EXIT) still duplicates a lot —
-# inherently, because a goto-free + structurally-CFG-isomorphic form of an N-way shared region
-# MUST duplicate or use a goto. Past this factor the emit reads worse than V2's honest goto, so we
+# (un-shared so the structure folds goto-free); the reconvergence continuation keeps that ~once
+# (now multi-exit-aware, so early-return regions like `$9A62` no longer blow up), but a genuinely
+# N-way shared region still duplicates a lot — inherently, because a goto-free + structurally-CFG-
+# isomorphic form of an N-way shared region MUST duplicate or use a goto. Past this factor the emit
+# reads worse than V2's honest goto, so we
 # DON'T count it a DREAM win (it stays an honest reject) — DREAM takes the subs it folds READABLY.
 DUP_CAP = 4
 
@@ -855,8 +880,14 @@ def _emit_one(bank, sub_addr_hex):
         print(f"sub ${sub_addr_hex}: OUT OF SCOPE (loop or switch) — passthrough")
         return
     dream = dream_structure(lines, instrs)
-    ok, nr, ns = vm_cfg.structured_equivalent(lines, dream, leaders)
-    print(f"=== DREAM structured C — bank {bank} @ ${sub_addr_hex}  [gate: {'PASS' if ok else 'REJECT'}] ===")
+    ast = dream_ast(lines, instrs)[0]                 # AST-native reorder-tolerant gate (the real one)
+    try:
+        ok = dream_equivalent_ast(lines, ast, tc, leaders)
+    except Exception:
+        ok = False
+    dup = _max_dup(dream)
+    tag = 'PASS' if (ok and dup <= DUP_CAP) else ('OVER-DUP %dx' % dup if ok else 'REJECT')
+    print(f"=== DREAM structured C — bank {bank} @ ${sub_addr_hex}  [gate: {tag}] ===")
     for a, ind, t in dream:
         print(f"  {('$%04X'%a) if a else '     '}  {'  '*ind}{t}")
     print(f"  gotos: raw {_gotos(lines)} -> dream {_gotos(dream)}")
