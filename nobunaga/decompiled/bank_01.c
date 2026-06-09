@@ -127,33 +127,21 @@ L_81FA:
 // (body @ $8201)
 
 word effect_war_a(void) {
-    if (((unsigned)selected_province_idx < (unsigned)battle_defending_province)) {    // $8208
-    } else {
-    }
-L_8220:
-    *(byte*)((((battle_defending_province * 54) + selected_province_idx) + 0x6193)) = 0;    // $8227
+    dsel_8220 = ((unsigned)selected_province_idx < (unsigned)battle_defending_province);    // $8220
+    *(byte*)((((dsel_8220 ? (selected_province_idx * 54) : (battle_defending_province * 54)) + (dsel_8220 ? battle_defending_province : selected_province_idx)) + 0x6193)) = 0;    // $8227
     attacker_rel_idx = ui_helper_d77e();    // $822B
     defender_rel_idx = ui_helper_d772(battle_defending_province);    // $8233
-    if (((unsigned)attacker_rel_idx < (unsigned)defender_rel_idx)) {    // $8237
-    } else {
-    }
-L_8247:
-    *(byte*)((((attacker_rel_idx * 54) + defender_rel_idx) + 0x6193)) = 0;    // $824E
+    dsel_8247 = ((unsigned)attacker_rel_idx < (unsigned)defender_rel_idx);    // $8247
+    *(byte*)((((dsel_8247 ? (defender_rel_idx * 54) : (attacker_rel_idx * 54)) + (dsel_8247 ? attacker_rel_idx : defender_rel_idx)) + 0x6193)) = 0;    // $824E
     return 0;    // $824F
-    }
-    }
 }
 
 // $8250 relations_matrix_get
 // (body @ $8255)
 
 word relations_matrix_get(word party_a, word party_b, word order_flag) {
-    if ((((unsigned)party_a < (unsigned)party_b) ^ order_flag)) {    // $825A
-    } else {
-    }
-L_826A:
-    return *(byte*)((((party_b * 54) + party_a) + 0x6193));    // $8270
-    }
+    dsel_826a = (((unsigned)party_a < (unsigned)party_b) ^ order_flag);    // $826A
+    return *(byte*)((((dsel_826a ? (party_a * 54) : (party_b * 54)) + (dsel_826a ? party_b : party_a)) + 0x6193));    // $8270
 }
 
 // $8271 relations_rng_predicate
@@ -183,13 +171,9 @@ word effect_tax(word stat, word tax_delta) {
     }
 L_82EB:
     local10 = pct_op(stat, tax_delta);    // $82F1
-    if (is_decrease) {    // $82F3
-    } else {
-    }
-L_8300:
-    local10 = (local10 + stat);    // $8300
+    dsel_8300 = is_decrease;    // $8300
+    local10 = (dsel_8300 ? (stat - local10) : (local10 + stat));    // $8300
     return local10;    // $8302
-    }
     }
 }
 
@@ -318,10 +302,7 @@ word effect_view_a(word arg1) {
     if (!((province_state_is_FF(arg1) ? 0 : 1))) goto L_84C3;    // $8489
     local6 = fief_is_daimyo_capital[arg1];    // $8492
     if (get_province_ai_state(arg1)) {    // $8498
-    if (!(local6)) goto L_84A3;    // $849C
-    goto L_84A9;    // $84A0
-L_84A3:
-L_84A9:
+    dsel_84a9 = local6;    // $84A9
     goto L_84B5;    // $84AF
 L_84B2:
 L_84B5:
@@ -2040,12 +2021,8 @@ word hire_stat_drain_rng(word arg1, word arg2) {
 // (body @ $A279)
 
 word report_fief_stat_decline(word arg1, word arg2) {
-    if ((arg1 == 7)) {    // $A27D
-    } else {
-    }
-L_A28D:
-    return ui_helper_d134(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), *(word*)(((arg1 << 1) + effect_view_a_data_f8ae)), arg2);    // $A29A
-    }
+    dsel_a28d = (arg1 == 7);    // $A28D
+    return ui_helper_d134(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), (dsel_a28d ? msg_town_value : *(word*)(((arg1 << 1) + effect_view_a_data_f8ae))), arg2);    // $A29A
 }
 
 // $A29B effect_hire_pay_gold
@@ -2861,14 +2838,9 @@ word map_helper_af10(word arg1) {
 
 word driver_map(void) {
     ui_helper_cd20();    // $AF3D
-    if ((scenario_fief_count == 50)) {    // $AF46
-    } else {
-    }
-L_AF58:
-    local11 = *(byte*)((selected_province_idx + province_to_map_section_17));    // $AF5A
-    map_helper_e5f2(*(byte*)((selected_province_idx + province_to_map_section_17)));    // $AF5C
+    local11 = *(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // $AF5A
+    map_helper_e5f2(*(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17))));    // $AF5C
     return map_helper_af10(local11);    // $AF65
-    }
 }
 
 // $AF66 driver_grant

@@ -1719,16 +1719,10 @@ L_9982:
 L_998A:
     goto L_99BD;    // $998D
 L_9990:
-    if (flip_x) {    // $9991
-    } else {
-    }
-L_999D:
-    x = (combat_arena_x_max - xi);    // $999D
-    if (flip_y) {    // $999F
-    } else {
-    }
-L_99AB:
-    y = (combat_arena_y_max - yi);    // $99AB
+    dsel_999d = flip_x;    // $999D
+    x = (dsel_999d ? xi : (combat_arena_x_max - xi));    // $999D
+    dsel_99ab = flip_y;    // $99AB
+    y = (dsel_99ab ? yi : (combat_arena_y_max - yi));    // $99AB
     if (!(!(seek_enemy_adjacent_cell_and_commit_move(x, y)))) return ai_place_unit_in_free_slot_resolve_coords(3);    // $99B2
 L_99BD:
     yi = (yi + 1);    // $99BD
@@ -1737,8 +1731,6 @@ L_99C8:
     xi = (xi + 1);    // $99C8
     if (((unsigned)xi <= (unsigned)combat_arena_x_max)) goto L_998A;    // $99CE
     return ((unsigned)xi <= (unsigned)combat_arena_x_max);    // $99D1
-    }
-    }
 }
 
 // $99D2 ai_place_combat_units_random_or_smart
@@ -2051,11 +2043,7 @@ L_9FC7:
     goto L_9F46;    // $9FCB
     }
 L_9FCE:
-    if (get_province_ai_state(local9)) {    // $9FD3
-    } else {
-    }
-L_9FE1:
-    *(word*)(((local8 * 26) + 0x7013)) = (*(word*)(((local8 * 26) + 0x7013)) - const_two);    // $9FEE
+    *(word*)(((local8 * 26) + 0x7013)) = (*(word*)(((local8 * 26) + 0x7013)) - (get_province_ai_state(local9) ? (6 - const_two) : const_two));    // $9FEE
     if ((*(word*)(((local8 * 26) + 0x7013)) <= 0)) {    // $9FFA
     *(word*)(((local8 * 26) + 0x7013)) = 0;    // $A007
     }
@@ -2063,7 +2051,6 @@ L_A008:
     if (!(get_province_ai_state(local9))) goto L_9FC7;    // $A00D
     message_display(mem_B1CA);    // $A013
     goto L_9FC7;    // $A017
-    }
 }
 
 // $A01A unit_type_count_gt3_and_equals_arg1
@@ -3094,11 +3081,7 @@ word battle_init_driver(void) {
     render_combat_map_screen();    // $AFFF
     result = battle_init_clear_defending_province_fields();    // $B005
     draw_combat_fief_day_header();    // $B006
-    if ((scenario_fief_count == 50)) {    // $B00F
-    } else {
-    }
-L_B021:
-    latched_selected_record_idx = *(byte*)((battle_defending_province + province_to_map_section_17));    // $B023
+    latched_selected_record_idx = *(byte*)((battle_defending_province + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // $B023
     if (!(!(result))) return dispatch_battle_resolution(result);    // $B027
     deploy_both_sides_units_loop();    // $B030
     side = 0;    // $B034
@@ -3126,6 +3109,5 @@ L_B07F:
     if (((unsigned)day < (unsigned)31)) goto L_B05B;    // $B0AA
     battle_winner_province_sel = selected_province_idx;    // $B0B0
     return dispatch_battle_resolution(3);    // $B0B8
-    }
 }
 

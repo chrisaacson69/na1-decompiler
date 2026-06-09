@@ -321,10 +321,13 @@ def value_diamonds(instructions):
         ok_f, jmp_f = _value_arm(bmap.get(fall, []))
         if not (ok_t and ok_f):
             continue
-        # The regA-only ternary is sound only if regA is the SOLE per-arm difference; reject
-        # when the arms leave a different regB (which the merge could consume — the $AF46 trap).
-        if _arm_exit_regb(bmap.get(taken, [])) != _arm_exit_regb(bmap.get(fall, [])):
-            continue
+        # NOTE: the arms are side-effect-free `_value_arm` runs, so the ONLY mutable carried
+        # state that can differ between them is regA and regB. The decompiler captures BOTH at
+        # the arm boundaries and builds a ternary for whichever differs (identical values
+        # collapse to a single value). This is what folds the $AF46 trap — two arms that load
+        # the SAME regA but a different `province_to_map_section` into regB, merged by a later
+        # `add`: the regB ternary carries the difference instead of the linear sweep dropping it.
+        # (`_arm_exit_regb` previously REJECTED a differing-regB diamond; now regB is folded too.)
         if preds.get(taken) != {H} or preds.get(fall) != {H}:
             continue
         ct, cf = cfg.get(taken, frozenset()), cfg.get(fall, frozenset())

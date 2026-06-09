@@ -549,11 +549,7 @@ L_8AC9:
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // $8B13
     i = 0;    // $8B18
 L_8B19:
-    if (((unsigned)i < (unsigned)8)) {    // $8B1C
-    } else {
-    }
-L_8B2A:
-    palette_write_wrap(i, msg_new_game_b862[i]);    // $8B2E
+    palette_write_wrap(i, *(byte*)((i + (((unsigned)i < (unsigned)8) ? msg_new_game : msg_new_game_b862))));    // $8B2E
     i = (i + 1);    // $8B34
     if (((unsigned)i < (unsigned)32)) goto L_8B19;    // $8B39
     marry_helper_cc35(0);    // $8B3D
@@ -566,7 +562,6 @@ L_8B44:
     syscall_audio_control(0, 0);    // $8B5D
     palette_write_wrap(7, 33);    // $8B64
     return palette_write_wrap(11, 48);    // $8B6F
-    }
 }
 
 // $8B70 select_msg_by_state_7b79

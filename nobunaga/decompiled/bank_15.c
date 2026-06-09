@@ -1329,13 +1329,9 @@ word scaled_transfer_da24(word arg1, word arg2, word arg3, word arg4, word arg5)
 // (body @ $DA54)
 
 word diplomacy_helper2(void) {
-    if (((unsigned)selected_province_idx < (unsigned)battle_defending_province)) {    // $DA5B
-    } else {
-    }
-L_DA73:
-    *(byte*)((((battle_defending_province * 54) + selected_province_idx) + 0x6193)) = 70;    // $DA7B
+    dsel_da73 = ((unsigned)selected_province_idx < (unsigned)battle_defending_province);    // $DA73
+    *(byte*)((((dsel_da73 ? (selected_province_idx * 54) : (battle_defending_province * 54)) + (dsel_da73 ? battle_defending_province : selected_province_idx)) + 0x6193)) = 70;    // $DA7B
     return 70;    // $DA7C
-    }
 }
 
 // $DA7D diplomacy_helper3
@@ -1344,26 +1340,17 @@ L_DA73:
 word diplomacy_helper3(void) {
     local11 = ui_helper_d77e();    // $DA85
     local10 = ui_helper_d772(battle_defending_province);    // $DA8D
-    if (((unsigned)local11 < (unsigned)local10)) {    // $DA91
-    } else {
-    }
-L_DAA1:
-    *(byte*)((((local11 * 54) + local10) + 0x6193)) = 90;    // $DAA9
+    dsel_daa1 = ((unsigned)local11 < (unsigned)local10);    // $DAA1
+    *(byte*)((((dsel_daa1 ? (local10 * 54) : (local11 * 54)) + (dsel_daa1 ? local11 : local10)) + 0x6193)) = 90;    // $DAA9
     return 90;    // $DAAA
-    }
 }
 
 // $DAAB relation_base_6f4f
 // (body @ $DAB0)
 
 word relation_base_6f4f(word arg1) {
-    if ((scenario_fief_count == 17)) {    // $DABA
-    } else {
-    }
-L_DACC:
-    syscall16_sram_wrap(4, ((arg1 << 3) + relation_base_data_8004), deduped_owner_list, 8);    // $DACF
+    syscall16_sram_wrap(4, ((arg1 << 3) + ((scenario_fief_count == 17) ? relation_base_data_8300 : relation_base_data_8004)), deduped_owner_list, 8);    // $DACF
     return 0x6F4F;    // $DAD6
-    }
 }
 
 // $DAD7 combat_helper_dad7
@@ -1489,14 +1476,8 @@ L_DC55:
 
 word fief_to_mapid(word arg1) {
     if ((!(((unsigned)arg1 <= (unsigned)50)))) return arg1;    // $DC6F
-    if ((scenario_fief_count == 50)) {    // $DC7A
-    phi_ret_dc87 = arg1;    // $DC7E
-    } else {
-    phi_ret_dc87 = province_to_mapid_table[arg1];    // $DC87
-    }
-L_DC87:
-    return phi_ret_dc87;    // $DC87
-    }
+    dsel_dc87 = (scenario_fief_count == 50);    // $DC87
+    return (dsel_dc87 ? arg1 : province_to_mapid_table[arg1]);    // $DC87
 }
 
 // $DC88 read_map_cell
@@ -2067,12 +2048,7 @@ L_E693:
 // (body @ $E699)
 
 word dispatch_map_helper_e694(void) {
-    if ((scenario_fief_count == 50)) {    // $E69F
-    } else {
-    }
-L_E6B1:
-    return map_helper_e5f2(*(byte*)((selected_province_idx_latch_7fdd + province_to_map_section_17)));    // $E6B8
-    }
+    return map_helper_e5f2(*(byte*)((selected_province_idx_latch_7fdd + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17))));    // $E6B8
 }
 
 // $E6B9 unpack_composite_face_record

@@ -763,6 +763,13 @@ def _ternary_expr(cond, vt, vf, polarity):
     return f"({cond} ? {tval} : {fval})"
 
 
+def _arm_ternary(cond, vt, vf, polarity):
+    """A value-diamond captures BOTH regA and regB at the arm boundaries; this builds the
+    ternary for ONE register, collapsing to the bare value when the arms agree (a regA-only
+    diamond carries regB in identically; the $AF46 regB-diamond carries regA in identically)."""
+    return vf if vt == vf else _ternary_expr(cond, vt, vf, polarity)
+
+
 def _bool_ternary_expr(formula, tval, fval):
     """`(formula ? tval : fval)` for a short-circuit boolean region, with the boolean-predicate
     simplifications `(B ? 1 : 0)` -> `B` and `(B ? 0 : 1)` -> `!(B)` (so `is_tile_in_bounds`
@@ -873,7 +880,7 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
 
     # Second pass: decompile
     dia_active = None          # the value-diamond currently being folded (None = not in one)
-    dia_cond = dia_vt = None   # its captured condition expr + the fall-arm (true-path) value
+    dia_cond = dia_vt = dia_vt_b = None  # captured cond + the fall-arm (true-path) regA/regB values
     breg_active = None         # the boolean-region currently being folded
     breg_cond_expr, breg_val = {}, {}   # captured per-cond conditions + per-value values
     cs_cond_expr = {}          # control short-circuit: captured per-guard condition exprs
@@ -978,11 +985,23 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         # holds the taken-arm value). Both run BEFORE the elif chain processes this instr.
         if dia_active is not None:
             if ins['addr'] == dia_active['taken_block']:
-                dia_vt = state.regA                       # fall-arm (entered first) value
+                dia_vt = state.regA                       # fall-arm (entered first) regA
+                dia_vt_b = state.regB                      #                       ... regB
             if ins['addr'] == dia_active['merge']:
-                _vf = state.regA                          # taken-arm value
-                state.regA = _ternary_expr(dia_cond, dia_vt, _vf, dia_active['polarity'])
-                dia_active = None                         # merge instr now consumes the ternary
+                _vf, _vf_b = state.regA, state.regB        # taken-arm regA / regB
+                _pol, _cond = dia_active['polarity'], dia_cond
+                # Fold BOTH registers: regA-only diamonds collapse regB to its shared value;
+                # the $AF46 regB-diamond collapses regA and carries the regB ternary into the
+                # merge's `add`, so the dropped `province_to_map_section` arm survives. When BOTH
+                # differ (a sorted-pair index like `min*54 + max`), the cond would appear in two
+                # ternaries — HOIST it into a temp so a call-valued cond runs ONCE (duplicating
+                # the call text = double side effect) and the pure case reads without repetition.
+                if dia_vt != _vf and dia_vt_b != _vf_b:
+                    _cond = f"dsel_{dia_active['merge']:04x}"
+                    state.emit(f"{_cond} = {dia_cond};")
+                state.regA = _arm_ternary(_cond, dia_vt, _vf, _pol)
+                state.regB = _arm_ternary(_cond, dia_vt_b, _vf_b, _pol)
+                dia_active = None                         # merge instr now consumes the ternary(ies)
         # Head conditional: capture the cond (regA), start folding, emit NO branch line.
         if ins['addr'] in dia_by_head:
             dia_active = dia_by_head[ins['addr']]
