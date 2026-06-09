@@ -509,6 +509,83 @@ def _gotos(lines):
     return sum(1 for _a, _i, t in lines if 'goto ' in t)
 
 
+def dream_equivalent(raw_lines, dream_lines, leaders):
+    """REORDER-TOLERANT structured-equivalence gate (the pseudo-address idea).
+
+    DREAM emits goto-free C that is often correct but ADDRESS-INVERTED (a shared merge
+    placed below its arms), which the address-anchored `lower_struct_cfg` rejects. Here we
+    RENUMBER each emitted block with a synthetic address in EMIT order (so emit order ==
+    address order by construction, below `_SYNTH_BASE` so the gate's dup-handling stays
+    inert), lower THAT with the existing verified gate (which is now never reordered), then
+    map the resulting CFG back to the real leaders via `synth->real` and compare to the raw
+    witness exactly as `structured_equivalent` does. Identity = the real address each block
+    belongs to; position = the emit-order synthetic address. No change to the shared gate.
+
+    Sufficient because DREAM carries each block's statements VERBATIM (it rearranges blocks,
+    never rewrites expressions): CFG-match + every-block-once ⇒ the right values reach every
+    call/return. A dropped/duplicated block shows up as a CFG mismatch here.
+
+    ⚠ EXPERIMENTAL — FLUSH-FRAGILE FIRST CUT (2026-06-08). Detecting block boundaries by
+    `bor(addr)` line-to-line breaks on flushed-call reordering: a flushed line whose address
+    belongs to a neighbouring block transiently flips the mapping and corrupts the synthetic
+    block split → net REGRESSION (274→240) vs the old gate. The old gate is flush-robust
+    because it stays in real-address space. CONCLUSION: don't renumber-and-reuse; build the
+    CFG directly from the DREAM AST (block identity is known structurally, flush irrelevant).
+    Kept behind `--check2` as the concept proof (genuine reorder wins DID appear: $E3A9,
+    $93C4, $A6CA, $AD3D); NOT used by `--check` or anything else."""
+    import vm_cfg
+    EXIT = vm_cfg.EXIT
+    real = [L for L in leaders if L != EXIT]
+    if not real:
+        return True
+    bor = vm_cfg._block_of_fn(real)
+    syn_lines, syn2real = [], {}
+    cur_real = cur_syn = None
+    n = 0
+    for addr, ind, text in dream_lines:
+        if addr and not vm_cfg._RE_LABEL.match(text.strip()):
+            rl = bor(addr)
+            if rl != cur_real:
+                n += 1
+                cur_syn, cur_real = 0x10000 + n * 0x10, rl
+                syn2real[cur_syn] = rl
+            syn_lines.append((cur_syn, ind, text))
+        else:
+            syn_lines.append((addr, ind, text))
+    if not syn2real:
+        return False
+    or_syn = {}
+    cfg_syn = vm_cfg.lower_struct_cfg(syn_lines, sorted(syn2real), orient=or_syn)
+
+    def m(x):
+        return x if x == EXIT else syn2real.get(x, x)
+
+    cfg_dream = {}
+    for u, ss in cfg_syn.items():
+        cfg_dream.setdefault(m(u), set()).update(m(s) for s in ss)
+    cfg_dream = {u: frozenset(ss) for u, ss in cfg_dream.items()}
+    or_dream = {m(u): (m(a), m(b)) for u, (a, b) in or_syn.items()}
+
+    or_raw = {}
+    cfg_raw = vm_cfg.lower_goto_cfg(raw_lines, real, orient=or_raw)
+    entry = real[0]
+    pred_n = {}
+    for _u, ss in cfg_raw.items():
+        for s in ss:
+            pred_n[s] = pred_n.get(s, 0) + 1
+    crossjump = frozenset(T for T, ss in cfg_raw.items()
+                          if ss == frozenset({EXIT}) and pred_n.get(T, 0) >= 2)
+    n_raw = vm_cfg.contract(cfg_raw, vm_cfg.observable_blocks(raw_lines, real), entry,
+                            orient=or_raw, crossjump=crossjump)
+    n_dr = vm_cfg.contract(cfg_dream, vm_cfg.observable_blocks(dream_lines, real), entry,
+                           orient=or_dream, crossjump=crossjump)
+    if n_raw != n_dr:
+        return False
+    fo_raw = {L: tf for L, tf in or_raw.items() if tf[0] != tf[1]}
+    fo_dr = {L: tf for L, tf in or_dream.items() if tf[0] != tf[1]}
+    return fo_raw == fo_dr
+
+
 def _check(bank, verbose=False):
     """Spike-A measurement: run dream_structure over every sub in `bank`, gate each vs its
     raw witness, and tally folded / gate-rejected / passthrough + goto deltas."""
@@ -572,8 +649,47 @@ def _emit_one(bank, sub_addr_hex):
     print(f"  gotos: raw {_gotos(lines)} -> dream {_gotos(dream)}")
 
 
+def _check2(bank):
+    """Compare the OLD address-anchored gate vs the NEW reorder-tolerant gate over a bank's
+    eligible subs: how many more does reorder-tolerance recover, and is any NEWLY-PASSING
+    sub actually wrong (sanity: new gate should be a strict superset that stays sound)?"""
+    import vm_cfg
+    grab = _capture_all(bank)
+    old_ok = new_ok = elig = 0
+    newly = []
+    for a0, (raw, instrs) in sorted(grab.items(), key=lambda x: (x[0] is None, x[0])):
+        if not instrs:
+            continue
+        tc = tagged_cfg(raw, instrs)
+        leaders = tc['leaders']
+        if not leaders or not eligible(tc, leaders[0]):
+            continue
+        elig += 1
+        dream = dream_structure(raw, instrs)
+        try:
+            o = vm_cfg.structured_equivalent(raw, dream, leaders)[0]
+        except Exception:
+            o = False
+        try:
+            nw = dream_equivalent(raw, dream, leaders)
+        except Exception:
+            nw = False
+        old_ok += o
+        new_ok += nw
+        if nw and not o:
+            newly.append(a0)
+        if o and not nw:
+            newly.append(-a0)                         # regression marker (should be none)
+    print(f"=== bank {bank}: eligible {elig} | OLD gate {old_ok} | NEW reorder-tolerant {new_ok} ===")
+    print(f"  newly-passing (reorder wins): {len(newly)}  " +
+          ' '.join(('$%X' % a) if a > 0 else ('!REGRESS $%X' % -a) for a in newly[:30]))
+    return old_ok, new_ok
+
+
 if __name__ == "__main__":
-    if len(sys.argv) >= 2 and sys.argv[1] == "--check":
+    if len(sys.argv) >= 2 and sys.argv[1] == "--check2":
+        _check2(int(sys.argv[2]))
+    elif len(sys.argv) >= 2 and sys.argv[1] == "--check":
         _check(int(sys.argv[2]), verbose="-v" in sys.argv)
     elif len(sys.argv) >= 2 and sys.argv[1] == "--emit":
         _emit_one(int(sys.argv[2]), sys.argv[3])
