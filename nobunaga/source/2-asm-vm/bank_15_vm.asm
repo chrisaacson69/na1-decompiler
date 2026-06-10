@@ -2109,9 +2109,9 @@ VM bytecode disassembly
   $D8AB  C6                         UCMPLT
   $D8AC  D7 88 D8                   JUMPT_abs              $D888
   $D8AF  3C                         PUSH_quick   ; inline operand = 12
-  $D8B0  E9 15 D8 02                CALL_abs_imm1          $D815 (province_clear_fields_d815) {bytecode}, $02
+  $D8B0  E9 15 D8 02                CALL_abs_imm1          $D815 (clear_military_stats_if_no_men) {bytecode}, $02
   $D8B4  3C                         PUSH_quick   ; inline operand = 12
-  $D8B5  E9 F7 D7 02                CALL_abs_imm1          $D7F7 (province_clear_fields_d7f7) {bytecode}, $02
+  $D8B5  E9 F7 D7 02                CALL_abs_imm1          $D7F7 (clear_econ_stats_if_no_output) {bytecode}, $02
   $D8B9  CF                         RETURN
 
 ; ============================================================
@@ -3229,7 +3229,7 @@ VM bytecode disassembly
   $DF9F  0A                         LOADL_quick   ; inline operand = 10
   $DFA0  B0                         DEREF
   $DFA1  B3                         PUSHL
-  $DFA2  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_transfer_da24) {bytecode}, $0A
+  $DFA2  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_force_transfer) {bytecode}, $0A
   $DFA6  B1                         POPSTORE
   $DFA7  08                         LOADL_quick   ; inline operand = 8
   $DFA8  D0                         INC

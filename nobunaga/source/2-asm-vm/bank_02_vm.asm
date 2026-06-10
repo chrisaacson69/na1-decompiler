@@ -1713,7 +1713,7 @@ VM bytecode disassembly
   $8C07  AC FF 82                   CALL_abs               $82FF (is_no_province_selected) {bytecode}
   $8C0A  D8 17 8C                   JUMPF_abs              $8C17
   $8C0D  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $8C10  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_message_string_de78) {bytecode}, $02
+  $8C10  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_uprising_message) {bytecode}, $02
   $8C14  D6 30 8C                   JUMP_abs               $8C30
  >$8C17  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $8C1A  D6 2A 8C                   JUMP_abs               $8C2A
@@ -1913,7 +1913,7 @@ VM bytecode disassembly
   $8DBE  AC FF 82                   CALL_abs               $82FF (is_no_province_selected) {bytecode}
   $8DC1  D8 CE 8D                   JUMPF_abs              $8DCE
   $8DC4  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $8DC7  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_message_string_de78) {bytecode}, $02
+  $8DC7  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_uprising_message) {bytecode}, $02
   $8DCB  D6 D7 8D                   JUMP_abs               $8DD7
  >$8DCE  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $8DD1  59                         LOADR_qimm   ; inline operand = 9
@@ -6319,7 +6319,7 @@ VM bytecode disassembly
   $ABE3  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $ABE7  D7 F4 AB                   JUMPT_abs              $ABF4
   $ABEA  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $ABED  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_message_string_de78) {bytecode}, $02
+  $ABED  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_uprising_message) {bytecode}, $02
   $ABF1  D6 06 AC                   JUMP_abs               $AC06
  >$ABF4  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
   $ABF7  E9 8F 83 02                CALL_abs_imm1          $838F (get_battle_side_province) {bytecode}, $02

@@ -784,9 +784,9 @@ word effect_send(word ceiling, word current, word budget) {
 // (body @ $8BF9)
 
 word apply_hire_unit_stats(word arg1, word arg2) {
-    arg1->morale = scaled_transfer_da24(arg1->morale, (rng_mod(20) + 40), arg2, arg1->men, arg1->header);    // $8C1A
-    arg1->skill = scaled_transfer_da24(arg1->skill, (rng_mod(20) + 60), arg2, arg1->men, arg1->header);    // $8C3C
-    arg1->arms = scaled_transfer_da24(arg1->arms, (rng_mod(10) + 50), arg2, arg1->arms, arg1->header);    // $8C5D
+    arg1->morale = scaled_force_transfer(arg1->morale, (rng_mod(20) + 40), arg2, arg1->men, arg1->header);    // $8C1A
+    arg1->skill = scaled_force_transfer(arg1->skill, (rng_mod(20) + 60), arg2, arg1->men, arg1->header);    // $8C3C
+    arg1->arms = scaled_force_transfer(arg1->arms, (rng_mod(10) + 50), arg2, arg1->arms, arg1->header);    // $8C5D
     arg1->men = (arg1->men + arg2);    // $8C66
     return (arg1->men + arg2);    // $8C67
 }
@@ -816,13 +816,13 @@ word effect_move(word amount) {
     i = 0;    // $8CC7
 L_8CC8:
     donor_stat_ptr = (donor_stat_ptr + 2);    // $8CD3
-    *(word*)(target_stat_ptr) = scaled_transfer_da24(*(word*)(target_stat_ptr), *(word*)(((donor_stat_ptr + 2) + -2)), amount, *(word*)(target), *(word*)((target + 8)));    // $8CDF
+    *(word*)(target_stat_ptr) = scaled_force_transfer(*(word*)(target_stat_ptr), *(word*)(((donor_stat_ptr + 2) + -2)), amount, *(word*)(target), *(word*)((target + 8)));    // $8CDF
     target_stat_ptr = (target_stat_ptr + 2);    // $8CE2
     i = (i + 1);    // $8CE5
     if (((unsigned)i < (unsigned)3)) goto L_8CC8;    // $8CE9
     *(word*)(target) = (*(word*)(target) + amount);    // $8CF2
     *(word*)(donor) = (*(word*)(donor) - amount);    // $8CF9
-    return province_clear_fields_d815(selected_province_idx);    // $8D01
+    return clear_military_stats_if_no_men(selected_province_idx);    // $8D01
 }
 
 // $8D02 bribe_success_check
@@ -856,7 +856,7 @@ word effect_bribe(word gold_amount) {
     message_display(effect_bribe_data_bb3e);    // $8DA4
     draw_message(msg_d_peasants_have_defected, defect_amount);    // $8DAC
     confirm_prompt();    // $8DB0
-    province_clear_fields_d7f7(battle_defending_province);    // $8DB6
+    clear_econ_stats_if_no_output(battle_defending_province);    // $8DB6
     result = 1;    // $8DBB
     goto L_8DE6;    // $8DBC
 L_8DBF:
@@ -1736,7 +1736,7 @@ word driver_marry(void) {
     local10 = 0;    // $9DCA
     local8 = selected_province_daimyo_record();    // $9DCE
     if (!(fief_is_daimyo_capital[selected_province_idx])) goto L_9EFC;    // $9DD7
-    marry_helper_e4dc(selected_province_owner());    // $9DDE
+    build_fiefs_excluding_daimyo(selected_province_owner());    // $9DDE
     if (!(province_select_helper(8, 0x6F89))) goto L_9EFA;    // $9DEA
     redraw_window(msg_which_fief);    // $9DF0
     battle_defending_province = province_select_prompt(0x6F89);    // $9DFB
@@ -2217,7 +2217,7 @@ word driver_train(void) {
     if (!((*(word*)((local11 + 20)) < *(word*)((local11 + 24))))) goto L_A6A7;    // $A652
     if (!((*(word*)((local11 + 16)) <= 0))) goto L_A671;    // $A65B
     redraw_window(msg_you_have_no_soldiers);    // $A661
-    province_clear_fields_d815(selected_province_idx);    // $A668
+    clear_military_stats_if_no_men(selected_province_idx);    // $A668
     confirm_prompt();    // $A66C
     return 0;    // $A670
 L_A671:

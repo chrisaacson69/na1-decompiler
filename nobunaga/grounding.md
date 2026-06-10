@@ -124,6 +124,23 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### ★ BANK 15 GROUNDING COMPLETE ★ — batch #5, the final 7 leaves   [2026-06-10]
+**Bank 15 is fully grounded: 0 suspect (`_XXXX`-suffixed) subs remain** (confirmed by both the cursor and
+a direct `^word *_XXXX(` def count). The fixed bank — native floor (firmware/BIOS/interpreter/ALU, ch.19),
+the 37-sub bytecode band, banks 10/14, the DREAM phi fix — is recovered top to bottom. Gates green (CFG
+499/499, 114/114, stack-audit 187, round-trip clean). Final 7:
+- `$D7F7` → **`clear_econ_stats_if_no_output`** [HIGH] — if output(+8)==0, zero loyalty(+12)+wealth(+14).
+- `$D815` → **`clear_military_stats_if_no_men`** [HIGH] — if men(+16)==0, zero morale(+18)/skill(+20)/arms(+22).
+  (Both unblocked by the already-mapped $7001 province record; no new map needed.)
+- `$DA24` → **`scaled_force_transfer`** [MED] — proportional pct_op/math32 split clamped to arg5 (effect_move).
+- `$DE78` → **`select_uprising_message`** [HIGH] — uprising message by ai_turn_flags + province; wrong-cat'd note refined.
+- `$E4DC` → **`build_fiefs_excluding_daimyo`** [MED] — owned fiefs minus daimyo arg1's (marriage targets).
+- `$CA97` → **`fill_bytes`** [HIGH] — memset(arg1, arg3, arg2); REFUTES "derived byte" note.
+- `$CCBA` → **`clear_rect_lower_right`** [HIGH] — blanks cols 20-29 rows 20-25 + clears ui_state_flag_7bf9;
+  REFUTES the "ui_get" name (it clears, doesn't get). The 2 cursor-invisible orphans (no tracked inbound).
+**Session tally:** 33 bank-15 leaves grounded across 5 batches + a corpus-wide DREAM value-fix + banks 10/14
+folded + ch.19/ch.20 written. ~15 wrong-category labels and ~8 refuted notes corrected.
+
 ### Bytecode band batch #4 — 7 bank-15 accessor-tail leaves   [2026-06-10]
 Gates green (CFG 499/499, 114/114). Backlog 12 → 5 bank-15 suspects.
 - `$E275` → **`announce_daimyo_death`** [HIGH] — the "[lord] was killed in fief X, year Y" announcement (+ clear_fief_pair_matrix + sound); wrong-category (was "prompt_helper").
@@ -338,7 +355,17 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): bank-15 bytecode band, batch #4 (depth-0, SKIP cross-bank-blocked) <<<
+### >>> NEXT BLOCK (start here): banks 0/1/2 (bank 15 + 10 + 14 are DONE) <<<
+**Bank 15 complete (0 suspects); banks 10 & 14 complete (all named).** Remaining corpus suspects: banks
+0/1/2 — **5 (bank 0), 5 (bank 1), 7 (bank 2) ≈ 17** `_XXXX`-suffixed function defs (direct C count).
+NOTE the cursor's `--grounding` count for switchable banks is UNRELIABLE: native-call-index keys by CPU
+address so banks 0/1/2 share the $8000-$BFFF window (the cursor shows ~16 for EACH, the colliding union,
+and spuriously shows it for 10/14 too). Ground banks 0/1/2 by reading `source/4-c/bank_0N.c` directly
+(grep `^word *_[0-9a-f]{4}(` per file); the leaves-first/fanout ordering is still a useful hint, just not
+the per-bank attribution. A proper fix = split native-call-index's CODE_BANKS into NATIVE vs BYTECODE sets
+([[tools-architecture-refactor]] debt). Later: the ch.16 strategic vs tactical render is now both grounded.
+
+### (historical) bank-15 batch cursors
 Run `py -3 tools/label-walk-prep.py 15 --grounding`. Batches #1 (7) + #2 (10) + #3 (7) done — **12 suspects
 left (10 depth-0)**. Current top clean depth-0 leaves: `$E275 prompt_helper_e275` (4), `$E4A2
 build_owned_fief_list_6f89` (2), `$D586 count_div_iterations_d586` (1), `$D8F2 record_grow_capped_d8f2`

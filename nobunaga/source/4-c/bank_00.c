@@ -905,7 +905,7 @@ word compare_greater_with_coinflip_tiebreak(word arg1, word arg2) {
 // (body @ $8ED8)
 
 word display_two_message_prompt_then_compare(word arg1, word arg2, word arg3) {
-    local11 = select_message_string_de78(arg3);    // $8EDD
+    local11 = select_uprising_message(arg3);    // $8EDD
     local10 = select_message_string_by_flags_and_arg(arg3);    // $8EE3
     message_display(msg_in_fief);    // $8EE7
     draw_message(msg_fmt__d, (arg3 + 1), local11);    // $8EF2
@@ -918,7 +918,7 @@ word display_two_message_prompt_then_compare(word arg1, word arg2, word arg3) {
 // (body @ $8F0F)
 
 word ai_resolve_province_takeover_attempt(word fief) {
-    fief_name_str = select_message_string_de78(fief);    // $8F14
+    fief_name_str = select_uprising_message(fief);    // $8F14
     call_bank10_entry(30);    // $8F17
     rec = ((fief * 26) + 0x7001);    // $8F23
     attacker_strength = (((sqrt_int(*(word*)((rec + 8))) + sqrt_int(*(word*)((rec + 14)))) + rng_mod(20)) + 10);    // $8F41
@@ -1321,7 +1321,7 @@ word get_daimyo_stat4_by_fief(word arg1) {
 // (body @ $947F)
 
 word avg_daimyo_charisma_over_fief_list(void) {
-    marry_helper_e4dc(255);    // $9482
+    build_fiefs_excluding_daimyo(255);    // $9482
     local9 = 0;    // $9487
     local10 = 0;    // $9489
     local11 = 0x6F89;    // $948D

@@ -75,10 +75,10 @@ L_CA90:
     return local11;    // $CA96
 }
 
-// $CA97 fill_bytes_ca97
+// $CA97 fill_bytes
 // (body @ $CA9C)
 
-word fill_bytes_ca97(word arg1, word arg2, word arg3) {
+word fill_bytes(word arg1, word arg2, word arg3) {
     goto L_CAAB;    // $CA9C
 L_CA9F:
     arg1 = (arg1 + 1);    // $CAA1
@@ -261,10 +261,10 @@ word open_message_window(void) {
     return set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // $CCB9
 }
 
-// $CCBA ui_get_7bf9
+// $CCBA clear_rect_lower_right
 // (body @ $CCBF)
 
-word ui_get_7bf9(void) {
+word clear_rect_lower_right(void) {
     ppu_fill_rect_wrap(20, 20, 29, 25, 1);    // $CCC8
     ui_state_flag_7bf9 = 0;    // $CCCD
     return 0;    // $CCD0
@@ -1183,10 +1183,10 @@ word selected_province_daimyo_record(void) {
     return fief_to_daimyo_record_addr(selected_province_idx);    // $D7F6
 }
 
-// $D7F7 province_clear_fields_d7f7
+// $D7F7 clear_econ_stats_if_no_output
 // (body @ $D7FC)
 
-word province_clear_fields_d7f7(word arg1) {
+word clear_econ_stats_if_no_output(word arg1) {
     local11 = ((arg1 * 26) + 0x7001);    // $D804
     phi_ret_d814 = *(word*)((local11 + 8));    // $D808
     if (phi_ret_d814) goto L_D814;    // $D808
@@ -1197,10 +1197,10 @@ L_D814:
     return phi_ret_d814;    // $D814
 }
 
-// $D815 province_clear_fields_d815
+// $D815 clear_military_stats_if_no_men
 // (body @ $D81A)
 
-word province_clear_fields_d815(word arg1) {
+word clear_military_stats_if_no_men(word arg1) {
     local11 = ((arg1 * 26) + 0x7011);    // $D822
     phi_ret_d835 = *(word*)(local11);    // $D825
     if (phi_ret_d835) goto L_D835;    // $D825
@@ -1245,8 +1245,8 @@ L_D8A1:
     i = (i + 1);    // $D8A7
 L_D8A9:
     if (((unsigned)i < (unsigned)6)) goto L_D888;    // $D8AC
-    province_clear_fields_d815(fief);    // $D8B0
-    return province_clear_fields_d7f7(fief);    // $D8B9
+    clear_military_stats_if_no_men(fief);    // $D8B0
+    return clear_econ_stats_if_no_output(fief);    // $D8B9
 }
 
 // $D8BA develop_gain
@@ -1379,10 +1379,10 @@ L_DA21:
     return local11;    // $DA23
 }
 
-// $DA24 scaled_transfer_da24
+// $DA24 scaled_force_transfer
 // (body @ $DA29)
 
-word scaled_transfer_da24(word arg1, word arg2, word arg3, word arg4, word arg5) {
+word scaled_force_transfer(word arg1, word arg2, word arg3, word arg4, word arg5) {
     return min_word((pct_op(arg1, math32_2arg(arg4, arg3)) + pct_op((arg2 | 1), math32_2arg(arg3, arg4))), arg5);    // $DA4E
 }
 
@@ -1660,10 +1660,10 @@ L_DE45:
     return 20;    // $DE77
 }
 
-// $DE78 select_message_string_de78
+// $DE78 select_uprising_message
 // (body @ $DE7D)
 
-word select_message_string_de78(word arg1) {
+word select_uprising_message(word arg1) {
     if (!((ai_turn_flags & 32))) goto L_DE8A;    // $DE83
     return msg_rebels_f72e;    // $DE89
 L_DE8A:
@@ -1740,7 +1740,7 @@ word transfer_force_triplet(void) {
     local11 = *(word*)((local10 + 6));    // $DF91
     local8 = 0;    // $DF93
 L_DF94:
-    *(word*)(local10) = scaled_transfer_da24(*(word*)(local10), *(word*)(local9), war_attacker_men, war_defender_men, local11);    // $DFA6
+    *(word*)(local10) = scaled_force_transfer(*(word*)(local10), *(word*)(local9), war_attacker_men, war_defender_men, local11);    // $DFA6
     local8 = (local8 + 1);    // $DFA9
     local10 = (local10 + 2);    // $DFAD
     local9 = (local9 + 2);    // $DFB2
@@ -2067,10 +2067,10 @@ L_E4C6:
     return saved_fief;    // $E4DB
 }
 
-// $E4DC marry_helper_e4dc
+// $E4DC build_fiefs_excluding_daimyo
 // (body @ $E4E1)
 
-word marry_helper_e4dc(word arg1) {
+word build_fiefs_excluding_daimyo(word arg1) {
     build_owned_fief_list();    // $E4E1
     local10 = 0x6F89;    // $E4E7
     phi_val_e501 = 0x6F89;    // $E4E8

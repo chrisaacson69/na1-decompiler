@@ -862,7 +862,7 @@ L_8BFD:
     if (local11) goto L_8C1D;    // $8BFE
     set_cursor(2, 14);    // $8C03
     if (!(is_no_province_selected())) goto L_8C17;    // $8C0A
-    phi_push_8c30 = select_message_string_de78(battle_defending_province);    // $8C14
+    phi_push_8c30 = select_uprising_message(battle_defending_province);    // $8C14
     goto L_8C30;    // $8C14
 L_8C17:
     selected_province_owner();    // $8C17
@@ -974,7 +974,7 @@ word draw_combat_roster_window(void) {
     combat_unit_window_mode_flag = 0;    // $8DB5
     set_cursor(12, 4);    // $8DBA
     if (!(is_no_province_selected())) goto L_8DCE;    // $8DC1
-    phi_push_8dd7 = select_message_string_de78(battle_defending_province);    // $8DCB
+    phi_push_8dd7 = select_uprising_message(battle_defending_province);    // $8DCB
     goto L_8DD7;    // $8DCB
 L_8DCE:
     phi_push_8dd7 = ((selected_province_owner() * 9) + 0x77A8);    // $8DD6
@@ -2931,7 +2931,7 @@ L_ABC5:
     combat_unit_window_refresh();    // $ABD2
     if (!(is_no_province_selected())) goto L_ABF4;    // $ABD8
     if (get_province_ai_state(get_battle_side_province(cur_combat_side))) goto L_ABF4;    // $ABE7
-    phi_push_ac06 = select_message_string_de78(battle_defending_province);    // $ABF1
+    phi_push_ac06 = select_uprising_message(battle_defending_province);    // $ABF1
     goto L_AC06;    // $ABF1
 L_ABF4:
     phi_push_ac06 = ((fief_owner(get_battle_side_province(cur_combat_side)) * 9) + 0x77A8);    // $AC05

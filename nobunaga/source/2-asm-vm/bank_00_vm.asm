@@ -2062,7 +2062,7 @@ VM bytecode disassembly
 ; sub $8ED3   (frame_off=-6, body @ $8ED8)
 ; ============================================================
   $8ED8  3E                         PUSH_quick   ; inline operand = 14
-  $8ED9  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_message_string_de78) {bytecode}, $02
+  $8ED9  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_uprising_message) {bytecode}, $02
   $8EDD  2B                         STORE_quick   ; inline operand = 11
   $8EDE  3E                         PUSH_quick   ; inline operand = 14
   $8EDF  E9 9D 8B 02                CALL_abs_imm1          $8B9D (select_message_string_by_flags_and_arg) {bytecode}, $02
@@ -2090,7 +2090,7 @@ VM bytecode disassembly
 ; sub $8F0A   (frame_off=-14, body @ $8F0F)
 ; ============================================================
   $8F0F  3C                         PUSH_quick   ; inline operand = 12
-  $8F10  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_message_string_de78) {bytecode}, $02
+  $8F10  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_uprising_message) {bytecode}, $02
   $8F14  2A                         STORE_quick   ; inline operand = 10
   $8F15  8D 1E                      BYTE_PUSH_imm1         +30
   $8F17  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
@@ -2887,7 +2887,7 @@ VM bytecode disassembly
 ; sub $947A   (frame_off=-6, body @ $947F)
 ; ============================================================
   $947F  8E FF 00                   PUSH_imm2              $00FF
-  $9482  E9 DC E4 02                CALL_abs_imm1          $E4DC (marry_helper_e4dc) {bytecode}, $02
+  $9482  E9 DC E4 02                CALL_abs_imm1          $E4DC (build_fiefs_excluding_daimyo) {bytecode}, $02
   $9486  40                         LOADL_qimm   ; inline operand = 0
   $9487  29                         STORE_quick   ; inline operand = 9
   $9488  40                         LOADL_qimm   ; inline operand = 0

@@ -1826,7 +1826,7 @@ VM bytecode disassembly
   $8C12  8F 12                      BYTE_ADD_imm1          +18
   $8C14  B0                         DEREF
   $8C15  B3                         PUSHL
-  $8C16  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_transfer_da24) {bytecode}, $0A
+  $8C16  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_force_transfer) {bytecode}, $0A
   $8C1A  B1                         POPSTORE
   $8C1B  0C                         LOADL_quick   ; inline operand = 12
   $8C1C  8F 14                      BYTE_ADD_imm1          +20
@@ -1848,7 +1848,7 @@ VM bytecode disassembly
   $8C34  8F 14                      BYTE_ADD_imm1          +20
   $8C36  B0                         DEREF
   $8C37  B3                         PUSHL
-  $8C38  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_transfer_da24) {bytecode}, $0A
+  $8C38  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_force_transfer) {bytecode}, $0A
   $8C3C  B1                         POPSTORE
   $8C3D  0C                         LOADL_quick   ; inline operand = 12
   $8C3E  8F 16                      BYTE_ADD_imm1          +22
@@ -1870,7 +1870,7 @@ VM bytecode disassembly
   $8C55  8F 16                      BYTE_ADD_imm1          +22
   $8C57  B0                         DEREF
   $8C58  B3                         PUSHL
-  $8C59  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_transfer_da24) {bytecode}, $0A
+  $8C59  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_force_transfer) {bytecode}, $0A
   $8C5D  B1                         POPSTORE
   $8C5E  3D                         PUSH_quick   ; inline operand = 13
   $8C5F  0C                         LOADL_quick   ; inline operand = 12
@@ -1959,7 +1959,7 @@ VM bytecode disassembly
   $8CD8  07                         LOADL_quick   ; inline operand = 7
   $8CD9  B0                         DEREF
   $8CDA  B3                         PUSHL
-  $8CDB  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_transfer_da24) {bytecode}, $0A
+  $8CDB  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_force_transfer) {bytecode}, $0A
   $8CDF  B1                         POPSTORE
   $8CE0  07                         LOADL_quick   ; inline operand = 7
   $8CE1  72                         ADD_qimm   ; inline operand = 2
@@ -1986,7 +1986,7 @@ VM bytecode disassembly
   $8CF8  BC                         SUB
   $8CF9  B1                         POPSTORE
   $8CFA  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $8CFD  E9 15 D8 02                CALL_abs_imm1          $D815 (province_clear_fields_d815) {bytecode}, $02
+  $8CFD  E9 15 D8 02                CALL_abs_imm1          $D815 (clear_military_stats_if_no_men) {bytecode}, $02
   $8D01  CF                         RETURN
 
 ; ============================================================
@@ -2096,7 +2096,7 @@ VM bytecode disassembly
   $8DAC  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8DB0  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $8DB3  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $8DB6  E9 F7 D7 02                CALL_abs_imm1          $D7F7 (province_clear_fields_d7f7) {bytecode}, $02
+  $8DB6  E9 F7 D7 02                CALL_abs_imm1          $D7F7 (clear_econ_stats_if_no_output) {bytecode}, $02
   $8DBA  41                         LOADL_qimm   ; inline operand = 1
   $8DBB  26                         STORE_quick   ; inline operand = 6
   $8DBC  D6 E6 8D                   JUMP_abs               $8DE6
@@ -4408,7 +4408,7 @@ VM bytecode disassembly
   $9DD7  D8 FC 9E                   JUMPF_abs              $9EFC
   $9DDA  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $9DDD  B3                         PUSHL
-  $9DDE  E9 DC E4 02                CALL_abs_imm1          $E4DC (marry_helper_e4dc) {bytecode}, $02
+  $9DDE  E9 DC E4 02                CALL_abs_imm1          $E4DC (build_fiefs_excluding_daimyo) {bytecode}, $02
   $9DE2  8E 89 6F                   PUSH_imm2              $6F89
   $9DE5  68                         PUSH_qimm   ; inline operand = 8
   $9DE6  E9 9F 87 04                CALL_abs_imm1          $879F (province_select_helper) {bytecode}, $04
@@ -5607,7 +5607,7 @@ VM bytecode disassembly
   $A65E  8E FD FD                   PUSH_imm2              $FDFD (msg_you_have_no_soldiers)
   $A661  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $A665  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $A668  E9 15 D8 02                CALL_abs_imm1          $D815 (province_clear_fields_d815) {bytecode}, $02
+  $A668  E9 15 D8 02                CALL_abs_imm1          $D815 (clear_military_stats_if_no_men) {bytecode}, $02
   $A66C  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $A66F  40                         LOADL_qimm   ; inline operand = 0
   $A670  CF                         RETURN
