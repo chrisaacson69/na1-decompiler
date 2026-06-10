@@ -1790,6 +1790,48 @@ def _emit_one(bank, sub_addr_hex):
     print(f"  gotos: raw {_gotos(lines)} -> dream {_gotos(dream)}")
 
 
+def dream_structure_gated(lines, instructions):
+    """CUTOVER entry — the hybrid emit hook (mirrors vm_decompile.structure_v2's contract).
+
+    Returns DREAM-structured `(addr, indent, text)` lines IFF the AST-native gate
+    (`dream_equivalent_ast`) passes AND the merge-duplication factor is within `DUP_CAP`
+    (running the emit-time `_reshare` idiomatic-goto pass first when an over-dup would
+    otherwise sink it). On ANY failure — out of scope (returns None from `dream_ast`),
+    gate reject, or over-dup that `_reshare` can't fold — returns the input `lines`
+    UNCHANGED, the agreed fallback signal: the caller then routes the sub to V2.
+
+    This is the SAME validated chain `_emit_one` reports interactively, with the verdict
+    turned into a value rather than printed — so a sub is DREAM-owned in the canonical
+    `decompiled/*.c` exactly when `dream.py --emit` would tag it PASS or RE-SHARED."""
+    try:
+        built = dream_ast(lines, instructions)        # None ⇒ out of scope (unhandled shape)
+    except Exception:
+        return lines
+    if built is None:
+        return lines
+    ast, tc, nxt = built
+    out = []
+    _emit_ast(ast, 1, out, nxt)                        # base indent 1 = inside the function body
+    try:
+        ok = dream_equivalent_ast(lines, ast, tc, tc['leaders'])
+    except Exception:
+        ok = False
+    if not ok:
+        return lines
+    if _max_dup(out) > DUP_CAP:                        # idiomatic-goto re-share the shared sink
+        rwork = _reshare(ast, tc, nxt)
+        rout = []
+        _emit_ast(rwork, 1, rout, nxt)
+        try:
+            rok = dream_equivalent_ast(lines, rwork, tc, tc['leaders'])
+        except Exception:
+            rok = False
+        if rok and _max_dup(rout) <= DUP_CAP:
+            return rout
+        return lines                                   # honest over-dup ⇒ V2 reads better
+    return out
+
+
 def _check2(bank):
     """Compare the OLD address-anchored gate vs the NEW reorder-tolerant gate over a bank's
     eligible subs: how many more does reorder-tolerance recover, and is any NEWLY-PASSING

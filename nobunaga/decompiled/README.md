@@ -16,14 +16,28 @@
 
 **That's the whole engine.** Banks 03–14 are **data** (graphics/maps/text/tables) — 0 bytecode subroutines (verified via the `JSR $E823` stub scan), so there is nothing to decompile there. The 4 files above are the complete bytecode surface: 495 functions, ~11.8k lines.
 
+## Three views per bank — basic, full, and asm
+
+Each bank is committed in three forms, so the structure engine's work is legible side by side:
+
+| Form | File | What it is |
+|---|---|---|
+| **full** (canonical) | `bank_NN.c` | The readable C: `if`/`while`/`switch`/`do-while` with braces. Structured by **DREAM** (the pattern-independent reaching-condition structurer; owns **479/495**), with the **V2** region reducer as the per-sub fallback (16 subs). This is what you read. |
+| **basic** | `bank_NN.raw.c` | Bytecode → **direct goto/label C, no structuring** — the intermediary the structure engine folds. Also the **CFG-equivalence reference**: the gate proves `bank_NN.c` induces the *same control-flow graph* as this file, so the structured form is faithful by construction. Open both to *see* what the structure engine did. |
+| **asm** | `bank_NN_vm.asm` | The execution-validated VM-asm listing (`vm-disasm.py`), the disassembly each form is decompiled from. |
+
+`all_banks.c` / `all_banks.raw.c` are the merged PRG-keyed views of the same.
+
 ## How it's made
 
 ```
-py -3 tools/decompile-all.py          # regenerate all 4 -> decompiled/
+py -3 tools/decompile-all.py          # canonical (DREAM) bank_NN.c + bank_NN_vm.asm + all_banks.c
+py -3 tools/decompile-all.py --basic  # the basic goto form -> bank_NN.raw.c + all_banks.raw.c
+py -3 tools/decompile-all.py --v2      # V2 region reducer (audit/diff only) -> bank_NN.v2.c
 ```
 
-Pipeline (both execution-validated — see `../tools/README.md`, `../ROADMAP.md`):
-`vm-disasm.py` (ROM → v2 VM-asm, correct lengths) → `vm_decompile.py` (asm → C, dispatch keyed on the opcode byte). **Deterministic:** fixed ROM → byte-identical C, so these are committed and only regenerated when a *tool* improves (not every session).
+Pipeline (execution-validated — see `../tools/README.md`, `../ROADMAP.md`):
+`vm-disasm.py` (ROM → VM-asm, correct lengths) → `vm_decompile.py` (asm → C, dispatch keyed on the opcode byte) → `dream.py` (DREAM structurer; V2 fallback). **Deterministic:** fixed ROM → byte-identical output, so these are committed and only regenerated when a *tool* improves (not every session). Soundness is gated end-to-end: `py -3 tools/vm-cfg-gate.py --dream` proves every sub's `bank_NN.c` is CFG-equivalent to its `bank_NN.raw.c` witness (DREAM subs via the reorder-tolerant AST gate, V2 subs via the address-anchored gate).
 
 ## Reading the C — caveats
 

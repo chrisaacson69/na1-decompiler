@@ -34,11 +34,36 @@ sys.path.insert(0, str(HERE))
 
 import vm_cfg
 import vm_decompile
+import dream
 _da_spec = importlib.util.spec_from_file_location("decompile_all", HERE / "decompile-all.py")
 decompile_all = importlib.util.module_from_spec(_da_spec)
 _da_spec.loader.exec_module(decompile_all)
 
 CODE_BANKS = [0, 1, 2, 15]
+
+
+def _hybrid_equiv(collect, leaders):
+    """Per-sub equivalence for the DREAM-hybrid canonical output. Each sub is validated with
+    the relation that matches its OWNER (recorded by decompile() as collect['structurer']):
+    DREAM-owned subs via the AST-native reorder-tolerant `dream_equivalent_ast` (re-deriving
+    the AST from the raw witness exactly as the emit did — the address-anchored gate would
+    falsely reject DREAM's reorder-inverted merges); V2-fallback subs via `structured_equivalent`;
+    raw passthrough is trivially the witness. Returns (ok, n_raw, n_str)."""
+    who = collect.get('structurer')
+    raw, instrs = collect['raw'], collect['instructions']
+    if who == 'dream':
+        built = dream.dream_ast(raw, instrs)
+        if built is None:
+            return False, None, None
+        ast, tc, nxt = built
+        try:
+            return bool(dream.dream_equivalent_ast(raw, ast, tc, tc['leaders'])), None, None
+        except Exception:
+            return False, None, None
+    if who == 'raw':
+        return True, None, None
+    # V2-fallback (or any non-DREAM run): the address-anchored gate is correct.
+    return vm_cfg.structured_equivalent(raw, collect['structured'], leaders)
 
 
 def _fmt(cfg):
@@ -50,7 +75,7 @@ def _fmt(cfg):
     return "\n".join(parts)
 
 
-def run(banks, verbose=False, show_structured=False):
+def run(banks, verbose=False, show_structured=False, hybrid=False):
     raw_fail = []        # lower(raw) != bytecode                    — HARD (witness faithful)
     struct_fail = []     # the GATED structured output != raw        — HARD (gating regression)
     fellback = []        # subs where structure_lines was rejected -> honest goto (expected)
@@ -81,9 +106,14 @@ def run(banks, verbose=False, show_structured=False):
                         print(f"\nRAW != bytecode  bank {bank} ${stub:04X}")
                         print("  bytecode:\n" + _fmt(bc))
                         print("  lower(raw):\n" + _fmt(cc_raw))
-                # The GATED output decompile actually emits must be CFG-equivalent.
-                ok, n_raw, n_str = vm_cfg.structured_equivalent(
-                    collect['raw'], collect['structured'], leaders)
+                # The GATED output decompile actually emits must be CFG-equivalent. In hybrid
+                # (--dream) mode each sub is checked by its owner's relation; else the
+                # address-anchored gate validates the active single structurer (V1/V2).
+                if hybrid:
+                    ok, n_raw, n_str = _hybrid_equiv(collect, leaders)
+                else:
+                    ok, n_raw, n_str = vm_cfg.structured_equivalent(
+                        collect['raw'], collect['structured'], leaders)
                 if not ok:
                     struct_fail.append((bank, stub))
                     if show_structured:
@@ -130,10 +160,19 @@ def main():
                     help="dump each gated-structured/raw difference (a gating regression)")
     ap.add_argument("--v2", action="store_true",
                     help="validate the V2 region reducer (vm_reduce) instead of the templates")
+    ap.add_argument("--dream", action="store_true",
+                    help="validate the CANONICAL DREAM-hybrid output (DREAM primary + V2 fallback): "
+                         "each sub checked by its owner's relation (DREAM via dream_equivalent_ast, "
+                         "V2 via structured_equivalent). This gates the actual committed bank_NN.c.")
     args = ap.parse_args()
+    if args.v2 and args.dream:
+        ap.error("--v2 and --dream are mutually exclusive structurer modes")
     banks = [int(b, 0) for b in args.banks.split(",") if b.strip()]
     vm_decompile.STRUCTURE_V2 = args.v2
-    sys.exit(run(banks, args.verbose, args.show_structured))
+    if args.dream:
+        vm_decompile.STRUCTURE_DREAM = True
+        vm_decompile.structure_dream = dream.dream_structure_gated
+    sys.exit(run(banks, args.verbose, args.show_structured, hybrid=args.dream))
 
 
 if __name__ == "__main__":

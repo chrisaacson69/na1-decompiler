@@ -52,12 +52,29 @@ STRUCTURE = True
 
 # --- Structurer selector: template menagerie (V1) vs region reducer (V2) --------
 # CFG epic, REFRAME 2026-06-04: the template approach (structure_loops/structure_lines/
-# structure_switches) is being replaced by a single bottom-up CFG region reducer
+# structure_switches) was replaced by a single bottom-up CFG region reducer
 # (tools/vm_reduce.py) that is closed under composition — see vm_reduce's docstring +
-# the ROADMAP epic. Default OFF while V2 is built rung-by-rung: STRUCTURE_V2=False keeps
-# the proven template path (decompiled/*.c byte-identical). Flip True to run V2 instead;
-# it feeds the SAME structured_equivalent gate, so the safety model is unchanged.
+# the ROADMAP epic. CUTOVER 2026-06-10: DREAM (below) is now the canonical structurer and
+# V2 is its per-sub FALLBACK; the V1 templates are RETIRED from the canonical emit path but
+# kept in this module — the 114 soundness suite (test-vm-cfg.py) and the default vm-cfg-gate
+# still exercise them as a front-end regression guard. STRUCTURE_V2=True selects the V2
+# reducer alone (the --v2 audit/diff path); it feeds the SAME structured_equivalent gate.
 STRUCTURE_V2 = False
+
+
+# --- DREAM cutover (CFG epic, rung 6 EXECUTED 2026-06-10): DREAM is the PRIMARY
+# structurer; V2 (region reducer) is retained as the per-sub FALLBACK. With
+# STRUCTURE_DREAM=True the decompile() dispatch tries DREAM first (pattern-independent
+# reaching-condition structurer, `tools/dream.py`), gate-validated by its AST-native
+# `dream_equivalent_ast`; a sub DREAM can't own (out of scope / gate reject / honest
+# over-dup) falls back to the V2 reducer, itself gated by structured_equivalent. So the
+# canonical decompiled/*.c is DREAM where it wins (~479/495), V2 where it doesn't. The
+# `structure_dream` hook is wired by the driver (decompile-all.py) to
+# dream.dream_structure_gated — left None here to keep tools/vm_decompile import-light
+# (dream.py is only pulled in on the canonical-emit path). Default OFF so the gate tools
+# and captures keep their explicit-flag control.
+STRUCTURE_DREAM = False
+structure_dream = None      # set to dream.dream_structure_gated by the canonical driver
 
 
 def structure_v2(lines, instructions):
@@ -1354,7 +1371,31 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     #     <else-body>
     #   L_Y:
     structured_ungated, gated_fallback = state.lines, False
-    if STRUCTURE and STRUCTURE_V2:
+    structurer = None
+    if STRUCTURE and STRUCTURE_DREAM:
+        # CFG epic rung-6 CUTOVER — DREAM PRIMARY, V2 FALLBACK. Try DREAM first: it
+        # self-validates with its AST-native gate inside structure_dream and returns the
+        # raw `state.lines` UNCHANGED when it can't own the sub (out of scope / gate reject /
+        # honest over-dup). On that fallback signal, route the sub to the V2 region reducer,
+        # gated by structured_equivalent exactly as the STRUCTURE_V2 path does. So every sub
+        # has one owner: DREAM where its gate passes, V2 otherwise — the hybrid code oracle.
+        # `structurer` records that owner so the hybrid gate (vm-cfg-gate --dream) re-validates
+        # each sub with the RIGHT relation (DREAM via dream_equivalent_ast, V2 via structured_equivalent).
+        structured = structure_dream(state.lines, instructions)
+        if structured is not state.lines:
+            structured_ungated, structurer = structured, 'dream'   # DREAM-owned (gate-validated)
+        else:
+            structured = structure_v2(state.lines, instructions)   # V2 fallback
+            structured_ungated, structurer = structured, 'v2'
+            if structured is not state.lines:
+                import vm_cfg
+                _leaders = vm_cfg.bytecode_cfg(instructions)[1]
+                r, _nr, _ns = vm_cfg.structured_equivalent(state.lines, structured, _leaders)
+                if not r:
+                    structured, gated_fallback, structurer = state.lines, True, 'raw'
+            else:
+                structurer = 'raw'                                 # V2 passthrough == raw goto
+    elif STRUCTURE and STRUCTURE_V2:
         # CFG epic V2 — REGION REDUCER. A SINGLE bottom-up reducer (vm_reduce, behind
         # structure_v2) replaces the three template passes. It detects irreducibility
         # structurally and emits honest gotos there itself, so the gate is a pure
@@ -1368,7 +1409,9 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             if not r:
                 structured, gated_fallback = state.lines, True
     elif STRUCTURE:
-        # Template menagerie (V1, superseded by V2 but the default until cutover).
+        # Template menagerie (V1) — RETIRED from canonical emit (DREAM is now primary,
+        # 2026-06-10); reached only when STRUCTURE alone is set (the 114-suite / default
+        # gate front-end regression path), never for the committed decompiled/*.c.
         # Phase 1: fold loops first (while), then the if/else inside the bodies, and LAST
         # inline switch case bodies (Phase 3). Switches go last so structure_lines folds the
         # case bodies on clean goto lines BEFORE the case labels exist — else its if/else span
@@ -1419,6 +1462,7 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         collect['structured'] = list(structured)
         collect['structured_ungated'] = list(structured_ungated)
         collect['gated_fallback'] = gated_fallback
+        collect['structurer'] = structurer      # 'dream' | 'v2' | 'raw' | None (non-DREAM run)
         collect['instructions'] = instructions
         collect['body_addr'] = body_addr
 
