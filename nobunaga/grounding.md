@@ -203,23 +203,34 @@ explicitly grounds the chapter's older informal `$C480`/`$0075`/`$0082` model in
 ### DONE 2026-06-10: repaired the grounding cursor (`label-walk-prep --grounding`)
 The leaves-first cursor was broken by the oracle reorg: `cluster-anon-subs.py` had been moved to
 `attic/` (but is imported by `label-walk-prep` + `var-walk-prep`) and still read the gone
-`decompiled/` path. Restored it to `tools/`, repointed at `source/4-c/`, and added
-`suspect_targets(bank)` + a `--grounding` mode: the first pass named every sub (so `sub_XXXX` is
-empty), so the grounding cursor now lists the still-`_XXXX`-suffixed suspects ranked HIGH-FANOUT
-first. Backlog surfaced: **b15 37, b0/b1/b2 16 each ≈ 85 suspect code subs.**
+`decompiled/` path. Restored it to `tools/`, repointed at `source/4-c/`, and added `suspect_targets(bank)` + a
+`--grounding` mode. **Ordered LEAVES-FIRST** (Chris's bottom-up correction): `depth` = how many
+un-grounded subs deep this one sits (0 = a true root, groundable NOW); fanout (= inbound sites) is
+only the tiebreak *within* a depth band. `--by-fanout` flips to the leverage view. Backlog surfaced:
+**b15 37, b0/b1/b2 16 each ≈ 85 suspect code subs.** **KNOWN BLIND SPOT:** depth is computed over the
+in-graph suspect set (banks 0/1/2/15 only), so it cannot see cross-bank deps into banks 13/14 or data
+deps — `$E80C` shows depth-0 but is really blocked by a bank-14 routine. Treat depth-0 as *necessary,
+not sufficient*; the human ledger's open-items override.
 
-### >>> NEXT BLOCK (start here): work the ranked suspect backlog, high-fanout first <<<
-Run `py -3 tools/label-walk-prep.py 15 --grounding`. Current top leverage targets (bank 15):
-`$E80C ui_helper_e80c` (34 sites — the long-open one; needs `mem_7FCB` + bank-14 routine 14),
-`$CD20 ui_helper_cd20` (18), `$E554 find_record_9e3c` (10), `$D972 war_helper_d972` (9),
-`$E5F2 map_helper_e5f2` (8 — the strategic-map section blitter, ties into the graphics thread).
-Also still open: the `$7FD1`/`ui_msg_col_shift_flag` axis (read `message_display $D338`); `$7530`
-per-daimyo stat table (stride 7) and `$77A8` daimyo-name table (stride 9) exposed by `fief_owner`.
+### DONE 2026-06-10: pass-0 native floor (kernel) confirmed COMPLETE — bottom-up satisfied
+Per Chris ("make sure ground-0 is done first; `$E80C` proves we must stay lower"): audited the
+native kernel region `$C000-$C7FF`. Filtering `native-call-index` defs to **real subroutines (≥1 jsr
+caller)** — the raw def list is polluted by branch-target labels (`$C439`, `$C47D`… are intra-routine
+labels of `ppu_fill_rect`) and by VM-bytecode regions ($C800+) mis-parsed as 6502. Result: **20/20 real
+native subs grounded, 0 gaps** (`wait_vblank`, `set_prg_bank`, `mul_xy_by_3`, the PPU gates
+`screen_on`/`rendering_on`/`ppu_safe_gate`, `controller_poll`, `palette_upload`, music voices, +the
+blit helpers just done). The interrupt handlers (ch.01) + 23 syscalls (ch.04) cover the rest. **The
+bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect layer above it.**
+FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
+is likely named after one caller; re-ground the name.
 
-### Then: finish the UI-primitive vocabulary + write the chapter-18 section once
-Grounded primitives so far: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),
-`open_message_window`($CC89), `redraw_window`($CEC4), `prompt_y_n`($D3A7), `standard_delay`($D759).
-Once the draw-window family lands, write the chapter-18 "UI primitive vocabulary" section in one pass.
+### >>> NEXT BLOCK (start here): bank-15 VM-suspect leaves, depth-0 first, SKIP cross-bank-blocked <<<
+Run `py -3 tools/label-walk-prep.py 15 --grounding`. Native floor is done, so the groundable bank-15
+roots are now the depth-0 VM suspects — highest sites first, but **skip ones blocked by an out-of-graph
+(bank 13/14) dependency** (the depth blind spot above). `$E80C` (34 sites) is blocked → defer to a
+bank-14 descent. Next clean leaf = `$CD20 ui_helper_cd20` (18 sites; looks like the palette-pending
+consumer per the `$7FC9` note). Then `$D972 war_helper_d972` (9), `$CA12 byte_helper_ca12` (7), etc.
+The graphics thread (`$E5F2 map_helper_e5f2` → strategic-map section blitter) is also here when wanted.
 
 ### Open items
 - `$E80C` (now value-correct) — name needs `mem_7FCB` + bank-14 routine 14 grounded.

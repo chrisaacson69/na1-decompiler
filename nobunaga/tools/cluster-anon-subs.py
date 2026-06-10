@@ -43,29 +43,38 @@ def anon_addrs(bank):
     return sorted({int(a, 16) for a in re.findall(r'^word sub_([0-9A-Fa-f]+)\(', text, re.M)})
 
 
-def suspect_targets(bank):
+def suspect_targets(bank, by_fanout=False):
     """GROUNDING-pass cursor (vs anon_addrs's first-pass cursor). The first pass named every
     sub, so `sub_XXXX` is now empty; the grounding pass re-grounds the still-address-suffixed
-    `<role>_<addr>` labels (self-confessed low-fidelity). Returns the suspect CODE subs in this
-    bank's window, ranked HIGH-FANOUT first (inbound call/jmp/table sites = leverage; matches
-    the ledger's "N sites"), tie-broken leaves-first by call-graph depth then by address.
-    Returns [(addr, label, n_sites)]. Data tables fall out — they have no inbound CALL edge.
-    Deterministic: same labels + same ROM -> same order."""
+    `<role>_<addr>` labels (self-confessed low-fidelity).
+
+    Default order is LEAVES-FIRST (bottom-up): `depth` = how many un-grounded subs deep this
+    one sits (0 = a true root/leaf — calls no other still-suspect sub, so it is groundable NOW;
+    >0 = sits on un-grounded callees, ground those first). High-fanout is only the tiebreak
+    *within* a depth band (do the highest-leverage groundable leaf first). The $E80C lesson:
+    fanout-first picks impactful NON-leaves you can't actually ground yet.
+
+    `by_fanout=True` flips to fanout-primary (the old order) for when you explicitly want the
+    leverage view. Leaf-ness is judged against the GLOBAL suspect set (all code banks), so a
+    bank-15 sub that calls an un-grounded sub in any bank is correctly NOT depth 0.
+
+    Returns [(addr, label, n_sites, depth)] for subs in `bank`'s window. Data tables fall out
+    (no inbound CALL edge). Deterministic: same labels + same ROM -> same order."""
     nci = import_module("native-call-index")
     name, _lab_bank, _defs, entry_targets, inbound, outbound = nci.build()
-    lo, hi = (0xC000, 0xFFFF) if bank == 15 else (0x8000, 0xBFFF)
-    susp = [a for a, lbl in name.items()
-            if lo <= a <= hi
-            and re.search(r'_[0-9a-f]{4}$', lbl) and not lbl.startswith("sub_")
-            and (inbound.get(a) or a in entry_targets)]
-    sset = set(susp)
+
+    def is_suspect(a):
+        lbl = name.get(a, "")
+        return bool(re.search(r"_[0-9a-f]{4}$", lbl)) and not lbl.startswith("sub_")
+
+    sset = {a for a in name if is_suspect(a)}      # global: leaf-ness spans banks
     memo = {}
 
     def depth(a, stack):
         if a in memo:
             return memo[a]
         if a in stack:
-            return 0
+            return 0                                # cycle back-edge
         stack.add(a)
         d = 0
         for dst, _kind in outbound.get(a, []):
@@ -75,8 +84,13 @@ def suspect_targets(bank):
         memo[a] = d
         return d
 
-    susp.sort(key=lambda a: (-len(inbound.get(a, [])), depth(a, set()), a))
-    return [(a, name[a], len(inbound.get(a, []))) for a in susp]
+    lo, hi = (0xC000, 0xFFFF) if bank == 15 else (0x8000, 0xBFFF)
+    listed = [a for a in sset if lo <= a <= hi and (inbound.get(a) or a in entry_targets)]
+    if by_fanout:
+        listed.sort(key=lambda a: (-len(inbound.get(a, [])), depth(a, set()), a))
+    else:
+        listed.sort(key=lambda a: (depth(a, set()), -len(inbound.get(a, [])), a))
+    return [(a, name[a], len(inbound.get(a, [])), depth(a, set())) for a in listed]
 
 
 def callgraph_order(bank, addrs):
