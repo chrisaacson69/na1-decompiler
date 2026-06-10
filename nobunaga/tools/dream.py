@@ -1123,16 +1123,18 @@ def _switches_in(tc, header):
                    for t in targets if t != M):
             return None
         boundaries = targets | ({M} if M is not EXIT else set())
-        bodies, seen = {}, []
+        bodies, seen = {}, set()
         for t in targets:
             bn = set() if t == M else _reach_until(cfg, t, boundaries - {t})
             bodies[t] = bn
-            seen += list(bn)
-        if len(seen) != len(set(seen)):                # a block shared between two cases
-            return None
+            seen |= bn
+        # A block reached from ≥2 cases (a shared tail converging before the merge) is fine: it is
+        # carried in EACH case's body, so the emit DUPLICATES its text but `_ast_cfg` collapses the
+        # copies to one block identity (edges[L] set once) — the lowered CFG still matches the
+        # witness, and the duplication is the same un-sharing the acyclic path already does.
         region = {b for b in tc['leaders'] if b is not EXIT and S in dom.get(b, set())
                   and b != S and b != M and not (M is not EXIT and M in dom.get(b, set()))}
-        if region - set(seen):                         # region block not owned by any case
+        if region - seen:                              # a region block reached by no case → bail
             return None
         out.append({'S': S, 'merge': M, 'meta': meta, 'targets': targets,
                     'bodies': bodies, 'nodes': region | {S}})
