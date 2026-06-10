@@ -384,6 +384,123 @@ def _lit_of(tc, L):
     return _branch_lit(rawcond, L) if rawcond is not None else None
 
 
+# --------------------------------------------------------------------------- #
+# SHORT-CIRCUIT `||` RECOVERY. The compiler lowers `if (c1 || c2 || … || ck) { body }` to a
+# CASCADE of guard blocks: each Bi tests ci and GOTOs the common BODY if true, else falls to the
+# next guard; the last guard falls to SKIP. A pivot-by-pivot structurer splits on each ci in turn
+# and DUPLICATES body's whole subtree into every disjunct's arm (`$9E26`: 7x). Recovering the
+# compound condition lets BODY emit ONCE. SOUND because the absorbed guards B2..Bk (and any
+# intervening blocks) are STATEMENT-FREE — their only content is the condition, which short-circuit
+# `||` evaluates in the same order — so collapsing the cascade to one `entry → {body, skip}` branch
+# is a behaviour-preserving identity (the same one the front-end's `control_shortcircuits` applies).
+# The gate stays honest: the SAME collapse runs on the raw-witness CFG, so both sides compare equal.
+# --------------------------------------------------------------------------- #
+def _or_chains(tc):
+    """Detect short-circuit OR chains; return [{entry, body, skip, absorbed, compound_text}]
+    where `absorbed` = the statement-free guards/links to remove (B2..Bk + intervening 1-ways).
+    A guard reaches BODY under EITHER its goto-cond or its fall-cond (mixed polarity — `$9E26`'s
+    `$9E58` falls to the body), so BODY is identified as the COMMON successor and each disjunct is
+    read from the EDGE TAG `tag[(Bi, body)]` (already the correctly-signed condition)."""
+    cfg, kind, info, tag = tc['cfg'], tc['kind'], tc['info'], tc['tag']
+    EXIT = vm_cfg.EXIT
+    indeg = {}
+    for u in cfg:
+        for v in cfg[u]:
+            if v != EXIT:
+                indeg[v] = indeg.get(v, 0) + 1
+
+    def empty(L):
+        return not info[L][0]                         # condition-only block (no statements)
+
+    def absorbable(L):
+        # an absorbed guard/link must be statement-free AND reached ONLY from within the chain
+        # (in-degree 1) — else removing it would dangle an external predecessor's edge (unsound).
+        return empty(L) and indeg.get(L, 0) == 1
+
+    def other_succ(L, body):
+        return next((s for s in cfg[L] if s != body and s != EXIT), None)
+
+    def walk(B, body):
+        """Longest chain from B whose every member branches to `body`; (members, absorbed, skip)."""
+        members, absorbed, cur = [B], [], B
+        nxt = other_succ(B, body)
+        while True:
+            interv, n = [], nxt
+            while n not in (None, EXIT) and kind.get(n) == '1way' and absorbable(n):
+                interv.append(n)
+                n = next((s for s in cfg[n] if s != EXIT), None)
+            if (n not in (None, EXIT) and kind.get(n) == '2way' and absorbable(n)
+                    and body in cfg[n]):
+                absorbed += interv + [n]
+                members.append(n)
+                cur, nxt = n, other_succ(n, body)
+                continue
+            break
+        return members, absorbed, nxt                 # nxt = the cascade's SKIP exit
+
+    chains, claimed = [], set()
+    for B in sorted(cfg):
+        if B == EXIT or B in claimed or kind.get(B) != '2way':
+            continue
+        best = None
+        for body in sorted(s for s in cfg[B] if s != EXIT):
+            if body in claimed:
+                continue
+            members, absorbed, skip = walk(B, body)
+            if len(members) >= 2 and skip not in (None, body) \
+                    and not (set(absorbed) & claimed) and (best is None or len(members) > len(best[0])):
+                best = (members, absorbed, skip, body)
+        if best is None:
+            continue
+        members, absorbed, skip, body = best
+        parts = [to_c(tag[(m, body)]) for m in members]   # signed disjuncts from the edge tags
+        chains.append(dict(entry=B, body=body, skip=skip, absorbed=absorbed,
+                           compound_text='(' + ' || '.join(parts) + ')'))
+        claimed |= {B} | set(absorbed)
+    return chains
+
+
+def _collapse_tc_chains(tc, chains):
+    """Rewrite tc IN PLACE: each chain's entry becomes one 2-way block with the compound condition
+    (goto BODY / fall SKIP); the absorbed statement-free guards/links are removed."""
+    absorbed = set()
+    for ch in chains:
+        e, T, skip = ch['entry'], ch['body'], ch['skip']
+        clit = _branch_lit(ch['compound_text'], e)
+        tc['cfg'][e] = frozenset({T, skip})
+        tc['tag'][(e, T)] = clit
+        tc['tag'][(e, skip)] = neg(clit)
+        info_e = list(tc['info'][e])
+        info_e[1], info_e[3] = ch['compound_text'], T
+        tc['info'][e] = tuple(info_e)
+        absorbed |= set(ch['absorbed'])
+    for b in absorbed:
+        tc['cfg'].pop(b, None)
+        tc['kind'].pop(b, None)
+        tc['info'].pop(b, None)
+    for k in [k for k in tc['tag'] if k[0] in absorbed or k[1] in absorbed]:
+        tc['tag'].pop(k, None)
+    tc['leaders'] = [L for L in tc['leaders'] if L not in absorbed]
+
+
+def _collapse_raw_chains(cfg, orient, chains):
+    """Apply the SAME collapse to a lowered RAW-witness CFG + orientation so the gate compares the
+    structurer's compound branch against an equally-collapsed witness: entry → {body, skip}. The
+    orientation is recorded with the SAME `_record_orient(compound_text, body, skip)` call the
+    structurer uses, so its parity fold (a `(!(c)||…)` compound flips taken/fall) is identical on
+    both sides — hard-coding true=body would mismatch whenever the compound's parity is negative."""
+    absorbed = set()
+    for ch in chains:
+        e = ch['entry']
+        cfg[e] = frozenset({ch['body'], ch['skip']})
+        vm_cfg._record_orient(orient, e, ch['compound_text'], ch['body'], ch['skip'])
+        absorbed |= set(ch['absorbed'])
+    for b in absorbed:
+        cfg.pop(b, None)
+        if orient is not None:
+            orient.pop(b, None)
+
+
 def _factor(cond, piv):
     """Divide `piv` (a positive literal) out of `cond` if it's a top-level conjunct.
     Returns ('pos', residual) if piv⊆cond, ('neg', residual) if !piv⊆cond, else None."""
@@ -565,6 +682,14 @@ def dream_ast(lines, instructions):
     leaders = tc['leaders']
     if not leaders or not eligible(tc, leaders[0]):
         return None
+    # SHORT-CIRCUIT `||` recovery: collapse guard cascades to one compound branch BEFORE building
+    # reaching conditions, so BODY emits once (not duplicated per disjunct). leaders_full + or_chains
+    # are kept for the gate, which collapses the raw witness identically (see `_or_chains`).
+    tc['leaders_full'] = list(leaders)
+    tc['or_chains'] = _or_chains(tc)
+    if tc['or_chains']:
+        _collapse_tc_chains(tc, tc['or_chains'])
+        leaders = tc['leaders']
     # Topological (reverse-postorder) rank: a block ranks before the blocks it flows to. Used
     # to order an arm's branch-free residue by DATA dependency (so each block falls into its
     # successor) instead of by address — the gate is reorder-tolerant, and a merge can sit at a
@@ -650,7 +775,14 @@ def dream_equivalent_ast(raw_lines, ast, tc, leaders):
         return False
     cfg_str, or_str, _entry = built
     or_raw = {}
-    cfg_raw = vm_cfg.lower_goto_cfg(raw_lines, real, orient=or_raw)
+    # Lower the raw witness with the FULL (pre-collapse) leader set so the guard cascade is intact,
+    # then apply the SAME OR-chain collapse the structurer did — both sides end at one compound
+    # branch, so the recovered `||` verifies against the witness (sound: absorbed guards are
+    # statement-free, so cascade ≡ compound). No chains ⇒ this is the original single-lowering path.
+    full = tc.get('leaders_full', leaders)
+    real_full = [L for L in full if L != EXIT]
+    cfg_raw = vm_cfg.lower_goto_cfg(raw_lines, real_full, orient=or_raw)
+    _collapse_raw_chains(cfg_raw, or_raw, tc.get('or_chains', []))
     obs = vm_cfg.observable_blocks(raw_lines, real)
     entry = real[0]
     pred_n = {}
@@ -864,10 +996,12 @@ def _check(bank, verbose=False):
             passthrough += 1
             continue
         elig += 1
-        dream = dream_structure(raw, instrs)
-        ast = dream_ast(raw, instrs)[0]
+        ast, tc, nxt = dream_ast(raw, instrs)         # collapsed tc — gate must see the SAME one
+        out = []
+        _emit_ast(ast, 0, out, nxt)
+        dream = out
         try:
-            ok = dream_equivalent_ast(raw, ast, tc, leaders)   # the AST-native reorder-tolerant gate
+            ok = dream_equivalent_ast(raw, ast, tc, tc['leaders'])   # AST-native reorder-tolerant gate
         except Exception:
             ok = False                                # malformed AST the gate can't lower = reject
         if ok and _max_dup(dream) > DUP_CAP:          # CFG-correct but reads worse than honest goto
@@ -910,10 +1044,11 @@ def _emit_one(bank, sub_addr_hex):
     if not eligible(tc, leaders[0]):
         print(f"sub ${sub_addr_hex}: OUT OF SCOPE (loop or switch) — passthrough")
         return
-    dream = dream_structure(lines, instrs)
-    ast = dream_ast(lines, instrs)[0]                 # AST-native reorder-tolerant gate (the real one)
+    ast, tc, nxt = dream_ast(lines, instrs)           # collapsed tc — gate must see the SAME one
+    dream = []
+    _emit_ast(ast, 0, dream, nxt)
     try:
-        ok = dream_equivalent_ast(lines, ast, tc, leaders)
+        ok = dream_equivalent_ast(lines, ast, tc, tc['leaders'])   # AST-native reorder-tolerant gate
     except Exception:
         ok = False
     dup = _max_dup(dream)
