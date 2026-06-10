@@ -647,8 +647,20 @@ def _emit_ast(ast, indent, out, nxt):
             out.append((0, indent, "continue;"))
         elif k == 'break':
             out.append((0, indent, "break;"))
+        elif k == 'fallthrough':
+            pass                                      # C case fall-through: the next label follows
         elif k == 'loop':
             _emit_loop(node[1], node[2], indent, out, nxt)
+        elif k == 'switch':
+            _, S, head, sel, cases, _merge = node
+            for a, t in head:
+                out.append((a, indent, t))
+            out.append((S, indent, f"switch ({sel}) {{"))
+            for labs, body in cases:
+                for lab in labs:
+                    out.append((0, indent + 1, lab))
+                _emit_ast(body, indent + 2, out, nxt)
+            out.append((0, indent, "}"))
         elif k == 'guard':
             _, cond, payload = node
             baddr = payload[1] if payload[0] == 'block' else 0
@@ -762,11 +774,15 @@ CONT_SINK = '\x1bCONT'                    # synthetic sink: latch back-edge → 
 
 
 def _brk_sink(x):
-    return ('\x1bBRK', x)                  # synthetic sink: loop-exit edge → block X outside the loop
+    return ('\x1bBRK', x)                  # synthetic sink: loop-exit / switch-merge edge → block X
+
+
+def _ft_sink(x):
+    return ('\x1bFT', x)                   # synthetic sink: switch case → the NEXT case (fall-through)
 
 
 def _is_sink(L):
-    return L == CONT_SINK or (isinstance(L, tuple) and L and L[0] == '\x1bBRK')
+    return L == CONT_SINK or (isinstance(L, tuple) and L and L[0] in ('\x1bBRK', '\x1bFT'))
 
 
 def _acyclic_seq(tc, header, do_orchains=True):
@@ -942,15 +958,19 @@ def _outer_tc(base, loops, removed):
                 buckets=base.get('buckets', {}), tag=tag, kind=kind)
 
 
-def _map_sinks(seq, h, exit_target):
-    """Replace synthetic sink blocks in a structured loop body with continue/break markers:
-    CONTINUE sink → ('continue', h); BREAK sink for X → ('break', X). Recurses into guards / ifs."""
+def _map_sinks(seq, h=None):
+    """Replace a region's synthetic sink blocks with control markers: CONTINUE sink → ('continue',
+    h) (loops); BREAK sink for X → ('break', X) (loop fall-out / switch merge); FALL-THROUGH sink
+    for X → ('fallthrough', X) (switch case → next case). Maps only THIS region's sinks — nested
+    loop/switch nodes were already mapped one level down — so it does not recurse into them."""
     def conv(node):
         k = node[0]
         if k == 'block':
             L = node[1]
             if L == CONT_SINK:
                 return ('continue', h)
+            if isinstance(L, tuple) and L and L[0] == '\x1bFT':
+                return ('fallthrough', L[1])
             if _is_sink(L):
                 return ('break', L[1])
             return node
@@ -963,65 +983,251 @@ def _map_sinks(seq, h, exit_target):
     return [conv(x) for x in seq]
 
 
-def _substitute_loops(seq, loop_nodes):
-    """Replace each collapsed loop header's block in the outer AST with its ('loop', h, body)."""
+def _substitute_loops(seq, block_nodes):
+    """Replace each collapsed region header's block in the outer AST with its built node (loop or
+    switch), keyed by block address. Recurses into guards/ifs AND into already-built loop bodies
+    and switch cases — a disjoint construct's collapsed header can sit INSIDE a sibling construct's
+    body when one's region nested the other's header (see `_structure_tc`)."""
     def sub(node):
         k = node[0]
-        if k == 'block' and node[1] in loop_nodes:
-            return loop_nodes[node[1]]
+        if k == 'block' and node[1] in block_nodes:
+            return block_nodes[node[1]]
         if k == 'guard':
             return ('guard', node[1], sub(node[2]))
         if k == 'if':
             _, Lpiv, piv, f, t, fall, goto = node
             return ('if', Lpiv, piv, f, t, [sub(x) for x in fall], [sub(x) for x in goto])
+        if k == 'loop':
+            return ('loop', node[1], [sub(x) for x in node[2]])
+        if k == 'switch':
+            _, S, head, sel, cases, merge = node
+            return ('switch', S, head, sel, [(labs, [sub(x) for x in body]) for labs, body in cases], merge)
         return node
     return [sub(x) for x in seq]
 
 
-def _structure_tc(tc, header):
-    """Structure a single-entry reducible region `tc` (acyclic OR cyclic) into an AST seq, or None
-    if out of scope. RECURSIVE: structure each OUTERMOST loop's body in its redirected sub-tc — which
-    may itself contain a (now-innermost) loop, peeled by the recursive call — wrap in a loop node,
-    collapse the loop to its header in the outer graph, structure that acyclically, and substitute
-    the loop nodes back. Each region's own back/exit edges are redirected to sinks (mapped to
-    continue/break here, after the body is fully structured), so nesting composes one level at a
-    time. Bails if any region stays cyclic after collapse (irreducible)."""
-    if not _has_backedge(tc['cfg'], header):
-        return _acyclic_seq(tc, header, do_orchains=False)
-    loops = _natural_loops(tc, header)
-    if loops is None:
+# --------------------------------------------------------------------------- #
+# RUNG 2 — SWITCH DISPATCH.  A switch is a first-class VM op the front-end lowers to a goto
+# dispatch: `switch (E) { case k: goto L_T; … default: goto L_D; }` with the case BODIES as
+# separate blocks. DREAM inlines them — the SAME region-collapse lever as loops: a switch is a
+# single-entry region rooted at the switch block S, exiting at the MERGE M (S's immediate
+# post-dominator). Collapse the region to S (succ = M) in the outer; structure each case's body
+# as its own sub-region (edges to M → a BREAK sink; edges to the NEXT case target → a FALL-THROUGH
+# sink for C's case fall-through; returns stay terminal) reusing `_structure_tc`, so a case body
+# can itself carry ifs or loops. The gate is unchanged: `lower_goto_cfg` already reads the raw
+# `case k: goto L` dispatch into S's edge set, and `_ast_cfg`'s switch node reproduces exactly that
+# edge set from the case-body entries. Scope: SINGLE-ENTRY switches whose case bodies are DISJOINT
+# (a block shared between two cases is an un-handled cross-case merge — bail).
+# --------------------------------------------------------------------------- #
+def _switch_meta(bucket):
+    """(head_stmts, selector_text, [(case_label, target_addr)]) parsed from a switch block's raw
+    lines, or None if it isn't a well-formed `switch(E){ case k: goto L; … }`. The selector stmts
+    BEFORE the opener are kept; the `case/default: goto` dispatch + the `}` closer are dropped (the
+    structure re-supplies them around the inlined bodies)."""
+    head, sel, cases, opener = [], None, [], False
+    for addr, _i, text in bucket:
+        t = text.strip()
+        if vm_cfg._RE_LABEL.match(t):
+            continue
+        mo = vm_cfg._RE_SWITCH_OPEN.match(t)
+        if mo:
+            sel, opener = mo.group(1), True
+            continue
+        mc = vm_cfg._RE_SWITCH_CASE.match(t)
+        if mc:
+            cases.append((mc.group(1) + ':', int(mc.group(2), 16)))
+            continue
+        if t == '}':
+            continue
+        if not opener:
+            head.append((addr, t))
+    if sel is None or not cases:
         return None
-    loop_nodes, removed = {}, set()
-    for lp in loops:
-        h, N = lp['h'], lp['nodes']
-        rtc = _region_tc(tc, N, h, lp['exit'])
-        body = _structure_tc(rtc, h)                  # RECURSE: inner loops peeled here
+    return {'head': head, 'sel': sel, 'cases': cases}
+
+
+def _reach_until(cfg, start, stops):
+    """Nodes reachable from `start` WITHOUT entering any node in `stops` (stops are boundaries —
+    not included). `start` itself is always included. EXIT is never traversed."""
+    seen, work = {start}, [start]
+    while work:
+        n = work.pop()
+        for s in cfg.get(n, ()):
+            if s != vm_cfg.EXIT and s not in stops and s not in seen:
+                seen.add(s)
+                work.append(s)
+    return seen
+
+
+def _case_region_tc(base, nodes, root, merge, case_targets):
+    """Acyclic-or-loopy sub-tc for ONE switch case body: `nodes` rooted at `root`, with edges to the
+    switch MERGE redirected to a BREAK sink, edges to ANOTHER case target to a FALL-THROUGH sink, and
+    any other outside edge to a BREAK sink (defensive). Internal edges (incl. a case-local loop's
+    back edge) are carried verbatim for `_structure_tc` to peel."""
+    EXIT = vm_cfg.EXIT
+    cfg, tag, info, kind = {}, {}, {}, {}
+    for L in nodes:
+        info[L] = base['info'][L]
+        kind[L] = base['kind'][L]
+        succ = []
+        for s in base['cfg'][L]:
+            if s == EXIT:
+                t = EXIT
+            elif s in nodes:
+                t = s
+            elif s == merge:
+                t = _brk_sink(merge)
+            elif s in case_targets:
+                t = _ft_sink(s)
+            else:
+                t = _brk_sink(s)
+            succ.append(t)
+            tag[(L, t)] = base['tag'].get((L, s), TRUE)
+        cfg[L] = succ
+    sinks = {s for L in nodes for s in cfg[L] if _is_sink(s)}
+    for sk in sinks:
+        cfg[sk] = [EXIT]
+        info[sk] = ([], None, None, None, False)
+        kind[sk] = 'exit'
+        tag[(sk, EXIT)] = TRUE
+    real = [L for L in base['leaders'] if L in nodes]
+    leaders = real + sorted(sinks, key=repr)
+    return dict(cfg=cfg, leaders=leaders, block_of=base['block_of'], info=info,
+                buckets=base.get('buckets', {}), tag=tag, kind=kind)
+
+
+def _switches_in(tc, header):
+    """The reachable SINGLE-ENTRY switch regions of `tc` as [{S, merge, meta, targets, bodies,
+    nodes}], or None when any switch is out of scope (malformed, not single-entry, cross-case
+    shared block, or a case target that escapes the region). [] when there are no switches."""
+    EXIT = vm_cfg.EXIT
+    cfg = tc['cfg']
+    reach = _reach_until(cfg, header, set())
+    sw_blocks = [L for L in tc['leaders'] if tc['kind'].get(L) == 'switch' and L in reach]
+    if not sw_blocks:
+        return []
+    dom = vm_cfg.dominators(cfg, header)
+    pdom = vm_cfg.post_dominators(cfg)
+    out = []
+    for S in sw_blocks:
+        meta = _switch_meta(tc['buckets'][S])
+        if meta is None:
+            return None
+        targets = {t for _l, t in meta['cases']}
+        M = vm_cfg._imm_post_dom(pdom, S)
+        # SINGLE-ENTRY: every case target dominated by S, so the only way into a case body is the
+        # dispatch. EXEMPT (a) an empty case that IS the merge, and (b) a TERMINAL case target
+        # (→EXIT) — a shared `return`/exit block (e.g. `$A5F9`'s `default: return 0`, also the outer
+        # if's early-exit) is duplicated into the case, which the gate's cross-jump bypass accepts.
+        if not all(S in dom.get(t, set()) or set(cfg.get(t, ())) == {EXIT}
+                   for t in targets if t != M):
+            return None
+        boundaries = targets | ({M} if M is not EXIT else set())
+        bodies, seen = {}, []
+        for t in targets:
+            bn = set() if t == M else _reach_until(cfg, t, boundaries - {t})
+            bodies[t] = bn
+            seen += list(bn)
+        if len(seen) != len(set(seen)):                # a block shared between two cases
+            return None
+        region = {b for b in tc['leaders'] if b is not EXIT and S in dom.get(b, set())
+                  and b != S and b != M and not (M is not EXIT and M in dom.get(b, set()))}
+        if region - set(seen):                         # region block not owned by any case
+            return None
+        out.append({'S': S, 'merge': M, 'meta': meta, 'targets': targets,
+                    'bodies': bodies, 'nodes': region | {S}})
+    # switch regions must be pairwise disjoint at this level (nested switches peel via recursion).
+    alln = [n for sw in out for n in sw['nodes']]
+    if len(alln) != len(set(alln)):
+        return None
+    return out
+
+
+def _build_switch_node(tc, sw):
+    """Build the ('switch', S, head, sel, cases, merge) node: structure each case body in its own
+    region (recurse), in ADDRESS order so C fall-through is layout-natural; an empty case (target ==
+    merge) becomes a bare `break`. Returns None if any case body is out of scope."""
+    S, M, meta = sw['S'], sw['merge'], sw['meta']
+    labels, order = {}, []                              # distinct targets in declaration order
+    for lab, t in meta['cases']:
+        if t not in labels:
+            labels[t], _ = [], order.append(t)
+        labels[t].append(lab)
+    cases = []
+    for t in sorted(order):                            # ADDRESS order → fall-through is adjacency
+        if t == M:
+            cases.append((labels[t], [('break', M)] if M is not vm_cfg.EXIT else []))
+            continue
+        crt = _case_region_tc(tc, sw['bodies'][t], t, M, sw['targets'])
+        body = _structure_tc(crt, t)
         if body is None:
             return None
-        loop_nodes[h] = ('loop', h, _map_sinks(body, h, lp['exit']))
-        removed |= (set(N) - {h})
-    otc = _outer_tc(tc, loops, removed)
-    if _has_backedge(otc['cfg'], header):             # residue still cyclic ⇒ irreducible — bail
+        cases.append((labels[t], _map_sinks(body)))
+    return ('switch', S, meta['head'], meta['sel'], cases, M)
+
+
+def _structure_tc(tc, header):
+    """Structure a single-entry reducible region `tc` (acyclic, loopy, and/or switched) into an AST
+    seq, or None if out of scope. RECURSIVE and layered: collapse SWITCHES first (each to its block
+    S → merge), then LOOPS (each outermost loop's body structured in a redirected sub-tc — inner
+    loops/switches peeled by the recursive call), then the acyclic residue. Each construct's own
+    boundary edges are redirected to sinks (mapped to continue/break/fall-through after the body is
+    structured) and its region collapses to a single header, so nesting composes one level at a
+    time. Bails if any residue stays cyclic (irreducible)."""
+    # 1. SWITCHES — collapse each region to its switch block, then structure what's left.
+    switches = _switches_in(tc, header)
+    if switches is None:
         return None
-    outer = _acyclic_seq(otc, header, do_orchains=False)
-    return _substitute_loops(outer, loop_nodes)
+    if switches:
+        sw_nodes, removed = {}, set()
+        for sw in switches:
+            node = _build_switch_node(tc, sw)
+            if node is None:
+                return None
+            sw_nodes[sw['S']] = node
+            removed |= (set(sw['nodes']) - {sw['S']})
+        otc = _outer_tc(tc, [{'h': sw['S'], 'exit': sw['merge']} for sw in switches], removed)
+        inner = _structure_tc(otc, header)             # RECURSE: loops / acyclic around the switch
+        return None if inner is None else _substitute_loops(inner, sw_nodes)
+    # 2. LOOPS — each outermost loop's body structured in its redirected sub-tc, collapsed to header.
+    if _has_backedge(tc['cfg'], header):
+        loops = _natural_loops(tc, header)
+        if loops is None:
+            return None
+        loop_nodes, removed = {}, set()
+        for lp in loops:
+            h, N = lp['h'], lp['nodes']
+            rtc = _region_tc(tc, N, h, lp['exit'])
+            body = _structure_tc(rtc, h)               # RECURSE: inner loops/switches peeled here
+            if body is None:
+                return None
+            loop_nodes[h] = ('loop', h, _map_sinks(body, h))
+            removed |= (set(N) - {h})
+        otc = _outer_tc(tc, loops, removed)
+        if _has_backedge(otc['cfg'], header):          # residue still cyclic ⇒ irreducible — bail
+            return None
+        outer = _structure_tc(otc, header)             # RECURSE (no loops left; switches handled)
+        return None if outer is None else _substitute_loops(outer, loop_nodes)
+    # 3. ACYCLIC residue.
+    return _acyclic_seq(tc, header, do_orchains=False)
 
 
 def dream_ast(lines, instructions):
     """Build the refinement AST (+ tc + the address next_leader map) for an in-scope sub, or None
-    when out of scope (switch, or a loop shape Phase 1 doesn't handle). Shared by the emitter and
-    the AST-native gate."""
+    when out of scope (an unhandled loop/switch shape). Shared by the emitter and the AST-native
+    gate. PURE-ACYCLIC subs (no loop, no switch) keep the original `_acyclic_seq` path — with `||`
+    recovery (`do_orchains=True`), whose collapse the gate mirrors on the raw witness. Loop/switch
+    subs route through `_structure_tc` (no `||` collapse: the gate lowers the un-collapsed witness)."""
     tc = tagged_cfg(lines, instructions)
     leaders = tc['leaders']
     if not leaders:
-        return None
-    if any(k == 'switch' for k in tc['kind'].values()):
         return None
     EXIT = vm_cfg.EXIT
     header = leaders[0]
     real = [L for L in leaders if L != EXIT]
     nxt = {real[i]: (real[i + 1] if i + 1 < len(real) else EXIT) for i in range(len(real))}
-    if not _has_backedge(tc['cfg'], header):
+    has_switch = any(k == 'switch' for k in tc['kind'].values())
+    if not has_switch and not _has_backedge(tc['cfg'], header):
         tc['leaders'] = list(leaders)
         return _acyclic_seq(tc, header), tc, nxt
     ast = _structure_tc(tc, header)
@@ -1069,7 +1275,9 @@ def _ast_cfg(ast, tc):
             return L
         if k == 'continue':                           # back-edge → the loop header
             return node[1]
-        if k == 'break':                              # exit edge → the block past the loop
+        if k == 'break':                              # exit edge → past the loop / switch merge
+            return node[1]
+        if k == 'fallthrough':                        # switch case → the next case (real block)
             return node[1]
         if k == 'loop':
             # The loop body's lexical end loops back to the header (fall == h); break/continue
@@ -1077,6 +1285,14 @@ def _ast_cfg(ast, tc):
             # REAL edges, so the lowered CFG is cyclic exactly like the witness. Entry == h.
             _, h, body = node
             return build(body, h)
+        if k == 'switch':
+            # The switch block S branches to each case body's entry (= its target block); break /
+            # fall-through markers carry the real merge / next-case targets. So edges[S] is exactly
+            # the raw `case k: goto L` target set, and each case body sets its own blocks' edges.
+            _, S, _head, _sel, cases, _merge = node
+            entries = {build(body, cont) for _labs, body in cases}
+            edges[S] = frozenset(entries)
+            return S
         if k == 'guard':
             # `if(cr){block}` where cr is a residual reaching condition. CFG-TRANSPARENT: the
             # real branching that reaches `block` is the upstream `if` nodes (their empty goto
