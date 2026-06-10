@@ -329,7 +329,7 @@ word display_prompt_message_b900(word arg1) {
 // (body @ $8699)
 
 word prompt_select_player_daimyo(word arg1) {
-    map_helper_e5f2(((scenario_fief_count == 50) ? 2 : 0));    // $86A8
+    render_map_section(((scenario_fief_count == 50) ? 2 : 0));    // $86A8
     ui_input_prompt_active_flag = 1;    // $86AD
     local11 = 2;    // $86B1
 L_86B2:
@@ -353,7 +353,7 @@ L_86E9:
     phi_86ed_0 = (local11 + -2);    // $86EC
 L_86ED:
 L_86F1:
-    map_helper_e5f2(phi_86ed_0);    // $86ED
+    render_map_section(phi_86ed_0);    // $86ED
     local10 = number_input(1, scenario_fief_count);    // $86F9
     if ((number_input(1, scenario_fief_count) <= 0)) goto L_86BA;    // $86FC
     local10 = (local10 - 1);    // $8701
@@ -742,7 +742,7 @@ L_8DAC:
     redraw_window(((fief_owner(local10) * 9) + 0x77A8));    // $8DCB
 L_8DD6:
     redraw_window(msg_s_territory);    // $8DD2
-    find_record_9e3c(battle_defending_province);    // $8DD9
+    redraw_fief_on_map(battle_defending_province);    // $8DD9
     phi_ret_8de0 = confirm_prompt();    // $8DDD
 L_8DE0:
     return phi_ret_8de0;    // $8DE0
@@ -797,7 +797,7 @@ L_8E6C:
     if (!(province_state_is_FF(local11))) goto L_8E8D;    // $8E71
     selected_province_idx = local11;    // $8E75
     battle_defending_province = selected_province_idx;    // $8E7B
-    combat_helper_dad7();    // $8E7E
+    compact_relation_list();    // $8E7E
 L_8E8D:
     resolve_ownerless_province_succession(dedup_owners_to_6f4f(deduped_owner_list));    // $8E89
     phi_val_8e8f = (local11 + 1);    // $8E8E
@@ -1038,10 +1038,10 @@ L_91BE:
     list_remove_matching(daimyo);    // $91C4
     if (!(get_province_ai_state(fief))) goto L_91D3;    // $91CD
 L_91D3:
-    ui_helper_db35();    // $91D0
+    increment_ai_player_count();    // $91D0
     message_display(((daimyo * 9) + 0x77A8));    // $91DB
     draw_message(msg_died_of_s, *(word*)((((death_cause - 1) << 1) + check_and_process_daimyo_data_bba5)));    // $91EB
-    clear_fief_pair_6193(fief);    // $91F0
+    clear_fief_pair_matrix(fief);    // $91F0
     confirm_prompt();    // $91F4
     phi_ret_91fc = find_fiefs_of_owner(fief);    // $91F8
 L_91FC:
@@ -1358,7 +1358,7 @@ L_9635:
     if (fief_is_daimyo_capital[local11]) goto L_9657;    // $9646
     fief_to_daimyo_map[local11] = 50;    // $9651
 L_9657:
-    find_record_9e3c(local11);    // $9653
+    redraw_fief_on_map(local11);    // $9653
     phi_val_9659 = (local11 + 1);    // $9658
 L_9659:
     local11 = phi_val_9659;    // $9659
@@ -1393,7 +1393,7 @@ word scenario50_fief30_event_eligible(word arg1) {
     selected_province_idx = 30;    // $96E5
     if (!(cur_flag_and_selected_ai_state5())) goto L_976E;    // $96EB
     if ((ai_turn_flags & 2)) goto L_976E;    // $96F3
-    combat_helper_dad7();    // $96F6
+    compact_relation_list();    // $96F6
     filter_province_list_by_owner(1, deduped_owner_list);    // $96FD
     war_attacker_men = 0;    // $9702
     phi_val_9734 = 0x6F4F;    // $9708
@@ -1496,14 +1496,14 @@ word set_fief_ownership_record(word arg1, word arg2, word arg3, word arg4) {
     fief_to_daimyo_map[arg4] = arg1;    // $98AF
     fief_is_daimyo_capital[arg4] = arg2;    // $98B7
     province_ai_state[arg4] = arg3;    // $98BF
-    return find_record_9e3c(arg4);    // $98C5
+    return redraw_fief_on_map(arg4);    // $98C5
 }
 
 // $98C6 select_provinces_and_assign_ai_state
 // (body @ $98CB)
 
 word select_provinces_and_assign_ai_state(word arg1, word arg2) {
-    combat_helper_dad7();    // $98CB
+    compact_relation_list();    // $98CB
     filter_province_list_by_owner(1, deduped_owner_list);    // $98D2
     local10 = &list_buf;    // $98D9
     local11 = 0x6F4F;    // $98DD
@@ -1585,7 +1585,7 @@ L_99DD:
     if (!((fief_owner(local11) == 50))) goto L_99F6;    // $99E5
     fief_to_daimyo_map[local11] = 24;    // $99F0
 L_99F6:
-    find_record_9e3c(local11);    // $99F2
+    redraw_fief_on_map(local11);    // $99F2
     phi_val_99f8 = (local11 + 1);    // $99F7
 L_99F8:
     local11 = phi_val_99f8;    // $99F8
@@ -1602,7 +1602,7 @@ L_9A04:
     post_elim_owner_sentinel_id = 51;    // $9A44
     mem_6DC0 = 1;    // $9A48
     mem_6D15 = 5;    // $9A4C
-    find_record_9e3c(30);    // $9A51
+    redraw_fief_on_map(30);    // $9A51
     local8 = 0;    // $9A56
 L_9A57:
     if (!((*(byte*)((local8 + 0x7FD5)) == 24))) goto L_9A6C;    // $9A60
@@ -1619,7 +1619,7 @@ L_9A9E:
     redraw_window(msg_nobunaga_s_ambition_of_a_unite);    // $9A9A
     palette_swap(0);    // $9A9F
     ui_prompt_redraw();    // $9AA3
-    return map_helper_e5f2(6);    // $9AAB
+    return render_map_section(6);    // $9AAB
 }
 
 // $9AAC driver_diplomacy_gold_transfer
@@ -1656,7 +1656,7 @@ word ai_scan_idle_fiefs_run_diplomacy_action(void) {
 L_9B1B:
     if (!(fief_is_daimyo_capital[selected_province_idx])) goto L_9B6D;    // $9B23
     if (get_province_ai_state(selected_province_idx)) goto L_9B6D;    // $9B2D
-    combat_helper_dad7();    // $9B30
+    compact_relation_list();    // $9B30
     phi_val_9b63 = 0x6F4F;    // $9B36
     goto L_9B63;    // $9B36
 L_9B39:
@@ -1685,8 +1685,8 @@ L_9B7E:
 // (body @ $9B84)
 
 word marry_transfer_gold_between_provinces(void) {
-    local11 = marry_helper_e315();    // $9B87
-    phi_ret_9be4 = marry_helper_e315();    // $9B88
+    local11 = marriage_pact_handler();    // $9B87
+    phi_ret_9be4 = marriage_pact_handler();    // $9B88
     if (!(phi_ret_9be4)) goto L_9BE4;    // $9B88
     open_message_window();    // $9B8B
     daimyo_name_width(selected_province_idx);    // $9B91

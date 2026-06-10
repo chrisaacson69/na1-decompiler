@@ -124,6 +124,23 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bytecode band batch #3 — 7 more bank-15 leaves (the GRAPHICS keystone)   [2026-06-10]
+Gates green (CFG 499/499, 114/114). Backlog 19 → 12 bank-15 suspects.
+- `$E5F2` → **`render_map_section`** [HIGH] — **the strategic-map section renderer** (graphics thread): blits the
+  section's 28×16 tilemap (`strategic_map_section_tilemaps`+idx*0x1C0) + 32-B attribute table
+  (`strategic_map_section_attributes`+idx*32→$23C8) + palette, marks it current, draws every fief's lord name.
+  **A "map section" = tilemap(0x1C0) + attributes(32) + fief records(34).**
+- `$E554` → **`redraw_fief_on_map`** [HIGH] — locate one fief by id in the current section's record list (col,row,id triples)
+  and redraw its label tile-strip + lord name. Pairs with render_map_section. (was "find_record_9e3c" — it draws.)
+- `$DAD7` → **`compact_relation_list`** [MED] — load selected daimyo's relation row, prune to still-existing entries; wrong-category (was "combat_helper").
+- `$DB35` → **`increment_ai_player_count`** [MED] — `ai_player_count++`; set $6DA1 bit7 at ≥8; wrong-category (was "ui_helper").
+- `$E1E7` → **`clear_fief_pair_matrix`** [HIGH] — sound 29 + zero fief arg1's row+col in the 54-stride fief×fief $6193 grid.
+- `$E315` → **`marriage_pact_handler`** [MED] — marriage-pact flow (interactive accept+demand-gold vs auto/AI probabilistic dowry).
+- `$D9D3` → **`redraw_window_row`** [MED] — `redraw_window($7985 + arg1*10)`, a 10-B-stride row table.
+- DEFERRED still: `$DA24` (formula), `$D815`/`$D7F7` (province-record field cleaners — need the $7001/$7011 map).
+**Graphics thread unlocked:** the strategic-map render path (`render_map_section`→`ppu_copy_rect` on the section tilemaps,
+`redraw_fief_on_map` for per-fief refresh) is now legible end to end — a good ch.16 update when the band's done.
+
 ### Bytecode band batch #2 — 10 more bank-15 leaves grounded   [2026-06-10]
 Resumed the tree-out after the DREAM phi-clobber fix (so the 4-c oracle is value-correct). Gates green
 (CFG 499/499, 114/114). Backlog 29 → 19 bank-15 suspects.
@@ -310,15 +327,15 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): bank-15 bytecode band, batch #3 (depth-0, SKIP cross-bank-blocked) <<<
-Run `py -3 tools/label-walk-prep.py 15 --grounding`. Batches #1 (7) + #2 (10) done — **19 suspects left
-(15 depth-0)**. Current top clean depth-0 leaves: `$E554 find_record_9e3c` (10 — the generic record
-finder, high leverage), `$DAD7 combat_helper_dad7` (8), `$E5F2 map_helper_e5f2` (8 — the strategic-map
-section blitter, the GRAPHICS thread: it calls ppu_copy_rect on `strategic_map_section_tilemaps`),
-`$DB35 ui_helper_db35` (3), `$D9D3 draw_window_row_7985` (2), `$E1E7 clear_fief_pair_6193` (2),
-`$E315 marry_helper_e315` (2). DEFERRED: `$DA24` (formula), `$D815`/`$D7F7` (province-record field
-cleaners — need the $7001/$7011 record map). Then banks 0/1/2 (16 suspects each). Re-confirm flagged
-stowaways: `$C6AD mul_xy_by_3` (general Y*X); the `daimyo_pool` var label at $6E4A (fief-id-ranged).
+### >>> NEXT BLOCK (start here): bank-15 bytecode band, batch #4 (depth-0, SKIP cross-bank-blocked) <<<
+Run `py -3 tools/label-walk-prep.py 15 --grounding`. Batches #1 (7) + #2 (10) + #3 (7) done — **12 suspects
+left (10 depth-0)**. Current top clean depth-0 leaves: `$E275 prompt_helper_e275` (4), `$E4A2
+build_owned_fief_list_6f89` (2), `$D586 count_div_iterations_d586` (1), `$D8F2 record_grow_capped_d8f2`
+(1) — the tail is mostly 1-2-site accessors/wrappers. DEFERRED (need data-structure maps): `$DA24`
+(pct/math32 formula), `$D815`/`$D7F7` (province-record field cleaners — the $7001/$7011 record map would
+unblock both + sharpen many others). When bank 15 is clean, move to banks 0/1/2 (16 suspects each). Then:
+write the ch.16 strategic-map-render update (render_map_section + redraw_fief_on_map now legible). Re-confirm
+stowaways: `$C6AD mul_xy_by_3` (general Y*X); `daimyo_pool` var at $6E4A (fief-id-ranged, likely misnamed).
 
 ### Open items
 - `$E80C` (now value-correct) — name needs `mem_7FCB` + bank-14 routine 14 grounded.

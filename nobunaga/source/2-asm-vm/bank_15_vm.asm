@@ -3141,7 +3141,7 @@ VM bytecode disassembly
  >$DF2A  40                         LOADL_qimm   ; inline operand = 0
  >$DF2B  D4                         BYTE_POPSTORE
   $DF2C  3B                         PUSH_quick   ; inline operand = 11
-  $DF2D  E9 54 E5 02                CALL_abs_imm1          $E554 (find_record_9e3c) {bytecode}, $02
+  $DF2D  E9 54 E5 02                CALL_abs_imm1          $E554 (redraw_fief_on_map) {bytecode}, $02
  >$DF31  0B                         LOADL_quick   ; inline operand = 11
   $DF32  D0                         INC
  >$DF33  2B                         STORE_quick   ; inline operand = 11
@@ -3507,7 +3507,7 @@ VM bytecode disassembly
  >$E193  40                         LOADL_qimm   ; inline operand = 0
  >$E194  D4                         BYTE_POPSTORE
   $E195  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $E198  E9 54 E5 02                CALL_abs_imm1          $E554 (find_record_9e3c) {bytecode}, $02
+  $E198  E9 54 E5 02                CALL_abs_imm1          $E554 (redraw_fief_on_map) {bytecode}, $02
  >$E19C  08                         LOADL_quick   ; inline operand = 8
   $E19D  D7 C7 E1                   JUMPT_abs              $E1C7
   $E1A0  09                         LOADL_quick   ; inline operand = 9
@@ -3626,7 +3626,7 @@ VM bytecode disassembly
   $E267  3C                         PUSH_quick   ; inline operand = 12
   $E268  E9 97 DB 02                CALL_abs_imm1          $DB97 (assign_unique_daimyo_face_code) {bytecode}, $02
   $E26C  3C                         PUSH_quick   ; inline operand = 12
-  $E26D  E9 54 E5 02                CALL_abs_imm1          $E554 (find_record_9e3c) {bytecode}, $02
+  $E26D  E9 54 E5 02                CALL_abs_imm1          $E554 (redraw_fief_on_map) {bytecode}, $02
   $E271  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $E274  CF                         RETURN
 
@@ -3634,7 +3634,7 @@ VM bytecode disassembly
 ; sub $E275   (frame_off=+0, body @ $E27A)
 ; ============================================================
   $E27A  3C                         PUSH_quick   ; inline operand = 12
-  $E27B  E9 E7 E1 02                CALL_abs_imm1          $E1E7 (clear_fief_pair_6193) {bytecode}, $02
+  $E27B  E9 E7 E1 02                CALL_abs_imm1          $E1E7 (clear_fief_pair_matrix) {bytecode}, $02
   $E27F  3C                         PUSH_quick   ; inline operand = 12
   $E280  E9 72 D7 02                CALL_abs_imm1          $D772 (fief_owner) {bytecode}, $02
   $E284  59                         LOADR_qimm   ; inline operand = 9
@@ -3902,7 +3902,7 @@ VM bytecode disassembly
   $E497  3C                         PUSH_quick   ; inline operand = 12
   $E498  E9 AF E2 04                CALL_abs_imm1          $E2AF (copy_arms_record_5) {bytecode}, $04
   $E49C  3C                         PUSH_quick   ; inline operand = 12
-  $E49D  E9 54 E5 02                CALL_abs_imm1          $E554 (find_record_9e3c) {bytecode}, $02
+  $E49D  E9 54 E5 02                CALL_abs_imm1          $E554 (redraw_fief_on_map) {bytecode}, $02
  >$E4A1  CF                         RETURN
 
 ; ============================================================
@@ -4202,7 +4202,7 @@ VM bytecode disassembly
  >$E6B1  BB                         ADD
   $E6B2  D3                         BYTE_DEREF
   $E6B3  B3                         PUSHL
-  $E6B4  E9 F2 E5 02                CALL_abs_imm1          $E5F2 (map_helper_e5f2) {bytecode}, $02
+  $E6B4  E9 F2 E5 02                CALL_abs_imm1          $E5F2 (render_map_section) {bytecode}, $02
   $E6B8  CF                         RETURN
 
 ; ============================================================

@@ -1851,7 +1851,7 @@ VM bytecode disassembly
   $8D3F  62                         PUSH_qimm   ; inline operand = 2
   $8D40  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $8D44  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $8D47  E9 D3 D9 02                CALL_abs_imm1          $D9D3 (draw_window_row_7985) {bytecode}, $02
+  $8D47  E9 D3 D9 02                CALL_abs_imm1          $D9D3 (redraw_window_row) {bytecode}, $02
   $8D4B  A4 63 6F                   LOADL_abs              $6F63 (battle_defending_province)
   $8D4E  D0                         INC
   $8D4F  B3                         PUSHL
@@ -6636,7 +6636,7 @@ VM bytecode disassembly
   $AE5C  AA 57 6F                   PUSH_abs               $6F57 (battle_winner_province_sel)
   $AE5F  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $AE63  D8 69 AE                   JUMPF_abs              $AE69
-  $AE66  AC 35 DB                   CALL_abs               $DB35 (ui_helper_db35) {bytecode}
+  $AE66  AC 35 DB                   CALL_abs               $DB35 (increment_ai_player_count) {bytecode}
  >$AE69  AC FF 82                   CALL_abs               $82FF (is_no_province_selected) {bytecode}
   $AE6C  D8 70 AE                   JUMPF_abs              $AE70
   $AE6F  CF                         RETURN
@@ -6796,7 +6796,7 @@ VM bytecode disassembly
   $AF94  DA                         AND
   $AF95  D7 E0 AF                   JUMPT_abs              $AFE0
   $AF98  AA E6 7B                   PUSH_abs               $7BE6 (latched_selected_record_idx)
-  $AF9B  E9 F2 E5 02                CALL_abs_imm1          $E5F2 (map_helper_e5f2) {bytecode}, $02
+  $AF9B  E9 F2 E5 02                CALL_abs_imm1          $E5F2 (render_map_section) {bytecode}, $02
   $AF9F  D6 E0 AF                   JUMP_abs               $AFE0
  >$AFA2  AC 20 CD                   CALL_abs               $CD20 (repaint_screen) {bytecode}
   $AFA5  61                         PUSH_qimm   ; inline operand = 1
@@ -6827,7 +6827,7 @@ VM bytecode disassembly
   $AFD5  89 32                      BYTE_LOADL_imm1        +50
   $AFD7  A9 33 6E                   BYTE_STORE_abs         $6E33 (post_elim_owner_sentinel_id)
   $AFDA  8D 1E                      BYTE_PUSH_imm1         +30
-  $AFDC  E9 54 E5 02                CALL_abs_imm1          $E554 (find_record_9e3c) {bytecode}, $02
+  $AFDC  E9 54 E5 02                CALL_abs_imm1          $E554 (redraw_fief_on_map) {bytecode}, $02
  >$AFE0  CF                         RETURN
 
 ; ============================================================

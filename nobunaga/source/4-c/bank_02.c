@@ -945,7 +945,7 @@ word draw_unit_roster_columns(word arg1) {
 
 word draw_combat_fief_day_header(void) {
     set_cursor(2, 3);    // $8D40
-    draw_window_row_7985(battle_defending_province);    // $8D47
+    redraw_window_row(battle_defending_province);    // $8D47
     draw_message(msg_fief_2d_b5a7, (battle_defending_province + 1));    // $8D53
     return draw_combat_day_header(1);    // $8D5C
 }
@@ -3283,7 +3283,7 @@ word transfer_owned_fiefs_and_announce_succession(void) {
         if ((battle_winner_province_sel != 50)) {    // $AE4C
             prompt_helper_e275(battle_winner_province_sel);    // $AE58
             if (get_province_ai_state(battle_winner_province_sel)) {    // $AE55
-                ui_helper_db35();    // $AE66
+                increment_ai_player_count();    // $AE66
             }
         }
     }
@@ -3357,7 +3357,7 @@ word dispatch_battle_resolution(word outcome) {
         apply_conquest_outcome();    // $AF8B
         phi_ret_afe0 = (ai_turn_flags & 128);    // $AF95
         if (!(phi_ret_afe0)) {    // $AF80
-            phi_ret_afe0 = map_helper_e5f2(latched_selected_record_idx);    // $AF9F
+            phi_ret_afe0 = render_map_section(latched_selected_record_idx);    // $AF9F
         }
     } else {
         repaint_screen();    // $AFA2
@@ -3370,7 +3370,7 @@ word dispatch_battle_resolution(word outcome) {
         ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $AFCC
         palette_swap(0);    // $AFD1
         post_elim_owner_sentinel_id = 50;    // $AFD7
-        phi_ret_afe0 = find_record_9e3c(30);    // $AFDC
+        phi_ret_afe0 = redraw_fief_on_map(30);    // $AFDC
     }
     return phi_ret_afe0;    // $AFE0
 }

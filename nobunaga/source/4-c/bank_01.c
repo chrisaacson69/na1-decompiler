@@ -343,7 +343,7 @@ word effect_view_a(word arg1) {
     set_cursor(14, 3);    // $84CC
     draw_message(msg_fief_2d_ba93, (arg1 + 1));    // $84D6
     set_cursor(22, 3);    // $84DD
-    draw_window_row_7985(arg1);    // $84E2
+    redraw_window_row(arg1);    // $84E2
     set_cursor(10, 4);    // $84E8
     if (local8) {    // $84C6
         draw_owner_name(arg1);    // $84F1
@@ -955,7 +955,7 @@ word resolve_siege_assault_outcome(void) {
     } else {
         if (fief_is_daimyo_capital[battle_defending_province]) {    // $8F42
             swap_word(battle_defending_province, selected_province_idx);    // $8F53
-            combat_helper_dad7();    // $8F57
+            compact_relation_list();    // $8F57
             filter_province_list_by_owner(1, deduped_owner_list);    // $8F5E
             if ((deduped_owner_list != 255)) {    // $8F4D
                 if (rng_mod((*(byte*)((local5 + 3)) / 10))) {    // $8F6C
@@ -1301,7 +1301,7 @@ word ai_try_war_attack(void) {
     if ((fief_owner_weakness(attacker_idx) || (!(*(word*)((fief + 16))) || !(*(word*)((fief + 6)))))) {    // $949F
         return 0;    // $94C4
     } else {
-        combat_helper_dad7();    // $94C5
+        compact_relation_list();    // $94C5
         filter_province_list_by_owner(0, deduped_owner_list);    // $94CC
         target_idx = pick_weakest_men_fief(deduped_owner_list);    // $94D7
         if ((target_idx == 255)) {    // $94C5
@@ -1401,7 +1401,7 @@ word driver_move(void) {
     if (!(effect_war_combat_prep_b(selected_province_idx))) {    // $96D6
         return 0;    // $96E1
     } else {
-        combat_helper_dad7();    // $96E2
+        compact_relation_list();    // $96E2
         filter_province_list_by_owner(1, deduped_owner_list);    // $96E9
         if (province_select_helper(1, deduped_owner_list)) {    // $96E2
             redraw_window(msg_move_where);    // $96FB
@@ -1500,7 +1500,7 @@ word driver_war(void) {
         return 0;    // $986B
     } else {
         if (!((!(effect_war_combat_prep_c(local9)) || !(effect_war_combat_prep_a(local9)) || !(effect_war_combat_prep_b(local9))))) {    // $986C
-            combat_helper_dad7();    // $9884
+            compact_relation_list();    // $9884
             filter_province_list_by_owner(0, deduped_owner_list);    // $988B
             effect_war_e(&local1);    // $9893
             if (province_select_helper(2, deduped_owner_list)) {    // $9884
@@ -1810,8 +1810,8 @@ word driver_marry(void) {
                 local10 = 1;    // $9E08
                 battle_defending_province = (battle_defending_province - 1);    // $9E0D
                 open_message_window();    // $9E10
-                local11 = marry_helper_e315();    // $9E16
-                if (marry_helper_e315()) {    // $9E01
+                local11 = marriage_pact_handler();    // $9E16
+                if (marriage_pact_handler()) {    // $9E01
                     active_province_idx_copy = (rng_mod(22) + 53);    // $9E22
                     palette_swap(1);    // $9E26
                     draw_daimyo_portrait(2, 4);    // $9E2C
@@ -2373,7 +2373,7 @@ L_A72C:
     if ((scenario_fief_count != 50)) goto L_A6FD;    // $A74C
 L_A753:
     local11 = province_to_map_section_50[local8];    // $A755
-    map_helper_e5f2(province_to_map_section_50[local8]);    // $A757
+    render_map_section(province_to_map_section_50[local8]);    // $A757
     map_helper_af10(local11);    // $A75C
     effect_view_a(local8);    // $A761
     goto L_A6D0;    // $A765
@@ -2903,7 +2903,7 @@ word map_helper_af10(word arg1) {
     while (1) {    // $AF2B
         arg1 = fief_select_input_loop(arg1);    // $AF30
         if ((fief_select_input_loop(arg1) != 10)) {    // $AF2B
-            map_helper_e5f2(arg1);    // $AF27
+            render_map_section(arg1);    // $AF27
             continue;
         } else {
             break;
@@ -2918,7 +2918,7 @@ word map_helper_af10(word arg1) {
 word driver_map(void) {
     repaint_screen();    // $AF3D
     local11 = *(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // $AF5A
-    map_helper_e5f2(*(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17))));    // $AF5C
+    render_map_section(*(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17))));    // $AF5C
     return map_helper_af10(local11);    // $AF65
 }
 
@@ -3066,7 +3066,7 @@ word subhandler_B12B(void) {
 word subhandler_B14B(void) {
     message_display(msg_do_you_really_want_to_end_the);    // $B153
     if (prompt_y_n()) {    // $B150
-        ui_helper_db35();    // $B15D
+        increment_ai_player_count();    // $B15D
         if ((ai_turn_flags & 128)) {    // $B15D
             repaint_screen();    // $B16A
             set_cursor(12, 14);    // $B16F
