@@ -648,10 +648,7 @@ def _emit_ast(ast, indent, out, nxt):
         elif k == 'break':
             out.append((0, indent, "break;"))
         elif k == 'loop':
-            _, h, body = node
-            out.append((h, indent, "while (1) {"))
-            _emit_ast(body, indent + 1, out, nxt)
-            out.append((0, indent, "}"))
+            _emit_loop(node[1], node[2], indent, out, nxt)
         elif k == 'guard':
             _, cond, payload = node
             baddr = payload[1] if payload[0] == 'block' else 0
@@ -682,6 +679,58 @@ def _emit_ast(ast, indent, out, nxt):
                 out.append((0, indent, "} else {"))
                 _emit_ast(else_seq, indent + 1, out, nxt)
             out.append((0, indent, "}"))
+
+
+def _is_jump(seq, k):
+    return len(seq) == 1 and seq[0][0] == k
+
+
+def _emit_loop(h, body, indent, out, nxt):
+    """Render a ('loop', h, body) idiomatically. The body's control test resolves to break/continue
+    markers; the two standard rotations are recovered EXACTLY (these are behaviour-preserving
+    identities, and the gate validates the AST — unchanged by this rendering choice):
+      • BOTTOM test (`do … while`): body ends in `if(c) continue; else break;` → `do { rest } while(c)`
+        (empty rest ⇒ `while(c) {}`).
+      • TOP test (`while`): body is exactly `if(c){ work; continue } else break` (header carries no
+        statements of its own) → `while(c) { work }`.
+    Anything else stays the always-correct `while (1) { … break/continue … }`."""
+    # BOTTOM test: trailing if with pure continue/break arms.
+    if body and body[-1][0] == 'if':
+        _, Lp, piv, _f, _t, fall, goto = body[-1]
+        cond = None
+        if _is_jump(goto, 'continue') and _is_jump(fall, 'break'):
+            cond = piv
+        elif _is_jump(goto, 'break') and _is_jump(fall, 'continue'):
+            cond = neg(piv)
+        if cond is not None:
+            rest = body[:-1]
+            if _emits(rest, nxt):
+                out.append((h, indent, "do {"))
+                _emit_ast(rest, indent + 1, out, nxt)
+                out.append((0, indent, f"}} while ({to_c(cond)});"))
+            else:
+                out.append((h, indent, f"while ({to_c(cond)}) {{"))
+                out.append((0, indent, "}"))
+            return
+    # TOP test: optional empty header block, then a single if with one break arm; the other arm is
+    # the loop body and ends by looping back (continue).
+    core = body[1:] if (body and body[0][0] == 'block' and not body[0][2]) else body
+    if len(core) == 1 and core[0][0] == 'if':
+        _, Lp, piv, _f, _t, fall, goto = core[0]
+        work = cond = None
+        if _is_jump(fall, 'break') and goto and goto[-1][0] == 'continue':
+            cond, work = piv, goto[:-1]
+        elif _is_jump(goto, 'break') and fall and fall[-1][0] == 'continue':
+            cond, work = neg(piv), fall[:-1]
+        if cond is not None and _emits(work, nxt):
+            out.append((h, indent, f"while ({to_c(cond)}) {{"))
+            _emit_ast(work, indent + 1, out, nxt)
+            out.append((0, indent, "}"))
+            return
+    # Fallback: the always-correct infinite loop with explicit break/continue.
+    out.append((h, indent, "while (1) {"))
+    _emit_ast(body, indent + 1, out, nxt)
+    out.append((0, indent, "}"))
 
 
 # RUNG 2 (value-aware) — CONSUMING-CALL STACK-PHI repair now lives in the FRONT-END
