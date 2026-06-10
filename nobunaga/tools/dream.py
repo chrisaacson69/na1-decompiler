@@ -904,6 +904,12 @@ def _natural_loops(tc, header):
                 changed = True                            # as an inline early-exit (to a fixpoint)
         if bail:
             return None
+        if fallout is None and len(gotos) == 1:
+            # No natural fall-out (no latch/header has a clean outside-edge) but exactly ONE exit
+            # target: PROMOTE it to the fall-out (emitted after the loop, reached via `break`) so it
+            # is not orphaned by the collapse — `while(1){ … if(c) break }` then the target region.
+            fallout = next(iter(gotos))
+            gotos = set()
         loops.append({'h': h, 'nodes': frozenset(N), 'latches': frozenset(latches),
                       'exit': fallout, 'gotos': frozenset(gotos)})
     return loops
