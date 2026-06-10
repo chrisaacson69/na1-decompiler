@@ -783,7 +783,7 @@ word ui_draw_window_d309(void) {
 // (body @ $D31F)
 
 word ui_draw_window_d31a(void) {
-    ui_helper_d759();    // $D31F
+    standard_delay();    // $D31F
     return ui_draw_window_d309();    // $D325
 }
 
@@ -833,10 +833,10 @@ word ui_helper_d351(word arg1) {
     return local11;    // $D3A6
 }
 
-// $D3A7 ui_helper_d3a7
+// $D3A7 prompt_y_n
 // (body @ $D3AC)
 
-word ui_helper_d3a7(void) {
+word prompt_y_n(void) {
     redraw_window(msg_y_n_f695);    // $D3AF
     read_frame_timer(1);    // $D3B4
     while (1) {    // $D3B8
@@ -1159,10 +1159,10 @@ L_D751:
     return ((arg1 - 1) + 1);    // $D758
 }
 
-// $D759 ui_helper_d759
+// $D759 standard_delay
 // (body @ $D75E)
 
-word ui_helper_d759(void) {
+word standard_delay(void) {
     return delay_loop(delay_loop_count);    // $D765
 }
 
@@ -1170,7 +1170,7 @@ word ui_helper_d759(void) {
 // (body @ $D76B)
 
 word confirm_prompt(void) {
-    ui_helper_d759();    // $D76B
+    standard_delay();    // $D76B
     return open_message_window();    // $D771
 }
 
@@ -2012,7 +2012,7 @@ word marry_helper_e315(void) {
         ui_input_mode = 2;    // $E329
         draw_daimyo_name_menu(msg_marriage_pact);    // $E32F
         redraw_window(msg_accept);    // $E336
-        if (ui_helper_d3a7()) {    // $E324
+        if (prompt_y_n()) {    // $E324
             message_display(msg_demand_gold);    // $E343
             local11 = number_input(1, 0x270F);    // $E34F
             if (!(number_input(1, 0x270F))) {    // $E340
@@ -2155,10 +2155,10 @@ word marry_helper_e4dc(word arg1) {
     return -1;    // $E50F
 }
 
-// $E510 ui_helper_e510
+// $E510 build_eligible_province_list
 // (body @ $E515)
 
-word ui_helper_e510(word arg1) {
+word build_eligible_province_list(word arg1) {
     local9 = 0x6F89;    // $E518
     local10 = 0;    // $E51A
     phi_val_e545 = 0;    // $E51C

@@ -96,6 +96,22 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### `$E510`  `ui_helper_e510` → `build_eligible_province_list`   [HIGH CONFIRMED 2026-06-10]
+`build_eligible_province_list(enemy_flag)`: scans all fiefs, keeps those that exist
+(`!province_state_is_FF`), match the ownership filter (`is_enemy_owned(i) == enemy_flag`), and aren't
+`selected_province_idx`; appends each idx to the `$6F89` buffer, FF-terminates, returns the count.
+The candidate-list BUILDER the Send/Pact/View/Marry target-select commands pick from — confirms (and
+sharpens) the prior caller note; it builds the list, it's not a "cursor/menu enter primitive."
+
+### `$D3A7`  `ui_helper_d3a7` → `prompt_y_n`   [HIGH CONFIRMED 2026-06-10]
+Y/N confirm prompt: `redraw_window(msg_y_n_f695)`, poll `wait_button_edge` until A(64)/B(128); on A
+echo 'Y' + return 1, else return 0. 8 callers. Sibling of `confirm_prompt ($D766)` — this draws the
+explicit "Y/N" string and echoes the choice.
+
+### `$D759`  `ui_helper_d759` → `standard_delay`   [HIGH CONFIRMED 2026-06-10]
+2-op wrapper: `return delay_loop(delay_loop_count)`. Runs the standard configurable busy-wait;
+`delay_loop_count ($6D65)` is the user-adjustable message-speed setting. 3 callers.
+
 ### `$CC35`  `marry_helper_cc35` → `palette_swap`   [HIGH CONFIRMED 2026-06-10]
 1-op forward: `return syscall_palette_swap(arg1)`. **Wrong-category label** (like `fief_owner`):
 nothing to do with marriage — a generic palette-swap primitive that merely *appears* in effect/
@@ -148,18 +164,26 @@ sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-da
 
 ## Frontier (where to resume — do not retread)
 
-- **UI-primitive vocabulary cluster** (ground together, then write the chapter-18 section once).
-  Grounded: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),
-  `open_message_window`($CC89), `redraw_window`($CEC4).
-  Pending CLEAN VM leaves: `ui_helper_d759` (→ delay wrapper, `delay_loop(delay_loop_count)`),
-  `ui_helper_d3a7` (Y/N confirm-prompt loop), `ui_helper_e510`. `$E80C` (now value-correct) deferred
-  — needs `mem_7FCB` + bank-14 routine 14.
-- **DEFERRED — the `ui_draw_window_*` family** (`ccd1`, `d2f9`, `d309`, `d31a`, …): fixed-geometry
-  blit wrappers that bottom out at the NATIVE `syscall_ppu_blit_nobank` ($C437/$C439), whose 5-arg
-  GEOMETRY isn't grounded — can't name *which* window without it. **This is the pass-0 native-floor
-  unlock**: grounding the blit geometry once clarifies open_message_window + the whole draw-window
-  family + every blit corpus-wide. (Also: every `ui_draw_window_*` COMMENT lists args reversed vs the
-  actual C — `(1,26,9,20,2)` vs `(2,20,9,26,1)` — a systematic suspect-note convention slip to fix.)
+### >>> NEXT BLOCK (start here): the pass-0 native blit-geometry unlock <<<
+Ground `syscall_ppu_blit_nobank` ($C437/$C439, native 6502 — the FIRST descent to the pass-0 floor):
+decode its 5-arg geometry (left/top/right/bottom + mode? fill vs tile-source?). This is the keystone —
+it unlocks the whole **`ui_draw_window_*` family** (`ccd1` `(2,3,29,3)`, `d2f9` `(2,8,9,19)`, `d309`
+`(2,20,9,26)`, `d31a` = `standard_delay`?+`d309`, …) AND sharpens `open_message_window`'s rectangle
+AND makes every `ppu_blit_*` call corpus-wide read as real screen geometry. Method note: this is
+6502-asm reading (`source/1-asm-6502/bank_15*.asm`), not VM bytecode — the layer-ID rule says
+not-in-bytecode-set ⇒ native. While there, fix the systematic suspect-note slip: every
+`ui_draw_window_*` comment lists args REVERSED vs the actual C (`(1,26,9,20,2)` vs `(2,20,9,26,1)`).
+
+### Then: finish the UI-primitive vocabulary + write the chapter-18 section once
+Grounded primitives so far: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),
+`open_message_window`($CC89), `redraw_window`($CEC4), `prompt_y_n`($D3A7), `standard_delay`($D759).
+Once the draw-window family lands, write the chapter-18 "UI primitive vocabulary" section in one pass.
+
+### Open items
+- `$E80C` (now value-correct) — name needs `mem_7FCB` + bank-14 routine 14 grounded.
+- Read `message_display ($D338)` to settle the `$7FD1` axis (row vs col) + confirm/rename
+  `ui_msg_col_shift_flag` across both consumers.
+- Next high-fanout non-UI leaves once UI is done (re-run `label-walk-prep` for the leaves-first cursor).
 - **Open sub-question:** read `message_display ($D338)` to settle the `$7FD1` axis (row vs col) +
   confirm/rename `ui_msg_col_shift_flag` across both consumers.
 - **Pass-0 native floor:** enumerate the Bank-15 code the bytecode compiler did not claim; ground

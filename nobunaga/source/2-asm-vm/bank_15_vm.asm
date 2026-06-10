@@ -1265,7 +1265,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $D31A   (frame_off=+0, body @ $D31F)
 ; ============================================================
-  $D31F  AC 59 D7                   CALL_abs               $D759 (ui_helper_d759) {bytecode}
+  $D31F  AC 59 D7                   CALL_abs               $D759 (standard_delay) {bytecode}
   $D322  AC 09 D3                   CALL_abs               $D309 (ui_draw_window_d309) {bytecode}
   $D325  CF                         RETURN
 
@@ -1892,7 +1892,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $D766   (frame_off=+0, body @ $D76B)
 ; ============================================================
-  $D76B  AC 59 D7                   CALL_abs               $D759 (ui_helper_d759) {bytecode}
+  $D76B  AC 59 D7                   CALL_abs               $D759 (standard_delay) {bytecode}
   $D76E  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
   $D771  CF                         RETURN
 
@@ -3731,7 +3731,7 @@ VM bytecode disassembly
   $E32F  E9 D6 E2 02                CALL_abs_imm1          $E2D6 (draw_daimyo_name_menu) {bytecode}, $02
   $E333  8E A6 F7                   PUSH_imm2              $F7A6 (msg_accept)
   $E336  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
-  $E33A  AC A7 D3                   CALL_abs               $D3A7 (ui_helper_d3a7) {bytecode}
+  $E33A  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
   $E33D  D8 59 E3                   JUMPF_abs              $E359
   $E340  8E 8C F7                   PUSH_imm2              $F78C (msg_demand_gold)
   $E343  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02

@@ -3040,7 +3040,7 @@ VM bytecode disassembly
   $94EC  B0                         DEREF
   $94ED  B3                         PUSHL
   $94EE  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
- >$94F2  AC 59 D7                   CALL_abs               $D759 (ui_helper_d759) {bytecode}
+ >$94F2  AC 59 D7                   CALL_abs               $D759 (standard_delay) {bytecode}
  >$94F5  CF                         RETURN
 
 ; ============================================================
@@ -6746,7 +6746,7 @@ VM bytecode disassembly
   $AF2C  B3                         PUSHL
   $AF2D  8E 77 BA                   PUSH_imm2              $BA77 (msg_lord_s)
   $AF30  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
-  $AF34  AC 59 D7                   CALL_abs               $D759 (ui_helper_d759) {bytecode}
+  $AF34  AC 59 D7                   CALL_abs               $D759 (standard_delay) {bytecode}
   $AF37  AC 20 CD                   CALL_abs               $CD20 (ui_helper_cd20) {bytecode}
   $AF3A  CF                         RETURN
 

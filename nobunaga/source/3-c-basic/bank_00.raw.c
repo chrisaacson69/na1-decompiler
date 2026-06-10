@@ -30,7 +30,7 @@ L_8052:
     call_bank10_entry(5);    // $808C
     if (audio_wait_gate) goto L_80B8;    // $8093
 L_8099:
-    ui_helper_d759();    // $8096
+    standard_delay();    // $8096
     ui_input_mode = 0;    // $809A
     ui_input_sel_latch_7fdf = 255;    // $80A0
 L_80A3:
@@ -104,7 +104,7 @@ L_81E9:
     fill_attr_wrap();    // $81FE
     palette_swap(0);    // $8202
     message_display(msg_would_you_like_to_play_again);    // $8209
-    if (ui_helper_d3a7()) goto L_821D;    // $8210
+    if (prompt_y_n()) goto L_821D;    // $8210
 L_821A:
     message_display(msg_thanks_for_playing);    // $8216
     goto L_821A;    // $821A
@@ -123,7 +123,7 @@ L_8226:
 L_8235:
     confirm_prompt();    // $8232
     message_display(msg_new_game_b882);    // $8238
-    if (!(ui_helper_d3a7())) goto L_8244;    // $823F
+    if (!(prompt_y_n())) goto L_8244;    // $823F
     return 0;    // $8243
 L_8244:
     chr_bank0_set_wrap(1);    // $8245
@@ -149,7 +149,7 @@ L_82A3:
     sram_save_pending_flag = 0;    // $82EB
     message_display(verify_sram_save_integri_data_b89e);    // $82F1
     redraw_window(msg_data_loaded);    // $82F8
-    ui_helper_d759();    // $82FC
+    standard_delay();    // $82FC
     ui_helper_cd20();    // $82FF
     palette_swap(1);    // $8303
     ppu_upload_block_wrap(0, verify_sram_save_integri_data_b78a, 0x14D0, 4);    // $830F
@@ -313,8 +313,8 @@ L_865E:
     local11 = phi_val_865e;    // $865E
     syscall16_sram_wrap(3, local11, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // $866D
     message_display(msg_watch_other_daimyos_battle);    // $8674
-    ui_confirm_flag_6e7d = ui_helper_d3a7();    // $867B
-    return ui_helper_d3a7();    // $867E
+    ui_confirm_flag_6e7d = prompt_y_n();    // $867B
+    return prompt_y_n();    // $867E
 }
 
 // $867F display_prompt_message_b900
@@ -361,7 +361,7 @@ L_86F1:
     message_display(msg_is);    // $870F
     redraw_window(((local10 * 9) + 0x77A8));    // $871B
     draw_message(msg_of_fief_2d_ok, (local10 + 1));    // $8725
-    if (!(ui_helper_d3a7())) goto L_873E;    // $872C
+    if (!(prompt_y_n())) goto L_873E;    // $872C
     local11 = 9;    // $8730
     goto L_873E;    // $8731
 L_8734:
@@ -431,8 +431,8 @@ L_886F:
     set_cursor(15, 18);    // $8892
     draw_message(msg_total_4d, local9);    // $889A
     message_display(msg_is_this_ok);    // $88A1
-    if (!(ui_helper_d3a7())) goto L_8861;    // $88A8
-    return ui_helper_d3a7();    // $88AB
+    if (!(prompt_y_n())) goto L_8861;    // $88A8
+    return prompt_y_n();    // $88AB
 }
 
 // $88AC render_boot_title_screens
@@ -554,7 +554,7 @@ L_8AC9:
     const_two = number_input(1, 5);    // $8AD6
     if (!(number_input(1, 5))) goto L_8AC9;    // $8AD9
     message_display(msg_is_everything_ok_so_far);    // $8ADF
-    if (ui_helper_d3a7()) goto L_8B44;    // $8AE6
+    if (prompt_y_n()) goto L_8B44;    // $8AE6
     ui_helper_cd20();    // $8AE9
     palette_swap(1);    // $8AED
     ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // $8AFB
@@ -705,7 +705,7 @@ L_8C95:
     message_display(resolve_ownerless_provin_data_ba5e);    // $8CCE
     daimyo_name_width(*(byte*)(local9));    // $8CD5
     draw_message(msg_would_you_like_to_bid_for_fief, (battle_defending_province + 1));    // $8CE1
-    if (!(ui_helper_d3a7())) goto L_8D22;    // $8CE8
+    if (!(prompt_y_n())) goto L_8D22;    // $8CE8
     message_display(msg_how_much);    // $8CEE
     local8 = number_input(1, *(word*)(((selected_province_idx * 26) + 0x7001)));    // $8D03
     open_message_window();    // $8D04
@@ -909,13 +909,13 @@ L_9006:
     message_display(collect_high_loyalty_pro_data_bb26);    // $9031
     daimyo_name_width(selected_province_idx);    // $9038
     redraw_window(msg_the_people_are_rebelling_will);    // $903F
-    if (!(ui_helper_d3a7())) goto L_908A;    // $9046
+    if (!(prompt_y_n())) goto L_908A;    // $9046
     record_apply_two_grows(local5, *(word*)(local5));    // $904D
     *(word*)(local5) = 0;    // $9053
     message_display(msg_giving_all_of_it);    // $9057
     if (stat_above_threshold_and_gap_predicate(local6, *(word*)(local7))) goto L_907D;    // $9063
     redraw_window(msg_it_didn_t_work);    // $9069
-    ui_helper_d759();    // $906D
+    standard_delay();    // $906D
     local9 = (local9 + 1);    // $9072
     return append_candidate_zero_priority(selected_province_idx, ((local9 + 1) - 1));    // $907C
 L_907D:
@@ -1409,7 +1409,7 @@ L_9734:
     local11 = phi_val_9734;    // $9734
     if ((*(byte*)(local11) != 255)) goto L_970B;    // $973B
     if (!((war_attacker_men > *(word*)(((selected_province_idx * 26) + 0x7011))))) goto L_976E;    // $974F
-    if (!(((unsigned)ui_helper_e510(1) >= (unsigned)3))) goto L_976E;    // $9759
+    if (!(((unsigned)build_eligible_province_list(1) >= (unsigned)3))) goto L_976E;    // $9759
     ai_turn_flags = (ai_turn_flags | 2);    // $9762
     reassign_daimyo24_fiefs_to_owner50();    // $9765
     ai_turn_planner_resume_flag = 1;    // $9769
@@ -1594,7 +1594,7 @@ L_99F8:
 L_9A04:
     province_ai_state[selected_province_idx] = 5;    // $9A0D
     selected_province_idx = 30;    // $9A10
-    local10 = (ui_helper_e510(1) + 1);    // $9A19
+    local10 = (build_eligible_province_list(1) + 1);    // $9A19
     local11 = ((unsigned)local10 / (unsigned)3);    // $9A1D
     select_provinces_and_assign_ai_state((local11 - 1), 0x6F89);    // $9A24
     process_first_n_unmarked_list_entries(local11, 0x6F89, 52);    // $9A2E
@@ -1632,7 +1632,7 @@ word driver_diplomacy_gold_transfer(void) {
     open_message_window();    // $9AB8
     daimyo_name_width(selected_province_idx);    // $9ABE
     draw_message(msg_will_you_ally_with_fief_2d_for, (battle_defending_province + 1), local11);    // $9ACB
-    if (!(ui_helper_d3a7())) goto L_9B07;    // $9AD2
+    if (!(prompt_y_n())) goto L_9B07;    // $9AD2
     ui_helper_e80c(7);    // $9AD6
     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // $9AE9
     message_display(msg_this_pact_doesn_t_mean_you_can);    // $9AED
@@ -1691,7 +1691,7 @@ word marry_transfer_gold_between_provinces(void) {
     open_message_window();    // $9B8B
     daimyo_name_width(selected_province_idx);    // $9B91
     draw_message(msg_will_you_accept_4d_units_of_go, local11, (battle_defending_province + 1));    // $9B9E
-    if (!(ui_helper_d3a7())) goto L_9BDA;    // $9BA5
+    if (!(prompt_y_n())) goto L_9BDA;    // $9BA5
     ui_helper_e80c(4);    // $9BA9
     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // $9BBC
     message_display(msg_you_ve_lost_a_daughter_but_gai);    // $9BC0

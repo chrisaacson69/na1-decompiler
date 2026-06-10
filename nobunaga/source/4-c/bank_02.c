@@ -1449,7 +1449,7 @@ word announce_battle_outcome_retreat_or_won(word arg1, word arg2) {
                 }
             }
         } else {
-            phi_ret_94f5 = ui_helper_d759();    // $94F2
+            phi_ret_94f5 = standard_delay();    // $94F2
         }
     } else {
         if (!(local8)) {    // $9486
@@ -1483,7 +1483,7 @@ L_94AD:
                 }
             }
         }
-        phi_ret_94f5 = ui_helper_d759();    // $94F2
+        phi_ret_94f5 = standard_delay();    // $94F2
     }
     return phi_ret_94f5;    // $94F5
 }
@@ -3327,7 +3327,7 @@ word transfer_owned_fiefs_and_announce_succession(void) {
         redraw_window(msg_has_passed_from);    // $AF00
         draw_message(msg_lord_s_to, ((fief_owner(battle_winner_province_sel) * 9) + 0x77A8));    // $AF15
         draw_message(msg_lord_s, ((fief_owner(get_battle_side_province((local7 ^ 1))) * 9) + 0x77A8));    // $AF30
-        ui_helper_d759();    // $AF34
+        standard_delay();    // $AF34
         return ui_helper_cd20();    // $AF3A
     }
 }
