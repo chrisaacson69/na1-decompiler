@@ -57,7 +57,27 @@ def main():
     ap.add_argument("--size", type=int, default=7, help="target subs per cluster (default 7)")
     ap.add_argument("--landmarks", default="", help="bank-specific context to prepend to seeds (pass once per bank)")
     ap.add_argument("--json", action="store_true", help="emit ONLY the {bank,clusters,seeds} args object")
+    ap.add_argument("--grounding", action="store_true",
+                    help="GROUNDING-pass cursor: list still-_XXXX-suffixed (suspect) subs ranked "
+                         "high-fanout first, instead of the first-pass anonymous-sub clusters")
     a = ap.parse_args()
+
+    if a.grounding:
+        targets = _cluster.suspect_targets(a.bank)
+        if a.json:
+            print(json.dumps({"bank": a.bank,
+                              "targets": [{"addr": f"{x:04X}", "name": n, "sites": s}
+                                          for x, n, s in targets]}))
+            return
+        if not targets:
+            print(f"bank_{a.bank:02d}: 0 suspect (_XXXX-suffixed) subs — GROUNDING COMPLETE for this bank.")
+            return
+        print(f"bank_{a.bank:02d}: {len(targets)} suspect subs (still address-suffixed), high-fanout first:")
+        for x, n, s in targets[:a.batch_clusters * a.size]:
+            print(f"  ${x:04X}  {s:>4} sites  {n}")
+        print(f"\n(showing top {min(len(targets), a.batch_clusters * a.size)}; "
+              f"pick a high-fanout leaf, ground it per nobunaga/grounding.md, regenerate, repeat.)")
+        return
 
     addrs = _cluster.anon_addrs(a.bank)
     remaining = len(addrs)

@@ -36,9 +36,47 @@ ROOT = Path(__file__).parent.parent
 
 
 def anon_addrs(bank):
-    p = ROOT / "decompiled" / f"bank_{bank:02d}.c"
+    # source/4-c is the canonical structured-C oracle (was decompiled/ before the 2026-06
+    # oracle reorg; see na1dream/ARCHITECTURE.md).
+    p = ROOT / "source" / "4-c" / f"bank_{bank:02d}.c"
     text = p.read_text(encoding="utf-8")
     return sorted({int(a, 16) for a in re.findall(r'^word sub_([0-9A-Fa-f]+)\(', text, re.M)})
+
+
+def suspect_targets(bank):
+    """GROUNDING-pass cursor (vs anon_addrs's first-pass cursor). The first pass named every
+    sub, so `sub_XXXX` is now empty; the grounding pass re-grounds the still-address-suffixed
+    `<role>_<addr>` labels (self-confessed low-fidelity). Returns the suspect CODE subs in this
+    bank's window, ranked HIGH-FANOUT first (inbound call/jmp/table sites = leverage; matches
+    the ledger's "N sites"), tie-broken leaves-first by call-graph depth then by address.
+    Returns [(addr, label, n_sites)]. Data tables fall out — they have no inbound CALL edge.
+    Deterministic: same labels + same ROM -> same order."""
+    nci = import_module("native-call-index")
+    name, _lab_bank, _defs, entry_targets, inbound, outbound = nci.build()
+    lo, hi = (0xC000, 0xFFFF) if bank == 15 else (0x8000, 0xBFFF)
+    susp = [a for a, lbl in name.items()
+            if lo <= a <= hi
+            and re.search(r'_[0-9a-f]{4}$', lbl) and not lbl.startswith("sub_")
+            and (inbound.get(a) or a in entry_targets)]
+    sset = set(susp)
+    memo = {}
+
+    def depth(a, stack):
+        if a in memo:
+            return memo[a]
+        if a in stack:
+            return 0
+        stack.add(a)
+        d = 0
+        for dst, _kind in outbound.get(a, []):
+            if dst in sset and dst != a:
+                d = max(d, 1 + depth(dst, stack))
+        stack.discard(a)
+        memo[a] = d
+        return d
+
+    susp.sort(key=lambda a: (-len(inbound.get(a, [])), depth(a, set()), a))
+    return [(a, name[a], len(inbound.get(a, []))) for a in susp]
 
 
 def callgraph_order(bank, addrs):

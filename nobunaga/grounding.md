@@ -49,8 +49,9 @@ Chris: **the bytecode compiler has claimed every VM routine, so —**
 
 ## The loop (proven on `$D772`, below — run N of these per session)
 
-1. **Pick** the next leaf from `label-walk`'s leaves-first cursor
-   (`py -3 tools/label-walk-prep.py <bank>`); take high-fanout first for leverage.
+1. **Pick** the next leaf from the grounding cursor
+   (`py -3 tools/label-walk-prep.py <bank> --grounding`) — lists the still-`_XXXX`-suffixed
+   (suspect) subs ranked **high-fanout first** (inbound call sites = leverage). Take the top.
 2. **Layer-ID** it (VM vs 6502 — see above). Choose the view accordingly.
 3. **Read the authoritative body.** Reduce an accessor to a one-line semantic; trace full logic
    otherwise.
@@ -199,12 +200,21 @@ Layer 1 the `clear_rect_*` blanks (with old→new name map), Layer 2 the text/wi
 `standard_delay`) — plus the "every screen = clear → locate → format+draw → copy art → wait" idiom. It
 explicitly grounds the chapter's older informal `$C480`/`$0075`/`$0082` model into the named syscalls.
 
-### >>> NEXT BLOCK (start here): next high-fanout non-UI leaves <<<
-The UI-primitive cluster is done (vocabulary grounded + chaptered). Re-run the leaves-first cursor
-(`py -3 tools/label-walk-prep.py <bank>`) and take the next high-fanout leaves OUTSIDE the UI family.
-Still-open threads to fold in when their inputs get grounded: `$E80C` name (needs `mem_7FCB` +
-bank-14 routine 14); the `$7FD1`/`ui_msg_col_shift_flag` axis (read `message_display $D338`); the
-`$7530` per-daimyo stat table (stride 7) and `$77A8` daimyo-name table (stride 9) exposed by `fief_owner`.
+### DONE 2026-06-10: repaired the grounding cursor (`label-walk-prep --grounding`)
+The leaves-first cursor was broken by the oracle reorg: `cluster-anon-subs.py` had been moved to
+`attic/` (but is imported by `label-walk-prep` + `var-walk-prep`) and still read the gone
+`decompiled/` path. Restored it to `tools/`, repointed at `source/4-c/`, and added
+`suspect_targets(bank)` + a `--grounding` mode: the first pass named every sub (so `sub_XXXX` is
+empty), so the grounding cursor now lists the still-`_XXXX`-suffixed suspects ranked HIGH-FANOUT
+first. Backlog surfaced: **b15 37, b0/b1/b2 16 each ≈ 85 suspect code subs.**
+
+### >>> NEXT BLOCK (start here): work the ranked suspect backlog, high-fanout first <<<
+Run `py -3 tools/label-walk-prep.py 15 --grounding`. Current top leverage targets (bank 15):
+`$E80C ui_helper_e80c` (34 sites — the long-open one; needs `mem_7FCB` + bank-14 routine 14),
+`$CD20 ui_helper_cd20` (18), `$E554 find_record_9e3c` (10), `$D972 war_helper_d972` (9),
+`$E5F2 map_helper_e5f2` (8 — the strategic-map section blitter, ties into the graphics thread).
+Also still open: the `$7FD1`/`ui_msg_col_shift_flag` axis (read `message_display $D338`); `$7530`
+per-daimyo stat table (stride 7) and `$77A8` daimyo-name table (stride 9) exposed by `fief_owner`.
 
 ### Then: finish the UI-primitive vocabulary + write the chapter-18 section once
 Grounded primitives so far: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),
