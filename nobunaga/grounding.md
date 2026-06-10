@@ -97,6 +97,28 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bytecode band batch #1 — 7 depth-0 leaves grounded   [2026-06-10]
+First "tree-out" pass over the bank-15 bytecode band ($CA03–$E80C), leaves-first. Gates green
+(CFG 495/495 both ways, 114/114). `$E80C` (top, 34 sites) **deferred** — cross-bank-14 blocked.
+- `$CD20` `ui_helper_cd20` → **`repaint_screen`** [HIGH]. Full-screen repaint + UI-state reset:
+  palette_swap(1) bracket; fill_nametable + fill_attr; two DIRTY-FLAG-gated reloads (`7fc9`→sprite
+  palette 7/11/15; `7fc7`→bg palette + `strategic_map_chr_tiles` upload); then latch/clear selection,
+  reset cursor + state flags. ~18 sites. Consumes the two dirty flags whose producers sit at $7FC9/$7FC7.
+- `$CA12` `byte_helper_ca12` → **`deduct_byte_at`** [HIGH]. `*p -= (byte)arg2; return *p`. REFUTES the
+  old [LOW] "compares vs a const" note (no compare; the undecoded-op guess was wrong). 7 sites.
+- `$D972` `war_helper_d972` → **`fief_owner_weakness`** [HIGH]. `daimyo_weakness_flag[fief_owner(arg1)]`
+  — data accessor, wrong-category (not a "war helper"); built on grounded `fief_owner`. 9 sites.
+- `$D351` `ui_helper_d351` → **`prompt_ab_window`** [HIGH]. A/B prompt over a caller window: poll
+  A(→1,glyph60)/B(→0,glyph62)/btn-2(→2); sibling of `prompt_y_n` with a window arg + 3rd exit. 7 sites.
+- `$DC0E` `list_op_6e4a` → **`pool_push_pop`** [HIGH]. Stack on $6E4A/$6E4B: arg1≤49 PUSH, >49 POP.
+  Elements are 0-49 (fief range) — the `daimyo_pool` var label may be a misnomer (flagged). 6 sites.
+- `$DC3C` `list_remove_6e7f` → **`list_remove_matching`** [HIGH]. FFs every entry == arg1 in the $6E7F
+  list (scenario_fief_count). $6E7F list's purpose still open. 6 sites.
+- `$DB12` `tax_helper_db12` → **`defender_owner_is_keyed_daimyo`** [MED]. Combat predicate, wrong-category
+  (NOT tax): `fief_owner(battle_defending_province) == (fiefs==17 ? 3 : 20)`. OPEN: who is daimyo 3/20
+  (likely the scenario protagonist) — confirm via daimyo table.
+- DEFERRED `$DA24 scaled_transfer_da24` — pure pct_op/math32 formula; needs caller-domain context to name.
+
 ### `$C437`/`$C428`  PPU blit syscalls → fill-rect vs copy-rect geometry   [HIGH CONFIRMED 2026-06-10]
 Hand-decoded the native 6502 keystone (`bank_15.asm $C428-$C4DF`, the first pass-0-floor descent).
 Both syscalls walk the SAME inclusive tile rect; mode flag `$0082` (set by entry point) selects fill
@@ -224,13 +246,16 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): bank-15 VM-suspect leaves, depth-0 first, SKIP cross-bank-blocked <<<
-Run `py -3 tools/label-walk-prep.py 15 --grounding`. Native floor is done, so the groundable bank-15
-roots are now the depth-0 VM suspects — highest sites first, but **skip ones blocked by an out-of-graph
-(bank 13/14) dependency** (the depth blind spot above). `$E80C` (34 sites) is blocked → defer to a
-bank-14 descent. Next clean leaf = `$CD20 ui_helper_cd20` (18 sites; looks like the palette-pending
-consumer per the `$7FC9` note). Then `$D972 war_helper_d972` (9), `$CA12 byte_helper_ca12` (7), etc.
-The graphics thread (`$E5F2 map_helper_e5f2` → strategic-map section blitter) is also here when wanted.
+### >>> NEXT BLOCK (start here): bank-15 bytecode band, batch #2 (depth-0, SKIP cross-bank-blocked) <<<
+Run `py -3 tools/label-walk-prep.py 15 --grounding`. Batch #1 (7 leaves) is done — **30 suspects left
+(22 depth-0)**. Skip out-of-graph-blocked subs (`$E80C`, bank-14). Current top clean depth-0 leaves:
+`$DD3A combat_helper_dd3a` (6), `$DA24 scaled_transfer_da24` (5, deferred — pure formula, needs caller
+domain), `$CC69 trade_helper_cc69` (4), `$CCE1 ui_get_cursor_sel_7fdf` (3), `$CDAF ui_get_menu_count_7fcf`
+(3), `$D677`/`$D687`/`$DB6E` draw_window_* (3 ea), `$D815`/`$D7F7` province_clear_fields (3/2),
+`$DFFE update_arms_table` (3). Many are accessors/wrappers (fast). The graphics thread
+(`$E5F2 map_helper_e5f2` → strategic-map section blitter) is also here when wanted.
+Then banks 0/1/2 (16 suspects each). Re-confirm flagged stowaways: `$C6AD mul_xy_by_3` (general Y*X);
+the `daimyo_pool` var label at $6E4A (elements look fief-id-ranged, not daimyo).
 
 ### Open items
 - `$E80C` (now value-correct) — name needs `mem_7FCB` + bank-14 routine 14 grounded.

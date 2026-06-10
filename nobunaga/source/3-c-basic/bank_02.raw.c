@@ -1397,7 +1397,7 @@ word announce_battle_outcome_retreat_or_won(word arg1, word arg2) {
     local9 = get_battle_side_province((local7 ^ 1));    // $93BD
     local10 = fief_owner(arg1);    // $93C3
     local8 = (arg1 == battle_winner_province_sel);    // $93C9
-    ui_helper_cd20();    // $93CA
+    repaint_screen();    // $93CA
     palette_swap(1);    // $93CE
     local11 = 0;    // $93D3
 L_93D4:
@@ -3089,7 +3089,7 @@ L_AE2A:
 // (body @ $AE31)
 
 word transfer_owned_fiefs_and_announce_succession(void) {
-    ui_helper_cd20();    // $AE31
+    repaint_screen();    // $AE31
     local10 = fief_owner(battle_winner_province_sel);    // $AE3B
     local7 = (battle_winner_province_sel == battle_defending_province);    // $AE43
     if (!(test_6f65_bit7((battle_winner_province_sel == battle_defending_province)))) goto L_AE69;    // $AE49
@@ -3143,7 +3143,7 @@ L_AEF4:
     draw_message(msg_lord_s_to, ((fief_owner(battle_winner_province_sel) * 9) + 0x77A8));    // $AF15
     draw_message(msg_lord_s, ((fief_owner(get_battle_side_province((local7 ^ 1))) * 9) + 0x77A8));    // $AF30
     standard_delay();    // $AF34
-    return ui_helper_cd20();    // $AF3A
+    return repaint_screen();    // $AF3A
 }
 
 // $AF3B dispatch_battle_resolution
@@ -3167,7 +3167,7 @@ L_AF80:
     phi_ret_afe0 = map_helper_e5f2(latched_selected_record_idx);    // $AF9F
     goto L_AFE0;    // $AF9F
 L_AFA2:
-    ui_helper_cd20();    // $AFA2
+    repaint_screen();    // $AFA2
     palette_swap(1);    // $AFA6
     i = 0;    // $AFAB
 L_AFAC:
@@ -3188,7 +3188,7 @@ L_AFE0:
 word battle_init_driver(void) {
     ui_input_mode = 3;    // $AFE7
     sram_save_checksum = (rng_mod(4) + 53);    // $AFF1
-    ui_helper_cd20();    // $AFF4
+    repaint_screen();    // $AFF4
     call_bank10_entry(2);    // $AFF8
     map_populate();    // $AFFC
     render_combat_map_screen();    // $AFFF
