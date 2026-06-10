@@ -849,8 +849,10 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     push_phi_merges = set(push_phi_sites.values())
     # val_phi: regA value-merge at a SIDE-EFFECTING-arm merge whose first op consumes regA -- a
     # `storeA_*` (store regA) or `branch_z/nz` (branch on regA) -- that value_diamonds can't fold.
-    # val_phi_sites: site -> merge; the store/branch then reads phi_val_<merge> (it already reads
-    # state.regA, which the materialise sets to the temp). See vm_cfg.value_merge_phis ($A45A).
+    # val_phi_sites: site -> (merge, tag_addr); the store/branch then reads phi_val_<merge> (it
+    # already reads state.regA, which the materialise sets to the temp). tag_addr buckets the
+    # materialise into the PRED's block (the fall pred's else block, NOT the merge) so DREAM places
+    # it inside the arm, not after the join. See vm_cfg.value_merge_phis ($A45A).
     val_phi_sites = _vmcfg.value_merge_phis(instructions)
     diamonds = _vmcfg.value_diamonds(instructions)
     dia_by_head = {d['head']: d for d in diamonds}
@@ -983,11 +985,15 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         # regA consumes a pending call exactly once (no re-eval, rng advances as the bytecode does);
         # all preds write the SAME name. See vm_cfg.value_merge_phis ($A45A $A4FD store, $A523 branch).
         if ins['addr'] in val_phi_sites:
-            _vm = val_phi_sites[ins['addr']]
+            _vm, _vtag = val_phi_sites[ins['addr']]
             _vnm = f"phi_val_{_vm:04x}"
             _vv = state.regA                              # consume any pending call exactly once
             if _vv != _vnm:
-                state.emit(f"{_vnm} = {_vv};")
+                # tag the materialise with the pred's OWN block addr (_vtag), not the firing site:
+                # for the fall-through pred that is the fall (else) block, so DREAM buckets it INTO
+                # the else arm instead of after the join. Jump preds: _vtag == ins['addr'] (no-op
+                # vs the old state.emit). See vm_cfg.value_merge_phis.
+                state.lines.append((_vtag, state.indent, f"{_vnm} = {_vv};"))
             state.regA = _vnm
 
         # Label for branch targets — AFTER the phi materialise (see note above) so a jump arm's

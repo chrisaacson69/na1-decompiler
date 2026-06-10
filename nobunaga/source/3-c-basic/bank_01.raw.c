@@ -86,7 +86,7 @@ L_815A:
     phi_val_8163 = is_enemy_owned(fief);    // $815F
     goto L_8163;    // $815F
 L_8162:
-    phi_val_8163 = 0;    // $8163
+    phi_val_8163 = 0;    // $8162
 L_8163:
     eligible = phi_val_8163;    // $8163
 L_8164:
@@ -410,7 +410,7 @@ L_85F7:
     local11 = (local11 + 1);    // $860E
     *(byte*)(((local11 + 1) - 1)) = local8;    // $8612
 L_8613:
-    phi_val_8615 = (local8 + 1);    // $8615
+    phi_val_8615 = (local8 + 1);    // $8614
 L_8615:
     local8 = phi_val_8615;    // $8615
     if (((unsigned)local8 < (unsigned)scenario_fief_count)) goto L_85F7;    // $861B
@@ -456,7 +456,7 @@ L_86A8:
     if ((ui_prompt_redraw() == 2)) goto L_870F;    // $86FE
     local10 = 0;    // $8702
 L_8703:
-    phi_val_8705 = (local11 + 1);    // $8705
+    phi_val_8705 = (local11 + 1);    // $8704
 L_8705:
     local11 = phi_val_8705;    // $8705
     if ((*(byte*)(local11) != 255)) goto L_862A;    // $870C
@@ -544,7 +544,7 @@ L_882F:
     phi_val_8849 = 100;    // $883D
     goto L_8849;    // $883D
 L_8840:
-    phi_val_8849 = math32_2arg(gain, fief->output);    // $8849
+    phi_val_8849 = math32_2arg(gain, fief->output);    // $8845
 L_8849:
     local10 = phi_val_8849;    // $8849
     local10 = (local10 / 2);    // $884E
@@ -587,7 +587,7 @@ L_88E4:
     phi_val_88fc = 100;    // $88F0
     goto L_88FC;    // $88F0
 L_88F3:
-    phi_val_88fc = math32_2arg(gain, fief->town);    // $88FC
+    phi_val_88fc = math32_2arg(gain, fief->town);    // $88F8
 L_88FC:
     local10 = phi_val_88fc;    // $88FC
     fief->wealth = (fief->wealth - pct_op(fief->wealth, (local10 / 2)));    // $8910
@@ -686,14 +686,14 @@ L_8A74:
     loan_rate = rng_mod(15);    // $8A88
 L_8A8B:
     ui_cursor_row = 21;    // $8A8D
-    phi_val_8a93 = loan_rate;    // $8A93
+    phi_val_8a93 = loan_rate;    // $8A90
 L_8A93:
     local11 = phi_val_8a93;    // $8A93
 L_8A94:
     ui_helper_d134(0xBB36, (local11 / 10), (local11 % 10));    // $8A9F
     return ui_helper_cc7b(local10, local9);    // $8AA9
 L_8AAA:
-    phi_val_8aae = (gold_rice_exchange_rate + 1);    // $8AAE
+    phi_val_8aae = (gold_rice_exchange_rate + 1);    // $8AAD
 L_8AAE:
     gold_rice_exchange_rate = phi_val_8aae;    // $8AAE
     ui_cursor_row = 22;    // $8AB3
@@ -745,7 +745,7 @@ word effect_subhandler_9F04(word amount) {
     phi_val_8b7a = 0;    // $8B71
     goto L_8B7A;    // $8B71
 L_8B74:
-    phi_val_8b7a = math32_muladddiv(rate, amount);    // $8B7A
+    phi_val_8b7a = math32_muladddiv(rate, amount);    // $8B76
 L_8B7A:
     interest = phi_val_8b7a;    // $8B7A
     *(word*)(debt_ptr) = (*(word*)(debt_ptr) + interest);    // $8B81
@@ -916,7 +916,7 @@ L_8F08:
     if (!(rng_mod((*(byte*)((attacker_daimyo + 3)) / 10)))) goto L_8F3E;    // $8F28
     war_side_state_flag = 0;    // $8F2C
     fief_is_daimyo_capital[selected_province_idx] = 1;    // $8F38
-    phi_val_8f3a = 3;    // $8F3A
+    phi_val_8f3a = 3;    // $8F39
 L_8F3A:
     outcome_code = phi_val_8f3a;    // $8F3A
     goto L_8FA1;    // $8F3B
@@ -936,7 +936,7 @@ L_8F42:
     phi_val_8f96 = 4;    // $8F92
     goto L_8F96;    // $8F92
 L_8F95:
-    phi_val_8f96 = 2;    // $8F96
+    phi_val_8f96 = 2;    // $8F95
 L_8F96:
     outcome_code = phi_val_8f96;    // $8F96
 L_8FA1:
@@ -993,7 +993,7 @@ word ai_commit_attack_deduct_resources(void) {
     phi_val_9070 = (rng_mod(2) << 7);    // $906C
     goto L_9070;    // $906C
 L_906F:
-    phi_val_9070 = 0;    // $9070
+    phi_val_9070 = 0;    // $906F
 L_9070:
     war_side_state_flag = phi_val_9070;    // $9070
     local11 = ((selected_province_idx * 26) + 0x7001);    // $907D
@@ -1022,7 +1022,7 @@ L_90E8:
     phi_val_9130 = spend_amount;    // $9116
     goto L_9130;    // $9116
 L_9119:
-    phi_val_9130 = min_word((*(word*)((local11 + 6)) - 1), pct_op(spend_amount, (rng_mod(10) + 50)));    // $9130
+    phi_val_9130 = min_word((*(word*)((local11 + 6)) - 1), pct_op(spend_amount, (rng_mod(10) + 50)));    // $912C
 L_9130:
     war_attacker_rice = phi_val_9130;    // $9130
     *(word*)((local11 + 6)) = (*(word*)((local11 + 6)) - war_attacker_rice);    // $913C
@@ -1269,7 +1269,7 @@ L_9505:
     phi_val_952e = 0;    // $952A
     goto L_952E;    // $952A
 L_952D:
-    phi_val_952e = 1;    // $952E
+    phi_val_952e = 1;    // $952D
 L_952E:
     do_attack = phi_val_952e;    // $952E
     if (!(get_province_ai_state(alt_target_idx))) goto L_9547;    // $9534
@@ -1978,7 +1978,7 @@ L_A1C8:
     ui_helper_cc7b(22, (local11 + 7));    // $A1CD
     ui_helper_d134(msg_fmt__2d_bd15, (local11 + 1));    // $A1D7
     redraw_window(*(word*)(((local11 << 1) + driver_trade_data_ff4f)));    // $A1E3
-    phi_val_a1e9 = (local11 + 1);    // $A1E9
+    phi_val_a1e9 = (local11 + 1);    // $A1E8
 L_A1E9:
     local11 = phi_val_a1e9;    // $A1E9
     if ((local11 < 6)) goto L_A1C8;    // $A1ED
@@ -2421,7 +2421,7 @@ word effect_give_b(word fief, word give_type) {
     goto L_A98C;    // $A982
 L_A985:
     if ((local11 != 2)) goto L_A98D;    // $A988
-    phi_val_a98c = 0;    // $A98C
+    phi_val_a98c = 0;    // $A98B
 L_A98C:
     local11 = phi_val_a98c;    // $A98C
 L_A98D:
@@ -2458,7 +2458,7 @@ word effect_give_c(word fief) {
     message_display(effect_give_c_data_be30);    // $A9E6
     local11 = ui_helper_d351(msg_peasnts_men);    // $A9F1
     if (local11) goto L_A9FB;    // $A9F3
-    phi_val_a9f7 = 2;    // $A9F7
+    phi_val_a9f7 = 2;    // $A9F6
 L_A9F7:
     local11 = phi_val_a9f7;    // $A9F7
     goto L_AA1D;    // $A9F8
@@ -2559,7 +2559,7 @@ L_AB59:
         default: goto L_ABB9;    // $AB70
     }    // $AB70
 L_AB7D:
-    phi_val_ab7e = 2;    // $AB7E
+    phi_val_ab7e = 2;    // $AB7D
 L_AB7E:
     local10 = phi_val_ab7e;    // $AB7E
     ui_helper_d134(msg_d_s, (local11 + 1), *(word*)(((local10 << 1) + draw_unit_label_data_f9af)));    // $AB8D
@@ -2629,7 +2629,7 @@ L_AC53:
     field_idx = (field_idx - 1);    // $AC5D
     if (!(((field_idx - 1) < 0))) goto L_AC68;    // $AC60
     field_idx = 4;    // $AC64
-    phi_val_ac67 = 24;    // $AC67
+    phi_val_ac67 = 24;    // $AC65
 L_AC67:
     cursor_row = phi_val_ac67;    // $AC67
 L_AC68:
@@ -2772,7 +2772,7 @@ L_AEC2:
     phi_val_aece = 2;    // $AEC9
     goto L_AECE;    // $AEC9
 L_AECC:
-    phi_val_aece = (arg1 - 1);    // $AECE
+    phi_val_aece = (arg1 - 1);    // $AECD
 L_AECE:
     arg1 = phi_val_aece;    // $AECE
 L_AECF:
@@ -2907,7 +2907,7 @@ word subhandler_B09D(void) {
         default: goto L_B0C6;    // $B0B0
     }    // $B0B0
 L_B0BD:
-    phi_val_b0c3 = (ai_turn_flags | 4);    // $B0C3
+    phi_val_b0c3 = (ai_turn_flags | 4);    // $B0C2
 L_B0C3:
     ai_turn_flags = phi_val_b0c3;    // $B0C3
 L_B0C6:
@@ -2979,7 +2979,7 @@ L_B185:
     if (!((ui_helper_d772(local10) == local11))) goto L_B197;    // $B18C
     province_ai_state[local10] = 0;    // $B196
 L_B197:
-    phi_val_b199 = (local10 + 1);    // $B199
+    phi_val_b199 = (local10 + 1);    // $B198
 L_B199:
     local10 = phi_val_b199;    // $B199
     if (((unsigned)local10 < (unsigned)scenario_fief_count)) goto L_B185;    // $B19F
@@ -3023,7 +3023,7 @@ L_B1EC:
     goto L_B20B;    // $B207
 L_B20A:
 L_B20B:
-    phi_val_b20c = (local10 - 1);    // $B20C
+    phi_val_b20c = (local10 - 1);    // $B20B
 L_B20C:
     local10 = phi_val_b20c;    // $B20C
     read_frame_timer(2);    // $B20E
@@ -3298,7 +3298,7 @@ L_B734:
     goto L_B74F;    // $B743
 L_B746:
     ui_helper_cc7b(21, 15);    // $B749
-    phi_val_b74f = 20;    // $B74F
+    phi_val_b74f = 20;    // $B74D
 L_B74F:
     local10 = phi_val_b74f;    // $B74F
     read_frame_timer(2);    // $B751
@@ -3349,7 +3349,7 @@ L_B7F2:
     redraw_window(msg_your_orders);    // $B7FF
     command = command_menu_select_loop();    // $B806
     cmd_handler = *(word*)(((command_menu_select_loop() << 1) + command_driver_table));    // $B80D
-    phi_val_b810 = (*(cmd_handler))();    // $B810
+    phi_val_b810 = (*(cmd_handler))();    // $B80F
 L_B810:
     result = phi_val_b810;    // $B810
     if (!(result)) goto L_B7E8;    // $B812
@@ -3454,7 +3454,7 @@ L_B98D:
     ai_per_fief_loop_index = (turn_idx + 1);    // $B996
     goto L_B9A7;    // $B999
 L_B99C:
-    phi_val_b99e = (turn_idx + 1);    // $B99E
+    phi_val_b99e = (turn_idx + 1);    // $B99D
 L_B99E:
     turn_idx = phi_val_b99e;    // $B99E
     if (((unsigned)turn_idx < (unsigned)scenario_fief_count)) goto L_B8AA;    // $B9A4

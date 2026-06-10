@@ -84,7 +84,7 @@ L_824D:
     goto L_826A;    // $8260
 L_8263:
     char_advance_width(78);    // $8265
-    phi_val_826a = 0;    // $826A
+    phi_val_826a = 0;    // $8269
 L_826A:
     local11 = phi_val_826a;    // $826A
     ui_draw_window_d309();    // $826B
@@ -289,7 +289,7 @@ word read_button_press(void) {
         default: goto L_84F3;    // $8490
     }    // $8490
 L_84BD:
-    phi_val_84bf = 52;    // $84BF
+    phi_val_84bf = 52;    // $84BD
 L_84BF:
     local11 = phi_val_84bf;    // $84BF
     return local11;    // $84C1
@@ -336,7 +336,7 @@ word step_coord_by_direction(word arg1, word arg2, word arg3) {
     }    // $8503
 L_8512:
     local11 = *(word*)(arg1);    // $8514
-    phi_val_8518 = (*(word*)(arg2) + 1);    // $8518
+    phi_val_8518 = (*(word*)(arg2) + 1);    // $8517
 L_8518:
     local10 = phi_val_8518;    // $8518
 L_8519:
@@ -348,7 +348,7 @@ L_8524:
     *(word*)(arg2) = local10;    // $8529
     return 1;    // $852B
 L_852C:
-    phi_val_852f = (*(word*)(arg1) - 1);    // $852F
+    phi_val_852f = (*(word*)(arg1) - 1);    // $852E
 L_852F:
     local11 = phi_val_852f;    // $852F
     phi_val_8518 = *(word*)(arg2);    // $8532
@@ -512,7 +512,7 @@ L_86C8:
     goto L_86D4;    // $86CA
 L_86CD:
     ui_helper_cc7b(3, 10);    // $86CF
-    phi_val_86d4 = 0;    // $86D4
+    phi_val_86d4 = 0;    // $86D3
 L_86D4:
     local10 = phi_val_86d4;    // $86D4
     read_frame_timer(2);    // $86D6
@@ -564,7 +564,7 @@ L_8760:
     goto L_876D;    // $8762
 L_8765:
     ui_helper_cc7b(2, 21);    // $8768
-    phi_val_876d = 0;    // $876D
+    phi_val_876d = 0;    // $876C
 L_876D:
     local10 = phi_val_876d;    // $876D
     read_frame_timer(2);    // $876F
@@ -611,7 +611,7 @@ word draw_tactical_terrain_feature(word arg1, word arg2) {
         default: goto L_8810;    // $87F1
     }    // $87F1
 L_880E:
-    phi_val_880f = 1;    // $880F
+    phi_val_880f = 1;    // $880E
 L_880F:
     local8 = phi_val_880f;    // $880F
 L_8810:
@@ -673,7 +673,7 @@ L_890C:
     phi_val_8922 = lookup_terrain_attr_record(local11, local10);    // $891C
     goto L_8922;    // $891C
 L_891F:
-    phi_val_8922 = map_populate_data_b54a;    // $8922
+    phi_val_8922 = map_populate_data_b54a;    // $891F
 L_8922:
     local6 = phi_val_8922;    // $8922
     local7 = ((local10 << 1) << 1);    // $8926
@@ -1024,7 +1024,7 @@ L_8E7E:
     defender_stat_ptr = (defender_stat_ptr + 1);    // $8E86
     attacker_stat_ptr = (attacker_stat_ptr + 1);    // $8E8C
     *(word*)(((((*(byte*)(((attacker_stat_ptr + 1) - 1)) <= *(byte*)(((defender_stat_ptr + 1) - 1))) ? 1 : 0) << 1) + 0x7BEA)) = (*(word*)(((((*(byte*)(((attacker_stat_ptr + 1) - 1)) <= *(byte*)(((defender_stat_ptr + 1) - 1))) ? 1 : 0) << 1) + 0x7BEA)) + *(byte*)(((weight_ptr + 1) - 1)));    // $8EA2
-    phi_val_8ea5 = (i + 1);    // $8EA5
+    phi_val_8ea5 = (i + 1);    // $8EA4
 L_8EA5:
     i = phi_val_8ea5;    // $8EA5
     if ((i < 5)) goto L_8E7E;    // $8EA9
@@ -1189,7 +1189,7 @@ L_90D0:
     dst_ptr = (dst_ptr + 1);    // $90E8
     *(byte*)(((dst_ptr + 1) - 1)) = *(byte*)(src_cursor);    // $90ED
 L_90EE:
-    phi_val_90f0 = (src_cursor + 1);    // $90F0
+    phi_val_90f0 = (src_cursor + 1);    // $90EF
 L_90F0:
     src_cursor = phi_val_90f0;    // $90F0
     if ((*(byte*)(src_cursor) != 255)) goto L_90D0;    // $90F7
@@ -1408,7 +1408,7 @@ L_9419:
     if (!(local7)) goto L_942F;    // $941A
     if ((arg2 != 1)) goto L_942F;    // $9420
     if (test_unit_type_present_flag(local7, 0)) goto L_942F;    // $9429
-    phi_val_942e = (arg2 + 1);    // $942E
+    phi_val_942e = (arg2 + 1);    // $942D
 L_942E:
     arg2 = phi_val_942e;    // $942E
 L_942F:
@@ -1450,7 +1450,7 @@ L_94B4:
     goto L_94D4;    // $94C9
 L_94CC:
     if ((arg2 != 8)) goto L_94D5;    // $94CF
-    phi_val_94d4 = (arg2 - 1);    // $94D4
+    phi_val_94d4 = (arg2 - 1);    // $94D3
 L_94D4:
     arg2 = phi_val_94d4;    // $94D4
 L_94D5:
@@ -1525,7 +1525,7 @@ word draw_tactical_cursor_region_arg0(word arg1) {
 L_95DC:
     if (!(((unsigned)arg1 >= (unsigned)8))) goto L_95F7;    // $95DF
 L_95E2:
-    phi_val_95e3 = 2;    // $95E3
+    phi_val_95e3 = 2;    // $95E2
 L_95E3:
     tactical_battle_phase = phi_val_95e3;    // $95E3
 L_95E6:
@@ -1604,7 +1604,7 @@ L_96F5:
     goto L_9707;    // $9700
 L_9703:
     combat_arena_x_max = 3;    // $9704
-    phi_val_9707 = 3;    // $9707
+    phi_val_9707 = 3;    // $9704
 L_9707:
     rect_adjusted = phi_val_9707;    // $9707
 L_9708:
@@ -1692,7 +1692,7 @@ L_9829:
     if (!(sub_8003(&tile_x, &tile_y, slot_idx))) goto L_9853;    // $984A
 L_9853:
     commit_unit_move_and_redraw_count(tile_x, tile_y);    // $984F
-    phi_val_9855 = (slot_idx + 1);    // $9855
+    phi_val_9855 = (slot_idx + 1);    // $9854
 L_9855:
     slot_idx = phi_val_9855;    // $9855
     if (!(((unsigned)slot_idx < (unsigned)6))) goto L_9864;    // $9859
@@ -1731,7 +1731,7 @@ L_98E1:
     dir = (dir + 1);    // $98E3
     if (((unsigned)dir < (unsigned)6)) goto L_98B1;    // $98E7
 L_98EA:
-    phi_val_98ec = (unit_idx + 1);    // $98EC
+    phi_val_98ec = (unit_idx + 1);    // $98EB
 L_98EC:
     unit_idx = phi_val_98ec;    // $98EC
     if (!(((unsigned)unit_idx < (unsigned)cur_combat_unit_slot))) goto L_98FD;    // $98F2
@@ -1777,7 +1777,7 @@ word rng_search_combat_rect_for_unit_cell(word approach_dir) {
         default: goto L_9977;    // $9966
     }    // $9966
 L_9975:
-    phi_val_9976 = 1;    // $9976
+    phi_val_9976 = 1;    // $9975
 L_9976:
     flip_y = phi_val_9976;    // $9976
 L_9977:
@@ -1787,7 +1787,7 @@ L_997D:
     phi_val_9976 = 0;    // $997E
     goto L_9976;    // $997E
 L_9981:
-    phi_val_9982 = 1;    // $9982
+    phi_val_9982 = 1;    // $9981
 L_9982:
     flip_x = phi_val_9982;    // $9982
     goto L_9977;    // $9983
@@ -1805,11 +1805,11 @@ L_9990:
     if (!(seek_enemy_adjacent_cell_and_commit_move(x, y))) goto L_99BB;    // $99B2
     return ai_place_unit_in_free_slot_resolve_coords(3);    // $99BA
 L_99BB:
-    phi_val_99bd = (yi + 1);    // $99BD
+    phi_val_99bd = (yi + 1);    // $99BC
 L_99BD:
     yi = phi_val_99bd;    // $99BD
     if (((unsigned)yi <= (unsigned)combat_arena_y_max)) goto L_9990;    // $99C3
-    phi_val_99c8 = (xi + 1);    // $99C8
+    phi_val_99c8 = (xi + 1);    // $99C7
 L_99C8:
     xi = phi_val_99c8;    // $99C8
     if (((unsigned)xi <= (unsigned)combat_arena_x_max)) goto L_998A;    // $99CE
@@ -1864,11 +1864,11 @@ L_9A6F:
     goto L_9A81;    // $9A72
 L_9A75:
     if (test_map_cell_bits(local10, local9, 2)) goto L_9A95;    // $9A7C
-    phi_val_9a81 = (local10 + 1);    // $9A81
+    phi_val_9a81 = (local10 + 1);    // $9A80
 L_9A81:
     local10 = phi_val_9a81;    // $9A81
     if (((unsigned)local10 <= (unsigned)combat_arena_x_max)) goto L_9A75;    // $9A87
-    phi_val_9a8c = (local9 + 1);    // $9A8C
+    phi_val_9a8c = (local9 + 1);    // $9A8B
 L_9A8C:
     local9 = phi_val_9a8c;    // $9A8C
     if (((unsigned)local9 <= (unsigned)combat_arena_y_max)) goto L_9A6F;    // $9A92
@@ -2152,7 +2152,7 @@ L_A024:
     if (!(test_unit_type_present_flag(cur_combat_side, local10))) goto L_A032;    // $A02C
     local11 = (local11 + 1);    // $A031
 L_A032:
-    phi_val_a034 = (local10 + 1);    // $A034
+    phi_val_a034 = (local10 + 1);    // $A033
 L_A034:
     local10 = phi_val_a034;    // $A034
     if (((unsigned)local10 < (unsigned)5)) goto L_A024;    // $A038
@@ -2568,7 +2568,7 @@ L_A641:
     free_cell_found = 1;    // $A671
     goto L_A67E;    // $A672
 L_A675:
-    phi_val_a677 = (local11 + 1);    // $A677
+    phi_val_a677 = (local11 + 1);    // $A676
 L_A677:
     local11 = phi_val_a677;    // $A677
     if (((unsigned)local11 < (unsigned)6)) goto L_A641;    // $A67B
@@ -3050,7 +3050,7 @@ L_AE08:
     phi_val_ae13 = ai_run_all_units_combat_actions(day);    // $AE0D
     goto L_AE13;    // $AE0D
 L_AE10:
-    phi_val_ae13 = combat_command_dispatch_loop_per_unit();    // $AE13
+    phi_val_ae13 = combat_command_dispatch_loop_per_unit();    // $AE10
 L_AE13:
     result = phi_val_ae13;    // $AE13
     if (result) goto L_AE2A;    // $AE15
@@ -3086,7 +3086,7 @@ L_AE80:
     local8 = (local8 + 1);    // $AE8C
     *(byte*)(((local8 + 1) - 1)) = local11;    // $AE90
 L_AE91:
-    phi_val_ae93 = (local11 + 1);    // $AE93
+    phi_val_ae93 = (local11 + 1);    // $AE92
 L_AE93:
     local11 = phi_val_ae93;    // $AE93
     if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_AE80;    // $AE99

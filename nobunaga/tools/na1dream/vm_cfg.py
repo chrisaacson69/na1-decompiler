@@ -848,12 +848,23 @@ def value_merge_phis(instructions):
         `(select!=3) ? (rng_mod(40)<3) : roll_3pct_event_chance()` collapsed to `roll_3pct()` -> the
         wrong selection probability for event modes 1/2.
 
-    Returns `{site_addr: merge}`. At each site -- a JUMPing pred's jump, or the merge's first op for
-    the fall-through pred -- the decoder stores regA into `phi_val_<merge>`; the store/branch then
-    reads that temp (it already reads state.regA, which the materialisation sets to the temp). All
-    preds write the SAME name, so the linear leak is harmless and each value is captured under its
-    own control -- sound, no re-evaluation (a CALL-valued arm's call is read exactly once, so rng
-    advances exactly as the bytecode does).
+    Returns `{site_addr: (merge, tag_addr)}`. At each site -- a JUMPing pred's jump, or the merge's
+    first op for the fall-through pred -- the decoder stores regA into `phi_val_<merge>`; the
+    store/branch then reads that temp (it already reads state.regA, which the materialisation sets to
+    the temp). All preds write the SAME name, so the linear leak is harmless and each value is
+    captured under its own control -- sound, no re-evaluation (a CALL-valued arm's call is read
+    exactly once, so rng advances exactly as the bytecode does).
+
+    `tag_addr` is the address the materialise LINE is attributed to (NOT necessarily the firing
+    site). It MUST land in the pred's OWN block: the jump pred's jump addr (its then block), and --
+    the trap -- the FALL-THROUGH pred's last-instr addr (its else block), NOT the merge. DREAM
+    assigns statements to blocks by addr (vm_reduce._partition); a merge-addr tag buckets the fall
+    capture into the MERGE block, so DREAM emits it AFTER the if/else join -- where it runs
+    unconditionally, clobbering every jump arm's value and leaving an empty else ($A45A $A523/$A4FD).
+    The earlier fix tagged the fall capture at the consumer (merge) and relied on the LINEAR
+    emitter's goto-bypass for placement; that is correct linearly but DREAM-WRONG, because DREAM
+    dissolves the bypass. The repair must be DREAM-correct (right block), not just linear-correct.
+    The linear emitter is unaffected by the retag (emission order, not addr, fixes ITS placement).
 
     GUARDS (mirror return_phis/push_phis): the merge's FIRST op consumes regA (store/branch -> regA
     is carried IN, not recomputed in-block); >=2 preds; each leaves by an unconditional jump or
@@ -892,16 +903,19 @@ def value_merge_phis(instructions):
                 break
             last = pb[-1]
             if last['mnemonic'] == 'jump_abs' and _target(last) == M:
-                sites[last['addr']] = M                            # capture before the jump flushes
+                # JUMP pred: fire at the jump (before it flushes regA); tag = jump addr (its block).
+                sites[last['addr']] = (M, last['addr'])
             elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
-                sites[blk[0]['addr']] = M                           # fall-through: capture at the consumer
+                # FALL-THROUGH pred: regA isn't live until its last op dispatches, so fire at the
+                # consumer (merge's first op) but tag with the fall pred's last-instr addr so the
+                # line buckets into the FALL (else) block, not the merge -- see the docstring.
+                sites[blk[0]['addr']] = (M, last['addr'])
             else:
                 ok = False                                         # a conditional-branch pred -> skip merge
                 break
         if not ok:
             continue
-        for addr in sites:
-            out[addr] = M
+        out.update(sites)
     return out
 
 
