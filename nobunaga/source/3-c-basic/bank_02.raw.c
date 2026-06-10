@@ -704,7 +704,7 @@ L_8936:
 // (body @ $897C)
 
 word render_combat_map_screen(void) {
-    marry_helper_cc35(1);    // $897D
+    palette_swap(1);    // $897D
     local11 = 0;    // $8982
 L_8983:
     palette_write_wrap(local11, combat_map_palette[local11]);    // $898B
@@ -715,13 +715,13 @@ L_8983:
     phi_push_89bb = sram_save_checksum;    // $89B0
     goto L_89BB;    // $89B0
 L_89B3:
-    phi_push_89bb = fief_to_mapid(ui_helper_d77e());    // $89BB
+    phi_push_89bb = fief_to_mapid(selected_province_owner());    // $89BB
 L_89BB:
     upload_map_cell_tiles(phi_push_89bb, 0);    // $89BC
     upload_map_cell_tiles(fief_to_mapid(fief_owner(battle_defending_province)), 1);    // $89CE
     tactical_battle_phase = 0;    // $89D3
     map_render_driver();    // $89D6
-    return marry_helper_cc35(0);    // $89DE
+    return palette_swap(0);    // $89DE
 }
 
 // $89DF draw_unit_count_digits
@@ -865,7 +865,7 @@ L_8BFD:
     phi_push_8c30 = select_message_string_de78(battle_defending_province);    // $8C14
     goto L_8C30;    // $8C14
 L_8C17:
-    ui_helper_d77e();    // $8C17
+    selected_province_owner();    // $8C17
     goto L_8C2A;    // $8C1A
 L_8C1D:
     set_cursor(2, 8);    // $8C1F
@@ -916,7 +916,7 @@ L_8CC4:
 L_8CCB:
     phi_ret_8d38 = is_no_province_selected();    // $8CCE
     if (phi_ret_8d38) goto L_8D38;    // $8CCE
-    active_province_idx_copy = ui_helper_d77e();    // $8CD4
+    active_province_idx_copy = selected_province_owner();    // $8CD4
     phi_ret_8d38 = build_blit_fief_tile_block(12, 20);    // $8CDE
     goto L_8D38;    // $8CDE
 L_8CE1:
@@ -961,7 +961,7 @@ word draw_combat_fief_day_header(void) {
 // (body @ $8D62)
 
 word draw_combat_roster_window(void) {
-    marry_helper_cc35(1);    // $8D63
+    palette_swap(1);    // $8D63
     palette_write_wrap(7, 43);    // $8D6A
     palette_write_wrap(11, 35);    // $8D71
     ppu_blit_nobank_wrap(11, 3, 29, 3, 1);    // $8D7B
@@ -977,7 +977,7 @@ word draw_combat_roster_window(void) {
     phi_push_8dd7 = select_message_string_de78(battle_defending_province);    // $8DCB
     goto L_8DD7;    // $8DCB
 L_8DCE:
-    phi_push_8dd7 = ((ui_helper_d77e() * 9) + 0x77A8);    // $8DD7
+    phi_push_8dd7 = ((selected_province_owner() * 9) + 0x77A8);    // $8DD7
 L_8DD7:
     redraw_window(phi_push_8dd7);    // $8DD8
     ui_window_col = 22;    // $8DDE
@@ -1006,7 +1006,7 @@ L_8E29:
     if (((unsigned)local11 < (unsigned)18)) goto L_8DFA;    // $8E2D
     draw_unit_roster_columns(0);    // $8E31
     draw_unit_roster_columns(1);    // $8E36
-    return marry_helper_cc35(0);    // $8E3F
+    return palette_swap(0);    // $8E3F
 }
 
 // $8E40 ai_score_strength_term_40pct
@@ -1398,14 +1398,14 @@ word announce_battle_outcome_retreat_or_won(word arg1, word arg2) {
     local10 = fief_owner(arg1);    // $93C3
     local8 = (arg1 == battle_winner_province_sel);    // $93C9
     ui_helper_cd20();    // $93CA
-    marry_helper_cc35(1);    // $93CE
+    palette_swap(1);    // $93CE
     local11 = 0;    // $93D3
 L_93D4:
     palette_write_wrap(local11, msg_the_enemy_has_turned_tail_and[local11]);    // $93DC
     local11 = (local11 + 1);    // $93E2
     if (((unsigned)local11 < (unsigned)16)) goto L_93D4;    // $93E7
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $93F4
-    marry_helper_cc35(0);    // $93F9
+    palette_swap(0);    // $93F9
     set_cursor(2, 3);    // $93FF
     if (!(get_province_ai_state(arg1))) goto L_9486;    // $9408
     if (local8) goto L_9439;    // $940C
@@ -1541,9 +1541,9 @@ L_95E2:
 L_95E3:
     tactical_battle_phase = phi_val_95e3;    // $95E3
 L_95E6:
-    marry_helper_cc35(1);    // $95E7
+    palette_swap(1);    // $95E7
     map_render_driver();    // $95EB
-    marry_helper_cc35(0);    // $95EF
+    palette_swap(0);    // $95EF
     return draw_valid_unit_field_cells();    // $95F6
 L_95F7:
     phi_val_95e3 = 1;    // $95F8
@@ -3168,14 +3168,14 @@ L_AF80:
     goto L_AFE0;    // $AF9F
 L_AFA2:
     ui_helper_cd20();    // $AFA2
-    marry_helper_cc35(1);    // $AFA6
+    palette_swap(1);    // $AFA6
     i = 0;    // $AFAB
 L_AFAC:
     palette_write_wrap(i, battle_setup_select_prov_data_ba7f[i]);    // $AFB4
     i = (i + 1);    // $AFBA
     if (((unsigned)i < (unsigned)16)) goto L_AFAC;    // $AFBF
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $AFCC
-    marry_helper_cc35(0);    // $AFD1
+    palette_swap(0);    // $AFD1
     post_elim_owner_sentinel_id = 50;    // $AFD7
     phi_ret_afe0 = find_record_9e3c(30);    // $AFDC
 L_AFE0:

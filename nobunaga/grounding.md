@@ -96,6 +96,12 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### `$CC35`  `marry_helper_cc35` → `palette_swap`   [HIGH CONFIRMED 2026-06-10]
+1-op forward: `return syscall_palette_swap(arg1)`. **Wrong-category label** (like `fief_owner`):
+nothing to do with marriage — a generic palette-swap primitive that merely *appears* in effect/
+marriage screens. Sites read `palette_swap(1)` / `palette_swap(0)` bracketing `palette_write_wrap`
+blocks (swap to a working palette, write, swap back). 91 sites, 0 stale.
+
 ### `$D77E`  `ui_helper_d77e` → `selected_province_owner`   [HIGH CONFIRMED 2026-06-10]
 2-op accessor: `return fief_owner(selected_province_idx)` (`PUSH $6F5F; CALL fief_owner; RETURN`).
 The owning daimyo id of the currently-selected province. 5 callers (Marry/Pact diplomacy). NOT a
@@ -145,9 +151,15 @@ sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-da
 - **UI-primitive vocabulary cluster** (ground together, then write the chapter-18 section once).
   Grounded: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),
   `open_message_window`($CC89), `redraw_window`($CEC4).
-  Pending: `ui_draw_window_d31a`/`d309`, `ui_helper_d3a7`, `ui_helper_d759`, `ui_helper_e510` —
-  do `d31a`/`d309` next (the draw-window pair). `marry_helper_cc35` ×91 also pending (non-UI; verify
-  the "marry" guess). `$E80C` (now value-correct) deferred — needs `mem_7FCB` + bank-14 routine 14.
+  Pending CLEAN VM leaves: `ui_helper_d759` (→ delay wrapper, `delay_loop(delay_loop_count)`),
+  `ui_helper_d3a7` (Y/N confirm-prompt loop), `ui_helper_e510`. `$E80C` (now value-correct) deferred
+  — needs `mem_7FCB` + bank-14 routine 14.
+- **DEFERRED — the `ui_draw_window_*` family** (`ccd1`, `d2f9`, `d309`, `d31a`, …): fixed-geometry
+  blit wrappers that bottom out at the NATIVE `syscall_ppu_blit_nobank` ($C437/$C439), whose 5-arg
+  GEOMETRY isn't grounded — can't name *which* window without it. **This is the pass-0 native-floor
+  unlock**: grounding the blit geometry once clarifies open_message_window + the whole draw-window
+  family + every blit corpus-wide. (Also: every `ui_draw_window_*` COMMENT lists args reversed vs the
+  actual C — `(1,26,9,20,2)` vs `(2,20,9,26,1)` — a systematic suspect-note convention slip to fix.)
 - **Open sub-question:** read `message_display ($D338)` to settle the `$7FD1` axis (row vs col) +
   confirm/rename `ui_msg_col_shift_flag` across both consumers.
 - **Pass-0 native floor:** enumerate the Bank-15 code the bytecode compiler did not claim; ground

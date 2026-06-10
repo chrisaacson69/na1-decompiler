@@ -472,7 +472,7 @@ VM bytecode disassembly
 ; sub $CD20   (frame_off=-2, body @ $CD25)
 ; ============================================================
   $CD25  61                         PUSH_qimm   ; inline operand = 1
-  $CD26  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $CD26  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $CD2A  AC 50 CF                   CALL_abs               $CF50 (fill_nametable_wrap) {bytecode}
   $CD2D  AC 5D CF                   CALL_abs               $CF5D (fill_attr_wrap) {bytecode}
   $CD30  A4 C9 7F                   LOADL_abs              $7FC9 (ui_pending_flag_7fc9)
@@ -515,7 +515,7 @@ VM bytecode disassembly
   $CD7A  40                         LOADL_qimm   ; inline operand = 0
   $CD7B  A8 C7 7F                   STORE_abs              $7FC7 (ui_pending_flag_7fc7)
  >$CD7E  60                         PUSH_qimm   ; inline operand = 0
-  $CD7F  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $CD7F  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $CD83  A4 5D 6F                   LOADL_abs              $6F5D (selected_record_idx_9e3c)
   $CD86  8C FF 00                   LOADR_imm2             $00FF
   $CD89  C1                         CMPNE
@@ -4107,7 +4107,7 @@ VM bytecode disassembly
   $E5FB  C1                         CMPNE
   $E5FC  D8 93 E6                   JUMPF_abs              $E693
   $E5FF  61                         PUSH_qimm   ; inline operand = 1
-  $E600  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $E600  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $E604  61                         PUSH_qimm   ; inline operand = 1
   $E605  8D 13                      BYTE_PUSH_imm1         +19
   $E607  8D 1F                      BYTE_PUSH_imm1         +31
@@ -4184,7 +4184,7 @@ VM bytecode disassembly
   $E689  3B                         PUSH_quick   ; inline operand = 11
   $E68A  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $E68E  60                         PUSH_qimm   ; inline operand = 0
-  $E68F  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $E68F  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
  >$E693  CF                         RETURN
 
 ; ============================================================

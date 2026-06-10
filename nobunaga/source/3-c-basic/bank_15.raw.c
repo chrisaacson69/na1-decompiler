@@ -216,10 +216,10 @@ word syscall16_sram_wrap(word arg1, word arg2, word arg3, word arg4) {
     return syscall_memcpy_banked(arg1, arg2, arg3, arg4);    // $CBCC
 }
 
-// $CC35 marry_helper_cc35
+// $CC35 palette_swap
 // (body @ $CC3A)
 
-word marry_helper_cc35(word arg1) {
+word palette_swap(word arg1) {
     return syscall_palette_swap(arg1);    // $CC41
 }
 
@@ -304,7 +304,7 @@ L_CD1F:
 // (body @ $CD25)
 
 word ui_helper_cd20(void) {
-    marry_helper_cc35(1);    // $CD26
+    palette_swap(1);    // $CD26
     fill_nametable_wrap();    // $CD2A
     fill_attr_wrap();    // $CD2D
     if (!(ui_pending_flag_7fc9)) goto L_CD4F;    // $CD33
@@ -322,7 +322,7 @@ L_CD57:
     ppu_upload_block_wrap(4, strategic_map_chr_tiles, 0x15B0, 36);    // $CD76
     ui_pending_flag_7fc7 = 0;    // $CD7B
 L_CD7E:
-    marry_helper_cc35(0);    // $CD7F
+    palette_swap(0);    // $CD7F
     if ((selected_record_idx_9e3c == 255)) goto L_CD99;    // $CD8A
     latched_selected_record_idx = selected_record_idx_9e3c;    // $CD90
     selected_record_idx_9e3c = 255;    // $CD96
@@ -664,7 +664,7 @@ L_D1FC:
     phi_val_d1fe = (local11 + 1);    // $D1FD
 L_D1FE:
     local11 = phi_val_d1fe;    // $D1FE
-    if (!((*(byte*)((local11 + 0x7FD5)) != ui_helper_d77e()))) goto L_D214;    // $D20B
+    if (!((*(byte*)((local11 + 0x7FD5)) != selected_province_owner()))) goto L_D214;    // $D20B
     if (((unsigned)local11 < (unsigned)8)) goto L_D1FC;    // $D211
 L_D214:
     if (!(((unsigned)local11 >= (unsigned)8))) goto L_D237;    // $D217
@@ -1136,10 +1136,10 @@ word fief_owner(word arg1) {
     return fief_to_daimyo_map[arg1];    // $D77D
 }
 
-// $D77E ui_helper_d77e
+// $D77E selected_province_owner
 // (body @ $D783)
 
-word ui_helper_d77e(void) {
+word selected_province_owner(void) {
     return fief_owner(selected_province_idx);    // $D78A
 }
 
@@ -1343,7 +1343,7 @@ word get_6da2_cur(void) {
 // (body @ $D9BC)
 
 word is_enemy_owned(word arg1) {
-    return (fief_owner(arg1) == ui_helper_d77e());    // $D9C7
+    return (fief_owner(arg1) == selected_province_owner());    // $D9C7
 }
 
 // $D9C8 province_ai_state_addr
@@ -1399,7 +1399,7 @@ word diplomacy_helper2(void) {
 // (body @ $DA82)
 
 word diplomacy_helper3(void) {
-    local11 = ui_helper_d77e();    // $DA85
+    local11 = selected_province_owner();    // $DA85
     local10 = fief_owner(battle_defending_province);    // $DA8D
     dsel_daa1 = ((unsigned)local11 < (unsigned)local10);    // $DAA1
     *(byte*)((((dsel_daa1 ? (local10 * 54) : (local11 * 54)) + (dsel_daa1 ? local11 : local10)) + 0x6193)) = 90;    // $DAA9
@@ -1851,7 +1851,7 @@ L_E16E:
     install_new_daimyo(battle_defending_province);    // $E171
     goto L_E19C;    // $E175
 L_E178:
-    *(byte*)(local10) = ui_helper_d77e();    // $E17C
+    *(byte*)(local10) = selected_province_owner();    // $E17C
     *(byte*)(province_ai_state_addr(battle_defending_province)) = (get_province_ai_state(selected_province_idx) ? 5 : 0);    // $E194
 L_E19C:
     find_record_9e3c(battle_defending_province);    // $E198
@@ -1941,7 +1941,7 @@ word draw_daimyo_name_menu(word arg1) {
     message_display(msg_lord_f777);    // $E2E1
     redraw_window(((fief_owner(battle_defending_province) * 9) + 0x77A8));    // $E2F3
     redraw_window(draw_daimyo_name_menu_data_f77d);    // $E2FA
-    redraw_window(((ui_helper_d77e() * 9) + 0x77A8));    // $E308
+    redraw_window(((selected_province_owner() * 9) + 0x77A8));    // $E308
     return draw_message(msg_wants_a_s, arg1);    // $E314
 }
 
@@ -2146,7 +2146,7 @@ L_E595:
 word map_helper_e5f2(word arg1) {
     phi_ret_e693 = (arg1 != selected_record_idx_9e3c);    // $E5FC
     if (!(phi_ret_e693)) goto L_E693;    // $E5FC
-    marry_helper_cc35(1);    // $E600
+    palette_swap(1);    // $E600
     ppu_blit_nobank_wrap(30, 4, 31, 19, 1);    // $E60C
     ppu_blit_from_bank_wrap(2, 4, 29, 19, ((arg1 * 0x01C0) + strategic_map_section_tilemaps), 4);    // $E621
     ppu_upload_block_wrap(4, ((arg1 << 5) + strategic_map_section_attributes), 0x23C8, 2);    // $E632
@@ -2166,7 +2166,7 @@ L_E67E:
     draw_window_f706(*(byte*)(((cursor + 1) - 1)));    // $E67A
     if ((*(byte*)(cursor) != 255)) goto L_E65E;    // $E685
     set_cursor(local11, local10);    // $E68A
-    phi_ret_e693 = marry_helper_cc35(0);    // $E68F
+    phi_ret_e693 = palette_swap(0);    // $E68F
 L_E693:
     return phi_ret_e693;    // $E693
 }

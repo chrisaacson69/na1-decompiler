@@ -1330,7 +1330,7 @@ VM bytecode disassembly
 ; sub $8977   (frame_off=-2, body @ $897C)
 ; ============================================================
   $897C  61                         PUSH_qimm   ; inline operand = 1
-  $897D  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $897D  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8981  40                         LOADL_qimm   ; inline operand = 0
   $8982  2B                         STORE_quick   ; inline operand = 11
  >$8983  0B                         LOADL_quick   ; inline operand = 11
@@ -1373,7 +1373,7 @@ VM bytecode disassembly
   $89D3  A8 FE 6F                   STORE_abs              $6FFE (tactical_battle_phase)
   $89D6  AC 5E 88                   CALL_abs               $885E (map_render_driver) {bytecode}
   $89D9  60                         PUSH_qimm   ; inline operand = 0
-  $89DA  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $89DA  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $89DE  CF                         RETURN
 
 ; ============================================================
@@ -1865,7 +1865,7 @@ VM bytecode disassembly
 ; sub $8D5D   (frame_off=-4, body @ $8D62)
 ; ============================================================
   $8D62  61                         PUSH_qimm   ; inline operand = 1
-  $8D63  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $8D63  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8D67  8D 2B                      BYTE_PUSH_imm1         +43
   $8D69  67                         PUSH_qimm   ; inline operand = 7
   $8D6A  E9 8B CF 04                CALL_abs_imm1          $CF8B (palette_write_wrap) {bytecode}, $04
@@ -1964,7 +1964,7 @@ VM bytecode disassembly
   $8E35  61                         PUSH_qimm   ; inline operand = 1
   $8E36  E9 61 8C 02                CALL_abs_imm1          $8C61 (draw_unit_roster_columns) {bytecode}, $02
   $8E3A  60                         PUSH_qimm   ; inline operand = 0
-  $8E3B  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $8E3B  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8E3F  CF                         RETURN
 
 ; ============================================================
@@ -2883,7 +2883,7 @@ VM bytecode disassembly
   $93C9  28                         STORE_quick   ; inline operand = 8
   $93CA  AC 20 CD                   CALL_abs               $CD20 (ui_helper_cd20) {bytecode}
   $93CD  61                         PUSH_qimm   ; inline operand = 1
-  $93CE  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $93CE  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $93D2  40                         LOADL_qimm   ; inline operand = 0
   $93D3  2B                         STORE_quick   ; inline operand = 11
  >$93D4  0B                         LOADL_quick   ; inline operand = 11
@@ -2906,7 +2906,7 @@ VM bytecode disassembly
   $93F3  64                         PUSH_qimm   ; inline operand = 4
   $93F4  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $93F8  60                         PUSH_qimm   ; inline operand = 0
-  $93F9  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $93F9  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $93FD  63                         PUSH_qimm   ; inline operand = 3
   $93FE  62                         PUSH_qimm   ; inline operand = 2
   $93FF  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
@@ -3149,10 +3149,10 @@ VM bytecode disassembly
  >$95E2  42                         LOADL_qimm   ; inline operand = 2
  >$95E3  A8 FE 6F                   STORE_abs              $6FFE (tactical_battle_phase)
  >$95E6  61                         PUSH_qimm   ; inline operand = 1
-  $95E7  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $95E7  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $95EB  AC 5E 88                   CALL_abs               $885E (map_render_driver) {bytecode}
   $95EE  60                         PUSH_qimm   ; inline operand = 0
-  $95EF  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $95EF  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $95F3  AC 58 8B                   CALL_abs               $8B58 (draw_valid_unit_field_cells) {bytecode}
   $95F6  CF                         RETURN
  >$95F7  41                         LOADL_qimm   ; inline operand = 1
@@ -6800,7 +6800,7 @@ VM bytecode disassembly
   $AF9F  D6 E0 AF                   JUMP_abs               $AFE0
  >$AFA2  AC 20 CD                   CALL_abs               $CD20 (ui_helper_cd20) {bytecode}
   $AFA5  61                         PUSH_qimm   ; inline operand = 1
-  $AFA6  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $AFA6  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $AFAA  40                         LOADL_qimm   ; inline operand = 0
   $AFAB  2B                         STORE_quick   ; inline operand = 11
  >$AFAC  0B                         LOADL_quick   ; inline operand = 11
@@ -6823,7 +6823,7 @@ VM bytecode disassembly
   $AFCB  64                         PUSH_qimm   ; inline operand = 4
   $AFCC  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $AFD0  60                         PUSH_qimm   ; inline operand = 0
-  $AFD1  E9 35 CC 02                CALL_abs_imm1          $CC35 (marry_helper_cc35) {bytecode}, $02
+  $AFD1  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $AFD5  89 32                      BYTE_LOADL_imm1        +50
   $AFD7  A9 33 6E                   BYTE_STORE_abs         $6E33 (post_elim_owner_sentinel_id)
   $AFDA  8D 1E                      BYTE_PUSH_imm1         +30

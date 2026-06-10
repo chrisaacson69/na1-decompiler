@@ -304,7 +304,7 @@ word province_window_redraw_ba78(word arg1, word arg2) {
 
 word effect_view_a(word arg1) {
     ui_helper_cd20();    // $83FF
-    marry_helper_cc35(1);    // $8403
+    palette_swap(1);    // $8403
     palette_write_wrap(7, 35);    // $840A
     palette_write_wrap(11, 37);    // $8411
     palette_write_wrap(15, 43);    // $8418
@@ -381,7 +381,7 @@ word effect_view_a(word arg1) {
     }
     fief_info_display(0);    // $858D
     view_render_five_stats();    // $8591
-    return marry_helper_cc35(0);    // $8599
+    return palette_swap(0);    // $8599
 }
 
 // $859A effect_view_defending_province
@@ -441,7 +441,7 @@ word effect_view_b(void) {
         if ((*(byte*)(local11) != 255)) {    // $8705
             if (!(local10)) {    // $862A
                 ui_helper_cd20();    // $862E
-                marry_helper_cc35(1);    // $8632
+                palette_swap(1);    // $8632
                 palette_write_wrap(7, 43);    // $8639
                 palette_write_wrap(11, 35);    // $8640
                 ppu_render_rect_wrap(2, 3, 5, 3, 1);    // $8649
@@ -472,7 +472,7 @@ word effect_view_b(void) {
             view_window_redraw_by_6da2_flag(*(byte*)(local11));    // $86DE
             local10 = (local10 + 1);    // $86E4
             if ((((local10 + 1) == 4) || (*(byte*)((local11 + 1)) == 255))) {    // $86C2
-                marry_helper_cc35(0);    // $86F5
+                palette_swap(0);    // $86F5
                 if (!((ui_prompt_redraw() == 2))) {    // $86F4
                     local10 = 0;    // $8702
                 } else {
@@ -1808,9 +1808,9 @@ word driver_marry(void) {
                 local11 = marry_helper_e315();    // $9E16
                 if (marry_helper_e315()) {    // $9E01
                     active_province_idx_copy = (rng_mod(22) + 53);    // $9E22
-                    marry_helper_cc35(1);    // $9E26
+                    palette_swap(1);    // $9E26
                     draw_daimyo_portrait(2, 4);    // $9E2C
-                    marry_helper_cc35(0);    // $9E31
+                    palette_swap(0);    // $9E31
                     draw_message(msg_lord_s_s_wants_d_gold_pay_fd45, ((selected_province_owner() * 9) + 0x77A8), ((fief_owner(battle_defending_province) * 9) + 0x77A8), local11);    // $9E51
                     if (ui_helper_d3a7()) {    // $9E1A
                         local9 = ((selected_province_idx * 26) + 0x7001);    // $9E65
@@ -1832,9 +1832,9 @@ word driver_marry(void) {
                     }
                     confirm_prompt();    // $9EAB
                     active_province_idx_copy = selected_province_owner();    // $9EB1
-                    marry_helper_cc35(1);    // $9EB5
+                    palette_swap(1);    // $9EB5
                     draw_daimyo_portrait(2, 4);    // $9EBB
-                    marry_helper_cc35(0);    // $9EC0
+                    palette_swap(0);    // $9EC0
                     return local10;    // $9EC5
                 } else {
                     helper_8B8F(1);    // $9EC7

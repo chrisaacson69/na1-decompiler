@@ -12,7 +12,7 @@ word display_fullscreen_graphic_sequence(void) {
     syscall_audio_control(0, 0);    // $800B
     ui_helper_cd20();    // $800F
     if (count_6da2_set()) {    // $8008
-        marry_helper_cc35(1);    // $8019
+        palette_swap(1);    // $8019
         ppu_upload_block_wrap(6, 0x9054, 0x1510, 174);    // $8027
         ppu_blit_from_bank_wrap(0, 0, 31, 22, 0x8D74, 6);    // $8035
         ppu_render_rect_wrap(16, 8, 17, 13, 1);    // $8040
@@ -22,7 +22,7 @@ word display_fullscreen_graphic_sequence(void) {
             palette_write_wrap(local11, msg_congratulations_my_lord[local11]);    // $805A
             local11 = (local11 + 1);    // $8060
         } while (((unsigned)local11 < (unsigned)8));
-        marry_helper_cc35(0);    // $8068
+        palette_swap(0);    // $8068
         set_cursor(2, 24);    // $806F
         redraw_window(msg_congratulations_my_lord_b7da);    // $8076
         draw_message(msg_in_the_year_4d, current_game_year);    // $8080
@@ -60,7 +60,7 @@ word display_fullscreen_graphic_sequence(void) {
                 break;
             }
         }
-        marry_helper_cc35(1);    // $80D8
+        palette_swap(1);    // $80D8
         ppu_upload_block_wrap(6, display_fullscreen_graph_data_9d04, 0x1000, 254);    // $80E6
         syscall_fill_nametable(0, 0);    // $80ED
         fill_attr_wrap();    // $80F1
@@ -91,7 +91,7 @@ word display_fullscreen_graphic_sequence(void) {
             while (syscall_audio_control(1, 2)) {    // $8165
             }
         }
-        marry_helper_cc35(1);    // $8170
+        palette_swap(1);    // $8170
         ppu_upload_block_wrap(6, display_fullscreen_graph_data_af64, 0x1000, 248);    // $817E
         syscall_fill_nametable(0, 0);    // $8185
         fill_attr_wrap();    // $8189
@@ -102,7 +102,7 @@ word display_fullscreen_graphic_sequence(void) {
             local11 = (local11 + 1);    // $81AA
         } while (((unsigned)local11 < (unsigned)4));
     }
-    marry_helper_cc35(0);    // $81B2
+    palette_swap(0);    // $81B2
     call_bank10_entry(0);    // $81B7
     ui_input_mode = 0;    // $81BC
     ui_input_sel_latch_7fdf = 255;    // $81C2
@@ -122,11 +122,11 @@ word display_fullscreen_graphic_sequence(void) {
         }
         break;
     }
-    marry_helper_cc35(1);    // $81EA
+    palette_swap(1);    // $81EA
     ppu_upload_block_wrap(0, display_fullscreen_graph_data_b2ba, 0x1000, 81);    // $81F7
     fill_nametable_wrap();    // $81FB
     fill_attr_wrap();    // $81FE
-    marry_helper_cc35(0);    // $8202
+    palette_swap(0);    // $8202
     message_display(msg_would_you_like_to_play_again);    // $8209
     if (!(ui_helper_d3a7())) {    // $81E9
         message_display(msg_thanks_for_playing);    // $8216
@@ -177,7 +177,7 @@ L_82A3:
     redraw_window(msg_data_loaded);    // $82F8
     ui_helper_d759();    // $82FC
     ui_helper_cd20();    // $82FF
-    marry_helper_cc35(1);    // $8303
+    palette_swap(1);    // $8303
     ppu_upload_block_wrap(0, verify_sram_save_integri_data_b78a, 0x14D0, 4);    // $830F
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $831D
     local9 = 0;    // $8322
@@ -185,7 +185,7 @@ L_8323:
     palette_write_wrap(local9, verify_sram_save_integri_data_b852[local9]);    // $832B
     local9 = (local9 + 1);    // $8331
     if (((unsigned)local9 < (unsigned)8)) goto L_8323;    // $8335
-    marry_helper_cc35(0);    // $8339
+    palette_swap(0);    // $8339
     ui_msg_col_shift_flag = 1;    // $833E
     return 1;    // $8342
 L_8343:
@@ -423,7 +423,7 @@ word prompt_select_player_daimyo(word arg1) {
 
 word daimyo_creation_stat_roll_screen(void) {
     ui_helper_cd20();    // $8768
-    marry_helper_cc35(1);    // $876C
+    palette_swap(1);    // $876C
     palette_write_wrap(7, 43);    // $8773
     palette_write_wrap(11, 37);    // $877A
     ppu_render_rect_wrap(2, 6, 10, 10, 1);    // $8783
@@ -457,7 +457,7 @@ word daimyo_creation_stat_roll_screen(void) {
         draw_message(msg_fmt_blank_b9a7);    // $884F
         local9 = (local9 + 1);    // $8855
     } while ((local9 < 6));
-    marry_helper_cc35(0);    // $885D
+    palette_swap(0);    // $885D
     do {    // $8861
         local9 = 0;    // $8862
         local11 = ((selected_province_idx * 7) + 0x7530);    // $886C
@@ -481,7 +481,7 @@ word daimyo_creation_stat_roll_screen(void) {
 
 word render_boot_title_screens(void) {
     ui_msg_oneshot_flag_7fc5 = 0;    // $88B2
-    marry_helper_cc35(1);    // $88B6
+    palette_swap(1);    // $88B6
     ppu_upload_block_wrap(0, msg_fmt_blank, 0x1000, 102);    // $88C3
     ppu_upload_block_wrap(0, render_boot_title_screen_data_a84a, 0x23C0, 4);    // $88CF
     ppu_blit_from_bank_wrap(0, 0, 31, 29, render_boot_title_screen_data_a88a, 0);    // $88DD
@@ -490,7 +490,7 @@ word render_boot_title_screens(void) {
         palette_write_wrap(local11, msg_new_game_b862[local11]);    // $88EB
         local11 = (local11 + 1);    // $88F1
     } while (((unsigned)local11 < (unsigned)32));
-    marry_helper_cc35(0);    // $88FA
+    palette_swap(0);    // $88FA
     ui_input_sel_latch_7fdf = 255;    // $8901
     ui_input_mode = 0;    // $8905
     while (1) {    // $8908
@@ -512,7 +512,7 @@ word render_boot_title_screens(void) {
             break;
         }
     }
-    marry_helper_cc35(1);    // $892D
+    palette_swap(1);    // $892D
     ppu_upload_block_wrap(0, display_fullscreen_graph_data_b2ba, 0x1000, 81);    // $893A
     ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // $8948
     fill_nametable_wrap();    // $894C
@@ -527,7 +527,7 @@ word render_boot_title_screens(void) {
         palette_write_wrap(local11, msg_new_game[local11]);    // $8990
         local11 = (local11 + 1);    // $8996
     } while (((unsigned)local11 < (unsigned)8));
-    return marry_helper_cc35(0);    // $89A2
+    return palette_swap(0);    // $89A2
 }
 
 // $89A3 init_new_game_state
@@ -583,7 +583,7 @@ word init_new_game_state(void) {
             } while (((unsigned)i < (unsigned)5));
             ui_helper_cd20();    // $8A4B
             ui_msg_col_shift_flag = 1;    // $8A4F
-            marry_helper_cc35(1);    // $8A53
+            palette_swap(1);    // $8A53
             ppu_upload_block_wrap(0, verify_sram_save_integri_data_b78a, 0x14D0, 4);    // $8A5F
             ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $8A6D
             i = 0;    // $8A72
@@ -591,7 +591,7 @@ word init_new_game_state(void) {
                 palette_write_wrap(i, verify_sram_save_integri_data_b852[i]);    // $8A7B
                 i = (i + 1);    // $8A81
             } while (((unsigned)i < (unsigned)8));
-            marry_helper_cc35(0);    // $8A89
+            palette_swap(0);    // $8A89
             phi_val_8abc = 1;    // $8A8E
             while (1) {    // $8ABC
                 i = phi_val_8abc;    // $8ABC
@@ -616,7 +616,7 @@ word init_new_game_state(void) {
             message_display(msg_is_everything_ok_so_far);    // $8ADF
             if (!(ui_helper_d3a7())) {    // $8ADC
                 ui_helper_cd20();    // $8AE9
-                marry_helper_cc35(1);    // $8AED
+                palette_swap(1);    // $8AED
                 ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // $8AFB
                 ppu_blit_from_bank_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // $8B09
                 ppu_render_rect_wrap(0, 3, 17, 7, 1);    // $8B13
@@ -625,7 +625,7 @@ word init_new_game_state(void) {
                     palette_write_wrap(i, *(byte*)((i + (((unsigned)i < (unsigned)8) ? msg_new_game : msg_new_game_b862))));    // $8B2E
                     i = (i + 1);    // $8B34
                 } while (((unsigned)i < (unsigned)32));
-                marry_helper_cc35(0);    // $8B3D
+                palette_swap(0);    // $8B3D
                 continue;
             } else {
                 message_display(msg_then_on_with_the_game);    // $8B47
@@ -1688,7 +1688,7 @@ word process_first_n_unmarked_list_entries(word arg1, word arg2, word arg3) {
 
 word reassign_owner50_fiefs_to_daimyo24(void) {
     ui_helper_cd20();    // $99B0
-    marry_helper_cc35(1);    // $99B4
+    palette_swap(1);    // $99B4
     if ((battle_winner_province_sel == selected_province_idx)) {    // $99B0
         province_ai_state[selected_province_idx] = 5;    // $99CB
         set_cursor(2, 5);    // $99CE
@@ -1733,7 +1733,7 @@ word reassign_owner50_fiefs_to_daimyo24(void) {
         redraw_window(msg_nobunaga_s_loyal_subordinate_y);    // $9A93
         redraw_window(msg_nobunaga_s_ambition_of_a_unite);    // $9A9A
     }
-    marry_helper_cc35(0);    // $9A9F
+    palette_swap(0);    // $9A9F
     ui_prompt_redraw();    // $9AA3
     return map_helper_e5f2(6);    // $9AAB
 }

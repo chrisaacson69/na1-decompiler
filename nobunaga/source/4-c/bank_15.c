@@ -216,10 +216,10 @@ word syscall16_sram_wrap(word arg1, word arg2, word arg3, word arg4) {
     return syscall_memcpy_banked(arg1, arg2, arg3, arg4);    // $CBCC
 }
 
-// $CC35 marry_helper_cc35
+// $CC35 palette_swap
 // (body @ $CC3A)
 
-word marry_helper_cc35(word arg1) {
+word palette_swap(word arg1) {
     return syscall_palette_swap(arg1);    // $CC41
 }
 
@@ -304,7 +304,7 @@ word get_6f5d_or_ff(void) {
 // (body @ $CD25)
 
 word ui_helper_cd20(void) {
-    marry_helper_cc35(1);    // $CD26
+    palette_swap(1);    // $CD26
     fill_nametable_wrap();    // $CD2A
     fill_attr_wrap();    // $CD2D
     if (ui_pending_flag_7fc9) {    // $CD25
@@ -322,7 +322,7 @@ word ui_helper_cd20(void) {
         ppu_upload_block_wrap(4, strategic_map_chr_tiles, 0x15B0, 36);    // $CD76
         ui_pending_flag_7fc7 = 0;    // $CD7B
     }
-    marry_helper_cc35(0);    // $CD7F
+    palette_swap(0);    // $CD7F
     if ((selected_record_idx_9e3c != 255)) {    // $CD7E
         latched_selected_record_idx = selected_record_idx_9e3c;    // $CD90
         selected_record_idx_9e3c = 255;    // $CD96
@@ -2224,7 +2224,7 @@ L_E58E:
 word map_helper_e5f2(word arg1) {
     phi_ret_e693 = (arg1 != selected_record_idx_9e3c);    // $E5FC
     if (phi_ret_e693) {    // $E5F7
-        marry_helper_cc35(1);    // $E600
+        palette_swap(1);    // $E600
         ppu_blit_nobank_wrap(30, 4, 31, 19, 1);    // $E60C
         ppu_blit_from_bank_wrap(2, 4, 29, 19, ((arg1 * 0x01C0) + strategic_map_section_tilemaps), 4);    // $E621
         ppu_upload_block_wrap(4, ((arg1 << 5) + strategic_map_section_attributes), 0x23C8, 2);    // $E632
@@ -2242,7 +2242,7 @@ word map_helper_e5f2(word arg1) {
             draw_window_f706(*(byte*)(((cursor + 1) - 1)));    // $E67A
         }
         set_cursor(local11, local10);    // $E68A
-        phi_ret_e693 = marry_helper_cc35(0);    // $E68F
+        phi_ret_e693 = palette_swap(0);    // $E68F
     }
     return phi_ret_e693;    // $E693
 }
