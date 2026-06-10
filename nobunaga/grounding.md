@@ -97,6 +97,27 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Banks 10 + 14 folded into the corpus — the "$E80C" cross-bank case resolved   [2026-06-10]
+`$E80C` (top depth-0 leaf, 34 sites) was "blocked" by `call_bank_wrap(14)` → bank 14, a bank the
+decompiler never covered (`CODE_BANKS = [0,1,2,15]`, comment claimed "rest are data"). Chased it:
+`call_bank_wrap(n)` = `syscall_dispatch(n,7)` = **call_bank** (`JSR bank n $8000`). Scanned every bank
+for the `JSR $E823` (vm_entry) bootstrap → only banks **0,1,2,10,14** carry bytecode; **3-9, 11-13 are
+pure data** (0 bytecode, confirmed). Banks **10 (1 sub) and 14 (3 subs) were missed.** Added them to the
+bytecode-pipeline `CODE_BANKS` (decompile_all/merged, cfg_gate, stack_audit, v2-corpus, vm-roundtrip —
+NOT the native-parse tools, whose $8xxx addresses would collide with banks 0/1/2). Corpus **495 → 499
+subs**, gates green (CFG 499/499, 114/114, stack-audit 187). Grounded the 4 + the caller:
+- `$E80C` `ui_helper_e80c` → **`trigger_cutscene`** [HIGH]. `if(ai_turn_flags&4){cutscene_id=arg1;
+  return call_bank_wrap(14);}` — fire the AI-turn cutscene engine for event `arg1`. 34 sites.
+- bank14 `$80AD` → **`run_cutscene`** [HIGH] — the AI-turn cutscene SCRIPT INTERPRETER (reads a 5-byte
+  descriptor at `cutscene_id*5 + cutscene_table $AF80`, loads palette+CHR, runs a command switch:
+  move/draw-sprite-grid/delay/loop/clear/play-audio/end). A second mini-interpreter we'd never seen.
+- bank14 `$801D` → **`draw_sprite_grid`** [HIGH]; `$8003` → **`cutscene_delay`** [HIGH]; `$AF80` →
+  **`cutscene_table`** [MED]. bank10 `$8003` → **`play_audio_by_id`** [HIGH] (sound/music trigger).
+- RAM: `$7FCB` → **`cutscene_id`**, `$7FE5` → **`sound_request_id`**.
+**Lesson:** the "code only in 0/1/2/15" assumption was a decompiler-scope artifact, not a fact —
+call_bank reaches any bank's $8000, and the bank-14 cutscene engine proves it. Code banks = 0,1,2,10,14
+(bytecode) + 15 (native). See chapter 19 + the decompile_all comment.
+
 ### Bytecode band batch #1 — 7 depth-0 leaves grounded   [2026-06-10]
 First "tree-out" pass over the bank-15 bytecode band ($CA03–$E80C), leaves-first. Gates green
 (CFG 495/495 both ways, 114/114). `$E80C` (top, 34 sites) **deferred** — cross-bank-14 blocked.

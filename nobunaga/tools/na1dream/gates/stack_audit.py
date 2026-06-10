@@ -51,7 +51,7 @@ from na1dream.nobunaga_vm import NobunagaVM
 from vm_assemble import find_stubs, bank_range, walk_sub
 from na1dream.vm_stack_effect import STACK_EFFECT, GATED_CLASSES, effect
 
-CODE_BANKS = (0, 1, 2, 15)
+CODE_BANKS = (0, 1, 2, 10, 14, 15)
 
 # Controlled frame: FP high in RAM, SP below it with headroom so data-stack pushes
 # (descending) never collide with locals (FP-2..-24) or args (FP+0x0B..+0x11).

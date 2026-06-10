@@ -9,7 +9,7 @@
 // (body @ $CA08)
 
 word call_bank10_entry(word arg1) {
-    mem_7FE5 = arg1;    // $CA09
+    sound_request_id = arg1;    // $CA09
     return call_bank_wrap(10);    // $CA11
 }
 
@@ -2307,13 +2307,13 @@ word draw_daimyo_portrait(word col, word row) {
     return 1;    // $E80B
 }
 
-// $E80C ui_helper_e80c
+// $E80C trigger_cutscene
 // (body @ $E811)
 
-word ui_helper_e80c(word arg1) {
+word trigger_cutscene(word arg1) {
     phi_ret_e822 = (ai_turn_flags & 4);    // $E816
     if (phi_ret_e822) {    // $E811
-        mem_7FCB = arg1;    // $E81A
+        cutscene_id = arg1;    // $E81A
         phi_ret_e822 = call_bank_wrap(14);    // $E81E
     }
     return phi_ret_e822;    // $E822

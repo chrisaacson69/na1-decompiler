@@ -78,7 +78,21 @@ py -3 native-call-index.py callers $ADDR        # who calls a sub (kind = jsr / 
 
 ## What's left
 
-Every native layer of Bank 15 — firmware, BIOS, kernel helpers, music, interpreter, ALU — is ground-truthed. The remaining Bank-15 grounding work is entirely in **layer 4, the bytecode band `$CA03–$E80C`**: the ~37 still-suspect application subs, to be ground leaves-first (skipping the cross-bank-blocked ones until a bank-14 descent). When that band is clean, Bank 15 is fully recovered top to bottom, and the frontier moves out into the paged banks (0–14), which are almost entirely bytecode + data over this same fixed-bank machinery.
+Every native layer of Bank 15 — firmware, BIOS, kernel helpers, music, interpreter, ALU — is ground-truthed. The remaining Bank-15 grounding work is entirely in **layer 4, the bytecode band `$CA03–$E80C`**: the still-suspect application subs, ground leaves-first.
+
+### The cross-bank inventory (what runs where)
+
+`call_bank` (syscall 7) does a literal `JSR` to any bank's `$8000`, where a tiny native stub (`JMP …; JSR $E823 vm_entry`) hands off to that bank's bytecode. Scanning every bank for that bootstrap settles the whole-ROM code map:
+
+| Banks | Contents |
+|---|---|
+| **15** | native firmware / BIOS / interpreter / ALU (this chapter) |
+| **0, 1, 2** | bytecode — the bulk of the game (491 subs) |
+| **10** | bytecode — the audio/SFX trigger (`play_audio_by_id`, 1 sub) |
+| **14** | bytecode — the **AI-turn cutscene engine** (`run_cutscene` + 2 helpers, 3 subs) |
+| **3–9, 11–13** | **pure data** — graphics, tilemaps, tables (no executable code) |
+
+So the code-bearing banks are **0, 1, 2, 10, 14** (bytecode) **+ 15** (native) — six in total; the other ten are data. Banks 10 and 14 were folded into the decompiler corpus on 2026-06-10 (they had been missed by an `CODE_BANKS = [0,1,2,15]` that wrongly assumed "the rest are data"); the trigger that exposed them was `$E80C trigger_cutscene`, whose `call_bank_wrap(14)` reached a subsystem the corpus had never decompiled. With those in, the corpus is **499 subs across all six code banks**, and the frontier is the bytecode itself — there is no undiscovered native or bytecode bank left to find.
 
 ## Tags
 

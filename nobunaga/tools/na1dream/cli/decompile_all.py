@@ -87,7 +87,9 @@ from na1dream.nobunaga_vm import NobunagaVM
 # Done here (not in vm_decompile) so vm_decompile stays import-light for the gate tools.
 vm_decompile.structure_dream = dream.dream_structure_gated
 
-CODE_BANKS = [0, 1, 2, 15]   # the only banks containing bytecode (rest are data)
+CODE_BANKS = [0, 1, 2, 10, 14, 15]   # banks containing bytecode (banks 3-9/11-13 are pure data).
+# 10 = audio trigger (1 sub), 14 = AI-turn cutscene engine (3 subs); both invoked via call_bank
+# (syscall 7 = JSR bank $8000 -> JSR $E823 vm_entry). Added 2026-06-10 — see chapter 19 / ch.5.
 
 # The recovered "source" is committed as a pipeline ladder under source/ (see
 # tools/na1dream/ARCHITECTURE.md §artifacts): each decompiler stage is its own dir.

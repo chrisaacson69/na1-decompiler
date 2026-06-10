@@ -48,7 +48,7 @@ _da_spec = importlib.util.spec_from_file_location("decompile_all", HERE / "decom
 decompile_all = importlib.util.module_from_spec(_da_spec)
 _da_spec.loader.exec_module(decompile_all)
 
-CODE_BANKS = [0, 1, 2, 15]
+CODE_BANKS = [0, 1, 2, 10, 14, 15]
 _GOTO = re.compile(r'\bgoto L_[0-9A-Fa-f]{4};')
 
 

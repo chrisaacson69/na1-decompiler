@@ -26,7 +26,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from na1dream.nobunaga_vm import NobunagaVM
 from vm_assemble import encode_sub, find_stubs, bank_range
 
-CODE_BANKS = (0, 1, 2, 15)
+CODE_BANKS = (0, 1, 2, 10, 14, 15)
 
 
 def roundtrip_bank(bank, verbose=False):

@@ -34,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))   # tools/ -> `na1d
 
 from na1dream import nobunaga_vm
 
-CODE_BANKS = [0, 1, 2, 15]
+CODE_BANKS = [0, 1, 2, 10, 14, 15]
 ROM_PATH = ROOT / "Nobunaga's Ambition (USA).nes"
 
 

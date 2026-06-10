@@ -1190,7 +1190,7 @@ word ravage_defending_province_sweep(void) {
     redraw_window(msg_someone_has_sent_ninja_aginst);    // $93D5
     draw_message(msg_fmt__2d, (battle_defending_province + 1));    // $93E1
     confirm_prompt();    // $93E5
-    ui_helper_e80c(15);    // $93E9
+    trigger_cutscene(15);    // $93E9
     if (ravage_defender_field_off10()) goto L_944E;    // $93F0
     if (ravage_defender_field_off4()) goto L_944E;    // $93F6
     if (ravage_defender_loyalty()) goto L_944E;    // $93FC
@@ -1371,7 +1371,7 @@ L_9659:
     message_display(msg_beware_a_treacherous_subordina);    // $9686
     delay_loop(98);    // $968C
     open_message_window();    // $9690
-    ui_helper_e80c(5);    // $9694
+    trigger_cutscene(5);    // $9694
     audio_wait_gate = local10;    // $9699
     ai_turn_flags = saved_ai_turn_flags;    // $969F
     war_side_state_flag = 0;    // $96A3
@@ -1633,7 +1633,7 @@ word driver_diplomacy_gold_transfer(void) {
     daimyo_name_width(selected_province_idx);    // $9ABE
     draw_message(msg_will_you_ally_with_fief_2d_for, (battle_defending_province + 1), local11);    // $9ACB
     if (!(prompt_y_n())) goto L_9B07;    // $9AD2
-    ui_helper_e80c(7);    // $9AD6
+    trigger_cutscene(7);    // $9AD6
     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // $9AE9
     message_display(msg_this_pact_doesn_t_mean_you_can);    // $9AED
     diplomacy_helper2();    // $9AF1
@@ -1692,7 +1692,7 @@ word marry_transfer_gold_between_provinces(void) {
     daimyo_name_width(selected_province_idx);    // $9B91
     draw_message(msg_will_you_accept_4d_units_of_go, local11, (battle_defending_province + 1));    // $9B9E
     if (!(prompt_y_n())) goto L_9BDA;    // $9BA5
-    ui_helper_e80c(4);    // $9BA9
+    trigger_cutscene(4);    // $9BA9
     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // $9BBC
     message_display(msg_you_ve_lost_a_daughter_but_gai);    // $9BC0
     diplomacy_helper3();    // $9BC4
@@ -1784,7 +1784,7 @@ L_9CAD:
 // (body @ $9CB8)
 
 word decay_fief_list_wealth_and_output_disaster1(void) {
-    ui_helper_e80c(20);    // $9CBA
+    trigger_cutscene(20);    // $9CBA
     phi_val_9cf5 = 0x7BAD;    // $9CC1
     goto L_9CF5;    // $9CC1
 L_9CC4:
@@ -1802,7 +1802,7 @@ L_9CF5:
 // (body @ $9D05)
 
 word random_event_ravage_output_hidden_mark_weakness(void) {
-    ui_helper_e80c(31);    // $9D07
+    trigger_cutscene(31);    // $9D07
     phi_val_9d7b = 0x7BAD;    // $9D0E
     goto L_9D7B;    // $9D0E
 L_9D11:
@@ -1926,14 +1926,14 @@ L_9F1F:
     call_bank10_entry(30);    // $9F21
     message_display(msg_riot);    // $9F28
     confirm_prompt();    // $9F2C
-    ui_helper_e80c(23);    // $9F31
+    trigger_cutscene(23);    // $9F31
     collect_high_loyalty_provinces_to_candidate_list();    // $9F35
     goto L_9F10;    // $9F38
 L_9F3B:
     call_bank10_entry(30);    // $9F3D
     message_display(msg_revolt);    // $9F44
     confirm_prompt();    // $9F48
-    ui_helper_e80c(25);    // $9F4D
+    trigger_cutscene(25);    // $9F4D
     revolt_spread_sweep_flip_fief_ownership();    // $9F51
     goto L_9F10;    // $9F54
 }

@@ -35,7 +35,7 @@ from na1dream import vm_decompile
 from na1dream import dream
 from na1dream.cli import decompile_all
 
-CODE_BANKS = [0, 1, 2, 15]
+CODE_BANKS = [0, 1, 2, 10, 14, 15]
 
 
 def _hybrid_equiv(collect, leaders):
