@@ -643,6 +643,15 @@ def _emit_ast(ast, indent, out, nxt):
         if k == 'block':
             for a, t in node[2]:
                 out.append((a, indent, t))
+        elif k == 'continue':
+            out.append((0, indent, "continue;"))
+        elif k == 'break':
+            out.append((0, indent, "break;"))
+        elif k == 'loop':
+            _, h, body = node
+            out.append((h, indent, "while (1) {"))
+            _emit_ast(body, indent + 1, out, nxt)
+            out.append((0, indent, "}"))
         elif k == 'guard':
             _, cond, payload = node
             baddr = payload[1] if payload[0] == 'block' else 0
@@ -659,7 +668,10 @@ def _emit_ast(ast, indent, out, nxt):
             # guard idiom `if(c) goto body; merge`) OR the goto body simply sits at a lower
             # address than the fall body (arm-order inversion — `$8008`).
             fm, gm = _min_addr(fall_seq, nxt), _min_addr(goto_seq, nxt)
-            flip = (not fall_has) or (goto_has and (fm is None or gm < fm))
+            INF = 1 << 30                             # a break/continue-only arm has no real addr
+            fmv = fm if fm is not None else INF       # → sorts last, so it never steals `then`
+            gmv = gm if gm is not None else INF
+            flip = (not fall_has) or (goto_has and gmv < fmv)
             if flip:
                 then_seq, else_seq, cond, else_has = goto_seq, fall_seq, piv, fall_has
             else:
@@ -679,34 +691,248 @@ def _emit_ast(ast, indent, out, nxt):
 # mechanism (6/8 eligible repaired, gate-green) and is now superseded — DREAM inherits the
 # front-end's phi temps (`phi_<merge> = <value>;` per arm; the merge call reads the temp).
 
-def dream_ast(lines, instructions):
-    """Build the refinement AST (+ tc + the address next_leader map) for an eligible sub,
-    or None when out of scope (loop/switch). Shared by the emitter and the AST-native gate."""
-    tc = tagged_cfg(lines, instructions)
+
+# --------------------------------------------------------------------------- #
+# RUNG 2 — LOOP STRUCTURING.  DREAM's acyclic core (reaching conditions → `refine`) is
+# loop-blind, but a natural loop is just an ACYCLIC sub-problem once its two erased boundaries
+# are put back (the un-sharing lever again): the BACK edge (latch → header) and the EXIT edges
+# (a loop node → a block outside the loop). We cut both, redirecting each to a synthetic SINK
+# leader — the back edge to a CONTINUE sink, every exit edge to a BREAK sink — so the loop body
+# becomes a DAG rooted at the header that the existing `_acyclic_seq` structures verbatim. The
+# resulting AST's sink-blocks are then mapped to `('continue', h)` / `('break', X)` markers, and
+# the whole body is wrapped in a `('loop', h, body)` node emitted as `while (1) { … }`. The OUTER
+# graph collapses each loop to its header (successor = the single exit target), is structured
+# acyclically, and the loop node is substituted back in for the header's block. The gate is
+# already cycle-tolerant (`vm_cfg.contract` bypasses routers through self-loops and keeps tail
+# orientation), and `_ast_cfg` derives every edge from each block's REAL successors — so the
+# continue/break markers resolve to the true header / exit and the lowered CFG matches the raw
+# witness exactly. Phase 1 scope: SINGLE-LEVEL, SINGLE-EXIT-TARGET, reducible loops; any other
+# shape (nested, multi-exit, irreducible, switch-in-loop) returns None → passthrough unchanged.
+# --------------------------------------------------------------------------- #
+CONT_SINK = '\x1bCONT'                    # synthetic sink: latch back-edge → loop header (continue)
+
+
+def _brk_sink(x):
+    return ('\x1bBRK', x)                  # synthetic sink: loop-exit edge → block X outside the loop
+
+
+def _is_sink(L):
+    return L == CONT_SINK or (isinstance(L, tuple) and L and L[0] == '\x1bBRK')
+
+
+def _acyclic_seq(tc, header, do_orchains=True):
+    """Run the full acyclic refinement pipeline over `tc` (its `leaders` already set, `header` =
+    entry): optional ||-collapse, reverse-postorder rank, reconvergence map, reaching conditions,
+    `refine`. Returns the AST seq. Shared by the top-level acyclic path AND each loop sub-problem
+    (body region + collapsed outer). `do_orchains=False` for loop sub-problems — the gate lowers
+    the REAL (un-collapsed) witness for the loop case, so recovering `||` inside a loop would
+    desync the two sides; left for a later rung."""
     leaders = tc['leaders']
-    if not leaders or not eligible(tc, leaders[0]):
-        return None
-    # SHORT-CIRCUIT `||` recovery: collapse guard cascades to one compound branch BEFORE building
-    # reaching conditions, so BODY emits once (not duplicated per disjunct). leaders_full + or_chains
-    # are kept for the gate, which collapses the raw witness identically (see `_or_chains`).
-    tc['leaders_full'] = list(leaders)
-    tc['or_chains'] = _or_chains(tc)
-    if tc['or_chains']:
-        _collapse_tc_chains(tc, tc['or_chains'])
-        leaders = tc['leaders']
-    # Topological (reverse-postorder) rank: a block ranks before the blocks it flows to. Used
-    # to order an arm's branch-free residue by DATA dependency (so each block falls into its
-    # successor) instead of by address — the gate is reorder-tolerant, and a merge can sit at a
-    # LOWER address than its predecessor (`$93C4`: $944E < $9453), which address order misplaces.
-    tc['rpo'] = {L: i for i, L in enumerate(_reverse_postorder(tc['cfg'], leaders[0]))}
+    if do_orchains:
+        # SHORT-CIRCUIT `||` recovery: collapse guard cascades to one compound branch BEFORE
+        # reaching conditions, so BODY emits once (not duplicated per disjunct). leaders_full +
+        # or_chains are kept for the gate, which collapses the raw witness identically.
+        tc['leaders_full'] = list(leaders)
+        tc['or_chains'] = _or_chains(tc)
+        if tc['or_chains']:
+            _collapse_tc_chains(tc, tc['or_chains'])
+            leaders = tc['leaders']
+    else:
+        tc.setdefault('leaders_full', list(leaders))
+        tc.setdefault('or_chains', [])
+    # Topological (reverse-postorder) rank: a block ranks before the blocks it flows to. Used to
+    # order an arm's branch-free residue by DATA dependency (so each block falls into its
+    # successor), pivot selection, and pre-trunk membership — never by address (the gate is
+    # reorder-tolerant; a merge can sit at a LOWER address than its predecessor).
+    tc['rpo'] = {L: i for i, L in enumerate(_reverse_postorder(tc['cfg'], header))}
     # Multi-exit-aware reconvergence (NOT the strict EXIT-rooted post-dominator: early returns
     # collapse that to EXIT, defeating continuation extraction — see `_reconvergences`).
-    tc['cont_map'] = _reconvergences(tc['cfg'], leaders[0], tc['rpo'])   # emit-once continuation map
-    cr = reaching_conditions(tc, leaders[0])
+    tc['cont_map'] = _reconvergences(tc['cfg'], header, tc['rpo'])
+    cr = reaching_conditions(tc, header)
     items = [(cr[L], L) for L in leaders if L != vm_cfg.EXIT and L in cr]
-    real = [L for L in leaders if L != vm_cfg.EXIT]
-    nxt = {real[i]: (real[i + 1] if i + 1 < len(real) else vm_cfg.EXIT) for i in range(len(real))}
-    return refine(tc, items), tc, nxt
+    return refine(tc, items)
+
+
+def _natural_loops(tc, header):
+    """The sub's reducible natural loops as [{h, nodes, latches, exit}], or None when out of
+    Phase-1 scope. Loops sharing a header merge (one loop, many latches). Bails (None) on nested
+    or overlapping loops and on any loop with >1 distinct exit TARGET — left for a later phase."""
+    cfg = tc['cfg']
+    edges, _dom = vm_cfg.back_edges(cfg, header)
+    if not edges:
+        return []
+    byh = {}
+    for u, h in edges:
+        byh.setdefault(h, set()).add(u)
+    loops, nodes_of = [], {}
+    for h, latches in byh.items():
+        N = set()
+        for u in latches:
+            N |= vm_cfg.natural_loop(u, h, cfg)
+        nodes_of[h] = N
+        loops.append({'h': h, 'nodes': frozenset(N), 'latches': frozenset(latches)})
+    hs = list(nodes_of)
+    for i, hi in enumerate(hs):                       # disjoint single-level only (Phase 1)
+        for j, hj in enumerate(hs):
+            if i != j and hj in nodes_of[hi]:
+                return None                            # nested loop
+        for hj in hs[i + 1:]:
+            if nodes_of[hi] & nodes_of[hj]:
+                return None                            # overlapping (irreducible-ish)
+    for lp in loops:
+        exits = set()
+        for n in lp['nodes']:
+            for s in cfg[n]:
+                if s != vm_cfg.EXIT and s not in lp['nodes']:
+                    exits.add(s)
+        if len(exits) > 1:
+            return None                                # multi-exit-target loop
+        lp['exit'] = next(iter(exits)) if exits else None
+    return loops
+
+
+def _region_tc(base, nodes, header, exit_target):
+    """A self-contained acyclic sub-`tc` for one loop body: the loop's `nodes`, with every back
+    edge (→ header) redirected to the CONTINUE sink and every exit edge (→ outside `nodes`) to that
+    exit's BREAK sink. Sinks are terminal (→EXIT) statement-free leaders. Block content / branch
+    conditions are carried verbatim (the structuring is identity-preserving)."""
+    EXIT = vm_cfg.EXIT
+    cfg, tag, info, kind = {}, {}, {}, {}
+    for L in nodes:
+        info[L] = base['info'][L]
+        kind[L] = base['kind'][L]
+        succ = []
+        for s in base['cfg'][L]:
+            if s == EXIT:
+                t = EXIT
+            elif s == header:
+                t = CONT_SINK
+            elif s in nodes:
+                t = s
+            else:
+                t = _brk_sink(s)
+            succ.append(t)
+            tag[(L, t)] = base['tag'].get((L, s), TRUE)
+        cfg[L] = succ
+    sinks = {s for L in nodes for s in cfg[L] if _is_sink(s)}
+    for sk in sinks:
+        cfg[sk] = [EXIT]
+        info[sk] = ([], None, None, None, False)
+        kind[sk] = 'exit'
+        tag[(sk, EXIT)] = TRUE
+    real = [L for L in base['leaders'] if L in nodes]
+    leaders = real + sorted(sinks, key=repr)
+    return dict(cfg=cfg, leaders=leaders, block_of=base['block_of'], info=info,
+                buckets=base.get('buckets', {}), tag=tag, kind=kind)
+
+
+def _outer_tc(base, loops, removed):
+    """The sub with every loop COLLAPSED to its header: body-interior nodes dropped, each header
+    rewired to its single exit target (a 1-way), so the residue is acyclic and `_acyclic_seq`
+    structures it. The header's block is later replaced by the loop node, so its statements here
+    are irrelevant."""
+    EXIT = vm_cfg.EXIT
+    hexit = {lp['h']: lp['exit'] for lp in loops}
+    cfg, tag, info, kind = {}, {}, {}, {}
+    leaders = [L for L in base['leaders'] if L not in removed]
+    for L in leaders:
+        if L in hexit:
+            x = hexit[L]
+            succ = [x if x is not None else EXIT]
+            cfg[L] = succ
+            kind[L] = 'exit' if succ == [EXIT] else '1way'
+            info[L] = ([], None, None, None, False)
+            tag[(L, succ[0])] = TRUE
+        else:
+            cfg[L] = list(base['cfg'][L])
+            kind[L] = base['kind'][L]
+            info[L] = base['info'][L]
+            for s in base['cfg'][L]:
+                tag[(L, s)] = base['tag'].get((L, s), TRUE)
+    return dict(cfg=cfg, leaders=leaders, block_of=base['block_of'], info=info,
+                buckets=base.get('buckets', {}), tag=tag, kind=kind)
+
+
+def _map_sinks(seq, h, exit_target):
+    """Replace synthetic sink blocks in a structured loop body with continue/break markers:
+    CONTINUE sink → ('continue', h); BREAK sink for X → ('break', X). Recurses into guards / ifs."""
+    def conv(node):
+        k = node[0]
+        if k == 'block':
+            L = node[1]
+            if L == CONT_SINK:
+                return ('continue', h)
+            if _is_sink(L):
+                return ('break', L[1])
+            return node
+        if k == 'guard':
+            return ('guard', node[1], conv(node[2]))
+        if k == 'if':
+            _, Lpiv, piv, f, t, fall, goto = node
+            return ('if', Lpiv, piv, f, t, [conv(x) for x in fall], [conv(x) for x in goto])
+        return node
+    return [conv(x) for x in seq]
+
+
+def _substitute_loops(seq, loop_nodes):
+    """Replace each collapsed loop header's block in the outer AST with its ('loop', h, body)."""
+    def sub(node):
+        k = node[0]
+        if k == 'block' and node[1] in loop_nodes:
+            return loop_nodes[node[1]]
+        if k == 'guard':
+            return ('guard', node[1], sub(node[2]))
+        if k == 'if':
+            _, Lpiv, piv, f, t, fall, goto = node
+            return ('if', Lpiv, piv, f, t, [sub(x) for x in fall], [sub(x) for x in goto])
+        return node
+    return [sub(x) for x in seq]
+
+
+def _loop_structure(tc, header, loops):
+    """Build the loop-aware AST: structure each loop body in isolation (redirected sub-tc), wrap
+    in a loop node, then structure the collapsed outer graph and substitute the loop nodes back.
+    Returns None if any region (body or outer) is still cyclic (irreducible — out of scope)."""
+    loop_nodes, removed = {}, set()
+    for lp in loops:
+        h, N = lp['h'], lp['nodes']
+        rtc = _region_tc(tc, N, h, lp['exit'])
+        if _has_backedge(rtc['cfg'], h):              # body still cyclic ⇒ irreducible — bail
+            return None
+        body = _map_sinks(_acyclic_seq(rtc, h, do_orchains=False), h, lp['exit'])
+        loop_nodes[h] = ('loop', h, body)
+        removed |= (set(N) - {h})
+    otc = _outer_tc(tc, loops, removed)
+    if _has_backedge(otc['cfg'], header):             # outer still cyclic ⇒ irreducible — bail
+        return None
+    outer = _acyclic_seq(otc, header, do_orchains=False)
+    return _substitute_loops(outer, loop_nodes)
+
+
+def dream_ast(lines, instructions):
+    """Build the refinement AST (+ tc + the address next_leader map) for an in-scope sub, or None
+    when out of scope (switch, or a loop shape Phase 1 doesn't handle). Shared by the emitter and
+    the AST-native gate."""
+    tc = tagged_cfg(lines, instructions)
+    leaders = tc['leaders']
+    if not leaders:
+        return None
+    if any(k == 'switch' for k in tc['kind'].values()):
+        return None
+    EXIT = vm_cfg.EXIT
+    header = leaders[0]
+    real = [L for L in leaders if L != EXIT]
+    nxt = {real[i]: (real[i + 1] if i + 1 < len(real) else EXIT) for i in range(len(real))}
+    if not _has_backedge(tc['cfg'], header):
+        tc['leaders'] = list(leaders)
+        return _acyclic_seq(tc, header), tc, nxt
+    loops = _natural_loops(tc, header)
+    if loops is None:
+        return None
+    ast = _loop_structure(tc, header, loops)
+    if ast is None:
+        return None
+    return ast, tc, nxt
 
 
 def dream_structure(lines, instructions):
@@ -746,6 +972,16 @@ def _ast_cfg(ast, tc):
                 rs = tc['cfg'][L]
                 edges[L] = frozenset({EXIT}) if EXIT in rs else frozenset({cont})
             return L
+        if k == 'continue':                           # back-edge → the loop header
+            return node[1]
+        if k == 'break':                              # exit edge → the block past the loop
+            return node[1]
+        if k == 'loop':
+            # The loop body's lexical end loops back to the header (fall == h); break/continue
+            # markers carry their own real targets. Building the body sets every loop block's
+            # REAL edges, so the lowered CFG is cyclic exactly like the witness. Entry == h.
+            _, h, body = node
+            return build(body, h)
         if k == 'guard':
             # `if(cr){block}` where cr is a residual reaching condition. CFG-TRANSPARENT: the
             # real branching that reaches `block` is the upstream `if` nodes (their empty goto
@@ -994,13 +1230,13 @@ def _check(bank, verbose=False):
     for a0, (raw, instrs) in sorted(grab.items(), key=lambda x: (x[0] is None, x[0])):
         if not instrs:
             continue
-        tc = tagged_cfg(raw, instrs)
-        leaders = tc['leaders']
-        if not leaders or not eligible(tc, leaders[0]):
+        built = dream_ast(raw, instrs)               # None ⇒ out of scope (switch / unhandled loop)
+        if built is None:
             passthrough += 1
             continue
         elig += 1
-        ast, tc, nxt = dream_ast(raw, instrs)         # collapsed tc — gate must see the SAME one
+        ast, tc, nxt = built
+        leaders = tc['leaders']
         out = []
         _emit_ast(ast, 0, out, nxt)
         dream = out
@@ -1043,12 +1279,11 @@ def _emit_one(bank, sub_addr_hex):
     """Dump the structured C dream_structure produces for one sub + the gate verdict."""
     import vm_cfg
     lines, instrs = _capture_sub(bank, sub_addr_hex)
-    tc = tagged_cfg(lines, instrs)
-    leaders = tc['leaders']
-    if not eligible(tc, leaders[0]):
-        print(f"sub ${sub_addr_hex}: OUT OF SCOPE (loop or switch) — passthrough")
+    built = dream_ast(lines, instrs)                  # None ⇒ out of scope (switch / unhandled loop)
+    if built is None:
+        print(f"sub ${sub_addr_hex}: OUT OF SCOPE (switch / unhandled loop) — passthrough")
         return
-    ast, tc, nxt = dream_ast(lines, instrs)           # collapsed tc — gate must see the SAME one
+    ast, tc, nxt = built
     dream = []
     _emit_ast(ast, 0, dream, nxt)
     try:
