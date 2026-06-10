@@ -442,13 +442,19 @@ def refine(tc, items):
             payload = ('block', L, tc['info'][L][0])
             out.append(payload if c == TRUE else ('guard', c, payload))
         return out
-    # PRE-PIVOT TRUNK: the UNCONDITIONAL linear entry chain before the first branch — blocks at a
-    # lower address than the pivot AND with reaching condition TRUE (always executed in this context).
-    # Emit in address order BEFORE the if (else the reorder-tolerant AST gate sees them misplaced).
-    # The `c == TRUE` guard is load-bearing: a CONDITIONAL block can sit at a lower address than the
-    # branch that guards it (address-inverted arm body — `$AD3D`'s `$AD67` under `if(sel)` at `$AD7B`);
-    # without it that block emits as unconditional trunk, flowing into the branch and corrupting the CFG.
-    pre = sorted((x for x in items if x[1] < Lpiv and x[0] == TRUE), key=lambda x: x[1])
+    rpo, cont_map = tc['rpo'], tc.get('cont_map', {})
+    big = 1 << 30
+    rpiv = rpo.get(Lpiv, big)
+    # PRE-PIVOT TRUNK: the UNCONDITIONAL linear entry chain before the first branch — blocks
+    # TOPOLOGICALLY before the pivot (rpo < rpo(pivot)) AND with reaching condition TRUE (always
+    # executed in this context). Selection AND order are by rpo, NOT address: a reconvergence/join
+    # is also `cr==TRUE` but sits AFTER the branches (rpo > pivot), and it can be ADDRESS-INVERTED
+    # below its own predecessors (`$9E78`'s flag-set `$9FC7` at a lower address than `$A008`/`$A010`
+    # that feed it). Address order would mis-grab that join as trunk and emit it before the branch,
+    # dropping the edges into it; rpo excludes it (it's a continuation, placed after the if). The
+    # `c == TRUE` guard also keeps a CONDITIONAL low-rpo arm body out (`$AD3D`'s `$AD67`).
+    pre = sorted((x for x in items if x[0] == TRUE and rpo.get(x[1], big) < rpiv),
+                 key=lambda x: rpo.get(x[1], big))
     pre_set = {L for _c, L in pre}
     pre_nodes = [('block', L, tc['info'][L][0]) for _c, L in pre]
     cpiv = dict((L, c) for c, L in items)[Lpiv]
@@ -459,7 +465,6 @@ def refine(tc, items):
     # rather than DUPLICATING it into both arms — distribution alone makes a wide reconvergent
     # tail blow up combinatorially. Split: [< cont in topo order] distributes into the arms;
     # [>= cont] is the continuation, refined once with cont forced unconditional (TRUE).
-    rpo, cont_map = tc['rpo'], tc.get('cont_map', {})
     item_ls = {L for _c, L in items}
     cont = cont_map.get(Lpiv)
     if cont in (None, vm_cfg.EXIT) or cont not in item_ls or cont == Lpiv or cont in pre_set:
