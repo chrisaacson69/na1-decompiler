@@ -1020,7 +1020,7 @@ prg_bank_count = 16        # 256 KB total
 "0xDB35" = { name = "ui_helper_db35",      comment = "Sub-handler helper." }
 "0xDB12" = { name = "tax_helper_db12",     comment = "Tax-specific helper." }
 "0xD759" = { name = "ui_helper_d759",      comment = "Helper called by 3 drivers." }
-"0xD772" = { name = "ui_helper_d772",      comment = "Helper called by 2 drivers." }
+"0xD772" = { name = "fief_owner",          comment = "[HIGH CONFIRMED 2026-06-10] return fief_to_daimyo_map[fief] -- 5-op accessor (LOADL 12 fief; LOADR_imm2 $6E15 fief_to_daimyo_map; ADD; BYTE_DEREF; RETURN @ $D777). Takes a fief id, returns its owning daimyo id. Was 'ui_helper_d772' (low-fidelity: NOT a UI helper, a data accessor; the 'fief->owner' note scattered in other comments is now ground-truthed)." }
 "0xE5F2" = { name = "map_helper_e5f2",     comment = "Map-rendering helper called by Map (chapter 11)." }
 "0xC4DC" = { name = "ui_unused",           comment = "Reserved." }
 

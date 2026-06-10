@@ -1,0 +1,101 @@
+# Grounding pass — method + ledger
+
+The decompiler now emits readable game-C (DREAM canonical, 495 subs). This pass makes the
+**labels and the mechanics docs trustworthy**, which they are not yet: the existing names and
+their toml comments came from a low-fidelity first pass that prioritized breadth (give every
+sub *a* name) over correctness. **Everything prior — names AND comments AND the chapter docs
+derived from them — is a SUSPECT to be re-grounded, not a fact to be trusted.**
+
+This is a distinct *mode* from that first pass:
+
+| first pass (`label-walk`) | grounding pass (this doc) |
+|---|---|
+| breadth-first coverage | depth-first correctness |
+| name the *anonymous* subs | re-confirm / correct the *named* ones too |
+| prior names = trusted seeds | prior names = suspects |
+| name + one-line comment | name + **evidence** + **confidence** + recovered **mechanics** |
+
+We reuse `label-walk`'s machinery (leaves-first call-graph cursor, seed assembly) but flip the
+job from "name the blank" to "ground-truth it, lowest layer first."
+
+---
+
+## Settled framing
+
+- **Direction: leaves-first up the call graph.** A leaf is the only thing nameable with
+  confidence in isolation (no unnamed callee hiding its meaning); naming it propagates up to
+  every caller for free. This mirrors the project's own recurring lesson — *topological order
+  beats address order everywhere.* Completeness comes from covering a **call-graph layer to
+  exhaustion**, not from a linear "walk from the start" (code is a tree; there is no start).
+- **Pass 0 = the native 6502 / Bank-15 floor.** The true leaves under the VM. See *Layer ID*.
+- **Two outputs per grounded routine, not one:** (1) a grounded label in `mesen-labels.toml`;
+  (2) any recovered *rule* promoted up into the matching mechanics chapter (`NN-*.md`). A
+  chapter claim that can't be re-grounded gets marked provisional, not left masquerading as fact.
+- **Misread ⇒ a decompiler-3% flag.** If a routine won't read right after honest effort, suspect
+  the decompiler before the label: hand-decompile the raw bytecode (the loop that found the
+  value-merge phi bugs — the CFG gate is value-blind, only *reading* catches these). Log it.
+
+### Layer ID (do this first — you cannot tell from the address)
+`$D772` *looked* like fixed-bank native 6502; it is VM bytecode in the fixed bank. Rule, per
+Chris: **the bytecode compiler has claimed every VM routine, so —**
+- in the bytecode-routine set (has a VM sub / `vm_disasm` decodes it) ⇒ **VM** → read
+  `source/4-c/bank_NN.c` + `py -3 -m na1dream.vm_disasm <bank> --sub <ADDR>`.
+- not claimed ⇒ **6502 or data** (Mesen separated these by execution-marking over time) → read
+  `source/1-asm-6502/bank_15*.asm`. This native code lives mostly/entirely in **Bank 15**;
+  no mixed code has been seen in the other banks. *(Pass-0 worklist = bank-15 code the bytecode
+  compiler did NOT claim — deterministically enumerable.)*
+
+---
+
+## The loop (proven on `$D772`, below — run N of these per session)
+
+1. **Pick** the next leaf from `label-walk`'s leaves-first cursor
+   (`py -3 tools/label-walk-prep.py <bank>`); take high-fanout first for leverage.
+2. **Layer-ID** it (VM vs 6502 — see above). Choose the view accordingly.
+3. **Read the authoritative body.** Reduce an accessor to a one-line semantic; trace full logic
+   otherwise.
+4. **Fact-check the existing name/comment as a suspect** → confirm / amend / refute. Never harvest
+   a prior note as truth.
+5. **Name from behavior** (house style: read-at-the-call-site, e.g. `fief_owner` not
+   `ui_helper_d772`); record the **evidence expression** + a **confidence tag**.
+6. **Apply** to `mesen-labels.toml`, **regenerate** (`py -3 -m na1dream.cli.decompile_all`),
+   **spot-check** 2–3 call sites now read right. Log the rename old→new (chapters cite old names).
+7. **Mechanics → chapter** (`NN-*.md`) if the routine encodes a rule; accessors have none.
+8. **Ledger + advance the frontier** (below).
+
+### Conventions
+- **Where labels live:** `mesen-labels.toml` — `[prg.bankN]` `"0xADDR" = {name, comment}` for code
+  labels; `[vars.bankN."0xADDR"]` for per-sub slot/variable names; `[ram]` for ZP/RAM.
+- **Confidence tag** (formalize the emergent toml convention) in every grounded comment:
+  `[<LEVEL> <STATUS> <DATE>]` — LEVEL ∈ HIGH/MED/LOW (certainty), STATUS ∈
+  CONFIRMED / PROBABLE / AMENDED / REFUTED / OPEN. The comment MUST carry the evidence expression
+  (the recovered one-liner or the key trace), so the next session can re-check without re-deriving.
+- **Only CONFIRMED facts flow up into the `.md` chapters** as grounded; everything else stays
+  provisional in the toml.
+- The generated C (`source/4-c/*.c`) is NEVER hand-edited — change the toml and regenerate.
+
+---
+
+## Ledger (append-only, newest first)
+
+### `$D772`  `ui_helper_d772` → `fief_owner`   [HIGH CONFIRMED 2026-06-10]
+Pilot that proved the loop. 5-op VM accessor: `return fief_to_daimyo_map[fief]`
+(`LOADL 12 fief; LOADR_imm2 $6E15 fief_to_daimyo_map; ADD; BYTE_DEREF; RETURN @ $D777`).
+Takes a fief id, returns its owning daimyo id. Old name was wrong-category (a data accessor, not a
+UI helper); the "fief→owner" note scattered in ~5 other comments is now ground-truthed. 149 call
+sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-daimyo stat table
+(stride 7), `$77A8` daimyo-name table (stride 9).
+
+---
+
+## Frontier (where to resume — do not retread)
+
+- **Highest-leverage VM leaves still anonymous** (call-site counts): `ui_helper_cc7b` ×211,
+  `ui_helper_d134` ×193, `ui_helper_cc89` ×87, `marry_helper_cc35` ×91, `ui_helper_e80c` ×73,
+  `ui_helper_d77e` ×65 — all UI/window primitives by their neighborhood; ground next.
+- **Pass-0 native floor:** enumerate the Bank-15 code the bytecode compiler did not claim; ground
+  the 6502 leaves (syscalls + kernel) under the VM.
+- **Sub-targets exposed by grounded leaves:** `$7530` (per-daimyo stat table, stride 7), `$77A8`
+  (daimyo-name table, stride 9).
+- **Backlog size:** 454 distinct `_XXXX`-suffixed (address-tagged = self-confessed low-fidelity)
+  names across `source/4-c/`.
