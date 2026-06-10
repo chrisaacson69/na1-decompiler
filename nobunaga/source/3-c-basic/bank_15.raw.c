@@ -726,10 +726,10 @@ L_D2CA:
     phi_d2ec_3 = 2;    // $D2D8
     goto L_D2EC;    // $D2D8
 L_D2DB:
-    phi_d2ec_0 = (ui_window_col << 3);    // $D2EC
-    phi_d2ec_1 = ((ui_cursor_row << 3) - 1);    // $D2EC
-    phi_d2ec_2 = 0;    // $D2EC
-    phi_d2ec_3 = ui_timer_gate_flag_7fe7;    // $D2EC
+    phi_d2ec_0 = (ui_window_col << 3);    // $D2EB
+    phi_d2ec_1 = ((ui_cursor_row << 3) - 1);    // $D2EB
+    phi_d2ec_2 = 0;    // $D2EB
+    phi_d2ec_3 = ui_timer_gate_flag_7fe7;    // $D2EB
 L_D2EC:
     syscall_set_sprite(0, phi_d2ec_0, phi_d2ec_1, phi_d2ec_2, phi_d2ec_3);    // $D2EE
     frame_counter = 200;    // $D2F5
@@ -872,8 +872,8 @@ L_D469:
     if (!(((unsigned)(*(word*)(((local4 << 1) + &local6)) + 1) >= (unsigned)10))) goto L_D485;    // $D477
     *(word*)(((local4 << 1) + &local6)) = 0;    // $D484
 L_D485:
-    phi_d492_0 = 0xF6A1;    // $D492
-    phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D492
+    phi_d492_0 = 0xF6A1;    // $D48F
+    phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D48F
 L_D492:
     draw_message(phi_d492_0, phi_d492_1);    // $D492
     ui_window_col = (ui_window_col - 1);    // $D49A
@@ -1028,7 +1028,7 @@ word redraw_window_f6c7(void) {
         default: goto L_D6A5;    // $D68F
     }    // $D68F
 L_D69E:
-    phi_d6a1_0 = 0xF6C7;    // $D6A1
+    phi_d6a1_0 = 0xF6C7;    // $D69E
 L_D6A1:
 L_D6A5:
     return redraw_window(phi_d6a1_0);    // $D6A5
@@ -1475,7 +1475,7 @@ word draw_window_f706(word arg1) {
     phi_db92_0 = ((fief_owner(arg1) * 9) + 0x77A8);    // $DB8C
     goto L_DB92;    // $DB8C
 L_DB8F:
-    phi_db92_0 = msg_no_lord;    // $DB92
+    phi_db92_0 = msg_no_lord;    // $DB8F
 L_DB92:
     return redraw_window(phi_db92_0);    // $DB96
 }
@@ -1640,14 +1640,14 @@ L_DE0A:
     phi_push_de27 = (rng_mod(20) + 50);    // $DE1C
     goto L_DE27;    // $DE1C
 L_DE1F:
-    phi_push_de27 = (rng_mod(30) + 30);    // $DE27
+    phi_push_de27 = (rng_mod(30) + 30);    // $DE25
 L_DE27:
     *(word*)(local9) = pct_op(*(word*)(local9), phi_push_de27);    // $DE2F
     if (!((*(word*)(local9) < 10))) goto L_DE3B;    // $DE34
     phi_push_de3c = 10;    // $DE38
     goto L_DE3C;    // $DE38
 L_DE3B:
-    phi_push_de3c = 0;    // $DE3C
+    phi_push_de3c = 0;    // $DE3B
 L_DE3C:
     *(word*)(local9) = (*(word*)(local9) + phi_push_de3c);    // $DE42
     phi_val_de45 = (local9 + 2);    // $DE44
@@ -1801,8 +1801,8 @@ L_E080:
     phi_e0a2_1 = battle_defending_province;    // $E099
     goto L_E0A2;    // $E099
 L_E09C:
-    phi_e0a2_0 = battle_defending_province;    // $E0A2
-    phi_e0a2_1 = selected_province_idx;    // $E0A2
+    phi_e0a2_0 = battle_defending_province;    // $E09F
+    phi_e0a2_1 = selected_province_idx;    // $E09F
 L_E0A2:
 L_E0A6:
     daimyo_stat_transfer(phi_e0a2_0, phi_e0a2_1);    // $E0A2
@@ -2219,7 +2219,7 @@ L_E7A7:
     goto L_E7FA;    // $E7EB
 L_E7EE:
     unpack_composite_face_record(&face_buf);    // $E7F2
-    phi_push_e7fa = &face_buf;    // $E7FA
+    phi_push_e7fa = &face_buf;    // $E7F7
 L_E7FA:
     ppu_copy_rect_wrap(col, row, (col + 5), (row + 5), phi_push_e7fa, 8);    // $E803
     ui_pending_flag_7fc7 = 1;    // $E808

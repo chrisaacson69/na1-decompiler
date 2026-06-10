@@ -79,6 +79,33 @@ Chris: **the bytecode compiler has claimed every VM routine, so —**
 
 ## Decompiler 3% backlog (misreads found by reading — the other output of this pass)
 
+### DREAM fold clobbers if/else phi-temp merges (value-wrong 4-c, V1 correct)   [FIXED 2026-06-10]
+Found while grounding bank-15 leaves ($DB6E, $D687). **DREAM's structured output (`source/4-c`) was
+VALUE-WRONG** for an if/else whose arms set a front-end phi temp: it dropped the if-arm's skip-over-else
+and emitted the else-arm's `phi = <default>` UNCONDITIONALLY after the `if`, so the conditional value
+was dead. The V1 raw witness (`source/3-c-basic`) was CORRECT — a block-ATTRIBUTION bug, not a value
+bug. **Root cause:** `consuming_phis`/`push_phis` tagged the fall-through pred's materialise at the
+MERGE address (the capture site), so DREAM — which buckets lines into blocks BY ADDRESS TAG — placed it
+in the join block. `return_phis`/`value_merge_phis` already carried a separate `tag_addr` (the pred's
+own block) for exactly this; `consuming_phis`/`push_phis` never got it. **Fix (commit pending):** both
+now return a `tag_addr` (fall pred → its last-instr/block addr; jump pred → the jump addr), and the
+decoder emits the materialise line via `state.lines.append((tag, …))` not `state.emit(...)`. Mirrors
+the $E80C return-phi fix. **Result:** clobber-pattern scan 42 → 11, and all 11 are FALSE POSITIVES
+(sibling-branch / conditional-overwrite). $DB6E/$D687/$9FFA now render correct if/else. Gates green:
+CFG 499/499 (dream + v2), 114/114, stack-audit 187, round-trip clean. **Gate-invisible** still — found
+only by READING (the recurring [[decompiler-method-reframe]] lesson); a value-golden harness would catch
+this class at the assertion level.
+- **Confirmed cases:** `$DB6E draw_province_lord_name` — 4-c always `redraw_window(msg_no_lord)`, raw
+  correctly picks `daimyo_name_table[owner]` vs `msg_no_lord`. `$9FFA` (bank 1) — 4-c always
+  `msg_debt_what_debt`, raw picks `msg_no_gold` vs `msg_debt`. `$D687` season-string select (same shape).
+- **Scope:** a heuristic scan (`phi_X` assigned in a block, then re-assigned a *different* rvalue at
+  shallower indent before use) flags **~42 candidate sites across all 4 banks** — incl. message pickers
+  (`no_gold`/`no_rice`/`no_peasants`…), a 4-way coord merge (`phi_d2ec_0..3`), swapped province pairs
+  (`phi_e0a2_*`). Upper bound (some may be legit sequential reassigns); needs triage.
+- **Impact on grounding:** the 4-c oracle (what we READ to ground) is value-wrong here — for any sub
+  hitting this shape, read the **raw `3-c-basic`** form. **Fix = the AST analogue of the front-end
+  clobber fix:** emit each arm's phi assignment INSIDE its arm / keep the skip, in `dream.py`'s fold.
+
 ### `$E80C` — return-phi reached by a conditional-branch taken edge   [FIXED 2026-06-10]
 **Root cause (not "boolean arm" as first hypothesized):** `return_phis` bailed on ANY pred ending in
 a conditional branch (`else: ok=False`). `$E822`'s preds are the `JUMPF` branch block (taken edge →

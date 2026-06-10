@@ -836,7 +836,7 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     # Consuming-call STACK-PHI repair: at each predecessor's exit to a multi-pred merge, store the
     # call's args (top-N stack entries) into per-merge temps so the shared call pops named temps
     # instead of dropping all but the fall-through pred's pushes (the silent value-drop bug).
-    # phi_mat: materialise_addr -> (merge_leader, arity). See vm_cfg.consuming_phis.
+    # phi_mat: materialise_addr -> (merge_leader, arity, tag_addr). See vm_cfg.consuming_phis.
     phi_mat = _vmcfg.consuming_phis(instructions)
     # ret_phi: same repair for the RETURN VALUE (regA) at a shared bare `vm_return` merge.
     # ret_phi_sites: site_addr -> merge_leader; the merge's vm_return then returns phi_ret_<merge>.
@@ -845,8 +845,8 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     # push_phi: same repair for regA at a shared `pushA` merge (the pushed value usually feeds a
     # consuming-call merge, so push_phis + consuming_phis chain). push_phi_sites: site -> merge;
     # the merge's pushA pushes phi_push_<merge>. See vm_cfg.push_phis ($83FA $84B5).
-    push_phi_sites = _vmcfg.push_phis(instructions)
-    push_phi_merges = set(push_phi_sites.values())
+    push_phi_sites = _vmcfg.push_phis(instructions)   # site -> (merge, tag_addr)
+    push_phi_merges = set(v[0] for v in push_phi_sites.values())
     # val_phi: regA value-merge at a SIDE-EFFECTING-arm merge whose first op consumes regA -- a
     # `storeA_*` (store regA) or `branch_z/nz` (branch on regA) -- that value_diamonds can't fold.
     # val_phi_sites: site -> (merge, tag_addr); the store/branch then reads phi_val_<merge> (it
@@ -942,13 +942,15 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         # under its own control — sound, no re-evaluation. Net stack Δ 0 (pop N, push N) -> the
         # SELF_CHECK depth trace (recorded above) is unaffected. Fires BEFORE the jump/call.
         if ins['addr'] in phi_mat:
-            _phi_M, _phi_n = phi_mat[ins['addr']]
+            _phi_M, _phi_n, _phi_tag = phi_mat[ins['addr']]
             if len(state.stack) >= _phi_n:
                 _phi_args = [state.stack.pop() for _ in range(_phi_n)]   # top-down = arg1..argN
                 _phi_names = [f"phi_{_phi_M:04x}_{_k}" for _k in range(_phi_n)]
                 for _k, _v in enumerate(_phi_args):
                     if _v != _phi_names[_k]:                   # skip the trivial phi_k = phi_k
-                        state.emit(f"{_phi_names[_k]} = {_v};")
+                        # tag with the pred's OWN block addr (_phi_tag) so DREAM buckets the
+                        # materialise INTO the arm (the fall pred's else block), not after the join.
+                        state.lines.append((_phi_tag, state.indent, f"{_phi_names[_k]} = {_v};"))
                 for _nm in reversed(_phi_names):              # push back so pop order = arg1..argN
                     state.stack.append(_nm)
 
@@ -974,11 +976,13 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         # instead of dropping every JUMPing pred's regA. Reading regA consumes a pending call
         # exactly once; all preds write the SAME name. See vm_cfg.push_phis.
         if ins['addr'] in push_phi_sites:
-            _pm = push_phi_sites[ins['addr']]
+            _pm, _ptag = push_phi_sites[ins['addr']]
             _pnm = f"phi_push_{_pm:04x}"
             _pv = state.regA                              # consume any pending call exactly once
             if _pv != _pnm:
-                state.emit(f"{_pnm} = {_pv};")
+                # tag with the pred's OWN block addr (_ptag) so DREAM places it in the arm, not after
+                # the join (mirrors return_phis/value_merge_phis). Jump preds: _ptag == ins['addr'].
+                state.lines.append((_ptag, state.indent, f"{_pnm} = {_pv};"))
             state.regA = _pnm
 
         # === Value-merge (regA) PHI materialisation (pre-dispatch) ===

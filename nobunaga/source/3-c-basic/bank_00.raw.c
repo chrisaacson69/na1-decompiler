@@ -350,7 +350,7 @@ L_86DF:
     if (!(((unsigned)(local11 + 1) >= (unsigned)4))) goto L_86E9;    // $86E4
     local11 = 2;    // $86E8
 L_86E9:
-    phi_86ed_0 = (local11 + -2);    // $86ED
+    phi_86ed_0 = (local11 + -2);    // $86EC
 L_86ED:
 L_86F1:
     map_helper_e5f2(phi_86ed_0);    // $86ED
@@ -1248,7 +1248,7 @@ word announce_provinces_by_ai_state_mode(word arg1) {
         default: goto L_94CE;    // $94B7
     }    // $94B7
 L_94C4:
-    phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // $94C7
+    phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // $94C4
 L_94C7:
     message_display(phi_94c7_0);    // $94C7
 L_94CE:
@@ -1274,8 +1274,8 @@ L_94EF:
 L_9504:
     message_display(announce_provinces_by_ai_data_bc4b);    // $9507
     daimyo_name_width(local10);    // $950C
-    phi_9516_0 = msg_plague_has_come_to_fief_2d;    // $9516
-    phi_9516_1 = (local10 + 1);    // $9516
+    phi_9516_0 = msg_plague_has_come_to_fief_2d;    // $9513
+    phi_9516_1 = (local10 + 1);    // $9513
 L_9516:
     draw_message(phi_9516_0, phi_9516_1);    // $9516
 L_951D:

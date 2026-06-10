@@ -616,11 +616,12 @@ def consuming_phis(instructions):
     each arm's assignment carries its own value under its own control — sound, no re-evaluation
     (unlike a reaching-condition ternary, which would re-run a call-valued branch predicate).
 
-    Returns `{materialise_addr: (merge, arity)}`. At each predecessor's EXIT to the merge (its
-    unconditional jump, or — for the fall-through pred — the merge's call address), the decoder
-    stores the top `arity` stack entries (the call's args, fully built — works for COMPUTED args,
-    not just constant/load pushes) into per-merge temps `phi_<merge>_<k>` and leaves the temp
-    names on the stack, so the merge's call pops the temps. All preds write the SAME names, so the
+    Returns `{materialise_addr: (merge, arity, tag_addr)}`. At each predecessor's EXIT to the merge
+    (its unconditional jump, or — for the fall-through pred — the merge's call address = the capture
+    SITE), the decoder stores the top `arity` stack entries (the call's args, fully built — works for
+    COMPUTED args, not just constant/load pushes) into per-merge temps `phi_<merge>_<k>` and leaves
+    the temp names on the stack, so the merge's call pops the temps. The `tag_addr` (the PRED's own
+    block) is where DREAM ATTRIBUTES the materialise line — the fall pred's else block, not the join. All preds write the SAME names, so the
     linear leak is harmless and each arg is carried under its own control — sound, no re-eval.
 
     CONSERVATIVE GUARDS (only a genuine multi-path arg-merge is touched): the merge's FIRST op is a
@@ -675,17 +676,21 @@ def consuming_phis(instructions):
                 ok = False
                 break
             last = pb[-1]
+            # site = capture TIMING (args fully built on the stack there); tag = the PRED's own block
+            # addr, so DREAM buckets the materialise INTO the arm, not after the join (the DREAM-vs-
+            # linear placement lesson -- mirrors return_phis/value_merge_phis; a merge-addr tag floats
+            # the fall pred's capture past the if and clobbers the jump arms in DREAM's structured C).
             if last['mnemonic'] == 'jump_abs' and _target(last) == M:
-                sites[last['addr']] = M                # materialise just before the jump
+                sites[last['addr']] = last['addr']     # jump pred: site == tag (in the pred's block)
             elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
-                sites[blk[0]['addr']] = M              # fall-through: materialise at the merge call
+                sites[blk[0]['addr']] = last['addr']   # fall pred: site = merge call, tag = its block
             else:
                 ok = False
                 break
         if not ok:
             continue
-        for addr in sites:
-            out[addr] = (M, n)                         # (merge, arity) -> materialise top-N into temps
+        for addr, tag in sites.items():
+            out[addr] = (M, n, tag)                    # (merge, arity, tag) -> materialise top-N
     return out
 
 
@@ -789,10 +794,10 @@ def push_phis(instructions):
     rendered `redraw_window(msg_home_fief)`. value_diamonds can't fold it: it's a 3-way merge,
     not a 2-way head.)
 
-    Returns `{site_addr: merge}` PLUS, as the decoder needs both, callers read `set(values())` for
-    the merge set (the `pushA` there pushes `phi_push_<merge>`, not the linearly-stale regA). At
-    each site -- a JUMPing pred's jump, or the `pushA` address itself for the fall-through pred --
-    the decoder stores regA into `phi_push_<merge>`. All preds write the SAME name, so the linear
+    Returns `{site_addr: (merge, tag_addr)}`; callers read `set(v[0] for v in values())` for the
+    merge set (the `pushA` there pushes `phi_push_<merge>`, not the linearly-stale regA). At each
+    site -- a JUMPing pred's jump, or the `pushA` address itself for the fall-through pred -- the
+    decoder stores regA into `phi_push_<merge>`, tagged at `tag_addr` (the pred's block) for DREAM. All preds write the SAME name, so the linear
     leak is harmless and each value is carried under its own control -- sound, no re-evaluation.
 
     GUARDS (mirror return_phis): the merge block's FIRST op is `pushA`; >=2 preds; each leaves by an
@@ -831,17 +836,19 @@ def push_phis(instructions):
                 ok = False
                 break
             last = pb[-1]
+            # site = capture timing; tag = the PRED's own block addr (DREAM attribution), so the fall
+            # pred's materialise lands in its else block, not after the join (mirrors return_phis).
             if last['mnemonic'] == 'jump_abs' and _target(last) == M:
-                sites[last['addr']] = M                             # capture before the jump flushes
+                sites[last['addr']] = last['addr']                  # jump pred: site == tag (pred block)
             elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
-                sites[blk[0]['addr']] = M                           # fall-through: capture at the pushA
+                sites[blk[0]['addr']] = last['addr']                # fall pred: site = pushA, tag = block
             else:
                 ok = False
                 break
         if not ok:
             continue
-        for addr in sites:
-            out[addr] = M
+        for addr, tag in sites.items():
+            out[addr] = (M, tag)                                    # (merge, tag_addr)
     return out
 
 

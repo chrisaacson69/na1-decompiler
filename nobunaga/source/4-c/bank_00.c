@@ -388,8 +388,8 @@ word prompt_select_player_daimyo(word arg1) {
                         if (((unsigned)(local11 + 1) >= (unsigned)4)) {    // $86DF
                             local11 = 2;    // $86E8
                         }
+                        phi_86ed_0 = (local11 + -2);    // $86EC
                     }
-                    phi_86ed_0 = (local11 + -2);    // $86ED
                     map_helper_e5f2(phi_86ed_0);    // $86ED
                 }
                 continue;
@@ -1339,7 +1339,7 @@ word avg_daimyo_charisma_over_fief_list(void) {
 word announce_provinces_by_ai_state_mode(word arg1) {
     switch (arg1) {    // $94B6
         case 1:
-            phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // $94C7
+            phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // $94C4
             message_display(phi_94c7_0);    // $94C7
             confirm_prompt();    // $94CB
             break;
@@ -1347,7 +1347,6 @@ word announce_provinces_by_ai_state_mode(word arg1) {
             break;
         case 2:
             phi_94c7_0 = msg_lord_plague_has_come;    // $94EC
-            phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // $94C7
             message_display(phi_94c7_0);    // $94C7
             confirm_prompt();    // $94CB
             break;
@@ -1364,14 +1363,14 @@ word announce_provinces_by_ai_state_mode(word arg1) {
                         daimyo_name_width(local10);    // $94F7
                         phi_9516_0 = msg_a_typhoon_has_struck_fief_2d;    // $9501
                         phi_9516_1 = (local10 + 1);    // $9501
-                        goto L_9516;
+                        draw_message(phi_9516_0, phi_9516_1);    // $9516
+                        confirm_prompt();    // $951A
                         break;
                     case 2:
                         message_display(announce_provinces_by_ai_data_bc4b);    // $9507
                         daimyo_name_width(local10);    // $950C
-L_9516:
-                        phi_9516_0 = msg_plague_has_come_to_fief_2d;    // $9516
-                        phi_9516_1 = (local10 + 1);    // $9516
+                        phi_9516_0 = msg_plague_has_come_to_fief_2d;    // $9513
+                        phi_9516_1 = (local10 + 1);    // $9513
                         draw_message(phi_9516_0, phi_9516_1);    // $9516
                         confirm_prompt();    // $951A
                         break;

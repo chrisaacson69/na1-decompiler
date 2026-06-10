@@ -175,7 +175,7 @@ word effect_tax(word stat, word tax_delta) {
     phi_push_82eb = abs16(tax_delta);    // $82E7
     goto L_82EB;    // $82E7
 L_82EA:
-    phi_push_82eb = tax_delta;    // $82EB
+    phi_push_82eb = tax_delta;    // $82EA
 L_82EB:
     local10 = pct_op(stat, phi_push_82eb);    // $82F1
     dsel_8300 = is_decrease;    // $8300
@@ -308,7 +308,7 @@ word effect_view_a(word arg1) {
     phi_push_84b5 = *(word*)((((dsel_84a9 ? 0 : province_ai_state[arg1]) << 1) + effect_view_a_data_f7d4));    // $84AF
     goto L_84B5;    // $84AF
 L_84B2:
-    phi_push_84b5 = msg_home_fief;    // $84B5
+    phi_push_84b5 = msg_home_fief;    // $84B2
 L_84B5:
     phi_84c6_0 = phi_push_84b5;    // $84B6
     goto L_84C6;    // $84B6
@@ -317,7 +317,7 @@ L_84B9:
     phi_push_84b5 = msg_direct;    // $84C0
     goto L_84B5;    // $84C0
 L_84C3:
-    phi_84c6_0 = msg_empty;    // $84C6
+    phi_84c6_0 = msg_empty;    // $84C3
 L_84C6:
     redraw_window(phi_84c6_0);    // $84C6
     set_cursor(14, 3);    // $84CC
@@ -341,8 +341,8 @@ L_8511:
     phi_8522_1 = (local11 + 13);    // $851B
     goto L_8522;    // $851B
 L_851E:
-    phi_8522_0 = 10;    // $8522
-    phi_8522_1 = (local11 + 1);    // $8522
+    phi_8522_0 = 10;    // $8521
+    phi_8522_1 = (local11 + 1);    // $8521
 L_8522:
     set_cursor(phi_8522_0, phi_8522_1);    // $8522
     redraw_window(*(word*)(((local11 << 1) + effect_view_a_data_f8ae)));    // $852E
@@ -952,7 +952,7 @@ L_8FA1:
         default: goto L_8FD4;    // $8FBE
     }    // $8FBE
 L_8FCD:
-    phi_8fd0_0 = selected_province_idx;    // $8FD0
+    phi_8fd0_0 = selected_province_idx;    // $8FCD
 L_8FD0:
 L_8FD4:
     prompt_helper_e275(phi_8fd0_0);    // $8FD0
@@ -961,7 +961,7 @@ L_8FD8:
     phi_8fd0_0 = battle_defending_province;    // $8FDB
     goto L_8FD0;    // $8FDB
 L_8FDE:
-    phi_8fed_0 = 0xBB49;    // $8FED
+    phi_8fed_0 = 0xBB49;    // $8FEA
 L_8FED:
     message_display(((attacker_name_idx * 9) + 0x77A8));    // $8FE6
     redraw_window(phi_8fed_0);    // $8FED
@@ -1011,7 +1011,7 @@ L_90CF:
     phi_push_90e8 = (rng_mod(20) + 50);    // $90DD
     goto L_90E8;    // $90DD
 L_90E0:
-    phi_push_90e8 = (rng_mod(30) + 60);    // $90E8
+    phi_push_90e8 = (rng_mod(30) + 60);    // $90E6
 L_90E8:
     spend_amount = pct_op(attack_budget, phi_push_90e8);    // $90EE
     war_attacker_men = spend_amount;    // $90F0
@@ -1089,7 +1089,7 @@ L_9260:
     phi_9284_0 = msg_counterattacked;    // $927E
     goto L_9284;    // $927E
 L_9281:
-    phi_9284_0 = msg_enemy_morale_is_falling_to_pie;    // $9284
+    phi_9284_0 = msg_enemy_morale_is_falling_to_pie;    // $9281
 L_9284:
     redraw_window(phi_9284_0);    // $9284
     confirm_prompt();    // $9288
@@ -1418,9 +1418,9 @@ word relations_roll_vs_owner(word arg1, word arg2) {
     phi_980d_2 = 1;    // $9805
     goto L_980D;    // $9805
 L_9808:
-    phi_980d_0 = selected_province_idx;    // $980D
-    phi_980d_1 = arg1;    // $980D
-    phi_980d_2 = arg2;    // $980D
+    phi_980d_0 = selected_province_idx;    // $980A
+    phi_980d_1 = arg1;    // $980A
+    phi_980d_2 = arg2;    // $980A
 L_980D:
     return ((unsigned)relations_matrix_get(phi_980d_0, phi_980d_1, phi_980d_2) > (unsigned)phi_980d_0);    // $9813
 }
@@ -1523,7 +1523,7 @@ word driver_tax(void) {
     trigger_cutscene(19);    // $99F5
     goto L_9A08;    // $99FC
 L_99FF:
-    phi_9a08_0 = msg_the_peasants_are_delighted;    // $9A08
+    phi_9a08_0 = msg_the_peasants_are_delighted;    // $9A05
 L_9A08:
     trigger_cutscene(18);    // $9A01
     message_display(phi_9a08_0);    // $9A08
@@ -1766,7 +1766,7 @@ L_9E9E:
     phi_9ea7_0 = msg_you_have_no_gold;    // $9EA1
     goto L_9EA7;    // $9EA1
 L_9EA4:
-    phi_9ea7_0 = msg_don_t_you_long_to_hear_the_pit;    // $9EA7
+    phi_9ea7_0 = msg_don_t_you_long_to_hear_the_pit;    // $9EA4
 L_9EA7:
 L_9EAB:
     message_display(phi_9ea7_0);    // $9EA7
@@ -1848,7 +1848,7 @@ L_9FF1:
     phi_9ffa_0 = msg_no_gold;    // $9FF4
     goto L_9FFA;    // $9FF4
 L_9FF7:
-    phi_9ffa_0 = msg_debt_what_debt;    // $9FFA
+    phi_9ffa_0 = msg_debt_what_debt;    // $9FF7
 L_9FFA:
     redraw_window(phi_9ffa_0);    // $9FFA
     confirm_prompt();    // $9FFE
@@ -1874,7 +1874,7 @@ L_A053:
     phi_a05c_0 = msg_treasury_full;    // $A056
     goto L_A05C;    // $A056
 L_A059:
-    phi_a05c_0 = msg_no_rice;    // $A05C
+    phi_a05c_0 = msg_no_rice;    // $A059
 L_A05C:
     redraw_window(phi_a05c_0);    // $A05C
 L_A063:
@@ -1904,7 +1904,7 @@ L_A0D8:
     phi_a0e1_0 = msg_storehouse_full;    // $A0DB
     goto L_A0E1;    // $A0DB
 L_A0DE:
-    phi_a0e1_0 = msg_sorry_no_credit;    // $A0E1
+    phi_a0e1_0 = msg_sorry_no_credit;    // $A0DE
 L_A0E1:
     redraw_window(phi_a0e1_0);    // $A0E1
 L_A0E8:
@@ -1950,7 +1950,7 @@ L_A19A:
     phi_a1a3_0 = msg_armory_full;    // $A19D
     goto L_A1A3;    // $A19D
 L_A1A0:
-    phi_a1a3_0 = msg_we_merchants_deal_only_in_cash;    // $A1A3
+    phi_a1a3_0 = msg_we_merchants_deal_only_in_cash;    // $A1A0
 L_A1A3:
     redraw_window(phi_a1a3_0);    // $A1A3
 L_A1AA:
@@ -2093,8 +2093,8 @@ L_A3F1:
     drain_amount = ((arg1->wealth >= drain_amount) ? drain_amount : arg1->wealth);    // $A40A
     if (!(drain_amount)) goto L_A41D;    // $A40C
     arg1->wealth = (arg1->wealth - drain_amount);    // $A416
-    phi_a419_0 = 13;    // $A419
-    phi_a419_1 = drain_amount;    // $A419
+    phi_a419_0 = 13;    // $A418
+    phi_a419_1 = drain_amount;    // $A418
 L_A419:
 L_A41D:
     report_fief_stat_decline(phi_a419_0, phi_a419_1);    // $A419
@@ -2432,7 +2432,7 @@ L_A98D:
     phi_a9a6_0 = msg_you_have_no_gold;    // $A9A0
     goto L_A9A6;    // $A9A0
 L_A9A3:
-    phi_a9a6_0 = msg_you_have_no_rice;    // $A9A6
+    phi_a9a6_0 = msg_you_have_no_rice;    // $A9A3
 L_A9A6:
     message_display(phi_a9a6_0);    // $A9A6
     confirm_prompt();    // $A9AA
@@ -2489,7 +2489,7 @@ word driver_give(void) {
     phi_aa53_0 = msg_you_have_no_peasants;    // $AA4D
     goto L_AA53;    // $AA4D
 L_AA50:
-    phi_aa53_0 = msg_you_have_no_soldiers;    // $AA53
+    phi_aa53_0 = msg_you_have_no_soldiers;    // $AA50
 L_AA53:
     message_display(phi_aa53_0);    // $AA53
     confirm_prompt();    // $AA57
@@ -2654,8 +2654,8 @@ L_ACC1:
     read_frame_timer(0);    // $ACC2
     set_cursor(14, cursor_row);    // $ACC8
     draw_message(0xBE59, *(word*)(((field_idx << 1) + &edit_buffer)));    // $ACD9
-    phi_ace8_0 = 0xBE5D;    // $ACE8
-    phi_ace8_1 = units_delta;    // $ACE8
+    phi_ace8_0 = 0xBE5D;    // $ACE5
+    phi_ace8_1 = units_delta;    // $ACE5
 L_ACE8:
     set_cursor(14, 25);    // $ACE0
     draw_message(phi_ace8_0, phi_ace8_1);    // $ACE8
