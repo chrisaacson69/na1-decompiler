@@ -14,7 +14,7 @@ word display_fullscreen_graphic_sequence(void) {
     if (!(count_6da2_set())) goto L_811C;    // $8015
     palette_swap(1);    // $8019
     ppu_upload_block_wrap(6, 0x9054, 0x1510, 174);    // $8027
-    ppu_blit_from_bank_wrap(0, 0, 31, 22, 0x8D74, 6);    // $8035
+    ppu_copy_rect_wrap(0, 0, 31, 22, 0x8D74, 6);    // $8035
     ppu_render_rect_wrap(16, 8, 17, 13, 1);    // $8040
     ppu_render_rect_wrap(2, 24, 31, 26, 1);    // $804C
     local11 = 0;    // $8051
@@ -48,7 +48,7 @@ L_80D7:
     ppu_upload_block_wrap(6, display_fullscreen_graph_data_9d04, 0x1000, 254);    // $80E6
     syscall_fill_nametable(0, 0);    // $80ED
     fill_attr_wrap();    // $80F1
-    ppu_blit_from_bank_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // $80FE
+    ppu_copy_rect_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // $80FE
     local11 = 0;    // $8103
 L_8104:
     palette_write_wrap(local11, msg_congratulations_my_lord_b7d2[local11]);    // $810C
@@ -80,7 +80,7 @@ L_816F:
     ppu_upload_block_wrap(6, display_fullscreen_graph_data_af64, 0x1000, 248);    // $817E
     syscall_fill_nametable(0, 0);    // $8185
     fill_attr_wrap();    // $8189
-    ppu_blit_from_bank_wrap(0, 5, 31, 24, display_fullscreen_graph_data_ace4, 6);    // $8196
+    ppu_copy_rect_wrap(0, 5, 31, 24, display_fullscreen_graph_data_ace4, 6);    // $8196
     local11 = 0;    // $819B
 L_819C:
     palette_write_wrap(local11, msg_congratulations_my_lord_b7d6[local11]);    // $81A4
@@ -443,7 +443,7 @@ word render_boot_title_screens(void) {
     palette_swap(1);    // $88B6
     ppu_upload_block_wrap(0, msg_fmt_blank, 0x1000, 102);    // $88C3
     ppu_upload_block_wrap(0, render_boot_title_screen_data_a84a, 0x23C0, 4);    // $88CF
-    ppu_blit_from_bank_wrap(0, 0, 31, 29, render_boot_title_screen_data_a88a, 0);    // $88DD
+    ppu_copy_rect_wrap(0, 0, 31, 29, render_boot_title_screen_data_a88a, 0);    // $88DD
     local11 = 0;    // $88E2
 L_88E3:
     palette_write_wrap(local11, msg_new_game_b862[local11]);    // $88EB
@@ -464,7 +464,7 @@ L_892C:
     ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // $8948
     fill_nametable_wrap();    // $894C
     fill_attr_wrap();    // $894F
-    ppu_blit_from_bank_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // $895C
+    ppu_copy_rect_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // $895C
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // $8966
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $8973
     set_cursor(21, 26);    // $897B
@@ -558,7 +558,7 @@ L_8AC9:
     ui_helper_cd20();    // $8AE9
     palette_swap(1);    // $8AED
     ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // $8AFB
-    ppu_blit_from_bank_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // $8B09
+    ppu_copy_rect_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // $8B09
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // $8B13
     i = 0;    // $8B18
 L_8B19:

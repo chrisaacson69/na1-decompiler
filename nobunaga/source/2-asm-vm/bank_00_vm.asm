@@ -29,7 +29,7 @@ VM bytecode disassembly
   $8031  8D 1F                      BYTE_PUSH_imm1         +31
   $8033  60                         PUSH_qimm   ; inline operand = 0
   $8034  60                         PUSH_qimm   ; inline operand = 0
-  $8035  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_blit_from_bank_wrap) {bytecode}, $0C
+  $8035  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $8039  61                         PUSH_qimm   ; inline operand = 1
   $803A  6D                         PUSH_qimm   ; inline operand = 13
   $803B  8D 11                      BYTE_PUSH_imm1         +17
@@ -120,7 +120,7 @@ VM bytecode disassembly
   $80FA  8D 1F                      BYTE_PUSH_imm1         +31
   $80FC  65                         PUSH_qimm   ; inline operand = 5
   $80FD  60                         PUSH_qimm   ; inline operand = 0
-  $80FE  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_blit_from_bank_wrap) {bytecode}, $0C
+  $80FE  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $8102  40                         LOADL_qimm   ; inline operand = 0
   $8103  2B                         STORE_quick   ; inline operand = 11
  >$8104  0B                         LOADL_quick   ; inline operand = 11
@@ -204,7 +204,7 @@ VM bytecode disassembly
   $8192  8D 1F                      BYTE_PUSH_imm1         +31
   $8194  65                         PUSH_qimm   ; inline operand = 5
   $8195  60                         PUSH_qimm   ; inline operand = 0
-  $8196  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_blit_from_bank_wrap) {bytecode}, $0C
+  $8196  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $819A  40                         LOADL_qimm   ; inline operand = 0
   $819B  2B                         STORE_quick   ; inline operand = 11
  >$819C  0B                         LOADL_quick   ; inline operand = 11
@@ -1238,7 +1238,7 @@ VM bytecode disassembly
   $88D9  8D 1F                      BYTE_PUSH_imm1         +31
   $88DB  60                         PUSH_qimm   ; inline operand = 0
   $88DC  60                         PUSH_qimm   ; inline operand = 0
-  $88DD  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_blit_from_bank_wrap) {bytecode}, $0C
+  $88DD  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $88E1  40                         LOADL_qimm   ; inline operand = 0
   $88E2  2B                         STORE_quick   ; inline operand = 11
  >$88E3  0B                         LOADL_quick   ; inline operand = 11
@@ -1297,7 +1297,7 @@ VM bytecode disassembly
   $8958  8D 1F                      BYTE_PUSH_imm1         +31
   $895A  63                         PUSH_qimm   ; inline operand = 3
   $895B  60                         PUSH_qimm   ; inline operand = 0
-  $895C  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_blit_from_bank_wrap) {bytecode}, $0C
+  $895C  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $8960  61                         PUSH_qimm   ; inline operand = 1
   $8961  67                         PUSH_qimm   ; inline operand = 7
   $8962  8D 11                      BYTE_PUSH_imm1         +17
@@ -1523,7 +1523,7 @@ VM bytecode disassembly
   $8B05  8D 1F                      BYTE_PUSH_imm1         +31
   $8B07  63                         PUSH_qimm   ; inline operand = 3
   $8B08  60                         PUSH_qimm   ; inline operand = 0
-  $8B09  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_blit_from_bank_wrap) {bytecode}, $0C
+  $8B09  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $8B0D  61                         PUSH_qimm   ; inline operand = 1
   $8B0E  67                         PUSH_qimm   ; inline operand = 7
   $8B0F  8D 11                      BYTE_PUSH_imm1         +17

@@ -75,6 +75,67 @@ After a scene has loaded, the rendering pipeline doesn't stop — it just shifts
 
 The single uploader handles all of these. The parameter `$0075` (row length, normally 32) is just set to a smaller value for partial-row updates. With `$0082 = 0` (constant-fill mode) the engine can clear regions; with non-zero source pointer it can write text/glyphs.
 
+## The UI primitive vocabulary (grounded 2026-06)
+
+The "single uploader" above is no longer a black box. The grounding pass walked the native 6502 and the VM wrappers and recovered the **named primitive stack** every NA1 screen is built from. The informal `$C480` "row uploader" — with its `$0075` length and `$0082` mode flag — turns out to be the **inner loop of two sibling syscalls**, and above them sits a small, sharp vocabulary of text/window calls.
+
+### Layer 0 — the two blit syscalls (native 6502, bank 15)
+
+Both walk the same inclusive tile rectangle `[left,top]..[right,bottom]` into a nametable; the entry point sets the mode flag (`$0082`) that decides what each cell receives:
+
+| | `ppu_fill_rect` ($C437, syscall 12) | `ppu_copy_rect` ($C428, syscall 20) |
+|---|---|---|
+| mode `$0082` | 0 | 1 |
+| each cell ← | a **constant tile** (`$5C`) | next byte of a **source stream** (`$5C/$5D` ptr, post-incremented) |
+| bank | — | switches to `$5E`, restores after |
+| use | **clear** a region (tile `$01` = blank) | paint **tile art** — text rows, map sections, portraits |
+
+Address math (confirmed by reading $C437–$C4DF): `PPU_addr = $2000 + (sel<<10) + row*32 + col`, where `sel` = `$52`, the nametable select (0–3 → `$2000/$2400/$2800/$2C00`; the wrappers always pass 0). The loop's `$0075` is the row width `= right+1−left`; `$0082` is exactly the mode flag the model section above spotted — now named. So the question that section left open ("fill or text?") has a crisp answer: **`$0082`=0 is `ppu_fill_rect`; `$0082`=1 is `ppu_copy_rect`.**
+
+Call-site (C) form: `ppu_fill_rect_wrap(left, top, right, bottom, tile)` and `ppu_copy_rect_wrap(left, top, right, bottom, src_ptr, src_bank)`. Proof the geometry is real: `ppu_copy_rect_wrap(2, 4, 29, 19, section*0x1C0 + strategic_map_section_tilemaps, 4)` copies cols 2–29 × rows 4–19 = 28×16 = **0x1C0 = 448 bytes**, exactly one strategic-map section's stride (ch.16).
+
+### Layer 1 — the `clear_rect_*` blanks
+
+A handful of fixed-geometry `ppu_fill_rect_wrap(...,1)` calls (tile `$01` = blank) erase standard panes before they're repainted. These were the mislabeled "`ui_draw_window_*`" family — they don't draw a window, they **blank a rectangle**:
+
+| name (was) | rect (cols × rows) | role |
+|---|---|---|
+| `clear_rect_top_strip` (`ui_draw_window_ccd1`, $CCD1) | 2–29 × 3 | full-width 1-row header strip |
+| `clear_rect_left_upper` (`…d2f9`, $D2F9) | 2–9 × 8–19 | left panel, upper |
+| `clear_rect_left_lower` (`…d309`, $D309) | 2–9 × 20–26 | left panel, lower (15 callers) |
+| `clear_rect_left_lower_alt` (`…d31a`, $D31A) | = above | alias / tail-call of `_left_lower` |
+
+### Layer 2 — text & window primitives
+
+| name | addr | one-line behavior |
+|---|---|---|
+| `format_string` | $CFFC | printf core: scans `%C/%D/%S`, space-pads to width, calls `num_to_ascii`/`atoi`/`strlen`/`to_upper`. Fills a buffer; draws nothing. |
+| `set_cursor(col,row)` | $CC7B | the `locate()` — sets `ui_window_col` ($7FCD) / `ui_cursor_row` ($7FCF), the draw origin every `redraw_window` consumes. |
+| `redraw_window` | $CEC4 | draw a prepared buffer/string into the current window region. The "restore the display after my prompt" primitive (17 drivers). |
+| `draw_message(fmt, …)` | $D134 | `format_string` then `redraw_window` — the printf-and-draw wrapper. 193 sites; the `_2d`/`_4d` name suffix encodes the field width. |
+| `open_message_window()` | $CC89 | `ppu_fill_rect_wrap(2,·,19,25,1); set_cursor(2,·)` — blank the standard bottom message rect + home the cursor. The "prepare to print" pre-roll (14 callers). |
+| `prompt_y_n()` | $D3A7 | draw "Y/N", poll until A(64)/B(128), echo 'Y' + return 1 on accept, else 0. |
+| `standard_delay()` | $D759 | the configurable busy-wait; `delay_loop_count` ($6D65) is the player's message-speed setting. |
+
+### The idiom: every screen is the same few moves
+
+Stacked, the vocabulary makes the steady-state loop legible. A typical message beat reads:
+
+```c
+open_message_window();              // clear the bottom rect + home cursor   (fill + locate)
+draw_message(msg_attacks_2d, n);    // printf "%2d attacks" + draw            (format + draw)
+standard_delay();                   // hold at the player's reading speed     (wait)
+```
+
+and a content repaint (map section, portrait, stat pane) is:
+
+```c
+clear_rect_left_upper();                                   // erase the pane     (fill)
+ppu_copy_rect_wrap(2, 4, 29, 19, section_tilemap, bank);   // paint the tile art (copy)
+```
+
+That is the whole alphabet: **clear a rect → position the cursor → format + draw text → copy tile art → wait.** The 92%-of-events `read_controller` poll (ch.4) sits between repaints; these primitives are what run when something on screen actually changes. The model section's "one row-uploader handles everything" is now precise — it is `ppu_fill_rect`/`ppu_copy_rect`, and the layers above are just the named ways the game asks them to clear, write text, or paint art.
+
 ## Examples of window updates we've now seen
 
 The visual layer reveals this pattern everywhere we look:

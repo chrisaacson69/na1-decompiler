@@ -223,25 +223,25 @@ word palette_swap(word arg1) {
     return syscall_palette_swap(arg1);    // $CC41
 }
 
-// $CC42 ppu_blit_nobank_wrap
+// $CC42 ppu_fill_rect_wrap
 // (body @ $CC47)
 
-word ppu_blit_nobank_wrap(word arg1, word arg2, word arg3, word arg4, word arg5) {
-    return syscall_ppu_blit_nobank(0, arg1, arg2, arg3, arg4, arg5);    // $CC53
+word ppu_fill_rect_wrap(word arg1, word arg2, word arg3, word arg4, word arg5) {
+    return syscall_ppu_fill_rect(0, arg1, arg2, arg3, arg4, arg5);    // $CC53
 }
 
-// $CC54 ppu_blit_from_bank_wrap
+// $CC54 ppu_copy_rect_wrap
 // (body @ $CC59)
 
-word ppu_blit_from_bank_wrap(word arg1, word arg2, word arg3, word arg4, word arg5, word arg6) {
-    return syscall_ppu_blit_from_bank(0, arg1, arg2, arg3, arg4, arg5, arg6);    // $CC68
+word ppu_copy_rect_wrap(word arg1, word arg2, word arg3, word arg4, word arg5, word arg6) {
+    return syscall_ppu_copy_rect(0, arg1, arg2, arg3, arg4, arg5, arg6);    // $CC68
 }
 
 // $CC69 trade_helper_cc69
 // (body @ $CC6E)
 
 word trade_helper_cc69(void) {
-    return ppu_blit_nobank_wrap(22, 7, 29, 18, 1);    // $CC7A
+    return ppu_fill_rect_wrap(22, 7, 29, 18, 1);    // $CC7A
 }
 
 // $CC7B set_cursor
@@ -257,7 +257,7 @@ word set_cursor(word arg1, word arg2) {
 // (body @ $CC8E)
 
 word open_message_window(void) {
-    ppu_blit_nobank_wrap(2, (ui_msg_col_shift_flag ? 20 : 22), 19, 25, 1);    // $CCA2
+    ppu_fill_rect_wrap(2, (ui_msg_col_shift_flag ? 20 : 22), 19, 25, 1);    // $CCA2
     return set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // $CCB9
 }
 
@@ -265,23 +265,23 @@ word open_message_window(void) {
 // (body @ $CCBF)
 
 word ui_get_7bf9(void) {
-    ppu_blit_nobank_wrap(20, 20, 29, 25, 1);    // $CCC8
+    ppu_fill_rect_wrap(20, 20, 29, 25, 1);    // $CCC8
     ui_state_flag_7bf9 = 0;    // $CCCD
     return 0;    // $CCD0
 }
 
-// $CCD1 ui_draw_window_ccd1
+// $CCD1 clear_rect_top_strip
 // (body @ $CCD6)
 
-word ui_draw_window_ccd1(void) {
-    return ppu_blit_nobank_wrap(2, 3, 29, 3, 1);    // $CCE0
+word clear_rect_top_strip(void) {
+    return ppu_fill_rect_wrap(2, 3, 29, 3, 1);    // $CCE0
 }
 
 // $CCE1 ui_get_cursor_sel_7fdf
 // (body @ $CCE6)
 
 word ui_get_cursor_sel_7fdf(void) {
-    ppu_blit_nobank_wrap(2, 26, 29, 26, 1);    // $CCEE
+    ppu_fill_rect_wrap(2, 26, 29, 26, 1);    // $CCEE
     ui_input_sel_latch_7fdf = 255;    // $CCF5
     return 255;    // $CCF8
 }
@@ -290,7 +290,7 @@ word ui_get_cursor_sel_7fdf(void) {
 // (body @ $CCFE)
 
 word get_6f5d_or_ff(void) {
-    ppu_blit_nobank_wrap(0, 4, 31, 19, 1);    // $CD05
+    ppu_fill_rect_wrap(0, 4, 31, 19, 1);    // $CD05
     phi_ret_cd1f = (selected_record_idx_9e3c != 255);    // $CD10
     if (phi_ret_cd1f) {    // $CCFE
         latched_selected_record_idx = selected_record_idx_9e3c;    // $CD16
@@ -430,7 +430,7 @@ word char_advance_width(word arg1) {
         return ui_get_menu_count_7fcf();    // $CE91
     } else {
         *(byte*)&arg1 = char_classify(*(byte*)&arg1);    // $CE9A
-        syscall_ppu_blit_nobank(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&arg1);    // $CEAF
+        syscall_ppu_fill_rect(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&arg1);    // $CEAF
         ui_window_col = (ui_window_col + 1);    // $CEB7
         phi_ret_cec3 = ((unsigned)(ui_window_col + 1) > (unsigned)31);    // $CEBD
         if (phi_ret_cec3) {    // $CE92
@@ -459,7 +459,7 @@ L_CEEC:
     ui_window_col = (ui_window_col + 1);    // $CF00
     if (!(((ui_window_col + 1) == 32))) goto L_CF27;    // $CF06
 L_CF13:
-    ppu_blit_from_bank_wrap(local11, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // $CF17
+    ppu_copy_rect_wrap(local11, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // $CF17
 L_CF1B:
     ui_get_menu_count_7fcf();    // $CF1B
 L_CF27:
@@ -468,7 +468,7 @@ L_CF27:
     if (*(byte*)(((arg1 + 1) - 1))) goto L_CECC;    // $CF2F
     phi_ret_cf4f = (local11 != ui_window_col);    // $CF37
     if (!(phi_ret_cf4f)) return phi_ret_cf4f;    // $CF37
-    phi_ret_cf4f = ppu_blit_from_bank_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // $CF4B
+    phi_ret_cf4f = ppu_copy_rect_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // $CF4B
     return phi_ret_cf4f;    // $CF3A
     return phi_ret_cf4f;    // $CF4F
 }
@@ -765,26 +765,26 @@ word read_frame_timer(word arg1) {
     return phi_ret_d2f8;    // $D2F8
 }
 
-// $D2F9 ui_draw_window_d2f9
+// $D2F9 clear_rect_left_upper
 // (body @ $D2FE)
 
-word ui_draw_window_d2f9(void) {
-    return ppu_blit_nobank_wrap(2, 8, 9, 19, 1);    // $D308
+word clear_rect_left_upper(void) {
+    return ppu_fill_rect_wrap(2, 8, 9, 19, 1);    // $D308
 }
 
-// $D309 ui_draw_window_d309
+// $D309 clear_rect_left_lower
 // (body @ $D30E)
 
-word ui_draw_window_d309(void) {
-    return ppu_blit_nobank_wrap(2, 20, 9, 26, 1);    // $D319
+word clear_rect_left_lower(void) {
+    return ppu_fill_rect_wrap(2, 20, 9, 26, 1);    // $D319
 }
 
-// $D31A ui_draw_window_d31a
+// $D31A clear_rect_left_lower_alt
 // (body @ $D31F)
 
-word ui_draw_window_d31a(void) {
+word clear_rect_left_lower_alt(void) {
     standard_delay();    // $D31F
-    return ui_draw_window_d309();    // $D325
+    return clear_rect_left_lower();    // $D325
 }
 
 // $D326 message_display
@@ -792,7 +792,7 @@ word ui_draw_window_d31a(void) {
 
 word message_display(word arg1) {
     if (ui_msg_oneshot_flag_7fc5) {    // $D32B
-        ui_draw_window_d309();    // $D331
+        clear_rect_left_lower();    // $D331
         ui_msg_oneshot_flag_7fc5 = 0;    // $D335
     }
     set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // $D347
@@ -2210,7 +2210,7 @@ word find_record_9e3c(word arg1) {
                 goto L_E58E;
             }
         }
-        ppu_blit_from_bank_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + find_record_data_8d5a), 4);    // $E5E6
+        ppu_copy_rect_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + find_record_data_8d5a), 4);    // $E5E6
         draw_window_f706(arg1);    // $E5EB
 L_E58E:
         phi_ret_e594 = set_cursor(local11, local10);    // $E590
@@ -2225,8 +2225,8 @@ word map_helper_e5f2(word arg1) {
     phi_ret_e693 = (arg1 != selected_record_idx_9e3c);    // $E5FC
     if (phi_ret_e693) {    // $E5F7
         palette_swap(1);    // $E600
-        ppu_blit_nobank_wrap(30, 4, 31, 19, 1);    // $E60C
-        ppu_blit_from_bank_wrap(2, 4, 29, 19, ((arg1 * 0x01C0) + strategic_map_section_tilemaps), 4);    // $E621
+        ppu_fill_rect_wrap(30, 4, 31, 19, 1);    // $E60C
+        ppu_copy_rect_wrap(2, 4, 29, 19, ((arg1 * 0x01C0) + strategic_map_section_tilemaps), 4);    // $E621
         ppu_upload_block_wrap(4, ((arg1 << 5) + strategic_map_section_attributes), 0x23C8, 2);    // $E632
         selected_record_idx_9e3c = arg1;    // $E637
         local11 = ui_window_col;    // $E63D
@@ -2302,7 +2302,7 @@ word draw_daimyo_portrait(word col, word row) {
         phi_push_e7fa = ((fief_to_mapid(active_province_idx_copy) * 36) + jumptab_b144);    // $E7EB
     }
     phi_push_e7fa = &face_buf;    // $E7FA
-    ppu_blit_from_bank_wrap(col, row, (col + 5), (row + 5), phi_push_e7fa, 8);    // $E803
+    ppu_copy_rect_wrap(col, row, (col + 5), (row + 5), phi_push_e7fa, 8);    // $E803
     ui_pending_flag_7fc7 = 1;    // $E808
     return 1;    // $E80B
 }

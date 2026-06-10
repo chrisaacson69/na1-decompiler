@@ -274,7 +274,7 @@ PHASE_PAGES = {
       ("Where the art lives",
        "<p>The victory and defeat full-screens are static CHR uploaded from <b>bank 6</b> "
        "(<code>$9D04</code> victory, <code>$AF64</code> defeat) and blitted via the usual "
-       "<code>ppu_upload_block_wrap</code> / <code>ppu_blit_from_bank_wrap</code> pair. They’re prime targets for "
+       "<code>ppu_upload_block_wrap</code> / <code>ppu_copy_rect_wrap</code> pair. They’re prime targets for "
        "the “render graphics bits from code” frontier — the same code-driven extraction that pulled the title and "
        "portrait art — so both screens could be rendered to PNG straight from ROM without ever reaching the "
        "ending in-game.</p>"),

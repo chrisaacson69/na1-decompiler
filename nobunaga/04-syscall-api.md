@@ -96,7 +96,7 @@ All 23 entries are characterized. 16 fired during the captured trace (startup + 
 | 9 | $C3AD | `syscall_audio_load_voice` | Set voice config. struct[2]=voice idx, [4]=tempo_div, [6]=song_ptr_lo, [8]=song_ptr_hi → 3 bytes at v0_config + voice*3 ($0725-$0733) |
 | 10 | $C3CF | `syscall_audio_control` | Audio control. struct[2]=voice idx, struct[4]=mode: 0 = silence all (clear audio state + APU); 1 = mute triangle for voice; 2 = query mute state |
 | 11 | $C427 | (RTS) | Single `RTS` at $C427; another placeholder slot |
-| 12 | $C437 | `syscall_ppu_blit_nobank` | Sibling of #20 (`ppu_blit_from_bank`) but enters with mode = 0 (no bank switch). Falls into the same code at $C439 |
+| 12 | $C437 | `syscall_ppu_fill_rect` | Constant-tile FILL of an inclusive nametable rect. struct → $52=nametable sel 0-3 ($2000/$2400/$2800/$2C00; wrappers pass 0), $54=left, $56=top, $58=right, $5A=bottom, $5C=fill tile. Writes tile $5C to every cell; PPU addr = $2000 + (sel<<10) + row*32 + col. Enters with mode flag $82=0 (no bank switch); shares the rect loop at $C439 with #20. Tile $01 = blank, so the UI callers use it to CLEAR regions. (Hand-decoded 2026-06-10, see ch.18.) |
 | 13 | $C4E0 | `syscall_ppu_render_rect` | 2D nametable region renderer. struct[6/8]=start (x,y), struct[10/12]=end (x,y), struct[14]=per-tile param. For each cell calls three helpers ($C640 addr, $C673 attr, $C711 write). Used for menu borders, status panels — anything with per-tile variation |
 | 14 | $C535 | (RTS placeholder) | Single `RTS` byte. Reserved slot |
 | 15 | $C536 | (RTS placeholder) | Single `RTS` byte. Reserved slot (sequential to #14 — `60 60` at $C535-$C536) |
@@ -104,7 +104,7 @@ All 23 entries are characterized. 16 fired during the captured trace (startup + 
 | 17 | $C1C3 | `syscall_rng_next` | 48-bit shift-and-add transform over wall-clock state ($0083-$0088). Returns 16-bit pseudo-random in $66/$67. The game's RNG |
 | 18 | $C36C | `syscall_palette_swap` | Atomically swap palette_shadow ($0700-$071F) with palette_alt ($0090-$00AF). Used for fade/transition effects |
 | 19 | $C1B8 | `syscall_wait_for_nmi` | Set nmi_busy=1, spin until NMI clears it. The canonical "wait for next VBlank" primitive |
-| 20 | $C428 | `syscall_ppu_blit_from_bank` | Bank-switched PPU blit. Switches to bank from struct[$E], copies block to nametable region |
+| 20 | $C428 | `syscall_ppu_copy_rect` | Byte-stream COPY into an inclusive nametable rect (same rect math as #12, mode flag $82=1). Saves PRG bank, switches to $5E, copies width*height bytes from the ($5C/$5D) source pointer (post-incremented, row-major) into the rect, restores bank. struct → $52=nt sel, $54=left, $56=top, $58=right, $5A=bottom, $5C/$5D=src ptr, $5E=src bank. Proof: $E621 copies a 28×16 = 0x1C0 B strategic-map section. The workhorse for screen content (menus, maps, portraits). (Hand-decoded 2026-06-10, see ch.18.) |
 | 21 | $C60C | `syscall_set_chr_bank0_reg` | Write 5-bit value (struct[2]) to MMC1 CHR-bank-0 register at $BFFF. On SOROM, bit 4 is the WRAM-enable gate — this is the bracket call that opens/closes SRAM access around save I/O |
 | 22 | $C5AA | `syscall_sram_block_with_checksum` | SRAM block read/write with 16-bit checksum. Toggles MMC1 WRAM gate via $BFFF writes, copies a block via $0200 buffer in two passes, accumulates a 16-bit checksum into $66/$67. The save-data I/O primitive |
 
@@ -118,7 +118,7 @@ The dispatch event log shows striking concentration:
 |---|---:|---:|---|
 | **$06** read_controller | 6342 | **92.2%** | Polled in every menu-wait loop, every prompt, every UI tick. The game spends most of its CPU waiting on input |
 | $11 rng_next | 130 | 1.9% | Used wherever randomness is needed; consistent low-grade demand |
-| $14 ppu_blit_from_bank | 122 | 1.8% | Screen content rendering — menus, prompts, map updates |
+| $14 ppu_copy_rect | 122 | 1.8% | Screen content rendering — menus, prompts, map updates |
 | $03 set_sprite | 81 | 1.2% | OAM updates for cursors, animation, UI sprites |
 | $04 palette_write | 78 | 1.1% | Color changes — title-screen palette load, menu highlights |
 | Others | 127 | 1.8% | Boot one-shots + low-frequency game state |

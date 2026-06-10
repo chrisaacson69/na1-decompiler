@@ -5,7 +5,7 @@ simple syscalls, stubs PPU/audio/input, logs everything). This harness just driv
 a sub through the real CALL mechanism (so the frame prologue runs) and reports.
 
 NOTE (2026-05-30): $885E is the staging->PPU RENDER driver, NOT the ROM->SRAM
-populator (it READS $7BFD and blits via syscall $14 ppu_blit_from_bank). The
+populator (it READS $7BFD and blits via syscall $14 ppu_copy_rect). The
 routine that WRITES the staging buffer is still unfound — see ROADMAP step 2'.
 This harness is the tool for testing candidates once found.
 

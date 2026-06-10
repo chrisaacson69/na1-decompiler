@@ -489,7 +489,7 @@ b15_c426:   rts                         ; 3C426:  60
 
             hex 60                      ; 3C427:  60
 
-syscall_ppu_blit_from_bank:
+syscall_ppu_copy_rect:
             hex ad 73 00 ; lda kernel_var_73    ; 3C428:  ad 73 00
             pha                         ; 3C42B:  48
             hex ad 5e 00 ; lda $005e    ; 3C42C:  ad 5e 00
@@ -497,7 +497,7 @@ syscall_ppu_blit_from_bank:
             lda #$01                    ; 3C432:  a9 01
             jmp b15_c439                ; 3C434:  4c 39 c4
 
-syscall_ppu_blit_nobank:
+syscall_ppu_fill_rect:
             lda #$00                    ; 3C437:  a9 00
 b15_c439:   hex 8d 82 00 ; sta $0082    ; 3C439:  8d 82 00
             hex ac 56 00 ; ldy $0056    ; 3C43C:  ac 56 00

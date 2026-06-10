@@ -456,11 +456,11 @@ class NobunagaVM:
         0x06: ("read_controller",    "STUB"), 0x07: ("call_bank",          "EMU"),
         0x08: ("fill_attr_quadrant", "STUB"), 0x09: ("audio_load_voice",   "EMU"),
         0x0A: ("audio_control",      "STUB"), 0x0B: ("syscall_0B",         "TODO"),
-        0x0C: ("ppu_blit_nobank",    "STUB"), 0x0D: ("ppu_render_rect",    "STUB"),
+        0x0C: ("ppu_fill_rect",    "STUB"), 0x0D: ("ppu_render_rect",    "STUB"),
         0x0E: ("syscall_0E",         "TODO"), 0x0F: ("syscall_0F",         "TODO"),
         0x10: ("memcpy_banked",      "EMU"),  0x11: ("rng_next",           "EMU"),
         0x12: ("palette_swap",       "EMU"),  0x13: ("wait_for_nmi",       "STUB"),
-        0x14: ("ppu_blit_from_bank", "STUB"), 0x15: ("set_chr_bank0_reg",  "STUB"),
+        0x14: ("ppu_copy_rect", "STUB"), 0x15: ("set_chr_bank0_reg",  "STUB"),
         0x16: ("sram_block_checksum","TODO"),
     }
 

@@ -396,13 +396,13 @@
 //   PRG $3CBB1  bank15 $CBB1  call_bank_wrap
 //   PRG $3CBBD  bank15 $CBBD  syscall16_sram_wrap
 //   PRG $3CC35  bank15 $CC35  palette_swap
-//   PRG $3CC42  bank15 $CC42  ppu_blit_nobank_wrap
-//   PRG $3CC54  bank15 $CC54  ppu_blit_from_bank_wrap
+//   PRG $3CC42  bank15 $CC42  ppu_fill_rect_wrap
+//   PRG $3CC54  bank15 $CC54  ppu_copy_rect_wrap
 //   PRG $3CC69  bank15 $CC69  trade_helper_cc69
 //   PRG $3CC7B  bank15 $CC7B  set_cursor
 //   PRG $3CC89  bank15 $CC89  open_message_window
 //   PRG $3CCBA  bank15 $CCBA  ui_get_7bf9
-//   PRG $3CCD1  bank15 $CCD1  ui_draw_window_ccd1
+//   PRG $3CCD1  bank15 $CCD1  clear_rect_top_strip
 //   PRG $3CCE1  bank15 $CCE1  ui_get_cursor_sel_7fdf
 //   PRG $3CCF9  bank15 $CCF9  get_6f5d_or_ff
 //   PRG $3CD20  bank15 $CD20  ui_helper_cd20
@@ -422,9 +422,9 @@
 //   PRG $3D14E  bank15 $D14E  poll_input
 //   PRG $3D287  bank15 $D287  wait_button_edge
 //   PRG $3D29D  bank15 $D29D  read_frame_timer
-//   PRG $3D2F9  bank15 $D2F9  ui_draw_window_d2f9
-//   PRG $3D309  bank15 $D309  ui_draw_window_d309
-//   PRG $3D31A  bank15 $D31A  ui_draw_window_d31a
+//   PRG $3D2F9  bank15 $D2F9  clear_rect_left_upper
+//   PRG $3D309  bank15 $D309  clear_rect_left_lower
+//   PRG $3D31A  bank15 $D31A  clear_rect_left_lower_alt
 //   PRG $3D326  bank15 $D326  message_display
 //   PRG $3D351  bank15 $D351  ui_helper_d351
 //   PRG $3D3A7  bank15 $D3A7  prompt_y_n
@@ -521,7 +521,7 @@ word display_fullscreen_graphic_sequence(void) {
     if (count_6da2_set()) {    // PRG $00008 -> bank15 $D628
         palette_swap(1);    // PRG $00019 -> bank15 $CC35
         ppu_upload_block_wrap(6, 0x9054, 0x1510, 174);    // PRG $00027 -> bank15 $CF7C
-        ppu_blit_from_bank_wrap(0, 0, 31, 22, 0x8D74, 6);    // PRG $00035 -> bank15 $CC54
+        ppu_copy_rect_wrap(0, 0, 31, 22, 0x8D74, 6);    // PRG $00035 -> bank15 $CC54
         ppu_render_rect_wrap(16, 8, 17, 13, 1);    // PRG $00040 -> bank15 $CF6A
         ppu_render_rect_wrap(2, 24, 31, 26, 1);    // PRG $0004C -> bank15 $CF6A
         local11 = 0;    // PRG $00051
@@ -571,7 +571,7 @@ word display_fullscreen_graphic_sequence(void) {
         ppu_upload_block_wrap(6, display_fullscreen_graph_data_9d04, 0x1000, 254);    // PRG $000E6 -> bank15 $CF7C
         syscall_fill_nametable(0, 0);    // PRG $000ED -> bank15 $C312
         fill_attr_wrap();    // PRG $000F1 -> bank15 $CF5D
-        ppu_blit_from_bank_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // PRG $000FE -> bank15 $CC54
+        ppu_copy_rect_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // PRG $000FE -> bank15 $CC54
         local11 = 0;    // PRG $00103
         do {    // PRG $00104
             palette_write_wrap(local11, msg_congratulations_my_lord_b7d2[local11]);    // PRG $0010C -> bank15 $CF8B
@@ -602,7 +602,7 @@ word display_fullscreen_graphic_sequence(void) {
         ppu_upload_block_wrap(6, display_fullscreen_graph_data_af64, 0x1000, 248);    // PRG $0017E -> bank15 $CF7C
         syscall_fill_nametable(0, 0);    // PRG $00185 -> bank15 $C312
         fill_attr_wrap();    // PRG $00189 -> bank15 $CF5D
-        ppu_blit_from_bank_wrap(0, 5, 31, 24, display_fullscreen_graph_data_ace4, 6);    // PRG $00196 -> bank15 $CC54
+        ppu_copy_rect_wrap(0, 5, 31, 24, display_fullscreen_graph_data_ace4, 6);    // PRG $00196 -> bank15 $CC54
         local11 = 0;    // PRG $0019B
         do {    // PRG $0019C
             palette_write_wrap(local11, msg_congratulations_my_lord_b7d6[local11]);    // PRG $001A4 -> bank15 $CF8B
@@ -1001,7 +1001,7 @@ word render_boot_title_screens(void) {
     palette_swap(1);    // PRG $008B6 -> bank15 $CC35
     ppu_upload_block_wrap(0, msg_fmt_blank, 0x1000, 102);    // PRG $008C3 -> bank15 $CF7C
     ppu_upload_block_wrap(0, render_boot_title_screen_data_a84a, 0x23C0, 4);    // PRG $008CF -> bank15 $CF7C
-    ppu_blit_from_bank_wrap(0, 0, 31, 29, render_boot_title_screen_data_a88a, 0);    // PRG $008DD -> bank15 $CC54
+    ppu_copy_rect_wrap(0, 0, 31, 29, render_boot_title_screen_data_a88a, 0);    // PRG $008DD -> bank15 $CC54
     local11 = 0;    // PRG $008E2
     do {    // PRG $008E3
         palette_write_wrap(local11, msg_new_game_b862[local11]);    // PRG $008EB -> bank15 $CF8B
@@ -1034,7 +1034,7 @@ word render_boot_title_screens(void) {
     ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // PRG $00948 -> bank15 $CF7C
     fill_nametable_wrap();    // PRG $0094C -> bank15 $CF50
     fill_attr_wrap();    // PRG $0094F -> bank15 $CF5D
-    ppu_blit_from_bank_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // PRG $0095C -> bank15 $CC54
+    ppu_copy_rect_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // PRG $0095C -> bank15 $CC54
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // PRG $00966 -> bank15 $CF6A
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // PRG $00973 -> bank15 $CF6A
     set_cursor(21, 26);    // PRG $0097B -> bank15 $CC7B
@@ -1136,7 +1136,7 @@ word init_new_game_state(void) {
                 ui_helper_cd20();    // PRG $00AE9 -> bank15 $CD20
                 palette_swap(1);    // PRG $00AED -> bank15 $CC35
                 ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // PRG $00AFB -> bank15 $CF7C
-                ppu_blit_from_bank_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // PRG $00B09 -> bank15 $CC54
+                ppu_copy_rect_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // PRG $00B09 -> bank15 $CC54
                 ppu_render_rect_wrap(0, 3, 17, 7, 1);    // PRG $00B13 -> bank15 $CF6A
                 i = 0;    // PRG $00B18
                 do {    // PRG $00B19
@@ -6165,7 +6165,7 @@ L_p06E56:
     found_flag = 1;    // PRG $06E75
     goto L_p06E78;    // PRG $06E75
 L_p06E2A:
-    ppu_blit_from_bank_wrap(local11, local10, min_word((local11 + 8), 29), local10, ((((selected_record_idx_9e3c * 0x01C0) + ((local10 + -4) * 28)) + local11) + fief_select_input_loop_data_8d5a), 4);    // PRG $06E4F -> bank15 $CC54
+    ppu_copy_rect_wrap(local11, local10, min_word((local11 + 8), 29), local10, ((((selected_record_idx_9e3c * 0x01C0) + ((local10 + -4) * 28)) + local11) + fief_select_input_loop_data_8d5a), 4);    // PRG $06E4F -> bank15 $CC54
     goto L_p06EA2;    // PRG $06E53
 L_p06E78:
     blink_phase = 0;    // PRG $06E78
@@ -6987,7 +6987,7 @@ word build_blit_fief_tile_block(word dst_col, word dst_row) {
             src_ptr = (src_ptr + 1);    // PRG $0820D
         }
     }
-    return ppu_blit_from_bank_wrap(dst_col, dst_row, (dst_col + 5), (dst_row + 5), &tile_buf, 8);    // PRG $08229 -> bank15 $CC54
+    return ppu_copy_rect_wrap(dst_col, dst_row, (dst_col + 5), (dst_row + 5), &tile_buf, 8);    // PRG $08229 -> bank15 $CC54
 }
 
 // ===== bank2 $822A  (PRG $0822A) =====
@@ -7015,7 +7015,7 @@ word prompt_yes_no(void) {
         phi_val_826a = 0;    // PRG $08269
     }
     local11 = phi_val_826a;    // PRG $0826A
-    ui_draw_window_d309();    // PRG $0826B -> bank15 $D309
+    clear_rect_left_lower();    // PRG $0826B -> bank15 $D309
     return local11;    // PRG $0826F
 }
 
@@ -7463,7 +7463,7 @@ word combat_command_menu_input_loop(word arg1, word arg2) {
             case 1:
                 read_frame_timer(0);    // PRG $086A1 -> bank15 $D29D
                 local11 = 1;    // PRG $086A6
-                ui_draw_window_d309();    // PRG $086A7 -> bank15 $D309
+                clear_rect_left_lower();    // PRG $086A7 -> bank15 $D309
                 break;
             case 16:
                 read_frame_timer(0);    // PRG $086AE -> bank15 $D29D
@@ -7514,7 +7514,7 @@ word select_entry_from_b52f_table_by_cursor(word arg1, word arg2) {
             case 1:
                 read_frame_timer(0);    // PRG $08737 -> bank15 $D29D
                 local11 = 1;    // PRG $0873C
-                ui_draw_window_d309();    // PRG $0873D -> bank15 $D309
+                clear_rect_left_lower();    // PRG $0873D -> bank15 $D309
                 break;
             case 16:
                 read_frame_timer(0);    // PRG $08744 -> bank15 $D29D
@@ -7555,7 +7555,7 @@ word prompt_province_selection(word arg1, word arg2) {
     draw_message(msg_d_d_b536, arg1, arg2);    // PRG $0879C -> bank15 $D134
     local11 = select_province_by_cursor(arg1, arg2);    // PRG $087A6 -> bank15 $D59D
     if (!((!(local11) || (local11 == 1)))) {    // PRG $08797
-        ui_draw_window_d309();    // PRG $087B2 -> bank15 $D309
+        clear_rect_left_lower();    // PRG $087B2 -> bank15 $D309
     }
     return local11;    // PRG $087B6
 }
@@ -7571,7 +7571,7 @@ word draw_tactical_terrain_feature(word arg1, word arg2) {
         local10 = arg2;    // PRG $087C9
         calc_tactical_cell_coords(&local11, &local10);    // PRG $087D2 -> bank2 $83A2
         local7 = lookup_terrain_attr_record(arg1, arg2);    // PRG $087DC -> bank2 $83C6
-        ppu_blit_from_bank_wrap(local11, (local10 + 2), (local11 + 3), (local10 + 3), (local7 + 8), 2);    // PRG $087EB -> bank15 $CC54
+        ppu_copy_rect_wrap(local11, (local10 + 2), (local11 + 3), (local10 + 3), (local7 + 8), 2);    // PRG $087EB -> bank15 $CC54
         switch (*(byte*)(local7)) {    // PRG $087C6
             case 146:
             case 162:
@@ -7613,18 +7613,18 @@ word map_render_driver(void) {
     local9 = 0;    // PRG $08864
     do {    // PRG $08865
         local11 = (((local9 << 1) << 1) + 10);    // PRG $08869
-        ppu_blit_from_bank_wrap(local11, 4, (local11 + 3), 25, ((((tactical_battle_phase * 3) + local9) * 88) + 0x7BFD), 2);    // PRG $08881 -> bank15 $CC54
+        ppu_copy_rect_wrap(local11, 4, (local11 + 3), 25, ((((tactical_battle_phase * 3) + local9) * 88) + 0x7BFD), 2);    // PRG $08881 -> bank15 $CC54
         local9 = (local9 + 1);    // PRG $08887
     } while (((unsigned)local9 < (unsigned)5));
     ppu_upload_block_wrap(5, (((fief_to_mapid(battle_defending_province) * 144) + (tactical_battle_phase * 48)) + map_render_driver_data_8004), 0x23C8, 3);    // PRG $088AC -> bank15 $CF7C
     if (tactical_battle_phase) {    // PRG $0888E
-        ppu_blit_from_bank_wrap(11, 3, 12, 3, map_render_driver_data_b540, 2);    // PRG $088BE -> bank15 $CC54
+        ppu_copy_rect_wrap(11, 3, 12, 3, map_render_driver_data_b540, 2);    // PRG $088BE -> bank15 $CC54
     } else {
         set_cursor(11, 3);    // PRG $088C7 -> bank15 $CC7B
         redraw_window(map_render_driver_data_b544);    // PRG $088CE -> bank15 $CEC4
     }
     if ((tactical_battle_phase != 2)) {    // PRG $088D2
-        ppu_blit_from_bank_wrap(27, 3, 28, 3, map_render_driver_data_b542, 2);    // PRG $088E4 -> bank15 $CC54
+        ppu_copy_rect_wrap(27, 3, 28, 3, map_render_driver_data_b542, 2);    // PRG $088E4 -> bank15 $CC54
     } else {
         set_cursor(27, 3);    // PRG $088EE -> bank15 $CC7B
         redraw_window(map_render_driver_data_b547);    // PRG $088F5 -> bank15 $CEC4
@@ -7726,7 +7726,7 @@ word draw_unit_count_digits(word arg1, word arg2) {
             local10 = ((unsigned)local11 % (unsigned)10);    // PRG $08AD9
             *(byte*)(((arg1 * 9) + 0x6FEC)) = (local10 + 8);    // PRG $08AF3
             ppu_render_rect_wrap((local9 + 1), (local8 + 2), (local9 + 2), (local8 + 2), *(byte*)(((arg1 * 9) + 0x6FE4)));    // PRG $08B09 -> bank15 $CF6A
-            phi_ret_8b24 = ppu_blit_from_bank_wrap(local9, (local8 + 2), (local9 + 3), (local8 + 3), ((arg1 * 9) + 0x6FE5), 2);    // PRG $08B20 -> bank15 $CC54
+            phi_ret_8b24 = ppu_copy_rect_wrap(local9, (local8 + 2), (local9 + 3), (local8 + 3), ((arg1 * 9) + 0x6FE5), 2);    // PRG $08B20 -> bank15 $CC54
         }
         return phi_ret_8b24;    // PRG $08B24
     }
@@ -7813,7 +7813,7 @@ word combat_unit_window_refresh(void) {
     if ((combat_unit_window_mode_flag == 2)) {    // PRG $08BEF
         return (combat_unit_window_mode_flag == 2);    // PRG $08BF7
     } else {
-        ui_draw_window_d2f9();    // PRG $08BF8 -> bank15 $D2F9
+        clear_rect_left_upper();    // PRG $08BF8 -> bank15 $D2F9
         local11 = 1;    // PRG $08BFC
         do {    // PRG $08BFD
             if (!(local11)) {    // PRG $08BFD
@@ -7924,9 +7924,9 @@ word draw_combat_roster_window(void) {
     palette_swap(1);    // PRG $08D63 -> bank15 $CC35
     palette_write_wrap(7, 43);    // PRG $08D6A -> bank15 $CF8B
     palette_write_wrap(11, 35);    // PRG $08D71 -> bank15 $CF8B
-    ppu_blit_nobank_wrap(11, 3, 29, 3, 1);    // PRG $08D7B -> bank15 $CC42
-    ppu_blit_nobank_wrap(10, 4, 29, 6, 1);    // PRG $08D85 -> bank15 $CC42
-    ppu_blit_nobank_wrap(2, 7, 29, 26, 1);    // PRG $08D90 -> bank15 $CC42
+    ppu_fill_rect_wrap(11, 3, 29, 3, 1);    // PRG $08D7B -> bank15 $CC42
+    ppu_fill_rect_wrap(10, 4, 29, 6, 1);    // PRG $08D85 -> bank15 $CC42
+    ppu_fill_rect_wrap(2, 7, 29, 26, 1);    // PRG $08D90 -> bank15 $CC42
     fill_attr_wrap();    // PRG $08D94 -> bank15 $CF5D
     ppu_render_rect_wrap(18, 6, 22, 11, 1);    // PRG $08D9E -> bank15 $CF6A
     ppu_render_rect_wrap(18, 12, 23, 17, 2);    // PRG $08DAA -> bank15 $CF6A
@@ -8199,7 +8199,7 @@ word prompt_hit_any_key_return_button(void) {
     set_cursor(2, 24);    // PRG $09114 -> bank15 $CC7B
     redraw_window(msg_hit_any_key);    // PRG $0911B -> bank15 $CEC4
     local11 = wait_button_edge();    // PRG $09122 -> bank15 $D287
-    ui_draw_window_d309();    // PRG $09123 -> bank15 $D309
+    clear_rect_left_lower();    // PRG $09123 -> bank15 $D309
     ui_get_cursor_sel_7fdf();    // PRG $09126 -> bank15 $CCE1
     return local11;    // PRG $0912A
 }
@@ -8232,7 +8232,7 @@ word paged_flee_fief_list_display(void) {
     }
     if (!(local10)) {    // PRG $09191
         redraw_window(msg_there_is_no_fief_to_flee_to);    // PRG $09198 -> bank15 $CEC4
-        ui_draw_window_d31a();    // PRG $0919C -> bank15 $D31A
+        clear_rect_left_lower_alt();    // PRG $0919C -> bank15 $D31A
     }
     return local10;    // PRG $091A0
 }
@@ -8498,14 +8498,14 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
             redraw_window(*(word*)((((((arg1 - 1) << 1) + 4) << 1) + jumptab_b196)));    // PRG $0953B -> bank15 $CEC4
         }
         local10 = (local10 ^ 1);    // PRG $09543
-        ui_draw_window_d31a();    // PRG $09544 -> bank15 $D31A
+        clear_rect_left_lower_alt();    // PRG $09544 -> bank15 $D31A
         if (!(test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot))) {    // PRG $09544 -> bank2 $8F79
             if ((local10 != cur_combat_side)) {    // PRG $09554
                 phi_push_9560 = 5;    // PRG $095BB
             }
             phi_push_9560 = 7;    // PRG $09560
             draw_combat_ui_string_b196(phi_push_9560, cur_combat_unit_slot);    // PRG $09561 -> bank2 $936A
-            phi_ret_9568 = ui_draw_window_d31a();    // PRG $09565 -> bank15 $D31A
+            phi_ret_9568 = clear_rect_left_lower_alt();    // PRG $09565 -> bank15 $D31A
         } else {
             phi_ret_9568 = test_unit_type_present_flag((cur_combat_side ^ 1), arg2);    // PRG $095AE -> bank2 $8F79
             if (!(phi_ret_9568)) {    // PRG $095A3
@@ -8514,7 +8514,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
                 }
                 phi_push_9560 = 7;    // PRG $09560
                 draw_combat_ui_string_b196(phi_push_9560, cur_combat_unit_slot);    // PRG $09561 -> bank2 $936A
-                phi_ret_9568 = ui_draw_window_d31a();    // PRG $09565 -> bank15 $D31A
+                phi_ret_9568 = clear_rect_left_lower_alt();    // PRG $09565 -> bank15 $D31A
             }
         }
         return phi_ret_9568;    // PRG $09568
@@ -8526,17 +8526,17 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
             char_advance_width(10);    // PRG $09584 -> bank15 $CE81
             redraw_window(mem_B1A6);    // PRG $0958B -> bank15 $CEC4
             if ((arg1 == 2)) {    // PRG $09577
-                ui_draw_window_d31a();    // PRG $09595 -> bank15 $D31A
+                clear_rect_left_lower_alt();    // PRG $09595 -> bank15 $D31A
                 message_display(mem_B1D6);    // PRG $0959B -> bank15 $D326
             }
-            ui_draw_window_d31a();    // PRG $09544 -> bank15 $D31A
+            clear_rect_left_lower_alt();    // PRG $09544 -> bank15 $D31A
             if (!(test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot))) {    // PRG $09544 -> bank2 $8F79
                 if ((local10 != cur_combat_side)) {    // PRG $09554
                     phi_push_9560 = 5;    // PRG $095BB
                 }
                 phi_push_9560 = 7;    // PRG $09560
                 draw_combat_ui_string_b196(phi_push_9560, cur_combat_unit_slot);    // PRG $09561 -> bank2 $936A
-                phi_ret_9568 = ui_draw_window_d31a();    // PRG $09565 -> bank15 $D31A
+                phi_ret_9568 = clear_rect_left_lower_alt();    // PRG $09565 -> bank15 $D31A
             } else {
                 phi_ret_9568 = test_unit_type_present_flag((cur_combat_side ^ 1), arg2);    // PRG $095AE -> bank2 $8F79
                 if (!(phi_ret_9568)) {    // PRG $095A3
@@ -8545,7 +8545,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
                     }
                     phi_push_9560 = 7;    // PRG $09560
                     draw_combat_ui_string_b196(phi_push_9560, cur_combat_unit_slot);    // PRG $09561 -> bank2 $936A
-                    phi_ret_9568 = ui_draw_window_d31a();    // PRG $09565 -> bank15 $D31A
+                    phi_ret_9568 = clear_rect_left_lower_alt();    // PRG $09565 -> bank15 $D31A
                 }
             }
             return phi_ret_9568;    // PRG $09568
@@ -8996,7 +8996,7 @@ L_p09AD5:
 L_p09AF5:
     cur_combat_unit_slot = (cur_combat_unit_slot + 1);    // PRG $09AF9
     if (((unsigned)cur_combat_unit_slot < (unsigned)5)) goto L_p09A21;    // PRG $09B01
-    return ui_draw_window_d309();    // PRG $09B07 -> bank15 $D309
+    return clear_rect_left_lower();    // PRG $09B07 -> bank15 $D309
 }
 
 // ===== bank2 $9B08  (PRG $09B08) =====
@@ -9171,7 +9171,7 @@ word reduce_defending_province_town_chaos(word arg1, word arg2) {
         } else {
             word_sub_saturating(local10, (pct_op(*(word*)(local10), math32_2arg(arg1, (*(word*)(local10) - arg1))) * 10));    // PRG $09E18 -> bank15 $CA31
         }
-        return ui_draw_window_d31a();    // PRG $09E1F -> bank15 $D31A
+        return clear_rect_left_lower_alt();    // PRG $09E1F -> bank15 $D31A
     }
 }
 
@@ -9248,7 +9248,7 @@ word resolve_attack_apply_casualties(word arg1, word arg2) {
     }
     draw_unit_count_digits(local7, arg1);    // PRG $09F48 -> bank2 $89DF
     draw_unit_count_digits(cur_combat_side, 0);    // PRG $09F50 -> bank2 $89DF
-    return ui_draw_window_d31a();    // PRG $09F57 -> bank15 $D31A
+    return clear_rect_left_lower_alt();    // PRG $09F57 -> bank15 $D31A
 }
 
 // ===== bank2 $A01A  (PRG $0A01A) =====
@@ -9914,24 +9914,24 @@ word player_move_unit_until_placed_loop(void) {
                         return 0;    // PRG $0A95E
                     } else {
                         message_display(mem_B1C4);    // PRG $0A962 -> bank15 $D326
-                        ui_draw_window_d31a();    // PRG $0A966 -> bank15 $D31A
+                        clear_rect_left_lower_alt();    // PRG $0A966 -> bank15 $D31A
                         continue;
                     }
                 } else {
                     message_display(mem_B1C4);    // PRG $0A962 -> bank15 $D326
-                    ui_draw_window_d31a();    // PRG $0A966 -> bank15 $D31A
+                    clear_rect_left_lower_alt();    // PRG $0A966 -> bank15 $D31A
                     continue;
                 }
             } else {
                 message_display(mem_B1C4);    // PRG $0A962 -> bank15 $D326
-                ui_draw_window_d31a();    // PRG $0A966 -> bank15 $D31A
+                clear_rect_left_lower_alt();    // PRG $0A966 -> bank15 $D31A
                 continue;
             }
         } else {
             break;
         }
     }
-    ui_draw_window_d309();    // PRG $0A936 -> bank15 $D309
+    clear_rect_left_lower();    // PRG $0A936 -> bank15 $D309
     return 1;    // PRG $0A93A
 }
 
@@ -9976,13 +9976,13 @@ word player_move_unit_with_occupancy_check_loop(void) {
                 }
             }
             message_display(mem_B1C0);    // PRG $0A9F1 -> bank15 $D326
-            ui_draw_window_d31a();    // PRG $0A9F5 -> bank15 $D31A
+            clear_rect_left_lower_alt();    // PRG $0A9F5 -> bank15 $D31A
             continue;
         } else {
             break;
         }
     }
-    ui_draw_window_d309();    // PRG $0A99A -> bank15 $D309
+    clear_rect_left_lower();    // PRG $0A99A -> bank15 $D309
     return 1;    // PRG $0A99E
 }
 
@@ -10026,12 +10026,12 @@ word combat_command_select_target_resolve_attack(void) {
                     }
                 }
             } else {
-                ui_draw_window_d309();    // PRG $0AAA2 -> bank15 $D309
+                clear_rect_left_lower();    // PRG $0AAA2 -> bank15 $D309
                 return 1;    // PRG $0AAA6
             }
         }
     }
-    ui_draw_window_d31a();    // PRG $0AA62 -> bank15 $D31A
+    clear_rect_left_lower_alt();    // PRG $0AA62 -> bank15 $D31A
     return 1;    // PRG $0AA66
 }
 
@@ -10045,7 +10045,7 @@ word combat_flee_to_fief_command(void) {
     char_advance_width(10);    // PRG $0AABC -> bank15 $CE81
     if (cur_combat_unit_slot) {    // PRG $0AAAC
         redraw_window(mem_B1B8);    // PRG $0AAC9 -> bank15 $CEC4
-        ui_draw_window_d31a();    // PRG $0AACD -> bank15 $D31A
+        clear_rect_left_lower_alt();    // PRG $0AACD -> bank15 $D31A
     } else {
         redraw_window(mem_B1AA);    // PRG $0AAD6 -> bank15 $CEC4
         if (prompt_yes_no()) {    // PRG $0AAD3 -> bank2 $822A
@@ -10055,7 +10055,7 @@ word combat_flee_to_fief_command(void) {
                 redraw_window(mem_B1D0);    // PRG $0AAF5 -> bank15 $CEC4
                 dest_fief = prompt_select_province_from_list();    // PRG $0AAFC -> bank2 $91A1
                 if ((prompt_select_province_from_list() != 255)) {    // PRG $0AAF2 -> bank2 $91A1
-                    ui_draw_window_d309();    // PRG $0AB04 -> bank15 $D309
+                    clear_rect_left_lower();    // PRG $0AB04 -> bank15 $D309
                     message_display(mem_B1D2);    // PRG $0AB0A -> bank15 $D326
                     if (prompt_yes_no()) {    // PRG $0AB04 -> bank2 $822A
                         battle_winner_province_sel = source_fief;    // PRG $0AB15
@@ -10066,10 +10066,10 @@ word combat_flee_to_fief_command(void) {
                         return 0;    // PRG $0AB31
                     }
                 } else {
-                    ui_draw_window_d309();    // PRG $0AB32 -> bank15 $D309
+                    clear_rect_left_lower();    // PRG $0AB32 -> bank15 $D309
                 }
             } else {
-                ui_draw_window_d309();    // PRG $0AB32 -> bank15 $D309
+                clear_rect_left_lower();    // PRG $0AB32 -> bank15 $D309
             }
         }
     }
@@ -10085,7 +10085,7 @@ word redraw_combat_side_window(void) {
     if (!(cur_combat_unit_slot)) {    // PRG $0AB3C
         redraw_window(*(word*)((((test_6f65_bit7(cur_combat_side) ? 18 : 19) << 1) + jumptab_b196)));    // PRG $0AB61 -> bank15 $CEC4
     }
-    ui_draw_window_d31a();    // PRG $0AB65 -> bank15 $D31A
+    clear_rect_left_lower_alt();    // PRG $0AB65 -> bank15 $D31A
     return 0;    // PRG $0AB69
 }
 
@@ -10173,7 +10173,7 @@ word ai_run_all_units_combat_actions(word battle_phase) {
         }
         break;
     }
-    ui_draw_window_d309();    // PRG $0AC7A -> bank15 $D309
+    clear_rect_left_lower();    // PRG $0AC7A -> bank15 $D309
     return battle_over_flag;    // PRG $0AC7E
 }
 
@@ -10189,8 +10189,8 @@ word combat_command_dispatch_loop_per_unit(void) {
             if (test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot)) {    // PRG $0AC8C -> bank2 $8F79
                 do {    // PRG $0AC99
                     if ((combat_unit_window_mode_flag != 1)) {    // PRG $0AC99
-                        ui_draw_window_d2f9();    // PRG $0ACA1 -> bank15 $D2F9
-                        ui_draw_window_d309();    // PRG $0ACA4 -> bank15 $D309
+                        clear_rect_left_upper();    // PRG $0ACA1 -> bank15 $D2F9
+                        clear_rect_left_lower();    // PRG $0ACA4 -> bank15 $D309
                         local11 = 0;    // PRG $0ACA8
                         do {    // PRG $0ACA9
                             set_cursor(4, (local11 + 10));    // PRG $0ACAD -> bank15 $CC7B
@@ -10240,7 +10240,7 @@ word display_morale_falling_message(void) {
         phi_ad58_0 = msg_our;    // PRG $0AD58
         redraw_window(phi_ad58_0);    // PRG $0AD58 -> bank15 $CEC4
         redraw_window(msg_morale_is_falling);    // PRG $0AD5F -> bank15 $CEC4
-        return ui_draw_window_d31a();    // PRG $0AD66 -> bank15 $D31A
+        return clear_rect_left_lower_alt();    // PRG $0AD66 -> bank15 $D31A
     } else {
         if (get_province_ai_state(selected_province_idx)) {    // PRG $0AD7B -> bank15 $D98D
             message_display(display_morale_falling_m_data_ba31);    // PRG $0AD6A -> bank15 $D326
@@ -10249,7 +10249,7 @@ word display_morale_falling_message(void) {
             phi_ad58_0 = msg_our;    // PRG $0AD58
             redraw_window(phi_ad58_0);    // PRG $0AD58 -> bank15 $CEC4
             redraw_window(msg_morale_is_falling);    // PRG $0AD5F -> bank15 $CEC4
-            return ui_draw_window_d31a();    // PRG $0AD66 -> bank15 $D31A
+            return clear_rect_left_lower_alt();    // PRG $0AD66 -> bank15 $D31A
         } else {
             return get_province_ai_state(selected_province_idx);    // PRG $0AD85 -> bank15 $D98D
         }
@@ -10726,19 +10726,19 @@ word palette_swap(word arg1) {
 }
 
 // ===== bank15 $CC42  (PRG $3CC42) =====
-// PRG $3CC42 ppu_blit_nobank_wrap
+// PRG $3CC42 ppu_fill_rect_wrap
 // (body @ PRG $3CC47)
 
-word ppu_blit_nobank_wrap(word arg1, word arg2, word arg3, word arg4, word arg5) {
-    return syscall_ppu_blit_nobank(0, arg1, arg2, arg3, arg4, arg5);    // PRG $3CC53 -> bank15 $C437
+word ppu_fill_rect_wrap(word arg1, word arg2, word arg3, word arg4, word arg5) {
+    return syscall_ppu_fill_rect(0, arg1, arg2, arg3, arg4, arg5);    // PRG $3CC53 -> bank15 $C437
 }
 
 // ===== bank15 $CC54  (PRG $3CC54) =====
-// PRG $3CC54 ppu_blit_from_bank_wrap
+// PRG $3CC54 ppu_copy_rect_wrap
 // (body @ PRG $3CC59)
 
-word ppu_blit_from_bank_wrap(word arg1, word arg2, word arg3, word arg4, word arg5, word arg6) {
-    return syscall_ppu_blit_from_bank(0, arg1, arg2, arg3, arg4, arg5, arg6);    // PRG $3CC68 -> bank15 $C428
+word ppu_copy_rect_wrap(word arg1, word arg2, word arg3, word arg4, word arg5, word arg6) {
+    return syscall_ppu_copy_rect(0, arg1, arg2, arg3, arg4, arg5, arg6);    // PRG $3CC68 -> bank15 $C428
 }
 
 // ===== bank15 $CC69  (PRG $3CC69) =====
@@ -10746,7 +10746,7 @@ word ppu_blit_from_bank_wrap(word arg1, word arg2, word arg3, word arg4, word ar
 // (body @ PRG $3CC6E)
 
 word trade_helper_cc69(void) {
-    return ppu_blit_nobank_wrap(22, 7, 29, 18, 1);    // PRG $3CC7A -> bank15 $CC42
+    return ppu_fill_rect_wrap(22, 7, 29, 18, 1);    // PRG $3CC7A -> bank15 $CC42
 }
 
 // ===== bank15 $CC7B  (PRG $3CC7B) =====
@@ -10764,7 +10764,7 @@ word set_cursor(word arg1, word arg2) {
 // (body @ PRG $3CC8E)
 
 word open_message_window(void) {
-    ppu_blit_nobank_wrap(2, (ui_msg_col_shift_flag ? 20 : 22), 19, 25, 1);    // PRG $3CCA2 -> bank15 $CC42
+    ppu_fill_rect_wrap(2, (ui_msg_col_shift_flag ? 20 : 22), 19, 25, 1);    // PRG $3CCA2 -> bank15 $CC42
     return set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // PRG $3CCB9 -> bank15 $CC7B
 }
 
@@ -10773,17 +10773,17 @@ word open_message_window(void) {
 // (body @ PRG $3CCBF)
 
 word ui_get_7bf9(void) {
-    ppu_blit_nobank_wrap(20, 20, 29, 25, 1);    // PRG $3CCC8 -> bank15 $CC42
+    ppu_fill_rect_wrap(20, 20, 29, 25, 1);    // PRG $3CCC8 -> bank15 $CC42
     ui_state_flag_7bf9 = 0;    // PRG $3CCCD
     return 0;    // PRG $3CCD0
 }
 
 // ===== bank15 $CCD1  (PRG $3CCD1) =====
-// PRG $3CCD1 ui_draw_window_ccd1
+// PRG $3CCD1 clear_rect_top_strip
 // (body @ PRG $3CCD6)
 
-word ui_draw_window_ccd1(void) {
-    return ppu_blit_nobank_wrap(2, 3, 29, 3, 1);    // PRG $3CCE0 -> bank15 $CC42
+word clear_rect_top_strip(void) {
+    return ppu_fill_rect_wrap(2, 3, 29, 3, 1);    // PRG $3CCE0 -> bank15 $CC42
 }
 
 // ===== bank15 $CCE1  (PRG $3CCE1) =====
@@ -10791,7 +10791,7 @@ word ui_draw_window_ccd1(void) {
 // (body @ PRG $3CCE6)
 
 word ui_get_cursor_sel_7fdf(void) {
-    ppu_blit_nobank_wrap(2, 26, 29, 26, 1);    // PRG $3CCEE -> bank15 $CC42
+    ppu_fill_rect_wrap(2, 26, 29, 26, 1);    // PRG $3CCEE -> bank15 $CC42
     ui_input_sel_latch_7fdf = 255;    // PRG $3CCF5
     return 255;    // PRG $3CCF8
 }
@@ -10801,7 +10801,7 @@ word ui_get_cursor_sel_7fdf(void) {
 // (body @ PRG $3CCFE)
 
 word get_6f5d_or_ff(void) {
-    ppu_blit_nobank_wrap(0, 4, 31, 19, 1);    // PRG $3CD05 -> bank15 $CC42
+    ppu_fill_rect_wrap(0, 4, 31, 19, 1);    // PRG $3CD05 -> bank15 $CC42
     phi_ret_cd1f = (selected_record_idx_9e3c != 255);    // PRG $3CD10
     if (phi_ret_cd1f) {    // PRG $3CCFE
         latched_selected_record_idx = selected_record_idx_9e3c;    // PRG $3CD16
@@ -10945,7 +10945,7 @@ word char_advance_width(word arg1) {
         return ui_get_menu_count_7fcf();    // PRG $3CE91 -> bank15 $CDAF
     } else {
         *(byte*)&arg1 = char_classify(*(byte*)&arg1);    // PRG $3CE9A -> bank15 $CDCA
-        syscall_ppu_blit_nobank(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&arg1);    // PRG $3CEAF -> bank15 $C437
+        syscall_ppu_fill_rect(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&arg1);    // PRG $3CEAF -> bank15 $C437
         ui_window_col = (ui_window_col + 1);    // PRG $3CEB7
         phi_ret_cec3 = ((unsigned)(ui_window_col + 1) > (unsigned)31);    // PRG $3CEBD
         if (phi_ret_cec3) {    // PRG $3CE92
@@ -10975,7 +10975,7 @@ L_p3CEEC:
     ui_window_col = (ui_window_col + 1);    // PRG $3CF00
     if (!(((ui_window_col + 1) == 32))) goto L_p3CF27;    // PRG $3CF06
 L_p3CF13:
-    ppu_blit_from_bank_wrap(local11, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // PRG $3CF17 -> bank15 $CC54
+    ppu_copy_rect_wrap(local11, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // PRG $3CF17 -> bank15 $CC54
 L_p3CF1B:
     ui_get_menu_count_7fcf();    // PRG $3CF1B -> bank15 $CDAF
 L_p3CF27:
@@ -10984,7 +10984,7 @@ L_p3CF27:
     if (*(byte*)(((arg1 + 1) - 1))) goto L_p3CECC;    // PRG $3CF2F
     phi_ret_cf4f = (local11 != ui_window_col);    // PRG $3CF37
     if (!(phi_ret_cf4f)) return phi_ret_cf4f;    // PRG $3CF37
-    phi_ret_cf4f = ppu_blit_from_bank_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // PRG $3CF4B -> bank15 $CC54
+    phi_ret_cf4f = ppu_copy_rect_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // PRG $3CF4B -> bank15 $CC54
     return phi_ret_cf4f;    // PRG $3CF3A
     return phi_ret_cf4f;    // PRG $3CF4F
 }
@@ -11294,28 +11294,28 @@ word read_frame_timer(word arg1) {
 }
 
 // ===== bank15 $D2F9  (PRG $3D2F9) =====
-// PRG $3D2F9 ui_draw_window_d2f9
+// PRG $3D2F9 clear_rect_left_upper
 // (body @ PRG $3D2FE)
 
-word ui_draw_window_d2f9(void) {
-    return ppu_blit_nobank_wrap(2, 8, 9, 19, 1);    // PRG $3D308 -> bank15 $CC42
+word clear_rect_left_upper(void) {
+    return ppu_fill_rect_wrap(2, 8, 9, 19, 1);    // PRG $3D308 -> bank15 $CC42
 }
 
 // ===== bank15 $D309  (PRG $3D309) =====
-// PRG $3D309 ui_draw_window_d309
+// PRG $3D309 clear_rect_left_lower
 // (body @ PRG $3D30E)
 
-word ui_draw_window_d309(void) {
-    return ppu_blit_nobank_wrap(2, 20, 9, 26, 1);    // PRG $3D319 -> bank15 $CC42
+word clear_rect_left_lower(void) {
+    return ppu_fill_rect_wrap(2, 20, 9, 26, 1);    // PRG $3D319 -> bank15 $CC42
 }
 
 // ===== bank15 $D31A  (PRG $3D31A) =====
-// PRG $3D31A ui_draw_window_d31a
+// PRG $3D31A clear_rect_left_lower_alt
 // (body @ PRG $3D31F)
 
-word ui_draw_window_d31a(void) {
+word clear_rect_left_lower_alt(void) {
     standard_delay();    // PRG $3D31F -> bank15 $D759
-    return ui_draw_window_d309();    // PRG $3D325 -> bank15 $D309
+    return clear_rect_left_lower();    // PRG $3D325 -> bank15 $D309
 }
 
 // ===== bank15 $D326  (PRG $3D326) =====
@@ -11324,7 +11324,7 @@ word ui_draw_window_d31a(void) {
 
 word message_display(word arg1) {
     if (ui_msg_oneshot_flag_7fc5) {    // PRG $3D32B
-        ui_draw_window_d309();    // PRG $3D331 -> bank15 $D309
+        clear_rect_left_lower();    // PRG $3D331 -> bank15 $D309
         ui_msg_oneshot_flag_7fc5 = 0;    // PRG $3D335
     }
     set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // PRG $3D347 -> bank15 $CC7B
@@ -12820,7 +12820,7 @@ word find_record_9e3c(word arg1) {
                 goto L_p3E58E;
             }
         }
-        ppu_blit_from_bank_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + find_record_data_8d5a), 4);    // PRG $3E5E6 -> bank15 $CC54
+        ppu_copy_rect_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + find_record_data_8d5a), 4);    // PRG $3E5E6 -> bank15 $CC54
         draw_window_f706(arg1);    // PRG $3E5EB -> bank15 $DB6E
 L_p3E58E:
         phi_ret_e594 = set_cursor(local11, local10);    // PRG $3E590 -> bank15 $CC7B
@@ -12836,8 +12836,8 @@ word map_helper_e5f2(word arg1) {
     phi_ret_e693 = (arg1 != selected_record_idx_9e3c);    // PRG $3E5FC
     if (phi_ret_e693) {    // PRG $3E5F7
         palette_swap(1);    // PRG $3E600 -> bank15 $CC35
-        ppu_blit_nobank_wrap(30, 4, 31, 19, 1);    // PRG $3E60C -> bank15 $CC42
-        ppu_blit_from_bank_wrap(2, 4, 29, 19, ((arg1 * 0x01C0) + strategic_map_section_tilemaps), 4);    // PRG $3E621 -> bank15 $CC54
+        ppu_fill_rect_wrap(30, 4, 31, 19, 1);    // PRG $3E60C -> bank15 $CC42
+        ppu_copy_rect_wrap(2, 4, 29, 19, ((arg1 * 0x01C0) + strategic_map_section_tilemaps), 4);    // PRG $3E621 -> bank15 $CC54
         ppu_upload_block_wrap(4, ((arg1 << 5) + strategic_map_section_attributes), 0x23C8, 2);    // PRG $3E632 -> bank15 $CF7C
         selected_record_idx_9e3c = arg1;    // PRG $3E637
         local11 = ui_window_col;    // PRG $3E63D
@@ -12916,7 +12916,7 @@ word draw_daimyo_portrait(word col, word row) {
         phi_push_e7fa = ((fief_to_mapid(active_province_idx_copy) * 36) + jumptab_b144);    // PRG $3E7EB -> bank15 $DC66
     }
     phi_push_e7fa = &face_buf;    // PRG $3E7FA
-    ppu_blit_from_bank_wrap(col, row, (col + 5), (row + 5), phi_push_e7fa, 8);    // PRG $3E803 -> bank15 $CC54
+    ppu_copy_rect_wrap(col, row, (col + 5), (row + 5), phi_push_e7fa, 8);    // PRG $3E803 -> bank15 $CC54
     ui_pending_flag_7fc7 = 1;    // PRG $3E808
     return 1;    // PRG $3E80B
 }

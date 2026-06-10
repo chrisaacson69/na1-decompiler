@@ -6720,7 +6720,7 @@ VM bytecode disassembly
   $AE4C  B3                         PUSHL
   $AE4D  3A                         PUSH_quick   ; inline operand = 10
   $AE4E  3B                         PUSH_quick   ; inline operand = 11
-  $AE4F  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_blit_from_bank_wrap) {bytecode}, $0C
+  $AE4F  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $AE53  D6 A2 AE                   JUMP_abs               $AEA2
  >$AE56  81 D8                      LOADL_near             $D8
   $AE58  D0                         INC

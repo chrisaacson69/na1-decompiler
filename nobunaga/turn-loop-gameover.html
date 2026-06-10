@@ -119,7 +119,7 @@
 </ol>
 
 <h2>Where the art lives</h2>
-<p>The victory and defeat full-screens are static CHR uploaded from <b>bank 6</b> (<code>$9D04</code> victory, <code>$AF64</code> defeat) and blitted via the usual <code>ppu_upload_block_wrap</code> / <code>ppu_blit_from_bank_wrap</code> pair. They’re prime targets for the “render graphics bits from code” frontier — the same code-driven extraction that pulled the title and portrait art — so both screens could be rendered to PNG straight from ROM without ever reaching the ending in-game.</p>
+<p>The victory and defeat full-screens are static CHR uploaded from <b>bank 6</b> (<code>$9D04</code> victory, <code>$AF64</code> defeat) and blitted via the usual <code>ppu_upload_block_wrap</code> / <code>ppu_copy_rect_wrap</code> pair. They’re prime targets for the “render graphics bits from code” frontier — the same code-driven extraction that pulled the title and portrait art — so both screens could be rendered to PNG straight from ROM without ever reaching the ending in-game.</p>
 <h2>What it pinned down</h2>
 <div class="find"><b>Game-over is a discriminator, not a computation.</b> The whole sequence is two presentation branches selected by one boolean (<code>count_6da2_set</code> over <code>$6DA2</code>). No formula — the interesting state was decided earlier (whoever set the abort bit); this phase just announces it.</div>
 <div class="find"><b>$6DA2 is an unresolved per-fief flag array — queued for a data-walk.</b> It’s the victory/defeat discriminator here, but it’s also read in 10+ AI / combat sites and gates the command-pass abort. That breadth means it deserves a real data-walk rather than a guessed name.</div>

@@ -96,6 +96,24 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### `$C437`/`$C428`  PPU blit syscalls → fill-rect vs copy-rect geometry   [HIGH CONFIRMED 2026-06-10]
+Hand-decoded the native 6502 keystone (`bank_15.asm $C428-$C4DF`, the first pass-0-floor descent).
+Both syscalls walk the SAME inclusive tile rect; mode flag `$0082` (set by entry point) selects fill
+vs copy. ZP arg map: `$52`=nametable sel 0-3 (→ `$2000/$2400/$2800/$2C00`; wrappers pass 0), `$54`=left
+col, `$56`=top row, `$58`=right col, `$5A`=bottom row, `$5C/$5D`=fill tile (nobank) / source ptr
+(from_bank, post-incremented), `$5E`=source bank (from_bank only). `PPU_addr = $2000 + (sel<<10) +
+row*32 + col` (row*32 via the `$C6AD` repeated-add multiply). **`syscall_ppu_fill_rect` ($C437) =
+constant-tile FILL** (writes `$5C` to every cell), **`syscall_ppu_copy_rect` ($C428) = byte-stream
+COPY** of width*height bytes (saves/switches/restores PRG bank). Proof: `$E621` copies `(2,4,29,19)` =
+28×16 = `0x1C0` B/section from `strategic_map_section_tilemaps` (matches its documented 448-B stride).
+Tile `$01` = blank (ch.16), so every `ppu_fill_rect_wrap(...,1)` UI call CLEARS a region.
+**Suspect-note slips fixed:** the `ui_draw_window_*` family (`ccd1`/`d2f9`/`d309`/`d31a`) listed its 5
+args REVERSED and miscategorized fill-with-blank as "window draw" — amended in `mesen-labels.toml`.
+**Renames applied** (Chris chose full rename): syscalls `ppu_blit_nobank`/`_from_bank` →
+`ppu_fill_rect`/`ppu_copy_rect` (+ `syscall_`/`_wrap` forms), and `ui_draw_window_{ccd1,d2f9,d309,d31a}`
+→ `clear_rect_{top_strip,left_upper,left_lower,left_lower_alt}`. Source of truth = `mesen-labels.toml`
+(PRG labels + wrappers) and the syscall-id maps in `vm_decompile.py`/`nobunaga_vm.py`; regen propagates.
+
 ### `$E510`  `ui_helper_e510` → `build_eligible_province_list`   [HIGH CONFIRMED 2026-06-10]
 `build_eligible_province_list(enemy_flag)`: scans all fiefs, keeps those that exist
 (`!province_state_is_FF`), match the ownership filter (`is_enemy_owned(i) == enemy_flag`), and aren't
@@ -126,7 +144,7 @@ UI helper — a data accessor like `fief_owner`. Sites now read as game logic:
 leaves-first order paying off: a 2-op accessor over a grounded leaf grounds instantly.)
 
 ### `$CC89`  `ui_helper_cc89` → `open_message_window`   [HIGH CONFIRMED 2026-06-10]
-`open_message_window()` = `ppu_blit_nobank_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22)`
+`open_message_window()` = `ppu_fill_rect_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22)`
 (body @ `$CC8E`). Draws the standard bottom message-window rect + homes the cursor — the
 "prepare the window before printing" primitive (14 callers, command pre-roll). **Also corrected a
 SUSPECT neighbor note `$7FD1 ui_msg_col_shift_flag`:** (1) polarity was inverted (code is
@@ -164,15 +182,29 @@ sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-da
 
 ## Frontier (where to resume — do not retread)
 
-### >>> NEXT BLOCK (start here): the pass-0 native blit-geometry unlock <<<
-Ground `syscall_ppu_blit_nobank` ($C437/$C439, native 6502 — the FIRST descent to the pass-0 floor):
-decode its 5-arg geometry (left/top/right/bottom + mode? fill vs tile-source?). This is the keystone —
-it unlocks the whole **`ui_draw_window_*` family** (`ccd1` `(2,3,29,3)`, `d2f9` `(2,8,9,19)`, `d309`
-`(2,20,9,26)`, `d31a` = `standard_delay`?+`d309`, …) AND sharpens `open_message_window`'s rectangle
-AND makes every `ppu_blit_*` call corpus-wide read as real screen geometry. Method note: this is
-6502-asm reading (`source/1-asm-6502/bank_15*.asm`), not VM bytecode — the layer-ID rule says
-not-in-bytecode-set ⇒ native. While there, fix the systematic suspect-note slip: every
-`ui_draw_window_*` comment lists args REVERSED vs the actual C (`(1,26,9,20,2)` vs `(2,20,9,26,1)`).
+### DONE 2026-06-10: the pass-0 native blit-geometry unlock + full rename
+`$C437`/`$C428` fully decoded (fill-rect vs copy-rect, full ZP arg map, `PPU_addr` formula) — see the
+ledger entry above. Renames applied end-to-end and gate-verified (CFG 495/495 both directions,
+114/114 unit suite): `ppu_blit_nobank`/`_from_bank` → `ppu_fill_rect`/`ppu_copy_rect` (+ `syscall_`/
+`_wrap` forms), `ui_draw_window_{ccd1,d2f9,d309,d31a}` → `clear_rect_{top_strip,left_upper,left_lower,
+left_lower_alt}`. Source-of-truth touched: `mesen-labels.toml`, the syscall-id maps in
+`vm_decompile.py`/`nobunaga_vm.py`, the curated `bank_15_labeled.asm`, and the `.md` chapters; all of
+`source/2,3,4` + `.mlb` + the turn-loop HTML regenerated. ch.04 rows 12/20 now carry the full arg-map.
+
+### DONE 2026-06-10: ch.18 "UI primitive vocabulary" section written
+Added to `18-window-updates.md` (after "The window-update model in steady state"): a 3-layer grounded
+stack — Layer 0 the two blit syscalls (`ppu_fill_rect`/`ppu_copy_rect` + arg-map + `PPU_addr` formula),
+Layer 1 the `clear_rect_*` blanks (with old→new name map), Layer 2 the text/window primitives
+(`format_string`, `set_cursor`, `redraw_window`, `draw_message`, `open_message_window`, `prompt_y_n`,
+`standard_delay`) — plus the "every screen = clear → locate → format+draw → copy art → wait" idiom. It
+explicitly grounds the chapter's older informal `$C480`/`$0075`/`$0082` model into the named syscalls.
+
+### >>> NEXT BLOCK (start here): next high-fanout non-UI leaves <<<
+The UI-primitive cluster is done (vocabulary grounded + chaptered). Re-run the leaves-first cursor
+(`py -3 tools/label-walk-prep.py <bank>`) and take the next high-fanout leaves OUTSIDE the UI family.
+Still-open threads to fold in when their inputs get grounded: `$E80C` name (needs `mem_7FCB` +
+bank-14 routine 14); the `$7FD1`/`ui_msg_col_shift_flag` axis (read `message_display $D338`); the
+`$7530` per-daimyo stat table (stride 7) and `$77A8` daimyo-name table (stride 9) exposed by `fief_owner`.
 
 ### Then: finish the UI-primitive vocabulary + write the chapter-18 section once
 Grounded primitives so far: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),

@@ -63,7 +63,7 @@ created: 2026-05-29
 - **Simulate the economy / check a formula:** `tools/econ_sim.py`.
 - **Province adjacency / strategic map:** `tools/adjacency.py` / `tools/render-strategic-atlas.py` (`--variant 17|50`).
 - **Render the daimyo portrait anthology (per scenario, NES-exact):** `tools/render-portrait.py anthology [17|50]` → `atlas/daimyo-anthology-{17,50}.png`. Preset portrait path (historical daimyo): descriptor table bank 8 `$BBD0` → CHR banks 7-8 → per-portrait 6×6 tile-index map bank 8 `$B144`+mapid×36 (tile base `0x5B`) → palette `$F7CC`. [[project_nobunaga_daimyo_portraits]]
-- **Extract & render ANY ROM graphic in true NES color:** follow the recipe in [appendix-asset-extraction.md](./appendix-asset-extraction.md) (CHR via `ppu_upload_block_wrap` descriptor + tile-index map via `ppu_blit_from_bank_wrap` + palette via `palette_write_wrap`; ⚠️ read the BYTECODE for the real args + resolve cross-bank pointers by the upload's BANK arg). Reusable primitives (NES master palette, 2bpp decoder) in `render-portrait.py`. Candidate-asset inventory (title/map-tiles/units/UI) is in the appendix.
+- **Extract & render ANY ROM graphic in true NES color:** follow the recipe in [appendix-asset-extraction.md](./appendix-asset-extraction.md) (CHR via `ppu_upload_block_wrap` descriptor + tile-index map via `ppu_copy_rect_wrap` + palette via `palette_write_wrap`; ⚠️ read the BYTECODE for the real args + resolve cross-bank pointers by the upload's BANK arg). Reusable primitives (NES master palette, 2bpp decoder) in `render-portrait.py`. Candidate-asset inventory (title/map-tiles/units/UI) is in the appendix.
 
 ## The discipline (why this file exists)
 
