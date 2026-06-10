@@ -795,9 +795,9 @@ L_8B38:
 
 word draw_combat_day_header(word arg1) {
     set_cursor(2, 5);    // $8B40
-    draw_window_f6c4();    // $8B44
+    draw_current_year();    // $8B44
     char_advance_width(10);    // $8B48
-    redraw_window_f6c7();    // $8B4C
+    draw_current_season();    // $8B4C
     return draw_message(msg_day_2d, arg1);    // $8B57
 }
 
@@ -1213,7 +1213,7 @@ word prompt_hit_any_key_return_button(void) {
     redraw_window(msg_hit_any_key);    // $911B
     local11 = wait_button_edge();    // $9122
     clear_rect_left_lower();    // $9123
-    ui_get_cursor_sel_7fdf();    // $9126
+    reset_prompt_selection();    // $9126
     return local11;    // $912A
 }
 
@@ -2700,7 +2700,7 @@ L_A86A:
     if (cur_combat_side) goto L_A8CD;    // $A87D
     if (!(((unsigned)fief > (unsigned)29))) goto L_A8CD;    // $A884
 L_A887:
-    relation_base_6f4f(battle_defending_province);    // $A88A
+    load_daimyo_relation_row(battle_defending_province);    // $A88A
     side_fief = get_battle_side_province(cur_combat_side);    // $A895
     build_daimyo_province_list(get_battle_side_province(cur_combat_side));    // $A897
     owner = deduped_owner_list;    // $A89E
@@ -2856,7 +2856,7 @@ word combat_flee_to_fief_command(void) {
 L_AAD3:
     redraw_window(mem_B1AA);    // $AAD6
     if (!(prompt_yes_no())) goto L_AB35;    // $AADD
-    relation_base_6f4f(battle_defending_province);    // $AAE3
+    load_daimyo_relation_row(battle_defending_province);    // $AAE3
     build_daimyo_province_list(source_fief);    // $AAE8
     if (!(paged_flee_fief_list_display())) goto L_AB32;    // $AAEF
     redraw_window(mem_B1D0);    // $AAF5
@@ -2897,7 +2897,7 @@ word prompt_hit_any_key_and_redraw_combat_screen(void) {
     set_cursor(2, 26);    // $AB75
     redraw_window(msg_hit_any_key_b9ec);    // $AB7C
     wait_button_edge();    // $AB80
-    ui_get_cursor_sel_7fdf();    // $AB83
+    reset_prompt_selection();    // $AB83
     render_combat_map_screen();    // $AB86
     draw_valid_unit_field_cells();    // $AB89
     return 1;    // $AB8D

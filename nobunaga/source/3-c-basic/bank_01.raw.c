@@ -295,9 +295,9 @@ word effect_view_a(word arg1) {
     ppu_render_rect_wrap(23, 6, 23, 18, 2);    // $8456
     ui_pending_flag_7fc9 = 1;    // $845B
     set_cursor(2, 3);    // $8460
-    draw_window_f6c4();    // $8464
+    draw_current_year();    // $8464
     set_cursor(7, 3);    // $8469
-    redraw_window_f6c7();    // $846D
+    draw_current_season();    // $846D
     cap_fief_stats(arg1);    // $8471
     set_cursor(10, 5);    // $8477
     local8 = (province_state_is_FF(arg1) ? 0 : 1);    // $8488
@@ -472,7 +472,7 @@ word fief_info_display(word arg1) {
     fief_menu_info_mode_flag = arg1;    // $8724
     set_cursor(22, 5);    // $872A
     redraw_window(msg_menu);    // $8731
-    trade_helper_cc69();    // $8735
+    clear_rect_right_panel();    // $8735
     if (fief_menu_info_mode_flag) goto L_876B;    // $873B
     local11 = 0;    // $873F
 L_8740:
@@ -927,7 +927,7 @@ L_8F42:
     if (!(fief_is_daimyo_capital[battle_defending_province])) goto L_8FA1;    // $8F4A
     swap_word(battle_defending_province, selected_province_idx);    // $8F53
     combat_helper_dad7();    // $8F57
-    combat_helper_dd3a(1, deduped_owner_list);    // $8F5E
+    filter_province_list_by_owner(1, deduped_owner_list);    // $8F5E
     if ((deduped_owner_list == 255)) goto L_8F95;    // $8F69
     if (!(rng_mod((*(byte*)((local5 + 3)) / 10)))) goto L_8F95;    // $8F76
     fief_is_daimyo_capital[selected_province_idx] = 0;    // $8F82
@@ -1254,7 +1254,7 @@ word ai_try_war_attack(void) {
     return 0;    // $94C4
 L_94C5:
     combat_helper_dad7();    // $94C5
-    combat_helper_dd3a(0, deduped_owner_list);    // $94CC
+    filter_province_list_by_owner(0, deduped_owner_list);    // $94CC
     target_idx = pick_weakest_men_fief(deduped_owner_list);    // $94D7
     if ((target_idx != 255)) goto L_94E2;    // $94DD
     return 0;    // $94E1
@@ -1356,7 +1356,7 @@ word driver_move(void) {
     return 0;    // $96E1
 L_96E2:
     combat_helper_dad7();    // $96E2
-    combat_helper_dd3a(1, deduped_owner_list);    // $96E9
+    filter_province_list_by_owner(1, deduped_owner_list);    // $96E9
     if (!(province_select_helper(1, deduped_owner_list))) goto L_97BF;    // $96F5
     redraw_window(msg_move_where);    // $96FB
     battle_defending_province = province_select_prompt(deduped_owner_list);    // $9706
@@ -1382,7 +1382,7 @@ L_9797:
     message_display(msg_they_have_arrived_safely);    // $979F
     confirm_prompt();    // $97A3
     effect_move(local11);    // $97A7
-    update_arms_table_dffe(battle_defending_province, local9);    // $97AF
+    cap_arms_at_index(battle_defending_province, local9);    // $97AF
     return 1;    // $97B4
 L_97B5:
     message_display(msg_that_fief_can_t_hold_more_men);    // $97B8
@@ -1458,7 +1458,7 @@ L_986C:
     if (!(effect_war_combat_prep_a(local9))) goto L_9998;    // $9879
     if (!(effect_war_combat_prep_b(local9))) goto L_9998;    // $9881
     combat_helper_dad7();    // $9884
-    combat_helper_dd3a(0, deduped_owner_list);    // $988B
+    filter_province_list_by_owner(0, deduped_owner_list);    // $988B
     effect_war_e(&local1);    // $9893
     if (!(province_select_helper(2, deduped_owner_list))) goto L_9998;    // $989F
     redraw_window(msg_attack_where);    // $98A5
@@ -1971,7 +1971,7 @@ word subhandler_A1AF(void) {
 
 word driver_trade(void) {
     if (!(effect_trade())) goto L_A249;    // $A1BE
-    trade_helper_cc69();    // $A1C1
+    clear_rect_right_panel();    // $A1C1
     phi_val_a1e9 = 0;    // $A1C5
     goto L_A1E9;    // $A1C5
 L_A1C8:
@@ -2174,7 +2174,7 @@ word effect_hire_variant_pay(word fief) {
     if (!(number_input(1, max_affordable))) goto L_A5F2;    // $A581
     *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_men_hire_rate, amount));    // $A592
     apply_hire_unit_stats(fief, amount);    // $A595
-    update_arms_table_dffe(selected_province_idx, fief);    // $A59D
+    cap_arms_at_index(selected_province_idx, fief);    // $A59D
     helper_8A4E(4);    // $A5A2
     helper_82AC((fief + 16));    // $A5AA
     trigger_cutscene(33);    // $A5B0
@@ -2752,7 +2752,7 @@ L_AE78:
     if ((blink_phase == 100)) goto L_AE2A;    // $AE86
     if (!((blink_phase == 200))) goto L_AEA2;    // $AE8F
     set_cursor(local11, local10);    // $AE94
-    draw_window_f706(selected_province_idx);    // $AE9B
+    draw_province_lord_name(selected_province_idx);    // $AE9B
     blink_phase = 0;    // $AEA0
 L_AEA2:
     switch (poll_input()) {    // $AEA5
@@ -2849,7 +2849,7 @@ L_AF9C:
     message_display(msg_what_are_your_orders);    // $AFBD
     if (local10) goto L_AFF5;    // $AFC2
     local10 = 1;    // $AFC6
-    trade_helper_cc69();    // $AFC7
+    clear_rect_right_panel();    // $AFC7
     local9 = 0;    // $AFCB
 L_AFCC:
     set_cursor(23, (local9 + 7));    // $AFD1
@@ -3045,7 +3045,7 @@ L_B239:
 // (body @ $B243)
 
 word driver_other(void) {
-    trade_helper_cc69();    // $B243
+    clear_rect_right_panel();    // $B243
     local9 = 0;    // $B247
 L_B248:
     set_cursor(22, (local9 + 7));    // $B24D
@@ -3408,7 +3408,7 @@ L_B8AA:
     ai_turn_flags = (ai_turn_flags | (rng_mod(4) ? 0 : 1));    // $B8EB
 L_B8EE:
     if (count_6da2_set()) goto L_B8FA;    // $B8F1
-    if (!(get_6e09())) goto L_B90E;    // $B8F7
+    if (!(is_ai_count_ge_8())) goto L_B90E;    // $B8F7
 L_B8FA:
     ai_turn_flags = (ai_turn_flags | -128);    // $B901
     phi_ret_b90d = count_6da2_set();    // $B907

@@ -1394,7 +1394,7 @@ word scenario50_fief30_event_eligible(word arg1) {
     if (!(cur_flag_and_selected_ai_state5())) goto L_976E;    // $96EB
     if ((ai_turn_flags & 2)) goto L_976E;    // $96F3
     combat_helper_dad7();    // $96F6
-    combat_helper_dd3a(1, deduped_owner_list);    // $96FD
+    filter_province_list_by_owner(1, deduped_owner_list);    // $96FD
     war_attacker_men = 0;    // $9702
     phi_val_9734 = 0x6F4F;    // $9708
     goto L_9734;    // $9708
@@ -1504,7 +1504,7 @@ word set_fief_ownership_record(word arg1, word arg2, word arg3, word arg4) {
 
 word select_provinces_and_assign_ai_state(word arg1, word arg2) {
     combat_helper_dad7();    // $98CB
-    combat_helper_dd3a(1, deduped_owner_list);    // $98D2
+    filter_province_list_by_owner(1, deduped_owner_list);    // $98D2
     local10 = &list_buf;    // $98D9
     local11 = 0x6F4F;    // $98DD
     count = 0;    // $98DF
@@ -2183,9 +2183,9 @@ L_A349:
     fief_idx = phi_val_a349;    // $A349
     if (((unsigned)fief_idx < (unsigned)scenario_fief_count)) goto L_A316;    // $A34F
     set_cursor(2, 3);    // $A354
-    draw_window_f6c4();    // $A358
+    draw_current_year();    // $A358
     set_cursor(7, 3);    // $A35D
-    redraw_window_f6c7();    // $A361
+    draw_current_season();    // $A361
     process_fiefs_with_state_ff();    // $A364
     battle_defender_province_staging = -1;    // $A369
     switch (current_season) {    // $A36F

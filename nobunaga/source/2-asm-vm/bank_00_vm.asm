@@ -3239,7 +3239,7 @@ VM bytecode disassembly
   $96F6  AC D7 DA                   CALL_abs               $DAD7 (combat_helper_dad7) {bytecode}
   $96F9  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $96FC  61                         PUSH_qimm   ; inline operand = 1
-  $96FD  E9 3A DD 04                CALL_abs_imm1          $DD3A (combat_helper_dd3a) {bytecode}, $04
+  $96FD  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
   $9701  40                         LOADL_qimm   ; inline operand = 0
   $9702  A8 81 6F                   STORE_abs              $6F81 (war_attacker_men)
   $9705  8A 4F 6F                   LOADL_imm2             $6F4F (deduped_owner_list)
@@ -3514,7 +3514,7 @@ VM bytecode disassembly
   $98CB  AC D7 DA                   CALL_abs               $DAD7 (combat_helper_dad7) {bytecode}
   $98CE  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $98D1  61                         PUSH_qimm   ; inline operand = 1
-  $98D2  E9 3A DD 04                CALL_abs_imm1          $DD3A (combat_helper_dd3a) {bytecode}, $04
+  $98D2  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
   $98D6  DE CA FF                   LEAL_far               $FFCA
   $98D9  2A                         STORE_quick   ; inline operand = 10
   $98DA  8A 4F 6F                   LOADL_imm2             $6F4F (deduped_owner_list)
@@ -5100,11 +5100,11 @@ VM bytecode disassembly
   $A352  63                         PUSH_qimm   ; inline operand = 3
   $A353  62                         PUSH_qimm   ; inline operand = 2
   $A354  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $A358  AC 77 D6                   CALL_abs               $D677 (draw_window_f6c4) {bytecode}
+  $A358  AC 77 D6                   CALL_abs               $D677 (draw_current_year) {bytecode}
   $A35B  63                         PUSH_qimm   ; inline operand = 3
   $A35C  67                         PUSH_qimm   ; inline operand = 7
   $A35D  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $A361  AC 87 D6                   CALL_abs               $D687 (redraw_window_f6c7) {bytecode}
+  $A361  AC 87 D6                   CALL_abs               $D687 (draw_current_season) {bytecode}
   $A364  AC 63 8E                   CALL_abs               $8E63 (process_fiefs_with_state_ff) {bytecode}
   $A367  89 FF                      BYTE_LOADL_imm1        -1
   $A369  A9 67 6F                   BYTE_STORE_abs         $6F67 (battle_defender_province_staging)

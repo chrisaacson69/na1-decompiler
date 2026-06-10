@@ -124,6 +124,22 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bytecode band batch #2 — 10 more bank-15 leaves grounded   [2026-06-10]
+Resumed the tree-out after the DREAM phi-clobber fix (so the 4-c oracle is value-correct). Gates green
+(CFG 499/499, 114/114). Backlog 29 → 19 bank-15 suspects.
+- `$DB6E` → **`draw_province_lord_name`** [HIGH] — owner name (`daimyo_name_table[fief_owner]`) or `msg_no_lord` (the phi-clobber sub, now correct).
+- `$D687` → **`draw_current_season`** [HIGH] — season banner string by `current_season` (also a fixed clobber).
+- `$DD3A` → **`filter_province_list_by_owner`** [HIGH] — in-place prune of a province list by ownership; wrong-category (was "combat_helper").
+- `$CC69` → **`clear_rect_right_panel`** [HIGH] — `ppu_fill_rect_wrap(22,7,29,18,1)`; another `clear_rect_*`, wrong-category (was "trade_helper").
+- `$CCE1` → **`reset_prompt_selection`** [HIGH] — blanks row 26 + `ui_input_sel_latch_7fdf=255`; REFUTES "returns cursor selection" (it WRITES it).
+- `$CDAF` → **`cursor_advance_row`** [HIGH] — col=2, row++, wrap 27→3; REFUTES "returns menu count" (it advances the cursor).
+- `$D677` → **`draw_current_year`** [HIGH] — `draw_message($F6C4, current_game_year)`.
+- `$DAAB` → **`load_daimyo_relation_row`** [MED] — loads daimyo arg1's 8-byte relation row (bank 4, scenario-keyed) into $6F4F.
+- `$DFFE` → **`cap_arms_at_index`** [MED] — caps `$76AB[arg1]` at `arg2->arms/50+20`, spills excess to `$76A9[arg1]`.
+- `$D982` → **`is_ai_count_ge_8`** [MED] — `ai_player_count >= 8` (8's role open).
+- DEFERRED still: `$DA24` (pure pct/math32 formula), `$D815`/`$D7F7` (province-record field cleaners — need the $7001/$7011 record map).
+**Tally of wrong-category labels this batch: 4** (combat_/trade_/2× ui_get_* misfilings) + 2 refuted accessor notes.
+
 ### Banks 10 + 14 folded into the corpus — the "$E80C" cross-bank case resolved   [2026-06-10]
 `$E80C` (top depth-0 leaf, 34 sites) was "blocked" by `call_bank_wrap(14)` → bank 14, a bank the
 decompiler never covered (`CODE_BANKS = [0,1,2,15]`, comment claimed "rest are data"). Chased it:
@@ -294,16 +310,15 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): bank-15 bytecode band, batch #2 (depth-0, SKIP cross-bank-blocked) <<<
-Run `py -3 tools/label-walk-prep.py 15 --grounding`. Batch #1 (7 leaves) is done — **30 suspects left
-(22 depth-0)**. Skip out-of-graph-blocked subs (`$E80C`, bank-14). Current top clean depth-0 leaves:
-`$DD3A combat_helper_dd3a` (6), `$DA24 scaled_transfer_da24` (5, deferred — pure formula, needs caller
-domain), `$CC69 trade_helper_cc69` (4), `$CCE1 ui_get_cursor_sel_7fdf` (3), `$CDAF ui_get_menu_count_7fcf`
-(3), `$D677`/`$D687`/`$DB6E` draw_window_* (3 ea), `$D815`/`$D7F7` province_clear_fields (3/2),
-`$DFFE update_arms_table` (3). Many are accessors/wrappers (fast). The graphics thread
-(`$E5F2 map_helper_e5f2` → strategic-map section blitter) is also here when wanted.
-Then banks 0/1/2 (16 suspects each). Re-confirm flagged stowaways: `$C6AD mul_xy_by_3` (general Y*X);
-the `daimyo_pool` var label at $6E4A (elements look fief-id-ranged, not daimyo).
+### >>> NEXT BLOCK (start here): bank-15 bytecode band, batch #3 (depth-0, SKIP cross-bank-blocked) <<<
+Run `py -3 tools/label-walk-prep.py 15 --grounding`. Batches #1 (7) + #2 (10) done — **19 suspects left
+(15 depth-0)**. Current top clean depth-0 leaves: `$E554 find_record_9e3c` (10 — the generic record
+finder, high leverage), `$DAD7 combat_helper_dad7` (8), `$E5F2 map_helper_e5f2` (8 — the strategic-map
+section blitter, the GRAPHICS thread: it calls ppu_copy_rect on `strategic_map_section_tilemaps`),
+`$DB35 ui_helper_db35` (3), `$D9D3 draw_window_row_7985` (2), `$E1E7 clear_fief_pair_6193` (2),
+`$E315 marry_helper_e315` (2). DEFERRED: `$DA24` (formula), `$D815`/`$D7F7` (province-record field
+cleaners — need the $7001/$7011 record map). Then banks 0/1/2 (16 suspects each). Re-confirm flagged
+stowaways: `$C6AD mul_xy_by_3` (general Y*X); the `daimyo_pool` var label at $6E4A (fief-id-ranged).
 
 ### Open items
 - `$E80C` (now value-correct) — name needs `mem_7FCB` + bank-14 routine 14 grounded.

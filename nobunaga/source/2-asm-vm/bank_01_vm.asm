@@ -618,11 +618,11 @@ VM bytecode disassembly
   $845E  63                         PUSH_qimm   ; inline operand = 3
   $845F  62                         PUSH_qimm   ; inline operand = 2
   $8460  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $8464  AC 77 D6                   CALL_abs               $D677 (draw_window_f6c4) {bytecode}
+  $8464  AC 77 D6                   CALL_abs               $D677 (draw_current_year) {bytecode}
   $8467  63                         PUSH_qimm   ; inline operand = 3
   $8468  67                         PUSH_qimm   ; inline operand = 7
   $8469  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $846D  AC 87 D6                   CALL_abs               $D687 (redraw_window_f6c7) {bytecode}
+  $846D  AC 87 D6                   CALL_abs               $D687 (draw_current_season) {bytecode}
   $8470  3C                         PUSH_quick   ; inline operand = 12
   $8471  E9 36 D8 02                CALL_abs_imm1          $D836 (cap_fief_stats) {bytecode}, $02
   $8475  65                         PUSH_qimm   ; inline operand = 5
@@ -1006,7 +1006,7 @@ VM bytecode disassembly
   $872A  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $872E  8E 15 BB                   PUSH_imm2              $BB15 (msg_menu)
   $8731  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
-  $8735  AC 69 CC                   CALL_abs               $CC69 (trade_helper_cc69) {bytecode}
+  $8735  AC 69 CC                   CALL_abs               $CC69 (clear_rect_right_panel) {bytecode}
   $8738  A4 E2 7B                   LOADL_abs              $7BE2 (fief_menu_info_mode_flag)
   $873B  D7 6B 87                   JUMPT_abs              $876B
   $873E  40                         LOADL_qimm   ; inline operand = 0
@@ -2361,7 +2361,7 @@ VM bytecode disassembly
   $8F57  AC D7 DA                   CALL_abs               $DAD7 (combat_helper_dad7) {bytecode}
   $8F5A  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $8F5D  61                         PUSH_qimm   ; inline operand = 1
-  $8F5E  E9 3A DD 04                CALL_abs_imm1          $DD3A (combat_helper_dd3a) {bytecode}, $04
+  $8F5E  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
   $8F62  A5 4F 6F                   BYTE_LOADL_abs         $6F4F (deduped_owner_list)
   $8F65  8C FF 00                   LOADR_imm2             $00FF
   $8F68  C1                         CMPNE
@@ -3133,7 +3133,7 @@ VM bytecode disassembly
  >$94C5  AC D7 DA                   CALL_abs               $DAD7 (combat_helper_dad7) {bytecode}
   $94C8  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $94CB  60                         PUSH_qimm   ; inline operand = 0
-  $94CC  E9 3A DD 04                CALL_abs_imm1          $DD3A (combat_helper_dd3a) {bytecode}, $04
+  $94CC  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
   $94D0  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $94D3  E9 B3 93 02                CALL_abs_imm1          $93B3 (pick_weakest_men_fief) {bytecode}, $02
   $94D7  2A                         STORE_quick   ; inline operand = 10
@@ -3462,7 +3462,7 @@ VM bytecode disassembly
  >$96E2  AC D7 DA                   CALL_abs               $DAD7 (combat_helper_dad7) {bytecode}
   $96E5  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $96E8  61                         PUSH_qimm   ; inline operand = 1
-  $96E9  E9 3A DD 04                CALL_abs_imm1          $DD3A (combat_helper_dd3a) {bytecode}, $04
+  $96E9  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
   $96ED  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $96F0  61                         PUSH_qimm   ; inline operand = 1
   $96F1  E9 9F 87 04                CALL_abs_imm1          $879F (province_select_helper) {bytecode}, $04
@@ -3553,7 +3553,7 @@ VM bytecode disassembly
   $97A7  E9 A5 8C 02                CALL_abs_imm1          $8CA5 (effect_move) {bytecode}, $02
   $97AB  39                         PUSH_quick   ; inline operand = 9
   $97AC  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $97AF  E9 FE DF 04                CALL_abs_imm1          $DFFE (update_arms_table_dffe) {bytecode}, $04
+  $97AF  E9 FE DF 04                CALL_abs_imm1          $DFFE (cap_arms_at_index) {bytecode}, $04
   $97B3  41                         LOADL_qimm   ; inline operand = 1
   $97B4  CF                         RETURN
  >$97B5  8E C4 BB                   PUSH_imm2              $BBC4 (msg_that_fief_can_t_hold_more_men)
@@ -3679,7 +3679,7 @@ VM bytecode disassembly
   $9884  AC D7 DA                   CALL_abs               $DAD7 (combat_helper_dad7) {bytecode}
   $9887  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $988A  60                         PUSH_qimm   ; inline operand = 0
-  $988B  E9 3A DD 04                CALL_abs_imm1          $DD3A (combat_helper_dd3a) {bytecode}, $04
+  $988B  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
   $988F  DE EA FF                   LEAL_far               $FFEA
   $9892  B3                         PUSHL
   $9893  E9 14 98 02                CALL_abs_imm1          $9814 (effect_war_e) {bytecode}, $02
@@ -4959,7 +4959,7 @@ VM bytecode disassembly
 ; ============================================================
   $A1BB  AC 15 8A                   CALL_abs               $8A15 (effect_trade) {bytecode}
   $A1BE  D8 49 A2                   JUMPF_abs              $A249
-  $A1C1  AC 69 CC                   CALL_abs               $CC69 (trade_helper_cc69) {bytecode}
+  $A1C1  AC 69 CC                   CALL_abs               $CC69 (clear_rect_right_panel) {bytecode}
   $A1C4  40                         LOADL_qimm   ; inline operand = 0
   $A1C5  D6 E9 A1                   JUMP_abs               $A1E9
  >$A1C8  0B                         LOADL_quick   ; inline operand = 11
@@ -5513,7 +5513,7 @@ VM bytecode disassembly
   $A595  E9 F4 8B 04                CALL_abs_imm1          $8BF4 (apply_hire_unit_stats) {bytecode}, $04
   $A599  3C                         PUSH_quick   ; inline operand = 12
   $A59A  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $A59D  E9 FE DF 04                CALL_abs_imm1          $DFFE (update_arms_table_dffe) {bytecode}, $04
+  $A59D  E9 FE DF 04                CALL_abs_imm1          $DFFE (cap_arms_at_index) {bytecode}, $04
   $A5A1  64                         PUSH_qimm   ; inline operand = 4
   $A5A2  E9 4E 8A 02                CALL_abs_imm1          $8A4E (helper_8A4E) {bytecode}, $02
   $A5A6  0C                         LOADL_quick   ; inline operand = 12
@@ -6762,7 +6762,7 @@ VM bytecode disassembly
   $AE93  3B                         PUSH_quick   ; inline operand = 11
   $AE94  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $AE98  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $AE9B  E9 6E DB 02                CALL_abs_imm1          $DB6E (draw_window_f706) {bytecode}, $02
+  $AE9B  E9 6E DB 02                CALL_abs_imm1          $DB6E (draw_province_lord_name) {bytecode}, $02
   $AE9F  40                         LOADL_qimm   ; inline operand = 0
   $AEA0  85 D5                      STORE_near             $D5
  >$AEA2  AC 4E D1                   CALL_abs               $D14E (poll_input) {bytecode}
@@ -6898,7 +6898,7 @@ VM bytecode disassembly
   $AFC2  D7 F5 AF                   JUMPT_abs              $AFF5
   $AFC5  41                         LOADL_qimm   ; inline operand = 1
   $AFC6  2A                         STORE_quick   ; inline operand = 10
-  $AFC7  AC 69 CC                   CALL_abs               $CC69 (trade_helper_cc69) {bytecode}
+  $AFC7  AC 69 CC                   CALL_abs               $CC69 (clear_rect_right_panel) {bytecode}
   $AFCA  40                         LOADL_qimm   ; inline operand = 0
   $AFCB  29                         STORE_quick   ; inline operand = 9
  >$AFCC  09                         LOADL_quick   ; inline operand = 9
@@ -7212,7 +7212,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $B23E   (frame_off=-7, body @ $B243)
 ; ============================================================
-  $B243  AC 69 CC                   CALL_abs               $CC69 (trade_helper_cc69) {bytecode}
+  $B243  AC 69 CC                   CALL_abs               $CC69 (clear_rect_right_panel) {bytecode}
   $B246  40                         LOADL_qimm   ; inline operand = 0
   $B247  29                         STORE_quick   ; inline operand = 9
  >$B248  09                         LOADL_quick   ; inline operand = 9
@@ -8206,7 +8206,7 @@ VM bytecode disassembly
   $B8EB  A9 A1 6D                   BYTE_STORE_abs         $6DA1 (ai_turn_flags)
  >$B8EE  AC 28 D6                   CALL_abs               $D628 (count_6da2_set) {bytecode}
   $B8F1  D7 FA B8                   JUMPT_abs              $B8FA
-  $B8F4  AC 82 D9                   CALL_abs               $D982 (get_6e09) {bytecode}
+  $B8F4  AC 82 D9                   CALL_abs               $D982 (is_ai_count_ge_8) {bytecode}
   $B8F7  D8 0E B9                   JUMPF_abs              $B90E
  >$B8FA  89 80                      BYTE_LOADL_imm1        -128
   $B8FC  CD                         SWAP

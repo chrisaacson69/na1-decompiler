@@ -617,7 +617,7 @@ VM bytecode disassembly
   $CE89  5A                         LOADR_qimm   ; inline operand = 10
   $CE8A  C0                         CMPEQ
   $CE8B  D8 92 CE                   JUMPF_abs              $CE92
-  $CE8E  AC AF CD                   CALL_abs               $CDAF (ui_get_menu_count_7fcf) {bytecode}
+  $CE8E  AC AF CD                   CALL_abs               $CDAF (cursor_advance_row) {bytecode}
   $CE91  CF                         RETURN
  >$CE92  A0 0B 00                   BYTE_LOADL_far         $000B
   $CE95  B3                         PUSHL
@@ -638,7 +638,7 @@ VM bytecode disassembly
   $CEBA  8B 1F                      BYTE_LOADR_imm1        +31
   $CEBC  C8                         UCMPGT
   $CEBD  D8 C3 CE                   JUMPF_abs              $CEC3
-  $CEC0  AC AF CD                   CALL_abs               $CDAF (ui_get_menu_count_7fcf) {bytecode}
+  $CEC0  AC AF CD                   CALL_abs               $CDAF (cursor_advance_row) {bytecode}
  >$CEC3  CF                         RETURN
 
 ; ============================================================
@@ -684,7 +684,7 @@ VM bytecode disassembly
  >$CF13  AA CF 7F                   PUSH_abs               $7FCF (ui_cursor_row)
   $CF16  3B                         PUSH_quick   ; inline operand = 11
   $CF17  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
- >$CF1B  AC AF CD                   CALL_abs               $CDAF (ui_get_menu_count_7fcf) {bytecode}
+ >$CF1B  AC AF CD                   CALL_abs               $CDAF (cursor_advance_row) {bytecode}
  >$CF1E  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $CF21  2B                         STORE_quick   ; inline operand = 11
   $CF22  DE DB FF                   LEAL_far               $FFDB
@@ -1696,7 +1696,7 @@ VM bytecode disassembly
   $D61C  AC 87 D2                   CALL_abs               $D287 (wait_button_edge) {bytecode}
   $D61F  2B                         STORE_quick   ; inline operand = 11
   $D620  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
-  $D623  AC E1 CC                   CALL_abs               $CCE1 (ui_get_cursor_sel_7fdf) {bytecode}
+  $D623  AC E1 CC                   CALL_abs               $CCE1 (reset_prompt_selection) {bytecode}
   $D626  0B                         LOADL_quick   ; inline operand = 11
   $D627  CF                         RETURN
 
@@ -1731,7 +1731,7 @@ VM bytecode disassembly
   $D657  51                         LOADR_qimm   ; inline operand = 1
   $D658  C0                         CMPEQ
   $D659  D8 6B D6                   JUMPF_abs              $D66B
-  $D65C  AC 82 D9                   CALL_abs               $D982 (get_6e09) {bytecode}
+  $D65C  AC 82 D9                   CALL_abs               $D982 (is_ai_count_ge_8) {bytecode}
   $D65F  D8 66 D6                   JUMPF_abs              $D666
   $D662  40                         LOADL_qimm   ; inline operand = 0
   $D663  D6 67 D6                   JUMP_abs               $D667
@@ -2480,7 +2480,7 @@ VM bytecode disassembly
 ; sub $DAD7   (frame_off=-4, body @ $DADC)
 ; ============================================================
   $DADC  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $DADF  E9 AB DA 02                CALL_abs_imm1          $DAAB (relation_base_6f4f) {bytecode}, $02
+  $DADF  E9 AB DA 02                CALL_abs_imm1          $DAAB (load_daimyo_relation_row) {bytecode}, $02
   $DAE3  8A 4F 6F                   LOADL_imm2             $6F4F (deduped_owner_list)
   $DAE6  2A                         STORE_quick   ; inline operand = 10
   $DAE7  2B                         STORE_quick   ; inline operand = 11
@@ -2537,7 +2537,7 @@ VM bytecode disassembly
   $DB3A  A4 09 6E                   LOADL_abs              $6E09 (ai_player_count)
   $DB3D  D0                         INC
   $DB3E  A8 09 6E                   STORE_abs              $6E09 (ai_player_count)
-  $DB41  AC 82 D9                   CALL_abs               $D982 (get_6e09) {bytecode}
+  $DB41  AC 82 D9                   CALL_abs               $D982 (is_ai_count_ge_8) {bytecode}
   $DB44  D8 4A DB                   JUMPF_abs              $DB4A
   $DB47  AC 62 D9                   CALL_abs               $D962 (set_6da1_bit7) {bytecode}
  >$DB4A  CF                         RETURN
@@ -3371,7 +3371,7 @@ VM bytecode disassembly
   $E084  AC 73 DF                   CALL_abs               $DF73 (transfer_force_triplet) {bytecode}
   $E087  36                         PUSH_quick   ; inline operand = 6
   $E088  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $E08B  E9 FE DF 04                CALL_abs_imm1          $DFFE (update_arms_table_dffe) {bytecode}, $04
+  $E08B  E9 FE DF 04                CALL_abs_imm1          $DFFE (cap_arms_at_index) {bytecode}, $04
   $E08F  09                         LOADL_quick   ; inline operand = 9
   $E090  D8 9C E0                   JUMPF_abs              $E09C
   $E093  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
@@ -4096,7 +4096,7 @@ VM bytecode disassembly
   $E5E3  AA CD 7F                   PUSH_abs               $7FCD (ui_window_col)
   $E5E6  E9 54 CC 0C                CALL_abs_imm1          $CC54 (ppu_copy_rect_wrap) {bytecode}, $0C
   $E5EA  3C                         PUSH_quick   ; inline operand = 12
-  $E5EB  E9 6E DB 02                CALL_abs_imm1          $DB6E (draw_window_f706) {bytecode}, $02
+  $E5EB  E9 6E DB 02                CALL_abs_imm1          $DB6E (draw_province_lord_name) {bytecode}, $02
   $E5EF  D6 8E E5                   JUMP_abs               $E58E
 
 ; ============================================================
@@ -4174,7 +4174,7 @@ VM bytecode disassembly
   $E677  D1                         DEC
   $E678  D3                         BYTE_DEREF
   $E679  B3                         PUSHL
-  $E67A  E9 6E DB 02                CALL_abs_imm1          $DB6E (draw_window_f706) {bytecode}, $02
+  $E67A  E9 6E DB 02                CALL_abs_imm1          $DB6E (draw_province_lord_name) {bytecode}, $02
  >$E67E  81 D8                      LOADL_near             $D8
   $E680  D3                         BYTE_DEREF
   $E681  8C FF 00                   LOADR_imm2             $00FF
