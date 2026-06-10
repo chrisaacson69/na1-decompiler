@@ -333,8 +333,10 @@ left (10 depth-0)**. Current top clean depth-0 leaves: `$E275 prompt_helper_e275
 build_owned_fief_list_6f89` (2), `$D586 count_div_iterations_d586` (1), `$D8F2 record_grow_capped_d8f2`
 (1) — the tail is mostly 1-2-site accessors/wrappers. DEFERRED (need data-structure maps): `$DA24`
 (pct/math32 formula), `$D815`/`$D7F7` (province-record field cleaners — the $7001/$7011 record map would
-unblock both + sharpen many others). When bank 15 is clean, move to banks 0/1/2 (16 suspects each). Then:
-write the ch.16 strategic-map-render update (render_map_section + redraw_fief_on_map now legible). Re-confirm
+unblock both + sharpen many others). **DONE: ch.20 "The Strategic Map Render"** written (render_map_section + redraw_fief_on_map + the
+section data layout; the graphics thread captured). Plan from here (Chris): **(1) batch #4** — the bank-15
+accessor tail (`$E275`, `$E4A2`, `$D586`, `$D8F2`); **(2) then the `$7001`/`$7011` province-record map** —
+unblocks `$D815`/`$D7F7` and sharpens many subs; **(3) then banks 0/1/2** (16 suspects each). Re-confirm
 stowaways: `$C6AD mul_xy_by_3` (general Y*X); `daimyo_pool` var at $6E4A (fief-id-ranged, likely misnamed).
 
 ### Open items
