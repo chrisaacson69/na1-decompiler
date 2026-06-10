@@ -96,6 +96,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### `$D77E`  `ui_helper_d77e` → `selected_province_owner`   [HIGH CONFIRMED 2026-06-10]
+2-op accessor: `return fief_owner(selected_province_idx)` (`PUSH $6F5F; CALL fief_owner; RETURN`).
+The owning daimyo id of the currently-selected province. 5 callers (Marry/Pact diplomacy). NOT a
+UI helper — a data accessor like `fief_owner`. Sites now read as game logic:
+`rest_turns_remaining[selected_province_owner()]`. (Built on the just-grounded `fief_owner` — the
+leaves-first order paying off: a 2-op accessor over a grounded leaf grounds instantly.)
+
 ### `$CC89`  `ui_helper_cc89` → `open_message_window`   [HIGH CONFIRMED 2026-06-10]
 `open_message_window()` = `ppu_blit_nobank_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22)`
 (body @ `$CC8E`). Draws the standard bottom message-window rect + homes the cursor — the
@@ -138,9 +145,9 @@ sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-da
 - **UI-primitive vocabulary cluster** (ground together, then write the chapter-18 section once).
   Grounded: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),
   `open_message_window`($CC89), `redraw_window`($CEC4).
-  Pending: `ui_helper_e80c` ×73, `ui_helper_d77e` ×65, `ui_draw_window_d31a`/`d309`, `ui_helper_d3a7`,
-  `ui_helper_d759`, `ui_helper_e510` — do `e80c` next (highest fanout left).
-  `marry_helper_cc35` ×91 also pending (non-UI; verify the "marry" guess).
+  Pending: `ui_draw_window_d31a`/`d309`, `ui_helper_d3a7`, `ui_helper_d759`, `ui_helper_e510` —
+  do `d31a`/`d309` next (the draw-window pair). `marry_helper_cc35` ×91 also pending (non-UI; verify
+  the "marry" guess). `$E80C` (now value-correct) deferred — needs `mem_7FCB` + bank-14 routine 14.
 - **Open sub-question:** read `message_display ($D338)` to settle the `$7FD1` axis (row vs col) +
   confirm/rename `ui_msg_col_shift_flag` across both consumers.
 - **Pass-0 native floor:** enumerate the Bank-15 code the bytecode compiler did not claim; ground

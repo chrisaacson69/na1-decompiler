@@ -725,7 +725,7 @@ word render_combat_map_screen(void) {
     if (is_no_province_selected()) {    // $8999
         phi_push_89bb = sram_save_checksum;    // $89B0
     }
-    phi_push_89bb = fief_to_mapid(ui_helper_d77e());    // $89BB
+    phi_push_89bb = fief_to_mapid(selected_province_owner());    // $89BB
     upload_map_cell_tiles(phi_push_89bb, 0);    // $89BC
     upload_map_cell_tiles(fief_to_mapid(fief_owner(battle_defending_province)), 1);    // $89CE
     tactical_battle_phase = 0;    // $89D3
@@ -856,7 +856,7 @@ word combat_unit_window_refresh(void) {
                 if (is_no_province_selected()) {    // $8C01
                     phi_push_8c30 = select_message_string_de78(battle_defending_province);    // $8C14
                 } else {
-                    ui_helper_d77e();    // $8C17
+                    selected_province_owner();    // $8C17
                 }
             } else {
                 set_cursor(2, 8);    // $8C1F
@@ -929,7 +929,7 @@ L_8CC4:
     if (!(arg1)) {    // $8D22
         phi_ret_8d38 = is_no_province_selected();    // $8CCE
         if (!(phi_ret_8d38)) {    // $8CCB
-            active_province_idx_copy = ui_helper_d77e();    // $8CD4
+            active_province_idx_copy = selected_province_owner();    // $8CD4
             phi_ret_8d38 = build_blit_fief_tile_block(12, 20);    // $8CDE
         }
     } else {
@@ -968,7 +968,7 @@ word draw_combat_roster_window(void) {
     if (is_no_province_selected()) {    // $8D62
         phi_push_8dd7 = select_message_string_de78(battle_defending_province);    // $8DCB
     }
-    phi_push_8dd7 = ((ui_helper_d77e() * 9) + 0x77A8);    // $8DD7
+    phi_push_8dd7 = ((selected_province_owner() * 9) + 0x77A8);    // $8DD7
     redraw_window(phi_push_8dd7);    // $8DD8
     ui_window_col = 22;    // $8DDE
     redraw_window(((fief_owner(battle_defending_province) * 9) + 0x77A8));    // $8DEF

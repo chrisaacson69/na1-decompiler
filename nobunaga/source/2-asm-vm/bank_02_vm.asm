@@ -1357,7 +1357,7 @@ VM bytecode disassembly
   $89AA  D8 B3 89                   JUMPF_abs              $89B3
   $89AD  A4 EB 7F                   LOADL_abs              $7FEB (sram_save_checksum)
   $89B0  D6 BB 89                   JUMP_abs               $89BB
- >$89B3  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+ >$89B3  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $89B6  B3                         PUSHL
   $89B7  E9 66 DC 02                CALL_abs_imm1          $DC66 (fief_to_mapid) {bytecode}, $02
  >$89BB  B3                         PUSHL
@@ -1715,7 +1715,7 @@ VM bytecode disassembly
   $8C0D  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
   $8C10  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_message_string_de78) {bytecode}, $02
   $8C14  D6 30 8C                   JUMP_abs               $8C30
- >$8C17  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+ >$8C17  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $8C1A  D6 2A 8C                   JUMP_abs               $8C2A
  >$8C1D  68                         PUSH_qimm   ; inline operand = 8
   $8C1E  62                         PUSH_qimm   ; inline operand = 2
@@ -1797,7 +1797,7 @@ VM bytecode disassembly
   $8CC8  D6 12 8D                   JUMP_abs               $8D12
  >$8CCB  AC FF 82                   CALL_abs               $82FF (is_no_province_selected) {bytecode}
   $8CCE  D7 38 8D                   JUMPT_abs              $8D38
-  $8CD1  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+  $8CD1  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $8CD4  A8 5B 6F                   STORE_abs              $6F5B (active_province_idx_copy)
   $8CD7  8D 14                      BYTE_PUSH_imm1         +20
   $8CD9  6C                         PUSH_qimm   ; inline operand = 12
@@ -1915,7 +1915,7 @@ VM bytecode disassembly
   $8DC4  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
   $8DC7  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_message_string_de78) {bytecode}, $02
   $8DCB  D6 D7 8D                   JUMP_abs               $8DD7
- >$8DCE  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+ >$8DCE  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $8DD1  59                         LOADR_qimm   ; inline operand = 9
   $8DD2  B5                         MULT
   $8DD3  8C A8 77                   LOADR_imm2             $77A8 (daimyo_name_table)

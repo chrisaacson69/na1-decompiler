@@ -1042,7 +1042,7 @@ VM bytecode disassembly
   $8759  8C D4 7F                   LOADR_imm2             $7FD4
   $875C  BB                         ADD
   $875D  B3                         PUSHL
-  $875E  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+  $875E  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $8761  D4                         BYTE_POPSTORE
   $8762  CF                         RETURN
 
@@ -1743,7 +1743,7 @@ VM bytecode disassembly
   $8CA0  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
   $8CA3  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $8CA7  D8 0A 8D                   JUMPF_abs              $8D0A
-  $8CAA  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+  $8CAA  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $8CAD  8C 67 6D                   LOADR_imm2             $6D67 (rest_turns_remaining)
   $8CB0  BB                         ADD
   $8CB1  D3                         BYTE_DEREF
@@ -2249,7 +2249,7 @@ VM bytecode disassembly
   $901E  08                         LOADL_quick   ; inline operand = 8
   $901F  B0                         DEREF
   $9020  D8 8A 90                   JUMPF_abs              $908A
-  $9023  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+  $9023  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $9026  8C 67 6D                   LOADR_imm2             $6D67 (rest_turns_remaining)
   $9029  BB                         ADD
   $902A  D3                         BYTE_DEREF
@@ -3858,7 +3858,7 @@ VM bytecode disassembly
   $9B41  A8 5F 6F                   STORE_abs              $6F5F (selected_province_idx)
   $9B44  AC 1E 8C                   CALL_abs               $8C1E (cur_flag_and_selected_ai_state5) {bytecode}
   $9B47  D8 5B 9B                   JUMPF_abs              $9B5B
-  $9B4A  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+  $9B4A  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $9B4D  8C 67 6D                   LOADR_imm2             $6D67 (rest_turns_remaining)
   $9B50  BB                         ADD
   $9B51  D3                         BYTE_DEREF
@@ -3946,7 +3946,7 @@ VM bytecode disassembly
   $9BF7  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $9BFB  D7 16 9C                   JUMPT_abs              $9C16
   $9BFE  AC 45 8C                   CALL_abs               $8C45 (set_6da1_bit7_if_no_ai_state5_province_found) {bytecode}
-  $9C01  AC 7E D7                   CALL_abs               $D77E (ui_helper_d77e) {bytecode}
+  $9C01  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $9C04  8C 67 6D                   LOADR_imm2             $6D67 (rest_turns_remaining)
   $9C07  BB                         ADD
   $9C08  D3                         BYTE_DEREF

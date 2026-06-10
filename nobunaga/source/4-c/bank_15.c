@@ -653,7 +653,7 @@ word poll_input(void) {
                 phi_val_d1fe = 0;    // $D1F9
                 while (1) {    // $D1FE
                     local11 = phi_val_d1fe;    // $D1FE
-                    if ((*(byte*)((local11 + 0x7FD5)) != ui_helper_d77e())) {    // $D1FE
+                    if ((*(byte*)((local11 + 0x7FD5)) != selected_province_owner())) {    // $D1FE
                         if (((unsigned)local11 < (unsigned)8)) {    // $D20E
                             phi_val_d1fe = (local11 + 1);    // $D1FD
                             continue;
@@ -1181,10 +1181,10 @@ word fief_owner(word arg1) {
     return fief_to_daimyo_map[arg1];    // $D77D
 }
 
-// $D77E ui_helper_d77e
+// $D77E selected_province_owner
 // (body @ $D783)
 
-word ui_helper_d77e(void) {
+word selected_province_owner(void) {
     return fief_owner(selected_province_idx);    // $D78A
 }
 
@@ -1393,7 +1393,7 @@ word get_6da2_cur(void) {
 // (body @ $D9BC)
 
 word is_enemy_owned(word arg1) {
-    return (fief_owner(arg1) == ui_helper_d77e());    // $D9C7
+    return (fief_owner(arg1) == selected_province_owner());    // $D9C7
 }
 
 // $D9C8 province_ai_state_addr
@@ -1445,7 +1445,7 @@ word diplomacy_helper2(void) {
 // (body @ $DA82)
 
 word diplomacy_helper3(void) {
-    local11 = ui_helper_d77e();    // $DA85
+    local11 = selected_province_owner();    // $DA85
     local10 = fief_owner(battle_defending_province);    // $DA8D
     dsel_daa1 = ((unsigned)local11 < (unsigned)local10);    // $DAA1
     *(byte*)((((dsel_daa1 ? (local10 * 54) : (local11 * 54)) + (dsel_daa1 ? local11 : local10)) + 0x6193)) = 90;    // $DAA9
@@ -1906,7 +1906,7 @@ L_E120:
                 }
                 install_new_daimyo(battle_defending_province);    // $E171
             } else {
-                *(byte*)(local10) = ui_helper_d77e();    // $E17C
+                *(byte*)(local10) = selected_province_owner();    // $E17C
                 *(byte*)(province_ai_state_addr(battle_defending_province)) = (get_province_ai_state(selected_province_idx) ? 5 : 0);    // $E194
                 find_record_9e3c(battle_defending_province);    // $E198
             }
@@ -1999,7 +1999,7 @@ word draw_daimyo_name_menu(word arg1) {
     message_display(msg_lord_f777);    // $E2E1
     redraw_window(((fief_owner(battle_defending_province) * 9) + 0x77A8));    // $E2F3
     redraw_window(draw_daimyo_name_menu_data_f77d);    // $E2FA
-    redraw_window(((ui_helper_d77e() * 9) + 0x77A8));    // $E308
+    redraw_window(((selected_province_owner() * 9) + 0x77A8));    // $E308
     return draw_message(msg_wants_a_s, arg1);    // $E314
 }
 

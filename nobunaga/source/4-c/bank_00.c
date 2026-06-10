@@ -414,8 +414,8 @@ word prompt_select_player_daimyo(word arg1) {
     province_ai_state[local10] = 5;    // $874F
     selected_province_idx = local10;    // $8751
     selected_province_idx_latch_7fdd = local10;    // $8755
-    *(byte*)((arg1 + 0x7FD4)) = ui_helper_d77e();    // $8761
-    return ui_helper_d77e();    // $8762
+    *(byte*)((arg1 + 0x7FD4)) = selected_province_owner();    // $8761
+    return selected_province_owner();    // $8762
 }
 
 // $8763 daimyo_creation_stat_roll_screen
@@ -764,7 +764,7 @@ word resolve_ownerless_province_succession(word arg1) {
             selected_province_idx = *(byte*)(local9);    // $8C97
             selected_province_idx = find_first_enemy_owned_fief();    // $8C9D
             if (get_province_ai_state(selected_province_idx)) {    // $8C95
-                if (!(rest_turns_remaining[ui_helper_d77e()])) {    // $8CAA
+                if (!(rest_turns_remaining[selected_province_owner()])) {    // $8CAA
                     if ((*(word*)(((selected_province_idx * 26) + 0x7001)) > 0)) {    // $8CB5
                         call_bank10_entry(28);    // $8CC7
                         message_display(resolve_ownerless_provin_data_ba5e);    // $8CCE
@@ -980,7 +980,7 @@ word collect_high_loyalty_provinces_to_candidate_list(void) {
                 local7 = (local5 + 12);    // $901A
                 local6 = *(word*)(local7);    // $901D
                 if (*(word*)(local8)) {    // $900C
-                    if (!(rest_turns_remaining[ui_helper_d77e()])) {    // $9023
+                    if (!(rest_turns_remaining[selected_province_owner()])) {    // $9023
                         message_display(collect_high_loyalty_pro_data_bb26);    // $9031
                         daimyo_name_width(selected_province_idx);    // $9038
                         redraw_window(msg_the_people_are_rebelling_will);    // $903F
@@ -1778,7 +1778,7 @@ L_9B39:
     battle_defending_province = selected_province_idx;    // $9B3C
     selected_province_idx = *(byte*)(owner_cursor);    // $9B41
     if (!(cur_flag_and_selected_ai_state5())) goto L_9B5B;    // $9B47
-    if (rest_turns_remaining[ui_helper_d77e()]) goto L_9B5B;    // $9B52
+    if (rest_turns_remaining[selected_province_owner()]) goto L_9B5B;    // $9B52
     driver_diplomacy_gold_transfer();    // $9B55
     goto L_9B7E;    // $9B58
 L_9B5B:
@@ -1831,7 +1831,7 @@ word ai_event_marry_random_eligible_fief(void) {
             candidate_fief = rng_mod(scenario_fief_count);    // $9BF5
             if (!(get_province_ai_state(candidate_fief))) {    // $9BEE
                 set_6da1_bit7_if_no_ai_state5_province_found();    // $9BFE
-                if (!(rest_turns_remaining[ui_helper_d77e()])) {    // $9BFE
+                if (!(rest_turns_remaining[selected_province_owner()])) {    // $9BFE
                     battle_defending_province = candidate_fief;    // $9C0D
                     marry_transfer_gold_between_provinces();    // $9C10
                 } else {
