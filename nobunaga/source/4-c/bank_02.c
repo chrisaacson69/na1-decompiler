@@ -3281,7 +3281,7 @@ word transfer_owned_fiefs_and_announce_succession(void) {
     local7 = (battle_winner_province_sel == battle_defending_province);    // $AE43
     if (test_6f65_bit7((battle_winner_province_sel == battle_defending_province))) {    // $AE31
         if ((battle_winner_province_sel != 50)) {    // $AE4C
-            prompt_helper_e275(battle_winner_province_sel);    // $AE58
+            announce_daimyo_death(battle_winner_province_sel);    // $AE58
             if (get_province_ai_state(battle_winner_province_sel)) {    // $AE55
                 increment_ai_player_count();    // $AE66
             }

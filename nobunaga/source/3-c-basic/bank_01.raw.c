@@ -955,7 +955,7 @@ L_8FCD:
     phi_8fd0_0 = selected_province_idx;    // $8FCD
 L_8FD0:
 L_8FD4:
-    prompt_helper_e275(phi_8fd0_0);    // $8FD0
+    announce_daimyo_death(phi_8fd0_0);    // $8FD0
     return apply_conquest_outcome();    // $8FD7
 L_8FD8:
     phi_8fd0_0 = battle_defending_province;    // $8FDB

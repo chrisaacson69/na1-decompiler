@@ -2409,7 +2409,7 @@ VM bytecode disassembly
   $8FBD  07                         LOADL_quick   ; inline operand = 7
   $8FBE  D5 FF FF 04 00 D4 8F CD 8F D8 8F DE ... SWITCH_contig          limit=4   ; .table 4 word targets (contiguous); SWITCH 65535=>$8FCD 65536=>$8FD8 65537=>$8FDE 65538=>$8FF7 default=>$8FD4
  >$8FCD  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
- >$8FD0  E9 75 E2 02                CALL_abs_imm1          $E275 (prompt_helper_e275) {bytecode}, $02
+ >$8FD0  E9 75 E2 02                CALL_abs_imm1          $E275 (announce_daimyo_death) {bytecode}, $02
  >$8FD4  AC 3C E0                   CALL_abs               $E03C (apply_conquest_outcome) {bytecode}
   $8FD7  CF                         RETURN
  >$8FD8  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)

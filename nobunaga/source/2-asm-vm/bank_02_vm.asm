@@ -6632,7 +6632,7 @@ VM bytecode disassembly
   $AE51  C1                         CMPNE
   $AE52  D8 69 AE                   JUMPF_abs              $AE69
   $AE55  AA 57 6F                   PUSH_abs               $6F57 (battle_winner_province_sel)
-  $AE58  E9 75 E2 02                CALL_abs_imm1          $E275 (prompt_helper_e275) {bytecode}, $02
+  $AE58  E9 75 E2 02                CALL_abs_imm1          $E275 (announce_daimyo_death) {bytecode}, $02
   $AE5C  AA 57 6F                   PUSH_abs               $6F57 (battle_winner_province_sel)
   $AE5F  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $AE63  D8 69 AE                   JUMPF_abs              $AE69

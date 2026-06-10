@@ -124,6 +124,17 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bytecode band batch #4 — 7 bank-15 accessor-tail leaves   [2026-06-10]
+Gates green (CFG 499/499, 114/114). Backlog 12 → 5 bank-15 suspects.
+- `$E275` → **`announce_daimyo_death`** [HIGH] — the "[lord] was killed in fief X, year Y" announcement (+ clear_fief_pair_matrix + sound); wrong-category (was "prompt_helper").
+- `$E4A2` → **`build_owned_fief_list`** [HIGH] — builds the $6F89 list of fiefs passing get_6da2_cur(); drop addr suffix.
+- `$D586` → **`count_decimal_digits`** [HIGH] — base-10 digit count of arg1.
+- `$D9F7` → **`revolt_type_message`** [HIGH] — `$7B79[arg1]==7 ? christians : rioters` uprising-message picker; wrong-category (was "classify_7b79").
+- `$E694` → **`render_section_for_selected_province`** [HIGH] — render_map_section(province_to_map_section[latched province]); the "jump map to selected province" entry.
+- `$D8F2` → **`develop_gain_capped_loyalty`** [MED], `$D919` → **`develop_gain_capped_wealth`** [MED] — develop_gain clamped to the (header − loyalty/wealth) headroom.
+**Remaining bank-15: 5** — `$DA24` (formula), `$D815`/`$D7F7` (province-record field cleaners → next, the $7001 map),
+`$DE78 select_message_string_de78` + `$E4DC marry_helper_e4dc` (now depth-0).
+
 ### Bytecode band batch #3 — 7 more bank-15 leaves (the GRAPHICS keystone)   [2026-06-10]
 Gates green (CFG 499/499, 114/114). Backlog 19 → 12 bank-15 suspects.
 - `$E5F2` → **`render_map_section`** [HIGH] — **the strategic-map section renderer** (graphics thread): blits the

@@ -1625,7 +1625,7 @@ VM bytecode disassembly
 ; sub $D59D   (frame_off=-10, body @ $D5A2)
 ; ============================================================
   $D5A2  3D                         PUSH_quick   ; inline operand = 13
-  $D5A3  E9 86 D5 02                CALL_abs_imm1          $D586 (count_div_iterations_d586) {bytecode}, $02
+  $D5A3  E9 86 D5 02                CALL_abs_imm1          $D586 (count_decimal_digits) {bytecode}, $02
   $D5A7  2B                         STORE_quick   ; inline operand = 11
   $D5A8  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $D5AB  29                         STORE_quick   ; inline operand = 9
@@ -2223,7 +2223,7 @@ VM bytecode disassembly
 ; ============================================================
   $D945  3D                         PUSH_quick   ; inline operand = 13
   $D946  3C                         PUSH_quick   ; inline operand = 12
-  $D947  E9 F2 D8 04                CALL_abs_imm1          $D8F2 (record_grow_capped_d8f2) {bytecode}, $04
+  $D947  E9 F2 D8 04                CALL_abs_imm1          $D8F2 (develop_gain_capped_loyalty) {bytecode}, $04
   $D94B  B3                         PUSHL
   $D94C  0C                         LOADL_quick   ; inline operand = 12
   $D94D  7C                         ADD_qimm   ; inline operand = 12
@@ -2234,7 +2234,7 @@ VM bytecode disassembly
   $D952  B1                         POPSTORE
   $D953  3D                         PUSH_quick   ; inline operand = 13
   $D954  3C                         PUSH_quick   ; inline operand = 12
-  $D955  E9 19 D9 04                CALL_abs_imm1          $D919 (record_grow_capped_d919) {bytecode}, $04
+  $D955  E9 19 D9 04                CALL_abs_imm1          $D919 (develop_gain_capped_wealth) {bytecode}, $04
   $D959  B3                         PUSHL
   $D95A  0C                         LOADL_quick   ; inline operand = 12
   $D95B  7E                         ADD_qimm   ; inline operand = 14
@@ -3083,7 +3083,7 @@ VM bytecode disassembly
  >$DEB3  8A 28 F7                   LOADL_imm2             $F728
   $DEB6  D6 B0 DE                   JUMP_abs               $DEB0
  >$DEB9  3C                         PUSH_quick   ; inline operand = 12
-  $DEBA  E9 F7 D9 02                CALL_abs_imm1          $D9F7 (classify_7b79) {bytecode}, $02
+  $DEBA  E9 F7 D9 02                CALL_abs_imm1          $D9F7 (revolt_type_message) {bytecode}, $02
   $DEBE  D6 B0 DE                   JUMP_abs               $DEB0
 
 ; ============================================================
@@ -3940,7 +3940,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $E4DC   (frame_off=-4, body @ $E4E1)
 ; ============================================================
-  $E4E1  AC A2 E4                   CALL_abs               $E4A2 (build_owned_fief_list_6f89) {bytecode}
+  $E4E1  AC A2 E4                   CALL_abs               $E4A2 (build_owned_fief_list) {bytecode}
   $E4E4  8A 89 6F                   LOADL_imm2             $6F89
   $E4E7  2A                         STORE_quick   ; inline operand = 10
   $E4E8  D6 01 E5                   JUMP_abs               $E501

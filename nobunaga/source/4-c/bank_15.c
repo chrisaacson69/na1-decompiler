@@ -957,10 +957,10 @@ L_D573:
     return local3;    // $D585
 }
 
-// $D586 count_div_iterations_d586
+// $D586 count_decimal_digits
 // (body @ $D58B)
 
-word count_div_iterations_d586(word arg1) {
+word count_decimal_digits(word arg1) {
     phi_val_d596 = 0;    // $D58C
     while (1) {    // $D596
         local11 = phi_val_d596;    // $D596
@@ -979,7 +979,7 @@ word count_div_iterations_d586(word arg1) {
 // (body @ $D5A2)
 
 word select_province_by_cursor(word arg1, word arg2) {
-    local11 = count_div_iterations_d586(arg2);    // $D5A7
+    local11 = count_decimal_digits(arg2);    // $D5A7
     local9 = ui_window_col;    // $D5AB
     local8 = ui_cursor_row;    // $D5AF
     while (1) {    // $D5B0
@@ -1310,10 +1310,10 @@ word develop_gain(word amount, word stat_ptr, word companion_ptr) {
     }
 }
 
-// $D8F2 record_grow_capped_d8f2
+// $D8F2 develop_gain_capped_loyalty
 // (body @ $D8F7)
 
-word record_grow_capped_d8f2(word arg1, word arg2) {
+word develop_gain_capped_loyalty(word arg1, word arg2) {
     local11 = develop_gain(arg2, (arg1 + 12), (arg1 + 8));    // $D902
     local10 = (arg1->header - arg1->loyalty);    // $D90D
     if ((local11 > (arg1->header - arg1->loyalty))) {    // $D8F7
@@ -1323,10 +1323,10 @@ word record_grow_capped_d8f2(word arg1, word arg2) {
     }
 }
 
-// $D919 record_grow_capped_d919
+// $D919 develop_gain_capped_wealth
 // (body @ $D91E)
 
-word record_grow_capped_d919(word arg1, word arg2) {
+word develop_gain_capped_wealth(word arg1, word arg2) {
     local11 = develop_gain(arg2, (arg1 + 14), (arg1 + 4));    // $D929
     local10 = (arg1->header - arg1->wealth);    // $D934
     if ((local11 > (arg1->header - arg1->wealth))) {    // $D91E
@@ -1340,9 +1340,9 @@ word record_grow_capped_d919(word arg1, word arg2) {
 // (body @ $D945)
 
 word record_apply_two_grows(word arg1, word arg2) {
-    arg1->loyalty = (arg1->loyalty + record_grow_capped_d8f2(arg1, arg2));    // $D952
-    arg1->wealth = (arg1->wealth + record_grow_capped_d919(arg1, arg2));    // $D960
-    return (arg1->wealth + record_grow_capped_d919(arg1, arg2));    // $D961
+    arg1->loyalty = (arg1->loyalty + develop_gain_capped_loyalty(arg1, arg2));    // $D952
+    arg1->wealth = (arg1->wealth + develop_gain_capped_wealth(arg1, arg2));    // $D960
+    return (arg1->wealth + develop_gain_capped_wealth(arg1, arg2));    // $D961
 }
 
 // $D962 set_6da1_bit7
@@ -1416,10 +1416,10 @@ word test_6f65_bit7(word arg1) {
     return ((war_side_state_flag[arg1] & 128) != 0);    // $D9F6
 }
 
-// $D9F7 classify_7b79
+// $D9F7 revolt_type_message
 // (body @ $D9FC)
 
-word classify_7b79(word arg1) {
+word revolt_type_message(word arg1) {
     local11 = ((*(byte*)((arg1 + 0x7B79)) == 7) ? msg_christns_f6f5 : msg_rioters_f6fe);    // $DA21
     return local11;    // $DA23
 }
@@ -1735,7 +1735,7 @@ word select_message_string_de78(word arg1) {
                     phi_val_deb0 = 0xF728;    // $DEB6
                     break;
                 default:
-                    phi_val_deb0 = classify_7b79(arg1);    // $DEBE
+                    phi_val_deb0 = revolt_type_message(arg1);    // $DEBE
                     break;
             }
             local11 = phi_val_deb0;    // $DEB0
@@ -1967,10 +1967,10 @@ word install_new_daimyo(word arg1) {
     return confirm_prompt();    // $E274
 }
 
-// $E275 prompt_helper_e275
+// $E275 announce_daimyo_death
 // (body @ $E27A)
 
-word prompt_helper_e275(word arg1) {
+word announce_daimyo_death(word arg1) {
     clear_fief_pair_matrix(arg1);    // $E27B
     message_display(((fief_owner(arg1) * 9) + 0x77A8));    // $E28B
     redraw_window(msg_was_killed);    // $E292
@@ -2110,10 +2110,10 @@ word neutralize_fief(word arg1) {
     return phi_ret_e4a1;    // $E4A1
 }
 
-// $E4A2 build_owned_fief_list_6f89
+// $E4A2 build_owned_fief_list
 // (body @ $E4A7)
 
-word build_owned_fief_list_6f89(void) {
+word build_owned_fief_list(void) {
     saved_fief = selected_province_idx;    // $E4AA
     write_ptr = 0x6F89;    // $E4AE
     phi_val_e4c6 = 0;    // $E4B0
@@ -2139,7 +2139,7 @@ word build_owned_fief_list_6f89(void) {
 // (body @ $E4E1)
 
 word marry_helper_e4dc(word arg1) {
-    build_owned_fief_list_6f89();    // $E4E1
+    build_owned_fief_list();    // $E4E1
     local10 = 0x6F89;    // $E4E7
     phi_val_e501 = 0x6F89;    // $E4E8
     while (1) {    // $E501
@@ -2251,10 +2251,10 @@ word render_map_section(word arg1) {
     return phi_ret_e693;    // $E693
 }
 
-// $E694 dispatch_map_helper_e694
+// $E694 render_section_for_selected_province
 // (body @ $E699)
 
-word dispatch_map_helper_e694(void) {
+word render_section_for_selected_province(void) {
     return render_map_section(*(byte*)((selected_province_idx_latch_7fdd + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17))));    // $E6B8
 }
 

@@ -979,13 +979,13 @@ word resolve_siege_assault_outcome(void) {
     switch (outcome_code) {    // $8FA1
         case 65535:
             phi_8fd0_0 = selected_province_idx;    // $8FCD
-            prompt_helper_e275(phi_8fd0_0);    // $8FD0
+            announce_daimyo_death(phi_8fd0_0);    // $8FD0
             break;
         default:
             break;
         case 65536:
             phi_8fd0_0 = battle_defending_province;    // $8FDB
-            prompt_helper_e275(phi_8fd0_0);    // $8FD0
+            announce_daimyo_death(phi_8fd0_0);    // $8FD0
             break;
         case 65537:
             phi_8fed_0 = 0xBB49;    // $8FEA

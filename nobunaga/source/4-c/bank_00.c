@@ -684,7 +684,7 @@ word select_message_string_by_flags_and_arg(word arg1) {
 // (body @ $8BEB)
 
 word find_first_enemy_owned_fief(void) {
-    build_owned_fief_list_6f89();    // $8BEB
+    build_owned_fief_list();    // $8BEB
     phi_val_8c03 = 0x6F89;    // $8BF1
     while (1) {    // $8C03
         local11 = phi_val_8c03;    // $8C03
@@ -929,7 +929,7 @@ word ai_resolve_province_takeover_attempt(word fief) {
         confirm_prompt();    // $8F60
         if (fief_is_daimyo_capital[fief]) {    // $8F51
             fief_list_handle = fief_owner(fief);    // $8F71
-            prompt_helper_e275(fief);    // $8F73
+            announce_daimyo_death(fief);    // $8F73
             pool_push_pop(fief_list_handle);    // $8F78
             list_remove_matching(fief_list_handle);    // $8F7D
             find_fiefs_of_owner(fief);    // $8F82
@@ -1558,7 +1558,7 @@ word revolt_spread_sweep_flip_fief_ownership(void) {
                         confirm_prompt();    // $97C0
                         local10 = (*(byte*)(local11) + 0x6E15);    // $97C9
                         if (*(byte*)((*(byte*)(local11) + 0x6DA2))) {    // $97B9
-                            prompt_helper_e275(*(byte*)(local11));    // $97D7
+                            announce_daimyo_death(*(byte*)(local11));    // $97D7
                             pool_push_pop(*(byte*)(local10));    // $97DE
                             list_remove_matching(*(byte*)(local10));    // $97E5
                             *(byte*)((*(byte*)(local11) + 0x6DA2)) = 0;    // $97F1
@@ -2399,7 +2399,7 @@ word ai_strategic_turn_planner(void) {
         ai_turn_planner_resume_flag = 2;    // $A46D
         return ((unsigned)fief_i < (unsigned)scenario_fief_count);    // $A469
     } else {
-        dispatch_map_helper_e694();    // $A473
+        render_section_for_selected_province();    // $A473
         if (sram_save_pending_flag) {    // $A479
             write_sram_save_checksum_and_signature();    // $A47C
         }

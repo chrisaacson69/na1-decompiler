@@ -1633,7 +1633,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $8BE6   (frame_off=-2, body @ $8BEB)
 ; ============================================================
-  $8BEB  AC A2 E4                   CALL_abs               $E4A2 (build_owned_fief_list_6f89) {bytecode}
+  $8BEB  AC A2 E4                   CALL_abs               $E4A2 (build_owned_fief_list) {bytecode}
   $8BEE  8A 89 6F                   LOADL_imm2             $6F89
   $8BF1  D6 03 8C                   JUMP_abs               $8C03
  >$8BF4  0B                         LOADL_quick   ; inline operand = 11
@@ -2144,7 +2144,7 @@ VM bytecode disassembly
   $8F6D  E9 72 D7 02                CALL_abs_imm1          $D772 (fief_owner) {bytecode}, $02
   $8F71  25                         STORE_quick   ; inline operand = 5
   $8F72  3C                         PUSH_quick   ; inline operand = 12
-  $8F73  E9 75 E2 02                CALL_abs_imm1          $E275 (prompt_helper_e275) {bytecode}, $02
+  $8F73  E9 75 E2 02                CALL_abs_imm1          $E275 (announce_daimyo_death) {bytecode}, $02
   $8F77  35                         PUSH_quick   ; inline operand = 5
   $8F78  E9 0E DC 02                CALL_abs_imm1          $DC0E (pool_push_pop) {bytecode}, $02
   $8F7C  35                         PUSH_quick   ; inline operand = 5
@@ -3356,7 +3356,7 @@ VM bytecode disassembly
   $97D4  0B                         LOADL_quick   ; inline operand = 11
   $97D5  D3                         BYTE_DEREF
   $97D6  B3                         PUSHL
-  $97D7  E9 75 E2 02                CALL_abs_imm1          $E275 (prompt_helper_e275) {bytecode}, $02
+  $97D7  E9 75 E2 02                CALL_abs_imm1          $E275 (announce_daimyo_death) {bytecode}, $02
   $97DB  0A                         LOADL_quick   ; inline operand = 10
   $97DC  D3                         BYTE_DEREF
   $97DD  B3                         PUSHL
@@ -5235,7 +5235,7 @@ VM bytecode disassembly
   $A46C  42                         LOADL_qimm   ; inline operand = 2
   $A46D  A8 48 6E                   STORE_abs              $6E48 (ai_turn_planner_resume_flag)
   $A470  D6 D4 A5                   JUMP_abs               $A5D4
- >$A473  AC 94 E6                   CALL_abs               $E694 (dispatch_map_helper_e694) {bytecode}
+ >$A473  AC 94 E6                   CALL_abs               $E694 (render_section_for_selected_province) {bytecode}
   $A476  A4 61 6F                   LOADL_abs              $6F61 (sram_save_pending_flag)
   $A479  D8 7F A4                   JUMPF_abs              $A47F
   $A47C  AC AA A3                   CALL_abs               $A3AA (write_sram_save_checksum_and_signature) {bytecode}
