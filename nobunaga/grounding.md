@@ -78,6 +78,16 @@ Chris: **the bytecode compiler has claimed every VM routine, so —**
 
 ## Ledger (append-only, newest first)
 
+### `$CC7B`  `ui_helper_cc7b` → `set_cursor`   [HIGH CONFIRMED 2026-06-10]
+5-op VM setter: `set_cursor(col,row)` = `ui_window_col=arg1; ui_cursor_row=arg2`
+(`LOADL 12; STORE $7FCD; LOADL 13; STORE $7FCF; RETURN @ $CC80`). The text-cursor / draw-origin
+positioning primitive — the `locate(col,row)` every `redraw_window` consumes. Axes confirmed
+*independently of the body* by consumers (`$7FCD`=col/X line-wrap boundary; `$7FCF`=row/Y, used in
+`find_record`'s `base+(row-4)*28+col`). 211 sites de-noised, 0 stale; call sites now read as real
+layout (`set_cursor(3,4); set_cursor(3,6); set_cursor(3,8); set_cursor(3,10)` = a menu list down
+col 3). First member of the **UI-primitive vocabulary** cluster — chapter-18 section deferred until
+the cluster (`cc89`, `d134`, `d77e`, ...) is ground, then written once.
+
 ### `$D772`  `ui_helper_d772` → `fief_owner`   [HIGH CONFIRMED 2026-06-10]
 Pilot that proved the loop. 5-op VM accessor: `return fief_to_daimyo_map[fief]`
 (`LOADL 12 fief; LOADR_imm2 $6E15 fief_to_daimyo_map; ADD; BYTE_DEREF; RETURN @ $D777`).
@@ -90,9 +100,11 @@ sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-da
 
 ## Frontier (where to resume — do not retread)
 
-- **Highest-leverage VM leaves still anonymous** (call-site counts): `ui_helper_cc7b` ×211,
-  `ui_helper_d134` ×193, `ui_helper_cc89` ×87, `marry_helper_cc35` ×91, `ui_helper_e80c` ×73,
-  `ui_helper_d77e` ×65 — all UI/window primitives by their neighborhood; ground next.
+- **UI-primitive vocabulary cluster** (ground together, then write the chapter-18 section once):
+  `ui_helper_d134` ×193, `ui_helper_cc89` ×87, `ui_helper_e80c` ×73, `ui_helper_d77e` ×65,
+  `ui_draw_window_d31a`/`d309`, `ui_helper_d3a7`, `ui_helper_d759`, `ui_helper_e510` — all
+  window/text primitives neighboring the grounded `set_cursor`/`redraw_window`. Do `d134` next
+  (highest fanout left). `marry_helper_cc35` ×91 also pending (non-UI; verify the "marry" guess).
 - **Pass-0 native floor:** enumerate the Bank-15 code the bytecode compiler did not claim; ground
   the 6502 leaves (syscalls + kernel) under the VM.
 - **Sub-targets exposed by grounded leaves:** `$7530` (per-daimyo stat table, stride 7), `$77A8`

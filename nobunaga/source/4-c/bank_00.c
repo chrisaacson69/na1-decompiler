@@ -23,7 +23,7 @@ word display_fullscreen_graphic_sequence(void) {
             local11 = (local11 + 1);    // $8060
         } while (((unsigned)local11 < (unsigned)8));
         marry_helper_cc35(0);    // $8068
-        ui_helper_cc7b(2, 24);    // $806F
+        set_cursor(2, 24);    // $806F
         redraw_window(msg_congratulations_my_lord_b7da);    // $8076
         ui_helper_d134(msg_in_the_year_4d, current_game_year);    // $8080
         redraw_window(msg_you_united_japan);    // $8087
@@ -72,7 +72,7 @@ word display_fullscreen_graphic_sequence(void) {
         } while (((unsigned)local11 < (unsigned)4));
     } else {
         call_bank10_entry(6);    // $811D
-        ui_helper_cc7b(11, 26);    // $8124
+        set_cursor(11, 26);    // $8124
         redraw_window(msg_game_over);    // $812B
         local9 = 0;    // $8130
         do {    // $8131
@@ -429,29 +429,29 @@ word daimyo_creation_stat_roll_screen(void) {
     ppu_render_rect_wrap(2, 6, 10, 10, 1);    // $8783
     ppu_render_rect_wrap(16, 12, 26, 16, 1);    // $878F
     ppu_render_rect_wrap(14, 18, 26, 18, 2);    // $879B
-    ui_helper_cc7b(3, 4);    // $87A1
+    set_cursor(3, 4);    // $87A1
     ui_helper_d134(msg_fief_2d, (selected_province_idx + 1));    // $87AD
-    ui_helper_cc7b(3, 6);    // $87B3
+    set_cursor(3, 6);    // $87B3
     redraw_window(((selected_province_idx * 10) + 0x7985));    // $87C1
-    ui_helper_cc7b(3, 8);    // $87C7
+    set_cursor(3, 8);    // $87C7
     redraw_window(((selected_province_idx * 9) + 0x77A8));    // $87D5
-    ui_helper_cc7b(3, 10);    // $87DB
+    set_cursor(3, 10);    // $87DB
     local11 = selected_province_daimyo_record();    // $87E2
     local11 = (local11 + 1);    // $87E5
     ui_helper_d134(msg_age_2d, *(byte*)(((local11 + 1) - 1)));    // $87EC
     active_province_idx_copy = selected_province_idx;    // $87F3
     draw_daimyo_portrait(4, 12);    // $87F8
-    ui_helper_cc7b(13, 6);    // $87FE
+    set_cursor(13, 6);    // $87FE
     redraw_window(msg_please_set);    // $8805
-    ui_helper_cc7b(13, 7);    // $880B
+    set_cursor(13, 7);    // $880B
     redraw_window(msg_daimyo_abilities);    // $8812
-    ui_helper_cc7b(13, 9);    // $8818
+    set_cursor(13, 9);    // $8818
     redraw_window(msg_press_any_button);    // $881F
-    ui_helper_cc7b(13, 10);    // $8825
+    set_cursor(13, 10);    // $8825
     redraw_window(msg_to_set_abilities);    // $882C
     local9 = 1;    // $8831
     do {    // $8832
-        ui_helper_cc7b(16, (local9 + 11));    // $8837
+        set_cursor(16, (local9 + 11));    // $8837
         redraw_window(*(word*)(((local9 << 1) + effect_view_a_data_f8ae)));    // $8843
         ui_window_col = 22;    // $8849
         ui_helper_d134(msg_fmt_blank_b9a7);    // $884F
@@ -463,13 +463,13 @@ word daimyo_creation_stat_roll_screen(void) {
         local11 = ((selected_province_idx * 7) + 0x7530);    // $886C
         local10 = 1;    // $886E
         do {    // $886F
-            ui_helper_cc7b(23, (local10 + 11));    // $8874
+            set_cursor(23, (local10 + 11));    // $8874
             *(byte*)(local11) = prompt_roll_stat_value();    // $887C
             local11 = (local11 + 1);    // $887F
             local9 = (local9 + *(byte*)(((local11 + 1) - 1)));    // $8885
             local10 = (local10 + 1);    // $8888
         } while (((unsigned)local10 <= (unsigned)5));
-        ui_helper_cc7b(15, 18);    // $8892
+        set_cursor(15, 18);    // $8892
         ui_helper_d134(msg_total_4d, local9);    // $889A
         message_display(msg_is_this_ok);    // $88A1
     } while (!(ui_helper_d3a7()));
@@ -520,7 +520,7 @@ word render_boot_title_screens(void) {
     ppu_blit_from_bank_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // $895C
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // $8966
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $8973
-    ui_helper_cc7b(21, 26);    // $897B
+    set_cursor(21, 26);    // $897B
     redraw_window(msg_control_1);    // $8982
     local11 = 0;    // $8987
     do {    // $8988
@@ -1686,7 +1686,7 @@ word reassign_owner50_fiefs_to_daimyo24(void) {
     marry_helper_cc35(1);    // $99B4
     if ((battle_winner_province_sel == selected_province_idx)) {    // $99B0
         province_ai_state[selected_province_idx] = 5;    // $99CB
-        ui_helper_cc7b(2, 5);    // $99CE
+        set_cursor(2, 5);    // $99CE
         redraw_window(msg_akechi_mitsuhide_failed_to_tak);    // $99D5
         phi_val_99f8 = 0;    // $99DA
         while (1) {    // $99F8
@@ -1721,7 +1721,7 @@ word reassign_owner50_fiefs_to_daimyo24(void) {
             }
             local8 = (local8 + 1);    // $9A6E
         } while (((unsigned)local8 < (unsigned)8));
-        ui_helper_cc7b(2, 5);    // $9A77
+        set_cursor(2, 5);    // $9A77
         redraw_window(msg_nobunaga);    // $9A7E
         redraw_window(msg_has_been_destroyed_but_in_the);    // $9A85
         redraw_window(msg_hashiba_hideyoshi);    // $9A8C
@@ -2309,9 +2309,9 @@ word per_period_fief_daimyo_update_driver(void) {
             break;
         }
     }
-    ui_helper_cc7b(2, 3);    // $A354
+    set_cursor(2, 3);    // $A354
     draw_window_f6c4();    // $A358
-    ui_helper_cc7b(7, 3);    // $A35D
+    set_cursor(7, 3);    // $A35D
     redraw_window_f6c7();    // $A361
     process_fiefs_with_state_ff();    // $A364
     battle_defender_province_staging = -1;    // $A369

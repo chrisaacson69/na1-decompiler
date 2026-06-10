@@ -992,7 +992,7 @@ prg_bank_count = 16        # 256 KB total
 "0xD134" = { name = "ui_helper_d134",      comment = "Helper called by 13 drivers. Often follows message_display. Candidate: format-and-print (the '%d' / '%s' substitution layer)." }
 "0xD3A7" = { name = "ui_helper_d3a7",      comment = "Helper called by 8 drivers. TBD." }
 "0xE80C" = { name = "ui_helper_e80c",      comment = "Helper called by 15 drivers. TBD." }
-"0xCC7B" = { name = "ui_helper_cc7b",      comment = "Helper called by 6 drivers. TBD." }
+"0xCC7B" = { name = "set_cursor",          comment = "[HIGH CONFIRMED 2026-06-10] set_cursor(col,row): ui_window_col=arg1; ui_cursor_row=arg2 -- 5-op setter (LOADL 12; STORE $7FCD ui_window_col; LOADL 13; STORE $7FCF ui_cursor_row; RETURN @ $CC80). The text-cursor/draw-origin positioning primitive (the 'locate(col,row)' every redraw_window then consumes; axes confirmed by consumers -- $7FCD=col/X line-wrap boundary, $7FCF=row/Y). Was 'ui_helper_cc7b' (TBD); 211 call sites. UI-primitive vocabulary -- chapter 18 section pending once the cluster (cc89/d134/...) is ground." }
 "0xD7EA" = { name = "selected_province_daimyo_record", comment = "[CONFIRMED 2026-06-02] Returns fief_to_daimyo_record_addr(selected_province_idx) — the ACTIVE/attacker daimyo's 7-byte record. Used by ai_sum_battle_strength as the attacker side of the daimyo-stat comparison (vs the defending province's record); also 4 other drivers. (was ui_helper_d7ea.)" }
 "0xE510" = { name = "ui_helper_e510",      comment = "Helper called by 5 drivers (Send, Pact, View, Marry — the 'select target province from a list' command set). Candidate: cursor/menu enter primitive." }
 "0xD77E" = { name = "ui_helper_d77e",      comment = "Helper called by 5 drivers (Marry, Pact among them). TBD." }

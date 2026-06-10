@@ -243,10 +243,10 @@ word trade_helper_cc69(void) {
     return ppu_blit_nobank_wrap(22, 7, 29, 18, 1);    // $CC7A
 }
 
-// $CC7B ui_helper_cc7b
+// $CC7B set_cursor
 // (body @ $CC80)
 
-word ui_helper_cc7b(word arg1, word arg2) {
+word set_cursor(word arg1, word arg2) {
     ui_window_col = arg1;    // $CC81
     ui_cursor_row = arg2;    // $CC85
     return arg2;    // $CC88
@@ -257,7 +257,7 @@ word ui_helper_cc7b(word arg1, word arg2) {
 
 word ui_helper_cc89(void) {
     ppu_blit_nobank_wrap(2, (ui_msg_col_shift_flag ? 20 : 22), 19, 25, 1);    // $CCA2
-    return ui_helper_cc7b(2, (ui_msg_col_shift_flag ? 20 : 22));    // $CCB9
+    return set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // $CCB9
 }
 
 // $CCBA ui_get_7bf9
@@ -325,7 +325,7 @@ word ui_helper_cd20(void) {
         selected_record_idx_9e3c = 255;    // $CD96
     }
     ui_input_sel_latch_7fdf = 255;    // $CD9C
-    ui_helper_cc7b(2, 20);    // $CDA2
+    set_cursor(2, 20);    // $CDA2
     ui_state_flag_7bf9 = 0;    // $CDA7
     combat_unit_window_mode_flag = 0;    // $CDAB
     return 0;    // $CDAE
@@ -693,9 +693,9 @@ word poll_input(void) {
         local9 = ui_window_col;    // $D17F
         local8 = ui_cursor_row;    // $D183
         ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $D18D
-        ui_helper_cc7b(21, 26);    // $D195
+        set_cursor(21, 26);    // $D195
         ui_helper_d134(0xF68A, (local11 + 1));    // $D19F
-        ui_helper_cc7b(local9, local8);    // $D1A5
+        set_cursor(local9, local8);    // $D1A5
         ui_input_sel_latch_7fdf = local11;    // $D1AA
     }
     if ((ui_timer_gate_flag_7fe7 != 2)) {    // $D1AD
@@ -784,7 +784,7 @@ word message_display(word arg1) {
         ui_draw_window_d309();    // $D331
         ui_msg_oneshot_flag_7fc5 = 0;    // $D335
     }
-    ui_helper_cc7b(2, (ui_msg_col_shift_flag ? 20 : 22));    // $D347
+    set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // $D347
     return redraw_window(arg1);    // $D350
 }
 
@@ -970,7 +970,7 @@ word select_province_by_cursor(word arg1, word arg2) {
     local9 = ui_window_col;    // $D5AB
     local8 = ui_cursor_row;    // $D5AF
     while (1) {    // $D5B0
-        ui_helper_cc7b(local9, local8);    // $D5B2
+        set_cursor(local9, local8);    // $D5B2
         phi_val_d5c2 = 0;    // $D5B7
         while (1) {    // $D5C2
             local10 = phi_val_d5c2;    // $D5C2
@@ -982,7 +982,7 @@ word select_province_by_cursor(word arg1, word arg2) {
                 break;
             }
         }
-        ui_helper_cc7b(local9, local8);    // $D5CB
+        set_cursor(local9, local8);    // $D5CB
         local7 = cursor_nav_loop(local11);    // $D5D4
         if (!((local7 <= 0))) {    // $D5C9
             if ((local7 >= arg1)) {    // $D5DB
@@ -1014,7 +1014,7 @@ word number_input(word arg1, word arg2) {
 // (body @ $D60E)
 
 word ui_prompt_redraw(void) {
-    ui_helper_cc7b(2, 26);    // $D611
+    set_cursor(2, 26);    // $D611
     redraw_window(msg_hit_any_key_f6b7);    // $D618
     local11 = wait_button_edge();    // $D61F
     ui_helper_cc89();    // $D620
@@ -2182,7 +2182,7 @@ word find_record_9e3c(word arg1) {
         draw_window_f706(arg1);    // $E5EB
 L_E58E:
     }
-    return ui_helper_cc7b(local11, local10);    // $E594
+    return set_cursor(local11, local10);    // $E594
 }
 
 // $E5F2 map_helper_e5f2
@@ -2207,7 +2207,7 @@ word map_helper_e5f2(word arg1) {
             cursor = (cursor + 1);    // $E675
             draw_window_f706(*(byte*)(((cursor + 1) - 1)));    // $E67A
         }
-        ui_helper_cc7b(local11, local10);    // $E68A
+        set_cursor(local11, local10);    // $E68A
     }
     return marry_helper_cc35(0);    // $E693
 }
