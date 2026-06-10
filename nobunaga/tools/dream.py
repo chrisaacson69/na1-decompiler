@@ -649,6 +649,10 @@ def _emit_ast(ast, indent, out, nxt):
             out.append((0, indent, "break;"))
         elif k == 'fallthrough':
             pass                                      # C case fall-through: the next label follows
+        elif k == 'gotosink':
+            out.append((0, indent, f"goto L_{node[1]:04X};"))
+        elif k == 'label':
+            out.append((0, indent, f"L_{node[1]:04X}:"))
         elif k == 'loop':
             _emit_loop(node[1], node[2], indent, out, nxt)
         elif k == 'switch':
@@ -1281,6 +1285,10 @@ def _ast_cfg(ast, tc):
             return node[1]
         if k == 'fallthrough':                        # switch case → the next case (real block)
             return node[1]
+        if k == 'gotosink':                           # re-shared sink: route to the kept copy of
+            return node[1]                            # the block; set NO edges (the kept copy owns them)
+        if k == 'label':                              # emit-only label on the kept copy — CFG-transparent
+            return cont
         if k == 'loop':
             # The loop body's lexical end loops back to the header (fall == h); break/continue
             # markers carry their own real targets. Building the body sets every loop block's
@@ -1532,14 +1540,80 @@ def _max_dup(lines):
     return max(c.values()) if c else 1
 
 
+def _entry_addr(node):
+    """The real block address `node` enters at — used to match the copies of a duplicated sink."""
+    k = node[0]
+    if k == 'guard':
+        return _entry_addr(node[2])
+    if k in ('block', 'loop', 'switch', 'continue', 'break', 'fallthrough', 'gotosink', 'label', 'if'):
+        return node[1]
+    return None
+
+
+def _copy_ast(node):
+    """Deep-copy the AST (tuples for nodes, lists for seqs) so re-sharing never mutates the gate's AST."""
+    if isinstance(node, list):
+        return [_copy_ast(x) for x in node]
+    if isinstance(node, tuple):
+        return tuple(_copy_ast(x) for x in node)
+    return node
+
+
+def _iter_seqs(ast):
+    """Yield every mutable statement-list in the tree (the lists `_emit_ast` walks), parents first."""
+    yield ast
+    for node in ast:
+        k = node[0]
+        if k == 'if':
+            yield from _iter_seqs(node[5])
+            yield from _iter_seqs(node[6])
+        elif k == 'loop':
+            yield from _iter_seqs(node[2])
+        elif k == 'switch':
+            for _labs, body in node[4]:
+                yield from _iter_seqs(body)
+
+
+def _reshare(ast, tc, nxt):
+    """IDIOMATIC-GOTO RE-SHARING (emit-time, gate-validated). When the emit duplicates a shared
+    single-entry sink node more than `DUP_CAP` times — a cross-case shared tail in a switch, a
+    shared cleanup/epilogue, or a shared continuation DREAM un-shared by duplication — keep ONE
+    copy under a label and replace the rest with `goto L_<addr>`. That is the faithful idiom the
+    compiler emitted (a `goto cleanup` reached from N sites), reading better than N-way text
+    duplication. SOUND BY THE GATE: `_ast_cfg` lowers `gotosink` exactly like `break` (routes to
+    the kept block, sets no edges), so the re-shared AST must still lower to the witness CFG or the
+    caller rejects it and keeps the honest-goto fallback. Returns a re-shared COPY (the input is
+    never mutated); `_check`/`_emit_one` re-gate the result before trusting it."""
+    work = _copy_ast(ast)
+    for _ in range(16):                                   # several distinct sinks may each over-dup
+        out = []
+        _emit_ast(work, 0, out, nxt)
+        if _max_dup(out) <= DUP_CAP:
+            break
+        from collections import Counter
+        target = Counter(a for a, _i, _t in out if a).most_common(1)[0][0]
+        sites = []                                        # (seq, index) of every copy entering at target
+        for seq in _iter_seqs(work):
+            for i, node in enumerate(seq):
+                if node[0] not in ('label', 'gotosink') and _entry_addr(node) == target:
+                    sites.append((seq, i))
+        if len(sites) < 2:
+            break                                         # nothing shareable here — stop (avoid spin)
+        keep_seq, keep_i = sites[-1]                      # keep the LAST copy (bias the gotos forward)
+        for seq, i in sites[:-1]:
+            seq[i] = ('gotosink', target)
+        keep_seq.insert(keep_i, ('label', target))
+    return work
+
+
 def _check(bank, verbose=False):
     """Spike-A measurement: run dream_structure over every sub in `bank`, gate each vs its
     raw witness, and tally folded / gate-rejected / over-duplicated / passthrough + goto deltas."""
     import vm_cfg
     grab = _capture_all(bank)
-    elig = folded = rejected = overdup = passthrough = 0
-    g_raw_e = g_dream_e = 0                            # goto totals over ELIGIBLE-and-validated
-    rej_list, win_list, dup_list = [], [], []
+    elig = folded = rejected = overdup = passthrough = reshared = 0
+    g_raw_e = g_dream_e = g_reshared = 0               # goto totals over ELIGIBLE-and-validated
+    rej_list, win_list, dup_list, reshare_list = [], [], [], []
     for a0, (raw, instrs) in sorted(grab.items(), key=lambda x: (x[0] is None, x[0])):
         if not instrs:
             continue
@@ -1558,6 +1632,18 @@ def _check(bank, verbose=False):
         except Exception:
             ok = False                                # malformed AST the gate can't lower = reject
         if ok and _max_dup(dream) > DUP_CAP:          # CFG-correct but reads worse than honest goto
+            rwork = _reshare(ast, tc, nxt)            # re-share the shared sink as ONE copy + gotos
+            rout = []
+            _emit_ast(rwork, 0, rout, nxt)
+            try:
+                rok = dream_equivalent_ast(raw, rwork, tc, tc['leaders'])
+            except Exception:
+                rok = False
+            if rok and _max_dup(rout) <= DUP_CAP:     # gate-validated + duplication folded → DREAM owns it
+                reshared += 1
+                g_reshared += _gotos(rout)
+                reshare_list.append((a0, _gotos(rout), _max_dup(dream)))
+                continue
             overdup += 1
             dup_list.append((a0, _max_dup(dream)))
             continue
@@ -1577,12 +1663,15 @@ def _check(bank, verbose=False):
     print(f"  eligible (acyclic, no switch): {elig}")
     print(f"    validated (gate-green): {folded}")
     print(f"    gate-rejected         : {rejected}")
+    print(f"    re-shared (idiomatic goto, dup-folded): {reshared}  ({g_reshared} gotos)")
     print(f"    over-duplicated (>{DUP_CAP}x, kept honest): {overdup}")
     if folded:
         print(f"  gotos over validated  : raw {g_raw_e} -> dream {g_dream_e}  (delta {g_dream_e-g_raw_e})")
         print(f"  subs strictly improved: {len(win_list)}")
     if verbose and rej_list:
         print("  rejected: " + ' '.join('$%X' % a for a in rej_list[:40]))
+    if verbose and reshare_list:
+        print("  re-shared: " + ' '.join('$%X(%dx->%dg)' % (a, d, g) for a, g, d in reshare_list))
     if verbose and dup_list:
         print("  over-dup: " + ' '.join('$%X(%dx)' % (a, n) for a, n in dup_list))
     return folded, rejected, elig
@@ -1604,7 +1693,19 @@ def _emit_one(bank, sub_addr_hex):
     except Exception:
         ok = False
     dup = _max_dup(dream)
-    tag = 'PASS' if (ok and dup <= DUP_CAP) else ('OVER-DUP %dx' % dup if ok else 'REJECT')
+    reshared = False
+    if ok and dup > DUP_CAP:                            # try idiomatic-goto re-sharing of the shared sink
+        rwork = _reshare(ast, tc, nxt)
+        rout = []
+        _emit_ast(rwork, 0, rout, nxt)
+        try:
+            rok = dream_equivalent_ast(lines, rwork, tc, tc['leaders'])
+        except Exception:
+            rok = False
+        if rok and _max_dup(rout) <= DUP_CAP:
+            dream, dup, ok, reshared = rout, _max_dup(rout), True, True
+    tag = ('RE-SHARED (idiomatic goto)' if reshared else 'PASS') if (ok and dup <= DUP_CAP) \
+          else ('OVER-DUP %dx' % dup if ok else 'REJECT')
     print(f"=== DREAM structured C — bank {bank} @ ${sub_addr_hex}  [gate: {tag}] ===")
     for a, ind, t in dream:
         print(f"  {('$%04X'%a) if a else '     '}  {'  '*ind}{t}")
