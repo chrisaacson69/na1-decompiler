@@ -78,6 +78,14 @@ Chris: **the bytecode compiler has claimed every VM routine, so —**
 
 ## Ledger (append-only, newest first)
 
+### `$D134`  `ui_helper_d134` → `draw_message`   [HIGH CONFIRMED 2026-06-10]
+`draw_message(fmt, ...)` = `format_string(&fmt, &msg_buf); return redraw_window(&msg_buf)`
+(body @ `$D139`, −150 frame = the `msg_buf`). printf-then-draw wrapper. 193 sites, all
+`(msg_*_Nd, value)` — the `_2d`/`_4d` suffixes encode the printf width. **Refuted** the old note:
+d134 is NOT the %d/%s substitution layer — that is `$CFFC format_string` ([HIGH]); d134 wraps it
+with `redraw_window`. UI vocabulary now: `format_string`(printf core) · `set_cursor`(locate) ·
+`redraw_window`(draw raw) · `draw_message`(printf+draw).
+
 ### `$CC7B`  `ui_helper_cc7b` → `set_cursor`   [HIGH CONFIRMED 2026-06-10]
 5-op VM setter: `set_cursor(col,row)` = `ui_window_col=arg1; ui_cursor_row=arg2`
 (`LOADL 12; STORE $7FCD; LOADL 13; STORE $7FCF; RETURN @ $CC80`). The text-cursor / draw-origin
@@ -100,11 +108,11 @@ sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-da
 
 ## Frontier (where to resume — do not retread)
 
-- **UI-primitive vocabulary cluster** (ground together, then write the chapter-18 section once):
-  `ui_helper_d134` ×193, `ui_helper_cc89` ×87, `ui_helper_e80c` ×73, `ui_helper_d77e` ×65,
-  `ui_draw_window_d31a`/`d309`, `ui_helper_d3a7`, `ui_helper_d759`, `ui_helper_e510` — all
-  window/text primitives neighboring the grounded `set_cursor`/`redraw_window`. Do `d134` next
-  (highest fanout left). `marry_helper_cc35` ×91 also pending (non-UI; verify the "marry" guess).
+- **UI-primitive vocabulary cluster** (ground together, then write the chapter-18 section once).
+  Grounded: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134), `redraw_window`($CEC4).
+  Pending: `ui_helper_cc89` ×87, `ui_helper_e80c` ×73, `ui_helper_d77e` ×65, `ui_draw_window_d31a`/
+  `d309`, `ui_helper_d3a7`, `ui_helper_d759`, `ui_helper_e510` — do `cc89` next (highest fanout left).
+  `marry_helper_cc35` ×91 also pending (non-UI; verify the "marry" guess).
 - **Pass-0 native floor:** enumerate the Bank-15 code the bytecode compiler did not claim; ground
   the 6502 leaves (syscalls + kernel) under the VM.
 - **Sub-targets exposed by grounded leaves:** `$7530` (per-daimyo stat table, stride 7), `$77A8`

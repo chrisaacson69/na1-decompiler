@@ -1056,7 +1056,7 @@ VM bytecode disassembly
   $D19A  D0                         INC
   $D19B  B3                         PUSHL
   $D19C  8E 8A F6                   PUSH_imm2              $F68A
-  $D19F  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+  $D19F  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $D1A3  38                         PUSH_quick   ; inline operand = 8
   $D1A4  39                         PUSH_quick   ; inline operand = 9
   $D1A5  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
@@ -1394,7 +1394,7 @@ VM bytecode disassembly
   $D40B  D7 F8 D3                   JUMPT_abs              $D3F8
   $D40E  36                         PUSH_quick   ; inline operand = 6
   $D40F  8E 9E F6                   PUSH_imm2              $F69E (msg_fmt__d_f69e)
-  $D412  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+  $D412  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $D416  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $D419  D1                         DEC
   $D41A  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
@@ -1455,7 +1455,7 @@ VM bytecode disassembly
   $D48D  B0                         DEREF
   $D48E  B3                         PUSHL
   $D48F  8E A1 F6                   PUSH_imm2              $F6A1
- >$D492  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+ >$D492  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $D496  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $D499  D1                         DEC
   $D49A  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
@@ -1566,7 +1566,7 @@ VM bytecode disassembly
   $D549  B0                         DEREF
   $D54A  B3                         PUSHL
   $D54B  8E A9 F6                   PUSH_imm2              $F6A9
-  $D54E  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+  $D54E  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $D552  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $D555  D1                         DEC
   $D556  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
@@ -1672,7 +1672,7 @@ VM bytecode disassembly
   $D5EE  3D                         PUSH_quick   ; inline operand = 13
   $D5EF  3C                         PUSH_quick   ; inline operand = 12
   $D5F0  8E AC F6                   PUSH_imm2              $F6AC (msg_d_d_f6ac)
-  $D5F3  E9 34 D1 06                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $06
+  $D5F3  E9 34 D1 06                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $06
   $D5F7  3D                         PUSH_quick   ; inline operand = 13
   $D5F8  3C                         PUSH_quick   ; inline operand = 12
   $D5F9  E9 9D D5 04                CALL_abs_imm1          $D59D (select_province_by_cursor) {bytecode}, $04
@@ -1754,7 +1754,7 @@ VM bytecode disassembly
 ; ============================================================
   $D67C  AA 9F 6D                   PUSH_abs               $6D9F (current_game_year)
   $D67F  8E C4 F6                   PUSH_imm2              $F6C4
-  $D682  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+  $D682  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $D686  CF                         RETURN
 
 ; ============================================================
@@ -3608,7 +3608,7 @@ VM bytecode disassembly
   $E249  D0                         INC
   $E24A  B3                         PUSHL
   $E24B  8E 35 F7                   PUSH_imm2              $F735 (msg_is_now_fief_2d_s_daimyo)
-  $E24E  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+  $E24E  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $E252  0C                         LOADL_quick   ; inline operand = 12
   $E253  8C F7 6C                   LOADR_imm2             $6CF7 (province_ai_state)
   $E256  BB                         ADD
@@ -3653,7 +3653,7 @@ VM bytecode disassembly
   $E2A2  D0                         INC
   $E2A3  B3                         PUSHL
   $E2A4  8E 5B F7                   PUSH_imm2              $F75B (msg_in_fief_2d_in_the_year_d)
-  $E2A7  E9 34 D1 06                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $06
+  $E2A7  E9 34 D1 06                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $06
  >$E2AB  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $E2AE  CF                         RETURN
 
@@ -3714,7 +3714,7 @@ VM bytecode disassembly
   $E308  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $E30C  3C                         PUSH_quick   ; inline operand = 12
   $E30D  8E 7F F7                   PUSH_imm2              $F77F (msg_wants_a_s)
-  $E310  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+  $E310  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $E314  CF                         RETURN
 
 ; ============================================================
@@ -3878,7 +3878,7 @@ VM bytecode disassembly
   $E46E  D0                         INC
   $E46F  B3                         PUSHL
   $E470  8E B8 F7                   PUSH_imm2              $F7B8 (msg_d_lost_its_leader)
-  $E473  E9 34 D1 04                CALL_abs_imm1          $D134 (ui_helper_d134) {bytecode}, $04
+  $E473  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $E477  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $E47A  0C                         LOADL_quick   ; inline operand = 12
   $E47B  8C F7 6C                   LOADR_imm2             $6CF7 (province_ai_state)
