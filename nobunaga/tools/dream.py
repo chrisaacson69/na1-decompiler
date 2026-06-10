@@ -753,14 +753,28 @@ def _acyclic_seq(tc, header, do_orchains=True):
     return refine(tc, items)
 
 
+def _preds(cfg):
+    p = {}
+    for u in cfg:
+        for s in cfg[u]:
+            p.setdefault(s, set()).add(u)
+    return p
+
+
 def _natural_loops(tc, header):
-    """The sub's reducible natural loops as [{h, nodes, latches, exit}], or None when out of
-    Phase-1 scope. Loops sharing a header merge (one loop, many latches). Bails (None) on nested
-    or overlapping loops and on any loop with >1 distinct exit TARGET — left for a later phase."""
+    """The sub's reducible natural loops as [{h, nodes, latches, exit}], or None when out of scope.
+    Loops sharing a header merge (one loop, many latches). Each loop keeps ONE fall-out exit (the
+    post-loop continuation, emitted after the loop) — taken from a latch's outside-edge (bottom
+    test) or the header's (top test). Any OTHER exit edge to a TERMINAL block reached ONLY from the
+    loop is ABSORBED into the body as an inline early-return (the search-loop `if(found) return 1`
+    idiom); a non-terminal or shared extra exit is a genuine multi-break — bail (None) for now.
+    Also bails on nested / overlapping (irreducible) loops."""
+    EXIT = vm_cfg.EXIT
     cfg = tc['cfg']
     edges, _dom = vm_cfg.back_edges(cfg, header)
     if not edges:
         return []
+    preds = _preds(cfg)
     byh = {}
     for u, h in edges:
         byh.setdefault(h, set()).add(u)
@@ -770,7 +784,7 @@ def _natural_loops(tc, header):
         for u in latches:
             N |= vm_cfg.natural_loop(u, h, cfg)
         nodes_of[h] = N
-        loops.append({'h': h, 'nodes': frozenset(N), 'latches': frozenset(latches)})
+        loops.append({'h': h, 'nodes': set(N), 'latches': frozenset(latches)})
     hs = list(nodes_of)
     for i, hi in enumerate(hs):                       # disjoint single-level only (Phase 1)
         for j, hj in enumerate(hs):
@@ -780,14 +794,29 @@ def _natural_loops(tc, header):
             if nodes_of[hi] & nodes_of[hj]:
                 return None                            # overlapping (irreducible-ish)
     for lp in loops:
-        exits = set()
-        for n in lp['nodes']:
-            for s in cfg[n]:
-                if s != vm_cfg.EXIT and s not in lp['nodes']:
-                    exits.add(s)
-        if len(exits) > 1:
-            return None                                # multi-exit-target loop
-        lp['exit'] = next(iter(exits)) if exits else None
+        N, h, latches = lp['nodes'], lp['h'], lp['latches']
+        # The fall-out continuation: a latch's outside-edge (bottom test), else the header's (top
+        # test). >1 distinct fall-out candidate from the controlling block ⇒ unhandled.
+        fallout = None
+        for src in list(latches) + [h]:
+            outs = {s for s in cfg[src] if s != EXIT and s not in N}
+            if outs:
+                if len(outs) > 1:
+                    return None
+                fallout = next(iter(outs))
+                break
+        # Every other exit target: absorb if it's a terminal early-return reached ONLY from the
+        # loop; otherwise it's a real second break target — out of scope for now.
+        exits = {s for n in N for s in cfg[n] if s != EXIT and s not in N}
+        for X in exits:
+            if X == fallout:
+                continue
+            if set(cfg.get(X, ())) == {EXIT} and preds.get(X, set()) <= N:
+                N.add(X)                               # inline the early-return into the body
+            else:
+                return None
+        lp['nodes'] = frozenset(N)
+        lp['exit'] = fallout
     return loops
 
 
