@@ -71,3 +71,33 @@ The smell that something is misfiled: needing `importlib.spec_from_file_location
 `sys.path` hack to reach it — that means it should have been an importable package module.
 The package is renameable (everything is gate-anchored): re-running the gates proves any
 move preserved behavior, so refactors here are mechanical, not risky.
+
+## Where does OUTPUT go? (the artifact axis)
+
+The package sorts *tools*; tools also *emit*, and that output sorts into three classes.
+Keep them apart, and inside the regenerable class organize **by kind, never flat** — a
+catch-all output dir is the same smell as a flat `tools/`.
+
+| Class | What | Where | Versioned? |
+|---|---|---|---|
+| **Source** | hand-authored input/knowledge | `nobunaga/*.md` chapters, the ROM, `mesen-labels.toml`, `.xlsx` data | yes — it's input, not output |
+| **Oracle** | committed, deterministic, read-like-source deliverables | `decompiled/` (C), `disasm/` (asm) | yes — the project's payoff; regenerate only when a tool improves |
+| **Render / scratch** | regenerable from the ROM (graphics, traces, reports, dumps) | a gitignored renders tree, **in a kind subdir** | no — gitignored |
+
+Deciding where a new tool's output lands:
+
+1. **A canonical artifact meant to be READ like source** (deterministic, the deliverable)?
+   → its own committed top-level dir, like `decompiled/` / `disasm/`. These are oracles.
+2. **Regenerable from the ROM** (a render, a trace, an HTML report, a txt dump)?
+   → the gitignored renders tree, under a **kind** subdir (`renders/<kind>/`) — not a flat
+   pile in one dir. The tool owns its output subpath.
+3. **Hand-authored knowledge?** → it's *source*, not output: a `.md` at the project root.
+
+**Known artifact debt (convention defined 2026-06-10, moves deferred):** `atlas/` is a flat
+catch-all (misnamed — it holds animations, province renders, PPU/SRAM dumps, strategic maps,
+UI previews, title CHR — not just "atlas" maps). Target: rename to `renders/` with
+`{provinces, anim, ppu-sram, strategic, ui, title}` subdirs. The `nobunaga/` root also has
+~22 loose generated `.txt`/`.html` mixed with the source `.md` chapters — they belong under
+an `out/` tree (`out/reports/`, `out/dumps/`). Apply this convention when the emitting tools
+(`render-*`, the atlas builders) are next touched; `atlas/`+`traces/` are gitignored, so the
+moves are git-free — the only coupling is updating each tool's output path + regenerating.
