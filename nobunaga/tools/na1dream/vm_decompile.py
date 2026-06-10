@@ -840,8 +840,8 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     phi_mat = _vmcfg.consuming_phis(instructions)
     # ret_phi: same repair for the RETURN VALUE (regA) at a shared bare `vm_return` merge.
     # ret_phi_sites: site_addr -> merge_leader; the merge's vm_return then returns phi_ret_<merge>.
-    ret_phi_sites = _vmcfg.return_phis(instructions)
-    ret_phi_merges = set(ret_phi_sites.values())
+    ret_phi_sites = _vmcfg.return_phis(instructions)        # site -> (merge, tag_addr)
+    ret_phi_merges = {m for (m, _t) in ret_phi_sites.values()}
     # push_phi: same repair for regA at a shared `pushA` merge (the pushed value usually feeds a
     # consuming-call merge, so push_phis + consuming_phis chain). push_phi_sites: site -> merge;
     # the merge's pushA pushes phi_push_<merge>. See vm_cfg.push_phis ($83FA $84B5).
@@ -958,11 +958,14 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         # of dropping every JUMPing pred's value. Reading state.regA consumes a pending call exactly
         # once (no re-eval); all preds write the SAME name. See vm_cfg.return_phis.
         if ins['addr'] in ret_phi_sites:
-            _rm = ret_phi_sites[ins['addr']]
+            _rm, _rtag = ret_phi_sites[ins['addr']]
             _rnm = f"phi_ret_{_rm:04x}"
             _rv = state.regA                              # consume any pending call exactly once
             if _rv != _rnm:
-                state.emit(f"{_rnm} = {_rv};")
+                # tag with the pred's OWN block addr (_rtag) so DREAM buckets the materialise INTO
+                # the arm (jump/branch pred = the jump/branch addr; fall pred = its last-instr addr,
+                # the fall/else block) instead of after the join. See vm_cfg.return_phis.
+                state.lines.append((_rtag, state.indent, f"{_rnm} = {_rv};"))
             state.regA = _rnm
 
         # === Push (regA) PHI materialisation (pre-dispatch) ===

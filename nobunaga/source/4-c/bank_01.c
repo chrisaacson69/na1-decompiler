@@ -274,8 +274,9 @@ word apply_two_grows_const1_override(word arg1, word arg2) {
 word province_window_redraw_ba6f(word arg1, word arg2) {
     if ((province_ai_state[arg1] != 255)) {    // $83A7
         phi_ret_83c6 = draw_message(msg_fmt__4d, arg2);    // $83BC
+    } else {
+        phi_ret_83c6 = redraw_window(province_window_redraw_data_ba6f);    // $83C2
     }
-    phi_ret_83c6 = redraw_window(province_window_redraw_data_ba6f);    // $83C6
     return phi_ret_83c6;    // $83C6
 }
 
@@ -292,8 +293,9 @@ word helper_83C7(word arg1) {
 word province_window_redraw_ba78(word arg1, word arg2) {
     if ((province_ai_state[arg1] != 255)) {    // $83DA
         phi_ret_83f9 = draw_message(msg_fmt__3d_ba74, arg2);    // $83EF
+    } else {
+        phi_ret_83f9 = redraw_window(province_window_redraw_data_ba78);    // $83F5
     }
-    phi_ret_83f9 = redraw_window(province_window_redraw_data_ba78);    // $83F9
     return phi_ret_83f9;    // $83F9
 }
 
@@ -3196,10 +3198,12 @@ word ai_calc_men_surplus_over_gold_and_rice(word out_gold_surplus, word out_rice
     if ((*(word*)(out_gold_surplus) < 0)) {    // $B2F4
         *(word*)(out_gold_surplus) = 0;    // $B31F
     }
-    if ((*(word*)(out_rice_surplus) < 0)) {    // $B320
+    phi_ret_b32a = (*(word*)(out_rice_surplus) < 0);    // $B324
+    if (phi_ret_b32a) {    // $B320
         *(word*)(out_rice_surplus) = 0;    // $B329
+        phi_ret_b32a = 0;    // $B329
     }
-    return 0;    // $B32A
+    return phi_ret_b32a;    // $B32A
 }
 
 // $B32B rng_threshold_10_29
@@ -3493,10 +3497,12 @@ word ai_econ_action_state0(void) {
     ai_econ_command_dispatch();    // $B87A
     random_daimyo_stat_increment();    // $B87D
     fief = ((selected_province_idx * 26) + 0x7001);    // $B88A
-    if (!(rng_mod(4))) {    // $B87A
+    phi_ret_b89a = rng_mod(4);    // $B890
+    if (!(phi_ret_b89a)) {    // $B87A
         *(word*)((fief + 22)) = (*(word*)((fief + 22)) + 1);    // $B899
+        phi_ret_b89a = (*(word*)((fief + 22)) + 1);    // $B899
     }
-    return (*(word*)((fief + 22)) + 1);    // $B89A
+    return phi_ret_b89a;    // $B89A
 }
 
 // $B89B ai_per_fief_command_driver
@@ -3516,9 +3522,11 @@ L_B8EE:
     if (!(get_6e09())) goto L_B90E;    // $B8F7
 L_B8FA:
     ai_turn_flags = (ai_turn_flags | -128);    // $B901
-    if (!(count_6da2_set())) goto L_B90D;    // $B907
+    phi_ret_b90d = count_6da2_set();    // $B907
+    if (!(phi_ret_b90d)) goto L_B90D;    // $B907
+    phi_ret_b90d = ui_prompt_redraw();    // $B90A
 L_B90D:
-    return ui_prompt_redraw();    // $B90D
+    return phi_ret_b90d;    // $B90D
 L_B90E:
     ai_turn_loop_redispatch_flag = 0;    // $B90F
     selected_province_idx = daimyo_turn_order[turn_idx];    // $B918
@@ -3568,9 +3576,11 @@ L_B99E:
     turn_idx = phi_val_b99e;    // $B99E
     if (((unsigned)turn_idx < (unsigned)scenario_fief_count)) goto L_B8AA;    // $B9A4
 L_B9A7:
-    if (ai_turn_loop_redispatch_flag) goto L_B9B1;    // $B9AA
+    phi_ret_b9b1 = ai_turn_loop_redispatch_flag;    // $B9AA
+    if (phi_ret_b9b1) goto L_B9B1;    // $B9AA
     ai_per_fief_loop_index = 0;    // $B9AE
+    phi_ret_b9b1 = 0;    // $B9AE
 L_B9B1:
-    return 0;    // $B9B1
+    return phi_ret_b9b1;    // $B9B1
 }
 

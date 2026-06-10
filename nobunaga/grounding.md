@@ -78,16 +78,21 @@ Chris: **the bytecode compiler has claimed every VM routine, so —**
 
 ## Decompiler 3% backlog (misreads found by reading — the other output of this pass)
 
-### `$E80C` — return-phi value-merge with a boolean arm (UNCONDITIONAL side-effecting call)   [OPEN 2026-06-10]
-Both stages emit `if(flags&4){mem_7FCB=arg1;} return call_bank_wrap(14);` but the bytecode's
-`CALL call_bank_wrap` (`$E81E`) is on the TRUE path only — the `JUMPF $E822` false path skips to the
-`RETURN` and returns `regA = flags&4 = 0`. Correct: `if(ai_turn_flags&4){mem_7FCB=arg1; return
-call_bank_wrap(14);} return 0;`. The linear regA sweep pulled the call up to the `$E822` merge, so a
-side-effecting bank-14 dispatch fires unconditionally + the false-path 0 is dropped. Same family as
-`return_phis`, but the non-call arm's value is a boolean `AND` result — which `return_phis` excludes
-(boolean/diamond merges), so it slips through. Gate-invisible (CFG identical; value/effect differ).
-Fix candidate: extend `return_phis` (or a new pass) to cover a return-merge whose arms are
-{call-valued, boolean-valued}. Naming of `$E80C` (×73, 15 callers) deferred until the value is correct.
+### `$E80C` — return-phi reached by a conditional-branch taken edge   [FIXED 2026-06-10]
+**Root cause (not "boolean arm" as first hypothesized):** `return_phis` bailed on ANY pred ending in
+a conditional branch (`else: ok=False`). `$E822`'s preds are the `JUMPF` branch block (taken edge →
+RETURN) + the call block (fall-through), so the merge was abandoned and the call-valued fall arm
+leaked to the RETURN, firing `call_bank_wrap(14)` UNCONDITIONALLY. **Fix:** accept a pred whose
+conditional branch's taken edge IS the merge — `branch_z/nz` emit `if(regA) goto` and don't touch
+regA, so capture regA at the branch; and carry a `tag_addr` (return `{site:(merge,tag)}`) so DREAM
+buckets the fall-arm capture INTO the arm, not after the join (the value_merge_phis DREAM-vs-linear
+placement lesson, re-applied). **Blast radius: 49 merges / 48 subs — 21 SERIOUS (a side-effecting
+call made unconditional: `$E80C`, `$87B7` draw_tactical_terrain_feature, `redraw_window` `$CEC4`,
+`find_record` `$E554`, +17) + 28 value-only regA leaks.** Gate-invisible (CFG identical, value/effect
+differ) — found by READING e80c while grounding. Gates after fix: 114/114, CFG hybrid 495/495
+witness + 495/495 CFG-preserving (0 fallbacks), stack-audit 184. Lives in `vm_cfg.return_phis` +
+`vm_decompile.py` ret_phi hook. `$E80C` itself now reads `if(ai_turn_flags&4){mem_7FCB=arg1; return
+call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a conditional bank-14 dispatch).
 
 ## Ledger (append-only, newest first)
 

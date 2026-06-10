@@ -700,15 +700,21 @@ def return_phis(instructions):
     fall arm's `return 200`). One arm here is CALL-valued, so it must be captured at the pred's
     exit (a temp), never re-evaluated at the return.
 
-    Returns `{site_addr: merge}`. At each site -- a JUMPing pred's jump (where that pred's regA
-    is textually live), or the RETURN address itself for the fall-through pred -- the decoder
-    stores regA into `phi_ret_<merge>` and the merge's `vm_return` returns that temp. All preds
-    write the SAME name, so the linear leak is harmless and each value is under its own control.
+    Returns `{site_addr: (merge, tag_addr)}`. The capture SITE fixes the timing (where regA is
+    grabbed, pre-dispatch); the TAG fixes DREAM block attribution (the pred's OWN block, so the
+    materialise lands INSIDE the arm, not after the join -- the DREAM-vs-linear placement lesson
+    from value_merge_phis). Sites: a JUMPing pred's jump, a conditional-branch pred's branch (its
+    TAKEN edge flows into the merge; branch_z/nz don't touch regA, so regA there == the taken-edge
+    return value), or the RETURN address for the fall-through pred. The decoder stores regA into
+    `phi_ret_<merge>`; the merge's `vm_return` returns that temp. All preds write the SAME name.
 
     GUARDS (mirror consuming_phis): the merge block is a BARE `vm_return` (so regA is carried in,
-    not recomputed in-block); >=2 preds; each leaves by an unconditional jump or fall-through (a
-    conditional-branch pred is skipped); and the preds' blocks are NOT all identical (>=2 distinct
-    signatures -> the returned regA genuinely differs; identical preds return the same value)."""
+    not recomputed in-block); >=2 preds; each leaves by an unconditional jump, a conditional branch
+    INTO the merge, or fall-through (a branch whose taken edge is NOT the merge, or a switch, bails);
+    and the preds' blocks are NOT all identical (>=2 distinct signatures -> the returned regA
+    genuinely differs; identical preds return the same value). The conditional-branch case (added
+    2026-06-10) closed the $E80C class: 21 subs were firing a side-effecting call UNCONDITIONALLY
+    (the call-valued fall arm leaked to the RETURN) + 28 more had value-only regA leaks."""
     cfg, leaders = _bytecode_cfg_raw(instructions)
     block_of = _block_of_fn(leaders)
     bmap = {L: [] for L in leaders}
@@ -742,17 +748,30 @@ def return_phis(instructions):
                 ok = False
                 break
             last = pb[-1]
+            # Each entry: capture-SITE addr -> (merge, TAG addr). Site = where regA is captured
+            # (pre-dispatch timing); tag = the PRED's own block addr, so DREAM buckets the
+            # materialise INTO the arm, not after the join (the DREAM-vs-linear placement lesson
+            # from value_merge_phis -- a merge-addr tag floats the capture past the if).
             if last['mnemonic'] == 'jump_abs' and _target(last) == M:
-                sites[last['addr']] = M                             # capture before the jump flushes
+                sites[last['addr']] = (M, last['addr'])            # capture before the jump flushes
+            elif last['mnemonic'] in ('branch_z_abs', 'branch_nz_abs') and _target(last) == M:
+                # TAKEN edge of a conditional branch flows straight into the merge ($E80C's $E822:
+                # `if(flags&4)==0 -> RETURN`). branch_z/nz emit `if(regA) goto` and DON'T touch regA,
+                # so regA on the taken edge == regA before the branch -> capture there. Without this
+                # the merge was abandoned and a call-valued fall-through arm leaked to the RETURN,
+                # firing UNCONDITIONALLY (the $E80C class; 49 merges corpus-wide).
+                sites[last['addr']] = (M, last['addr'])
             elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
-                sites[blk[0]['addr']] = M                           # fall-through: capture at the RETURN
+                # fall-through: capture at the RETURN (regA = the fall arm's value/call result there),
+                # but TAG to the fall pred's last instr so DREAM places it in the fall/else block.
+                sites[blk[0]['addr']] = (M, pb[-1]['addr'])
             else:
                 ok = False
                 break
         if not ok:
             continue
-        for addr in sites:
-            out[addr] = M
+        for addr, mt in sites.items():
+            out[addr] = mt
     return out
 
 
