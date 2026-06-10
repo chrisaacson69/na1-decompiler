@@ -883,20 +883,29 @@ def _natural_loops(tc, header):
         # a sink is a multi-level break — either ⇒ out of scope (bail). An absorbed block can't reach
         # a latch (it isn't in the natural loop), so the region stays acyclic (re-checked downstream).
         bail = False
+        gotos = set()                                     # MULTI-TARGET breaks: secondary exits
         changed = True
         while changed and not bail:
             changed = False
             for X in {s for n in N for s in cfg[n] if s != EXIT and s not in N}:
-                if X == fallout:
+                if X == fallout or X in gotos:
                     continue
-                if _is_sink(X) or not (preds.get(X, set()) <= N):
-                    bail = True
-                    break
-                N.add(X)
-                changed = True
+                if _is_sink(X):
+                    bail = True                           # a synthetic sink = a multi-LEVEL break
+                    break                                 # across an already-redirected boundary
+                if not (preds.get(X, set()) <= N):
+                    # X is reached from OUTSIDE the loop too -> a shared post-loop merge, not a
+                    # loop-only early-exit. It can't be absorbed (that would pull outer code in),
+                    # so the loop exits to it via `goto L_X` (a multi-target break), not `break`
+                    # (which only reaches the single fall-out). `_map_sinks` renders it gotosink.
+                    gotos.add(X)
+                    continue
+                N.add(X)                                  # reached ONLY from the loop -> absorb it
+                changed = True                            # as an inline early-exit (to a fixpoint)
         if bail:
             return None
-        loops.append({'h': h, 'nodes': frozenset(N), 'latches': frozenset(latches), 'exit': fallout})
+        loops.append({'h': h, 'nodes': frozenset(N), 'latches': frozenset(latches),
+                      'exit': fallout, 'gotos': frozenset(gotos)})
     return loops
 
 
@@ -962,11 +971,14 @@ def _outer_tc(base, loops, removed):
                 buckets=base.get('buckets', {}), tag=tag, kind=kind)
 
 
-def _map_sinks(seq, h=None):
+def _map_sinks(seq, h=None, goto_targets=()):
     """Replace a region's synthetic sink blocks with control markers: CONTINUE sink → ('continue',
-    h) (loops); BREAK sink for X → ('break', X) (loop fall-out / switch merge); FALL-THROUGH sink
-    for X → ('fallthrough', X) (switch case → next case). Maps only THIS region's sinks — nested
-    loop/switch nodes were already mapped one level down — so it does not recurse into them."""
+    h) (loops); BREAK sink for X → ('break', X) (loop fall-out / switch merge) — UNLESS X is a
+    multi-target break in `goto_targets`, then → ('gotosink', X) (rendered `goto L_X`, since `break`
+    only reaches the single fall-out); FALL-THROUGH sink for X → ('fallthrough', X) (switch case →
+    next case). Maps only THIS region's sinks — nested loop/switch nodes were already mapped one
+    level down — so it does not recurse into them."""
+    goto_targets = set(goto_targets)
     def conv(node):
         k = node[0]
         if k == 'block':
@@ -975,6 +987,8 @@ def _map_sinks(seq, h=None):
                 return ('continue', h)
             if isinstance(L, tuple) and L and L[0] == '\x1bFT':
                 return ('fallthrough', L[1])
+            if isinstance(L, tuple) and L and L[0] == '\x1bBRK':
+                return ('gotosink', L[1]) if L[1] in goto_targets else ('break', L[1])
             if _is_sink(L):
                 return ('break', L[1])
             return node
@@ -1008,6 +1022,55 @@ def _substitute_loops(seq, block_nodes):
             return ('switch', S, head, sel, [(labs, [sub(x) for x in body]) for labs, body in cases], merge)
         return node
     return [sub(x) for x in seq]
+
+
+def _label_goto_targets(seq):
+    """In-place: insert a ('label', X) marker before the block that OWNS each `gotosink` target X (a
+    loop multi-target break), so the emitted `goto L_X` has a landing label. The label is
+    CFG-transparent in `_ast_cfg`; the marker is matched only against real code owners
+    (block/loop/switch/if/guard), never another control marker, and is idempotent per target."""
+    targets = set()
+
+    def collect(s):
+        for n in s:
+            k = n[0]
+            if k == 'gotosink':
+                targets.add(n[1])
+            elif k == 'if':
+                collect(n[5]); collect(n[6])
+            elif k == 'loop':
+                collect(n[2])
+            elif k == 'switch':
+                for _labs, body in n[4]:
+                    collect(body)
+            elif k == 'guard':
+                collect([n[2]])
+    collect(seq)
+    if not targets:
+        return
+    done = set()
+    _OWNER = ('block', 'loop', 'switch', 'if', 'guard')
+
+    def walk(s):
+        i = 0
+        while i < len(s):
+            n = s[i]
+            k = n[0]
+            if k in _OWNER and _entry_addr(n) in targets and _entry_addr(n) not in done:
+                done.add(_entry_addr(n))
+                s.insert(i, ('label', _entry_addr(n)))
+                i += 1                                    # step over the inserted label to the owner
+                n = s[i]
+                k = n[0]
+            if k == 'if':
+                walk(n[5]); walk(n[6])
+            elif k == 'loop':
+                walk(n[2])
+            elif k == 'switch':
+                for _labs, body in n[4]:
+                    walk(body)
+            i += 1
+    walk(seq)
 
 
 # --------------------------------------------------------------------------- #
@@ -1207,11 +1270,19 @@ def _structure_tc(tc, header):
             body = _structure_tc(rtc, h)               # RECURSE: inner loops/switches peeled here
             if body is None:
                 return None
-            loop_nodes[h] = ('loop', h, _map_sinks(body, h))
+            loop_nodes[h] = ('loop', h, _map_sinks(body, h, lp.get('gotos', ())))
             removed |= (set(N) - {h})
         otc = _outer_tc(tc, loops, removed)
         if _has_backedge(otc['cfg'], header):          # residue still cyclic ⇒ irreducible — bail
             return None
+        # A multi-target break `goto L_X` is only sound if X is reachable in the OUTER graph (so it
+        # is emitted once, with a label, for the goto to land on). When X is reached ONLY from this
+        # loop's interior — a loop that exits straight INTO another loop's header — it is orphaned by
+        # the collapse and the goto would dangle, so bail to passthrough (NOT a gate-reject).
+        if any(lp.get('gotos') for lp in loops):
+            outer_reach = _reachable(otc['cfg'], header)
+            if any(g not in outer_reach for lp in loops for g in lp.get('gotos', ())):
+                return None
         outer = _structure_tc(otc, header)             # RECURSE (no loops left; switches handled)
         return None if outer is None else _substitute_loops(outer, loop_nodes)
     # 3. ACYCLIC residue.
@@ -1239,6 +1310,7 @@ def dream_ast(lines, instructions):
     ast = _structure_tc(tc, header)
     if ast is None:
         return None
+    _label_goto_targets(ast)                          # land each `goto L_X` (multi-target break) on a label
     return ast, tc, nxt
 
 
