@@ -830,6 +830,11 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     # the merge's pushA pushes phi_push_<merge>. See vm_cfg.push_phis ($83FA $84B5).
     push_phi_sites = _vmcfg.push_phis(instructions)
     push_phi_merges = set(push_phi_sites.values())
+    # val_phi: regA value-merge at a SIDE-EFFECTING-arm merge whose first op consumes regA -- a
+    # `storeA_*` (store regA) or `branch_z/nz` (branch on regA) -- that value_diamonds can't fold.
+    # val_phi_sites: site -> merge; the store/branch then reads phi_val_<merge> (it already reads
+    # state.regA, which the materialise sets to the temp). See vm_cfg.value_merge_phis ($A45A).
+    val_phi_sites = _vmcfg.value_merge_phis(instructions)
     diamonds = _vmcfg.value_diamonds(instructions)
     dia_by_head = {d['head']: d for d in diamonds}
     dia_fall_jump = {d['fall_jump_addr'] for d in diamonds if d['fall_jump_addr'] is not None}
@@ -953,6 +958,20 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             if _pv != _pnm:
                 state.emit(f"{_pnm} = {_pv};")
             state.regA = _pnm
+
+        # === Value-merge (regA) PHI materialisation (pre-dispatch) ===
+        # At a pred's EXIT to a SIDE-EFFECTING-arm merge whose first op consumes regA (its jump, or
+        # the store/branch itself for the fall-through pred), capture regA into phi_val_<merge> so
+        # the store/branch reads the temp instead of dropping every JUMPing pred's value. Reading
+        # regA consumes a pending call exactly once (no re-eval, rng advances as the bytecode does);
+        # all preds write the SAME name. See vm_cfg.value_merge_phis ($A45A $A4FD store, $A523 branch).
+        if ins['addr'] in val_phi_sites:
+            _vm = val_phi_sites[ins['addr']]
+            _vnm = f"phi_val_{_vm:04x}"
+            _vv = state.regA                              # consume any pending call exactly once
+            if _vv != _vnm:
+                state.emit(f"{_vnm} = {_vv};")
+            state.regA = _vnm
 
         # Label for branch targets — AFTER the phi materialise (see note above) so a jump arm's
         # `goto L_<merge>` lands below the fall-through pred's `phi = …` instead of clobbering on it.

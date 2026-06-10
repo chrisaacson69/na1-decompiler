@@ -826,6 +826,85 @@ def push_phis(instructions):
     return out
 
 
+_STORE_REGA = {'storeA_local_neg', 'storeA_local_pos', 'storeA_mem_word', 'storeA_mem_byte'}
+_BRANCH_REGA = {'branch_z_abs', 'branch_nz_abs'}
+
+
+def value_merge_phis(instructions):
+    """Find regA VALUE-MERGE phis with SIDE-EFFECTING arms: a merge whose FIRST op CONSUMES regA --
+    a store of regA to a local/global (`storeA_*`) or a branch on regA (`branch_z/nz_abs`) -- reached
+    by >=2 preds that leave a DIFFERENT regA. Name the temp each pred materialises it into.
+
+    The regA analogue of return_phis/push_phis for the cases value_diamonds CAN'T fold: the arms do
+    side-effecting work (a per-arm store, an rng CALL) AND leave a different regA, so the
+    side-effect-free `_value_arm` test rejects them and the single LINEAR sweep then keeps only the
+    fall-through pred's regA -- silently DROPPING the JUMPing preds' value (a gate-INVISIBLE value
+    bug: two structurings share the CFG yet differ on the value at the merge). Found by
+    hand-decompiling `$A45A` (the AI strategic-turn planner) from bytecode and diffing vs V2:
+      - `$A4FD` (a `storeA_local`): the event-handler pointer
+        `(rng_mod(4)==0) ? random_event_ravage_output_hidden_mark_weakness : ai_event_build_…`
+        collapsed to the fall arm `ai_event_build_…` -> the WRONG random event ran when rng_mod(4)==0.
+      - `$A523` (a `branch_z`): the per-province event chance
+        `(select!=3) ? (rng_mod(40)<3) : roll_3pct_event_chance()` collapsed to `roll_3pct()` -> the
+        wrong selection probability for event modes 1/2.
+
+    Returns `{site_addr: merge}`. At each site -- a JUMPing pred's jump, or the merge's first op for
+    the fall-through pred -- the decoder stores regA into `phi_val_<merge>`; the store/branch then
+    reads that temp (it already reads state.regA, which the materialisation sets to the temp). All
+    preds write the SAME name, so the linear leak is harmless and each value is captured under its
+    own control -- sound, no re-evaluation (a CALL-valued arm's call is read exactly once, so rng
+    advances exactly as the bytecode does).
+
+    GUARDS (mirror return_phis/push_phis): the merge's FIRST op consumes regA (store/branch -> regA
+    is carried IN, not recomputed in-block); >=2 preds; each leaves by an unconditional jump or
+    fall-through (a conditional-branch pred is skipped -- its regA is its own branch condition, not a
+    merged value); preds' blocks are NOT all identical (>=2 distinct signatures -> regA genuinely
+    differs); and NOT a value-diamond / boolean merge (those fold to a ternary -- the better form)."""
+    cfg, leaders = _bytecode_cfg_raw(instructions)
+    block_of = _block_of_fn(leaders)
+    bmap = {L: [] for L in leaders}
+    for ins in instructions:
+        bmap[block_of(ins['addr'])].append(ins)
+    preds = _predecessors(cfg)
+    folded_merges = ({d['merge'] for d in value_diamonds(instructions)}
+                     | {r['merge'] for r in boolean_regions(instructions)})
+
+    def blk_sig(p):
+        return tuple((i['mnemonic'], i.get('operand', '') or '') for i in bmap.get(p, []))
+
+    out = {}
+    for M in leaders:
+        if M in folded_merges:                                     # handled by the ternary fold
+            continue
+        blk = bmap.get(M, [])
+        if not blk or blk[0]['mnemonic'] not in (_STORE_REGA | _BRANCH_REGA):
+            continue                                               # consumer must read regA first
+        ps = [p for p in preds.get(M, ()) if p is not EXIT]
+        if len(ps) < 2:
+            continue
+        if len({blk_sig(p) for p in ps}) < 2:                      # all preds identical -> same regA
+            continue
+        sites, ok = {}, True
+        for p in ps:
+            pb = bmap.get(p, [])
+            if not pb:
+                ok = False
+                break
+            last = pb[-1]
+            if last['mnemonic'] == 'jump_abs' and _target(last) == M:
+                sites[last['addr']] = M                            # capture before the jump flushes
+            elif last['mnemonic'] not in ('jump_abs', 'branch_z_abs', 'branch_nz_abs', 'switch'):
+                sites[blk[0]['addr']] = M                           # fall-through: capture at the consumer
+            else:
+                ok = False                                         # a conditional-branch pred -> skip merge
+                break
+        if not ok:
+            continue
+        for addr in sites:
+            out[addr] = M
+    return out
+
+
 def unknown_control_mnemonics(instructions):
     """Expose any unrecognised control-shaped mnemonics for the gate to report."""
     if not instructions:
