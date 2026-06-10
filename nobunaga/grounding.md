@@ -78,6 +78,15 @@ Chris: **the bytecode compiler has claimed every VM routine, so —**
 
 ## Ledger (append-only, newest first)
 
+### `$CC89`  `ui_helper_cc89` → `open_message_window`   [HIGH CONFIRMED 2026-06-10]
+`open_message_window()` = `ppu_blit_nobank_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22)`
+(body @ `$CC8E`). Draws the standard bottom message-window rect + homes the cursor — the
+"prepare the window before printing" primitive (14 callers, command pre-roll). **Also corrected a
+SUSPECT neighbor note `$7FD1 ui_msg_col_shift_flag`:** (1) polarity was inverted (code is
+`flag?20:22` = !=0→20, ==0→22; note said opposite); (2) the 20/22 lands in `set_cursor`'s ROW arg,
+so it reads as a row/vertical shift, not a column — `col_shift` name left un-renamed, marked OPEN
+pending `message_display ($D338)`. UI vocabulary now also covers window setup.
+
 ### `$D134`  `ui_helper_d134` → `draw_message`   [HIGH CONFIRMED 2026-06-10]
 `draw_message(fmt, ...)` = `format_string(&fmt, &msg_buf); return redraw_window(&msg_buf)`
 (body @ `$D139`, −150 frame = the `msg_buf`). printf-then-draw wrapper. 193 sites, all
@@ -109,10 +118,13 @@ sites flipped, 0 stale, structurally inert. Exposed next targets: `$7530` per-da
 ## Frontier (where to resume — do not retread)
 
 - **UI-primitive vocabulary cluster** (ground together, then write the chapter-18 section once).
-  Grounded: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134), `redraw_window`($CEC4).
-  Pending: `ui_helper_cc89` ×87, `ui_helper_e80c` ×73, `ui_helper_d77e` ×65, `ui_draw_window_d31a`/
-  `d309`, `ui_helper_d3a7`, `ui_helper_d759`, `ui_helper_e510` — do `cc89` next (highest fanout left).
+  Grounded: `format_string`($CFFC), `set_cursor`($CC7B), `draw_message`($D134),
+  `open_message_window`($CC89), `redraw_window`($CEC4).
+  Pending: `ui_helper_e80c` ×73, `ui_helper_d77e` ×65, `ui_draw_window_d31a`/`d309`, `ui_helper_d3a7`,
+  `ui_helper_d759`, `ui_helper_e510` — do `e80c` next (highest fanout left).
   `marry_helper_cc35` ×91 also pending (non-UI; verify the "marry" guess).
+- **Open sub-question:** read `message_display ($D338)` to settle the `$7FD1` axis (row vs col) +
+  confirm/rename `ui_msg_col_shift_flag` across both consumers.
 - **Pass-0 native floor:** enumerate the Bank-15 code the bytecode compiler did not claim; ground
   the 6502 leaves (syscalls + kernel) under the VM.
 - **Sub-targets exposed by grounded leaves:** `$7530` (per-daimyo stat table, stride 7), `$77A8`

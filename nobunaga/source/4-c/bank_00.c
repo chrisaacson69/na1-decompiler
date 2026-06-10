@@ -196,7 +196,7 @@ L_8343:
     ui_pending_flag_7fc7 = 0;    // $835C
     ui_input_mode = 0;    // $8360
     ui_msg_col_shift_flag = 0;    // $8364
-    ui_helper_cc89();    // $8367
+    open_message_window();    // $8367
     message_display(msg_data_can_t_be_used);    // $836D
     ui_prompt_redraw();    // $8371
     goto L_8235;    // $8374
@@ -769,7 +769,7 @@ word resolve_ownerless_province_succession(word arg1) {
                         if (ui_helper_d3a7()) {    // $8CC5
                             message_display(msg_how_much);    // $8CEE
                             local8 = number_input(1, *(word*)(((selected_province_idx * 26) + 0x7001)));    // $8D03
-                            ui_helper_cc89();    // $8D04
+                            open_message_window();    // $8D04
                         }
                     }
                 }
@@ -1472,7 +1472,7 @@ word reassign_daimyo24_fiefs_to_owner50(void) {
     ai_turn_flags = (ai_turn_flags | 4);    // $9680
     message_display(msg_beware_a_treacherous_subordina);    // $9686
     delay_loop(98);    // $968C
-    ui_helper_cc89();    // $9690
+    open_message_window();    // $9690
     ui_helper_e80c(5);    // $9694
     audio_wait_gate = local10;    // $9699
     ai_turn_flags = saved_ai_turn_flags;    // $969F
@@ -1739,7 +1739,7 @@ word reassign_owner50_fiefs_to_daimyo24(void) {
 word driver_diplomacy_gold_transfer(void) {
     local11 = diplomacy_helper();    // $9AB4
     if (diplomacy_helper()) {    // $9AB1
-        ui_helper_cc89();    // $9AB8
+        open_message_window();    // $9AB8
         daimyo_name_width(selected_province_idx);    // $9ABE
         draw_message(msg_will_you_ally_with_fief_2d_for, (battle_defending_province + 1), local11);    // $9ACB
         if (ui_helper_d3a7()) {    // $9AB8
@@ -1795,7 +1795,7 @@ L_9B7E:
 word marry_transfer_gold_between_provinces(void) {
     local11 = marry_helper_e315();    // $9B87
     if (marry_helper_e315()) {    // $9B84
-        ui_helper_cc89();    // $9B8B
+        open_message_window();    // $9B8B
         daimyo_name_width(selected_province_idx);    // $9B91
         draw_message(msg_will_you_accept_4d_units_of_go, local11, (battle_defending_province + 1));    // $9B9E
         if (ui_helper_d3a7()) {    // $9B8B

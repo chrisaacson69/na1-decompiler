@@ -252,10 +252,10 @@ word set_cursor(word arg1, word arg2) {
     return arg2;    // $CC88
 }
 
-// $CC89 ui_helper_cc89
+// $CC89 open_message_window
 // (body @ $CC8E)
 
-word ui_helper_cc89(void) {
+word open_message_window(void) {
     ppu_blit_nobank_wrap(2, (ui_msg_col_shift_flag ? 20 : 22), 19, 25, 1);    // $CCA2
     return set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // $CCB9
 }
@@ -818,7 +818,7 @@ word ui_helper_d351(word arg1) {
         }
     }
     local11 = phi_val_d3a1;    // $D3A1
-    ui_helper_cc89();    // $D3A2
+    open_message_window();    // $D3A2
     return local11;    // $D3A6
 }
 
@@ -846,7 +846,7 @@ word ui_helper_d3a7(void) {
         phi_val_d3e7 = 0;    // $D3E6
     }
     local11 = phi_val_d3e7;    // $D3E7
-    ui_helper_cc89();    // $D3E8
+    open_message_window();    // $D3E8
     return local11;    // $D3EC
 }
 
@@ -1005,7 +1005,7 @@ word number_input(word arg1, word arg2) {
     draw_message(msg_d_d_f6ac, arg1, arg2);    // $D5F3
     local11 = select_province_by_cursor(arg1, arg2);    // $D5FD
     if ((local11 > 0)) {    // $D5EE
-        ui_helper_cc89();    // $D604
+        open_message_window();    // $D604
     }
     return local11;    // $D608
 }
@@ -1017,7 +1017,7 @@ word ui_prompt_redraw(void) {
     set_cursor(2, 26);    // $D611
     redraw_window(msg_hit_any_key_f6b7);    // $D618
     local11 = wait_button_edge();    // $D61F
-    ui_helper_cc89();    // $D620
+    open_message_window();    // $D620
     ui_get_cursor_sel_7fdf();    // $D623
     return local11;    // $D627
 }
@@ -1159,7 +1159,7 @@ word ui_helper_d759(void) {
 
 word confirm_prompt(void) {
     ui_helper_d759();    // $D76B
-    return ui_helper_cc89();    // $D771
+    return open_message_window();    // $D771
 }
 
 // $D772 fief_owner
@@ -1967,7 +1967,7 @@ word copy_arms_record_5(word arg1, word arg2) {
 // (body @ $E2DB)
 
 word draw_daimyo_name_menu(word arg1) {
-    ui_helper_cc89();    // $E2DB
+    open_message_window();    // $E2DB
     message_display(msg_lord_f777);    // $E2E1
     redraw_window(((fief_owner(battle_defending_province) * 9) + 0x77A8));    // $E2F3
     redraw_window(draw_daimyo_name_menu_data_f77d);    // $E2FA
@@ -1988,7 +1988,7 @@ word marry_helper_e315(void) {
             message_display(msg_demand_gold);    // $E343
             local11 = number_input(1, 0x270F);    // $E34F
             if (!(number_input(1, 0x270F))) {    // $E340
-                ui_helper_cc89();    // $E353
+                open_message_window();    // $E353
             }
         } else {
             local11 = 0;    // $E35A
@@ -2019,7 +2019,7 @@ word diplomacy_helper(void) {
         redraw_window(msg_demand_gold);    // $E3C5
         local11 = number_input(1, 0x270F);    // $E3D1
         if (!(number_input(1, 0x270F))) {    // $E3B3
-            ui_helper_cc89();    // $E3D5
+            open_message_window();    // $E3D5
         }
         ui_input_mode = local9;    // $E3D9
         return local11;    // $E3DD
