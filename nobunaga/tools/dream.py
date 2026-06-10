@@ -545,9 +545,13 @@ def refine(tc, items):
     if not items:
         return []
     piv = Lpiv = None
-    for _c, L in sorted(items, key=lambda x: x[1]):
-        # PIVOT = the lowest-address 2-way branch's goto-cond literal, WITH its real polarity
-        # (normalizing to positive swaps pos/neg vs the edge tags when rawcond is `!(...)`).
+    _rpo = tc.get('rpo', {})
+    for _c, L in sorted(items, key=lambda x: (_rpo.get(x[1], 1 << 30), x[1])):
+        # PIVOT = the TOPOLOGICALLY-FIRST 2-way branch (lowest rpo) — the one that dominates the
+        # others — with its real polarity. rpo, not address: an address-inverted branch region
+        # (`$9192`'s `$9290` merge sits below the `$92BC`/`$92C5` that precede it topologically)
+        # must pivot on the entry-most branch, else the merge is split before its predecessors and
+        # the structure scrambles. The AST gate is reorder-tolerant, so address order isn't owed.
         lt = _lit_of(tc, L)
         if lt is not None:
             piv, Lpiv = lt, L
