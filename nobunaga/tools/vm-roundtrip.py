@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from nobunaga_vm import NobunagaVM
+from na1dream.nobunaga_vm import NobunagaVM
 from vm_assemble import encode_sub, find_stubs, bank_range
 
 CODE_BANKS = (0, 1, 2, 15)

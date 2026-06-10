@@ -30,11 +30,7 @@ import importlib.util
 import sys
 from pathlib import Path
 
-# vm-disasm.py has a hyphen -> load it explicitly and reuse its decode authority.
-_spec = importlib.util.spec_from_file_location(
-    "vm_disasm", Path(__file__).parent / "vm-disasm.py")
-vm_disasm = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(vm_disasm)
+from na1dream import vm_disasm    # reuse its decode authority (now a package module)
 
 instr_len = vm_disasm.instr_len
 walk_sub = vm_disasm.walk_sub
@@ -135,7 +131,7 @@ def encode_sub(mem, stub, end):
 def _main():
     import argparse
     sys.path.insert(0, str(Path(__file__).parent))
-    from nobunaga_vm import NobunagaVM
+    from na1dream.nobunaga_vm import NobunagaVM
     ap = argparse.ArgumentParser(description="Sea-16 VM encoder self-test")
     ap.add_argument("bank", type=lambda x: int(x, 0), help="bank 0-15")
     args = ap.parse_args()

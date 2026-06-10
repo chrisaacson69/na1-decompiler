@@ -41,9 +41,9 @@ from pathlib import Path
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 
-import vm_cfg
-import vm_decompile
-import vm_reduce
+from na1dream import vm_cfg
+from na1dream import vm_decompile
+from na1dream import vm_reduce
 _da_spec = importlib.util.spec_from_file_location("decompile_all", HERE / "decompile-all.py")
 decompile_all = importlib.util.module_from_spec(_da_spec)
 _da_spec.loader.exec_module(decompile_all)

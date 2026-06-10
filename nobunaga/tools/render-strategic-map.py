@@ -31,7 +31,7 @@ import sys, importlib.util
 from pathlib import Path
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
-from nobunaga_vm import NobunagaVM
+from na1dream.nobunaga_vm import NobunagaVM
 from PIL import Image, ImageDraw
 
 # render-text.py (hyphenated) holds the game-font glyph decoder. Font tiles 0..80

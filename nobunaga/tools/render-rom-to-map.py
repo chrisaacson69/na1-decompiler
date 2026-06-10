@@ -29,7 +29,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
-from nobunaga_vm import NobunagaVM
+from na1dream.nobunaga_vm import NobunagaVM
 
 # Import render-from-sram.py despite the hyphenated filename (importlib, not `import`).
 _spec = importlib.util.spec_from_file_location("render_from_sram", HERE / "render-from-sram.py")

@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from cpu6502 import Memory, CPU6502
+from na1dream.cpu6502 import Memory, CPU6502
 
 ROM_PATH = Path(__file__).parent.parent / "Nobunaga's Ambition (USA).nes"
 

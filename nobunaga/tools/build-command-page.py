@@ -1633,7 +1633,7 @@ def classify(cmd, quiet=False):
 
 def anim_id_of(driver_hex):
     """Extract the $E80C (ui_helper_e80c) argument = animation id for a driver."""
-    asm = subprocess.run([sys.executable, str(ROOT/"tools"/"vm-disasm.py"), "1", "--stdout"],
+    asm = subprocess.run([sys.executable, str(ROOT/"tools"/"na1dream"/"vm_disasm.py"), "1", "--stdout"],
                          capture_output=True, text=True).stdout
     lines = asm.splitlines()
     driver = int(driver_hex, 16)

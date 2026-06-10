@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-from nobunaga_vm import NobunagaVM
+from na1dream.nobunaga_vm import NobunagaVM
 
 
 def stub_returning(value):

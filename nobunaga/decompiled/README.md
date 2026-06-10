@@ -31,13 +31,14 @@ Each bank is committed in three forms, so the structure engine's work is legible
 ## How it's made
 
 ```
-py -3 tools/decompile-all.py          # canonical (DREAM) bank_NN.c + bank_NN_vm.asm + all_banks.c
-py -3 tools/decompile-all.py --basic  # the basic goto form -> bank_NN.raw.c + all_banks.raw.c
-py -3 tools/decompile-all.py --v2      # V2 region reducer (audit/diff only) -> bank_NN.v2.c
+cd ../tools                                       # run from the tools/ dir (so `na1dream` resolves)
+py -3 -m na1dream.cli.decompile_all               # canonical (DREAM) bank_NN.c + bank_NN_vm.asm + all_banks.c
+py -3 -m na1dream.cli.decompile_all --basic       # the basic goto form -> bank_NN.raw.c + all_banks.raw.c
+py -3 -m na1dream.cli.decompile_all --v2          # V2 region reducer (audit/diff only) -> bank_NN.v2.c
 ```
 
-Pipeline (execution-validated — see `../tools/README.md`, `../ROADMAP.md`):
-`vm-disasm.py` (ROM → VM-asm, correct lengths) → `vm_decompile.py` (asm → C, dispatch keyed on the opcode byte) → `dream.py` (DREAM structurer; V2 fallback). **Deterministic:** fixed ROM → byte-identical output, so these are committed and only regenerated when a *tool* improves (not every session). Soundness is gated end-to-end: `py -3 tools/vm-cfg-gate.py --dream` proves every sub's `bank_NN.c` is CFG-equivalent to its `bank_NN.raw.c` witness (DREAM subs via the reorder-tolerant AST gate, V2 subs via the address-anchored gate).
+Pipeline (execution-validated — see `../tools/na1dream/ARCHITECTURE.md`, `../ROADMAP.md`):
+`vm_disasm` (ROM → VM-asm, correct lengths) → `vm_decompile` (asm → C, dispatch keyed on the opcode byte) → `dream` (DREAM structurer; V2 fallback), all in the `na1dream` package. **Deterministic:** fixed ROM → byte-identical output, so these are committed and only regenerated when a *tool* improves (not every session). Soundness is gated end-to-end: `py -3 -m na1dream.gates.cfg_gate --dream` proves every sub's `bank_NN.c` is CFG-equivalent to its `bank_NN.raw.c` witness (DREAM subs via the reorder-tolerant AST gate, V2 subs via the address-anchored gate).
 
 ## Reading the C — caveats
 

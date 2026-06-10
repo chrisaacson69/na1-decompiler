@@ -5,6 +5,8 @@ created: 2026-05-29
 # tools/ — Registry
 > The catalog of every script here, so sessions invoke instead of rebuild. **Status legend:** ✅ canonical (use this) · 🔁 has duplicate/variant siblings (consolidation pending — see [ROADMAP](../ROADMAP.md) Phase 3) · 🧪 one-shot/discovery (did its job; keep for provenance, don't extend) · ⚠️ gap/broken. Initial pass 2026-05-29 from a full inventory; entries marked 🔎 need a purpose re-confirm before anyone relies on them.
 
+> **⚠️ PACKAGE REORG 2026-06-10 — the decompiler core is now the `na1dream/` package.** The engine modules (`nobunaga_vm`, `cpu6502`, `vm_disasm` (was `vm-disasm.py`), `vm_decompile`, `vm_cfg`, `vm_reduce`, `dream`, `vm_stack_effect`) moved into **`tools/na1dream/`**; the pipeline commands into **`na1dream/cli/`** and the gates into **`na1dream/gates/`**. Run them packaged, **from the `tools/` dir**: `py -3 -m na1dream.cli.decompile_all`, `py -3 -m na1dream.gates.cfg_gate --dream`, `py -3 -m na1dream.gates.test_vm_cfg`, `py -3 -m na1dream.gates.stack_audit`, `py -3 -m na1dream.dream --emit <bank> <addr>`. The archaeology one-offs (`find-*`/`map-*`/`probe-*` …) moved to **`tools/attic/`**; Mesen lua to **`tools/lua/`**. **See [`na1dream/ARCHITECTURE.md`](na1dream/ARCHITECTURE.md) for the layout + the rule for where new code goes.** Rows below still cite old flat paths in places — the package paths above are authoritative.
+
 ## Core VM / emulator infrastructure
 | Script | Status | Purpose |
 |---|---|---|

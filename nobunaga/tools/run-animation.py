@@ -25,7 +25,7 @@ Animation ids (descriptor table $AF80): 9 = Grow. (others TBD as labeled.)
 import sys, argparse
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-from nobunaga_vm import NobunagaVM
+from na1dream.nobunaga_vm import NobunagaVM
 from PIL import Image
 
 # Reusable from render-portrait.py (kept local to avoid a hard import dep).

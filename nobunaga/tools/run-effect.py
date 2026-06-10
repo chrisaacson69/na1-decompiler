@@ -15,7 +15,7 @@ where <effect> is one of:
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-from nobunaga_vm import NobunagaVM
+from na1dream.nobunaga_vm import NobunagaVM
 
 EFFECTS = {
     "grow":   {"entry": 0x87F0, "body": 0x87F5, "frame_off": -4, "bank": 1},
