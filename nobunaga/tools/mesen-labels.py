@@ -29,7 +29,7 @@ from pathlib import Path
 PROJ = Path(__file__).resolve().parent.parent
 TOML = PROJ / "mesen-labels.toml"
 ROM = PROJ / "Nobunaga's Ambition (USA).nes"
-DISASM = PROJ / "disasm"
+DISASM = PROJ / "source" / "1-asm-6502"   # native 6502 disassembly (pipeline stage 1)
 
 BANK_SIZE = 0x4000
 

@@ -81,19 +81,35 @@ catch-all output dir is the same smell as a flat `tools/`.
 | Class | What | Where | Versioned? |
 |---|---|---|---|
 | **Source** | hand-authored input/knowledge | `nobunaga/*.md` chapters, the ROM, `mesen-labels.toml`, `.xlsx` data | yes — it's input, not output |
-| **Oracle** | committed, deterministic, read-like-source deliverables | `decompiled/` (C), `disasm/` (asm) | yes — the project's payoff; regenerate only when a tool improves |
+| **Oracle** | committed, deterministic, read-like-source deliverables | **`source/`** — the recovered game source as a pipeline ladder | yes — the project's payoff; regenerate only when a tool improves |
 | **Render / scratch** | regenerable from the ROM (graphics, traces, reports, dumps) | a gitignored renders tree, **in a kind subdir** | no — gitignored |
+
+The **oracle** class is itself organized by pipeline stage under `source/` (each stage = one
+abstraction level, so you can walk ROM → readable C):
+
+```
+source/
+  1-asm-6502/   native 6502 disassembly (bank_NN[.asm|_labeled|_named] + the full .asm + chr_rom.bin)
+  2-asm-vm/     Sea-16 VM bytecode disassembly (bank_NN_vm.asm) — written by decompile_all
+  3-c-basic/    bytecode → direct goto C (bank_NN.raw.c) — the CFG-equivalence witness
+  4-c/          structured C, DREAM canonical (bank_NN.c) — what you read
+```
+Writers: `mesen-labels.py` owns stage 1 (`--asm`); `na1dream.cli.decompile_all` writes stages
+2–4 (and `--basic` writes 3). Stage 1 `*_named.asm` are gitignored (regenerable from the toml).
 
 Deciding where a new tool's output lands:
 
 1. **A canonical artifact meant to be READ like source** (deterministic, the deliverable)?
-   → its own committed top-level dir, like `decompiled/` / `disasm/`. These are oracles.
+   → a committed stage under `source/` (or its own top-level dir if it's a new kind). These are oracles.
 2. **Regenerable from the ROM** (a render, a trace, an HTML report, a txt dump)?
    → the gitignored renders tree, under a **kind** subdir (`renders/<kind>/`) — not a flat
    pile in one dir. The tool owns its output subpath.
 3. **Hand-authored knowledge?** → it's *source*, not output: a `.md` at the project root.
 
-**Known artifact debt (convention defined 2026-06-10, moves deferred):** `atlas/` is a flat
+**Done 2026-06-10:** the oracle reorg above — `disasm/` + `decompiled/` consolidated into the
+`source/` ladder, the duplicated VM-asm de-duped (one canonical copy in `2-asm-vm/`).
+
+**Remaining artifact debt (convention defined, moves deferred):** `atlas/` is a flat
 catch-all (misnamed — it holds animations, province renders, PPU/SRAM dumps, strategic maps,
 UI previews, title CHR — not just "atlas" maps). Target: rename to `renders/` with
 `{provinces, anim, ppu-sram, strategic, ui, title}` subdirs. The `nobunaga/` root also has

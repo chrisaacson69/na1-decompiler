@@ -6,7 +6,7 @@ created: 2026-05-26
 
 > Exact equations derived from bytecode walk + empirical verification across multiple in-game tests. Each formula listed here has been **proven against ≥3 controlled SRAM snapshots** with matching predictions.
 
-**Links:** [commands README](./commands/README.md) · [Chapter 11 — strategic engine complete](./11-strategic-engine-complete.md) · `disasm/bank_01_vm.asm`, `disasm/bank_15_vm.asm`
+**Links:** [commands README](./commands/README.md) · [Chapter 11 — strategic engine complete](./11-strategic-engine-complete.md) · `source/2-asm-vm/bank_01_vm.asm`, `source/2-asm-vm/bank_15_vm.asm`
 
 ## Notation
 

@@ -95,7 +95,7 @@ def parse_named_subs(bank, far=False, recorded=None):
     far=False -> positional slots (arg/localN). far=True -> far-frame slots (fp±N)
     minus those already recorded in the sub's [vars.*] section (`recorded`)."""
     recorded = recorded or {}
-    text = (ROOT / "decompiled" / f"bank_{bank:02d}.c").read_text(encoding="utf-8")
+    text = (ROOT / "source" / "4-c" / f"bank_{bank:02d}.c").read_text(encoding="utf-8")
     starts = [m.start() for m in BODY_RE.finditer(text)]
     out = []
     for i, s in enumerate(starts):

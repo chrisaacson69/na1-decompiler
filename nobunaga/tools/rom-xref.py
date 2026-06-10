@@ -34,14 +34,14 @@ from collections import defaultdict
 from pathlib import Path
 
 PROJ = Path(__file__).resolve().parent.parent
-DISASM = PROJ / "disasm"
+DISASM = PROJ / "source" / "2-asm-vm"   # VM bytecode disasm (stage 2)
 ROM = PROJ / "Nobunaga's Ambition (USA).nes"
 CODE_BANKS = (0, 1, 2, 15)
 IMM_WORD_OPS = {0x8A: "loadA", 0x8C: "loadB", 0x8E: "push"}
 
 sys.path.insert(0, str(PROJ / "tools"))
 from importlib import import_module
-_nv = import_module("nobunaga_vm")
+_nv = import_module("na1dream.nobunaga_vm")
 
 INS_RE = re.compile(
     r'^\s*>?\$([0-9A-Fa-f]{4})\s+'

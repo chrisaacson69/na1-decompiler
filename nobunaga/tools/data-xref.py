@@ -33,12 +33,12 @@ from collections import defaultdict
 from pathlib import Path
 
 PROJ = Path(__file__).resolve().parent.parent
-DISASM = PROJ / "disasm"
+DISASM = PROJ / "source" / "2-asm-vm"   # VM bytecode disasm (stage 2)
 CODE_BANKS = (0, 1, 2, 15)
 
 sys.path.insert(0, str(PROJ / "tools"))
 from importlib import import_module
-_nv = import_module("nobunaga_vm")
+_nv = import_module("na1dream.nobunaga_vm")
 
 # opcode byte -> access kind for the absolute-memory family ($A4-$AB), per the v2
 # OPCODE_INFO spec (nobunaga_vm). $A8/$A9 are STORES (proven: $A48E LOADL_abs $6D9F /

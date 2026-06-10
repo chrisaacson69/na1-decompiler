@@ -9,7 +9,7 @@ created: 2026-06-01
 
 ## Why this works
 
-This cart is **CHR-RAM** (iNES byte5 = 0): tile bitmaps are not static in the ROM at fixed PPU addresses — the CPU **uploads** them at runtime. So you can't just `dd` a CHR bank and get a picture. Every on-screen graphic is assembled from three pieces the code moves around, and to render it faithfully you reconstruct the same three pieces the game does. The decompiled code (all 4 banks named, `decompiled/all_banks.c`) tells you where each piece lives.
+This cart is **CHR-RAM** (iNES byte5 = 0): tile bitmaps are not static in the ROM at fixed PPU addresses — the CPU **uploads** them at runtime. So you can't just `dd` a CHR bank and get a picture. Every on-screen graphic is assembled from three pieces the code moves around, and to render it faithfully you reconstruct the same three pieces the game does. The decompiled code (all 4 banks named, `source/4-c/all_banks.c`) tells you where each piece lives.
 
 ## An NES CHR-RAM asset = three pieces
 
@@ -23,7 +23,7 @@ Render = decode each referenced CHR tile (2bpp → 4 palette slots) → place it
 
 ## The recipe (repeatable)
 
-1. **Find the draw routine.** Grep `decompiled/all_banks.c` for the asset's screen, or scan the **graphics entry points** (the 27 functions that call `ppu_upload_block_wrap` / `ppu_blit_from_bank_wrap` / `palette_write_wrap` — see inventory below).
+1. **Find the draw routine.** Grep `source/4-c/all_banks.c` for the asset's screen, or scan the **graphics entry points** (the 27 functions that call `ppu_upload_block_wrap` / `ppu_blit_from_bank_wrap` / `palette_write_wrap` — see inventory below).
 2. **Read the BYTECODE of the upload/blit calls, not just the C.** ⚠️ The decompiler's host-call arg capture is **lossy** (it renders `?` / duplicate args). `py -3 tools/vm-disasm.py <bank> --stdout` and read the real `PUSH`/`CALL_abs_imm1` sequence — the true `{bank, src, count}`, the map pointer, and the dimensions are only reliable there. *(The portrait layout bug — a per-id `*36` map mistaken for a fixed table — was invisible in the C and obvious in the bytecode.)*
 3. **Resolve cross-bank pointers by the upload's BANK ARG, not the pointer's operand bank.** ⚠️ `$8000-$BFFF` is the switchable MMC1 window, so the decompiler resolves a `$BBxx` operand to whatever string/data sits there in the *current* bank (e.g. portraits' `$BBD0` mis-resolved to `msg_ng_to_pieces`). The real source bank is the `bank` argument passed to the upload/blit syscall. Use the PRG offset (`bank*0x4000 + (cpu&0x3FFF)`) as the true identity. This is the #1 recurring trap (same as the bank-8 face tables, [[feedback_documented_vs_actual_behavior]]).
 4. **Decode + assemble.** Reuse the primitives in `tools/render-portrait.py`: `NES_PALETTE` (64-color 2C02 master table) and the 2bpp tile decoder. Read the palette indices from the ROM table (don't hardcode), so the output is the game's true color.

@@ -560,7 +560,7 @@ never ADD false accepts. Confirmed: 114/114 incl. the inject-a-misroute negative
 495/495 both paths; witness `lower(raw)==bytecode` 495/495 (untouched — only `lower_struct_cfg` changed);
 disasm 0 BAD ×4; drift-guard clean; regen deterministic.
 
-**Measured.** V1 templates **1151 → 1080 (−71 gotos, fallbacks 35 → 15)**; `decompiled/*.c` gained real
+**Measured.** V1 templates **1151 → 1080 (−71 gotos, fallbacks 35 → 15)**; `source/4-c/*.c` gained real
 structure (73 gotos → `if`/`while`, e.g. `if (x != 24) goto L_merge` → `if (x == 24) { … }`). **V2 reducer
 929 → 929 (INERT).** behind-V1 51 → 57 (rose only because V1 improved; V2 still leads 929 < 1080).
 
@@ -627,7 +627,7 @@ structurer folds into `if(c1||c2…){body}`. So the reducer needs NO new rule �
 **Result.** V2 **929 → 899 (−30, 13 subs better, 0 worse)** — the FIRST atlas-sourced atom AND the first
 real V2 drop since the merge/gate lane was exhausted; V1 1080 → 1038 (−42), raw 2068 → 2032 (−36). All gates
 green: witness 495/495, structuring 495/495, soundness 114/114, drift clean, disasm 0 BAD ×4, deterministic;
-`decompiled/*.c` regenerated (`$9A5D` now reads `if ((local11 || local10)) { … }`). The discovery sub `$9A5D`
+`source/4-c/*.c` regenerated (`$9A5D` now reads `if ((local11 || local10)) { … }`). The discovery sub `$9A5D`
 itself only went 13→12 in V2 (its OTHER regions still flat-span) — the −30 is almost entirely OTHER subs, i.e.
 the atom folds **beyond its intended purpose** (Chris's bar for "real issue, not chasing": met).
 
@@ -668,7 +668,7 @@ logic" gap a single structural metric misses.
 
 **Result.** `$A30D` 8→0 gotos — folds to the EXACT clean form (each case `break;`, empty default omitted, both
 `while` loops + the switch reading as game logic). V2 **899 → 883 (−16, 4 subs, 0 worse)**; V1 unchanged
-(`decompiled/*.c` byte-identical — this is a V2-reducer + gate change, not a decoder fold). All gates green:
+(`source/4-c/*.c` byte-identical — this is a V2-reducer + gate change, not a decoder fold). All gates green:
 witness 495/495, structuring 495/495, soundness 114/114, drift clean, disasm 0 BAD, deterministic. The gate
 change is the reusable keystone: switch-`break` now models correctly, so the remaining switch shapes
 (shared-RETURN merge `$9C84`, pre-switch-shared `$9ED9`, non-empty default) compose on top of it.

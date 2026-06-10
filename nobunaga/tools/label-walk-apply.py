@@ -33,7 +33,7 @@ from walk_guard import snapshot_decompiled, find_guard_violations
 ROOT = Path(__file__).resolve().parent.parent
 TOML = ROOT / "mesen-labels.toml"
 MLB = ROOT / "Nobunaga's Ambition (USA).mlb"
-DECOMPILED = ROOT / "decompiled"
+DECOMPILED = ROOT / "source" / "4-c"   # structured C (stage 4)
 
 
 def die(msg, code=2):
@@ -178,7 +178,7 @@ def main():
         return
 
     files = ["mesen-labels.toml", "Nobunaga's Ambition (USA).mlb",
-             f"decompiled/bank_{a.bank:02d}.c", "decompiled/all_banks.c"]
+             f"source/4-c/bank_{a.bank:02d}.c", "source/4-c/all_banks.c"]
     run(["git", "add"] + files)
     msg = (f"Nobunaga: label-walk bank_{a.bank:02d} batch — {len(verified)} named ({tally_str})\n\n"
            f"Names from the label-walk skill (propose@C -> independent verify@bytecode),\n"

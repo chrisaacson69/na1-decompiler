@@ -22,7 +22,7 @@ from collections import defaultdict
 PROJ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJ / "tools"))
 _ml = import_module("mesen-labels")
-_vd = import_module("vm_decompile")
+_vd = import_module("na1dream.vm_decompile")
 
 ROM = PROJ / "Nobunaga's Ambition (USA).nes"
 INES = 16

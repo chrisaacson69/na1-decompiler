@@ -28,7 +28,10 @@ from collections import defaultdict
 from pathlib import Path
 
 PROJ = Path(__file__).resolve().parent.parent
-DISASM = PROJ / "disasm"
+# Pipeline stages live under source/ now (tools/na1dream/ARCHITECTURE.md): native 6502 in
+# 1-asm-6502/, VM bytecode in 2-asm-vm/. This tool reads both.
+ASM6502 = PROJ / "source" / "1-asm-6502"
+ASMVM = PROJ / "source" / "2-asm-vm"
 ROM = PROJ / "Nobunaga's Ambition (USA).nes"
 CMD_TABLE = PROJ / "command-table.txt"
 CODE_BANKS = (0, 1, 2, 15)
@@ -66,7 +69,7 @@ HEX_OPERAND_RE = re.compile(r"^\$([0-9a-fA-F]{4})$")
 def parse_native(bank, entry_targets):
     """Yield edges from a native disasm bank. entry_targets = set of known sub-entry
     addrs (jsr/host_call targets) used to attribute calls to the enclosing sub."""
-    path = DISASM / f"bank_{bank:02d}.asm"
+    path = ASM6502 / f"bank_{bank:02d}.asm"
     if not path.exists():
         return [], {}
     edges = []
@@ -114,7 +117,7 @@ VM_CALL_RE = re.compile(r"\b(?:host_call(?:_simple)?|CALL_abs(?:_imm1)?)\s+\$([0
 
 
 def parse_bytecode(bank):
-    path = DISASM / f"bank_{bank:02d}_vm.asm"
+    path = ASMVM / f"bank_{bank:02d}_vm.asm"
     if not path.exists():
         return []
     edges = []
