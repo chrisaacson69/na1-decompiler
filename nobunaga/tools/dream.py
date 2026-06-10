@@ -855,16 +855,27 @@ def _natural_loops(tc, header):
                     return None
                 fallout = next(iter(outs))
                 break
-        # Every other exit target: absorb if it's a terminal early-return reached ONLY from the
-        # loop; otherwise it's a real second break target — out of scope for now.
-        exits = {s for n in N for s in cfg[n] if s != EXIT and s not in N}
-        for X in exits:
-            if X == fallout:
-                continue
-            if not _is_sink(X) and set(cfg.get(X, ())) == {EXIT} and preds.get(X, set()) <= N:
-                N.add(X)                               # inline the early-return into the body
-            else:
-                return None
+        # Every other exit target is an EARLY-EXIT block: absorb it into the body (to a fixpoint)
+        # iff it is reached ONLY from the loop (all preds inside the region). Its own onward edges
+        # then become breaks to the fall-out / returns — the `if(match){…; return/break}` idiom.
+        # It need NOT be directly terminal (`$987E`'s `$988F` does `*p=-56` then jumps to the shared
+        # return `$98A2`). A block reached from OUTSIDE the loop is a genuine shared continuation, or
+        # a sink is a multi-level break — either ⇒ out of scope (bail). An absorbed block can't reach
+        # a latch (it isn't in the natural loop), so the region stays acyclic (re-checked downstream).
+        bail = False
+        changed = True
+        while changed and not bail:
+            changed = False
+            for X in {s for n in N for s in cfg[n] if s != EXIT and s not in N}:
+                if X == fallout:
+                    continue
+                if _is_sink(X) or not (preds.get(X, set()) <= N):
+                    bail = True
+                    break
+                N.add(X)
+                changed = True
+        if bail:
+            return None
         loops.append({'h': h, 'nodes': frozenset(N), 'latches': frozenset(latches), 'exit': fallout})
     return loops
 
