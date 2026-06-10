@@ -762,13 +762,16 @@ def _preds(cfg):
 
 
 def _natural_loops(tc, header):
-    """The sub's reducible natural loops as [{h, nodes, latches, exit}], or None when out of scope.
-    Loops sharing a header merge (one loop, many latches). Each loop keeps ONE fall-out exit (the
-    post-loop continuation, emitted after the loop) — taken from a latch's outside-edge (bottom
-    test) or the header's (top test). Any OTHER exit edge to a TERMINAL block reached ONLY from the
-    loop is ABSORBED into the body as an inline early-return (the search-loop `if(found) return 1`
-    idiom); a non-terminal or shared extra exit is a genuine multi-break — bail (None) for now.
-    Also bails on nested / overlapping (irreducible) loops."""
+    """The OUTERMOST reducible loops of `tc` as [{h, nodes, latches, exit}], or None when out of
+    scope. Loops sharing a header merge (one loop, many latches). Only outermost loops are returned
+    — a nested loop is left INSIDE its parent's `nodes` and re-discovered when `_structure_tc`
+    recurses on the parent's body region (which peels exactly one level). Each loop keeps ONE
+    fall-out exit (the post-loop continuation, emitted after the loop) — a latch's outside-edge
+    (bottom test) or the header's (top test). Any OTHER exit edge to a TERMINAL block reached ONLY
+    from the loop is ABSORBED into the body as an inline early-return (the search-loop
+    `if(found) return 1` idiom); a non-terminal or shared extra exit is a genuine multi-break — bail.
+    Bails on overlapping (irreducible) outermost loops and on any exit to a synthetic sink (a
+    multi-level break across an already-redirected boundary)."""
     EXIT = vm_cfg.EXIT
     cfg = tc['cfg']
     edges, _dom = vm_cfg.back_edges(cfg, header)
@@ -778,30 +781,28 @@ def _natural_loops(tc, header):
     byh = {}
     for u, h in edges:
         byh.setdefault(h, set()).add(u)
-    loops, nodes_of = [], {}
+    nodes_of = {}
     for h, latches in byh.items():
         N = set()
         for u in latches:
             N |= vm_cfg.natural_loop(u, h, cfg)
         nodes_of[h] = N
-        loops.append({'h': h, 'nodes': set(N), 'latches': frozenset(latches)})
     hs = list(nodes_of)
-    for i, hi in enumerate(hs):                       # disjoint single-level only (Phase 1)
-        for j, hj in enumerate(hs):
-            if i != j and hj in nodes_of[hi]:
-                return None                            # nested loop
-        for hj in hs[i + 1:]:
-            if nodes_of[hi] & nodes_of[hj]:
-                return None                            # overlapping (irreducible-ish)
-    for lp in loops:
-        N, h, latches = lp['nodes'], lp['h'], lp['latches']
+    outer = [hi for hi in hs if all(hi == hj or hi not in nodes_of[hj] for hj in hs)]
+    for i in range(len(outer)):                       # outermost loops must be pairwise disjoint
+        for j in range(i + 1, len(outer)):
+            if nodes_of[outer[i]] & nodes_of[outer[j]]:
+                return None                            # overlap without nesting ⇒ irreducible
+    loops = []
+    for h in outer:
+        N, latches = set(nodes_of[h]), byh[h]
         # The fall-out continuation: a latch's outside-edge (bottom test), else the header's (top
         # test). >1 distinct fall-out candidate from the controlling block ⇒ unhandled.
         fallout = None
         for src in list(latches) + [h]:
             outs = {s for s in cfg[src] if s != EXIT and s not in N}
             if outs:
-                if len(outs) > 1:
+                if len(outs) > 1 or any(_is_sink(s) for s in outs):
                     return None
                 fallout = next(iter(outs))
                 break
@@ -811,12 +812,11 @@ def _natural_loops(tc, header):
         for X in exits:
             if X == fallout:
                 continue
-            if set(cfg.get(X, ())) == {EXIT} and preds.get(X, set()) <= N:
+            if not _is_sink(X) and set(cfg.get(X, ())) == {EXIT} and preds.get(X, set()) <= N:
                 N.add(X)                               # inline the early-return into the body
             else:
                 return None
-        lp['nodes'] = frozenset(N)
-        lp['exit'] = fallout
+        loops.append({'h': h, 'nodes': frozenset(N), 'latches': frozenset(latches), 'exit': fallout})
     return loops
 
 
@@ -918,21 +918,30 @@ def _substitute_loops(seq, loop_nodes):
     return [sub(x) for x in seq]
 
 
-def _loop_structure(tc, header, loops):
-    """Build the loop-aware AST: structure each loop body in isolation (redirected sub-tc), wrap
-    in a loop node, then structure the collapsed outer graph and substitute the loop nodes back.
-    Returns None if any region (body or outer) is still cyclic (irreducible — out of scope)."""
+def _structure_tc(tc, header):
+    """Structure a single-entry reducible region `tc` (acyclic OR cyclic) into an AST seq, or None
+    if out of scope. RECURSIVE: structure each OUTERMOST loop's body in its redirected sub-tc — which
+    may itself contain a (now-innermost) loop, peeled by the recursive call — wrap in a loop node,
+    collapse the loop to its header in the outer graph, structure that acyclically, and substitute
+    the loop nodes back. Each region's own back/exit edges are redirected to sinks (mapped to
+    continue/break here, after the body is fully structured), so nesting composes one level at a
+    time. Bails if any region stays cyclic after collapse (irreducible)."""
+    if not _has_backedge(tc['cfg'], header):
+        return _acyclic_seq(tc, header, do_orchains=False)
+    loops = _natural_loops(tc, header)
+    if loops is None:
+        return None
     loop_nodes, removed = {}, set()
     for lp in loops:
         h, N = lp['h'], lp['nodes']
         rtc = _region_tc(tc, N, h, lp['exit'])
-        if _has_backedge(rtc['cfg'], h):              # body still cyclic ⇒ irreducible — bail
+        body = _structure_tc(rtc, h)                  # RECURSE: inner loops peeled here
+        if body is None:
             return None
-        body = _map_sinks(_acyclic_seq(rtc, h, do_orchains=False), h, lp['exit'])
-        loop_nodes[h] = ('loop', h, body)
+        loop_nodes[h] = ('loop', h, _map_sinks(body, h, lp['exit']))
         removed |= (set(N) - {h})
     otc = _outer_tc(tc, loops, removed)
-    if _has_backedge(otc['cfg'], header):             # outer still cyclic ⇒ irreducible — bail
+    if _has_backedge(otc['cfg'], header):             # residue still cyclic ⇒ irreducible — bail
         return None
     outer = _acyclic_seq(otc, header, do_orchains=False)
     return _substitute_loops(outer, loop_nodes)
@@ -955,10 +964,7 @@ def dream_ast(lines, instructions):
     if not _has_backedge(tc['cfg'], header):
         tc['leaders'] = list(leaders)
         return _acyclic_seq(tc, header), tc, nxt
-    loops = _natural_loops(tc, header)
-    if loops is None:
-        return None
-    ast = _loop_structure(tc, header, loops)
+    ast = _structure_tc(tc, header)
     if ast is None:
         return None
     return ast, tc, nxt
