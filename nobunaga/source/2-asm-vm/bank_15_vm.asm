@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 15
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1333 CPU addresses named
+  labels:       1334 CPU addresses named
 
   bank 15: found 135 bytecode-subroutine stubs
 
@@ -3313,7 +3313,7 @@ VM bytecode disassembly
   $E025  0C                         LOADL_quick   ; inline operand = 12
   $E026  55                         LOADR_qimm   ; inline operand = 5
   $E027  B5                         MULT
-  $E028  8C A9 76                   LOADR_imm2             $76A9
+  $E028  8C A9 76                   LOADR_imm2             $76A9 (province_unit_type_pct)
   $E02B  BB                         ADD
   $E02C  B4                         POPR
   $E02D  B3                         PUSHL
@@ -3355,13 +3355,13 @@ VM bytecode disassembly
   $E067  A4 63 6F                   LOADL_abs              $6F63 (battle_defending_province)
   $E06A  55                         LOADR_qimm   ; inline operand = 5
   $E06B  B5                         MULT
-  $E06C  8C A9 76                   LOADR_imm2             $76A9
+  $E06C  8C A9 76                   LOADR_imm2             $76A9 (province_unit_type_pct)
   $E06F  BB                         ADD
   $E070  B3                         PUSHL
   $E071  A4 5F 6F                   LOADL_abs              $6F5F (selected_province_idx)
   $E074  55                         LOADR_qimm   ; inline operand = 5
   $E075  B5                         MULT
-  $E076  8C A9 76                   LOADR_imm2             $76A9
+  $E076  8C A9 76                   LOADR_imm2             $76A9 (province_unit_type_pct)
   $E079  BB                         ADD
   $E07A  B3                         PUSHL
   $E07B  64                         PUSH_qimm   ; inline operand = 4
@@ -3665,7 +3665,7 @@ VM bytecode disassembly
   $E2B6  0C                         LOADL_quick   ; inline operand = 12
   $E2B7  55                         LOADR_qimm   ; inline operand = 5
   $E2B8  B5                         MULT
-  $E2B9  8C A9 76                   LOADR_imm2             $76A9
+  $E2B9  8C A9 76                   LOADR_imm2             $76A9 (province_unit_type_pct)
   $E2BC  BB                         ADD
   $E2BD  2B                         STORE_quick   ; inline operand = 11
   $E2BE  D6 CF E2                   JUMP_abs               $E2CF

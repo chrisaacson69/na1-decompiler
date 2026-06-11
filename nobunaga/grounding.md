@@ -150,6 +150,16 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #9 — AI strength keystone + battle setup (80/131, 61%)   [2026-06-10]
+- `$9C88` `ai_eval_battle_strength_total` ✅ — THE keystone summing every AI strength term grounded this session.
+  **Found the difficulty knob:** mod = `115 - const_two*15` (const_two = the skill level 1-5, $6D63) when the side is
+  AI → 100/85/70/55/40 — a difficulty-scaled combat-AI handicap. Old note ('30 or 100') corrected.
+- `$91D5` `distribute_damage_across_unit_types` → **`distribute_men_into_unit_strengths`** — REFUTED 'damage': splits
+  the army's MEN (side_resource+4) into the 5 unit_strength columns by province_unit_type_pct ($76A9, now labeled).
+- `$8B58` `draw_valid_unit_field_cells` → **`draw_unit_counts_in_valid_cells`**.
+- `$8C61` `draw_unit_roster_columns` ✅, `$A07A` `find_adjacent_unit_around_tile` ✅, `$8544`/`$8B25` ✅ re-grounded.
+Next: rows 1-7.
+
 ### Bank 2 full-verify batch #8 — AI strength terms + battle resolution (73/131, 55%)   [2026-06-10]
 - `$AD86` `halve_defender_province_stat_for_exposed_units` → **`halve_defender_morale_for_breaching_attackers`** —
   REFUTED side: it loops ATTACKER (side-0) units ON placeable cells (bit 32 SET) to halve the DEFENDER's morale

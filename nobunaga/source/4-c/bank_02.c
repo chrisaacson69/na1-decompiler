@@ -796,10 +796,10 @@ word draw_combat_day_header(word arg1) {
     return draw_message(msg_day_2d, arg1);    // $8B57
 }
 
-// $8B58 draw_valid_unit_field_cells
+// $8B58 draw_unit_counts_in_valid_cells
 // (body @ $8B5D)
 
-word draw_valid_unit_field_cells(void) {
+word draw_unit_counts_in_valid_cells(void) {
     local10 = 0;    // $8B5E
     do {    // $8B5F
         local9 = 0;    // $8B60
@@ -1277,10 +1277,10 @@ word prompt_select_province_from_list(void) {
     return 255;    // $91D4
 }
 
-// $91D5 distribute_damage_across_unit_types
+// $91D5 distribute_men_into_unit_strengths
 // (body @ $91DA)
 
-word distribute_damage_across_unit_types(void) {
+word distribute_men_into_unit_strengths(void) {
     local8 = 0;    // $91DB
     do {    // $91DC
         local11 = *(word*)((side_resource_ptr(local8) + 4));    // $91E3
@@ -1369,7 +1369,7 @@ word battle_init_clear_defending_province_fields(void) {
         defender_depleted_flag = 8;    // $9350
     }
     if (!(defender_depleted_flag)) {    // $9351
-        distribute_damage_across_unit_types();    // $9355
+        distribute_men_into_unit_strengths();    // $9355
         clear_all_unit_positions();    // $9358
         cur_combat_side = 1;    // $935C
     } else {
@@ -1602,7 +1602,7 @@ word draw_tactical_cursor_region_arg0(word arg1) {
     palette_swap(1);    // $95E7
     map_render_driver();    // $95EB
     palette_swap(0);    // $95EF
-    return draw_valid_unit_field_cells();    // $95F6
+    return draw_unit_counts_in_valid_cells();    // $95F6
 }
 
 // $960E is_cell_valid_for_phase
@@ -3055,7 +3055,7 @@ word prompt_hit_any_key_and_redraw_combat_screen(void) {
     wait_button_edge();    // $AB80
     reset_prompt_selection();    // $AB83
     render_combat_map_screen();    // $AB86
-    draw_valid_unit_field_cells();    // $AB89
+    draw_unit_counts_in_valid_cells();    // $AB89
     return 1;    // $AB8D
 }
 

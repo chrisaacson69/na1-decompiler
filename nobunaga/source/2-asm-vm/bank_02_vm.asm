@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 2
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1333 CPU addresses named
+  labels:       1334 CPU addresses named
 
   bank 2: found 131 bytecode-subroutine stubs
 
@@ -2568,7 +2568,7 @@ VM bytecode disassembly
   $91ED  E9 8F 83 02                CALL_abs_imm1          $838F (get_battle_side_province) {bytecode}, $02
   $91F1  55                         LOADR_qimm   ; inline operand = 5
   $91F2  B5                         MULT
-  $91F3  8C A9 76                   LOADR_imm2             $76A9
+  $91F3  8C A9 76                   LOADR_imm2             $76A9 (province_unit_type_pct)
   $91F6  BB                         ADD
   $91F7  26                         STORE_quick   ; inline operand = 6
   $91F8  8D 1F                      BYTE_PUSH_imm1         +31
@@ -2813,7 +2813,7 @@ VM bytecode disassembly
   $9350  2B                         STORE_quick   ; inline operand = 11
  >$9351  0B                         LOADL_quick   ; inline operand = 11
   $9352  D7 62 93                   JUMPT_abs              $9362
-  $9355  AC D5 91                   CALL_abs               $91D5 (distribute_damage_across_unit_types) {bytecode}
+  $9355  AC D5 91                   CALL_abs               $91D5 (distribute_men_into_unit_strengths) {bytecode}
   $9358  AC 9C 92                   CALL_abs               $929C (clear_all_unit_positions) {bytecode}
   $935B  41                         LOADL_qimm   ; inline operand = 1
   $935C  A8 E8 7B                   STORE_abs              $7BE8 (cur_combat_side)
@@ -3153,7 +3153,7 @@ VM bytecode disassembly
   $95EB  AC 5E 88                   CALL_abs               $885E (map_render_driver) {bytecode}
   $95EE  60                         PUSH_qimm   ; inline operand = 0
   $95EF  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
-  $95F3  AC 58 8B                   CALL_abs               $8B58 (draw_valid_unit_field_cells) {bytecode}
+  $95F3  AC 58 8B                   CALL_abs               $8B58 (draw_unit_counts_in_valid_cells) {bytecode}
   $95F6  CF                         RETURN
  >$95F7  41                         LOADL_qimm   ; inline operand = 1
   $95F8  D6 E3 95                   JUMP_abs               $95E3
@@ -6272,7 +6272,7 @@ VM bytecode disassembly
   $AB80  AC 87 D2                   CALL_abs               $D287 (wait_button_edge) {bytecode}
   $AB83  AC E1 CC                   CALL_abs               $CCE1 (reset_prompt_selection) {bytecode}
   $AB86  AC 77 89                   CALL_abs               $8977 (render_combat_map_screen) {bytecode}
-  $AB89  AC 58 8B                   CALL_abs               $8B58 (draw_valid_unit_field_cells) {bytecode}
+  $AB89  AC 58 8B                   CALL_abs               $8B58 (draw_unit_counts_in_valid_cells) {bytecode}
   $AB8C  41                         LOADL_qimm   ; inline operand = 1
   $AB8D  CF                         RETURN
 
