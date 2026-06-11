@@ -4742,7 +4742,7 @@ VM bytecode disassembly
   $A03E  2B                         STORE_quick   ; inline operand = 11
   $A03F  D8 63 A0                   JUMPF_abs              $A063
   $A042  3B                         PUSH_quick   ; inline operand = 11
-  $A043  E9 0A 8B 02                CALL_abs_imm1          $8B0A (effect_subhandler_A003) {bytecode}, $02
+  $A043  E9 0A 8B 02                CALL_abs_imm1          $8B0A (effect_sell_rice_for_gold) {bytecode}, $02
   $A047  3C                         PUSH_quick   ; inline operand = 12
   $A048  E9 AC 82 02                CALL_abs_imm1          $82AC (clamp_amount_to_province_max) {bytecode}, $02
   $A04C  61                         PUSH_qimm   ; inline operand = 1
@@ -7382,7 +7382,7 @@ VM bytecode disassembly
   $B35D  52                         LOADR_qimm   ; inline operand = 2
   $B35E  B6                         SDIV
   $B35F  B3                         PUSHL
-  $B360  E9 0A 8B 02                CALL_abs_imm1          $8B0A (effect_subhandler_A003) {bytecode}, $02
+  $B360  E9 0A 8B 02                CALL_abs_imm1          $8B0A (effect_sell_rice_for_gold) {bytecode}, $02
   $B364  D6 A3 B3                   JUMP_abs               $B3A3
  >$B367  AC 2B B3                   CALL_abs               $B32B (rng_threshold_10_29) {bytecode}
   $B36A  A6 0D 6E                   LOADR_abs              $6E0D (gold_rice_exchange_rate)

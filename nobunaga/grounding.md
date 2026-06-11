@@ -198,6 +198,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #10 — targeting/trade/war-prep + 2 value-bug flags (76/131)   [2026-06-10]
+1 rename + 2 DREAM value-bug flags:
+- `$8327` `scale_div10_capcheck` ✅ — the 3rd/last bank-1 ext-op sub (4-c value-wrong, flagged); = -1 if >arg3 else floor(a*b/10).
+- `$97EA` `relations_roll_vs_owner` ✅ — bytecode shows `relations_matrix_get(...) > rng_mod(100)` (a real roll); **4-c renders the
+  roll as phi_980d_0 — value-wrong, flagged** (nearly mis-renamed it).
+- `$8B0A` `effect_subhandler_A003` → **`effect_sell_rice_for_gold`** (gold += rate*rice/10, rice -= amount).
+- `$8172` count_eligible_targets, `$933A/$9351` war-prep men/gold checks (sibling of prep_a=rice), `$A93A` effect_give_a:
+  re-grounded. The 3 war-prep checks now map cleanly to rice/men/gold. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #9 — view/dam/war-prep + a refute (69/131)   [2026-06-10]
 3 renames + 1 REFUTE:
 - `$A29B` `effect_hire_pay_gold` → **`effect_ninja_failed`** — bytecode-verified it's the ninja FAILURE effect

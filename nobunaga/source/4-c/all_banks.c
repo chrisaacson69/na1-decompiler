@@ -146,7 +146,7 @@
 //   PRG $049C1  bank1  $89C1  develop_morale
 //   PRG $04A15  bank1  $8A15  effect_trade
 //   PRG $04A4E  bank1  $8A4E  cycle_economy_rate
-//   PRG $04B0A  bank1  $8B0A  effect_subhandler_A003
+//   PRG $04B0A  bank1  $8B0A  effect_sell_rice_for_gold
 //   PRG $04B40  bank1  $8B40  effect_subhandler_9F04
 //   PRG $04B8F  bank1  $8B8F  play_result_jingle
 //   PRG $04BC1  bank1  $8BC1  compute_bribe_effect_value
@@ -4008,10 +4008,10 @@ L_p04A93:
 }
 
 // ===== bank1 $8B0A  (PRG $04B0A) =====
-// PRG $04B0A effect_subhandler_A003
+// PRG $04B0A effect_sell_rice_for_gold
 // (body @ PRG $04B0F)
 
-word effect_subhandler_A003(word rice_amount) {
+word effect_sell_rice_for_gold(word rice_amount) {
     fief = ((selected_province_idx * 26) + 0x7001);    // PRG $04B19
     rice_ptr = (fief + 6);    // PRG $04B1C
     header = *(word*)((rice_ptr + 18));    // PRG $04B21
@@ -5236,7 +5236,7 @@ word subhandler_A003(word arg1) {
             draw_message(msg_s_rice_will_you_sell, msg_how_much_f99d);    // PRG $06034 -> bank15 $D134
             local11 = number_input(1, local10);    // PRG $0603E -> bank15 $D5E9
             if (number_input(1, local10)) {    // PRG $0602E -> bank15 $D5E9
-                effect_subhandler_A003(local11);    // PRG $06043 -> bank1 $8B0A
+                effect_sell_rice_for_gold(local11);    // PRG $06043 -> bank1 $8B0A
                 clamp_amount_to_province_max(arg1);    // PRG $06048 -> bank1 $82AC
                 cycle_economy_rate(1);    // PRG $0604D -> bank1 $8A4E
                 return 1;    // PRG $06052
@@ -6568,7 +6568,7 @@ word ai_province_gold_to_rice_convert(word gold_surplus_ptr, word rice_surplus_p
     } else {
         fief = ((selected_province_idx * 26) + 0x7001);    // PRG $07350
         if (((unsigned)rng_threshold_10_29() < (unsigned)gold_rice_exchange_rate)) {    // PRG $07346 -> bank1 $B32B
-            effect_subhandler_A003((*(word*)(rice_surplus_ptr) / 2));    // PRG $07360 -> bank1 $8B0A
+            effect_sell_rice_for_gold((*(word*)(rice_surplus_ptr) / 2));    // PRG $07360 -> bank1 $8B0A
         } else {
             if (((unsigned)rng_threshold_10_29() > (unsigned)gold_rice_exchange_rate)) {    // PRG $07367 -> bank1 $B32B
                 rice_gain = ratio_times10_capped(*(word*)(gold_surplus_ptr), gold_rice_exchange_rate, (*(word*)((fief + 24)) - *(word*)((fief + 6))));    // PRG $07386 -> bank1 $8357

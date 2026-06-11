@@ -753,10 +753,10 @@ L_8A93:
     return set_cursor(local10, local9);    // $8AA9
 }
 
-// $8B0A effect_subhandler_A003
+// $8B0A effect_sell_rice_for_gold
 // (body @ $8B0F)
 
-word effect_subhandler_A003(word rice_amount) {
+word effect_sell_rice_for_gold(word rice_amount) {
     fief = ((selected_province_idx * 26) + 0x7001);    // $8B19
     rice_ptr = (fief + 6);    // $8B1C
     header = *(word*)((rice_ptr + 18));    // $8B21
@@ -1938,7 +1938,7 @@ word subhandler_A003(word arg1) {
             draw_message(msg_s_rice_will_you_sell, msg_how_much_f99d);    // $A034
             local11 = number_input(1, local10);    // $A03E
             if (number_input(1, local10)) {    // $A02E
-                effect_subhandler_A003(local11);    // $A043
+                effect_sell_rice_for_gold(local11);    // $A043
                 clamp_amount_to_province_max(arg1);    // $A048
                 cycle_economy_rate(1);    // $A04D
                 return 1;    // $A052
@@ -3225,7 +3225,7 @@ word ai_province_gold_to_rice_convert(word gold_surplus_ptr, word rice_surplus_p
     } else {
         fief = ((selected_province_idx * 26) + 0x7001);    // $B350
         if (((unsigned)rng_threshold_10_29() < (unsigned)gold_rice_exchange_rate)) {    // $B346
-            effect_subhandler_A003((*(word*)(rice_surplus_ptr) / 2));    // $B360
+            effect_sell_rice_for_gold((*(word*)(rice_surplus_ptr) / 2));    // $B360
         } else {
             if (((unsigned)rng_threshold_10_29() > (unsigned)gold_rice_exchange_rate)) {    // $B367
                 rice_gain = ratio_times10_capped(*(word*)(gold_surplus_ptr), gold_rice_exchange_rate, (*(word*)((fief + 24)) - *(word*)((fief + 6))));    // $B386
