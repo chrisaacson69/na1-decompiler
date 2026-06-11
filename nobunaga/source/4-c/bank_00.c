@@ -1585,10 +1585,10 @@ word revolt_spread_sweep_flip_fief_ownership(void) {
     return (*(byte*)(local11) != 255);    // $9878
 }
 
-// $9879 mark_6f89_list_entry_by_value
+// $9879 mark_fief_list_entry_removed
 // (body @ $987E)
 
-word mark_6f89_list_entry_by_value(word arg1) {
+word mark_fief_list_entry_removed(word arg1) {
     phi_val_9898 = 0x6F89;    // $9881
     while (1) {    // $9898
         local11 = phi_val_9898;    // $9898
@@ -1628,7 +1628,7 @@ word select_provinces_and_assign_ai_state(word arg1, word arg2) {
         if ((*(byte*)(local11) == 255)) break;    // $98EA
         local10 = (local10 + 1);    // $98EF
         *(byte*)(((local10 + 1) - 1)) = *(byte*)(local11);    // $98F4
-        mark_6f89_list_entry_by_value(*(byte*)(local11));    // $98F8
+        mark_fief_list_entry_removed(*(byte*)(local11));    // $98F8
         local11 = (local11 + 1);    // $98FE
         count = (count + 1);    // $9903
     }

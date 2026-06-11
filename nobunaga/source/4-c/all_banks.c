@@ -73,7 +73,7 @@
 //   PRG $01621  bank0  $9621  reassign_daimyo24_fiefs_to_owner50
 //   PRG $016B0  bank0  $96B0  scenario50_fief30_event_eligible
 //   PRG $01778  bank0  $9778  revolt_spread_sweep_flip_fief_ownership
-//   PRG $01879  bank0  $9879  mark_6f89_list_entry_by_value
+//   PRG $01879  bank0  $9879  mark_fief_list_entry_removed
 //   PRG $018A3  bank0  $98A3  set_fief_ownership_record
 //   PRG $018C6  bank0  $98C6  select_provinces_and_assign_ai_state
 //   PRG $01974  bank0  $9974  process_first_n_unmarked_list_entries
@@ -2155,10 +2155,10 @@ word revolt_spread_sweep_flip_fief_ownership(void) {
 }
 
 // ===== bank0 $9879  (PRG $01879) =====
-// PRG $01879 mark_6f89_list_entry_by_value
+// PRG $01879 mark_fief_list_entry_removed
 // (body @ PRG $0187E)
 
-word mark_6f89_list_entry_by_value(word arg1) {
+word mark_fief_list_entry_removed(word arg1) {
     phi_val_9898 = 0x6F89;    // PRG $01881
     while (1) {    // PRG $01898
         local11 = phi_val_9898;    // PRG $01898
@@ -2200,7 +2200,7 @@ word select_provinces_and_assign_ai_state(word arg1, word arg2) {
         if ((*(byte*)(local11) == 255)) break;    // PRG $018EA
         local10 = (local10 + 1);    // PRG $018EF
         *(byte*)(((local10 + 1) - 1)) = *(byte*)(local11);    // PRG $018F4
-        mark_6f89_list_entry_by_value(*(byte*)(local11));    // PRG $018F8 -> bank0 $9879
+        mark_fief_list_entry_removed(*(byte*)(local11));    // PRG $018F8 -> bank0 $9879
         local11 = (local11 + 1);    // PRG $018FE
         count = (count + 1);    // PRG $01903
     }

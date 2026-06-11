@@ -3538,7 +3538,7 @@ VM bytecode disassembly
   $98F5  0B                         LOADL_quick   ; inline operand = 11
   $98F6  D3                         BYTE_DEREF
   $98F7  B3                         PUSHL
-  $98F8  E9 79 98 02                CALL_abs_imm1          $9879 (mark_6f89_list_entry_by_value) {bytecode}, $02
+  $98F8  E9 79 98 02                CALL_abs_imm1          $9879 (mark_fief_list_entry_removed) {bytecode}, $02
   $98FC  0B                         LOADL_quick   ; inline operand = 11
   $98FD  D0                         INC
   $98FE  2B                         STORE_quick   ; inline operand = 11

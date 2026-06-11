@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #5 — scenario events / upkeep / diplomacy (38/98)   [2026-06-10]
+1 rename:
+- `$9879` `mark_6f89_list_entry_by_value` -> **`mark_fief_list_entry_removed`** (sets the $6F89 entry to 200).
+- `$9621` reassign_daimyo24_fiefs_to_owner50 (50-fief event), `$9AAC` driver_diplomacy_gold_transfer (ally-for-gold),
+  `$9B7F` marry_transfer_gold_between_provinces (dowry), `$A0A9` update_province_highwater_marks (snapshots into the
+  $6003 stride-8 base table; the >= logic tracks toward the min -- flagged), `$A15B` consume_province_army_upkeep
+  (men/2 rice+gold cost, starvation cuts men), `$A2DF` roll_3pct_event_chance: re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #4 — aging/clamp/event leaves (31/98)   [2026-06-10]
 1 rename:
 - `$94B1` `announce_provinces_by_ai_state_mode` -> **`announce_seasonal_event`** (typhoon/plague by event id, not AI state).
