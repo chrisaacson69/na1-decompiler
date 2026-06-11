@@ -16,14 +16,14 @@ word compose_upload_daimyo_portrait(word out_buf) {
     local9 = ((unsigned)local9 % (unsigned)5);    // $80A4
     part3_digit = ((unsigned)local8 / (unsigned)5);    // $80A8
     local8 = ((unsigned)local8 % (unsigned)5);    // $80AC
-    ppu_upload_block_wrap(8, ((part0_digit * 192) + unpack_base5_digits_uplo_data_a604), 0x17F0, 12);    // $80BC
-    ppu_upload_block_wrap(8, ((local9 * 96) + unpack_base5_digits_uplo_data_a9c4), 0x18B0, 6);    // $80CE
+    ppu_upload_block_wrap(8, ((part0_digit * 192) + digit_gfx_a604), 0x17F0, 12);    // $80BC
+    ppu_upload_block_wrap(8, ((local9 * 96) + digit_gfx_a9c4), 0x18B0, 6);    // $80CE
     ppu_upload_block_wrap(8, ((local8 * 96) + 0xABA4), 0x1910, 6);    // $80E0
-    ppu_upload_block_wrap(8, ((part3_digit * 192) + unpack_base5_digits_uplo_data_ad84), 0x1970, 12);    // $80F3
+    ppu_upload_block_wrap(8, ((part3_digit * 192) + digit_gfx_ad84), 0x1970, 12);    // $80F3
     syscall16_sram_wrap(9, ((part0_digit * 12) + 0xAE34), out_buf, 12);    // $8102
     syscall16_sram_wrap(9, ((local9 * 6) + 0xAE70), (out_buf + 12), 6);    // $8113
     syscall16_sram_wrap(9, ((local8 * 6) + 0xAE8E), (out_buf + 18), 6);    // $8125
-    return syscall16_sram_wrap(9, ((part3_digit * 12) + unpack_base5_digits_uplo_data_aeac), (out_buf + 24), 12);    // $813B
+    return syscall16_sram_wrap(9, ((part3_digit * 12) + digit_sram_aeac), (out_buf + 24), 12);    // $813B
 }
 
 // $813C build_blit_fief_tile_block
@@ -660,7 +660,7 @@ word map_render_driver(void) {
         ppu_copy_rect_wrap(local11, 4, (local11 + 3), 25, ((((tactical_battle_phase * 3) + local9) * 88) + 0x7BFD), 2);    // $8881
         local9 = (local9 + 1);    // $8887
     } while (((unsigned)local9 < (unsigned)5));
-    ppu_upload_block_wrap(5, (((fief_to_mapid(battle_defending_province) * 144) + (tactical_battle_phase * 48)) + map_render_driver_data_8004), 0x23C8, 3);    // $88AC
+    ppu_upload_block_wrap(5, (((fief_to_mapid(battle_defending_province) * 144) + (tactical_battle_phase * 48)) + map_tile_gfx_8004), 0x23C8, 3);    // $88AC
     if (tactical_battle_phase) {    // $888E
         ppu_copy_rect_wrap(11, 3, 12, 3, map_scroll_marker_tiles, 2);    // $88BE
     } else {
@@ -3364,7 +3364,7 @@ word dispatch_battle_resolution(word outcome) {
         palette_swap(1);    // $AFA6
         i = 0;    // $AFAB
         do {    // $AFAC
-            palette_write_wrap(i, battle_setup_select_prov_data_ba7f[i]);    // $AFB4
+            palette_write_wrap(i, battle_select_palette[i]);    // $AFB4
             i = (i + 1);    // $AFBA
         } while (((unsigned)i < (unsigned)16));
         ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $AFCC

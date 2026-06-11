@@ -44,7 +44,7 @@ VM bytecode disassembly
   $80B1  0A                         LOADL_quick   ; inline operand = 10
   $80B2  8C C0 00                   LOADR_imm2             $00C0
   $80B5  B5                         MULT
-  $80B6  8C 04 A6                   LOADR_imm2             $A604 (unpack_base5_digits_uplo_data_a604)
+  $80B6  8C 04 A6                   LOADR_imm2             $A604 (digit_gfx_a604)
   $80B9  BB                         ADD
   $80BA  B3                         PUSHL
   $80BB  68                         PUSH_qimm   ; inline operand = 8
@@ -54,7 +54,7 @@ VM bytecode disassembly
   $80C4  09                         LOADL_quick   ; inline operand = 9
   $80C5  8B 60                      BYTE_LOADR_imm1        +96
   $80C7  B5                         MULT
-  $80C8  8C C4 A9                   LOADR_imm2             $A9C4 (unpack_base5_digits_uplo_data_a9c4)
+  $80C8  8C C4 A9                   LOADR_imm2             $A9C4 (digit_gfx_a9c4)
   $80CB  BB                         ADD
   $80CC  B3                         PUSHL
   $80CD  68                         PUSH_qimm   ; inline operand = 8
@@ -74,7 +74,7 @@ VM bytecode disassembly
   $80E8  07                         LOADL_quick   ; inline operand = 7
   $80E9  8C C0 00                   LOADR_imm2             $00C0
   $80EC  B5                         MULT
-  $80ED  8C 84 AD                   LOADR_imm2             $AD84 (unpack_base5_digits_uplo_data_ad84)
+  $80ED  8C 84 AD                   LOADR_imm2             $AD84 (digit_gfx_ad84)
   $80F0  BB                         ADD
   $80F1  B3                         PUSHL
   $80F2  68                         PUSH_qimm   ; inline operand = 8
@@ -120,7 +120,7 @@ VM bytecode disassembly
   $812E  07                         LOADL_quick   ; inline operand = 7
   $812F  5C                         LOADR_qimm   ; inline operand = 12
   $8130  B5                         MULT
-  $8131  8C AC AE                   LOADR_imm2             $AEAC (unpack_base5_digits_uplo_data_aeac)
+  $8131  8C AC AE                   LOADR_imm2             $AEAC (digit_sram_aeac)
   $8134  BB                         ADD
   $8135  B3                         PUSHL
   $8136  69                         PUSH_qimm   ; inline operand = 9
@@ -1191,7 +1191,7 @@ VM bytecode disassembly
   $88A3  B5                         MULT
   $88A4  B4                         POPR
   $88A5  BB                         ADD
-  $88A6  8C 04 80                   LOADR_imm2             $8004 (map_render_driver_data_8004)
+  $88A6  8C 04 80                   LOADR_imm2             $8004 (map_tile_gfx_8004)
   $88A9  BB                         ADD
   $88AA  B3                         PUSHL
   $88AB  65                         PUSH_qimm   ; inline operand = 5
@@ -6804,7 +6804,7 @@ VM bytecode disassembly
   $AFAA  40                         LOADL_qimm   ; inline operand = 0
   $AFAB  2B                         STORE_quick   ; inline operand = 11
  >$AFAC  0B                         LOADL_quick   ; inline operand = 11
-  $AFAD  8C 7F BA                   LOADR_imm2             $BA7F (battle_setup_select_prov_data_ba7f)
+  $AFAD  8C 7F BA                   LOADR_imm2             $BA7F (battle_select_palette)
   $AFB0  BB                         ADD
   $AFB1  D3                         BYTE_DEREF
   $AFB2  B3                         PUSHL

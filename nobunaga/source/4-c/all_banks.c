@@ -572,7 +572,7 @@ word display_fullscreen_graphic_sequence(void) {
             }
         }
         palette_swap(1);    // PRG $000D8 -> bank15 $CC35
-        ppu_upload_block_wrap(6, display_fullscreen_graph_data_9d04, 0x1000, 254);    // PRG $000E6 -> bank15 $CF7C
+        ppu_upload_block_wrap(6, cinematic_gfx_9d04, 0x1000, 254);    // PRG $000E6 -> bank15 $CF7C
         syscall_fill_nametable(0, 0);    // PRG $000ED -> bank15 $C312
         fill_attr_wrap();    // PRG $000F1 -> bank15 $CF5D
         ppu_copy_rect_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // PRG $000FE -> bank15 $CC54
@@ -603,10 +603,10 @@ word display_fullscreen_graphic_sequence(void) {
             }
         }
         palette_swap(1);    // PRG $00170 -> bank15 $CC35
-        ppu_upload_block_wrap(6, display_fullscreen_graph_data_af64, 0x1000, 248);    // PRG $0017E -> bank15 $CF7C
+        ppu_upload_block_wrap(6, cinematic_gfx_af64, 0x1000, 248);    // PRG $0017E -> bank15 $CF7C
         syscall_fill_nametable(0, 0);    // PRG $00185 -> bank15 $C312
         fill_attr_wrap();    // PRG $00189 -> bank15 $CF5D
-        ppu_copy_rect_wrap(0, 5, 31, 24, display_fullscreen_graph_data_ace4, 6);    // PRG $00196 -> bank15 $CC54
+        ppu_copy_rect_wrap(0, 5, 31, 24, cinematic_gfx_ace4, 6);    // PRG $00196 -> bank15 $CC54
         local11 = 0;    // PRG $0019B
         do {    // PRG $0019C
             palette_write_wrap(local11, msg_congratulations_my_lord_b7d6[local11]);    // PRG $001A4 -> bank15 $CF8B
@@ -634,7 +634,7 @@ word display_fullscreen_graphic_sequence(void) {
         break;
     }
     palette_swap(1);    // PRG $001EA -> bank15 $CC35
-    ppu_upload_block_wrap(0, display_fullscreen_graph_data_b2ba, 0x1000, 81);    // PRG $001F7 -> bank15 $CF7C
+    ppu_upload_block_wrap(0, cinematic_gfx_b2ba, 0x1000, 81);    // PRG $001F7 -> bank15 $CF7C
     fill_nametable_wrap();    // PRG $001FB -> bank15 $CF50
     fill_attr_wrap();    // PRG $001FE -> bank15 $CF5D
     palette_swap(0);    // PRG $00202 -> bank15 $CC35
@@ -679,7 +679,7 @@ L_p002A3:
     local8 = (local8 + syscall_sram_block_with_checksum(1, 0, local11, 0x0100));    // PRG $002B2 -> bank15 $C5AA
     local11 = (local11 + 0x0100);    // PRG $002B9
     if (((unsigned)local11 < (unsigned)0x7F00)) goto L_p002A3;    // PRG $002BF
-    local8 = (local8 + syscall_sram_block_with_checksum(1, 0, ui_transient_state, verify_sram_save_integri_data_81eb));    // PRG $002D3 -> bank15 $C5AA
+    local8 = (local8 + syscall_sram_block_with_checksum(1, 0, ui_transient_state, save_sram_81eb));    // PRG $002D3 -> bank15 $C5AA
     chr_bank0_set_wrap(1);    // PRG $002D5 -> bank15 $CBA4
     if ((sram_save_checksum != local8)) goto L_p00343;    // PRG $002DE
     chr_bank0_set_wrap(0);    // PRG $002E2 -> bank15 $CBA4
@@ -690,11 +690,11 @@ L_p002A3:
     standard_delay();    // PRG $002FC -> bank15 $D759
     repaint_screen();    // PRG $002FF -> bank15 $CD20
     palette_swap(1);    // PRG $00303 -> bank15 $CC35
-    ppu_upload_block_wrap(0, verify_sram_save_integri_data_b78a, 0x14D0, 4);    // PRG $0030F -> bank15 $CF7C
+    ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // PRG $0030F -> bank15 $CF7C
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // PRG $0031D -> bank15 $CF7C
     local9 = 0;    // PRG $00322
 L_p00323:
-    palette_write_wrap(local9, verify_sram_save_integri_data_b852[local9]);    // PRG $0032B -> bank15 $CF8B
+    palette_write_wrap(local9, data_screen_palette[local9]);    // PRG $0032B -> bank15 $CF8B
     local9 = (local9 + 1);    // PRG $00331
     if (((unsigned)local9 < (unsigned)8)) goto L_p00323;    // PRG $00335
     palette_swap(0);    // PRG $00339 -> bank15 $CC35
@@ -860,10 +860,10 @@ word prompt_select_scenario_size(void) {
     } while ((local10 == 2));
     if ((local10 == 1)) {    // PRG $00645
         scenario_fief_count = 17;    // PRG $0064D
-        phi_val_865e = prompt_select_scenario_s_data_a004;    // PRG $00653
+        phi_val_865e = scenario_select_gfx_a004;    // PRG $00653
     } else {
         scenario_fief_count = 50;    // PRG $00658
-        phi_val_865e = prompt_select_scenario_s_data_8004;    // PRG $0065B
+        phi_val_865e = scenario_select_gfx_8004;    // PRG $0065B
     }
     local11 = phi_val_865e;    // PRG $0065E
     syscall16_sram_wrap(3, local11, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // PRG $0066D -> bank15 $CBBD
@@ -1034,11 +1034,11 @@ word render_boot_title_screens(void) {
         }
     }
     palette_swap(1);    // PRG $0092D -> bank15 $CC35
-    ppu_upload_block_wrap(0, display_fullscreen_graph_data_b2ba, 0x1000, 81);    // PRG $0093A -> bank15 $CF7C
-    ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // PRG $00948 -> bank15 $CF7C
+    ppu_upload_block_wrap(0, cinematic_gfx_b2ba, 0x1000, 81);    // PRG $0093A -> bank15 $CF7C
+    ppu_upload_block_wrap(6, boot_title_gfx_8264, 0x14D0, 177);    // PRG $00948 -> bank15 $CF7C
     fill_nametable_wrap();    // PRG $0094C -> bank15 $CF50
     fill_attr_wrap();    // PRG $0094F -> bank15 $CF5D
-    ppu_copy_rect_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // PRG $0095C -> bank15 $CC54
+    ppu_copy_rect_wrap(0, 3, 31, 21, scenario_select_gfx_8004, 6);    // PRG $0095C -> bank15 $CC54
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // PRG $00966 -> bank15 $CF6A
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // PRG $00973 -> bank15 $CF6A
     set_cursor(21, 26);    // PRG $0097B -> bank15 $CC7B
@@ -1106,11 +1106,11 @@ word init_new_game_state(void) {
             repaint_screen();    // PRG $00A4B -> bank15 $CD20
             ui_msg_col_shift_flag = 1;    // PRG $00A4F
             palette_swap(1);    // PRG $00A53 -> bank15 $CC35
-            ppu_upload_block_wrap(0, verify_sram_save_integri_data_b78a, 0x14D0, 4);    // PRG $00A5F -> bank15 $CF7C
+            ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // PRG $00A5F -> bank15 $CF7C
             ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // PRG $00A6D -> bank15 $CF7C
             i = 0;    // PRG $00A72
             do {    // PRG $00A73
-                palette_write_wrap(i, verify_sram_save_integri_data_b852[i]);    // PRG $00A7B -> bank15 $CF8B
+                palette_write_wrap(i, data_screen_palette[i]);    // PRG $00A7B -> bank15 $CF8B
                 i = (i + 1);    // PRG $00A81
             } while (((unsigned)i < (unsigned)8));
             palette_swap(0);    // PRG $00A89 -> bank15 $CC35
@@ -1139,8 +1139,8 @@ word init_new_game_state(void) {
             if (!(prompt_y_n())) {    // PRG $00ADC -> bank15 $D3A7
                 repaint_screen();    // PRG $00AE9 -> bank15 $CD20
                 palette_swap(1);    // PRG $00AED -> bank15 $CC35
-                ppu_upload_block_wrap(6, render_boot_title_screen_data_8264, 0x14D0, 177);    // PRG $00AFB -> bank15 $CF7C
-                ppu_copy_rect_wrap(0, 3, 31, 21, prompt_select_scenario_s_data_8004, 6);    // PRG $00B09 -> bank15 $CC54
+                ppu_upload_block_wrap(6, boot_title_gfx_8264, 0x14D0, 177);    // PRG $00AFB -> bank15 $CF7C
+                ppu_copy_rect_wrap(0, 3, 31, 21, scenario_select_gfx_8004, 6);    // PRG $00B09 -> bank15 $CC54
                 ppu_render_rect_wrap(0, 3, 17, 7, 1);    // PRG $00B13 -> bank15 $CF6A
                 i = 0;    // PRG $00B18
                 do {    // PRG $00B19
@@ -2981,7 +2981,7 @@ word write_sram_save_checksum_and_signature(void) {
         local10 = (local10 + syscall_sram_block_with_checksum(0, local9, local11, 0x0100));    // PRG $0240A -> bank15 $C5AA
         local11 = (local11 + 0x0100);    // PRG $02411
     } while (((unsigned)local11 < (unsigned)0x7F00));
-    local10 = (local10 + syscall_sram_block_with_checksum(0, local9, ui_transient_state, verify_sram_save_integri_data_81eb));    // PRG $0242B -> bank15 $C5AA
+    local10 = (local10 + syscall_sram_block_with_checksum(0, local9, ui_transient_state, save_sram_81eb));    // PRG $0242B -> bank15 $C5AA
     sram_save_checksum = local10;    // PRG $0242D
     strcpy(0x7FED, msg_koei_bf17);    // PRG $02436 -> bank15 $CAD9
     chr_bank0_set_wrap(0);    // PRG $0243B -> bank15 $CBA4
@@ -6155,7 +6155,7 @@ word driver_rest(void) {
 
 word fief_select_input_loop(word arg1) {
     fief_anchor = arg1;    // PRG $06DFC
-    syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + fief_select_input_loop_data_9e3c), &fief_cell_buf, 34);    // PRG $06E11 -> bank15 $CBBD
+    syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c), &fief_cell_buf, 34);    // PRG $06E11 -> bank15 $CBBD
     cell_ptr = &fief_cell_buf;    // PRG $06E18
     found_flag = 0;    // PRG $06E1B
 L_p06E1D:
@@ -6171,7 +6171,7 @@ L_p06E56:
     found_flag = 1;    // PRG $06E75
     goto L_p06E78;    // PRG $06E75
 L_p06E2A:
-    ppu_copy_rect_wrap(local11, local10, min_word((local11 + 8), 29), local10, ((((selected_record_idx_9e3c * 0x01C0) + ((local10 + -4) * 28)) + local11) + fief_select_input_loop_data_8d5a), 4);    // PRG $06E4F -> bank15 $CC54
+    ppu_copy_rect_wrap(local11, local10, min_word((local11 + 8), 29), local10, ((((selected_record_idx_9e3c * 0x01C0) + ((local10 + -4) * 28)) + local11) + window_tile_gfx_8d5a), 4);    // PRG $06E4F -> bank15 $CC54
     goto L_p06EA2;    // PRG $06E53
 L_p06E78:
     blink_phase = 0;    // PRG $06E78
@@ -6950,14 +6950,14 @@ word compose_upload_daimyo_portrait(word out_buf) {
     local9 = ((unsigned)local9 % (unsigned)5);    // PRG $080A4
     part3_digit = ((unsigned)local8 / (unsigned)5);    // PRG $080A8
     local8 = ((unsigned)local8 % (unsigned)5);    // PRG $080AC
-    ppu_upload_block_wrap(8, ((part0_digit * 192) + unpack_base5_digits_uplo_data_a604), 0x17F0, 12);    // PRG $080BC -> bank15 $CF7C
-    ppu_upload_block_wrap(8, ((local9 * 96) + unpack_base5_digits_uplo_data_a9c4), 0x18B0, 6);    // PRG $080CE -> bank15 $CF7C
+    ppu_upload_block_wrap(8, ((part0_digit * 192) + digit_gfx_a604), 0x17F0, 12);    // PRG $080BC -> bank15 $CF7C
+    ppu_upload_block_wrap(8, ((local9 * 96) + digit_gfx_a9c4), 0x18B0, 6);    // PRG $080CE -> bank15 $CF7C
     ppu_upload_block_wrap(8, ((local8 * 96) + 0xABA4), 0x1910, 6);    // PRG $080E0 -> bank15 $CF7C
-    ppu_upload_block_wrap(8, ((part3_digit * 192) + unpack_base5_digits_uplo_data_ad84), 0x1970, 12);    // PRG $080F3 -> bank15 $CF7C
+    ppu_upload_block_wrap(8, ((part3_digit * 192) + digit_gfx_ad84), 0x1970, 12);    // PRG $080F3 -> bank15 $CF7C
     syscall16_sram_wrap(9, ((part0_digit * 12) + 0xAE34), out_buf, 12);    // PRG $08102 -> bank15 $CBBD
     syscall16_sram_wrap(9, ((local9 * 6) + 0xAE70), (out_buf + 12), 6);    // PRG $08113 -> bank15 $CBBD
     syscall16_sram_wrap(9, ((local8 * 6) + 0xAE8E), (out_buf + 18), 6);    // PRG $08125 -> bank15 $CBBD
-    return syscall16_sram_wrap(9, ((part3_digit * 12) + unpack_base5_digits_uplo_data_aeac), (out_buf + 24), 12);    // PRG $0813B -> bank15 $CBBD
+    return syscall16_sram_wrap(9, ((part3_digit * 12) + digit_sram_aeac), (out_buf + 24), 12);    // PRG $0813B -> bank15 $CBBD
 }
 
 // ===== bank2 $813C  (PRG $0813C) =====
@@ -7623,7 +7623,7 @@ word map_render_driver(void) {
         ppu_copy_rect_wrap(local11, 4, (local11 + 3), 25, ((((tactical_battle_phase * 3) + local9) * 88) + 0x7BFD), 2);    // PRG $08881 -> bank15 $CC54
         local9 = (local9 + 1);    // PRG $08887
     } while (((unsigned)local9 < (unsigned)5));
-    ppu_upload_block_wrap(5, (((fief_to_mapid(battle_defending_province) * 144) + (tactical_battle_phase * 48)) + map_render_driver_data_8004), 0x23C8, 3);    // PRG $088AC -> bank15 $CF7C
+    ppu_upload_block_wrap(5, (((fief_to_mapid(battle_defending_province) * 144) + (tactical_battle_phase * 48)) + map_tile_gfx_8004), 0x23C8, 3);    // PRG $088AC -> bank15 $CF7C
     if (tactical_battle_phase) {    // PRG $0888E
         ppu_copy_rect_wrap(11, 3, 12, 3, map_scroll_marker_tiles, 2);    // PRG $088BE -> bank15 $CC54
     } else {
@@ -10427,7 +10427,7 @@ word dispatch_battle_resolution(word outcome) {
         palette_swap(1);    // PRG $0AFA6 -> bank15 $CC35
         i = 0;    // PRG $0AFAB
         do {    // PRG $0AFAC
-            palette_write_wrap(i, battle_setup_select_prov_data_ba7f[i]);    // PRG $0AFB4 -> bank15 $CF8B
+            palette_write_wrap(i, battle_select_palette[i]);    // PRG $0AFB4 -> bank15 $CF8B
             i = (i + 1);    // PRG $0AFBA
         } while (((unsigned)i < (unsigned)16));
         ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // PRG $0AFCC -> bank15 $CF7C
@@ -12222,7 +12222,7 @@ word set_marriage_relation(void) {
 // (body @ PRG $3DAB0)
 
 word load_daimyo_relation_row(word arg1) {
-    syscall16_sram_wrap(4, ((arg1 << 3) + ((scenario_fief_count == 17) ? relation_base_data_8300 : relation_base_data_8004)), deduped_owner_list, 8);    // PRG $3DACF -> bank15 $CBBD
+    syscall16_sram_wrap(4, ((arg1 << 3) + ((scenario_fief_count == 17) ? relation_sram_8300 : relation_sram_base)), deduped_owner_list, 8);    // PRG $3DACF -> bank15 $CBBD
     return 0x6F4F;    // PRG $3DAD6
 }
 
@@ -12368,7 +12368,7 @@ word fief_to_mapid(word arg1) {
 // (body @ PRG $3DC8D)
 
 word read_map_cell(word arg1, word arg2) {
-    syscall16_sram_wrap(4, ((((fief_to_mapid(battle_defending_province) * 55) + (arg2 * 11)) + arg1) + read_map_cell_data_a57e), &cell, 1);    // PRG $3DCAA -> bank15 $CBBD
+    syscall16_sram_wrap(4, ((((fief_to_mapid(battle_defending_province) * 55) + (arg2 * 11)) + arg1) + map_cell_sram_a57e), &cell, 1);    // PRG $3DCAA -> bank15 $CBBD
     return cell;    // PRG $3DCB1
 }
 
@@ -12996,7 +12996,7 @@ word redraw_fief_on_map(word arg1) {
     if (phi_ret_e594) {    // PRG $3E559
         local11 = ui_window_col;    // PRG $3E564
         local10 = ui_cursor_row;    // PRG $3E568
-        syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + find_record_data_9e3c), &record_buf, 34);    // PRG $3E57B -> bank15 $CBBD
+        syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c_alias), &record_buf, 34);    // PRG $3E57B -> bank15 $CBBD
         rec_cursor = &record_buf;    // PRG $3E582
         while (1) {    // PRG $3E584
             if ((*(byte*)(rec_cursor) != 255)) {    // PRG $3E584
@@ -13014,7 +13014,7 @@ word redraw_fief_on_map(word arg1) {
                 goto L_p3E58E;
             }
         }
-        ppu_copy_rect_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + find_record_data_8d5a), 4);    // PRG $3E5E6 -> bank15 $CC54
+        ppu_copy_rect_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + window_tile_gfx_8d5a_alias), 4);    // PRG $3E5E6 -> bank15 $CC54
         draw_province_lord_name(arg1);    // PRG $3E5EB -> bank15 $DB6E
 L_p3E58E:
         phi_ret_e594 = set_cursor(local11, local10);    // PRG $3E590 -> bank15 $CC7B
@@ -13036,7 +13036,7 @@ word render_map_section(word arg1) {
         selected_record_idx_9e3c = arg1;    // PRG $3E637
         local11 = ui_window_col;    // PRG $3E63D
         local10 = ui_cursor_row;    // PRG $3E641
-        syscall16_sram_wrap(4, ((arg1 * 34) + find_record_data_9e3c), &record_buf, 34);    // PRG $3E652 -> bank15 $CBBD
+        syscall16_sram_wrap(4, ((arg1 * 34) + record_sram_9e3c_alias), &record_buf, 34);    // PRG $3E652 -> bank15 $CBBD
         cursor = &record_buf;    // PRG $3E659
         while ((*(byte*)(cursor) != 255)) {    // PRG $3E67E
             cursor = (cursor + 1);    // PRG $3E661
@@ -13072,14 +13072,14 @@ word unpack_composite_face_record(word dst_buf) {
     part_nose = ((unsigned)part_nose % (unsigned)5);    // PRG $3E6D7
     part_hair = ((unsigned)part_eyes / (unsigned)5);    // PRG $3E6DB
     part_eyes = ((unsigned)part_eyes % (unsigned)5);    // PRG $3E6DF
-    ppu_upload_block_wrap(8, ((part_face * 192) + unpack_record_to_sram_data_a604), 0x15B0, 12);    // PRG $3E6EF -> bank15 $CF7C
+    ppu_upload_block_wrap(8, ((part_face * 192) + portrait_gfx_a604), 0x15B0, 12);    // PRG $3E6EF -> bank15 $CF7C
     ppu_upload_block_wrap(8, ((part_nose * 96) + 0xA9C4), 0x1670, 6);    // PRG $3E701 -> bank15 $CF7C
-    ppu_upload_block_wrap(8, ((part_eyes * 96) + unpack_record_to_sram_data_aba4), 0x16D0, 6);    // PRG $3E713 -> bank15 $CF7C
-    ppu_upload_block_wrap(8, ((part_hair * 192) + unpack_record_to_sram_data_ad84), 0x1730, 12);    // PRG $3E726 -> bank15 $CF7C
-    syscall16_sram_wrap(9, ((part_face * 12) + unpack_record_to_sram_data_ae34), dst_buf, 12);    // PRG $3E735 -> bank15 $CBBD
-    syscall16_sram_wrap(9, ((part_nose * 6) + unpack_record_to_sram_data_ae70), (dst_buf + 12), 6);    // PRG $3E746 -> bank15 $CBBD
-    syscall16_sram_wrap(9, ((part_eyes * 6) + unpack_record_to_sram_data_ae8e), (dst_buf + 18), 6);    // PRG $3E758 -> bank15 $CBBD
-    return syscall16_sram_wrap(9, ((part_hair * 12) + unpack_record_to_sram_data_aeac), (dst_buf + 24), 12);    // PRG $3E76E -> bank15 $CBBD
+    ppu_upload_block_wrap(8, ((part_eyes * 96) + portrait_gfx_eyes), 0x16D0, 6);    // PRG $3E713 -> bank15 $CF7C
+    ppu_upload_block_wrap(8, ((part_hair * 192) + portrait_gfx_ad84), 0x1730, 12);    // PRG $3E726 -> bank15 $CF7C
+    syscall16_sram_wrap(9, ((part_face * 12) + portrait_sram_ae34), dst_buf, 12);    // PRG $3E735 -> bank15 $CBBD
+    syscall16_sram_wrap(9, ((part_nose * 6) + portrait_sram_ae70), (dst_buf + 12), 6);    // PRG $3E746 -> bank15 $CBBD
+    syscall16_sram_wrap(9, ((part_eyes * 6) + portrait_sram_ae8e), (dst_buf + 18), 6);    // PRG $3E758 -> bank15 $CBBD
+    return syscall16_sram_wrap(9, ((part_hair * 12) + portrait_sram_aeac), (dst_buf + 24), 12);    // PRG $3E76E -> bank15 $CBBD
 }
 
 // ===== bank15 $E76F  (PRG $3E76F) =====
@@ -13089,7 +13089,7 @@ word unpack_composite_face_record(word dst_buf) {
 word draw_daimyo_portrait(word col, word row) {
     pal_idx = 0;    // PRG $3E775
     do {    // PRG $3E777
-        palette_write_wrap(pal_idx, *(word*)(((pal_idx << 1) + marry_helper_data_f7cc)));    // PRG $3E782 -> bank15 $CF8B
+        palette_write_wrap(pal_idx, *(word*)(((pal_idx << 1) + marry_palette)));    // PRG $3E782 -> bank15 $CF8B
         pal_idx = (pal_idx + 1);    // PRG $3E789
     } while (((unsigned)pal_idx < (unsigned)4));
     if (!(((unsigned)active_province_idx_copy >= (unsigned)53))) {    // PRG $3E792

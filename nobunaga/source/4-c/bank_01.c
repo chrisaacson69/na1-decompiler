@@ -2828,7 +2828,7 @@ word driver_rest(void) {
 
 word fief_select_input_loop(word arg1) {
     fief_anchor = arg1;    // $ADFC
-    syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + fief_select_input_loop_data_9e3c), &fief_cell_buf, 34);    // $AE11
+    syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c), &fief_cell_buf, 34);    // $AE11
     cell_ptr = &fief_cell_buf;    // $AE18
     found_flag = 0;    // $AE1B
 L_AE1D:
@@ -2844,7 +2844,7 @@ L_AE56:
     found_flag = 1;    // $AE75
     goto L_AE78;    // $AE75
 L_AE2A:
-    ppu_copy_rect_wrap(local11, local10, min_word((local11 + 8), 29), local10, ((((selected_record_idx_9e3c * 0x01C0) + ((local10 + -4) * 28)) + local11) + fief_select_input_loop_data_8d5a), 4);    // $AE4F
+    ppu_copy_rect_wrap(local11, local10, min_word((local11 + 8), 29), local10, ((((selected_record_idx_9e3c * 0x01C0) + ((local10 + -4) * 28)) + local11) + window_tile_gfx_8d5a), 4);    // $AE4F
     goto L_AEA2;    // $AE53
 L_AE78:
     blink_phase = 0;    // $AE78

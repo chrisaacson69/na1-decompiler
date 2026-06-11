@@ -106,7 +106,7 @@ VM bytecode disassembly
   $80D8  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $80DC  8E FE 00                   PUSH_imm2              $00FE
   $80DF  8E 00 10                   PUSH_imm2              $1000
-  $80E2  8E 04 9D                   PUSH_imm2              $9D04 (display_fullscreen_graph_data_9d04)
+  $80E2  8E 04 9D                   PUSH_imm2              $9D04 (cinematic_gfx_9d04)
   $80E5  66                         PUSH_qimm   ; inline operand = 6
   $80E6  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $80EA  60                         PUSH_qimm   ; inline operand = 0
@@ -190,7 +190,7 @@ VM bytecode disassembly
   $8170  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8174  8E F8 00                   PUSH_imm2              $00F8
   $8177  8E 00 10                   PUSH_imm2              $1000
-  $817A  8E 64 AF                   PUSH_imm2              $AF64 (display_fullscreen_graph_data_af64)
+  $817A  8E 64 AF                   PUSH_imm2              $AF64 (cinematic_gfx_af64)
   $817D  66                         PUSH_qimm   ; inline operand = 6
   $817E  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $8182  60                         PUSH_qimm   ; inline operand = 0
@@ -199,7 +199,7 @@ VM bytecode disassembly
   $8185  E9 26 F2 06                CALL_abs_imm1          $F226 (syscall_dispatch) {native}, $06
   $8189  AC 5D CF                   CALL_abs               $CF5D (fill_attr_wrap) {bytecode}
   $818C  66                         PUSH_qimm   ; inline operand = 6
-  $818D  8E E4 AC                   PUSH_imm2              $ACE4 (display_fullscreen_graph_data_ace4)
+  $818D  8E E4 AC                   PUSH_imm2              $ACE4 (cinematic_gfx_ace4)
   $8190  8D 18                      BYTE_PUSH_imm1         +24
   $8192  8D 1F                      BYTE_PUSH_imm1         +31
   $8194  65                         PUSH_qimm   ; inline operand = 5
@@ -249,7 +249,7 @@ VM bytecode disassembly
   $81EA  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $81EE  8D 51                      BYTE_PUSH_imm1         +81
   $81F0  8E 00 10                   PUSH_imm2              $1000
-  $81F3  8E BA B2                   PUSH_imm2              $B2BA (display_fullscreen_graph_data_b2ba)
+  $81F3  8E BA B2                   PUSH_imm2              $B2BA (cinematic_gfx_b2ba)
   $81F6  60                         PUSH_qimm   ; inline operand = 0
   $81F7  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $81FB  AC 50 CF                   CALL_abs               $CF50 (fill_nametable_wrap) {bytecode}
@@ -347,7 +347,7 @@ VM bytecode disassembly
   $82BB  8C 00 7F                   LOADR_imm2             $7F00 (ui_transient_state)
   $82BE  C6                         UCMPLT
   $82BF  D7 A3 82                   JUMPT_abs              $82A3
-  $82C2  8E EB 81                   PUSH_imm2              $81EB (verify_sram_save_integri_data_81eb)
+  $82C2  8E EB 81                   PUSH_imm2              $81EB (save_sram_81eb)
   $82C5  8E 00 7F                   PUSH_imm2              $7F00 (ui_transient_state)
   $82C8  60                         PUSH_qimm   ; inline operand = 0
   $82C9  61                         PUSH_qimm   ; inline operand = 1
@@ -379,7 +379,7 @@ VM bytecode disassembly
   $8303  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8307  64                         PUSH_qimm   ; inline operand = 4
   $8308  8E D0 14                   PUSH_imm2              $14D0
-  $830B  8E 8A B7                   PUSH_imm2              $B78A (verify_sram_save_integri_data_b78a)
+  $830B  8E 8A B7                   PUSH_imm2              $B78A (data_screen_gfx_b78a)
   $830E  60                         PUSH_qimm   ; inline operand = 0
   $830F  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $8313  8E 9A 00                   PUSH_imm2              $009A
@@ -390,7 +390,7 @@ VM bytecode disassembly
   $8321  40                         LOADL_qimm   ; inline operand = 0
   $8322  29                         STORE_quick   ; inline operand = 9
  >$8323  09                         LOADL_quick   ; inline operand = 9
-  $8324  8C 52 B8                   LOADR_imm2             $B852 (verify_sram_save_integri_data_b852)
+  $8324  8C 52 B8                   LOADR_imm2             $B852 (data_screen_palette)
   $8327  BB                         ADD
   $8328  D3                         BYTE_DEREF
   $8329  B3                         PUSHL
@@ -901,11 +901,11 @@ VM bytecode disassembly
   $8648  D8 56 86                   JUMPF_abs              $8656
   $864B  89 11                      BYTE_LOADL_imm1        +17
   $864D  A8 9D 6D                   STORE_abs              $6D9D (scenario_fief_count)
-  $8650  8A 04 A0                   LOADL_imm2             $A004 (prompt_select_scenario_s_data_a004)
+  $8650  8A 04 A0                   LOADL_imm2             $A004 (scenario_select_gfx_a004)
   $8653  D6 5E 86                   JUMP_abs               $865E
  >$8656  89 32                      BYTE_LOADL_imm1        +50
   $8658  A8 9D 6D                   STORE_abs              $6D9D (scenario_fief_count)
-  $865B  8A 04 80                   LOADL_imm2             $8004 (prompt_select_scenario_s_data_8004)
+  $865B  8A 04 80                   LOADL_imm2             $8004 (scenario_select_gfx_8004)
  >$865E  2B                         STORE_quick   ; inline operand = 11
   $865F  8A CF 7F                   LOADL_imm2             $7FCF (ui_cursor_row)
   $8662  8C 01 60                   LOADR_imm2             $6001 (ai_per_fief_loop_index)
@@ -1281,18 +1281,18 @@ VM bytecode disassembly
   $892D  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8931  8D 51                      BYTE_PUSH_imm1         +81
   $8933  8E 00 10                   PUSH_imm2              $1000
-  $8936  8E BA B2                   PUSH_imm2              $B2BA (display_fullscreen_graph_data_b2ba)
+  $8936  8E BA B2                   PUSH_imm2              $B2BA (cinematic_gfx_b2ba)
   $8939  60                         PUSH_qimm   ; inline operand = 0
   $893A  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $893E  8E B1 00                   PUSH_imm2              $00B1
   $8941  8E D0 14                   PUSH_imm2              $14D0
-  $8944  8E 64 82                   PUSH_imm2              $8264 (render_boot_title_screen_data_8264)
+  $8944  8E 64 82                   PUSH_imm2              $8264 (boot_title_gfx_8264)
   $8947  66                         PUSH_qimm   ; inline operand = 6
   $8948  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $894C  AC 50 CF                   CALL_abs               $CF50 (fill_nametable_wrap) {bytecode}
   $894F  AC 5D CF                   CALL_abs               $CF5D (fill_attr_wrap) {bytecode}
   $8952  66                         PUSH_qimm   ; inline operand = 6
-  $8953  8E 04 80                   PUSH_imm2              $8004 (prompt_select_scenario_s_data_8004)
+  $8953  8E 04 80                   PUSH_imm2              $8004 (scenario_select_gfx_8004)
   $8956  8D 15                      BYTE_PUSH_imm1         +21
   $8958  8D 1F                      BYTE_PUSH_imm1         +31
   $895A  63                         PUSH_qimm   ; inline operand = 3
@@ -1441,7 +1441,7 @@ VM bytecode disassembly
   $8A53  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8A57  64                         PUSH_qimm   ; inline operand = 4
   $8A58  8E D0 14                   PUSH_imm2              $14D0
-  $8A5B  8E 8A B7                   PUSH_imm2              $B78A (verify_sram_save_integri_data_b78a)
+  $8A5B  8E 8A B7                   PUSH_imm2              $B78A (data_screen_gfx_b78a)
   $8A5E  60                         PUSH_qimm   ; inline operand = 0
   $8A5F  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $8A63  8E 9A 00                   PUSH_imm2              $009A
@@ -1452,7 +1452,7 @@ VM bytecode disassembly
   $8A71  40                         LOADL_qimm   ; inline operand = 0
   $8A72  2B                         STORE_quick   ; inline operand = 11
  >$8A73  0B                         LOADL_quick   ; inline operand = 11
-  $8A74  8C 52 B8                   LOADR_imm2             $B852 (verify_sram_save_integri_data_b852)
+  $8A74  8C 52 B8                   LOADR_imm2             $B852 (data_screen_palette)
   $8A77  BB                         ADD
   $8A78  D3                         BYTE_DEREF
   $8A79  B3                         PUSHL
@@ -1514,11 +1514,11 @@ VM bytecode disassembly
   $8AED  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8AF1  8E B1 00                   PUSH_imm2              $00B1
   $8AF4  8E D0 14                   PUSH_imm2              $14D0
-  $8AF7  8E 64 82                   PUSH_imm2              $8264 (render_boot_title_screen_data_8264)
+  $8AF7  8E 64 82                   PUSH_imm2              $8264 (boot_title_gfx_8264)
   $8AFA  66                         PUSH_qimm   ; inline operand = 6
   $8AFB  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $8AFF  66                         PUSH_qimm   ; inline operand = 6
-  $8B00  8E 04 80                   PUSH_imm2              $8004 (prompt_select_scenario_s_data_8004)
+  $8B00  8E 04 80                   PUSH_imm2              $8004 (scenario_select_gfx_8004)
   $8B03  8D 15                      BYTE_PUSH_imm1         +21
   $8B05  8D 1F                      BYTE_PUSH_imm1         +31
   $8B07  63                         PUSH_qimm   ; inline operand = 3
@@ -5195,7 +5195,7 @@ VM bytecode disassembly
   $A413  8C 00 7F                   LOADR_imm2             $7F00 (ui_transient_state)
   $A416  C6                         UCMPLT
   $A417  D7 FB A3                   JUMPT_abs              $A3FB
-  $A41A  8E EB 81                   PUSH_imm2              $81EB (verify_sram_save_integri_data_81eb)
+  $A41A  8E EB 81                   PUSH_imm2              $81EB (save_sram_81eb)
   $A41D  8E 00 7F                   PUSH_imm2              $7F00 (ui_transient_state)
   $A420  39                         PUSH_quick   ; inline operand = 9
   $A421  60                         PUSH_qimm   ; inline operand = 0
