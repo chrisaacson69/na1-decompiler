@@ -119,14 +119,18 @@ this class at the assertion level.
   hitting this shape, read the **raw `3-c-basic`** form. **Fix = the AST analogue of the front-end
   clobber fix:** emit each arm's phi assignment INSIDE its arm / keep the skip, in `dream.py`'s fold.
 
-### SWITCH per-case offset collapsed to one constant (value-wrong 4-c)   [OPEN 2026-06-10]
-Found grounding bank-2 `$8B8A draw_side_resource_field`. A `SWITCH_noncontig` whose cases differ only by an
-`ADD_qimm` after a shared `CALL`/`DEREF` renders **value-wrong** in 4-c: all 3 cases show
-`side_resource_ptr(arg1)` at **offset 0**, but the bytecode is case0=+0, case1=`ADD_qimm 2` ($8BD8),
-case2=`ADD_qimm 4` ($8BE1) → gold/rice/men. The per-case operand on the merge path got dropped (same value-merge
-family as the if/else clobber above, but in a SWITCH where arms reconverge at the shared DEREF). **Impact:** any
-switch that post-processes the selector into an offset reads wrong in 4-c — verify against bytecode/`3-c-basic`.
-Not yet scanned corpus-wide; likely a handful. (Gate-invisible; found by reading.)
+### Arms reconverging at a shared SUFFIX op → per-arm value collapsed (value-wrong 4-c)   [OPEN 2026-06-10]
+Two confirmed bank-2 cases. The shape: branch/switch arms each compute a different value, then **jump to a shared
+tail** that applies a common op (DEREF, `*9+table`, etc.); DREAM keeps only ONE arm's value for all, dropping the
+others. Gate-invisible; found by reading.
+- `$8B8A draw_side_resource_field` — `SWITCH_noncontig` cases differ by `ADD_qimm` before a shared `DEREF`: 4-c shows
+  all 3 as `side_resource_ptr(arg1)` offset 0, but bytecode is +0/+2/+4 ($8BD8/$8BE1) = gold/rice/men.
+- `$8BEA combat_unit_window_refresh` — if/else arms compute `selected_province_owner()` ($8C17) vs `fief_owner(defender)`
+  ($8C26), reconverging at the shared `*9 + $77A8` tail ($8C2A): 4-c renders fief_owner(defender) for BOTH; the
+  `selected_province_owner` call shows as a bare discarded statement.
+**Impact:** any sub whose branches feed a shared downstream op reads value-wrong in 4-c — verify vs bytecode/`3-c-basic`.
+Not yet scanned corpus-wide; likely a handful. **Fix = AST analogue of the front-end clobber fix** (keep each arm's
+value to the merge), in `dream.py`'s fold.
 
 ### `$E80C` — return-phi reached by a conditional-branch taken edge   [FIXED 2026-06-10]
 **Root cause (not "boolean arm" as first hypothesized):** `return_phis` bailed on ANY pred ending in
@@ -145,6 +149,19 @@ witness + 495/495 CFG-preserving (0 fallbacks), stack-audit 184. Lives in `vm_cf
 call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a conditional bank-14 dispatch).
 
 ## Ledger (append-only, newest first)
+
+### Bank 2 full-verify batch #5 — depth-1 combat predicates + render (52/131)   [2026-06-10]
+4 renames (incl. a total refute) + a 2nd DREAM value-bug confirmed:
+- `$836A` `unit_damage_within_strength` → **`side_has_rice_for_day`** — TOTAL refute: it's ceil(men/15)<=rice (daily
+  ration check; caller applies STARVATION on false), not damage/strength. Was a victim of the refuted unit_record_ptr.
+- `$8F97` `clear_unit_status_flag_set_field_200` → **`remove_unit`** — clears presence bit + off-maps (200); renamed
+  data `$B5B9` -> `unit_presence_clear_masks` (ROM-verified ~(1<<n) masks).
+- `$97F8` `test_cur_unit_slot_present` → **`is_cur_unit_absent`** (returned the negation — name read backwards).
+- `$9019` `test_map_cell_blocked_c2` → **`is_map_cell_blocked`** (mask 0xC2 = bits 7,6,1).
+- `$8EF5` `ai_attacker_outstrengths_defender` ✅ — THE AI engage/avoid gate (ai_sum_battle_strength then compare).
+- `$8977` `render_combat_map_screen` ✅ / `$8BEA` `combat_unit_window_refresh` ✅ — but `$8BEA` exposed a **2nd
+  arms-reconverge DREAM value bug** (attacker name selected_province_owner dropped); backlog entry generalized.
+Reconfirms: $6F65 bits 0-4 = presence (remove_unit clears them), side_resource +2/+4 = rice/men. Next: rows 1-7.
 
 ### Bank 2 full-verify batch #4 — last depth-0 leaves + first depth-1 (render/prompt) (45/131)   [2026-06-10]
 - `$8B8A` `draw_unit_stat_field` → **`draw_side_resource_field`** — draws side gold/rice/men. **Found a NEW DREAM

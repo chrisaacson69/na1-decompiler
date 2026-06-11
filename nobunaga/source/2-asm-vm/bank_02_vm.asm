@@ -2208,7 +2208,7 @@ VM bytecode disassembly
 ; sub $8F97   (frame_off=+0, body @ $8F9C)
 ; ============================================================
   $8F9C  0D                         LOADL_quick   ; inline operand = 13
-  $8F9D  8C B9 B5                   LOADR_imm2             $B5B9 (clear_unit_status_flag_s_data_b5b9)
+  $8F9D  8C B9 B5                   LOADR_imm2             $B5B9 (unit_presence_clear_masks)
   $8FA0  BB                         ADD
   $8FA1  D3                         BYTE_DEREF
   $8FA2  B3                         PUSHL
@@ -2346,7 +2346,7 @@ VM bytecode disassembly
   $906C  D7 9E 90                   JUMPT_abs              $909E
   $906F  3D                         PUSH_quick   ; inline operand = 13
   $9070  3C                         PUSH_quick   ; inline operand = 12
-  $9071  E9 19 90 04                CALL_abs_imm1          $9019 (test_map_cell_blocked_c2) {bytecode}, $04
+  $9071  E9 19 90 04                CALL_abs_imm1          $9019 (is_map_cell_blocked) {bytecode}, $04
   $9075  D7 9E 90                   JUMPT_abs              $909E
   $9078  AC B9 82                   CALL_abs               $82B9 (cur_unit_row_ptr) {bytecode}
   $907B  D3                         BYTE_DEREF
@@ -2685,7 +2685,7 @@ VM bytecode disassembly
   $9280  D7 89 92                   JUMPT_abs              $9289
   $9283  37                         PUSH_quick   ; inline operand = 7
   $9284  38                         PUSH_quick   ; inline operand = 8
-  $9285  E9 97 8F 04                CALL_abs_imm1          $8F97 (clear_unit_status_flag_set_field_200) {bytecode}, $04
+  $9285  E9 97 8F 04                CALL_abs_imm1          $8F97 (remove_unit) {bytecode}, $04
  >$9289  07                         LOADL_quick   ; inline operand = 7
   $928A  D0                         INC
   $928B  27                         STORE_quick   ; inline operand = 7
@@ -2945,7 +2945,7 @@ VM bytecode disassembly
   $943B  C0                         CMPEQ
   $943C  D8 4A 94                   JUMPF_abs              $944A
   $943F  37                         PUSH_quick   ; inline operand = 7
-  $9440  E9 6A 83 02                CALL_abs_imm1          $836A (unit_damage_within_strength) {bytecode}, $02
+  $9440  E9 6A 83 02                CALL_abs_imm1          $836A (side_has_rice_for_day) {bytecode}, $02
   $9444  D7 4A 94                   JUMPT_abs              $944A
   $9447  0D                         LOADL_quick   ; inline operand = 13
   $9448  D0                         INC
@@ -3404,7 +3404,7 @@ VM bytecode disassembly
   $979D  D7 D7 97                   JUMPT_abs              $97D7
   $97A0  3D                         PUSH_quick   ; inline operand = 13
   $97A1  3C                         PUSH_quick   ; inline operand = 12
-  $97A2  E9 19 90 04                CALL_abs_imm1          $9019 (test_map_cell_blocked_c2) {bytecode}, $04
+  $97A2  E9 19 90 04                CALL_abs_imm1          $9019 (is_map_cell_blocked) {bytecode}, $04
   $97A6  D7 D7 97                   JUMPT_abs              $97D7
   $97A9  3D                         PUSH_quick   ; inline operand = 13
   $97AA  3C                         PUSH_quick   ; inline operand = 12
@@ -3464,7 +3464,7 @@ VM bytecode disassembly
 ; ============================================================
   $9815  40                         LOADL_qimm   ; inline operand = 0
   $9816  D6 55 98                   JUMP_abs               $9855
- >$9819  AC F8 97                   CALL_abs               $97F8 (test_cur_unit_slot_present) {bytecode}
+ >$9819  AC F8 97                   CALL_abs               $97F8 (is_cur_unit_absent) {bytecode}
   $981C  D8 29 98                   JUMPF_abs              $9829
   $981F  A4 E4 7B                   LOADL_abs              $7BE4 (cur_combat_unit_slot)
   $9822  D0                         INC
@@ -3520,7 +3520,7 @@ VM bytecode disassembly
   $9883  E9 10 98 02                CALL_abs_imm1          $9810 (ai_place_unit_in_free_slot_resolve_coords) {bytecode}, $02
   $9887  41                         LOADL_qimm   ; inline operand = 1
   $9888  D6 EC 98                   JUMP_abs               $98EC
- >$988B  AC F8 97                   CALL_abs               $97F8 (test_cur_unit_slot_present) {bytecode}
+ >$988B  AC F8 97                   CALL_abs               $97F8 (is_cur_unit_absent) {bytecode}
   $988E  D8 9B 98                   JUMPF_abs              $989B
   $9891  A4 E4 7B                   LOADL_abs              $7BE4 (cur_combat_unit_slot)
   $9894  D0                         INC
@@ -3711,7 +3711,7 @@ VM bytecode disassembly
   $99F2  D0                         INC
   $99F3  A8 E4 7B                   STORE_abs              $7BE4 (cur_combat_unit_slot)
   $99F6  D6 0F 9A                   JUMP_abs               $9A0F
- >$99F9  AC F8 97                   CALL_abs               $97F8 (test_cur_unit_slot_present) {bytecode}
+ >$99F9  AC F8 97                   CALL_abs               $97F8 (is_cur_unit_absent) {bytecode}
   $99FC  D7 EF 99                   JUMPT_abs              $99EF
   $99FF  65                         PUSH_qimm   ; inline operand = 5
   $9A00  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
@@ -3731,7 +3731,7 @@ VM bytecode disassembly
 ; ============================================================
   $9A1D  40                         LOADL_qimm   ; inline operand = 0
   $9A1E  A8 E4 7B                   STORE_abs              $7BE4 (cur_combat_unit_slot)
- >$9A21  AC F8 97                   CALL_abs               $97F8 (test_cur_unit_slot_present) {bytecode}
+ >$9A21  AC F8 97                   CALL_abs               $97F8 (is_cur_unit_absent) {bytecode}
   $9A24  D7 F5 9A                   JUMPT_abs              $9AF5
   $9A27  A4 E4 7B                   LOADL_abs              $7BE4 (cur_combat_unit_slot)
   $9A2A  D7 56 9A                   JUMPT_abs              $9A56
@@ -4203,7 +4203,7 @@ VM bytecode disassembly
   $9D60  E9 25 8B 04                CALL_abs_imm1          $8B25 (draw_terrain_feature_if_valid) {bytecode}, $04
   $9D64  3D                         PUSH_quick   ; inline operand = 13
   $9D65  3C                         PUSH_quick   ; inline operand = 12
-  $9D66  E9 97 8F 04                CALL_abs_imm1          $8F97 (clear_unit_status_flag_set_field_200) {bytecode}, $04
+  $9D66  E9 97 8F 04                CALL_abs_imm1          $8F97 (remove_unit) {bytecode}, $04
   $9D6A  D6 73 9D                   JUMP_abs               $9D73
  >$9D6D  3D                         PUSH_quick   ; inline operand = 13
   $9D6E  3C                         PUSH_quick   ; inline operand = 12
@@ -4914,7 +4914,7 @@ VM bytecode disassembly
   $A208  A4 E4 7B                   LOADL_abs              $7BE4 (cur_combat_unit_slot)
   $A20B  D8 1F A2                   JUMPF_abs              $A21F
   $A20E  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
-  $A211  E9 6A 83 02                CALL_abs_imm1          $836A (unit_damage_within_strength) {bytecode}, $02
+  $A211  E9 6A 83 02                CALL_abs_imm1          $836A (side_has_rice_for_day) {bytecode}, $02
   $A215  D7 1F A2                   JUMPT_abs              $A21F
  >$A218  3C                         PUSH_quick   ; inline operand = 12
   $A219  E9 DA A0 02                CALL_abs_imm1          $A0DA (eval_and_announce_battle_strength_parity_if_enemy_present) {bytecode}, $02
@@ -5620,7 +5620,7 @@ VM bytecode disassembly
   $A664  D7 75 A6                   JUMPT_abs              $A675
   $A667  39                         PUSH_quick   ; inline operand = 9
   $A668  3A                         PUSH_quick   ; inline operand = 10
-  $A669  E9 19 90 04                CALL_abs_imm1          $9019 (test_map_cell_blocked_c2) {bytecode}, $04
+  $A669  E9 19 90 04                CALL_abs_imm1          $9019 (is_map_cell_blocked) {bytecode}, $04
   $A66D  D7 75 A6                   JUMPT_abs              $A675
   $A670  41                         LOADL_qimm   ; inline operand = 1
   $A671  25                         STORE_quick   ; inline operand = 5
@@ -5910,7 +5910,7 @@ VM bytecode disassembly
  >$A86A  AC E5 A7                   CALL_abs               $A7E5 (ai_test_own_double_ge_enemy_total_strength) {bytecode}
   $A86D  D7 87 A8                   JUMPT_abs              $A887
   $A870  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
-  $A873  E9 6A 83 02                CALL_abs_imm1          $836A (unit_damage_within_strength) {bytecode}, $02
+  $A873  E9 6A 83 02                CALL_abs_imm1          $836A (side_has_rice_for_day) {bytecode}, $02
   $A877  D8 87 A8                   JUMPF_abs              $A887
   $A87A  A4 E8 7B                   LOADL_abs              $7BE8 (cur_combat_side)
   $A87D  D7 CD A8                   JUMPT_abs              $A8CD
