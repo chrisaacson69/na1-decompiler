@@ -19,7 +19,15 @@ structure. They are found **only by reading**. Until DREAM is fixed, for any aff
 |---|-----|--------|-------------|--------------|
 | 1.1 | if/else phi-temp clobber (else-arm value emitted unconditionally) | ✅ FIXED 2026-06-10 | 42→11 candidates, the 11 all false positives | `$DB6E`, `$D687`, `$9FFA` |
 | 1.2 | Arms reconverge at a shared SUFFIX op → only one arm's value kept | 🔴 OPEN | a handful (not yet scanned corpus-wide) | `$8B8A` (switch +2/+4 offset collapses to 0), `$8BEA` (name-source dropped) |
-| 1.3 | 32-bit ext-op math chains render as a placeholder `return <local>` | 🔴 OPEN | **exactly 5 subs corpus-wide** (bank1 ×3, bank15 ×2, **bank0 ×0**) | `$8303 math32_muladddiv`, `$8357 ratio_times10_capped` |
+| 1.3 | 32-bit ext-op math chains render as a placeholder `return <local>` | 🟡 CENSUSED + CERTIFIED 2026-06-10 (formulas known; DREAM emit-fix pending) | **exactly 5 subs corpus-wide** (bank1 ×3, bank15 ×2, **bank0 ×0**) | `$8303 math32_muladddiv`, `$8357 ratio_times10_capped` |
+
+**★ value-golden ORACLE built 2026-06-10 (`tools/value-oracle.py`).** Runs any VM sub from the REAL ROM via the
+6502 emulator (na1dream.cpu6502/nobunaga_vm) → ground truth by construction. `certify-extop` proved all 5 ext-op
+formulas against the ROM (and CORRECTED a wrong grounding: math32_2arg = (a*100)/(a+b), not a*b/c). Certified
+formulas now in the toml `[CERTIFIED]` comments. This is the gate the whole capstone needed. **Remaining 1.3 work:**
+make DREAM emit these (a 5-entry body-override, like the enum table — safe, bounded) instead of the ext-op stub.
+**Remaining 1.2 work:** extend the oracle to a full differential census (oracle vs a 4-c executor) to find every
+value-merge sub, then the dream.py fold fix.
 | 1.4 | return-phi reached by a conditional-branch taken edge | ✅ FIXED 2026-06-10 | — | `$E80C` |
 
 **Shared root cause:** value materialization across a control-flow join (if/else, switch, the 32-bit aux stack)
