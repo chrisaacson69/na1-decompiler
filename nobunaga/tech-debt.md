@@ -27,8 +27,13 @@ recognised, so switch cases computing `base+{0,2,4}` and converging at a shared 
 consumer-agnostic (sets `state.regA` to the temp, the deref reads `*(phi_val)`). **Corpus blast radius: exactly 1 sub**
 (`$8B8A draw_side_resource_field`). **Oracle-certified**: with distinct gold/rice/men set, the ROM draws 111/222/333
 for arg2=0/1/2 — matching the new per-case +0/+2/+4 (the old collapsed code drew 111 for all three). Gates: self-check
-(stack model) clean, deterministic, 1-sub diff. **STILL OPEN — the `$8BEA` name-source subclass** (different consumer:
-two name sources reconverge at the `fief_owner(...)*9+$77A8` tail; not a deref) — a separate value_merge gap.
+(stack model) clean, deterministic, 1-sub diff. **STILL OPEN — the `$8BEA` name-source subclass** (a HARDER shape,
+diagnosed 2026-06-11): two name sources (`selected_province_owner` @ $8C17 vs `fief_owner(defender)` @ $8C26)
+reconverge at `$8C2A`, but that block's FIRST op is `LOADR_qimm 9` — a regR load that is regA-NEUTRAL; the actual regA
+consumer is the `MULT` two ops later (`base*9+$77A8`). `value_merge_phis` only inspects `blk[0]`, so it can't see the
+consumer hiding behind the regR-load → the selected_province_owner base is dropped. **Fix is NOT a consumer-set add** —
+it needs the check to scan PAST leading regA-neutral ops to the first op that READS regA (a per-op "reads-regA"
+classification), with a broader blast radius. Left for attended work, not the unattended pass.
 
 **Bug 1.2 root cause (diagnosed 2026-06-10):** the value-merge phi family (`value_merge_phis`/`consuming_phis`/
 `return_phis`/`push_phis`, keyed by `tag_addr`) that landed 1.1/1.4 covers **if/else** merges, but `dream.py` DEFERS
