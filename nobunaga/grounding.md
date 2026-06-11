@@ -192,6 +192,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #2 — command-effect + audio/relations leaves (20/131)   [2026-06-10]
+Clean leaves, 2 stub renames + re-grounded effects:
+- `$87CB` `helper_87CB` → **`show_not_home_fief`** (message_display wrapper).
+- `$8B8F` `helper_8B8F` → **`play_result_jingle`** (bank-10 sound 8/7 = accept/reject, used by Pact/Marry).
+- `$87D8` `effect_dam` ✅ — sqrt_int(output), 10000 sentinel if no output. `$8BE5` `effect_send` ✅ — min(ceiling-current, budget).
+- `$8250` `relations_matrix_get` ✅ (3 args; $6193 stride-54 matrix), `$9301` war-prep field-clamp ✅ (gold/rice/men
+  $7001/$7007/$7011), `$A255` `hire_stat_drain_rng` ✅ ((rng_mod(max(pct(a,sqrt(b)),1))+1)*5). Next: rows 1-7.
+
 ### Bank 1 full-verify batch #1 — economy/UI leaves + 32-bit math primitives (13/131)   [2026-06-10]
 First bank-1 batch (the lord-command/turn engine). 4 renames (3 from stubs) + a NEW DREAM bug class:
 - `$8303` `math32_muladddiv` ✅ — bytecode-grounded = floor((rate*amount+9)/10) = ceil(rate*amount/10); 4-c showed a

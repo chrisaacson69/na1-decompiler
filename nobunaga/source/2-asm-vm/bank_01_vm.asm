@@ -2086,7 +2086,7 @@ VM bytecode disassembly
   $8D94  BB                         ADD
   $8D95  B1                         POPSTORE
   $8D96  60                         PUSH_qimm   ; inline operand = 0
-  $8D97  E9 8F 8B 02                CALL_abs_imm1          $8B8F (helper_8B8F) {bytecode}, $02
+  $8D97  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $8D9B  8D 1A                      BYTE_PUSH_imm1         +26
   $8D9D  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
   $8DA1  8E 3E BB                   PUSH_imm2              $BB3E (effect_bribe_data_bb3e)
@@ -2101,7 +2101,7 @@ VM bytecode disassembly
   $8DBB  26                         STORE_quick   ; inline operand = 6
   $8DBC  D6 E6 8D                   JUMP_abs               $8DE6
  >$8DBF  61                         PUSH_qimm   ; inline operand = 1
-  $8DC0  E9 8F 8B 02                CALL_abs_imm1          $8B8F (helper_8B8F) {bytecode}, $02
+  $8DC0  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $8DC4  61                         PUSH_qimm   ; inline operand = 1
   $8DC5  AC EA D7                   CALL_abs               $D7EA (selected_province_daimyo_record) {bytecode}
   $8DC8  74                         ADD_qimm   ; inline operand = 4
@@ -4265,7 +4265,7 @@ VM bytecode disassembly
   $9CD0  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9CD4  D6 14 9D                   JUMP_abs               $9D14
  >$9CD7  60                         PUSH_qimm   ; inline operand = 0
-  $9CD8  E9 8F 8B 02                CALL_abs_imm1          $8B8F (helper_8B8F) {bytecode}, $02
+  $9CD8  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $9CDC  3A                         PUSH_quick   ; inline operand = 10
   $9CDD  0B                         LOADL_quick   ; inline operand = 11
   $9CDE  B4                         POPR
@@ -4302,7 +4302,7 @@ VM bytecode disassembly
   $9D17  09                         LOADL_quick   ; inline operand = 9
   $9D18  CF                         RETURN
  >$9D19  61                         PUSH_qimm   ; inline operand = 1
-  $9D1A  E9 8F 8B 02                CALL_abs_imm1          $8B8F (helper_8B8F) {bytecode}, $02
+  $9D1A  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $9D1E  8E FB BB                   PUSH_imm2              $BBFB (driver_pact_data_bbfb)
   $9D21  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9D25  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
@@ -4478,7 +4478,7 @@ VM bytecode disassembly
   $9E6C  D8 9E 9E                   JUMPF_abs              $9E9E
   $9E6F  AC 7D DA                   CALL_abs               $DA7D (diplomacy_helper3) {bytecode}
   $9E72  60                         PUSH_qimm   ; inline operand = 0
-  $9E73  E9 8F 8B 02                CALL_abs_imm1          $8B8F (helper_8B8F) {bytecode}, $02
+  $9E73  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $9E77  8D 10                      BYTE_PUSH_imm1         +16
   $9E79  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
   $9E7D  8E C3 FC                   PUSH_imm2              $FCC3 (msg_your_bride_to_be_has_arrived)
@@ -4519,7 +4519,7 @@ VM bytecode disassembly
   $9EC4  0A                         LOADL_quick   ; inline operand = 10
   $9EC5  CF                         RETURN
  >$9EC6  61                         PUSH_qimm   ; inline operand = 1
-  $9EC7  E9 8F 8B 02                CALL_abs_imm1          $8B8F (helper_8B8F) {bytecode}, $02
+  $9EC7  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $9ECB  8E 05 BC                   PUSH_imm2              $BC05 (driver_marry_data_bc05)
   $9ECE  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9ED2  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
@@ -4553,7 +4553,7 @@ VM bytecode disassembly
   $9EF9  CF                         RETURN
  >$9EFA  0A                         LOADL_quick   ; inline operand = 10
   $9EFB  CF                         RETURN
- >$9EFC  AC CB 87                   CALL_abs               $87CB (helper_87CB) {bytecode}
+ >$9EFC  AC CB 87                   CALL_abs               $87CB (show_not_home_fief) {bytecode}
  >$9EFF  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $9F02  0A                         LOADL_quick   ; inline operand = 10
   $9F03  CF                         RETURN
@@ -6664,7 +6664,7 @@ VM bytecode disassembly
   $ADE8  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
   $ADEC  41                         LOADL_qimm   ; inline operand = 1
   $ADED  CF                         RETURN
- >$ADEE  AC CB 87                   CALL_abs               $87CB (helper_87CB) {bytecode}
+ >$ADEE  AC CB 87                   CALL_abs               $87CB (show_not_home_fief) {bytecode}
   $ADF1  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
  >$ADF4  40                         LOADL_qimm   ; inline operand = 0
   $ADF5  CF                         RETURN
@@ -6864,7 +6864,7 @@ VM bytecode disassembly
   $AF71  BB                         ADD
   $AF72  D3                         BYTE_DEREF
   $AF73  D7 7E AF                   JUMPT_abs              $AF7E
-  $AF76  AC CB 87                   CALL_abs               $87CB (helper_87CB) {bytecode}
+  $AF76  AC CB 87                   CALL_abs               $87CB (show_not_home_fief) {bytecode}
   $AF79  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $AF7C  40                         LOADL_qimm   ; inline operand = 0
   $AF7D  CF                         RETURN

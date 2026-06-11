@@ -136,7 +136,7 @@
 //   PRG $045EA  bank1  $85EA  effect_view_b
 //   PRG $0471E  bank1  $871E  fief_info_display
 //   PRG $0479F  bank1  $879F  province_select_helper
-//   PRG $047CB  bank1  $87CB  helper_87CB
+//   PRG $047CB  bank1  $87CB  show_not_home_fief
 //   PRG $047D8  bank1  $87D8  effect_dam
 //   PRG $047F0  bank1  $87F0  effect_grow
 //   PRG $0487D  bank1  $887D  helper_dam_rounding
@@ -148,7 +148,7 @@
 //   PRG $04A4E  bank1  $8A4E  cycle_economy_rate
 //   PRG $04B0A  bank1  $8B0A  effect_subhandler_A003
 //   PRG $04B40  bank1  $8B40  effect_subhandler_9F04
-//   PRG $04B8F  bank1  $8B8F  helper_8B8F
+//   PRG $04B8F  bank1  $8B8F  play_result_jingle
 //   PRG $04BC1  bank1  $8BC1  compute_bribe_effect_value
 //   PRG $04BE5  bank1  $8BE5  effect_send
 //   PRG $04BF4  bank1  $8BF4  apply_hire_unit_stats
@@ -3781,10 +3781,10 @@ word province_select_helper(word arg1, word arg2) {
 }
 
 // ===== bank1 $87CB  (PRG $047CB) =====
-// PRG $047CB helper_87CB
+// PRG $047CB show_not_home_fief
 // (body @ PRG $047D0)
 
-word helper_87CB(void) {
+word show_not_home_fief(void) {
     return message_display(msg_not_home_fief);    // PRG $047D7 -> bank15 $D326
 }
 
@@ -4043,10 +4043,10 @@ word effect_subhandler_9F04(word amount) {
 }
 
 // ===== bank1 $8B8F  (PRG $04B8F) =====
-// PRG $04B8F helper_8B8F
+// PRG $04B8F play_result_jingle
 // (body @ PRG $04B94)
 
-word helper_8B8F(word arg1) {
+word play_result_jingle(word arg1) {
     syscall_audio_control(0, 0);    // PRG $04B97 -> bank15 $C3CF
     call_bank10_entry((arg1 ? 8 : 7));    // PRG $04BA5 -> bank15 $CA03
     if ((audio_wait_gate == 1)) {    // PRG $04BA4
@@ -4148,7 +4148,7 @@ word effect_bribe(word gold_amount) {
         compute_bribe_effect_value(target_loyalty_ptr, defect_amount);    // PRG $04D83 -> bank1 $8BC1
         *(word*)(target_output_ptr) = (*(word*)(target_output_ptr) - defect_amount);    // PRG $04D8D
         *(word*)((own_fief + 8)) = (*(word*)((own_fief + 8)) + defect_amount);    // PRG $04D95
-        helper_8B8F(0);    // PRG $04D97 -> bank1 $8B8F
+        play_result_jingle(0);    // PRG $04D97 -> bank1 $8B8F
         trigger_cutscene(26);    // PRG $04D9D -> bank15 $E80C
         message_display(effect_bribe_data_bb3e);    // PRG $04DA4 -> bank15 $D326
         draw_message(msg_d_peasants_have_defected, defect_amount);    // PRG $04DAC -> bank15 $D134
@@ -4156,7 +4156,7 @@ word effect_bribe(word gold_amount) {
         clear_econ_stats_if_no_output(battle_defending_province);    // PRG $04DB6 -> bank15 $D7F7
         result = 1;    // PRG $04DBB
     } else {
-        helper_8B8F(1);    // PRG $04DC0 -> bank1 $8B8F
+        play_result_jingle(1);    // PRG $04DC0 -> bank1 $8B8F
         *(byte*)((selected_province_daimyo_record() + 4)) = (*(byte*)((selected_province_daimyo_record() + 4)) - 1);    // PRG $04DCD -> bank15 $D7EA
         redraw_window(msg_no_peasants_defected);    // PRG $04DD1 -> bank15 $CEC4
         confirm_prompt();    // PRG $04DD5 -> bank15 $D766
@@ -5027,7 +5027,7 @@ word driver_pact(void) {
                     if ((*(word*)(local11) < local10)) {    // PRG $05CC6
                         message_display(msg_you_have_no_gold);    // PRG $05CD0 -> bank15 $D326
                     } else {
-                        helper_8B8F(0);    // PRG $05CD8 -> bank1 $8B8F
+                        play_result_jingle(0);    // PRG $05CD8 -> bank1 $8B8F
                         *(word*)(local11) = (*(word*)(local11) - local10);    // PRG $05CE2
                         *(word*)(((battle_defending_province * 26) + 0x7001)) = (*(word*)(((battle_defending_province * 26) + 0x7001)) + local10);    // PRG $05CF2
                         diplomacy_helper2();    // PRG $05CF3 -> bank15 $DA4F
@@ -5039,7 +5039,7 @@ word driver_pact(void) {
                     *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) - 1);    // PRG $05D13 -> bank15 $D7EA
                 }
             } else {
-                helper_8B8F(1);    // PRG $05D1A -> bank1 $8B8F
+                play_result_jingle(1);    // PRG $05D1A -> bank1 $8B8F
                 message_display(driver_pact_data_bbfb);    // PRG $05D21 -> bank15 $D326
                 draw_message(msg_lord_s_they_ve_refused, ((selected_province_owner() * 9) + 0x77A8));    // PRG $05D32 -> bank15 $D134
                 *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) - 1);    // PRG $05D13 -> bank15 $D7EA
@@ -5116,7 +5116,7 @@ word driver_marry(void) {
                         local9 = ((selected_province_idx * 26) + 0x7001);    // PRG $05E65
                         if ((local11 <= *(word*)(local9))) {    // PRG $05E5B
                             diplomacy_helper3();    // PRG $05E6F -> bank15 $DA7D
-                            helper_8B8F(0);    // PRG $05E73 -> bank1 $8B8F
+                            play_result_jingle(0);    // PRG $05E73 -> bank1 $8B8F
                             trigger_cutscene(16);    // PRG $05E79 -> bank15 $E80C
                             message_display(msg_your_bride_to_be_has_arrived);    // PRG $05E80 -> bank15 $D326
                             *(word*)(local9) = (*(word*)(local9) - local11);    // PRG $05E8A
@@ -5136,7 +5136,7 @@ word driver_marry(void) {
                     palette_swap(0);    // PRG $05EC0 -> bank15 $CC35
                     return local10;    // PRG $05EC5
                 } else {
-                    helper_8B8F(1);    // PRG $05EC7 -> bank1 $8B8F
+                    play_result_jingle(1);    // PRG $05EC7 -> bank1 $8B8F
                     message_display(driver_marry_data_bc05);    // PRG $05ECE -> bank15 $D326
                     draw_message(msg_lord_s_they_ve_refused, ((selected_province_owner() * 9) + 0x77A8));    // PRG $05EDF -> bank15 $D134
                     *(byte*)((local8 + 2)) = (*(byte*)((local8 + 2)) - 1);    // PRG $05EE8
@@ -5152,7 +5152,7 @@ word driver_marry(void) {
             return local10;    // PRG $05EFB
         }
     } else {
-        helper_87CB();    // PRG $05EFC -> bank1 $87CB
+        show_not_home_fief();    // PRG $05EFC -> bank1 $87CB
         confirm_prompt();    // PRG $05EFF -> bank15 $D766
         return local10;    // PRG $05F03
     }
@@ -6143,7 +6143,7 @@ word driver_rest(void) {
             return 1;    // PRG $06DED
         }
     } else {
-        helper_87CB();    // PRG $06DEE -> bank1 $87CB
+        show_not_home_fief();    // PRG $06DEE -> bank1 $87CB
         confirm_prompt();    // PRG $06DF1 -> bank15 $D766
     }
     return 0;    // PRG $06DF5
@@ -6257,7 +6257,7 @@ word driver_map(void) {
 
 word driver_grant(void) {
     if (!(fief_is_daimyo_capital[selected_province_idx])) {    // PRG $06F6B
-        helper_87CB();    // PRG $06F76 -> bank1 $87CB
+        show_not_home_fief();    // PRG $06F76 -> bank1 $87CB
         confirm_prompt();    // PRG $06F79 -> bank15 $D766
         return 0;    // PRG $06F7D
     } else {
