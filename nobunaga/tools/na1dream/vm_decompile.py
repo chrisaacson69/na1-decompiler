@@ -52,6 +52,19 @@ def _load_asset_enums():
 
 _ARG_ENUMS, _ENUMS = _load_asset_enums()
 
+# --- Bug 1.3 fix: certified ext-op body overrides (2026-06-10) ----------------
+# The 5 subs whose 32-bit aux-stack math DREAM can't fold render as `// ext_op ...`
+# comments + a stub `return <arg>`. Their formulas are CERTIFIED against the real
+# ROM (tools/value-oracle.py certify-extop). Emit the certified body instead.
+# Keyed by ENTRY addr; lambda takes the (renamed) param-name list.
+_EXTOP_OVERRIDE = {
+    0x8303: lambda p: [f"return (({p[0]} * {p[1]} + 9) / 10);    // [CERTIFIED ext-op fold vs ROM 2026-06-10]"],
+    0x8327: lambda p: [f"return (((({p[0]} * {p[1]}) / 10) >= {p[2]}) ? 0xFFFF : (({p[0]} * {p[1]}) / 10));    // [CERTIFIED ext-op fold vs ROM 2026-06-10]"],
+    0x8357: lambda p: [f"return min_word((({p[0]} * 10) / {p[1]}), {p[2]});    // [CERTIFIED ext-op fold vs ROM 2026-06-10]"],
+    0xD6B8: lambda p: [f"return (({p[0]} * {p[1]}) / {p[2]});    // [CERTIFIED ext-op fold vs ROM 2026-06-10]"],
+    0xD6DE: lambda p: [f"return (({p[0]} * 100) / ({p[0]} + {p[1]}));    // [CERTIFIED ext-op fold vs ROM 2026-06-10]"],
+}
+
 def _apply_arg_enums(fname, args):
     """Replace literal-int args of enum-typed functions with named constants."""
     emap = _ARG_ENUMS.get(fname)
@@ -870,6 +883,20 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     params = ", ".join(f"word arg{i}" for i in range(1, arg_count + 1)) or "void"
     params = apply_var_names(params, var_names)   # var-walk: rename args in the signature
     print(f"word {fn_name}({params}) {{")
+
+    # Bug 1.3 fix: if this is an ext-op sub with a certified formula, emit it and stop
+    # (DREAM can't fold the 32-bit aux stack, so its generated body is the value-wrong stub).
+    _ov = _EXTOP_OVERRIDE.get(sub_addr)
+    if _ov:
+        _pnames = [seg.split()[-1] for seg in params.split(", ")] if params != "void" else []
+        for _ln in _ov(_pnames):
+            print(f"    {_ln}")
+        print("}")
+        if collect is not None:
+            collect.update(raw=[], structured=[], structured_ungated=[],
+                           gated_fallback=False, structurer='override',
+                           instructions=instructions, body_addr=body_addr)
+        return
 
     # Value-diamond ternaries: a 2-way conditional whose arms each just LOAD a value and
     # converge — `regA = cond ? vA : vB`. The decode loop folds these to a ternary (else

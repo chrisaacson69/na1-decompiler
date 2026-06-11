@@ -213,45 +213,21 @@ word effect_tax(word stat, word tax_delta) {
 // (body @ $8308)
 
 word math32_muladddiv(word rate, word amount) {
-    // ext_op sign_extend16_to_32
-    // ext_op push_a32_to_vm_stack
-    // ext_op sign_extend16_to_32
-    // ext_op pop_b32_from_vm_stack
-    // ext_op umul32
-    // ext_op add32
-    // ext_op sdiv32
-    // ext_op ext_op_nop
-    return rate;    // $8326
+    return ((rate * amount + 9) / 10);    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
 }
 
 // $8327 scale_div10_capcheck
 // (body @ $832C)
 
 word scale_div10_capcheck(word arg1, word arg2, word arg3) {
-    if (!((math32_muladddiv(arg1, arg2) > arg3))) {    // $832C
-        // ext_op sign_extend16_to_32
-        // ext_op push_a32_to_vm_stack
-        // ext_op sign_extend16_to_32
-        // ext_op pop_b32_from_vm_stack
-        // ext_op umul32
-        // ext_op sdiv32
-    }
-    // ext_op ext_op_nop
-    return arg1;    // $8356
+    return ((((arg1 * arg2) / 10) >= arg3) ? 0xFFFF : ((arg1 * arg2) / 10));    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
 }
 
 // $8357 ratio_times10_capped
 // (body @ $835C)
 
 word ratio_times10_capped(word arg1, word arg2, word arg3) {
-    // ext_op sign_extend16_to_32
-    // ext_op push_a32_to_vm_stack
-    // ext_op sign_extend16_to_32
-    // ext_op umul32
-    // ext_op pop_b32_from_vm_stack
-    // ext_op sdiv32
-    // ext_op ext_op_nop
-    return min_word(arg1, arg3);    // $8378
+    return min_word(((arg1 * 10) / arg2), arg3);    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
 }
 
 // $8379 apply_two_grows_const1_override

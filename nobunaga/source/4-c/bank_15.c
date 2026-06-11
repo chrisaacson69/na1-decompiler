@@ -1091,44 +1091,14 @@ word draw_current_season(void) {
 // (body @ $D6BD)
 
 word math32_3arg(word arg1, word arg2, word arg3) {
-    if (arg3) {    // $D6BD
-        // ext_op sign_extend16_to_32
-        // ext_op push_a32_to_vm_stack
-        // ext_op sign_extend16_to_32
-        // ext_op push_a32_to_vm_stack
-        // ext_op sign_extend16_to_32
-        // ext_op pop_b32_from_vm_stack
-        // ext_op umul32
-        // ext_op pop_b32_from_vm_stack
-        // ext_op sdiv32
-        // ext_op ext_op_nop
-        phi_ret_d6dd = arg1;    // $D6D8
-    } else {
-        phi_ret_d6dd = -1;    // $D6DB
-    }
-    return phi_ret_d6dd;    // $D6DD
+    return ((arg1 * arg2) / arg3);    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
 }
 
 // $D6DE math32_2arg
 // (body @ $D6E3)
 
 word math32_2arg(word arg1, word arg2) {
-    if (!((arg1 || arg2))) {    // $D6E3
-        return 0;    // $D6EC
-    } else {
-        // ext_op clear_a_high16
-        // ext_op push_a32_to_vm_stack
-        // ext_op clear_a_high16
-        // ext_op pop_b32_from_vm_stack
-        // ext_op add32
-        // ext_op push_a32_to_vm_stack
-        // ext_op clear_a_high16
-        // ext_op umul32
-        // ext_op pop_b32_from_vm_stack
-        // ext_op sdiv32
-        // ext_op ext_op_nop
-        return arg1;    // $D70C
-    }
+    return ((arg1 * 100) / (arg1 + arg2));    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
 }
 
 // $D70D pct_op
