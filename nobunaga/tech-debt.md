@@ -18,7 +18,16 @@ structure. They are found **only by reading**. Until DREAM is fixed, for any aff
 | # | Bug | Status | Blast radius | Example subs |
 |---|-----|--------|-------------|--------------|
 | 1.1 | if/else phi-temp clobber (else-arm value emitted unconditionally) | ✅ FIXED 2026-06-10 | 42→11 candidates, the 11 all false positives | `$DB6E`, `$D687`, `$9FFA` |
-| 1.2 | Arms reconverge at a shared SUFFIX op → only one arm's value kept | 🔴 OPEN | a handful (not yet scanned corpus-wide) | `$8B8A` (switch +2/+4 offset collapses to 0), `$8BEA` (name-source dropped) |
+| 1.2 | Arms reconverge at a shared SUFFIX op → only one arm's value kept | 🔴 OPEN — DIAGNOSED 2026-06-10 | a handful (structural census = 29 candidates but NOISY; most are legit shared-body switches) | `$8B8A` (switch +2/+4 offset collapses to 0), `$8BEA` (name-source dropped) |
+
+**Bug 1.2 root cause (diagnosed 2026-06-10):** the value-merge phi family (`value_merge_phis`/`consuming_phis`/
+`return_phis`/`push_phis`, keyed by `tag_addr`) that landed 1.1/1.4 covers **if/else** merges, but `dream.py` DEFERS
+switches (line ~213 "switch predicates handled later"; Rung-1 scope ~line 374 = "no switch dispatch"). So switch arms
+carrying DIFFERENT values (e.g. `$8B8A` side_resource_ptr(arg1)+0/+2/+4 per case) collapse to one arm. The fix is a
+real dream.py switch-handling extension (apply the phi machinery across switch cases), NOT a quick override. **The
+certified census needs the full differential harness** (oracle vs a 4-c executor / DREAM-AST evaluator) — the
+structural "duplicate arm-address line" proxy gives 29 candidates but most are legit (shared loop bodies, jump tables).
+Snapshot of the pre-fix corpus is at `/tmp/all_banks_before_1_2.c` for a regression-diff gate.
 | 1.3 | 32-bit ext-op math chains render as a placeholder `return <local>` | 🟡 CENSUSED + CERTIFIED 2026-06-10 (formulas known; DREAM emit-fix pending) | **exactly 5 subs corpus-wide** (bank1 ×3, bank15 ×2, **bank0 ×0**) | `$8303 math32_muladddiv`, `$8357 ratio_times10_capped` |
 
 **★ value-golden ORACLE built 2026-06-10 (`tools/value-oracle.py`).** Runs any VM sub from the REAL ROM via the
