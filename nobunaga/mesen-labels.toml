@@ -1072,15 +1072,15 @@ prg_bank_count = 16        # 256 KB total
 "0xBE2E" = { name = "str_peasants_men_prompt_nl", comment = "[ROM-STR 2026-06-10] '(Peasnts/Men)?' (nl alias)" }
 "0xBE30" = { name = "str_peasants_men_prompt", comment = "[ROM-STR 2026-06-10] '(Peasnts/Men)?'" }
 "0xBE41" = { name = "str_amount_available_fields", comment = "[ROM-STR 2026-06-10] '%3d','%d%s','available  0','(arrows)'" }
-"0xF7D4" = { name = "grant_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the grant-command menu strings (driver_grant)." }
-"0xF816" = { name = "fief_stat_label_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the fief-info stat label strings (read by fief_info_display)." }
-"0xF8AE" = { name = "fief_stat_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to fief stat-name strings (report_fief_stat_decline / effect_view_a)." }
+"0xF7D4" = { name = "governance_policy_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the AI governance-policy names: Home fief/Industrial/Military/Balanced/Farming/Direct (driver_grant). (was grant_menu_str_ptrs.)" }
+"0xF816" = { name = "lord_command_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the 14 lord-command names: Move/War/Tax/Send/Dam/Pact/Grow/Marry/Trade/Hire/Train/View/Build/Give. REFUTES the prior fief_stat_label name -- these are COMMAND names (its reader fief_info_display draws the command menu)." }
+"0xF8AE" = { name = "fief_stat_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to fief/daimyo stat names: Age/Hlth/Driv/Luck/Char/IQ (daimyo record +0..+5) then Gold/Debt/Town/Rice/Output/Dams/Lylty/Wealth (province record)." }
 "0xF9AF" = { name = "unit_type_name_table_alias", comment = "[ROM-DATA 2026-06-10] Alias of unit_type_name_table ($F9AF: Rifles/Infntry/Cavalry); read by render_arms_edit_screen." }
 "0xFEA6" = { name = "province_to_map_section_50", comment = "[MAP] 50-fief scenario: province index -> strategic-map section (values 0-8, 50 entries). Read by driver_map/driver_view; scenario_fief_count==50 branch selects this (vs province_to_map_section_17 $FED8)." }
 "0xFED8" = { name = "province_to_map_section_17", comment = "[MAP] 17-fief scenario: province index -> strategic-map section (values 0/1, 17 entries). Read by driver_map/driver_view. 50-fief uses province_to_map_section_50 $FEA6." }
-"0xFEE9" = { name = "province_state_label_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to province-state label strings (draw_fief_view_label, indexed by get_province_ai_state)." }
-"0xFF1A" = { name = "settings_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the 7 settings-submenu item strings (driver_other)." }
-"0xFF4F" = { name = "trade_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the trade-submenu item strings (driver_trade)." }
+"0xFEE9" = { name = "governance_state_label_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to abbreviated governance-state labels: Assign/Ind/Mil/Bal/Farm/Dir/Menu (draw_fief_view_label). (was province_state_label_ptrs.)" }
+"0xFF1A" = { name = "settings_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to settings-menu items: Sound/Animat/Wait/Save/Battle/End/Menu (driver_other)." }
+"0xFF4F" = { name = "trade_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to trade-menu items: Loan/Repay/Sell/Buy/Arms/Menu (driver_trade)." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xB9F6" = { name = "msg_s_s_s", comment = "[ROM-STR] \"%s%s%s\"" }
 "0xB9FD" = { name = "msg_attack", comment = "[ROM-STR] \"Attack\"" }
@@ -1407,7 +1407,7 @@ prg_bank_count = 16        # 256 KB total
 "0xB11E" = { name = "terrain_attr_table", comment = "[ROM-DATA 2026-06-10] 6 terrain-attribute records, 16 bytes each, indexed by terrain type 0..5 (see lookup_terrain_attr_record $83C6 for the bit->type map). Record fields still unanalyzed; first bytes: 63 64 67 68 65 66 69 6a 6b 6c 6f 70. (was 'lookup_terrain_attr_reco_data_b11e'.)" }
 "0xB144" = { name = "fief_tile_block_tiles", comment = "[ROM-DATA 2026-06-10] Tile IDs for the fief graphic block (build_blit_fief_tile_block); 36-byte 6x6 cell." }
 "0xB196" = { name = "combat_message_table", comment = "[ROM-DATA HIGH 2026-06-10] Word-ptr table of >=10 combat announcement strings (bank 2), read by announce_combat_side_daimyo_and_status, draw_combat_message ($936A), redraw_combat_side_window. Verified entries: [0] blank, [1] '..men have deserted to our..', [2] 'Some of our men have des..', [3] 'You can`t move there!', [4] 'we seem to have the upper..', [5] 'Enemy unit %d has been..', [6] 'they`ve counter-attacked', [7] 'Unit %d has been wiped out', [8] 'we have taken an enemy a..', [9] 'Which unit shall we go a..'. (was 'jumptab_b196'.)" }
-"0xB4F0" = { name = "combat_command_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the combat-command menu item strings (drawn by combat_command_dispatch_loop_per_unit)." }
+"0xB4F0" = { name = "combat_command_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to combat-command menu items: Move/Attack/Bribe/Flee/Pass/View (combat_command_dispatch_loop_per_unit)." }
 "0xB51E" = { name = "str_keypad_yn_prompt", comment = "[ROM-STR 2026-06-10] '8 9 ( 0  (Y/N)?','8932170 (%d-%d)' direction keypad" }
 "0xB540" = { name = "map_scroll_marker_tiles", comment = "[ROM-DATA 2026-06-10] Scroll-arrow + section marker tiles for the tactical map (map_render_driver)." }
 "0xB542" = { name = "map_scroll_marker_tiles_a", comment = "[ROM-DATA 2026-06-10] +offset alias of map_scroll_marker_tiles ($B540)." }

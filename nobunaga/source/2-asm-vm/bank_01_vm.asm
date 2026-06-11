@@ -30,7 +30,7 @@ VM bytecode disassembly
   $8034  0C                         LOADL_quick   ; inline operand = 12
   $8035  D1                         DEC
   $8036  D2                         LSHIFT1
-  $8037  8C 16 F8                   LOADR_imm2             $F816 (fief_stat_label_ptrs)
+  $8037  8C 16 F8                   LOADR_imm2             $F816 (lord_command_name_ptrs)
   $803A  BB                         ADD
   $803B  B0                         DEREF
   $803C  B3                         PUSHL
@@ -653,7 +653,7 @@ VM bytecode disassembly
   $84A7  BB                         ADD
   $84A8  D3                         BYTE_DEREF
  >$84A9  D2                         LSHIFT1
-  $84AA  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
+  $84AA  8C D4 F7                   LOADR_imm2             $F7D4 (governance_policy_name_ptrs)
   $84AD  BB                         ADD
   $84AE  B0                         DEREF
   $84AF  D6 B5 84                   JUMP_abs               $84B5
@@ -811,7 +811,7 @@ VM bytecode disassembly
  >$85D9  3C                         PUSH_quick   ; inline operand = 12
   $85DA  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $85DE  D2                         LSHIFT1
-  $85DF  8C E9 FE                   LOADR_imm2             $FEE9 (province_state_label_ptrs)
+  $85DF  8C E9 FE                   LOADR_imm2             $FEE9 (governance_state_label_ptrs)
   $85E2  BB                         ADD
   $85E3  B0                         DEREF
   $85E4  B3                         PUSHL
@@ -1023,7 +1023,7 @@ VM bytecode disassembly
   $874F  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8753  0B                         LOADL_quick   ; inline operand = 11
   $8754  D2                         LSHIFT1
-  $8755  8C 16 F8                   LOADR_imm2             $F816 (fief_stat_label_ptrs)
+  $8755  8C 16 F8                   LOADR_imm2             $F816 (lord_command_name_ptrs)
   $8758  BB                         ADD
   $8759  B0                         DEREF
   $875A  B3                         PUSHL
@@ -1050,7 +1050,7 @@ VM bytecode disassembly
   $877D  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8781  0B                         LOADL_quick   ; inline operand = 11
   $8782  D2                         LSHIFT1
-  $8783  8C 16 F8                   LOADR_imm2             $F816 (fief_stat_label_ptrs)
+  $8783  8C 16 F8                   LOADR_imm2             $F816 (lord_command_name_ptrs)
   $8786  BB                         ADD
   $8787  B0                         DEREF
   $8788  B3                         PUSHL
@@ -6914,7 +6914,7 @@ VM bytecode disassembly
   $AFDF  09                         LOADL_quick   ; inline operand = 9
   $AFE0  D0                         INC
   $AFE1  D2                         LSHIFT1
-  $AFE2  8C E9 FE                   LOADR_imm2             $FEE9 (province_state_label_ptrs)
+  $AFE2  8C E9 FE                   LOADR_imm2             $FEE9 (governance_state_label_ptrs)
   $AFE5  BB                         ADD
   $AFE6  B0                         DEREF
   $AFE7  B3                         PUSHL
@@ -6942,7 +6942,7 @@ VM bytecode disassembly
   $B00B  D8 23 B0                   JUMPF_abs              $B023
   $B00E  0B                         LOADL_quick   ; inline operand = 11
   $B00F  D2                         LSHIFT1
-  $B010  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
+  $B010  8C D4 F7                   LOADR_imm2             $F7D4 (governance_policy_name_ptrs)
   $B013  BB                         ADD
   $B014  B0                         DEREF
   $B015  B3                         PUSHL
@@ -6952,7 +6952,7 @@ VM bytecode disassembly
   $B020  D6 85 AF                   JUMP_abs               $AF85
  >$B023  0B                         LOADL_quick   ; inline operand = 11
   $B024  D2                         LSHIFT1
-  $B025  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
+  $B025  8C D4 F7                   LOADR_imm2             $F7D4 (governance_policy_name_ptrs)
   $B028  BB                         ADD
   $B029  B0                         DEREF
   $B02A  B3                         PUSHL
@@ -6961,7 +6961,7 @@ VM bytecode disassembly
   $B031  BB                         ADD
   $B032  D3                         BYTE_DEREF
   $B033  D2                         LSHIFT1
-  $B034  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
+  $B034  8C D4 F7                   LOADR_imm2             $F7D4 (governance_policy_name_ptrs)
   $B037  BB                         ADD
   $B038  B0                         DEREF
   $B039  B3                         PUSHL
