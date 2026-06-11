@@ -176,7 +176,7 @@ word consume_daily_battle_rice(word strength_ptrs, word remainder_accum) {
         if (((*(word*)(*(word*)(((side << 1) + strength_ptrs))) - drain) <= 0)) {    // $8342
             *(word*)(*(word*)(((side << 1) + strength_ptrs))) = 0;    // $8359
         }
-        draw_unit_stat_field(side, 1);    // $835C
+        draw_side_resource_field(side, 1);    // $835C
         side = (side + 1);    // $8362
     } while (((unsigned)side < (unsigned)2));
     return ((unsigned)side < (unsigned)2);    // $8369
@@ -815,10 +815,10 @@ word draw_valid_unit_field_cells(void) {
     return ((unsigned)local10 < (unsigned)2);    // $8B89
 }
 
-// $8B8A draw_unit_stat_field
+// $8B8A draw_side_resource_field
 // (body @ $8B8F)
 
-word draw_unit_stat_field(word arg1, word arg2) {
+word draw_side_resource_field(word arg1, word arg2) {
     phi_ret_8bd7 = (combat_unit_window_mode_flag == 2);    // $8B94
     if (phi_ret_8bd7) {    // $8B8F
         local11 = ui_window_col;    // $8B9A
@@ -2117,7 +2117,7 @@ word apply_pct_reduction_to_unit_strength(word arg1, word arg2, word arg3) {
         local10 = *(word*)(local11);    // $9D31
     }
     *(word*)((side_resource_ptr(arg1) + 4)) = (*(word*)((side_resource_ptr(arg1) + 4)) - local10);    // $9D3D
-    draw_unit_stat_field(arg1, 2);    // $9D40
+    draw_side_resource_field(arg1, 2);    // $9D40
     *(word*)(local11) = (*(word*)(local11) - local10);    // $9D4A
     if (((*(word*)(local11) - local10) <= 0)) {    // $9D32
         draw_terrain_feature_if_valid(*(byte*)(unit_col_ptr(arg1, arg2)), *(byte*)(unit_row_ptr(arg1, arg2)));    // $9D60
@@ -2182,7 +2182,7 @@ word tally_unit_type_then_check_strength_parity_50(word arg1) {
 
 word resolve_attack_apply_casualties(word arg1, word arg2) {
     *(word*)(side_resource_ptr(cur_combat_side)) = (*(word*)(side_resource_ptr(cur_combat_side)) - arg2);    // $9E84
-    draw_unit_stat_field(cur_combat_side, 0);    // $9E89
+    draw_side_resource_field(cur_combat_side, 0);    // $9E89
     local9 = get_battle_side_province(cur_combat_side);    // $9E94
     local7 = (cur_combat_side ^ 1);    // $9E9A
     local8 = get_battle_side_province((cur_combat_side ^ 1));    // $9EA0
@@ -2202,10 +2202,10 @@ word resolve_attack_apply_casualties(word arg1, word arg2) {
             } else {
                 *(word*)(unit_strength_ptr(local7, arg1)) = (*(word*)(unit_strength_ptr(local7, arg1)) - local11);    // $9F63
                 *(word*)((side_resource_ptr(local7) + 4)) = (*(word*)((side_resource_ptr(local7) + 4)) - local11);    // $9F6F
-                draw_unit_stat_field(local7, 2);    // $9F72
+                draw_side_resource_field(local7, 2);    // $9F72
                 *(word*)(unit_strength_ptr(cur_combat_side, 0)) = (*(word*)(unit_strength_ptr(cur_combat_side, 0)) + local11);    // $9F83
                 *(word*)((side_resource_ptr(cur_combat_side) + 4)) = (*(word*)((side_resource_ptr(cur_combat_side) + 4)) + local11);    // $9F91
-                draw_unit_stat_field(cur_combat_side, 2);    // $9F96
+                draw_side_resource_field(cur_combat_side, 2);    // $9F96
                 if (get_province_ai_state(local8)) {    // $9F58
                     message_display(mem_B19A);    // $9FA5
                 }

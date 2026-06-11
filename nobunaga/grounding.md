@@ -119,6 +119,15 @@ this class at the assertion level.
   hitting this shape, read the **raw `3-c-basic`** form. **Fix = the AST analogue of the front-end
   clobber fix:** emit each arm's phi assignment INSIDE its arm / keep the skip, in `dream.py`'s fold.
 
+### SWITCH per-case offset collapsed to one constant (value-wrong 4-c)   [OPEN 2026-06-10]
+Found grounding bank-2 `$8B8A draw_side_resource_field`. A `SWITCH_noncontig` whose cases differ only by an
+`ADD_qimm` after a shared `CALL`/`DEREF` renders **value-wrong** in 4-c: all 3 cases show
+`side_resource_ptr(arg1)` at **offset 0**, but the bytecode is case0=+0, case1=`ADD_qimm 2` ($8BD8),
+case2=`ADD_qimm 4` ($8BE1) → gold/rice/men. The per-case operand on the merge path got dropped (same value-merge
+family as the if/else clobber above, but in a SWITCH where arms reconverge at the shared DEREF). **Impact:** any
+switch that post-processes the selector into an offset reads wrong in 4-c — verify against bytecode/`3-c-basic`.
+Not yet scanned corpus-wide; likely a handful. (Gate-invisible; found by reading.)
+
 ### `$E80C` — return-phi reached by a conditional-branch taken edge   [FIXED 2026-06-10]
 **Root cause (not "boolean arm" as first hypothesized):** `return_phis` bailed on ANY pred ending in
 a conditional branch (`else: ok=False`). `$E822`'s preds are the `JUMPF` branch block (taken edge →
@@ -136,6 +145,19 @@ witness + 495/495 CFG-preserving (0 fallbacks), stack-audit 184. Lives in `vm_cf
 call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a conditional bank-14 dispatch).
 
 ## Ledger (append-only, newest first)
+
+### Bank 2 full-verify batch #4 — last depth-0 leaves + first depth-1 (render/prompt) (45/131)   [2026-06-10]
+- `$8B8A` `draw_unit_stat_field` → **`draw_side_resource_field`** — draws side gold/rice/men. **Found a NEW DREAM
+  bug:** the switch's per-case +2/+4 offset collapses to 0 in 4-c (value-merge in a SWITCH); bytecode @
+  $8BD8/$8BE1 has ADD_qimm 2/4. Logged in the decompiler-3% backlog [OPEN]. Refuted the 'unit stat / unit_record_ptr' note.
+- `$AB37` `redraw_combat_side_window` ✅ — REFUTED branch desc: slot-0 draws combat_message_table[18/19] keyed on
+  war bit-7 (test_6f65_bit7), clear is unconditional (prior note had it backwards).
+- `$840B` `draw_tactical_cursor_region` ✅ — 16-sprite 4x4 cursor (draw at col<<3; erase parks at 248,248).
+- `$89DF` `draw_unit_count_digits` ✅ — on-map troop count via $6FE5+side*9 digit buffer + war-marker tile 178/179.
+- `$91A1` `prompt_select_province_from_list` ✅ — validates pick against the $6F4F list (built by $90BB — cross-link).
+- `$910C` `prompt_hit_any_key_return_button` ✅ / `$AD38` `display_morale_falling_message` ✅ (re-grounded).
+Cross-confirms piling up: test_6f65_bit7 (bit-7 war state) reaffirms the batch-1 packed-$6F65 finding; cursor/digit
+render reuse the phase-window geometry. Next: rows 1-7 of `bank-ground-order.py 2 --todo`.
 
 ### Bank 2 full-verify batch #3 — 7 depth-0 leaves, combat-strength + conquest layer (38/131)   [2026-06-10]
 Heavy refute batch — **5 prior comments wrong, 1 rename**:

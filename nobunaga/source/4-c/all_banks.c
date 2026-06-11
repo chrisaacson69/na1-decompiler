@@ -279,7 +279,7 @@
 //   PRG $08B25  bank2  $8B25  draw_terrain_feature_if_valid
 //   PRG $08B39  bank2  $8B39  draw_combat_day_header
 //   PRG $08B58  bank2  $8B58  draw_valid_unit_field_cells
-//   PRG $08B8A  bank2  $8B8A  draw_unit_stat_field
+//   PRG $08B8A  bank2  $8B8A  draw_side_resource_field
 //   PRG $08BEA  bank2  $8BEA  combat_unit_window_refresh
 //   PRG $08C61  bank2  $8C61  draw_unit_roster_columns
 //   PRG $08D39  bank2  $8D39  draw_combat_fief_day_header
@@ -7122,7 +7122,7 @@ word consume_daily_battle_rice(word strength_ptrs, word remainder_accum) {
         if (((*(word*)(*(word*)(((side << 1) + strength_ptrs))) - drain) <= 0)) {    // PRG $08342
             *(word*)(*(word*)(((side << 1) + strength_ptrs))) = 0;    // PRG $08359
         }
-        draw_unit_stat_field(side, 1);    // PRG $0835C -> bank2 $8B8A
+        draw_side_resource_field(side, 1);    // PRG $0835C -> bank2 $8B8A
         side = (side + 1);    // PRG $08362
     } while (((unsigned)side < (unsigned)2));
     return ((unsigned)side < (unsigned)2);    // PRG $08369
@@ -7785,10 +7785,10 @@ word draw_valid_unit_field_cells(void) {
 }
 
 // ===== bank2 $8B8A  (PRG $08B8A) =====
-// PRG $08B8A draw_unit_stat_field
+// PRG $08B8A draw_side_resource_field
 // (body @ PRG $08B8F)
 
-word draw_unit_stat_field(word arg1, word arg2) {
+word draw_side_resource_field(word arg1, word arg2) {
     phi_ret_8bd7 = (combat_unit_window_mode_flag == 2);    // PRG $08B94
     if (phi_ret_8bd7) {    // PRG $08B8F
         local11 = ui_window_col;    // PRG $08B9A
@@ -9139,7 +9139,7 @@ word apply_pct_reduction_to_unit_strength(word arg1, word arg2, word arg3) {
         local10 = *(word*)(local11);    // PRG $09D31
     }
     *(word*)((side_resource_ptr(arg1) + 4)) = (*(word*)((side_resource_ptr(arg1) + 4)) - local10);    // PRG $09D3D -> bank2 $827E
-    draw_unit_stat_field(arg1, 2);    // PRG $09D40 -> bank2 $8B8A
+    draw_side_resource_field(arg1, 2);    // PRG $09D40 -> bank2 $8B8A
     *(word*)(local11) = (*(word*)(local11) - local10);    // PRG $09D4A
     if (((*(word*)(local11) - local10) <= 0)) {    // PRG $09D32
         draw_terrain_feature_if_valid(*(byte*)(unit_col_ptr(arg1, arg2)), *(byte*)(unit_row_ptr(arg1, arg2)));    // PRG $09D60 -> bank2 $8B25
@@ -9209,7 +9209,7 @@ word tally_unit_type_then_check_strength_parity_50(word arg1) {
 
 word resolve_attack_apply_casualties(word arg1, word arg2) {
     *(word*)(side_resource_ptr(cur_combat_side)) = (*(word*)(side_resource_ptr(cur_combat_side)) - arg2);    // PRG $09E84 -> bank2 $827E
-    draw_unit_stat_field(cur_combat_side, 0);    // PRG $09E89 -> bank2 $8B8A
+    draw_side_resource_field(cur_combat_side, 0);    // PRG $09E89 -> bank2 $8B8A
     local9 = get_battle_side_province(cur_combat_side);    // PRG $09E94 -> bank2 $838F
     local7 = (cur_combat_side ^ 1);    // PRG $09E9A
     local8 = get_battle_side_province((cur_combat_side ^ 1));    // PRG $09EA0 -> bank2 $838F
@@ -9229,10 +9229,10 @@ word resolve_attack_apply_casualties(word arg1, word arg2) {
             } else {
                 *(word*)(unit_strength_ptr(local7, arg1)) = (*(word*)(unit_strength_ptr(local7, arg1)) - local11);    // PRG $09F63 -> bank2 $82C9
                 *(word*)((side_resource_ptr(local7) + 4)) = (*(word*)((side_resource_ptr(local7) + 4)) - local11);    // PRG $09F6F -> bank2 $827E
-                draw_unit_stat_field(local7, 2);    // PRG $09F72 -> bank2 $8B8A
+                draw_side_resource_field(local7, 2);    // PRG $09F72 -> bank2 $8B8A
                 *(word*)(unit_strength_ptr(cur_combat_side, 0)) = (*(word*)(unit_strength_ptr(cur_combat_side, 0)) + local11);    // PRG $09F83 -> bank2 $82C9
                 *(word*)((side_resource_ptr(cur_combat_side) + 4)) = (*(word*)((side_resource_ptr(cur_combat_side) + 4)) + local11);    // PRG $09F91 -> bank2 $827E
-                draw_unit_stat_field(cur_combat_side, 2);    // PRG $09F96 -> bank2 $8B8A
+                draw_side_resource_field(cur_combat_side, 2);    // PRG $09F96 -> bank2 $8B8A
                 if (get_province_ai_state(local8)) {    // PRG $09F58 -> bank15 $D98D
                     message_display(mem_B19A);    // PRG $09FA5 -> bank15 $D326
                 }

@@ -467,7 +467,7 @@ VM bytecode disassembly
   $8359  B1                         POPSTORE
  >$835A  61                         PUSH_qimm   ; inline operand = 1
   $835B  38                         PUSH_quick   ; inline operand = 8
-  $835C  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_unit_stat_field) {bytecode}, $04
+  $835C  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_side_resource_field) {bytecode}, $04
   $8360  08                         LOADL_quick   ; inline operand = 8
   $8361  D0                         INC
   $8362  28                         STORE_quick   ; inline operand = 8
@@ -4179,7 +4179,7 @@ VM bytecode disassembly
   $9D3D  B1                         POPSTORE
   $9D3E  62                         PUSH_qimm   ; inline operand = 2
   $9D3F  3C                         PUSH_quick   ; inline operand = 12
-  $9D40  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_unit_stat_field) {bytecode}, $04
+  $9D40  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_side_resource_field) {bytecode}, $04
   $9D44  3A                         PUSH_quick   ; inline operand = 10
   $9D45  0B                         LOADL_quick   ; inline operand = 11
   $9D46  B4                         POPR
@@ -4374,7 +4374,7 @@ VM bytecode disassembly
   $9E84  B1                         POPSTORE
   $9E85  60                         PUSH_qimm   ; inline operand = 0
   $9E86  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
-  $9E89  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_unit_stat_field) {bytecode}, $04
+  $9E89  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_side_resource_field) {bytecode}, $04
   $9E8D  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
   $9E90  E9 8F 83 02                CALL_abs_imm1          $838F (get_battle_side_province) {bytecode}, $02
   $9E94  29                         STORE_quick   ; inline operand = 9
@@ -4511,7 +4511,7 @@ VM bytecode disassembly
   $9F6F  B1                         POPSTORE
   $9F70  62                         PUSH_qimm   ; inline operand = 2
   $9F71  37                         PUSH_quick   ; inline operand = 7
-  $9F72  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_unit_stat_field) {bytecode}, $04
+  $9F72  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_side_resource_field) {bytecode}, $04
   $9F76  3B                         PUSH_quick   ; inline operand = 11
   $9F77  60                         PUSH_qimm   ; inline operand = 0
   $9F78  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
@@ -4532,7 +4532,7 @@ VM bytecode disassembly
   $9F91  B1                         POPSTORE
   $9F92  62                         PUSH_qimm   ; inline operand = 2
   $9F93  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
-  $9F96  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_unit_stat_field) {bytecode}, $04
+  $9F96  E9 8A 8B 04                CALL_abs_imm1          $8B8A (draw_side_resource_field) {bytecode}, $04
   $9F9A  38                         PUSH_quick   ; inline operand = 8
   $9F9B  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $9F9F  D8 A9 9F                   JUMPF_abs              $9FA9
