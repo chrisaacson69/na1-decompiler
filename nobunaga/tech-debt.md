@@ -31,6 +31,12 @@ VM's aux 32-bit stack + ext-ops (`sign_extend16_to_32`/`umul32`/`sdiv32`/`add32`
 **Good news:** both open bugs are *bounded and known*, concentrated in math/formula primitives — not a broad rot.
 Find ext-op subs with `grep -l '// ext_op' source/4-c/bank_NN.c`.
 
+**Plan (decided 2026-06-10): DEFER the fix, finish grounding first.** The grounding pass is the quantification pass —
+every affected sub gets hit, read against bytecode, and **flagged inline** in its toml comment (`grep -n 'DREAM\|ext-op\|value-wrong' mesen-labels.toml`).
+When banks 1 & 0 are done we'll have the *complete* list and fix the decompiler as an informed capstone (value-merge AST
+fix first — same family as the landed ones; 32-bit ext-op modeling only if the count justifies it; a heuristic gate-scan
+for the patterns as the backstop). Fixing now would mean investing blind to the real scope.
+
 ---
 
 ## 2. Tooling & architecture — 🟡
