@@ -2202,7 +2202,7 @@ VM bytecode disassembly
   $8FD8  60                         PUSH_qimm   ; inline operand = 0
   $8FD9  3D                         PUSH_quick   ; inline operand = 13
   $8FDA  3C                         PUSH_quick   ; inline operand = 12
-  $8FDB  E9 99 8E 06                CALL_abs_imm1          $8E99 (append_candidate_entry_6f67) {bytecode}, $06
+  $8FDB  E9 99 8E 06                CALL_abs_imm1          $8E99 (append_candidate_pair) {bytecode}, $06
   $8FDF  CF                         RETURN
 
 ; ============================================================
@@ -2898,7 +2898,7 @@ VM bytecode disassembly
  >$9491  0B                         LOADL_quick   ; inline operand = 11
   $9492  D3                         BYTE_DEREF
   $9493  B3                         PUSHL
-  $9494  E9 6D 94 02                CALL_abs_imm1          $946D (get_daimyo_stat4_by_fief) {bytecode}, $02
+  $9494  E9 6D 94 02                CALL_abs_imm1          $946D (get_fief_daimyo_charisma) {bytecode}, $02
   $9498  CD                         SWAP
   $9499  0A                         LOADL_quick   ; inline operand = 10
   $949A  BB                         ADD
@@ -3130,7 +3130,7 @@ VM bytecode disassembly
   $9619  61                         PUSH_qimm   ; inline operand = 1
   $961A  3D                         PUSH_quick   ; inline operand = 13
   $961B  3C                         PUSH_quick   ; inline operand = 12
-  $961C  E9 99 8E 06                CALL_abs_imm1          $8E99 (append_candidate_entry_6f67) {bytecode}, $06
+  $961C  E9 99 8E 06                CALL_abs_imm1          $8E99 (append_candidate_pair) {bytecode}, $06
   $9620  CF                         RETURN
 
 ; ============================================================
@@ -4413,7 +4413,7 @@ VM bytecode disassembly
 ; sub $9F57   (frame_off=-2, body @ $9F5C)
 ; ============================================================
   $9F5C  3C                         PUSH_quick   ; inline operand = 12
-  $9F5D  E9 6D 94 02                CALL_abs_imm1          $946D (get_daimyo_stat4_by_fief) {bytecode}, $02
+  $9F5D  E9 6D 94 02                CALL_abs_imm1          $946D (get_fief_daimyo_charisma) {bytecode}, $02
   $9F61  5A                         LOADR_qimm   ; inline operand = 10
   $9F62  B6                         SDIV
   $9F63  2B                         STORE_quick   ; inline operand = 11
@@ -4726,7 +4726,7 @@ VM bytecode disassembly
 ; sub $A128   (frame_off=-2, body @ $A12D)
 ; ============================================================
   $A12D  3C                         PUSH_quick   ; inline operand = 12
-  $A12E  E9 6D 94 02                CALL_abs_imm1          $946D (get_daimyo_stat4_by_fief) {bytecode}, $02
+  $A12E  E9 6D 94 02                CALL_abs_imm1          $946D (get_fief_daimyo_charisma) {bytecode}, $02
   $A132  5A                         LOADR_qimm   ; inline operand = 10
   $A133  B6                         SDIV
   $A134  2B                         STORE_quick   ; inline operand = 11
@@ -4813,7 +4813,7 @@ VM bytecode disassembly
   $A19B  D3                         BYTE_DEREF
   $A19C  B3                         PUSHL
   $A19D  3C                         PUSH_quick   ; inline operand = 12
-  $A19E  E9 6D 94 02                CALL_abs_imm1          $946D (get_daimyo_stat4_by_fief) {bytecode}, $02
+  $A19E  E9 6D 94 02                CALL_abs_imm1          $946D (get_fief_daimyo_charisma) {bytecode}, $02
   $A1A2  52                         LOADR_qimm   ; inline operand = 2
   $A1A3  B6                         SDIV
   $A1A4  B3                         PUSHL

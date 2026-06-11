@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #1 — math/relations/candidate leaves (10/98)   [2026-06-10]
+First bank-0 batch (the main loop; entry vm_bootstrap). 2 renames + re-dated confirms:
+- `$8E99` `append_candidate_entry_6f67` → **`append_candidate_pair`** (dual-lane $6F67/$6F68 list).
+- `$946D` `get_daimyo_stat4_by_fief` → **`get_fief_daimyo_charisma`** (+4 = CHARISMA).
+- `$8377` transfer_arms_field_pct (pct byte transfer), `$8C35` relations_matrix_cell_addr ($6193 stride-54),
+  `$9214` calc_year_scaled_random_value, `$92F9` random_ravage_province_field, `$9D86`
+  square_over_2025_probability_roll (P~(2025-arg1^2)/2025): re-grounded. Next: rows 1-7.
+
 ### ★★ BANK 1 FULL-VERIFICATION COMPLETE ★★ — batch #18, the turn-loop roots (131/131, 100%)   [2026-06-10]
 **Every one of bank 1's 131 subs is read-verified (0 todo, 0 suspects).** The lord-command / turn engine reads top to
 bottom: root `ai_per_fief_command_driver` ($B89B, depth 7, the AI per-fief turn loop) -> ai_econ_command_dispatch /

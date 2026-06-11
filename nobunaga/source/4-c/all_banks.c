@@ -36,7 +36,7 @@
 //   PRG $00C75  bank0  $8C75  resolve_ownerless_province_succession
 //   PRG $00DE1  bank0  $8DE1  dedup_owners_to_6f4f
 //   PRG $00E63  bank0  $8E63  process_fiefs_with_state_ff
-//   PRG $00E99  bank0  $8E99  append_candidate_entry_6f67
+//   PRG $00E99  bank0  $8E99  append_candidate_pair
 //   PRG $00EBC  bank0  $8EBC  compare_greater_with_coinflip_tiebreak
 //   PRG $00ED3  bank0  $8ED3  display_two_message_prompt_then_compare
 //   PRG $00F0A  bank0  $8F0A  ai_resolve_province_takeover_attempt
@@ -63,7 +63,7 @@
 //   PRG $01395  bank0  $9395  ravage_defender_field_off18
 //   PRG $013AA  bank0  $93AA  ravage_defender_loyalty
 //   PRG $013BF  bank0  $93BF  ravage_defending_province_sweep
-//   PRG $0146D  bank0  $946D  get_daimyo_stat4_by_fief
+//   PRG $0146D  bank0  $946D  get_fief_daimyo_charisma
 //   PRG $0147A  bank0  $947A  avg_daimyo_charisma_over_fief_list
 //   PRG $014B1  bank0  $94B1  announce_provinces_by_ai_state_mode
 //   PRG $0152F  bank0  $952F  avg_byte_array_6d2d_over_fiefs
@@ -1413,10 +1413,10 @@ word process_fiefs_with_state_ff(void) {
 }
 
 // ===== bank0 $8E99  (PRG $00E99) =====
-// PRG $00E99 append_candidate_entry_6f67
+// PRG $00E99 append_candidate_pair
 // (body @ PRG $00E9E)
 
-word append_candidate_entry_6f67(word arg1, word arg2, word arg3) {
+word append_candidate_pair(word arg1, word arg2, word arg3) {
     *(byte*)(((arg2 << 1) + 0x6F67)) = arg1;    // PRG $00EA6
     *(byte*)(((arg2 << 1) + 0x6F68)) = arg3;    // PRG $00EAF
     *(byte*)((((arg2 + 1) << 1) + 0x6F67)) = -1;    // PRG $00EBA
@@ -1487,7 +1487,7 @@ word ai_resolve_province_takeover_attempt(word fief) {
 // (body @ PRG $00FD8)
 
 word append_candidate_zero_priority(word arg1, word arg2) {
-    return append_candidate_entry_6f67(arg1, arg2, 0);    // PRG $00FDF -> bank0 $8E99
+    return append_candidate_pair(arg1, arg2, 0);    // PRG $00FDF -> bank0 $8E99
 }
 
 // ===== bank0 $8FE0  (PRG $00FE0) =====
@@ -1870,10 +1870,10 @@ word ravage_defending_province_sweep(void) {
 }
 
 // ===== bank0 $946D  (PRG $0146D) =====
-// PRG $0146D get_daimyo_stat4_by_fief
+// PRG $0146D get_fief_daimyo_charisma
 // (body @ PRG $01472)
 
-word get_daimyo_stat4_by_fief(word arg1) {
+word get_fief_daimyo_charisma(word arg1) {
     return *(byte*)((fief_to_daimyo_record_addr(arg1) + 4));    // PRG $01479 -> bank15 $D7DA
 }
 
@@ -1887,7 +1887,7 @@ word avg_daimyo_charisma_over_fief_list(void) {
     local10 = 0;    // PRG $01489
     local11 = 0x6F89;    // PRG $0148D
     while ((*(byte*)(local11) != 255)) {    // PRG $014A4
-        local10 = (local10 + get_daimyo_stat4_by_fief(*(byte*)(local11)));    // PRG $0149B -> bank0 $946D
+        local10 = (local10 + get_fief_daimyo_charisma(*(byte*)(local11)));    // PRG $0149B -> bank0 $946D
         local11 = (local11 + 1);    // PRG $0149E
         local9 = (local9 + 1);    // PRG $014A2
     }
@@ -2010,7 +2010,7 @@ word province_conquest_roll_predicate(word arg1) {
 // (body @ PRG $01619)
 
 word append_candidate_priority1(word arg1, word arg2) {
-    return append_candidate_entry_6f67(arg1, arg2, 1);    // PRG $01620 -> bank0 $8E99
+    return append_candidate_pair(arg1, arg2, 1);    // PRG $01620 -> bank0 $8E99
 }
 
 // ===== bank0 $9621  (PRG $01621) =====
@@ -2666,7 +2666,7 @@ word ai_event_build_two_batches_dispatch_or_announce(void) {
 // (body @ PRG $01F5C)
 
 word event_boost_province_wealth_loyalty(word arg1, word arg2) {
-    local11 = (get_daimyo_stat4_by_fief(arg1) / 10);    // PRG $01F63 -> bank0 $946D
+    local11 = (get_fief_daimyo_charisma(arg1) / 10);    // PRG $01F63 -> bank0 $946D
     phi_ret_9f8b = rng_mod(2);    // PRG $01F69 -> bank15 $CA52
     if (phi_ret_9f8b) {    // PRG $01F5C
         arg2->wealth = (arg2->wealth + (rng_mod(10) + local11));    // PRG $01F7A -> bank15 $CA52
@@ -2791,7 +2791,7 @@ word update_province_highwater_marks(word arg1) {
 // (body @ PRG $0212D)
 
 word event_boost_province_gold_output(word arg1, word arg2) {
-    local11 = (get_daimyo_stat4_by_fief(arg1) / 10);    // PRG $02134 -> bank0 $946D
+    local11 = (get_fief_daimyo_charisma(arg1) / 10);    // PRG $02134 -> bank0 $946D
     *(word*)(arg2) = (*(word*)(arg2) + (rng_mod(10) + local11));    // PRG $02142 -> bank15 $CA52
     phi_ret_a15a = rng_mod(2);    // PRG $02148 -> bank15 $CA52
     if (phi_ret_a15a) {    // PRG $0212D
@@ -2822,7 +2822,7 @@ word consume_province_army_upkeep(word arg1) {
 // (body @ PRG $02196)
 
 word calc_charisma_scaled_income_variance(word arg1) {
-    return pct_op((get_daimyo_stat4_by_fief(arg1) / 2), fief_tax_rate[arg1]);    // PRG $021A9 -> bank15 $D70D
+    return pct_op((get_fief_daimyo_charisma(arg1) / 2), fief_tax_rate[arg1]);    // PRG $021A9 -> bank15 $D70D
 }
 
 // ===== bank0 $A1AA  (PRG $021AA) =====
