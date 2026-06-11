@@ -120,13 +120,13 @@
 //   PRG $041FC  bank1  $81FC  effect_war_a
 //   PRG $04250  bank1  $8250  relations_matrix_get
 //   PRG $04271  bank1  $8271  relations_rng_predicate
-//   PRG $042AC  bank1  $82AC  helper_82AC
+//   PRG $042AC  bank1  $82AC  clamp_amount_to_province_max
 //   PRG $042D6  bank1  $82D6  effect_tax
 //   PRG $04303  bank1  $8303  math32_muladddiv
 //   PRG $04327  bank1  $8327  scale_div10_capcheck
-//   PRG $04357  bank1  $8357  helper_8357
+//   PRG $04357  bank1  $8357  ratio_times10_capped
 //   PRG $04379  bank1  $8379  apply_two_grows_const1_override
-//   PRG $043A2  bank1  $83A2  province_window_redraw_ba6f
+//   PRG $043A2  bank1  $83A2  draw_province_stat_or_dashes
 //   PRG $043C7  bank1  $83C7  helper_83C7
 //   PRG $043D5  bank1  $83D5  province_window_redraw_ba78
 //   PRG $043FA  bank1  $83FA  effect_view_a
@@ -145,7 +145,7 @@
 //   PRG $0496F  bank1  $896F  develop_wealth
 //   PRG $049C1  bank1  $89C1  develop_morale
 //   PRG $04A15  bank1  $8A15  effect_trade
-//   PRG $04A4E  bank1  $8A4E  helper_8A4E
+//   PRG $04A4E  bank1  $8A4E  cycle_economy_rate
 //   PRG $04B0A  bank1  $8B0A  effect_subhandler_A003
 //   PRG $04B40  bank1  $8B40  effect_subhandler_9F04
 //   PRG $04B8F  bank1  $8B8F  helper_8B8F
@@ -3413,10 +3413,10 @@ word relations_rng_predicate(word arg1, word arg2) {
 }
 
 // ===== bank1 $82AC  (PRG $042AC) =====
-// PRG $042AC helper_82AC
+// PRG $042AC clamp_amount_to_province_max
 // (body @ PRG $042B1)
 
-word helper_82AC(word arg1) {
+word clamp_amount_to_province_max(word arg1) {
     *(word*)(arg1) = min_word(*(word*)(((selected_province_idx * 26) + 0x7019)), *(word*)(arg1));    // PRG $042C5 -> bank15 $CB5E
     *(word*)(arg1) = ((*(word*)(arg1) < 0) ? 0 : *(word*)(arg1));    // PRG $042D4
     return ((*(word*)(arg1) < 0) ? 0 : *(word*)(arg1));    // PRG $042D5
@@ -3473,10 +3473,10 @@ word scale_div10_capcheck(word arg1, word arg2, word arg3) {
 }
 
 // ===== bank1 $8357  (PRG $04357) =====
-// PRG $04357 helper_8357
+// PRG $04357 ratio_times10_capped
 // (body @ PRG $0435C)
 
-word helper_8357(word arg1, word arg2, word arg3) {
+word ratio_times10_capped(word arg1, word arg2, word arg3) {
     // ext_op sign_extend16_to_32
     // ext_op push_a32_to_vm_stack
     // ext_op sign_extend16_to_32
@@ -3504,14 +3504,14 @@ word apply_two_grows_const1_override(word arg1, word arg2) {
 }
 
 // ===== bank1 $83A2  (PRG $043A2) =====
-// PRG $043A2 province_window_redraw_ba6f
+// PRG $043A2 draw_province_stat_or_dashes
 // (body @ PRG $043A7)
 
-word province_window_redraw_ba6f(word arg1, word arg2) {
+word draw_province_stat_or_dashes(word arg1, word arg2) {
     if ((province_ai_state[arg1] != 255)) {    // PRG $043A7
         phi_ret_83c6 = draw_message(msg_fmt__4d, arg2);    // PRG $043BC -> bank15 $D134
     } else {
-        phi_ret_83c6 = redraw_window(province_window_redraw_data_ba6f);    // PRG $043C2 -> bank15 $CEC4
+        phi_ret_83c6 = redraw_window(str_field_dashes);    // PRG $043C2 -> bank15 $CEC4
     }
     return phi_ret_83c6;    // PRG $043C6
 }
@@ -3521,7 +3521,7 @@ word province_window_redraw_ba6f(word arg1, word arg2) {
 // (body @ PRG $043CC)
 
 word helper_83C7(word arg1) {
-    return province_window_redraw_ba6f(selected_province_idx, arg1);    // PRG $043D4 -> bank1 $83A2
+    return draw_province_stat_or_dashes(selected_province_idx, arg1);    // PRG $043D4 -> bank1 $83A2
 }
 
 // ===== bank1 $83D5  (PRG $043D5) =====
@@ -3609,7 +3609,7 @@ word effect_view_a(word arg1) {
         } else {
             ui_window_col = 16;    // PRG $0454C
             local9 = (local9 + 2);    // PRG $04551
-            province_window_redraw_ba6f(arg1, *(word*)(((local9 + 2) + -2)));    // PRG $04557 -> bank1 $83A2
+            draw_province_stat_or_dashes(arg1, *(word*)(((local9 + 2) + -2)));    // PRG $04557 -> bank1 $83A2
         }
         local11 = (local11 + 1);    // PRG $0455D
     } while (((unsigned)local11 < (unsigned)18));
@@ -3843,7 +3843,7 @@ word helper_dam_rounding(word arg1, word arg2) {
         }
     }
     *(word*)(arg2) = (*(word*)(arg2) + local11);    // PRG $0489F
-    return helper_82AC(arg2);    // PRG $048A5 -> bank1 $82AC
+    return clamp_amount_to_province_max(arg2);    // PRG $048A5 -> bank1 $82AC
 }
 
 // ===== bank1 $88A6  (PRG $048A6) =====
@@ -3950,10 +3950,10 @@ word effect_trade(void) {
 }
 
 // ===== bank1 $8A4E  (PRG $04A4E) =====
-// PRG $04A4E helper_8A4E
+// PRG $04A4E cycle_economy_rate
 // (body @ PRG $04A53)
 
-word helper_8A4E(word arg1) {
+word cycle_economy_rate(word arg1) {
     local10 = ui_window_col;    // PRG $04A56
     local9 = ui_cursor_row;    // PRG $04A5A
     ui_window_col = 26;    // PRG $04A5D
@@ -4018,7 +4018,7 @@ word effect_subhandler_A003(word rice_amount) {
     rate = gold_rice_exchange_rate;    // PRG $04B25
     *(word*)(fief) = (*(word*)(fief) + math32_muladddiv(rate, rice_amount));    // PRG $04B32 -> bank1 $8303
     *(word*)(rice_ptr) = (*(word*)(rice_ptr) - rice_amount);    // PRG $04B39
-    return helper_8A4E(1);    // PRG $04B3F -> bank1 $8A4E
+    return cycle_economy_rate(1);    // PRG $04B3F -> bank1 $8A4E
 }
 
 // ===== bank1 $8B40  (PRG $04B40) =====
@@ -4031,7 +4031,7 @@ word effect_subhandler_9F04(word amount) {
     town = *(word*)((debt_ptr + 2));    // PRG $04B56
     rate = (loan_rate + 10);    // PRG $04B5B
     if ((amount <= 0)) {    // PRG $04B45
-        amount = helper_8357(town, rate, (town - *(word*)(debt_ptr)));    // PRG $04B6F -> bank1 $8357
+        amount = ratio_times10_capped(town, rate, (town - *(word*)(debt_ptr)));    // PRG $04B6F -> bank1 $8357
         phi_val_8b7a = 0;    // PRG $04B71
     } else {
         phi_val_8b7a = math32_muladddiv(rate, amount);    // PRG $04B76 -> bank1 $8303
@@ -4039,7 +4039,7 @@ word effect_subhandler_9F04(word amount) {
     interest = phi_val_8b7a;    // PRG $04B7A
     *(word*)(debt_ptr) = (*(word*)(debt_ptr) + interest);    // PRG $04B81
     *(word*)(fief) = (*(word*)(fief) + amount);    // PRG $04B88
-    return helper_8A4E(0);    // PRG $04B8E -> bank1 $8A4E
+    return cycle_economy_rate(0);    // PRG $04B8E -> bank1 $8A4E
 }
 
 // ===== bank1 $8B8F  (PRG $04B8F) =====
@@ -5171,14 +5171,14 @@ word subhandler_9F04(word arg1) {
         return 0;    // PRG $05F2E
     } else {
         if ((arg1->town > arg1->debt)) {    // PRG $05F2F
-            local10 = helper_8357((arg1->town - arg1->debt), (loan_rate + 10), (arg1->header - *(word*)(arg1)));    // PRG $05F58 -> bank1 $8357
-            if (helper_8357((arg1->town - arg1->debt), (loan_rate + 10), (arg1->header - *(word*)(arg1)))) {    // PRG $05F3B -> bank1 $8357
+            local10 = ratio_times10_capped((arg1->town - arg1->debt), (loan_rate + 10), (arg1->header - *(word*)(arg1)));    // PRG $05F58 -> bank1 $8357
+            if (ratio_times10_capped((arg1->town - arg1->debt), (loan_rate + 10), (arg1->header - *(word*)(arg1)))) {    // PRG $05F3B -> bank1 $8357
                 draw_message(msg_s_would_you_like_to_borrow, msg_how_much_f99d);    // PRG $05F62 -> bank15 $D134
                 local11 = number_input(1, local10);    // PRG $05F6C -> bank15 $D5E9
                 if (number_input(1, local10)) {    // PRG $05F5C -> bank15 $D5E9
                     effect_subhandler_9F04(local11);    // PRG $05F71 -> bank1 $8B40
-                    helper_82AC(arg1);    // PRG $05F76 -> bank1 $82AC
-                    helper_8A4E(0);    // PRG $05F7B -> bank1 $8A4E
+                    clamp_amount_to_province_max(arg1);    // PRG $05F76 -> bank1 $82AC
+                    cycle_economy_rate(0);    // PRG $05F7B -> bank1 $8A4E
                     set_cursor(16, 7);    // PRG $05F82 -> bank15 $CC7B
                     helper_83C7(*(word*)(arg1));    // PRG $05F89 -> bank1 $83C7
                     set_cursor(16, 8);    // PRG $05F90 -> bank15 $CC7B
@@ -5231,14 +5231,14 @@ word subhandler_9FAF(word arg1) {
 word subhandler_A003(word arg1) {
     message_display(subhandler_A003_data_bc75);    // PRG $0600B -> bank15 $D326
     if (arg1->rice) {    // PRG $06008
-        local10 = helper_8357((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice);    // PRG $0602A -> bank1 $8357
-        if (helper_8357((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice)) {    // PRG $06015 -> bank1 $8357
+        local10 = ratio_times10_capped((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice);    // PRG $0602A -> bank1 $8357
+        if (ratio_times10_capped((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice)) {    // PRG $06015 -> bank1 $8357
             draw_message(msg_s_rice_will_you_sell, msg_how_much_f99d);    // PRG $06034 -> bank15 $D134
             local11 = number_input(1, local10);    // PRG $0603E -> bank15 $D5E9
             if (number_input(1, local10)) {    // PRG $0602E -> bank15 $D5E9
                 effect_subhandler_A003(local11);    // PRG $06043 -> bank1 $8B0A
-                helper_82AC(arg1);    // PRG $06048 -> bank1 $82AC
-                helper_8A4E(1);    // PRG $0604D -> bank1 $8A4E
+                clamp_amount_to_province_max(arg1);    // PRG $06048 -> bank1 $82AC
+                cycle_economy_rate(1);    // PRG $0604D -> bank1 $8A4E
                 return 1;    // PRG $06052
             }
         } else {
@@ -5262,16 +5262,16 @@ word subhandler_A003(word arg1) {
 word subhandler_A068(word arg1) {
     message_display(subhandler_A068_data_bca2);    // PRG $06070 -> bank15 $D326
     if (*(word*)(((selected_province_idx * 26) + 0x7001))) {    // PRG $0606D
-        local11 = helper_8357(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice));    // PRG $06097 -> bank1 $8357
-        if (helper_8357(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice))) {    // PRG $06082 -> bank1 $8357
+        local11 = ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice));    // PRG $06097 -> bank1 $8357
+        if (ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice))) {    // PRG $06082 -> bank1 $8357
             redraw_window(msg_how_much_f99d);    // PRG $0609E -> bank15 $CEC4
             redraw_window(msg_rice_will_you_buy);    // PRG $060A5 -> bank15 $CEC4
             local10 = number_input(1, local11);    // PRG $060AF -> bank15 $D5E9
             if (number_input(1, local11)) {    // PRG $0609B -> bank15 $D5E9
                 *(word*)(arg1) = (*(word*)(arg1) - math32_muladddiv(gold_rice_exchange_rate, local10));    // PRG $060C1 -> bank1 $8303
                 arg1->rice = (arg1->rice + local10);    // PRG $060C9
-                helper_82AC((arg1 + 6));    // PRG $060CD -> bank1 $82AC
-                helper_8A4E(2);    // PRG $060D2 -> bank1 $8A4E
+                clamp_amount_to_province_max((arg1 + 6));    // PRG $060CD -> bank1 $82AC
+                cycle_economy_rate(2);    // PRG $060D2 -> bank1 $8A4E
                 return 1;    // PRG $060D7
             }
         } else {
@@ -5313,15 +5313,15 @@ word subhandler_A113(word arg1) {
         message_display(subhandler_A113_data_bce9);    // PRG $06130 -> bank15 $D326
         local11 = ((arms_buy_price_rate + 9) / 10);    // PRG $0613A
         if ((*(word*)(arg1) >= local11)) {    // PRG $0612D
-            local11 = helper_8357(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms));    // PRG $06158 -> bank1 $8357
-            if (helper_8357(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms))) {    // PRG $06142 -> bank1 $8357
+            local11 = ratio_times10_capped(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms));    // PRG $06158 -> bank1 $8357
+            if (ratio_times10_capped(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms))) {    // PRG $06142 -> bank1 $8357
                 redraw_window(msg_how_many);    // PRG $0615F -> bank15 $CEC4
                 local10 = number_input(1, local11);    // PRG $06169 -> bank15 $D5E9
                 if (number_input(1, local11)) {    // PRG $0615C -> bank15 $D5E9
                     *(word*)(arg1) = (*(word*)(arg1) - math32_muladddiv(arms_buy_price_rate, local10));    // PRG $0617B -> bank1 $8303
                     arg1->arms = (arg1->arms + effect_subhandler_A113(arg1, local10));    // PRG $0618A -> bank1 $A0ED
-                    helper_82AC((arg1 + 22));    // PRG $0618F -> bank1 $82AC
-                    helper_8A4E(3);    // PRG $06194 -> bank1 $8A4E
+                    clamp_amount_to_province_max((arg1 + 22));    // PRG $0618F -> bank1 $82AC
+                    cycle_economy_rate(3);    // PRG $06194 -> bank1 $8A4E
                     return 1;    // PRG $06199
                 }
             } else {
@@ -5425,7 +5425,7 @@ word effect_hire_pay_gold(word arg1, word arg2) {
     redraw_window(msg_your_ninja_failed_bd7c);    // PRG $062AD -> bank15 $CEC4
     standard_delay();    // PRG $062B1 -> bank15 $D759
     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) - math32_muladddiv(hire_gold_rate, arg2));    // PRG $062CB -> bank1 $8303
-    return helper_8A4E(5);    // PRG $062D1 -> bank1 $8A4E
+    return cycle_economy_rate(5);    // PRG $062D1 -> bank1 $8A4E
 }
 
 // ===== bank1 $A2D2  (PRG $062D2) =====
@@ -5433,8 +5433,8 @@ word effect_hire_pay_gold(word arg1, word arg2) {
 // (body @ PRG $062D7)
 
 word effect_ninja_sabotage(word arg1) {
-    max_affordable_count = helper_8357(*(word*)(arg1), hire_gold_rate, arg1->header);    // PRG $062E6 -> bank1 $8357
-    if (helper_8357(*(word*)(arg1), hire_gold_rate, arg1->header)) {    // PRG $062D7 -> bank1 $8357
+    max_affordable_count = ratio_times10_capped(*(word*)(arg1), hire_gold_rate, arg1->header);    // PRG $062E6 -> bank1 $8357
+    if (ratio_times10_capped(*(word*)(arg1), hire_gold_rate, arg1->header)) {    // PRG $062D7 -> bank1 $8357
         message_display(msg_how_many);    // PRG $062ED -> bank15 $D326
         unit_count = number_input(1, max_affordable_count);    // PRG $062F7 -> bank15 $D5E9
         if (number_input(1, max_affordable_count)) {    // PRG $062EA -> bank15 $D5E9
@@ -5493,7 +5493,7 @@ word effect_ninja_sabotage(word arg1) {
                                         }
                                     }
                                     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) - math32_muladddiv(hire_gold_rate, unit_count));    // PRG $06452 -> bank1 $8303
-                                    helper_8A4E(5);    // PRG $06454 -> bank1 $8A4E
+                                    cycle_economy_rate(5);    // PRG $06454 -> bank1 $8A4E
                                     return 1;    // PRG $06459
                                 case 65536:
                                     drain_amount = hire_stat_drain_rng(arg1->morale, unit_count);    // PRG $06464 -> bank1 $A255
@@ -5568,16 +5568,16 @@ word effect_ninja_sabotage(word arg1) {
 
 word effect_hire_variant_pay(word fief) {
     headroom = (fief->header - fief->men);    // PRG $06563
-    max_affordable = helper_8357(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men));    // PRG $0656F -> bank1 $8357
-    if (helper_8357(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men))) {    // PRG $06558 -> bank1 $8357
+    max_affordable = ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men));    // PRG $0656F -> bank1 $8357
+    if (ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men))) {    // PRG $06558 -> bank1 $8357
         message_display(msg_how_many);    // PRG $06576 -> bank15 $D326
         amount = number_input(1, max_affordable);    // PRG $06580 -> bank15 $D5E9
         if (number_input(1, max_affordable)) {    // PRG $06573 -> bank15 $D5E9
             *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_men_hire_rate, amount));    // PRG $06592 -> bank1 $8303
             apply_hire_unit_stats(fief, amount);    // PRG $06595 -> bank1 $8BF4
             cap_arms_at_index(selected_province_idx, fief);    // PRG $0659D -> bank15 $DFFE
-            helper_8A4E(4);    // PRG $065A2 -> bank1 $8A4E
-            helper_82AC((fief + 16));    // PRG $065AA -> bank1 $82AC
+            cycle_economy_rate(4);    // PRG $065A2 -> bank1 $8A4E
+            clamp_amount_to_province_max((fief + 16));    // PRG $065AA -> bank1 $82AC
             trigger_cutscene(33);    // PRG $065B0 -> bank15 $E80C
             message_display(effect_hire_variant_pay_data_bdd0);    // PRG $065B7 -> bank15 $D326
             draw_message(msg_lord_s_we_now_have_d_men, ((selected_province_owner() * 9) + 0x77A8), *(word*)(((selected_province_idx * 26) + 0x7011)));    // PRG $065D4 -> bank15 $D134
@@ -6571,10 +6571,10 @@ word ai_province_gold_to_rice_convert(word gold_surplus_ptr, word rice_surplus_p
             effect_subhandler_A003((*(word*)(rice_surplus_ptr) / 2));    // PRG $07360 -> bank1 $8B0A
         } else {
             if (((unsigned)rng_threshold_10_29() > (unsigned)gold_rice_exchange_rate)) {    // PRG $07367 -> bank1 $B32B
-                rice_gain = helper_8357(*(word*)(gold_surplus_ptr), gold_rice_exchange_rate, (*(word*)((fief + 24)) - *(word*)((fief + 6))));    // PRG $07386 -> bank1 $8357
+                rice_gain = ratio_times10_capped(*(word*)(gold_surplus_ptr), gold_rice_exchange_rate, (*(word*)((fief + 24)) - *(word*)((fief + 6))));    // PRG $07386 -> bank1 $8357
                 *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_rice_exchange_rate, rice_gain));    // PRG $07395 -> bank1 $8303
                 *(word*)((fief + 6)) = (*(word*)((fief + 6)) + rice_gain);    // PRG $0739D
-                helper_8A4E(2);    // PRG $0739F -> bank1 $8A4E
+                cycle_economy_rate(2);    // PRG $0739F -> bank1 $8A4E
             }
         }
         return ai_calc_men_surplus_over_gold_and_rice(gold_surplus_ptr, rice_surplus_ptr);    // PRG $073A9 -> bank1 $B2EF
@@ -6642,7 +6642,7 @@ word ai_state2_recruit_arm_train(void) {
         ai_calc_men_surplus_over_gold_and_rice(&men_over_gold, &men_over_rice);    // PRG $074ED -> bank1 $B2EF
         fief = ((selected_province_idx * 26) + 0x7001);    // PRG $074FB
         if ((min_word(((current_game_year - 1559) * 40), *(word*)((fief + 24))) > *(word*)((fief + 16)))) {    // PRG $074E2 -> bank15 $CB5E
-            local8 = helper_8357((men_over_gold / 2), gold_men_hire_rate, (min_word(((current_game_year - 1559) * 100), *(word*)((fief + 24))) - *(word*)((fief + 16))));    // PRG $0753F -> bank1 $8357
+            local8 = ratio_times10_capped((men_over_gold / 2), gold_men_hire_rate, (min_word(((current_game_year - 1559) * 100), *(word*)((fief + 24))) - *(word*)((fief + 16))));    // PRG $0753F -> bank1 $8357
             if (!(((local8 <= 0) || !(((unsigned)rng_mod(10) < (unsigned)(const_two + 3)))))) {    // PRG $07519 -> bank15 $CA52
                 *(word*)(fief) = (*(word*)(fief) - (men_over_gold / 2));    // PRG $0755E
                 apply_hire_unit_stats(fief, local8);    // PRG $07561 -> bank1 $8BF4
@@ -6658,8 +6658,8 @@ word ai_state2_recruit_arm_train(void) {
             if ((men_over_gold / local8)) {    // PRG $075C0
                 *(word*)(fief) = (*(word*)(fief) - scale_div10_capcheck(local8, arms_buy_price_rate, *(word*)(fief)));    // PRG $075D8 -> bank1 $8327
                 *(word*)((fief + 22)) = (*(word*)((fief + 22)) + (local8 << 1));    // PRG $075E3
-                helper_82AC((fief + 22));    // PRG $075E8 -> bank1 $82AC
-                helper_8A4E(3);    // PRG $075ED -> bank1 $8A4E
+                clamp_amount_to_province_max((fief + 22));    // PRG $075E8 -> bank1 $82AC
+                cycle_economy_rate(3);    // PRG $075ED -> bank1 $8A4E
             }
         }
         ai_calc_men_surplus_over_gold_and_rice(&men_over_gold, &men_over_rice);    // PRG $075F9 -> bank1 $B2EF
@@ -6832,7 +6832,7 @@ word issue_province_command(word fief) {
                     } else {
                         set_cursor(16, (i + 1));    // PRG $0785A -> bank15 $CC7B
                         fief_word_ptr = (fief_word_ptr + 2);    // PRG $07860
-                        province_window_redraw_ba6f(fief, *(word*)(((fief_word_ptr + 2) + -2)));    // PRG $07866 -> bank1 $83A2
+                        draw_province_stat_or_dashes(fief, *(word*)(((fief_word_ptr + 2) + -2)));    // PRG $07866 -> bank1 $83A2
                     }
                     i = (i + 1);    // PRG $0786C
                 } while (((unsigned)i < (unsigned)18));

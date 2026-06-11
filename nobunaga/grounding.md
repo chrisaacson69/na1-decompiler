@@ -152,6 +152,15 @@ this class at the assertion level.
   hitting this shape, read the **raw `3-c-basic`** form. **Fix = the AST analogue of the front-end
   clobber fix:** emit each arm's phi assignment INSIDE its arm / keep the skip, in `dream.py`'s fold.
 
+### 32-bit ext-op math chains render as a PLACEHOLDER return (value-wrong 4-c)   [OPEN 2026-06-10]
+Found grounding bank-1 leaves `$8303 math32_muladddiv`, `$8357 ratio_times10_capped`. Subs whose body is a 32-bit
+extended-op chain (`sign_extend16_to_32` / `umul32` / `sdiv32` / `add32` on the VM's aux 32-bit stack, opcodes `B7 25/14/15/01/02/03/19`)
+render in 4-c as a bare placeholder `return <some local>` — DREAM models neither the 32-bit aux stack nor the ext-ops, so the
+real computation is DROPPED. Examples: `$8303` true body = `floor((rate*amount+9)/10)` but 4-c says `return rate`;
+`$8357` true body = `min((arg1*10)/arg2, arg3)` but 4-c says `return min_word(arg1, arg3)`. **Impact:** any sub with
+`// ext_op` comment lines in its 4-c is value-wrong — READ THE BYTECODE (`source/2-asm-vm`). These are the financial/stat
+formula primitives (rates, interest, growth), so the damage is concentrated in the economy commands. Likely many in banks 0/1.
+
 ### Arms reconverging at a shared SUFFIX op → per-arm value collapsed (value-wrong 4-c)   [OPEN 2026-06-10]
 Two confirmed bank-2 cases. The shape: branch/switch arms each compute a different value, then **jump to a shared
 tail** that applies a common op (DEREF, `*9+table`, etc.); DREAM keeps only ONE arm's value for all, dropping the
@@ -182,6 +191,20 @@ witness + 495/495 CFG-preserving (0 fallbacks), stack-audit 184. Lives in `vm_cf
 call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a conditional bank-14 dispatch).
 
 ## Ledger (append-only, newest first)
+
+### Bank 1 full-verify batch #1 — economy/UI leaves + 32-bit math primitives (13/131)   [2026-06-10]
+First bank-1 batch (the lord-command/turn engine). 4 renames (3 from stubs) + a NEW DREAM bug class:
+- `$8303` `math32_muladddiv` ✅ — bytecode-grounded = floor((rate*amount+9)/10) = ceil(rate*amount/10); 4-c showed a
+  placeholder `return rate`. **Logged a new DREAM backlog item: 32-bit ext-op chains render as a placeholder return** —
+  any sub with `// ext_op` lines is value-wrong, read the bytecode.
+- `$8357` `helper_8357` → **`ratio_times10_capped`** — = min((arg1*10)/arg2, arg3); 4-c `return min_word(arg1,arg3)` was
+  value-wrong (dropped the ext-op math).
+- `$82AC` `helper_82AC` → **`clamp_amount_to_province_max`** (caps *arg1 at province field $7019 = the +24 word, open).
+- `$8A4E` `helper_8A4E` → **`cycle_economy_rate`** (loan_rate / gold_rice_exchange_rate +1/wrap adjuster).
+- `$83A2` `province_window_redraw_ba6f` → **`draw_province_stat_or_dashes`** (stat %4d if active, else "----" $BA6F →
+  renamed `str_field_dashes`).
+- `$804C` `province_select_prompt` ✅ (7-driver fief picker), `$871E` `fief_info_display` ✅ (paged stat panel). Next: rows 1-7.
+
 
 ### ★★ BANK 2 FULL-VERIFICATION COMPLETE ★★ — batch #16, the 9 combat-driver roots (131/131, 100%)   [2026-06-10]
 **Every one of bank 2's 131 subs is now read-verified against its bytecode (0 todo, 0 suspects).** The final 9 are the
