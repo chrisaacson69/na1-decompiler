@@ -266,10 +266,10 @@ word draw_tactical_cursor_region(word arg1) {
     }
 }
 
-// $8488 read_button_press
+// $8488 read_dpad_dir_code
 // (body @ $848D)
 
-word read_button_press(void) {
+word read_dpad_dir_code(void) {
     switch (poll_input()) {    // $848D
         case 64:
         case 80:
@@ -370,8 +370,8 @@ word wait_button_press_debounced(word arg1, word arg2) {
         draw_tactical_cursor_region(1);    // $856D
         local10 = 0;    // $8572
         while (1) {    // $8573
-            local11 = read_button_press();    // $8576
-            if (!(read_button_press())) {    // $8573
+            local11 = read_dpad_dir_code();    // $8576
+            if (!(read_dpad_dir_code())) {    // $8573
                 local10 = (local10 + 1);    // $857C
                 if (!(((unsigned)local10 < (unsigned)100))) {    // $857A
                     break;
@@ -388,8 +388,8 @@ word wait_button_press_debounced(word arg1, word arg2) {
         } else {
             local10 = 0;    // $8590
             while (1) {    // $8591
-                local11 = read_button_press();    // $8594
-                if (read_button_press()) {    // $8591
+                local11 = read_dpad_dir_code();    // $8594
+                if (read_dpad_dir_code()) {    // $8591
                     return local11;    // $8599
                 } else {
                     local10 = (local10 + 1);    // $859C

@@ -773,7 +773,7 @@ VM bytecode disassembly
   $856D  E9 0B 84 02                CALL_abs_imm1          $840B (draw_tactical_cursor_region) {bytecode}, $02
   $8571  40                         LOADL_qimm   ; inline operand = 0
   $8572  2A                         STORE_quick   ; inline operand = 10
- >$8573  AC 88 84                   CALL_abs               $8488 (read_button_press) {bytecode}
+ >$8573  AC 88 84                   CALL_abs               $8488 (read_dpad_dir_code) {bytecode}
   $8576  2B                         STORE_quick   ; inline operand = 11
   $8577  D7 84 85                   JUMPT_abs              $8584
   $857A  0A                         LOADL_quick   ; inline operand = 10
@@ -791,7 +791,7 @@ VM bytecode disassembly
   $858E  CF                         RETURN
  >$858F  40                         LOADL_qimm   ; inline operand = 0
   $8590  2A                         STORE_quick   ; inline operand = 10
- >$8591  AC 88 84                   CALL_abs               $8488 (read_button_press) {bytecode}
+ >$8591  AC 88 84                   CALL_abs               $8488 (read_dpad_dir_code) {bytecode}
   $8594  2B                         STORE_quick   ; inline operand = 11
   $8595  D8 9A 85                   JUMPF_abs              $859A
   $8598  0B                         LOADL_quick   ; inline operand = 11

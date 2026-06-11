@@ -261,7 +261,7 @@
 //   PRG $083A2  bank2  $83A2  calc_tactical_cell_coords
 //   PRG $083C6  bank2  $83C6  lookup_terrain_attr_record
 //   PRG $0840B  bank2  $840B  draw_tactical_cursor_region
-//   PRG $08488  bank2  $8488  read_button_press
+//   PRG $08488  bank2  $8488  read_dpad_dir_code
 //   PRG $084F7  bank2  $84F7  step_coord_by_direction
 //   PRG $08544  bank2  $8544  step_coord_from_dir_code
 //   PRG $08561  bank2  $8561  wait_button_press_debounced
@@ -7218,10 +7218,10 @@ word draw_tactical_cursor_region(word arg1) {
 }
 
 // ===== bank2 $8488  (PRG $08488) =====
-// PRG $08488 read_button_press
+// PRG $08488 read_dpad_dir_code
 // (body @ PRG $0848D)
 
-word read_button_press(void) {
+word read_dpad_dir_code(void) {
     switch (poll_input()) {    // PRG $0848D -> bank15 $D14E
         case 64:
         case 80:
@@ -7325,8 +7325,8 @@ word wait_button_press_debounced(word arg1, word arg2) {
         draw_tactical_cursor_region(1);    // PRG $0856D -> bank2 $840B
         local10 = 0;    // PRG $08572
         while (1) {    // PRG $08573
-            local11 = read_button_press();    // PRG $08576 -> bank2 $8488
-            if (!(read_button_press())) {    // PRG $08573 -> bank2 $8488
+            local11 = read_dpad_dir_code();    // PRG $08576 -> bank2 $8488
+            if (!(read_dpad_dir_code())) {    // PRG $08573 -> bank2 $8488
                 local10 = (local10 + 1);    // PRG $0857C
                 if (!(((unsigned)local10 < (unsigned)100))) {    // PRG $0857A
                     break;
@@ -7343,8 +7343,8 @@ word wait_button_press_debounced(word arg1, word arg2) {
         } else {
             local10 = 0;    // PRG $08590
             while (1) {    // PRG $08591
-                local11 = read_button_press();    // PRG $08594 -> bank2 $8488
-                if (read_button_press()) {    // PRG $08591 -> bank2 $8488
+                local11 = read_dpad_dir_code();    // PRG $08594 -> bank2 $8488
+                if (read_dpad_dir_code()) {    // PRG $08591 -> bank2 $8488
                     return local11;    // PRG $08599
                 } else {
                     local10 = (local10 + 1);    // PRG $0859C

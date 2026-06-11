@@ -150,6 +150,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #12 — AI movement/input layer (101/131, 77%)   [2026-06-10]
+Well-named depth-4 layer; 1 rename + detail fixes:
+- `$8488` `read_button_press` → **`read_dpad_dir_code`** (maps d-pad to the 48-based hex-grid direction code).
+- `$97D9` `commit_unit_move_and_redraw_count` ✅ — added the cur_combat_unit_slot++ the prior note missed.
+- `$A4BC` `find_strongest_unit_type_by_strength` ✅ — added the arg2 threshold (255 if best% < threshold); metric is the
+  strength RATIO. `$A3BD` `ai_step_unit_toward_target` ✅ (bfs + place), `$A194` ai placement, `$9D9A` ratio<50,
+  `$85A7` cursor input: re-grounded. `$85A7` is a same-addr cross-bank pair (bank-1 effect_view_c). Next: rows 1-7.
+
 ### Bank 2 full-verify batch #11 — combat resolution + attack command (94/131, 71%)   [2026-06-10]
 3 renames (1 polarity refute):
 - `$A7E5` `ai_test_own_double_ge_enemy_total_strength` → **`ai_own_double_lt_enemy_total`** — code is `2*own <
