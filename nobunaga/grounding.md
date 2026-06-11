@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #14 — Build + AI economy/attack (102/131)   [2026-06-10]
+All confirmed; re-grounded:
+- `$88A6` effect_build (Grow shape on TOWN field), `$9B7E` driver_dam (dams field $7001+10, limit 100),
+  `$B42B` ai_develop_dam_and_grow (the AI economy turn), `$9046` ai_commit_attack_deduct_resources
+  (budget = min(rice*2, men, gold)), `$9423` pick_ai_attack_target_fief, `$9814` effect_war_e.
+- `$945D` find_fief_by_owner_men_minority ✅ but FLAGGED: the test is fief_men_ratio_pct >= 50 (comparable-or-stronger),
+  so the 'minority' name reads backwards — confirm intent later. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #13 — give/assign/rest/other orchestrators (97/131)   [2026-06-10]
 All confirmed (well-named orchestrators); 1 comment refute:
 - `$AC11` `effect_assign` ✅ — REFUTED 'places a retainer': it's the **arms-allocation editor** (render_arms_edit_screen,
