@@ -198,6 +198,11 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #17 — the rest of the command drivers (125/131)   [2026-06-10]
+All confirmed: `$9DC4` driver_marry, `$A2D2` effect_ninja_sabotage (covert actions), `$A6C7` driver_view,
+`$A853` driver_build (confirms $7001+4 = town), `$AA1F` driver_give, `$AAAE` driver_bribe, `$AF66` driver_grant.
+The entire lord-command menu (the 21 commands) is now read-verified end-to-end. Next: the final 6 (the turn-loop roots).
+
 ### Bank 1 full-verify batch #16 — the player + AI command drivers (118/131)   [2026-06-10]
 All confirmed (well-named drivers), re-grounded — the command layer is now wired top-to-bottom:
 - Player: `$96D1` driver_move, `$9850` driver_war (capital + gold/rice/men prep), `$9A5D` driver_send,
