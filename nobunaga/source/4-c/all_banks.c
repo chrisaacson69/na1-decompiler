@@ -304,7 +304,7 @@
 //   PRG $0912B  bank2  $912B  paged_flee_fief_list_display
 //   PRG $091A1  bank2  $91A1  prompt_select_province_from_list
 //   PRG $091D5  bank2  $91D5  distribute_damage_across_unit_types
-//   PRG $0929C  bank2  $929C  reset_unit_field_grid_to_200
+//   PRG $0929C  bank2  $929C  clear_all_unit_positions
 //   PRG $092CA  bank2  $92CA  battle_init_clear_defending_province_fields
 //   PRG $0936A  bank2  $936A  draw_combat_message
 //   PRG $09387  bank2  $9387  draw_unit_type_label
@@ -8322,10 +8322,10 @@ word distribute_damage_across_unit_types(void) {
 }
 
 // ===== bank2 $929C  (PRG $0929C) =====
-// PRG $0929C reset_unit_field_grid_to_200
+// PRG $0929C clear_all_unit_positions
 // (body @ PRG $092A1)
 
-word reset_unit_field_grid_to_200(void) {
+word clear_all_unit_positions(void) {
     local11 = 0;    // PRG $092A2
     do {    // PRG $092A3
         local10 = 0;    // PRG $092A4
@@ -8366,7 +8366,7 @@ word battle_init_clear_defending_province_fields(void) {
     }
     if (!(defender_depleted_flag)) {    // PRG $09351
         distribute_damage_across_unit_types();    // PRG $09355 -> bank2 $91D5
-        reset_unit_field_grid_to_200();    // PRG $09358 -> bank2 $929C
+        clear_all_unit_positions();    // PRG $09358 -> bank2 $929C
         cur_combat_side = 1;    // PRG $0935C
     } else {
         battle_winner_province_sel = battle_defending_province;    // PRG $09365

@@ -2814,7 +2814,7 @@ VM bytecode disassembly
  >$9351  0B                         LOADL_quick   ; inline operand = 11
   $9352  D7 62 93                   JUMPT_abs              $9362
   $9355  AC D5 91                   CALL_abs               $91D5 (distribute_damage_across_unit_types) {bytecode}
-  $9358  AC 9C 92                   CALL_abs               $929C (reset_unit_field_grid_to_200) {bytecode}
+  $9358  AC 9C 92                   CALL_abs               $929C (clear_all_unit_positions) {bytecode}
   $935B  41                         LOADL_qimm   ; inline operand = 1
   $935C  A8 E8 7B                   STORE_abs              $7BE8 (cur_combat_side)
   $935F  D6 68 93                   JUMP_abs               $9368

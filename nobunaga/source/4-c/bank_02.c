@@ -1327,10 +1327,10 @@ word distribute_damage_across_unit_types(void) {
     return ((unsigned)local8 < (unsigned)2);    // $929B
 }
 
-// $929C reset_unit_field_grid_to_200
+// $929C clear_all_unit_positions
 // (body @ $92A1)
 
-word reset_unit_field_grid_to_200(void) {
+word clear_all_unit_positions(void) {
     local11 = 0;    // $92A2
     do {    // $92A3
         local10 = 0;    // $92A4
@@ -1370,7 +1370,7 @@ word battle_init_clear_defending_province_fields(void) {
     }
     if (!(defender_depleted_flag)) {    // $9351
         distribute_damage_across_unit_types();    // $9355
-        reset_unit_field_grid_to_200();    // $9358
+        clear_all_unit_positions();    // $9358
         cur_combat_side = 1;    // $935C
     } else {
         battle_winner_province_sel = battle_defending_province;    // $9365

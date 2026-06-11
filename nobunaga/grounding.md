@@ -150,6 +150,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #7 — terrain/map render + init (66/131, 50%)   [2026-06-10]
+Well-named region (breadth pass was solid here) — mostly confirms + cross-links, 1 rename, 1 polarity fix:
+- `$87B7` `draw_tactical_terrain_feature` — REFUTED bit-2 polarity: draws when cell is CLEAR of bit 2 (bit 2 = water/border = skip), not set.
+- `$929C` `reset_unit_field_grid_to_200` → **`clear_all_unit_positions`** (off-maps all 10 units to 200).
+- `$8903` `map_populate` ✅ (the populator vs map_render_driver) / `$87B7`+`$8903` share the bit-2 land/water test.
+- `$84F7` `step_coord_by_direction` ✅ (4 cardinal dirs + is_tile_in_bounds), `$9BB4` `ai_terrain_strength_term` ✅
+  (terrain class 32/16/8->0/1/2/else 3 -> strength multiplier), `$8D39` `draw_combat_fief_day_header` ✅,
+  `$912B` `paged_flee_fief_list_display` ✅ (paginates the $6F4F list). Next: rows 1-7. **Halfway through bank 2.**
+
 ### Bank 2 full-verify batch #6 — depth-1 unit/cell predicates + fief render (59/131)   [2026-06-10]
 2 renames + 2 inverted-comment fixes:
 - `$9030` `is_battleside_province_aistate5_and_not_resting` → **`battleside_not_state5_or_resting`** — comment was the
