@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #2 — new-game setup + state setters (17/98)   [2026-06-10]
+1 rename + re-grounds:
+- `$867F` `display_prompt_message_b900` → **`prompt_player_choose_fief`** (new-game fief pick).
+- `$821E` verify_sram_save_integrity, `$85FC` prompt_roll_stat_value (rng 60-109), `$862B`
+  prompt_select_scenario_size (17/50), `$98A3` set_fief_ownership_record (owner/capital/state + redraw),
+  `$A1AA` calc_fief_harvest_base_term ($6007/$6009 stride-8 income * tax_rate), `$A5D5` rng_mod_30
+  ((skill+1)*10): re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #1 — math/relations/candidate leaves (10/98)   [2026-06-10]
 First bank-0 batch (the main loop; entry vm_bootstrap). 2 renames + re-dated confirms:
 - `$8E99` `append_candidate_entry_6f67` → **`append_candidate_pair`** (dual-lane $6F67/$6F68 list).

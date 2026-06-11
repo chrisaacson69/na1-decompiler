@@ -949,7 +949,7 @@ VM bytecode disassembly
   $86B0  42                         LOADL_qimm   ; inline operand = 2
   $86B1  2B                         STORE_quick   ; inline operand = 11
  >$86B2  3C                         PUSH_quick   ; inline operand = 12
-  $86B3  E9 7F 86 02                CALL_abs_imm1          $867F (display_prompt_message_b900) {bytecode}, $02
+  $86B3  E9 7F 86 02                CALL_abs_imm1          $867F (prompt_player_choose_fief) {bytecode}, $02
   $86B7  D6 F1 86                   JUMP_abs               $86F1
  >$86BA  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
   $86BD  D1                         DEC

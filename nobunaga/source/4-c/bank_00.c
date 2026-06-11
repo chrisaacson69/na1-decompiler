@@ -355,10 +355,10 @@ word prompt_select_scenario_size(void) {
     return prompt_y_n();    // $867E
 }
 
-// $867F display_prompt_message_b900
+// $867F prompt_player_choose_fief
 // (body @ $8684)
 
-word display_prompt_message_b900(word arg1) {
+word prompt_player_choose_fief(word arg1) {
     message_display(msg_player);    // $8687
     return draw_message(msg_d_which_fief_would_you_like_to, arg1);    // $8693
 }
@@ -371,7 +371,7 @@ word prompt_select_player_daimyo(word arg1) {
     ui_input_prompt_active_flag = 1;    // $86AD
     local11 = 2;    // $86B1
     do {    // $86B2
-        display_prompt_message_b900(arg1);    // $86B3
+        prompt_player_choose_fief(arg1);    // $86B3
         while (1) {    // $86F1
             local10 = number_input(1, scenario_fief_count);    // $86F9
             if ((number_input(1, scenario_fief_count) <= 0)) {    // $86F1

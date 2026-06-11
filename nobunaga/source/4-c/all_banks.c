@@ -21,7 +21,7 @@
 //   PRG $003E2  bank0  $83E2  apply_scenario_starting_stat_boosts
 //   PRG $005FC  bank0  $85FC  prompt_roll_stat_value
 //   PRG $0062B  bank0  $862B  prompt_select_scenario_size
-//   PRG $0067F  bank0  $867F  display_prompt_message_b900
+//   PRG $0067F  bank0  $867F  prompt_player_choose_fief
 //   PRG $00694  bank0  $8694  prompt_select_player_daimyo
 //   PRG $00763  bank0  $8763  daimyo_creation_stat_roll_screen
 //   PRG $008AC  bank0  $88AC  render_boot_title_screens
@@ -873,10 +873,10 @@ word prompt_select_scenario_size(void) {
 }
 
 // ===== bank0 $867F  (PRG $0067F) =====
-// PRG $0067F display_prompt_message_b900
+// PRG $0067F prompt_player_choose_fief
 // (body @ PRG $00684)
 
-word display_prompt_message_b900(word arg1) {
+word prompt_player_choose_fief(word arg1) {
     message_display(msg_player);    // PRG $00687 -> bank15 $D326
     return draw_message(msg_d_which_fief_would_you_like_to, arg1);    // PRG $00693 -> bank15 $D134
 }
@@ -890,7 +890,7 @@ word prompt_select_player_daimyo(word arg1) {
     ui_input_prompt_active_flag = 1;    // PRG $006AD
     local11 = 2;    // PRG $006B1
     do {    // PRG $006B2
-        display_prompt_message_b900(arg1);    // PRG $006B3 -> bank0 $867F
+        prompt_player_choose_fief(arg1);    // PRG $006B3 -> bank0 $867F
         while (1) {    // PRG $006F1
             local10 = number_input(1, scenario_fief_count);    // PRG $006F9 -> bank15 $D5E9
             if ((number_input(1, scenario_fief_count) <= 0)) {    // PRG $006F1 -> bank15 $D5E9
