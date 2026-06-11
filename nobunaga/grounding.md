@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #13 — per-turn / seasonal sweeps (94/98)   [2026-06-10]
+All confirmed (no renames): `$8FF8` collect_high_loyalty_provinces_to_candidate_list, `$9C22`
+random_ravage_sweep_bounded_fiefs, `$9C84` random_event_type_dispatch, `$9E9D`
+build_event_eligible_fief_candidate_list, `$9F8C` per_turn_age_daimyo_decay_health_and_province_stats (age++/health--),
+`$A066` init_province_highwater_from_records (season 1), `$A26F` harvest_income_sweep_all_fiefs (the fall harvest):
+re-grounded. Next: the final 4 (the turn-loop roots).
+
 ### Bank 0 full-verify batch #12 — new-game init / takeover / income (87/98)   [2026-06-10]
 All confirmed (no renames): `$89A3` init_new_game_state (sets const_two=skill), `$8F0A`
 ai_resolve_province_takeover_attempt (sqrt(output)+sqrt(wealth) vs men), `$9778` revolt_spread_sweep_flip_fief_ownership,
