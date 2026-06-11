@@ -856,6 +856,37 @@ def _bool_ternary_expr(formula, tval, fval):
     return f"({formula} ? {tval} : {fval})"
 
 
+def inline_trivial_temps(text):
+    """Readability post-pass (emit-time): inline a synthetic temp (phi_*/dsel_*) that is assigned
+    by a PURE expression (no call) and used EXACTLY ONCE on the immediately-following line, then drop
+    the assignment. CFG- AND value-preserving — single static use, adjacent, no side effect moved.
+    CONSERVATIVE BY DESIGN: a MULTI-use temp (e.g. phi_ret read by an `if` AND a `return`) or a
+    call-RHS temp is left untouched; the larger per-arm/liveness class is deferred (tech-debt §4.2 —
+    it is NOT gate-protected, so it needs the value-oracle, not this trivial textual pass). ~6 subs
+    corpus-wide (mostly `dsel_*` selectors collapsing to clean ternaries)."""
+    lines = text.split("\n")
+    count = {}
+    for nm in re.findall(r'\b(?:phi_\w+|dsel_\w+)\b', text):
+        count[nm] = count.get(nm, 0) + 1
+    out, i, n = [], 0, len(lines)
+    while i < n:
+        m = re.match(r'^\s*(phi_\w+|dsel_\w+)\s*=\s*(.+?);\s*(?://.*)?$', lines[i])
+        if m and i + 1 < n:
+            t, rhs = m.group(1), m.group(2).strip()
+            nxt = lines[i + 1]
+            if (count.get(t) == 2                                   # 1 assign + 1 read, whole sub
+                    and re.search(r'[a-z_]\w*\(', rhs) is None       # PURE: no function call in RHS
+                    and len(re.findall(r'\b' + re.escape(t) + r'\b', nxt)) == 1  # the use is next
+                    and not re.match(r'^\s*' + re.escape(t) + r'\s*=', nxt)):  # ...a READ, not a reassign
+                repl = rhs if (re.fullmatch(r'\w+', rhs) or re.fullmatch(r'\(.*\)', rhs)) else f'({rhs})'
+                lines[i + 1] = re.sub(r'\b' + re.escape(t) + r'\b', lambda _m: repl, nxt, count=1)
+                i += 1                                               # drop the assignment line
+                continue
+        out.append(lines[i])
+        i += 1
+    return "\n".join(out)
+
+
 def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     body_addr, instructions = parse_listing(filepath, sub_addr)
     if not instructions:

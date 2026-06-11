@@ -151,8 +151,11 @@ def bank_subs(bank, tmp_dir, on_sub=None):
                                    var_names=VAR_NAMES.get((bank, stub)),
                                    collect=collect)
         sub_c = "\n".join(l for l in buf.getvalue().splitlines()
-                          if not l.startswith("// Decompiled from"))
-        subs.append((stub, sub_c.rstrip("\n")))
+                          if not l.startswith("// Decompiled from")).rstrip("\n")
+        # Readability: inline trivially-single-use synthetic temps (DREAM canonical only).
+        if vm_decompile.STRUCTURE and getattr(vm_decompile, "STRUCTURE_DREAM", False):
+            sub_c = vm_decompile.inline_trivial_temps(sub_c)
+        subs.append((stub, sub_c))
         if on_sub:
             on_sub(stub, collect)
     return labels, subs, misaligned

@@ -1893,10 +1893,8 @@ word rng_search_combat_rect_for_unit_cell(word approach_dir) {
             while (1) {    // $99BD
                 yi = phi_val_99bd;    // $99BD
                 if (((unsigned)yi <= (unsigned)combat_arena_y_max)) {    // $99BD
-                    dsel_999d = flip_x;    // $999D
-                    x = (dsel_999d ? xi : (combat_arena_x_max - xi));    // $999D
-                    dsel_99ab = flip_y;    // $99AB
-                    y = (dsel_99ab ? yi : (combat_arena_y_max - yi));    // $99AB
+                    x = (flip_x ? xi : (combat_arena_x_max - xi));    // $999D
+                    y = (flip_y ? yi : (combat_arena_y_max - yi));    // $99AB
                     if (seek_enemy_adjacent_cell_and_commit_move(x, y)) {    // $99AB
                         return ai_place_unit_in_free_slot_resolve_coords(3);    // $99BA
                     } else {

@@ -1552,8 +1552,7 @@ word fief_to_mapid(word arg1) {
     if (((unsigned)arg1 > (unsigned)50)) {    // $DC6B
         return arg1;    // $DC73
     } else {
-        dsel_dc87 = (scenario_fief_count == 50);    // $DC87
-        return (dsel_dc87 ? arg1 : province_to_mapid_table[arg1]);    // $DC87
+        return ((scenario_fief_count == 50) ? arg1 : province_to_mapid_table[arg1]);    // $DC87
     }
 }
 

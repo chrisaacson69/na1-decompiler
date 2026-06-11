@@ -204,8 +204,7 @@ word effect_tax(word stat, word tax_delta) {
         phi_push_82eb = tax_delta;    // $82EA
     }
     local10 = pct_op(stat, phi_push_82eb);    // $82F1
-    dsel_8300 = is_decrease;    // $8300
-    local10 = (dsel_8300 ? (stat - local10) : (local10 + stat));    // $8300
+    local10 = (is_decrease ? (stat - local10) : (local10 + stat));    // $8300
     return local10;    // $8302
 }
 
@@ -302,8 +301,7 @@ word effect_view_a(word arg1) {
     if ((province_state_is_FF(arg1) ? 0 : 1)) {    // $8488
         local6 = fief_is_daimyo_capital[arg1];    // $8492
         if (get_province_ai_state(arg1)) {    // $848C
-            dsel_84a9 = local6;    // $84A9
-            phi_push_84b5 = *(word*)((((dsel_84a9 ? 0 : province_ai_state[arg1]) << 1) + governance_policy_name_ptrs));    // $84AF
+            phi_push_84b5 = *(word*)((((local6 ? 0 : province_ai_state[arg1]) << 1) + governance_policy_name_ptrs));    // $84AF
         } else {
             if (local6) {    // $84B9
                 phi_push_84b5 = msg_home_fief;    // $84B2
@@ -2083,8 +2081,7 @@ word hire_stat_drain_rng(word arg1, word arg2) {
 // (body @ $A279)
 
 word report_fief_stat_decline(word arg1, word arg2) {
-    dsel_a28d = (arg1 == 7);    // $A28D
-    return draw_message(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), (dsel_a28d ? msg_town_value : *(word*)(((arg1 << 1) + fief_stat_name_ptrs))), arg2);    // $A29A
+    return draw_message(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), ((arg1 == 7) ? msg_town_value : *(word*)(((arg1 << 1) + fief_stat_name_ptrs))), arg2);    // $A29A
 }
 
 // $A29B effect_ninja_failed

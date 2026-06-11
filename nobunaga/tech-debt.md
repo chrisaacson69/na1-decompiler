@@ -115,6 +115,16 @@ for the patterns as the backstop). Fixing now would mean investing blind to the 
 
 - **4.1 single-use-phi → ternary inline pass.** Collapsing `phi_X = a; ... phi_X = b; use(phi_X)` into a ternary
   where the phi is used once would make the 4-c read much cleaner. A `dream.py` post-fold pass.
+- **4.2 synthetic-temp inlining — MEASURED 2026-06-11; trivial slice DONE, rest DEFERRED (low ROI).** Of 243 distinct
+  `phi_*`/`dsel_*` temps corpus-wide: **210 (87%) are genuine downstream value-merges that MUST stay** (the faithful
+  rendering — e.g. `phi_ret_8bd7`, read by an `if` AND a `return`). Only **~33 are inlinable** (~68 lines, ~0.5% of the
+  12k-line corpus): **6 single-use + pure-RHS + adjacent → DONE** (`vm_decompile.inline_trivial_temps`, wired in
+  `bank_subs` for the DREAM canonical only; provably value-preserving — single static use, pure RHS, adjacent, plus a
+  guard against `T=a; T=b` reassignment; self-check + deterministic). The remaining **27 are the `$8B8A`-style per-arm
+  temps** (every assign has its own adjacent use, shared name across switch arms) — they need a per-block LIVENESS pass
+  to tell them from genuine merges, AND that pass is **NOT gate-protected** (copy-prop is CFG-preserving, so the CFG-iso
+  gate is BLIND to a bad inline — it would need value-oracle verification). **Deferred: ~62 lines is not worth the
+  liveness machinery + oracle harness; the phi density is mostly inherent.** Measurement script logic in this entry.
 
 ---
 
