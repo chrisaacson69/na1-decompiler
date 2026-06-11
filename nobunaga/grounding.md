@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #11 — spy/bribe/loan + the last stub (83/131)   [2026-06-10]
+2 renames (incl. the LAST address-tagged stub — SUSPECT now 0):
+- `$AF10` `map_helper_af10` → **`browse_map_sections`** (strategic-map section scroller).
+- `$8B40` `effect_subhandler_9F04` → **`effect_take_loan`** (debt += interest = math32_muladddiv(loan_rate+10, amount)).
+- `$8D4D` `effect_bribe` ✅ (siphons enemy output, cutscene 26), `$918D` `ninja_mission_resolve_vs_defender` ✅
+  (daimyo CHA/IQ contest, skill-scaled rng), `$8271`/`$93DD` relations-vs-rng gates, `$85EA` effect_view_b
+  (enemy-fief list): re-grounded. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #10 — targeting/trade/war-prep + 2 value-bug flags (76/131)   [2026-06-10]
 1 rename + 2 DREAM value-bug flags:
 - `$8327` `scale_div10_capcheck` ✅ — the 3rd/last bank-1 ext-op sub (4-c value-wrong, flagged); = -1 if >arg3 else floor(a*b/10).

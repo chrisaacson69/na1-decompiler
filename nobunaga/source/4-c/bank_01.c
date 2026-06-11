@@ -766,10 +766,10 @@ word effect_sell_rice_for_gold(word rice_amount) {
     return cycle_economy_rate(1);    // $8B3F
 }
 
-// $8B40 effect_subhandler_9F04
+// $8B40 effect_take_loan
 // (body @ $8B45)
 
-word effect_subhandler_9F04(word amount) {
+word effect_take_loan(word amount) {
     fief = ((selected_province_idx * 26) + 0x7001);    // $8B4F
     debt_ptr = (fief + 2);    // $8B52
     town = *(word*)((debt_ptr + 2));    // $8B56
@@ -1880,7 +1880,7 @@ word subhandler_9F04(word arg1) {
                 draw_message(msg_s_would_you_like_to_borrow, msg_how_much_f99d);    // $9F62
                 local11 = number_input(1, local10);    // $9F6C
                 if (number_input(1, local10)) {    // $9F5C
-                    effect_subhandler_9F04(local11);    // $9F71
+                    effect_take_loan(local11);    // $9F71
                     clamp_amount_to_province_max(arg1);    // $9F76
                     cycle_economy_rate(0);    // $9F7B
                     set_cursor(16, 7);    // $9F82
@@ -2374,7 +2374,7 @@ L_A72C:
 L_A753:
     local11 = province_to_map_section_50[local8];    // $A755
     render_map_section(province_to_map_section_50[local8]);    // $A757
-    map_helper_af10(local11);    // $A75C
+    browse_map_sections(local11);    // $A75C
     effect_view_a(local8);    // $A761
     goto L_A6D0;    // $A765
 L_A768:
@@ -2894,10 +2894,10 @@ L_AF06:
     return arg1;    // $AEC1
 }
 
-// $AF10 map_helper_af10
+// $AF10 browse_map_sections
 // (body @ $AF15)
 
-word map_helper_af10(word arg1) {
+word browse_map_sections(word arg1) {
     message_display(msg_arrows_other_sections);    // $AF18
     redraw_window(msg_a_button_menu);    // $AF1F
     while (1) {    // $AF2B
@@ -2919,7 +2919,7 @@ word driver_map(void) {
     repaint_screen();    // $AF3D
     local11 = *(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // $AF5A
     render_map_section(*(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17))));    // $AF5C
-    return map_helper_af10(local11);    // $AF65
+    return browse_map_sections(local11);    // $AF65
 }
 
 // $AF66 driver_grant

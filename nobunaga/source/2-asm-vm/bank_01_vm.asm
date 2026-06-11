@@ -4623,7 +4623,7 @@ VM bytecode disassembly
   $9F6C  2B                         STORE_quick   ; inline operand = 11
   $9F6D  D8 9E 9F                   JUMPF_abs              $9F9E
   $9F70  3B                         PUSH_quick   ; inline operand = 11
-  $9F71  E9 40 8B 02                CALL_abs_imm1          $8B40 (effect_subhandler_9F04) {bytecode}, $02
+  $9F71  E9 40 8B 02                CALL_abs_imm1          $8B40 (effect_take_loan) {bytecode}, $02
   $9F75  3C                         PUSH_quick   ; inline operand = 12
   $9F76  E9 AC 82 02                CALL_abs_imm1          $82AC (clamp_amount_to_province_max) {bytecode}, $02
   $9F7A  60                         PUSH_qimm   ; inline operand = 0
@@ -5739,7 +5739,7 @@ VM bytecode disassembly
   $A756  B3                         PUSHL
   $A757  E9 F2 E5 02                CALL_abs_imm1          $E5F2 (render_map_section) {bytecode}, $02
   $A75B  3B                         PUSH_quick   ; inline operand = 11
-  $A75C  E9 10 AF 02                CALL_abs_imm1          $AF10 (map_helper_af10) {bytecode}, $02
+  $A75C  E9 10 AF 02                CALL_abs_imm1          $AF10 (browse_map_sections) {bytecode}, $02
   $A760  38                         PUSH_quick   ; inline operand = 8
   $A761  E9 FA 83 02                CALL_abs_imm1          $83FA (effect_view_a) {bytecode}, $02
   $A765  D6 D0 A6                   JUMP_abs               $A6D0
@@ -6853,7 +6853,7 @@ VM bytecode disassembly
   $AF5B  B3                         PUSHL
   $AF5C  E9 F2 E5 02                CALL_abs_imm1          $E5F2 (render_map_section) {bytecode}, $02
   $AF60  3B                         PUSH_quick   ; inline operand = 11
-  $AF61  E9 10 AF 02                CALL_abs_imm1          $AF10 (map_helper_af10) {bytecode}, $02
+  $AF61  E9 10 AF 02                CALL_abs_imm1          $AF10 (browse_map_sections) {bytecode}, $02
   $AF65  CF                         RETURN
 
 ; ============================================================

@@ -147,7 +147,7 @@
 //   PRG $04A15  bank1  $8A15  effect_trade
 //   PRG $04A4E  bank1  $8A4E  cycle_economy_rate
 //   PRG $04B0A  bank1  $8B0A  effect_sell_rice_for_gold
-//   PRG $04B40  bank1  $8B40  effect_subhandler_9F04
+//   PRG $04B40  bank1  $8B40  effect_take_loan
 //   PRG $04B8F  bank1  $8B8F  play_result_jingle
 //   PRG $04BC1  bank1  $8BC1  compute_bribe_effect_value
 //   PRG $04BE5  bank1  $8BE5  effect_send
@@ -219,7 +219,7 @@
 //   PRG $06D67  bank1  $AD67  driver_assign
 //   PRG $06DB3  bank1  $ADB3  driver_rest
 //   PRG $06DF6  bank1  $ADF6  fief_select_input_loop
-//   PRG $06F10  bank1  $AF10  map_helper_af10
+//   PRG $06F10  bank1  $AF10  browse_map_sections
 //   PRG $06F38  bank1  $AF38  driver_map
 //   PRG $06F66  bank1  $AF66  driver_grant
 //   PRG $07066  bank1  $B066  setting_sound_on_off
@@ -4022,10 +4022,10 @@ word effect_sell_rice_for_gold(word rice_amount) {
 }
 
 // ===== bank1 $8B40  (PRG $04B40) =====
-// PRG $04B40 effect_subhandler_9F04
+// PRG $04B40 effect_take_loan
 // (body @ PRG $04B45)
 
-word effect_subhandler_9F04(word amount) {
+word effect_take_loan(word amount) {
     fief = ((selected_province_idx * 26) + 0x7001);    // PRG $04B4F
     debt_ptr = (fief + 2);    // PRG $04B52
     town = *(word*)((debt_ptr + 2));    // PRG $04B56
@@ -5176,7 +5176,7 @@ word subhandler_9F04(word arg1) {
                 draw_message(msg_s_would_you_like_to_borrow, msg_how_much_f99d);    // PRG $05F62 -> bank15 $D134
                 local11 = number_input(1, local10);    // PRG $05F6C -> bank15 $D5E9
                 if (number_input(1, local10)) {    // PRG $05F5C -> bank15 $D5E9
-                    effect_subhandler_9F04(local11);    // PRG $05F71 -> bank1 $8B40
+                    effect_take_loan(local11);    // PRG $05F71 -> bank1 $8B40
                     clamp_amount_to_province_max(arg1);    // PRG $05F76 -> bank1 $82AC
                     cycle_economy_rate(0);    // PRG $05F7B -> bank1 $8A4E
                     set_cursor(16, 7);    // PRG $05F82 -> bank15 $CC7B
@@ -5686,7 +5686,7 @@ L_p0672C:
 L_p06753:
     local11 = province_to_map_section_50[local8];    // PRG $06755
     render_map_section(province_to_map_section_50[local8]);    // PRG $06757 -> bank15 $E5F2
-    map_helper_af10(local11);    // PRG $0675C -> bank1 $AF10
+    browse_map_sections(local11);    // PRG $0675C -> bank1 $AF10
     effect_view_a(local8);    // PRG $06761 -> bank1 $83FA
     goto L_p066D0;    // PRG $06765
 L_p06768:
@@ -6222,10 +6222,10 @@ L_p06F06:
 }
 
 // ===== bank1 $AF10  (PRG $06F10) =====
-// PRG $06F10 map_helper_af10
+// PRG $06F10 browse_map_sections
 // (body @ PRG $06F15)
 
-word map_helper_af10(word arg1) {
+word browse_map_sections(word arg1) {
     message_display(msg_arrows_other_sections);    // PRG $06F18 -> bank15 $D326
     redraw_window(msg_a_button_menu);    // PRG $06F1F -> bank15 $CEC4
     while (1) {    // PRG $06F2B
@@ -6248,7 +6248,7 @@ word driver_map(void) {
     repaint_screen();    // PRG $06F3D -> bank15 $CD20
     local11 = *(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // PRG $06F5A
     render_map_section(*(byte*)((selected_province_idx + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17))));    // PRG $06F5C -> bank15 $E5F2
-    return map_helper_af10(local11);    // PRG $06F65 -> bank1 $AF10
+    return browse_map_sections(local11);    // PRG $06F65 -> bank1 $AF10
 }
 
 // ===== bank1 $AF66  (PRG $06F66) =====
