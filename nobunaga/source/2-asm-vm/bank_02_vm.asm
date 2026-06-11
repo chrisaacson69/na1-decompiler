@@ -5501,7 +5501,7 @@ VM bytecode disassembly
   $A590  D7 A3 A5                   JUMPT_abs              $A5A3
   $A593  DE F8 FF                   LEAL_far               $FFF8
   $A596  B3                         PUSHL
-  $A597  E9 FC A4 02                CALL_abs_imm1          $A4FC (max_enemy_unit_type_strength_pct) {bytecode}, $02
+  $A597  E9 FC A4 02                CALL_abs_imm1          $A4FC (min_own_strength_pct_vs_list) {bytecode}, $02
   $A59B  17                         LOADR_quick   ; inline operand = 7
   $A59C  C8                         UCMPGT
   $A59D  D8 A3 A5                   JUMPF_abs              $A5A3
@@ -5686,7 +5686,7 @@ VM bytecode disassembly
   $A6D7  B3                         PUSHL
   $A6D8  E9 F3 A0 06                CALL_abs_imm1          $A0F3 (build_reachable_enemy_target_list) {bytecode}, $06
   $A6DC  B3                         PUSHL
-  $A6DD  E9 FC A4 02                CALL_abs_imm1          $A4FC (max_enemy_unit_type_strength_pct) {bytecode}, $02
+  $A6DD  E9 FC A4 02                CALL_abs_imm1          $A4FC (min_own_strength_pct_vs_list) {bytecode}, $02
   $A6E1  22                         STORE_quick   ; inline operand = 2
   $A6E2  02                         LOADL_quick   ; inline operand = 2
   $A6E3  8B 14                      BYTE_LOADR_imm1        +20
@@ -5958,7 +5958,7 @@ VM bytecode disassembly
 ; sub $A8CF   (frame_off=+0, body @ $A8D4)
 ; ============================================================
   $A8D4  3C                         PUSH_quick   ; inline operand = 12
-  $A8D5  E9 4D A8 02                CALL_abs_imm1          $A84D (ai_clear_province_state_when_strong_enough) {bytecode}, $02
+  $A8D5  E9 4D A8 02                CALL_abs_imm1          $A84D (ai_claim_province_when_strong_enough) {bytecode}, $02
   $A8D9  D8 DE A8                   JUMPF_abs              $A8DE
   $A8DC  41                         LOADL_qimm   ; inline operand = 1
   $A8DD  CF                         RETURN

@@ -350,14 +350,14 @@
 //   PRG $0A3BD  bank2  $A3BD  ai_step_unit_toward_target
 //   PRG $0A3F8  bank2  $A3F8  ai_select_weak_reachable_enemy_target
 //   PRG $0A4BC  bank2  $A4BC  find_strongest_unit_type_by_strength
-//   PRG $0A4FC  bank2  $A4FC  max_enemy_unit_type_strength_pct
+//   PRG $0A4FC  bank2  $A4FC  min_own_strength_pct_vs_list
 //   PRG $0A52F  bank2  $A52F  ai_decide_unit_action_attack_or_advance
 //   PRG $0A5A4  bank2  $A5A4  ai_advance_units_toward_reachable_enemies
 //   PRG $0A625  bank2  $A625  ai_advance_units_into_free_adjacent_cells
 //   PRG $0A6C5  bank2  $A6C5  ai_choose_combat_action_by_battle_strength
 //   PRG $0A721  bank2  $A721  ai_rng_resolve_combat_apply_casualties
 //   PRG $0A7E5  bank2  $A7E5  ai_own_double_lt_enemy_total
-//   PRG $0A84D  bank2  $A84D  ai_clear_province_state_when_strong_enough
+//   PRG $0A84D  bank2  $A84D  ai_claim_province_when_strong_enough
 //   PRG $0A8CF  bank2  $A8CF  ai_select_unit_combat_action
 //   PRG $0A90E  bank2  $A90E  player_move_unit_until_placed_loop
 //   PRG $0A96C  bank2  $A96C  player_move_unit_with_occupancy_check_loop
@@ -9647,10 +9647,10 @@ word find_strongest_unit_type_by_strength(word arg1, word arg2) {
 }
 
 // ===== bank2 $A4FC  (PRG $0A4FC) =====
-// PRG $0A4FC max_enemy_unit_type_strength_pct
+// PRG $0A4FC min_own_strength_pct_vs_list
 // (body @ PRG $0A501)
 
-word max_enemy_unit_type_strength_pct(word arg1) {
+word min_own_strength_pct_vs_list(word arg1) {
     local10 = 100;    // PRG $0A503
     local11 = 0;    // PRG $0A505
     while (((unsigned)local11 < (unsigned)6)) {    // PRG $0A527
@@ -9679,7 +9679,7 @@ word ai_decide_unit_action_attack_or_advance(void) {
     if (((unsigned)target_unit_type < (unsigned)5)) return eval_and_announce_battle_strength_parity_if_enemy_present(target_unit_type);    // PRG $0A575 -> bank2 $A0DA
     phi_ret_a5a3 = find_adjacent_unit_around_tile(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), cur_combat_side, 0);    // PRG $0A590 -> bank2 $A07A
     if (phi_ret_a5a3) return phi_ret_a5a3;    // PRG $0A590
-    phi_ret_a5a3 = ((unsigned)max_enemy_unit_type_strength_pct(&reachable_enemy_list) > (unsigned)strength_threshold);    // PRG $0A59D -> bank2 $A4FC
+    phi_ret_a5a3 = ((unsigned)min_own_strength_pct_vs_list(&reachable_enemy_list) > (unsigned)strength_threshold);    // PRG $0A59D -> bank2 $A4FC
     if (!(phi_ret_a5a3)) return phi_ret_a5a3;    // PRG $0A59D
     phi_ret_a5a3 = ai_place_units_near_enemy_loop();    // PRG $0A5A0 -> bank2 $A194
     return phi_ret_a5a3;    // PRG $0A5A0
@@ -9772,7 +9772,7 @@ word ai_advance_units_into_free_adjacent_cells(void) {
 // (body @ PRG $0A6CA)
 
 word ai_choose_combat_action_by_battle_strength(word unit_type) {
-    enemy_strength_pct = max_enemy_unit_type_strength_pct(build_reachable_enemy_target_list(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), &enemy_target_list));    // PRG $0A6E1 -> bank2 $A4FC
+    enemy_strength_pct = min_own_strength_pct_vs_list(build_reachable_enemy_target_list(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), &enemy_target_list));    // PRG $0A6E1 -> bank2 $A4FC
     if (((unsigned)enemy_strength_pct < (unsigned)20)) return ai_place_units_near_enemy_loop();    // PRG $0A6E6 -> bank2 $A194
     if ((*(word*)(unit_strength_ptr(cur_combat_side, 0)) <= 1)) return ai_place_units_near_enemy_loop();    // PRG $0A6F4 -> bank2 $82C9
     strongest_unit_type = find_strongest_unit_type_by_strength(&enemy_target_list, 70);    // PRG $0A705 -> bank2 $A4BC
@@ -9842,10 +9842,10 @@ word ai_own_double_lt_enemy_total(void) {
 }
 
 // ===== bank2 $A84D  (PRG $0A84D) =====
-// PRG $0A84D ai_clear_province_state_when_strong_enough
+// PRG $0A84D ai_claim_province_when_strong_enough
 // (body @ PRG $0A852)
 
-word ai_clear_province_state_when_strong_enough(word fief) {
+word ai_claim_province_when_strong_enough(word fief) {
     if ((cur_combat_unit_slot || !(test_6f65_bit7(cur_combat_side)) || is_no_province_selected())) {    // PRG $0A852 -> bank15 $D9E5
         return 0;    // PRG $0A869
     } else {
@@ -9891,7 +9891,7 @@ word ai_clear_province_state_when_strong_enough(word fief) {
 // (body @ PRG $0A8D4)
 
 word ai_select_unit_combat_action(word fief, word unit_idx) {
-    if (ai_clear_province_state_when_strong_enough(fief)) {    // PRG $0A8D4 -> bank2 $A84D
+    if (ai_claim_province_when_strong_enough(fief)) {    // PRG $0A8D4 -> bank2 $A84D
         return 1;    // PRG $0A8DD
     } else {
         ai_rng_resolve_combat_apply_casualties();    // PRG $0A8DE -> bank2 $A721

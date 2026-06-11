@@ -150,6 +150,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #13 — AI combat tactics + cursor input (108/131, 82%)   [2026-06-10]
+2 polarity/meaning refutes:
+- `$A4FC` `max_enemy_unit_type_strength_pct` → **`min_own_strength_pct_vs_list`** — keeps the MIN (worst matchup),
+  not the max (accumulator starts 100, takes smaller).
+- `$A84D` `ai_clear_province_state_when_strong_enough` → **`ai_claim_province_when_strong_enough`** — it SETS
+  province_ai_state=5 + relocates capital (claims the province), doesn't 'clear to 0'; gate is NOT-outmatched + has-rice.
+- `$8623` poll_cursor (fixed wrong-bank effect_view_c ref), `$98FE` seek-enemy-adjacent, `$9810` AI placement,
+  `$9B4A` attack-targeting blink (audio cue + cursor), `$AB6A` (returns 1 not 0): re-grounded. Next: rows 1-7.
+
 ### Bank 2 full-verify batch #12 — AI movement/input layer (101/131, 77%)   [2026-06-10]
 Well-named depth-4 layer; 1 rename + detail fixes:
 - `$8488` `read_button_press` → **`read_dpad_dir_code`** (maps d-pad to the 48-based hex-grid direction code).
