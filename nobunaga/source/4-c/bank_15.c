@@ -1431,19 +1431,19 @@ word scaled_force_transfer(word arg1, word arg2, word arg3, word arg4, word arg5
     return min_word((pct_op(arg1, math32_2arg(arg4, arg3)) + pct_op((arg2 | 1), math32_2arg(arg3, arg4))), arg5);    // $DA4E
 }
 
-// $DA4F diplomacy_helper2
+// $DA4F set_pact_relation
 // (body @ $DA54)
 
-word diplomacy_helper2(void) {
+word set_pact_relation(void) {
     dsel_da73 = ((unsigned)selected_province_idx < (unsigned)battle_defending_province);    // $DA73
     *(byte*)((((dsel_da73 ? (selected_province_idx * 54) : (battle_defending_province * 54)) + (dsel_da73 ? battle_defending_province : selected_province_idx)) + 0x6193)) = 70;    // $DA7B
     return 70;    // $DA7C
 }
 
-// $DA7D diplomacy_helper3
+// $DA7D set_marriage_relation
 // (body @ $DA82)
 
-word diplomacy_helper3(void) {
+word set_marriage_relation(void) {
     local11 = selected_province_owner();    // $DA85
     local10 = fief_owner(battle_defending_province);    // $DA8D
     dsel_daa1 = ((unsigned)local11 < (unsigned)local10);    // $DAA1
@@ -2040,10 +2040,10 @@ word marriage_pact_handler(void) {
     }
 }
 
-// $E3A4 diplomacy_helper
+// $E3A4 prompt_diplomacy_pact
 // (body @ $E3A9)
 
-word diplomacy_helper(void) {
+word prompt_diplomacy_pact(void) {
     if (get_province_ai_state(battle_defending_province)) {    // $E3A9
         local9 = ui_input_mode;    // $E3B6
         ui_input_mode = 2;    // $E3B8

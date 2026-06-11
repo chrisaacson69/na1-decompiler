@@ -844,7 +844,7 @@ VM bytecode disassembly
   $85DF  A6 63 6F                   LOADR_abs              $6F63 (battle_defending_province)
   $85E2  C1                         CMPNE
   $85E3  D8 E9 85                   JUMPF_abs              $85E9
-  $85E6  AC 7D DA                   CALL_abs               $DA7D (diplomacy_helper3) {bytecode}
+  $85E6  AC 7D DA                   CALL_abs               $DA7D (set_marriage_relation) {bytecode}
  >$85E9  0A                         LOADL_quick   ; inline operand = 10
   $85EA  D0                         INC
  >$85EB  2A                         STORE_quick   ; inline operand = 10
@@ -3788,7 +3788,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $9AAC   (frame_off=-2, body @ $9AB1)
 ; ============================================================
-  $9AB1  AC A4 E3                   CALL_abs               $E3A4 (diplomacy_helper) {bytecode}
+  $9AB1  AC A4 E3                   CALL_abs               $E3A4 (prompt_diplomacy_pact) {bytecode}
   $9AB4  2B                         STORE_quick   ; inline operand = 11
   $9AB5  D8 11 9B                   JUMPF_abs              $9B11
   $9AB8  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
@@ -3817,7 +3817,7 @@ VM bytecode disassembly
   $9AE9  B1                         POPSTORE
   $9AEA  8E 31 BE                   PUSH_imm2              $BE31 (msg_this_pact_doesn_t_mean_you_can)
   $9AED  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
-  $9AF1  AC 4F DA                   CALL_abs               $DA4F (diplomacy_helper2) {bytecode}
+  $9AF1  AC 4F DA                   CALL_abs               $DA4F (set_pact_relation) {bytecode}
   $9AF4  3B                         PUSH_quick   ; inline operand = 11
   $9AF5  A4 63 6F                   LOADL_abs              $6F63 (battle_defending_province)
   $9AF8  8B 1A                      BYTE_LOADR_imm1        +26
@@ -3916,7 +3916,7 @@ VM bytecode disassembly
   $9BBC  B1                         POPSTORE
   $9BBD  8E BA BE                   PUSH_imm2              $BEBA (msg_you_ve_lost_a_daughter_but_gai)
   $9BC0  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
-  $9BC4  AC 7D DA                   CALL_abs               $DA7D (diplomacy_helper3) {bytecode}
+  $9BC4  AC 7D DA                   CALL_abs               $DA7D (set_marriage_relation) {bytecode}
   $9BC7  3B                         PUSH_quick   ; inline operand = 11
   $9BC8  A4 63 6F                   LOADL_abs              $6F63 (battle_defending_province)
   $9BCB  8B 1A                      BYTE_LOADR_imm1        +26

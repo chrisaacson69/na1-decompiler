@@ -472,8 +472,8 @@
 //   PRG $3D9E5  bank15 $D9E5  test_6f65_bit7
 //   PRG $3D9F7  bank15 $D9F7  revolt_type_message
 //   PRG $3DA24  bank15 $DA24  scaled_force_transfer
-//   PRG $3DA4F  bank15 $DA4F  diplomacy_helper2
-//   PRG $3DA7D  bank15 $DA7D  diplomacy_helper3
+//   PRG $3DA4F  bank15 $DA4F  set_pact_relation
+//   PRG $3DA7D  bank15 $DA7D  set_marriage_relation
 //   PRG $3DAAB  bank15 $DAAB  load_daimyo_relation_row
 //   PRG $3DAD7  bank15 $DAD7  compact_relation_list
 //   PRG $3DB12  bank15 $DB12  defender_owner_is_keyed_daimyo
@@ -501,7 +501,7 @@
 //   PRG $3E2AF  bank15 $E2AF  copy_arms_record_5
 //   PRG $3E2D6  bank15 $E2D6  draw_daimyo_name_menu
 //   PRG $3E315  bank15 $E315  marriage_pact_handler
-//   PRG $3E3A4  bank15 $E3A4  diplomacy_helper
+//   PRG $3E3A4  bank15 $E3A4  prompt_diplomacy_pact
 //   PRG $3E425  bank15 $E425  find_fiefs_of_owner
 //   PRG $3E454  bank15 $E454  neutralize_fief
 //   PRG $3E4A2  bank15 $E4A2  build_owned_fief_list
@@ -811,7 +811,7 @@ word apply_scenario_starting_stat_boosts(void) {
                     selected_province_idx = *(word*)(((local11 << 1) + &boosted_fief_list));    // PRG $005CD
                     battle_defending_province = *(word*)(((local10 << 1) + &boosted_fief_list));    // PRG $005D9
                     if ((selected_province_idx != battle_defending_province)) {    // PRG $005C4
-                        diplomacy_helper3();    // PRG $005E6 -> bank15 $DA7D
+                        set_marriage_relation();    // PRG $005E6 -> bank15 $DA7D
                     }
                     phi_val_85eb = (local10 + 1);    // PRG $005EA
                     continue;
@@ -2316,8 +2316,8 @@ word reassign_owner50_fiefs_to_daimyo24(void) {
 // (body @ PRG $01AB1)
 
 word driver_diplomacy_gold_transfer(void) {
-    local11 = diplomacy_helper();    // PRG $01AB4 -> bank15 $E3A4
-    phi_ret_9b11 = diplomacy_helper();    // PRG $01AB5 -> bank15 $E3A4
+    local11 = prompt_diplomacy_pact();    // PRG $01AB4 -> bank15 $E3A4
+    phi_ret_9b11 = prompt_diplomacy_pact();    // PRG $01AB5 -> bank15 $E3A4
     if (phi_ret_9b11) {    // PRG $01AB1
         open_message_window();    // PRG $01AB8 -> bank15 $CC89
         daimyo_name_width(selected_province_idx);    // PRG $01ABE -> bank15 $D78B
@@ -2326,7 +2326,7 @@ word driver_diplomacy_gold_transfer(void) {
             trigger_cutscene(7);    // PRG $01AD6 -> bank15 $E80C
             *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // PRG $01AE9
             message_display(msg_this_pact_doesn_t_mean_you_can);    // PRG $01AED -> bank15 $D326
-            diplomacy_helper2();    // PRG $01AF1 -> bank15 $DA4F
+            set_pact_relation();    // PRG $01AF1 -> bank15 $DA4F
             *(word*)(((battle_defending_province * 26) + 0x7001)) = (*(word*)(((battle_defending_province * 26) + 0x7001)) - local11);    // PRG $01B03
         } else {
             message_display(msg_who_needs_wimps_like_him_anywa);    // PRG $01B0A -> bank15 $D326
@@ -2386,7 +2386,7 @@ word marry_transfer_gold_between_provinces(void) {
             trigger_cutscene(4);    // PRG $01BA9 -> bank15 $E80C
             *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // PRG $01BBC
             message_display(msg_you_ve_lost_a_daughter_but_gai);    // PRG $01BC0 -> bank15 $D326
-            diplomacy_helper3();    // PRG $01BC4 -> bank15 $DA7D
+            set_marriage_relation();    // PRG $01BC4 -> bank15 $DA7D
             *(word*)(((battle_defending_province * 26) + 0x7001)) = (*(word*)(((battle_defending_province * 26) + 0x7001)) - local11);    // PRG $01BD6
         } else {
             message_display(msg_the_princess_was_too_good_for);    // PRG $01BDD -> bank15 $D326
@@ -5020,8 +5020,8 @@ word driver_pact(void) {
             *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) - 1);    // PRG $05C93 -> bank15 $D7EA
             local9 = 1;    // PRG $05C95
             open_message_window();    // PRG $05C96 -> bank15 $CC89
-            local10 = diplomacy_helper();    // PRG $05C9C -> bank15 $E3A4
-            if (diplomacy_helper()) {    // PRG $05C85 -> bank15 $E3A4
+            local10 = prompt_diplomacy_pact();    // PRG $05C9C -> bank15 $E3A4
+            if (prompt_diplomacy_pact()) {    // PRG $05C85 -> bank15 $E3A4
                 draw_message(msg_lord_s_s_wants_d_gold_pay, ((selected_province_owner() * 9) + 0x77A8), ((fief_owner(battle_defending_province) * 9) + 0x77A8), local10);    // PRG $05CBC -> bank15 $D134
                 if (prompt_y_n()) {    // PRG $05CA0 -> bank15 $D3A7
                     if ((*(word*)(local11) < local10)) {    // PRG $05CC6
@@ -5030,7 +5030,7 @@ word driver_pact(void) {
                         play_result_jingle(0);    // PRG $05CD8 -> bank1 $8B8F
                         *(word*)(local11) = (*(word*)(local11) - local10);    // PRG $05CE2
                         *(word*)(((battle_defending_province * 26) + 0x7001)) = (*(word*)(((battle_defending_province * 26) + 0x7001)) + local10);    // PRG $05CF2
-                        diplomacy_helper2();    // PRG $05CF3 -> bank15 $DA4F
+                        set_pact_relation();    // PRG $05CF3 -> bank15 $DA4F
                         trigger_cutscene(3);    // PRG $05CF7 -> bank15 $E80C
                         message_display(msg_war_is_inevitable_so_don_t_let);    // PRG $05CFE -> bank15 $D326
                     }
@@ -5115,7 +5115,7 @@ word driver_marry(void) {
                     if (prompt_y_n()) {    // PRG $05E1A -> bank15 $D3A7
                         local9 = ((selected_province_idx * 26) + 0x7001);    // PRG $05E65
                         if ((local11 <= *(word*)(local9))) {    // PRG $05E5B
-                            diplomacy_helper3();    // PRG $05E6F -> bank15 $DA7D
+                            set_marriage_relation();    // PRG $05E6F -> bank15 $DA7D
                             play_result_jingle(0);    // PRG $05E73 -> bank1 $8B8F
                             trigger_cutscene(16);    // PRG $05E79 -> bank15 $E80C
                             message_display(msg_your_bride_to_be_has_arrived);    // PRG $05E80 -> bank15 $D326
@@ -12196,20 +12196,20 @@ word scaled_force_transfer(word arg1, word arg2, word arg3, word arg4, word arg5
 }
 
 // ===== bank15 $DA4F  (PRG $3DA4F) =====
-// PRG $3DA4F diplomacy_helper2
+// PRG $3DA4F set_pact_relation
 // (body @ PRG $3DA54)
 
-word diplomacy_helper2(void) {
+word set_pact_relation(void) {
     dsel_da73 = ((unsigned)selected_province_idx < (unsigned)battle_defending_province);    // PRG $3DA73
     *(byte*)((((dsel_da73 ? (selected_province_idx * 54) : (battle_defending_province * 54)) + (dsel_da73 ? battle_defending_province : selected_province_idx)) + 0x6193)) = 70;    // PRG $3DA7B
     return 70;    // PRG $3DA7C
 }
 
 // ===== bank15 $DA7D  (PRG $3DA7D) =====
-// PRG $3DA7D diplomacy_helper3
+// PRG $3DA7D set_marriage_relation
 // (body @ PRG $3DA82)
 
-word diplomacy_helper3(void) {
+word set_marriage_relation(void) {
     local11 = selected_province_owner();    // PRG $3DA85 -> bank15 $D77E
     local10 = fief_owner(battle_defending_province);    // PRG $3DA8D -> bank15 $D772
     dsel_daa1 = ((unsigned)local11 < (unsigned)local10);    // PRG $3DAA1
@@ -12834,10 +12834,10 @@ word marriage_pact_handler(void) {
 }
 
 // ===== bank15 $E3A4  (PRG $3E3A4) =====
-// PRG $3E3A4 diplomacy_helper
+// PRG $3E3A4 prompt_diplomacy_pact
 // (body @ PRG $3E3A9)
 
-word diplomacy_helper(void) {
+word prompt_diplomacy_pact(void) {
     if (get_province_ai_state(battle_defending_province)) {    // PRG $3E3A9 -> bank15 $D98D
         local9 = ui_input_mode;    // PRG $3E3B6
         ui_input_mode = 2;    // PRG $3E3B8

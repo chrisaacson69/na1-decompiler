@@ -4235,7 +4235,7 @@ VM bytecode disassembly
   $9C94  41                         LOADL_qimm   ; inline operand = 1
   $9C95  29                         STORE_quick   ; inline operand = 9
   $9C96  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
-  $9C99  AC A4 E3                   CALL_abs               $E3A4 (diplomacy_helper) {bytecode}
+  $9C99  AC A4 E3                   CALL_abs               $E3A4 (prompt_diplomacy_pact) {bytecode}
   $9C9C  2A                         STORE_quick   ; inline operand = 10
   $9C9D  D8 19 9D                   JUMPF_abs              $9D19
   $9CA0  3A                         PUSH_quick   ; inline operand = 10
@@ -4284,7 +4284,7 @@ VM bytecode disassembly
   $9CF0  B0                         DEREF
   $9CF1  BB                         ADD
   $9CF2  B1                         POPSTORE
-  $9CF3  AC 4F DA                   CALL_abs               $DA4F (diplomacy_helper2) {bytecode}
+  $9CF3  AC 4F DA                   CALL_abs               $DA4F (set_pact_relation) {bytecode}
   $9CF6  63                         PUSH_qimm   ; inline operand = 3
   $9CF7  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
   $9CFB  8E 63 FD                   PUSH_imm2              $FD63 (msg_war_is_inevitable_so_don_t_let)
@@ -4476,7 +4476,7 @@ VM bytecode disassembly
   $9E6A  B4                         POPR
   $9E6B  C3                         SCMPLE
   $9E6C  D8 9E 9E                   JUMPF_abs              $9E9E
-  $9E6F  AC 7D DA                   CALL_abs               $DA7D (diplomacy_helper3) {bytecode}
+  $9E6F  AC 7D DA                   CALL_abs               $DA7D (set_marriage_relation) {bytecode}
   $9E72  60                         PUSH_qimm   ; inline operand = 0
   $9E73  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $9E77  8D 10                      BYTE_PUSH_imm1         +16

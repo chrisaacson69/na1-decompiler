@@ -1727,8 +1727,8 @@ word driver_pact(void) {
             *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) - 1);    // $9C93
             local9 = 1;    // $9C95
             open_message_window();    // $9C96
-            local10 = diplomacy_helper();    // $9C9C
-            if (diplomacy_helper()) {    // $9C85
+            local10 = prompt_diplomacy_pact();    // $9C9C
+            if (prompt_diplomacy_pact()) {    // $9C85
                 draw_message(msg_lord_s_s_wants_d_gold_pay, ((selected_province_owner() * 9) + 0x77A8), ((fief_owner(battle_defending_province) * 9) + 0x77A8), local10);    // $9CBC
                 if (prompt_y_n()) {    // $9CA0
                     if ((*(word*)(local11) < local10)) {    // $9CC6
@@ -1737,7 +1737,7 @@ word driver_pact(void) {
                         play_result_jingle(0);    // $9CD8
                         *(word*)(local11) = (*(word*)(local11) - local10);    // $9CE2
                         *(word*)(((battle_defending_province * 26) + 0x7001)) = (*(word*)(((battle_defending_province * 26) + 0x7001)) + local10);    // $9CF2
-                        diplomacy_helper2();    // $9CF3
+                        set_pact_relation();    // $9CF3
                         trigger_cutscene(3);    // $9CF7
                         message_display(msg_war_is_inevitable_so_don_t_let);    // $9CFE
                     }
@@ -1820,7 +1820,7 @@ word driver_marry(void) {
                     if (prompt_y_n()) {    // $9E1A
                         local9 = ((selected_province_idx * 26) + 0x7001);    // $9E65
                         if ((local11 <= *(word*)(local9))) {    // $9E5B
-                            diplomacy_helper3();    // $9E6F
+                            set_marriage_relation();    // $9E6F
                             play_result_jingle(0);    // $9E73
                             trigger_cutscene(16);    // $9E79
                             message_display(msg_your_bride_to_be_has_arrived);    // $9E80

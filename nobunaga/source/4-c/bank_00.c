@@ -296,7 +296,7 @@ word apply_scenario_starting_stat_boosts(void) {
                     selected_province_idx = *(word*)(((local11 << 1) + &boosted_fief_list));    // $85CD
                     battle_defending_province = *(word*)(((local10 << 1) + &boosted_fief_list));    // $85D9
                     if ((selected_province_idx != battle_defending_province)) {    // $85C4
-                        diplomacy_helper3();    // $85E6
+                        set_marriage_relation();    // $85E6
                     }
                     phi_val_85eb = (local10 + 1);    // $85EA
                     continue;
@@ -1741,8 +1741,8 @@ word reassign_owner50_fiefs_to_daimyo24(void) {
 // (body @ $9AB1)
 
 word driver_diplomacy_gold_transfer(void) {
-    local11 = diplomacy_helper();    // $9AB4
-    phi_ret_9b11 = diplomacy_helper();    // $9AB5
+    local11 = prompt_diplomacy_pact();    // $9AB4
+    phi_ret_9b11 = prompt_diplomacy_pact();    // $9AB5
     if (phi_ret_9b11) {    // $9AB1
         open_message_window();    // $9AB8
         daimyo_name_width(selected_province_idx);    // $9ABE
@@ -1751,7 +1751,7 @@ word driver_diplomacy_gold_transfer(void) {
             trigger_cutscene(7);    // $9AD6
             *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // $9AE9
             message_display(msg_this_pact_doesn_t_mean_you_can);    // $9AED
-            diplomacy_helper2();    // $9AF1
+            set_pact_relation();    // $9AF1
             *(word*)(((battle_defending_province * 26) + 0x7001)) = (*(word*)(((battle_defending_province * 26) + 0x7001)) - local11);    // $9B03
         } else {
             message_display(msg_who_needs_wimps_like_him_anywa);    // $9B0A
@@ -1809,7 +1809,7 @@ word marry_transfer_gold_between_provinces(void) {
             trigger_cutscene(4);    // $9BA9
             *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) + local11);    // $9BBC
             message_display(msg_you_ve_lost_a_daughter_but_gai);    // $9BC0
-            diplomacy_helper3();    // $9BC4
+            set_marriage_relation();    // $9BC4
             *(word*)(((battle_defending_province * 26) + 0x7001)) = (*(word*)(((battle_defending_province * 26) + 0x7001)) - local11);    // $9BD6
         } else {
             message_display(msg_the_princess_was_too_good_for);    // $9BDD

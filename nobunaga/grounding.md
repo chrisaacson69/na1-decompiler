@@ -198,6 +198,17 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### ★★★★ CODE-LABEL TASK COMPLETE — ALL 6 CODE BANKS 100% GROUNDED (499/499) ★★★★   [2026-06-10]
+**Every code subroutine in the corpus is read-verified against its bytecode: bank 0 (98), bank 1 (131), bank 2 (131),
+bank 10 (1), bank 14 (3), bank 15 (135) -- 499 subs, 0 todo, 0 suspects, 0 address-tagged stubs.** Closed out by dating
+bank 15's 14 foundational kernel primitives (pct_op 60-callers, rng_mod 155, message_display 159, redraw_window 147,
+min_word, confirm_prompt, number_input, select_province_by_cursor, math32_2arg, cap_fief_stats -> confirms $7001+24 =
+the stat CAP) + 3 renames (diplomacy_helper2/3/'' -> set_pact_relation / set_marriage_relation / prompt_diplomacy_pact).
+The whole game now reads as a coherent system from vm_bootstrap (the entry/main loop) down to pct_op. NEXT (per Chris):
+(1) optional asset-label mini-pass for the data banks 3-14; (2) the decompiler value-bug capstone + value-golden harness
+(see tech-debt.md -- the bridge to trustworthy-to-analyze C); (3) the re-analysis pass (correct + discover from the now-
+legible C). Session arc: banks 2 + 1 + 0 fully verified (50 batches), the procedure + tech-debt docs, 3 DREAM bug classes.
+
 ### ★★ BANK 0 FULL-VERIFICATION COMPLETE ★★ — batch #14, the main-loop roots (98/98, 100%)   [2026-06-10]
 **Every one of bank 0's 98 subs is read-verified (0 todo, 0 suspects).** The main loop reads top to bottom from the ROOT
 `vm_bootstrap` ($A778, the game entry / JSR vm_entry) -> ai_strategic_turn_planner (season/year advance, save) ->
@@ -920,27 +931,19 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): FULL-VERIFY bank 0 (the main loop) — LAST bank <<<
-**★ BANKS 2 + 1 FULL-VERIFY COMPLETE (131/131 each, 2026-06-10).** Only **bank 0** remains (~98 subs, the main game
-loop — the bank loaded first, entry `vm_bootstrap`, per Chris). Same loop: `py -3 tools/bank-ground-order.py 0 --todo`,
-7/batch, read each against bytecode, confirm-or-REFUTE, regen, commit. **Method wins to reuse:** (1) read ROM strings
-for any draw_message target (py, file off = 16 + bank*0x4000 + (cpu - (bank==15?0xC000:0x8000))); (2) READ THE BYTECODE
-for any sub with `// ext_op` lines (32-bit math, 4-c is value-wrong) or a suspicious linear body (value-merge bugs);
-(3) NO nested double-quotes or em-dashes in toml comments (use single quotes — they break parse_toml); (4) the clean
-descriptive names are wrong as often as the stubs. Cross-bank same-addr pairs ($83A2/$93AA/$85A7 etc.) are FINE.
-Bank 0 is the main loop so expect: the turn/season scheduler, new-game setup, the dispatch into banks 1 (commands) &
-2 (combat) via call_bank, and succession/event handling. After bank 0: the corpus is fully grounded -> the optional
-decompiler-bug capstone (see tech-debt.md), then the chapter rename-sweep.
+### >>> NEXT BLOCK (start here): the CODE-LABEL TASK IS DONE -- next phases <<<
+**★★★ ALL 6 CODE BANKS 100% GROUNDED (499/499 subs, 2026-06-10).** Banks 0/1/2/10/14/15 = full-verified, 0 todo,
+0 suspects. The code-label pass is COMPLETE. Remaining phases (Chris):
+1. **(optional) Asset-label mini-pass for the data banks 3-14** -- label the assets/tables in the non-code banks (these
+   banks are pure data: graphics/tile/map/text tables). A different kind of pass (data, not code-behavior).
+2. **Decompiler value-bug capstone + value-golden harness** (see nobunaga/tech-debt.md) -- fix the 2 OPEN DREAM value
+   bug classes (32-bit ext-op render: 5 subs flagged; arms-reconverge value-merge: a handful) and add a harness that
+   asserts 4-c expression values == bytecode. This CERTIFIES the C as trustworthy for automated/LLM analysis -- the
+   bridge between 'readable C' and 'analyzable C'.
+3. **The re-analysis pass** -- re-read the now-legible C (human + LLM) to correct earlier reads and discover new
+   structure. Plus the chapter rename-sweep (NN-*.md cite pre-pass names).
+The grounding method (bank-ground-order.py worklist, bottom-up, bytecode walks) + the full procedure are in this doc.
 
-#### (historical) original NEXT BLOCK note: banks 0/1/2 (bank 15 + 10 + 14 are DONE)
-**Bank 15 complete (0 suspects); banks 10 & 14 complete (all named).** Remaining corpus suspects: banks
-0/1/2 — **5 (bank 0), 5 (bank 1), 7 (bank 2) ≈ 17** `_XXXX`-suffixed function defs (direct C count).
-NOTE the cursor's `--grounding` count for switchable banks is UNRELIABLE: native-call-index keys by CPU
-address so banks 0/1/2 share the $8000-$BFFF window (the cursor shows ~16 for EACH, the colliding union,
-and spuriously shows it for 10/14 too). Ground banks 0/1/2 by reading `source/4-c/bank_0N.c` directly
-(grep `^word *_[0-9a-f]{4}(` per file); the leaves-first/fanout ordering is still a useful hint, just not
-the per-bank attribution. A proper fix = split native-call-index's CODE_BANKS into NATIVE vs BYTECODE sets
-([[tools-architecture-refactor]] debt). Later: the ch.16 strategic vs tactical render is now both grounded.
 
 ### (historical) bank-15 batch cursors
 Run `py -3 tools/label-walk-prep.py 15 --grounding`. Batches #1 (7) + #2 (10) + #3 (7) done — **12 suspects
