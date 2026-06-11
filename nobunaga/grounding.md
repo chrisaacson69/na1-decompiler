@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #7 — wrappers + disaster/income leaves (52/98)   [2026-06-10]
+All confirmed (no renames): `$839A` init_daimyo_arms_record ($76A9 stride-5), `$8C1E`
+cur_flag_and_selected_ai_state5, `$8FD3` append_candidate_zero_priority, `$90D7`
+saturating_sub_byte_then_reset_if_ge_100, `$9974` process_first_n_unmarked_list_entries (reassign N fiefs to owner),
+`$9D00` random_event_ravage_output_hidden_mark_weakness (cutscene 31), `$A191` calc_charisma_scaled_income_variance:
+re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #6 — per-period stats / save / shuffle (45/98)   [2026-06-10]
 1 rename:
 - `$952F` `avg_byte_array_6d2d_over_fiefs` -> **`avg_fief_tax_rate`**.
