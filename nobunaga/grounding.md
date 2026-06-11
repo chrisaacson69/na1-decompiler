@@ -22,6 +22,19 @@ job from "name the blank" to "ground-truth it, lowest layer first."
 
 ## Settled framing
 
+- **★ THE BAR IS FULL VERIFICATION, not the stub sweep (Chris, 2026-06-10).** A bank is NOT "done"
+  when its address-tagged (`_<4hex>`) stubs are gone — those are merely the *self-confessed* suspects.
+  EVERY sub gets read against its bytecode, because the clean, descriptive names are the more dangerous
+  ones: `unit_record_ptr`→`side_resource_ptr` had a confident name AND a prior `[HIGH CONFIRMED]` tag and
+  was wrong ("+4 = hp" was actually "men") — caught only because it sat in a keystone's call path. The
+  stub sweep under-covers exactly that class. "Bank 2 complete" in the ledger means **stub-sweep complete
+  (0 address-tagged)**; full verification of bank 2 is tracked separately (17/131 as of 2026-06-10).
+- **The bottom-up worklist tool: `py -3 tools/bank-ground-order.py <bank>`** (`--todo` hides already-dated,
+  `--json` for automation). Emits EVERY sub in the bank leaves-first by call-graph depth (reuses
+  native-call-index's fused graph), annotated `SUSPECT`/`dated`/`todo`. Depth 0 = calls no other in-bank
+  sub (only grounded other-bank helpers, e.g. bank 15) ⇒ groundable NOW; the roots (battle_init_driver
+  depth 13, etc.) land last, read against already-grounded callees. This is the "flush out the call tree"
+  Chris asked for — grind the list top-to-bottom and the top-level routines arrive already-clarified.
 - **Direction: leaves-first up the call graph.** A leaf is the only thing nameable with
   confidence in isolation (no unnamed callee hiding its meaning); naming it propagates up to
   every caller for free. This mirrors the project's own recurring lesson — *topological order
@@ -395,10 +408,15 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): bank 1 (turn-command engine) — 5 suspects; then bank 0 <<<
-**Bank 2 COMPLETE (2026-06-10): 0 suspects** (combat unit-table keystone + side resource pool + 3 combat-UI
-tails; see ledger). Bonus table columns still un-mapped (optional): `$6F65` (per-unit status/flag byte),
-`$6FE5` (digit scratch buf). **Bank 1 — 5 address-tagged suspects** (the specialized lord-command/turn engine
+### >>> NEXT BLOCK (start here): FULL-VERIFY bank 2 bottom-up (17/131); then banks 1, 0 <<<
+**STANDARD CHANGED 2026-06-10 (Chris): full verification, not stub sweep** (see Settled framing ★). Bank 2's
+address-tagged STUBS are cleared (0 `_<4hex>`), but only **17/131 subs are truly verified** — the other 114
+carry inherited breadth-pass names that are SUSPECTS until read. **Resume = `py -3 tools/bank-ground-order.py
+2 --todo`** (leaves-first worklist of the 114). Grind depth-0 up: top of the list is `get_battle_side_province`
+($838F, 25 callers), `test_unit_type_present_flag` ($8F79), `is_no_province_selected` ($82FF)… roots last
+(`battle_init_driver` $AFE1 depth 13). Same loop as before (layer-ID → read bytecode → fact-check → name+tag →
+toml → regen → spot-check), now applied to descriptively-named subs too (confirm or REFUTE the inherited name).
+Bonus table columns still un-mapped (optional): `$6F65` (per-unit status/flag byte), `$6FE5` (digit scratch buf). **Bank 1 — 5 address-tagged suspects** (the specialized lord-command/turn engine
 dispatched by bank 0; per Chris's NES-banking framing banks 1 & 2 are the engines, bank 0 the main loop):
 - `helper_8357` ($8357, 3 args) — fully vague; ID first.
 - `province_window_redraw_ba6f` + `province_window_redraw_ba78` ($BA6F/$BA78, 2 args) — adjacent pair, likely
