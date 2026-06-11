@@ -198,6 +198,20 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### ★★ BANK 0 FULL-VERIFICATION COMPLETE ★★ — batch #14, the main-loop roots (98/98, 100%)   [2026-06-10]
+**Every one of bank 0's 98 subs is read-verified (0 todo, 0 suspects).** The main loop reads top to bottom from the ROOT
+`vm_bootstrap` ($A778, the game entry / JSR vm_entry) -> ai_strategic_turn_planner (season/year advance, save) ->
+call_bank_wrap(2) into bank 2 (combat) + the command dispatch into bank 1 -> the per-period/seasonal sweeps (harvest,
+aging, events, succession, ravage) -> the math/relations/income leaves. Final 4 confirmed: `$9ED9`
+ai_event_build_two_batches_dispatch_or_announce, `$A30D` per_period_fief_daimyo_update_driver, `$A455`
+ai_strategic_turn_planner, `$A778` vm_bootstrap.
+**★★★ ALL CODE BANKS GROUNDED: 0/1/2/10/14 = 100% full-verified; 15 = 121/135 (the 14 undated are pre-dated-convention
+groundings from the original bank-15 arc, which declared complete with 0 suspects). ★★★** Bank-0 arc (14 batches): the
+$7001 record field map confirmed again (gold/town/rice/output/dams/loyalty/wealth/men/morale/skill/arms), the
+$6003-stride-8 highwater/income table, ~15 renames (address-offset suffixes -> field names, e.g. ravage_defender_arms ->
+ravage_defender_wealth). 0 ext-op subs in bank 0 (as predicted). NEXT: date/re-confirm bank-15's 14, then the optional
+asset-label pass (banks 3-14) + the decompiler value-bug capstone before the re-analysis.
+
 ### Bank 0 full-verify batch #13 — per-turn / seasonal sweeps (94/98)   [2026-06-10]
 All confirmed (no renames): `$8FF8` collect_high_loyalty_provinces_to_candidate_list, `$9C22`
 random_ravage_sweep_bounded_fiefs, `$9C84` random_event_type_dispatch, `$9E9D`
