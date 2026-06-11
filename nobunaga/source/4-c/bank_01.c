@@ -13,7 +13,7 @@ word prompt_message_and_redraw(word prompt_id, word message_ptr) {
     if ((prompt_id == 255)) {    // $8008
         redraw_window(msg_attack);    // $801A
     } else {
-        draw_message(msg_s_s_s, *(word*)((((prompt_id - 1) << 1) + prompt_message_and_redra_data_f816)), ((message_ptr == msg_no_fiefs) ? str_market_panel_nl1 : msg_fiefs), message_ptr);    // $8040
+        draw_message(msg_s_s_s, *(word*)((((prompt_id - 1) << 1) + fief_stat_label_ptrs)), ((message_ptr == msg_no_fiefs) ? str_market_panel_nl1 : msg_fiefs), message_ptr);    // $8040
     }
     return redraw_window(str_market_panel);    // $804B
 }
@@ -327,7 +327,7 @@ word effect_view_a(word arg1) {
         local6 = fief_is_daimyo_capital[arg1];    // $8492
         if (get_province_ai_state(arg1)) {    // $848C
             dsel_84a9 = local6;    // $84A9
-            phi_push_84b5 = *(word*)((((dsel_84a9 ? 0 : province_ai_state[arg1]) << 1) + effect_view_a_data_f7d4));    // $84AF
+            phi_push_84b5 = *(word*)((((dsel_84a9 ? 0 : province_ai_state[arg1]) << 1) + grant_menu_str_ptrs));    // $84AF
         } else {
             if (local6) {    // $84B9
                 phi_push_84b5 = msg_home_fief;    // $84B2
@@ -363,7 +363,7 @@ word effect_view_a(word arg1) {
             phi_8522_1 = (local11 + 1);    // $8521
         }
         set_cursor(phi_8522_0, phi_8522_1);    // $8522
-        redraw_window(*(word*)(((local11 << 1) + effect_view_a_data_f8ae)));    // $852E
+        redraw_window(*(word*)(((local11 << 1) + fief_stat_name_ptrs)));    // $852E
         if (((unsigned)local11 < (unsigned)6)) {    // $8522
             ui_window_col = 6;    // $8539
             local10 = (local10 + 1);    // $853E
@@ -412,7 +412,7 @@ word draw_fief_view_label(word arg1) {
         ui_window_col = local10;    // $85CE
         return redraw_window(msg_fief_bab0);    // $85D8
     } else {
-        return redraw_window(*(word*)(((get_province_ai_state(arg1) << 1) + view_window_redraw_by_6d_data_fee9)));    // $85E9
+        return redraw_window(*(word*)(((get_province_ai_state(arg1) << 1) + province_state_label_ptrs)));    // $85E9
     }
 }
 
@@ -506,7 +506,7 @@ word fief_info_display(word arg1) {
         do {    // $8740
             set_cursor(22, (local11 + 7));    // $8745
             draw_message(msg_fmt__2d_bb1e, (local11 + 1));    // $874F
-            redraw_window(*(word*)(((local11 << 1) + prompt_message_and_redra_data_f816)));    // $875B
+            redraw_window(*(word*)(((local11 << 1) + fief_stat_label_ptrs)));    // $875B
             local11 = (local11 + 1);    // $8761
         } while (((unsigned)local11 < (unsigned)12));
     } else {
@@ -514,7 +514,7 @@ word fief_info_display(word arg1) {
         do {    // $876D
             set_cursor(22, (local11 + -5));    // $8773
             draw_message(msg_fmt__2d_bb22, (local11 + 1));    // $877D
-            redraw_window(*(word*)(((local11 << 1) + prompt_message_and_redra_data_f816)));    // $8789
+            redraw_window(*(word*)(((local11 << 1) + fief_stat_label_ptrs)));    // $8789
             local11 = (local11 + 1);    // $878F
         } while (((unsigned)local11 < (unsigned)21));
     }
@@ -2057,7 +2057,7 @@ word driver_trade(void) {
             if ((local11 < 6)) {    // $A1E9
                 set_cursor(22, (local11 + 7));    // $A1CD
                 draw_message(msg_fmt__2d_bd15, (local11 + 1));    // $A1D7
-                redraw_window(*(word*)(((local11 << 1) + driver_trade_data_ff4f)));    // $A1E3
+                redraw_window(*(word*)(((local11 << 1) + trade_menu_str_ptrs)));    // $A1E3
                 phi_val_a1e9 = (local11 + 1);    // $A1E8
                 continue;
             } else {
@@ -2108,7 +2108,7 @@ word hire_stat_drain_rng(word arg1, word arg2) {
 
 word report_fief_stat_decline(word arg1, word arg2) {
     dsel_a28d = (arg1 == 7);    // $A28D
-    return draw_message(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), (dsel_a28d ? msg_town_value : *(word*)(((arg1 << 1) + effect_view_a_data_f8ae))), arg2);    // $A29A
+    return draw_message(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), (dsel_a28d ? msg_town_value : *(word*)(((arg1 << 1) + fief_stat_name_ptrs))), arg2);    // $A29A
 }
 
 // $A29B effect_ninja_failed
@@ -2948,17 +2948,17 @@ word driver_grant(void) {
                         do {    // $AFCC
                             set_cursor(23, (local9 + 7));    // $AFD1
                             draw_message(msg_fmt__d_be98, (local9 + 1));    // $AFDB
-                            redraw_window(*(word*)((((local9 + 1) << 1) + view_window_redraw_by_6d_data_fee9)));    // $AFE8
+                            redraw_window(*(word*)((((local9 + 1) << 1) + province_state_label_ptrs)));    // $AFE8
                             local9 = (local9 + 1);    // $AFEE
                         } while ((local9 < 6));
                     }
                     local11 = (submenu_prompt(6) + 1);    // $AFFB
                     if (((submenu_prompt(6) + 1) != 6)) {    // $AFF5
                         if ((province_ai_state[battle_defending_province] == local11)) {    // $B001
-                            draw_message(msg_it_s_already_a_s_state, *(word*)(((local11 << 1) + effect_view_a_data_f7d4)));    // $B019
+                            draw_message(msg_it_s_already_a_s_state, *(word*)(((local11 << 1) + grant_menu_str_ptrs)));    // $B019
                             confirm_prompt();    // $B01D
                         } else {
-                            draw_message(msg_it_s_currently_a_s_state_ok_to, *(word*)(((province_ai_state[battle_defending_province] << 1) + effect_view_a_data_f7d4)), *(word*)(((local11 << 1) + effect_view_a_data_f7d4)));    // $B03D
+                            draw_message(msg_it_s_currently_a_s_state_ok_to, *(word*)(((province_ai_state[battle_defending_province] << 1) + grant_menu_str_ptrs)), *(word*)(((local11 << 1) + grant_menu_str_ptrs)));    // $B03D
                             if (prompt_y_n()) {    // $B023
                                 province_ai_state[battle_defending_province] = local11;    // $B050
                                 trigger_cutscene(CUTSCENE_GRANT);    // $B052
@@ -3154,7 +3154,7 @@ word driver_other(void) {
     do {    // $B248
         set_cursor(22, (local9 + 7));    // $B24D
         draw_message(msg_fmt__2d_bf71, (local9 + 1));    // $B257
-        redraw_window(*(word*)(((local9 << 1) + driver_other_data_ff1a)));    // $B263
+        redraw_window(*(word*)(((local9 << 1) + settings_menu_str_ptrs)));    // $B263
         local9 = (local9 + 1);    // $B269
     } while ((local9 < 7));
     while (1) {    // $B270

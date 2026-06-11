@@ -452,7 +452,7 @@ word daimyo_creation_stat_roll_screen(void) {
     local9 = 1;    // $8831
     do {    // $8832
         set_cursor(16, (local9 + 11));    // $8837
-        redraw_window(*(word*)(((local9 << 1) + effect_view_a_data_f8ae)));    // $8843
+        redraw_window(*(word*)(((local9 << 1) + fief_stat_name_ptrs)));    // $8843
         ui_window_col = 22;    // $8849
         draw_message(msg_fmt_blank_b9a7);    // $884F
         local9 = (local9 + 1);    // $8855
@@ -483,8 +483,8 @@ word render_boot_title_screens(void) {
     ui_msg_oneshot_flag_7fc5 = 0;    // $88B2
     palette_swap(1);    // $88B6
     ppu_upload_block_wrap(0, msg_fmt_blank, 0x1000, 102);    // $88C3
-    ppu_upload_block_wrap(0, render_boot_title_screen_data_a84a, 0x23C0, 4);    // $88CF
-    ppu_copy_rect_wrap(0, 0, 31, 29, render_boot_title_screen_data_a88a, 0);    // $88DD
+    ppu_upload_block_wrap(0, boot_title_attr_fill, 0x23C0, 4);    // $88CF
+    ppu_copy_rect_wrap(0, 0, 31, 29, boot_title_tile_table, 0);    // $88DD
     local11 = 0;    // $88E2
     do {    // $88E3
         palette_write_wrap(local11, msg_new_game_b862[local11]);    // $88EB
@@ -1134,7 +1134,7 @@ word check_and_process_daimyo_natural_death(word fief) {
         increment_ai_player_count();    // $91D0
     }
     message_display(((daimyo * 9) + 0x77A8));    // $91DB
-    draw_message(msg_died_of_s, *(word*)((((death_cause - 1) << 1) + check_and_process_daimyo_data_bba5)));    // $91EB
+    draw_message(msg_died_of_s, *(word*)((((death_cause - 1) << 1) + str_death_cause_msgs)));    // $91EB
     clear_fief_pair_matrix(fief);    // $91F0
     confirm_prompt();    // $91F4
     phi_ret_91fc = find_fiefs_of_owner(fief);    // $91F8

@@ -1151,7 +1151,7 @@ VM bytecode disassembly
   $8837  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $883B  09                         LOADL_quick   ; inline operand = 9
   $883C  D2                         LSHIFT1
-  $883D  8C AE F8                   LOADR_imm2             $F8AE (effect_view_a_data_f8ae)
+  $883D  8C AE F8                   LOADR_imm2             $F8AE (fief_stat_name_ptrs)
   $8840  BB                         ADD
   $8841  B0                         DEREF
   $8842  B3                         PUSHL
@@ -1229,11 +1229,11 @@ VM bytecode disassembly
   $88C3  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $88C7  64                         PUSH_qimm   ; inline operand = 4
   $88C8  8E C0 23                   PUSH_imm2              $23C0
-  $88CB  8E 4A A8                   PUSH_imm2              $A84A (render_boot_title_screen_data_a84a)
+  $88CB  8E 4A A8                   PUSH_imm2              $A84A (boot_title_attr_fill)
   $88CE  60                         PUSH_qimm   ; inline operand = 0
   $88CF  E9 7C CF 08                CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
   $88D3  60                         PUSH_qimm   ; inline operand = 0
-  $88D4  8E 8A A8                   PUSH_imm2              $A88A (render_boot_title_screen_data_a88a)
+  $88D4  8E 8A A8                   PUSH_imm2              $A88A (boot_title_tile_table)
   $88D7  8D 1D                      BYTE_PUSH_imm1         +29
   $88D9  8D 1F                      BYTE_PUSH_imm1         +31
   $88DB  60                         PUSH_qimm   ; inline operand = 0
@@ -2502,7 +2502,7 @@ VM bytecode disassembly
   $91DF  0A                         LOADL_quick   ; inline operand = 10
   $91E0  D1                         DEC
   $91E1  D2                         LSHIFT1
-  $91E2  8C A5 BB                   LOADR_imm2             $BBA5 (check_and_process_daimyo_data_bba5)
+  $91E2  8C A5 BB                   LOADR_imm2             $BBA5 (str_death_cause_msgs)
   $91E5  BB                         ADD
   $91E6  B0                         DEREF
   $91E7  B3                         PUSHL

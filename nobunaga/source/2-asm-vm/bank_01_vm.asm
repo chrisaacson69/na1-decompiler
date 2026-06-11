@@ -30,7 +30,7 @@ VM bytecode disassembly
   $8034  0C                         LOADL_quick   ; inline operand = 12
   $8035  D1                         DEC
   $8036  D2                         LSHIFT1
-  $8037  8C 16 F8                   LOADR_imm2             $F816 (prompt_message_and_redra_data_f816)
+  $8037  8C 16 F8                   LOADR_imm2             $F816 (fief_stat_label_ptrs)
   $803A  BB                         ADD
   $803B  B0                         DEREF
   $803C  B3                         PUSHL
@@ -653,7 +653,7 @@ VM bytecode disassembly
   $84A7  BB                         ADD
   $84A8  D3                         BYTE_DEREF
  >$84A9  D2                         LSHIFT1
-  $84AA  8C D4 F7                   LOADR_imm2             $F7D4 (effect_view_a_data_f7d4)
+  $84AA  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
   $84AD  BB                         ADD
   $84AE  B0                         DEREF
   $84AF  D6 B5 84                   JUMP_abs               $84B5
@@ -717,7 +717,7 @@ VM bytecode disassembly
  >$8522  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $8526  0B                         LOADL_quick   ; inline operand = 11
   $8527  D2                         LSHIFT1
-  $8528  8C AE F8                   LOADR_imm2             $F8AE (effect_view_a_data_f8ae)
+  $8528  8C AE F8                   LOADR_imm2             $F8AE (fief_stat_name_ptrs)
   $852B  BB                         ADD
   $852C  B0                         DEREF
   $852D  B3                         PUSHL
@@ -811,7 +811,7 @@ VM bytecode disassembly
  >$85D9  3C                         PUSH_quick   ; inline operand = 12
   $85DA  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $85DE  D2                         LSHIFT1
-  $85DF  8C E9 FE                   LOADR_imm2             $FEE9 (view_window_redraw_by_6d_data_fee9)
+  $85DF  8C E9 FE                   LOADR_imm2             $FEE9 (province_state_label_ptrs)
   $85E2  BB                         ADD
   $85E3  B0                         DEREF
   $85E4  B3                         PUSHL
@@ -1023,7 +1023,7 @@ VM bytecode disassembly
   $874F  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8753  0B                         LOADL_quick   ; inline operand = 11
   $8754  D2                         LSHIFT1
-  $8755  8C 16 F8                   LOADR_imm2             $F816 (prompt_message_and_redra_data_f816)
+  $8755  8C 16 F8                   LOADR_imm2             $F816 (fief_stat_label_ptrs)
   $8758  BB                         ADD
   $8759  B0                         DEREF
   $875A  B3                         PUSHL
@@ -1050,7 +1050,7 @@ VM bytecode disassembly
   $877D  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8781  0B                         LOADL_quick   ; inline operand = 11
   $8782  D2                         LSHIFT1
-  $8783  8C 16 F8                   LOADR_imm2             $F816 (prompt_message_and_redra_data_f816)
+  $8783  8C 16 F8                   LOADR_imm2             $F816 (fief_stat_label_ptrs)
   $8786  BB                         ADD
   $8787  B0                         DEREF
   $8788  B3                         PUSHL
@@ -4974,7 +4974,7 @@ VM bytecode disassembly
   $A1D7  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $A1DB  0B                         LOADL_quick   ; inline operand = 11
   $A1DC  D2                         LSHIFT1
-  $A1DD  8C 4F FF                   LOADR_imm2             $FF4F (driver_trade_data_ff4f)
+  $A1DD  8C 4F FF                   LOADR_imm2             $FF4F (trade_menu_str_ptrs)
   $A1E0  BB                         ADD
   $A1E1  B0                         DEREF
   $A1E2  B3                         PUSHL
@@ -5064,7 +5064,7 @@ VM bytecode disassembly
   $A283  D6 8D A2                   JUMP_abs               $A28D
  >$A286  0C                         LOADL_quick   ; inline operand = 12
   $A287  D2                         LSHIFT1
-  $A288  8C AE F8                   LOADR_imm2             $F8AE (effect_view_a_data_f8ae)
+  $A288  8C AE F8                   LOADR_imm2             $F8AE (fief_stat_name_ptrs)
   $A28B  BB                         ADD
   $A28C  B0                         DEREF
  >$A28D  B3                         PUSHL
@@ -6914,7 +6914,7 @@ VM bytecode disassembly
   $AFDF  09                         LOADL_quick   ; inline operand = 9
   $AFE0  D0                         INC
   $AFE1  D2                         LSHIFT1
-  $AFE2  8C E9 FE                   LOADR_imm2             $FEE9 (view_window_redraw_by_6d_data_fee9)
+  $AFE2  8C E9 FE                   LOADR_imm2             $FEE9 (province_state_label_ptrs)
   $AFE5  BB                         ADD
   $AFE6  B0                         DEREF
   $AFE7  B3                         PUSHL
@@ -6942,7 +6942,7 @@ VM bytecode disassembly
   $B00B  D8 23 B0                   JUMPF_abs              $B023
   $B00E  0B                         LOADL_quick   ; inline operand = 11
   $B00F  D2                         LSHIFT1
-  $B010  8C D4 F7                   LOADR_imm2             $F7D4 (effect_view_a_data_f7d4)
+  $B010  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
   $B013  BB                         ADD
   $B014  B0                         DEREF
   $B015  B3                         PUSHL
@@ -6952,7 +6952,7 @@ VM bytecode disassembly
   $B020  D6 85 AF                   JUMP_abs               $AF85
  >$B023  0B                         LOADL_quick   ; inline operand = 11
   $B024  D2                         LSHIFT1
-  $B025  8C D4 F7                   LOADR_imm2             $F7D4 (effect_view_a_data_f7d4)
+  $B025  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
   $B028  BB                         ADD
   $B029  B0                         DEREF
   $B02A  B3                         PUSHL
@@ -6961,7 +6961,7 @@ VM bytecode disassembly
   $B031  BB                         ADD
   $B032  D3                         BYTE_DEREF
   $B033  D2                         LSHIFT1
-  $B034  8C D4 F7                   LOADR_imm2             $F7D4 (effect_view_a_data_f7d4)
+  $B034  8C D4 F7                   LOADR_imm2             $F7D4 (grant_menu_str_ptrs)
   $B037  BB                         ADD
   $B038  B0                         DEREF
   $B039  B3                         PUSHL
@@ -7227,7 +7227,7 @@ VM bytecode disassembly
   $B257  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $B25B  09                         LOADL_quick   ; inline operand = 9
   $B25C  D2                         LSHIFT1
-  $B25D  8C 1A FF                   LOADR_imm2             $FF1A (driver_other_data_ff1a)
+  $B25D  8C 1A FF                   LOADR_imm2             $FF1A (settings_menu_str_ptrs)
   $B260  BB                         ADD
   $B261  B0                         DEREF
   $B262  B3                         PUSHL

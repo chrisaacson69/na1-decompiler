@@ -156,7 +156,7 @@ VM bytecode disassembly
   $816E  E9 66 DC 02                CALL_abs_imm1          $DC66 (fief_to_mapid) {bytecode}, $02
   $8172  D2                         LSHIFT1
   $8173  D2                         LSHIFT1
-  $8174  8C D0 BB                   LOADR_imm2             $BBD0 (build_blit_fief_tile_blo_data_bbd0)
+  $8174  8C D0 BB                   LOADR_imm2             $BBD0 (fief_tile_descriptor_table)
   $8177  BB                         ADD
   $8178  85 D5                      STORE_near             $D5
   $817A  64                         PUSH_qimm   ; inline operand = 4
@@ -186,7 +186,7 @@ VM bytecode disassembly
   $81A6  E9 66 DC 02                CALL_abs_imm1          $DC66 (fief_to_mapid) {bytecode}, $02
   $81AA  8B 24                      BYTE_LOADR_imm1        +36
   $81AC  B5                         MULT
-  $81AD  8C 44 B1                   LOADR_imm2             $B144 (build_blit_fief_tile_blo_data_b144)
+  $81AD  8C 44 B1                   LOADR_imm2             $B144 (fief_tile_block_tiles)
   $81B0  BB                         ADD
   $81B1  85 DA                      STORE_near             $DA
   $81B3  D6 DD 81                   JUMP_abs               $81DD
@@ -1137,7 +1137,7 @@ VM bytecode disassembly
   $884F  0C                         LOADL_quick   ; inline operand = 12
   $8850  8B 31                      BYTE_LOADR_imm1        +49
   $8852  B5                         MULT
-  $8853  8C 25 9C                   LOADR_imm2             $9C25 (upload_map_cell_tiles_data_9c25)
+  $8853  8C 25 9C                   LOADR_imm2             $9C25 (map_cell_tile_source)
   $8856  BB                         ADD
   $8857  B3                         PUSHL
   $8858  65                         PUSH_qimm   ; inline operand = 5
@@ -1199,7 +1199,7 @@ VM bytecode disassembly
   $88B0  A4 FE 6F                   LOADL_abs              $6FFE (tactical_battle_phase)
   $88B3  D8 C5 88                   JUMPF_abs              $88C5
   $88B6  62                         PUSH_qimm   ; inline operand = 2
-  $88B7  8E 40 B5                   PUSH_imm2              $B540 (map_render_driver_data_b540)
+  $88B7  8E 40 B5                   PUSH_imm2              $B540 (map_scroll_marker_tiles)
   $88BA  63                         PUSH_qimm   ; inline operand = 3
   $88BB  6C                         PUSH_qimm   ; inline operand = 12
   $88BC  63                         PUSH_qimm   ; inline operand = 3
@@ -1209,14 +1209,14 @@ VM bytecode disassembly
  >$88C5  63                         PUSH_qimm   ; inline operand = 3
   $88C6  6B                         PUSH_qimm   ; inline operand = 11
   $88C7  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $88CB  8E 44 B5                   PUSH_imm2              $B544 (map_render_driver_data_b544)
+  $88CB  8E 44 B5                   PUSH_imm2              $B544 (map_scroll_marker_tiles_b)
   $88CE  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
  >$88D2  A4 FE 6F                   LOADL_abs              $6FFE (tactical_battle_phase)
   $88D5  52                         LOADR_qimm   ; inline operand = 2
   $88D6  C1                         CMPNE
   $88D7  D8 EB 88                   JUMPF_abs              $88EB
   $88DA  62                         PUSH_qimm   ; inline operand = 2
-  $88DB  8E 42 B5                   PUSH_imm2              $B542 (map_render_driver_data_b542)
+  $88DB  8E 42 B5                   PUSH_imm2              $B542 (map_scroll_marker_tiles_a)
   $88DE  63                         PUSH_qimm   ; inline operand = 3
   $88DF  8D 1C                      BYTE_PUSH_imm1         +28
   $88E1  63                         PUSH_qimm   ; inline operand = 3
@@ -1226,7 +1226,7 @@ VM bytecode disassembly
  >$88EB  63                         PUSH_qimm   ; inline operand = 3
   $88EC  8D 1B                      BYTE_PUSH_imm1         +27
   $88EE  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $88F2  8E 47 B5                   PUSH_imm2              $B547 (map_render_driver_data_b547)
+  $88F2  8E 47 B5                   PUSH_imm2              $B547 (map_scroll_marker_tiles_c)
   $88F5  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
  >$88F9  61                         PUSH_qimm   ; inline operand = 1
   $88FA  66                         PUSH_qimm   ; inline operand = 6
@@ -1252,7 +1252,7 @@ VM bytecode disassembly
   $8917  3B                         PUSH_quick   ; inline operand = 11
   $8918  E9 C6 83 04                CALL_abs_imm1          $83C6 (lookup_terrain_attr_record) {bytecode}, $04
   $891C  D6 22 89                   JUMP_abs               $8922
- >$891F  8A 4A B5                   LOADL_imm2             $B54A (map_populate_data_b54a)
+ >$891F  8A 4A B5                   LOADL_imm2             $B54A (map_water_cell_tile)
  >$8922  26                         STORE_quick   ; inline operand = 6
   $8923  0A                         LOADL_quick   ; inline operand = 10
   $8924  D2                         LSHIFT1
@@ -1944,7 +1944,7 @@ VM bytecode disassembly
   $8E13  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $8E17  0B                         LOADL_quick   ; inline operand = 11
   $8E18  D2                         LSHIFT1
-  $8E19  8C AE F8                   LOADR_imm2             $F8AE (effect_view_a_data_f8ae)
+  $8E19  8C AE F8                   LOADR_imm2             $F8AE (fief_stat_name_ptrs)
   $8E1C  BB                         ADD
   $8E1D  B0                         DEREF
   $8E1E  B3                         PUSHL
@@ -3959,7 +3959,7 @@ VM bytecode disassembly
   $9BEC  2B                         STORE_quick   ; inline operand = 11
  >$9BED  0B                         LOADL_quick   ; inline operand = 11
   $9BEE  D2                         LSHIFT1
-  $9BEF  8C C2 B9                   LOADR_imm2             $B9C2 (ai_terrain_strength_term_data_b9c2)
+  $9BEF  8C C2 B9                   LOADR_imm2             $B9C2 (terrain_strength_mult_table)
   $9BF2  BB                         ADD
   $9BF3  B0                         DEREF
   $9BF4  B3                         PUSHL
@@ -5987,7 +5987,7 @@ VM bytecode disassembly
   $A913  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
   $A916  E9 8F 83 02                CALL_abs_imm1          $838F (get_battle_side_province) {bytecode}, $02
   $A91A  2B                         STORE_quick   ; inline operand = 11
- >$A91B  AA F0 B4                   PUSH_abs               $B4F0 (combat_command_dispatch_data_b4f0)
+ >$A91B  AA F0 B4                   PUSH_abs               $B4F0 (combat_command_menu_str_ptrs)
   $A91E  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A922  AC A9 82                   CALL_abs               $82A9 (cur_unit_col_ptr) {bytecode}
   $A925  D3                         BYTE_DEREF
@@ -6420,7 +6420,7 @@ VM bytecode disassembly
   $ACAD  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $ACB1  0B                         LOADL_quick   ; inline operand = 11
   $ACB2  D2                         LSHIFT1
-  $ACB3  8C F0 B4                   LOADR_imm2             $B4F0 (combat_command_dispatch_data_b4f0)
+  $ACB3  8C F0 B4                   LOADR_imm2             $B4F0 (combat_command_menu_str_ptrs)
   $ACB6  BB                         ADD
   $ACB7  B0                         DEREF
   $ACB8  B3                         PUSHL
@@ -6461,7 +6461,7 @@ VM bytecode disassembly
   $AD07  2B                         STORE_quick   ; inline operand = 11
   $AD08  0B                         LOADL_quick   ; inline operand = 11
   $AD09  D2                         LSHIFT1
-  $AD0A  8C F8 B9                   LOADR_imm2             $B9F8 (combat_command_dispatch_data_b9f8)
+  $AD0A  8C F8 B9                   LOADR_imm2             $B9F8 (combat_command_jumptab)
   $AD0D  BB                         ADD
   $AD0E  B0                         DEREF
   $AD0F  28                         STORE_quick   ; inline operand = 8

@@ -36,12 +36,12 @@ word build_blit_fief_tile_block(word dst_col, word dst_row) {
         i = (i + 1);    // $8156
     } while (((unsigned)i < (unsigned)4));
     if (!(*(byte*)((daimyo_record_addr(active_province_idx_copy) + 6)))) {    // $815F
-        descriptor_ptr = (((fief_to_mapid(active_province_idx_copy) << 1) << 1) + build_blit_fief_tile_blo_data_bbd0);    // $8178
+        descriptor_ptr = (((fief_to_mapid(active_province_idx_copy) << 1) << 1) + fief_tile_descriptor_table);    // $8178
         syscall16_sram_wrap(8, descriptor_ptr, &tile_descriptor, 4);    // $8182
         descriptor_ptr = &tile_descriptor;    // $8189
         ppu_upload_block_wrap(*(byte*)(descriptor_ptr), *(word*)((descriptor_ptr + 2)), 0x17F0, *(byte*)((descriptor_ptr + 1)));    // $819C
         i = 0;    // $81A1
-        src_ptr = ((fief_to_mapid(active_province_idx_copy) * 36) + build_blit_fief_tile_blo_data_b144);    // $81B1
+        src_ptr = ((fief_to_mapid(active_province_idx_copy) * 36) + fief_tile_block_tiles);    // $81B1
         while (((unsigned)i < (unsigned)36)) {    // $81DD
             syscall16_sram_wrap(8, src_ptr, &tile_byte, 1);    // $81BE
             *(byte*)((i + &tile_buf)) = (tile_byte + 36);    // $81D0
@@ -647,7 +647,7 @@ word draw_tactical_terrain_feature(word arg1, word arg2) {
 
 word upload_map_cell_tiles(word arg1, word arg2) {
     syscall16_sram_wrap(5, ((arg1 * 49) + 0x9C24), ((arg2 * 9) + 0x6FE4), 1);    // $8842
-    return ppu_upload_block_wrap(5, ((arg1 * 49) + upload_map_cell_tiles_data_9c25), ((arg2 * 48) + 5392), 3);    // $885D
+    return ppu_upload_block_wrap(5, ((arg1 * 49) + map_cell_tile_source), ((arg2 * 48) + 5392), 3);    // $885D
 }
 
 // $885E map_render_driver
@@ -662,16 +662,16 @@ word map_render_driver(void) {
     } while (((unsigned)local9 < (unsigned)5));
     ppu_upload_block_wrap(5, (((fief_to_mapid(battle_defending_province) * 144) + (tactical_battle_phase * 48)) + map_render_driver_data_8004), 0x23C8, 3);    // $88AC
     if (tactical_battle_phase) {    // $888E
-        ppu_copy_rect_wrap(11, 3, 12, 3, map_render_driver_data_b540, 2);    // $88BE
+        ppu_copy_rect_wrap(11, 3, 12, 3, map_scroll_marker_tiles, 2);    // $88BE
     } else {
         set_cursor(11, 3);    // $88C7
-        redraw_window(map_render_driver_data_b544);    // $88CE
+        redraw_window(map_scroll_marker_tiles_b);    // $88CE
     }
     if ((tactical_battle_phase != 2)) {    // $88D2
-        ppu_copy_rect_wrap(27, 3, 28, 3, map_render_driver_data_b542, 2);    // $88E4
+        ppu_copy_rect_wrap(27, 3, 28, 3, map_scroll_marker_tiles_a, 2);    // $88E4
     } else {
         set_cursor(27, 3);    // $88EE
-        redraw_window(map_render_driver_data_b547);    // $88F5
+        redraw_window(map_scroll_marker_tiles_c);    // $88F5
     }
     return ppu_render_rect_wrap(2, 3, 8, 6, 1);    // $8902
 }
@@ -687,7 +687,7 @@ word map_populate(void) {
             if (is_cell_clear_of_bits(local11, local10, 2)) {    // $890C
                 phi_val_8922 = lookup_terrain_attr_record(local11, local10);    // $891C
             } else {
-                phi_val_8922 = map_populate_data_b54a;    // $891F
+                phi_val_8922 = map_water_cell_tile;    // $891F
             }
             local6 = phi_val_8922;    // $8922
             local7 = ((local10 << 1) << 1);    // $8926
@@ -981,7 +981,7 @@ word draw_combat_roster_window(void) {
             case 65531:
             default:
                 set_cursor(18, local10);    // $8E13
-                redraw_window(*(word*)(((local11 << 1) + effect_view_a_data_f8ae)));    // $8E1F
+                redraw_window(*(word*)(((local11 << 1) + fief_stat_name_ptrs)));    // $8E1F
                 local10 = (local10 + 1);    // $8E25
                 break;
             case 65529:
@@ -2058,7 +2058,7 @@ word ai_terrain_strength_term(word side, word unit_slot) {
         default:
             break;
     }
-    return (pct_op(*(word*)(unit_strength_ptr(side, unit_slot)), *(word*)(((terrain_class_idx << 1) + ai_terrain_strength_term_data_b9c2))) * 3);    // $9C03
+    return (pct_op(*(word*)(unit_strength_ptr(side, unit_slot)), *(word*)(((terrain_class_idx << 1) + terrain_strength_mult_table))) * 3);    // $9C03
 }
 
 // $9C04 ai_province_stat_diff_term
@@ -2865,7 +2865,7 @@ word ai_select_unit_combat_action(word fief, word unit_idx) {
 word player_move_unit_until_placed_loop(void) {
     local11 = get_battle_side_province(cur_combat_side);    // $A91A
     while (1) {    // $A91B
-        message_display(combat_command_dispatch_data_b4f0);    // $A91E
+        message_display(combat_command_menu_str_ptrs);    // $A91E
         local9 = *(byte*)(cur_unit_col_ptr());    // $A926
         local8 = *(byte*)(cur_unit_row_ptr());    // $A92B
         local10 = prompt_unit_move_direction_at_tile();    // $A92F
@@ -3149,7 +3149,7 @@ word combat_command_dispatch_loop_per_unit(void) {
                         local11 = 0;    // $ACA8
                         do {    // $ACA9
                             set_cursor(4, (local11 + 10));    // $ACAD
-                            redraw_window(*(word*)(((local11 << 1) + combat_command_dispatch_data_b4f0)));    // $ACB9
+                            redraw_window(*(word*)(((local11 << 1) + combat_command_menu_str_ptrs)));    // $ACB9
                             local11 = (local11 + 1);    // $ACBF
                         } while (((unsigned)local11 < (unsigned)6));
                         combat_unit_window_mode_flag = 1;    // $ACC7
@@ -3163,7 +3163,7 @@ word combat_command_dispatch_loop_per_unit(void) {
                     redraw_window(msg_your_orders_for);    // $ACF2
                     draw_unit_type_label();    // $ACF6
                     local11 = combat_command_menu_input_loop(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // $AD07
-                    cmd_handler = *(word*)(((local11 << 1) + combat_command_dispatch_data_b9f8));    // $AD0F
+                    cmd_handler = *(word*)(((local11 << 1) + combat_command_jumptab));    // $AD0F
                 } while ((*(cmd_handler))());
                 if ((local11 == 3)) {    // $AD15
                     battle_over = 1;    // $AD1C
