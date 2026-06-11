@@ -47,6 +47,12 @@ job from "name the blank" to "ground-truth it, lowest layer first."
 - **Misread ⇒ a decompiler-3% flag.** If a routine won't read right after honest effort, suspect
   the decompiler before the label: hand-decompile the raw bytecode (the loop that found the
   value-merge phi bugs — the CFG gate is value-blind, only *reading* catches these). Log it.
+- **Data structures = TRUST KNOWN VALUES (Chris, 2026-06-10).** The on-RAM layouts (`$7001` province
+  record, `$6193` relations matrix, the combat unit table, etc.) are well-known and reliable. This pass
+  grounds *code behavior*, not data layout — use the established field map; only flag a field if the code
+  actively contradicts it. Do NOT spend the pass re-deriving data structures.
+- **Tech debt + quirks live in `nobunaga/tech-debt.md`** (the canonical map). Log decompiler-bug detail in
+  the §"Decompiler 3% backlog" below AND the corresponding tech-debt.md row.
 
 ### Layer ID (do this first — you cannot tell from the address)
 `$D772` *looked* like fixed-bank native 6502; it is VM bytecode in the fixed bank. Rule, per
