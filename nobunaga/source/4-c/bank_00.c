@@ -1333,10 +1333,10 @@ word avg_daimyo_charisma_over_fief_list(void) {
     return ((unsigned)local10 / (unsigned)local9);    // $94B0
 }
 
-// $94B1 announce_provinces_by_ai_state_mode
+// $94B1 announce_seasonal_event
 // (body @ $94B6)
 
-word announce_provinces_by_ai_state_mode(word arg1) {
+word announce_seasonal_event(word arg1) {
     switch (arg1) {    // $94B6
         case 1:
             phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // $94C4
@@ -2453,7 +2453,7 @@ word ai_strategic_turn_planner(void) {
         }
         *(byte*)((selected_count + 0x7BAD)) = -1;    // $A544
         if (selected_count) {    // $A546
-            announce_provinces_by_ai_state_mode(ai_planner_event_handler_select);    // $A54C
+            announce_seasonal_event(ai_planner_event_handler_select);    // $A54C
             (*(event_handler_fn))();    // $A551
             if ((ai_turn_planner_resume_flag == 1)) return (ai_turn_planner_resume_flag == 1);    // $A557
         }

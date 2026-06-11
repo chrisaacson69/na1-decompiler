@@ -65,7 +65,7 @@
 //   PRG $013BF  bank0  $93BF  ravage_defending_province_sweep
 //   PRG $0146D  bank0  $946D  get_fief_daimyo_charisma
 //   PRG $0147A  bank0  $947A  avg_daimyo_charisma_over_fief_list
-//   PRG $014B1  bank0  $94B1  announce_provinces_by_ai_state_mode
+//   PRG $014B1  bank0  $94B1  announce_seasonal_event
 //   PRG $0152F  bank0  $952F  avg_byte_array_6d2d_over_fiefs
 //   PRG $01558  bank0  $9558  avg_province_wealth_over_fiefs
 //   PRG $01595  bank0  $9595  province_conquest_roll_predicate
@@ -1895,10 +1895,10 @@ word avg_daimyo_charisma_over_fief_list(void) {
 }
 
 // ===== bank0 $94B1  (PRG $014B1) =====
-// PRG $014B1 announce_provinces_by_ai_state_mode
+// PRG $014B1 announce_seasonal_event
 // (body @ PRG $014B6)
 
-word announce_provinces_by_ai_state_mode(word arg1) {
+word announce_seasonal_event(word arg1) {
     switch (arg1) {    // PRG $014B6
         case 1:
             phi_94c7_0 = msg_summer_this_year_brings_typhoo;    // PRG $014C4
@@ -3057,7 +3057,7 @@ word ai_strategic_turn_planner(void) {
         }
         *(byte*)((selected_count + 0x7BAD)) = -1;    // PRG $02544
         if (selected_count) {    // PRG $02546
-            announce_provinces_by_ai_state_mode(ai_planner_event_handler_select);    // PRG $0254C -> bank0 $94B1
+            announce_seasonal_event(ai_planner_event_handler_select);    // PRG $0254C -> bank0 $94B1
             (*(event_handler_fn))();    // PRG $02551
             if ((ai_turn_planner_resume_flag == 1)) return (ai_turn_planner_resume_flag == 1);    // PRG $02557
         }

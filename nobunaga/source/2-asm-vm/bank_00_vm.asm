@@ -5343,7 +5343,7 @@ VM bytecode disassembly
   $A545  08                         LOADL_quick   ; inline operand = 8
   $A546  D8 5B A5                   JUMPF_abs              $A55B
   $A549  AA 7B 6F                   PUSH_abs               $6F7B (ai_planner_event_handler_select)
-  $A54C  E9 B1 94 02                CALL_abs_imm1          $94B1 (announce_provinces_by_ai_state_mode) {bytecode}, $02
+  $A54C  E9 B1 94 02                CALL_abs_imm1          $94B1 (announce_seasonal_event) {bytecode}, $02
   $A550  0B                         LOADL_quick   ; inline operand = 11
   $A551  DD                         CALLPTR
   $A552  A4 48 6E                   LOADL_abs              $6E48 (ai_turn_planner_resume_flag)

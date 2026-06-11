@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #4 — aging/clamp/event leaves (31/98)   [2026-06-10]
+1 rename:
+- `$94B1` `announce_provinces_by_ai_state_mode` -> **`announce_seasonal_event`** (typhoon/plague by event id, not AI state).
+- `$90C6` reset_byte_if_ge_100, `$9154` check_daimyo_natural_death (age>=70 + health-scaled rng), `$91FD`
+  clamp_value_to_range, `$922E` roll_small_or_large_random, `$92A9` repay_province_debt_from_gold, `$9595`
+  province_conquest_roll_predicate (loyals vs rebels split): re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #3 — uprising/owner/predicate leaves (24/98)   [2026-06-10]
 2 renames:
 - `$8B70` `select_msg_by_state_7b79` → **`select_rebellion_message`** (Christians vs rioters by $7B79 state).
