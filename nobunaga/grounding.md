@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #13 — give/assign/rest/other orchestrators (97/131)   [2026-06-10]
+All confirmed (well-named orchestrators); 1 comment refute:
+- `$AC11` `effect_assign` ✅ — REFUTED 'places a retainer': it's the **arms-allocation editor** (render_arms_edit_screen,
+  redistribute arms across unit types, $7017).
+- `$A8D3` give_transfer_apply (give gold/rice -> develops recipient loyalty/wealth or morale), `$879F`
+  province_select_helper, `$A94D` give_rice_gold_eligibility, `$ADB3` driver_rest (capital-only, rest_turns_remaining),
+  `$B23E` driver_other (settings submenu), `$B6B4` command_menu_select_loop: re-grounded. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #12 — the command drivers + buy effects (90/131)   [2026-06-10]
 3 renames + 4 driver re-grounds:
 - `$A068` `subhandler_A068` → **`effect_buy_rice`**, `$A113` `subhandler_A113` → **`effect_buy_arms`**,
