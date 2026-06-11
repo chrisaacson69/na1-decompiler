@@ -52,7 +52,7 @@
 //   PRG $011FD  bank0  $91FD  clamp_value_to_range
 //   PRG $01214  bank0  $9214  calc_year_scaled_random_value
 //   PRG $0122E  bank0  $922E  roll_small_or_large_random
-//   PRG $0124A  bank0  $924A  roll_period_rate_table_6e0b
+//   PRG $0124A  bank0  $924A  roll_period_market_rates
 //   PRG $012A9  bank0  $92A9  repay_province_debt_from_gold
 //   PRG $012D9  bank0  $92D9  deduct_b_from_a_void_b_if_overdrawn
 //   PRG $012F9  bank0  $92F9  random_ravage_province_field
@@ -1723,10 +1723,10 @@ word roll_small_or_large_random(void) {
 }
 
 // ===== bank0 $924A  (PRG $0124A) =====
-// PRG $0124A roll_period_rate_table_6e0b
+// PRG $0124A roll_period_market_rates
 // (body @ PRG $0124F)
 
-word roll_period_rate_table_6e0b(void) {
+word roll_period_market_rates(void) {
     loan_rate = (rng_mod(10) + 1);    // PRG $01255 -> bank15 $CA52
     if (rng_mod(5)) {    // PRG $0124F -> bank15 $CA52
         phi_val_9279 = clamp_value_to_range(10, ((rng_mod(11) + gold_rice_exchange_rate) + -5), 30);    // PRG $01273 -> bank0 $91FD
@@ -3011,7 +3011,7 @@ word ai_strategic_turn_planner(void) {
         current_season = ((current_season + 1) & 3);    // PRG $02488
         if (!(((current_season + 1) & 3))) {    // PRG $0248B
             current_game_year = (current_game_year + 1);    // PRG $02492
-            roll_period_rate_table_6e0b();    // PRG $02495 -> bank0 $924A
+            roll_period_market_rates();    // PRG $02495 -> bank0 $924A
         }
         per_period_fief_daimyo_update_driver();    // PRG $02498 -> bank0 $A30D
         phi_val_a4ae = 0;    // PRG $0249C

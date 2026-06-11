@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #8 — new-game / succession / rates (59/98)   [2026-06-10]
+1 rename (the last bank-0 stub -> SUSPECT 0):
+- `$924A` `roll_period_rate_table_6e0b` -> **`roll_period_market_rates`** (loan/exchange/arms/men/hire rates @ $6E0B).
+- `$8694` prompt_select_player_daimyo, `$8763` daimyo_creation_stat_roll_screen, `$8B9D`
+  select_message_string_by_flags_and_arg, `$8C75` resolve_ownerless_province_succession, `$9194`
+  check_and_process_daimyo_natural_death, `$9338` ravage_defender_output_and_bump_selected_arms: re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #7 — wrappers + disaster/income leaves (52/98)   [2026-06-10]
 All confirmed (no renames): `$839A` init_daimyo_arms_record ($76A9 stride-5), `$8C1E`
 cur_flag_and_selected_ai_state5, `$8FD3` append_candidate_zero_priority, `$90D7`

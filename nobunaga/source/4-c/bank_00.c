@@ -1174,10 +1174,10 @@ word roll_small_or_large_random(void) {
     }
 }
 
-// $924A roll_period_rate_table_6e0b
+// $924A roll_period_market_rates
 // (body @ $924F)
 
-word roll_period_rate_table_6e0b(void) {
+word roll_period_market_rates(void) {
     loan_rate = (rng_mod(10) + 1);    // $9255
     if (rng_mod(5)) {    // $924F
         phi_val_9279 = clamp_value_to_range(10, ((rng_mod(11) + gold_rice_exchange_rate) + -5), 30);    // $9273
@@ -2407,7 +2407,7 @@ word ai_strategic_turn_planner(void) {
         current_season = ((current_season + 1) & 3);    // $A488
         if (!(((current_season + 1) & 3))) {    // $A48B
             current_game_year = (current_game_year + 1);    // $A492
-            roll_period_rate_table_6e0b();    // $A495
+            roll_period_market_rates();    // $A495
         }
         per_period_fief_daimyo_update_driver();    // $A498
         phi_val_a4ae = 0;    // $A49C

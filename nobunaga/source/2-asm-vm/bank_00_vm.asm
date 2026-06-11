@@ -5249,7 +5249,7 @@ VM bytecode disassembly
   $A48E  A4 9F 6D                   LOADL_abs              $6D9F (current_game_year)
   $A491  D0                         INC
   $A492  A8 9F 6D                   STORE_abs              $6D9F (current_game_year)
-  $A495  AC 4A 92                   CALL_abs               $924A (roll_period_rate_table_6e0b) {bytecode}
+  $A495  AC 4A 92                   CALL_abs               $924A (roll_period_market_rates) {bytecode}
  >$A498  AC 0D A3                   CALL_abs               $A30D (per_period_fief_daimyo_update_driver) {bytecode}
   $A49B  40                         LOADL_qimm   ; inline operand = 0
   $A49C  D6 AE A4                   JUMP_abs               $A4AE
