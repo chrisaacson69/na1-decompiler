@@ -3703,7 +3703,7 @@ VM bytecode disassembly
   $E2F1  BB                         ADD
   $E2F2  B3                         PUSHL
   $E2F3  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
-  $E2F7  8E 7D F7                   PUSH_imm2              $F77D (draw_daimyo_name_menu_data_f77d)
+  $E2F7  8E 7D F7                   PUSH_imm2              $F77D (str_marriage_event_msgs)
   $E2FA  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $E2FE  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $E301  59                         LOADR_qimm   ; inline operand = 9

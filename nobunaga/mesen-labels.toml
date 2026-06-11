@@ -247,7 +247,7 @@ prg_bank_count = 16        # 256 KB total
 "0xAEAC" = { name = "unpack_record_to_sram_data_aeac", comment = "[ROM-DATA] binary table (unanalyzed); read by unpack_record_to_sram_e6b9 via imm-word ptr; bytes: 49 01 85 08 4c 67 e8 a5 08 c5 0c a5" }
 "0xB144" = { name = "jumptab_b144", comment = "[ROM-DATA] pointer/dispatch table; read by marry_helper_e76f via imm-word ptr; bytes: e9 e9 e9 e9 e9 e9 e9 e9 e9 e9 e9 e9" }
 "0xF67A" = { name = "strategic_map_bg_palette", comment = "[MAP] Strategic-map/UI BG palette table (read by ui_helper_cd20), colors stored as words w/ 0 high byte: sub-pal0 $3E/$12/$29/$30 = backdrop/sea/land/coast, sub-pal1 $3E/$16/$38/$30 = volcanic red/yellow/white (mountain peaks)." }
-"0xF77D" = { name = "draw_daimyo_name_menu_data_f77d", comment = "[ROM-DATA] binary table (unanalyzed); read by draw_daimyo_name_menu via imm-word ptr; bytes: 0a 00 20 77 61 6e 74 73 20 61 0a 25" }
+"0xF77D" = { name = "str_marriage_event_msgs", comment = "[ROM-STR 2026-06-10] '...wants a %s','Demand gold','marriage pact','accept'" }
 "0xF7CC" = { name = "marry_helper_data_f7cc", comment = "[ROM-DATA] binary table (unanalyzed); read by marry_helper_e76f via imm-word ptr; bytes: 3e 00 38 00 28 00 30 00 e0 f7 ea f7" }
 "0xFEA6" = { name = "province_to_map_section_50", comment = "[MAP] 50-fief scenario: province index -> strategic-map section (values 0-8, 50 entries). Indexed by selected_province_idx in driver_map/dispatch_map_helper_e694; the scenario_fief_count==50 branch selects this table (vs province_to_map_section_17 $FED8)." }
 "0xFED8" = { name = "province_to_map_section_17", comment = "[MAP] 17-fief scenario: province index -> strategic-map section (values 0/1, 17 entries). 50-fief uses province_to_map_section_50 $FEA6." }
@@ -716,18 +716,18 @@ prg_bank_count = 16        # 256 KB total
 "0xB2BA" = { name = "display_fullscreen_graph_data_b2ba", comment = "[ROM-DATA] binary table (unanalyzed); read by display_fullscreen_graphic_sequence, render_boot_title_screens via imm-word ptr; bytes: ff ff ff ff ff ff ff ff 00 00 00 00" }
 "0xB78A" = { name = "verify_sram_save_integri_data_b78a", comment = "[ROM-DATA] binary table (unanalyzed); read by init_new_game_state, verify_sram_save_integrity via imm-word ptr; bytes: 00 72 54 78 1e 2a 4e 00 00 72 54 78" }
 "0xB852" = { name = "verify_sram_save_integri_data_b852", comment = "[ROM-DATA] binary table (unanalyzed); read by init_new_game_state, verify_sram_save_integrity via imm-word ptr; bytes: 3e 12 29 30 3e 02 12 21 3e 16 27 30" }
-"0xB89E" = { name = "verify_sram_save_integri_data_b89e", comment = "[ROM-DATA] binary table (unanalyzed); read by verify_sram_save_integrity via imm-word ptr; bytes: 00 44 61 74 61 20 6c 6f 61 64 65 64" }
-"0xB8AB" = { name = "verify_sram_save_integri_data_b8ab", comment = "[ROM-DATA] binary table (unanalyzed); read by verify_sram_save_integrity via imm-word ptr; bytes: 20 20 20 20 00 44 61 74 61 20 63 61" }
-"0xB8C7" = { name = "prompt_select_scenario_s_data_b8c7", comment = "[ROM-DATA] binary table (unanalyzed); read by prompt_select_scenario_size via imm-word ptr; bytes: 00 28 31 37 66 69 65 66 73 2f 35 30" }
-"0xBA5E" = { name = "resolve_ownerless_provin_data_ba5e", comment = "[ROM-DATA] binary table (unanalyzed); read by resolve_ownerless_province_succession via imm-word ptr; bytes: 00 0a 57 6f 75 6c 64 20 79 6f 75 20" }
-"0xBA8C" = { name = "resolve_ownerless_provin_data_ba8c", comment = "[ROM-DATA] binary table (unanalyzed); read by resolve_ownerless_province_succession via imm-word ptr; bytes: 00 0a 46 69 65 66 20 25 32 64 20 69" }
-"0xBAFD" = { name = "ai_resolve_province_take_data_bafd", comment = "[ROM-DATA] binary table (unanalyzed); read by ai_resolve_province_takeover_attempt via imm-word ptr; bytes: 00 25 73 20 68 61 76 65 20 77 6f 6e" }
-"0xBB26" = { name = "collect_high_loyalty_pro_data_bb26", comment = "[ROM-DATA] binary table (unanalyzed); read by collect_high_loyalty_provinces_to_candidate_list via imm-word ptr; bytes: 00 0a 74 68 65 20 70 65 6f 70 6c 65" }
+"0xB89E" = { name = "str_load_status_msgs", comment = "[ROM-STR 2026-06-10] 'Data loaded','Data can`t be used'" }
+"0xB8AB" = { name = "str_data_cant_be_used", comment = "[ROM-STR 2026-06-10] 'Data can`t be used'" }
+"0xB8C7" = { name = "str_scenario_size_prompt", comment = "[ROM-STR 2026-06-10] '(17fiefs/50fiefs)?','Watch other daimyos battle?'" }
+"0xBA5E" = { name = "str_bid_for_fief_prompt", comment = "[ROM-STR 2026-06-10] 'Would you like to bid for fief %2d','How much'" }
+"0xBA8C" = { name = "str_fief_is_yours", comment = "[ROM-STR 2026-06-10] 'Fief %2d is yours!'" }
+"0xBAFD" = { name = "str_uprising_outcome_msgs", comment = "[ROM-STR 2026-06-10] '%s have won!','The loyal forces have won!'" }
+"0xBB26" = { name = "str_people_rebelling", comment = "[ROM-STR 2026-06-10] 'the people are rebelling! Will you appease'" }
 "0xBBA5" = { name = "check_and_process_daimyo_data_bba5", comment = "[ROM-DATA] binary table (unanalyzed); read by check_and_process_daimyo_natural_death via imm-word ptr; bytes: a9 bb b1 bb 6f 6c 64 20 61 67 65 00" }
-"0xBBC6" = { name = "ravage_defending_provinc_data_bbc6", comment = "[ROM-DATA] binary table (unanalyzed); read by ravage_defending_province_sweep via imm-word ptr; bytes: 00 0a 73 6f 6d 65 6f 6e 65 20 68 61" }
-"0xBC2A" = { name = "announce_provinces_by_ai_data_bc2a", comment = "[ROM-DATA] binary table (unanalyzed); read by announce_provinces_by_ai_state_mode via imm-word ptr; bytes: 00 0a 61 20 74 79 70 68 6f 6f 6e 20" }
-"0xBC4B" = { name = "announce_provinces_by_ai_data_bc4b", comment = "[ROM-DATA] binary table (unanalyzed); read by announce_provinces_by_ai_state_mode via imm-word ptr; bytes: 00 0a 70 6c 61 67 75 65 20 68 61 73" }
-"0xBF1C" = { name = "write_sram_save_checksum_data_bf1c", comment = "[ROM-DATA] binary table (unanalyzed); read by write_sram_save_checksum_and_signature via imm-word ptr; bytes: 00 44 61 74 61 20 68 61 73 20 62 65" }
+"0xBBC6" = { name = "str_ninja_sent_against", comment = "[ROM-STR 2026-06-10] 'someone has sent ninja aginst fief %2d!'" }
+"0xBC2A" = { name = "str_typhoon_msg", comment = "[ROM-STR 2026-06-10] 'a typhoon has struck fief %2d!'" }
+"0xBC4B" = { name = "str_plague_msg", comment = "[ROM-STR 2026-06-10] 'plague has come to fief %2d!'" }
+"0xBF1C" = { name = "str_save_and_illness_msgs", comment = "[ROM-STR 2026-06-10] 'Data has been saved',' has taken ill','Disloyal'" }
 "0xF8AE" = { name = "daimyo_creation_stat_rol_data_f8ae", comment = "[ROM-DATA] binary table (unanalyzed); read by daimyo_creation_stat_roll_screen via imm-word ptr; bytes: d2 f8 d6 f8 db f8 e0 f8 e5 f8 ea f8" }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xAC4A" = { name = "msg_fmt_blank", comment = "[ROM-STR] \"017?100\"" }
@@ -768,9 +768,9 @@ prg_bank_count = 16        # 256 KB total
 "0xB9CD" = { name = "msg_how_many_players", comment = "[ROM-STR] \"How many players\"" }
 "0xB9DE" = { name = "msg_please_select_skill_level", comment = "[ROM-STR] \"Please select\nskill level\"" }
 "0xB9F8" = { name = "msg_is_everything_ok_so_far", comment = "[ROM-STR] \"Is everything OK\nso far\"" }
-"0xBA10" = { name = "msg_then_on_with_the_game", comment = "[ROM-STR] \"Then on with the\ngame!\"" }
+"0xBA10" = { name = "str_market_panel_nl2", comment = "[ROM-STR 2026-06-10] market panel pad-alias of $BA12" }
 "0xBA28" = { name = "msg_pirates", comment = "[ROM-STR] \"Pirates \"" }
-"0xBA31" = { name = "msg_christns", comment = "[ROM-STR] \"Christns\"" }
+"0xBA31" = { name = "str_enemy_morale_falling", comment = "[ROM-STR 2026-06-10] 'enemy','morale is falling','Fief %2d'" }
 "0xBA3A" = { name = "msg_rioters", comment = "[ROM-STR] \"Rioters \"" }
 "0xBA43" = { name = "msg_zealots", comment = "[ROM-STR] \"Zealots \"" }
 "0xBA4C" = { name = "msg_monks", comment = "[ROM-STR] \"Monks   \"" }
@@ -1044,34 +1044,34 @@ prg_bank_count = 16        # 256 KB total
 "0x9E3C" = { name = "fief_select_input_loop_data_9e3c", comment = "[ROM-DATA] binary table (unanalyzed); read by fief_select_input_loop via imm-word ptr; bytes: 02 59 b5 8c a8 77 bb b3 ac 7e d7 59" }
 "0xB9DC" = { name = "jumptab_b9dc", comment = "[ROM-DATA] pointer/dispatch table; read by driver_trade via imm-word ptr; bytes: 04 9f af 9f 03 a0 68 a0 13 a1 af a1" }
 "0xB9E8" = { name = "jumptab_b9e8", comment = "[ROM-DATA] pointer/dispatch table; read by driver_other via imm-word ptr; bytes: 66 b0 9d b0 d2 b0 09 b1 2b b1 4b b1" }
-"0xBA10" = { name = "prompt_message_and_redra_data_ba10", comment = "[ROM-DATA] binary table (unanalyzed); read by prompt_message_and_redraw via imm-word ptr; bytes: 00 00 0a 00 5f 5f 4d 61 72 6b 65 74" }
-"0xBA11" = { name = "prompt_message_and_redra_data_ba11", comment = "[ROM-DATA] binary table (unanalyzed); read by prompt_message_and_redraw via imm-word ptr; bytes: 00 0a 00 5f 5f 4d 61 72 6b 65 74 5f" }
-"0xBA12" = { name = "prompt_message_and_redra_data_ba12", comment = "[ROM-DATA] binary table (unanalyzed); read by prompt_message_and_redraw via imm-word ptr; bytes: 0a 00 5f 5f 4d 61 72 6b 65 74 5f 5f" }
-"0xBA69" = { name = "count_eligible_targets_data_ba69", comment = "[ROM-DATA] binary table (unanalyzed); read by count_eligible_targets via imm-word ptr; bytes: 2d 00 25 34 64 00 2d 2d 2d 2d 00 25" }
+"0xBA10" = { name = "str_market_panel_nl2", comment = "[ROM-STR 2026-06-10] market panel pad-alias of $BA12" }
+"0xBA11" = { name = "str_market_panel_nl1", comment = "[ROM-STR 2026-06-10] market panel pad-alias of $BA12" }
+"0xBA12" = { name = "str_market_panel", comment = "[ROM-STR 2026-06-10] '__Market__','Rate/Rice/Arms/Men %2d.%1d'" }
+"0xBA69" = { name = "str_fief_list_columns", comment = "[ROM-STR 2026-06-10] '-','%4d','----','%3d','Home fief','Direct','Empty','Fief'" }
 "0xBA6F" = { name = "str_field_dashes", comment = "[ROM-STR 2026-06-10] \"----\" (4 dashes), the empty/blank placeholder drawn by draw_province_stat_or_dashes ($83A2) for inactive provinces. bytes: 2d 2d 2d 2d 00 ... (followed by a \"%3d\" string)." }
 "0xBA78" = { name = "str_field_dashes3", comment = "[ROM-STR 2026-06-10] \"---\" (3 dashes), the 3-digit empty placeholder drawn by draw_province_stat3_or_dashes ($83D5). bytes: 2d 2d 2d 00 (followed by \"Home fie...\")." }
-"0xBA9C" = { name = "effect_view_a_data_ba9c", comment = "[ROM-DATA] binary table (unanalyzed); read by effect_view_a via imm-word ptr; bytes: 2d 2d 2d 2d 2d 2d 2d 2d 00 53 69 63" }
-"0xBB26" = { name = "province_select_helper_data_bb26", comment = "[ROM-DATA] binary table (unanalyzed); read by province_select_helper via imm-word ptr; bytes: 2d 00 4e 6f 74 20 68 6f 6d 65 20 66" }
-"0xBB3E" = { name = "effect_bribe_data_bb3e", comment = "[ROM-DATA] binary table (unanalyzed); read by effect_bribe via imm-word ptr; bytes: 00 20 68 61 73 20 6c 6f 73 74 00 20" }
-"0xBBE2" = { name = "driver_tax_data_bbe2", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_tax via imm-word ptr; bytes: 00 49 73 20 74 68 69 73 20 4f 4b 00" }
-"0xBBEE" = { name = "driver_dam_data_bbee", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_dam via imm-word ptr; bytes: 00 44 61 6d 73 20 76 61 6c 75 65 00" }
-"0xBBFA" = { name = "driver_dam_data_bbfa", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_dam via imm-word ptr; bytes: 00 00 00 4f 75 74 70 75 74 00 00 00" }
-"0xBBFB" = { name = "driver_pact_data_bbfb", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_pact via imm-word ptr; bytes: 00 00 4f 75 74 70 75 74 00 00 00 00" }
-"0xBBFC" = { name = "driver_grow_data_bbfc", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_grow via imm-word ptr; bytes: 00 4f 75 74 70 75 74 00 00 00 00 0a" }
-"0xBC04" = { name = "driver_grow_data_bc04", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_grow via imm-word ptr; bytes: 00 00 00 0a 54 68 65 20 74 72 65 61" }
-"0xBC05" = { name = "driver_marry_data_bc05", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_marry via imm-word ptr; bytes: 00 00 0a 54 68 65 20 74 72 65 61 73" }
+"0xBA9C" = { name = "str_fief_info_labels", comment = "[ROM-STR 2026-06-10] 'Sick','Home','Fief','Gold','Town','Rice'..." }
+"0xBB26" = { name = "str_not_home_and_status", comment = "[ROM-STR 2026-06-10] 'Not home fief',' has lost'" }
+"0xBB3E" = { name = "str_daimyo_status_msgs", comment = "[ROM-STR 2026-06-10] ' has lost',' has retreated',' has fled'" }
+"0xBBE2" = { name = "str_is_this_ok", comment = "[ROM-STR 2026-06-10] 'Is this OK'" }
+"0xBBEE" = { name = "str_dams_value_label", comment = "[ROM-STR 2026-06-10] 'Dams value'" }
+"0xBBFA" = { name = "str_output_label", comment = "[ROM-STR 2026-06-10] 'Output'" }
+"0xBBFB" = { name = "str_output_label_alias1", comment = "[ROM-STR 2026-06-10] 'Output' (alias of $BBFA)" }
+"0xBBFC" = { name = "str_output_label_alias2", comment = "[ROM-STR 2026-06-10] 'Output' (alias of $BBFA)" }
+"0xBC04" = { name = "str_treasure_room_full", comment = "[ROM-STR 2026-06-10] 'The treasure room is already full!'" }
+"0xBC05" = { name = "str_treasure_room_full_alias", comment = "[ROM-STR 2026-06-10] alias of $BC04" }
 "0xBC06" = { name = "msg_loan_prompt", comment = "[ROM-STR 2026-06-10] loan prompt ('The treasu[re room]...'); read by effect_loan ($9F04). bytes: 00 0a 54 68 65 20 74 72 65 61 73 75 = \\0\\nThe treasu." }
 "0xBC59" = { name = "msg_repay_debt", comment = "[ROM-STR 2026-06-10] The debt-repayment prompt strings (\"...No gold...\"), message_display'd at the top of prompt_repay_debt ($9FAF). bytes: 00 0a 4e 6f 20 67 6f 6c 64 00 ... = \\0\\n'No gold'\\0..." }
 "0xBC75" = { name = "msg_sell_rice_prompt", comment = "[ROM-STR 2026-06-10] '%s rice\\nwil[l]...' sell-rice prompt; read by effect_sell_rice ($A003). bytes: 00 25 73 20 72 69 63 65 0a 77 69 6c." }
 "0xBCA2" = { name = "msg_buy_rice_prompt", comment = "[ROM-STR 2026-06-10] \"...rice\\nwill...\" — the buy-rice prompt drawn by effect_buy_rice ($A068). bytes: 00 20 72 69 63 65 0a 77 69 6c 6c 20." }
 "0xBCE9" = { name = "msg_buy_arms_prompt", comment = "[ROM-STR 2026-06-10] \"Armory full...\" — the buy-arms prompt/strings drawn by effect_buy_arms ($A113). bytes: 00 41 72 6d 6f 72 79 20 66 75 6c 6c = \\0'Armory full'." }
-"0xBDCF" = { name = "effect_ninja_sabotage_data_bdcf", comment = "[ROM-DATA] read by effect_ninja_sabotage ($A2D2) via imm-word ptr; bytes: 00 00 0a 28 4d 65 6e 2f 4e 69 6e 6a (= part of the \"\\n(Men/Ninja)\" prompt region)." }
+"0xBDCF" = { name = "str_men_ninja_train_msgs", comment = "[ROM-STR 2026-06-10] '(Men/Ninja)?','The men can`t train any further'" }
 "0xBDD0" = { name = "msg_men_or_ninja", comment = "[ROM-STR 2026-06-10] \"\\n(Men/Ninja)?\" — the Hire-type prompt. bytes: 00 0a 28 4d 65 6e 2f 4e 69 6e 6a 61. (was 'effect_hire_variant_pay_data_bdd0'.)" }
-"0xBE13" = { name = "driver_build_data_be13", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_build via imm-word ptr; bytes: 00 54 6f 77 6e 20 76 61 6c 75 65 00" }
-"0xBE1F" = { name = "effect_give_b_data_be1f", comment = "[ROM-DATA] binary table (unanalyzed); read by effect_give_b via imm-word ptr; bytes: 00 28 47 6f 6c 64 2f 52 69 63 65 29" }
-"0xBE2E" = { name = "effect_give_b_data_be2e", comment = "[ROM-DATA] binary table (unanalyzed); read by effect_give_b via imm-word ptr; bytes: 0a 00 00 28 50 65 61 73 6e 74 73 2f" }
-"0xBE30" = { name = "effect_give_c_data_be30", comment = "[ROM-DATA] binary table (unanalyzed); read by effect_give_c via imm-word ptr; bytes: 00 28 50 65 61 73 6e 74 73 2f 4d 65" }
-"0xBE41" = { name = "effect_give_c_data_be41", comment = "[ROM-DATA] binary table (unanalyzed); read by effect_give_c via imm-word ptr; bytes: 0a 00 25 33 64 00 25 64 25 73 00 61" }
+"0xBE13" = { name = "str_town_value_label", comment = "[ROM-STR 2026-06-10] 'Town value'" }
+"0xBE1F" = { name = "str_gold_rice_prompt", comment = "[ROM-STR 2026-06-10] '(Gold/Rice)?'" }
+"0xBE2E" = { name = "str_peasants_men_prompt_nl", comment = "[ROM-STR 2026-06-10] '(Peasnts/Men)?' (nl alias)" }
+"0xBE30" = { name = "str_peasants_men_prompt", comment = "[ROM-STR 2026-06-10] '(Peasnts/Men)?'" }
+"0xBE41" = { name = "str_amount_available_fields", comment = "[ROM-STR 2026-06-10] '%3d','%d%s','available  0','(arrows)'" }
 "0xF7D4" = { name = "effect_view_a_data_f7d4", comment = "[ROM-DATA] binary table (unanalyzed); read by driver_grant, effect_view_a via imm-word ptr; bytes: e0 f7 ea f7 f5 f7 fe f7 07 f8 0f f8" }
 "0xF816" = { name = "prompt_message_and_redra_data_f816", comment = "[ROM-DATA] binary table (unanalyzed); read by fief_info_display, prompt_message_and_redraw via imm-word ptr; bytes: 40 f8 45 f8 49 f8 4d f8 52 f8 56 f8" }
 "0xF8AE" = { name = "effect_view_a_data_f8ae", comment = "[ROM-DATA] binary table (unanalyzed); read by effect_view_a, report_fief_stat_decline via imm-word ptr; bytes: d2 f8 d6 f8 db f8 e0 f8 e5 f8 ea f8" }
@@ -1089,7 +1089,7 @@ prg_bank_count = 16        # 256 KB total
 "0xBA2D" = { name = "msg_rice_2d_1d", comment = "[ROM-STR] \"Rice  %2d.%1d\"" }
 "0xBA3B" = { name = "msg_arms_2d_1d", comment = "[ROM-STR] \"Arms  %2d.%1d\"" }
 "0xBA49" = { name = "msg_men_2d_1d", comment = "[ROM-STR] \"Men   %2d.%1d\"" }
-"0xBA57" = { name = "msg_ninja_2d_1d", comment = "[ROM-STR] \"Ninja %2d.%1d\"" }
+"0xBA57" = { name = "str_passed_from_lord", comment = "[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'" }
 "0xBA65" = { name = "msg_fmt__2d_ba65", comment = "[ROM-STR] \"%2d\"" }
 "0xBA6B" = { name = "msg_fmt__4d", comment = "[ROM-STR] \"%4d\"" }
 "0xBA74" = { name = "msg_fmt__3d_ba74", comment = "[ROM-STR] \"%3d\"" }
@@ -1408,7 +1408,7 @@ prg_bank_count = 16        # 256 KB total
 "0xB144" = { name = "build_blit_fief_tile_blo_data_b144", comment = "[ROM-DATA] binary table (unanalyzed); read by build_blit_fief_tile_block via imm-word ptr; bytes: 79 7a 7b 7c 7c 7f 7d 7e 80 81 92 93" }
 "0xB196" = { name = "combat_message_table", comment = "[ROM-DATA HIGH 2026-06-10] Word-ptr table of >=10 combat announcement strings (bank 2), read by announce_combat_side_daimyo_and_status, draw_combat_message ($936A), redraw_combat_side_window. Verified entries: [0] blank, [1] '..men have deserted to our..', [2] 'Some of our men have des..', [3] 'You can`t move there!', [4] 'we seem to have the upper..', [5] 'Enemy unit %d has been..', [6] 'they`ve counter-attacked', [7] 'Unit %d has been wiped out', [8] 'we have taken an enemy a..', [9] 'Which unit shall we go a..'. (was 'jumptab_b196'.)" }
 "0xB4F0" = { name = "combat_command_dispatch_data_b4f0", comment = "[ROM-DATA] binary table (unanalyzed); read by combat_command_dispatch_loop_per_unit via imm-word ptr; bytes: fc b4 01 b5 08 b5 0e b5 13 b5 18 b5" }
-"0xB51E" = { name = "build_blit_fief_tile_blo_data_b51e", comment = "[ROM-DATA] binary table (unanalyzed); read by build_blit_fief_tile_block via imm-word ptr; bytes: 3e 00 38 00 28 00 30 00 0a 28 59 2f" }
+"0xB51E" = { name = "str_keypad_yn_prompt", comment = "[ROM-STR 2026-06-10] '8 9 ( 0  (Y/N)?','8932170 (%d-%d)' direction keypad" }
 "0xB540" = { name = "map_render_driver_data_b540", comment = "[ROM-DATA] binary table (unanalyzed); read by map_render_driver via imm-word ptr; bytes: b4 b5 b6 b7 20 20 00 20 20 00 01 01" }
 "0xB542" = { name = "map_render_driver_data_b542", comment = "[ROM-DATA] binary table (unanalyzed); read by map_render_driver via imm-word ptr; bytes: b6 b7 20 20 00 20 20 00 01 01 01 01" }
 "0xB544" = { name = "map_render_driver_data_b544", comment = "[ROM-DATA] binary table (unanalyzed); read by map_render_driver via imm-word ptr; bytes: 20 20 00 20 20 00 01 01 01 01 01 01" }
@@ -1421,15 +1421,15 @@ prg_bank_count = 16        # 256 KB total
 "0xB632" = { name = "jumptab_b632", comment = "[ROM-DATA] pointer/dispatch table; read by announce_battle_outcome_retreat_or_won via imm-word ptr; bytes: 68 b6 9b b6 ba b6 fc b6 2e b7 5c b7" }
 "0xB640" = { name = "battle_conclusion_msgs_loser", comment = "[CONFIRMED 2026-06-02] 6 LE string pointers indexed by (outcome_code-1) in announce_battle_outcome_retreat_or_won — the LOSER's-view battle-end messages: [1]$B7B1 'this is truly unfortunate...', [2]$B7CE 'someday we will avenge this outrage!', [3]$B7F3 'your men are exhausted!'(timeout), [4]$B80B 'supply reports... out of rice'(rice<=0), [5]$B848 'the command unit has been destroyed!'(commander), [6]$B87B 'not a single soldier remains'(annihilation)." }
 "0xB650" = { name = "battle_conclusion_msgs_observer", comment = "[CONFIRMED 2026-06-02] 4 LE string pointers — the third-person/observer battle-end messages: [1]$B8D1 '<lord> is out of rice and must surrender', [2]$B8F4 \"<lord>'s command unit has been wiped out\", [3]$B929 \"<lord>'s men have been completely destroyed\", [4]$B94F '<lord> has no soldiers / He has lost'. Pairs with battle_conclusion_msgs_loser by outcome code." }
-"0xB96C" = { name = "announce_battle_outcome_data_b96c", comment = "[ROM-DATA] binary table (unanalyzed); read by announce_battle_outcome_retreat_or_won via imm-word ptr; bytes: 0a 00 25 73 20 68 61 73 20 72 65 74" }
-"0xB99D" = { name = "announce_combat_side_dai_data_b99d", comment = "[ROM-DATA] binary table (unanalyzed); read by announce_combat_side_daimyo_and_status via imm-word ptr; bytes: 00 00 00 4c 6f 72 64 0a 00 0a 50 6c" }
-"0xB99E" = { name = "announce_combat_side_dai_data_b99e", comment = "[ROM-DATA] binary table (unanalyzed); read by announce_combat_side_daimyo_and_status via imm-word ptr; bytes: 00 00 4c 6f 72 64 0a 00 0a 50 6c 65" }
+"0xB96C" = { name = "str_battle_outcome_msgs", comment = "[ROM-STR 2026-06-10] '%s has retreated','%s hung on to the end and won'" }
+"0xB99D" = { name = "str_position_unit_prompt", comment = "[ROM-STR 2026-06-10] 'Lord  Please position unit %d'" }
+"0xB99E" = { name = "str_position_unit_prompt_alias", comment = "[ROM-STR 2026-06-10] alias of $B99D" }
 "0xB9C2" = { name = "ai_terrain_strength_term_data_b9c2", comment = "[ROM-DATA] binary table (unanalyzed); read by ai_terrain_strength_term via imm-word ptr; bytes: 5a 00 14 00 0a 00 00 00 54 68 65 0a" }
 "0xB9F8" = { name = "combat_command_dispatch_data_b9f8", comment = "[ROM-DATA] binary table (unanalyzed); read by combat_command_dispatch_loop_per_unit via imm-word ptr; bytes: 0e a9 6c a9 fb a9 a7 aa 37 ab 6a ab" }
-"0xBA18" = { name = "combat_command_dispatch_data_ba18", comment = "[ROM-DATA] binary table (unanalyzed); read by combat_command_dispatch_loop_per_unit via imm-word ptr; bytes: 00 0a 59 6f 75 72 0a 6f 72 64 65 72" }
-"0xBA2B" = { name = "display_morale_falling_m_data_ba2b", comment = "[ROM-DATA] binary table (unanalyzed); read by display_morale_falling_message via imm-word ptr; bytes: 00 0a 6f 75 72 00 00 0a 65 6e 65 6d" }
-"0xBA31" = { name = "display_morale_falling_m_data_ba31", comment = "[ROM-DATA] binary table (unanalyzed); read by display_morale_falling_message via imm-word ptr; bytes: 00 0a 65 6e 65 6d 79 00 0a 6d 6f 72" }
-"0xBA57" = { name = "transfer_owned_fiefs_and_data_ba57", comment = "[ROM-DATA] binary table (unanalyzed); read by transfer_owned_fiefs_and_announce_succession via imm-word ptr; bytes: 0a 00 0a 68 61 73 20 70 61 73 73 65" }
+"0xBA18" = { name = "str_combat_orders_labels", comment = "[ROM-STR 2026-06-10] 'Your orders for','our','enemy','morale is'" }
+"0xBA2B" = { name = "str_our_morale_falling", comment = "[ROM-STR 2026-06-10] 'our','morale is falling','Fief %2d'" }
+"0xBA31" = { name = "str_enemy_morale_falling", comment = "[ROM-STR 2026-06-10] 'enemy','morale is falling','Fief %2d'" }
+"0xBA57" = { name = "str_passed_from_lord", comment = "[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'" }
 "0xBA7F" = { name = "battle_setup_select_prov_data_ba7f", comment = "[ROM-DATA] binary table (unanalyzed); read by battle_setup_select_province_phase via imm-word ptr; bytes: 3e 12 29 30 3e 02 12 21 3e 18 29 30" }
 "0xBBD0" = { name = "build_blit_fief_tile_blo_data_bbd0", comment = "[ROM-DATA] binary table (unanalyzed); read by build_blit_fief_tile_block via imm-word ptr; bytes: ff ff ff ff ff ff ff ff ff ff ff ff" }
 "0xF9AF" = { name = "unit_type_name_table", comment = "[ROM-DATA HIGH 2026-06-10] 3 word-ptrs to the unit-type name strings (verified in ROM): [0] $F9B5 'Rifles', [1] $F9BD 'Infntry', [2] $F9C5 'Cavalry'. Read by draw_unit_type_label ($9387). (was 'draw_unit_label_data_f9af'.)" }

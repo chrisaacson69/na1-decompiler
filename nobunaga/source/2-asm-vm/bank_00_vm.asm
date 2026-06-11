@@ -369,7 +369,7 @@ VM bytecode disassembly
   $82E7  A8 D1 7F                   STORE_abs              $7FD1 (ui_msg_col_shift_flag)
   $82EA  40                         LOADL_qimm   ; inline operand = 0
   $82EB  A8 61 6F                   STORE_abs              $6F61 (sram_save_pending_flag)
-  $82EE  8E 9E B8                   PUSH_imm2              $B89E (verify_sram_save_integri_data_b89e)
+  $82EE  8E 9E B8                   PUSH_imm2              $B89E (str_load_status_msgs)
   $82F1  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $82F5  8E 9F B8                   PUSH_imm2              $B89F (msg_data_loaded)
   $82F8  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
@@ -409,7 +409,7 @@ VM bytecode disassembly
   $833E  A8 D1 7F                   STORE_abs              $7FD1 (ui_msg_col_shift_flag)
   $8341  41                         LOADL_qimm   ; inline operand = 1
   $8342  CF                         RETURN
- >$8343  8E AB B8                   PUSH_imm2              $B8AB (verify_sram_save_integri_data_b8ab)
+ >$8343  8E AB B8                   PUSH_imm2              $B8AB (str_data_cant_be_used)
   $8346  8E ED 7F                   PUSH_imm2              $7FED
   $8349  E9 D9 CA 04                CALL_abs_imm1          $CAD9 (strcpy) {bytecode}, $04
   $834D  60                         PUSH_qimm   ; inline operand = 0
@@ -886,7 +886,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $862B   (frame_off=-4, body @ $8630)
 ; ============================================================
- >$8630  8E C7 B8                   PUSH_imm2              $B8C7 (prompt_select_scenario_s_data_b8c7)
+ >$8630  8E C7 B8                   PUSH_imm2              $B8C7 (str_scenario_size_prompt)
   $8633  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8637  8E C8 B8                   PUSH_imm2              $B8C8 (msg_fiefs_50fiefs)
   $863A  E9 51 D3 02                CALL_abs_imm1          $D351 (prompt_ab_window) {bytecode}, $02
@@ -1556,7 +1556,7 @@ VM bytecode disassembly
   $8B3C  60                         PUSH_qimm   ; inline operand = 0
   $8B3D  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8B41  D6 C1 89                   JUMP_abs               $89C1
- >$8B44  8E 10 BA                   PUSH_imm2              $BA10 (msg_then_on_with_the_game)
+ >$8B44  8E 10 BA                   PUSH_imm2              $BA10 (str_market_panel_nl2)
   $8B47  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8B4B  48                         LOADL_qimm   ; inline operand = 8
   $8B4C  A6 61 6D                   LOADR_abs              $6D61 (newgame_player_count)
@@ -1596,7 +1596,7 @@ VM bytecode disassembly
   $8B8C  57                         LOADR_qimm   ; inline operand = 7
   $8B8D  C0                         CMPEQ
   $8B8E  D8 97 8B                   JUMPF_abs              $8B97
-  $8B91  8A 31 BA                   LOADL_imm2             $BA31 (msg_christns)
+  $8B91  8A 31 BA                   LOADL_imm2             $BA31 (str_enemy_morale_falling)
   $8B94  D6 9A 8B                   JUMP_abs               $8B9A
  >$8B97  8A 3A BA                   LOADL_imm2             $BA3A (msg_rioters)
  >$8B9A  2B                         STORE_quick   ; inline operand = 11
@@ -1759,7 +1759,7 @@ VM bytecode disassembly
   $8CC2  D8 22 8D                   JUMPF_abs              $8D22
   $8CC5  8D 1C                      BYTE_PUSH_imm1         +28
   $8CC7  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
-  $8CCB  8E 5E BA                   PUSH_imm2              $BA5E (resolve_ownerless_provin_data_ba5e)
+  $8CCB  8E 5E BA                   PUSH_imm2              $BA5E (str_bid_for_fief_prompt)
   $8CCE  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8CD2  09                         LOADL_quick   ; inline operand = 9
   $8CD3  D3                         BYTE_DEREF
@@ -1864,7 +1864,7 @@ VM bytecode disassembly
   $8D89  3A                         PUSH_quick   ; inline operand = 10
   $8D8A  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $8D8E  D8 AC 8D                   JUMPF_abs              $8DAC
-  $8D91  8E 8C BA                   PUSH_imm2              $BA8C (resolve_ownerless_provin_data_ba8c)
+  $8D91  8E 8C BA                   PUSH_imm2              $BA8C (str_fief_is_yours)
   $8D94  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8D98  3A                         PUSH_quick   ; inline operand = 10
   $8D99  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
@@ -2129,7 +2129,7 @@ VM bytecode disassembly
   $8F49  39                         PUSH_quick   ; inline operand = 9
   $8F4A  E9 D3 8E 06                CALL_abs_imm1          $8ED3 (display_two_message_prompt_then_compare) {bytecode}, $06
   $8F4E  D8 96 8F                   JUMPF_abs              $8F96
-  $8F51  8E FD BA                   PUSH_imm2              $BAFD (ai_resolve_province_take_data_bafd)
+  $8F51  8E FD BA                   PUSH_imm2              $BAFD (str_uprising_outcome_msgs)
   $8F54  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8F58  3A                         PUSH_quick   ; inline operand = 10
   $8F59  8E FE BA                   PUSH_imm2              $BAFE (msg_s_have_won)
@@ -2254,7 +2254,7 @@ VM bytecode disassembly
   $9029  BB                         ADD
   $902A  D3                         BYTE_DEREF
   $902B  D7 8A 90                   JUMPT_abs              $908A
-  $902E  8E 26 BB                   PUSH_imm2              $BB26 (collect_high_loyalty_pro_data_bb26)
+  $902E  8E 26 BB                   PUSH_imm2              $BB26 (str_people_rebelling)
   $9031  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9035  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
   $9038  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
@@ -2796,7 +2796,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $93BF   (frame_off=-4, body @ $93C4)
 ; ============================================================
-  $93C4  8E C6 BB                   PUSH_imm2              $BBC6 (ravage_defending_provinc_data_bbc6)
+  $93C4  8E C6 BB                   PUSH_imm2              $BBC6 (str_ninja_sent_against)
   $93C7  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $93CB  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
   $93CE  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
@@ -2939,7 +2939,7 @@ VM bytecode disassembly
   $94DC  D9 02 00 01 00 EF 94 02 00 04 95 1D ... SWITCH_noncontig       count=2   ; .table 2 (key,target) + default (noncontiguous); SWITCH 1=>$94EF 2=>$9504 default=>$951D
  >$94E9  8E 13 BC                   PUSH_imm2              $BC13 (msg_lord_plague_has_come)
   $94EC  D6 C7 94                   JUMP_abs               $94C7
- >$94EF  8E 2A BC                   PUSH_imm2              $BC2A (announce_provinces_by_ai_data_bc2a)
+ >$94EF  8E 2A BC                   PUSH_imm2              $BC2A (str_typhoon_msg)
   $94F2  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $94F6  3A                         PUSH_quick   ; inline operand = 10
   $94F7  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
@@ -2948,7 +2948,7 @@ VM bytecode disassembly
   $94FD  B3                         PUSHL
   $94FE  8E 2B BC                   PUSH_imm2              $BC2B (msg_a_typhoon_has_struck_fief_2d)
   $9501  D6 16 95                   JUMP_abs               $9516
- >$9504  8E 4B BC                   PUSH_imm2              $BC4B (announce_provinces_by_ai_data_bc4b)
+ >$9504  8E 4B BC                   PUSH_imm2              $BC4B (str_plague_msg)
   $9507  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $950B  3A                         PUSH_quick   ; inline operand = 10
   $950C  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
@@ -5214,7 +5214,7 @@ VM bytecode disassembly
   $A43B  E9 A4 CB 02                CALL_abs_imm1          $CBA4 (chr_bank0_set_wrap) {bytecode}, $02
   $A43F  40                         LOADL_qimm   ; inline operand = 0
   $A440  A8 61 6F                   STORE_abs              $6F61 (sram_save_pending_flag)
-  $A443  8E 1C BF                   PUSH_imm2              $BF1C (write_sram_save_checksum_data_bf1c)
+  $A443  8E 1C BF                   PUSH_imm2              $BF1C (str_save_and_illness_msgs)
   $A446  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A44A  8E 1D BF                   PUSH_imm2              $BF1D (msg_data_has_been_saved)
   $A44D  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02

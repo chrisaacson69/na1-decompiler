@@ -196,6 +196,18 @@ witness + 495/495 CFG-preserving (0 fallbacks), stack-audit 184. Lives in `vm_cf
 `vm_decompile.py` ret_phi hook. `$E80C` itself now reads `if(ai_turn_flags&4){mem_7FCB=arg1; return
 call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a conditional bank-14 dispatch).
 
+## Asset-label pass (post-code-label) — ledger
+
+### Asset Layer-0: the fast text strings (43 of the 94 _data_XXXX placeholders)   [2026-06-10]
+Renamed the 43 placeholder `<reader>_data_XXXX` labels that decode as TEXT to `str_*` names from their ROM content
+(read full strings from the .nes, not the truncated toml bytes). Examples: str_typhoon_msg, str_treasure_room_full,
+str_market_panel, str_fief_list_columns, str_passed_from_lord, str_position_unit_prompt. **Method: name by the decoded
+text + reader role; no viewing needed.** Notes: ~5 of the 94 that passed the printable heuristic are actually data
+(boot-title $A84A 0x55 fill, $B78A binary, $B9C2 terrain-mult table, $FDD8 0x01 coord fill) -- left for Layer 2 / skip;
+many real strings are overlapping pointers into packed blobs (named each for the substring it heads). 51 `_data_`
+placeholders remain (numeric/pointer/tile -> Layer 2 by reader role; tiles -> optional viewing). NO nested double-quotes
+or backslash-n in toml comments (both break parse_toml -- use single quotes and /n).
+
 ## Ledger (append-only, newest first)
 
 ### ★★★★ CODE-LABEL TASK COMPLETE — ALL 6 CODE BANKS 100% GROUNDED (499/499) ★★★★   [2026-06-10]

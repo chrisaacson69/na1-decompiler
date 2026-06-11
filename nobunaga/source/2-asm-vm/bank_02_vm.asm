@@ -134,7 +134,7 @@ VM bytecode disassembly
   $8142  85 D7                      STORE_near             $D7
  >$8144  81 D7                      LOADL_near             $D7
   $8146  D2                         LSHIFT1
-  $8147  8C 1E B5                   LOADR_imm2             $B51E (build_blit_fief_tile_blo_data_b51e)
+  $8147  8C 1E B5                   LOADR_imm2             $B51E (str_keypad_yn_prompt)
   $814A  BB                         ADD
   $814B  B0                         DEREF
   $814C  B3                         PUSHL
@@ -2960,7 +2960,7 @@ VM bytecode disassembly
   $9453  26                         STORE_quick   ; inline operand = 6
   $9454  3C                         PUSH_quick   ; inline operand = 12
   $9455  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
-  $9459  8E 6C B9                   PUSH_imm2              $B96C (announce_battle_outcome_data_b96c)
+  $9459  8E 6C B9                   PUSH_imm2              $B96C (str_battle_outcome_msgs)
   $945C  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $9460  36                         PUSH_quick   ; inline operand = 6
   $9461  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
@@ -3061,7 +3061,7 @@ VM bytecode disassembly
   $9515  AA C6 B1                   PUSH_abs               $B1C6
   $9518  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $951C  D6 3F 95                   JUMP_abs               $953F
- >$951F  8E 9D B9                   PUSH_imm2              $B99D (announce_combat_side_dai_data_b99d)
+ >$951F  8E 9D B9                   PUSH_imm2              $B99D (str_position_unit_prompt)
   $9522  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9526  3B                         PUSH_quick   ; inline operand = 11
   $9527  E9 AF D7 02                CALL_abs_imm1          $D7AF (draw_daimyo_name) {bytecode}, $02
@@ -3103,7 +3103,7 @@ VM bytecode disassembly
   $956F  B3                         PUSHL
   $9570  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $9574  D8 A2 95                   JUMPF_abs              $95A2
-  $9577  8E 9E B9                   PUSH_imm2              $B99E (announce_combat_side_dai_data_b99e)
+  $9577  8E 9E B9                   PUSH_imm2              $B99E (str_position_unit_prompt_alias)
   $957A  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $957E  3B                         PUSH_quick   ; inline operand = 11
   $957F  E9 AF D7 02                CALL_abs_imm1          $D7AF (draw_daimyo_name) {bytecode}, $02
@@ -6442,7 +6442,7 @@ VM bytecode disassembly
   $ACD4  D7 DC AC                   JUMPT_abs              $ACDC
   $ACD7  39                         PUSH_quick   ; inline operand = 9
   $ACD8  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
- >$ACDC  8E 18 BA                   PUSH_imm2              $BA18 (combat_command_dispatch_data_ba18)
+ >$ACDC  8E 18 BA                   PUSH_imm2              $BA18 (str_combat_orders_labels)
   $ACDF  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $ACE3  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
   $ACE6  E9 8F 83 02                CALL_abs_imm1          $838F (get_battle_side_province) {bytecode}, $02
@@ -6494,7 +6494,7 @@ VM bytecode disassembly
   $AD3D  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
   $AD40  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $AD44  D8 7B AD                   JUMPF_abs              $AD7B
-  $AD47  8E 2B BA                   PUSH_imm2              $BA2B (display_morale_falling_m_data_ba2b)
+  $AD47  8E 2B BA                   PUSH_imm2              $BA2B (str_our_morale_falling)
   $AD4A  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $AD4E  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
   $AD51  E9 AF D7 02                CALL_abs_imm1          $D7AF (draw_daimyo_name) {bytecode}, $02
@@ -6504,7 +6504,7 @@ VM bytecode disassembly
   $AD5F  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $AD63  AC 1A D3                   CALL_abs               $D31A (clear_rect_left_lower_alt) {bytecode}
   $AD66  CF                         RETURN
- >$AD67  8E 31 BA                   PUSH_imm2              $BA31 (display_morale_falling_m_data_ba31)
+ >$AD67  8E 31 BA                   PUSH_imm2              $BA31 (str_enemy_morale_falling)
   $AD6A  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $AD6E  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
   $AD71  E9 AF D7 02                CALL_abs_imm1          $D7AF (draw_daimyo_name) {bytecode}, $02
@@ -6709,7 +6709,7 @@ VM bytecode disassembly
   $AEE3  59                         LOADR_qimm   ; inline operand = 9
   $AEE4  C0                         CMPEQ
   $AEE5  D8 F1 AE                   JUMPF_abs              $AEF1
-  $AEE8  8E 57 BA                   PUSH_imm2              $BA57 (transfer_owned_fiefs_and_data_ba57)
+  $AEE8  8E 57 BA                   PUSH_imm2              $BA57 (str_passed_from_lord)
   $AEEB  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $AEEF  40                         LOADL_qimm   ; inline operand = 0
   $AEF0  29                         STORE_quick   ; inline operand = 9

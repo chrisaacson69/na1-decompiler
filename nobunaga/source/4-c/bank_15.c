@@ -2002,7 +2002,7 @@ word draw_daimyo_name_menu(word arg1) {
     open_message_window();    // $E2DB
     message_display(msg_lord_f777);    // $E2E1
     redraw_window(((fief_owner(battle_defending_province) * 9) + 0x77A8));    // $E2F3
-    redraw_window(draw_daimyo_name_menu_data_f77d);    // $E2FA
+    redraw_window(str_marriage_event_msgs);    // $E2FA
     redraw_window(((selected_province_owner() * 9) + 0x77A8));    // $E308
     return draw_message(msg_wants_a_s, arg1);    // $E314
 }

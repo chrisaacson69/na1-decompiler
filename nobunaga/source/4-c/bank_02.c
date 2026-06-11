@@ -32,7 +32,7 @@ word compose_upload_daimyo_portrait(word out_buf) {
 word build_blit_fief_tile_block(word dst_col, word dst_row) {
     i = 0;    // $8142
     do {    // $8144
-        palette_write_wrap(i, *(word*)(((i << 1) + build_blit_fief_tile_blo_data_b51e)));    // $814F
+        palette_write_wrap(i, *(word*)(((i << 1) + str_keypad_yn_prompt)));    // $814F
         i = (i + 1);    // $8156
     } while (((unsigned)i < (unsigned)4));
     if (!(*(byte*)((daimyo_record_addr(active_province_idx_copy) + 6)))) {    // $815F
@@ -1438,7 +1438,7 @@ word announce_battle_outcome_retreat_or_won(word arg1, word arg2) {
         }
         local6 = *(word*)((((arg2 - 1) << 1) + battle_conclusion_msgs_loser));    // $9453
         daimyo_name_width(arg1);    // $9455
-        redraw_window(announce_battle_outcome_data_b96c);    // $945C
+        redraw_window(str_battle_outcome_msgs);    // $945C
         redraw_window(local6);    // $9461
         call_bank10_entry((local8 ? 4 : 3));    // $946F
         if (audio_wait_gate) {    // $946E
@@ -1499,7 +1499,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
         if (!(arg1)) {    // $9511
             message_display(mem_B1C6);    // $9518
         } else {
-            message_display(announce_combat_side_dai_data_b99d);    // $9522
+            message_display(str_position_unit_prompt);    // $9522
             draw_daimyo_name(local11);    // $9527
             char_advance_width(10);    // $952C
             redraw_window(*(word*)((((((arg1 - 1) << 1) + 4) << 1) + combat_message_table)));    // $953B
@@ -1530,7 +1530,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
     } else {
         local11 = get_battle_side_province(local10);    // $956E
         if (get_province_ai_state(get_battle_side_province(local10))) {    // $9569
-            message_display(announce_combat_side_dai_data_b99e);    // $957A
+            message_display(str_position_unit_prompt_alias);    // $957A
             draw_daimyo_name(local11);    // $957F
             char_advance_width(10);    // $9584
             redraw_window(mem_B1A6);    // $958B
@@ -3158,7 +3158,7 @@ word combat_command_dispatch_loop_per_unit(void) {
                     if (!(is_cell_valid_for_phase(unit_cell))) {    // $ACCA
                         erase_cursor_advance_phase(unit_cell);    // $ACD8
                     }
-                    message_display(combat_command_dispatch_data_ba18);    // $ACDF
+                    message_display(str_combat_orders_labels);    // $ACDF
                     draw_daimyo_name(get_battle_side_province(cur_combat_side));    // $ACEB
                     redraw_window(msg_your_orders_for);    // $ACF2
                     draw_unit_type_label();    // $ACF6
@@ -3189,7 +3189,7 @@ word combat_command_dispatch_loop_per_unit(void) {
 
 word display_morale_falling_message(void) {
     if (get_province_ai_state(battle_defending_province)) {    // $AD3D
-        message_display(display_morale_falling_m_data_ba2b);    // $AD4A
+        message_display(str_our_morale_falling);    // $AD4A
         phi_ad58_0 = msg_our;    // $AD55
         draw_daimyo_name(battle_defending_province);    // $AD51
         redraw_window(phi_ad58_0);    // $AD58
@@ -3197,7 +3197,7 @@ word display_morale_falling_message(void) {
         return clear_rect_left_lower_alt();    // $AD66
     } else {
         if (get_province_ai_state(selected_province_idx)) {    // $AD7B
-            message_display(display_morale_falling_m_data_ba31);    // $AD6A
+            message_display(str_enemy_morale_falling);    // $AD6A
             phi_ad58_0 = msg_enemy;    // $AD78
             draw_daimyo_name(selected_province_idx);    // $AD71
             redraw_window(phi_ad58_0);    // $AD58
@@ -3324,7 +3324,7 @@ word transfer_owned_fiefs_and_announce_succession(void) {
                 draw_message(msg_fmt__2d_ba52, (*(byte*)(local8) + 1));    // $AEDC
                 local9 = (local9 + 1);    // $AEE2
                 if (((local9 + 1) == 9)) {    // $AED5
-                    redraw_window(transfer_owned_fiefs_and_data_ba57);    // $AEEB
+                    redraw_window(str_passed_from_lord);    // $AEEB
                     local9 = 0;    // $AEF0
                 }
             }

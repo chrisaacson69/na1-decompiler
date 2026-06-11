@@ -9,7 +9,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $8003   (frame_off=+0, body @ $8008)
 ; ============================================================
-  $8008  8E 10 BA                   PUSH_imm2              $BA10 (prompt_message_and_redra_data_ba10)
+  $8008  8E 10 BA                   PUSH_imm2              $BA10 (str_market_panel_nl2)
   $800B  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $800F  0C                         LOADL_quick   ; inline operand = 12
   $8010  8C FF 00                   LOADR_imm2             $00FF
@@ -23,7 +23,7 @@ VM bytecode disassembly
   $8023  8C 8A F9                   LOADR_imm2             $F98A (msg_no_fiefs)
   $8026  C0                         CMPEQ
   $8027  D8 30 80                   JUMPF_abs              $8030
-  $802A  8A 11 BA                   LOADL_imm2             $BA11 (prompt_message_and_redra_data_ba11)
+  $802A  8A 11 BA                   LOADL_imm2             $BA11 (str_market_panel_nl1)
   $802D  D6 33 80                   JUMP_abs               $8033
  >$8030  8A 94 F9                   LOADL_imm2             $F994 (msg_fiefs)
  >$8033  B3                         PUSHL
@@ -36,7 +36,7 @@ VM bytecode disassembly
   $803C  B3                         PUSHL
   $803D  8E F6 B9                   PUSH_imm2              $B9F6 (msg_s_s_s)
   $8040  E9 34 D1 08                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $08
- >$8044  8E 12 BA                   PUSH_imm2              $BA12 (prompt_message_and_redra_data_ba12)
+ >$8044  8E 12 BA                   PUSH_imm2              $BA12 (str_market_panel)
   $8047  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $804B  CF                         RETURN
 
@@ -160,7 +160,7 @@ VM bytecode disassembly
   $8120  5A                         LOADR_qimm   ; inline operand = 10
   $8121  B6                         SDIV
   $8122  B3                         PUSHL
-  $8123  8E 57 BA                   PUSH_imm2              $BA57 (msg_ninja_2d_1d)
+  $8123  8E 57 BA                   PUSH_imm2              $BA57 (str_passed_from_lord)
   $8126  E9 34 D1 06                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $06
   $812A  41                         LOADL_qimm   ; inline operand = 1
   $812B  A8 F9 7B                   STORE_abs              $7BF9 (ui_state_flag_7bf9)
@@ -252,7 +252,7 @@ VM bytecode disassembly
   $81DF  40                         LOADL_qimm   ; inline operand = 0
   $81E0  2B                         STORE_quick   ; inline operand = 11
   $81E1  D6 FA 81                   JUMP_abs               $81FA
- >$81E4  8E 69 BA                   PUSH_imm2              $BA69 (count_eligible_targets_data_ba69)
+ >$81E4  8E 69 BA                   PUSH_imm2              $BA69 (str_fief_list_columns)
   $81E7  3C                         PUSH_quick   ; inline operand = 12
   $81E8  E9 03 80 04                CALL_abs_imm1          $8003 (prompt_message_and_redraw) {bytecode}, $04
   $81EC  40                         LOADL_qimm   ; inline operand = 0
@@ -687,7 +687,7 @@ VM bytecode disassembly
   $84F0  3C                         PUSH_quick   ; inline operand = 12
   $84F1  E9 4B DB 02                CALL_abs_imm1          $DB4B (draw_owner_name) {bytecode}, $02
   $84F5  D6 FF 84                   JUMP_abs               $84FF
- >$84F8  8E 9C BA                   PUSH_imm2              $BA9C (effect_view_a_data_ba9c)
+ >$84F8  8E 9C BA                   PUSH_imm2              $BA9C (str_fief_info_labels)
   $84FB  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
  >$84FF  3C                         PUSH_quick   ; inline operand = 12
   $8500  E9 DA D7 02                CALL_abs_imm1          $D7DA (fief_to_daimyo_record_addr) {bytecode}, $02
@@ -1081,7 +1081,7 @@ VM bytecode disassembly
   $87B6  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $87B9  40                         LOADL_qimm   ; inline operand = 0
   $87BA  CF                         RETURN
- >$87BB  8E 26 BB                   PUSH_imm2              $BB26 (province_select_helper_data_bb26)
+ >$87BB  8E 26 BB                   PUSH_imm2              $BB26 (str_not_home_and_status)
   $87BE  3C                         PUSH_quick   ; inline operand = 12
   $87BF  E9 03 80 04                CALL_abs_imm1          $8003 (prompt_message_and_redraw) {bytecode}, $04
   $87C3  61                         PUSH_qimm   ; inline operand = 1
@@ -2089,7 +2089,7 @@ VM bytecode disassembly
   $8D97  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
   $8D9B  8D 1A                      BYTE_PUSH_imm1         +26
   $8D9D  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
-  $8DA1  8E 3E BB                   PUSH_imm2              $BB3E (effect_bribe_data_bb3e)
+  $8DA1  8E 3E BB                   PUSH_imm2              $BB3E (str_daimyo_status_msgs)
   $8DA4  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8DA8  37                         PUSH_quick   ; inline operand = 7
   $8DA9  8E 36 FC                   PUSH_imm2              $FC36 (msg_d_peasants_have_defected)
@@ -3826,7 +3826,7 @@ VM bytecode disassembly
   $99B2  0B                         LOADL_quick   ; inline operand = 11
   $99B3  72                         ADD_qimm   ; inline operand = 2
   $99B4  2A                         STORE_quick   ; inline operand = 10
-  $99B5  8E E2 BB                   PUSH_imm2              $BBE2 (driver_tax_data_bbe2)
+  $99B5  8E E2 BB                   PUSH_imm2              $BBE2 (str_is_this_ok)
   $99B8  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $99BC  06                         LOADL_quick   ; inline operand = 6
   $99BD  D3                         BYTE_DEREF
@@ -4143,7 +4143,7 @@ VM bytecode disassembly
   $9BE4  B3                         PUSHL
   $9BE5  E9 5E CB 04                CALL_abs_imm1          $CB5E (min_word) {bytecode}, $04
   $9BE9  2B                         STORE_quick   ; inline operand = 11
-  $9BEA  8E EE BB                   PUSH_imm2              $BBEE (driver_dam_data_bbee)
+  $9BEA  8E EE BB                   PUSH_imm2              $BBEE (str_dams_value_label)
   $9BED  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9BF1  0A                         LOADL_quick   ; inline operand = 10
   $9BF2  B0                         DEREF
@@ -4188,7 +4188,7 @@ VM bytecode disassembly
   $9C34  3A                         PUSH_quick   ; inline operand = 10
   $9C35  89 64                      BYTE_LOADL_imm1        +100
   $9C37  B1                         POPSTORE
- >$9C38  8E FA BB                   PUSH_imm2              $BBFA (driver_dam_data_bbfa)
+ >$9C38  8E FA BB                   PUSH_imm2              $BBFA (str_output_label)
   $9C3B  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9C3F  0A                         LOADL_quick   ; inline operand = 10
   $9C40  B0                         DEREF
@@ -4303,7 +4303,7 @@ VM bytecode disassembly
   $9D18  CF                         RETURN
  >$9D19  61                         PUSH_qimm   ; inline operand = 1
   $9D1A  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
-  $9D1E  8E FB BB                   PUSH_imm2              $BBFB (driver_pact_data_bbfb)
+  $9D1E  8E FB BB                   PUSH_imm2              $BBFB (str_output_label_alias1)
   $9D21  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9D25  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $9D28  59                         LOADR_qimm   ; inline operand = 9
@@ -4346,7 +4346,7 @@ VM bytecode disassembly
  >$9D66  0B                         LOADL_quick   ; inline operand = 11
   $9D67  B0                         DEREF
   $9D68  D8 B8 9D                   JUMPF_abs              $9DB8
-  $9D6B  8E FC BB                   PUSH_imm2              $BBFC (driver_grow_data_bbfc)
+  $9D6B  8E FC BB                   PUSH_imm2              $BBFC (str_output_label_alias2)
   $9D6E  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9D72  0B                         LOADL_quick   ; inline operand = 11
   $9D73  78                         ADD_qimm   ; inline operand = 8
@@ -4375,7 +4375,7 @@ VM bytecode disassembly
   $9D99  2A                         STORE_quick   ; inline operand = 10
   $9D9A  69                         PUSH_qimm   ; inline operand = 9
   $9D9B  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
-  $9D9F  8E 04 BC                   PUSH_imm2              $BC04 (driver_grow_data_bc04)
+  $9D9F  8E 04 BC                   PUSH_imm2              $BC04 (str_treasure_room_full)
   $9DA2  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9DA6  0B                         LOADL_quick   ; inline operand = 11
   $9DA7  78                         ADD_qimm   ; inline operand = 8
@@ -4520,7 +4520,7 @@ VM bytecode disassembly
   $9EC5  CF                         RETURN
  >$9EC6  61                         PUSH_qimm   ; inline operand = 1
   $9EC7  E9 8F 8B 02                CALL_abs_imm1          $8B8F (play_result_jingle) {bytecode}, $02
-  $9ECB  8E 05 BC                   PUSH_imm2              $BC05 (driver_marry_data_bc05)
+  $9ECB  8E 05 BC                   PUSH_imm2              $BC05 (str_treasure_room_full_alias)
   $9ECE  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9ED2  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $9ED5  59                         LOADR_qimm   ; inline operand = 9
@@ -5177,7 +5177,7 @@ VM bytecode disassembly
   $A377  8C 01 70                   LOADR_imm2             $7001 (province_table_live)
   $A37A  BB                         ADD
   $A37B  2C                         STORE_quick   ; inline operand = 12
-  $A37C  8E CF BD                   PUSH_imm2              $BDCF (effect_ninja_sabotage_data_bdcf)
+  $A37C  8E CF BD                   PUSH_imm2              $BDCF (str_men_ninja_train_msgs)
   $A37F  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A383  AC EA D7                   CALL_abs               $D7EA (selected_province_daimyo_record) {bytecode}
   $A386  73                         ADD_qimm   ; inline operand = 3
@@ -5883,7 +5883,7 @@ VM bytecode disassembly
  >$A87C  0B                         LOADL_quick   ; inline operand = 11
   $A87D  B0                         DEREF
   $A87E  D8 C6 A8                   JUMPF_abs              $A8C6
-  $A881  8E 13 BE                   PUSH_imm2              $BE13 (driver_build_data_be13)
+  $A881  8E 13 BE                   PUSH_imm2              $BE13 (str_town_value_label)
   $A884  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A888  0B                         LOADL_quick   ; inline operand = 11
   $A889  74                         ADD_qimm   ; inline operand = 4
@@ -6034,7 +6034,7 @@ VM bytecode disassembly
   $A969  D8 BB A9                   JUMPF_abs              $A9BB
   $A96C  0B                         LOADL_quick   ; inline operand = 11
   $A96D  2A                         STORE_quick   ; inline operand = 10
-  $A96E  8E 1F BE                   PUSH_imm2              $BE1F (effect_give_b_data_be1f)
+  $A96E  8E 1F BE                   PUSH_imm2              $BE1F (str_gold_rice_prompt)
   $A971  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A975  8E 20 BE                   PUSH_imm2              $BE20 (msg_gold_rice)
   $A978  E9 51 D3 02                CALL_abs_imm1          $D351 (prompt_ab_window) {bytecode}, $02
@@ -6075,7 +6075,7 @@ VM bytecode disassembly
   $A9BA  CF                         RETURN
  >$A9BB  8E D9 FD                   PUSH_imm2              $FDD9 (msg_you_have_no_gold)
   $A9BE  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
-  $A9C2  8E 2E BE                   PUSH_imm2              $BE2E (effect_give_b_data_be2e)
+  $A9C2  8E 2E BE                   PUSH_imm2              $BE2E (str_peasants_men_prompt_nl)
   $A9C5  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $A9C9  8E EB FD                   PUSH_imm2              $FDEB (msg_you_have_no_rice)
   $A9CC  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
@@ -6090,7 +6090,7 @@ VM bytecode disassembly
   $A9DB  E9 3A A9 02                CALL_abs_imm1          $A93A (effect_give_a) {bytecode}, $02
   $A9DF  2B                         STORE_quick   ; inline operand = 11
   $A9E0  D8 05 AA                   JUMPF_abs              $AA05
-  $A9E3  8E 30 BE                   PUSH_imm2              $BE30 (effect_give_c_data_be30)
+  $A9E3  8E 30 BE                   PUSH_imm2              $BE30 (str_peasants_men_prompt)
   $A9E6  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A9EA  8E 31 BE                   PUSH_imm2              $BE31 (msg_peasnts_men)
   $A9ED  E9 51 D3 02                CALL_abs_imm1          $D351 (prompt_ab_window) {bytecode}, $02
@@ -6108,7 +6108,7 @@ VM bytecode disassembly
   $AA02  D6 F7 A9                   JUMP_abs               $A9F7
  >$AA05  8E FD FD                   PUSH_imm2              $FDFD (msg_you_have_no_soldiers)
   $AA08  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
-  $AA0C  8E 41 BE                   PUSH_imm2              $BE41 (effect_give_c_data_be41)
+  $AA0C  8E 41 BE                   PUSH_imm2              $BE41 (str_amount_available_fields)
   $AA0F  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $AA13  8E 13 FE                   PUSH_imm2              $FE13 (msg_you_have_no_peasants)
   $AA16  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02

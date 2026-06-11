@@ -9,13 +9,13 @@
 // (body @ $8008)
 
 word prompt_message_and_redraw(word prompt_id, word message_ptr) {
-    message_display(prompt_message_and_redra_data_ba10);    // $800B
+    message_display(str_market_panel_nl2);    // $800B
     if ((prompt_id == 255)) {    // $8008
         redraw_window(msg_attack);    // $801A
     } else {
-        draw_message(msg_s_s_s, *(word*)((((prompt_id - 1) << 1) + prompt_message_and_redra_data_f816)), ((message_ptr == msg_no_fiefs) ? prompt_message_and_redra_data_ba11 : msg_fiefs), message_ptr);    // $8040
+        draw_message(msg_s_s_s, *(word*)((((prompt_id - 1) << 1) + prompt_message_and_redra_data_f816)), ((message_ptr == msg_no_fiefs) ? str_market_panel_nl1 : msg_fiefs), message_ptr);    // $8040
     }
-    return redraw_window(prompt_message_and_redra_data_ba12);    // $804B
+    return redraw_window(str_market_panel);    // $804B
 }
 
 // $804C province_select_prompt
@@ -74,7 +74,7 @@ word draw_market_rates(void) {
     draw_message(msg_men_2d_1d, (rate / 10), (gold_men_hire_rate % 10));    // $810C
     set_cursor(20, 25);    // $8114
     rate = hire_gold_rate;    // $811B
-    draw_message(msg_ninja_2d_1d, (rate / 10), (hire_gold_rate % 10));    // $8126
+    draw_message(str_passed_from_lord, (rate / 10), (hire_gold_rate % 10));    // $8126
     ui_state_flag_7bf9 = 1;    // $812B
     return 1;    // $812E
 }
@@ -131,7 +131,7 @@ word count_eligible_targets(word arg1, word arg2, word arg3) {
                                 if ((ui_prompt_redraw() == 2)) {    // $81D7
                                     local11 = 0;    // $81E0
                                 } else {
-                                    prompt_message_and_redraw(arg1, count_eligible_targets_data_ba69);    // $81E8
+                                    prompt_message_and_redraw(arg1, str_fief_list_columns);    // $81E8
                                     local10 = 0;    // $81ED
                                     continue;
                                 }
@@ -348,7 +348,7 @@ word effect_view_a(word arg1) {
     if (local8) {    // $84C6
         draw_owner_name(arg1);    // $84F1
     } else {
-        redraw_window(effect_view_a_data_ba9c);    // $84FB
+        redraw_window(str_fief_info_labels);    // $84FB
     }
     local10 = fief_to_daimyo_record_addr(arg1);    // $8504
     local7 = ((arg1 * 26) + 0x7001);    // $850D
@@ -531,7 +531,7 @@ word province_select_helper(word arg1, word arg2) {
         confirm_prompt();    // $87B6
         return 0;    // $87BA
     } else {
-        prompt_message_and_redraw(arg1, province_select_helper_data_bb26);    // $87BF
+        prompt_message_and_redraw(arg1, str_not_home_and_status);    // $87BF
         return count_eligible_targets(arg1, arg2, 1);    // $87CA
     }
 }
@@ -886,7 +886,7 @@ word effect_bribe(word gold_amount) {
         *(word*)((own_fief + 8)) = (*(word*)((own_fief + 8)) + defect_amount);    // $8D95
         play_result_jingle(0);    // $8D97
         trigger_cutscene(26);    // $8D9D
-        message_display(effect_bribe_data_bb3e);    // $8DA4
+        message_display(str_daimyo_status_msgs);    // $8DA4
         draw_message(msg_d_peasants_have_defected, defect_amount);    // $8DAC
         confirm_prompt();    // $8DB0
         clear_econ_stats_if_no_output(battle_defending_province);    // $8DB6
@@ -1563,7 +1563,7 @@ word driver_tax(void) {
     local6 = (selected_province_idx + 0x6D2D);    // $99A6
     local11 = ((selected_province_idx * 26) + 0x700D);    // $99B1
     local10 = (local11 + 2);    // $99B4
-    message_display(driver_tax_data_bbe2);    // $99B8
+    message_display(str_is_this_ok);    // $99B8
     draw_message(msg_tax_is_d_enter_new_tax, *(byte*)(local6));    // $99C2
     battle_defending_province = selected_province_idx;    // $99C9
     local5 = number_input(1, (defender_owner_is_keyed_daimyo() ? 30 : 100));    // $99DF
@@ -1686,7 +1686,7 @@ word driver_dam(void) {
                 return 0;    // $9BCE
             } else {
                 local11 = min_word(*(word*)(local8), ((effect_dam(local8) * (100 - *(word*)((local8 + 10)))) / 2));    // $9BE9
-                message_display(driver_dam_data_bbee);    // $9BED
+                message_display(str_dams_value_label);    // $9BED
                 draw_message(msg_s_is_d_spend_how_much_on_it, msg_dams_value, *(word*)(local10));    // $9BFA
                 local9 = number_input(1, local11);    // $9C04
                 if (number_input(1, local11)) {    // $9BCF
@@ -1700,7 +1700,7 @@ word driver_dam(void) {
                     if ((*(word*)(local10) > 100)) {    // $9C20
                         *(word*)(local10) = 100;    // $9C37
                     }
-                    message_display(driver_dam_data_bbfa);    // $9C3B
+                    message_display(str_output_label);    // $9C3B
                     draw_message(msg_dams_value_is_now_d, *(word*)(local10));    // $9C45
                     confirm_prompt();    // $9C49
                     return 1;    // $9C4D
@@ -1747,7 +1747,7 @@ word driver_pact(void) {
                 }
             } else {
                 play_result_jingle(1);    // $9D1A
-                message_display(driver_pact_data_bbfb);    // $9D21
+                message_display(str_output_label_alias1);    // $9D21
                 draw_message(msg_lord_s_they_ve_refused, ((selected_province_owner() * 9) + 0x77A8));    // $9D32
                 *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) - 1);    // $9D13
             }
@@ -1772,14 +1772,14 @@ word driver_grow(void) {
         return 0;    // $9D65
     } else {
         if (*(word*)(local11)) {    // $9D66
-            message_display(driver_grow_data_bbfc);    // $9D6E
+            message_display(str_output_label_alias2);    // $9D6E
             draw_message(msg_s_is_d_spend_how_much_on_it, msg_output, *(word*)((local11 + 8)));    // $9D7C
             local10 = number_input(1, *(word*)(local11));    // $9D88
             if (number_input(1, *(word*)(local11))) {    // $9D6B
                 *(word*)(local11) = (*(word*)(local11) - local10);    // $9D92
                 local10 = effect_grow(local11, local10);    // $9D99
                 trigger_cutscene(9);    // $9D9B
-                message_display(driver_grow_data_bc04);    // $9DA2
+                message_display(str_treasure_room_full);    // $9DA2
                 draw_message(msg_output_is_now_d, *(word*)((local11 + 8)));    // $9DAD
                 confirm_prompt();    // $9DB1
                 return 1;    // $9DB5
@@ -1842,7 +1842,7 @@ word driver_marry(void) {
                     return local10;    // $9EC5
                 } else {
                     play_result_jingle(1);    // $9EC7
-                    message_display(driver_marry_data_bc05);    // $9ECE
+                    message_display(str_treasure_room_full_alias);    // $9ECE
                     draw_message(msg_lord_s_they_ve_refused, ((selected_province_owner() * 9) + 0x77A8));    // $9EDF
                     *(byte*)((local8 + 2)) = (*(byte*)((local8 + 2)) - 1);    // $9EE8
                     *(byte*)((local8 + 4)) = (*(byte*)((local8 + 4)) - 1);    // $9EEE
@@ -2151,7 +2151,7 @@ word effect_ninja_sabotage(word arg1) {
                         }
                         trigger_cutscene(12);    // $A36D
                         arg1 = ((battle_defending_province * 26) + 0x7001);    // $A37B
-                        message_display(effect_ninja_sabotage_data_bdcf);    // $A37F
+                        message_display(str_men_ninja_train_msgs);    // $A37F
                         if ((*(byte*)((fief_to_daimyo_record_addr(battle_defending_province) + 3)) < (*(byte*)((selected_province_daimyo_record() + 3)) + 30))) {    // $A36C
                             switch (mission) {    // $A399
                                 case 65535:
@@ -2436,7 +2436,7 @@ word driver_build(void) {
         return 0;    // $A87B
     } else {
         if (*(word*)(local11)) {    // $A87C
-            message_display(driver_build_data_be13);    // $A884
+            message_display(str_town_value_label);    // $A884
             draw_message(msg_s_is_d_spend_how_much_on_it, msg_town_value_be14, *(word*)((local11 + 4)));    // $A892
             local10 = number_input(1, *(word*)(local11));    // $A89E
             if (number_input(1, *(word*)(local11))) {    // $A881
@@ -2513,7 +2513,7 @@ word effect_give_b(word fief, word give_type) {
     local11 = give_rice_gold_eligibility(fief);    // $A968
     if (give_rice_gold_eligibility(fief)) {    // $A963
         eligibility_flags = local11;    // $A96D
-        message_display(effect_give_b_data_be1f);    // $A971
+        message_display(str_gold_rice_prompt);    // $A971
         local11 = prompt_ab_window(msg_gold_rice);    // $A97C
         if (!(local11)) {    // $A96C
             phi_val_a98c = 2;    // $A982
@@ -2541,7 +2541,7 @@ word effect_give_b(word fief, word give_type) {
         }
     } else {
         message_display(msg_you_have_no_gold);    // $A9BE
-        redraw_window(effect_give_b_data_be2e);    // $A9C5
+        redraw_window(str_peasants_men_prompt_nl);    // $A9C5
         redraw_window(msg_you_have_no_rice);    // $A9CC
         confirm_prompt();    // $A9D0
     }
@@ -2554,7 +2554,7 @@ word effect_give_b(word fief, word give_type) {
 word effect_give_c(word fief) {
     local11 = effect_give_a(fief);    // $A9DF
     if (effect_give_a(fief)) {    // $A9DA
-        message_display(effect_give_c_data_be30);    // $A9E6
+        message_display(str_peasants_men_prompt);    // $A9E6
         local11 = prompt_ab_window(msg_peasnts_men);    // $A9F1
         if (!(local11)) {    // $A9E3
             phi_val_a9f7 = 2;    // $A9F6
@@ -2567,7 +2567,7 @@ word effect_give_c(word fief) {
         }
     } else {
         message_display(msg_you_have_no_soldiers);    // $AA08
-        redraw_window(effect_give_c_data_be41);    // $AA0F
+        redraw_window(str_amount_available_fields);    // $AA0F
         redraw_window(msg_you_have_no_peasants);    // $AA16
         confirm_prompt();    // $AA1A
     }
