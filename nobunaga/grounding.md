@@ -124,6 +124,23 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### ★ BANK 2 GROUNDING COMPLETE ★ — the 3 combat-UI tail suspects   [2026-06-10]
+**Bank 2 (tactical combat engine) is fully grounded: 0 suspects (0 pure `_XXXX`, 0 address-tagged).** The
+final 3, all read from the ROM (not guessed) — pulled actual strings out of `Nobunaga's Ambition (USA).nes`:
+- `$8270` `set_combat_state_pair_7bf5_7bf7` → **`set_tactical_cursor_pos(cell,row)`** [HIGH] — writes the
+  confirmed tactical-cursor pair $7BF5(col)/$7BF7(row); draw_tactical_cursor_region ($840B) consumes it.
+- `$936A` `draw_combat_ui_string_b196` → **`draw_combat_message(idx,slot)`** [HIGH] — draws combat
+  announcement string #idx from the $B196 table for a unit slot. **Renamed `jumptab_b196` →
+  `combat_message_table`**: ROM-verified ≥10 entries ([3] "You can`t move there!", [5] "Enemy unit %d has
+  been..", [7] "Unit %d has been wiped out", desertion/counter-attack/upper-hand). Caller picks 5(enemy)/7(own).
+  Also `$B626` `draw_combat_ui_string_data_b626` → **`combat_msg_blank_str`** (just a leading NUL = blank line).
+- `$9387` `draw_unit_label_b627` → **`draw_unit_type_label`** [HIGH] — draws "unit %d\n%s" = slot+1 + a
+  unit-type name. **Renamed `draw_unit_label_data_f9af` → `unit_type_name_table`** + added 3 string labels:
+  ROM-verified the 3 NA1 unit types = **'Rifles' / 'Infntry' / 'Cavalry'** ($F9B5/$F9BD/$F9C5).
+Regenerated (499 subs), 0 old-name stragglers. **Method note:** reading the ROM strings directly (py one-liner,
+16KB-bank offsets) was decisive — turned 3 MED "ui string" guesses into HIGH facts. Bank-2 totals for the arc:
+**9 suspects ground/refuted** (6 keystone + 3 UI). NEXT = bank 1 (5 suspects), then bank 0 (5).
+
 ### Bank 2 keystone — the combat unit table (struct-of-arrays @ $6FBC) + side resource pool   [2026-06-10]
 **Started bank 2 (the tactical COMBAT engine; banks 1/2 are specialized engines dispatched by bank 0's main
 loop, never co-resident — Chris's NES-banking framing). One keystone cleared 5 of 8 address-tagged suspects
@@ -378,17 +395,20 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): bank 2 (combat) — 3 suspects left; then banks 1, 0 <<<
-**Bank 2 keystone DONE (2026-06-10):** the $6FBC combat unit table (strength/col/row) + $6F7D side resource
-pool grounded — 6 subs renamed (see ledger top). **3 address-tagged suspects remain in bank 2:**
-- `set_combat_state_pair_7bf5_7bf7` ($8270) — writes tactical_cursor_cell_7bf5/row_7bf7; re-ground the two
-  $7BF5/$7BF7 vars (cursor cell/row?) while here.
-- `draw_combat_ui_string_b196` ($B196) — combat UI text draw; verify the string/coords.
-- `draw_unit_label_b627` — combat UI; verify what label (unit name? count?).
-Bonus table columns to map when convenient: `$6F65` (per-unit status/flag byte), `$6FE5` (digit scratch buf).
-Then **bank 1** (5 suspects: helper_8357, province_window_redraw_ba6f/_ba78 pair, map_helper_af10,
-ai_seed_fief_collection_rate_6d2d) then **bank 0** (5: display_prompt_message_b900, select_msg_by_state_7b79,
-dedup_owners_to_6f4f, append_candidate_entry_6f67, roll_period_rate_table_6e0b — the main-loop bank, do last).
+### >>> NEXT BLOCK (start here): bank 1 (turn-command engine) — 5 suspects; then bank 0 <<<
+**Bank 2 COMPLETE (2026-06-10): 0 suspects** (combat unit-table keystone + side resource pool + 3 combat-UI
+tails; see ledger). Bonus table columns still un-mapped (optional): `$6F65` (per-unit status/flag byte),
+`$6FE5` (digit scratch buf). **Bank 1 — 5 address-tagged suspects** (the specialized lord-command/turn engine
+dispatched by bank 0; per Chris's NES-banking framing banks 1 & 2 are the engines, bank 0 the main loop):
+- `helper_8357` ($8357, 3 args) — fully vague; ID first.
+- `province_window_redraw_ba6f` + `province_window_redraw_ba78` ($BA6F/$BA78, 2 args) — adjacent pair, likely
+  the province-info window redraw; ground together.
+- `map_helper_af10` ($AF10, 1 arg).
+- `ai_seed_fief_collection_rate_6d2d` ($6D2D area) — AI tax/collection seed; cross-checks the $6D2D table.
+**Method that worked in bank 2:** read the ROM strings directly for any draw_message/message_display target
+(py one-liner, 16KB-bank file offset = 16 + bank*0x4000 + (cpu - (bank==15?0xC000:0x8000))) — decisive.
+Then **bank 0** (5: display_prompt_message_b900, select_msg_by_state_7b79, dedup_owners_to_6f4f,
+append_candidate_entry_6f67, roll_period_rate_table_6e0b — the main-loop bank, do last).
 
 #### (historical) original NEXT BLOCK note: banks 0/1/2 (bank 15 + 10 + 14 are DONE)
 **Bank 15 complete (0 suspects); banks 10 & 14 complete (all named).** Remaining corpus suspects: banks
