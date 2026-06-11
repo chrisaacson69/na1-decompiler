@@ -3700,7 +3700,7 @@ VM bytecode disassembly
   $98C0  DE EA FF                   LEAL_far               $FFEA
   $98C3  B3                         PUSHL
   $98C4  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $98C7  E9 C1 97 04                CALL_abs_imm1          $97C1 (candidate_list_6f4f_lookup) {bytecode}, $04
+  $98C7  E9 C1 97 04                CALL_abs_imm1          $97C1 (fief_list_parallel_lookup) {bytecode}, $04
   $98CB  D8 DA 98                   JUMPF_abs              $98DA
   $98CE  8E 29 FE                   PUSH_imm2              $FE29 (msg_they_are_your_allies)
   $98D1  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
@@ -4657,7 +4657,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $9FAF   (frame_off=-2, body @ $9FB4)
 ; ============================================================
-  $9FB4  8E 59 BC                   PUSH_imm2              $BC59 (subhandler_9FAF_data_bc59)
+  $9FB4  8E 59 BC                   PUSH_imm2              $BC59 (msg_repay_debt)
   $9FB7  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9FBB  0C                         LOADL_quick   ; inline operand = 12
   $9FBC  72                         ADD_qimm   ; inline operand = 2
@@ -4922,7 +4922,7 @@ VM bytecode disassembly
   $A17B  B1                         POPSTORE
   $A17C  3A                         PUSH_quick   ; inline operand = 10
   $A17D  3C                         PUSH_quick   ; inline operand = 12
-  $A17E  E9 ED A0 04                CALL_abs_imm1          $A0ED (effect_subhandler_A113) {bytecode}, $04
+  $A17E  E9 ED A0 04                CALL_abs_imm1          $A0ED (amount_div_force_factor) {bytecode}, $04
   $A182  B3                         PUSHL
   $A183  0C                         LOADL_quick   ; inline operand = 12
   $A184  8F 16                      BYTE_ADD_imm1          +22

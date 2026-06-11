@@ -1441,10 +1441,10 @@ word driver_move(void) {
     }
 }
 
-// $97C1 candidate_list_6f4f_lookup
+// $97C1 fief_list_parallel_lookup
 // (body @ $97C6)
 
-word candidate_list_6f4f_lookup(word arg1, word arg2) {
+word fief_list_parallel_lookup(word arg1, word arg2) {
     local11 = 0x6F4F;    // $97C9
     while (1) {    // $97E0
         if ((*(byte*)(local11) != 255)) {    // $97E0
@@ -1509,7 +1509,7 @@ word driver_war(void) {
                 if (province_select_prompt(deduped_owner_list)) {    // $98A2
                     open_message_window();    // $98B6
                     battle_defending_province = (battle_defending_province - 1);    // $98BD
-                    if (candidate_list_6f4f_lookup(battle_defending_province, &local1)) {    // $98B6
+                    if (fief_list_parallel_lookup(battle_defending_province, &local1)) {    // $98B6
                         redraw_window(msg_they_are_your_allies);    // $98D1
                         confirm_prompt();    // $98D5
                         return 1;    // $98D9
@@ -1900,11 +1900,11 @@ word subhandler_9F04(word arg1) {
     }
 }
 
-// $9FAF subhandler_9FAF
+// $9FAF prompt_repay_debt
 // (body @ $9FB4)
 
-word subhandler_9FAF(word arg1) {
-    message_display(subhandler_9FAF_data_bc59);    // $9FB7
+word prompt_repay_debt(word arg1) {
+    message_display(msg_repay_debt);    // $9FB7
     if (arg1->debt) {    // $9FB4
         if (*(word*)(arg1)) {    // $9FC1
             local11 = number_input(1, min_word(arg1->debt, *(word*)(arg1)));    // $9FD7
@@ -1989,10 +1989,10 @@ word subhandler_A068(word arg1) {
     return 0;    // $A0EC
 }
 
-// $A0ED effect_subhandler_A113
+// $A0ED amount_div_force_factor
 // (body @ $A0F2)
 
-word effect_subhandler_A113(word fief, word amount) {
+word amount_div_force_factor(word fief, word amount) {
     divisor = math32_3arg((fief->arms + fief->men), 5, fief->header);    // $A108
     if (!(divisor)) {    // $A0F2
         divisor = 1;    // $A10E
@@ -2018,7 +2018,7 @@ word subhandler_A113(word arg1) {
                 local10 = number_input(1, local11);    // $A169
                 if (number_input(1, local11)) {    // $A15C
                     *(word*)(arg1) = (*(word*)(arg1) - math32_muladddiv(arms_buy_price_rate, local10));    // $A17B
-                    arg1->arms = (arg1->arms + effect_subhandler_A113(arg1, local10));    // $A18A
+                    arg1->arms = (arg1->arms + amount_div_force_factor(arg1, local10));    // $A18A
                     clamp_amount_to_province_max((arg1 + 22));    // $A18F
                     cycle_economy_rate(3);    // $A194
                     return 1;    // $A199

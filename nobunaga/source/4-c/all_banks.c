@@ -177,7 +177,7 @@
 //   PRG $055C9  bank1  $95C9  ai_develop_grow_if_men_exceeds_gold
 //   PRG $0560C  bank1  $960C  ai_reinforce_province_arms_and_econ_10pct
 //   PRG $056D1  bank1  $96D1  driver_move
-//   PRG $057C1  bank1  $97C1  candidate_list_6f4f_lookup
+//   PRG $057C1  bank1  $97C1  fief_list_parallel_lookup
 //   PRG $057EA  bank1  $97EA  relations_roll_vs_owner
 //   PRG $05814  bank1  $9814  effect_war_e
 //   PRG $05850  bank1  $9850  driver_war
@@ -188,10 +188,10 @@
 //   PRG $05D3D  bank1  $9D3D  driver_grow
 //   PRG $05DC4  bank1  $9DC4  driver_marry
 //   PRG $05F04  bank1  $9F04  subhandler_9F04
-//   PRG $05FAF  bank1  $9FAF  subhandler_9FAF
+//   PRG $05FAF  bank1  $9FAF  prompt_repay_debt
 //   PRG $06003  bank1  $A003  subhandler_A003
 //   PRG $06068  bank1  $A068  subhandler_A068
-//   PRG $060ED  bank1  $A0ED  effect_subhandler_A113
+//   PRG $060ED  bank1  $A0ED  amount_div_force_factor
 //   PRG $06113  bank1  $A113  subhandler_A113
 //   PRG $061AF  bank1  $A1AF  noop_command_handler
 //   PRG $061B6  bank1  $A1B6  driver_trade
@@ -4727,10 +4727,10 @@ word driver_move(void) {
 }
 
 // ===== bank1 $97C1  (PRG $057C1) =====
-// PRG $057C1 candidate_list_6f4f_lookup
+// PRG $057C1 fief_list_parallel_lookup
 // (body @ PRG $057C6)
 
-word candidate_list_6f4f_lookup(word arg1, word arg2) {
+word fief_list_parallel_lookup(word arg1, word arg2) {
     local11 = 0x6F4F;    // PRG $057C9
     while (1) {    // PRG $057E0
         if ((*(byte*)(local11) != 255)) {    // PRG $057E0
@@ -4798,7 +4798,7 @@ word driver_war(void) {
                 if (province_select_prompt(deduped_owner_list)) {    // PRG $058A2 -> bank1 $804C
                     open_message_window();    // PRG $058B6 -> bank15 $CC89
                     battle_defending_province = (battle_defending_province - 1);    // PRG $058BD
-                    if (candidate_list_6f4f_lookup(battle_defending_province, &local1)) {    // PRG $058B6 -> bank1 $97C1
+                    if (fief_list_parallel_lookup(battle_defending_province, &local1)) {    // PRG $058B6 -> bank1 $97C1
                         redraw_window(msg_they_are_your_allies);    // PRG $058D1 -> bank15 $CEC4
                         confirm_prompt();    // PRG $058D5 -> bank15 $D766
                         return 1;    // PRG $058D9
@@ -5197,11 +5197,11 @@ word subhandler_9F04(word arg1) {
 }
 
 // ===== bank1 $9FAF  (PRG $05FAF) =====
-// PRG $05FAF subhandler_9FAF
+// PRG $05FAF prompt_repay_debt
 // (body @ PRG $05FB4)
 
-word subhandler_9FAF(word arg1) {
-    message_display(subhandler_9FAF_data_bc59);    // PRG $05FB7 -> bank15 $D326
+word prompt_repay_debt(word arg1) {
+    message_display(msg_repay_debt);    // PRG $05FB7 -> bank15 $D326
     if (arg1->debt) {    // PRG $05FB4
         if (*(word*)(arg1)) {    // PRG $05FC1
             local11 = number_input(1, min_word(arg1->debt, *(word*)(arg1)));    // PRG $05FD7 -> bank15 $D5E9
@@ -5289,10 +5289,10 @@ word subhandler_A068(word arg1) {
 }
 
 // ===== bank1 $A0ED  (PRG $060ED) =====
-// PRG $060ED effect_subhandler_A113
+// PRG $060ED amount_div_force_factor
 // (body @ PRG $060F2)
 
-word effect_subhandler_A113(word fief, word amount) {
+word amount_div_force_factor(word fief, word amount) {
     divisor = math32_3arg((fief->arms + fief->men), 5, fief->header);    // PRG $06108 -> bank15 $D6B8
     if (!(divisor)) {    // PRG $060F2
         divisor = 1;    // PRG $0610E
@@ -5319,7 +5319,7 @@ word subhandler_A113(word arg1) {
                 local10 = number_input(1, local11);    // PRG $06169 -> bank15 $D5E9
                 if (number_input(1, local11)) {    // PRG $0615C -> bank15 $D5E9
                     *(word*)(arg1) = (*(word*)(arg1) - math32_muladddiv(arms_buy_price_rate, local10));    // PRG $0617B -> bank1 $8303
-                    arg1->arms = (arg1->arms + effect_subhandler_A113(arg1, local10));    // PRG $0618A -> bank1 $A0ED
+                    arg1->arms = (arg1->arms + amount_div_force_factor(arg1, local10));    // PRG $0618A -> bank1 $A0ED
                     clamp_amount_to_province_max((arg1 + 22));    // PRG $0618F -> bank1 $82AC
                     cycle_economy_rate(3);    // PRG $06194 -> bank1 $8A4E
                     return 1;    // PRG $06199

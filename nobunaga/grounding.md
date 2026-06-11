@@ -198,6 +198,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #7 — bribe/siege/debt + AI reinforce (55/131)   [2026-06-10]
+3 renames (2 stubs + a list-suffix; +1 stale data label):
+- `$9FAF` `subhandler_9FAF` → **`prompt_repay_debt`** (number_input vs min(debt,gold); $BC59 → msg_repay_debt).
+- `$A0ED` `effect_subhandler_A113` → **`amount_div_force_factor`** (was mis-named AND mis-addressed — it's $A0ED).
+- `$97C1` `candidate_list_6f4f_lookup` → **`fief_list_parallel_lookup`** (find key in $6F4F, return parallel arg2[i]).
+- `$8D02` `bribe_success_check` ✅ (loyalty+CHARISMA contest, skill-scaled rng + coin flip), `$8DFD`
+  `resolve_siege_assault_outcome` ✅ (auto-resolve war from $7013 + $6F7F/$6F85), `$AB22` arms-edit screen ($76A9),
+  `$960C` AI reinforce: re-grounded. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #6 — the develop/move command family (48/131)   [2026-06-10]
 All confirmed (well-named); re-grounded with the formulas + a quirk:
 - `$891D/$896F/$89C1` `develop_loyalty/wealth/morale` ✅ — all the Grow shape `math32_3arg(amount, 6-skill,
