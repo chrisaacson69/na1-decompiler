@@ -854,6 +854,12 @@ def push_phis(instructions):
 
 _STORE_REGA = {'storeA_local_neg', 'storeA_local_pos', 'storeA_mem_word', 'storeA_mem_byte'}
 _BRANCH_REGA = {'branch_z_abs', 'branch_nz_abs'}
+# A DEREF (regA = *(regA), opcode $B0) also CONSUMES regA-in (the address) — so a merge whose
+# first op is a deref reached by preds leaving DIFFERENT addresses (e.g. a switch where each case
+# computes side_resource_ptr(arg1)+{0,2,4}, $8B8A) drops all but the fall pred's address without
+# this. The decoder side is consumer-agnostic (it sets state.regA to the temp; the deref then
+# reads `*(phi_val)`), so allowing it here is the whole fix. (bug 1.2, 2026-06-11.)
+_DEREF_REGA = {'loadA_ind_word'}
 
 
 def value_merge_phis(instructions):
@@ -914,7 +920,7 @@ def value_merge_phis(instructions):
         if M in folded_merges:                                     # handled by the ternary fold
             continue
         blk = bmap.get(M, [])
-        if not blk or blk[0]['mnemonic'] not in (_STORE_REGA | _BRANCH_REGA):
+        if not blk or blk[0]['mnemonic'] not in (_STORE_REGA | _BRANCH_REGA | _DEREF_REGA):
             continue                                               # consumer must read regA first
         ps = [p for p in preds.get(M, ()) if p is not EXIT]
         if len(ps) < 2:

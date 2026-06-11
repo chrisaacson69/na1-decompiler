@@ -826,15 +826,18 @@ word draw_side_resource_field(word arg1, word arg2) {
         set_cursor(6, ((arg1 ? 9 : 15) + arg2));    // $8BAC
         switch (arg2) {    // $8BA8
             case 0:
-                local9 = *(word*)(side_resource_ptr(arg1));    // $8BC8
+                phi_val_8bc7 = side_resource_ptr(arg1);    // $8BC3
+                local9 = *(word*)(phi_val_8bc7);    // $8BC8
                 break;
             default:
                 break;
             case 1:
-                local9 = *(word*)(side_resource_ptr(arg1));    // $8BC8
+                phi_val_8bc7 = (side_resource_ptr(arg1) + 2);    // $8BDE
+                local9 = *(word*)(phi_val_8bc7);    // $8BC8
                 break;
             case 2:
-                local9 = *(word*)(side_resource_ptr(arg1));    // $8BC8
+                phi_val_8bc7 = (side_resource_ptr(arg1) + 4);    // $8BE7
+                local9 = *(word*)(phi_val_8bc7);    // $8BC8
                 break;
         }
         draw_message(msg_fmt__4d_b574, local9);    // $8BCD

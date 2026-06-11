@@ -20,6 +20,16 @@ structure. They are found **only by reading**. Until DREAM is fixed, for any aff
 | 1.1 | if/else phi-temp clobber (else-arm value emitted unconditionally) | ✅ FIXED 2026-06-10 | 42→11 candidates, the 11 all false positives | `$DB6E`, `$D687`, `$9FFA` |
 | 1.2 | Arms reconverge at a shared SUFFIX op → only one arm's value kept | 🔴 OPEN — DIAGNOSED 2026-06-10 | a handful (structural census = 29 candidates but NOISY; most are legit shared-body switches) | `$8B8A` (switch +2/+4 offset collapses to 0), `$8BEA` (name-source dropped) |
 
+**Bug 1.2 — DEREF-consumer subclass FIXED + CERTIFIED 2026-06-11.** `value_merge_phis`' consumer set was
+`_STORE_REGA | _BRANCH_REGA`; a merge whose first op is a **`DEREF`** (`loadA_ind_word`, regA-as-address) was not
+recognised, so switch cases computing `base+{0,2,4}` and converging at a shared deref collapsed to the fall arm. Added
+`_DEREF_REGA = {'loadA_ind_word'}` to the consumer set (vm_cfg.py) — a ONE-LINE front-end fix; the decoder side is
+consumer-agnostic (sets `state.regA` to the temp, the deref reads `*(phi_val)`). **Corpus blast radius: exactly 1 sub**
+(`$8B8A draw_side_resource_field`). **Oracle-certified**: with distinct gold/rice/men set, the ROM draws 111/222/333
+for arg2=0/1/2 — matching the new per-case +0/+2/+4 (the old collapsed code drew 111 for all three). Gates: self-check
+(stack model) clean, deterministic, 1-sub diff. **STILL OPEN — the `$8BEA` name-source subclass** (different consumer:
+two name sources reconverge at the `fief_owner(...)*9+$77A8` tail; not a deref) — a separate value_merge gap.
+
 **Bug 1.2 root cause (diagnosed 2026-06-10):** the value-merge phi family (`value_merge_phis`/`consuming_phis`/
 `return_phis`/`push_phis`, keyed by `tag_addr`) that landed 1.1/1.4 covers **if/else** merges, but `dream.py` DEFERS
 switches (line ~213 "switch predicates handled later"; Rung-1 scope ~line 374 = "no switch dispatch"). So switch arms

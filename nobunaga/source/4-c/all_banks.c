@@ -7772,15 +7772,18 @@ word draw_side_resource_field(word arg1, word arg2) {
         set_cursor(6, ((arg1 ? 9 : 15) + arg2));    // PRG $08BAC -> bank15 $CC7B
         switch (arg2) {    // PRG $08BA8
             case 0:
-                local9 = *(word*)(side_resource_ptr(arg1));    // PRG $08BC8 -> bank2 $827E
+                phi_val_8bc7 = side_resource_ptr(arg1);    // PRG $08BC3 -> bank2 $827E
+                local9 = *(word*)(phi_val_8bc7);    // PRG $08BC8
                 break;
             default:
                 break;
             case 1:
-                local9 = *(word*)(side_resource_ptr(arg1));    // PRG $08BC8 -> bank2 $827E
+                phi_val_8bc7 = (side_resource_ptr(arg1) + 2);    // PRG $08BDE -> bank2 $827E
+                local9 = *(word*)(phi_val_8bc7);    // PRG $08BC8
                 break;
             case 2:
-                local9 = *(word*)(side_resource_ptr(arg1));    // PRG $08BC8 -> bank2 $827E
+                phi_val_8bc7 = (side_resource_ptr(arg1) + 4);    // PRG $08BE7 -> bank2 $827E
+                local9 = *(word*)(phi_val_8bc7);    // PRG $08BC8
                 break;
         }
         draw_message(msg_fmt__4d_b574, local9);    // PRG $08BCD -> bank15 $D134
