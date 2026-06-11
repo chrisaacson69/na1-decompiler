@@ -32,7 +32,7 @@
 //   PRG $00C0E  bank0  $8C0E  is_selected_province_ai_state_5
 //   PRG $00C1E  bank0  $8C1E  cur_flag_and_selected_ai_state5
 //   PRG $00C35  bank0  $8C35  relations_matrix_cell_addr
-//   PRG $00C45  bank0  $8C45  set_6da1_bit7_if_no_ai_state5_province_found
+//   PRG $00C45  bank0  $8C45  flag_turn_abort_if_no_state5_province
 //   PRG $00C75  bank0  $8C75  resolve_ownerless_province_succession
 //   PRG $00DE1  bank0  $8DE1  dedup_owners
 //   PRG $00E63  bank0  $8E63  process_fiefs_with_state_ff
@@ -1252,10 +1252,10 @@ word relations_matrix_cell_addr(word row_fief, word col_fief) {
 }
 
 // ===== bank0 $8C45  (PRG $00C45) =====
-// PRG $00C45 set_6da1_bit7_if_no_ai_state5_province_found
+// PRG $00C45 flag_turn_abort_if_no_state5_province
 // (body @ PRG $00C4A)
 
-word set_6da1_bit7_if_no_ai_state5_province_found(void) {
+word flag_turn_abort_if_no_state5_province(void) {
     local11 = 0;    // PRG $00C4B
     phi_val_8c68 = scenario_fief_count;    // PRG $00C4F
     while (1) {    // PRG $00C68
@@ -2407,7 +2407,7 @@ word ai_event_marry_random_eligible_fief(void) {
         if (((unsigned)attempt_i < (unsigned)scenario_fief_count)) {    // PRG $01C18
             candidate_fief = rng_mod(scenario_fief_count);    // PRG $01BF5 -> bank15 $CA52
             if (!(get_province_ai_state(candidate_fief))) {    // PRG $01BEE -> bank15 $D98D
-                set_6da1_bit7_if_no_ai_state5_province_found();    // PRG $01BFE -> bank0 $8C45
+                flag_turn_abort_if_no_state5_province();    // PRG $01BFE -> bank0 $8C45
                 if (!(rest_turns_remaining[selected_province_owner()])) {    // PRG $01BFE -> bank15 $D77E
                     battle_defending_province = candidate_fief;    // PRG $01C0D
                     marry_transfer_gold_between_provinces();    // PRG $01C10 -> bank0 $9B7F
@@ -2440,7 +2440,7 @@ word random_ravage_sweep_bounded_fiefs(void) {
                     if (!(get_province_ai_state(local11))) {    // PRG $01C40 -> bank15 $D98D
                         local10 = (local10 + 1);    // PRG $01C50
                         if (((unsigned)((local10 + 1) - 1) < (unsigned)(8 - ai_player_count))) {    // PRG $01C48
-                            set_6da1_bit7_if_no_ai_state5_province_found();    // PRG $01C57 -> bank0 $8C45
+                            flag_turn_abort_if_no_state5_province();    // PRG $01C57 -> bank0 $8C45
                             battle_defending_province = local11;    // PRG $01C5B
                             swap_word(battle_defending_province, selected_province_idx);    // PRG $01C64 -> bank15 $CB94
                             ravage_defending_province_sweep();    // PRG $01C68 -> bank0 $93BF

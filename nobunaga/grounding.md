@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #10 — events / relations / scenario init (73/98)   [2026-06-10]
+1 rename:
+- `$8C45` `set_6da1_bit7_if_no_ai_state5_province_found` -> **`flag_turn_abort_if_no_state5_province`** (ai_turn_flags bit7).
+- `$83E2` apply_scenario_starting_stat_boosts ($7530 stride-7 daimyo stats), `$90E8` normalize_relations_matrix_lower,
+  `$947A` avg_daimyo_charisma_over_fief_list, `$9F57` event_boost_province_wealth_loyalty, `$A128`
+  event_boost_province_gold_output, `$A5E6` spawn_zealot_uprising_force_from_province: re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #9 — ravage variants + AI event eligibility (66/98)   [2026-06-10]
 4 renames (1 refute) -- the address-offset suffixes mapped to record fields:
 - `$936B` `ravage_defender_field_off4` -> **`ravage_defender_town`** ($7005=+4).

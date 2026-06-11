@@ -723,10 +723,10 @@ word relations_matrix_cell_addr(word row_fief, word col_fief) {
     return (((row_fief * 54) + col_fief) + 0x6193);    // $8C44
 }
 
-// $8C45 set_6da1_bit7_if_no_ai_state5_province_found
+// $8C45 flag_turn_abort_if_no_state5_province
 // (body @ $8C4A)
 
-word set_6da1_bit7_if_no_ai_state5_province_found(void) {
+word flag_turn_abort_if_no_state5_province(void) {
     local11 = 0;    // $8C4B
     phi_val_8c68 = scenario_fief_count;    // $8C4F
     while (1) {    // $8C68
@@ -1829,7 +1829,7 @@ word ai_event_marry_random_eligible_fief(void) {
         if (((unsigned)attempt_i < (unsigned)scenario_fief_count)) {    // $9C18
             candidate_fief = rng_mod(scenario_fief_count);    // $9BF5
             if (!(get_province_ai_state(candidate_fief))) {    // $9BEE
-                set_6da1_bit7_if_no_ai_state5_province_found();    // $9BFE
+                flag_turn_abort_if_no_state5_province();    // $9BFE
                 if (!(rest_turns_remaining[selected_province_owner()])) {    // $9BFE
                     battle_defending_province = candidate_fief;    // $9C0D
                     marry_transfer_gold_between_provinces();    // $9C10
@@ -1861,7 +1861,7 @@ word random_ravage_sweep_bounded_fiefs(void) {
                     if (!(get_province_ai_state(local11))) {    // $9C40
                         local10 = (local10 + 1);    // $9C50
                         if (((unsigned)((local10 + 1) - 1) < (unsigned)(8 - ai_player_count))) {    // $9C48
-                            set_6da1_bit7_if_no_ai_state5_province_found();    // $9C57
+                            flag_turn_abort_if_no_state5_province();    // $9C57
                             battle_defending_province = local11;    // $9C5B
                             swap_word(battle_defending_province, selected_province_idx);    // $9C64
                             ravage_defending_province_sweep();    // $9C68

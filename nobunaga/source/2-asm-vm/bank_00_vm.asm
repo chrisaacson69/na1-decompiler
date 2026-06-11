@@ -3945,7 +3945,7 @@ VM bytecode disassembly
   $9BF6  3A                         PUSH_quick   ; inline operand = 10
   $9BF7  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $9BFB  D7 16 9C                   JUMPT_abs              $9C16
-  $9BFE  AC 45 8C                   CALL_abs               $8C45 (set_6da1_bit7_if_no_ai_state5_province_found) {bytecode}
+  $9BFE  AC 45 8C                   CALL_abs               $8C45 (flag_turn_abort_if_no_state5_province) {bytecode}
   $9C01  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
   $9C04  8C 67 6D                   LOADR_imm2             $6D67 (rest_turns_remaining)
   $9C07  BB                         ADD
@@ -3993,7 +3993,7 @@ VM bytecode disassembly
   $9C52  B4                         POPR
   $9C53  C6                         UCMPLT
   $9C54  D8 78 9C                   JUMPF_abs              $9C78
-  $9C57  AC 45 8C                   CALL_abs               $8C45 (set_6da1_bit7_if_no_ai_state5_province_found) {bytecode}
+  $9C57  AC 45 8C                   CALL_abs               $8C45 (flag_turn_abort_if_no_state5_province) {bytecode}
   $9C5A  0B                         LOADL_quick   ; inline operand = 11
   $9C5B  A8 63 6F                   STORE_abs              $6F63 (battle_defending_province)
   $9C5E  8E 5F 6F                   PUSH_imm2              $6F5F (selected_province_idx)
