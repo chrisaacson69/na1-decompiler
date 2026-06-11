@@ -190,16 +190,16 @@
 //   PRG $05F04  bank1  $9F04  subhandler_9F04
 //   PRG $05FAF  bank1  $9FAF  prompt_repay_debt
 //   PRG $06003  bank1  $A003  subhandler_A003
-//   PRG $06068  bank1  $A068  subhandler_A068
+//   PRG $06068  bank1  $A068  effect_buy_rice
 //   PRG $060ED  bank1  $A0ED  amount_div_force_factor
-//   PRG $06113  bank1  $A113  subhandler_A113
+//   PRG $06113  bank1  $A113  effect_buy_arms
 //   PRG $061AF  bank1  $A1AF  noop_command_handler
 //   PRG $061B6  bank1  $A1B6  driver_trade
 //   PRG $06255  bank1  $A255  hire_stat_drain_rng
 //   PRG $06274  bank1  $A274  report_fief_stat_decline
 //   PRG $0629B  bank1  $A29B  effect_ninja_failed
 //   PRG $062D2  bank1  $A2D2  effect_ninja_sabotage
-//   PRG $06553  bank1  $A553  effect_hire_variant_pay
+//   PRG $06553  bank1  $A553  effect_hire_men
 //   PRG $065F4  bank1  $A5F4  driver_hire
 //   PRG $06637  bank1  $A637  driver_train
 //   PRG $066B3  bank1  $A6B3  effect_view_d
@@ -5256,11 +5256,11 @@ word subhandler_A003(word arg1) {
 }
 
 // ===== bank1 $A068  (PRG $06068) =====
-// PRG $06068 subhandler_A068
+// PRG $06068 effect_buy_rice
 // (body @ PRG $0606D)
 
-word subhandler_A068(word arg1) {
-    message_display(subhandler_A068_data_bca2);    // PRG $06070 -> bank15 $D326
+word effect_buy_rice(word arg1) {
+    message_display(msg_buy_rice_prompt);    // PRG $06070 -> bank15 $D326
     if (*(word*)(((selected_province_idx * 26) + 0x7001))) {    // PRG $0606D
         local11 = ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice));    // PRG $06097 -> bank1 $8357
         if (ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice))) {    // PRG $06082 -> bank1 $8357
@@ -5301,16 +5301,16 @@ word amount_div_force_factor(word fief, word amount) {
 }
 
 // ===== bank1 $A113  (PRG $06113) =====
-// PRG $06113 subhandler_A113
+// PRG $06113 effect_buy_arms
 // (body @ PRG $06118)
 
-word subhandler_A113(word arg1) {
+word effect_buy_arms(word arg1) {
     if ((arg1->men <= 0)) {    // PRG $06118
         message_display(msg_weapons_for_who);    // PRG $06124 -> bank15 $D326
         confirm_prompt();    // PRG $06128 -> bank15 $D766
         return 0;    // PRG $0612C
     } else {
-        message_display(subhandler_A113_data_bce9);    // PRG $06130 -> bank15 $D326
+        message_display(msg_buy_arms_prompt);    // PRG $06130 -> bank15 $D326
         local11 = ((arms_buy_price_rate + 9) / 10);    // PRG $0613A
         if ((*(word*)(arg1) >= local11)) {    // PRG $0612D
             local11 = ratio_times10_capped(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms));    // PRG $06158 -> bank1 $8357
@@ -5563,10 +5563,10 @@ word effect_ninja_sabotage(word arg1) {
 }
 
 // ===== bank1 $A553  (PRG $06553) =====
-// PRG $06553 effect_hire_variant_pay
+// PRG $06553 effect_hire_men
 // (body @ PRG $06558)
 
-word effect_hire_variant_pay(word fief) {
+word effect_hire_men(word fief) {
     headroom = (fief->header - fief->men);    // PRG $06563
     max_affordable = ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men));    // PRG $0656F -> bank1 $8357
     if (ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men))) {    // PRG $06558 -> bank1 $8357
@@ -5579,7 +5579,7 @@ word effect_hire_variant_pay(word fief) {
             cycle_economy_rate(4);    // PRG $065A2 -> bank1 $8A4E
             clamp_amount_to_province_max((fief + 16));    // PRG $065AA -> bank1 $82AC
             trigger_cutscene(33);    // PRG $065B0 -> bank15 $E80C
-            message_display(effect_hire_variant_pay_data_bdd0);    // PRG $065B7 -> bank15 $D326
+            message_display(msg_men_or_ninja);    // PRG $065B7 -> bank15 $D326
             draw_message(msg_lord_s_we_now_have_d_men, ((selected_province_owner() * 9) + 0x77A8), *(word*)(((selected_province_idx * 26) + 0x7011)));    // PRG $065D4 -> bank15 $D134
             confirm_prompt();    // PRG $065D8 -> bank15 $D766
             return 1;    // PRG $065DC
@@ -5603,7 +5603,7 @@ word driver_hire(void) {
             case 0:
                 return effect_ninja_sabotage(local11);    // PRG $0662E -> bank1 $A2D2
             case 1:
-                return effect_hire_variant_pay(local11);    // PRG $06634 -> bank1 $A553
+                return effect_hire_men(local11);    // PRG $06634 -> bank1 $A553
             default:
                 return 0;    // PRG $06636
         }

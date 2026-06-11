@@ -1957,11 +1957,11 @@ word subhandler_A003(word arg1) {
     return 0;    // $A067
 }
 
-// $A068 subhandler_A068
+// $A068 effect_buy_rice
 // (body @ $A06D)
 
-word subhandler_A068(word arg1) {
-    message_display(subhandler_A068_data_bca2);    // $A070
+word effect_buy_rice(word arg1) {
+    message_display(msg_buy_rice_prompt);    // $A070
     if (*(word*)(((selected_province_idx * 26) + 0x7001))) {    // $A06D
         local11 = ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice));    // $A097
         if (ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice))) {    // $A082
@@ -2000,16 +2000,16 @@ word amount_div_force_factor(word fief, word amount) {
     return (amount / divisor);    // $A112
 }
 
-// $A113 subhandler_A113
+// $A113 effect_buy_arms
 // (body @ $A118)
 
-word subhandler_A113(word arg1) {
+word effect_buy_arms(word arg1) {
     if ((arg1->men <= 0)) {    // $A118
         message_display(msg_weapons_for_who);    // $A124
         confirm_prompt();    // $A128
         return 0;    // $A12C
     } else {
-        message_display(subhandler_A113_data_bce9);    // $A130
+        message_display(msg_buy_arms_prompt);    // $A130
         local11 = ((arms_buy_price_rate + 9) / 10);    // $A13A
         if ((*(word*)(arg1) >= local11)) {    // $A12D
             local11 = ratio_times10_capped(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms));    // $A158
@@ -2255,10 +2255,10 @@ word effect_ninja_sabotage(word arg1) {
     }
 }
 
-// $A553 effect_hire_variant_pay
+// $A553 effect_hire_men
 // (body @ $A558)
 
-word effect_hire_variant_pay(word fief) {
+word effect_hire_men(word fief) {
     headroom = (fief->header - fief->men);    // $A563
     max_affordable = ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men));    // $A56F
     if (ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men))) {    // $A558
@@ -2271,7 +2271,7 @@ word effect_hire_variant_pay(word fief) {
             cycle_economy_rate(4);    // $A5A2
             clamp_amount_to_province_max((fief + 16));    // $A5AA
             trigger_cutscene(33);    // $A5B0
-            message_display(effect_hire_variant_pay_data_bdd0);    // $A5B7
+            message_display(msg_men_or_ninja);    // $A5B7
             draw_message(msg_lord_s_we_now_have_d_men, ((selected_province_owner() * 9) + 0x77A8), *(word*)(((selected_province_idx * 26) + 0x7011)));    // $A5D4
             confirm_prompt();    // $A5D8
             return 1;    // $A5DC
@@ -2294,7 +2294,7 @@ word driver_hire(void) {
             case 0:
                 return effect_ninja_sabotage(local11);    // $A62E
             case 1:
-                return effect_hire_variant_pay(local11);    // $A634
+                return effect_hire_men(local11);    // $A634
             default:
                 return 0;    // $A636
         }

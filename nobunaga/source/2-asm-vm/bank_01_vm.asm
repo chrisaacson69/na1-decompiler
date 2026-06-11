@@ -4761,7 +4761,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $A068   (frame_off=-4, body @ $A06D)
 ; ============================================================
-  $A06D  8E A2 BC                   PUSH_imm2              $BCA2 (subhandler_A068_data_bca2)
+  $A06D  8E A2 BC                   PUSH_imm2              $BCA2 (msg_buy_rice_prompt)
   $A070  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A074  A4 5F 6F                   LOADL_abs              $6F5F (selected_province_idx)
   $A077  8B 1A                      BYTE_LOADR_imm1        +26
@@ -4874,7 +4874,7 @@ VM bytecode disassembly
   $A128  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $A12B  40                         LOADL_qimm   ; inline operand = 0
   $A12C  CF                         RETURN
- >$A12D  8E E9 BC                   PUSH_imm2              $BCE9 (subhandler_A113_data_bce9)
+ >$A12D  8E E9 BC                   PUSH_imm2              $BCE9 (msg_buy_arms_prompt)
   $A130  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A134  A4 0F 6E                   LOADL_abs              $6E0F (arms_buy_price_rate)
   $A137  79                         ADD_qimm   ; inline operand = 9
@@ -5522,7 +5522,7 @@ VM bytecode disassembly
   $A5AA  E9 AC 82 02                CALL_abs_imm1          $82AC (clamp_amount_to_province_max) {bytecode}, $02
   $A5AE  8D 21                      BYTE_PUSH_imm1         +33
   $A5B0  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
-  $A5B4  8E D0 BD                   PUSH_imm2              $BDD0 (effect_hire_variant_pay_data_bdd0)
+  $A5B4  8E D0 BD                   PUSH_imm2              $BDD0 (msg_men_or_ninja)
   $A5B7  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A5BB  A4 5F 6F                   LOADL_abs              $6F5F (selected_province_idx)
   $A5BE  8B 1A                      BYTE_LOADR_imm1        +26
@@ -5574,7 +5574,7 @@ VM bytecode disassembly
   $A62A  E9 D2 A2 02                CALL_abs_imm1          $A2D2 (effect_ninja_sabotage) {bytecode}, $02
   $A62E  CF                         RETURN
  >$A62F  3B                         PUSH_quick   ; inline operand = 11
-  $A630  E9 53 A5 02                CALL_abs_imm1          $A553 (effect_hire_variant_pay) {bytecode}, $02
+  $A630  E9 53 A5 02                CALL_abs_imm1          $A553 (effect_hire_men) {bytecode}, $02
   $A634  CF                         RETURN
  >$A635  40                         LOADL_qimm   ; inline operand = 0
   $A636  CF                         RETURN

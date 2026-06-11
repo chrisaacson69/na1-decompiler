@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #12 — the command drivers + buy effects (90/131)   [2026-06-10]
+3 renames + 4 driver re-grounds:
+- `$A068` `subhandler_A068` → **`effect_buy_rice`**, `$A113` `subhandler_A113` → **`effect_buy_arms`**,
+  `$A553` `effect_hire_variant_pay` → **`effect_hire_men`** (+ 3 data-label renames: msg_buy_rice/arms_prompt, msg_men_or_ninja).
+- `$999A` driver_tax, `$9D3D` driver_grow (limit at $7001+24), `$A1B6` driver_trade (6-item submenu), `$A637`
+  driver_train: re-grounded. The lord-command menu (Tax/Grow/Trade/Train/buy rice/arms/men) is now wired end-to-end. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #11 — spy/bribe/loan + the last stub (83/131)   [2026-06-10]
 2 renames (incl. the LAST address-tagged stub — SUSPECT now 0):
 - `$AF10` `map_helper_af10` → **`browse_map_sections`** (strategic-map section scroller).
