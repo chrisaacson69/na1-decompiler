@@ -2981,10 +2981,10 @@ word driver_grant(void) {
     }
 }
 
-// $B066 subhandler_B066
+// $B066 setting_sound_on_off
 // (body @ $B06B)
 
-word subhandler_B066(void) {
+word setting_sound_on_off(void) {
     message_display(msg_sound);    // $B06E
     local11 = prompt_ab_window(msg_on_off);    // $B079
     if ((local11 == 2)) {    // $B06B
@@ -3000,10 +3000,10 @@ word subhandler_B066(void) {
     }
 }
 
-// $B09D subhandler_B09D
+// $B09D setting_animation_on_off
 // (body @ $B0A2)
 
-word subhandler_B09D(void) {
+word setting_animation_on_off(void) {
     message_display(msg_animation);    // $B0A5
     switch (prompt_ab_window(msg_on_off_bed0)) {    // $B0A2
         case 1:
@@ -3020,10 +3020,10 @@ word subhandler_B09D(void) {
     return 0;    // $B0C7
 }
 
-// $B0D2 subhandler_B0D2
+// $B0D2 setting_message_wait_speed
 // (body @ $B0D7)
 
-word subhandler_B0D2(void) {
+word setting_message_wait_speed(void) {
     message_display(msg_wait_is_now);    // $B0DA
     draw_message(msg_d_enter_new_wait, sqrt_int((delay_loop_count / 2)));    // $B0EC
     local11 = number_input(1, 10);    // $B0F6
@@ -3035,10 +3035,10 @@ word subhandler_B0D2(void) {
     return 0;    // $B108
 }
 
-// $B109 subhandler_B109
+// $B109 setting_save_game
 // (body @ $B10E)
 
-word subhandler_B109(void) {
+word setting_save_game(void) {
     message_display(msg_are_you_sure);    // $B111
     if (prompt_y_n()) {    // $B10E
         sram_save_pending_flag = 1;    // $B11C
@@ -3048,10 +3048,10 @@ word subhandler_B109(void) {
     return 0;    // $B12A
 }
 
-// $B12B subhandler_B12B
+// $B12B setting_watch_battles
 // (body @ $B130)
 
-word subhandler_B12B(void) {
+word setting_watch_battles(void) {
     message_display(msg_watch_others_battle);    // $B133
     local11 = prompt_ab_window(msg_y_n);    // $B13E
     if ((local11 != 2)) {    // $B130

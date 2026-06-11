@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #8 — the Settings ("Other") submenu (62/131)   [2026-06-10]
+5 stub renames — the whole settings menu (driver indices 27-31):
+- `subhandler_B066` → **`setting_sound_on_off`**, `_B09D` → **`setting_animation_on_off`** (ai_turn_flags bit2),
+  `_B0D2` → **`setting_message_wait_speed`** (delay_loop_count = 2n²), `_B109` → **`setting_save_game`**
+  (sram_save_pending_flag), `_B12B` → **`setting_watch_battles`**.
+- `$ABBD` `commit_arms_record_from_buffer` ✅ (arms-edit save vs $76A9), `$ADF6` `fief_select_input_loop` ✅
+  (on-map fief pick from the $9E3C cell list). Next: rows 1-7.
+
 ### Bank 1 full-verify batch #7 — bribe/siege/debt + AI reinforce (55/131)   [2026-06-10]
 3 renames (2 stubs + a list-suffix; +1 stale data label):
 - `$9FAF` `subhandler_9FAF` → **`prompt_repay_debt`** (number_input vs min(debt,gold); $BC59 → msg_repay_debt).

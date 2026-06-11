@@ -222,11 +222,11 @@
 //   PRG $06F10  bank1  $AF10  map_helper_af10
 //   PRG $06F38  bank1  $AF38  driver_map
 //   PRG $06F66  bank1  $AF66  driver_grant
-//   PRG $07066  bank1  $B066  subhandler_B066
-//   PRG $0709D  bank1  $B09D  subhandler_B09D
-//   PRG $070D2  bank1  $B0D2  subhandler_B0D2
-//   PRG $07109  bank1  $B109  subhandler_B109
-//   PRG $0712B  bank1  $B12B  subhandler_B12B
+//   PRG $07066  bank1  $B066  setting_sound_on_off
+//   PRG $0709D  bank1  $B09D  setting_animation_on_off
+//   PRG $070D2  bank1  $B0D2  setting_message_wait_speed
+//   PRG $07109  bank1  $B109  setting_save_game
+//   PRG $0712B  bank1  $B12B  setting_watch_battles
 //   PRG $0714B  bank1  $B14B  subhandler_B14B
 //   PRG $071A6  bank1  $B1A6  submenu_prompt
 //   PRG $0723E  bank1  $B23E  driver_other
@@ -6312,10 +6312,10 @@ word driver_grant(void) {
 }
 
 // ===== bank1 $B066  (PRG $07066) =====
-// PRG $07066 subhandler_B066
+// PRG $07066 setting_sound_on_off
 // (body @ PRG $0706B)
 
-word subhandler_B066(void) {
+word setting_sound_on_off(void) {
     message_display(msg_sound);    // PRG $0706E -> bank15 $D326
     local11 = prompt_ab_window(msg_on_off);    // PRG $07079 -> bank15 $D351
     if ((local11 == 2)) {    // PRG $0706B
@@ -6332,10 +6332,10 @@ word subhandler_B066(void) {
 }
 
 // ===== bank1 $B09D  (PRG $0709D) =====
-// PRG $0709D subhandler_B09D
+// PRG $0709D setting_animation_on_off
 // (body @ PRG $070A2)
 
-word subhandler_B09D(void) {
+word setting_animation_on_off(void) {
     message_display(msg_animation);    // PRG $070A5 -> bank15 $D326
     switch (prompt_ab_window(msg_on_off_bed0)) {    // PRG $070A2 -> bank15 $D351
         case 1:
@@ -6353,10 +6353,10 @@ word subhandler_B09D(void) {
 }
 
 // ===== bank1 $B0D2  (PRG $070D2) =====
-// PRG $070D2 subhandler_B0D2
+// PRG $070D2 setting_message_wait_speed
 // (body @ PRG $070D7)
 
-word subhandler_B0D2(void) {
+word setting_message_wait_speed(void) {
     message_display(msg_wait_is_now);    // PRG $070DA -> bank15 $D326
     draw_message(msg_d_enter_new_wait, sqrt_int((delay_loop_count / 2)));    // PRG $070EC -> bank15 $D134
     local11 = number_input(1, 10);    // PRG $070F6 -> bank15 $D5E9
@@ -6369,10 +6369,10 @@ word subhandler_B0D2(void) {
 }
 
 // ===== bank1 $B109  (PRG $07109) =====
-// PRG $07109 subhandler_B109
+// PRG $07109 setting_save_game
 // (body @ PRG $0710E)
 
-word subhandler_B109(void) {
+word setting_save_game(void) {
     message_display(msg_are_you_sure);    // PRG $07111 -> bank15 $D326
     if (prompt_y_n()) {    // PRG $0710E -> bank15 $D3A7
         sram_save_pending_flag = 1;    // PRG $0711C
@@ -6383,10 +6383,10 @@ word subhandler_B109(void) {
 }
 
 // ===== bank1 $B12B  (PRG $0712B) =====
-// PRG $0712B subhandler_B12B
+// PRG $0712B setting_watch_battles
 // (body @ PRG $07130)
 
-word subhandler_B12B(void) {
+word setting_watch_battles(void) {
     message_display(msg_watch_others_battle);    // PRG $07133 -> bank15 $D326
     local11 = prompt_ab_window(msg_y_n);    // PRG $0713E -> bank15 $D351
     if ((local11 != 2)) {    // PRG $07130
