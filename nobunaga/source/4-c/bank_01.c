@@ -953,23 +953,23 @@ word resolve_siege_assault_outcome(void) {
     redraw_window(msg_has_lost);    // $8FB6
     confirm_prompt();    // $8FBA
     switch (outcome_code) {    // $8FA1
-        case 65535:
+        case 1:
             phi_8fd0_0 = selected_province_idx;    // $8FCD
             announce_daimyo_death(phi_8fd0_0);    // $8FD0
             break;
         default:
             break;
-        case 65536:
+        case 2:
             phi_8fd0_0 = battle_defending_province;    // $8FDB
             announce_daimyo_death(phi_8fd0_0);    // $8FD0
             break;
-        case 65537:
+        case 3:
             phi_8fed_0 = 0xBB49;    // $8FEA
             message_display(((attacker_name_idx * 9) + 0x77A8));    // $8FE6
             redraw_window(phi_8fed_0);    // $8FED
             confirm_prompt();    // $8FF1
             break;
-        case 65538:
+        case 4:
             phi_8fed_0 = 0xBB58;    // $9006
             message_display(((local8 * 9) + 0x77A8));    // $8FFF
             redraw_window(phi_8fed_0);    // $8FED
@@ -2130,7 +2130,7 @@ word effect_ninja_sabotage(word arg1) {
                         message_display(str_men_ninja_train_msgs);    // $A37F
                         if ((*(byte*)((fief_to_daimyo_record_addr(battle_defending_province) + 3)) < (*(byte*)((selected_province_daimyo_record() + 3)) + 30))) {    // $A36C
                             switch (mission) {    // $A399
-                                case 65535:
+                                case 1:
                                     if (!(arg1->loyalty)) {    // $A3AB
                                         if (!(arg1->wealth)) {    // $A3B1
                                             effect_ninja_failed(local8, unit_count);    // $A3B9
@@ -2164,7 +2164,7 @@ word effect_ninja_sabotage(word arg1) {
                                     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) - math32_muladddiv(hire_gold_rate, unit_count));    // $A452
                                     cycle_economy_rate(5);    // $A454
                                     return 1;    // $A459
-                                case 65536:
+                                case 2:
                                     drain_amount = hire_stat_drain_rng(arg1->morale, unit_count);    // $A464
                                     drain_amount = ((arg1->morale >= drain_amount) ? drain_amount : arg1->morale);    // $A476
                                     if (drain_amount) {    // $A476
@@ -2177,7 +2177,7 @@ word effect_ninja_sabotage(word arg1) {
                                         effect_ninja_failed(local8, unit_count);    // $A47D
                                         return 1;    // $A482
                                     }
-                                case 65537:
+                                case 3:
                                     if (!(arg1->dams)) {    // $A497
                                         if (!(arg1->rice)) {    // $A49D
                                             effect_ninja_failed(local8, unit_count);    // $A4A5
@@ -2199,9 +2199,9 @@ word effect_ninja_sabotage(word arg1) {
                                         phi_a419_1 = drain_amount;    // $A505
                                         report_fief_stat_decline(phi_a419_0, phi_a419_1);    // $A419
                                     }
-                                case 65538:
+                                case 4:
                                     ninja_mission_resolve_vs_defender(unit_count);    // $A509
-                                case 65539:
+                                case 5:
                                     drain_amount = hire_stat_drain_rng(arg1->town, unit_count);    // $A519
                                     drain_amount = ((arg1->town >= drain_amount) ? drain_amount : arg1->town);    // $A529
                                     if (drain_amount) {    // $A529

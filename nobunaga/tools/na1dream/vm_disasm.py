@@ -160,8 +160,11 @@ def walk_sub(mem, body, end, labels):
             operand_str = f"limit={limit}"
             default = raw[5] | (raw[6] << 8)
             case_tgts = [raw[7 + 2 * k] | (raw[8 + 2 * k] << 8) for k in range(limit)]
-            # Parseable switch table for the decompiler (cases = offs..offs+limit-1).
-            sw = " ".join(f"{offs + k}=>${case_tgts[k]:04X}" for k in range(limit))
+            # The VM dispatch is `index = (value + offs) & 0xFFFF` (vm_op_D5_switch @ $EC65: clc/adc),
+            # so `offs` is a NEGATIVE bias (-low_key) and the case VALUE for slot k is (k - offs) & 0xFFFF,
+            # NOT offs+k. (offs=0 switches were coincidentally right; offs!=0 rendered garbage, e.g.
+            # $8C61's cursor_row switch showed 65530..65541 for the real keys 6..17.) 2026-06-11.
+            sw = " ".join(f"{(k - offs) & 0xFFFF}=>${case_tgts[k]:04X}" for k in range(limit))
             comment = (f".table {limit} word targets (contiguous); "
                        f"SWITCH {sw} default=>${default:04X}")
             tgts = [default] + case_tgts

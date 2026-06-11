@@ -54,6 +54,18 @@ make DREAM emit these (a 5-entry body-override, like the enum table — safe, bo
 value-merge sub, then the dream.py fold fix.
 | 1.4 | return-phi reached by a conditional-branch taken edge | ✅ FIXED 2026-06-10 | — | `$E80C` |
 
+| 1.5 | SWITCH_contig case KEYS rendered as `offs+k` instead of `(k-offs)&0xFFFF` | ✅ FIXED 2026-06-11 | 6 subs (contig switches with offs!=0) | `$8C61`, `$8D5D` |
+
+**Bug 1.5 (SWITCH_contig key rendering) — FIXED 2026-06-11.** The VM dispatch is `index = (value + offs) & 0xFFFF`
+(vm_op_D5_switch @ $EC65: `clc; lda offs; adc regA`), so `offs` is a NEGATIVE bias (= -low_key) and the case VALUE for
+slot k is `(k - offs) & 0xFFFF`. vm_disasm.py emitted `offs + k` (the author assumed `value - offs`), so a switch on a
+variable not starting at 0 rendered garbage keys: `$8C61`'s cursor_row switch showed `case 65530..65541` for the real
+keys `6..17`. Gate-INVISIBLE (the dispatch CFG / targets are correct; only the printed case LABELS were wrong) — found
+by Chris READING the output. Fix: `vm_disasm.py:164` `(k - offs) & 0xFFFF`. Label-only (no CFG change): 6 subs, self-
+check clean, deterministic. offs=0 switches were coincidentally already correct (no regression).
+
+| # | Bug | Status | Blast radius | Example subs |
+
 **Shared root cause:** value materialization across a control-flow join (if/else, switch, the 32-bit aux stack)
 keeps only ONE arm's value. The proper fix is one AST-level change in `dream.py`'s fold — emit each arm's value to
 the merge — plus a **value-golden harness** (assert 4-c expression values == V1/bytecode) that would catch this

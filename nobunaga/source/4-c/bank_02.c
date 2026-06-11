@@ -888,12 +888,12 @@ word draw_unit_roster_columns(word arg1) {
     do {    // $8C88
         ui_window_col = ((arg1 + 1) * 12);    // $8C8C
         switch (ui_cursor_row) {    // $8C88
-            case 65530:
-            case 65531:
-            case 65532:
-            case 65533:
-            case 65534:
-            case 65535:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
                 if ((!(is_no_province_selected()) || arg1)) {    // $8CB1
                     local11 = (local11 + 1);    // $8CBD
                     phi_8cc4_0 = 0xB591;    // $8CC1
@@ -904,17 +904,17 @@ word draw_unit_roster_columns(word arg1) {
                     redraw_window(phi_8d0e_0);    // $8D0E
                 }
                 break;
-            case 65536:
-            case 65537:
-            case 65538:
+            case 12:
+            case 13:
+            case 14:
                 local9 = (local9 + 2);    // $8CE9
                 phi_8cc4_0 = 0xB59A;    // $8CF1
                 phi_8cc4_1 = *(word*)(((local9 + 2) + -2));    // $8CF1
                 draw_message(phi_8cc4_0, phi_8cc4_1);    // $8CC4
                 break;
-            case 65539:
-            case 65540:
-            case 65541:
+            case 15:
+            case 16:
+            case 17:
                 if ((!(is_no_province_selected()) || arg1)) {    // $8CF4
                     local10 = (local10 + 2);    // $8D00
                     phi_8cc4_0 = 0xB59E;    // $8D08
@@ -981,18 +981,18 @@ word draw_combat_roster_window(void) {
     local10 = 6;    // $8DF6
     while (((unsigned)local11 < (unsigned)18)) {    // $8E29
         switch (local11) {    // $8DFA
-            case 65531:
+            case 9:
             default:
                 set_cursor(18, local10);    // $8E13
                 redraw_window(*(word*)(((local11 << 1) + fief_stat_name_ptrs)));    // $8E1F
                 local10 = (local10 + 1);    // $8E25
                 break;
-            case 65529:
-            case 65530:
-            case 65532:
-            case 65533:
-            case 65534:
-            case 65535:
+            case 7:
+            case 8:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
                 break;
         }
         local11 = (local11 + 1);    // $8E28
@@ -1866,21 +1866,21 @@ word rng_search_combat_rect_for_unit_cell(word approach_dir) {
     flip_x = rng_mod(2);    // $995E
     flip_y = rng_mod(2);    // $9964
     switch (approach_dir) {    // $9959
-        case 65535:
+        case 1:
             phi_val_9976 = 1;    // $9975
             flip_y = phi_val_9976;    // $9976
             break;
         default:
             break;
-        case 65536:
+        case 2:
             phi_val_9976 = 0;    // $997E
             flip_y = phi_val_9976;    // $9976
             break;
-        case 65537:
+        case 3:
             phi_val_9982 = 1;    // $9981
             flip_x = phi_val_9982;    // $9982
             break;
-        case 65538:
+        case 4:
             phi_val_9982 = 0;    // $9987
             flip_x = phi_val_9982;    // $9982
             break;

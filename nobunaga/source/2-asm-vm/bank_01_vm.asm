@@ -2407,7 +2407,7 @@ VM bytecode disassembly
   $8FB6  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $8FBA  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $8FBD  07                         LOADL_quick   ; inline operand = 7
-  $8FBE  D5 FF FF 04 00 D4 8F CD 8F D8 8F DE ... SWITCH_contig          limit=4   ; .table 4 word targets (contiguous); SWITCH 65535=>$8FCD 65536=>$8FD8 65537=>$8FDE 65538=>$8FF7 default=>$8FD4
+  $8FBE  D5 FF FF 04 00 D4 8F CD 8F D8 8F DE ... SWITCH_contig          limit=4   ; .table 4 word targets (contiguous); SWITCH 1=>$8FCD 2=>$8FD8 3=>$8FDE 4=>$8FF7 default=>$8FD4
  >$8FCD  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
  >$8FD0  E9 75 E2 02                CALL_abs_imm1          $E275 (announce_daimyo_death) {bytecode}, $02
  >$8FD4  AC 3C E0                   CALL_abs               $E03C (apply_conquest_outcome) {bytecode}
@@ -5192,7 +5192,7 @@ VM bytecode disassembly
   $A395  C2                         SCMPLT
   $A396  D8 49 A5                   JUMPF_abs              $A549
   $A399  0A                         LOADL_quick   ; inline operand = 10
-  $A39A  D5 FF FF 05 00 1D A4 AB A3 5A A4 97 ... SWITCH_contig          limit=5   ; .table 5 word targets (contiguous); SWITCH 65535=>$A3AB 65536=>$A45A 65537=>$A497 65538=>$A508 65539=>$A510 default=>$A41D
+  $A39A  D5 FF FF 05 00 1D A4 AB A3 5A A4 97 ... SWITCH_contig          limit=5   ; .table 5 word targets (contiguous); SWITCH 1=>$A3AB 2=>$A45A 3=>$A497 4=>$A508 5=>$A510 default=>$A41D
  >$A3AB  0C                         LOADL_quick   ; inline operand = 12
   $A3AC  7C                         ADD_qimm   ; inline operand = 12
   $A3AD  B0                         DEREF

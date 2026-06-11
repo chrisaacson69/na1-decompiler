@@ -73,28 +73,28 @@ L_8118:
 L_811A:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $811D
     switch (*(byte*)(((*(word*)(fp - 35) + 1) - 1))) {    // $8121
-    case 65469: goto L_81EC;    // $8121
-    case 65470: goto L_8195;    // $8121
-    case 65471: goto L_81DC;    // $8121
-    case 65472: goto L_81F2;    // $8121
-    case 65473: goto L_8225;    // $8121
-    case 65474: goto L_8225;    // $8121
-    case 65475: goto L_8225;    // $8121
-    case 65476: goto L_8225;    // $8121
-    case 65477: goto L_8225;    // $8121
-    case 65478: goto L_8154;    // $8121
-    case 65479: goto L_8225;    // $8121
-    case 65480: goto L_8225;    // $8121
-    case 65481: goto L_8225;    // $8121
-    case 65482: goto L_8225;    // $8121
-    case 65483: goto L_8225;    // $8121
-    case 65484: goto L_81CB;    // $8121
-    case 65485: goto L_8216;    // $8121
-    case 65486: goto L_8225;    // $8121
-    case 65487: goto L_8225;    // $8121
-    case 65488: goto L_8185;    // $8121
-    case 65489: goto L_81BC;    // $8121
-    case 65490: goto L_8167;    // $8121
+    case 67: goto L_81EC;    // $8121
+    case 68: goto L_8195;    // $8121
+    case 69: goto L_81DC;    // $8121
+    case 70: goto L_81F2;    // $8121
+    case 71: goto L_8225;    // $8121
+    case 72: goto L_8225;    // $8121
+    case 73: goto L_8225;    // $8121
+    case 74: goto L_8225;    // $8121
+    case 75: goto L_8225;    // $8121
+    case 76: goto L_8154;    // $8121
+    case 77: goto L_8225;    // $8121
+    case 78: goto L_8225;    // $8121
+    case 79: goto L_8225;    // $8121
+    case 80: goto L_8225;    // $8121
+    case 81: goto L_8225;    // $8121
+    case 82: goto L_81CB;    // $8121
+    case 83: goto L_8216;    // $8121
+    case 84: goto L_8225;    // $8121
+    case 85: goto L_8225;    // $8121
+    case 86: goto L_8185;    // $8121
+    case 87: goto L_81BC;    // $8121
+    case 88: goto L_8167;    // $8121
     default: goto L_8225;    // $8121
     }    // $8121
 L_8154:

@@ -1781,7 +1781,7 @@ VM bytecode disassembly
   $8C8B  B5                         MULT
   $8C8C  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
   $8C8F  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
-  $8C92  D5 FA FF 0C 00 12 8D B1 8C B1 8C B1 ... SWITCH_contig          limit=12   ; .table 12 word targets (contiguous); SWITCH 65530=>$8CB1 65531=>$8CB1 65532=>$8CB1 65533=>$8CB1 65534=>$8CB1 65535=>$8CB1 65536=>$8CE7 65537=>$8CE7 65538=>$8CE7 65539=>$8CF4 65540=>$8CF4 65541=>$8CF4 default=>$8D12
+  $8C92  D5 FA FF 0C 00 12 8D B1 8C B1 8C B1 ... SWITCH_contig          limit=12   ; .table 12 word targets (contiguous); SWITCH 6=>$8CB1 7=>$8CB1 8=>$8CB1 9=>$8CB1 10=>$8CB1 11=>$8CB1 12=>$8CE7 13=>$8CE7 14=>$8CE7 15=>$8CF4 16=>$8CF4 17=>$8CF4 default=>$8D12
  >$8CB1  AC FF 82                   CALL_abs               $82FF (is_no_province_selected) {bytecode}
   $8CB4  D8 BB 8C                   JUMPF_abs              $8CBB
   $8CB7  0C                         LOADL_quick   ; inline operand = 12
@@ -1938,7 +1938,7 @@ VM bytecode disassembly
   $8DF6  2A                         STORE_quick   ; inline operand = 10
   $8DF7  D6 29 8E                   JUMP_abs               $8E29
  >$8DFA  0B                         LOADL_quick   ; inline operand = 11
-  $8DFB  D5 F9 FF 07 00 10 8E 26 8E 26 8E 10 ... SWITCH_contig          limit=7   ; .table 7 word targets (contiguous); SWITCH 65529=>$8E26 65530=>$8E26 65531=>$8E10 65532=>$8E26 65533=>$8E26 65534=>$8E26 65535=>$8E26 default=>$8E10
+  $8DFB  D5 F9 FF 07 00 10 8E 26 8E 26 8E 10 ... SWITCH_contig          limit=7   ; .table 7 word targets (contiguous); SWITCH 7=>$8E26 8=>$8E26 9=>$8E10 10=>$8E26 11=>$8E26 12=>$8E26 13=>$8E26 default=>$8E10
  >$8E10  3A                         PUSH_quick   ; inline operand = 10
   $8E11  8D 12                      BYTE_PUSH_imm1         +18
   $8E13  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
@@ -3642,7 +3642,7 @@ VM bytecode disassembly
   $9960  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
   $9964  26                         STORE_quick   ; inline operand = 6
   $9965  0C                         LOADL_quick   ; inline operand = 12
-  $9966  D5 FF FF 04 00 77 99 75 99 7D 99 81 ... SWITCH_contig          limit=4   ; .table 4 word targets (contiguous); SWITCH 65535=>$9975 65536=>$997D 65537=>$9981 65538=>$9986 default=>$9977
+  $9966  D5 FF FF 04 00 77 99 75 99 7D 99 81 ... SWITCH_contig          limit=4   ; .table 4 word targets (contiguous); SWITCH 1=>$9975 2=>$997D 3=>$9981 4=>$9986 default=>$9977
  >$9975  41                         LOADL_qimm   ; inline operand = 1
  >$9976  26                         STORE_quick   ; inline operand = 6
  >$9977  A4 F6 6F                   LOADL_abs              $6FF6 (combat_arena_x_min)

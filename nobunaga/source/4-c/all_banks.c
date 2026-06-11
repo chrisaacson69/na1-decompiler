@@ -4218,23 +4218,23 @@ word resolve_siege_assault_outcome(void) {
     redraw_window(msg_has_lost);    // PRG $04FB6 -> bank15 $CEC4
     confirm_prompt();    // PRG $04FBA -> bank15 $D766
     switch (outcome_code) {    // PRG $04FA1
-        case 65535:
+        case 1:
             phi_8fd0_0 = selected_province_idx;    // PRG $04FCD
             announce_daimyo_death(phi_8fd0_0);    // PRG $04FD0 -> bank15 $E275
             break;
         default:
             break;
-        case 65536:
+        case 2:
             phi_8fd0_0 = battle_defending_province;    // PRG $04FDB
             announce_daimyo_death(phi_8fd0_0);    // PRG $04FD0 -> bank15 $E275
             break;
-        case 65537:
+        case 3:
             phi_8fed_0 = 0xBB49;    // PRG $04FEA
             message_display(((attacker_name_idx * 9) + 0x77A8));    // PRG $04FE6 -> bank15 $D326
             redraw_window(phi_8fed_0);    // PRG $04FED -> bank15 $CEC4
             confirm_prompt();    // PRG $04FF1 -> bank15 $D766
             break;
-        case 65538:
+        case 4:
             phi_8fed_0 = 0xBB58;    // PRG $05006
             message_display(((local8 * 9) + 0x77A8));    // PRG $04FFF -> bank15 $D326
             redraw_window(phi_8fed_0);    // PRG $04FED -> bank15 $CEC4
@@ -5437,7 +5437,7 @@ word effect_ninja_sabotage(word arg1) {
                         message_display(str_men_ninja_train_msgs);    // PRG $0637F -> bank15 $D326
                         if ((*(byte*)((fief_to_daimyo_record_addr(battle_defending_province) + 3)) < (*(byte*)((selected_province_daimyo_record() + 3)) + 30))) {    // PRG $0636C -> bank15 $D7DA
                             switch (mission) {    // PRG $06399
-                                case 65535:
+                                case 1:
                                     if (!(arg1->loyalty)) {    // PRG $063AB
                                         if (!(arg1->wealth)) {    // PRG $063B1
                                             effect_ninja_failed(local8, unit_count);    // PRG $063B9 -> bank1 $A29B
@@ -5471,7 +5471,7 @@ word effect_ninja_sabotage(word arg1) {
                                     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) - math32_muladddiv(hire_gold_rate, unit_count));    // PRG $06452 -> bank1 $8303
                                     cycle_economy_rate(5);    // PRG $06454 -> bank1 $8A4E
                                     return 1;    // PRG $06459
-                                case 65536:
+                                case 2:
                                     drain_amount = hire_stat_drain_rng(arg1->morale, unit_count);    // PRG $06464 -> bank1 $A255
                                     drain_amount = ((arg1->morale >= drain_amount) ? drain_amount : arg1->morale);    // PRG $06476
                                     if (drain_amount) {    // PRG $06476
@@ -5484,7 +5484,7 @@ word effect_ninja_sabotage(word arg1) {
                                         effect_ninja_failed(local8, unit_count);    // PRG $0647D -> bank1 $A29B
                                         return 1;    // PRG $06482
                                     }
-                                case 65537:
+                                case 3:
                                     if (!(arg1->dams)) {    // PRG $06497
                                         if (!(arg1->rice)) {    // PRG $0649D
                                             effect_ninja_failed(local8, unit_count);    // PRG $064A5 -> bank1 $A29B
@@ -5506,9 +5506,9 @@ word effect_ninja_sabotage(word arg1) {
                                         phi_a419_1 = drain_amount;    // PRG $06505
                                         report_fief_stat_decline(phi_a419_0, phi_a419_1);    // PRG $06419 -> bank1 $A274
                                     }
-                                case 65538:
+                                case 4:
                                     ninja_mission_resolve_vs_defender(unit_count);    // PRG $06509 -> bank1 $918D
-                                case 65539:
+                                case 5:
                                     drain_amount = hire_stat_drain_rng(arg1->town, unit_count);    // PRG $06519 -> bank1 $A255
                                     drain_amount = ((arg1->town >= drain_amount) ? drain_amount : arg1->town);    // PRG $06529
                                     if (drain_amount) {    // PRG $06529
@@ -7836,12 +7836,12 @@ word draw_unit_roster_columns(word arg1) {
     do {    // PRG $08C88
         ui_window_col = ((arg1 + 1) * 12);    // PRG $08C8C
         switch (ui_cursor_row) {    // PRG $08C88
-            case 65530:
-            case 65531:
-            case 65532:
-            case 65533:
-            case 65534:
-            case 65535:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
                 if ((!(is_no_province_selected()) || arg1)) {    // PRG $08CB1 -> bank2 $82FF
                     local11 = (local11 + 1);    // PRG $08CBD
                     phi_8cc4_0 = 0xB591;    // PRG $08CC1
@@ -7852,17 +7852,17 @@ word draw_unit_roster_columns(word arg1) {
                     redraw_window(phi_8d0e_0);    // PRG $08D0E -> bank15 $CEC4
                 }
                 break;
-            case 65536:
-            case 65537:
-            case 65538:
+            case 12:
+            case 13:
+            case 14:
                 local9 = (local9 + 2);    // PRG $08CE9
                 phi_8cc4_0 = 0xB59A;    // PRG $08CF1
                 phi_8cc4_1 = *(word*)(((local9 + 2) + -2));    // PRG $08CF1
                 draw_message(phi_8cc4_0, phi_8cc4_1);    // PRG $08CC4 -> bank15 $D134
                 break;
-            case 65539:
-            case 65540:
-            case 65541:
+            case 15:
+            case 16:
+            case 17:
                 if ((!(is_no_province_selected()) || arg1)) {    // PRG $08CF4 -> bank2 $82FF
                     local10 = (local10 + 2);    // PRG $08D00
                     phi_8cc4_0 = 0xB59E;    // PRG $08D08
@@ -7931,18 +7931,18 @@ word draw_combat_roster_window(void) {
     local10 = 6;    // PRG $08DF6
     while (((unsigned)local11 < (unsigned)18)) {    // PRG $08E29
         switch (local11) {    // PRG $08DFA
-            case 65531:
+            case 9:
             default:
                 set_cursor(18, local10);    // PRG $08E13 -> bank15 $CC7B
                 redraw_window(*(word*)(((local11 << 1) + fief_stat_name_ptrs)));    // PRG $08E1F -> bank15 $CEC4
                 local10 = (local10 + 1);    // PRG $08E25
                 break;
-            case 65529:
-            case 65530:
-            case 65532:
-            case 65533:
-            case 65534:
-            case 65535:
+            case 7:
+            case 8:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
                 break;
         }
         local11 = (local11 + 1);    // PRG $08E28
@@ -8855,21 +8855,21 @@ word rng_search_combat_rect_for_unit_cell(word approach_dir) {
     flip_x = rng_mod(2);    // PRG $0995E -> bank15 $CA52
     flip_y = rng_mod(2);    // PRG $09964 -> bank15 $CA52
     switch (approach_dir) {    // PRG $09959
-        case 65535:
+        case 1:
             phi_val_9976 = 1;    // PRG $09975
             flip_y = phi_val_9976;    // PRG $09976
             break;
         default:
             break;
-        case 65536:
+        case 2:
             phi_val_9976 = 0;    // PRG $0997E
             flip_y = phi_val_9976;    // PRG $09976
             break;
-        case 65537:
+        case 3:
             phi_val_9982 = 1;    // PRG $09981
             flip_x = phi_val_9982;    // PRG $09982
             break;
-        case 65538:
+        case 4:
             phi_val_9982 = 0;    // PRG $09987
             flip_x = phi_val_9982;    // PRG $09982
             break;
@@ -10578,28 +10578,28 @@ L_p38118:
 L_p3811A:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // PRG $3811D
     switch (*(byte*)(((*(word*)(fp - 35) + 1) - 1))) {    // PRG $38121
-    case 65469: goto L_p381EC;    // PRG $38121
-    case 65470: goto L_p38195;    // PRG $38121
-    case 65471: goto L_p381DC;    // PRG $38121
-    case 65472: goto L_p381F2;    // PRG $38121
-    case 65473: goto L_p38225;    // PRG $38121
-    case 65474: goto L_p38225;    // PRG $38121
-    case 65475: goto L_p38225;    // PRG $38121
-    case 65476: goto L_p38225;    // PRG $38121
-    case 65477: goto L_p38225;    // PRG $38121
-    case 65478: goto L_p38154;    // PRG $38121
-    case 65479: goto L_p38225;    // PRG $38121
-    case 65480: goto L_p38225;    // PRG $38121
-    case 65481: goto L_p38225;    // PRG $38121
-    case 65482: goto L_p38225;    // PRG $38121
-    case 65483: goto L_p38225;    // PRG $38121
-    case 65484: goto L_p381CB;    // PRG $38121
-    case 65485: goto L_p38216;    // PRG $38121
-    case 65486: goto L_p38225;    // PRG $38121
-    case 65487: goto L_p38225;    // PRG $38121
-    case 65488: goto L_p38185;    // PRG $38121
-    case 65489: goto L_p381BC;    // PRG $38121
-    case 65490: goto L_p38167;    // PRG $38121
+    case 67: goto L_p381EC;    // PRG $38121
+    case 68: goto L_p38195;    // PRG $38121
+    case 69: goto L_p381DC;    // PRG $38121
+    case 70: goto L_p381F2;    // PRG $38121
+    case 71: goto L_p38225;    // PRG $38121
+    case 72: goto L_p38225;    // PRG $38121
+    case 73: goto L_p38225;    // PRG $38121
+    case 74: goto L_p38225;    // PRG $38121
+    case 75: goto L_p38225;    // PRG $38121
+    case 76: goto L_p38154;    // PRG $38121
+    case 77: goto L_p38225;    // PRG $38121
+    case 78: goto L_p38225;    // PRG $38121
+    case 79: goto L_p38225;    // PRG $38121
+    case 80: goto L_p38225;    // PRG $38121
+    case 81: goto L_p38225;    // PRG $38121
+    case 82: goto L_p381CB;    // PRG $38121
+    case 83: goto L_p38216;    // PRG $38121
+    case 84: goto L_p38225;    // PRG $38121
+    case 85: goto L_p38225;    // PRG $38121
+    case 86: goto L_p38185;    // PRG $38121
+    case 87: goto L_p381BC;    // PRG $38121
+    case 88: goto L_p38167;    // PRG $38121
     default: goto L_p38225;    // PRG $38121
     }    // PRG $38121
 L_p38154:
