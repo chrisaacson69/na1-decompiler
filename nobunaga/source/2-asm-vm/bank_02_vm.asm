@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 2
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1332 CPU addresses named
+  labels:       1333 CPU addresses named
 
   bank 2: found 131 bytecode-subroutine stubs
 
@@ -577,7 +577,7 @@ VM bytecode disassembly
  >$8403  0B                         LOADL_quick   ; inline operand = 11
   $8404  54                         LOADR_qimm   ; inline operand = 4
   $8405  BD                         LSHIFT
-  $8406  8C 1E B1                   LOADR_imm2             $B11E (lookup_terrain_attr_reco_data_b11e)
+  $8406  8C 1E B1                   LOADR_imm2             $B11E (terrain_attr_table)
   $8409  BB                         ADD
   $840A  CF                         RETURN
 
@@ -1972,7 +1972,7 @@ VM bytecode disassembly
 ; ============================================================
   $8E45  0D                         LOADL_quick   ; inline operand = 13
   $8E46  D2                         LSHIFT1
-  $8E47  8C EA 7B                   LOADR_imm2             $7BEA
+  $8E47  8C EA 7B                   LOADR_imm2             $7BEA (battle_side_strength_mod)
   $8E4A  BB                         ADD
   $8E4B  B0                         DEREF
   $8E4C  B3                         PUSHL
@@ -1990,7 +1990,7 @@ VM bytecode disassembly
 ; ============================================================
   $8E61  40                         LOADL_qimm   ; inline operand = 0
   $8E62  A8 EC 7B                   STORE_abs              $7BEC
-  $8E65  A8 EA 7B                   STORE_abs              $7BEA
+  $8E65  A8 EA 7B                   STORE_abs              $7BEA (battle_side_strength_mod)
   $8E68  AC EA D7                   CALL_abs               $D7EA (selected_province_daimyo_record) {bytecode}
   $8E6B  D0                         INC
   $8E6C  2B                         STORE_quick   ; inline operand = 11
@@ -2026,7 +2026,7 @@ VM bytecode disassembly
   $8E95  D6 99 8E                   JUMP_abs               $8E99
  >$8E98  40                         LOADL_qimm   ; inline operand = 0
  >$8E99  D2                         LSHIFT1
-  $8E9A  8C EA 7B                   LOADR_imm2             $7BEA
+  $8E9A  8C EA 7B                   LOADR_imm2             $7BEA (battle_side_strength_mod)
   $8E9D  BB                         ADD
   $8E9E  B4                         POPR
   $8E9F  B3                         PUSHL
@@ -2078,7 +2078,7 @@ VM bytecode disassembly
   $8EDD  D6 E1 8E                   JUMP_abs               $8EE1
  >$8EE0  40                         LOADL_qimm   ; inline operand = 0
  >$8EE1  D2                         LSHIFT1
-  $8EE2  8C EA 7B                   LOADR_imm2             $7BEA
+  $8EE2  8C EA 7B                   LOADR_imm2             $7BEA (battle_side_strength_mod)
   $8EE5  BB                         ADD
   $8EE6  B4                         POPR
   $8EE7  B3                         PUSHL

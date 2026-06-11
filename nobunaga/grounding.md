@@ -137,6 +137,22 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #2 — 7 depth-0 leaves, the tactical-render layer (31/131)   [2026-06-10]
+All 7 names CONFIRMED accurate (cleaner than batch #1) — value was sharper comments + cross-confirmations + 1
+arg-order fix + 1 new var label:
+- `$885E` `map_render_driver` ✅ — renders the **5-cell phase window** (screen X=i*4+10, src=(phase*3+i)*88+$7BFD)
+  + background upload + phase-conditional scroll arrows (cols 11/27). Locks together with batch-1's
+  `is_cell_valid_for_phase` (5 cells, +3/phase) + `calc_tactical_cell_coords` (*4+10, phase*3). Render pipeline solid.
+- `$83C6` `lookup_terrain_attr_record` ✅ — terrain bit->type map (32->0,16->1,8->2,128->3,4->4,64/none->5), stride-16
+  table; renamed data `$B11E` -> `terrain_attr_table`.
+- `$8E40` `ai_score_strength_term_40pct` ✅ — base + pct(pct(base,40), per-side mod[$7BEA]); side 0=atk/1=def.
+  Labeled `$7BEA` -> `battle_side_strength_mod` (writer unread, role clear).
+- `$822A` `prompt_yes_no` ✅ — A(0x40)->1 echo 'Y'(89), B(0x80)->0 echo 'N'(78).
+- `$8792` `prompt_province_selection` ✅ — cursor pick (reused for combat unit-target, list-size 5).
+- `$882A` `upload_map_cell_tiles` ✅ — **CORRECTED** the prior comment's reversed syscall arg order + swapped src/dst.
+- `$900A` `wrap_index_0_2_to_zero` ✅.
+Next: `bank-ground-order.py 2 --todo` rows 1-7 (next depth band begins).
+
 ### Bank 2 full-verify batch #1 — 7 depth-0 leaves (24/131)   [2026-06-10]
 First batch under the **full-verification** bar (`bank-ground-order.py 2 --todo`, leaves-first). 7 highest-fanout
 depth-0 predicates/accessors — 5 names confirmed, 2 refined, **3 comments REFUTED**, 1 var corrected:

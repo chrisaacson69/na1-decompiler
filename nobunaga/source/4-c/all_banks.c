@@ -7181,7 +7181,7 @@ word lookup_terrain_attr_record(word arg1, word arg2) {
         default:
             break;
     }
-    return ((local11 << 4) + lookup_terrain_attr_reco_data_b11e);    // PRG $0840A
+    return ((local11 << 4) + terrain_attr_table);    // PRG $0840A
 }
 
 // ===== bank2 $840B  (PRG $0840B) =====
@@ -7987,7 +7987,7 @@ word ai_score_strength_term_40pct(word strength_base, word side_idx) {
 
 word ai_sum_battle_strength(void) {
     mem_7BEC = 0;    // PRG $08E62
-    mem_7BEA = 0;    // PRG $08E65
+    battle_side_strength_mod = 0;    // PRG $08E65
     attacker_stat_ptr = (selected_province_daimyo_record() + 1);    // PRG $08E6C -> bank15 $D7EA
     defender_stat_ptr = (fief_to_daimyo_record_addr(battle_defending_province) + 1);    // PRG $08E75 -> bank15 $D7DA
     weight_ptr = battle_strength_stat_weights;    // PRG $08E79
