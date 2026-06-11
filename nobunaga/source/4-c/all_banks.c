@@ -132,7 +132,7 @@
 //   PRG $043FA  bank1  $83FA  effect_view_a
 //   PRG $0459A  bank1  $859A  effect_view_defending_province
 //   PRG $045A7  bank1  $85A7  effect_view_c
-//   PRG $045B4  bank1  $85B4  view_window_redraw_by_6da2_flag
+//   PRG $045B4  bank1  $85B4  draw_fief_view_label
 //   PRG $045EA  bank1  $85EA  effect_view_b
 //   PRG $0471E  bank1  $871E  fief_info_display
 //   PRG $0479F  bank1  $879F  province_select_helper
@@ -231,7 +231,7 @@
 //   PRG $071A6  bank1  $B1A6  submenu_prompt
 //   PRG $0723E  bank1  $B23E  driver_other
 //   PRG $072A1  bank1  $B2A1  driver_pass
-//   PRG $072B2  bank1  $B2B2  ai_seed_fief_collection_rate_6d2d
+//   PRG $072B2  bank1  $B2B2  ai_seed_fief_tax_rate
 //   PRG $072EF  bank1  $B2EF  ai_calc_men_surplus_over_gold_and_rice
 //   PRG $0732B  bank1  $B32B  rng_threshold_10_29
 //   PRG $07338  bank1  $B338  ai_province_gold_to_rice_convert
@@ -3643,10 +3643,10 @@ word effect_view_c(void) {
 }
 
 // ===== bank1 $85B4  (PRG $045B4) =====
-// PRG $045B4 view_window_redraw_by_6da2_flag
+// PRG $045B4 draw_fief_view_label
 // (body @ PRG $045B9)
 
-word view_window_redraw_by_6da2_flag(word arg1) {
+word draw_fief_view_label(word arg1) {
     local10 = ui_window_col;    // PRG $045BC
     if (fief_is_daimyo_capital[arg1]) {    // PRG $045B9
         redraw_window(msg_home);    // PRG $045C9 -> bank15 $CEC4
@@ -3715,7 +3715,7 @@ word effect_view_b(void) {
             ui_window_col = (local6 - 1);    // PRG $046C4
             draw_message(msg_fmt__4d_bb10, *(byte*)((*(byte*)(local11) + 0x6D2D)));    // PRG $046D2 -> bank15 $D134
             ui_window_col = (local6 - 1);    // PRG $046D8
-            view_window_redraw_by_6da2_flag(*(byte*)(local11));    // PRG $046DE -> bank1 $85B4
+            draw_fief_view_label(*(byte*)(local11));    // PRG $046DE -> bank1 $85B4
             local10 = (local10 + 1);    // PRG $046E4
             if ((((local10 + 1) == 4) || (*(byte*)((local11 + 1)) == 255))) {    // PRG $046C2
                 palette_swap(0);    // PRG $046F5 -> bank15 $CC35
@@ -6522,10 +6522,10 @@ word driver_pass(void) {
 }
 
 // ===== bank1 $B2B2  (PRG $072B2) =====
-// PRG $072B2 ai_seed_fief_collection_rate_6d2d
+// PRG $072B2 ai_seed_fief_tax_rate
 // (body @ PRG $072B7)
 
-word ai_seed_fief_collection_rate_6d2d(word arg1) {
+word ai_seed_fief_tax_rate(word arg1) {
     swap_word(&arg1, battle_defending_province);    // PRG $072BE -> bank15 $CB94
     fief_tax_rate[battle_defending_province] = (rng_mod(30) + 35);    // PRG $072E2 -> bank15 $CA52
     return swap_word(&arg1, battle_defending_province);    // PRG $072EE -> bank15 $CB94
@@ -6590,7 +6590,7 @@ word ai_develop_town_handler(void) {
     gold_surplus = 0;    // PRG $073B1
     fief = ((selected_province_idx * 26) + 0x7001);    // PRG $073BC
     ai_calc_men_surplus_over_gold_and_rice(&gold_surplus, &rice_surplus);    // PRG $073C5 -> bank1 $B2EF
-    ai_seed_fief_collection_rate_6d2d(selected_province_idx);    // PRG $073CC -> bank1 $B2B2
+    ai_seed_fief_tax_rate(selected_province_idx);    // PRG $073CC -> bank1 $B2B2
     ai_province_gold_to_rice_convert(&gold_surplus, &rice_surplus);    // PRG $073D8 -> bank1 $B338
     gain = effect_send(min_word((((current_game_year - 1559) * 100) + 100), *(word*)((fief + 24))), *(word*)((fief + 4)), gold_surplus);    // PRG $073FB -> bank1 $8BE5
     if (!((!((*(word*)((fief + 4)) < *(word*)((fief + 24)))) || rng_mod(3) || (gain <= 0)))) {    // PRG $073AF -> bank15 $CA52
@@ -6609,7 +6609,7 @@ word ai_develop_dam_and_grow(void) {
     rice_surplus = 0;    // PRG $07431
     gold_budget = 0;    // PRG $07432
     ai_calc_men_surplus_over_gold_and_rice(&gold_budget, &rice_surplus);    // PRG $0743B -> bank1 $B2EF
-    ai_seed_fief_collection_rate_6d2d(selected_province_idx);    // PRG $07442 -> bank1 $B2B2
+    ai_seed_fief_tax_rate(selected_province_idx);    // PRG $07442 -> bank1 $B2B2
     fief = ((selected_province_idx * 26) + 0x7001);    // PRG $07454
     if ((*(word*)((((selected_province_idx * 26) + 0x7001) + 12)) > *(word*)((fief + 8)))) {    // PRG $07430
         if (*(word*)((fief + 8))) {    // PRG $0745C

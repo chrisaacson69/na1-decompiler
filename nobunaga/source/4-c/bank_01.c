@@ -402,10 +402,10 @@ word effect_view_c(void) {
     return effect_view_a(selected_province_idx);    // $85B3
 }
 
-// $85B4 view_window_redraw_by_6da2_flag
+// $85B4 draw_fief_view_label
 // (body @ $85B9)
 
-word view_window_redraw_by_6da2_flag(word arg1) {
+word draw_fief_view_label(word arg1) {
     local10 = ui_window_col;    // $85BC
     if (fief_is_daimyo_capital[arg1]) {    // $85B9
         redraw_window(msg_home);    // $85C9
@@ -473,7 +473,7 @@ word effect_view_b(void) {
             ui_window_col = (local6 - 1);    // $86C4
             draw_message(msg_fmt__4d_bb10, *(byte*)((*(byte*)(local11) + 0x6D2D)));    // $86D2
             ui_window_col = (local6 - 1);    // $86D8
-            view_window_redraw_by_6da2_flag(*(byte*)(local11));    // $86DE
+            draw_fief_view_label(*(byte*)(local11));    // $86DE
             local10 = (local10 + 1);    // $86E4
             if ((((local10 + 1) == 4) || (*(byte*)((local11 + 1)) == 255))) {    // $86C2
                 palette_swap(0);    // $86F5
@@ -3182,10 +3182,10 @@ word driver_pass(void) {
     return 1;    // $B2B1
 }
 
-// $B2B2 ai_seed_fief_collection_rate_6d2d
+// $B2B2 ai_seed_fief_tax_rate
 // (body @ $B2B7)
 
-word ai_seed_fief_collection_rate_6d2d(word arg1) {
+word ai_seed_fief_tax_rate(word arg1) {
     swap_word(&arg1, battle_defending_province);    // $B2BE
     fief_tax_rate[battle_defending_province] = (rng_mod(30) + 35);    // $B2E2
     return swap_word(&arg1, battle_defending_province);    // $B2EE
@@ -3246,7 +3246,7 @@ word ai_develop_town_handler(void) {
     gold_surplus = 0;    // $B3B1
     fief = ((selected_province_idx * 26) + 0x7001);    // $B3BC
     ai_calc_men_surplus_over_gold_and_rice(&gold_surplus, &rice_surplus);    // $B3C5
-    ai_seed_fief_collection_rate_6d2d(selected_province_idx);    // $B3CC
+    ai_seed_fief_tax_rate(selected_province_idx);    // $B3CC
     ai_province_gold_to_rice_convert(&gold_surplus, &rice_surplus);    // $B3D8
     gain = effect_send(min_word((((current_game_year - 1559) * 100) + 100), *(word*)((fief + 24))), *(word*)((fief + 4)), gold_surplus);    // $B3FB
     if (!((!((*(word*)((fief + 4)) < *(word*)((fief + 24)))) || rng_mod(3) || (gain <= 0)))) {    // $B3AF
@@ -3264,7 +3264,7 @@ word ai_develop_dam_and_grow(void) {
     rice_surplus = 0;    // $B431
     gold_budget = 0;    // $B432
     ai_calc_men_surplus_over_gold_and_rice(&gold_budget, &rice_surplus);    // $B43B
-    ai_seed_fief_collection_rate_6d2d(selected_province_idx);    // $B442
+    ai_seed_fief_tax_rate(selected_province_idx);    // $B442
     fief = ((selected_province_idx * 26) + 0x7001);    // $B454
     if ((*(word*)((((selected_province_idx * 26) + 0x7001) + 12)) > *(word*)((fief + 8)))) {    // $B430
         if (*(word*)((fief + 8))) {    // $B45C

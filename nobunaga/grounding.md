@@ -198,6 +198,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #5 — targeting/view/rate leaves (41/131)   [2026-06-10]
+2 renames (drop address suffixes) + a nice difficulty quirk:
+- `$8379` `apply_two_grows_const1_override` ✅ — forces const_two(skill)=1 to make a grow DIFFICULTY-INDEPENDENT
+  (deterministic events/scenario effects bypass the skill scaling).
+- `$85B4` `view_window_redraw_by_6da2_flag` → **`draw_fief_view_label`** ("Home" if capital else state label).
+- `$B2B2` `ai_seed_fief_collection_rate_6d2d` → **`ai_seed_fief_tax_rate`** (fief_tax_rate[arg1] = rng+35, 35-64).
+- `$812F` target_eligible_by_cmd, `$A91E` give_eligibility_flags (2-bit), `$A6B3` effect_view_d (rng(rec+3)+rec+5),
+  `$B32B` rng_threshold_10_29: re-grounded. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #4 — hire/train/war-prep effects (34/131)   [2026-06-10]
 Clean batch (no decompiler bugs). 2 stub renames:
 - `$9181` `ca12_with_const1_wrapper` → **`decrement_byte_at`** (deduct_byte_at(arg1,1)).

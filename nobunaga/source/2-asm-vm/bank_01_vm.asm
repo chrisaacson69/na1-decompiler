@@ -959,7 +959,7 @@ VM bytecode disassembly
   $86DB  0B                         LOADL_quick   ; inline operand = 11
   $86DC  D3                         BYTE_DEREF
   $86DD  B3                         PUSHL
-  $86DE  E9 B4 85 02                CALL_abs_imm1          $85B4 (view_window_redraw_by_6da2_flag) {bytecode}, $02
+  $86DE  E9 B4 85 02                CALL_abs_imm1          $85B4 (draw_fief_view_label) {bytecode}, $02
   $86E2  0A                         LOADL_quick   ; inline operand = 10
   $86E3  D0                         INC
   $86E4  2A                         STORE_quick   ; inline operand = 10
@@ -7447,7 +7447,7 @@ VM bytecode disassembly
   $B3C4  B3                         PUSHL
   $B3C5  E9 EF B2 04                CALL_abs_imm1          $B2EF (ai_calc_men_surplus_over_gold_and_rice) {bytecode}, $04
   $B3C9  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $B3CC  E9 B2 B2 02                CALL_abs_imm1          $B2B2 (ai_seed_fief_collection_rate_6d2d) {bytecode}, $02
+  $B3CC  E9 B2 B2 02                CALL_abs_imm1          $B2B2 (ai_seed_fief_tax_rate) {bytecode}, $02
   $B3D0  DE FA FF                   LEAL_far               $FFFA
   $B3D3  B3                         PUSHL
   $B3D4  DE FC FF                   LEAL_far               $FFFC
@@ -7520,7 +7520,7 @@ VM bytecode disassembly
   $B43A  B3                         PUSHL
   $B43B  E9 EF B2 04                CALL_abs_imm1          $B2EF (ai_calc_men_surplus_over_gold_and_rice) {bytecode}, $04
   $B43F  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $B442  E9 B2 B2 02                CALL_abs_imm1          $B2B2 (ai_seed_fief_collection_rate_6d2d) {bytecode}, $02
+  $B442  E9 B2 B2 02                CALL_abs_imm1          $B2B2 (ai_seed_fief_tax_rate) {bytecode}, $02
   $B446  0B                         LOADL_quick   ; inline operand = 11
   $B447  78                         ADD_qimm   ; inline operand = 8
   $B448  B0                         DEREF
