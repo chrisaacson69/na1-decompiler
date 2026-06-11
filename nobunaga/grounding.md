@@ -150,6 +150,18 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #6 — depth-1 unit/cell predicates + fief render (59/131)   [2026-06-10]
+2 renames + 2 inverted-comment fixes:
+- `$9030` `is_battleside_province_aistate5_and_not_resting` → **`battleside_not_state5_or_resting`** — comment was the
+  exact NEGATION of the code (`state!=5 || resting`, not `state5 && !resting`).
+- `$8FC0` `find_unit_slot_by_fields` → **`side_has_unit_at_cell`** (returns a bool, not a slot).
+- `$9647` `find_free_tactical_placement_cell` ✅ — corrected bit-32 polarity (matches SET=placeable, not clear) + the
+  output col/row were swapped in the note.
+- `$A04E` `is_unit_at_coords` ✅ (specific unit) / `$8FC0` (any of a side) — now a clean pair.
+- `$94F6` `announce_combat_side_daimyo_and_status` ✅, `$A01A` `unit_type_count_gt3...` ✅, `$813C`
+  `build_blit_fief_tile_block` ✅ (re-grounded; refs updated to combat_message_table/is_unit_present).
+Next: rows 1-7.
+
 ### Bank 2 full-verify batch #5 — depth-1 combat predicates + render (52/131)   [2026-06-10]
 4 renames (incl. a total refute) + a 2nd DREAM value-bug confirmed:
 - `$836A` `unit_damage_within_strength` → **`side_has_rice_for_day`** — TOTAL refute: it's ceil(men/15)<=rice (daily

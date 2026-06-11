@@ -2665,7 +2665,7 @@ word render_arms_edit_screen(word arg1, word arg2) {
                 break;
         }
         local10 = phi_val_ab7e;    // $AB7E
-        draw_message(msg_d_s, (local11 + 1), *(word*)(((local10 << 1) + draw_unit_label_data_f9af)));    // $AB8D
+        draw_message(msg_d_s, (local11 + 1), *(word*)(((local10 << 1) + unit_type_name_table)));    // $AB8D
         set_cursor(5, 25);    // $AB94
         redraw_window(msg_available_0);    // $AB9B
         set_cursor(4, 20);    // $ABA2

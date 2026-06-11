@@ -1099,10 +1099,10 @@ word remove_unit(word arg1, word arg2) {
     return -56;    // $8FBF
 }
 
-// $8FC0 find_unit_slot_by_fields
+// $8FC0 side_has_unit_at_cell
 // (body @ $8FC5)
 
-word find_unit_slot_by_fields(word arg1, word arg2, word arg3) {
+word side_has_unit_at_cell(word arg1, word arg2, word arg3) {
     local11 = 0;    // $8FC6
     do {    // $8FC7
         if ((*(byte*)(unit_col_ptr(arg1, local11)) == arg2)) {    // $8FC7
@@ -1121,7 +1121,7 @@ word find_unit_slot_by_fields(word arg1, word arg2, word arg3) {
 word find_unit_at_tile(word arg1, word arg2) {
     local11 = 0;    // $8FF2
     while (1) {    // $8FF3
-        if (find_unit_slot_by_fields(local11, arg1, arg2)) {    // $8FF3
+        if (side_has_unit_at_cell(local11, arg1, arg2)) {    // $8FF3
             return 1;    // $8FFE
         } else {
             local11 = (local11 + 1);    // $9001
@@ -1152,10 +1152,10 @@ word is_map_cell_blocked(word arg1, word arg2) {
     return (is_cell_clear_of_bits(arg1, arg2, 194) ? 0 : 1);    // $902F
 }
 
-// $9030 is_battleside_province_aistate5_and_not_resting
+// $9030 battleside_not_state5_or_resting
 // (body @ $9035)
 
-word is_battleside_province_aistate5_and_not_resting(word side) {
+word battleside_not_state5_or_resting(word side) {
     fief = get_battle_side_province(side);    // $903A
     return ((get_province_ai_state(fief) != 5) || rest_turns_remaining[fief_owner(fief)]);    // $9057
 }
@@ -1832,7 +1832,7 @@ word seek_enemy_adjacent_cell_and_commit_move(word arg1, word arg2) {
         local10 = arg1;    // $9906
         local9 = arg2;    // $9908
         if (sub_8003(&local10, &local9, local11)) {    // $9905
-            if (!(find_unit_slot_by_fields((cur_combat_side ^ 1), local10, local9))) {    // $9919
+            if (!(side_has_unit_at_cell((cur_combat_side ^ 1), local10, local9))) {    // $9919
                 local11 = (local11 + 1);    // $992A
                 if (((unsigned)local11 < (unsigned)6)) {    // $9928
                     continue;
@@ -2004,7 +2004,7 @@ word deploy_both_sides_units_loop(void) {
     do {    // $9B12
         local10 = set_combat_arena_rect_by_approach();    // $9B15
         if ((!(is_no_province_selected()) || cur_combat_side)) {    // $9B12
-            if (is_battleside_province_aistate5_and_not_resting(cur_combat_side)) {    // $9B22
+            if (battleside_not_state5_or_resting(cur_combat_side)) {    // $9B22
                 ai_place_combat_units_random_or_smart(local10);    // $9B2D
             } else {
                 player_interactive_unit_move_loop();    // $9B34
@@ -3251,7 +3251,7 @@ word run_both_sides_combat_turn(word day) {
             unit_i = (unit_i + 1);    // $ADEB
         } while (((unsigned)unit_i < (unsigned)5));
         if ((!(is_no_province_selected()) || cur_combat_side)) {    // $ADF2
-            if (is_battleside_province_aistate5_and_not_resting(cur_combat_side)) {    // $ADFE
+            if (battleside_not_state5_or_resting(cur_combat_side)) {    // $ADFE
                 phi_val_ae13 = ai_run_all_units_combat_actions(day);    // $AE0D
             } else {
                 phi_val_ae13 = combat_command_dispatch_loop_per_unit();    // $AE10

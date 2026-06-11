@@ -292,11 +292,11 @@
 //   PRG $08F55  bank2  $8F55  end_war_relocate_capital
 //   PRG $08F79  bank2  $8F79  is_unit_present
 //   PRG $08F97  bank2  $8F97  remove_unit
-//   PRG $08FC0  bank2  $8FC0  find_unit_slot_by_fields
+//   PRG $08FC0  bank2  $8FC0  side_has_unit_at_cell
 //   PRG $08FEC  bank2  $8FEC  find_unit_at_tile
 //   PRG $0900A  bank2  $900A  wrap_index_0_2_to_zero
 //   PRG $09019  bank2  $9019  is_map_cell_blocked
-//   PRG $09030  bank2  $9030  is_battleside_province_aistate5_and_not_resting
+//   PRG $09030  bank2  $9030  battleside_not_state5_or_resting
 //   PRG $09058  bank2  $9058  place_unit_at_tile_if_free
 //   PRG $090A0  bank2  $90A0  prompt_unit_move_direction_at_tile
 //   PRG $090BB  bank2  $90BB  build_daimyo_province_list
@@ -8082,10 +8082,10 @@ word remove_unit(word arg1, word arg2) {
 }
 
 // ===== bank2 $8FC0  (PRG $08FC0) =====
-// PRG $08FC0 find_unit_slot_by_fields
+// PRG $08FC0 side_has_unit_at_cell
 // (body @ PRG $08FC5)
 
-word find_unit_slot_by_fields(word arg1, word arg2, word arg3) {
+word side_has_unit_at_cell(word arg1, word arg2, word arg3) {
     local11 = 0;    // PRG $08FC6
     do {    // PRG $08FC7
         if ((*(byte*)(unit_col_ptr(arg1, local11)) == arg2)) {    // PRG $08FC7 -> bank2 $828B
@@ -8105,7 +8105,7 @@ word find_unit_slot_by_fields(word arg1, word arg2, word arg3) {
 word find_unit_at_tile(word arg1, word arg2) {
     local11 = 0;    // PRG $08FF2
     while (1) {    // PRG $08FF3
-        if (find_unit_slot_by_fields(local11, arg1, arg2)) {    // PRG $08FF3 -> bank2 $8FC0
+        if (side_has_unit_at_cell(local11, arg1, arg2)) {    // PRG $08FF3 -> bank2 $8FC0
             return 1;    // PRG $08FFE
         } else {
             local11 = (local11 + 1);    // PRG $09001
@@ -8139,10 +8139,10 @@ word is_map_cell_blocked(word arg1, word arg2) {
 }
 
 // ===== bank2 $9030  (PRG $09030) =====
-// PRG $09030 is_battleside_province_aistate5_and_not_resting
+// PRG $09030 battleside_not_state5_or_resting
 // (body @ PRG $09035)
 
-word is_battleside_province_aistate5_and_not_resting(word side) {
+word battleside_not_state5_or_resting(word side) {
     fief = get_battle_side_province(side);    // PRG $0903A -> bank2 $838F
     return ((get_province_ai_state(fief) != 5) || rest_turns_remaining[fief_owner(fief)]);    // PRG $09057 -> bank15 $D98D
 }
@@ -8844,7 +8844,7 @@ word seek_enemy_adjacent_cell_and_commit_move(word arg1, word arg2) {
         local10 = arg1;    // PRG $09906
         local9 = arg2;    // PRG $09908
         if (sub_8003(&local10, &local9, local11)) {    // PRG $09905
-            if (!(find_unit_slot_by_fields((cur_combat_side ^ 1), local10, local9))) {    // PRG $09919 -> bank2 $8FC0
+            if (!(side_has_unit_at_cell((cur_combat_side ^ 1), local10, local9))) {    // PRG $09919 -> bank2 $8FC0
                 local11 = (local11 + 1);    // PRG $0992A
                 if (((unsigned)local11 < (unsigned)6)) {    // PRG $09928
                     continue;
@@ -9020,7 +9020,7 @@ word deploy_both_sides_units_loop(void) {
     do {    // PRG $09B12
         local10 = set_combat_arena_rect_by_approach();    // PRG $09B15 -> bank2 $9675
         if ((!(is_no_province_selected()) || cur_combat_side)) {    // PRG $09B12 -> bank2 $82FF
-            if (is_battleside_province_aistate5_and_not_resting(cur_combat_side)) {    // PRG $09B22 -> bank2 $9030
+            if (battleside_not_state5_or_resting(cur_combat_side)) {    // PRG $09B22 -> bank2 $9030
                 ai_place_combat_units_random_or_smart(local10);    // PRG $09B2D -> bank2 $99D2
             } else {
                 player_interactive_unit_move_loop();    // PRG $09B34 -> bank2 $9A18
@@ -10312,7 +10312,7 @@ word run_both_sides_combat_turn(word day) {
             unit_i = (unit_i + 1);    // PRG $0ADEB
         } while (((unsigned)unit_i < (unsigned)5));
         if ((!(is_no_province_selected()) || cur_combat_side)) {    // PRG $0ADF2 -> bank2 $82FF
-            if (is_battleside_province_aistate5_and_not_resting(cur_combat_side)) {    // PRG $0ADFE -> bank2 $9030
+            if (battleside_not_state5_or_resting(cur_combat_side)) {    // PRG $0ADFE -> bank2 $9030
                 phi_val_ae13 = ai_run_all_units_combat_actions(day);    // PRG $0AE0D -> bank2 $ABB7
             } else {
                 phi_val_ae13 = combat_command_dispatch_loop_per_unit();    // PRG $0AE10 -> bank2 $AC7F

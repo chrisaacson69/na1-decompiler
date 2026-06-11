@@ -2272,7 +2272,7 @@ VM bytecode disassembly
  >$8FF3  3D                         PUSH_quick   ; inline operand = 13
   $8FF4  3C                         PUSH_quick   ; inline operand = 12
   $8FF5  3B                         PUSH_quick   ; inline operand = 11
-  $8FF6  E9 C0 8F 06                CALL_abs_imm1          $8FC0 (find_unit_slot_by_fields) {bytecode}, $06
+  $8FF6  E9 C0 8F 06                CALL_abs_imm1          $8FC0 (side_has_unit_at_cell) {bytecode}, $06
   $8FFA  D8 FF 8F                   JUMPF_abs              $8FFF
   $8FFD  41                         LOADL_qimm   ; inline operand = 1
   $8FFE  CF                         RETURN
@@ -3603,7 +3603,7 @@ VM bytecode disassembly
   $991E  51                         LOADR_qimm   ; inline operand = 1
   $991F  DC                         XOR
   $9920  B3                         PUSHL
-  $9921  E9 C0 8F 06                CALL_abs_imm1          $8FC0 (find_unit_slot_by_fields) {bytecode}, $06
+  $9921  E9 C0 8F 06                CALL_abs_imm1          $8FC0 (side_has_unit_at_cell) {bytecode}, $06
   $9925  D7 31 99                   JUMPT_abs              $9931
  >$9928  0B                         LOADL_quick   ; inline operand = 11
   $9929  D0                         INC
@@ -3853,7 +3853,7 @@ VM bytecode disassembly
   $9B1C  A4 E8 7B                   LOADL_abs              $7BE8 (cur_combat_side)
   $9B1F  D8 2C 9B                   JUMPF_abs              $9B2C
  >$9B22  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
-  $9B25  E9 30 90 02                CALL_abs_imm1          $9030 (is_battleside_province_aistate5_and_not_resting) {bytecode}, $02
+  $9B25  E9 30 90 02                CALL_abs_imm1          $9030 (battleside_not_state5_or_resting) {bytecode}, $02
   $9B29  D8 34 9B                   JUMPF_abs              $9B34
  >$9B2C  3A                         PUSH_quick   ; inline operand = 10
   $9B2D  E9 D2 99 02                CALL_abs_imm1          $99D2 (ai_place_combat_units_random_or_smart) {bytecode}, $02
@@ -6589,7 +6589,7 @@ VM bytecode disassembly
   $ADF8  A4 E8 7B                   LOADL_abs              $7BE8 (cur_combat_side)
   $ADFB  D8 08 AE                   JUMPF_abs              $AE08
  >$ADFE  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
-  $AE01  E9 30 90 02                CALL_abs_imm1          $9030 (is_battleside_province_aistate5_and_not_resting) {bytecode}, $02
+  $AE01  E9 30 90 02                CALL_abs_imm1          $9030 (battleside_not_state5_or_resting) {bytecode}, $02
   $AE05  D8 10 AE                   JUMPF_abs              $AE10
  >$AE08  3C                         PUSH_quick   ; inline operand = 12
   $AE09  E9 B7 AB 02                CALL_abs_imm1          $ABB7 (ai_run_all_units_combat_actions) {bytecode}, $02
