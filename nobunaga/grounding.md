@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #11 — succession / relations / scenario events (80/98)   [2026-06-10]
+All confirmed (no renames): `$8E63` process_fiefs_with_state_ff, `$8ED3` display_two_message_prompt_then_compare
+(uprising loyals/rebels), `$911E` normalize_relations_matrix_upper, `$93BF` ravage_defending_province_sweep
+(the ninja-ravage cycle through town/loyalty/morale/wealth/output), `$96B0` scenario50_fief30_event_eligible,
+`$99AB` reassign_owner50_fiefs_to_daimyo24 (the Honnoji/Akechi event), `$9B12` ai_scan_idle_fiefs_run_diplomacy_action:
+re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #10 — events / relations / scenario init (73/98)   [2026-06-10]
 1 rename:
 - `$8C45` `set_6da1_bit7_if_no_ai_state5_province_found` -> **`flag_turn_abort_if_no_state5_province`** (ai_turn_flags bit7).
