@@ -1254,24 +1254,24 @@ word ravage_defender_output_and_bump_selected_arms(void) {
     }
 }
 
-// $936B ravage_defender_field_off4
+// $936B ravage_defender_town
 // (body @ $9370)
 
-word ravage_defender_field_off4(void) {
+word ravage_defender_town(void) {
     return random_ravage_province_field(((battle_defending_province * 26) + 0x7005));    // $937F
 }
 
-// $9380 ravage_defender_arms
+// $9380 ravage_defender_wealth
 // (body @ $9385)
 
-word ravage_defender_arms(void) {
+word ravage_defender_wealth(void) {
     return random_ravage_province_field(((battle_defending_province * 26) + 0x700F));    // $9394
 }
 
-// $9395 ravage_defender_field_off18
+// $9395 ravage_defender_morale
 // (body @ $939A)
 
-word ravage_defender_field_off18(void) {
+word ravage_defender_morale(void) {
     return random_ravage_province_field(((battle_defending_province * 26) + 0x7013));    // $93A9
 }
 
@@ -1292,7 +1292,7 @@ word ravage_defending_province_sweep(void) {
     draw_message(msg_fmt__2d, (battle_defending_province + 1));    // $93E1
     confirm_prompt();    // $93E5
     trigger_cutscene(15);    // $93E9
-    if (!((ravage_defender_field_off10() || ravage_defender_field_off4() || ravage_defender_loyalty() || ravage_defender_field_off18() || ravage_defender_arms() || ravage_defender_output_and_bump_selected_arms()))) {    // $93C4
+    if (!((ravage_defender_field_off10() || ravage_defender_town() || ravage_defender_loyalty() || ravage_defender_morale() || ravage_defender_wealth() || ravage_defender_output_and_bump_selected_arms()))) {    // $93C4
         if (rng_mod(2)) {    // $9411
             local11 = ((battle_defending_province * 26) + 0x7001);    // $9423
             local10 = fief_to_daimyo_record_addr(battle_defending_province);    // $942B
@@ -1971,10 +1971,10 @@ word ai_event_eligibility_check_loyalty_variant(word fief) {
     return !(((square_over_2025_probability_roll(*(word*)(((fief * 26) + 0x700D))) && (!((*(word*)(((fief * 26) + 0x7009)) > 0)) || (!((*(word*)(((fief * 26) + 0x7011)) > 2)) || (defender_owner_is_keyed_daimyo() || (province_state_is_FF(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(*(word*)(((fief * 26) + 0x700D)))) && ((square_over_2025_probability_roll((100 - fief_tax_rate[fief])) && (!((*(word*)(((fief * 26) + 0x7009)) > 0)) || (!((*(word*)(((fief * 26) + 0x7011)) > 2)) || (defender_owner_is_keyed_daimyo() || (province_state_is_FF(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll((100 - fief_tax_rate[fief]))) && ((square_over_2025_probability_roll(*(byte*)((fief_to_daimyo_record_addr(fief) + 4))) && (!((*(word*)(((fief * 26) + 0x7009)) > 0)) || (!((*(word*)(((fief * 26) + 0x7011)) > 2)) || (defender_owner_is_keyed_daimyo() || (province_state_is_FF(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(*(byte*)((fief_to_daimyo_record_addr(fief) + 4)))) && (rng_mod(0x03E8) || (!((*(word*)(((fief * 26) + 0x7009)) > 0)) || (!((*(word*)(((fief * 26) + 0x7011)) > 2)) || (defender_owner_is_keyed_daimyo() || (province_state_is_FF(fief) || rng_mod(4)))))))))))));    // $9E20
 }
 
-// $9E21 ai_event_eligibility_check_field18_variant
+// $9E21 ai_event_eligibility_check_morale_variant
 // (body @ $9E26)
 
-word ai_event_eligibility_check_field18_variant(word fief) {
+word ai_event_eligibility_check_morale_variant(word fief) {
     battle_defending_province = fief;    // $9E27
     if ((square_over_2025_probability_roll(*(word*)(((fief * 26) + 0x7013))) || square_over_2025_probability_roll(*(byte*)((fief_to_daimyo_record_addr(fief) + 4))) || !(rng_mod((defender_owner_is_keyed_daimyo() ? 20 : 0x03E8))))) {    // $9E26
         if ((!((*(word*)(((fief * 26) + 0x7011)) > 2)) || province_state_is_FF(fief))) {    // $9E60
@@ -1998,7 +1998,7 @@ word select_event_eligibility_check_by_type(word arg1, word arg2) {
         if ((arg1 == 1)) {    // $9E8B
             return ai_event_eligibility_check_loyalty_variant(arg2);    // $9E96
         } else {
-            return ai_event_eligibility_check_field18_variant(arg2);    // $9E9C
+            return ai_event_eligibility_check_morale_variant(arg2);    // $9E9C
         }
     }
 }

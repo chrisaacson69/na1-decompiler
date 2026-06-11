@@ -198,6 +198,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #9 — ravage variants + AI event eligibility (66/98)   [2026-06-10]
+4 renames (1 refute) -- the address-offset suffixes mapped to record fields:
+- `$936B` `ravage_defender_field_off4` -> **`ravage_defender_town`** ($7005=+4).
+- `$9380` `ravage_defender_arms` -> **`ravage_defender_wealth`** -- REFUTE: $700F=+14=WEALTH, not arms (arms=+22).
+- `$9395` `ravage_defender_field_off18` -> **`ravage_defender_morale`** ($7013=+18).
+- `$9E21` `..._field18_variant` -> **`ai_event_eligibility_check_morale_variant`**.
+- `$9614` append_candidate_priority1, `$98C6` select_provinces_and_assign_ai_state, `$9DA3`
+  ai_event_eligibility_check_loyalty_variant: re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #8 — new-game / succession / rates (59/98)   [2026-06-10]
 1 rename (the last bank-0 stub -> SUSPECT 0):
 - `$924A` `roll_period_rate_table_6e0b` -> **`roll_period_market_rates`** (loan/exchange/arms/men/hire rates @ $6E0B).

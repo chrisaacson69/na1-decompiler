@@ -2812,13 +2812,13 @@ VM bytecode disassembly
   $93E9  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
   $93ED  AC 23 93                   CALL_abs               $9323 (ravage_defender_field_off10) {bytecode}
   $93F0  D7 4E 94                   JUMPT_abs              $944E
-  $93F3  AC 6B 93                   CALL_abs               $936B (ravage_defender_field_off4) {bytecode}
+  $93F3  AC 6B 93                   CALL_abs               $936B (ravage_defender_town) {bytecode}
   $93F6  D7 4E 94                   JUMPT_abs              $944E
   $93F9  AC AA 93                   CALL_abs               $93AA (ravage_defender_loyalty) {bytecode}
   $93FC  D7 4E 94                   JUMPT_abs              $944E
-  $93FF  AC 95 93                   CALL_abs               $9395 (ravage_defender_field_off18) {bytecode}
+  $93FF  AC 95 93                   CALL_abs               $9395 (ravage_defender_morale) {bytecode}
   $9402  D7 4E 94                   JUMPT_abs              $944E
-  $9405  AC 80 93                   CALL_abs               $9380 (ravage_defender_arms) {bytecode}
+  $9405  AC 80 93                   CALL_abs               $9380 (ravage_defender_wealth) {bytecode}
   $9408  D7 4E 94                   JUMPT_abs              $944E
   $940B  AC 38 93                   CALL_abs               $9338 (ravage_defender_output_and_bump_selected_arms) {bytecode}
   $940E  D7 4E 94                   JUMPT_abs              $944E
@@ -4308,7 +4308,7 @@ VM bytecode disassembly
   $9E92  E9 A3 9D 02                CALL_abs_imm1          $9DA3 (ai_event_eligibility_check_loyalty_variant) {bytecode}, $02
   $9E96  CF                         RETURN
  >$9E97  3D                         PUSH_quick   ; inline operand = 13
-  $9E98  E9 21 9E 02                CALL_abs_imm1          $9E21 (ai_event_eligibility_check_field18_variant) {bytecode}, $02
+  $9E98  E9 21 9E 02                CALL_abs_imm1          $9E21 (ai_event_eligibility_check_morale_variant) {bytecode}, $02
   $9E9C  CF                         RETURN
 
 ; ============================================================

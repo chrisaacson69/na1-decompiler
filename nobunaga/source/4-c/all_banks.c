@@ -58,9 +58,9 @@
 //   PRG $012F9  bank0  $92F9  random_ravage_province_field
 //   PRG $01323  bank0  $9323  ravage_defender_field_off10
 //   PRG $01338  bank0  $9338  ravage_defender_output_and_bump_selected_arms
-//   PRG $0136B  bank0  $936B  ravage_defender_field_off4
-//   PRG $01380  bank0  $9380  ravage_defender_arms
-//   PRG $01395  bank0  $9395  ravage_defender_field_off18
+//   PRG $0136B  bank0  $936B  ravage_defender_town
+//   PRG $01380  bank0  $9380  ravage_defender_wealth
+//   PRG $01395  bank0  $9395  ravage_defender_morale
 //   PRG $013AA  bank0  $93AA  ravage_defender_loyalty
 //   PRG $013BF  bank0  $93BF  ravage_defending_province_sweep
 //   PRG $0146D  bank0  $946D  get_fief_daimyo_charisma
@@ -88,7 +88,7 @@
 //   PRG $01D00  bank0  $9D00  random_event_ravage_output_hidden_mark_weakness
 //   PRG $01D86  bank0  $9D86  square_over_2025_probability_roll
 //   PRG $01DA3  bank0  $9DA3  ai_event_eligibility_check_loyalty_variant
-//   PRG $01E21  bank0  $9E21  ai_event_eligibility_check_field18_variant
+//   PRG $01E21  bank0  $9E21  ai_event_eligibility_check_morale_variant
 //   PRG $01E7C  bank0  $9E7C  select_event_eligibility_check_by_type
 //   PRG $01E9D  bank0  $9E9D  build_event_eligible_fief_candidate_list
 //   PRG $01ED9  bank0  $9ED9  ai_event_build_two_batches_dispatch_or_announce
@@ -1809,26 +1809,26 @@ word ravage_defender_output_and_bump_selected_arms(void) {
 }
 
 // ===== bank0 $936B  (PRG $0136B) =====
-// PRG $0136B ravage_defender_field_off4
+// PRG $0136B ravage_defender_town
 // (body @ PRG $01370)
 
-word ravage_defender_field_off4(void) {
+word ravage_defender_town(void) {
     return random_ravage_province_field(((battle_defending_province * 26) + 0x7005));    // PRG $0137F -> bank0 $92F9
 }
 
 // ===== bank0 $9380  (PRG $01380) =====
-// PRG $01380 ravage_defender_arms
+// PRG $01380 ravage_defender_wealth
 // (body @ PRG $01385)
 
-word ravage_defender_arms(void) {
+word ravage_defender_wealth(void) {
     return random_ravage_province_field(((battle_defending_province * 26) + 0x700F));    // PRG $01394 -> bank0 $92F9
 }
 
 // ===== bank0 $9395  (PRG $01395) =====
-// PRG $01395 ravage_defender_field_off18
+// PRG $01395 ravage_defender_morale
 // (body @ PRG $0139A)
 
-word ravage_defender_field_off18(void) {
+word ravage_defender_morale(void) {
     return random_ravage_province_field(((battle_defending_province * 26) + 0x7013));    // PRG $013A9 -> bank0 $92F9
 }
 
@@ -1851,7 +1851,7 @@ word ravage_defending_province_sweep(void) {
     draw_message(msg_fmt__2d, (battle_defending_province + 1));    // PRG $013E1 -> bank15 $D134
     confirm_prompt();    // PRG $013E5 -> bank15 $D766
     trigger_cutscene(15);    // PRG $013E9 -> bank15 $E80C
-    if (!((ravage_defender_field_off10() || ravage_defender_field_off4() || ravage_defender_loyalty() || ravage_defender_field_off18() || ravage_defender_arms() || ravage_defender_output_and_bump_selected_arms()))) {    // PRG $013C4 -> bank0 $9323
+    if (!((ravage_defender_field_off10() || ravage_defender_town() || ravage_defender_loyalty() || ravage_defender_morale() || ravage_defender_wealth() || ravage_defender_output_and_bump_selected_arms()))) {    // PRG $013C4 -> bank0 $9323
         if (rng_mod(2)) {    // PRG $01411 -> bank15 $CA52
             local11 = ((battle_defending_province * 26) + 0x7001);    // PRG $01423
             local10 = fief_to_daimyo_record_addr(battle_defending_province);    // PRG $0142B -> bank15 $D7DA
@@ -2556,10 +2556,10 @@ word ai_event_eligibility_check_loyalty_variant(word fief) {
 }
 
 // ===== bank0 $9E21  (PRG $01E21) =====
-// PRG $01E21 ai_event_eligibility_check_field18_variant
+// PRG $01E21 ai_event_eligibility_check_morale_variant
 // (body @ PRG $01E26)
 
-word ai_event_eligibility_check_field18_variant(word fief) {
+word ai_event_eligibility_check_morale_variant(word fief) {
     battle_defending_province = fief;    // PRG $01E27
     if ((square_over_2025_probability_roll(*(word*)(((fief * 26) + 0x7013))) || square_over_2025_probability_roll(*(byte*)((fief_to_daimyo_record_addr(fief) + 4))) || !(rng_mod((defender_owner_is_keyed_daimyo() ? 20 : 0x03E8))))) {    // PRG $01E26 -> bank0 $9D86
         if ((!((*(word*)(((fief * 26) + 0x7011)) > 2)) || province_state_is_FF(fief))) {    // PRG $01E60 -> bank15 $D999
@@ -2584,7 +2584,7 @@ word select_event_eligibility_check_by_type(word arg1, word arg2) {
         if ((arg1 == 1)) {    // PRG $01E8B
             return ai_event_eligibility_check_loyalty_variant(arg2);    // PRG $01E96 -> bank0 $9DA3
         } else {
-            return ai_event_eligibility_check_field18_variant(arg2);    // PRG $01E9C -> bank0 $9E21
+            return ai_event_eligibility_check_morale_variant(arg2);    // PRG $01E9C -> bank0 $9E21
         }
     }
 }
