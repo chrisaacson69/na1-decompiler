@@ -150,6 +150,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #15 — AI brain + command/move drivers (122/131, 93%)   [2026-06-10]
+High-level drivers — all well-named (everything they call is now grounded), mostly re-grounding + 1 return fix:
+- `$A52F` `ai_decide_unit_action_attack_or_advance` ✅ — the per-unit AI tactical BRAIN (target -> attack, else advance);
+  integrates the whole batch-8..13 AI-strength stack.
+- `$A1EF` `ai_engage_present_enemy_if_favorable` ✅ — fixed 'always returns 0' (returns 1 when it engages).
+- `$AC7F` `combat_command_dispatch_loop_per_unit` ✅ (the $B9F8 command driver), `$9A18` player move loop,
+  `$99D2` AI placement, `$90A0` move-direction prompt, `$A3F8` AI target select: re-grounded. Next: final ~9 (the roots).
+
 ### Bank 2 full-verify batch #14 — attack resolution + menu input (115/131, 87%)   [2026-06-10]
 - `$9E20` `tally_unit_type_then_check_strength_parity_50` → **`resolve_attack_apply_mutual_casualties`** — the prior note
   MISSED the actual damage step: it applies casualties to both sides (own loses 100-pct%, enemy loses pct% of strength),
