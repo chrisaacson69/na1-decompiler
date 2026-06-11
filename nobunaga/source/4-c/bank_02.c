@@ -545,10 +545,10 @@ word combat_command_menu_input_loop(word arg1, word arg2) {
     return local10;    // $8682
 }
 
-// $86F9 select_entry_from_b52f_table_by_cursor
+// $86F9 select_menu_entry_by_cursor
 // (body @ $86FE)
 
-word select_entry_from_b52f_table_by_cursor(word arg1, word arg2) {
+word select_menu_entry_by_cursor(word arg1, word arg2) {
     set_cursor(2, 21);    // $8701
     read_frame_timer(2);    // $8706
     local10 = 0;    // $870B
@@ -1180,7 +1180,7 @@ word place_unit_at_tile_if_free(word arg1, word arg2) {
 
 word prompt_unit_move_direction_at_tile(void) {
     redraw_window(msg_up_up_rt_down_rt_down_down_lt);    // $90A8
-    return select_entry_from_b52f_table_by_cursor(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // $90BA
+    return select_menu_entry_by_cursor(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // $90BA
 }
 
 // $90BB build_daimyo_province_list
@@ -2162,10 +2162,10 @@ word reduce_defending_province_town_chaos(word arg1, word arg2) {
     }
 }
 
-// $9E20 tally_unit_type_then_check_strength_parity_50
+// $9E20 resolve_attack_apply_mutual_casualties
 // (body @ $9E25)
 
-word tally_unit_type_then_check_strength_parity_50(word arg1) {
+word resolve_attack_apply_mutual_casualties(word arg1) {
     validate_phase_unit_cells_draw_cursor(arg1);    // $9E26
     *(byte*)((arg1 + 0x7BEE)) = (*(byte*)((arg1 + 0x7BEE)) + 1);    // $9E32
     local11 = calc_battle_strength_pct_one_side(arg1);    // $9E38
@@ -2301,7 +2301,7 @@ word is_enemy_unit_adjacent(word arg1) {
 word eval_and_announce_battle_strength_parity_if_enemy_present(word arg1) {
     phi_ret_a0f2 = is_enemy_unit_adjacent(arg1);    // $A0E4
     if (phi_ret_a0f2) {    // $A0DF
-        phi_ret_a0f2 = announce_combat_side_daimyo_and_status(tally_unit_type_then_check_strength_parity_50(arg1), arg1);    // $A0EE
+        phi_ret_a0f2 = announce_combat_side_daimyo_and_status(resolve_attack_apply_mutual_casualties(arg1), arg1);    // $A0EE
     }
     return phi_ret_a0f2;    // $A0F2
 }
@@ -2931,7 +2931,7 @@ word player_move_unit_with_occupancy_check_loop(void) {
                         continue;
                     }
                     if (((unsigned)local10 < (unsigned)5)) {    // $A9DB
-                        announce_combat_side_daimyo_and_status(tally_unit_type_then_check_strength_parity_50(local10), local10);    // $A9E8
+                        announce_combat_side_daimyo_and_status(resolve_attack_apply_mutual_casualties(local10), local10);    // $A9E8
                         return 0;    // $A9ED
                     }
                 }

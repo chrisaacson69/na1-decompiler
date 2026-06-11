@@ -2382,7 +2382,7 @@ VM bytecode disassembly
   $90B1  AC A9 82                   CALL_abs               $82A9 (cur_unit_col_ptr) {bytecode}
   $90B4  D3                         BYTE_DEREF
   $90B5  B3                         PUSHL
-  $90B6  E9 F9 86 04                CALL_abs_imm1          $86F9 (select_entry_from_b52f_table_by_cursor) {bytecode}, $04
+  $90B6  E9 F9 86 04                CALL_abs_imm1          $86F9 (select_menu_entry_by_cursor) {bytecode}, $04
   $90BA  CF                         RETURN
 
 ; ============================================================
@@ -4722,7 +4722,7 @@ VM bytecode disassembly
   $A0E4  D8 F2 A0                   JUMPF_abs              $A0F2
   $A0E7  3C                         PUSH_quick   ; inline operand = 12
   $A0E8  3C                         PUSH_quick   ; inline operand = 12
-  $A0E9  E9 20 9E 02                CALL_abs_imm1          $9E20 (tally_unit_type_then_check_strength_parity_50) {bytecode}, $02
+  $A0E9  E9 20 9E 02                CALL_abs_imm1          $9E20 (resolve_attack_apply_mutual_casualties) {bytecode}, $02
   $A0ED  B3                         PUSHL
   $A0EE  E9 F6 94 04                CALL_abs_imm1          $94F6 (announce_combat_side_daimyo_and_status) {bytecode}, $04
  >$A0F2  CF                         RETURN
@@ -6091,7 +6091,7 @@ VM bytecode disassembly
   $A9DE  D8 EE A9                   JUMPF_abs              $A9EE
   $A9E1  3A                         PUSH_quick   ; inline operand = 10
   $A9E2  3A                         PUSH_quick   ; inline operand = 10
-  $A9E3  E9 20 9E 02                CALL_abs_imm1          $9E20 (tally_unit_type_then_check_strength_parity_50) {bytecode}, $02
+  $A9E3  E9 20 9E 02                CALL_abs_imm1          $9E20 (resolve_attack_apply_mutual_casualties) {bytecode}, $02
   $A9E7  B3                         PUSHL
   $A9E8  E9 F6 94 04                CALL_abs_imm1          $94F6 (announce_combat_side_daimyo_and_status) {bytecode}, $04
   $A9EC  40                         LOADL_qimm   ; inline operand = 0

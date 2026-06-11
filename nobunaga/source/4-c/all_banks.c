@@ -268,7 +268,7 @@
 //   PRG $085A7  bank2  $85A7  tactical_cursor_input_validate_redraw
 //   PRG $08623  bank2  $8623  poll_cursor_input_until_button
 //   PRG $08669  bank2  $8669  combat_command_menu_input_loop
-//   PRG $086F9  bank2  $86F9  select_entry_from_b52f_table_by_cursor
+//   PRG $086F9  bank2  $86F9  select_menu_entry_by_cursor
 //   PRG $08792  bank2  $8792  prompt_province_selection
 //   PRG $087B7  bank2  $87B7  draw_tactical_terrain_feature
 //   PRG $0882A  bank2  $882A  upload_map_cell_tiles
@@ -335,7 +335,7 @@
 //   PRG $09D75  bank2  $9D75  calc_battle_strength_pct_one_side
 //   PRG $09D9A  bank2  $9D9A  ai_battle_strength_ratio_below_50
 //   PRG $09DA8  bank2  $9DA8  reduce_defending_province_town_chaos
-//   PRG $09E20  bank2  $9E20  tally_unit_type_then_check_strength_parity_50
+//   PRG $09E20  bank2  $9E20  resolve_attack_apply_mutual_casualties
 //   PRG $09E73  bank2  $9E73  resolve_attack_apply_casualties
 //   PRG $0A01A  bank2  $A01A  unit_type_count_gt3_and_equals_arg1
 //   PRG $0A04E  bank2  $A04E  is_unit_at_coords
@@ -7504,10 +7504,10 @@ word combat_command_menu_input_loop(word arg1, word arg2) {
 }
 
 // ===== bank2 $86F9  (PRG $086F9) =====
-// PRG $086F9 select_entry_from_b52f_table_by_cursor
+// PRG $086F9 select_menu_entry_by_cursor
 // (body @ PRG $086FE)
 
-word select_entry_from_b52f_table_by_cursor(word arg1, word arg2) {
+word select_menu_entry_by_cursor(word arg1, word arg2) {
     set_cursor(2, 21);    // PRG $08701 -> bank15 $CC7B
     read_frame_timer(2);    // PRG $08706 -> bank15 $D29D
     local10 = 0;    // PRG $0870B
@@ -8169,7 +8169,7 @@ word place_unit_at_tile_if_free(word arg1, word arg2) {
 
 word prompt_unit_move_direction_at_tile(void) {
     redraw_window(msg_up_up_rt_down_rt_down_down_lt);    // PRG $090A8 -> bank15 $CEC4
-    return select_entry_from_b52f_table_by_cursor(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // PRG $090BA -> bank2 $86F9
+    return select_menu_entry_by_cursor(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // PRG $090BA -> bank2 $86F9
 }
 
 // ===== bank2 $90BB  (PRG $090BB) =====
@@ -9188,10 +9188,10 @@ word reduce_defending_province_town_chaos(word arg1, word arg2) {
 }
 
 // ===== bank2 $9E20  (PRG $09E20) =====
-// PRG $09E20 tally_unit_type_then_check_strength_parity_50
+// PRG $09E20 resolve_attack_apply_mutual_casualties
 // (body @ PRG $09E25)
 
-word tally_unit_type_then_check_strength_parity_50(word arg1) {
+word resolve_attack_apply_mutual_casualties(word arg1) {
     validate_phase_unit_cells_draw_cursor(arg1);    // PRG $09E26 -> bank2 $9B4A
     *(byte*)((arg1 + 0x7BEE)) = (*(byte*)((arg1 + 0x7BEE)) + 1);    // PRG $09E32
     local11 = calc_battle_strength_pct_one_side(arg1);    // PRG $09E38 -> bank2 $9D75
@@ -9333,7 +9333,7 @@ word is_enemy_unit_adjacent(word arg1) {
 word eval_and_announce_battle_strength_parity_if_enemy_present(word arg1) {
     phi_ret_a0f2 = is_enemy_unit_adjacent(arg1);    // PRG $0A0E4 -> bank2 $A0AD
     if (phi_ret_a0f2) {    // PRG $0A0DF
-        phi_ret_a0f2 = announce_combat_side_daimyo_and_status(tally_unit_type_then_check_strength_parity_50(arg1), arg1);    // PRG $0A0EE -> bank2 $94F6
+        phi_ret_a0f2 = announce_combat_side_daimyo_and_status(resolve_attack_apply_mutual_casualties(arg1), arg1);    // PRG $0A0EE -> bank2 $94F6
     }
     return phi_ret_a0f2;    // PRG $0A0F2
 }
@@ -9982,7 +9982,7 @@ word player_move_unit_with_occupancy_check_loop(void) {
                         continue;
                     }
                     if (((unsigned)local10 < (unsigned)5)) {    // PRG $0A9DB
-                        announce_combat_side_daimyo_and_status(tally_unit_type_then_check_strength_parity_50(local10), local10);    // PRG $0A9E8 -> bank2 $94F6
+                        announce_combat_side_daimyo_and_status(resolve_attack_apply_mutual_casualties(local10), local10);    // PRG $0A9E8 -> bank2 $94F6
                         return 0;    // PRG $0A9ED
                     }
                 }

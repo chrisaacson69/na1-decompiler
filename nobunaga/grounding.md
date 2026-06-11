@@ -150,6 +150,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #14 — attack resolution + menu input (115/131, 87%)   [2026-06-10]
+- `$9E20` `tally_unit_type_then_check_strength_parity_50` → **`resolve_attack_apply_mutual_casualties`** — the prior note
+  MISSED the actual damage step: it applies casualties to both sides (own loses 100-pct%, enemy loses pct% of strength),
+  feeds town-chaos, returns 0/1/2 (parity/win/loss). The core melee resolver.
+- `$86F9` `select_entry_from_b52f_table_by_cursor` → **`select_menu_entry_by_cursor`** ($B52F is a string prompt, not a table).
+- `$A0DA` attack-and-announce wrapper, `$8669`/`$8561` menu/input loops, `$9865` AI advance, `$9954` rng rect search:
+  re-grounded. Next: rows 1-7 (~16 left).
+
 ### Bank 2 full-verify batch #13 — AI combat tactics + cursor input (108/131, 82%)   [2026-06-10]
 2 polarity/meaning refutes:
 - `$A4FC` `max_enemy_unit_type_strength_pct` → **`min_own_strength_pct_vs_list`** — keeps the MIN (worst matchup),
