@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #3 — uprising/owner/predicate leaves (24/98)   [2026-06-10]
+2 renames:
+- `$8B70` `select_msg_by_state_7b79` → **`select_rebellion_message`** (Christians vs rioters by $7B79 state).
+- `$8DE1` `dedup_owners_to_6f4f` → **`dedup_owners`** (de-dup-by-owner into $6F4F; fixed a duplicate toml entry too).
+- `$88AC` render_boot_title_screens, `$8BE6` find_first_enemy_owned_fief, `$8C0E` is_selected_province_ai_state_5,
+  `$8EBC` compare_greater_with_coinflip_tiebreak, `$8FE0` stat_above_threshold_and_gap_predicate: re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #2 — new-game setup + state setters (17/98)   [2026-06-10]
 1 rename + re-grounds:
 - `$867F` `display_prompt_message_b900` → **`prompt_player_choose_fief`** (new-game fief pick).

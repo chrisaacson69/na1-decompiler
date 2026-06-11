@@ -26,7 +26,7 @@
 //   PRG $00763  bank0  $8763  daimyo_creation_stat_roll_screen
 //   PRG $008AC  bank0  $88AC  render_boot_title_screens
 //   PRG $009A3  bank0  $89A3  init_new_game_state
-//   PRG $00B70  bank0  $8B70  select_msg_by_state_7b79
+//   PRG $00B70  bank0  $8B70  select_rebellion_message
 //   PRG $00B9D  bank0  $8B9D  select_message_string_by_flags_and_arg
 //   PRG $00BE6  bank0  $8BE6  find_first_enemy_owned_fief
 //   PRG $00C0E  bank0  $8C0E  is_selected_province_ai_state_5
@@ -34,7 +34,7 @@
 //   PRG $00C35  bank0  $8C35  relations_matrix_cell_addr
 //   PRG $00C45  bank0  $8C45  set_6da1_bit7_if_no_ai_state5_province_found
 //   PRG $00C75  bank0  $8C75  resolve_ownerless_province_succession
-//   PRG $00DE1  bank0  $8DE1  dedup_owners_to_6f4f
+//   PRG $00DE1  bank0  $8DE1  dedup_owners
 //   PRG $00E63  bank0  $8E63  process_fiefs_with_state_ff
 //   PRG $00E99  bank0  $8E99  append_candidate_pair
 //   PRG $00EBC  bank0  $8EBC  compare_greater_with_coinflip_tiebreak
@@ -1166,10 +1166,10 @@ word init_new_game_state(void) {
 }
 
 // ===== bank0 $8B70  (PRG $00B70) =====
-// PRG $00B70 select_msg_by_state_7b79
+// PRG $00B70 select_rebellion_message
 // (body @ PRG $00B75)
 
-word select_msg_by_state_7b79(word arg1) {
+word select_rebellion_message(word arg1) {
     local11 = ((*(byte*)((arg1 + 0x7B79)) == 7) ? msg_christns : msg_rioters);    // PRG $00B9A
     return local11;    // PRG $00B9C
 }
@@ -1195,7 +1195,7 @@ word select_message_string_by_flags_and_arg(word arg1) {
                     phi_val_8bd5 = msg_monks;    // PRG $00BDB
                     break;
                 default:
-                    phi_val_8bd5 = select_msg_by_state_7b79(arg1);    // PRG $00BE3 -> bank0 $8B70
+                    phi_val_8bd5 = select_rebellion_message(arg1);    // PRG $00BE3 -> bank0 $8B70
                     break;
             }
             local11 = phi_val_8bd5;    // PRG $00BD5
@@ -1345,10 +1345,10 @@ word resolve_ownerless_province_succession(word arg1) {
 }
 
 // ===== bank0 $8DE1  (PRG $00DE1) =====
-// PRG $00DE1 dedup_owners_to_6f4f
+// PRG $00DE1 dedup_owners
 // (body @ PRG $00DE6)
 
-word dedup_owners_to_6f4f(word arg1) {
+word dedup_owners(word arg1) {
     arg1 = (arg1 + 1);    // PRG $00DE8
     *(byte*)&dedup_buf = *(byte*)(((arg1 + 1) - 1));    // PRG $00DEB
     local10 = 1;    // PRG $00DEF
@@ -1401,7 +1401,7 @@ word process_fiefs_with_state_ff(void) {
                 selected_province_idx = local11;    // PRG $00E75
                 battle_defending_province = selected_province_idx;    // PRG $00E7B
                 compact_relation_list();    // PRG $00E7E -> bank15 $DAD7
-                resolve_ownerless_province_succession(dedup_owners_to_6f4f(deduped_owner_list));    // PRG $00E89 -> bank0 $8C75
+                resolve_ownerless_province_succession(dedup_owners(deduped_owner_list));    // PRG $00E89 -> bank0 $8C75
             }
             phi_val_8e8f = (local11 + 1);    // PRG $00E8E
             continue;

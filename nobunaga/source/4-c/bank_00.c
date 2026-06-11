@@ -643,10 +643,10 @@ word init_new_game_state(void) {
     return syscall_audio_control(0, 0);    // $89D6
 }
 
-// $8B70 select_msg_by_state_7b79
+// $8B70 select_rebellion_message
 // (body @ $8B75)
 
-word select_msg_by_state_7b79(word arg1) {
+word select_rebellion_message(word arg1) {
     local11 = ((*(byte*)((arg1 + 0x7B79)) == 7) ? msg_christns : msg_rioters);    // $8B9A
     return local11;    // $8B9C
 }
@@ -671,7 +671,7 @@ word select_message_string_by_flags_and_arg(word arg1) {
                     phi_val_8bd5 = msg_monks;    // $8BDB
                     break;
                 default:
-                    phi_val_8bd5 = select_msg_by_state_7b79(arg1);    // $8BE3
+                    phi_val_8bd5 = select_rebellion_message(arg1);    // $8BE3
                     break;
             }
             local11 = phi_val_8bd5;    // $8BD5
@@ -814,10 +814,10 @@ word resolve_ownerless_province_succession(word arg1) {
     }
 }
 
-// $8DE1 dedup_owners_to_6f4f
+// $8DE1 dedup_owners
 // (body @ $8DE6)
 
-word dedup_owners_to_6f4f(word arg1) {
+word dedup_owners(word arg1) {
     arg1 = (arg1 + 1);    // $8DE8
     *(byte*)&dedup_buf = *(byte*)(((arg1 + 1) - 1));    // $8DEB
     local10 = 1;    // $8DEF
@@ -869,7 +869,7 @@ word process_fiefs_with_state_ff(void) {
                 selected_province_idx = local11;    // $8E75
                 battle_defending_province = selected_province_idx;    // $8E7B
                 compact_relation_list();    // $8E7E
-                resolve_ownerless_province_succession(dedup_owners_to_6f4f(deduped_owner_list));    // $8E89
+                resolve_ownerless_province_succession(dedup_owners(deduped_owner_list));    // $8E89
             }
             phi_val_8e8f = (local11 + 1);    // $8E8E
             continue;

@@ -1627,7 +1627,7 @@ VM bytecode disassembly
  >$8BD8  8A 4C BA                   LOADL_imm2             $BA4C (msg_monks)
   $8BDB  D6 D5 8B                   JUMP_abs               $8BD5
  >$8BDE  3C                         PUSH_quick   ; inline operand = 12
-  $8BDF  E9 70 8B 02                CALL_abs_imm1          $8B70 (select_msg_by_state_7b79) {bytecode}, $02
+  $8BDF  E9 70 8B 02                CALL_abs_imm1          $8B70 (select_rebellion_message) {bytecode}, $02
   $8BE3  D6 D5 8B                   JUMP_abs               $8BD5
 
 ; ============================================================
@@ -2002,7 +2002,7 @@ VM bytecode disassembly
   $8E7B  A8 63 6F                   STORE_abs              $6F63 (battle_defending_province)
   $8E7E  AC D7 DA                   CALL_abs               $DAD7 (compact_relation_list) {bytecode}
   $8E81  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
-  $8E84  E9 E1 8D 02                CALL_abs_imm1          $8DE1 (dedup_owners_to_6f4f) {bytecode}, $02
+  $8E84  E9 E1 8D 02                CALL_abs_imm1          $8DE1 (dedup_owners) {bytecode}, $02
   $8E88  B3                         PUSHL
   $8E89  E9 75 8C 02                CALL_abs_imm1          $8C75 (resolve_ownerless_province_succession) {bytecode}, $02
  >$8E8D  0B                         LOADL_quick   ; inline operand = 11
