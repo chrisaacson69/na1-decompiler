@@ -74,6 +74,21 @@ for the patterns as the backstop). Fixing now would mean investing blind to the 
 
 ---
 
+## ★ Impact on the planned RE-ANALYSIS pass (Chris's next goal, 2026-06-10)
+
+The point of grounding is to make `source/4-c/*.c` legible so a *second* pass (human AND LLM) can correct the
+earlier reads and discover new structure from the readable C. Debt impact on that:
+- 🔴 **The DREAM value-correctness bugs (§1) are the one thing that MISLEADS the re-analysis.** For the affected
+  subs the C is silently WRONG (e.g. `math32_muladddiv` shows `return rate` but is `(rate*amount+9)/10`). A careful
+  human sees the inline `value-wrong`/`ext_op` flag and drops to the bytecode — but **a bulk LLM pass reading the C
+  as ground truth will faithfully reproduce the wrong logic.** → Fixing the decompiler (esp. the value-golden harness
+  that *certifies* C-values == bytecode) is the natural BRIDGE between grounding and re-analysis. Small/bounded; bank 0
+  has 0 ext-op subs, so finishing it completes the census. Do this capstone before the automated re-analysis.
+- 🟢 **Everything else HELPS:** grounded names + struct fields (legible to both), the confidence tags + evidence
+  expressions (an LLM re-judges rather than re-derives), `bank-ground-order.py` (leaves-first reading order), and the
+  call cross-references (navigable graph).
+- 🟡 The chapter rename-sweep (§3.1) is friction for a human cross-referencing chapters vs C, not a blocker.
+
 ## 5. NOT debt — policy on data structures (Chris, 2026-06-10)
 
 The on-RAM **data structures are well-known and reliable** (the `$7001` province record, the `$6193` relations
