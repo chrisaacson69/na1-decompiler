@@ -2342,7 +2342,7 @@ VM bytecode disassembly
   $9063  D8 9E 90                   JUMPF_abs              $909E
   $9066  3D                         PUSH_quick   ; inline operand = 13
   $9067  3C                         PUSH_quick   ; inline operand = 12
-  $9068  E9 EC 8F 04                CALL_abs_imm1          $8FEC (find_unit_at_tile) {bytecode}, $04
+  $9068  E9 EC 8F 04                CALL_abs_imm1          $8FEC (is_any_unit_at_tile) {bytecode}, $04
   $906C  D7 9E 90                   JUMPT_abs              $909E
   $906F  3D                         PUSH_quick   ; inline operand = 13
   $9070  3C                         PUSH_quick   ; inline operand = 12
@@ -3400,7 +3400,7 @@ VM bytecode disassembly
 ; ============================================================
   $9797  3D                         PUSH_quick   ; inline operand = 13
   $9798  3C                         PUSH_quick   ; inline operand = 12
-  $9799  E9 EC 8F 04                CALL_abs_imm1          $8FEC (find_unit_at_tile) {bytecode}, $04
+  $9799  E9 EC 8F 04                CALL_abs_imm1          $8FEC (is_any_unit_at_tile) {bytecode}, $04
   $979D  D7 D7 97                   JUMPT_abs              $97D7
   $97A0  3D                         PUSH_quick   ; inline operand = 13
   $97A1  3C                         PUSH_quick   ; inline operand = 12
@@ -5616,7 +5616,7 @@ VM bytecode disassembly
   $A65B  D8 75 A6                   JUMPF_abs              $A675
   $A65E  39                         PUSH_quick   ; inline operand = 9
   $A65F  3A                         PUSH_quick   ; inline operand = 10
-  $A660  E9 EC 8F 04                CALL_abs_imm1          $8FEC (find_unit_at_tile) {bytecode}, $04
+  $A660  E9 EC 8F 04                CALL_abs_imm1          $8FEC (is_any_unit_at_tile) {bytecode}, $04
   $A664  D7 75 A6                   JUMPT_abs              $A675
   $A667  39                         PUSH_quick   ; inline operand = 9
   $A668  3A                         PUSH_quick   ; inline operand = 10
@@ -6564,7 +6564,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $ADD1   (frame_off=-6, body @ $ADD6)
 ; ============================================================
-  $ADD6  AC 86 AD                   CALL_abs               $AD86 (halve_defender_province_stat_for_exposed_units) {bytecode}
+  $ADD6  AC 86 AD                   CALL_abs               $AD86 (halve_defender_morale_for_breaching_attackers) {bytecode}
   $ADD9  40                         LOADL_qimm   ; inline operand = 0
   $ADDA  2A                         STORE_quick   ; inline operand = 10
  >$ADDB  40                         LOADL_qimm   ; inline operand = 0

@@ -150,6 +150,16 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #8 — AI strength terms + battle resolution (73/131, 55%)   [2026-06-10]
+- `$AD86` `halve_defender_province_stat_for_exposed_units` → **`halve_defender_morale_for_breaching_attackers`** —
+  REFUTED side: it loops ATTACKER (side-0) units ON placeable cells (bit 32 SET) to halve the DEFENDER's morale
+  ($7013+def*26 = the $7001 record's +18 morale), not "defending province's units / not-on-blocked-cell".
+- `$8FEC` `find_unit_at_tile` → **`is_any_unit_at_tile`** (returns bool, either side).
+- `$9C04` `ai_province_stat_diff_term` ✅ — pins $7013 = the $7001 record's morale/skill/arms (+18/+20/+22) sub-block.
+- `$A0F3` `build_reachable_enemy_target_list` ✅ (6 hex dirs, 1 step each), `$9C69`/`$93AA`/`$AE2C` ✅ re-grounded.
+- Noted `$93AA` is a same-CPU-addr/different-bank pair (bank-2 announce vs another bank's ravage_defender_loyalty).
+Next: rows 1-7.
+
 ### Bank 2 full-verify batch #7 — terrain/map render + init (66/131, 50%)   [2026-06-10]
 Well-named region (breadth pass was solid here) — mostly confirms + cross-links, 1 rename, 1 polarity fix:
 - `$87B7` `draw_tactical_terrain_feature` — REFUTED bit-2 polarity: draws when cell is CLEAR of bit 2 (bit 2 = water/border = skip), not set.

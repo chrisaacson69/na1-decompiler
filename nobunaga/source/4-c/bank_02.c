@@ -1115,10 +1115,10 @@ word side_has_unit_at_cell(word arg1, word arg2, word arg3) {
     return 0;    // $8FEB
 }
 
-// $8FEC find_unit_at_tile
+// $8FEC is_any_unit_at_tile
 // (body @ $8FF1)
 
-word find_unit_at_tile(word arg1, word arg2) {
+word is_any_unit_at_tile(word arg1, word arg2) {
     local11 = 0;    // $8FF2
     while (1) {    // $8FF3
         if (side_has_unit_at_cell(local11, arg1, arg2)) {    // $8FF3
@@ -1164,7 +1164,7 @@ word battleside_not_state5_or_resting(word side) {
 // (body @ $905D)
 
 word place_unit_at_tile_if_free(word arg1, word arg2) {
-    if (!((!(is_tile_in_bounds(arg1, arg2)) || find_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2)))) {    // $905D
+    if (!((!(is_tile_in_bounds(arg1, arg2)) || is_any_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2)))) {    // $905D
         draw_terrain_feature_if_valid(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // $9082
         *(byte*)(cur_unit_col_ptr()) = arg1;    // $908B
         *(byte*)(cur_unit_row_ptr()) = arg2;    // $9091
@@ -1716,7 +1716,7 @@ word tile_blocked_by_existing_unit_in_placement(word arg1, word arg2) {
 // (body @ $9797)
 
 word commit_unit_dest_tile_if_valid(word arg1, word arg2) {
-    if (!((find_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2) || tile_blocked_by_existing_unit_in_placement(arg1, arg2) || !(is_coord_in_combat_rect(arg1, arg2))))) {    // $9797
+    if (!((is_any_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2) || tile_blocked_by_existing_unit_in_placement(arg1, arg2) || !(is_coord_in_combat_rect(arg1, arg2))))) {    // $9797
         *(byte*)(unit_col_ptr(cur_combat_side, cur_combat_unit_slot)) = arg1;    // $97C7
         *(byte*)(unit_row_ptr(cur_combat_side, cur_combat_unit_slot)) = arg2;    // $97D4
         return 1;    // $97D6
@@ -2688,7 +2688,7 @@ word ai_advance_units_into_free_adjacent_cells(void) {
                 candidate_y = origin_y;    // $A644
                 if (sub_8003(&candidate_x, &candidate_y, local11)) {    // $A641
                     if (is_tile_in_bounds(candidate_x, candidate_y)) {    // $A655
-                        if (!(find_unit_at_tile(candidate_x, candidate_y))) {    // $A65E
+                        if (!(is_any_unit_at_tile(candidate_x, candidate_y))) {    // $A65E
                             if (!(is_map_cell_blocked(candidate_x, candidate_y))) {    // $A667
                                 free_cell_found = 1;    // $A671
                                 break;
@@ -3209,10 +3209,10 @@ word display_morale_falling_message(void) {
     }
 }
 
-// $AD86 halve_defender_province_stat_for_exposed_units
+// $AD86 halve_defender_morale_for_breaching_attackers
 // (body @ $AD8B)
 
-word halve_defender_province_stat_for_exposed_units(void) {
+word halve_defender_morale_for_breaching_attackers(void) {
     local10 = ((battle_defending_province * 26) + 0x7013);    // $AD95
     local11 = 0;    // $AD97
     while (1) {    // $AD98
@@ -3241,7 +3241,7 @@ word halve_defender_province_stat_for_exposed_units(void) {
 // (body @ $ADD6)
 
 word run_both_sides_combat_turn(word day) {
-    halve_defender_province_stat_for_exposed_units();    // $ADD6
+    halve_defender_morale_for_breaching_attackers();    // $ADD6
     side_i = 0;    // $ADDA
     while (1) {    // $ADDB
         combat_casualty_skip_flag_7bf3 = 0;    // $ADDC

@@ -293,7 +293,7 @@
 //   PRG $08F79  bank2  $8F79  is_unit_present
 //   PRG $08F97  bank2  $8F97  remove_unit
 //   PRG $08FC0  bank2  $8FC0  side_has_unit_at_cell
-//   PRG $08FEC  bank2  $8FEC  find_unit_at_tile
+//   PRG $08FEC  bank2  $8FEC  is_any_unit_at_tile
 //   PRG $0900A  bank2  $900A  wrap_index_0_2_to_zero
 //   PRG $09019  bank2  $9019  is_map_cell_blocked
 //   PRG $09030  bank2  $9030  battleside_not_state5_or_resting
@@ -369,7 +369,7 @@
 //   PRG $0ABB7  bank2  $ABB7  ai_run_all_units_combat_actions
 //   PRG $0AC7F  bank2  $AC7F  combat_command_dispatch_loop_per_unit
 //   PRG $0AD38  bank2  $AD38  display_morale_falling_message
-//   PRG $0AD86  bank2  $AD86  halve_defender_province_stat_for_exposed_units
+//   PRG $0AD86  bank2  $AD86  halve_defender_morale_for_breaching_attackers
 //   PRG $0ADD1  bank2  $ADD1  run_both_sides_combat_turn
 //   PRG $0AE2C  bank2  $AE2C  transfer_owned_fiefs_and_announce_succession
 //   PRG $0AF3B  bank2  $AF3B  dispatch_battle_resolution
@@ -8099,10 +8099,10 @@ word side_has_unit_at_cell(word arg1, word arg2, word arg3) {
 }
 
 // ===== bank2 $8FEC  (PRG $08FEC) =====
-// PRG $08FEC find_unit_at_tile
+// PRG $08FEC is_any_unit_at_tile
 // (body @ PRG $08FF1)
 
-word find_unit_at_tile(word arg1, word arg2) {
+word is_any_unit_at_tile(word arg1, word arg2) {
     local11 = 0;    // PRG $08FF2
     while (1) {    // PRG $08FF3
         if (side_has_unit_at_cell(local11, arg1, arg2)) {    // PRG $08FF3 -> bank2 $8FC0
@@ -8152,7 +8152,7 @@ word battleside_not_state5_or_resting(word side) {
 // (body @ PRG $0905D)
 
 word place_unit_at_tile_if_free(word arg1, word arg2) {
-    if (!((!(is_tile_in_bounds(arg1, arg2)) || find_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2)))) {    // PRG $0905D -> bank2 $8F11
+    if (!((!(is_tile_in_bounds(arg1, arg2)) || is_any_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2)))) {    // PRG $0905D -> bank2 $8F11
         draw_terrain_feature_if_valid(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // PRG $09082 -> bank2 $8B25
         *(byte*)(cur_unit_col_ptr()) = arg1;    // PRG $0908B -> bank2 $82A9
         *(byte*)(cur_unit_row_ptr()) = arg2;    // PRG $09091 -> bank2 $82B9
@@ -8723,7 +8723,7 @@ word tile_blocked_by_existing_unit_in_placement(word arg1, word arg2) {
 // (body @ PRG $09797)
 
 word commit_unit_dest_tile_if_valid(word arg1, word arg2) {
-    if (!((find_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2) || tile_blocked_by_existing_unit_in_placement(arg1, arg2) || !(is_coord_in_combat_rect(arg1, arg2))))) {    // PRG $09797 -> bank2 $8FEC
+    if (!((is_any_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2) || tile_blocked_by_existing_unit_in_placement(arg1, arg2) || !(is_coord_in_combat_rect(arg1, arg2))))) {    // PRG $09797 -> bank2 $8FEC
         *(byte*)(unit_col_ptr(cur_combat_side, cur_combat_unit_slot)) = arg1;    // PRG $097C7 -> bank2 $828B
         *(byte*)(unit_row_ptr(cur_combat_side, cur_combat_unit_slot)) = arg2;    // PRG $097D4 -> bank2 $829A
         return 1;    // PRG $097D6
@@ -9732,7 +9732,7 @@ word ai_advance_units_into_free_adjacent_cells(void) {
                 candidate_y = origin_y;    // PRG $0A644
                 if (sub_8003(&candidate_x, &candidate_y, local11)) {    // PRG $0A641
                     if (is_tile_in_bounds(candidate_x, candidate_y)) {    // PRG $0A655 -> bank2 $8F11
-                        if (!(find_unit_at_tile(candidate_x, candidate_y))) {    // PRG $0A65E -> bank2 $8FEC
+                        if (!(is_any_unit_at_tile(candidate_x, candidate_y))) {    // PRG $0A65E -> bank2 $8FEC
                             if (!(is_map_cell_blocked(candidate_x, candidate_y))) {    // PRG $0A667 -> bank2 $9019
                                 free_cell_found = 1;    // PRG $0A671
                                 break;
@@ -10269,10 +10269,10 @@ word display_morale_falling_message(void) {
 }
 
 // ===== bank2 $AD86  (PRG $0AD86) =====
-// PRG $0AD86 halve_defender_province_stat_for_exposed_units
+// PRG $0AD86 halve_defender_morale_for_breaching_attackers
 // (body @ PRG $0AD8B)
 
-word halve_defender_province_stat_for_exposed_units(void) {
+word halve_defender_morale_for_breaching_attackers(void) {
     local10 = ((battle_defending_province * 26) + 0x7013);    // PRG $0AD95
     local11 = 0;    // PRG $0AD97
     while (1) {    // PRG $0AD98
@@ -10302,7 +10302,7 @@ word halve_defender_province_stat_for_exposed_units(void) {
 // (body @ PRG $0ADD6)
 
 word run_both_sides_combat_turn(word day) {
-    halve_defender_province_stat_for_exposed_units();    // PRG $0ADD6 -> bank2 $AD86
+    halve_defender_morale_for_breaching_attackers();    // PRG $0ADD6 -> bank2 $AD86
     side_i = 0;    // PRG $0ADDA
     while (1) {    // PRG $0ADDB
         combat_casualty_skip_flag_7bf3 = 0;    // PRG $0ADDC
