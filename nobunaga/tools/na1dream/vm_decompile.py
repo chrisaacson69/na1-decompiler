@@ -21,6 +21,50 @@ import re
 from pathlib import Path
 
 
+# --- Asset-ID enums (2026-06-10) --------------------------------------------
+# Substitute named constants for the literal int args of "enum-typed" functions,
+# so trigger_cutscene(26) renders as trigger_cutscene(CUTSCENE_BRIBE). Data lives
+# in nobunaga/asset-enums.toml (next to mesen-labels.toml). Minimal parser — no
+# external toml dependency.
+def _load_asset_enums():
+    p = Path(__file__).resolve().parents[2] / "asset-enums.toml"
+    arg_enums, enums = {}, {}
+    if not p.exists():
+        return arg_enums, enums
+    section = None
+    for raw in p.read_text(encoding="utf-8").splitlines():
+        line = raw.split('#', 1)[0].strip()
+        if not line:
+            continue
+        sm = re.match(r'\[(\w+)\]', line)
+        if sm:
+            section = sm.group(1)
+            continue
+        if section == 'arg_enums':
+            m = re.match(r'(\w+)\s*=\s*\{\s*(\d+)\s*=\s*"(\w+)"\s*\}', line)
+            if m:
+                arg_enums[m.group(1)] = {int(m.group(2)): m.group(3)}
+        elif section:
+            m = re.match(r'(\d+)\s*=\s*"(\w+)"', line)
+            if m:
+                enums.setdefault(section, {})[int(m.group(1))] = m.group(2)
+    return arg_enums, enums
+
+_ARG_ENUMS, _ENUMS = _load_asset_enums()
+
+def _apply_arg_enums(fname, args):
+    """Replace literal-int args of enum-typed functions with named constants."""
+    emap = _ARG_ENUMS.get(fname)
+    if not emap:
+        return args
+    for idx, etable in emap.items():
+        if idx < len(args) and re.fullmatch(r'-?\d+', args[idx].strip()):
+            const = _ENUMS.get(etable, {}).get(int(args[idx]))
+            if const:
+                args[idx] = const
+    return args
+
+
 # --- VM-model drift-guard (M3, 2026-06-03) ----------------------------------
 # A self-check that the decompiler's per-opcode data-stack handling agrees with
 # the AUDITED authority `vm_stack_effect.STACK_EFFECT` (which vm-stack-audit.py
@@ -1256,6 +1300,7 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             # and forcing the mental flip in math32_3arg(c,b,a) etc.).
             args = [state.stack.pop() if state.stack else "/*stack underflow*/ regA"
                     for _ in range(arity)]
+            args = _apply_arg_enums(fname, args)
             state.set_call(f"{fname}({', '.join(args)})" if args else f"{fname}()")
 
         # === Indirect host calls — VM opcodes $EA / $DD (call through regA) ===

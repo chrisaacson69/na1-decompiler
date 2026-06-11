@@ -3382,7 +3382,7 @@ word battle_init_driver(void) {
     ui_input_mode = 3;    // $AFE7
     sram_save_checksum = (rng_mod(4) + 53);    // $AFF1
     repaint_screen();    // $AFF4
-    call_bank10_entry(2);    // $AFF8
+    call_bank10_entry(AUDIO_BATTLE_START);    // $AFF8
     map_populate();    // $AFFC
     render_combat_map_screen();    // $AFFF
     result = battle_init_defender();    // $B005

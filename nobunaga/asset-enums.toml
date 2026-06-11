@@ -1,0 +1,55 @@
+# Asset-ID enums — named constants the decompiler substitutes for literal int args
+# of "enum-typed" functions (e.g. trigger_cutscene(26) -> trigger_cutscene(CUTSCENE_BRIBE)).
+# Derived 2026-06-10 from the grounded call sites (each lord command animates its own cutscene)
+# + effect_ninja_sabotage's mission->cutscene mapping. [P] = probable (order-inferred, re-confirm by running).
+
+# function name -> { arg_index = enum_table_name }  (arg_index is 0-based, pop/print order = arg1,arg2,...)
+[arg_enums]
+trigger_cutscene  = { 0 = "cutscene" }
+call_bank10_entry = { 0 = "audio_cue" }
+
+# cutscene/animation IDs (run_cutscene, bank 14) — id -> readable constant
+[cutscene]
+0  = "CUTSCENE_TRADE"
+1  = "CUTSCENE_NINJA_ASSASSIN_RESULT"
+2  = "CUTSCENE_SIEGE_ASSAULT"
+3  = "CUTSCENE_PACT"
+4  = "CUTSCENE_MARRY_ACCEPT_GOLD"
+5  = "CUTSCENE_EVENT_REASSIGN50"      # [P] reassign_daimyo24_fiefs_to_owner50 (50-fief event)
+6  = "CUTSCENE_GIVE"
+7  = "CUTSCENE_ALLY_ACCEPT_GOLD"
+8  = "CUTSCENE_MOVE"
+9  = "CUTSCENE_GROW"
+10 = "CUTSCENE_TRAIN"
+11 = "CUTSCENE_GRANT"
+12 = "CUTSCENE_NINJA_ASSASSIN"
+13 = "CUTSCENE_WAR"
+14 = "CUTSCENE_VIEW"
+15 = "CUTSCENE_NINJA_ATTACK"          # 'someone has sent ninja against fief'
+16 = "CUTSCENE_MARRY"
+17 = "CUTSCENE_SEND"
+18 = "CUTSCENE_TAX_DELIGHTED"         # tax lowered
+19 = "CUTSCENE_TAX_PROTEST"           # tax raised
+20 = "CUTSCENE_DISASTER"              # [P] decay_fief_list disaster sweep
+21 = "CUTSCENE_DAM"
+22 = "CUTSCENE_ASSIGN_ARMS"
+23 = "CUTSCENE_AI_EVENT_23"           # [P] ai_event_build_two_batches
+24 = "CUTSCENE_BUILD"
+25 = "CUTSCENE_AI_EVENT_25"           # [P] ai_event_build_two_batches
+26 = "CUTSCENE_BRIBE"
+27 = "CUTSCENE_NINJA_UPRISING"        # [P] effect_ninja_sabotage (uprising vs arson order)
+28 = "CUTSCENE_NINJA_REVOLT"          # near 'enemy morale is falling'
+29 = "CUTSCENE_NINJA_ARSON"           # [P]
+30 = "CUTSCENE_NINJA_DAMS"            # drains the dams field
+31 = "CUTSCENE_RAVAGE"                # random_event_ravage_output
+32 = "CUTSCENE_REST"
+33 = "CUTSCENE_HIRE"
+
+# bank-10 audio cue IDs (call_bank10_entry) — id -> readable constant.
+# Audio is "play and listen" to confirm; only the high-confidence ones named, rest left numeric. [P] throughout.
+[audio_cue]
+1  = "AUDIO_UI_CONFIRM"               # [P] common: after init, sound-toggle, result jingle, vm_bootstrap
+2  = "AUDIO_BATTLE_START"             # [P] battle_init_driver
+7  = "AUDIO_JINGLE_FAIL"              # [P] play_result_jingle(arg!=0 -> 8 else 7)
+8  = "AUDIO_JINGLE_OK"                # [P]
+30 = "AUDIO_CONFLICT"                 # [P] takeover / revolt / ai-event
