@@ -124,6 +124,29 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 keystone — the combat unit table (struct-of-arrays @ $6FBC) + side resource pool   [2026-06-10]
+**Started bank 2 (the tactical COMBAT engine; banks 1/2 are specialized engines dispatched by bank 0's main
+loop, never co-resident — Chris's NES-banking framing). One keystone cleared 5 of 8 address-tagged suspects
++ refuted 1 confidently-misnamed sub.** The combat unit table is a struct-of-arrays, 2 sides × 5 unit slots:
+- `$82C9` `unit_word_field_ptr_6fbc` → **`unit_strength_ptr(side,slot)`** [HIGH] — word troop count, cap 9999
+  (`min_word(_,0x270F)` @ $08A57; `base_strength` @ $09C97; casualty/reinforce attrition @ $09F63/$09F83).
+- `$828B` `unit_field_ptr_6fd0` → **`unit_col_ptr(side,slot)`** [HIGH] — byte tactical-map COLUMN (X).
+- `$829A` `unit_field_ptr_6fda` → **`unit_row_ptr(side,slot)`** [HIGH] — byte tactical-map ROW (Y).
+  (Coord pair: unit-present-at-(col,row) scan @ $8FC7/$A079; off-map sentinel 200 @ $8FBD; `draw_terrain_
+  feature_if_valid(col,row)` @ $09082.) Geometry: $6FBC word[2][5]→$6FD0 byte[2][5]→$6FDA byte[2][5].
+- `$82A9`/`$82B9` `cur_unit_field_ptr_6fd0/6fda` → **`cur_unit_col_ptr`/`cur_unit_row_ptr`** [HIGH] — bind
+  (cur_combat_side $7BE8, cur_combat_unit_slot $7BE4). **Fixed stale comments** that mislabeled $7BE8 as
+  "field index" / $7BE4 as "unit index" — both REFUTED (verified $7BE8 is the 0/1 side: `=1` @ $935C, `^1` @
+  $9B3D/$AE1E; $7BE4 is the 0..4 slot).
+- `$827E` `unit_record_ptr` → **`side_resource_ptr(side)`** [HIGH, was NOT even flagged as suspect — clean
+  name, wrong meaning]. Per-combat-side resource pool, stride 6 = 3 words: **+0 gold / +2 rice / +4 men**.
+  Rosetta = `draw_message(msg_gold_4d_rice_4d_men_4d, +0,+2,+4)` @ $08C4F; ration check men/15<=rice @ $0838E;
+  men cap 9999 @ $09EFA; gold spend @ $09E84. **REFUTES** old comment's "6-byte combat-unit record, +4 = hp".
+Regenerated (499 subs), 0 old-name stragglers, call sites self-documenting. Surfaced for later: more parallel
+columns in the table — `$6F65` (per-unit status/flag byte), `$6FE5` (digit-render scratch buffer).
+**Bank 2 now: 3 address-tagged suspects left** — `set_combat_state_pair_7bf5_7bf7` ($8270),
+`draw_combat_ui_string_b196` ($B196), `draw_unit_label_b627`.
+
 ### ★ BANK 15 GROUNDING COMPLETE ★ — batch #5, the final 7 leaves   [2026-06-10]
 **Bank 15 is fully grounded: 0 suspect (`_XXXX`-suffixed) subs remain** (confirmed by both the cursor and
 a direct `^word *_XXXX(` def count). The fixed bank — native floor (firmware/BIOS/interpreter/ALU, ch.19),
@@ -355,7 +378,19 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): banks 0/1/2 (bank 15 + 10 + 14 are DONE) <<<
+### >>> NEXT BLOCK (start here): bank 2 (combat) — 3 suspects left; then banks 1, 0 <<<
+**Bank 2 keystone DONE (2026-06-10):** the $6FBC combat unit table (strength/col/row) + $6F7D side resource
+pool grounded — 6 subs renamed (see ledger top). **3 address-tagged suspects remain in bank 2:**
+- `set_combat_state_pair_7bf5_7bf7` ($8270) — writes tactical_cursor_cell_7bf5/row_7bf7; re-ground the two
+  $7BF5/$7BF7 vars (cursor cell/row?) while here.
+- `draw_combat_ui_string_b196` ($B196) — combat UI text draw; verify the string/coords.
+- `draw_unit_label_b627` — combat UI; verify what label (unit name? count?).
+Bonus table columns to map when convenient: `$6F65` (per-unit status/flag byte), `$6FE5` (digit scratch buf).
+Then **bank 1** (5 suspects: helper_8357, province_window_redraw_ba6f/_ba78 pair, map_helper_af10,
+ai_seed_fief_collection_rate_6d2d) then **bank 0** (5: display_prompt_message_b900, select_msg_by_state_7b79,
+dedup_owners_to_6f4f, append_candidate_entry_6f67, roll_period_rate_table_6e0b — the main-loop bank, do last).
+
+#### (historical) original NEXT BLOCK note: banks 0/1/2 (bank 15 + 10 + 14 are DONE)
 **Bank 15 complete (0 suspects); banks 10 & 14 complete (all named).** Remaining corpus suspects: banks
 0/1/2 — **5 (bank 0), 5 (bank 1), 7 (bank 2) ≈ 17** `_XXXX`-suffixed function defs (direct C count).
 NOTE the cursor's `--grounding` count for switchable banks is UNRELIABLE: native-call-index keys by CPU
