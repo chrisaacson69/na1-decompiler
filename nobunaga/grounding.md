@@ -150,6 +150,19 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### ★★ BANK 2 FULL-VERIFICATION COMPLETE ★★ — batch #16, the 9 combat-driver roots (131/131, 100%)   [2026-06-10]
+**Every one of bank 2's 131 subs is now read-verified against its bytecode (0 todo, 0 suspects).** The final 9 are the
+depth 8-13 roots, all confirmed (everything they call was grounded in batches 1-15):
+- `$AFE1` `battle_init_driver` ✅ — THE root (depth 13, $8000 entry): map_populate -> render_combat_map_screen ->
+  battle_init_defender -> draw_combat_fief_day_header -> dispatch_battle_resolution.
+- `$ADD1` `run_both_sides_combat_turn` ✅ (one day, both sides) -> `$ABB7` `ai_run_all_units_combat_actions` (one side) ->
+  `$A8CF` `ai_select_unit_combat_action` (one unit) -> `$A6C5` `ai_choose_combat_action_by_battle_strength`.
+- `$A5A4`/`$A625` AI advance (toward enemies / into free cells), `$A90E`/`$A96C` player move loops (place / melee): re-grounded.
+**The full combat call tree reads top-to-bottom as a coherent system.** Tally for the bank-2 full-verify arc (16 batches,
+7/batch): ~30 renames + ~40 refuted/corrected comments on previously `[HIGH/MED CONFIRMED]` labels + 2 new DREAM value-bug
+classes logged (switch / arms-reconverge value-merge) + the difficulty-knob ($9C88) + the $7001/$7013 record offset maps.
+**Vindicates the full-verify bar: the clean names were wrong as often as the stubs.**
+
 ### Bank 2 full-verify batch #15 — AI brain + command/move drivers (122/131, 93%)   [2026-06-10]
 High-level drivers — all well-named (everything they call is now grounded), mostly re-grounding + 1 return fix:
 - `$A52F` `ai_decide_unit_action_attack_or_advance` ✅ — the per-unit AI tactical BRAIN (target -> attack, else advance);
@@ -592,25 +605,21 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): FULL-VERIFY bank 2 bottom-up (17/131); then banks 1, 0 <<<
-**STANDARD CHANGED 2026-06-10 (Chris): full verification, not stub sweep** (see Settled framing ★). Bank 2's
-address-tagged STUBS are cleared (0 `_<4hex>`), but only **17/131 subs are truly verified** — the other 114
-carry inherited breadth-pass names that are SUSPECTS until read. **Resume = `py -3 tools/bank-ground-order.py
-2 --todo`** (leaves-first worklist of the 114). Grind depth-0 up: top of the list is `get_battle_side_province`
-($838F, 25 callers), `test_unit_type_present_flag` ($8F79), `is_no_province_selected` ($82FF)… roots last
-(`battle_init_driver` $AFE1 depth 13). Same loop as before (layer-ID → read bytecode → fact-check → name+tag →
-toml → regen → spot-check), now applied to descriptively-named subs too (confirm or REFUTE the inherited name).
-Bonus table columns still un-mapped (optional): `$6F65` (per-unit status/flag byte), `$6FE5` (digit scratch buf). **Bank 1 — 5 address-tagged suspects** (the specialized lord-command/turn engine
-dispatched by bank 0; per Chris's NES-banking framing banks 1 & 2 are the engines, bank 0 the main loop):
-- `helper_8357` ($8357, 3 args) — fully vague; ID first.
-- `province_window_redraw_ba6f` + `province_window_redraw_ba78` ($BA6F/$BA78, 2 args) — adjacent pair, likely
-  the province-info window redraw; ground together.
-- `map_helper_af10` ($AF10, 1 arg).
-- `ai_seed_fief_collection_rate_6d2d` ($6D2D area) — AI tax/collection seed; cross-checks the $6D2D table.
-**Method that worked in bank 2:** read the ROM strings directly for any draw_message/message_display target
-(py one-liner, 16KB-bank file offset = 16 + bank*0x4000 + (cpu - (bank==15?0xC000:0x8000))) — decisive.
-Then **bank 0** (5: display_prompt_message_b900, select_msg_by_state_7b79, dedup_owners_to_6f4f,
-append_candidate_entry_6f67, roll_period_rate_table_6e0b — the main-loop bank, do last).
+### >>> NEXT BLOCK (start here): FULL-VERIFY bank 1 (turn-command engine), then bank 0 <<<
+**★ BANK 2 FULL-VERIFY COMPLETE (131/131, 2026-06-10, batches #1-16).** Apply the identical loop to **bank 1** (the
+lord-command / turn engine, the other specialized bank dispatched by bank 0's main loop): `py -3
+tools/bank-ground-order.py 1 --todo` for the leaves-first worklist, 7/batch, read each against bytecode, confirm-or-REFUTE
+the inherited name, regen, commit. The loop: layer-ID → read bytecode → fact-check the suspect note → name+tag → toml →
+regen → spot-check → ledger. **Method wins from bank 2:** (1) read ROM strings directly for any draw_message target
+(py, 16KB-bank file offset = 16 + bank*0x4000 + (cpu - (bank==15?0xC000:0x8000))); (2) watch for the value-merge DREAM
+bug classes (switch per-case offset / arms-reconverge-at-suffix — verify against `3-c-basic`/bytecode); (3) the clean
+descriptive names are wrong as often as the stubs — trust nothing.
+**KNOWN BANK-1 BUGS to fix while there:** mis-keyed duplicate toml entries surfaced from bank 2 —
+`province_window_redraw_ba6f` is keyed `0x83A2` (should be `0xBA6F`). Recheck any other bank-1 `0x83A2`/`0x93AA`/`0x85A7`
+entries (same-CPU-addr cross-bank is FINE — verify each bank-1 sub at those addrs is correctly labeled, not a stray
+bank-2 leak). The bank-1 address-tagged stubs (`helper_8357`, `province_window_redraw_ba6f`/`_ba78`, `map_helper_af10`,
+`ai_seed_fief_collection_rate_6d2d`) are just the worst offenders — full-verify covers ALL ~131. Then **bank 0** (~98
+subs, the main loop) LAST.
 
 #### (historical) original NEXT BLOCK note: banks 0/1/2 (bank 15 + 10 + 14 are DONE)
 **Bank 15 complete (0 suspects); banks 10 & 14 complete (all named).** Remaining corpus suspects: banks
