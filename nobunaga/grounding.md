@@ -150,6 +150,16 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #11 — combat resolution + attack command (94/131, 71%)   [2026-06-10]
+3 renames (1 polarity refute):
+- `$A7E5` `ai_test_own_double_ge_enemy_total_strength` → **`ai_own_double_lt_enemy_total`** — code is `2*own <
+  enemy_total` (LESS-than), the comment said `>=`. Exact polarity flip.
+- `$A0AD` `enemy_unit_type_present_at_unit_tile` → **`is_enemy_unit_adjacent`** — checks 6 neighbors, not "the tile".
+- `$92CA` `battle_init_clear_defending_province_fields` → **`battle_init_defender`** — loads war_defender_*; confirms
+  $7001 record offsets (+0 gold / +6 rice / +16 men).
+- `$9058` `place_unit_at_tile_if_free` ✅ (AI-move commit) / `$A9FB` `combat_command_select_target_resolve_attack` ✅
+  (player attack) / `$8D5D` `draw_combat_roster_window` ✅. `$A721` rng gate is rng_mod(skill+1) not 3. Next: rows 1-7.
+
 ### Bank 2 full-verify batch #10 — placement/move/flee command layer (87/131, 66%)   [2026-06-10]
 Integration layer — ties together a dozen session-grounded subs. 2 renames (both refutes):
 - `$95BE` `draw_tactical_cursor_region_arg0` → **`erase_cursor_advance_phase`** — not a thin wrapper; it erases the

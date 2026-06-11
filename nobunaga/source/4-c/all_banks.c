@@ -305,7 +305,7 @@
 //   PRG $091A1  bank2  $91A1  prompt_select_province_from_list
 //   PRG $091D5  bank2  $91D5  distribute_men_into_unit_strengths
 //   PRG $0929C  bank2  $929C  clear_all_unit_positions
-//   PRG $092CA  bank2  $92CA  battle_init_clear_defending_province_fields
+//   PRG $092CA  bank2  $92CA  battle_init_defender
 //   PRG $0936A  bank2  $936A  draw_combat_message
 //   PRG $09387  bank2  $9387  draw_unit_type_label
 //   PRG $093AA  bank2  $93AA  announce_battle_outcome_retreat_or_won
@@ -340,7 +340,7 @@
 //   PRG $0A01A  bank2  $A01A  unit_type_count_gt3_and_equals_arg1
 //   PRG $0A04E  bank2  $A04E  is_unit_at_coords
 //   PRG $0A07A  bank2  $A07A  find_adjacent_unit_around_tile
-//   PRG $0A0AD  bank2  $A0AD  enemy_unit_type_present_at_unit_tile
+//   PRG $0A0AD  bank2  $A0AD  is_enemy_unit_adjacent
 //   PRG $0A0DA  bank2  $A0DA  eval_and_announce_battle_strength_parity_if_enemy_present
 //   PRG $0A0F3  bank2  $A0F3  build_reachable_enemy_target_list
 //   PRG $0A148  bank2  $A148  find_flagged_present_unit_type
@@ -356,7 +356,7 @@
 //   PRG $0A625  bank2  $A625  ai_advance_units_into_free_adjacent_cells
 //   PRG $0A6C5  bank2  $A6C5  ai_choose_combat_action_by_battle_strength
 //   PRG $0A721  bank2  $A721  ai_rng_resolve_combat_apply_casualties
-//   PRG $0A7E5  bank2  $A7E5  ai_test_own_double_ge_enemy_total_strength
+//   PRG $0A7E5  bank2  $A7E5  ai_own_double_lt_enemy_total
 //   PRG $0A84D  bank2  $A84D  ai_clear_province_state_when_strong_enough
 //   PRG $0A8CF  bank2  $A8CF  ai_select_unit_combat_action
 //   PRG $0A90E  bank2  $A90E  player_move_unit_until_placed_loop
@@ -8340,10 +8340,10 @@ word clear_all_unit_positions(void) {
 }
 
 // ===== bank2 $92CA  (PRG $092CA) =====
-// PRG $092CA battle_init_clear_defending_province_fields
+// PRG $092CA battle_init_defender
 // (body @ PRG $092CF)
 
-word battle_init_clear_defending_province_fields(void) {
+word battle_init_defender(void) {
     mem_7FE1 = 255;    // PRG $092D2
     defender_depleted_flag = 0;    // PRG $092D6
     battle_defender_status_flag_6f66 = (fief_is_daimyo_capital[battle_defending_province] << 7);    // PRG $092E1
@@ -9318,10 +9318,10 @@ word find_adjacent_unit_around_tile(word arg1, word arg2, word arg3, word arg4) 
 }
 
 // ===== bank2 $A0AD  (PRG $0A0AD) =====
-// PRG $0A0AD enemy_unit_type_present_at_unit_tile
+// PRG $0A0AD is_enemy_unit_adjacent
 // (body @ PRG $0A0B2)
 
-word enemy_unit_type_present_at_unit_tile(word arg1) {
+word is_enemy_unit_adjacent(word arg1) {
     local11 = (cur_combat_side ^ 1);    // PRG $0A0B7
     return (is_unit_present(local11, arg1) && find_adjacent_unit_around_tile(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), local11, arg1));    // PRG $0A0D9 -> bank2 $8F79
 }
@@ -9331,7 +9331,7 @@ word enemy_unit_type_present_at_unit_tile(word arg1) {
 // (body @ PRG $0A0DF)
 
 word eval_and_announce_battle_strength_parity_if_enemy_present(word arg1) {
-    phi_ret_a0f2 = enemy_unit_type_present_at_unit_tile(arg1);    // PRG $0A0E4 -> bank2 $A0AD
+    phi_ret_a0f2 = is_enemy_unit_adjacent(arg1);    // PRG $0A0E4 -> bank2 $A0AD
     if (phi_ret_a0f2) {    // PRG $0A0DF
         phi_ret_a0f2 = announce_combat_side_daimyo_and_status(tally_unit_type_then_check_strength_parity_50(arg1), arg1);    // PRG $0A0EE -> bank2 $94F6
     }
@@ -9429,7 +9429,7 @@ word ai_place_units_near_enemy_loop(void) {
 // (body @ PRG $0A1F4)
 
 word ai_engage_present_enemy_if_favorable(word unit_idx) {
-    if (enemy_unit_type_present_at_unit_tile(unit_idx)) {    // PRG $0A1F4 -> bank2 $A0AD
+    if (is_enemy_unit_adjacent(unit_idx)) {    // PRG $0A1F4 -> bank2 $A0AD
         if (!((!(unit_idx) || !(ai_battle_strength_ratio_below_50(unit_idx))))) {    // PRG $0A1FC -> bank2 $9D9A
             if ((!(cur_combat_unit_slot) || side_has_rice_for_day(cur_combat_side))) {    // PRG $0A208 -> bank2 $836A
                 return 0;    // PRG $0A220
@@ -9570,7 +9570,7 @@ word ai_select_weak_reachable_enemy_target(void) {
         i = 0;    // PRG $0A423
         do {    // PRG $0A424
             if ((*(byte*)(list_cursor) < 5)) {    // PRG $0A424
-                if (!(enemy_unit_type_present_at_unit_tile(*(byte*)(list_cursor)))) {    // PRG $0A42B -> bank2 $A0AD
+                if (!(is_enemy_unit_adjacent(*(byte*)(list_cursor)))) {    // PRG $0A42B -> bank2 $A0AD
                     *(byte*)(list_cursor) = -1;    // PRG $0A438
                 }
             }
@@ -9821,10 +9821,10 @@ word ai_rng_resolve_combat_apply_casualties(void) {
 }
 
 // ===== bank2 $A7E5  (PRG $0A7E5) =====
-// PRG $0A7E5 ai_test_own_double_ge_enemy_total_strength
+// PRG $0A7E5 ai_own_double_lt_enemy_total
 // (body @ PRG $0A7EA)
 
-word ai_test_own_double_ge_enemy_total_strength(void) {
+word ai_own_double_lt_enemy_total(void) {
     target_ptr = build_reachable_enemy_target_list(*(byte*)(unit_col_ptr(cur_combat_side, 0)), *(byte*)(unit_row_ptr(cur_combat_side, 0)), &target_list_buf);    // PRG $0A806 -> bank2 $A0F3
     enemy_side = (cur_combat_side ^ 1);    // PRG $0A80C
     i = 0;    // PRG $0A80E
@@ -9849,7 +9849,7 @@ word ai_clear_province_state_when_strong_enough(word fief) {
     if ((cur_combat_unit_slot || !(test_6f65_bit7(cur_combat_side)) || is_no_province_selected())) {    // PRG $0A852 -> bank15 $D9E5
         return 0;    // PRG $0A869
     } else {
-        if (!((ai_test_own_double_ge_enemy_total_strength() || !(side_has_rice_for_day(cur_combat_side))))) {    // PRG $0A86A -> bank2 $A7E5
+        if (!((ai_own_double_lt_enemy_total() || !(side_has_rice_for_day(cur_combat_side))))) {    // PRG $0A86A -> bank2 $A7E5
             if (!((cur_combat_side || !(((unsigned)fief > (unsigned)29))))) {    // PRG $0A87A
                 load_daimyo_relation_row(battle_defending_province);    // PRG $0A88A -> bank15 $DAAB
                 side_fief = get_battle_side_province(cur_combat_side);    // PRG $0A895 -> bank2 $838F
@@ -10449,7 +10449,7 @@ word battle_init_driver(void) {
     call_bank10_entry(2);    // PRG $0AFF8 -> bank10 audio entry $8003 (cmd 2)
     map_populate();    // PRG $0AFFC -> bank2 $8903
     render_combat_map_screen();    // PRG $0AFFF -> bank2 $8977
-    result = battle_init_clear_defending_province_fields();    // PRG $0B005 -> bank2 $92CA
+    result = battle_init_defender();    // PRG $0B005 -> bank2 $92CA
     draw_combat_fief_day_header();    // PRG $0B006 -> bank2 $8D39
     latched_selected_record_idx = *(byte*)((battle_defending_province + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // PRG $0B023
     if (result) {    // PRG $0B021

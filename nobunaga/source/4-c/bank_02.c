@@ -1344,10 +1344,10 @@ word clear_all_unit_positions(void) {
     return ((unsigned)local11 < (unsigned)2);    // $92C9
 }
 
-// $92CA battle_init_clear_defending_province_fields
+// $92CA battle_init_defender
 // (body @ $92CF)
 
-word battle_init_clear_defending_province_fields(void) {
+word battle_init_defender(void) {
     mem_7FE1 = 255;    // $92D2
     defender_depleted_flag = 0;    // $92D6
     battle_defender_status_flag_6f66 = (fief_is_daimyo_capital[battle_defending_province] << 7);    // $92E1
@@ -2287,10 +2287,10 @@ word find_adjacent_unit_around_tile(word arg1, word arg2, word arg3, word arg4) 
     return 0;    // $A0AC
 }
 
-// $A0AD enemy_unit_type_present_at_unit_tile
+// $A0AD is_enemy_unit_adjacent
 // (body @ $A0B2)
 
-word enemy_unit_type_present_at_unit_tile(word arg1) {
+word is_enemy_unit_adjacent(word arg1) {
     local11 = (cur_combat_side ^ 1);    // $A0B7
     return (is_unit_present(local11, arg1) && find_adjacent_unit_around_tile(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), local11, arg1));    // $A0D9
 }
@@ -2299,7 +2299,7 @@ word enemy_unit_type_present_at_unit_tile(word arg1) {
 // (body @ $A0DF)
 
 word eval_and_announce_battle_strength_parity_if_enemy_present(word arg1) {
-    phi_ret_a0f2 = enemy_unit_type_present_at_unit_tile(arg1);    // $A0E4
+    phi_ret_a0f2 = is_enemy_unit_adjacent(arg1);    // $A0E4
     if (phi_ret_a0f2) {    // $A0DF
         phi_ret_a0f2 = announce_combat_side_daimyo_and_status(tally_unit_type_then_check_strength_parity_50(arg1), arg1);    // $A0EE
     }
@@ -2393,7 +2393,7 @@ word ai_place_units_near_enemy_loop(void) {
 // (body @ $A1F4)
 
 word ai_engage_present_enemy_if_favorable(word unit_idx) {
-    if (enemy_unit_type_present_at_unit_tile(unit_idx)) {    // $A1F4
+    if (is_enemy_unit_adjacent(unit_idx)) {    // $A1F4
         if (!((!(unit_idx) || !(ai_battle_strength_ratio_below_50(unit_idx))))) {    // $A1FC
             if ((!(cur_combat_unit_slot) || side_has_rice_for_day(cur_combat_side))) {    // $A208
                 return 0;    // $A220
@@ -2531,7 +2531,7 @@ word ai_select_weak_reachable_enemy_target(void) {
         i = 0;    // $A423
         do {    // $A424
             if ((*(byte*)(list_cursor) < 5)) {    // $A424
-                if (!(enemy_unit_type_present_at_unit_tile(*(byte*)(list_cursor)))) {    // $A42B
+                if (!(is_enemy_unit_adjacent(*(byte*)(list_cursor)))) {    // $A42B
                     *(byte*)(list_cursor) = -1;    // $A438
                 }
             }
@@ -2774,10 +2774,10 @@ word ai_rng_resolve_combat_apply_casualties(void) {
     return ((unsigned)*(word*)(((get_battle_side_province(enemy_side) * 26) + 0x7013)) > (unsigned)(const_two * 100));    // $A799
 }
 
-// $A7E5 ai_test_own_double_ge_enemy_total_strength
+// $A7E5 ai_own_double_lt_enemy_total
 // (body @ $A7EA)
 
-word ai_test_own_double_ge_enemy_total_strength(void) {
+word ai_own_double_lt_enemy_total(void) {
     target_ptr = build_reachable_enemy_target_list(*(byte*)(unit_col_ptr(cur_combat_side, 0)), *(byte*)(unit_row_ptr(cur_combat_side, 0)), &target_list_buf);    // $A806
     enemy_side = (cur_combat_side ^ 1);    // $A80C
     i = 0;    // $A80E
@@ -2801,7 +2801,7 @@ word ai_clear_province_state_when_strong_enough(word fief) {
     if ((cur_combat_unit_slot || !(test_6f65_bit7(cur_combat_side)) || is_no_province_selected())) {    // $A852
         return 0;    // $A869
     } else {
-        if (!((ai_test_own_double_ge_enemy_total_strength() || !(side_has_rice_for_day(cur_combat_side))))) {    // $A86A
+        if (!((ai_own_double_lt_enemy_total() || !(side_has_rice_for_day(cur_combat_side))))) {    // $A86A
             if (!((cur_combat_side || !(((unsigned)fief > (unsigned)29))))) {    // $A87A
                 load_daimyo_relation_row(battle_defending_province);    // $A88A
                 side_fief = get_battle_side_province(cur_combat_side);    // $A895
@@ -3385,7 +3385,7 @@ word battle_init_driver(void) {
     call_bank10_entry(2);    // $AFF8
     map_populate();    // $AFFC
     render_combat_map_screen();    // $AFFF
-    result = battle_init_clear_defending_province_fields();    // $B005
+    result = battle_init_defender();    // $B005
     draw_combat_fief_day_header();    // $B006
     latched_selected_record_idx = *(byte*)((battle_defending_province + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // $B023
     if (result) {    // $B021

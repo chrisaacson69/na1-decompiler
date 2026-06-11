@@ -4718,7 +4718,7 @@ VM bytecode disassembly
 ; sub $A0DA   (frame_off=+0, body @ $A0DF)
 ; ============================================================
   $A0DF  3C                         PUSH_quick   ; inline operand = 12
-  $A0E0  E9 AD A0 02                CALL_abs_imm1          $A0AD (enemy_unit_type_present_at_unit_tile) {bytecode}, $02
+  $A0E0  E9 AD A0 02                CALL_abs_imm1          $A0AD (is_enemy_unit_adjacent) {bytecode}, $02
   $A0E4  D8 F2 A0                   JUMPF_abs              $A0F2
   $A0E7  3C                         PUSH_quick   ; inline operand = 12
   $A0E8  3C                         PUSH_quick   ; inline operand = 12
@@ -4904,7 +4904,7 @@ VM bytecode disassembly
 ; sub $A1EF   (frame_off=+0, body @ $A1F4)
 ; ============================================================
   $A1F4  3C                         PUSH_quick   ; inline operand = 12
-  $A1F5  E9 AD A0 02                CALL_abs_imm1          $A0AD (enemy_unit_type_present_at_unit_tile) {bytecode}, $02
+  $A1F5  E9 AD A0 02                CALL_abs_imm1          $A0AD (is_enemy_unit_adjacent) {bytecode}, $02
   $A1F9  D8 1F A2                   JUMPF_abs              $A21F
   $A1FC  0C                         LOADL_quick   ; inline operand = 12
   $A1FD  D8 18 A2                   JUMPF_abs              $A218
@@ -5270,7 +5270,7 @@ VM bytecode disassembly
   $A42B  06                         LOADL_quick   ; inline operand = 6
   $A42C  D3                         BYTE_DEREF
   $A42D  B3                         PUSHL
-  $A42E  E9 AD A0 02                CALL_abs_imm1          $A0AD (enemy_unit_type_present_at_unit_tile) {bytecode}, $02
+  $A42E  E9 AD A0 02                CALL_abs_imm1          $A0AD (is_enemy_unit_adjacent) {bytecode}, $02
   $A432  D7 39 A4                   JUMPT_abs              $A439
   $A435  36                         PUSH_quick   ; inline operand = 6
   $A436  89 FF                      BYTE_LOADL_imm1        -1
@@ -5907,7 +5907,7 @@ VM bytecode disassembly
   $A865  D8 6A A8                   JUMPF_abs              $A86A
  >$A868  40                         LOADL_qimm   ; inline operand = 0
   $A869  CF                         RETURN
- >$A86A  AC E5 A7                   CALL_abs               $A7E5 (ai_test_own_double_ge_enemy_total_strength) {bytecode}
+ >$A86A  AC E5 A7                   CALL_abs               $A7E5 (ai_own_double_lt_enemy_total) {bytecode}
   $A86D  D7 87 A8                   JUMPT_abs              $A887
   $A870  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
   $A873  E9 6A 83 02                CALL_abs_imm1          $836A (side_has_rice_for_day) {bytecode}, $02
@@ -6844,7 +6844,7 @@ VM bytecode disassembly
   $AFF8  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
   $AFFC  AC 03 89                   CALL_abs               $8903 (map_populate) {bytecode}
   $AFFF  AC 77 89                   CALL_abs               $8977 (render_combat_map_screen) {bytecode}
-  $B002  AC CA 92                   CALL_abs               $92CA (battle_init_clear_defending_province_fields) {bytecode}
+  $B002  AC CA 92                   CALL_abs               $92CA (battle_init_defender) {bytecode}
   $B005  26                         STORE_quick   ; inline operand = 6
   $B006  AC 39 8D                   CALL_abs               $8D39 (draw_combat_fief_day_header) {bytecode}
   $B009  A4 9D 6D                   LOADL_abs              $6D9D (scenario_fief_count)
