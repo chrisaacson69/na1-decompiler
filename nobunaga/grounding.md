@@ -198,6 +198,13 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #6 — per-period stats / save / shuffle (45/98)   [2026-06-10]
+1 rename:
+- `$952F` `avg_byte_array_6d2d_over_fiefs` -> **`avg_fief_tax_rate`**.
+- `$92D9` deduct_b_from_a_void_b_if_overdrawn, `$9558` avg_province_wealth_over_fiefs ($700F=+14 wealth),
+  `$9CB3` decay_fief_list_wealth_and_output_disaster1 (cutscene 20), `$A2ED` drift_daimyo_luck (+3=LUCK, -5..+5),
+  `$A3AA` write_sram_save_checksum_and_signature, `$A742` shuffle_fief_turn_order_array ($6F1B): re-grounded. Next: rows 1-7.
+
 ### Bank 0 full-verify batch #5 — scenario events / upkeep / diplomacy (38/98)   [2026-06-10]
 1 rename:
 - `$9879` `mark_6f89_list_entry_by_value` -> **`mark_fief_list_entry_removed`** (sets the $6F89 entry to 200).

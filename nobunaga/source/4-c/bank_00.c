@@ -1386,10 +1386,10 @@ word announce_seasonal_event(word arg1) {
     return (*(byte*)((((local11 + 1) - 1) + 0x7BAD)) != 255);    // $952E
 }
 
-// $952F avg_byte_array_6d2d_over_fiefs
+// $952F avg_fief_tax_rate
 // (body @ $9534)
 
-word avg_byte_array_6d2d_over_fiefs(void) {
+word avg_fief_tax_rate(void) {
     local11 = 0;    // $9535
     phi_val_9546 = 0;    // $9537
     while (1) {    // $9546

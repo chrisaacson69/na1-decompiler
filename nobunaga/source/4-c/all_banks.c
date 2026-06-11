@@ -66,7 +66,7 @@
 //   PRG $0146D  bank0  $946D  get_fief_daimyo_charisma
 //   PRG $0147A  bank0  $947A  avg_daimyo_charisma_over_fief_list
 //   PRG $014B1  bank0  $94B1  announce_seasonal_event
-//   PRG $0152F  bank0  $952F  avg_byte_array_6d2d_over_fiefs
+//   PRG $0152F  bank0  $952F  avg_fief_tax_rate
 //   PRG $01558  bank0  $9558  avg_province_wealth_over_fiefs
 //   PRG $01595  bank0  $9595  province_conquest_roll_predicate
 //   PRG $01614  bank0  $9614  append_candidate_priority1
@@ -1949,10 +1949,10 @@ word announce_seasonal_event(word arg1) {
 }
 
 // ===== bank0 $952F  (PRG $0152F) =====
-// PRG $0152F avg_byte_array_6d2d_over_fiefs
+// PRG $0152F avg_fief_tax_rate
 // (body @ PRG $01534)
 
-word avg_byte_array_6d2d_over_fiefs(void) {
+word avg_fief_tax_rate(void) {
     local11 = 0;    // PRG $01535
     phi_val_9546 = 0;    // PRG $01537
     while (1) {    // PRG $01546
