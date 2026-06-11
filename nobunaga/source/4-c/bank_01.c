@@ -1863,11 +1863,11 @@ word driver_marry(void) {
     }
 }
 
-// $9F04 subhandler_9F04
+// $9F04 effect_loan
 // (body @ $9F09)
 
-word subhandler_9F04(word arg1) {
-    message_display(subhandler_9F04_data_bc06);    // $9F0C
+word effect_loan(word arg1) {
+    message_display(msg_loan_prompt);    // $9F0C
     if ((*(word*)(arg1) >= arg1->header)) {    // $9F09
         daimyo_name_width(selected_province_idx);    // $9F1F
         redraw_window(msg_the_treasure_room_is_already_f);    // $9F26
@@ -1927,11 +1927,11 @@ word prompt_repay_debt(word arg1) {
     return 0;    // $A002
 }
 
-// $A003 subhandler_A003
+// $A003 effect_sell_rice
 // (body @ $A008)
 
-word subhandler_A003(word arg1) {
-    message_display(subhandler_A003_data_bc75);    // $A00B
+word effect_sell_rice(word arg1) {
+    message_display(msg_sell_rice_prompt);    // $A00B
     if (arg1->rice) {    // $A008
         local10 = ratio_times10_capped((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice);    // $A02A
         if (ratio_times10_capped((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice)) {    // $A015

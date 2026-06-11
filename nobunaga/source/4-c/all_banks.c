@@ -187,9 +187,9 @@
 //   PRG $05C4F  bank1  $9C4F  driver_pact
 //   PRG $05D3D  bank1  $9D3D  driver_grow
 //   PRG $05DC4  bank1  $9DC4  driver_marry
-//   PRG $05F04  bank1  $9F04  subhandler_9F04
+//   PRG $05F04  bank1  $9F04  effect_loan
 //   PRG $05FAF  bank1  $9FAF  prompt_repay_debt
-//   PRG $06003  bank1  $A003  subhandler_A003
+//   PRG $06003  bank1  $A003  effect_sell_rice
 //   PRG $06068  bank1  $A068  effect_buy_rice
 //   PRG $060ED  bank1  $A0ED  amount_div_force_factor
 //   PRG $06113  bank1  $A113  effect_buy_arms
@@ -5159,11 +5159,11 @@ word driver_marry(void) {
 }
 
 // ===== bank1 $9F04  (PRG $05F04) =====
-// PRG $05F04 subhandler_9F04
+// PRG $05F04 effect_loan
 // (body @ PRG $05F09)
 
-word subhandler_9F04(word arg1) {
-    message_display(subhandler_9F04_data_bc06);    // PRG $05F0C -> bank15 $D326
+word effect_loan(word arg1) {
+    message_display(msg_loan_prompt);    // PRG $05F0C -> bank15 $D326
     if ((*(word*)(arg1) >= arg1->header)) {    // PRG $05F09
         daimyo_name_width(selected_province_idx);    // PRG $05F1F -> bank15 $D78B
         redraw_window(msg_the_treasure_room_is_already_f);    // PRG $05F26 -> bank15 $CEC4
@@ -5225,11 +5225,11 @@ word prompt_repay_debt(word arg1) {
 }
 
 // ===== bank1 $A003  (PRG $06003) =====
-// PRG $06003 subhandler_A003
+// PRG $06003 effect_sell_rice
 // (body @ PRG $06008)
 
-word subhandler_A003(word arg1) {
-    message_display(subhandler_A003_data_bc75);    // PRG $0600B -> bank15 $D326
+word effect_sell_rice(word arg1) {
+    message_display(msg_sell_rice_prompt);    // PRG $0600B -> bank15 $D326
     if (arg1->rice) {    // PRG $06008
         local10 = ratio_times10_capped((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice);    // PRG $0602A -> bank1 $8357
         if (ratio_times10_capped((arg1->header - *(word*)(arg1)), gold_rice_exchange_rate, arg1->rice)) {    // PRG $06015 -> bank1 $8357

@@ -4561,7 +4561,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $9F04   (frame_off=-4, body @ $9F09)
 ; ============================================================
-  $9F09  8E 06 BC                   PUSH_imm2              $BC06 (subhandler_9F04_data_bc06)
+  $9F09  8E 06 BC                   PUSH_imm2              $BC06 (msg_loan_prompt)
   $9F0C  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9F10  0C                         LOADL_quick   ; inline operand = 12
   $9F11  8F 18                      BYTE_ADD_imm1          +24
@@ -4710,7 +4710,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $A003   (frame_off=-4, body @ $A008)
 ; ============================================================
-  $A008  8E 75 BC                   PUSH_imm2              $BC75 (subhandler_A003_data_bc75)
+  $A008  8E 75 BC                   PUSH_imm2              $BC75 (msg_sell_rice_prompt)
   $A00B  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $A00F  0C                         LOADL_quick   ; inline operand = 12
   $A010  76                         ADD_qimm   ; inline operand = 6

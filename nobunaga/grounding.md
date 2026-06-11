@@ -198,6 +198,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #15 — trade/give/loan + a parse-bug fix (111/131)   [2026-06-10]
+2 renames + 5 re-grounds. Also FIXED a self-inflicted toml bug: batch-14's comments had nested double-quotes
+(e.g. inside ('we're at our limit')) which made parse_toml SKIP those 2 entries (driver_dam, find_fief... showed
+false-todo). Rule: no nested `"` or em-dashes in toml comments — use single quotes.
+- `$9F04` `subhandler_9F04` → **`effect_loan`** (raise gold from town-debt at loan_rate, capped at treasure-room),
+  `$A003` `subhandler_A003` → **`effect_sell_rice`** (+ data labels msg_loan_prompt / msg_sell_rice_prompt).
+- `$A95E` effect_give_b (gold/rice), `$A9D5` effect_give_c (peasants/men), `$AD67` driver_assign, `$AF38`
+  driver_map, `$B338` ai_province_gold_to_rice_convert (market-rate AI economy): re-grounded. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #14 — Build + AI economy/attack (102/131)   [2026-06-10]
 All confirmed; re-grounded:
 - `$88A6` effect_build (Grow shape on TOWN field), `$9B7E` driver_dam (dams field $7001+10, limit 100),
