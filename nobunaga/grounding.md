@@ -198,6 +198,12 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 0 full-verify batch #12 — new-game init / takeover / income (87/98)   [2026-06-10]
+All confirmed (no renames): `$89A3` init_new_game_state (sets const_two=skill), `$8F0A`
+ai_resolve_province_takeover_attempt (sqrt(output)+sqrt(wealth) vs men), `$9778` revolt_spread_sweep_flip_fief_ownership,
+`$9BE5` ai_event_marry_random_eligible_fief, `$9E7C` select_event_eligibility_check_by_type (loyalty/morale dispatch),
+`$A1E2` calc_fief_gold_income, `$A21F` calc_fief_rice_income ($6003/$6005 base): re-grounded. Next: rows 1-7 (11 left).
+
 ### Bank 0 full-verify batch #11 — succession / relations / scenario events (80/98)   [2026-06-10]
 All confirmed (no renames): `$8E63` process_fiefs_with_state_ff, `$8ED3` display_two_message_prompt_then_compare
 (uprising loyals/rebels), `$911E` normalize_relations_matrix_upper, `$93BF` ravage_defending_province_sweep
