@@ -90,6 +90,39 @@ Chris: **the bytecode compiler has claimed every VM routine, so —**
 
 ---
 
+## ★ THE FULL-VERIFY PROCEDURE (canonical, proven on bank 2 → 131/131) ★
+
+This supersedes the stub-sweep cursor for the full-verification bar. One **bank** at a time, **7 subs per
+batch**, leaves-first. Repeat per batch until `--todo` is empty, then mark the bank complete.
+
+**Per-batch loop:**
+1. **Pull the next 7** from the worklist: `py -3 tools/bank-ground-order.py <bank> --todo` — leaves-first by
+   call-graph depth, annotated SUSPECT/dated/todo. Take the top 7 todo (highest fanout within the depth band).
+   Depth-0 first ⇒ everything a sub calls is already grounded by the time you read it.
+2. **Read all 7 bodies at once** from `source/4-c/bank_NN.c` (one py splitter on the `// $ADDR name` headers).
+3. **For each, fact-check the inherited name+comment as a SUSPECT** — confirm / refine / REFUTE. The clean
+   descriptive names are wrong as often as the stubs (bank-2: ~30 renames, ~40 corrected comments). Watch for:
+   inverted polarity, wrong side (attacker/defender), wrong return value, men-vs-damage / record-offset confusion.
+4. **Reach for the bytecode when the 4-c looks off** (`source/2-asm-vm/bank_NN_vm.asm`) — it is authoritative.
+   Specifically suspect a **DREAM value-merge bug** (see backlog) when a `switch`/if-else collapses per-arm
+   values; the bytecode `ADD_qimm`/distinct `CALL`s reveal the truth. Cross-check `source/3-c-basic` too.
+5. **Read ROM strings directly** for any `draw_message`/`message_display`/table target — decisive for naming.
+   File offset = `16 + bank*0x4000 + (cpu - (bank==15 ? 0xC000 : 0x8000))`.
+6. **Edit `mesen-labels.toml`** (one Edit per sub): reads-at-call-site name + `[<LEVEL> <STATUS> 2026-..-..]`
+   tag + the evidence one-liner. Label/relabel any data tables & vars you grounded in passing.
+7. **Regenerate** (`py -3 -m na1dream.cli.decompile_all` from `tools/`), confirm **old names gone** + **`--todo`
+   count dropped by 7**, spot-check 1-2 call sites.
+8. **Ledger entry** (newest-first in grounding.md) + **commit** all of: `mesen-labels.toml`, `grounding.md`,
+   `source/4-c/`, `source/2-asm-vm/` (label renames propagate to every bank's asm — commit them or the tree drifts).
+   Report the progress (`N/131`) at each commit.
+9. Refresh the **memory checkpoint** (`grounding-pass.md`) every few batches so a fresh session resumes clean.
+
+**Bank-complete:** when `--todo` hits 0, write the ★COMPLETE★ ledger entry, advance the frontier to the next
+bank, update memory. **Watch for mis-keyed duplicate toml entries** (`grep '"0xADDR"'` returning two hits in
+different `[prg.bankN]` sections — same-CPU-addr cross-bank is fine, a wrong section is a bug to fix).
+
+---
+
 ## Decompiler 3% backlog (misreads found by reading — the other output of this pass)
 
 ### DREAM fold clobbers if/else phi-temp merges (value-wrong 4-c, V1 correct)   [FIXED 2026-06-10]
@@ -614,12 +647,12 @@ regen → spot-check → ledger. **Method wins from bank 2:** (1) read ROM strin
 (py, 16KB-bank file offset = 16 + bank*0x4000 + (cpu - (bank==15?0xC000:0x8000))); (2) watch for the value-merge DREAM
 bug classes (switch per-case offset / arms-reconverge-at-suffix — verify against `3-c-basic`/bytecode); (3) the clean
 descriptive names are wrong as often as the stubs — trust nothing.
-**KNOWN BANK-1 BUGS to fix while there:** mis-keyed duplicate toml entries surfaced from bank 2 —
-`province_window_redraw_ba6f` is keyed `0x83A2` (should be `0xBA6F`). Recheck any other bank-1 `0x83A2`/`0x93AA`/`0x85A7`
-entries (same-CPU-addr cross-bank is FINE — verify each bank-1 sub at those addrs is correctly labeled, not a stray
-bank-2 leak). The bank-1 address-tagged stubs (`helper_8357`, `province_window_redraw_ba6f`/`_ba78`, `map_helper_af10`,
-`ai_seed_fief_collection_rate_6d2d`) are just the worst offenders — full-verify covers ALL ~131. Then **bank 0** (~98
-subs, the main loop) LAST.
+**NO known toml bugs in bank 1** — the `0x83A2`/`0x93AA`/`0x85A7` "duplicates" flagged during bank 2 are all legit
+same-CPU-addr/different-bank PAIRS (banks 0/1/2 share the $8000-$BFFF window), each correctly applied to its own bank.
+`province_window_redraw_ba6f` IS a real bank-1 sub at $83A2 (the `_ba6f` suffix names the $BA6F data table it reads,
+not its address) — just a low-fidelity name to clean up like any other. Bank 1 = 131 subs, 5 address-tagged stubs
+(`helper_8357`, `province_window_redraw_ba6f`/`_ba78`, `map_helper_af10`, `ai_seed_fief_collection_rate_6d2d`) are
+the worst offenders, but full-verify covers ALL 131. Then **bank 0** (~98 subs, the main loop) LAST.
 
 #### (historical) original NEXT BLOCK note: banks 0/1/2 (bank 15 + 10 + 14 are DONE)
 **Bank 15 complete (0 suspects); banks 10 & 14 complete (all named).** Remaining corpus suspects: banks
