@@ -300,7 +300,7 @@ word read_button_press(void) {
                     phi_84ef_0 = 0;    // $84EE
                 }
             }
-            draw_tactical_cursor_region_arg0(phi_84ef_0);    // $84EF
+            erase_cursor_advance_phase(phi_84ef_0);    // $84EF
         default:
             phi_val_84bf = 0;    // $84F4
             break;
@@ -421,7 +421,7 @@ word tactical_cursor_input_validate_redraw(void) {
                 } else {
                     phi_85ef_0 = 0;    // $85EE
                 }
-                draw_tactical_cursor_region_arg0(phi_85ef_0);    // $85EF
+                erase_cursor_advance_phase(phi_85ef_0);    // $85EF
                 set_cursor(local10, local9);    // $85F5
                 read_frame_timer(2);    // $85FA
             }
@@ -443,7 +443,7 @@ word tactical_cursor_input_validate_redraw(void) {
                 } else {
                     phi_85ef_0 = 10;    // $8620
                 }
-                draw_tactical_cursor_region_arg0(phi_85ef_0);    // $85EF
+                erase_cursor_advance_phase(phi_85ef_0);    // $85EF
                 set_cursor(local10, local9);    // $85F5
                 read_frame_timer(2);    // $85FA
             }
@@ -745,7 +745,7 @@ word draw_unit_count_digits(word arg1, word arg2) {
         return ((unsigned)local8 > (unsigned)4);    // $8A00
     } else {
         if (!(is_cell_valid_for_phase(local9))) {    // $8A01
-            phi_ret_8b24 = draw_tactical_cursor_region_arg0(local9);    // $8A0E
+            phi_ret_8b24 = erase_cursor_advance_phase(local9);    // $8A0E
         } else {
             calc_tactical_cell_coords(&local9, &local8);    // $8A19
             *(byte*)(((arg1 * 9) + 0x6FE5)) = (test_6f65_bit7(arg1) ? 178 : 179);    // $8A47
@@ -1566,10 +1566,10 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
     }
 }
 
-// $95BE draw_tactical_cursor_region_arg0
+// $95BE erase_cursor_advance_phase
 // (body @ $95C3)
 
-word draw_tactical_cursor_region_arg0(word arg1) {
+word erase_cursor_advance_phase(word arg1) {
     draw_tactical_cursor_region(0);    // $95C4
     switch (tactical_battle_phase) {    // $95C3
         case 0:
@@ -1681,10 +1681,10 @@ word is_coord_in_combat_rect(word tile_x, word tile_y) {
     return !((((unsigned)tile_x < (unsigned)combat_arena_x_min) || (((unsigned)tile_x > (unsigned)combat_arena_x_max) || (((unsigned)tile_y < (unsigned)combat_arena_y_min) || ((unsigned)tile_y > (unsigned)combat_arena_y_max)))));    // $9734
 }
 
-// $9735 tile_blocked_by_existing_unit_in_placement
+// $9735 tile_blocked_for_placement
 // (body @ $973A)
 
-word tile_blocked_by_existing_unit_in_placement(word arg1, word arg2) {
+word tile_blocked_for_placement(word arg1, word arg2) {
     if (!(cur_combat_side)) {    // $973A
         if (is_cell_clear_of_bits(arg1, arg2, 32)) {    // $9740
             if (!(is_cell_clear_of_bits(arg1, arg2, 8))) {    // $974B
@@ -1716,7 +1716,7 @@ word tile_blocked_by_existing_unit_in_placement(word arg1, word arg2) {
 // (body @ $9797)
 
 word commit_unit_dest_tile_if_valid(word arg1, word arg2) {
-    if (!((is_any_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2) || tile_blocked_by_existing_unit_in_placement(arg1, arg2) || !(is_coord_in_combat_rect(arg1, arg2))))) {    // $9797
+    if (!((is_any_unit_at_tile(arg1, arg2) || is_map_cell_blocked(arg1, arg2) || tile_blocked_for_placement(arg1, arg2) || !(is_coord_in_combat_rect(arg1, arg2))))) {    // $9797
         *(byte*)(unit_col_ptr(cur_combat_side, cur_combat_unit_slot)) = arg1;    // $97C7
         *(byte*)(unit_row_ptr(cur_combat_side, cur_combat_unit_slot)) = arg2;    // $97D4
         return 1;    // $97D6
@@ -1983,7 +1983,7 @@ L_9AC4:
     local9 = local7;    // $9AC7
 L_9AC8:
     if (is_cell_valid_for_phase(local10)) goto L_9AD5;    // $9ACD
-    draw_tactical_cursor_region_arg0(local10);    // $9AD1
+    erase_cursor_advance_phase(local10);    // $9AD1
 L_9AD5:
     local11 = wait_button_press_debounced(local10, local9);    // $9ADB
     if ((wait_button_press_debounced(local10, local9) != 48)) goto L_9A9C;    // $9ADF
@@ -2027,7 +2027,7 @@ word validate_phase_unit_cells_draw_cursor(word arg1) {
     local10 = *(byte*)(unit_col_ptr(local8, arg1));    // $9B6A
     local9 = *(byte*)(unit_row_ptr(local8, arg1));    // $9B72
     if (!(is_cell_valid_for_phase(local10))) {    // $9B4F
-        draw_tactical_cursor_region_arg0(local10);    // $9B7C
+        erase_cursor_advance_phase(local10);    // $9B7C
     }
     local11 = 0;    // $9B81
     do {    // $9B82
@@ -3101,7 +3101,7 @@ word ai_run_all_units_combat_actions(word battle_phase) {
                 draw_unit_type_label();    // $AC12
                 local10 = *(byte*)(cur_unit_col_ptr());    // $AC19
                 if (!(is_cell_valid_for_phase(*(byte*)(cur_unit_col_ptr())))) {    // $AC06
-                    draw_tactical_cursor_region_arg0(local10);    // $AC23
+                    erase_cursor_advance_phase(local10);    // $AC23
                 }
                 local10 = 1;    // $AC28
                 do {    // $AC29
@@ -3156,7 +3156,7 @@ word combat_command_dispatch_loop_per_unit(void) {
                     }
                     unit_cell = *(byte*)(cur_unit_col_ptr());    // $ACCE
                     if (!(is_cell_valid_for_phase(unit_cell))) {    // $ACCA
-                        draw_tactical_cursor_region_arg0(unit_cell);    // $ACD8
+                        erase_cursor_advance_phase(unit_cell);    // $ACD8
                     }
                     message_display(combat_command_dispatch_data_ba18);    // $ACDF
                     draw_daimyo_name(get_battle_side_province(cur_combat_side));    // $ACEB

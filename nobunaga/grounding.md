@@ -150,6 +150,17 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #10 — placement/move/flee command layer (87/131, 66%)   [2026-06-10]
+Integration layer — ties together a dozen session-grounded subs. 2 renames (both refutes):
+- `$95BE` `draw_tactical_cursor_region_arg0` → **`erase_cursor_advance_phase`** — not a thin wrapper; it erases the
+  cursor then ADVANCES tactical_battle_phase by cursor column (prior note missed the phase logic entirely).
+- `$9735` `tile_blocked_by_existing_unit_in_placement` → **`tile_blocked_for_placement`** — REFUTED 'iterates 6 unit
+  slots': it steps 6 DIRECTIONS from find_free_tactical_placement_cell.
+- `$9792` `commit_unit_dest_tile_if_valid` ✅ — 4-guard move validator (returns 1 not 0); integrates is_any_unit_at_tile
+  + is_map_cell_blocked + tile_blocked_for_placement + is_coord_in_combat_rect.
+- `$AAA7` `combat_flee_to_fief_command` ✅ — CONFIRMS the 'flee' framing ($90BB+$912B+$91A1 chain).
+- `$9D75` grounds math32_2arg = floor(100*A/(A+B)); `$A221` bfs (0xC2 blocking mask); `$9DA8` town-chaos ($7005=+4). Next: rows 1-7.
+
 ### Bank 2 full-verify batch #9 — AI strength keystone + battle setup (80/131, 61%)   [2026-06-10]
 - `$9C88` `ai_eval_battle_strength_total` ✅ — THE keystone summing every AI strength term grounded this session.
   **Found the difficulty knob:** mod = `115 - const_two*15` (const_two = the skill level 1-5, $6D63) when the side is

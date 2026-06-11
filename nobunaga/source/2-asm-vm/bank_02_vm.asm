@@ -689,7 +689,7 @@ VM bytecode disassembly
   $84EA  6A                         PUSH_qimm   ; inline operand = 10
   $84EB  D6 EF 84                   JUMP_abs               $84EF
  >$84EE  60                         PUSH_qimm   ; inline operand = 0
- >$84EF  E9 BE 95 02                CALL_abs_imm1          $95BE (draw_tactical_cursor_region_arg0) {bytecode}, $02
+ >$84EF  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
  >$84F3  40                         LOADL_qimm   ; inline operand = 0
   $84F4  D6 BF 84                   JUMP_abs               $84BF
 
@@ -826,7 +826,7 @@ VM bytecode disassembly
  >$85EA  65                         PUSH_qimm   ; inline operand = 5
   $85EB  D6 EF 85                   JUMP_abs               $85EF
  >$85EE  60                         PUSH_qimm   ; inline operand = 0
- >$85EF  E9 BE 95 02                CALL_abs_imm1          $95BE (draw_tactical_cursor_region_arg0) {bytecode}, $02
+ >$85EF  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
   $85F3  39                         PUSH_quick   ; inline operand = 9
   $85F4  3A                         PUSH_quick   ; inline operand = 10
   $85F5  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
@@ -1402,7 +1402,7 @@ VM bytecode disassembly
   $8A02  E9 0E 96 02                CALL_abs_imm1          $960E (is_cell_valid_for_phase) {bytecode}, $02
   $8A06  D7 11 8A                   JUMPT_abs              $8A11
   $8A09  39                         PUSH_quick   ; inline operand = 9
-  $8A0A  E9 BE 95 02                CALL_abs_imm1          $95BE (draw_tactical_cursor_region_arg0) {bytecode}, $02
+  $8A0A  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
   $8A0E  D6 24 8B                   JUMP_abs               $8B24
  >$8A11  DE F8 FF                   LEAL_far               $FFF8
   $8A14  B3                         PUSHL
@@ -3408,7 +3408,7 @@ VM bytecode disassembly
   $97A6  D7 D7 97                   JUMPT_abs              $97D7
   $97A9  3D                         PUSH_quick   ; inline operand = 13
   $97AA  3C                         PUSH_quick   ; inline operand = 12
-  $97AB  E9 35 97 04                CALL_abs_imm1          $9735 (tile_blocked_by_existing_unit_in_placement) {bytecode}, $04
+  $97AB  E9 35 97 04                CALL_abs_imm1          $9735 (tile_blocked_for_placement) {bytecode}, $04
   $97AF  D7 D7 97                   JUMPT_abs              $97D7
   $97B2  3D                         PUSH_quick   ; inline operand = 13
   $97B3  3C                         PUSH_quick   ; inline operand = 12
@@ -3815,7 +3815,7 @@ VM bytecode disassembly
   $9AC9  E9 0E 96 02                CALL_abs_imm1          $960E (is_cell_valid_for_phase) {bytecode}, $02
   $9ACD  D7 D5 9A                   JUMPT_abs              $9AD5
   $9AD0  3A                         PUSH_quick   ; inline operand = 10
-  $9AD1  E9 BE 95 02                CALL_abs_imm1          $95BE (draw_tactical_cursor_region_arg0) {bytecode}, $02
+  $9AD1  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
  >$9AD5  39                         PUSH_quick   ; inline operand = 9
   $9AD6  3A                         PUSH_quick   ; inline operand = 10
   $9AD7  E9 61 85 04                CALL_abs_imm1          $8561 (wait_button_press_debounced) {bytecode}, $04
@@ -3899,7 +3899,7 @@ VM bytecode disassembly
   $9B74  E9 0E 96 02                CALL_abs_imm1          $960E (is_cell_valid_for_phase) {bytecode}, $02
   $9B78  D7 80 9B                   JUMPT_abs              $9B80
   $9B7B  3A                         PUSH_quick   ; inline operand = 10
-  $9B7C  E9 BE 95 02                CALL_abs_imm1          $95BE (draw_tactical_cursor_region_arg0) {bytecode}, $02
+  $9B7C  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
  >$9B80  40                         LOADL_qimm   ; inline operand = 0
   $9B81  2B                         STORE_quick   ; inline operand = 11
  >$9B82  AC B9 82                   CALL_abs               $82B9 (cur_unit_row_ptr) {bytecode}
@@ -6341,7 +6341,7 @@ VM bytecode disassembly
   $AC1B  E9 0E 96 02                CALL_abs_imm1          $960E (is_cell_valid_for_phase) {bytecode}, $02
   $AC1F  D7 27 AC                   JUMPT_abs              $AC27
   $AC22  3A                         PUSH_quick   ; inline operand = 10
-  $AC23  E9 BE 95 02                CALL_abs_imm1          $95BE (draw_tactical_cursor_region_arg0) {bytecode}, $02
+  $AC23  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
  >$AC27  41                         LOADL_qimm   ; inline operand = 1
   $AC28  2A                         STORE_quick   ; inline operand = 10
  >$AC29  AC B9 82                   CALL_abs               $82B9 (cur_unit_row_ptr) {bytecode}
@@ -6441,7 +6441,7 @@ VM bytecode disassembly
   $ACD0  E9 0E 96 02                CALL_abs_imm1          $960E (is_cell_valid_for_phase) {bytecode}, $02
   $ACD4  D7 DC AC                   JUMPT_abs              $ACDC
   $ACD7  39                         PUSH_quick   ; inline operand = 9
-  $ACD8  E9 BE 95 02                CALL_abs_imm1          $95BE (draw_tactical_cursor_region_arg0) {bytecode}, $02
+  $ACD8  E9 BE 95 02                CALL_abs_imm1          $95BE (erase_cursor_advance_phase) {bytecode}, $02
  >$ACDC  8E 18 BA                   PUSH_imm2              $BA18 (combat_command_dispatch_data_ba18)
   $ACDF  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $ACE3  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
