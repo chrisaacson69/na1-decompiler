@@ -281,10 +281,10 @@ word draw_province_stat_or_dashes(word arg1, word arg2) {
     return phi_ret_83c6;    // $83C6
 }
 
-// $83C7 helper_83C7
+// $83C7 draw_selected_province_stat
 // (body @ $83CC)
 
-word helper_83C7(word arg1) {
+word draw_selected_province_stat(word arg1) {
     return draw_province_stat_or_dashes(selected_province_idx, arg1);    // $83D4
 }
 
@@ -583,10 +583,10 @@ word effect_grow(word fief, word amount) {
     }
 }
 
-// $887D helper_dam_rounding
+// $887D add_effect_gain_clamped
 // (body @ $8882)
 
-word helper_dam_rounding(word arg1, word arg2) {
+word add_effect_gain_clamped(word arg1, word arg2) {
     local11 = arg1;    // $8883
     if (fief_owner_weakness(selected_province_idx)) {    // $8882
         local11 = (local11 / 2);    // $8892
@@ -620,7 +620,7 @@ word effect_build(word fief, word amount) {
         }
         local10 = phi_val_88fc;    // $88FC
         fief->wealth = (fief->wealth - pct_op(fief->wealth, (local10 / 2)));    // $8910
-        helper_dam_rounding((gain << 1), (fief + 4));    // $8917
+        add_effect_gain_clamped((gain << 1), (fief + 4));    // $8917
         return gain;    // $891C
     }
 }
@@ -1695,7 +1695,7 @@ word driver_dam(void) {
                     if (!(((local9 << 1) / effect_dam(local8)))) {    // $9C08
                         local9 = (local9 + 1);    // $9C1F
                     }
-                    helper_dam_rounding(local9, local10);    // $9C22
+                    add_effect_gain_clamped(local9, local10);    // $9C22
                     trigger_cutscene(21);    // $9C28
                     if ((*(word*)(local10) > 100)) {    // $9C20
                         *(word*)(local10) = 100;    // $9C37
@@ -1884,9 +1884,9 @@ word subhandler_9F04(word arg1) {
                     clamp_amount_to_province_max(arg1);    // $9F76
                     cycle_economy_rate(0);    // $9F7B
                     set_cursor(16, 7);    // $9F82
-                    helper_83C7(*(word*)(arg1));    // $9F89
+                    draw_selected_province_stat(*(word*)(arg1));    // $9F89
                     set_cursor(16, 8);    // $9F90
-                    helper_83C7(arg1->debt);    // $9F98
+                    draw_selected_province_stat(arg1->debt);    // $9F98
                     return 1;    // $9F9D
                 } else {
                     open_message_window();    // $9F9E
@@ -2111,10 +2111,10 @@ word report_fief_stat_decline(word arg1, word arg2) {
     return draw_message(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), (dsel_a28d ? msg_town_value : *(word*)(((arg1 << 1) + effect_view_a_data_f8ae))), arg2);    // $A29A
 }
 
-// $A29B effect_hire_pay_gold
+// $A29B effect_ninja_failed
 // (body @ $A2A0)
 
-word effect_hire_pay_gold(word arg1, word arg2) {
+word effect_ninja_failed(word arg1, word arg2) {
     deduct_byte_at((selected_province_daimyo_record() + 4), 1);    // $A2A6
     redraw_window(msg_your_ninja_failed_bd7c);    // $A2AD
     standard_delay();    // $A2B1
@@ -2157,7 +2157,7 @@ word effect_ninja_sabotage(word arg1) {
                                 case 65535:
                                     if (!(arg1->loyalty)) {    // $A3AB
                                         if (!(arg1->wealth)) {    // $A3B1
-                                            effect_hire_pay_gold(local8, unit_count);    // $A3B9
+                                            effect_ninja_failed(local8, unit_count);    // $A3B9
                                             return 1;    // $A3BE
                                         }
                                     }
@@ -2198,13 +2198,13 @@ word effect_ninja_sabotage(word arg1) {
                                         phi_a419_1 = drain_amount;    // $A494
                                         report_fief_stat_decline(phi_a419_0, phi_a419_1);    // $A419
                                     } else {
-                                        effect_hire_pay_gold(local8, unit_count);    // $A47D
+                                        effect_ninja_failed(local8, unit_count);    // $A47D
                                         return 1;    // $A482
                                     }
                                 case 65537:
                                     if (!(arg1->dams)) {    // $A497
                                         if (!(arg1->rice)) {    // $A49D
-                                            effect_hire_pay_gold(local8, unit_count);    // $A4A5
+                                            effect_ninja_failed(local8, unit_count);    // $A4A5
                                             return 1;    // $A4AA
                                         }
                                     }
@@ -2235,12 +2235,12 @@ word effect_ninja_sabotage(word arg1) {
                                         phi_a419_1 = drain_amount;    // $A546
                                         report_fief_stat_decline(phi_a419_0, phi_a419_1);    // $A419
                                     } else {
-                                        effect_hire_pay_gold(local8, unit_count);    // $A530
+                                        effect_ninja_failed(local8, unit_count);    // $A530
                                         return 1;    // $A535
                                     }
                             }
                         } else {
-                            effect_hire_pay_gold(local8, unit_count);    // $A54B
+                            effect_ninja_failed(local8, unit_count);    // $A54B
                             return 1;    // $A550
                         }
                     }
@@ -2403,7 +2403,7 @@ L_A7C6:
     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) - 10);    // $A7D5
     if ((local8 != selected_province_idx)) goto L_A7F5;    // $A7DB
     set_cursor(16, 7);    // $A7E1
-    helper_83C7(*(word*)(((selected_province_idx * 26) + 0x7001)));    // $A7F1
+    draw_selected_province_stat(*(word*)(((selected_province_idx * 26) + 0x7001)));    // $A7F1
 L_A7F5:
     if (!((effect_view_d(selected_province_daimyo_record()) > effect_view_d(fief_to_daimyo_record_addr(local10))))) goto L_A817;    // $A80A
     if (!(rng_mod(const_two))) goto L_A82B;    // $A814
@@ -3060,10 +3060,10 @@ word setting_watch_battles(void) {
     return 0;    // $B14A
 }
 
-// $B14B subhandler_B14B
+// $B14B command_end_game
 // (body @ $B150)
 
-word subhandler_B14B(void) {
+word command_end_game(void) {
     message_display(msg_do_you_really_want_to_end_the);    // $B153
     if (prompt_y_n()) {    // $B150
         increment_ai_player_count();    // $B15D
@@ -3271,7 +3271,7 @@ word ai_develop_dam_and_grow(void) {
             local7 = min_word(gold_budget, (effect_dam(fief) * (100 - *(word*)((fief + 10)))));    // $B478
             *(word*)(fief) = (*(word*)(fief) - local7);    // $B47F
             local7 = (local7 / effect_dam(fief));    // $B489
-            helper_dam_rounding(local7, (fief + 10));    // $B48E
+            add_effect_gain_clamped(local7, (fief + 10));    // $B48E
             gold_budget = (gold_budget - local7);    // $B496
         }
         grow_amount = effect_send(min_word((((current_game_year - 1559) * 50) + 250), *(word*)((fief + 24))), *(word*)((fief + 8)), gold_budget);    // $B4B7

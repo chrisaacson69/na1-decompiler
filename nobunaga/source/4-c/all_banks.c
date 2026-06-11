@@ -127,7 +127,7 @@
 //   PRG $04357  bank1  $8357  ratio_times10_capped
 //   PRG $04379  bank1  $8379  apply_two_grows_const1_override
 //   PRG $043A2  bank1  $83A2  draw_province_stat_or_dashes
-//   PRG $043C7  bank1  $83C7  helper_83C7
+//   PRG $043C7  bank1  $83C7  draw_selected_province_stat
 //   PRG $043D5  bank1  $83D5  draw_province_stat3_or_dashes
 //   PRG $043FA  bank1  $83FA  effect_view_a
 //   PRG $0459A  bank1  $859A  effect_view_defending_province
@@ -139,7 +139,7 @@
 //   PRG $047CB  bank1  $87CB  show_not_home_fief
 //   PRG $047D8  bank1  $87D8  effect_dam
 //   PRG $047F0  bank1  $87F0  effect_grow
-//   PRG $0487D  bank1  $887D  helper_dam_rounding
+//   PRG $0487D  bank1  $887D  add_effect_gain_clamped
 //   PRG $048A6  bank1  $88A6  effect_build
 //   PRG $0491D  bank1  $891D  develop_loyalty
 //   PRG $0496F  bank1  $896F  develop_wealth
@@ -197,7 +197,7 @@
 //   PRG $061B6  bank1  $A1B6  driver_trade
 //   PRG $06255  bank1  $A255  hire_stat_drain_rng
 //   PRG $06274  bank1  $A274  report_fief_stat_decline
-//   PRG $0629B  bank1  $A29B  effect_hire_pay_gold
+//   PRG $0629B  bank1  $A29B  effect_ninja_failed
 //   PRG $062D2  bank1  $A2D2  effect_ninja_sabotage
 //   PRG $06553  bank1  $A553  effect_hire_variant_pay
 //   PRG $065F4  bank1  $A5F4  driver_hire
@@ -227,7 +227,7 @@
 //   PRG $070D2  bank1  $B0D2  setting_message_wait_speed
 //   PRG $07109  bank1  $B109  setting_save_game
 //   PRG $0712B  bank1  $B12B  setting_watch_battles
-//   PRG $0714B  bank1  $B14B  subhandler_B14B
+//   PRG $0714B  bank1  $B14B  command_end_game
 //   PRG $071A6  bank1  $B1A6  submenu_prompt
 //   PRG $0723E  bank1  $B23E  driver_other
 //   PRG $072A1  bank1  $B2A1  driver_pass
@@ -3517,10 +3517,10 @@ word draw_province_stat_or_dashes(word arg1, word arg2) {
 }
 
 // ===== bank1 $83C7  (PRG $043C7) =====
-// PRG $043C7 helper_83C7
+// PRG $043C7 draw_selected_province_stat
 // (body @ PRG $043CC)
 
-word helper_83C7(word arg1) {
+word draw_selected_province_stat(word arg1) {
     return draw_province_stat_or_dashes(selected_province_idx, arg1);    // PRG $043D4 -> bank1 $83A2
 }
 
@@ -3831,10 +3831,10 @@ word effect_grow(word fief, word amount) {
 }
 
 // ===== bank1 $887D  (PRG $0487D) =====
-// PRG $0487D helper_dam_rounding
+// PRG $0487D add_effect_gain_clamped
 // (body @ PRG $04882)
 
-word helper_dam_rounding(word arg1, word arg2) {
+word add_effect_gain_clamped(word arg1, word arg2) {
     local11 = arg1;    // PRG $04883
     if (fief_owner_weakness(selected_province_idx)) {    // PRG $04882 -> bank15 $D972
         local11 = (local11 / 2);    // PRG $04892
@@ -3869,7 +3869,7 @@ word effect_build(word fief, word amount) {
         }
         local10 = phi_val_88fc;    // PRG $048FC
         fief->wealth = (fief->wealth - pct_op(fief->wealth, (local10 / 2)));    // PRG $04910 -> bank15 $D70D
-        helper_dam_rounding((gain << 1), (fief + 4));    // PRG $04917 -> bank1 $887D
+        add_effect_gain_clamped((gain << 1), (fief + 4));    // PRG $04917 -> bank1 $887D
         return gain;    // PRG $0491C
     }
 }
@@ -4987,7 +4987,7 @@ word driver_dam(void) {
                     if (!(((local9 << 1) / effect_dam(local8)))) {    // PRG $05C08 -> bank1 $87D8
                         local9 = (local9 + 1);    // PRG $05C1F
                     }
-                    helper_dam_rounding(local9, local10);    // PRG $05C22 -> bank1 $887D
+                    add_effect_gain_clamped(local9, local10);    // PRG $05C22 -> bank1 $887D
                     trigger_cutscene(21);    // PRG $05C28 -> bank15 $E80C
                     if ((*(word*)(local10) > 100)) {    // PRG $05C20
                         *(word*)(local10) = 100;    // PRG $05C37
@@ -5180,9 +5180,9 @@ word subhandler_9F04(word arg1) {
                     clamp_amount_to_province_max(arg1);    // PRG $05F76 -> bank1 $82AC
                     cycle_economy_rate(0);    // PRG $05F7B -> bank1 $8A4E
                     set_cursor(16, 7);    // PRG $05F82 -> bank15 $CC7B
-                    helper_83C7(*(word*)(arg1));    // PRG $05F89 -> bank1 $83C7
+                    draw_selected_province_stat(*(word*)(arg1));    // PRG $05F89 -> bank1 $83C7
                     set_cursor(16, 8);    // PRG $05F90 -> bank15 $CC7B
-                    helper_83C7(arg1->debt);    // PRG $05F98 -> bank1 $83C7
+                    draw_selected_province_stat(arg1->debt);    // PRG $05F98 -> bank1 $83C7
                     return 1;    // PRG $05F9D
                 } else {
                     open_message_window();    // PRG $05F9E -> bank15 $CC89
@@ -5417,10 +5417,10 @@ word report_fief_stat_decline(word arg1, word arg2) {
 }
 
 // ===== bank1 $A29B  (PRG $0629B) =====
-// PRG $0629B effect_hire_pay_gold
+// PRG $0629B effect_ninja_failed
 // (body @ PRG $062A0)
 
-word effect_hire_pay_gold(word arg1, word arg2) {
+word effect_ninja_failed(word arg1, word arg2) {
     deduct_byte_at((selected_province_daimyo_record() + 4), 1);    // PRG $062A6 -> bank15 $CA12
     redraw_window(msg_your_ninja_failed_bd7c);    // PRG $062AD -> bank15 $CEC4
     standard_delay();    // PRG $062B1 -> bank15 $D759
@@ -5464,7 +5464,7 @@ word effect_ninja_sabotage(word arg1) {
                                 case 65535:
                                     if (!(arg1->loyalty)) {    // PRG $063AB
                                         if (!(arg1->wealth)) {    // PRG $063B1
-                                            effect_hire_pay_gold(local8, unit_count);    // PRG $063B9 -> bank1 $A29B
+                                            effect_ninja_failed(local8, unit_count);    // PRG $063B9 -> bank1 $A29B
                                             return 1;    // PRG $063BE
                                         }
                                     }
@@ -5505,13 +5505,13 @@ word effect_ninja_sabotage(word arg1) {
                                         phi_a419_1 = drain_amount;    // PRG $06494
                                         report_fief_stat_decline(phi_a419_0, phi_a419_1);    // PRG $06419 -> bank1 $A274
                                     } else {
-                                        effect_hire_pay_gold(local8, unit_count);    // PRG $0647D -> bank1 $A29B
+                                        effect_ninja_failed(local8, unit_count);    // PRG $0647D -> bank1 $A29B
                                         return 1;    // PRG $06482
                                     }
                                 case 65537:
                                     if (!(arg1->dams)) {    // PRG $06497
                                         if (!(arg1->rice)) {    // PRG $0649D
-                                            effect_hire_pay_gold(local8, unit_count);    // PRG $064A5 -> bank1 $A29B
+                                            effect_ninja_failed(local8, unit_count);    // PRG $064A5 -> bank1 $A29B
                                             return 1;    // PRG $064AA
                                         }
                                     }
@@ -5542,12 +5542,12 @@ word effect_ninja_sabotage(word arg1) {
                                         phi_a419_1 = drain_amount;    // PRG $06546
                                         report_fief_stat_decline(phi_a419_0, phi_a419_1);    // PRG $06419 -> bank1 $A274
                                     } else {
-                                        effect_hire_pay_gold(local8, unit_count);    // PRG $06530 -> bank1 $A29B
+                                        effect_ninja_failed(local8, unit_count);    // PRG $06530 -> bank1 $A29B
                                         return 1;    // PRG $06535
                                     }
                             }
                         } else {
-                            effect_hire_pay_gold(local8, unit_count);    // PRG $0654B -> bank1 $A29B
+                            effect_ninja_failed(local8, unit_count);    // PRG $0654B -> bank1 $A29B
                             return 1;    // PRG $06550
                         }
                     }
@@ -5715,7 +5715,7 @@ L_p067C6:
     *(word*)(((selected_province_idx * 26) + 0x7001)) = (*(word*)(((selected_province_idx * 26) + 0x7001)) - 10);    // PRG $067D5
     if ((local8 != selected_province_idx)) goto L_p067F5;    // PRG $067DB
     set_cursor(16, 7);    // PRG $067E1 -> bank15 $CC7B
-    helper_83C7(*(word*)(((selected_province_idx * 26) + 0x7001)));    // PRG $067F1 -> bank1 $83C7
+    draw_selected_province_stat(*(word*)(((selected_province_idx * 26) + 0x7001)));    // PRG $067F1 -> bank1 $83C7
 L_p067F5:
     if (!((effect_view_d(selected_province_daimyo_record()) > effect_view_d(fief_to_daimyo_record_addr(local10))))) goto L_p06817;    // PRG $0680A -> bank1 $A6B3
     if (!(rng_mod(const_two))) goto L_p0682B;    // PRG $06814 -> bank15 $CA52
@@ -6396,10 +6396,10 @@ word setting_watch_battles(void) {
 }
 
 // ===== bank1 $B14B  (PRG $0714B) =====
-// PRG $0714B subhandler_B14B
+// PRG $0714B command_end_game
 // (body @ PRG $07150)
 
-word subhandler_B14B(void) {
+word command_end_game(void) {
     message_display(msg_do_you_really_want_to_end_the);    // PRG $07153 -> bank15 $D326
     if (prompt_y_n()) {    // PRG $07150 -> bank15 $D3A7
         increment_ai_player_count();    // PRG $0715D -> bank15 $DB35
@@ -6616,7 +6616,7 @@ word ai_develop_dam_and_grow(void) {
             local7 = min_word(gold_budget, (effect_dam(fief) * (100 - *(word*)((fief + 10)))));    // PRG $07478 -> bank15 $CB5E
             *(word*)(fief) = (*(word*)(fief) - local7);    // PRG $0747F
             local7 = (local7 / effect_dam(fief));    // PRG $07489 -> bank1 $87D8
-            helper_dam_rounding(local7, (fief + 10));    // PRG $0748E -> bank1 $887D
+            add_effect_gain_clamped(local7, (fief + 10));    // PRG $0748E -> bank1 $887D
             gold_budget = (gold_budget - local7);    // PRG $07496
         }
         grow_amount = effect_send(min_word((((current_game_year - 1559) * 50) + 250), *(word*)((fief + 24))), *(word*)((fief + 8)), gold_budget);    // PRG $074B7 -> bank1 $8BE5

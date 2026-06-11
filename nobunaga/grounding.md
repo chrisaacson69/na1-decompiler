@@ -198,6 +198,16 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #9 — view/dam/war-prep + a refute (69/131)   [2026-06-10]
+3 renames + 1 REFUTE:
+- `$A29B` `effect_hire_pay_gold` → **`effect_ninja_failed`** — bytecode-verified it's the ninja FAILURE effect
+  ('your ninja failed' + daimyo CHARISMA loss + gold cost), NOT a hire payment.
+- `$83C7` `helper_83C7` → **`draw_selected_province_stat`**, `$887D` `helper_dam_rounding` →
+  **`add_effect_gain_clamped`** (weakness-halved gain + province-max clamp, used by Dam/Build),
+  `$B14B` `subhandler_B14B` → **`command_end_game`** (resign/game-over).
+- `$83FA` effect_view_a, `$9323` effect_war_combat_prep_a (rice check; cross-bank $9323 pair), `$B2A1` driver_pass:
+  re-grounded. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #8 — the Settings ("Other") submenu (62/131)   [2026-06-10]
 5 stub renames — the whole settings menu (driver indices 27-31):
 - `subhandler_B066` → **`setting_sound_on_off`**, `_B09D` → **`setting_animation_on_off`** (ai_turn_flags bit2),

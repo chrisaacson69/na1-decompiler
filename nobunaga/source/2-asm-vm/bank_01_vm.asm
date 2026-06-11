@@ -1337,7 +1337,7 @@ VM bytecode disassembly
   $8914  0B                         LOADL_quick   ; inline operand = 11
   $8915  D2                         LSHIFT1
   $8916  B3                         PUSHL
-  $8917  E9 7D 88 04                CALL_abs_imm1          $887D (helper_dam_rounding) {bytecode}, $04
+  $8917  E9 7D 88 04                CALL_abs_imm1          $887D (add_effect_gain_clamped) {bytecode}, $04
   $891B  0B                         LOADL_quick   ; inline operand = 11
   $891C  CF                         RETURN
 
@@ -4177,7 +4177,7 @@ VM bytecode disassembly
   $9C1F  29                         STORE_quick   ; inline operand = 9
  >$9C20  3A                         PUSH_quick   ; inline operand = 10
   $9C21  39                         PUSH_quick   ; inline operand = 9
-  $9C22  E9 7D 88 04                CALL_abs_imm1          $887D (helper_dam_rounding) {bytecode}, $04
+  $9C22  E9 7D 88 04                CALL_abs_imm1          $887D (add_effect_gain_clamped) {bytecode}, $04
   $9C26  8D 15                      BYTE_PUSH_imm1         +21
   $9C28  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
   $9C2C  0A                         LOADL_quick   ; inline operand = 10
@@ -4634,7 +4634,7 @@ VM bytecode disassembly
   $9F86  0C                         LOADL_quick   ; inline operand = 12
   $9F87  B0                         DEREF
   $9F88  B3                         PUSHL
-  $9F89  E9 C7 83 02                CALL_abs_imm1          $83C7 (helper_83C7) {bytecode}, $02
+  $9F89  E9 C7 83 02                CALL_abs_imm1          $83C7 (draw_selected_province_stat) {bytecode}, $02
   $9F8D  68                         PUSH_qimm   ; inline operand = 8
   $9F8E  8D 10                      BYTE_PUSH_imm1         +16
   $9F90  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
@@ -4642,7 +4642,7 @@ VM bytecode disassembly
   $9F95  72                         ADD_qimm   ; inline operand = 2
   $9F96  B0                         DEREF
   $9F97  B3                         PUSHL
-  $9F98  E9 C7 83 02                CALL_abs_imm1          $83C7 (helper_83C7) {bytecode}, $02
+  $9F98  E9 C7 83 02                CALL_abs_imm1          $83C7 (draw_selected_province_stat) {bytecode}, $02
   $9F9C  41                         LOADL_qimm   ; inline operand = 1
   $9F9D  CF                         RETURN
  >$9F9E  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
@@ -5203,7 +5203,7 @@ VM bytecode disassembly
   $A3B4  D7 BF A3                   JUMPT_abs              $A3BF
   $A3B7  39                         PUSH_quick   ; inline operand = 9
   $A3B8  38                         PUSH_quick   ; inline operand = 8
-  $A3B9  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_hire_pay_gold) {bytecode}, $04
+  $A3B9  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_ninja_failed) {bytecode}, $04
   $A3BD  41                         LOADL_qimm   ; inline operand = 1
   $A3BE  CF                         RETURN
  >$A3BF  8D 1C                      BYTE_PUSH_imm1         +28
@@ -5325,7 +5325,7 @@ VM bytecode disassembly
   $A478  D7 83 A4                   JUMPT_abs              $A483
   $A47B  39                         PUSH_quick   ; inline operand = 9
   $A47C  38                         PUSH_quick   ; inline operand = 8
-  $A47D  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_hire_pay_gold) {bytecode}, $04
+  $A47D  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_ninja_failed) {bytecode}, $04
   $A481  41                         LOADL_qimm   ; inline operand = 1
   $A482  CF                         RETURN
  >$A483  8D 1B                      BYTE_PUSH_imm1         +27
@@ -5351,7 +5351,7 @@ VM bytecode disassembly
   $A4A0  D7 AB A4                   JUMPT_abs              $A4AB
   $A4A3  39                         PUSH_quick   ; inline operand = 9
   $A4A4  38                         PUSH_quick   ; inline operand = 8
-  $A4A5  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_hire_pay_gold) {bytecode}, $04
+  $A4A5  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_ninja_failed) {bytecode}, $04
   $A4A9  41                         LOADL_qimm   ; inline operand = 1
   $A4AA  CF                         RETURN
  >$A4AB  8D 1E                      BYTE_PUSH_imm1         +30
@@ -5446,7 +5446,7 @@ VM bytecode disassembly
   $A52B  D7 36 A5                   JUMPT_abs              $A536
   $A52E  39                         PUSH_quick   ; inline operand = 9
   $A52F  38                         PUSH_quick   ; inline operand = 8
-  $A530  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_hire_pay_gold) {bytecode}, $04
+  $A530  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_ninja_failed) {bytecode}, $04
   $A534  41                         LOADL_qimm   ; inline operand = 1
   $A535  CF                         RETURN
  >$A536  8D 1D                      BYTE_PUSH_imm1         +29
@@ -5464,7 +5464,7 @@ VM bytecode disassembly
   $A546  D6 19 A4                   JUMP_abs               $A419
  >$A549  39                         PUSH_quick   ; inline operand = 9
   $A54A  38                         PUSH_quick   ; inline operand = 8
-  $A54B  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_hire_pay_gold) {bytecode}, $04
+  $A54B  E9 9B A2 04                CALL_abs_imm1          $A29B (effect_ninja_failed) {bytecode}, $04
   $A54F  41                         LOADL_qimm   ; inline operand = 1
   $A550  CF                         RETURN
  >$A551  40                         LOADL_qimm   ; inline operand = 0
@@ -5815,7 +5815,7 @@ VM bytecode disassembly
   $A7EE  BB                         ADD
   $A7EF  B0                         DEREF
   $A7F0  B3                         PUSHL
-  $A7F1  E9 C7 83 02                CALL_abs_imm1          $83C7 (helper_83C7) {bytecode}, $02
+  $A7F1  E9 C7 83 02                CALL_abs_imm1          $83C7 (draw_selected_province_stat) {bytecode}, $02
  >$A7F5  3A                         PUSH_quick   ; inline operand = 10
   $A7F6  E9 DA D7 02                CALL_abs_imm1          $D7DA (fief_to_daimyo_record_addr) {bytecode}, $02
   $A7FA  B3                         PUSHL
@@ -7574,7 +7574,7 @@ VM bytecode disassembly
   $B48B  7A                         ADD_qimm   ; inline operand = 10
   $B48C  B3                         PUSHL
   $B48D  37                         PUSH_quick   ; inline operand = 7
-  $B48E  E9 7D 88 04                CALL_abs_imm1          $887D (helper_dam_rounding) {bytecode}, $04
+  $B48E  E9 7D 88 04                CALL_abs_imm1          $887D (add_effect_gain_clamped) {bytecode}, $04
   $B492  07                         LOADL_quick   ; inline operand = 7
   $B493  CD                         SWAP
   $B494  0A                         LOADL_quick   ; inline operand = 10
