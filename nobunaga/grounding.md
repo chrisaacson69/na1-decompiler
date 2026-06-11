@@ -198,6 +198,12 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #16 — the player + AI command drivers (118/131)   [2026-06-10]
+All confirmed (well-named drivers), re-grounded — the command layer is now wired top-to-bottom:
+- Player: `$96D1` driver_move, `$9850` driver_war (capital + gold/rice/men prep), `$9A5D` driver_send,
+  `$9C4F` driver_pact (costs daimyo DRIVE), `$859A` effect_view_defending_province.
+- AI: `$949A` ai_try_war_attack (pick weakest target), `$B3AA` ai_develop_town_handler. Next: rows 1-7 (13 left).
+
 ### Bank 1 full-verify batch #15 — trade/give/loan + a parse-bug fix (111/131)   [2026-06-10]
 2 renames + 5 re-grounds. Also FIXED a self-inflicted toml bug: batch-14's comments had nested double-quotes
 (e.g. inside ('we're at our limit')) which made parse_toml SKIP those 2 entries (driver_dam, find_fief... showed
