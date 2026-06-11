@@ -198,6 +198,19 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### ★★ BANK 1 FULL-VERIFICATION COMPLETE ★★ — batch #18, the turn-loop roots (131/131, 100%)   [2026-06-10]
+**Every one of bank 1's 131 subs is read-verified (0 todo, 0 suspects).** The lord-command / turn engine reads top to
+bottom: root `ai_per_fief_command_driver` ($B89B, depth 7, the AI per-fief turn loop) -> ai_econ_command_dispatch /
+ai_state2_recruit_arm_train / issue_province_command -> the 21 command drivers (move/war/send/pact/marry/trade/grow/
+build/dam/train/hire/bribe/give/grant/view/tax/rest/other/pass + ninja) -> their effects -> the math/relations leaves.
+Final 6 confirmed: `$A5F4` driver_hire, `$B4D5` ai_state2_recruit_arm_train, `$B64B` ai_econ_command_dispatch, `$B79B`
+issue_province_command, `$B875` ai_econ_action_state0, `$B89B` ai_per_fief_command_driver.
+**Bank-1 arc tally (18 batches, 7/batch):** ~30 renames (every `helper_XXXX`/`subhandler_XXXX`/address-tagged stub + the
+mislabeled `effect_hire_pay_gold`->`effect_ninja_failed`, `effect_subhandler_A003`->`effect_sell_rice_for_gold`, etc.) +
+the **3rd DREAM bug class found** (32-bit ext-op math chains render as placeholder returns — bank-1's 3: $8303/$8357/$8327,
+all flagged) + a 4th value-render instance ($97EA roll) + confirmation that the Grow/develop family all share the
+skill-scaled formula `2*amount*(6-skill)/sqrt(...)`. Self-inflicted toml nested-quote bug found+fixed (no nested `"`).
+
 ### Bank 1 full-verify batch #17 — the rest of the command drivers (125/131)   [2026-06-10]
 All confirmed: `$9DC4` driver_marry, `$A2D2` effect_ninja_sabotage (covert actions), `$A6C7` driver_view,
 `$A853` driver_build (confirms $7001+4 = town), `$AA1F` driver_give, `$AAAE` driver_bribe, `$AF66` driver_grant.
@@ -798,21 +811,17 @@ bank-15 native floor is grounded; the remaining bank-15 work is the VM-suspect l
 FLAG: `$C6AD mul_xy_by_3` is really a general `Y*X` multiply (blit passes X=32 for row*32) — `_by_3`
 is likely named after one caller; re-ground the name.
 
-### >>> NEXT BLOCK (start here): FULL-VERIFY bank 1 (turn-command engine), then bank 0 <<<
-**★ BANK 2 FULL-VERIFY COMPLETE (131/131, 2026-06-10, batches #1-16).** Apply the identical loop to **bank 1** (the
-lord-command / turn engine, the other specialized bank dispatched by bank 0's main loop): `py -3
-tools/bank-ground-order.py 1 --todo` for the leaves-first worklist, 7/batch, read each against bytecode, confirm-or-REFUTE
-the inherited name, regen, commit. The loop: layer-ID → read bytecode → fact-check the suspect note → name+tag → toml →
-regen → spot-check → ledger. **Method wins from bank 2:** (1) read ROM strings directly for any draw_message target
-(py, 16KB-bank file offset = 16 + bank*0x4000 + (cpu - (bank==15?0xC000:0x8000))); (2) watch for the value-merge DREAM
-bug classes (switch per-case offset / arms-reconverge-at-suffix — verify against `3-c-basic`/bytecode); (3) the clean
-descriptive names are wrong as often as the stubs — trust nothing.
-**NO known toml bugs in bank 1** — the `0x83A2`/`0x93AA`/`0x85A7` "duplicates" flagged during bank 2 are all legit
-same-CPU-addr/different-bank PAIRS (banks 0/1/2 share the $8000-$BFFF window), each correctly applied to its own bank.
-`province_window_redraw_ba6f` IS a real bank-1 sub at $83A2 (the `_ba6f` suffix names the $BA6F data table it reads,
-not its address) — just a low-fidelity name to clean up like any other. Bank 1 = 131 subs, 5 address-tagged stubs
-(`helper_8357`, `province_window_redraw_ba6f`/`_ba78`, `map_helper_af10`, `ai_seed_fief_collection_rate_6d2d`) are
-the worst offenders, but full-verify covers ALL 131. Then **bank 0** (~98 subs, the main loop) LAST.
+### >>> NEXT BLOCK (start here): FULL-VERIFY bank 0 (the main loop) — LAST bank <<<
+**★ BANKS 2 + 1 FULL-VERIFY COMPLETE (131/131 each, 2026-06-10).** Only **bank 0** remains (~98 subs, the main game
+loop — the bank loaded first, entry `vm_bootstrap`, per Chris). Same loop: `py -3 tools/bank-ground-order.py 0 --todo`,
+7/batch, read each against bytecode, confirm-or-REFUTE, regen, commit. **Method wins to reuse:** (1) read ROM strings
+for any draw_message target (py, file off = 16 + bank*0x4000 + (cpu - (bank==15?0xC000:0x8000))); (2) READ THE BYTECODE
+for any sub with `// ext_op` lines (32-bit math, 4-c is value-wrong) or a suspicious linear body (value-merge bugs);
+(3) NO nested double-quotes or em-dashes in toml comments (use single quotes — they break parse_toml); (4) the clean
+descriptive names are wrong as often as the stubs. Cross-bank same-addr pairs ($83A2/$93AA/$85A7 etc.) are FINE.
+Bank 0 is the main loop so expect: the turn/season scheduler, new-game setup, the dispatch into banks 1 (commands) &
+2 (combat) via call_bank, and succession/event handling. After bank 0: the corpus is fully grounded -> the optional
+decompiler-bug capstone (see tech-debt.md), then the chapter rename-sweep.
 
 #### (historical) original NEXT BLOCK note: banks 0/1/2 (bank 15 + 10 + 14 are DONE)
 **Bank 15 complete (0 suspects); banks 10 & 14 complete (all named).** Remaining corpus suspects: banks
