@@ -137,6 +137,22 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #3 — 7 depth-0 leaves, combat-strength + conquest layer (38/131)   [2026-06-10]
+Heavy refute batch — **5 prior comments wrong, 1 rename**:
+- `$8E5C` `ai_sum_battle_strength` ✅ — the **WRITER of battle_side_strength_mod** ($7BEA/$7BEC), closing batch-2's
+  open loop. 8-stat weighted tally: each won stat adds its weight; side that wins. **Found weight table is 8 not 7**
+  (ROM @ $B5B1 = 5/10/10/5/20 daimyo + 10/25/15 province morale/skill/ARMS, 0xFE term) — corrected
+  `battle_strength_stat_weights` (prior note missed arms=15) + upgraded `$7BEA` (writer now known).
+- `$8F55` `clear_unit_combat_flags` → **`end_war_relocate_capital`** — clears war bit7 + RELOCATES the daimyo capital
+  (from_fief=0, to_fief=1). REFUTES old name + comment ('zeros both' — to_fief is SET).
+- `$8F28` `validate_dir_code_and_dispatch` — REFUTED polarity: rejects {52,53,54}, dispatches {49-51,55-57}->dir 0-5
+  (not 'returns 0 if >=55'). Calls coord-stepper $8003 (bank-2 $8003 still unground).
+- `$90BB` `build_daimyo_province_list` ✅ — corrected reversed syscall arg order (src $6F4F -> dst deduped_owner_list).
+- `$970A` `is_coord_in_combat_rect` ✅ — cleaned the garbled comment (arena rect $6FF6/$6FFA x, $6FF8/$6FFC y).
+- `$8B39` `draw_combat_day_header` ✅ / `$A148` `find_flagged_present_unit_type` ✅ (re-grounded).
+Mechanic captured: **battle strength = weighted stat-comparison** (skill 25 > IQ 20 top terms) feeding the AI engage/avoid
+decision. Next: rows 1-7 of `bank-ground-order.py 2 --todo`.
+
 ### Bank 2 full-verify batch #2 — 7 depth-0 leaves, the tactical-render layer (31/131)   [2026-06-10]
 All 7 names CONFIRMED accurate (cleaner than batch #1) — value was sharper comments + cross-confirmations + 1
 arg-order fix + 1 new var label:

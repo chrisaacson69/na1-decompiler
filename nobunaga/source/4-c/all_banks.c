@@ -289,7 +289,7 @@
 //   PRG $08EF5  bank2  $8EF5  ai_attacker_outstrengths_defender
 //   PRG $08F11  bank2  $8F11  is_tile_in_bounds
 //   PRG $08F28  bank2  $8F28  validate_dir_code_and_dispatch
-//   PRG $08F55  bank2  $8F55  clear_unit_combat_flags
+//   PRG $08F55  bank2  $8F55  end_war_relocate_capital
 //   PRG $08F79  bank2  $8F79  is_unit_present
 //   PRG $08F97  bank2  $8F97  clear_unit_status_flag_set_field_200
 //   PRG $08FC0  bank2  $8FC0  find_unit_slot_by_fields
@@ -8052,10 +8052,10 @@ word validate_dir_code_and_dispatch(word arg1, word arg2, word arg3) {
 }
 
 // ===== bank2 $8F55  (PRG $08F55) =====
-// PRG $08F55 clear_unit_combat_flags
+// PRG $08F55 end_war_relocate_capital
 // (body @ PRG $08F5A)
 
-word clear_unit_combat_flags(word from_fief, word to_fief) {
+word end_war_relocate_capital(word from_fief, word to_fief) {
     war_side_state_flag[cur_combat_side] = (war_side_state_flag[cur_combat_side] & 127);    // PRG $08F67
     fief_is_daimyo_capital[from_fief] = 0;    // PRG $08F6F
     fief_is_daimyo_capital[to_fief] = 1;    // PRG $08F77
@@ -9858,7 +9858,7 @@ word ai_clear_province_state_when_strong_enough(word fief) {
                 if ((deduped_owner_list != 255)) {    // PRG $0A887
                     battle_winner_province_sel = side_fief;    // PRG $0A8A7
                     if (test_6f65_bit7(cur_combat_side)) {    // PRG $0A8A6 -> bank15 $D9E5
-                        clear_unit_combat_flags(side_fief, owner);    // PRG $0A8B6 -> bank2 $8F55
+                        end_war_relocate_capital(side_fief, owner);    // PRG $0A8B6 -> bank2 $8F55
                         if (province_ai_state[owner]) {    // PRG $0A8B4
                             province_ai_state[owner] = 5;    // PRG $0A8CA
                         }
@@ -9874,7 +9874,7 @@ word ai_clear_province_state_when_strong_enough(word fief) {
             if ((deduped_owner_list != 255)) {    // PRG $0A887
                 battle_winner_province_sel = side_fief;    // PRG $0A8A7
                 if (test_6f65_bit7(cur_combat_side)) {    // PRG $0A8A6 -> bank15 $D9E5
-                    clear_unit_combat_flags(side_fief, owner);    // PRG $0A8B6 -> bank2 $8F55
+                    end_war_relocate_capital(side_fief, owner);    // PRG $0A8B6 -> bank2 $8F55
                     if (province_ai_state[owner]) {    // PRG $0A8B4
                         province_ai_state[owner] = 5;    // PRG $0A8CA
                     }
@@ -10070,7 +10070,7 @@ word combat_flee_to_fief_command(void) {
                     if (prompt_yes_no()) {    // PRG $0AB04 -> bank2 $822A
                         battle_winner_province_sel = source_fief;    // PRG $0AB15
                         if (test_6f65_bit7(cur_combat_side)) {    // PRG $0AB14 -> bank15 $D9E5
-                            clear_unit_combat_flags(source_fief, dest_fief);    // PRG $0AB24 -> bank2 $8F55
+                            end_war_relocate_capital(source_fief, dest_fief);    // PRG $0AB24 -> bank2 $8F55
                             province_ai_state[dest_fief] = 5;    // PRG $0AB2F
                         }
                         return 0;    // PRG $0AB31

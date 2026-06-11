@@ -5937,7 +5937,7 @@ VM bytecode disassembly
   $A8B1  D8 CD A8                   JUMPF_abs              $A8CD
   $A8B4  3A                         PUSH_quick   ; inline operand = 10
   $A8B5  3B                         PUSH_quick   ; inline operand = 11
-  $A8B6  E9 55 8F 04                CALL_abs_imm1          $8F55 (clear_unit_combat_flags) {bytecode}, $04
+  $A8B6  E9 55 8F 04                CALL_abs_imm1          $8F55 (end_war_relocate_capital) {bytecode}, $04
   $A8BA  0A                         LOADL_quick   ; inline operand = 10
   $A8BB  8C F7 6C                   LOADR_imm2             $6CF7 (province_ai_state)
   $A8BE  BB                         ADD
@@ -6224,7 +6224,7 @@ VM bytecode disassembly
   $AB1F  D8 30 AB                   JUMPF_abs              $AB30
   $AB22  3A                         PUSH_quick   ; inline operand = 10
   $AB23  3B                         PUSH_quick   ; inline operand = 11
-  $AB24  E9 55 8F 04                CALL_abs_imm1          $8F55 (clear_unit_combat_flags) {bytecode}, $04
+  $AB24  E9 55 8F 04                CALL_abs_imm1          $8F55 (end_war_relocate_capital) {bytecode}, $04
   $AB28  0A                         LOADL_quick   ; inline operand = 10
   $AB29  8C F7 6C                   LOADR_imm2             $6CF7 (province_ai_state)
   $AB2C  BB                         ADD

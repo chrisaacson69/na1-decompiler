@@ -1072,10 +1072,10 @@ word validate_dir_code_and_dispatch(word arg1, word arg2, word arg3) {
     }
 }
 
-// $8F55 clear_unit_combat_flags
+// $8F55 end_war_relocate_capital
 // (body @ $8F5A)
 
-word clear_unit_combat_flags(word from_fief, word to_fief) {
+word end_war_relocate_capital(word from_fief, word to_fief) {
     war_side_state_flag[cur_combat_side] = (war_side_state_flag[cur_combat_side] & 127);    // $8F67
     fief_is_daimyo_capital[from_fief] = 0;    // $8F6F
     fief_is_daimyo_capital[to_fief] = 1;    // $8F77
@@ -2810,7 +2810,7 @@ word ai_clear_province_state_when_strong_enough(word fief) {
                 if ((deduped_owner_list != 255)) {    // $A887
                     battle_winner_province_sel = side_fief;    // $A8A7
                     if (test_6f65_bit7(cur_combat_side)) {    // $A8A6
-                        clear_unit_combat_flags(side_fief, owner);    // $A8B6
+                        end_war_relocate_capital(side_fief, owner);    // $A8B6
                         if (province_ai_state[owner]) {    // $A8B4
                             province_ai_state[owner] = 5;    // $A8CA
                         }
@@ -2826,7 +2826,7 @@ word ai_clear_province_state_when_strong_enough(word fief) {
             if ((deduped_owner_list != 255)) {    // $A887
                 battle_winner_province_sel = side_fief;    // $A8A7
                 if (test_6f65_bit7(cur_combat_side)) {    // $A8A6
-                    clear_unit_combat_flags(side_fief, owner);    // $A8B6
+                    end_war_relocate_capital(side_fief, owner);    // $A8B6
                     if (province_ai_state[owner]) {    // $A8B4
                         province_ai_state[owner] = 5;    // $A8CA
                     }
@@ -3017,7 +3017,7 @@ word combat_flee_to_fief_command(void) {
                     if (prompt_yes_no()) {    // $AB04
                         battle_winner_province_sel = source_fief;    // $AB15
                         if (test_6f65_bit7(cur_combat_side)) {    // $AB14
-                            clear_unit_combat_flags(source_fief, dest_fief);    // $AB24
+                            end_war_relocate_capital(source_fief, dest_fief);    // $AB24
                             province_ai_state[dest_fief] = 5;    // $AB2F
                         }
                         return 0;    // $AB31
