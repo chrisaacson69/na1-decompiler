@@ -140,10 +140,10 @@ word unit_strength_ptr(word arg1, word arg2) {
     return (((arg1 * 10) + (arg2 << 1)) + 0x6FBC);    // $82DA
 }
 
-// $82DB test_map_cell_bits
+// $82DB is_cell_clear_of_bits
 // (body @ $82E0)
 
-word test_map_cell_bits(word arg1, word arg2, word arg3) {
+word is_cell_clear_of_bits(word arg1, word arg2, word arg3) {
     if ((((unsigned)arg1 > (unsigned)10) || ((unsigned)arg2 > (unsigned)4))) {    // $82E0
         return 1;    // $82ED
     } else {
@@ -611,7 +611,7 @@ word prompt_province_selection(word arg1, word arg2) {
 // (body @ $87BC)
 
 word draw_tactical_terrain_feature(word arg1, word arg2) {
-    phi_ret_8821 = test_map_cell_bits(arg1, arg2, 2);    // $87C3
+    phi_ret_8821 = is_cell_clear_of_bits(arg1, arg2, 2);    // $87C3
     if (phi_ret_8821) {    // $87BC
         local11 = arg1;    // $87C7
         local10 = arg2;    // $87C9
@@ -684,7 +684,7 @@ word map_populate(void) {
     do {    // $890A
         local11 = 0;    // $890B
         do {    // $890C
-            if (test_map_cell_bits(local11, local10, 2)) {    // $890C
+            if (is_cell_clear_of_bits(local11, local10, 2)) {    // $890C
                 phi_val_8922 = lookup_terrain_attr_record(local11, local10);    // $891C
             } else {
                 phi_val_8922 = map_populate_data_b54a;    // $891F
@@ -1082,10 +1082,10 @@ word clear_unit_combat_flags(word from_fief, word to_fief) {
     return 1;    // $8F78
 }
 
-// $8F79 test_unit_type_present_flag
+// $8F79 is_unit_present
 // (body @ $8F7E)
 
-word test_unit_type_present_flag(word arg1, word arg2) {
+word is_unit_present(word arg1, word arg2) {
     return (((unsigned)arg2 < (unsigned)5) && (((unsigned)war_side_state_flag[arg1] >> arg2) & 1));    // $8F96
 }
 
@@ -1149,7 +1149,7 @@ word wrap_index_0_2_to_zero(word arg1) {
 // (body @ $901E)
 
 word test_map_cell_blocked_c2(word arg1, word arg2) {
-    return (test_map_cell_bits(arg1, arg2, 194) ? 0 : 1);    // $902F
+    return (is_cell_clear_of_bits(arg1, arg2, 194) ? 0 : 1);    // $902F
 }
 
 // $9030 is_battleside_province_aistate5_and_not_resting
@@ -1420,7 +1420,7 @@ word announce_battle_outcome_retreat_or_won(word arg1, word arg2) {
             } else {
                 if (local7) {    // $9419
                     if ((arg2 == 1)) {    // $941D
-                        if (!(test_unit_type_present_flag(local7, 0))) {    // $9423
+                        if (!(is_unit_present(local7, 0))) {    // $9423
                             phi_val_942e = (arg2 + 1);    // $942D
                             arg2 = phi_val_942e;    // $942E
                         }
@@ -1506,7 +1506,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
         }
         local10 = (local10 ^ 1);    // $9543
         clear_rect_left_lower_alt();    // $9544
-        if (!(test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot))) {    // $9544
+        if (!(is_unit_present(cur_combat_side, cur_combat_unit_slot))) {    // $9544
             if ((local10 == cur_combat_side)) {    // $9554
                 phi_push_9560 = 7;    // $955F
             } else {
@@ -1515,7 +1515,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
             draw_combat_message(phi_push_9560, cur_combat_unit_slot);    // $9561
             phi_ret_9568 = clear_rect_left_lower_alt();    // $9565
         } else {
-            phi_ret_9568 = test_unit_type_present_flag((cur_combat_side ^ 1), arg2);    // $95AE
+            phi_ret_9568 = is_unit_present((cur_combat_side ^ 1), arg2);    // $95AE
             if (!(phi_ret_9568)) {    // $95A3
                 if ((local10 != cur_combat_side)) {    // $95B1
                     phi_push_9560 = 7;    // $955F
@@ -1539,7 +1539,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
                 message_display(mem_B1D6);    // $959B
             }
             clear_rect_left_lower_alt();    // $9544
-            if (!(test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot))) {    // $9544
+            if (!(is_unit_present(cur_combat_side, cur_combat_unit_slot))) {    // $9544
                 if ((local10 == cur_combat_side)) {    // $9554
                     phi_push_9560 = 7;    // $955F
                 } else {
@@ -1548,7 +1548,7 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
                 draw_combat_message(phi_push_9560, cur_combat_unit_slot);    // $9561
                 phi_ret_9568 = clear_rect_left_lower_alt();    // $9565
             } else {
-                phi_ret_9568 = test_unit_type_present_flag((cur_combat_side ^ 1), arg2);    // $95AE
+                phi_ret_9568 = is_unit_present((cur_combat_side ^ 1), arg2);    // $95AE
                 if (!(phi_ret_9568)) {    // $95A3
                     if ((local10 != cur_combat_side)) {    // $95B1
                         phi_push_9560 = 7;    // $955F
@@ -1620,7 +1620,7 @@ word find_free_tactical_placement_cell(word arg1, word arg2) {
     do {    // $964E
         local10 = 0;    // $964F
         while (1) {    // $9650
-            if (!(test_map_cell_bits(local11, local10, 32))) {    // $9650
+            if (!(is_cell_clear_of_bits(local11, local10, 32))) {    // $9650
                 *(word*)(arg1) = local11;    // $965D
                 *(word*)(arg2) = local10;    // $9660
                 return local10;    // $9661
@@ -1686,8 +1686,8 @@ word is_coord_in_combat_rect(word tile_x, word tile_y) {
 
 word tile_blocked_by_existing_unit_in_placement(word arg1, word arg2) {
     if (!(cur_combat_side)) {    // $973A
-        if (test_map_cell_bits(arg1, arg2, 32)) {    // $9740
-            if (!(test_map_cell_bits(arg1, arg2, 8))) {    // $974B
+        if (is_cell_clear_of_bits(arg1, arg2, 32)) {    // $9740
+            if (!(is_cell_clear_of_bits(arg1, arg2, 8))) {    // $974B
                 return 1;    // $9756
             } else {
                 find_free_tactical_placement_cell(&local11, &local10);    // $975F
@@ -1741,7 +1741,7 @@ word commit_unit_move_and_redraw_count(word arg1, word arg2) {
 // (body @ $97FD)
 
 word test_cur_unit_slot_present(void) {
-    return (test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot) ? 0 : 1);    // $980F
+    return (is_unit_present(cur_combat_side, cur_combat_unit_slot) ? 0 : 1);    // $980F
 }
 
 // $9810 ai_place_unit_in_free_slot_resolve_coords
@@ -1958,7 +1958,7 @@ L_9A6F:
     phi_val_9a81 = combat_arena_x_min;    // $9A72
     goto L_9A81;    // $9A72
 L_9A75:
-    if (test_map_cell_bits(local10, local9, 2)) goto L_9A95;    // $9A7C
+    if (is_cell_clear_of_bits(local10, local9, 2)) goto L_9A95;    // $9A7C
     phi_val_9a81 = (local10 + 1);    // $9A80
 L_9A81:
     local10 = phi_val_9a81;    // $9A81
@@ -2147,8 +2147,8 @@ word ai_battle_strength_ratio_below_50(word unit_type) {
 
 word reduce_defending_province_town_chaos(word arg1, word arg2) {
     local11 = (cur_combat_side ^ 1);    // $9DB2
-    if (!((!(test_map_cell_bits(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), 8)) || !(test_map_cell_bits(*(byte*)(unit_col_ptr(local11, arg2)), *(byte*)(unit_row_ptr(local11, arg2)), 8))))) {    // $9DAD
-        return test_map_cell_bits(*(byte*)(unit_col_ptr(local11, arg2)), *(byte*)(unit_row_ptr(local11, arg2)), 8);    // $9DDD
+    if (!((!(is_cell_clear_of_bits(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), 8)) || !(is_cell_clear_of_bits(*(byte*)(unit_col_ptr(local11, arg2)), *(byte*)(unit_row_ptr(local11, arg2)), 8))))) {    // $9DAD
+        return is_cell_clear_of_bits(*(byte*)(unit_col_ptr(local11, arg2)), *(byte*)(unit_row_ptr(local11, arg2)), 8);    // $9DDD
     } else {
         message_display(msg_the_town_is_in_complete_chaos);    // $9DE1
         arg1 = ((unsigned)arg1 / (unsigned)2);    // $9DE9
@@ -2245,7 +2245,7 @@ word unit_type_count_gt3_and_equals_arg1(word arg1) {
     while (1) {    // $A034
         local10 = phi_val_a034;    // $A034
         if (((unsigned)local10 < (unsigned)5)) {    // $A034
-            if (test_unit_type_present_flag(cur_combat_side, local10)) {    // $A024
+            if (is_unit_present(cur_combat_side, local10)) {    // $A024
                 local11 = (local11 + 1);    // $A031
             }
             phi_val_a034 = (local10 + 1);    // $A033
@@ -2266,7 +2266,7 @@ word unit_type_count_gt3_and_equals_arg1(word arg1) {
 // (body @ $A053)
 
 word is_unit_at_coords(word arg1, word arg2, word arg3, word arg4) {
-    return (test_unit_type_present_flag(arg3, arg4) && ((*(byte*)(unit_col_ptr(arg3, arg4)) == arg1) && (*(byte*)(unit_row_ptr(arg3, arg4)) == arg2)));    // $A079
+    return (is_unit_present(arg3, arg4) && ((*(byte*)(unit_col_ptr(arg3, arg4)) == arg1) && (*(byte*)(unit_row_ptr(arg3, arg4)) == arg2)));    // $A079
 }
 
 // $A07A find_adjacent_unit_around_tile
@@ -2292,7 +2292,7 @@ word find_adjacent_unit_around_tile(word arg1, word arg2, word arg3, word arg4) 
 
 word enemy_unit_type_present_at_unit_tile(word arg1) {
     local11 = (cur_combat_side ^ 1);    // $A0B7
-    return (test_unit_type_present_flag(local11, arg1) && find_adjacent_unit_around_tile(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), local11, arg1));    // $A0D9
+    return (is_unit_present(local11, arg1) && find_adjacent_unit_around_tile(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()), local11, arg1));    // $A0D9
 }
 
 // $A0DA eval_and_announce_battle_strength_parity_if_enemy_present
@@ -2432,7 +2432,7 @@ L_A24A:
     if ((local10 != 255)) goto L_A2B5;    // $A27B
     local11 = 0;    // $A27F
 L_A280:
-    if (!(test_unit_type_present_flag(cur_combat_side, local11))) goto L_A2AC;    // $A288
+    if (!(is_unit_present(cur_combat_side, local11))) goto L_A2AC;    // $A288
     *(byte*)((((*(byte*)(unit_row_ptr(cur_combat_side, local11)) * 11) + *(byte*)(unit_col_ptr(cur_combat_side, local11))) + &dist_grid)) = -128;    // $A2AB
 L_A2AC:
     local11 = (local11 + 1);    // $A2AE
@@ -2705,7 +2705,7 @@ word ai_advance_units_into_free_adjacent_cells(void) {
         enemy_side = (cur_combat_side ^ 1);    // $A683
         local11 = 0;    // $A685
         do {    // $A686
-            if (test_unit_type_present_flag(enemy_side, local11)) {    // $A686
+            if (is_unit_present(enemy_side, local11)) {    // $A686
                 if (free_cell_found) {    // $A68F
                     if (!(local11)) {    // $A693
                         if (ai_step_unit_toward_target(*(byte*)(unit_col_ptr(enemy_side, 0)), *(byte*)(unit_row_ptr(enemy_side, 0)))) {    // $A697
@@ -2755,7 +2755,7 @@ word ai_rng_resolve_combat_apply_casualties(void) {
                                 unit_type = 0;    // $A79B
                                 max_strength = 0;    // $A79C
                                 while (((unsigned)unit_type < (unsigned)5)) {    // $A7C4
-                                    if (test_unit_type_present_flag(enemy_side, unit_type)) {    // $A7A0
+                                    if (is_unit_present(enemy_side, unit_type)) {    // $A7A0
                                         if ((max_strength < *(word*)(unit_strength_ptr(enemy_side, unit_type)))) {    // $A7A9
                                             strongest_unit_type = unit_type;    // $A7B8
                                             max_strength = *(word*)(unit_strength_ptr(enemy_side, unit_type));    // $A7C0
@@ -2784,7 +2784,7 @@ word ai_test_own_double_ge_enemy_total_strength(void) {
     enemy_strength_total = 0;    // $A80F
     while (((unsigned)i < (unsigned)6)) {    // $A83A
         if ((*(byte*)(target_ptr) < 5)) {    // $A813
-            if (test_unit_type_present_flag(enemy_side, *(byte*)(target_ptr))) {    // $A81A
+            if (is_unit_present(enemy_side, *(byte*)(target_ptr))) {    // $A81A
                 enemy_strength_total = (enemy_strength_total + *(word*)(unit_strength_ptr(enemy_side, *(byte*)(target_ptr))));    // $A831
             }
         }
@@ -2967,7 +2967,7 @@ word combat_command_select_target_resolve_attack(void) {
             if (prompt_province_selection(1, 5)) {    // $AA38
                 target_idx = (target_idx - 1);    // $AA4B
                 enemy_side = (cur_combat_side ^ 1);    // $AA52
-                if (!(test_unit_type_present_flag((cur_combat_side ^ 1), (target_idx - 1)))) {    // $AA49
+                if (!(is_unit_present((cur_combat_side ^ 1), (target_idx - 1)))) {    // $AA49
                     phi_aa5e_0 = mem_B1C2;    // $AA5B
                     message_display(phi_aa5e_0);    // $AA5E
                 } else {
@@ -3063,11 +3063,11 @@ word prompt_hit_any_key_and_redraw_combat_screen(void) {
 // (body @ $AB93)
 
 word check_commander_alive_both_sides(void) {
-    if (!(test_unit_type_present_flag(0, 0))) {    // $AB93
+    if (!(is_unit_present(0, 0))) {    // $AB93
         battle_winner_province_sel = selected_province_idx;    // $AB9F
         return 5;    // $ABA3
     } else {
-        if (!(test_unit_type_present_flag(1, 0))) {    // $ABA4
+        if (!(is_unit_present(1, 0))) {    // $ABA4
             battle_winner_province_sel = battle_defending_province;    // $ABB0
             return 5;    // $ABB4
         } else {
@@ -3085,7 +3085,7 @@ word ai_run_all_units_combat_actions(word battle_phase) {
     battle_over_flag = 0;    // $ABC1
     while (1) {    // $AC72
         if (((unsigned)cur_combat_unit_slot < (unsigned)5)) {    // $AC72
-            if (test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot)) {    // $ABC5
+            if (is_unit_present(cur_combat_side, cur_combat_unit_slot)) {    // $ABC5
                 combat_unit_window_refresh();    // $ABD2
                 if (is_no_province_selected()) {    // $ABD2
                     if (!(get_province_ai_state(get_battle_side_province(cur_combat_side)))) {    // $ABDB
@@ -3141,7 +3141,7 @@ word combat_command_dispatch_loop_per_unit(void) {
     battle_over = 0;    // $AC88
     while (1) {    // $AD2E
         if (((unsigned)cur_combat_unit_slot < (unsigned)5)) {    // $AD2E
-            if (test_unit_type_present_flag(cur_combat_side, cur_combat_unit_slot)) {    // $AC8C
+            if (is_unit_present(cur_combat_side, cur_combat_unit_slot)) {    // $AC8C
                 do {    // $AC99
                     if ((combat_unit_window_mode_flag != 1)) {    // $AC99
                         clear_rect_left_upper();    // $ACA1
@@ -3216,8 +3216,8 @@ word halve_defender_province_stat_for_exposed_units(void) {
     local10 = ((battle_defending_province * 26) + 0x7013);    // $AD95
     local11 = 0;    // $AD97
     while (1) {    // $AD98
-        if (test_unit_type_present_flag(0, local11)) {    // $AD98
-            if (!(test_map_cell_bits(*(byte*)(unit_col_ptr(0, local11)), *(byte*)(unit_row_ptr(0, local11)), 32))) {    // $ADA1
+        if (is_unit_present(0, local11)) {    // $AD98
+            if (!(is_cell_clear_of_bits(*(byte*)(unit_col_ptr(0, local11)), *(byte*)(unit_row_ptr(0, local11)), 32))) {    // $ADA1
                 *(word*)(local10) = (*(word*)(local10) / 2);    // $ADC0
                 display_morale_falling_message();    // $ADC1
             } else {

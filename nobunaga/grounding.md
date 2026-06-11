@@ -137,6 +137,24 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 2 full-verify batch #1 — 7 depth-0 leaves (24/131)   [2026-06-10]
+First batch under the **full-verification** bar (`bank-ground-order.py 2 --todo`, leaves-first). 7 highest-fanout
+depth-0 predicates/accessors — 5 names confirmed, 2 refined, **3 comments REFUTED**, 1 var corrected:
+- `$838F` `get_battle_side_province` ✅ — side 0=attacker(selected_province_idx), !=0=defender(battle_defending). 25 callers.
+- `$82FF` `is_no_province_selected` ✅ — selected_province_idx==50 sentinel (valid fiefs 0-49).
+- `$8F11` `is_tile_in_bounds` ✅ — col<=10 & row<=4 (the tactical grid is 11x5).
+- `$83A2` `calc_tactical_cell_coords` ✅ — in-place (col,row)->screen; *col scrolls by phase*3. **Found a mis-keyed
+  DUPLICATE `0x83A2` (province_window_redraw_ba6f = a BANK-1 $BA6F label) — log for bank 1.**
+- `$8F79` `test_unit_type_present_flag` → **`is_unit_present(side,slot)`** — bytecode-verified it indexes $6F65
+  (LOADL 12,+$6F65,BYTE_DEREF,>>arg2,&1), **REFUTING the $6F65 var note's "indexes $6DA2" claim**. $6F65[side] is a
+  PACKED byte: bits 0-4 = unit presence, bit 7 = war state. Amended the $6F65 comment.
+- `$82DB` `test_map_cell_bits` → **`is_cell_clear_of_bits`** — old comment had the polarity backwards on BOTH counts
+  (returns 1 = off-map OR no masked bits; 0 = bit set). REFUTED.
+- `$960E` `is_cell_valid_for_phase` ✅ name, **comment REFUTED** — real per-phase windows p0:0-4, p1:3-7, p2:6-10
+  (5-cell window, +3/phase); cross-confirmed by $83A2's phase*3 scroll. Old note dropped the low bound + flipped phase2.
+**Lesson reinforced:** even `[HIGH CONFIRMED]` leaves had wrong comments — full-verify is earning its keep. Next:
+`bank-ground-order.py 2 --todo` rows 8-14.
+
 ### ★ BANK 2 GROUNDING COMPLETE ★ — the 3 combat-UI tail suspects   [2026-06-10]
 **Bank 2 (tactical combat engine) is fully grounded: 0 suspects (0 pure `_XXXX`, 0 address-tagged).** The
 final 3, all read from the ROM (not guessed) — pulled actual strings out of `Nobunaga's Ambition (USA).nes`:
