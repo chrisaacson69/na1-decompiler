@@ -192,6 +192,16 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #3 — economy command effects (the Grow formula) (27/131)   [2026-06-10]
+The command-effect layer — 2 renames + the canonical formulas:
+- `$87F0` `effect_grow` ✅ — THE Grow formula: `2*amount*(6-skill)/sqrt(output+amount)`, capped at headroom
+  (header-output); grounds `math32_3arg` and cross-confirms the const_two=skill var.
+- `$82D6` `effect_tax` ✅ — stat ± pct(stat, |delta|); `$81FC` `effect_war_a` ✅ — zeroes the $6193 relations
+  (province + owner pair) on war declaration.
+- `$8094` `view_render_five_stats` → **`draw_market_rates`** (loan/exchange/arms/men rates as %2d.%1d).
+- `$83D5` `province_window_redraw_ba78` → **`draw_province_stat3_or_dashes`** (3-digit sibling of $83A2; $BA78 →
+  str_field_dashes3). `$A274` decline-report, `$B1A6` submenu_prompt: re-grounded. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #2 — command-effect + audio/relations leaves (20/131)   [2026-06-10]
 Clean leaves, 2 stub renames + re-grounded effects:
 - `$87CB` `helper_87CB` → **`show_not_home_fief`** (message_display wrapper).

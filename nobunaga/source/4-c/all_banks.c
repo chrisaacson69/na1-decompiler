@@ -114,7 +114,7 @@
 //   PRG $02778  bank0  $A778  vm_bootstrap
 //   PRG $04003  bank1  $8003  prompt_message_and_redraw
 //   PRG $0404C  bank1  $804C  province_select_prompt
-//   PRG $04094  bank1  $8094  view_render_five_stats
+//   PRG $04094  bank1  $8094  draw_market_rates
 //   PRG $0412F  bank1  $812F  target_eligible_by_cmd
 //   PRG $04172  bank1  $8172  count_eligible_targets
 //   PRG $041FC  bank1  $81FC  effect_war_a
@@ -128,7 +128,7 @@
 //   PRG $04379  bank1  $8379  apply_two_grows_const1_override
 //   PRG $043A2  bank1  $83A2  draw_province_stat_or_dashes
 //   PRG $043C7  bank1  $83C7  helper_83C7
-//   PRG $043D5  bank1  $83D5  province_window_redraw_ba78
+//   PRG $043D5  bank1  $83D5  draw_province_stat3_or_dashes
 //   PRG $043FA  bank1  $83FA  effect_view_a
 //   PRG $0459A  bank1  $859A  effect_view_defending_province
 //   PRG $045A7  bank1  $85A7  effect_view_c
@@ -3277,10 +3277,10 @@ word province_select_prompt(word eligible_fief_list) {
 }
 
 // ===== bank1 $8094  (PRG $04094) =====
-// PRG $04094 view_render_five_stats
+// PRG $04094 draw_market_rates
 // (body @ PRG $04099)
 
-word view_render_five_stats(void) {
+word draw_market_rates(void) {
     set_cursor(20, 20);    // PRG $0409D -> bank15 $CC7B
     redraw_window(msg_market);    // PRG $040A4 -> bank15 $CEC4
     set_cursor(20, 21);    // PRG $040AC -> bank15 $CC7B
@@ -3525,14 +3525,14 @@ word helper_83C7(word arg1) {
 }
 
 // ===== bank1 $83D5  (PRG $043D5) =====
-// PRG $043D5 province_window_redraw_ba78
+// PRG $043D5 draw_province_stat3_or_dashes
 // (body @ PRG $043DA)
 
-word province_window_redraw_ba78(word arg1, word arg2) {
+word draw_province_stat3_or_dashes(word arg1, word arg2) {
     if ((province_ai_state[arg1] != 255)) {    // PRG $043DA
         phi_ret_83f9 = draw_message(msg_fmt__3d_ba74, arg2);    // PRG $043EF -> bank15 $D134
     } else {
-        phi_ret_83f9 = redraw_window(province_window_redraw_data_ba78);    // PRG $043F5 -> bank15 $CEC4
+        phi_ret_83f9 = redraw_window(str_field_dashes3);    // PRG $043F5 -> bank15 $CEC4
     }
     return phi_ret_83f9;    // PRG $043F9
 }
@@ -3605,7 +3605,7 @@ word effect_view_a(word arg1) {
         if (((unsigned)local11 < (unsigned)6)) {    // PRG $04522
             ui_window_col = 6;    // PRG $04539
             local10 = (local10 + 1);    // PRG $0453E
-            province_window_redraw_ba78(arg1, *(byte*)(((local10 + 1) - 1)));    // PRG $04543 -> bank1 $83D5
+            draw_province_stat3_or_dashes(arg1, *(byte*)(((local10 + 1) - 1)));    // PRG $04543 -> bank1 $83D5
         } else {
             ui_window_col = 16;    // PRG $0454C
             local9 = (local9 + 2);    // PRG $04551
@@ -3622,7 +3622,7 @@ word effect_view_a(word arg1) {
         }
     }
     fief_info_display(0);    // PRG $0458D -> bank1 $871E
-    view_render_five_stats();    // PRG $04591 -> bank1 $8094
+    draw_market_rates();    // PRG $04591 -> bank1 $8094
     return palette_swap(0);    // PRG $04599 -> bank15 $CC35
 }
 
@@ -6828,7 +6828,7 @@ word issue_province_command(word fief) {
                     if (((unsigned)i < (unsigned)6)) {    // PRG $07839
                         set_cursor(6, (i + 13));    // PRG $07843 -> bank15 $CC7B
                         daimyo_byte_ptr = (daimyo_byte_ptr + 1);    // PRG $07849
-                        province_window_redraw_ba78(fief, *(byte*)(((daimyo_byte_ptr + 1) - 1)));    // PRG $0784E -> bank1 $83D5
+                        draw_province_stat3_or_dashes(fief, *(byte*)(((daimyo_byte_ptr + 1) - 1)));    // PRG $0784E -> bank1 $83D5
                     } else {
                         set_cursor(16, (i + 1));    // PRG $0785A -> bank15 $CC7B
                         fief_word_ptr = (fief_word_ptr + 2);    // PRG $07860
@@ -6888,7 +6888,7 @@ L_p0790E:
     set_cursor(2, 26);    // PRG $0791F -> bank15 $CC7B
     draw_message(msg_turn_2d_fief_2d, (turn_idx + 1), (fief_idx + 1));    // PRG $0792C -> bank15 $D134
     if (ui_state_flag_7bf9) goto L_p07939;    // PRG $07933
-    view_render_five_stats();    // PRG $07936 -> bank1 $8094
+    draw_market_rates();    // PRG $07936 -> bank1 $8094
 L_p07939:
     if (rest_turns_remaining[fief_owner(fief_idx)]) goto L_p0797D;    // PRG $07943 -> bank15 $D772
     switch (province_ai_state[fief_idx]) {    // PRG $0794C

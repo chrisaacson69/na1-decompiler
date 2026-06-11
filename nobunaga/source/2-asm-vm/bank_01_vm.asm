@@ -558,7 +558,7 @@ VM bytecode disassembly
   $83E8  8E 74 BA                   PUSH_imm2              $BA74 (msg_fmt__3d_ba74)
   $83EB  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $83EF  D6 F9 83                   JUMP_abs               $83F9
- >$83F2  8E 78 BA                   PUSH_imm2              $BA78 (province_window_redraw_data_ba78)
+ >$83F2  8E 78 BA                   PUSH_imm2              $BA78 (str_field_dashes3)
   $83F5  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
  >$83F9  CF                         RETURN
 
@@ -735,7 +735,7 @@ VM bytecode disassembly
   $8540  D3                         BYTE_DEREF
   $8541  B3                         PUSHL
   $8542  3C                         PUSH_quick   ; inline operand = 12
-  $8543  E9 D5 83 04                CALL_abs_imm1          $83D5 (province_window_redraw_ba78) {bytecode}, $04
+  $8543  E9 D5 83 04                CALL_abs_imm1          $83D5 (draw_province_stat3_or_dashes) {bytecode}, $04
   $8547  D6 5B 85                   JUMP_abs               $855B
  >$854A  89 10                      BYTE_LOADL_imm1        +16
   $854C  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
@@ -772,7 +772,7 @@ VM bytecode disassembly
   $8588  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
  >$858C  60                         PUSH_qimm   ; inline operand = 0
   $858D  E9 1E 87 02                CALL_abs_imm1          $871E (fief_info_display) {bytecode}, $02
-  $8591  AC 94 80                   CALL_abs               $8094 (view_render_five_stats) {bytecode}
+  $8591  AC 94 80                   CALL_abs               $8094 (draw_market_rates) {bytecode}
   $8594  60                         PUSH_qimm   ; inline operand = 0
   $8595  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $8599  CF                         RETURN
@@ -8117,7 +8117,7 @@ VM bytecode disassembly
   $B84B  D3                         BYTE_DEREF
   $B84C  B3                         PUSHL
   $B84D  3C                         PUSH_quick   ; inline operand = 12
-  $B84E  E9 D5 83 04                CALL_abs_imm1          $83D5 (province_window_redraw_ba78) {bytecode}, $04
+  $B84E  E9 D5 83 04                CALL_abs_imm1          $83D5 (draw_province_stat3_or_dashes) {bytecode}, $04
   $B852  D6 6A B8                   JUMP_abs               $B86A
  >$B855  0B                         LOADL_quick   ; inline operand = 11
   $B856  D0                         INC
@@ -8238,7 +8238,7 @@ VM bytecode disassembly
   $B92C  E9 34 D1 06                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $06
   $B930  A4 F9 7B                   LOADL_abs              $7BF9 (ui_state_flag_7bf9)
   $B933  D7 39 B9                   JUMPT_abs              $B939
-  $B936  AC 94 80                   CALL_abs               $8094 (view_render_five_stats) {bytecode}
+  $B936  AC 94 80                   CALL_abs               $8094 (draw_market_rates) {bytecode}
  >$B939  3A                         PUSH_quick   ; inline operand = 10
   $B93A  E9 72 D7 02                CALL_abs_imm1          $D772 (fief_owner) {bytecode}, $02
   $B93E  8C 67 6D                   LOADR_imm2             $6D67 (rest_turns_remaining)

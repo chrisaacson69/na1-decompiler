@@ -54,10 +54,10 @@ word province_select_prompt(word eligible_fief_list) {
     return 0;    // $806E
 }
 
-// $8094 view_render_five_stats
+// $8094 draw_market_rates
 // (body @ $8099)
 
-word view_render_five_stats(void) {
+word draw_market_rates(void) {
     set_cursor(20, 20);    // $809D
     redraw_window(msg_market);    // $80A4
     set_cursor(20, 21);    // $80AC
@@ -288,14 +288,14 @@ word helper_83C7(word arg1) {
     return draw_province_stat_or_dashes(selected_province_idx, arg1);    // $83D4
 }
 
-// $83D5 province_window_redraw_ba78
+// $83D5 draw_province_stat3_or_dashes
 // (body @ $83DA)
 
-word province_window_redraw_ba78(word arg1, word arg2) {
+word draw_province_stat3_or_dashes(word arg1, word arg2) {
     if ((province_ai_state[arg1] != 255)) {    // $83DA
         phi_ret_83f9 = draw_message(msg_fmt__3d_ba74, arg2);    // $83EF
     } else {
-        phi_ret_83f9 = redraw_window(province_window_redraw_data_ba78);    // $83F5
+        phi_ret_83f9 = redraw_window(str_field_dashes3);    // $83F5
     }
     return phi_ret_83f9;    // $83F9
 }
@@ -367,7 +367,7 @@ word effect_view_a(word arg1) {
         if (((unsigned)local11 < (unsigned)6)) {    // $8522
             ui_window_col = 6;    // $8539
             local10 = (local10 + 1);    // $853E
-            province_window_redraw_ba78(arg1, *(byte*)(((local10 + 1) - 1)));    // $8543
+            draw_province_stat3_or_dashes(arg1, *(byte*)(((local10 + 1) - 1)));    // $8543
         } else {
             ui_window_col = 16;    // $854C
             local9 = (local9 + 2);    // $8551
@@ -384,7 +384,7 @@ word effect_view_a(word arg1) {
         }
     }
     fief_info_display(0);    // $858D
-    view_render_five_stats();    // $8591
+    draw_market_rates();    // $8591
     return palette_swap(0);    // $8599
 }
 
@@ -3479,7 +3479,7 @@ word issue_province_command(word fief) {
                     if (((unsigned)i < (unsigned)6)) {    // $B839
                         set_cursor(6, (i + 13));    // $B843
                         daimyo_byte_ptr = (daimyo_byte_ptr + 1);    // $B849
-                        province_window_redraw_ba78(fief, *(byte*)(((daimyo_byte_ptr + 1) - 1)));    // $B84E
+                        draw_province_stat3_or_dashes(fief, *(byte*)(((daimyo_byte_ptr + 1) - 1)));    // $B84E
                     } else {
                         set_cursor(16, (i + 1));    // $B85A
                         fief_word_ptr = (fief_word_ptr + 2);    // $B860
@@ -3537,7 +3537,7 @@ L_B90E:
     set_cursor(2, 26);    // $B91F
     draw_message(msg_turn_2d_fief_2d, (turn_idx + 1), (fief_idx + 1));    // $B92C
     if (ui_state_flag_7bf9) goto L_B939;    // $B933
-    view_render_five_stats();    // $B936
+    draw_market_rates();    // $B936
 L_B939:
     if (rest_turns_remaining[fief_owner(fief_idx)]) goto L_B97D;    // $B943
     switch (province_ai_state[fief_idx]) {    // $B94C
