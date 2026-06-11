@@ -159,7 +159,7 @@
 //   PRG $04DFD  bank1  $8DFD  resolve_siege_assault_outcome
 //   PRG $05009  bank1  $9009  ai_attack_announce_prompt
 //   PRG $05046  bank1  $9046  ai_commit_attack_deduct_resources
-//   PRG $05181  bank1  $9181  ca12_with_const1_wrapper
+//   PRG $05181  bank1  $9181  decrement_byte_at
 //   PRG $0518D  bank1  $918D  ninja_mission_resolve_vs_defender
 //   PRG $05301  bank1  $9301  war_prep_clamp_depleted_field_notify
 //   PRG $05323  bank1  $9323  effect_war_combat_prep_a
@@ -193,7 +193,7 @@
 //   PRG $06068  bank1  $A068  subhandler_A068
 //   PRG $060ED  bank1  $A0ED  effect_subhandler_A113
 //   PRG $06113  bank1  $A113  subhandler_A113
-//   PRG $061AF  bank1  $A1AF  subhandler_A1AF
+//   PRG $061AF  bank1  $A1AF  noop_command_handler
 //   PRG $061B6  bank1  $A1B6  driver_trade
 //   PRG $06255  bank1  $A255  hire_stat_drain_rng
 //   PRG $06274  bank1  $A274  report_fief_stat_decline
@@ -4338,10 +4338,10 @@ word ai_commit_attack_deduct_resources(void) {
 }
 
 // ===== bank1 $9181  (PRG $05181) =====
-// PRG $05181 ca12_with_const1_wrapper
+// PRG $05181 decrement_byte_at
 // (body @ PRG $05186)
 
-word ca12_with_const1_wrapper(word arg1) {
+word decrement_byte_at(word arg1) {
     return deduct_byte_at(arg1, 1);    // PRG $0518C -> bank15 $CA12
 }
 
@@ -4366,7 +4366,7 @@ word ninja_mission_resolve_vs_defender(word arg1) {
                 local11 = ((selected_province_idx * 26) + 0x7011);    // PRG $05208
                 local7 = (local4 + 2);    // PRG $0520B
                 local9 = 1;    // PRG $0520D
-                ca12_with_const1_wrapper(local5);    // PRG $0520F -> bank1 $9181
+                decrement_byte_at(local5);    // PRG $0520F -> bank1 $9181
             }
             local8 = 1;    // PRG $05214
             if ((*(word*)(local11) <= (rng_mod(10) + 1))) {    // PRG $05213 -> bank15 $CA52
@@ -4411,18 +4411,18 @@ word ninja_mission_resolve_vs_defender(word arg1) {
                         }
                     }
                 } else {
-                    ca12_with_const1_wrapper(local5);    // PRG $052E4 -> bank1 $9181
+                    decrement_byte_at(local5);    // PRG $052E4 -> bank1 $9181
                     redraw_window(msg_your_ninja_failed);    // PRG $052EB -> bank15 $CEC4
                     confirm_prompt();    // PRG $052EF -> bank15 $D766
                 }
             }
         } else {
-            ca12_with_const1_wrapper(local5);    // PRG $052E4 -> bank1 $9181
+            decrement_byte_at(local5);    // PRG $052E4 -> bank1 $9181
             redraw_window(msg_your_ninja_failed);    // PRG $052EB -> bank15 $CEC4
             confirm_prompt();    // PRG $052EF -> bank15 $D766
         }
     } else {
-        ca12_with_const1_wrapper(local5);    // PRG $052E4 -> bank1 $9181
+        decrement_byte_at(local5);    // PRG $052E4 -> bank1 $9181
         redraw_window(msg_your_ninja_failed);    // PRG $052EB -> bank15 $CEC4
         confirm_prompt();    // PRG $052EF -> bank15 $D766
     }
@@ -5340,10 +5340,10 @@ word subhandler_A113(word arg1) {
 }
 
 // ===== bank1 $A1AF  (PRG $061AF) =====
-// PRG $061AF subhandler_A1AF
+// PRG $061AF noop_command_handler
 // (body @ PRG $061B4)
 
-word subhandler_A1AF(void) {
+word noop_command_handler(void) {
     return 0;    // PRG $061B5
 }
 

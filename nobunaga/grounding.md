@@ -198,6 +198,14 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #4 — hire/train/war-prep effects (34/131)   [2026-06-10]
+Clean batch (no decompiler bugs). 2 stub renames:
+- `$9181` `ca12_with_const1_wrapper` → **`decrement_byte_at`** (deduct_byte_at(arg1,1)).
+- `$A1AF` `subhandler_A1AF` → **`noop_command_handler`** (returns 0; disabled command slots 26/33).
+- `$8BF4` `apply_hire_unit_stats` ✅ (blends recruits' morale/skill/arms via scaled_force_transfer, +arg2 men),
+  `$9586` `effect_train` ✅ (province skill += rng*4, +10 daimyo IQ+LUCK bonus), `$9368` war-prep weakness gate,
+  `$9382` `fief_men_if_provisioned` ✅ (men only if rice; confirms $7001 +6/+16), `$9009` AI-attack announce. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #3 — economy command effects (the Grow formula) (27/131)   [2026-06-10]
 The command-effect layer — 2 renames + the canonical formulas:
 - `$87F0` `effect_grow` ✅ — THE Grow formula: `2*amount*(6-skill)/sqrt(output+amount)`, capped at headroom

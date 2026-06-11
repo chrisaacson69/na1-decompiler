@@ -2737,7 +2737,7 @@ VM bytecode disassembly
   $920C  41                         LOADL_qimm   ; inline operand = 1
   $920D  29                         STORE_quick   ; inline operand = 9
   $920E  35                         PUSH_quick   ; inline operand = 5
-  $920F  E9 81 91 02                CALL_abs_imm1          $9181 (ca12_with_const1_wrapper) {bytecode}, $02
+  $920F  E9 81 91 02                CALL_abs_imm1          $9181 (decrement_byte_at) {bytecode}, $02
  >$9213  41                         LOADL_qimm   ; inline operand = 1
   $9214  28                         STORE_quick   ; inline operand = 8
   $9215  6A                         PUSH_qimm   ; inline operand = 10
@@ -2852,7 +2852,7 @@ VM bytecode disassembly
   $92DC  E9 54 E4 02                CALL_abs_imm1          $E454 (neutralize_fief) {bytecode}, $02
   $92E0  D6 F2 92                   JUMP_abs               $92F2
  >$92E3  35                         PUSH_quick   ; inline operand = 5
-  $92E4  E9 81 91 02                CALL_abs_imm1          $9181 (ca12_with_const1_wrapper) {bytecode}, $02
+  $92E4  E9 81 91 02                CALL_abs_imm1          $9181 (decrement_byte_at) {bytecode}, $02
   $92E8  8E B2 BB                   PUSH_imm2              $BBB2 (msg_your_ninja_failed)
   $92EB  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $92EF  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}

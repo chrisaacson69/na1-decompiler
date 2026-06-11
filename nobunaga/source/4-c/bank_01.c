@@ -1070,10 +1070,10 @@ word ai_commit_attack_deduct_resources(void) {
     }
 }
 
-// $9181 ca12_with_const1_wrapper
+// $9181 decrement_byte_at
 // (body @ $9186)
 
-word ca12_with_const1_wrapper(word arg1) {
+word decrement_byte_at(word arg1) {
     return deduct_byte_at(arg1, 1);    // $918C
 }
 
@@ -1097,7 +1097,7 @@ word ninja_mission_resolve_vs_defender(word arg1) {
                 local11 = ((selected_province_idx * 26) + 0x7011);    // $9208
                 local7 = (local4 + 2);    // $920B
                 local9 = 1;    // $920D
-                ca12_with_const1_wrapper(local5);    // $920F
+                decrement_byte_at(local5);    // $920F
             }
             local8 = 1;    // $9214
             if ((*(word*)(local11) <= (rng_mod(10) + 1))) {    // $9213
@@ -1142,18 +1142,18 @@ word ninja_mission_resolve_vs_defender(word arg1) {
                         }
                     }
                 } else {
-                    ca12_with_const1_wrapper(local5);    // $92E4
+                    decrement_byte_at(local5);    // $92E4
                     redraw_window(msg_your_ninja_failed);    // $92EB
                     confirm_prompt();    // $92EF
                 }
             }
         } else {
-            ca12_with_const1_wrapper(local5);    // $92E4
+            decrement_byte_at(local5);    // $92E4
             redraw_window(msg_your_ninja_failed);    // $92EB
             confirm_prompt();    // $92EF
         }
     } else {
-        ca12_with_const1_wrapper(local5);    // $92E4
+        decrement_byte_at(local5);    // $92E4
         redraw_window(msg_your_ninja_failed);    // $92EB
         confirm_prompt();    // $92EF
     }
@@ -2038,10 +2038,10 @@ word subhandler_A113(word arg1) {
     }
 }
 
-// $A1AF subhandler_A1AF
+// $A1AF noop_command_handler
 // (body @ $A1B4)
 
-word subhandler_A1AF(void) {
+word noop_command_handler(void) {
     return 0;    // $A1B5
 }
 
