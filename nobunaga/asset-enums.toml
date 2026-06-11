@@ -37,10 +37,10 @@ call_bank10_entry = { 0 = "audio_cue" }
 24 = "CUTSCENE_BUILD"
 25 = "CUTSCENE_AI_EVENT_25"           # [P] ai_event_build_two_batches
 26 = "CUTSCENE_BRIBE"
-27 = "CUTSCENE_NINJA_UPRISING"        # [P] effect_ninja_sabotage (uprising vs arson order)
-28 = "CUTSCENE_NINJA_REVOLT"          # near 'enemy morale is falling'
-29 = "CUTSCENE_NINJA_ARSON"           # [P]
-30 = "CUTSCENE_NINJA_DAMS"            # drains the dams field
+27 = "CUTSCENE_NINJA_REVOLT"          # CONFIRMED: mission 2 Revolt (drains morale), per the switch case order
+28 = "CUTSCENE_NINJA_UPRISING"        # CONFIRMED: mission 1 Uprising (drains loyalty+wealth)
+29 = "CUTSCENE_NINJA_ARSON"           # CONFIRMED: mission 5 Arson (drains town)
+30 = "CUTSCENE_NINJA_DAMS"            # CONFIRMED: mission 3 Dams (drains dams+rice)
 31 = "CUTSCENE_RAVAGE"                # random_event_ravage_output
 32 = "CUTSCENE_REST"
 33 = "CUTSCENE_HIRE"

@@ -5468,7 +5468,7 @@ word effect_ninja_sabotage(word arg1) {
                                             return 1;    // PRG $063BE
                                         }
                                     }
-                                    trigger_cutscene(CUTSCENE_NINJA_REVOLT);    // PRG $063C1 -> bank15 $E80C
+                                    trigger_cutscene(CUTSCENE_NINJA_UPRISING);    // PRG $063C1 -> bank15 $E80C
                                     drain_amount = hire_stat_drain_rng(arg1->loyalty, unit_count);    // PRG $063CE -> bank1 $A255
                                     drain_amount = ((arg1->loyalty >= drain_amount) ? drain_amount : arg1->loyalty);    // PRG $063DE
                                     if (drain_amount) {    // PRG $063DE
@@ -5499,7 +5499,7 @@ word effect_ninja_sabotage(word arg1) {
                                     drain_amount = hire_stat_drain_rng(arg1->morale, unit_count);    // PRG $06464 -> bank1 $A255
                                     drain_amount = ((arg1->morale >= drain_amount) ? drain_amount : arg1->morale);    // PRG $06476
                                     if (drain_amount) {    // PRG $06476
-                                        trigger_cutscene(CUTSCENE_NINJA_UPRISING);    // PRG $06485 -> bank15 $E80C
+                                        trigger_cutscene(CUTSCENE_NINJA_REVOLT);    // PRG $06485 -> bank15 $E80C
                                         arg1->morale = (arg1->morale - drain_amount);    // PRG $06491
                                         phi_a419_0 = 15;    // PRG $06494
                                         phi_a419_1 = drain_amount;    // PRG $06494

@@ -2161,7 +2161,7 @@ word effect_ninja_sabotage(word arg1) {
                                             return 1;    // $A3BE
                                         }
                                     }
-                                    trigger_cutscene(CUTSCENE_NINJA_REVOLT);    // $A3C1
+                                    trigger_cutscene(CUTSCENE_NINJA_UPRISING);    // $A3C1
                                     drain_amount = hire_stat_drain_rng(arg1->loyalty, unit_count);    // $A3CE
                                     drain_amount = ((arg1->loyalty >= drain_amount) ? drain_amount : arg1->loyalty);    // $A3DE
                                     if (drain_amount) {    // $A3DE
@@ -2192,7 +2192,7 @@ word effect_ninja_sabotage(word arg1) {
                                     drain_amount = hire_stat_drain_rng(arg1->morale, unit_count);    // $A464
                                     drain_amount = ((arg1->morale >= drain_amount) ? drain_amount : arg1->morale);    // $A476
                                     if (drain_amount) {    // $A476
-                                        trigger_cutscene(CUTSCENE_NINJA_UPRISING);    // $A485
+                                        trigger_cutscene(CUTSCENE_NINJA_REVOLT);    // $A485
                                         arg1->morale = (arg1->morale - drain_amount);    // $A491
                                         phi_a419_0 = 15;    // $A494
                                         phi_a419_1 = drain_amount;    // $A494
