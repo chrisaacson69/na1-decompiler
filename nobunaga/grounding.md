@@ -198,6 +198,15 @@ call_bank_wrap(14);} return 0;` — grounding of its NAME still pending (a condi
 
 ## Ledger (append-only, newest first)
 
+### Bank 1 full-verify batch #6 — the develop/move command family (48/131)   [2026-06-10]
+All confirmed (well-named); re-grounded with the formulas + a quirk:
+- `$891D/$896F/$89C1` `develop_loyalty/wealth/morale` ✅ — all the Grow shape `math32_3arg(amount, 6-skill,
+  sqrt((field+sibling)/2 + amount))` capped at headroom. **Quirk: morale adds `gain`, loyalty/wealth add `gain<<1`**
+  — morale develops half as fast.
+- `$8CA5` `effect_move` ✅ — moves men donor→target ($7011/+16), blending morale/skill/arms via scaled_force_transfer.
+- `$8A15` `effect_trade` ✅ (port fiefs 13/14 or 30/32 always; else ai_turn_flags bit0), `$8BC1` bribe value,
+  `$8C68` random_daimyo_stat_increment (1/10, +2 capped 200), confirm const_two=skill + the $7001 struct fields. Next: rows 1-7.
+
 ### Bank 1 full-verify batch #5 — targeting/view/rate leaves (41/131)   [2026-06-10]
 2 renames (drop address suffixes) + a nice difficulty quirk:
 - `$8379` `apply_two_grows_const1_override` ✅ — forces const_two(skill)=1 to make a grow DIFFICULTY-INDEPENDENT
