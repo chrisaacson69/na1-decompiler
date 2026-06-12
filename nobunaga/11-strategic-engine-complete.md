@@ -56,9 +56,9 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 **Rest** (`driver_rest $ADB3`) — **capital-gated** (must be home, else *"…not your home fief"*). *"Seasons"* (`number_input` 1–10) → `rest_turns_remaining[owner]` → *"It will do you good"*. The lord sits out that many turns to recover; the driver only *sets the counter* — the actual recuperation (health) is applied downstream in the per-turn tick. Cost = pure tempo (multiple action-slots).
 
-**Grant** (`$AF6B`) — set a province's policy "state". *"Which fief"* → *"What are your orders?"* → a submenu (`$B1A6`); *"It's currently a %s state, OK to make it a %s state"*, confirmed with *"Lord, you are truly wise!"*. Already-set states are rejected (*"It's already a %s state"*).
+**Grant** (`driver_grant $AF66`) — **capital-gated**; delegate a fief to an AI governance policy. *"What are your orders?"* → pick a state, written to `province_ai_state[fief]` (*"Lord, you are truly wise!"*). The driver is trivial; the meaning is in the **turn engine** (`ai_per_fief_command_driver $B89B`), which switches on the policy each turn to choose that fief's auto-action: **0 Home** = general AI economy (the default — every conquered/AI fief; *not* manual); **1 Industrial** = develop town; **2 Military** = *launch a war first*, then recruit/arm/train; **3 Balanced** = general econ dispatch; **4 Farming** = Dam + Grow; **5 Direct** = *you run it by hand* (your capital starts here). Per the SRAM census the AI itself only ever uses 0 — so states 1–4 are a **player automation lever**: set rear fiefs to self-develop and a frontier fief to **Military** to wage war for you. Delegated fiefs even auto-set their tax (≈35–64%).
 
-**Other** (`$B243`) — the settings/save menu. *"Change which?"* + the `$B1A6` submenu.
+**Other** (`driver_other $B23E`) — the settings/save menu (7 items via `jumptab_b9e8`). The five settings and the state they write: **Sound** (`audio_wait_gate`), **Animation** (bit 2 of `ai_turn_flags` — gates every command animation), **Wait** (text speed, `delay_loop_count = 2·n²`), **Save** (`sram_save_pending_flag`, saves at season end), **Battle** (`ui_confirm_flag_6e7d` — whether AI-vs-AI battles are shown). *End* (index 5) is the only option that ends the turn.
 
 **Pass** (`$B2A6`) — five instructions. Show one message, end the turn.
 
@@ -84,8 +84,8 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 | 16 | Assign | military | 30 gold; needs men | (5-row editor) | arms-allocation editor (redistribute unit types) |
 | 17 | Rest | misc | from capital | #seasons (1–10) | lord sits out N turns to recover |
 | 18 | Map | information | — | — | show the strategic map |
-| 19 | Grant | administration | — | which fief, policy | set a province's policy "state" |
-| 20 | Other | misc | — | submenu | settings / save |
+| 19 | Grant | administration | from capital | which fief, policy | delegate a fief to an AI policy (auto-develop / auto-war) |
+| 20 | Other | misc | — | submenu | settings (sound/anim/speed/battle) + Save |
 | 21 | Pass | misc | — | — | end the turn |
 
 ## Reviewing the mechanics

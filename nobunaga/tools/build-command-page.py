@@ -984,9 +984,12 @@ COMMANDS = {
       "(<code>$B050</code>); the game confirms <span class=\"scr\">It’s currently a &lt;X&gt; "
       "state. OK to…?</span> (or <span class=\"scr\">It’s already a &lt;X&gt; state.</span>), plays "
       "the animation (<code>ui_helper_e80c(11)</code>), and replies "
-      "<span class=\"scr\">Lord, you are truly wise.</span> State <b>0 = “Home fief”</b> means you keep "
-      "controlling it by hand; the other five hand the wheel to the AI with a focus. The AI’s per-fief "
-      "command driver then issues that province’s commands each turn according to the policy."),
+      "<span class=\"scr\">Lord, you are truly wise.</span> The state is read every turn by the per-fief "
+      "command driver (<code>ai_per_fief_command_driver $B89B</code>), which <code>switch</code>es on it "
+      "to pick that fief’s auto-action. <b>State 5 = “Direct”</b> is the one that means <i>you</i> run it "
+      "by hand (<code>issue_province_command</code> — your own capital starts here); <b>state 0 = "
+      "“Home”</b> is the AI’s general-economy default (every conquered/AI fief sits here); states 1–4 "
+      "delegate to a <i>themed</i> AI loop."),
     "flow": [
       (0xAF73, '<b>Daimyo-present gate</b> (<code>$6DA2</code>).'),
       (0xAFA0, 'Select the fief — <span class="scr">"Which fief?"</span> — then '
@@ -999,23 +1002,28 @@ COMMANDS = {
     ],
     "table_heading": "The six governance policies",
     "table": {
-      "caption": "The menu, read straight from the name table <code>effect_view_a_data_f7d4</code> "
-                 "(<code>$F7D4</code> → strings at <code>$F7E0…</code>). Index = the stored "
-                 "<code>province_ai_state</code> value.",
-      "headers": ["state", "Policy", "What the AI prioritizes"],
+      "caption": "Index = the stored <code>province_ai_state</code> value; the third column is the "
+                 "actual turn-engine handler the driver (<code>$B89B</code>) <code>switch</code>es to "
+                 "for that fief each turn.",
+      "headers": ["state", "Policy", "Turn-engine handler → what the fief auto-does"],
       "rows": [
-        ["0", "Home fief", "you keep direct manual control — not delegated"],
-        ["1", "Industrial", "Build — grow the town / gold-income engine"],
-        ["2", "Military", "Train &amp; Hire — raise soldiers and skill"],
-        ["3", "Balanced", "spread effort across economy and army"],
-        ["4", "Farming", "Grow / Dam — raise agricultural output &amp; rice"],
-        ["5", "Direct", "the most hands-off / aggressive delegated mode"],
+        ["0", "Home", "<code>ai_econ_action_state0 → ai_econ_command_dispatch</code> — the general "
+              "RNG-weighted economy loop. The AI default: every conquered/AI fief sits here (it is NOT "
+              "manual control)."],
+        ["1", "Industrial", "<code>ai_develop_town_handler</code> — develops the <b>town</b> (the gold engine)."],
+        ["2", "Military", "<code>ai_state2_recruit_arm_train</code> — <b>tries to launch a WAR first</b> "
+              "(<code>ai_try_war_attack</code>), then recruits / arms / trains. An autonomous aggressor."],
+        ["3", "Balanced", "<code>ai_econ_command_dispatch</code> — the general economic dispatch."],
+        ["4", "Farming", "<code>ai_develop_dam_and_grow</code> — Dam + Grow (<b>rice / output</b>)."],
+        ["5", "Direct", "<code>issue_province_command</code> — <b>YOU control it by hand</b>. Your own "
+              "capital starts in this state; it is the opposite of hands-off."],
       ],
-      "note": "The same six labels appear in the <b>View</b> screen "
-              "(<code>effect_view_a</code> reads the identical table), which is how you read back a "
-              "delegated fief’s current policy. Delegation is the late-game tempo play: once you hold "
-              "more fiefs than you have action-slots to micromanage, Grant lets the AI run the rear "
-              "provinces on a sensible focus while you spend your four seasons on the frontier.",
+      "note": "Per the SRAM census the AI <i>never</i> uses states 1–4 — every AI fief is 0 (Home) and "
+              "the human capital is 5 (Direct). So states 1–4 are a <b>player automation affordance</b>: "
+              "once you hold more fiefs than your four action-slots can micromanage, Grant hands rear "
+              "fiefs a themed AI loop (Farming a breadbasket, Industrial a gold mint) while you spend "
+              "your seasons on the frontier — and a <b>Military</b>-granted border fief will wage war on "
+              "your behalf. All delegated fiefs also auto-set their own tax (≈35–64%).",
     },
     "callout": (
       "<b>Genuinely a mechanic, not a UI screen.</b> Grant writes <code>province_ai_state</code>, the "
@@ -1074,18 +1082,21 @@ COMMANDS = {
                  "<code>jumptab_b9e8</code> ($B9E8).",
       "headers": ["#", "Option", "What it does"],
       "rows": [
-        ["1", "Sound", "toggle / select background music"],
-        ["2", "Animat(ion)", "turn command &amp; battle animations on or off"],
-        ["3", "Wait", "message / text-advance speed"],
-        ["4", "Save", "write the game to battery-backed SRAM (with checksum)"],
-        ["5", "Battle", "auto- vs. manual battle resolution preference"],
-        ["6", "End", "conclude the turn (the only option that returns true)"],
-        ["7", "Menu", "back out to the command menu"],
+        ["1", "Sound", "sound on/off → <code>audio_wait_gate</code> (off silences via <code>syscall_audio_control</code>)"],
+        ["2", "Animat(ion)", "command &amp; battle animations on/off → <b>bit 2 of</b> <code>ai_turn_flags</code>"],
+        ["3", "Wait", "message/text-advance speed → <code>delay_loop_count = 2·n²</code> (n = 1–10)"],
+        ["4", "Save", "marks <code>sram_save_pending_flag</code> → the game saves at <i>season end</i>"],
+        ["5", "Battle", "watch <i>other daimyo’s</i> battles play out → <code>ui_confirm_flag_6e7d</code> "
+              "(read at <code>$9130</code> to decide whether AI-vs-AI combat is shown)"],
+        ["6", "End", "conclude the turn (index 5 — the only option that returns true)"],
+        ["7", "Menu", "back out to the command menu (index 6)"],
       ],
-      "note": "These are the same preferences the engine reads elsewhere — e.g. the <b>Animat</b> "
-              "toggle is what gates every <code>ui_helper_e80c</code> command animation the other "
-              "pages show, and <b>Save</b> routes through the checksummed SRAM writer "
-              "(<code>syscall_sram_block_with_checksum</code>).",
+      "note": "These are the same preferences the engine reads elsewhere — the <b>Animat</b> bit in "
+              "<code>ai_turn_flags</code> gates every <code>ui_helper_e80c</code> command animation the "
+              "other pages show; <b>Wait</b>’s <code>delay_loop_count</code> times every text box; "
+              "<b>Battle</b>’s <code>ui_confirm_flag_6e7d</code> decides whether you spectate AI wars; "
+              "and <b>Save</b> routes through the checksummed SRAM writer. IDing these is the grounding "
+              "for the code that consumes them.",
     },
     "callout": (
       "<b>A settings command that quietly controls the rest of the game.</b> Nothing here touches a "

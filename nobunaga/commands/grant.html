@@ -88,7 +88,7 @@
 </div>
 
 <h2>What it does</h2>
-<p>Grant (<code>driver_grant $AF66</code>) sets a province’s <b>AI governance policy</b> (<code>province_ai_state</code>). Gated on your daimyo being present, you pick the fief (<span class="scr">Which fief?</span>), the game asks <span class="scr">What are your orders?</span>, and you choose one of six stances from the menu. The chosen value (1–5) is written to <code>province_ai_state[fief]</code> (<code>$B050</code>); the game confirms <span class="scr">It’s currently a &lt;X&gt; state. OK to…?</span> (or <span class="scr">It’s already a &lt;X&gt; state.</span>), plays the animation (<code>ui_helper_e80c(11)</code>), and replies <span class="scr">Lord, you are truly wise.</span> State <b>0 = “Home fief”</b> means you keep controlling it by hand; the other five hand the wheel to the AI with a focus. The AI’s per-fief command driver then issues that province’s commands each turn according to the policy.</p>
+<p>Grant (<code>driver_grant $AF66</code>) sets a province’s <b>AI governance policy</b> (<code>province_ai_state</code>). Gated on your daimyo being present, you pick the fief (<span class="scr">Which fief?</span>), the game asks <span class="scr">What are your orders?</span>, and you choose one of six stances from the menu. The chosen value (1–5) is written to <code>province_ai_state[fief]</code> (<code>$B050</code>); the game confirms <span class="scr">It’s currently a &lt;X&gt; state. OK to…?</span> (or <span class="scr">It’s already a &lt;X&gt; state.</span>), plays the animation (<code>ui_helper_e80c(11)</code>), and replies <span class="scr">Lord, you are truly wise.</span> The state is read every turn by the per-fief command driver (<code>ai_per_fief_command_driver $B89B</code>), which <code>switch</code>es on it to pick that fief’s auto-action. <b>State 5 = “Direct”</b> is the one that means <i>you</i> run it by hand (<code>issue_province_command</code> — your own capital starts here); <b>state 0 = “Home”</b> is the AI’s general-economy default (every conquered/AI fief sits here); states 1–4 delegate to a <i>themed</i> AI loop.</p>
 
 <h2>How it works</h2>
 <p class="sub">The driver reads as a step-by-step script:</p>
@@ -102,17 +102,17 @@
 </ol>
 
 <h2>The six governance policies</h2>
-<p class="sub">The menu, read straight from the name table <code>effect_view_a_data_f7d4</code> (<code>$F7D4</code> → strings at <code>$F7E0…</code>). Index = the stored <code>province_ai_state</code> value.</p>
+<p class="sub">Index = the stored <code>province_ai_state</code> value; the third column is the actual turn-engine handler the driver (<code>$B89B</code>) <code>switch</code>es to for that fief each turn.</p>
 <table>
-  <tr><th>state</th><th>Policy</th><th>What the AI prioritizes</th></tr>
-  <tr><td>0</td><td>Home fief</td><td>you keep direct manual control — not delegated</td></tr>
-  <tr><td>1</td><td>Industrial</td><td>Build — grow the town / gold-income engine</td></tr>
-  <tr><td>2</td><td>Military</td><td>Train &amp; Hire — raise soldiers and skill</td></tr>
-  <tr><td>3</td><td>Balanced</td><td>spread effort across economy and army</td></tr>
-  <tr><td>4</td><td>Farming</td><td>Grow / Dam — raise agricultural output &amp; rice</td></tr>
-  <tr><td>5</td><td>Direct</td><td>the most hands-off / aggressive delegated mode</td></tr>
+  <tr><th>state</th><th>Policy</th><th>Turn-engine handler → what the fief auto-does</th></tr>
+  <tr><td>0</td><td>Home</td><td><code>ai_econ_action_state0 → ai_econ_command_dispatch</code> — the general RNG-weighted economy loop. The AI default: every conquered/AI fief sits here (it is NOT manual control).</td></tr>
+  <tr><td>1</td><td>Industrial</td><td><code>ai_develop_town_handler</code> — develops the <b>town</b> (the gold engine).</td></tr>
+  <tr><td>2</td><td>Military</td><td><code>ai_state2_recruit_arm_train</code> — <b>tries to launch a WAR first</b> (<code>ai_try_war_attack</code>), then recruits / arms / trains. An autonomous aggressor.</td></tr>
+  <tr><td>3</td><td>Balanced</td><td><code>ai_econ_command_dispatch</code> — the general economic dispatch.</td></tr>
+  <tr><td>4</td><td>Farming</td><td><code>ai_develop_dam_and_grow</code> — Dam + Grow (<b>rice / output</b>).</td></tr>
+  <tr><td>5</td><td>Direct</td><td><code>issue_province_command</code> — <b>YOU control it by hand</b>. Your own capital starts in this state; it is the opposite of hands-off.</td></tr>
 </table>
-<p class="sub">The same six labels appear in the <b>View</b> screen (<code>effect_view_a</code> reads the identical table), which is how you read back a delegated fief’s current policy. Delegation is the late-game tempo play: once you hold more fiefs than you have action-slots to micromanage, Grant lets the AI run the rear provinces on a sensible focus while you spend your four seasons on the frontier.</p>
+<p class="sub">Per the SRAM census the AI <i>never</i> uses states 1–4 — every AI fief is 0 (Home) and the human capital is 5 (Direct). So states 1–4 are a <b>player automation affordance</b>: once you hold more fiefs than your four action-slots can micromanage, Grant hands rear fiefs a themed AI loop (Farming a breadbasket, Industrial a gold mint) while you spend your seasons on the frontier — and a <b>Military</b>-granted border fief will wage war on your behalf. All delegated fiefs also auto-set their own tax (≈35–64%).</p>
 
 <div class="callout"><b>Genuinely a mechanic, not a UI screen.</b> Grant writes <code>province_ai_state</code>, the very field the AI command driver reads each turn to decide that fief’s actions — and the same field the conquest/neutralize code resets (<code>neutralize_fief</code> forces it to −1). It is the player’s hook into the AI economy: hand a rear fief a <i>Farming</i> or <i>Industrial</i> policy and it develops itself for free, no slot spent.</div>
 

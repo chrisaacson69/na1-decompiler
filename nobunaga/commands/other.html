@@ -80,15 +80,15 @@
 <p class="sub">Read from the label table <code>$FF1A</code> and the dispatch table <code>jumptab_b9e8</code> ($B9E8).</p>
 <table>
   <tr><th>#</th><th>Option</th><th>What it does</th></tr>
-  <tr><td>1</td><td>Sound</td><td>toggle / select background music</td></tr>
-  <tr><td>2</td><td>Animat(ion)</td><td>turn command &amp; battle animations on or off</td></tr>
-  <tr><td>3</td><td>Wait</td><td>message / text-advance speed</td></tr>
-  <tr><td>4</td><td>Save</td><td>write the game to battery-backed SRAM (with checksum)</td></tr>
-  <tr><td>5</td><td>Battle</td><td>auto- vs. manual battle resolution preference</td></tr>
-  <tr><td>6</td><td>End</td><td>conclude the turn (the only option that returns true)</td></tr>
-  <tr><td>7</td><td>Menu</td><td>back out to the command menu</td></tr>
+  <tr><td>1</td><td>Sound</td><td>sound on/off → <code>audio_wait_gate</code> (off silences via <code>syscall_audio_control</code>)</td></tr>
+  <tr><td>2</td><td>Animat(ion)</td><td>command &amp; battle animations on/off → <b>bit 2 of</b> <code>ai_turn_flags</code></td></tr>
+  <tr><td>3</td><td>Wait</td><td>message/text-advance speed → <code>delay_loop_count = 2·n²</code> (n = 1–10)</td></tr>
+  <tr><td>4</td><td>Save</td><td>marks <code>sram_save_pending_flag</code> → the game saves at <i>season end</i></td></tr>
+  <tr><td>5</td><td>Battle</td><td>watch <i>other daimyo’s</i> battles play out → <code>ui_confirm_flag_6e7d</code> (read at <code>$9130</code> to decide whether AI-vs-AI combat is shown)</td></tr>
+  <tr><td>6</td><td>End</td><td>conclude the turn (index 5 — the only option that returns true)</td></tr>
+  <tr><td>7</td><td>Menu</td><td>back out to the command menu (index 6)</td></tr>
 </table>
-<p class="sub">These are the same preferences the engine reads elsewhere — e.g. the <b>Animat</b> toggle is what gates every <code>ui_helper_e80c</code> command animation the other pages show, and <b>Save</b> routes through the checksummed SRAM writer (<code>syscall_sram_block_with_checksum</code>).</p>
+<p class="sub">These are the same preferences the engine reads elsewhere — the <b>Animat</b> bit in <code>ai_turn_flags</code> gates every <code>ui_helper_e80c</code> command animation the other pages show; <b>Wait</b>’s <code>delay_loop_count</code> times every text box; <b>Battle</b>’s <code>ui_confirm_flag_6e7d</code> decides whether you spectate AI wars; and <b>Save</b> routes through the checksummed SRAM writer. IDing these is the grounding for the code that consumes them.</p>
 
 <div class="callout"><b>A settings command that quietly controls the rest of the game.</b> Nothing here touches a province or a daimyo, but two entries matter: <b>Save</b> is the only persistence path, and the <b>Animat</b> toggle is the master switch for the command-animation VM every other page on this site renders. The seven handlers behind <code>jumptab_b9e8</code> are small, self-contained UI routines — a settings panel, not a subsystem.</div>
 
