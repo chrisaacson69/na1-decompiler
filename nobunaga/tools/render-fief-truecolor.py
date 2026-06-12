@@ -29,6 +29,13 @@ rrm = importlib.util.module_from_spec(_rrm); _rrm.loader.exec_module(rrm)
 _rfp = importlib.util.spec_from_file_location("render_fief_from_ppu", HERE / "render-fief-from-ppu.py")
 rfp = importlib.util.module_from_spec(_rfp); _rfp.loader.exec_module(rfp)
 NES = rfp.NES_MASTER
+_rfs = importlib.util.spec_from_file_location("render_from_sram", HERE / "render-from-sram.py")
+rfs = importlib.util.module_from_spec(_rfs); _rfs.loader.exec_module(rfs)
+
+# terrain letter (render-from-sram metatile dict) -> combat sub-palette index.
+# Derived against the in-game echigo/echizen PPU references: water=blue(3),
+# forest=green(1), plains/field=pale-yellow(2), mountain=grey/green(1), '.'=plain.
+TERRAIN_SUBPAL = {'E': 3, 'B': 1, 'A': 2, 'D': 0, 'C': 1, 'F': 0, '.': 2, '?': 2}
 
 ROM = (HERE / "Nobunaga's Ambition (USA).nes").read_bytes()
 
@@ -76,14 +83,13 @@ def render(province, scenario=17, sub=None, label=None, out=None, out_path=None)
     mid  = map_id_for(province, scenario)
     pt   = build_pattern_table(mid)
     pal16 = combat_palette()
-    subs = [sub] if sub is not None else [0,1,2,3]            # render each sub-palette for comparison
-
+    # sub=None -> per-cell terrain sub-palette (canonical); sub=N -> single (diagnostic)
+    subs = [sub] if sub is not None else [None]
+    bg = pal16[0]
     CELL = 32  # 4x4 tiles * 8px
     cols, rows = 11, 5
     panels = []
     for sp in subs:
-        palette = pal16[sp*4: sp*4+4]
-        bg = pal16[0]
         W = cols*CELL
         H = rows*CELL + CELL//2                  # extra half-cell for the stagger
         img = Image.new("RGB", (W, H), NES[bg & 0x3F])
@@ -94,6 +100,11 @@ def render(province, scenario=17, sub=None, label=None, out=None, out_path=None)
             for row in range(rows):
                 cell = nt[col_base + stagger + row*16: col_base + stagger + row*16 + 16]
                 if len(cell) < 16: continue
+                if sp is None:                    # pick sub-palette from this cell's terrain
+                    cidx = TERRAIN_SUBPAL.get(rfs.identify(bytes(cell)), 2)
+                else:
+                    cidx = sp
+                palette = pal16[cidx*4: cidx*4+4]
                 for ty in range(4):
                     for tx in range(4):
                         idx = cell[ty*4+tx]
