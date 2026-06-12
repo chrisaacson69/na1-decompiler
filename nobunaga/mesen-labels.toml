@@ -1396,7 +1396,7 @@ prg_bank_count = 16        # 256 KB total
 [prg.bank2]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
 "0x8004" = { name = "map_tile_gfx_8004", comment = "[GFX-TILES 2026-06-10] Strategic-map tile-upload source (ppu_upload_block_wrap, map_render_driver)." }
-"0x9C25" = { name = "map_cell_tile_source", comment = "[ROM-DATA 2026-06-10] Tile source data for upload_map_cell_tiles (stride 49)." }
+"0x9C25" = { name = "daimyo_banner_chr", comment = "[ROM-DATA; RECLASSIFIED 2026-06-12] DAIMYO BANNER (家紋/crest) CHR — NOT map terrain tiles. 3 tiles (48 B) per daimyo, stride 49 (the preceding byte $9C24+idx*49 = the banner's attribute/palette byte). upload_map_cell_tiles($882A) blits the owning daimyo's banner to PT1 $1510 (per side) for the battlefield unit display; drawn next to the O/X leader marker (tile 178 daimyo-led / 179 general-led) + the men-count digits in each unit cell's lower half. Index = fief_to_mapid(owner) ($DC66): 17-fief -> province_to_mapid_table[daimyo], 50-fief -> daimyo index directly. Decoded + rendered to a labeled chart per scenario by tools/render-daimyo-banners.py (the crests are shared across scenarios; only the index arithmetic differs). Was the misleading 'map_cell_tile_source'." }
 "0xA604" = { name = "digit_gfx_a604", comment = "[GFX-TILES 2026-06-10] Number-digit tile source (ppu_upload_block_wrap, unpack_base5_digits_upload)." }
 "0xA9C4" = { name = "digit_gfx_a9c4", comment = "[GFX-TILES 2026-06-10] Number-digit tile source (unpack_base5_digits_upload)." }
 "0xAD84" = { name = "digit_gfx_ad84", comment = "[GFX-TILES 2026-06-10] Number-digit tile source (unpack_base5_digits_upload)." }
