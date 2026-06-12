@@ -23,6 +23,29 @@ The full walk of one AI fief's turn — decision order, the probability at each 
 ### Entry & the per-fief loop
 The turn loop (ch.13) calls `ai_per_fief_command_driver $B89B`, which walks `daimyo_turn_order` (re-shuffled each round) and dispatches each fief on `province_ai_state`. A player's **Direct (5)** fief opens the interactive menu; every **AI (0)** fief runs `ai_econ_action_state0 → ai_econ_command_dispatch $B64B` — **one brain, every AI fief, every turn** (the AI never uses states 1–4; ch.11 / ledger #22).
 
+### The action-economy asymmetry — the AI's biggest structural edge
+The two per-fief handlers are *not* symmetric, and this matters more than any single decision:
+- **Player (`issue_province_command`):** *"Your orders?"* → pick from the menu → the command runs → the loop ends **the moment a command consumes the turn** (returns 1). Free *looks* (View/Map return 0) don't end it, but the player gets **exactly one turn-consuming action per fief, per season** — Grow *or* Hire *or* War *or* Tax, never together.
+- **AI (`ai_econ_action_state0`):** runs the **entire `ai_econ_command_dispatch` cascade** — recruit + feed-morale + buy-arms + train + (develop town + dam + grow) + market-trade — **and then** `random_daimyo_stat_increment` **and** a 25% arms bump. That's **six-to-eight sub-actions in a single fief-turn.**
+
+So the AI's recruiting, training, trading, and developing are **all "free"** — bundled into the one turn the player would spend on just one of them. This **action-economy gap is arguably the AI's single biggest advantage**, independent of the stat/harvest subsidies. What keeps it beatable is that each AI sub-action is **small** (capped by the `gold−men` surplus) and **unstrategized** (random tax, never Assign, weakest-target wars): the AI does *everything a little, badly*, while the player does *one thing, optimally*. The whole player skill curve is choosing **which** one move per fief matters most — and, crucially, **using Grant to buy back the AI's throughput** where breadth beats depth (below).
+
+### Grant policies are alternate AI behaviours — the player's throughput lever
+The `$B89B` switch dispatches each Grant policy to a **different subset** of the cascade — so a granted fief runs one *focused, multi-action* behaviour per turn:
+
+| state | runs | behaviour per turn |
+|---|---|---|
+| **0 Home** | `ai_econ_action_state0` | the **full cascade + subsidies** (10% daimyo-stat boost, 25% arms bump, the Spring boon) — the AI default |
+| **1 Industrial** | `ai_develop_town_handler` | town-build + market-trade + tax (no army, no war) |
+| **2 Military** | `ai_state2_recruit_arm_train` | war + recruit + arm + train (no economy) — *an autonomous aggressor* |
+| **3 Balanced** | `ai_econ_command_dispatch` | the full cascade **without** the Home subsidies |
+| **4 Farming** | `ai_develop_dam_and_grow` | dam + grow (no army, no town) |
+| **5 Direct** | `issue_province_command` | **you**, one manual action |
+
+Two consequences for play:
+- **Home (0) is strictly better than Balanced (3)** (cascade + subsidies vs cascade alone), and the Grant menu offers only 1–5 — so **the player cannot grant Home**, but a conquered fief *defaults* to it. **Leaving a conquered fief at Home auto-runs the full subsidised cascade with no decay** — better than granting it for general growth (a correction to ledger #22). A player's Home fiefs will even **wage war on his behalf** (the cascade's military branch runs from them). Census-consistent: a real victory save was {Home 33, Balanced 10, Direct 7} — the empire is mostly left at Home.
+- **Grant is for *focus*, not automation.** Make a frontier fief **Military** to auto-attack, a rear fief **Farming** to auto-feed — accepting the state-≠0 Spring decay and the loss of the Home subsidies in exchange for the focused behaviour and (for Farming/Industrial) no unwanted wars.
+
 ### The decision order (`ai_econ_command_dispatch`)
 ```
 1. if rice == 0:            rice += rng(10)              ; never let a fief starve to 0
