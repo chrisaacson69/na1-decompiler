@@ -71,6 +71,29 @@ def combat_palette():
     p = prg(2, 0xB55A)
     return list(ROM[p: p+16])
 
+def read_attr_phases(map_id):
+    """Per-fief combat attribute table: 3 phases x 48 bytes (6 attr-rows x 8 cols),
+    bank 5 $8004 + map_id*144, uploaded to PPU $23C8 (= attr row 1)."""
+    off = prg(5, 0x8004) + map_id * 144
+    return [ROM[off + p*48: off + p*48 + 48] for p in range(3)]
+
+def cell_phase_l(abs_col):
+    """Which scroll phase shows abs_col, and its within-phase index l (0..4).
+    Phase p shows buffer cols [3p .. 3p+4]; screen tile col = 10 + l*4."""
+    if abs_col <= 4:  return 0, abs_col
+    if abs_col <= 7:  return 1, abs_col - 3
+    return 2, abs_col - 6
+
+def attr_subpal(phases, abs_col, screen_tx, screen_ty):
+    """Sub-palette (0..3) for a screen tile, from the per-fief attribute table."""
+    p, _ = cell_phase_l(abs_col)
+    attr_col = screen_tx // 4
+    attr_row = screen_ty // 4              # screen attr rows 1..6 in the table
+    idx = (attr_row - 1) * 8 + attr_col    # table starts at attr row 1 ($23C8)
+    if idx < 0 or idx >= 48:  return 2
+    quad = ((screen_ty % 4)//2)*2 + ((screen_tx % 4)//2)
+    return (phases[p][idx] >> (quad*2)) & 3
+
 MAPID = None
 def map_id_for(province, scenario):
     # province_to_mapid_table $F70E (bank 15)
@@ -83,32 +106,32 @@ def render(province, scenario=17, sub=None, label=None, out=None, out_path=None)
     mid  = map_id_for(province, scenario)
     pt   = build_pattern_table(mid)
     pal16 = combat_palette()
-    # sub=None -> per-cell terrain sub-palette (canonical); sub=N -> single (diagnostic)
-    subs = [sub] if sub is not None else [None]
+    phases = read_attr_phases(mid)           # per-fief attribute table (the real sub-palettes)
     bg = pal16[0]
     CELL = 32  # 4x4 tiles * 8px
     cols, rows = 11, 5
     panels = []
-    for sp in subs:
+    for sp in [sub]:                          # sub=None -> attribute-table per-quadrant; sub=N -> single
         W = cols*CELL
-        H = rows*CELL + CELL//2                  # extra half-cell for the stagger
+        H = rows*CELL + CELL//2               # extra half-cell for the stagger
         img = Image.new("RGB", (W, H), NES[bg & 0x3F])
         for col in range(cols):
             col_base = col*88
-            stagger  = 8 if (col & 1) else 0      # byte stagger in $7BFD
+            stagger  = 8 if (col & 1) else 0   # byte stagger in $7BFD
             ypx_off  = (CELL//2) if (col & 1) else 0
+            _, l = cell_phase_l(col)           # within-phase column index -> screen tile col
             for row in range(rows):
                 cell = nt[col_base + stagger + row*16: col_base + stagger + row*16 + 16]
                 if len(cell) < 16: continue
-                if sp is None:                    # pick sub-palette from this cell's terrain
-                    cidx = TERRAIN_SUBPAL.get(rfs.identify(bytes(cell)), 2)
-                else:
-                    cidx = sp
-                palette = pal16[cidx*4: cidx*4+4]
                 for ty in range(4):
                     for tx in range(4):
                         idx = cell[ty*4+tx]
                         tp  = pt[idx]
+                        # screen-tile position (handles the +10 offset + half-cell stagger)
+                        stx = 10 + l*4 + tx
+                        sty = 4 + row*4 + (2 if (col & 1) else 0) + ty
+                        cidx = sp if sp is not None else attr_subpal(phases, col, stx, sty)
+                        palette = pal16[cidx*4: cidx*4+4]
                         ox = col*CELL + tx*8
                         oy = row*CELL + ypx_off + ty*8
                         for py in range(8):
