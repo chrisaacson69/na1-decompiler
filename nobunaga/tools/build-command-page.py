@@ -1018,25 +1018,26 @@ COMMANDS = {
         ["5", "Direct", "<code>issue_province_command</code> — <b>YOU control it by hand</b>. Your own "
               "capital starts in this state; it is the opposite of hands-off."],
       ],
-      "note": "Per the SRAM census the AI <i>never</i> uses states 1–4 — every AI fief is 0 (Home) and "
-              "the human capital is 5 (Direct). So states 1–4 are a <b>player focus lever</b>, and there's "
-              "a subtlety worth knowing: <b>Home (0) is strictly better than Balanced (3)</b> — it runs the "
-              "same full cascade <i>plus</i> the AI-only subsidies (a 10% daimyo-stat boost, a 25% arms "
-              "bump, the spring wealth/loyalty boon) with no decay — and the menu can't grant Home, but a "
-              "conquered fief <i>defaults</i> to it. So for general growth you <b>leave a conquered fief at "
-              "Home</b> (it auto-develops <i>and</i> auto-wars, subsidised); you <b>Grant</b> only to "
-              "<i>focus</i> a fief — Farming a breadbasket, Industrial a gold mint, Military an autonomous "
-              "aggressor — accepting the state-≠0 spring decay in exchange. All delegated fiefs auto-set "
-              "their own tax (≈35–64%, re-randomised each turn).",
+      "note": "Per the SRAM census the AI <i>never</i> uses states 1–4 — every AI fief is 0 (Home), the "
+              "human capital 5 (Direct). And <b>the player can never have a Home fief</b>: conquest inherits "
+              "the <i>attacker's</i> state (<code>ai_state(conquered) = ai_state(attacker) ? 5 : 0</code>, "
+              "<code>$E194</code>), and you always attack from a Direct/granted fief — so every conquest "
+              "comes out <b>Direct (5)</b>, to micro or Grant. <b>Home (0) is strictly better than Balanced "
+              "(3)</b> (same cascade + the AI-only 10% stat boost / 25% arms bump / spring boon, no decay) — "
+              "but it's an <b>AI-only</b> mode you can't reach. So states 1–4 are your <i>only</i> way to "
+              "stop micro-ing a fief: <b>Grant to focus</b> — Farming a breadbasket, Industrial a gold mint, "
+              "Military an autonomous aggressor — accepting the state-≠0 spring decay and no subsidies. All "
+              "delegated fiefs auto-set their own tax (≈35–64%, re-randomised each turn).",
     },
     "callout": (
       "<b>Genuinely a mechanic, not a UI screen.</b> Grant writes <code>province_ai_state</code>, the "
       "very field the AI command driver reads each turn to decide that fief’s actions — and the same "
       "field the conquest/neutralize code resets (<code>neutralize_fief</code> forces it to −1). It is the "
       "player’s hook into the AI economy: where the player gets <b>one command per fief per season</b>, an "
-      "AI-run fief executes its whole cascade — recruit, arm, train, build — every turn. So Grant (and "
-      "simply <i>leaving a conquered fief at Home</i>) is how you buy back that <b>action throughput</b>: "
-      "a delegated fief develops, and a Military one wages war, for free, no slot spent."),
+      "AI-run fief executes its whole cascade — recruit, arm, train, build — every turn. Since the player "
+      "can’t reach Home (every conquest comes out Direct), <b>Grant is your only way to buy back that "
+      "action throughput</b>: a delegated fief develops, and a Military one wages war, for free, no slot "
+      "spent — at the cost of the spring decay and the Home subsidies you never had."),
   },
 
   # ---- Map: read-only strategic-map view (no state change, no turn spent) ----
