@@ -208,6 +208,33 @@ source_field -= effective_amount   (no attrition)
 - Send to high-HEADER fiefs for biggest transfers
 - Pairs with Give-Peasants: Send moves rice, Give converts rice to stats
 
+## Trade — the merchant market ($A1B6 driver; rate table $6E0B) — **DERIVED + part-CERTIFIED 2026-06-12**
+
+> A global commodity/credit market behind one menu. Prices come from a **period-rolled rate table** (`$6E0B`, re-rolled each season by `roll_period_market_rates $924A`) that **also drifts ±1 per transaction**. Every quantity cap uses `ratio_times10_capped(a,rate,cap) = min(⌊a·10/rate⌋, cap)` (CERTIFIED); every price uses `math32_muladddiv(rate,N) = ⌈rate·N/10⌉` (CERTIFIED) — so **rates are stored ×10** (a rate of 15 = 1.5 gold/unit).
+
+### Presence (`effect_trade $8A15`)
+```
+merchant present ⇔ fief is 13 or 14 (17-fief) / 30 or 32 (50-fief)   ; the two commercial capitals: always
+              OR  (ai_turn_flags & 1)                                ; elsewhere: a per-turn flag, set with prob (55 − 5·skill)%
+```
+
+### The five services (rates: `loan_rate $6E0B`, `gold_rice_exchange_rate $6E0D`, `arms_buy_price_rate $6E0F`)
+```
+Loan  ($9F04→$8B40):  max_gold = min(⌊(town−debt)·10/(loan_rate+10)⌋, header−gold)
+                      borrow N → gold += N ;  debt += ⌈(loan_rate+10)·N/10⌉   ; cycle_economy_rate(0): loan_rate+1 (wrap>15→rng15)
+   ⇒ debt CEILING = town; at max loan debt rises by (town−debt) but you only RECEIVE (town−debt)·10/(loan_rate+10) gold.
+     loan_rate is the interest, baked in: gold-per-debt = 10/(loan_rate+10) = 0.91→0.50 as loan_rate climbs 1→10.
+Repay ($9FAF):        N = number_input(1, min(gold,debt)) ;  gold −= N ; debt −= N         ; 1:1, no rate
+Sell  ($A003):        max = min(⌊(header−gold)·10/rate⌋, rice) ;  gold += ⌈rate·N/10⌉ ; rice −= N ; rate−1 (price falls)
+Buy   ($A068):        max = min(⌊gold·10/rate⌋, header−rice) ;     gold −= ⌈rate·N/10⌉ ; rice += N ; rate+1 (price rises)
+Arms  ($A113):        needs men>0 ; max = min(⌊gold·10/arms_rate⌋, header−arms)
+                      gold −= ⌈arms_rate·N/10⌉ ; arms += N / force_factor   ; arms_rate+1 (price rises)
+                      force_factor = math32_3arg(arms+men, 5, header)   ; arms gain DILUTES as the force grows
+```
+- **Per-transaction drift** (`cycle_economy_rate`): selling rice nudges its price **down**, buying rice/arms nudges it **up**, each loan raises `loan_rate` — a light supply/demand pressure on top of the seasonal re-roll.
+- **Caps everywhere are the `header` ceiling** (treasury/storehouse/armory room) — the same development ceiling the develop commands fight.
+- All field offsets per the `$7001` province-record map (gold +0, debt +2, town +4, rice +6, arms +22, header +24).
+
 ## Move ($96D1 driver → effect_move $8CA5; arms blend $DA24) — **DERIVED 2026-06-12 (by composition)**
 
 > Move relocates men **and** arms between two of your own fiefs. The men transfer is Send's capacity-clamp; the arms transfer is Hire's men-weighted dilution — so Move is verified *by composition* of two already-certified primitives (not independently emulator-run yet).

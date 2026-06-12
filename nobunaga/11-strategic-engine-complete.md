@@ -44,7 +44,7 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 **Send** (`$9A62`) — transfer resources between your own provinces. *"Send where?"*, then *"Rice"* (`$D5E9`) and *"Gold"* (`$D5E9`), each capped (*"We're at our limit"*), then *"Is this OK"* → *"The supplies have arrived safely"*. The internal-logistics command — and the reason the turn-order randomization (`$6F0B`) bites: you may want to Send before you attack, but the receiving fief might act first.
 
-**Trade** (`$A1BB`) — deal with a traveling merchant. *"Lord, how may I serve you?"* opens a buy/sell submenu (`$B1A6`); requires a merchant present (*"No merchant in the area"*). Closes with *"Let's do business again"* / *"Bye!"*.
+**Trade** (`driver_trade $A1B6`) — a **global commodity & credit market** behind one menu, the richest non-combat command. Requires a merchant present (`effect_trade $8A15`): always at the two commercial capitals (**fiefs 13/14**), elsewhere only when a per-turn flag is set (`ai_turn_flags & 1`, prob `(55−5·skill)%`), else *"No merchant in the area."* Six services (`jumptab_b9dc`): **Loan** (borrow against `town`; debt ceiling = town; `loan_rate` is the baked-in interest), **Repay** (1:1), **Sell rice** (→gold, price falls per sale), **Buy rice** (→rice, price rises), **Buy arms** (gold→weapons, gain diluted by force size), **Bye**. Prices come from the period-rolled rate table `$6E0B` (re-rolled each season by `roll_period_market_rates $924A`, drifting ±1 per transaction). All caps are `ratio_times10_capped`; all prices `math32_muladddiv` (rate stored ×10). **Impacts:** loans are the only way to spend past your treasury (leverage); rice↔gold trading couples the harvest economy to combat supply; and two entries of the *same* `$6E0B` table price **Hire and Ninja** — so the merchant reaches the assassination economy.
 
 **Give** (`$AA1F`) — chapter 10's immediate-action group; the loyalty/morale charity command, touches the most province fields.
 
@@ -74,7 +74,7 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 | 6 | Pact | diplomacy | ~50–99% of gold +20 (to target); −1/−2 Drive | which fief | buy peace → relation `$6193` = 70 |
 | 7 | Grow | development | gold; `header`≥output | amount | √-raise output, drain dams+loyalty |
 | 8 | Marry | diplomacy | from capital; ~50–79% of gold +200 (to target, floor >200); −1 Drive (refusal: −Drive/−Luck/−Cha) | which fief | marriage alliance → relation `$6193` = 90 |
-| 9 | Trade | economy | merchant present | buy/sell submenu | trade with a merchant |
+| 9 | Trade | economy | merchant present (fiefs 13/14 or ~45%) | loan/repay/sell/buy/arms | commodity + credit market (rates in `$6E0B`) |
 | 10 | Hire | military | gold | Men/Ninja | recruit men (`$A553`) or run a ninja mission (`$A2D2`) |
 | 11 | Train | military | `header`-derived cap | — | raise skill |
 | 12 | View | information | 10 gold to spy (Luck+IQ contest; can be caught) | which fief | inspect own free / spy on enemies |
@@ -92,7 +92,7 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 A few things the full picture makes clear:
 
-**Gold is the master resource.** Of the 21 commands, the ones that *cost* anything cost **gold** — Dam, Grow, Build, Bribe, Pact, Marry, Hire (the *"you have no gold"* gate), Assign (a flat 30), and the spying mode of View (10 a look). (Pact and Marry are the cruellest: their price is sized to a *fraction of your current treasury* — so a full war-chest makes peace proportionally expensive — and the gold is handed straight to the rival.) There is no separate "action point" economy; your turn is bounded by your treasury (and by the per-province `header` development ceiling). Tax is the only command that *generates* gold, and it does so against a loyalty cost — the central economic tension of the game is the **tax↔loyalty tradeoff**, and it's surfaced literally ("protesting" / "delighted").
+**Gold is the master resource.** Of the 21 commands, the ones that *cost* anything cost **gold** — Dam, Grow, Build, Bribe, Pact, Marry, Hire (the *"you have no gold"* gate), Assign (a flat 30), and the spying mode of View (10 a look). (Pact and Marry are the cruellest: their price is sized to a *fraction of your current treasury* — so a full war-chest makes peace proportionally expensive — and the gold is handed straight to the rival.) There is no separate "action point" economy; your turn is bounded by your treasury (and by the per-province `header` development ceiling) — the **one way past the treasury bound is a Trade loan**, borrowed against your town value at interest. Tax is the only command that *generates* gold, and it does so against a loyalty cost — the central economic tension of the game is the **tax↔loyalty tradeoff**, and it's surfaced literally ("protesting" / "delighted").
 
 **Development is deliberately lossy.** Dam/Grow/Build don't just add — they add on a √ curve *and* silently subtract a percentage from other fields (chapter 10). Combined with the `header`-gated ceiling, province development is a game of **managed decline**, not free growth. A player optimizing one stat is always paying in another.
 

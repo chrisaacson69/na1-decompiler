@@ -1298,30 +1298,37 @@ COMMANDS = {
     "table_heading": "The six services",
     "table": {
       "caption": "Read from <code>jumptab_b9dc</code> ($B9DC → $9F04/$9FAF/$A003/$A068/$A113/$A1AF) and "
-                 "the label table <code>$FF4F</code>. Every quantity cap is computed by the shared "
-                 "<code>helper_8357(headroom, rate, stock)</code>; every cost by "
-                 "<code>math32_muladddiv(N, rate)</code>.",
+                 "the label table <code>$FF4F</code>. Every quantity cap is "
+                 "<code>ratio_times10_capped(a, rate, cap) = min(⌊a·10/rate⌋, cap)</code>; every price is "
+                 "<code>math32_muladddiv(rate, N) = ⌈rate·N/10⌉</code> — both CERTIFIED, so <b>rates are "
+                 "stored ×10</b> (a rate of 15 = 1.5 gold/unit).",
       "headers": ["#", "Service", "Code", "What it does", "Rate"],
       "rows": [
-        ["1", "Loan", "$9F04", "borrow gold; collateral is <code>town − debt</code>; gold += N, debt "
-         "+= N. Treasury already full → <span class='scr'>“…already full”</span>; no collateral → "
-         "<span class='scr'>“You can’t borrow”</span>", "<code>loan_rate</code> (+10)"],
+        ["1", "Loan", "$9F04", "borrow against <code>town</code>; <b>debt ceiling = town</b>; "
+         "<code>gold += N</code>, <code>debt += ⌈(loan_rate+10)·N/10⌉</code>. So the rate is the "
+         "<b>interest</b>: at max loan, debt rises by <code>town−debt</code> but you only receive "
+         "<code>(town−debt)·10/(loan_rate+10)</code> gold (0.91→0.50/debt as the rate climbs 1→10). "
+         "Treasury full → <span class='scr'>“…already full”</span>; no collateral → "
+         "<span class='scr'>“You can’t borrow”</span>", "<code>loan_rate</code> +10"],
         ["2", "Repay", "$9FAF", "pay down debt 1:1, <code>N = min(gold, debt)</code>; gold −= N, debt "
          "−= N. No debt → <span class='scr'>“Debt? What debt?”</span>", "—"],
-        ["3", "Sell", "$A003", "rice → gold; capped by rice held + treasury headroom. No rice → "
+        ["3", "Sell", "$A003", "rice → gold; <code>gold += ⌈rate·N/10⌉</code>; capped by rice held + "
+         "treasury headroom. Each sale nudges the price <b>down</b>. No rice → "
          "<span class='scr'>“No rice”</span>", "<code>gold_rice_exchange_rate</code>"],
-        ["4", "Buy", "$A068", "gold → rice, <b>cash only</b>; gold −= N×rate, rice += N. Can’t afford → "
-         "<span class='scr'>“Sorry, no credit”</span>", "<code>gold_rice_exchange_rate</code>"],
+        ["4", "Buy", "$A068", "gold → rice, <b>cash only</b>; <code>gold −= ⌈rate·N/10⌉</code>, rice += N; "
+         "each buy nudges the price <b>up</b>. Can’t afford → <span class='scr'>“Sorry, no "
+         "credit”</span>", "<code>gold_rice_exchange_rate</code>"],
         ["5", "Arms", "$A113", "gold → weapons; <b>needs soldiers</b> (else <span class='scr'>“Weapons "
-         "for who?”</span>); gold −= N×rate, arms += N", "<code>arms_buy_price_rate</code>"],
+         "for who?”</span>); <code>gold −= ⌈rate·N/10⌉</code>, <code>arms += N / force_factor</code> "
+         "(gain <b>dilutes</b> as <code>arms+men</code> grows); price nudges up", "<code>arms_buy_price_rate</code>"],
         ["6", "Menu", "$A1AF", "<span class='scr'>“Bye.”</span> — leave the merchant", "—"],
       ],
-      "note": "The three rates live in the per-turn market table (<code>$6E0B…$6E13</code>) and "
-              "<b>re-roll every turn</b> — the same table that prices Hire and the loan system — so the "
-              "buy-low/sell-high timing is real. Exact price = <code>math32_muladddiv(N, rate)</code> "
-              "(a ⌊·⌋ of N×rate over a fixed divisor; the Arms “minimum to afford one” check "
-              "<code>(rate+9)/10</code> implies ≈ rate/10 gold per unit). Pinning the precise divisor "
-              "per good is a clean emulator-probe follow-up.",
+      "note": "The rates are five entries of the market table (<code>$6E0B…$6E13</code>), <b>re-rolled "
+              "every season</b> by <code>roll_period_market_rates $924A</code> — the same table that "
+              "prices <b>Hire and Ninja</b> (<code>gold_men_hire_rate</code> / <code>hire_gold_rate</code>) "
+              "— and they also <b>drift ±1 per transaction</b> (<code>cycle_economy_rate</code>: sell rice "
+              "→ price down, buy rice/arms → price up, each loan → loan_rate up). So both the seasonal "
+              "swing and your own trading move the price: buy-low / sell-high timing is real.",
     },
     "callout": (
       "<b>The one command you can’t always use — and that’s the point.</b> Trade fuses three systems: a "
@@ -1334,12 +1341,15 @@ COMMANDS = {
       "when they’re cheap and sells rice when it’s dear. This is why Trade gets a full subsystem page, "
       "not a thin one."),
     "rabbit_holes": [
-      ("Loan / debt mechanic", "borrowing capacity = <code>town − debt</code>, priced at "
-       "<code>loan_rate</code>; debt is province field +2 and is repaid via Repay (or bleeds you each "
-       "harvest). The fuller credit model is its own thread.", None),
-      ("Per-turn market rates", "<code>gold_rice_exchange_rate</code> / <code>arms_buy_price_rate</code> "
-       "/ <code>loan_rate</code> re-roll every turn in <code>$6E0B…</code> — quantifying the "
-       "distribution (and the exact price divisor per good) wants an emulator probe.", None),
+      ("Loan / debt mechanic", "debt ceiling = <code>town</code> (field +2); borrowing N adds "
+       "<code>⌈(loan_rate+10)·N/10⌉</code> to debt for N gold, so the rate is the interest baked into the "
+       "gold-per-debt ratio. The only way to spend beyond your treasury — leverage for an early rush, "
+       "repaid 1:1 from the harvest.", None),
+      ("The shared market table", "the five <code>$6E0B</code> rates re-roll each season "
+       "(<code>roll_period_market_rates $924A</code>) and drift per transaction "
+       "(<code>cycle_economy_rate</code>); two of them (<code>gold_men_hire_rate</code> / "
+       "<code>hire_gold_rate</code>) price <b>Hire and Ninja</b>, so the merchant table reaches the "
+       "assassination economy. Quantifying the seasonal distribution is an emulator-probe follow-up.", None),
     ],
   },
 }
