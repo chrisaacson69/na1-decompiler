@@ -27,31 +27,37 @@ The turn loop (ch.13) calls `ai_per_fief_command_driver $B89B`, which walks `dai
 ```
 1. if rice == 0:            rice += rng(10)              ; never let a fief starve to 0
 2. if capital & men == 0:   men  = 2                     ; token garrison — never leave the seat naked
-3. ~90% (rng(10) ≠ 0):      try the MILITARY branch  →  if it acted, STOP
-4. otherwise:               ~90% (rng(10) ≠ 0) DEVELOP TOWN ; then ALWAYS DAM+GROW
+3. ~90% (rng(10) ≠ 0):      run MILITARY-PREP  →  if it launched a WAR, STOP the turn
+4. fall through:            ~90% DEVELOP TOWN ; then ALWAYS DAM+GROW
 ```
-So the AI is **attack-first, build-second**: ~90% of fiefs look to recruit or make war before anyone develops.
+**The military and develop passes are NOT mutually exclusive** — a subtle but important point. `ai_state2_recruit_arm_train` returns 1 *only when it launches a war* (not for recruiting/arming/training), so the `&&` short-circuits and the fief **falls through to develop unless a war actually fired**. Net cadence per fief:
+- **~90% of turns:** the military pass runs (recruit / feed / arm / train); if a **war** launches, the turn ends there.
+- **On every turn a war did *not* fire** (the large majority — see "why so few wars" below): the develop pass *also* runs.
+- **~10% of turns:** the military pass is skipped entirely; develop only.
 
-### Branch A — Military (`ai_state2_recruit_arm_train`), in order
-1. **War (`ai_try_war_attack`)** — tried first; if a war launches, the branch returns and the fief is done. (Detailed below.)
-2. **Recruit** — only if `men < min((year−1559)·40, header)` (a *year-scaled* cap — armies grow over the campaign), and gated by **`rng(10) < const_two + 3`** (recruit chance ≈ `(difficulty+3)/10` — 50% at skill 2, higher at higher difficulty). Spends half the gold surplus.
-3. **Feed morale** — convert rice surplus into morale (`morale += send`, rice paid per man).
-4. **Buy arms** — if affordable, `arms += 2·N` at the market `arms_buy_price_rate` (and bumps that rate).
-5. **Train** — **50% (`rng(2)`)** → `effect_train` (raise skill).
-6. **Reinforce** — **1% (`rng(100)==0`)** → a rare arms/econ top-up.
+So a typical AI fief **does a little of everything every turn** — recruit, arm, train, *and* build — not one-or-the-other. The catch is the **ordering**: military spends gold *first*.
 
-### Branch B — Development (Town, then Dam+Grow)
-- **Town** (`ai_develop_town_handler`): seed tax, trade rice↔gold, then **2/3 (`rng(3)≠0`)** build town if `town < header`, sized to a year-scaled cap.
-- **Dam + Grow** (`ai_develop_dam_and_grow`): if `loyalty > output` (headroom), spend on Dam (to dams cap) then Grow (year-scaled cap); else just a small grow.
+### The order of operations, and why the AI under-develops (Chris's #2)
+Every spend is sized against `ai_calc_men_surplus_over_gold_and_rice`: **`gold_surplus = gold − men`, `rice_surplus = rice − men`** (clamped ≥0) — the AI keeps a cash/food reserve **equal to its army size** and spends only what's above it. Because the **military pass runs first and eats that surplus** (recruit spends `gold_surplus/2`, then arms), the develop pass that follows gets only the scraps. Combined with the reserve floor, this is a genuine trap: **a fief with a big army has little gold over `men`, so it can barely develop** — military daimyo stay economically stunted, exactly as observed. Develop caps also scale with the **game year** (`(year−1559)·k`), so what little the AI does build trends upward late.
 
-### How the AI sizes its spends — no "how much?" prompt
-Every spend reads `ai_calc_men_surplus_over_gold_and_rice`: **`gold_surplus = gold − men`, `rice_surplus = rice − men`** (clamped ≥0). The AI keeps a reserve equal to its **army size** and spends only the surplus — a one-line economic policy, **no daimyo stats involved**. The caps it spends toward scale with the **game year** (`(year−1559)·k`), so AI provinces strengthen as the campaign ages. The AI even **plays the rice market** (`ai_province_gold_to_rice_convert`: a `rng(10..29)` vs `gold_rice_exchange_rate` roll → sell rice when dear, buy when cheap).
+### What an AI fief actually does on a non-war turn — by question
+- **Recruit men?** Only when under-strength for the year (`men < min((year−1559)·40, header)`), then with probability **`(const_two+3)/10`** (50% at skill 2, higher at higher difficulty), spending half the gold surplus. New men get random morale/skill/arms (`apply_hire_unit_stats`, the Hire dilution). *Early game the year-cap is tiny, so the AI barely recruits; it builds armies as the campaign ages.*
+- **Train (skill)?** A flat **50% (`rng(2)`)** every military-prep turn (`effect_train`), after recruiting. Plus a 1% rare reinforce.
+- **Change its tax?** It doesn't *strategize* tax — every develop turn calls `ai_seed_fief_tax_rate`, which **re-randomizes the rate to `rng(30)+35` = 35–64**. Since develop runs most turns, AI tax simply **wanders in the 35–64 band** turn to turn (never the 90s that would trigger its own riots — see Appendix D).
+- **Re-mix its army (Assign)?** **Never.** `effect_assign` has exactly one caller — the player's `driver_assign`. The AI sets unit composition *only at hire time* and can't redistribute it. The army-composition lever is **player-only**.
+- **Buy / sell rice — and why?** On a develop turn, **75% (`rng(4)≠0`)** it rebalances surplus by price (`ai_province_gold_to_rice_convert`): **sell rice when the market is dear** (`rng(10..29) < exchange_rate`) for gold to develop with; **buy rice when cheap** (`> exchange_rate`) to feed troops. It's converting whichever surplus it's short of — and because the rate is the *global* `$6E0B` table, **the AI's trades move the same market the player trades in** (and the AI selling rice pushes the price down on you).
+- **Build / dam / grow?** Town: 2/3 (`rng(3)≠0`) if below the year-cap. Dam+Grow: only if `loyalty > output` (headroom), via the player's `effect_dam`/`effect_grow` (the √-curve + drain — the AI develops on the *same* lossy curve, not a cheat). *(One decompiler ambiguity in the AI grow bookkeeping — an extra `output += spend` alongside `effect_grow` — is flagged for a bytecode check; it doesn't change the cadence.)*
+
+### A quiet rubber-band: AI lords grow their own stats
+`random_daimyo_stat_increment` fires for AI fiefs only, **10% per turn**, bumping a random daimyo stat (health/drive/luck/charisma/IQ) by **+2** (wrapping at 200). So an AI daimyo's personal stats *drift upward over the campaign* while the player's are fixed at roll — another anti-player subsidy (with the harvest/Spring boosts, ledger #24).
 
 ### The war decision (`ai_try_war_attack`) — the only place targeting happens
 1. **Preconditions:** the fief must not be weak, and must have **both men and rice** — *no supply, no war* (rice = provisions).
 2. **Target = the weakest enemy by *provisioned* men** (`pick_weakest_men_fief`; `fief_men_ratio_pct = a_men·100/(a_men+b_men)`, where a fief with **no rice counts as 0 men**). A starved or tiny neighbour is the magnet. An adjacency/men-minority target (`$6E7F`) can override.
 3. **Commit gate:** attack only with a men-ratio advantage — `ratio − 10 − rng(const_two·3) > 60` — or a 1/100 "attack anyway". Risk-averse; it picks on the weak.
 4. **Resolve:** deduct men/rice → `effect_war_a` → **bank 2 (combat)**. *(The same bank-2 resolver handles uprisings — see the tie-back note below; the battle math itself is the combat chapters, ch.14–17.)*
+
+**Why so few wars fire despite the ~90% military pass (Chris's #1):** entering the military pass is *not* attacking. A war only launches when **all** of these line up: the fief isn't weak, it has men *and* rice, a neighbour is genuinely weaker (the **men-ratio advantage** gate, `ratio−10−rng(skill·3) > 60`), and — for a liked target — the daimyo is bold enough (Drive≥50) to ignore relations. Most fiefs, most turns, have no neighbour soft enough to clear the ratio gate, so they fall through to recruit/develop instead. There is **no per-year attack counter**; the limiter is purely *opportunity*. The flip side is what you observed: **once a fief becomes weak (especially starved — no rice ⇒ 0 provisioned men), it is reliably attacked** — every adjacent stronger daimyo's ratio gate now passes, so it gets piled on. Weakness, not a timer, is what summons the wars.
 
 ### Do daimyo stats alter the odds? — **only Drive**
 The econ/military cascade is driven by **difficulty (`const_two`)**, the **game year**, the **market rates**, and **province stats** (gold/rice/men/output/loyalty) — *not* the daimyo's personal stats. The single exception is **Drive (record +2)**, the AI's **aggression dial**:
