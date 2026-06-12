@@ -2,3 +2,10 @@
 # onto the native disasm). Deterministic from mesen-labels.toml + source/1-asm-6502/bank_NN.asm,
 # so we don't version them. Regenerate: py -3 -m mesen-labels --asm (from tools/)
 source/1-asm-6502/*_named.asm
+
+# Rendered tactical fief maps — regenerable from ROM via tools/batch-render-fief-maps.py
+# (the decoded map_populate + CHR + palette path). High byte-count, deterministic,
+# repeatable, so we don't version them. Regenerate: py batch-render-fief-maps.py
+assets/maps/fiefs/17/
+assets/maps/fiefs/50/
+assets/maps/fiefs/*.png

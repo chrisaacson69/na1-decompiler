@@ -70,7 +70,7 @@ def map_id_for(province, scenario):
     base = prg(15, 0xF70E) + (0 if scenario == 17 else 50)
     return ROM[base + province]
 
-def render(province, scenario=17, sub=None, label=None, out=None):
+def render(province, scenario=17, sub=None, label=None, out=None, out_path=None):
     sram = rrm.populate_from_rom(province, scenario)[0]        # (sram, ok, todo) -> full $6000-$7FFF
     nt   = sram[0x1BFD:]                                       # $7BFD onward (11 cols x 88)
     mid  = map_id_for(province, scenario)
@@ -114,9 +114,15 @@ def render(province, scenario=17, sub=None, label=None, out=None):
         final = Image.new("RGB", (pw, ph*4 + 4*3), (20,20,20))
         for i,(sp,im) in enumerate(panels):
             final.paste(im, (0, i*(ph+4)))
-    name = out or f"fief-{province}-truecolor.png"
-    final.save(HERE.parent / "assets" / "maps" / "fiefs" / name) if (HERE.parent/"assets"/"maps"/"fiefs").exists() else final.save(HERE / name)
-    print(f"province {province} (map_id {mid}) palette {' '.join(f'{b:02X}' for b in pal16)} -> {name}")
+    if out_path is not None:
+        Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+        final.save(out_path)
+        print(f"province {province} (map_id {mid}) -> {out_path}")
+    else:
+        name = out or f"fief-{province}-truecolor.png"
+        dst = (HERE.parent / "assets" / "maps" / "fiefs") if (HERE.parent/"assets"/"maps"/"fiefs").exists() else HERE
+        final.save(dst / name)
+        print(f"province {province} (map_id {mid}) palette {' '.join(f'{b:02X}' for b in pal16)} -> {name}")
     return final
 
 if __name__ == "__main__":
