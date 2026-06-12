@@ -16,6 +16,31 @@ created: 2026-05-14
 
 > **⚠ Erratum (2026-05-14, post-draft).** A Mesen `$EB7A` trace across a turn boundary revealed that this chapter's "pick one of six executors via `$B94C`" framing is one level too high. The trace shows each AI-fief iteration calls `$B875`, `$B64B`, `$B4D5`, `$B3AA`, `$B42B` **all in sequence** (16 hits each over ~16 AI fiefs — they are *stages*, not alternatives). The `$B94C` switch is used *inside* `$B64B` (the develop sub-dispatcher) to pick Dam/Grow/Build, which is consistent with chapter 10. So the per-fief AI is a **multi-stage pipeline**, and each stage's `$CA52` roll gates whether that stage acts. The "cascade of weighted coin-flips" model is *more* right under this correction, not less — the cascade just runs across all stages, every fief. Also: the `$B8A0` "Turn %2d Fief %2d" sub never fires during a normal turn — it is some other (probably combat-announcement) context, not the AI turn handler I called it. The pipeline entry point is reached indirectly and is part of the turn loop in ch 13.
 
+## The decompiled model (2026-06-12) — and why the AI is exploitable
+
+Pass 2 walked the AI in the grounded C. The "cascade of weighted coin-flips" headline **survives intact**; the addresses and framing in the older sections below are superseded by this. The confirmed model:
+
+**The AI is monomorphic.** Every AI fief sits permanently at `province_ai_state == 0` (Home) — the six-way `$B94C` switch is the *player's* Grant policy, not an AI choice (ch.11 / ledger #22; census `probe-ai-policy-distribution.py`). So the AI always runs case 0 → `ai_econ_action_state0 $B875` → **`ai_econ_command_dispatch $B64B`**, the single brain it uses for every fief, every turn.
+
+**The brain (`ai_econ_command_dispatch`) is a short, military-biased cascade of `rng(10)` gates:**
+```
+if rice == 0:                 rice += rng(10)              ; never starve
+if capital & no garrison:     men = 2                      ; never leave the seat undefended
+if rng(10) and ai_state2_recruit_arm_train():  return      ; ~90%: recruit / arm / train — and TRY A WAR first
+else:                                                       ; the develop fallback
+    if rng(10):  ai_develop_town_handler()                 ; ~90%: grow the town
+    ai_develop_dam_and_grow()                               ; always: dam + grow
+```
+`ai_state2_recruit_arm_train` opens with `ai_try_war_attack`, so the AI is **attack-first**: ~90% of fiefs each turn look for a war before falling back to building. Its **war target is the weakest adjacent enemy** (`pick_weakest_men_fief`, keyed on *provisioned* men), taken only past a strength gate at commit — emergent weakest-neighbour aggression, no board evaluation. The thresholds scale with the `const_two`/skill difficulty dial; the "intelligence" is entirely in those constants, exactly as the model below argues.
+
+**The AI is structurally exploitable — the dominance thesis's other half.** The asymmetries are all in the engine, not in any one weak heuristic:
+- **It never specializes.** The Grant policies (Industrial/Military/Farming/Balanced) that let the *player* automate an empire are never used by the AI — it runs the one generic loop on every fief (ledger #22).
+- **It never assassinates, bribes, or uses diplomacy strategically.** The ninja/assassination path (ledger #1), the Charisma-contest Bribe (#19), and Pact/Marry (#20) are player verbs the AI's cascade doesn't reach — so the cheapest faction-ending move has *no AI counter*, and the AI never sues for peace to block one.
+- **It defends its seat only reflexively** (the `men=2` token garrison) — there is no logic that anticipates a decapitation strike or relocates the capital (the mobile-seat defence, ledger #19) the way a player can.
+- **It is subsidized, not skilled.** The difficulty comes from the `const_two` dial (slower player development, bigger AI stat boosts, ledger #11) and the harvest's AI-only `event_boost_province_gold_output` bonus (ledger #24) — the engine props the AI up economically rather than making it play better.
+
+So the README thesis closes here: a high-Luck/Charisma lord who rolls max stats, relocates his seat out of reach, Grants his rear to auto-develop, and assassinates the weakest neighbours faces an opponent that can only do attack-first weighted coin-flips and was never given the verbs to punish any of it.
+
 ## The thread: the AI reuses the player's effects
 
 The way in was a search, not a guess. The player's command *drivers* (the `$B9B2` table) have **zero literal callers** — the menu dispatches through the table by indirect call. But the command *effect* handlers do have callers, and they came in pairs: Grow's effect `$87F0` is called from the Grow driver `$9D95` **and** from `$B4C2`; Dam's `$87D8` from its driver **and** from `$B46C`/`$B481`. That second-caller cluster — bank 1 `$B4xx` — is the AI: **it reuses the player's effect handlers but supplies its own arguments**, because it doesn't need the "how much?" prompt — it sizes the spend itself.

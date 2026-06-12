@@ -50,9 +50,11 @@ The thesis decomposes into questions the re-read answers as it goes. Current sta
 - **Assassination as the dominant action** — cheap, removes a whole faction, no guard stat.
   [CONFIRMED mechanically, entry #1]
 - **Combat = strength + supply, secondary** — 8-stat weighted compare, rice exhaustion. [from ch.14-17]
-- **The AI is structurally exploitable** — shares the player command path; war target is emergent
-  weakest-neighbor with no real scorer. [from ROADMAP AI-fork findings — to re-confirm]
-- **Luck decays → early-game window** — `drift_daimyo_luck $A2ED`. [UNVERIFIED — check sign/magnitude]
+- **The AI is structurally exploitable** — monomorphic (always `ai_state==0`), attack-first cascade of
+  `rng(10)` gates (`ai_econ_command_dispatch`); war target = weakest adjacent (`pick_weakest_men_fief`);
+  never specializes / assassinates / uses diplomacy; defends its seat only reflexively; subsidized by the
+  `const_two` dial + a harvest gold bonus. [CONFIRMED, ledger #24 + ch.12 rewrite]
+- **Luck decays → early-game window** — `drift_daimyo_luck $A2ED`, called **per fief EVERY season** from `per_period_fief_daimyo_update_driver` (cadence found, ledger #24). [PARTIAL — cadence confirmed; sign/magnitude of the drift still to read in `$A2ED`]
 - **Diplomacy & the relation value** — the `$6193` relation byte (0–100; Pact→70, Marry→90) is read as
   an **AI-aggression probability**: `$9422` spares an AI war-target when `rng(100) < relation` (AND the
   daimyo's `Drive < 50`); `$827C` is the ally-cooperation roll behind War's *"They are your allies!"*.
@@ -73,8 +75,22 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #24 — THE MAIN GAME LOOP grounded (bank 0): vm_bootstrap + the seasonal task rotation — 2026-06-12
+Walked ch.12/13's subject in the grounded C. The turn loop lives in **bank 0** (its own bank, as Chris noted; commands=bank 1, combat=bank 2). Closes ch.13's #1 open item ("the top-level loop hides").
+- **Master loop `vm_bootstrap $A778`** (bank 0): `init_new_game_state` then forever, each SEASON: (1) `ai_strategic_turn_planner` (season change); (2) `call_bank_wrap(2)` → **bank 2 combat** if a war/revolt is staged; (3) `shuffle_fief_turn_order_array` randomizes the `$6F1B` order; (4) `call_bank_wrap(1)` → `ai_per_fief_command_driver` = the **command phase** (walks `daimyo_turn_order`; player's Direct/ai_state-5 fiefs → `issue_province_command` interactive, AI fiefs → the cascade; a war launched mid-phase re-enters bank 2); (5) game-over on `ai_turn_flags` bit 7 → victory/defeat graphic. So ONE driver dispatches player-or-AI by `province_ai_state` (ch.13's structural guess, now grounded).
+- **`ai_strategic_turn_planner $A455` (season change):** deferred SRAM save (`write_sram_save_checksum_and_signature`, the Other→Save flag); advance `current_season` (`&3`, 4/year) → **at the year wrap: `current_game_year++` + `roll_period_market_rates`**; `per_period_fief_daimyo_update_driver`; cap all stats; pick + fire ONE random event (~7.5%/fief); illness sweep (low-health daimyo: `rng(400) < 100−health` → flagged, "has taken ill").
+- **THE SEASONAL TASK ROTATION** (`per_period_fief_daimyo_update_driver` → `switch(current_season)`): **S0 = aging** (`per_turn_age_daimyo_decay_health_and_province_stats`), **S1 = highwater marks**, **S2 = HARVEST** (`harvest_income_sweep_all_fiefs`), **S3 = relations decay** (`normalize_relations_matrix_lower`). Plus EVERY season: `drift_daimyo_luck` per fief + `check_and_process_daimyo_natural_death` per fief. So harvest is **annual (Fall)**, relations decay **annual (Winter)**, aging **annual (Spring)**; Luck drift + death checks are **per-season**.
+- **The Fall harvest (`harvest_income_sweep_all_fiefs`):** per fief — if loyalty>0, `gold += calc_fief_gold_income`, `rice += calc_fief_rice_income` (appendix §4, tax%-scaled); **AI/Home fiefs (ai_state==0) get a bonus `event_boost_province_gold_output`** (economic rubber-banding — the AI is subsidized); **debt auto-repays from harvested gold** (`repay_province_debt_from_gold`); armies eat upkeep (`consume_province_army_upkeep`). A fief in full revolt (loyalty 0) earns nothing.
+- **Events (`ai_strategic_turn_planner`):** one per season chosen by RNG — disaster (`decay_fief_list_wealth_and_output_disaster1`, season 1 + coin flip), ravage (`random_event_ravage_output_hidden_mark_weakness`, 25%), or boon (`ai_event_build_two_batches_dispatch_or_announce`, 75%); each rolls ~3–7.5%/fief for which fiefs are hit. Revolts/uprisings stage a force via `spawn_zealot_uprising_force_from_province` (the fief-50 zealot slot) → bank 2 combat.
+
+**RECONCILIATIONS this forces (fixing earlier ledger/doc claims):**
+- **Market rates reroll YEARLY, not per-season** (`roll_period_market_rates` only at the year wrap) → fix the Trade docs (ledger #23 / appendix / trade.html said "each season").
+- **The per-turn loyalty decay fires at HIGH tax, not low** (`per_period_fief_daimyo_update_driver`: `tax ≥ 90−skill → loyalty ×0.9`) → **resolves ledger #17's open `$A32A` puzzle** (the "fires at LOW tax — counterintuitive" read was inverted; it's a high-tax penalty, every season).
+- **Relations decay is ANNUAL (Winter, season 3)**, not per-turn → refine ledger #20 (a Pact's 70 erodes once/year, far slower than implied; deterrence lasts longer).
+- **Luck drifts EVERY season** (`drift_daimyo_luck`, 4×/year) → the "Luck decay → early-game window" thread now has its cadence (sign/magnitude still to read in `$A2ED`).
+
 ### #23 — Trade: a global commodity/credit market with real synthesis impacts — 2026-06-12
-The last non-combat command, and the richest (Chris: "simple interface, lots of impacts"). `driver_trade $A1B6` → 6 services via `jumptab_b9dc`. Market prices = the **period-rolled rate table `$6E0B`** (5 entries, re-rolled each season by `roll_period_market_rates $924A`), which **also drifts ±1 per transaction** (`cycle_economy_rate`). Helpers CERTIFIED: `ratio_times10_capped = min(⌊a·10/rate⌋,cap)`, `math32_muladddiv = ⌈rate·N/10⌉` → rates are stored ×10 (price = rate/10).
+The last non-combat command, and the richest (Chris: "simple interface, lots of impacts"). `driver_trade $A1B6` → 6 services via `jumptab_b9dc`. Market prices = the **period-rolled rate table `$6E0B`** (5 entries, re-rolled once per **year** by `roll_period_market_rates $924A` — see #24), which **also drifts ±1 per transaction** (`cycle_economy_rate`). Helpers CERTIFIED: `ratio_times10_capped = min(⌊a·10/rate⌋,cap)`, `math32_muladddiv = ⌈rate·N/10⌉` → rates are stored ×10 (price = rate/10).
 - **Presence (`effect_trade $8A15`):** always at the two commercial capitals (fiefs **13/14**, or 30/32 at 50-fief); elsewhere only when `ai_turn_flags & 1` (set per-turn at prob **(55−5·skill)%** — ~45% at skill 2, rarer at higher difficulty). A concrete reason to hold Kyoto/Sakai.
 - **Credit (Loan `$9F04` / Repay `$9FAF`):** borrow against **town collateral** — debt ceiling = `town`; borrowing N gives `gold+=N` but `debt += ⌈(loan_rate+10)·N/10⌉`. So **`loan_rate` IS the interest, baked into the gold-per-debt ratio** (`10/(loan_rate+10)` = 0.91→0.50 as loan_rate 1→10). This reconciles the toml's "sizes the loan, not interest" (it's the implicit cost). Repay is 1:1. **The only way to spend beyond your treasury** — a leverage lever for an early-game rush (borrow cheap when loan_rate is low, fund development/army, repay from harvest).
 - **Rice market (Sell `$A003` / Buy `$A068`):** convert gold⟷rice at `gold_rice_exchange_rate`; selling nudges the price down, buying up. Lets you **liquidate rice for gold or stockpile rice (= combat supply) for gold** — ties the harvest economy to the war economy. Caps are the `header` ceiling.
@@ -114,7 +130,7 @@ Walked the two diplomacy atoms. Both are **fully formulaic** (ch.11 had Pact's c
 - **Marry (`driver_marry $9DC4` → dowry `marriage_pact_handler $E314`) — DERIVED (sibling-confirmed).** Capital-gated (`show_not_home_fief` otherwise). AI dowry = `pct_op(gold, rng_mod(30)+50) + 200` ≈ **50–79% of treasury + 200**, gated on **your gold > 200**, same 1/skill-offer + weakness machinery as Pact. Effect on accept: gold→target, `set_marriage_relation $DA7D` = **90** (the strongest tie); rolls a bride portrait (`rng%22+53`).
 - **DRIVE (+2) is the diplomacy-attempt currency — promotes the stat-table row from TO-VERIFY to confirmed.** Every Pact/Marry attempt costs the player daimyo **−1 Drive** (`daimyo[+2]−1`). Pact: **−2 Drive** if you decline the price or get refused. **Marry refusal is harsh — `daimyo[+2]−1 (Drive), [+3]−1 (Luck), [+4]−1 (Charisma)`** (net refused = −2 Drive, −1 Luck, −1 Charisma; permanent stat loss). Marry *decline* (after seeing the dowry) costs nothing extra. The toml daimyo-record comment already hinted "+3=LUCK … marry-drained" — now grounded in the driver.
 - **CORRECTIONS found in the existing wikis:** `pact.html` claimed *"No formula … the price is read out of the relations state"* — **false** (it's a curve on your own gold, at 1/skill odds). `marry.html` said refusal drops "+3 (skill)" — **wrong, +3 is Luck**. Both fixed.
-- **Synthesis read (TENSIONED — see open Qs):** the price scales to your treasury (so it never feels cheap *at full coffers*), the AI gates the offer on 1/skill and refuses the weak, and the product is a relation number (70/90) that **decays each turn**. First read: a regressive sink the strong don't need and the weak can't get. BUT the price formula is **gameable** (below) and relation **does** gate AI aggression — so whether diplomacy is a dead sink or a cheap shield is genuinely open and hinges on quantifying decay-vs-deterrence.
+- **Synthesis read (TENSIONED — see open Qs):** the price scales to your treasury (so it never feels cheap *at full coffers*), the AI gates the offer on 1/skill and refuses the weak, and the product is a relation number (70/90) that **decays once a year** (Winter, ledger #24). First read: a regressive sink the strong don't need and the weak can't get. BUT the price formula is **gameable** (below) and relation **does** gate AI aggression — so whether diplomacy is a dead sink or a cheap shield is genuinely open and hinges on quantifying decay-vs-deterrence.
 
 **OPEN QUESTIONS raised by the diplomacy pair (added 2026-06-12, Chris):**
 1. **What does the `relation` value actually buy?** Readers found (ledger #20 grep): `$9422` AI war-target selection spares a target when `rng(100) < relation(target,you)` AND `daimyo.Drive < 50`; `$827C` ally-cooperation roll → War's *"They are your allies!"* block; decay `$9103/$9139` each turn. OPEN: the **decay rate/period**, the effective **deterrence threshold** (is 70 enough to reliably stop a war? how many turns before it bleeds below useful?), the `order_flag` (directional vs symmetric) semantics, and whether the AI ever *raises* relation (only Pact/Marry/normalize seen). Map the full reader set + emulate a pact→decay→AI-attack-roll sequence.
@@ -145,8 +161,8 @@ output grows). Implications for the synthesis:
 - **Tax (verified, wiki accurate):** the command just *sets the rate* (1-100) + an immediate penalty —
   loyalty AND wealth each drain `|Δtax|%` (econ_sim: Δ20 → −20% of each), −1 charisma. The rate's real
   weight is **downstream**: it's the harvest income multiplier (`gold/rice ≈ tax% of the economic base`,
-  `fief_tax_rate $6D2D`). OPEN (toml Inbox): the `$A32A` per-turn loyalty `×0.9` decay direction (fires at
-  LOW tax — counterintuitive, recheck vs bytecode).
+  `fief_tax_rate $6D2D`). RESOLVED (ledger #24): the per-period loyalty `×0.9` decay fires at **HIGH tax**
+  (`tax ≥ 90−skill`), every season — the "LOW tax" read was inverted. Overtaxing bleeds 10% loyalty/season.
 - **SYNTHESIS — the Grow↔Dam↔skill interaction (Chris):** harvest ∝ output×dams. Marginal rice/gold:
   Grow ∝ `dams·(6−skill)/√output`, Dam ∝ `√output` → **crossover output ≈ (6−skill)·dams** (skill 1 → 5×dams,
   skill 5 → 1:1). Since **Grow drains dams**, at high skill (crossover ≈ 1:1) you're forced into a
@@ -431,9 +447,9 @@ Status: `todo` / `WIP` / `done` (= every claim verified, corrections applied). P
 | 08 | VM instruction set | **done** | 2026-06-11 — 9999-cap/ALU/control-flow hold; fixed $30-$3F (PUSH not store-regB) + $D8 (JUMPF_abs, absolute not relative); names→Appendix C (ledger #10) |
 | 09 | Command system & Grow | **done** | 2026-06-11 — Grow/idiom/convention hold; added the MISSING skill-level dial (`const_two`=difficulty 1-5; gain ×(6−skill), 5.4× swing); ch.7 reconciliation closed (ledger #11) |
 | 10 | Command families | **done** | 2026-06-11 — develop-template real, but fixed 2 misclassifications (Bribe=peasant-defection not √-grow; Assign=arms-editor not retainer) + skill dial + the "target-select≠diplomacy-subsystem" over-read (ledger #12) |
-| 11 | Strategic engine (21 commands) | todo | **espionage/ninja portion already done** (ledger #1/#2) |
-| 12 | Daimyo AI | todo | erratum ×2; the AI-exploitability leg lands here |
-| 13 | Turn loop & harvest | todo | |
+| 11 | Strategic engine (21 commands) | **done** | 2026-06-12 — ALL 20 non-combat commands walked through the 6-goal checklist (Move/diplomacy/atoms/Grant/Other/Trade); only War deferred to the combat chapters (ledger #19-#23) |
+| 12 | Daimyo AI | **done** | 2026-06-12 — added the decompiled model (monomorphic, attack-first `ai_econ_command_dispatch` cascade) + the AI-exploitability synthesis; old pre-decompiler body marked superseded (ledger #24) |
+| 13 | Turn loop & harvest | **done** | 2026-06-12 — grounded `vm_bootstrap` master loop + the seasonal task rotation (S0 age/S1 highwater/S2 harvest/S3 relations-decay); closed the "top-level loop hides" + harvest-misID open items (ledger #24) |
 | 14 | Combat overview | todo | erratum 2026-06-01 |
 | 15 | Tactical map | todo | |
 | 16 | Render pipeline | todo | errata 2026-05-20 |

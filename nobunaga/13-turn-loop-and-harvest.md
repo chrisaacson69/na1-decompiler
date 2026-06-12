@@ -8,6 +8,30 @@ created: 2026-05-14
 
 **Links:** [Chapter 12 — Daimyo AI](./12-daimyo-ai.md) · [Chapter 11 — The Strategic Engine](./11-strategic-engine-complete.md) · [Nobunaga README](./README.md)
 
+> **✔ Decompiled (2026-06-12) — the loop no longer hides.** Pass 2 walked the turn loop in the grounded C; the trace narrative below is how it was *found* and still holds in shape, but the structural questions it left open are now answered. The turn loop is **bank 0** (its own bank; commands are bank 1, combat bank 2).
+>
+> **`vm_bootstrap $A778` is the top-level loop** (the sub ch.13 said "still hides"). After `init_new_game_state`, it runs forever, and each **season** does:
+> 1. **`ai_strategic_turn_planner $A455`** — the *season change*: write the deferred SRAM save (the Other→Save flag); advance `current_season` (`&3`, four per year) and, **at the year wrap, `current_game_year++` + `roll_period_market_rates`** (so the merchant rates re-roll *yearly*, not per-turn); run `per_period_fief_daimyo_update_driver`; cap every fief's stats; pick and fire **one random event**; run the illness sweep (a low-health daimyo, `rng(400) < 100−health`, is flagged and *"has taken ill"*).
+> 2. **Combat** — if a war or revolt is staged, `call_bank_wrap(2)` into **bank 2** and re-plan.
+> 3. **`shuffle_fief_turn_order_array`** — randomize this round's turn order (`$6F1B`). *(This is the `$6F0B`-style permutation; it is why a Send can arrive after the fief that needed it already acted — ch.11.)*
+> 4. **`call_bank_wrap(1)` → `ai_per_fief_command_driver $B89B`** — the **command phase**: walk `daimyo_turn_order`, and for each fief dispatch on `province_ai_state` — a player **Direct (5)** fief calls `issue_province_command` (the interactive *"your orders?"* menu, ch.11); an **AI (0)** fief runs the weighted-coin-flip cascade (ch.12); a war launched mid-phase re-enters bank 2. **This is the single driver ch.13 (below) correctly guessed dispatches "player-handler-or-AI by ownership."**
+> 5. Game over when `ai_turn_flags` bit 7 is set → the victory/defeat graphic.
+>
+> **The seasonal task rotation** (`per_period_fief_daimyo_update_driver` → `switch(current_season)`) is the spine of "what a round does":
+>
+> | season | the season's maintenance task |
+> |---|---|
+> | 0 (Spring) | **aging** — `per_turn_age_daimyo_decay_health_and_province_stats` |
+> | 1 (Summer) | province highwater marks |
+> | 2 (Fall) | **the HARVEST** — `harvest_income_sweep_all_fiefs` |
+> | 3 (Winter) | **relations decay** — `normalize_relations_matrix_lower` |
+>
+> Plus, **every** season: `drift_daimyo_luck` per fief and a natural-death check per fief. So the **harvest is annual (Fall)**, relations decay annual (Winter), aging annual (Spring) — and Luck drifts four times a year.
+>
+> **The harvest itself** (`harvest_income_sweep_all_fiefs`): per fief, if loyalty>0 add `calc_fief_gold_income` + `calc_fief_rice_income` (the tax%-scaled formula, appendix §4); **then auto-repay debt from the new gold** (`repay_province_debt_from_gold` — the Trade-loan counterpart) and **subtract army upkeep** (`consume_province_army_upkeep`). One twist: an **AI-run fief (state 0) gets a bonus** `event_boost_province_gold_output` — the AI economy is quietly subsidized (rubber-banding). A fief in full revolt (loyalty 0) earns nothing.
+>
+> **Correction to the trace below:** the *"harvest = the `$E03C` cluster"* identification in Phase 4 was wrong — `$E03C` is `apply_conquest_outcome` and `$DA24` is `scaled_force_transfer` (Move's arms blend). The trace caught those because an AI war *resolved* in that window; the real harvest is `harvest_income_sweep_all_fiefs` (bank 0), fired only in Fall.
+
 ## What the trace shows
 
 14 985 `$EB7A` events across frames 29 731 – 33 321 (≈ 3 590 frames, one full turn boundary). Stripping the idle cursor loop, the events fall into a clean five-phase shape:
@@ -70,11 +94,14 @@ That symmetry is the structural hint about the top-level loop: **it iterates "th
 
 ## What's still open
 
-- **The exact top-level loop sub.** The per-fief iteration boundaries are visible in the trace (every iteration begins with the `$CC54` close + status render), but the *containing* sub is reached indirectly and doesn't surface as a `$EB7A` target. Almost certainly a native loop in bank 15 (consistent with no bytecode-stub hits) that walks the `$6F0B` turn-order permutation, looks up each daimyo's fiefs, and indirect-calls the right handler. The right cut for this is a *short* exec-breakpoint trace at `$E867` (`vm_dispatch`) across one iteration boundary — that exposes the bytecode PC stream so the indirect-call site is visible.
-- **The two wars' call path.** The wars are folded into phase 2 — `$87D8` firing more than its siblings (22 vs 12, 11) is the tell. Walking the AI war path is the natural opener for the combat-resolution chapter arc.
-- **The harvest body.** `$E03C` / `$DF73` / `$DA24` are named here; their bytecode disassembly is the next short walk — and it's where the per-stat income/decay numbers live.
-- **Difficulty config writer.** Still not found. The config block at `$6D5F–$6D65` (`01 01 02 32`) feeds the AI thresholds, so the difficulty selector writes there at game start — a focused search at boot is the path.
-- **Leader characteristics in command effects.** Grow's effect didn't read the daimyo record; War's probably does. Walking War's effect is a quick test.
+*(Most of the 2026-05-14 open list is now closed by the decompiled model above; the survivors:)*
+
+- ~~The exact top-level loop sub~~ — **closed**: `vm_bootstrap $A778` (bank 0), with the per-fief dispatcher `ai_per_fief_command_driver $B89B`.
+- ~~The harvest body~~ — **closed**: `harvest_income_sweep_all_fiefs` (bank 0, Fall only), using the appendix-§4 `calc_fief_gold_income`/`calc_fief_rice_income`. The `$E03C` cluster was conquest, not harvest.
+- **The AI war path (→ combat, bank 2).** A staged war hands off via `call_bank_wrap(2)`; walking the bank-2 combat resolution is the next chapter arc (ch.14–17).
+- **`drift_daimyo_luck $A2ED` — the drift's sign and magnitude.** We know it fires per fief every season; whether Luck trends down (the "early-game window" thesis) and by how much is a short read of the `$A2ED` body.
+- **The event payloads.** The disaster/ravage/boon handlers (`decay_fief_list_wealth_and_output_disaster1`, `random_event_ravage_output_hidden_mark_weakness`, `ai_event_build_two_batches_dispatch_or_announce`) and `spawn_zealot_uprising_force_from_province` are named; their exact field effects are a short walk each.
+- **Leader characteristics in command effects.** Grow's effect didn't read the daimyo record; War's does (combat is where Drive/Charisma/etc. weigh in) — that lands in the combat chapters.
 
 ## Method note — when the trace beats the static walk
 

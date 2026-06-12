@@ -1324,7 +1324,7 @@ COMMANDS = {
         ["6", "Menu", "$A1AF", "<span class='scr'>“Bye.”</span> — leave the merchant", "—"],
       ],
       "note": "The rates are five entries of the market table (<code>$6E0B…$6E13</code>), <b>re-rolled "
-              "every season</b> by <code>roll_period_market_rates $924A</code> — the same table that "
+              "once a year</b> (at the season wrap) by <code>roll_period_market_rates $924A</code> — the same table that "
               "prices <b>Hire and Ninja</b> (<code>gold_men_hire_rate</code> / <code>hire_gold_rate</code>) "
               "— and they also <b>drift ±1 per transaction</b> (<code>cycle_economy_rate</code>: sell rice "
               "→ price down, buy rice/arms → price up, each loan → loan_rate up). So both the seasonal "

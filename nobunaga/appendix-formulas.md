@@ -210,7 +210,7 @@ source_field -= effective_amount   (no attrition)
 
 ## Trade — the merchant market ($A1B6 driver; rate table $6E0B) — **DERIVED + part-CERTIFIED 2026-06-12**
 
-> A global commodity/credit market behind one menu. Prices come from a **period-rolled rate table** (`$6E0B`, re-rolled each season by `roll_period_market_rates $924A`) that **also drifts ±1 per transaction**. Every quantity cap uses `ratio_times10_capped(a,rate,cap) = min(⌊a·10/rate⌋, cap)` (CERTIFIED); every price uses `math32_muladddiv(rate,N) = ⌈rate·N/10⌉` (CERTIFIED) — so **rates are stored ×10** (a rate of 15 = 1.5 gold/unit).
+> A global commodity/credit market behind one menu. Prices come from a **period-rolled rate table** (`$6E0B`, re-rolled once per **year** at the season wrap by `roll_period_market_rates $924A` — see ledger #24) that **also drifts ±1 per transaction**. Every quantity cap uses `ratio_times10_capped(a,rate,cap) = min(⌊a·10/rate⌋, cap)` (CERTIFIED); every price uses `math32_muladddiv(rate,N) = ⌈rate·N/10⌉` (CERTIFIED) — so **rates are stored ×10** (a rate of 15 = 1.5 gold/unit).
 
 ### Presence (`effect_trade $8A15`)
 ```
