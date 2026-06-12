@@ -96,9 +96,14 @@ def attr_subpal(phases, abs_col, screen_tx, screen_ty):
 
 MAPID = None
 def map_id_for(province, scenario):
-    # province_to_mapid_table $F70E (bank 15)
-    base = prg(15, 0xF70E) + (0 if scenario == 17 else 50)
-    return ROM[base + province]
+    # Two SEPARATE province->map_id tables (they are NOT contiguous in one array):
+    #   17-fief: $F70E bank 15 -- 17 entries, remaps the subset (0F 09 0D ... 18, 00-term)
+    #   50-fief: $8E18 bank 3  -- 50-entry identity ramp (province index IS the map_id)
+    # The old "$F70E + 50 + province" read ASCII string bytes past the 17-entry table,
+    # producing garbage map_ids -> wrong per-fief CHR + wrong attribute sub-palettes.
+    if scenario == 17:
+        return ROM[prg(15, 0xF70E) + province]
+    return ROM[prg(3, 0x8E18) + province]
 
 def render(province, scenario=17, sub=None, label=None, out=None, out_path=None):
     sram = rrm.populate_from_rom(province, scenario)[0]        # (sram, ok, todo) -> full $6000-$7FFF
