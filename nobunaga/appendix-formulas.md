@@ -275,6 +275,22 @@ dowry = pct_op(your.gold, rng(50..79)) + 200                  ; ≈ 50–79% of 
 - **Refusal penalty (permanent):** `daimyo +2 (Drive) −1`, `+3 (Luck) −1`, `+4 (Charisma) −1` — you lose three core stats for the snub. (Declining the dowry after it's named costs nothing extra.)
 - Flavor: rolls a composite bride-portrait (`rng%22 + 53`).
 
+## View — spy contest ($A6C7 driver; roll $A6B3) — **DERIVED 2026-06-12**
+
+> Viewing your own fiefs is free. Spying an enemy costs **10 gold** a look and runs a Luck+IQ contest.
+
+```
+if your.gold < 10:  "You have no gold!"
+your.gold −= 10
+roll(d) = rng(d.Luck[+3]) + d.IQ[+5]                 ; effect_view_d $A6B3
+if roll(you) > roll(target) and rng(skill) == 0:  clean look          ; auto-success
+elif rng(3) != 0:                                  clean look          ; 2/3 fallback
+elif target is owned (ai_state != 0xFF):           "Our spy was caught"
+else:                                              clean look          ; neutral target never catches
+```
+- **High Luck + IQ → reliable espionage.** The `rng(skill)` term makes the auto-success leg rarer at higher difficulty (another `const_two` dial).
+- Adds spying to the IQ and Luck stat-effect rows (synthesis stat table).
+
 ## 7. Hire ($A5F4 driver → Men:$A553 / Ninja:$A2D2; dilution $8BF4) — **VERIFIED 2026-05-26; effect addr CORRECTED 2026-06-02**
 
 > **CORRECTION (2026-06-02, bytecode walk).** The driver `$A5F4` prompts **"(Men/Ninja)?"** and branches: **Men → `effect_hire_men` ($A553)** (the recruit-soldiers formula below, animation **id 33**); **Ninja → `$A2D2`** (the *sabotage*-mission menu — Uprising/Revolt/Dams/Assassin/Arson, animation id 12 — the same subsystem **Bribe** uses, NOT recruitment). The earlier "$A2D2 = effect_hire dispatcher" label was wrong: `$A2D2` is the ninja path. The per-man gold cost uses `gold_men_hire_rate` ($6E11), which **re-rolls every turn** (market-rate table) — so hiring is cheaper some seasons.

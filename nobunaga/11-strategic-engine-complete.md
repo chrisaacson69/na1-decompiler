@@ -50,11 +50,11 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 ### Information & administration
 
-**View** (`$A6CC`) — inspect a fief. Free for your own; **spying on others costs gold** (*"You have no gold!"* gate) and can fail — *"Our spy was caught"*. A *"(99-view vassals)"* sub-option. View is both the information command and the **espionage** command.
+**View** (`driver_view $A6C7`) — inspect a fief. Free for your own; **spying on an enemy costs 10 gold** per look (`selected.gold −= 10`; *"You have no gold!"* if under 10). Spy success is a **Luck+IQ contest** (`effect_view_d = rng(Luck) + IQ` for each daimyo): beat the target and a `1/skill` roll for a clean look, else a 2/3 fallback succeeds and the remaining third gets *"Our spy was caught."* A *"(99-view vassals)"* sub-option and a strategic-map sub-screen (same renderer as Map). View is both the information command and the **espionage** command — and one of two places IQ matters (the other being assassination resolution).
 
 **Map** (`$AF3D`) — render the strategic map. 18 instructions, no prompt, no cost — pure display (`$E5F2`/`$AF10`).
 
-**Rest** (`$ADB8`) — *"Seasons"* (`$D5E9`: how many) → *"It will do you good"*. The lord skips turns to recover (health/age interplay).
+**Rest** (`driver_rest $ADB3`) — **capital-gated** (must be home, else *"…not your home fief"*). *"Seasons"* (`number_input` 1–10) → `rest_turns_remaining[owner]` → *"It will do you good"*. The lord sits out that many turns to recover; the driver only *sets the counter* — the actual recuperation (health) is applied downstream in the per-turn tick. Cost = pure tempo (multiple action-slots).
 
 **Grant** (`$AF6B`) — set a province's policy "state". *"Which fief"* → *"What are your orders?"* → a submenu (`$B1A6`); *"It's currently a %s state, OK to make it a %s state"*, confirmed with *"Lord, you are truly wise!"*. Already-set states are rejected (*"It's already a %s state"*).
 
@@ -77,12 +77,12 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 | 9 | Trade | economy | merchant present | buy/sell submenu | trade with a merchant |
 | 10 | Hire | military | gold | Men/Ninja | recruit men (`$A553`) or run a ninja mission (`$A2D2`) |
 | 11 | Train | military | `header`-derived cap | — | raise skill |
-| 12 | View | information | gold (to spy); can fail | which fief | inspect own / spy on others |
+| 12 | View | information | 10 gold to spy (Luck+IQ contest; can be caught) | which fief | inspect own free / spy on enemies |
 | 13 | Build | development | gold; `header`≥town | amount | √-raise town, drain wealth |
 | 14 | Give | economy | — | — | charity → loyalty/morale |
 | 15 | Bribe | diplomacy | gold; Charisma contest | amount | `sqrt(gold)` peasants defect target.output → your wealth |
-| 16 | Assign | military | — | — | arms-allocation editor (distribute weapon stores) |
-| 17 | Rest | misc | — | #seasons | lord rests (recover) |
+| 16 | Assign | military | 30 gold; needs men | (5-row editor) | arms-allocation editor (redistribute unit types) |
+| 17 | Rest | misc | from capital | #seasons (1–10) | lord sits out N turns to recover |
 | 18 | Map | information | — | — | show the strategic map |
 | 19 | Grant | administration | — | which fief, policy | set a province's policy "state" |
 | 20 | Other | misc | — | submenu | settings / save |
@@ -92,7 +92,7 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 A few things the full picture makes clear:
 
-**Gold is the master resource.** Of the 21 commands, the ones that *cost* anything cost **gold** — Dam, Grow, Build, Bribe, Pact, Marry, Hire (the *"you have no gold"* gate), and the spying mode of View. (Pact and Marry are the cruellest: their price is sized to a *fraction of your current treasury* — so a full war-chest makes peace proportionally expensive — and the gold is handed straight to the rival.) There is no separate "action point" economy; your turn is bounded by your treasury (and by the per-province `header` development ceiling). Tax is the only command that *generates* gold, and it does so against a loyalty cost — the central economic tension of the game is the **tax↔loyalty tradeoff**, and it's surfaced literally ("protesting" / "delighted").
+**Gold is the master resource.** Of the 21 commands, the ones that *cost* anything cost **gold** — Dam, Grow, Build, Bribe, Pact, Marry, Hire (the *"you have no gold"* gate), Assign (a flat 30), and the spying mode of View (10 a look). (Pact and Marry are the cruellest: their price is sized to a *fraction of your current treasury* — so a full war-chest makes peace proportionally expensive — and the gold is handed straight to the rival.) There is no separate "action point" economy; your turn is bounded by your treasury (and by the per-province `header` development ceiling). Tax is the only command that *generates* gold, and it does so against a loyalty cost — the central economic tension of the game is the **tax↔loyalty tradeoff**, and it's surfaced literally ("protesting" / "delighted").
 
 **Development is deliberately lossy.** Dam/Grow/Build don't just add — they add on a √ curve *and* silently subtract a percentage from other fields (chapter 10). Combined with the `header`-gated ceiling, province development is a game of **managed decline**, not free growth. A player optimizing one stat is always paying in another.
 

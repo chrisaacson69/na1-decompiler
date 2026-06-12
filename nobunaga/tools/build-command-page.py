@@ -1214,9 +1214,11 @@ COMMANDS = {
       "of the non-econ commands — it’s a loop over several screens. <span class=\"scr\">View which "
       "fief?</span> lets you inspect any province’s stats (<code>effect_view_a</code>); your own fiefs "
       "are free, but <b>spying on an enemy costs 10 gold</b> per look (no gold → <span class=\"scr\">You "
-      "have no gold.</span>). Spying is a <b>contest</b>: <code>effect_view_d</code> compares your "
-      "daimyo against the target and, on a bad roll, <span class=\"scr\">Our spy was caught.</span> "
-      "(animation 14). From the same command you can list a daimyo’s vassals "
+      "have no gold.</span>). Spying is a <b>Luck+IQ contest</b>: <code>effect_view_d = rng(Luck) + "
+      "IQ</code> for each daimyo — beat the target (and a <code>1-in-skill</code> roll) and the look "
+      "is clean; otherwise a 2-in-3 fallback still succeeds, but the remaining third gets "
+      "<span class=\"scr\">Our spy was caught.</span> (animation 14). From the same command you can "
+      "list a daimyo’s vassals "
       "(<span class=\"scr\">View vassals</span>, <code>effect_view_b/c</code>) and open the strategic "
       "<b>map</b> (<code>map_helper_e5f2 / map_helper_af10</code> — the very same render path the Map "
       "command uses, branched on <code>scenario_fief_count</code>)."),
@@ -1224,7 +1226,8 @@ COMMANDS = {
       (0xA716, '<span class="scr">"View which fief?"</span> — pick any province.'),
       (0xA6EE, '<b>Own fief:</b> view its full stats free (<code>effect_view_a</code>).'),
       (0xA7AA, '<b>Enemy fief:</b> costs <b>10 gold</b> to spy; debited on the attempt.'),
-      (0xA80A, '<b>Spy contest</b> (<code>effect_view_d</code>): your daimyo vs the target + an RNG roll.'),
+      (0xA80A, '<b>Spy contest</b> — <code>effect_view_d = rng(Luck) + IQ</code> per daimyo; you vs the '
+               'target (then a <code>1-in-skill</code> auto-pass, else a 2/3 fallback).'),
       (0xA843, '<b>Caught</b> → <span class="scr">"Our spy was caught."</span> (animation 14).'),
       (0xA743, '<b>Map sub-screen</b> — opens the strategic map (<code>map_helper_e5f2/af10</code>, '
                'the same renderer as the Map command).'),
@@ -1233,14 +1236,15 @@ COMMANDS = {
       "<b>The information hub — and a second door to the map.</b> View bundles three things the other "
       "commands keep separate: province inspection, vassal lists, and the strategic map. Reading your "
       "own holdings is free; reading an <i>enemy’s</i> is espionage — 10 gold a look and a "
-      "skill-vs-skill roll that can get your spy caught. The map sub-screen calls the identical "
+      "<b>Luck+IQ</b> roll (<code>rng(Luck)+IQ</code> each side) that can get your spy caught. The map "
+      "sub-screen calls the identical "
       "<code>map_helper_e5f2</code> path as the <a href=\"./map.html\">Map command</a> (and the kernel "
       "<code>$E694</code> standalone viewer), which is why all three share one render core — and why "
       "pulling that illustrated map from ROM is filed as its own task."),
     "rabbit_holes": [
-      ("Spy-contest math", "<code>effect_view_d ($A6B3)</code> — the daimyo-vs-daimyo skill roll that "
-       "decides whether an enemy inspection succeeds or the spy is caught; not yet pinned to a closed "
-       "form.", None),
+      ("Spy-contest math", "<code>effect_view_d ($A6B3) = rng(Luck) + IQ</code> — the daimyo-vs-daimyo "
+       "roll behind a successful inspection vs a caught spy. High Luck+IQ → reliable espionage; a "
+       "<code>1-in-skill</code> term makes it harder at higher difficulty.", None),
       ("The illustrated strategic map", "<code>map_helper_e5f2</code> blits a 9-section map from bank 4 "
        "— rendering it from ROM (both 17 & 50 fief) is an open task (ROADMAP Inbox).", None),
     ],
