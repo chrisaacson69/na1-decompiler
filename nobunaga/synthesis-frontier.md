@@ -75,6 +75,16 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #26 — The AI turn, top to bottom (decision order · probabilities · stat influence) — 2026-06-12
+Chris's brief: a full top-to-bottom walk of the AI's turn — order, odds, and whether daimyo stats move them. Written into ch.12 as "The AI turn, top to bottom." Findings:
+- **Decision order (`ai_econ_command_dispatch`):** seed rice if 0 → token-garrison an undefended capital → **~90% MILITARY** (war→recruit→arm→train), STOP if it acted → else **~90% develop town + ALWAYS dam/grow**. Attack-first, build-second.
+- **The probabilities:** military entry `rng(10)≠0` (~90%); recruit `rng(10)<const_two+3` (≈(skill+3)/10, **rises with difficulty**); town `rng(3)≠0` (2/3); train `rng(2)` (50%); reinforce `rng(100)==0` (1%); war commit needs a men-ratio advantage (`ratio−10−rng(skill·3)>60`) or 1/100.
+- **Spend-sizing without a prompt:** `ai_calc_men_surplus = {gold−men, rice−men}` (clamped ≥0) — the AI keeps a reserve = its army size, spends the surplus; caps scale with the **game year** (AI strengthens as the campaign ages). It even **plays the rice market**.
+- **War targeting (`ai_try_war_attack`):** target = **weakest enemy by *provisioned* men** (`pick_weakest_men_fief`; a fief with no rice = 0 men → starved fiefs are magnets); needs men AND rice to attack; risk-averse commit. → bank-2 combat. The "no real scorer" thesis is literally true: the scorer is men-ratio.
+- **DO DAIMYO STATS ALTER THE ODDS? — only DRIVE.** The cascade reads difficulty/year/market/province-stats, **not** the daimyo's personal stats — EXCEPT **Drive = the aggression dial** (`ai_relations_and_low_drive_skip_gate`: `Drive<50` respects relations & won't attack liked fiefs; `Drive≥50` ignores them; also gates the monk-fief attack). Charisma/IQ/Luck/age/health are inert on *decisions* (they matter in combat/events/assassination). So the AI plays the same opening regardless of who the lord is; only aggression (Drive) and battle strength vary.
+- **Partial answer to Q1 (what relation buys):** relation **gates AI attacks, but only for Drive<50 daimyo** — a bold (Drive≥50) lord rolls over your pacts/marriages. So diplomacy's deterrence is Drive-conditional. (Still open: the decay-vs-deterrence quantification.)
+- **Tie-back noted in ch.12 for combat (ch.14-17):** AI wars (`effect_war_a`) and uprisings (`spawn_uprising_force`) both resolve in **bank 2**; combat should close the men-ratio/`$8EB8` strength compare (Drive re-enters), rice/supply exhaustion, and the uprising-attacker resolution.
+
 ### #25 — The EVENT SYSTEM enumerated → new appendix-events.md (the deep dive, not a glance) — 2026-06-12
 Chris's push: the bank-0 glance (#24) was reconnaissance; walk the events properly. Did, and it corrected my own #24 labels. Built **`appendix-events.md`** (season · trigger · result). Findings:
 - **The 75% common event is the UPRISING dispatcher (Riot/Revolt), not a "boon"** (my #24 mislabel). Two eligibility variants drive it: **RIOT = loyalty variant** (low loyalty / **high tax** / low Charisma → "The people are rebelling!", player can quell by spending) vs **REVOLT = morale variant** (low **morale**, the army stat → ownership **flips**; at an AI capital the rebels can win → `announce_daimyo_death` + `find_fiefs_of_owner` = **faction collapse, same as assassination**). Confirms Chris's "military uprising if morale too low" — it's the morale-variant revolt.
@@ -418,7 +428,7 @@ train) but those are PROBABLE until verified.
 | Luck (+3) | ninja **attempt-gate** (`target.Luck < attacker.Luck+30`, all 5 missions); empty-fief assassination kill-roll defense (`rng(Luck/10)`,`rng(Luck/100)`); **−1 on Marry refusal**; **View spying** (`rng(Luck)+IQ` contest) | #1, #2, #20, #21 |
 | Charisma (+4) | assassination **resolution** (Cha+IQ contest); **counterattack** duel; kill sub-roll factor (`rng(Cha)+50`); **bribe success** (`your(loy+Cha) > target(loy+Cha)+rng·skill`); **−1 on Marry refusal** | #1, #19, #20 |
 | IQ (+5) | assassination **resolution** (Cha+IQ contest); **View spying** (`rng(Luck)+IQ` contest vs target) | #1, #21 |
-| Drive (+2) | the **diplomacy-attempt currency**: Pact/Marry each cost −1 Drive to attempt, −2 on Pact decline/refuse or Marry refusal; compared daimyo-vs-daimyo in combat (`$8EB8`) | #20 |
+| Drive (+2) | the **diplomacy-attempt currency** (Pact/Marry cost −1, −2 on refusal); **the AI's AGGRESSION dial** — `Drive<50` respects relations (won't attack liked fiefs), `Drive≥50` ignores them; gates attacking the monk fief; compared daimyo-vs-daimyo in combat (`$8EB8`) | #20, #26 |
 | Age (+0) | — *(aging/event interactions — TO VERIFY)* | — |
 
 ## Pass-2 sweep — BY CHAPTER, in order (the method, Chris 2026-06-11)
@@ -455,7 +465,7 @@ Status: `todo` / `WIP` / `done` (= every claim verified, corrections applied). P
 | 09 | Command system & Grow | **done** | 2026-06-11 — Grow/idiom/convention hold; added the MISSING skill-level dial (`const_two`=difficulty 1-5; gain ×(6−skill), 5.4× swing); ch.7 reconciliation closed (ledger #11) |
 | 10 | Command families | **done** | 2026-06-11 — develop-template real, but fixed 2 misclassifications (Bribe=peasant-defection not √-grow; Assign=arms-editor not retainer) + skill dial + the "target-select≠diplomacy-subsystem" over-read (ledger #12) |
 | 11 | Strategic engine (21 commands) | **done** | 2026-06-12 — ALL 20 non-combat commands walked through the 6-goal checklist (Move/diplomacy/atoms/Grant/Other/Trade); only War deferred to the combat chapters (ledger #19-#23) |
-| 12 | Daimyo AI | **done** | 2026-06-12 — added the decompiled model (monomorphic, attack-first `ai_econ_command_dispatch` cascade) + the AI-exploitability synthesis; old pre-decompiler body marked superseded (ledger #24) |
+| 12 | Daimyo AI | **done** | 2026-06-12 — full top-to-bottom AI-turn walk (order/probabilities/Drive-only stat influence) + the decompiled model + AI-exploitability synthesis; old pre-decompiler body superseded (ledger #24, #26) |
 | 13 | Turn loop & harvest | **done** | 2026-06-12 — grounded `vm_bootstrap` master loop + the seasonal task rotation (S0 age/S1 highwater/S2 harvest/S3 relations-decay); closed the "top-level loop hides" + harvest-misID open items (ledger #24) |
 | 14 | Combat overview | todo | erratum 2026-06-01 |
 | 15 | Tactical map | todo | |

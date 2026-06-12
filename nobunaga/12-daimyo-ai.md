@@ -16,6 +16,55 @@ created: 2026-05-14
 
 > **⚠ Erratum (2026-05-14, post-draft).** A Mesen `$EB7A` trace across a turn boundary revealed that this chapter's "pick one of six executors via `$B94C`" framing is one level too high. The trace shows each AI-fief iteration calls `$B875`, `$B64B`, `$B4D5`, `$B3AA`, `$B42B` **all in sequence** (16 hits each over ~16 AI fiefs — they are *stages*, not alternatives). The `$B94C` switch is used *inside* `$B64B` (the develop sub-dispatcher) to pick Dam/Grow/Build, which is consistent with chapter 10. So the per-fief AI is a **multi-stage pipeline**, and each stage's `$CA52` roll gates whether that stage acts. The "cascade of weighted coin-flips" model is *more* right under this correction, not less — the cascade just runs across all stages, every fief. Also: the `$B8A0` "Turn %2d Fief %2d" sub never fires during a normal turn — it is some other (probably combat-announcement) context, not the AI turn handler I called it. The pipeline entry point is reached indirectly and is part of the turn loop in ch 13.
 
+## The AI turn, top to bottom (2026-06-12)
+
+The full walk of one AI fief's turn — decision order, the probability at each gate, and where (if anywhere) the daimyo's own stats tilt the odds. The "cascade of weighted coin-flips" headline **survives intact**; the addresses and framing in the older sections below are superseded by this.
+
+### Entry & the per-fief loop
+The turn loop (ch.13) calls `ai_per_fief_command_driver $B89B`, which walks `daimyo_turn_order` (re-shuffled each round) and dispatches each fief on `province_ai_state`. A player's **Direct (5)** fief opens the interactive menu; every **AI (0)** fief runs `ai_econ_action_state0 → ai_econ_command_dispatch $B64B` — **one brain, every AI fief, every turn** (the AI never uses states 1–4; ch.11 / ledger #22).
+
+### The decision order (`ai_econ_command_dispatch`)
+```
+1. if rice == 0:            rice += rng(10)              ; never let a fief starve to 0
+2. if capital & men == 0:   men  = 2                     ; token garrison — never leave the seat naked
+3. ~90% (rng(10) ≠ 0):      try the MILITARY branch  →  if it acted, STOP
+4. otherwise:               ~90% (rng(10) ≠ 0) DEVELOP TOWN ; then ALWAYS DAM+GROW
+```
+So the AI is **attack-first, build-second**: ~90% of fiefs look to recruit or make war before anyone develops.
+
+### Branch A — Military (`ai_state2_recruit_arm_train`), in order
+1. **War (`ai_try_war_attack`)** — tried first; if a war launches, the branch returns and the fief is done. (Detailed below.)
+2. **Recruit** — only if `men < min((year−1559)·40, header)` (a *year-scaled* cap — armies grow over the campaign), and gated by **`rng(10) < const_two + 3`** (recruit chance ≈ `(difficulty+3)/10` — 50% at skill 2, higher at higher difficulty). Spends half the gold surplus.
+3. **Feed morale** — convert rice surplus into morale (`morale += send`, rice paid per man).
+4. **Buy arms** — if affordable, `arms += 2·N` at the market `arms_buy_price_rate` (and bumps that rate).
+5. **Train** — **50% (`rng(2)`)** → `effect_train` (raise skill).
+6. **Reinforce** — **1% (`rng(100)==0`)** → a rare arms/econ top-up.
+
+### Branch B — Development (Town, then Dam+Grow)
+- **Town** (`ai_develop_town_handler`): seed tax, trade rice↔gold, then **2/3 (`rng(3)≠0`)** build town if `town < header`, sized to a year-scaled cap.
+- **Dam + Grow** (`ai_develop_dam_and_grow`): if `loyalty > output` (headroom), spend on Dam (to dams cap) then Grow (year-scaled cap); else just a small grow.
+
+### How the AI sizes its spends — no "how much?" prompt
+Every spend reads `ai_calc_men_surplus_over_gold_and_rice`: **`gold_surplus = gold − men`, `rice_surplus = rice − men`** (clamped ≥0). The AI keeps a reserve equal to its **army size** and spends only the surplus — a one-line economic policy, **no daimyo stats involved**. The caps it spends toward scale with the **game year** (`(year−1559)·k`), so AI provinces strengthen as the campaign ages. The AI even **plays the rice market** (`ai_province_gold_to_rice_convert`: a `rng(10..29)` vs `gold_rice_exchange_rate` roll → sell rice when dear, buy when cheap).
+
+### The war decision (`ai_try_war_attack`) — the only place targeting happens
+1. **Preconditions:** the fief must not be weak, and must have **both men and rice** — *no supply, no war* (rice = provisions).
+2. **Target = the weakest enemy by *provisioned* men** (`pick_weakest_men_fief`; `fief_men_ratio_pct = a_men·100/(a_men+b_men)`, where a fief with **no rice counts as 0 men**). A starved or tiny neighbour is the magnet. An adjacency/men-minority target (`$6E7F`) can override.
+3. **Commit gate:** attack only with a men-ratio advantage — `ratio − 10 − rng(const_two·3) > 60` — or a 1/100 "attack anyway". Risk-averse; it picks on the weak.
+4. **Resolve:** deduct men/rice → `effect_war_a` → **bank 2 (combat)**. *(The same bank-2 resolver handles uprisings — see the tie-back note below; the battle math itself is the combat chapters, ch.14–17.)*
+
+### Do daimyo stats alter the odds? — **only Drive**
+The econ/military cascade is driven by **difficulty (`const_two`)**, the **game year**, the **market rates**, and **province stats** (gold/rice/men/output/loyalty) — *not* the daimyo's personal stats. The single exception is **Drive (record +2)**, the AI's **aggression dial**:
+- **`ai_relations_and_low_drive_skip_gate`** — the target selector skips a candidate when relations are good **and** the daimyo's `Drive < 50`. So a **timid (Drive<50) daimyo respects pacts/marriages** (won't attack fiefs it likes), while a **bold (Drive≥50) daimyo ignores relations** and attacks the weakest target regardless.
+- **The monk fief (30)** is attacked only by a high-Drive daimyo (`drive < rng(80)+90` → skip) — historical reluctance to assault the warrior-monks.
+
+Everything else — Charisma, IQ, Luck, age, health — is inert on the AI's *decisions*; those stats weigh in **combat resolution** (`$8EB8` compares Drive too), **event eligibility** (Charisma), **illness/death** (age/health), and **assassination** (Luck/Cha/IQ), not in choosing what to do. **So even across wildly different lords the AI plays the same opening; only its aggression (Drive) and its battle strength change.** A synthesis consequence: **a Pact or Marriage only buys deterrence against a *timid* daimyo** — it partially answers the "what does relation buy?" question (ledger #20 Q1): relation gates attacks, but the gate is Drive<50.
+
+### AI-initiated diplomacy events (`random_event_type_dispatch`)
+At the tail of the event pass, a separate roll (**50% nothing**, else marry / diplomacy / extra-ravage) has the AI exercise the *player's own verbs* autonomously — `ai_event_marry_random_eligible_fief` proposes a marriage, `ai_scan_idle_fiefs_run_diplomacy_action` runs a Pact. These keep the relations matrix alive between human turns. *(Eligibility/effects: a short follow-up.)*
+
+> **Tie-back for the combat chapters:** both the AI's wars (`effect_war_a`) and the world's uprisings (`spawn_uprising_force_from_province`, the riots/revolts of Appendix D) hand off to the **bank-2 combat resolver** via `call_bank_wrap(2)`. When ch.14–17 open that bank, they should close the loop on: the men-ratio/strength comparison (`$8EB8`, where Drive re-enters), supply/rice exhaustion across battle days, and how an uprising's `spawn_uprising_force` attacker (the fief-50 slot) is resolved against the defender.
+
 ## The decompiled model (2026-06-12) — and why the AI is exploitable
 
 Pass 2 walked the AI in the grounded C. The "cascade of weighted coin-flips" headline **survives intact**; the addresses and framing in the older sections below are superseded by this. The confirmed model:
