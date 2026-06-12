@@ -208,6 +208,73 @@ source_field -= effective_amount   (no attrition)
 - Send to high-HEADER fiefs for biggest transfers
 - Pairs with Give-Peasants: Send moves rice, Give converts rice to stats
 
+## Move ($96D1 driver → effect_move $8CA5; arms blend $DA24) — **DERIVED 2026-06-12 (by composition)**
+
+> Move relocates men **and** arms between two of your own fiefs. The men transfer is Send's capacity-clamp; the arms transfer is Hire's men-weighted dilution — so Move is verified *by composition* of two already-certified primitives (not independently emulator-run yet).
+
+### Formula
+```
+; preconditions (driver $96D1)
+if src.men == 0:                 "you have no soldiers"     ; effect_war_combat_prep_b
+amount = number_input(cap = min(src.men, dest.capacity − dest.men))   ; "That fief can't hold more men" if cap==0
+
+; effect ($8CA5): for each of the 3 military QUALITY stats q ∈ {morale+18, skill+20, arms+22}
+dest.q = min(dest.header,
+             ⌊ dest.q·dest.men / (dest.men + amount) ⌋        ; pct_op · math32_2arg(dest.men, amount)
+           + ⌊ src.q · amount  / (dest.men + amount) ⌋ )      ; = men-weighted average (same as Hire dilution §7)
+dest.men += amount
+src.men  −= amount
+if src.men == 0: clear src military stats   ; clear_military_stats_if_no_men (zeroes morale/skill/arms)
+cap_arms_at_index(dest)                     ; re-caps the SEPARATE $76A9 unit-type-pct table at arms/50+20
+```
+
+### Confirmed
+- **Capacity-clamped, no attrition** — `min(src.men, dest.header − dest.men)` (the `header` +24 field = the army ceiling); the men all arrive (like Send).
+- **The 3 quality stats dilute on merge** — morale/skill/arms become the **men-weighted average** of garrison-and-incoming, capped at `header` (`scaled_force_transfer $DA24` = `min(cap, pct_op(a, math32_2arg(men_a,men_b)) + pct_op(b, math32_2arg(men_b,men_a)))`; `math32_2arg = a·100/(a+b)`, CERTIFIED). Moving green troops *into* an elite garrison drags its quality down — the Hire-dilution lesson applies to Move. (The 5-entry **unit-type composition** `$76A9` is a *separate* table, re-capped by `cap_arms_at_index`, not blended.)
+- **Emptying the source clears its military stats** (`clear_military_stats_if_no_men`).
+- **Costs no gold** (the only resource-moving command that doesn't gate on treasury).
+- **"Lead them personally" relocates the CAPITAL** when moving *out of* your seat (`fief_is_daimyo_capital[src]→[dest]`, `province_ai_state[dest]=5`) — a strategic, not a numeric, effect. See ch.11 / synthesis ledger #19.
+
+### Strategic
+- **Consolidate into one strong fief, don't dribble** — each merge dilutes arms toward the average; repeated small reinforcements erode an elite stack.
+- **Move is the only no-gold way to reposition force** — pairs with Send (resources) for staging before War.
+- **Capital mobility = assassination defense** — relocate your seat (lead-personally Move from the capital) so `$A349` can't find the daimyo "in."
+
+## Pact ($9C4F driver; AI price $E3A4; relation $DA4F) — **BYTECODE-CERTIFIED 2026-06-12**
+
+> Buy peace from a rival. The price is sized to **your own treasury** (not the target's anything), the AI gates whether it even offers, and the gold is **paid to the target daimyo**. Plus a hidden Drive cost.
+
+### Formula (vs an AI house — `prompt_diplomacy_pact $E3A4`, `ai_state==0`)
+```
+; the AI decides whether to offer at all:
+if owner_is_weak(you) and rng(3) != 0:   refuse        ; weak players refused 2/3 of the time
+if rng(skill) != 0:                       refuse        ; otherwise offered only 1-in-skill attempts
+price = pct_op(your.gold, 50) + pct_op(your.gold, rng(0..49)) + 20      ; ≈ 50–99% of YOUR treasury + 20
+
+; on the player paying (driver $9C4F):
+if your.gold < price:  "You have no gold!"
+else: your.gold −= price ;  target.gold += price ;  relation[$6193] := 70   ; gold goes TO the rival
+```
+- **Drive cost:** −1 Drive (`daimyo +2`) per attempt; **−2** if you decline the named price or are refused.
+- **vs a human house** (`ai_state != 0`): the other player simply types a demand (1–9999).
+- Verified: bytecode `$E3A4` matches the C line-for-line; `pct_op` is ROM-certified, so the price is emulator-grade.
+
+## Marry ($9DC4 driver; AI dowry $E314; relation $DA7D) — **DERIVED 2026-06-12 (sibling of Pact)**
+
+> The strongest tie (relation 90 vs Pact's 70), capital-gated, with the harshest refusal penalty in the game.
+
+### Formula (vs an AI house — `marriage_pact_handler $E314`, `ai_state==0`)
+```
+gate:  must be at your capital ($6DA2);  the AI requires your.gold > 200
+if rng(skill) != 0 or (owner_is_weak(you) and rng(3) != 0):  refuse
+dowry = pct_op(your.gold, rng(50..79)) + 200                  ; ≈ 50–79% of YOUR treasury + 200
+
+; on paying:  your.gold −= dowry ; target.gold += dowry ; relation[$6193] := 90
+```
+- **Drive cost:** −1 Drive per attempt.
+- **Refusal penalty (permanent):** `daimyo +2 (Drive) −1`, `+3 (Luck) −1`, `+4 (Charisma) −1` — you lose three core stats for the snub. (Declining the dowry after it's named costs nothing extra.)
+- Flavor: rolls a composite bride-portrait (`rng%22 + 53`).
+
 ## 7. Hire ($A5F4 driver → Men:$A553 / Ninja:$A2D2; dilution $8BF4) — **VERIFIED 2026-05-26; effect addr CORRECTED 2026-06-02**
 
 > **CORRECTION (2026-06-02, bytecode walk).** The driver `$A5F4` prompts **"(Men/Ninja)?"** and branches: **Men → `effect_hire_men` ($A553)** (the recruit-soldiers formula below, animation **id 33**); **Ninja → `$A2D2`** (the *sabotage*-mission menu — Uprising/Revolt/Dams/Assassin/Arson, animation id 12 — the same subsystem **Bribe** uses, NOT recruitment). The earlier "$A2D2 = effect_hire dispatcher" label was wrong: `$A2D2` is the ninja path. The per-man gold cost uses `gold_men_hire_rate` ($6E11), which **re-rolls every turn** (market-rate table) — so hiring is cheaper some seasons.

@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """Render all 17 fief tactical maps from bank-4 cell-index data.
 
-Output: atlas/fief-NN-name.png (1x) + atlas/fief-NN-name-2x.png (zoomed)
-        atlas/atlas-overview.png (all 17 in one grid)
-        atlas/atlas-summary.txt (text summary of each fief)
+Output: assets/maps/fiefs/fief-NN-name.png (1x) + assets/maps/fiefs/fief-NN-name-2x.png (zoomed)
+        assets/maps/strategic/atlas-overview.png (all 17 in one grid)
+        assets/maps/strategic/atlas-summary.txt (text summary of each fief)
 """
 import os
 from PIL import Image, ImageDraw, ImageFont
 
 here = os.path.dirname(os.path.abspath(__file__))
-atlas_dir = os.path.join(here, 'atlas')
-os.makedirs(atlas_dir, exist_ok=True)
+fief_dir = os.path.join(here, 'assets', 'maps', 'fiefs')
+strat_dir = os.path.join(here, 'assets', 'maps', 'strategic')
+os.makedirs(fief_dir, exist_ok=True)
+os.makedirs(strat_dir, exist_ok=True)
 
 rom_path = os.path.join(here, "Nobunaga's Ambition (USA).nes")
 with open(rom_path, 'rb') as f:
@@ -125,9 +127,9 @@ for i, name in enumerate(FIEF_NAMES):
     titled.paste(img, (0, 24))
     titled_draw = ImageDraw.Draw(titled)
     titled_draw.text((4, 4), f"Fief {i:02d}: {name}", fill=(255, 255, 255), font=font_title)
-    titled.save(os.path.join(atlas_dir, f"fief-{i:02d}-{name.lower()}.png"))
+    titled.save(os.path.join(fief_dir, f"fief-{i:02d}-{name.lower()}.png"))
     titled.resize((WIDTH*2, (HEIGHT+24)*2), Image.NEAREST).save(
-        os.path.join(atlas_dir, f"fief-{i:02d}-{name.lower()}-2x.png"))
+        os.path.join(fief_dir, f"fief-{i:02d}-{name.lower()}-2x.png"))
     all_imgs.append((titled, name, i))
 
     # Summary line
@@ -149,16 +151,16 @@ for idx, (img, name, i) in enumerate(all_imgs):
     r = idx // COLS
     c = idx % COLS
     overview.paste(img, (c * cell_w, r * cell_h))
-overview.save(os.path.join(atlas_dir, "atlas-overview.png"))
+overview.save(os.path.join(strat_dir, "atlas-overview.png"))
 # Half-scale overview for easier viewing
 overview.resize((cell_w * COLS // 2, cell_h * ROWS // 2), Image.LANCZOS).save(
-    os.path.join(atlas_dir, "atlas-overview-half.png"))
+    os.path.join(strat_dir, "atlas-overview-half.png"))
 
 # Write summary
-with open(os.path.join(atlas_dir, "atlas-summary.txt"), 'w') as f:
+with open(os.path.join(strat_dir, "atlas-summary.txt"), 'w') as f:
     f.write('\n'.join(summary_lines))
 
 print()
-print(f"All 17 fiefs rendered to {atlas_dir}/")
+print(f"All 17 fiefs rendered to {fief_dir}/")
 print(f"Plus atlas-overview.png (large grid) and atlas-overview-half.png")
 print(f"Plus atlas-summary.txt (per-fief grid + byte counts)")

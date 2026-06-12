@@ -38,16 +38,16 @@ The IRQ handler is the most interesting find from session 1: a 23-entry dispatch
 
 | # | Chapter | Status |
 |---|---|---|
-| 1 | [Boot, vectors, and the BRK dispatcher](./01-boot-and-dispatch.md) | session 1 draft |
-| 2 | [Zero-page memory map](./02-zero-page-map.md) | session 2 draft |
-| 3 | [NMI/VBlank pipeline (PPU + OAM + audio driver)](./03-nmi-pipeline.md) | session 3 draft |
-| 4 | [The Syscall API: what each of the 23 dispatch entries does](./04-syscall-api.md) | session 4 draft |
-| 5 | [The Bytecode VM](./05-bytecode-vm.md) | session 5 draft |
-| 6 | [The VM Disassembler](./06-vm-disassembler.md) | session 6 draft |
-| 7 | [The SRAM Save Layer](./07-sram-save-layer.md) | session 7 draft |
-| 8 | [The VM Instruction Set: Arithmetic, Control Flow & the 9999 Cap](./08-vm-instruction-set.md) | session 8 draft |
-| 9 | [The Command System: how a menu pick becomes a formula (Grow fully traced)](./09-command-system-and-grow.md) | session 9 draft |
-| 10 | [The Command Families: eight handlers diffed against Grow](./10-command-families.md) | session 10 draft |
+| 1 | [Boot, vectors, and the Syscall Dispatcher](./01-boot-and-dispatch.md) | pass-2 verified 2026-06-11 (BRK framing corrected) |
+| 2 | [Zero-page memory map](./02-zero-page-map.md) | pass-2 verified 2026-06-11 ($02-$07 = VM registers) |
+| 3 | [NMI/VBlank pipeline (PPU + OAM + audio driver)](./03-nmi-pipeline.md) | pass-2 verified 2026-06-11 (holds; song-header → voice-config fix) |
+| 4 | [The Syscall API: what each of the 23 dispatch entries does](./04-syscall-api.md) | pass-2 verified 2026-06-11 (holds — grounded oracle for chs.1-3) |
+| 5 | [The Bytecode VM](./05-bytecode-vm.md) | pass-2 verified 2026-06-11 (model holds; ptr→vm_sp/fp/ip rename + vm_fp added) |
+| 6 | [The VM Disassembler](./06-vm-disassembler.md) | pass-2 verified 2026-06-11 (opcode table → Appendix C; trigger_syscall refuted) |
+| 7 | [The SRAM Save Layer](./07-sram-save-layer.md) | pass-2 REWRITTEN 2026-06-11 (body corrected to $7001/LE; erratum integrated) |
+| 8 | [The VM Instruction Set: Arithmetic, Control Flow & the 9999 Cap](./08-vm-instruction-set.md) | pass-2 verified 2026-06-11 (9999-cap holds; $30=PUSH + $D8=JUMPF_abs fixes; → Appendix C) |
+| 9 | [The Command System: how a menu pick becomes a formula (Grow fully traced)](./09-command-system-and-grow.md) | pass-2 verified 2026-06-11 (added the missing SKILL-LEVEL dial: gain ×(6−skill)) |
+| 10 | [The Command Families: eight handlers diffed against Grow](./10-command-families.md) | pass-2 verified 2026-06-11 (Bribe/Assign misclass fixed; skill dial; → commands/ pages) |
 | 11 | [The Strategic Engine, Complete: all 21 lord commands](./11-strategic-engine-complete.md) | session 11 draft |
 | 12 | [The Daimyo AI: a cascade of weighted coin-flips](./12-daimyo-ai.md) | session 12 draft (erratum'd) |
 | 13 | [The Turn Loop & the Harvest: what a round looks like](./13-turn-loop-and-harvest.md) | session 13 draft |
@@ -62,6 +62,7 @@ The IRQ handler is the most interesting find from session 1: a 23-entry dispatch
 | — | Synthesis: from bytecode to the strategy counter-graph | planned |
 | A | [Appendix: per-command effect formulas + AI thresholds; province adjacency](./appendix-formulas.md) | ongoing |
 | B | [Appendix: true-color ROM asset extraction](./appendix-asset-extraction.md) — the recipe (CHR + tile-map + palette), proven on daimyo portraits, with the candidate-asset inventory | active |
+| C | [Appendix: The VM Opcode Reference (canonical)](./appendix-vm-opcodes.md) — the authoritative 256-opcode table; **generated** by `tools/gen-opcode-appendix.py` from `vm-opcodes-v2.toml` + `OPCODE_INFO`. Cited by chs. 6 & 8 | active (pass-2 2026-06-11) |
 
 Plan note: per-command effect formulas (Grow's `$87F0`, Tax's rate→loyalty, etc.) go in an **appendix** rather than their own chapters — they turned out simpler than expected. The daimyo AI is tackled **before** combat (combat needs map generation + the battle engine and will span several chapters). men/morale/skill/arms feed the combat formula.
 

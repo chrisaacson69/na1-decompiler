@@ -6,7 +6,9 @@ created: 2026-05-14
 
 > Chapter 9 traced one menu command — Grow — all the way down, building the scaffolding (the command driver table, the calling convention, the province-access idiom, a control-flow-following disassembler) along the way. This chapter spends that scaffolding. It diffs the seven handlers that the `$B9B2` table grouped with Grow and shows that the "family" splits cleanly into **two real templates** — and that within each, the commands are the *same code parameterized by a province field offset, a set of message IDs, and an effect handler.* Eight commands, decoded for roughly the cost of two.
 
-**Links:** [Chapter 9 — Command System & Grow](./09-command-system-and-grow.md) · [Chapter 8 — VM Instruction Set](./08-vm-instruction-set.md) · [Nobunaga README](./README.md)
+**Links:** [Chapter 9 — Command System & Grow](./09-command-system-and-grow.md) · [Chapter 8 — VM Instruction Set](./08-vm-instruction-set.md) · [Appendix A — Formulas](./appendix-formulas.md) · [commands/](./commands/README.md) · [Nobunaga README](./README.md)
+
+> **⚠ Pass-2 fact-check (2026-06-11) — taxonomy partly wrong; reconcile to the verified `commands/` pages.** The core insight (Grow/Build/Dam share one √-develop template) is real, but session 10 over-fit two commands and missed the skill dial. Corrections, grounded in the per-command pages + [appendix-formulas.md](./appendix-formulas.md): **(1)** the effect skeleton's "`− word[$6D63]` (= 2)" is the **skill-level `(6−skill)` multiplier** (ch.9) — universal to the develop family: `gain = 2·⌊amount·(6−skill)/√(field+amount)⌋`. **(2) Bribe (idx 14, `effect_bribe $8D4D`) is NOT a develop command** — it's **gold-for-spy peasant defection** (`peasants = loy − (⌊(30+rng%25)·(min(loy,√gold)+1)/100⌋+1)`, emulator-confirmed; [bribe.md](./commands/bribe.md)), not a √-grow. **(3) Assign (idx 15, `effect_assign $AC11`) is the interactive arms-allocation editor** (5 unit-type rows; soldiers + 30 gold; [assign.md](./commands/assign.md)), not "assign a retainer." **(4)** `$879F`/`$804C` are the **generic province-target-select** helpers (War/Bribe/Pact/View/Ninja), not a "diplomacy subsystem." The verified √-develop family is **Grow/Build/Dam/Give**.
 
 ## The signature was too coarse
 
@@ -37,7 +39,7 @@ result = <effect handler>(record, amount)
 display result ; redraw ; return
 ```
 
-And the effect skeleton (chapter 9 §5b/5d) is equally fixed: `amount < 1` guard → `$CBCD` integer square root of `field + amount` → `− word[$6D63]` (a global constant, **= 2**, grounded from the SRAM dump) → `$D6B8` 32-bit helper → clamp against `field@24` → the flat-100 branch → `$D70D` percentage redistribution out of other fields.
+And the effect skeleton (chapter 9 §5b/5d, **corrected**) is equally fixed: `amount < 1` guard → `$CBCD` integer square root of `field + amount` → the **`(6−skill)` skill-level multiplier** (`word[$6D63]` = `const_two` = difficulty 1–5, **NOT a constant**) → `$D6B8` 32-bit math → clamp against `field@24` → a **live-computed** pct (flat-50 ceiling) → `$D70D` percentage redistribution out of other fields. The verified develop gain is `2·⌊amount·(6−skill)/√(field+amount)⌋`.
 
 What varies — the entire content of the diff (command names confirmed from the in-game menu, item N = table index N+1):
 
@@ -46,7 +48,7 @@ What varies — the entire content of the diff (command names confirmed from the
 | 6 | **Grow** | `$9D3D` / `$87F0` | **output** (`@8`) | dams (`@10`), loyalty (`@12`) | fully traced in ch 9 |
 | 12 | **Build** | `$A858` / `$88A6` | **town** (`@4`) | wealth (`@14`) | effect also chains `$887D` |
 | 4 | **Dam** | `$9B83` / `$87D8` + `$887D` | **output** (`@8`) + **debt** (`@2`) | — | two effect handlers — a two-field command |
-| 14 | **Bribe** | `$AAB3` / `$8D4D` | **town** (`@4`) + **debt** (`@2`) + **output** (`@8`) | — | largest; shares the `$E510/$879F/$804C` cluster with Pact (idx 5) |
+| 14 | **Bribe** ⚠ | `$AAB3` / `effect_bribe $8D4D` | *(NOT a develop command)* | — | **MISCLASSIFIED** — `$8D4D` is gold-for-spy **peasant defection**, not a √-grow of town/debt/output. It shares the *prompt* skeleton (asks for gold) but has a different effect. See banner + [bribe.md](./commands/bribe.md). |
 
 So the readable picture: **Grow develops agricultural output, Build develops the town (commerce), Dam touches output and debt, Bribe is the compound diplomatic-spend command.** Every one costs **gold** (debited from `field@0`, the prompt capped at it) and every one is gated by **`header == 0`** and a development-ceiling precondition. The √-curve diminishing returns and the silent cross-field drain are universal to the template — they are not Grow-specific quirks, they are *how this whole class of command works.*
 
@@ -60,10 +62,10 @@ These four never call `$D5E9` — they take no amount from the player. They read
 
 | idx | command | driver | touches | calls | reading |
 |---:|---|---|---|---|---|
-| 5 | **Pact** | `$9C54` | debt (`@2`, **byte** ops) | `$E510 $879F $CEC4 $804C $8B8F` | diplomacy — the `$E510/$879F/$804C` cluster is the diplomacy subsystem (shared with Bribe, idx 14) |
+| 5 | **Pact** | `driver_pact $9C4F` | relations matrix | `$879F $804C $CEC4 …` | diplomacy — pay gold to a rival for an alliance. *(Correction: `$879F`/`$804C` are the **generic province-target-select** helpers used across War/Bribe/View/Ninja, not a "diplomacy subsystem".)* |
 | 10 | **Train** | `$A63C` | header (`@24`), skill (`@20`), men (`@16`) | `$CEC4` | trains troops — reads men/skill against a header-derived cap, raises skill |
 | 13 | **Give** | `$AA24` | header, morale (`@18`), loyalty (`@12`), wealth (`@14`), town (`@4`) | `$A93A $A9D5 $A95E` | charity to the people — touches the most fields (loyalty/morale up); three bank-1 helpers |
-| 15 | **Assign** | `$AD6C` | men (`@16`) | `$AC11` | assign a retainer — a men-comparison gate then a single word store |
+| 15 | **Assign** | `$AD6C` | arms (`@22`), men (`@16`) | `effect_assign $AC11` | **interactive arms-allocation editor** (5 unit-type rows; needs soldiers + flat 30 gold) — NOT "assign a retainer". [assign.md](./commands/assign.md) |
 
 The names make these legible: **Pact** is diplomacy (and confirms the shared cluster's role), **Train** raises skill against a cap, **Give** is the loyalty/morale charity command, **Assign** moves a retainer. None prompts for a number because none *needs* one — they are state transitions, not investments.
 

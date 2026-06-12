@@ -6,7 +6,9 @@ created: 2026-05-14
 
 > Chapter 6 gave every one of the 256 opcodes a correct operand *length* — enough to walk bytecode without losing byte-alignment — but ~140 of them still had no *meaning*. This chapter hand-decodes the core of the instruction set: the register-file load/store matrix, the full ALU (add, sub, multiply, divide, modulo, shifts, bitwise, compares), and control flow. With those decoded, VM bytecode stops being a byte-aligned mystery and starts reading like source. The chapter ends by following that capability straight into the first real game mechanic: the value-clamp routine that caps resources at **9999** — the "big number" that kept surfacing in earlier sessions.
 
-**Links:** [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [Chapter 5 — Bytecode VM](./05-bytecode-vm.md) · [Chapter 7 — SRAM Save Layer](./07-sram-save-layer.md) · [Nobunaga README](./README.md)
+> **⚠ Pass-2 fact-check (2026-06-11) — solid analysis; opcode names → Appendix C.** The ALU decode, the compare-then-branch idiom, and the 9999-cap find all **hold**. Reconcile names with the canonical **[opcode reference (Appendix C)](./appendix-vm-opcodes.md)**: this chapter's `regA`/`regB` are the spec's **`regL` ($08) / `regR` ($0C)**, and its descriptive mnemonics map to the canonical set (`add`→`ADD`, `mul`→`MULT`, `div_signed`→`SDIV`, `cmp_sgt`→`SCMPGT`, `host_call`→`CALL_abs_imm1`, `vm_return`→`RETURN`, `loadA_imm_word`→`LOADL_imm2`). **Two real corrections below:** (1) `$30-$3F` is **`PUSH_quick`** (push a frame local onto the stack), not "store regB to frame" — the quick grid's 4th row is *push*; (2) `$D8` is **`JUMPF_abs`** (a 2-byte **absolute** branch target), not a relative "+sbyte" branch — the relative branches are `$E3-$E8`. (The chapter's own `$8A/$8C` = word-load correction is right and matches Appendix C.)
+
+**Links:** [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [Chapter 5 — Bytecode VM](./05-bytecode-vm.md) · [Chapter 7 — SRAM Save Layer](./07-sram-save-layer.md) · [Appendix C — Opcode Reference](./appendix-vm-opcodes.md) · [Nobunaga README](./README.md)
 
 ## The VM is a register machine
 
@@ -25,20 +27,20 @@ Almost every opcode is "do something to regA, optionally using regB." Binary ope
 
 ## The $00–$3F frame-local load/store matrix
 
-The first 64 opcodes are a single, beautifully regular structure: a **4×16 grid** crossing {load, store} × {regA, regB} × {negative-offset block, positive-offset block}.
+The first 64 opcodes are a single, beautifully regular structure: **four 16-opcode rows** — `LOADL_quick` ($00, regL←frame), `LOADR_quick` ($10, regR←frame), `STORE_quick` ($20, frame←regL), `PUSH_quick` ($30, **push** frame→stack) — each split into a negative-offset block (caller args / outer locals) and a positive-offset block (args 1–4).
 
-| Opcodes | Operation | Addresses |
+| Opcodes | Operation (canonical) | Addresses |
 |---|---|---|
-| `$00–$0B` | `regA = ` frame local | frame[−24 .. −2] (12 slots) |
-| `$0C–$0F` | `regA = ` frame local | frame[+0x0B/+0x0D/+0x0F/+0x11] |
-| `$10–$1B` | `regB = ` frame local | frame[−24 .. −2] |
-| `$1C–$1F` | `regB = ` frame local | frame[+0x0B .. +0x11] |
-| `$20–$2B` | frame local ` = regA` | frame[−24 .. −2] |
-| `$2C–$2F` | frame local ` = regA` | frame[+0x0B .. +0x11] |
-| `$30–$3B` | frame local ` = regB` | frame[−24 .. −2] |
-| `$3C–$3F` | frame local ` = regB` | frame[+0x0B .. +0x11] |
+| `$00–$0B` | `LOADL_quick` — regL = frame local | frame[−24 .. −2] (12 slots) |
+| `$0C–$0F` | `LOADL_quick` — regL = arg | frame[+0x0B/+0x0D/+0x0F/+0x11] (args 1–4) |
+| `$10–$1B` | `LOADR_quick` — regR = frame local | frame[−24 .. −2] |
+| `$1C–$1F` | `LOADR_quick` — regR = arg | frame[+0x0B .. +0x11] |
+| `$20–$2B` | `STORE_quick` — frame local = regL | frame[−24 .. −2] |
+| `$2C–$2F` | `STORE_quick` — arg = regL | frame[+0x0B .. +0x11] |
+| `$30–$3B` | `PUSH_quick` — **push** frame local → stack | frame[−24 .. −2] |
+| `$3C–$3F` | `PUSH_quick` — **push** arg → stack | frame[+0x0B .. +0x11] |
 
-The negative offsets reach the caller's arguments and outer locals; the positive offsets are the current frame's own scratch. The handlers are tiny `LDY #imm / LDA (ptr2),Y` stubs sharing a common tail. In disassembly these now read as `loadA_local_neg #11`, `storeB_local_pos #1`, and so on — the bytecode's variable accesses are legible.
+*(Correction 2026-06-11: the `$30` row is **push to the data stack**, not "store regB to frame" as the earlier draft had it — the four rows are LOADL/LOADR/STORE/PUSH, not loadA/loadB/storeA/storeB.)* The negative offsets reach the caller's arguments and outer locals; the positive offsets are the current frame's own scratch. The handlers are tiny `LDY #imm / LDA (ptr2),Y` stubs sharing a common tail. In disassembly these now read as `loadA_local_neg #11`, `storeB_local_pos #1`, and so on — the bytecode's variable accesses are legible.
 
 ## The ALU ($B0–$DC)
 
@@ -84,7 +86,7 @@ The compares are the key control-flow primitive. `cmp_sgt` ($C4) computes `regA 
 | `$E3` / `$E6` | `jump_rel` | ptr3 += signed byte (unconditional) |
 | `$E4` / `$E7` | `branch_nz_rel` | if regA ≠ 0: ptr3 += signed byte |
 | `$E5` / `$E8` | `branch_z_rel` | if regA == 0: ptr3 += signed byte |
-| `$D8` | `branch_z` | if regA == 0: ptr3 += signed byte — the dominant conditional branch |
+| `$D8` | `JUMPF_abs` | if regL == 0: PC = abs (2-byte **absolute** target) — the dominant conditional branch. *(Not a relative "+sbyte" branch; the relative forms are $E3–$E8.)* |
 | `$D5` | `switch` | jump-table dispatch on regA over inline (value,target) pairs |
 | `$E9` / `$AC` | `host_call` / `host_call_simple` | call native code or a bytecode subroutine |
 | `$DD` / `$EA` | `host_call_indirect*` | call through an address held in regA |
@@ -120,7 +122,7 @@ $AB47  add                      ; regA = local[11]*2 + local[13]   -> element ad
 $AB48  loadA_ind_word           ; regA = word[that address]   (current value)
 $AB49  loadB_imm_word 9999      ; regB = 9999
 $AB4C  cmp_sgt                  ; regA = (value > 9999)
-$AB4D  branch_z +89             ; if NOT over cap, skip the clamp
+$AB4D  JUMPF_abs <skip>         ; if regL==0 (NOT over cap), jump past the clamp  ($D8 is absolute — the old "+89" was a relative-render artifact)
 $AB4F  ...                      ; (over cap:)
 $AB50  loadA_local_neg #11      ; recompute the element address
 $AB53  add

@@ -25,7 +25,7 @@ enough for the terrain read) unless --font is added later.
 Usage:
   py render-strategic-map.py                 # contact sheet of all 9 sections (3x3)
   py render-strategic-map.py --section N      # one section, big
-  py render-strategic-map.py --scale 3 --out atlas/strategic-map.png
+  py render-strategic-map.py --scale 3 --out assets/maps/strategic/strategic-map.png
 """
 import sys, importlib.util
 from pathlib import Path
@@ -229,14 +229,14 @@ def main():
     if "--section" in args:
         sec = int(args[args.index("--section") + 1])
         img = render_section(vm, sec, pals, scale)
-        out = out or f"atlas/strategic-section-{sec}.png"
+        out = out or f"assets/maps/strategic/strategic-section-{sec}.png"
     elif "--stitch" in args:
         print(f"Auto-stitching scenario-{scenario} sections {sections}...")
         img = render_stitch(vm, pals, sections, scale=scale)
-        out = out or f"atlas/strategic-map-{scenario}-stitched.png"
+        out = out or f"assets/maps/strategic/strategic-map-{scenario}-stitched.png"
     else:
         img = contact_sheet(vm, pals, sections, cols=(2 if scenario == 17 else 3), scale=scale)
-        out = out or f"atlas/strategic-map-{scenario}.png"
+        out = out or f"assets/maps/strategic/strategic-map-{scenario}.png"
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
     print(f"wrote {out}  ({img.width}x{img.height})")

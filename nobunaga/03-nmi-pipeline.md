@@ -6,6 +6,8 @@ created: 2026-05-11
 
 > Every 1/60s the NMI handler runs five subsystems in a strict order, bracketed by NMI-disable/enable, with all PPU register access funneled through a shadow-state API. First chapter with runtime correlation: a 1-2 second Mesen trace (912k lines) confirmed the architecture and decoded the music driver completely.
 
+> **⚠ Pass-2 fact-check (2026-06-11).** Written WITH a runtime trace, this chapter largely **holds** against the grounded labels — the NMI handler, PPU shadow API, palette pipeline, controller poll, and two-pass music driver are all correct. Two updates: **(1)** the "4-byte song header at $0730-$0733" is **refuted** — that region is the tail of the **5×3-byte per-voice config array** (`$0725-$0733`: `v0..v4_config`, each `tempo_div / song_ptr_lo / song_ptr_hi`, written by `audio_load_voice $C3AD`); the snapshot read v3/v4 config as a header. **(2)** The "Open for chapter 4" items are now **resolved** (see the closing). Sub names grounded: `music_trigger_pass $C7AC`, `music_sequencer_pass $C817`, `reset_ppu_init $C757`.
+
 **Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Nobunaga README](./README.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
 
 ## The frame
@@ -214,18 +216,21 @@ $C7AB: RTS
 
 That single `JSR $C817` is what the disassembler missed.
 
-### Voice records ($0730-$0760)
+### Voice state records ($0734-$0760) + the per-voice config array ($0725-$0733)
 
-Five 9-byte voice records at `$0734-$0760`, preceded by a 4-byte song header at `$0730-$0733`:
+Five 9-byte voice **state** records at `$0734-$0760`, preceded by the 5×3-byte per-voice **config** array `$0725-$0733` (corrected 2026-06-11 — session 3 read part of it as a "4-byte song header at $0730," a misalignment):
 
 ```
-$0730: [active flag] [tempo] [song-base lo] [song-base hi]
-$0734-$073C: Voice 0  (9 bytes)
+$0721-$0724: audio_active_v0..v3       (per-voice enable flags)
+$0725-$0733: v0..v4_config             — 5 × (tempo_div, song_ptr_lo, song_ptr_hi), written by audio_load_voice $C3AD
+$0734-$073C: Voice 0 state  (9 bytes)
 $073D-$0745: Voice 1
 $0746-$074E: Voice 2
 $074F-$0757: Voice 3
 $0758-$0760: Voice 4
 ```
+
+(The snapshot below shows `$0730: 81 0A AF 84` — under the grounded layout that is `v3_config`'s song-ptr-hi `$81`, then `v4_config = (tempo_div $0A, song_ptr $84AF)`, not a song header.)
 
 A snapshot during gameplay (R1=Pulse1, R2=Pulse2, R3=Triangle active):
 
@@ -384,14 +389,14 @@ The mistake pattern is instructive: in chapter 1 the *structure* (4 JSRs in orde
 
 Plus three chapter-1 errata blocks and one chapter-2 erratum.
 
-## Open for chapter 4
+## Open for chapter 4 — mostly RESOLVED (pass-2 2026-06-11)
 
-- **Music data format at $81xx / $84xx.** Three independent per-voice tracks; byte-per-byte format unknown. Likely a small bytecode (note + duration packed bytes; possibly with rest/tempo/repeat opcodes).
-- **`$0090-$00AF` parallel buffer** ($3E-filled at reset alongside $0700-$071F, but never touched during the trace). Likely another deferred-PPU buffer used by a non-frame-resident subsystem.
-- **`$1C/$1D` and `$1E/$1F` pointers** (init'd to $0020/$0030 at reset). Not dereferenced during this gameplay trace — probably menu/dispatch infrastructure, fired by a BRK dispatch entry.
-- **The just-pressed / just-released button edge detection.** Lives downstream of the BRK dispatcher.
-- **`$C757`** (called from reset, but not from NMI). Last unidentified reset-time JSR.
-- **The BRK dispatcher's invocation pattern.** The trace ran 1-2 seconds (~912k cycles) and **`$0050` was never written and BRK never executed.** The BRK-VM is therefore **event-driven, not per-frame** — fired by input or AI state changes, not by the NMI cadence. That shapes chapter 4's investigation: the dispatch table is a syscall surface, not a scheduler.
+- ~~**Music data format at $81xx / $84xx**~~ → per-voice song tracks driven by `music_sequencer_pass`; the packed byte format is the audio-engine detail (ties to the bank-10 `play_audio_by_id` path). The one genuinely-open audio item.
+- ~~**`$0090-$00AF` parallel buffer**~~ → `palette_alt`, the swap target for fades (`palette_swap $C36C`); ch.2.
+- ~~**`$1C/$1D` and `$1E/$1F` pointers**~~ → `ppu_queue_a/b` (the PPU upload queues into $0020/$0030); ch.2.
+- **Just-pressed / just-released edge detection** — downstream of the dispatcher (the VM input path); still a fair forward pointer.
+- ~~**`$C757`**~~ → `reset_ppu_init` (PPU init: safe-gate, upload $30 bytes from `tab_c775` to PPU $0000, screen-on).
+- ~~**The BRK dispatcher's invocation pattern**~~ → **confirmed**: a **syscall surface, not a scheduler** (ch.1/ch.4) — game/VM code calls it via `jsr syscall_dispatch ($F226)` (a faked BRK), event-driven. The session-3 inference ("`$0050` never written in a passive trace ⇒ event-driven") was exactly right.
 
 ## Method note — toward better tooling
 

@@ -10,7 +10,7 @@ Usage:
     python render-fief-from-ppu.py --list            # list available PPU dumps
 
 Input : traces/<fief>-ppu-memory.dmp   (16 KB PPU memory dump from Mesen)
-Output: atlas/<fief>-ppu-render.png  +  atlas/<fief>-ppu-render-2x.png
+Output: assets/maps/fiefs/<fief>-ppu-render.png  +  assets/maps/fiefs/<fief>-ppu-render-2x.png
 
 PPU memory layout (16 KB = 4x $1000):
   $0000-$0FFF : pattern table 0 (BG, unused in NA1 combat)

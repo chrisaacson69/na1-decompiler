@@ -144,7 +144,7 @@ def render(sram_path, out_name, label, dump_base=0x7B40):
 def _render_all():
   # Render all captured fiefs
   captures = [
-    ('atlas/iga-sram.txt',                 'iga-sram-render.png',  'Iga (all clear + castle/town center)',          0x7B40),
+    ('assets/maps/fiefs/iga-sram.txt',                 'iga-sram-render.png',  'Iga (all clear + castle/town center)',          0x7B40),
     ('traces/mino-save-ram.dmp',           'mino-sram-render.png', 'Mino (mountain spine + forest perimeter)',       0x6000),
     ('traces/kaga-save-ram.dmp',           'kaga-sram-render.png', 'Kaga (water NW + clear + forest SE, NO mountains)', 0x6000),
     ('traces/shinano-save-ram.dmp',        'shinano-sram-render.png', 'Shinano (fief 16)',                              0x6000),

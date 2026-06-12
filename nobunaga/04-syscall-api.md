@@ -6,6 +6,8 @@ created: 2026-05-12
 
 > The 23-entry dispatch table is a syscall surface, not a subsystem state machine. Every dispatch goes through a single callable wrapper at $F226 that copies a parameter block from a caller-supplied struct into ZP and faking a BRK via PHP + JMP($FFFE). Chapter 1's "BRK-VM" framing was wrong scope — these are OS-style primitives ($read_controller$, $palette_write$, $set_sprite$), not game subsystems.
 
+> **✅ Pass-2 fact-check (2026-06-11) — VERIFIED, holds.** This chapter was (re)grounded through pass 1 and is current: all 23 catalog entries match the grounded `[prg.bank15]` labels, the `$F226` dispatch mechanism is correct, and rows 12/20 carry the hand-decoded arg-maps. The **"Errata to chapters 1-3"** below are now **applied inline** in chapters 1/2/3 (those chapters no longer carry the errors — the table here is retained as discovery history). Confirmed cross-link: `syscall_rng_next` ($17) runs its 48-bit transform over the wall-clock state `$0083-$0088`, which is **why game-time and RNG pause together** under `skip_wallclock $0089` (ties chs. 1/2/4).
+
 **Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Chapter 3 — NMI Pipeline](./03-nmi-pipeline.md) · [Nobunaga README](./README.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
 
 ## The reframe
@@ -135,7 +137,7 @@ While walking the handlers, several internal helpers were identified:
 
 ## Errata to chapters 1-3
 
-This session produced four chapter-1-to-3 corrections:
+This session produced four chapter-1-to-3 corrections. **[Pass-2, 2026-06-11: all four are now applied inline in chapters 1/2/3 — this table is retained as discovery history.]**
 
 | Chapter | Said | Actually |
 |---|---|---|

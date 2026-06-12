@@ -65,6 +65,20 @@ by Chris READING the output. Fix: `vm_disasm.py:164` `(k - offs) & 0xFFFF`. Labe
 check clean, deterministic. offs=0 switches were coincidentally already correct (no regression).
 
 | # | Bug | Status | Blast radius | Example subs |
+|---|-----|--------|-------------|--------------|
+| 1.6 | Switch case whose terminator is a JUMP to the shared tail is emitted with NO trailing break → renders as a false FALL-THROUGH into the next case | 🟡 FOUND 2026-06-11 (pass-2; needs census) | ≥1 (one-off vs class unknown) | `$A2D2` (case 4 assassinate "falls into" case 5 arson) |
+
+**Bug 1.6 (false switch fall-through) — FOUND 2026-06-11 during the pass-2 ninja read.** In
+`effect_ninja_sabotage $A2D2` the C (`source/4-c/bank_01.c:2199-2201`) shows `case 4` (assassinate,
+`ninja_mission_resolve_vs_defender`) with no break, falling into `case 5` (arson `town` drain) — but the
+bytecode at `$A50D` is `JUMP $A41D` (to the shared charge/return tail), so arson NEVER runs after
+assassinate. **Gate-INVISIBLE and most likely EMIT-only:** the hard gate proves gated structuring is
+CFG-preserving 499/499, so DREAM's AST routes case 4 → `$A41D` correctly; `_emit_ast` just dropped the
+visual `break`/`goto` to the shared tail, so the TEXT misleads (shows code that doesn't run) — same
+class of "text wrong, behavior right" as 1.5, not a value bug. Found by READING the C against bytecode
+(the "C looks off → drop to bytecode" backup). **Open:** census whether other shared-tail switches
+mis-render the same way; the fix is in `dream.py`'s switch emit (land a terminating `break`/`goto` on a
+case whose body ends in a jump to the merge), label-only.
 
 **Shared root cause:** value materialization across a control-flow join (if/else, switch, the 32-bit aux stack)
 keeps only ONE arm's value. The proper fix is one AST-level change in `dream.py`'s fold — emit each arm's value to

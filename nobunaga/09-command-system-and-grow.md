@@ -6,7 +6,9 @@ created: 2026-05-14
 
 > Chapter 8 decoded the VM's instruction set and found that the economy lives in the bytecode banks. This chapter walks the bridge the project was built to cross: from a menu item the player selects, through the VM's calling convention, down into the arithmetic that actually mutates a province — and out the other side with the **hidden mechanics of a single command fully exposed.** The worked example is menu item 7, **Grow**. By the end we have its complete formula, the cost the UI never shows, the diminishing-returns curve, the silent precondition, and the cross-field redistribution — plus the structural tools (`$B9B2` command table, the calling convention, the province-access idiom) that make the *other* 33 commands a mechanical diff rather than 33 fresh investigations.
 
-**Links:** [Chapter 8 — VM Instruction Set](./08-vm-instruction-set.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [Chapter 7 — SRAM Save Layer](./07-sram-save-layer.md) · [Nobunaga README](./README.md)
+**Links:** [Chapter 8 — VM Instruction Set](./08-vm-instruction-set.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [Chapter 7 — SRAM Save Layer](./07-sram-save-layer.md) · [Appendix A — Formulas](./appendix-formulas.md) · [Appendix C — Opcodes](./appendix-vm-opcodes.md) · [Nobunaga README](./README.md)
+
+> **⚠ Pass-2 fact-check (2026-06-11) — Grow holds; the SKILL-LEVEL dial was the missing piece.** The calling convention, province idiom, √-diminishing-returns find, and §5d's field reconciliation all **hold** (and this chapter correctly flagged ch.7's `$6000` error — now fixed). The big gap: this chapter reads `word[$6D63]` as a **constant "2,"** but it is **`const_two` = the SKILL LEVEL / difficulty knob (1–5, default 2)**, chosen at new-game ("Please select skill level."). The complete, emulator-verified formula is **`output gain = 2·⌊amount·(6−skill)/√(output+amount)⌋`** — the `(6−skill)` multiplier is what this chapter missed (its "minus a constant" step), and it *is* the **"×5 mystery"** solved: skill 1 → ×5, skill 5 → ×1, a **5.4× swing** in economic speed (HIGHER skill = slower economy = harder). The drain pct is **live-computed** (`⌊100·gain/(gain+output)⌋/2`, flat-50 ceiling), not the "flat 100" §5c shows. And `const_two` is a **pervasive anti-player difficulty dial** — it also gates AI-only stat boosts, uprising magnitude `(skill+1)·10`, and combat casualties `rng(6−skill)`. Opcode names in §7 reconcile to [Appendix C](./appendix-vm-opcodes.md).
 
 This chapter is longer and less linear than the others. It earns that: walking a single command end-to-end touched the calling convention, three layers of indirection, five mis-sized opcodes, an entire secondary instruction set, and a province table the earlier chapters hadn't located. The payoff is that everything here is reusable — the next command costs a fraction of this one.
 
@@ -85,7 +87,7 @@ This exact sequence appears **81 times** across banks 0, 1, 2, and 15 — it is 
 >
 > The header (base koku) is the **last** field (offset 24), not the first. Sections 5a/5b below were written against the chapter-7 (header@0) layout and are corrected in **§5d**. A second dump showed `$6000` is **not** a parallel province table: `$6000–$608F` holds 144 bytes of unrelated 16-bit data and everything up to `$6D1F` is empty. So `$7001` is the sole authoritative live province table, and chapter 7's "`$6000` province table" is a misidentified address — chapter 7's record offsets should be revisited against the layout above. The §5a/5b *offsets* are correct; only the *names* were wrong.
 >
-> The dump also grounded `word[$6D63] = 2` (the constant Grow's effect subtracts) — `$6D5F–$6D65` is a small config block `01 01 02 32`. And `$6F0B` holds a clean 17-element permutation of 0–16, almost certainly the daimyo turn order.
+> The dump also grounded `word[$6D63]` — which this chapter read as "the constant 2 Grow subtracts," but it is actually **`const_two` = the SKILL LEVEL** (the `02` in the config block `$6D5F–$6D65 = 01 01 02 32` is skill 2, the default). See the pass-2 banner + §5d. And `$6F0B` holds a clean 17-element permutation of 0–16 — the daimyo turn order.
 
 ## 5. Grow, fully traced
 
@@ -170,10 +172,10 @@ None of (1)–(5) is visible in the menu. This is precisely the class of opaque 
 So the corrected mechanics — replacing points (1)–(5):
 
 1. **Grow costs gold**, debited from the province's `gold` field. The input prompt is capped at the current gold; if `gold == 0` the command is blocked outright (driver precondition B).
-2. **The benefit is `√(output + gold_spent)`** — Grow raises the province's **output** on a square-root curve. Doubling the gold spent yields ≈`1.41×` the gain, not `2×`; many small Grows beat one large one.
+2. **The benefit is `output gain = 2·⌊amount·(6−skill)/√(output+amount)⌋`** (emulator-verified) — Grow raises **output** on a square-root curve in `amount` (gold spent), scaled by the global **`(6−skill)` difficulty multiplier** (`skill = const_two $6D63`). Doubling the gold yields ≈`1.41×` (the √); the skill dial swings the whole gain **~5.4×** (skill 1 → ×5 … skill 5 → ×1), invisible in the UI. Many small Grows still beat one large one. The result is clamped to `header − output` (min gain 1).
 3. **A development ceiling blocks it.** Driver precondition A refuses Grow when `header ≥ output` — base koku gates how far output can be pushed.
 4. **Grow silently drains loyalty and dams.** The effect's tail runs the `$D70D` percentage operator on `loyalty` and `dams` and **subtracts** the results. Raising output costs those two stats.
-5. **The flat-100 branch** in the effect still stands as decoded — a hard ceiling on the working value under one condition.
+5. **The drain pct is live-computed**, not a flat constant — `pct = ⌊100·gain/(gain+output)⌋ / 2`, with a flat **50** ceiling when `gain/2 > output` (the "flat 100" §5b decoded was this pct ceiling; the verified value is 50). loyalty and dams each pay `pct_op(field, pct)`.
 
 The *structure* of §5a/5b — guard, sqrt, clamp, redistribution, the flat-100 branch — was correct; only the field *names* were shifted by chapter 7's layout assumption. The diff method and the calling convention are unaffected.
 
@@ -205,7 +207,7 @@ The common cause: every one of these uses `$EFBF` or `$EFD5` (16-bit fetch helpe
 
 ## 8. What's open
 
-- **Chapter-7 reconciliation — resolved.** The `$7001` table's layout is confirmed (§4 note, §5d) and differs from chapter 7's assumption; a second dump showed `$6000` is *not* a parallel province table (it's empty in a live game). Remaining action item is on chapter 7's side: its province-record offsets and the "`$6000` table" address should be revised to match the confirmed `$7001` layout.
+- **Chapter-7 reconciliation — DONE (pass-2 2026-06-11).** The `$7001` layout is confirmed (§4 note, §5d); chapter 7's body has now been **rewritten** to match (the `$6000`/`$601A` misidentification corrected, the dead `province_table_OLD` label retired).
 - **The Grow family diff.** Indices 4, 5, 10, 12, 13, 14, 15 share Grow's `A4 5F 6F 8B 1A B5 …` template. With the calling convention and the province idiom known, decoding them is mechanical — expect them to differ in which field offsets they read/write and which message IDs they push. That is the bulk of the lord-command menu in one short session.
 - **The display-command family.** Indices 20–32, the `8E xx / host_call $D326` group — likely the status/info screens. Cheap to sweep.
 - **`$CBCD`'s siblings.** Integer sqrt is one native math primitive; the percentage operator `$D70D` is another. The harvest and combat code will lean on the same primitives — cataloguing them now pays forward.

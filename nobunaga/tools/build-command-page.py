@@ -22,8 +22,8 @@ Usage:
     py -3 tools/build-command-page.py animid <driver_hex>  # the $E80C arg = anim id
     py -3 tools/build-command-page.py list
 
-The GIF for a command is `commands/assets/<cmd>.gif` (produce it with
-`tools/run-animation.py <anim_id> --out atlas/anim` then copy). If present it is
+The GIF for a command is `assets/animations/<cmd>.gif` (produce it with
+`tools/run-animation.py <anim_id> --out assets/animations/anim` then copy). If present it is
 base64-embedded so each page is a single portable file.
 """
 import sys, base64, subprocess, re
@@ -36,7 +36,7 @@ except Exception:
 
 ROOT = Path(__file__).resolve().parent.parent
 CMD_DIR = ROOT / "commands"
-ASSETS = CMD_DIR / "assets"
+ASSETS = ROOT / "assets" / "animations"   # canonical command animations (asset reorg 2026-06-11)
 
 # ---- effects that carry a self-contained, bytecode-validated formula ----
 ATOMIC_EFFECTS = {
@@ -91,8 +91,8 @@ COMMANDS = {
     "formula": (
 '<span class="c">// gain — inverse-sqrt diminishing returns</span>\n'
 'sqrt   = <span class="k">int_sqrt</span>(output + amount)\n'
-'gain   = 2 &times; &lfloor;amount &times; (6 &minus; const_two) &divide; sqrt&rfloor;   '
-'<span class="c">// const_two=$6D63 ≈ 1, so ×5</span>\n'
+'gain   = 2 &times; &lfloor;amount &times; (6 &minus; skill) &divide; sqrt&rfloor;   '
+'<span class="c">// skill = const_two $6D63 = the DIFFICULTY level (1-5, default 2)</span>\n'
 'gain   = <span class="k">max</span>(gain, 1)\n'
 'gain   = <span class="k">min</span>(gain, header &minus; output)            '
 '<span class="c">// headroom clamp (rarely fires)</span>\n\n'
@@ -106,11 +106,17 @@ COMMANDS = {
     "roi": "ROI ≈ <code>10 / √(output + amount)</code> — front-load Grow while output is "
            "low; returns fall off sharply past output ≈ 300.",
     "callout": (
-"<b>Correction (2026-06-02).</b> The secondary-drain percentage is <b>not the constant 20</b> the "
-"earlier docs reported. The bytecode at <code>$8833–$884E</code> computes it live from the "
-"gain-to-output ratio, capped at 50%. The “20” was a coincidence of the one test where drains "
-"were measured (gain&nbsp;56, output&nbsp;80 → ⌊5600/136⌋/2&nbsp;=&nbsp;20). Likewise the "
-"“5” multiplier is really <code>6&nbsp;&minus;&nbsp;const_two</code>, not a literal constant."),
+"<b>The hidden SKILL-LEVEL dial.</b> The <code>(6&nbsp;&minus;&nbsp;skill)</code> multiplier is the game's "
+"<b>difficulty knob</b> (<code>const_two&nbsp;$6D63</code>, chosen 1–5 at “Please select skill level.”, "
+"default&nbsp;2) — and it scales your <i>entire</i> economy. On one province (output&nbsp;80, spend&nbsp;100) "
+"the gain is <b>76 / 60 / 46 / 30 / 14</b> for skill&nbsp;1 / 2 / 3 / 4 / 5 — a <b>5.4× swing</b> the UI "
+"never shows (emulator + <code>econ_sim</code> verified). Higher skill = slower development = harder. The "
+"long-mistaken literal “×5” was just skill-1’s 6−1; the validation table below was captured at skill&nbsp;1."
+"<br><br>"
+"<b>Drain correction (2026-06-02).</b> The secondary-drain percentage is <b>not a constant 20</b> — the "
+"bytecode at <code>$8833–$884E</code> computes it live from the gain-to-output ratio, capped at 50%. The "
+"“20” was a coincidence of the single drain-measured test (gain&nbsp;56, output&nbsp;80 → "
+"⌊5600/136⌋/2&nbsp;=&nbsp;20)."),
     "validation": {
       "caption": "Five controlled Grows on one province — predicted gain vs. observed, exact every time.",
       "headers": ["#", "output", "amount", "√", "predicted gain", "actual", "✓"],
@@ -152,8 +158,8 @@ COMMANDS = {
     "formula": (
 '<span class="c">// gain — inverse-sqrt diminishing returns (Grow’s kernel, on TOWN)</span>\n'
 'sqrt = <span class="k">int_sqrt</span>(town + amount)\n'
-'g    = &lfloor;amount &times; (6 &minus; const_two) &divide; sqrt&rfloor;       '
-'<span class="c">// const_two=$6D63 ≈ 1, so ×5</span>\n'
+'g    = &lfloor;amount &times; (6 &minus; skill) &divide; sqrt&rfloor;       '
+'<span class="c">// skill = const_two $6D63 = the DIFFICULTY level (1-5, default 2)</span>\n'
 'g    = <span class="k">max</span>(g, 1)\n'
 'g    = <span class="k">min</span>(g, header &minus; town)             '
 '<span class="c">// headroom clamp (rarely fires)</span>\n\n'
@@ -170,6 +176,11 @@ COMMANDS = {
            "<b>gold</b> income (town is in the gold-harvest formula) where Grow feeds rice. "
            "Front-load Build while town is low.",
     "callout": (
+"<b>The hidden SKILL-LEVEL dial.</b> The <code>(6&nbsp;&minus;&nbsp;skill)</code> term is the game's "
+"difficulty knob (<code>const_two&nbsp;$6D63</code>, 1–5, default 2): on one province (town&nbsp;66, "
+"spend&nbsp;100) the town gain is <b>82 / 66 / 50 / 32 / 16</b> for skill&nbsp;1–5 — the same ~5.4× swing "
+"as Grow, invisible in the UI (emulator + <code>econ_sim</code> verified). Higher skill = slower "
+"development = harder.<br><br>"
 "<b>Two corrections to the earlier notes (2026-06-02, full bytecode walk + ROM re-execution).</b> "
 "<b>(1)</b> The wealth-drain percentage is <b>not the constant 20</b> — exactly like Grow, the bytecode "
 "at <code>$88E4–$88FF</code> computes it live from the gain-to-town ratio, capped at 50%. "
@@ -238,8 +249,8 @@ COMMANDS = {
 'morale  &plus;= give( pair = (men    &plus; morale )&divide;2 )    '
 '<span class="c">// give_morale  $89C1</span>\n\n'
 '<span class="k">where</span> give(pair):\n'
-'   g     = &lfloor;amount &times; (6 &minus; const_two) &divide; &radic;(pair + amount)&rfloor;   '
-'<span class="c">// ×5</span>\n'
+'   g     = &lfloor;amount &times; (6 &minus; skill) &divide; &radic;(pair + amount)&rfloor;   '
+'<span class="c">// skill = const_two $6D63 = difficulty (1-5, default 2)</span>\n'
 '   g     = <span class="k">max</span>(g, 1);  g = <span class="k">min</span>(g, header &minus; field)\n'
 '   field &plus;= 2 &times; g                            '
 '<span class="c">// NO drain — pure benefit</span>'),
@@ -247,6 +258,10 @@ COMMANDS = {
            "<code>pair + amount</code> denominator stays small). Rice→Peasants is the staple loyalty "
            "pump — pair it with <b>Send</b> to convert a maxed fief’s rice surplus into frontier loyalty.",
     "callout": (
+"<b>The hidden SKILL-LEVEL dial.</b> Like Grow/Build, the <code>(6&nbsp;&minus;&nbsp;skill)</code> term is "
+"the difficulty knob (<code>const_two&nbsp;$6D63</code>, 1–5, default 2): Rice→Peasants (rice&nbsp;50) gives "
+"loyalty/wealth <b>+50 / +40 / +30 / +20 / +10</b> for skill&nbsp;1–5 — the same ~5× swing (<code>econ_sim</code> "
+"verified). Higher skill = weaker gifts.<br><br>"
 "<b>The widest command.</b> Peasants mode raises <b>two</b> fields (loyalty <i>and</i> wealth); Men mode "
 "raises morale. Each target is averaged with its <b>thematic complement</b> before the curve — "
 "loyalty↔output, wealth↔town, morale↔men — which pulls a pumped stat back toward its neglected twin and "
@@ -559,7 +574,11 @@ COMMANDS = {
 "Build). Two defining properties: dams is the <b>only</b> province stat capped at 0–100, and the gain is "
 "<b>inversely proportional to √output</b> — a developed fief pays far more gold per dam point. The spend cap "
 "<code>(100−dams)×√output÷2</code> is exactly the amount that lifts dams to 100, so “spend the max” always "
-"tops out the dam. Dams matter because the rice harvest multiplies <b>output × dams</b> (appendix §4)."),
+"tops out the dam. Dams matter because the rice harvest multiplies <b>output × dams</b> (appendix §4). "
+"<b>Skill-immune (2026-06-11):</b> unlike Grow/Build/Give, Dam’s gain has <b>no "
+"<code>(6&nbsp;&minus;&nbsp;skill)</code> term</b> — it is the one development command the difficulty dial "
+"does <i>not</i> slow (dams&nbsp;+25 at skill&nbsp;1 and skill&nbsp;5 alike, <code>econ_sim</code> verified), "
+"so Dam grows <i>relatively</i> more valuable at high difficulty when everything else is up to 5× slower."),
     "validation": {
       "caption": "Dam at Tokugawa’s state (output 254 → √=15, dams 39). The +56 row is the in-game "
                  "capture; the others apply the validated formula at the same state.",
@@ -655,11 +674,11 @@ COMMANDS = {
       "<b>Ninja</b> and you leave the recruiting sandbox for an offensive espionage subsystem "
       "(<code>effect_ninja_sabotage $A2D2</code>). You pay gold to hire the ninja (rate "
       "<code>hire_gold_rate $6E13</code>, which re-rolls every turn), choose a target fief "
-      "(<span class=\"scr\">Send where?</span>), then choose one of five missions. A <b>ninja-skill "
-      "contest</b> gates the outcome: the run proceeds only when your daimyo’s skill stat "
-      "(<code>record +3</code>) <b>+ 30</b> beats the target daimyo’s — otherwise "
+      "(<span class=\"scr\">Send where?</span>), then choose one of five missions. A <b>Luck "
+      "attempt-gate</b> gates every mission: it proceeds only when your daimyo’s <b>Luck</b> stat "
+      "(<code>record +3</code>) <b>+ 30</b> beats the target daimyo’s Luck — otherwise "
       "<span class=\"scr\">Your ninja failed!</span> and you forfeit the gold anyway "
-      "(<code>effect_hire_pay_gold $A29B</code>). On success the target loses the mission’s fields and "
+      "(<code>effect_ninja_failed $A29B</code>). On success the target loses the mission’s fields and "
       "you see <span class=\"scr\">Fief X’s &lt;stat&gt; has declined by N</span>. <i>This is the "
       "system the old notes mis-filed under “Bribe” — see the correction below; the genuinely separate "
       "Bribe command gets its own page.</i>"),
@@ -674,12 +693,12 @@ COMMANDS = {
                '(<code>$BD8F</code>).'),
       (0xA36D, '<b>The ninja sets out</b> — <code>ui_helper_e80c(12)</code> plays the mission-launch '
                'animation (each mission then has its own effect animation; see the table).'),
-      (0xA396, '<b>Ninja-skill contest.</b> Proceeds only if <code>target_daimyo[+3] &lt; '
-               'your_daimyo[+3] + 30</code> — a fixed +30 attacker edge on the skill stat.'),
+      (0xA396, '<b>Luck attempt-gate (all 5 missions).</b> Proceeds only if <code>target_daimyo.Luck &lt; '
+               'your_daimyo.Luck + 30</code> (record <code>+3</code> = Luck) — a fixed +30 attacker edge.'),
       (0xA39A, '<b>Mission switch</b> — dispatch to the chosen sabotage effect (drains via '
                '<code>hire_stat_drain_rng</code>, clamped so a field never goes below 0).'),
       (0xA2AD, '<b>On failure</b> → <span class="scr">"Your ninja failed!"</span>; gold is spent '
-               'regardless (<code>effect_hire_pay_gold</code>).'),
+               'regardless (<code>effect_ninja_failed</code>).'),
     ],
     "table_heading": "The five missions",
     "table": {
@@ -690,36 +709,44 @@ COMMANDS = {
         ["1", "Uprising", "loyalty + wealth", "28", "$A3AB"],
         ["2", "Revolt", "morale", "27", "$A45A"],
         ["3", "Dams", "dams + rice (flood)", "30", "$A497"],
-        ["4", "Assassin", "kills the enemy daimyo — gated by “daimyo present” ($6DA2); resolves in "
-         "ninja_mission_resolve_vs_defender", "1*", "$A508"],
+        ["4", "Assassin", "grinds the daimyo’s health to 0 (attrition) — requires targeting the daimyo’s "
+         "CAPITAL ($6DA2 = fief_is_daimyo_capital); a capital kill collapses the whole faction; resolves "
+         "in ninja_mission_resolve_vs_defender $918D", "1*", "$A508"],
         ["5", "Arson", "town", "29", "$A510"],
       ],
-      "note": "Drain magnitude (from <code>hire_stat_drain_rng $A255</code> bytecode): "
-              "<code>drain = (rng % max(1, ⌊field × √(your_skill+30) ÷ 100⌋) + 1) × 5</code> — always a "
-              "multiple of 5 (max 5×the cap), scaling with the target field’s value and your daimyo’s "
-              "skill (record +3, with a +30 edge). Each drain is clamped to the field (can zero a stat, "
-              "never negative). <b>Emulator-confirmed</b> across the full RNG band "
-              "(<code>tools/probe-espionage.py</code> — the observed drains matched "
-              "<code>{5,10,…,X×5}</code> for every test vector). *Assassin has no field-drain "
-              "animation of its own — it runs the resolution sub, which plays animation 1.",
+      "note": "Drain magnitude (from <code>hire_stat_drain_rng $A255</code> bytecode, confirmed 2026-06-11): "
+              "<code>drain = (rng % max(1, ⌊field × √(unit_count) ÷ 100⌋) + 1) × 5</code> — always a "
+              "multiple of 5, scaling with the target field’s value and <b>√(unit_count)</b> (the ninjas "
+              "you hired). <b>Economics:</b> cost ∝ <code>unit_count</code> (linear) but drain ∝ "
+              "<code>√unit_count</code> → strong diminishing returns; it is pure denial (you gain nothing), "
+              "best as small-batch pre-war softening. Each drain is clamped to the field (can zero a stat, "
+              "never negative). <b>Emulator-confirmed</b> shape across the full RNG band "
+              "(<code>tools/probe-espionage.py</code> — drains matched <code>{5,10,…,X×5}</code>). "
+              "⚠ Earlier text put the √ over <code>your_skill+30</code> — wrong: it is "
+              "<code>√(unit_count)</code>; the <code>+30</code> is the separate Luck attempt-gate. "
+              "*Assassin has no field-drain animation — it runs the resolution sub (animation 1).",
     },
     "callout": (
       "<b>This is the “buy → ninja” system — and it is NOT Bribe.</b> The toml long labeled "
       "<code>$A2D2</code> <code>effect_hire</code>, and an earlier note filed the whole "
       "Uprising/Revolt/Dams/Assassin/Arson menu under the <b>Bribe</b> command. The bytecode says "
       "otherwise: this menu hangs off <b>Hire ▸ Ninja</b> (<code>driver_hire $A5F4</code>), while the "
-      "recruit-men path is <code>effect_hire_variant_pay $A553</code> and the real <b>Bribe</b> command "
+      "recruit-men path is <code>effect_hire_men $A553</code> and the real <b>Bribe</b> command "
       "(<code>$8D4D</code>) is a separate gold-for-spy peasant-defection. The label is now "
       "<code>effect_ninja_sabotage</code>. The sabotage mechanics the old note described were all real — "
       "only the command attribution was wrong."),
     "rabbit_holes": [
-      ("Assassination resolution", "<code>ninja_mission_resolve_vs_defender $918D</code> — the "
-       "daimyo-kill path: a skill/luck roll that can be <span class=\"scr\">counterattacked</span> / "
-       "<span class=\"scr\">you have repelled</span>, and on success neutralizes the fief "
-       "(<code>neutralize_fief</code>). Plausibly the source of Tokugawa’s mystery health loss.", None),
-      ("Drain magnitude", "<code>hire_stat_drain_rng $A255</code> — the per-mission "
-       "<code>(rng·scaled+1)×5</code> drain; the scaling term needs an emulator probe to pin exactly.",
-       None),
+      ("Assassination resolution (RESOLVED)", "<code>ninja_mission_resolve_vs_defender $918D</code> — a "
+       "<b>Charisma+IQ</b> resolution contest with a Charisma <span class=\"scr\">counterattack</span> / "
+       "<span class=\"scr\">you have repelled</span> that can hurt <b>your own</b> daimyo (the confirmed "
+       "source of “Tokugawa’s mystery health loss”). On success it grinds the target’s health to 0 "
+       "(attrition, ~2 un-countered hits); at a capital it collapses the whole faction "
+       "(<code>find_fiefs_of_owner</code>). Full trace: "
+       "<a href=\"../synthesis-frontier.md\">synthesis-frontier.md §1</a>.", None),
+      ("Drain magnitude (RESOLVED)", "<code>hire_stat_drain_rng $A255</code> — "
+       "<code>(rng % max(1, ⌊field × √(unit_count) ÷ 100⌋) + 1) × 5</code>; the scaling term is "
+       "<b>√(unit_count)</b>, confirmed C+bytecode 2026-06-11. Cost ∝ ninjas, drain ∝ √ninjas = "
+       "diminishing returns (denial, not profit).", None),
     ],
   },
 
@@ -803,34 +830,43 @@ COMMANDS = {
                "not an economic one. He names the price; you pay or you don’t.",
     "anim_cap": "The two houses’ banners meet — the pact-sealing scene (id 3).",
     "summary": (
-      "Pact (<code>driver_pact $9C4F</code>) is a <b>diplomacy</b> command. You pick a target "
-      "daimyo (<span class=\"scr\">Which fief?</span>), and a relations helper "
-      "(<code>diplomacy_helper $9C9C</code>) sets the gold he demands to agree. The game shows "
+      "Pact (<code>driver_pact $9C4F</code>) buys peace from a rival. You pick a target daimyo "
+      "(<span class=\"scr\">Which fief?</span>), and the AI names a price "
+      "(<code>prompt_diplomacy_pact $E3A4</code>) sized to <b>your own treasury</b>: "
+      "<code>pct_op(yourGold, 50) + pct_op(yourGold, rng%50) + 20</code> — roughly <b>half to all "
+      "of your gold, plus 20</b>. The AI only <i>offers</i> a pact about <code>1-in-skill</code> "
+      "attempts, and refuses a militarily-weak lord two times in three. The game shows "
       "<span class=\"scr\">Lord &lt;you&gt;: &lt;him&gt; wants &lt;N&gt; gold. Pay?</span> — answer "
-      "yes (<code>ui_helper_d3a7</code>) and, if your selected fief holds the gold, it is debited and "
-      "the alliance is recorded (<code>diplomacy_helper2 $9CF3</code>); the pact animation plays "
-      "(<code>ui_helper_e80c(3)</code>) and you’re reminded "
-      "<span class=\"scr\">War is inevitable, so don’t let your guard down.</span> If you can’t (or "
-      "won’t) pay, you get <span class=\"scr\">You have no gold.</span> or — if <i>he</i> refuses — "
-      "<span class=\"scr\">They’ve refused.</span> / <span class=\"scr\">Who needs him anyway.</span> "
-      "No formula: the cost is set by the diplomacy state, and the only effect is gold spent + a "
-      "relation flipped."),
+      "yes and, if your fief holds the gold, <b>it is handed to the rival</b> "
+      "(<code>your.gold −= N; target.gold += N</code>) and the alliance is recorded at "
+      "<b>relation 70</b> (<code>set_pact_relation $9CF3</code>); the pact animation plays and you’re "
+      "reminded <span class=\"scr\">War is inevitable, so don’t let your guard down.</span> If you "
+      "can’t/won’t pay: <span class=\"scr\">You have no gold.</span> / "
+      "<span class=\"scr\">Who needs him anyway.</span>; if <i>he</i> refuses: "
+      "<span class=\"scr\">They’ve refused.</span> <b>Every attempt also costs your daimyo −1 Drive</b> "
+      "(record <code>+2</code>), and <b>−2</b> if you back out or are refused."),
     "flow": [
       (0x9C6E, 'Select <b>Pact</b>; pick the target — <span class="scr">"Which fief?"</span>.'),
-      (0x9C9C, 'A diplomacy helper sets the gold the target daimyo demands to ally.'),
+      (0x9C93, '<b>−1 Drive</b> (daimyo record <code>+2</code>) just for opening negotiations.'),
+      (0x9C9C, 'The AI names a price = <code>~50–99% of YOUR gold + 20</code> (offered ~1-in-skill; '
+               'a weak lord is refused 2/3).'),
       (0x9CBC, 'Prompt <span class="scr">"Lord &lt;you&gt;: &lt;him&gt; wants &lt;N&gt; gold. Pay?"</span>'),
       (0x9CCA, '<b>Gold check.</b> Your fief lacks the gold → <span class="scr">"You have no gold."</span>'),
-      (0x9CE2, '<b>Pay:</b> gold is debited and the alliance recorded (<code>diplomacy_helper2</code>).'),
+      (0x9CE2, '<b>Pay:</b> gold is moved <i>to the rival</i> and relation set to 70 '
+               '(<code>set_pact_relation $9CF3</code>).'),
       (0x9CF7, '<b>Animation</b> (<code>ui_helper_e80c(3)</code>), then '
                '<span class="scr">"War is inevitable, so don’t let your guard down."</span>'),
       (0x9D19, '<b>If he refuses:</b> <span class="scr">"They’ve refused."</span> / '
                '<span class="scr">"Who needs him anyway."</span> — no gold spent.'),
     ],
     "callout": (
-      "<b>A diplomacy command, not an econ formula.</b> The price isn’t a curve you can solve — it’s "
-      "read out of the relations state by <code>diplomacy_helper</code>, and the whole effect is "
-      "<i>gold spent → relation set</i>. That’s why Pact gets a functional page: the depth is in the "
-      "diplomacy/relations subsystem (the relations matrix the AI decays each turn), not in Pact itself."),
+      "<b>Peace you can’t afford when you’d want it.</b> The price <i>is</i> a curve — but on "
+      "<b>your own treasury</b>, not the rival’s: the richer you are, the more a pact costs, and the "
+      "gold goes straight into your enemy’s coffers. The AI offers it only about 1-in-skill attempts "
+      "and refuses the weak outright, so the lord who most needs a truce is the least likely to be sold "
+      "one. The only product is a relation number (70) in the matrix the AI decays each turn — though "
+      "because the price tracks your <i>current</i> gold, a near-empty treasury buys a pact for ~20, so "
+      "whether cheap diplomacy can rival the faction-ending assassination is an open synthesis question."),
     "rabbit_holes": [
       ("Relations matrix", "the per-daimyo relations grid Pact writes and the AI reads — "
        "<code>normalize_relations_matrix_lower/upper</code> decay it each turn; "
@@ -855,28 +891,33 @@ COMMANDS = {
       "it (and hold the gold) and the marriage alliance is recorded "
       "(<code>diplomacy_helper3 $9E6F</code>), the wedding animation plays "
       "(<code>ui_helper_e80c(16)</code>), and you’re told <span class=\"scr\">Your bride-to-be has "
-      "arrived.</span> / <span class=\"scr\">Don’t you long to hear the pitter-patter…</span> If the "
-      "house <b>refuses</b> (<span class=\"scr\">They’ve refused.</span>) your daimyo’s standing takes "
-      "the snub — records <code>+2</code>, <code>+3</code> (skill) and <code>+4</code> (charisma) each "
-      "drop by one."),
+      "arrived.</span> / <span class=\"scr\">Don’t you long to hear the pitter-patter…</span> The dowry "
+      "(vs an AI house) is sized to <b>your treasury</b> — <code>~50–79% of your gold + 200</code>, "
+      "needing gold &gt; 200 — and is <b>paid to the rival</b>, recording the strongest tie "
+      "(<b>relation 90</b>). Each attempt costs <b>−1 Drive</b>; if the house <b>refuses</b> "
+      "(<span class=\"scr\">They’ve refused.</span>) your daimyo permanently loses one each from "
+      "<b>Drive (+2)</b>, <b>Luck (+3)</b> and <b>Charisma (+4)</b>."),
     "flow": [
       (0x9DD7, '<b>Daimyo-present gate</b> (<code>$6DA2</code>) — you must be in the fief to court.'),
       (0x9DEA, 'Select the target house — <span class="scr">"Which fief?"</span>.'),
       (0x9E22, '<b>The bride is rolled</b> — <code>rng%22 + 53</code> picks a composite face, drawn via '
                '<code>draw_daimyo_portrait</code>.'),
-      (0x9E51, 'Prompt the dowry: <span class="scr">"&lt;him&gt; wants &lt;N&gt; gold. Pay?"</span>'),
+      (0x9E51, 'Dowry (vs an AI house) = <code>~50–79% of YOUR gold + 200</code> (floor: gold &gt; 200, '
+               'offered ~1-in-skill): <span class="scr">"&lt;him&gt; wants &lt;N&gt; gold. Pay?"</span>'),
       (0x9E6C, '<b>Gold check</b> — your fief must hold the dowry.'),
-      (0x9E6F, '<b>Wed:</b> alliance recorded (<code>diplomacy_helper3</code>), dowry debited, '
-               'animation <code>16</code>, <span class="scr">"Your bride-to-be has arrived."</span>'),
-      (0x9EC6, '<b>If refused:</b> <span class="scr">"They’ve refused."</span> and your daimyo loses '
-               '1 each from records +2 / +3 (skill) / +4 (charisma).'),
+      (0x9E6F, '<b>Wed:</b> dowry moved <i>to the rival</i>, relation set to <b>90</b> '
+               '(<code>set_marriage_relation</code>), animation <code>16</code>, '
+               '<span class="scr">"Your bride-to-be has arrived."</span>'),
+      (0x9EC6, '<b>If refused:</b> <span class="scr">"They’ve refused."</span> and your daimyo '
+               '<b>permanently loses 1 each</b> from <b>Drive (+2)</b>, <b>Luck (+3)</b>, '
+               '<b>Charisma (+4)</b>.'),
     ],
     "callout": (
       "<b>The only command that snubs you back.</b> Most refusals just cost a turn; a rejected marriage "
-      "proposal actually <b>drains three of your daimyo’s own stats</b> (records +2/+3/+4) — the public "
-      "loss of face. The reward is the tightest diplomatic bond in the game (a marriage alliance, "
-      "<code>diplomacy_helper3</code>), and a one-off bit of flavor: the bride gets a real, randomly "
-      "generated portrait through the same composite face system the replacement-daimyo generator uses."),
+      "proposal <b>permanently drains three of your daimyo’s core stats</b> — <b>Drive (+2), Luck (+3), "
+      "Charisma (+4)</b> each by one (the public loss of face). And like Pact, the dowry is sized to "
+      "<i>your own treasury</i> and handed to the rival, for the tightest bond in the game "
+      "(relation 90). One-off flavor: the bride gets a real, randomly generated composite portrait."),
     "rabbit_holes": [
       ("Composite portrait system", "the bride’s face is built by the base-5 composite renderer "
        "(<code>$6EB1 → bank-8 part tables</code>) — the same path generated/replacement daimyo use, "
@@ -1094,6 +1135,8 @@ COMMANDS = {
       "raw troops into a crack garrison dilutes it. The march animation plays "
       "(<code>ui_helper_e80c(8)</code>) and <span class=\"scr\">They have arrived safely.</span>"),
     "flow": [
+      (0x96D6, '<b>Soldier check</b> (<code>effect_war_combat_prep_b</code>) — no men → '
+               '<span class="scr">"You have no soldiers."</span> and the command aborts.'),
       (0x96E9, 'Select <b>Move</b>; the destination list is built from <i>your own</i> fiefs.'),
       (0x96FB, '<span class="scr">"Move where?"</span> — pick the destination province.'),
       (0x9741, '<b>Capacity</b> = <code>min(dest.header − dest.men, source.men)</code>; zero → '

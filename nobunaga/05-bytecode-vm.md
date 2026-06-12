@@ -6,6 +6,8 @@ created: 2026-05-13
 
 > The orchestration question — "how does the boot sequence know to do `call_bank → audio_load_voice ×3 → audio_control ×3 → palette_swap`?" — has an answer at a higher level of abstraction than chapters 1-4 reached. The 6502 kernel in bank 15 is an operating system. The game itself is a **bytecode program in banks 0-14**, interpreted by a virtual machine at $E823. Game logic, boot sequence, AI, menus, combat — all of it is VM bytecode. The kernel just provides syscall services.
 
+> **⚠ Pass-2 fact-check (2026-06-11) — architecturally correct; names updated.** The VM model here is right (and is the whole engine — the decompiler proves it). Pass-1 grounding renamed the ZP pointers this chapter calls `ptr0/ptr1/ptr3`: **`ptr0 → scratch_ptr` ($00/01), `ptr1 → vm_sp` ($02/03), `ptr2 → vm_fp` ($04/05), `ptr3 → vm_ip` ($06/07)**. One semantic refinement: this chapter calls `ptr1` "the VM frame pointer," but the grounded model names $02/03 **`vm_sp` — the operand-stack pointer** (frame allocation rides on it), with a *separate* **`vm_fp` ($04/05)** = the frame-base used for local/arg addressing (`vm_fp + signed offset` → the decompiler's `local0..N` / `arg1..N`); this chapter didn't surface vm_fp. Grounded sub names already match (`vm_entry $E823`, `vm_dispatch $E867`, `vm_call_native $EB57`, `vm_opcode_lo/hi_table $F026/$F126`); host-call opcodes are `vm_op_E9_host_call` / `vm_op_AC_host_call_simple` (VM disasm mnemonics `CALL_abs_imm1` / `CALL_abs`). The asm blocks below keep the old `ptr` names — read them through the map above.
+
 **Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Chapter 3 — NMI Pipeline](./03-nmi-pipeline.md) · [Chapter 4 — Syscall API](./04-syscall-api.md) · [Nobunaga README](./README.md)
 
 ## The orchestration question
@@ -152,18 +154,20 @@ Bytecode: ... [prepared frame] ...  E9 26 F2  ...
 
 So **the syscall struct never has to be built separately** — the VM frame *is* the syscall struct. The bytecode prepares it in place, fires the host-call opcode, gets results back through `$66/$67 → $08/$09` (chapter 4's calling convention), and continues.
 
-## What `ptr1` is, fully
+## What `$02/$03` is, fully — `vm_sp` (the operand-stack pointer)
 
-Across chapters 2-5, the function of `ptr1 = $02/$03` has been gradually clarified:
+Across chapters 2-5 the function of `$02/$03` was gradually clarified; pass-1 grounding gave it its final name **`vm_sp`**:
 
 | Chapter | Reading |
 |---|---|
 | 2 | "Pointer pair LO/HI; reset-init to $FF (forms $05FF with $03)" — generic pointer |
-| 3 | (not touched) |
-| 4 | "Syscall request-struct pointer — the caller passes a struct address in ptr1 before `jsr syscall_dispatch`" |
-| **5** | **The VM frame pointer.** Each VM call frame is allocated at (current ptr1 - 9) bytes. The current frame at ptr1 holds: byte 2 = task ID for the next host call; bytes 4-$15 = parameters; bytes 0-1, $16-$17 = frame metadata |
+| 4 | "Syscall request-struct pointer — the caller passes a struct address before `jsr syscall_dispatch`" |
+| 5 | "The VM frame pointer" — each frame is allocated at `vm_sp - 9`; the frame holds byte 2 = host-call task ID, bytes 4-$15 = parameters, bytes 0-1/$16-$17 = metadata |
+| **grounded** | **`vm_sp` — the VM operand-stack pointer.** The operand stack and the call frame are the *same* downward-growing structure (a frame is a slice of the stack) — which is why $02/$03 does both the `-= 9` frame-alloc and the `(vm_sp),Y` param reads. |
 
-The chapter-4 reading wasn't wrong; it was a partial view. From the VM's perspective, the syscall struct *and* the frame are the same memory — the VM never separates them, so the kernel can read its arguments straight out of the live VM frame.
+**The piece chapter 5 missed: `vm_fp` ($04/$05, was `ptr2`)** — the separate **frame-base pointer**. Locals and arguments are addressed as `vm_fp + signed offset` (the decompiler renders these as `local0..N` / `arg1..N`). So the VM has *two* frame registers: `vm_sp` (stack top / frame allocation) and `vm_fp` (frame base / local access). Chapter 5 saw only the stack-pointer role and named it "frame pointer."
+
+The chapter-4 "syscall struct pointer" reading wasn't wrong — it was a partial view. The syscall struct *and* the VM frame are the same memory at `vm_sp`; the VM never separates them, so the kernel reads its arguments straight out of the live frame.
 
 ## The architectural reframe
 

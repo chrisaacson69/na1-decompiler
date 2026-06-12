@@ -16,9 +16,9 @@ How it was found (see ROADMAP):
   ink is any non-zero pixel.
 
 Usage:
-  py -3 tools/render-text.py "NOBUNAGA"  --out atlas/text.png
+  py -3 tools/render-text.py "NOBUNAGA"  --out assets/screens/text.png
   py -3 tools/render-text.py "Lord  3" --scale 6 --fg f0b429 --bg 15151c
-  py -3 tools/render-text.py --atlas atlas/font-atlas.png      # dump the whole glyph set
+  py -3 tools/render-text.py --atlas assets/screens/font-atlas.png      # dump the whole glyph set
 
 Importable:  from render_text import render_text, FontError
              img = render_text("ATTACK", scale=4, fg=(240,180,41))
@@ -159,7 +159,7 @@ def main():
         ap.error("provide TEXT or --atlas")
     img = render_text(a.text, scale=a.scale, fg=_hexcolor(a.fg),
                       bg=_hexcolor(a.bg) if a.bg else None, tracking=a.tracking)
-    out = a.out or "atlas/text.png"
+    out = a.out or "assets/screens/text.png"
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
     print(f"wrote {out}  ({img.width}x{img.height})")

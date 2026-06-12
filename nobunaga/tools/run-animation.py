@@ -16,7 +16,7 @@ snapshots a frame at each present point (prompt_redraw / delay_loop), and render
 each frame's sprites with the real NES palette -> PNG frames + an animated GIF.
 
 Usage:
-    py -3 tools/run-animation.py <id> [--sram traces/X.dmp] [--out atlas/anim]
+    py -3 tools/run-animation.py <id> [--sram traces/X.dmp] [--out assets/animations/anim]
                                  [--pt 0|1] [--h 8|16] [--scale N] [--trace]
     py -3 tools/run-animation.py --list      # dump the descriptor table
 
@@ -141,8 +141,11 @@ def run(aid, sram, pt_base, sprite_h, scale, trace, out_prefix):
 
     # --- render ---
     imgs = []
+    frame_sprites = []   # active-sprite count per frame (to trim the trailing clear/blank)
+    sprite_bbox = None   # bbox of actually-DRAWN (non-backdrop) pixels = the animation's window
     for fi, (oam, pal, chr_snap) in enumerate(frames):
         active = [i for i in range(64) if oam[i*4] < 0xEF]
+        frame_sprites.append(len(active))
         canvas = Image.new("RGB", (256, 240), NES_PALETTE[pal[0] & 0x3F])
         px = canvas.load()
         for i in active:
@@ -164,22 +167,33 @@ def run(aid, sram, pt_base, sprite_h, scale, trace, out_prefix):
                         sy = y + r*8 + (7 - ty if flipy else ty)
                         if 0 <= sx < 256 and 0 <= sy < 240:
                             px[sx, sy] = rgb
+                            if sprite_bbox is None:
+                                sprite_bbox = [sx, sy, sx + 1, sy + 1]
+                            else:
+                                if sx < sprite_bbox[0]: sprite_bbox[0] = sx
+                                if sy < sprite_bbox[1]: sprite_bbox[1] = sy
+                                if sx + 1 > sprite_bbox[2]: sprite_bbox[2] = sx + 1
+                                if sy + 1 > sprite_bbox[3]: sprite_bbox[3] = sy + 1
         imgs.append(canvas)
         if trace:
             print(f"  frame {fi}: {len(active)} sprites")
 
     Path(out_prefix).parent.mkdir(parents=True, exist_ok=True)
-    # crop to the sprite bounding box (+8px margin) so the GIF isn't mostly empty
-    bbox = None
-    for im in imgs:
-        b = im.getbbox()
-        if b:
-            bbox = b if bbox is None else (min(bbox[0], b[0]), min(bbox[1], b[1]),
-                                           max(bbox[2], b[2]), max(bbox[3], b[3]))
-    if bbox:
+    # Drop trailing clear/blank frames. The single-scene (bank-14) cutscenes end with a sprite-clear
+    # (one rich scene -> sprites blanked); don't show that empty tail. Trim only from the END, so
+    # mid-animation low-sprite frames are safe.
+    if imgs:
+        peak = max(frame_sprites)
+        while len(imgs) > 1 and frame_sprites[-1] < max(1, peak * 0.30):
+            imgs.pop(); frame_sprites.pop()
+
+    # Clip to the SPRITE bounding region (from OAM positions = the draw_sprite_grid window).
+    # NOT im.getbbox(): that keys on non-black pixels, but the backdrop is palette entry 0
+    # (often grey, e.g. Grow), so getbbox returned the whole 256x240 -> fullscreen GIFs.
+    if sprite_bbox:
         pad = 8
-        bbox = (max(0, bbox[0]-pad), max(0, bbox[1]-pad),
-                min(256, bbox[2]+pad), min(240, bbox[3]+pad))
+        bbox = (max(0, sprite_bbox[0]-pad), max(0, sprite_bbox[1]-pad),
+                min(256, sprite_bbox[2]+pad), min(240, sprite_bbox[3]+pad))
         imgs = [im.crop(bbox) for im in imgs]
 
     w, h = imgs[0].size
@@ -201,7 +215,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("id", nargs="?", type=int)
     ap.add_argument("--sram", default="traces/exp-fall-1560-start.dmp")
-    ap.add_argument("--out", default="atlas/anim")
+    ap.add_argument("--out", default="assets/animations/anim")
     ap.add_argument("--pt", type=int, default=0, choices=(0, 1))
     ap.add_argument("--h", type=int, default=8, choices=(8, 16))
     ap.add_argument("--scale", type=int, default=3)

@@ -8,8 +8,8 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 here = os.path.dirname(os.path.abspath(__file__))
-saves_dir = os.path.join(here, 'atlas', 'Saves')
-out_path = os.path.join(here, 'atlas', 'strategic-atlas-with-adjacencies.png')
+saves_dir = os.path.join(here, 'assets', 'maps', 'strategic', 'Saves')
+out_path = os.path.join(here, 'assets', 'maps', 'strategic', 'strategic-atlas-with-adjacencies.png')
 
 FIEFS = ['Noto','Echigo','Musashi','Kaga','Echizen','Hida','Suruga','Mikawa',
          'Mino','Yamato','Omi','Iga','Iseshima','Yamashir','Settsu','Shinano','Owari']

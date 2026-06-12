@@ -22,7 +22,7 @@ Chapter 9 walked the command handlers down to the bytes they actually read and w
 
    The header (base koku) is the **last** field, not the first. The 12 visible stats occupy offsets 0–22.
 
-The body below (the `$60B6` decode, the "BE in SRAM" section, the `$601A` 50-record discussion) was written from mislabeled Memory-Viewer offsets and should be read *through* this erratum. The **ROM defaults table** (`$9258`/`$B0BE` in the body, `$B002` per chapter 8's correction) is a separate question — the static ROM template may genuinely differ from the live layout if the boot bytecode rearranges fields during new-game init; that has not been re-verified and is left as an open item. A full rewrite of this chapter's body against the confirmed layout is queued.
+The body below (the `$60B6` decode, the "BE in SRAM" section, the `$601A` 50-record discussion) was written from mislabeled Memory-Viewer offsets. The **ROM defaults table** is a separate **REPRESENTATION** of the same logical record — ROM = a header-first/LE scenario template in bank 3; live SRAM = the `$7001` layout above — not a contradiction (see the ROM-defaults section). **[Pass-2 2026-06-11: the queued rewrite is now done — the wrong body sections below are corrected in place against this layout. The grounded array bases (the real cleanup unlock — "name the array pointer first") are: `fief_history_table $6003` (17×8 high-water marks), `fief_tax_rate $6D2D` (flat per-fief), `fief_to_daimyo_map $6E15` (17-byte owner array), `province_table_live $7001` (17×26), `daimyo_table_17 $752F` (17×7), `daimyo_name_table $77A8` (17×9). The deprecated `province_table_OLD $601A` toml label exists only to flag this chapter's old error and can be retired.]**
 
 ## The save problem
 
@@ -47,64 +47,42 @@ Three artifacts were produced this session, all stored in the project folder for
 - `sram-current.sav` and `sram-mikawa-rice-given.sav` — 17-fief Tokugawa state at various turn counts
 - Inline pastes from the live Memory Viewer (the highest-fidelity captures)
 
-## The SRAM memory map (17-fief scenario)
+## The SRAM memory map (17-fief scenario) — grounded array bases
 
-| Region | Content | Confidence |
-|---|---|---|
-| **$6000-$6019** | 26-byte preamble — possibly a header / global game state (we see partial Tokugawa stats here, mixed order, suggesting **live UI cache**) | high (region type), low (field meanings) |
-| **$601A-$62F1** | **Province table — 50 records × 26 bytes each.** NOT 17 records: the "17-fief scenario" is a 17-province *window* into the full 50-province map of Japan. Records 0-16 are the playable fiefs; records 17-49 are the rest of Japan (unnamed, non-playable background territory). This mirrors the ROM defaults table layout exactly. | **decoded** |
-| **$62F2-$74CF** | Dense game state — daimyo records, additional per-province data, scenario leftovers | partial |
-| **$74D0-$752E** | Zeros / unused | high |
-| **$752F-$75A6** | **Daimyo table** — 17 records × 7 bytes each | **decoded** |
-| **$75A7-$76FF** | Zeros / unused in 17-fief (used in 50-fief for additional daimyo records) | high |
-| **$7700-$77A6** | 5-byte daimyo records left over from 50-fief, mostly $14-filled in 17-fief | high |
-| **$77A8-$78??** | **Daimyo name table** — 17 names × 9 bytes (8 chars + null pad) | **decoded** |
-| **$78??-$7BFF** | **Province name table** — 17 names × 9 bytes (or similar) | **decoded** |
-| **$7C00-$7E2D** | Map tile data — 558 bytes of background tile indices for the strategic map view | structural |
-| **$7E2E-$7F00** | Map color/palette index data | structural |
-| **$7F00-$7FFF** | **Transient UI cache** — frame counter at $7FE9, status flags, animation timing, menu position, etc. Zeroed at boot ($7FE7, $7FC7, $7FD3, $7FD1 explicitly cleared in the boot bytecode) | **decoded** (region type) |
+Rewritten 2026-06-11 against the grounded labels. The SRAM is a set of **parallel index-keyed arrays**; naming each array's **base + stride** (not just guessing offsets) is what unlocked the code.
 
-The boundary between "canonical game state" and "UI cache" runs roughly at $7C00. Everything before is data that must survive a save; everything after is recomputable from the canonical state plus per-frame inputs.
+| Base | Array | Stride / size | Notes |
+|---|---|---|---|
+| **$6003** | `fief_history_table` | 17 × 8 bytes | Per-fief HIGH-WATER MARKS (output/dams/loyalty/wealth maxima) — income harvests off the *peak*, not current. (This is the `$6000` region the old body called a "UI cache.") |
+| **$6D2D** | `fief_tax_rate` | 17 × 1 byte (flat) | Per-fief tax % (0-100); NOT in the 26-byte record. |
+| **$6D5F** | `current_season` + config | 4-byte block | Season 0-3; `$6D63 = const_two` (Grow's √ subtrahend). |
+| **$6E15** | `fief_to_daimyo_map` | 17 × 1 byte | **The explicit owner array**: position i = owner-daimyo of fief i+1. Starts identity; changes on conquest. |
+| **$7001** | `province_table_live` | 17 × 26 bytes | The live province records (see below). Record N at `$7001 + N*26`. |
+| **$7515** | `zealot_uprising_slot` | 26 bytes (idx 50) | Ikko-Ikki uprising force in province-record format (header=9999 marks it). The "0F 27 sentinel" the old body saw. |
+| **$752F** | `daimyo_table_17` | 17 × 7 bytes | Daimyo records (see below). |
+| **$77A8** | `daimyo_name_table` | 17 × 9 bytes | 8 chars + null pad, parallel-indexed to the records. |
+| (after names) | province name table | 17 × 9 bytes | Province names, same scheme. |
+| **$7C00-$7E2D** | strategic-map tile data | 558 bytes | Background tile indices for the overworld. |
+| **$7F00-$7FFF** | **transient UI cache** | — | Frame counter `$7FE9`, status flags; zeroed at boot (`$7FE7/$7FC7/$7FD3/$7FD1`). Rebuilt from canonical state each boot — not part of the save proper. |
 
-## The province record (26 bytes)
+The boundary between "canonical game state" and "UI cache" runs at ~$7C00. (Old body claims about a `$601A` 50-record province table and a `$6000` province preamble were the mislabeled-offset error this chapter's erratum corrects.)
 
-**Mikawa's record at $60B6**, captured from the live Memory Viewer at turn ~2:
+## The province record (26 bytes) — `province_table_live $7001`
 
-```
-Offset  Bytes      16-bit BE   Field        Notes
-$60B6   07 02      $0702=1794  header       base koku — Mikawa was a historically rich province
-$60B8   00 00      $0000=0     debt         "
-$60BA   00 42      $0042=66    town         "
-$60BC   00 2B      $002B=43    rice         (player gave rice this turn, dropped from 75)
-$60BE   00 88      $0088=136   output       
-$60C0   00 40      $0040=64    dams         
-$60C2   00 4E      $004E=78    loyalty      
-$60C4   00 5E      $005E=94    wealth       
-$60C6   00 47      $0047=71    men          
-$60C8   00 4B      $004B=75    morale       
-$60CA   00 4A      $004A=74    skill        
-$60CC   00 49      $0049=73    arms         
-$60CE   00 F4      $00F4=244   footer       hypothesis: annual income or computed yield
-```
+Each fief is a 26-byte record at `$7001 + idx*26`, **little-endian** 16-bit fields (the VM's `loadA_ind_word` reads low byte first). Confirmed layout (= the decompiler's `PROV_FIELDS`):
 
-**Three structural notes:**
+| +0 | +2 | +4 | +6 | +8 | +10 | +12 | +14 | +16 | +18 | +20 | +22 | +24 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| gold | debt | town | rice | output | dams | loyalty | wealth | men | morale | skill | arms | **header** |
 
-1. **Gold is NOT in the province record.** The player's gold appears to be stored separately (chapter 8's job to locate exactly where). Province "wealth" is a different thing — it represents the *province's economic capacity*, not the daimyo's treasury.
+`header` (+24, **last**) = base koku / development ceiling. The province-access idiom `idx*26 + $7001` appears 81× across the ROM; `selected_province_idx $6F5F` holds the index.
 
-2. **The header (base koku) is per-province** and lines up with historical Sengoku reality. Mikawa = 1794, which matches Mikawa's well-known high-yield rice fields. Other provinces seen: Echigo $074F=1871 (Uesugi Kenshin's heartland), Kaga $063D=1597, Echizen $0671=1649 (Asakura), Hida $064F=1615 (mountain province, lower), Suruga $063B=1595 (Imagawa). The footer at the end varies similarly.
+**Corrections to the old body (the "old junk"):**
+1. **Gold IS in the record, at +0.** The old "gold is stored separately / not in the province record" was an artifact of reading the wrong region ($6000, not $7001). Each fief has its own gold at +0; `wealth` (+14) is the separate economic-capacity stat.
+2. **Records are little-endian, not "BE in SRAM."** That claim came from the mislabeled $6000 region.
+3. **The example was at the wrong address.** The body's `$60B6` "Mikawa" decode read `$6000 + 7*26`; the live record is `$7001 + 7*26 = $70B7`. The field *values* were broadly right; the address, endianness, and field-0 were wrong. (There is no separate "footer" — the last field is `header`.)
 
-3. **The province record table is much larger than 17.** It runs from $B002 to
-   the daimyo-table marker at $B530 — `$B002 + 51×26 = $B530` exactly, so the
-   table is 51 fixed-size records. The "17-fief scenario" activates only records
-   0-16 (the 17 named, playable provinces); records 17-50 are the rest of Japan's
-   provinces, present as unnamed/non-playable background. The header field
-   confirms this: index 0 (Hatakeyama/Noto) is `0` and the other 16 playable
-   provinces start at `1000`, while the background provinces carry larger
-   `3000/7000/4500/2500` values — established AI territory with pre-built
-   stockpiles. The header is **dynamic** (Mikawa's grew 1000 → 1794 across two
-   turns of play), most likely an accumulated rice/koku stockpile. This is the
-   **generic-engine pattern** seen in chapters 4-5: one large world engine,
-   scenario-parameterized for which provinces are active. Index 7 = Mikawa.
+The header is **dynamic** (a fief's koku grows with development), and `index 0 = Hatakeyama/Noto` starts at header 0 (the weakest fief) — the generic-engine pattern: one 50-province world, scenario-windowed to the 17 active fiefs; `$7515` (idx 50) is the uprising slot.
 
 ## The ROM defaults table (LE in ROM, BE in SRAM)
 
@@ -135,7 +113,7 @@ $9272   E8 03            $03E8 = 1000      next record's header
 
 All 12 starting stats match user-reported turn-1 values **exactly in display order**. The ROM defaults exist as a separate template (`$9258` for 17-fief, `$B0BE` for 50-fief), and the boot bytecode initializes SRAM by copying from this template.
 
-**The byte-order quirk:** ROM stores stats little-endian (value, then $00). SRAM stores them big-endian ($00, then value). The boot bytecode that copies ROM → SRAM swaps bytes per field. This is a small but real engine detail — likely an artifact of how the 6502 reads operands (LSB first) being inverted by the copy routine's instruction order.
+**Correction (pass-2):** the live `$7001` SRAM records are **little-endian**, same as ROM — there is no ROM→SRAM byte-swap. The earlier "BE in SRAM" was an artifact of reading the mislabeled `$6000` region. What genuinely differs between the two representations is **field order**: the ROM scenario-defaults template is header-first (with `gold` at field 1), whereas the live record is gold-first (`header` at +24). Boot init transforms ROM → live, reordering fields; both store 16-bit values LE. (The ROM↔SRAM "two representations of one logical record" pattern — see CONTEXT.md.)
 
 The ROM defaults include `gold` at field 1 (between header and debt), but the runtime SRAM **omits gold from the province record** — supporting the hypothesis that gold is migrated to a daimyo-scoped or player-scoped location at boot. The defaults table is a static "starting condition" snapshot, not a structural mirror of the live record.
 
@@ -167,7 +145,7 @@ $7560:  12 61 5E 3A 52 54 00
 | 3 | **Luck** | $1F-$72 (31-114) | Fluctuates between turns from random events |
 | 4 | **Charisma** | $25-$72 (37-114) | Affects loyalty of subordinates and diplomacy |
 | 5 | **IQ** | $46-$75 (70-117) | Affects strategy quality |
-| 6 | **Status** | usually $00 | $01 seen for one record (Saito, rec 8) — likely "dead" or "special state" flag |
+| 6 | **Status** | usually $00 | **Original-vs-generated flag**: 0 = original scenario daimyo, 1 = generated/replacement — set on succession by `assign_unique_daimyo_face_code $DB97`, read by `draw_daimyo_portrait` to pick a preset vs composite portrait. NOT "dead" (the old guess). |
 
 **Tokugawa is at index 7** in the 17-fief daimyo table (matching the name "Tokugawa" at $77E7 in the name table, also index 7). The two tables are parallel: `record[N] in $752F` and `name[N] in $77A8` describe the same clan.
 
@@ -190,9 +168,9 @@ $7560:  12 61 5E 3A 52 54 00
 
 The historical accuracy is striking: Tokugawa Ieyasu (born 1542) = 18 years old in 1560; Uesugi Kenshin = 30; Imagawa Yoshimoto = 41 (he died at the Battle of Okehazama at 41 in 1560, the game's scenario start). The age field IS historical age in the year 1560, the scenario base year.
 
-## How daimyo matches fief: shared index
+## How daimyo matches fief: the owner array
 
-The province table and the daimyo table are **aligned by index** — `daimyo[N]` owns `province[N]` at game start. There is no explicit "owner" field in the province record; ownership is implicit in the table position.
+At game start the tables are **aligned by index** — `daimyo[N]` owns `province[N]`. But ownership is NOT purely positional: there is an **explicit owner array, `fief_to_daimyo_map $6E15`** (17 bytes, position i = owner-daimyo of fief i+1), initialized to the identity mapping and **rewritten on conquest** (e.g. when Tokugawa takes Owari, position 16 flips 16→7). A daimyo whose id no longer appears in the map has lost their home and becomes a "wandering" lord. So the index-alignment below is the *initial* state; the live owner is always `fief_to_daimyo_map`.
 
 This was verified against history for all 17 of the 17-fief clans:
 
@@ -299,8 +277,8 @@ The save's job is to capture **game state** — what makes one game-in-progress 
 
 ## Open questions for chapter 8+
 
-- **Gold storage location.** Player's gold (2 at the time of capture) is not in the province record. Likely in the daimyo-scoped data, possibly a per-player record near $7500 or extending the daimyo record format.
-- **Footer semantics.** Each province record ends with a 16-bit value (Mikawa = 244). Likely a derived/computed field — maybe annual gold income produced, or a function of (rice × output × loyalty / 100). Confirm by running one turn and seeing if gold increases by exactly 244.
+- ~~**Gold storage location.**~~ RESOLVED: gold is `province_table_live +0` (per-fief). The old "footer" was a mislabeled-offset artifact — the record's last field is `header` (+24).
+- **Secondary `$61D4` table** — the high-water-mark `fief_history_table $6003` accounts for the `$6000`-region records; reconcile any remaining `$61D4` reads against it.
 - **Secondary table at $61D4-$629F.** 17 more 26-byte records with much higher headers ($0B00-$0B23 range). Probably **per-fief military / production capacity / NPC posture**. Each daimyo's "current army" might live here, separate from the per-fief "infrastructure" stats.
 - **Market prices** (rate=1.0, rice=1.4, arms=2.8, men=3.0, ninja=1.9) — user reports these fluctuate, so they're in SRAM somewhere, but our partial paste didn't surface them. Probably in the $6Dxx or $6Fxx dense-but-uncategorized regions. Will follow up.
 - **Map data at $7C00-$7E2D** — 558 bytes of tile indices. Likely a 18×31 strategic-map grid. Chapter 8 (province table + map) can decode the rendering.

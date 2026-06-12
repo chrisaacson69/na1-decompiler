@@ -3,7 +3,7 @@
 
 Loops every province through the proven ROM->Map pipeline (seed province + $6D9D
 =50 -> run populate $8903 -> decode $7BFD), writes one PNG per fief into
-atlas/rom-50/, and prints a terrain-distribution summary table (the first time we
+assets/rom/rom-50/, and prints a terrain-distribution summary table (the first time we
 have all 50 tactical-map compositions without playing to 50 battles).
 
 Validated cell-exact on Mino (17-fief), Tanba + Ezo (50-fief). See ROADMAP.
@@ -47,7 +47,7 @@ def main():
     args = sys.argv[1:]
     scenario = int(args[args.index("--scenario") + 1]) if "--scenario" in args else 50
     count = int(args[args.index("--count") + 1]) if "--count" in args else (50 if scenario == 50 else 17)
-    outdir = HERE / "atlas" / ("rom-50" if scenario == 50 else "rom-17")
+    outdir = HERE / "assets" / "rom" / ("rom-50" if scenario == 50 else "rom-17")
     outdir.mkdir(parents=True, exist_ok=True)
 
     print(f"Rendering {count} fiefs (scenario {scenario}) from ROM -> {outdir}\n")

@@ -6,7 +6,9 @@ created: 2026-05-13
 
 > Chapter 5 documented the VM architecturally. Chapter 6 builds the tool that reads VM bytecode and translates it into a readable instruction listing — the same kind of value-multiplier the `mesen-labels.py` and `asm-relabel.py` tools provided for native code. By the end of this chapter all 256 opcodes are classified by operand format, the boot bytecode walks cleanly, and the first kernel syscall fires from a verifiable line of VM-assembly. The chapter also functions as a reference: the operand table at the bottom is the canonical map from VM opcode to handler + operand format.
 
-**Links:** [Chapter 5 — Bytecode VM](./05-bytecode-vm.md) · [Chapter 4 — Syscall API](./04-syscall-api.md) · [Nobunaga README](./README.md)
+> **⚠ Pass-2 fact-check (2026-06-11) — tool real; opcode reference superseded.** The disassembler approach here is sound and the tool was rebuilt in pass-1 (now `na1dream.vm_disasm`, execution-validated). But this chapter's session-6 opcode *reference* — the descriptive names (`push16`, `clear_aux_ptr`, `host_call`, `load_word_A8`) and the operand-format table — is **fully superseded** by the canonical verified spec. The complete 256-opcode table now lives in **[appendix-vm-opcodes.md](./appendix-vm-opcodes.md)** (generated from `vm-opcodes-v2.toml` + the execution-validated `OPCODE_INFO`). Two substantive corrections below: the operand **lengths** for ~10 opcodes (`$84/$86/$88`, `$A0-$A3`, `$AA`, `$AF`, `$DE/$DF`) were **wrong** in the old spec (pass-1 fixed them); and the **"37 trigger_syscall BRK opcodes" finding is refuted** — those are illegal/undefined opcodes routed to a trap, not a syscall path (the only call path is `CALL_abs`/`CALL_abs_imm1` → `$F226`, per ch.4).
+
+**Links:** [Chapter 5 — Bytecode VM](./05-bytecode-vm.md) · [Chapter 4 — Syscall API](./04-syscall-api.md) · [Appendix — VM Opcode Reference](./appendix-vm-opcodes.md) · [Nobunaga README](./README.md)
 
 ## The methodology arc
 
@@ -89,9 +91,11 @@ Reading $EFD5's exit conditions confirms the branch is taken in normal execution
 
 Other opcodes with similar conditional-fetch patterns may also be over-counted by the classifier. As we hand-verify more, the TOML refines. The infrastructure supports this — adding a specific `[[opcode]] op = 0xXX` entry overrides the range-based defaults.
 
-## The 256-opcode reference
+## The 256-opcode reference → see [appendix-vm-opcodes.md](./appendix-vm-opcodes.md)
 
-After auto-classification + a few hand corrections, the operand-format distribution:
+> **⚠ Superseded (pass-2 2026-06-11).** The canonical, fully-decoded 256-opcode table now lives in the generated **[opcode-reference appendix](./appendix-vm-opcodes.md)** (real mnemonics, verified operand lengths, pops/pushes). The session-6 tables in *this* section are a partial, partly-wrong first pass, kept for history. **Known errors:** the operand *lengths* for ~10 opcodes were wrong — notably `$84/$86/$88` (called `byte_word_byte`/4 bytes here; really `LOADR_far`/`STORE_far`/`PUSH_far`, **2** bytes) plus `$A0-$A3`, `$AA`, `$AF`, `$DE/$DF`; and `$AC`/`$E9` are `CALL_abs`/`CALL_abs_imm1`, not `host_call_simple`/`host_call`. The "~140 TBD semantic" opcodes are all decoded in the appendix.
+
+After auto-classification + a few hand corrections, the operand-format distribution (⚠ partly-wrong lengths — see appendix):
 
 | Format | Count | Opcode ranges | Notes |
 |---|---:|---|---|
@@ -123,7 +127,9 @@ After auto-classification + a few hand corrections, the operand-format distribut
 | $AC | `host_call_simple` | word | JSR to native function (or bytecode subroutine if target starts with `JSR vm_entry`) |
 | $E9 | `host_call` | word, byte | JSR to native function; afterward ptr1 += byte (the stack-cleanup convention) |
 
-### The trigger_syscall cluster — 37 opcodes sharing $EF92
+### The "trigger_syscall cluster" — REFUTED (pass-2 2026-06-11)
+
+> **⚠ This finding is wrong.** Session 6 read 37 opcode values (`$80`/`$91-$9F`/`$CE`/`$EB-$FF`) routing to a `BRK` handler at `$EF92` as an "implicit syscall" path. They are actually the **illegal/undefined-opcode trap**: in the verified ISA only **`$80` and `$CE` are ILLEGAL** and `$91-$9F`/`$EB-$FF` are **undefined**; the dispatch table points every invalid opcode at one catch-all trap (the `BRK` is a debug break), and the compiler never emits them. There is **no implicit-syscall opcode** — the only call/syscall path is `CALL_abs ($AC)` / `CALL_abs_imm1 ($E9)` → a native address (e.g. `$F226 syscall_dispatch`), which reconciles with ch.4's "real BRK — unused." The original analysis is kept below for history.
 
 Of all the finds in chapter 6, this is the most architecturally interesting. **37 different opcodes all map to the same handler at $EF92, which is:**
 
@@ -218,7 +224,7 @@ After chapter 6, the project's tool flywheel covers:
 ## What's open for chapter 7+
 
 - **Semantic decoding of individual opcodes.** ~140 opcodes have known operand formats but unknown game-logic meaning. Walking each handler one-by-one in the `bank_15_labeled.asm` view, looking at what state it manipulates, gives each opcode a real name. Each session can decode 10-20 opcodes. After 7-10 sessions of this, we'd have a fully-named VM instruction set.
-- **The trigger_syscall cluster mystery.** Why 37 different opcodes for the same BRK behavior? Either a stylistic redundancy or there's a side effect we haven't found. Worth a targeted runtime trace.
+- ~~**The trigger_syscall cluster mystery.**~~ RESOLVED (pass-2): not a cluster — illegal/undefined opcodes routed to one trap handler (see above). ~~Semantic decoding of individual opcodes~~ is also complete — the full ISA is in [appendix-vm-opcodes.md](./appendix-vm-opcodes.md).
 - **Walking the bytecode call graph.** From $A77D, we can follow `host_call_simple $89A3` → $89A8 → `host_call_simple $88AC` → $88B1 → etc. The graph of bytecode subroutines is the game's program structure. Walking it identifies the boot sequence, the screen-mode dispatcher, the main game loop, and so on.
 - **The runtime-trace validation.** With the disassembler, we can predict which bytecode bytes execute in what order. Cross-checking against a Mesen trace with `pc == $E867` (the vm_dispatch instruction) confirms the model. The chapter-5 dispatch logger Lua script is the scaffolding for this.
 

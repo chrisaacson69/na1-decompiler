@@ -16,13 +16,15 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 ### Military
 
-**Move** (`$96D6`) — relocate troops between your own provinces. Prompts: *"Move where?"* (province select via `$804C`), *"How many men"* (`$D5E9` number input), *"Will you lead them personally"*. Success: *"They have arrived safely"*. Gated by capacity — *"That fief can't hold more men"*. The lead-personally choice matters because the lord's presence is a combat modifier (see Chris's offense/defense note — a thin-leader vs. castle-leader decision starts here).
+**Move** (`driver_move $96D1`) — relocate troops between your own provinces. Prompts: *"Move where?"* (province select), *"How many men"* (`number_input`), *"Will you lead them personally"*. Success: *"They have arrived safely"*. Gated by `effect_war_combat_prep_b` (a *"you have no soldiers"* check — the source must have men) and by destination capacity — the move amount is clamped to `min(src.men, dest.capacity − dest.men)`, else *"That fief can't hold more men"*. The effect (`effect_move $8CA5`) shifts the men **and blends the three military quality stats — morale/skill/arms** — as a men-weighted average of garrison-and-incoming (`scaled_force_transfer`, the same dilution as Hire), capped at the `header` ceiling; an emptied source has its military stats cleared.
+
+> **The "lead them personally" choice MOVES THE CAPITAL** (`$9782`) — confirmed against the grounded C (2026-06-12). When the source fief *is* the daimyo's seat (and the lord isn't *"too weak for battle"*), answering yes does `fief_is_daimyo_capital[src]=0; fief_is_daimyo_capital[dest]=1` — the lord physically relocates his capital to the destination. This is not merely a "combat modifier": `fief_is_daimyo_capital` (`$6DA2`, a per-fief 0/1 flag, census-confirmed one-per-living-daimyo) is the **seat** that the assassination gate (`$A349`, mission 4) checks — *"The daimyo is out."* fires on any non-capital target. So the assassination target is a **mobile seat**: a player can relocate it (a lead-personally Move out of the capital) to dodge, and conquest reassigns it. The flag also grants a **+1 defensive multiplier** in battle (`ai_sum_battle_strength`: `(capital+2)·men`), so relocating the seat fortifies the destination. (Distinct from `province_ai_state` `$6CF7`, the Grant governance byte — `0=Home, 1=Industrial, 2=Military, 3=Balanced, 4=Farming, 5=Direct, 0xFF=unowned`; Move sets the destination to **5=Direct**, the player-run state.)
 
 **War** (`$9855`) — launch an attack. Heavy pre-roll setup (`$9368`/`$9351`/`$9323`/`$933A`/`$9814` — combat-prep subroutines), then *"Attack where?"*, blocked by *"They are your allies!"*. Prompts: *"How many men"*, *"How much rice will they take"* (supplies — the doughnut-fief attrition mechanic lives downstream of this), *"Will you lead them personally"*. War is the **front end to combat**; the battle resolution itself is elsewhere (a later chapter).
 
-**Hire** (`$A5F9`) — recruit. *"Recruit which"* → *"(Men/Ninja)?"* — the type prompt routes through `$D351`, and the recruiting logic proper is `$A2D2`. A short driver; the substance is in the callee.
+**Hire** (`driver_hire $A5F4`) — recruit, gated by `effect_war_combat_prep_c` (a *"you have no gold"* check — recruiting costs gold). *"Recruit which"* → *"(Men/Ninja)?"* (`prompt_ab_window`) routes to **two different callees**: the *Men* branch is `effect_hire_men $A553` (the recruiting proper); the *Ninja* branch is `effect_ninja_sabotage $A2D2` — i.e. Hire▸Ninja is the front door to the whole sabotage/assassination system (chapters covered in the ninja deep-dive). *(Correction 2026-06-12: chapter's earlier "recruiting logic is `$A2D2`" conflated the Ninja branch with recruiting.)*
 
-**Train** (`$A637`) and **Assign** (`$AD67`) — decoded in chapter 10 (the immediate-action group). Train raises skill against a header-derived cap; Assign places a retainer.
+**Train** (`$A637`) and **Assign** (`effect_assign $AC11`, driver `$AD67`) — decoded in chapter 10. Train raises skill against a header-derived cap; **Assign is the arms-allocation editor** (distribute a fief's weapon stores across the three arms types), *not* "place a retainer" (corrected in ch.10 / ledger #12).
 
 ### Province development
 
@@ -30,11 +32,11 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 ### Diplomacy
 
-**Pact** (`$9C4F`) — chapter 10's immediate-action group; invokes the `$E510/$879F/$804C` cluster, now identifiable as the **diplomacy subsystem**.
+**Pact** (`driver_pact $9C4F` → price `prompt_diplomacy_pact $E3A4`) — buy peace from a rival. **Not free** (ch.11's table previously said "—"): vs an AI house the price = `pct_op(gold,50) + pct_op(gold, rng(0..49)) + 20` ≈ **50–99% of your own treasury + 20**, and the AI only *offers* a pact at `1/skill` odds (refusing the militarily-weak 2/3 of the time, `fief_owner_weakness`). The gold **transfers to the target daimyo** — peace is literally bought. On success `set_pact_relation $DA4F` writes **70** into the **relation matrix** at `$6193` (a 54-stride fief×fief table, `relations_matrix_cell_addr $8C35`). Each attempt costs the player daimyo **−1 Drive**, **−2** if you decline the named price or are refused. The `$879F/$804C` helpers it shares with War/Bribe/View/Ninja are *generic province-target-select* primitives, **not** a "diplomacy subsystem" (over-read corrected in ch.10 / ledger #12).
 
-**Bribe** (`$AAAE`) — chapter 10's prompt-and-apply group, but pointed at a *target's* fields rather than your own; shares the diplomacy cluster with Pact.
+**Bribe** (`driver_bribe $AAAE` → `effect_bribe $8D4D`) — **gold-for-spy peasant defection**, *not* a develop-√ command (ch.10 / ledger #12). `sqrt(gold)` peasants defect from the target's `output` into your fief's `wealth`. Gated by a **Charisma contest** (`bribe_success_check $8D02`): success iff `your(loyalty+Charisma) > target(loyalty+Charisma) + rng(10)·skill` *and* a coin flip — *"%d peasants have defected"* on success.
 
-**Marry** (`$9DC9`) — alliance by marriage. Select a fief, and they name a price: *"Lord %s, %s wants %d gold. Pay"*. Pay → *"Your bride-to-be has arrived"*; can't afford → *"You have no gold!"*; they decline → *"Lord %s they've refused!"*. (Flavor: *"Don't you long to hear the pitter-patter of a li[ttle one]"*.) Costs gold, outcome not guaranteed.
+**Marry** (`driver_marry $9DC9` → dowry `marriage_pact_handler $E314`) — alliance by marriage, the strongest tie. Available only from your capital (`fief_is_daimyo_capital[src]`). Select a fief; the dowry (vs an AI house) = `pct_op(gold, rng(50..79)) + 200` ≈ **half-to-three-quarters of your treasury + 200**, gated on your gold > 200, offered only at `1/skill` odds. *"Lord %s, %s wants %d gold. Pay"* → the gold transfers to the target and `set_marriage_relation $DA7D` writes **90** into the `$6193` matrix (vs Pact's 70). **Refusal is costly**: your daimyo permanently loses **−1 Drive, −1 Luck, −1 Charisma** (`$9EE8`/`$9EEE`/`$9EF4`). Each attempt also costs **−1 Drive** up front. (Flavor: a rolled bride-portrait, *"Don't you long to hear the pitter-patter…"*.)
 
 ### Resource & economy
 
@@ -64,22 +66,22 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 | # | command | group | cost / gate | prompts | what it does |
 |--:|---|---|---|---|---|
-| 1 | Move | military | dest capacity | dest, #men, lead? | relocate troops between own fiefs |
+| 1 | Move | military | src has men; dest capacity | dest, #men, lead? | relocate men+arms between own fiefs; **lead? moves the capital** |
 | 2 | War | military | not vs. allies | target, #men, #rice, lead? | launch an attack (→ combat) |
 | 3 | Tax | economy | — | new rate | set tax rate; peasants react (loyalty) |
 | 4 | Send | economy | per-field caps | dest, rice, gold, confirm | transfer resources between own fiefs |
 | 5 | Dam | development | gold; `header`≥field | amount | √-raise output (+debt), drain others |
-| 6 | Pact | diplomacy | — | (diplomacy subsystem) | form a pact/ceasefire |
+| 6 | Pact | diplomacy | ~50–99% of gold +20 (to target); −1/−2 Drive | which fief | buy peace → relation `$6193` = 70 |
 | 7 | Grow | development | gold; `header`≥output | amount | √-raise output, drain dams+loyalty |
-| 8 | Marry | diplomacy | gold (demanded); refusable | which fief | alliance by marriage |
+| 8 | Marry | diplomacy | from capital; ~50–79% of gold +200 (to target, floor >200); −1 Drive (refusal: −Drive/−Luck/−Cha) | which fief | marriage alliance → relation `$6193` = 90 |
 | 9 | Trade | economy | merchant present | buy/sell submenu | trade with a merchant |
-| 10 | Hire | military | — | Men/Ninja | recruit troops or ninja |
+| 10 | Hire | military | gold | Men/Ninja | recruit men (`$A553`) or run a ninja mission (`$A2D2`) |
 | 11 | Train | military | `header`-derived cap | — | raise skill |
 | 12 | View | information | gold (to spy); can fail | which fief | inspect own / spy on others |
 | 13 | Build | development | gold; `header`≥town | amount | √-raise town, drain wealth |
 | 14 | Give | economy | — | — | charity → loyalty/morale |
-| 15 | Bribe | diplomacy | gold | amount | spend gold against a target |
-| 16 | Assign | military | — | — | assign a retainer |
+| 15 | Bribe | diplomacy | gold; Charisma contest | amount | `sqrt(gold)` peasants defect target.output → your wealth |
+| 16 | Assign | military | — | — | arms-allocation editor (distribute weapon stores) |
 | 17 | Rest | misc | — | #seasons | lord rests (recover) |
 | 18 | Map | information | — | — | show the strategic map |
 | 19 | Grant | administration | — | which fief, policy | set a province's policy "state" |
@@ -90,13 +92,13 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 A few things the full picture makes clear:
 
-**Gold is the master resource.** Of the 21 commands, the ones that *cost* anything cost **gold** — Dam, Grow, Build, Bribe, Marry, and the spying mode of View. There is no separate "action point" economy; your turn is bounded by your treasury (and by the per-province `header` development ceiling). Tax is the only command that *generates* gold, and it does so against a loyalty cost — the central economic tension of the game is the **tax↔loyalty tradeoff**, and it's surfaced literally ("protesting" / "delighted").
+**Gold is the master resource.** Of the 21 commands, the ones that *cost* anything cost **gold** — Dam, Grow, Build, Bribe, Pact, Marry, Hire (the *"you have no gold"* gate), and the spying mode of View. (Pact and Marry are the cruellest: their price is sized to a *fraction of your current treasury* — so a full war-chest makes peace proportionally expensive — and the gold is handed straight to the rival.) There is no separate "action point" economy; your turn is bounded by your treasury (and by the per-province `header` development ceiling). Tax is the only command that *generates* gold, and it does so against a loyalty cost — the central economic tension of the game is the **tax↔loyalty tradeoff**, and it's surfaced literally ("protesting" / "delighted").
 
 **Development is deliberately lossy.** Dam/Grow/Build don't just add — they add on a √ curve *and* silently subtract a percentage from other fields (chapter 10). Combined with the `header`-gated ceiling, province development is a game of **managed decline**, not free growth. A player optimizing one stat is always paying in another.
 
 **Three of the 21 are pure information** (View, Map) **or pure pacing** (Rest, Pass) — the engine budgets real screen time for *looking* and *waiting*, not just acting. View doubles as espionage, which folds information-gathering into the same risk economy as everything else (it costs gold, the spy can be caught).
 
-**The diplomacy subsystem is real and shared.** Pact and Bribe both route through `$E510/$879F/$804C`; Marry is adjacent. Diplomacy isn't flavor — it's a coherent subsystem with its own machinery, sitting alongside the military and economic ones.
+**Diplomacy writes a relation matrix, but there is no "diplomacy subsystem" of code.** The earlier read — that Pact/Bribe/Marry "route through a `$E510/$879F/$804C` diplomacy cluster" — was an over-read (ch.10 / ledger #12): `$879F/$804C` are *generic province-target-select* primitives shared by War/View/Ninja too. What diplomacy genuinely shares is **state, not code**: a pairwise **relation matrix at `$6193`** (packed triangular, `max·54+min`). Pact sets a pair to 70, Marry to 90 — and War's *"They are your allies!"* block reads the same table. Diplomacy is a data structure several commands poke, not a dedicated machine.
 
 **One UI substrate underneath all 21.** Every command is built from the same parts: `$804C` (province select), `$D5E9` (number input), `$CEC4` (confirm/yes-no), `$D326`/`$D134` (text / formatted text), `$B1A6` (generic option submenu), `$E80C` (commit & display result). The command drivers are thin orchestration over a fixed widget set — which is exactly why decoding one (Grow) made the other twenty cheap.
 
@@ -105,7 +107,7 @@ A few things the full picture makes clear:
 The **command layer** is now mapped. What remains for the strategic engine:
 
 - **The effect formulas.** Each command's effect handler (Grow's `$87F0` is the only one fully traced) holds the exact numbers — Tax's rate→loyalty curve, War's combat-strength roll, Marry's success probability, Send's caps. These are the per-command deep dives, each now a short walk.
-- **The shared subsystems.** `$B1A6` (the submenu used by Trade/Grant/Other), the `$E510/$879F/$804C` diplomacy cluster, and `$D5E9` (the input primitive with its cap logic) — naming these opens several commands at once.
+- **The shared subsystems.** `$B1A6` (the submenu used by Trade/Grant/Other), the generic `$879F/$804C` province-target-select primitives (War/Pact/Bribe/View/Ninja), the `$6193` relation matrix, and `$D5E9` (the input primitive with its cap logic) — naming these opens several commands at once.
 - **Combat resolution.** War is the front end; the battle itself — on the per-fief tactical maps Chris described (doughnut, chokepoint, the offense/defense leader tradeoff) — is the next major system.
 - **The daimyo AI.** The 21 commands are the player's verbs; the AI uses the same verbs. The decision engine that chooses among them is the counterpart to this chapter.
 

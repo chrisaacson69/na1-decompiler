@@ -5,6 +5,8 @@ created: 2026-05-11
 # Chapter 2 — Zero-Page Memory Map
 > 256 bytes of fast RAM, every byte counts. The first ZP map for the project — built by harvesting writes/reads across the full 16-bank disassembly. Confirms what chapter 1 saw, identifies the shared-scratch-pointer pool, and finds the first concrete instances of byte-meaning-by-context.
 
+> **⚠ Pass-2 fact-check (2026-06-11).** This static-only session-1 map predates the VM decode; the labels are now grounded. **Headline correction:** `$02–$07` are the **VM's core registers** (`vm_sp`/`vm_fp`/`vm_ip`) — the bytecode interpreter's state (ch.5) — not generic "subroutine-local pointers." The two **byte-meaning-by-context** findings (`$68/$69`, `$83-$86`) are **confirmed**. Settled statically since: `$1C–$1F → $0020/$0030` are the **PPU upload queues** (confirmed); `$0090–$00AF` is **`palette_alt`** (the fade/swap buffer paired with `palette_shadow $0700–$071F`) — *not* an attribute table; `$74 = palette_dirty`; `$80 = skip_vblank_wait`; `$7A = the music driver's voice pointer`.
+
 **Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Mappy Ch 2 — Object records & states](../mappy/02-object-records-and-states.md) (the byte-meaning-by-context precedent) · [Nobunaga README](./README.md)
 
 ## The constraint
@@ -48,9 +50,12 @@ This is the busy block. Every subsystem borrows from here when it needs a tempor
 | $0E  | 8 | 4 banks | Sparse use |
 | $0F  | (rare) | — | Likely free / boundary |
 
-**Reading:** $00-$0F is an 8-pointer-pair pool, with $00/$01 designated as the "default" pointer (used everywhere) and $02-$07 as "subroutine-local" pointers (each subroutine that needs a pointer borrows one). $08-$0F shifts toward an "indexed temp register file" model — `,x` and `,y` addressing dominates over `()` indirect, so it's used for 4-element record scratch rather than dereferenced pointers.
+**Reading [CORRECTED 2026-06-11]:** $00/$01 is the project-wide general scratch pointer (`scratch_ptr`, 13 of 16 banks) — that holds. But **$02–$07 are not "subroutine-local pointers"; they are the VM's three core registers**, which is *why* this block is the busiest RAM in the ROM:
+- **$02/$03 = `vm_sp`** — VM operand-stack pointer (reset-init $FF → `$05FF` stack base; frame alloc does `vm_sp -= 9`; `syscall_dispatch` reads params via `(vm_sp),Y`).
+- **$04/$05 = `vm_fp`** — VM frame-base pointer (frame-local address = `vm_fp + signed offset` — the local/arg access base).
+- **$06/$07 = `vm_ip`** — VM bytecode instruction pointer (the dispatch loop does `lda (vm_ip),Y / inc vm_ip` to fetch opcodes + inline operands; "second-busiest indirect," which session 1 noticed without knowing why).
 
-This split (pointers at $00-$07, indexed temps at $08-$0F) is conventional 6502 practice. Nothing surprising here, but the *volume* is striking — $00/$01 alone gets accessed in 13 of 16 banks, which means the convention is enforced project-wide, not just bank-locally.
+So $00-$07 is *the general scratch pointer + the entire interpreter register file*, and the striking access volume is the VM dispatch loop pounding `vm_ip`/`vm_sp` on every opcode (ch.5). $08-$0F remain indexed scratch / syscall return slots (`,x`/`,y` dominant). The convention is enforced project-wide because it **is** the VM.
 
 ### NMI/PPU pipeline pointers — $1C to $1F
 
@@ -63,7 +68,7 @@ Initialized by the reset handler (chapter 1, $C086-$C094):
 | $1E  | $30 | Pointer low → forms `$1E/$1F = $0030` |
 | $1F  | $00 | Pointer high |
 
-These point into $0020 and $0030 in main RAM. Best current guess: $0020 is the **PPU upload queue** (tiles/palette/nametable bytes deferred to next NMI), and $0030 is a second queue or its tail pointer. The NMI handler at $C0E2 calls `JSR $C54F` which is almost certainly the queue-drainer. Chapter 3 will follow the queue plumbing.
+These point into $0020 and $0030 in main RAM. **[CONFIRMED 2026-06-11]** grounded as `ppu_queue_a` ($1C/$1D → $0020) and `ppu_queue_b` ($1E/$1F → $0030) — the PPU upload queues (deferred tile/palette/nametable bytes drained next NMI), exactly the session-1 guess. *(Correction: the NMI's `JSR $C54F` is `nmi_off` — a re-entrancy guard that brackets the frame with `nmi_on $C68A` — not the queue-drainer. Chapter 3 follows the queue plumbing.)*
 
 ### IRQ / BRK dispatcher state — $50, $66-$69
 
@@ -88,9 +93,11 @@ These are the named kernel flags / counters from chapter 1, now annotated with w
 
 | Addr | Init | Role | Notable later writers/readers |
 |------|------|------|-------------------------------|
-| $73  | $00 | Cleared at reset; used by `$C6AD` (the BRK multiply-by-3 helper) | Read at $C247, $C270 (during dispatch math) |
-| $74  | $FF | Reset-set; **subsystem-state byte** managed by routines around `b15_c36c` | Read/written by a self-contained subsystem |
-| $80  | $00 | Cleared at reset; flag toggled around `b15_c376` (EORs $80) | EOR'd in update routine — pure toggle bit |
+| $71  | — | **`ppuctrl_shadow`** — PPUCTRL ($2000) shadow; the code never reads $2000 directly (`nmi_off $C54F` / `nmi_on $C68A` flip bit 7 here) | [grounded 2026-06-11] |
+| $72  | — | **`ppumask_shadow`** — PPUMASK ($2001) shadow (`rendering_on $C567` / `rendering_off $C69D`) | [grounded 2026-06-11] |
+| $73  | $00 | `kernel_var_73` — cleared at reset; used by `mul_xy_by_3 $C6AD` | Read during dispatch math |
+| $74  | $FF | **`palette_dirty`** — non-zero = palette upload pending; `palette_upload $C6D4` uploads `$0700-$071F` → PPU $3F00 next NMI, then clears it (reset-init $FF forces a first-frame upload) | [grounded 2026-06-11] |
+| $80  | $00 | **`skip_vblank_wait`** — non-zero = `wait_vblank $C537` returns immediately without spinning (lets boot/long ops bypass the VBlank wait) | [grounded 2026-06-11] |
 | $81  | $00 | **NMI busy semaphore.** Mainline sets to 1 then spin-waits for NMI to clear it | Loop pattern at `b15_c1bd` reads $81 |
 | $83  | $04 | Timer pair 1 hi | See note below — also accessed indexed as $83+X |
 | $84  | $D2 | Timer pair 1 lo (NMI adds +2 every frame, gated by $89) | |
@@ -106,25 +113,20 @@ These are the named kernel flags / counters from chapter 1, now annotated with w
 
 The two readings aren't contradictory — they're complementary. **The same bytes serve both roles simultaneously.** The X-indexed access at $C1F3 doesn't disturb the timer values; it just reads them as a four-element snapshot. This is the design move that lets the kernel save 4 bytes of dedicated "current timer reading" scratch — the existing live counters *are* the readable register file.
 
-### Mass-init region — $90 to $AF
+### Palette buffers — $90 to $AF (+ $0700-$071F) [RESOLVED 2026-06-11]
 
-The reset handler ($C05A-$C067) fills these 32 bytes with the constant `$3E`. **Crucially, it does the same fill at $0700-$071F**, so $0090-$00AF and $0700-$071F are mass-init'd together. Two parallel buffers.
+The reset handler ($C05A-$C067) fills these 32 bytes with `$3E`, and does the same at $0700-$071F. Grounded: these are the two **palette buffers**, not an attribute table:
+- **$0700-$071F = `palette_shadow`** — the live 32-byte palette. Foreground writes here + sets `palette_dirty $74`; `palette_upload $C6D4` DMAs it to PPU $3F00-$3F1F next NMI.
+- **$0090-$00AF = `palette_alt`** — a 32-byte alternate palette that `palette_swap ($C36C, syscall $12)` atomically swaps with `palette_shadow` for **fade / transition effects**.
 
-What 32 bytes filled with $3E plausibly is:
-- An **attribute table buffer** ($3E in binary is `00111110`, which decodes as a 2-bit-per-quadrant palette assignment of `00 11 11 10` — a real value in NES attribute encoding)
-- A **palette default** — $3E is a valid NES palette entry (medium grey)
-- A **deferred-write template** — a 32-byte block ready to be DMA'd to the PPU during the next VBlank
-
-The parallel fill of $0090-$00AF and $0700-$071F suggests $0700-$071F is the **master copy** (in main RAM, may be edited freely), and $0090-$00AF is the **ZP shadow** (fast read/write during the inner loop, periodically refreshed from the master or vice versa). NES games commonly use ZP shadows of nametable/attribute updates for speed.
-
-This needs runtime verification in Mesen — set a watch on $0090-$00AF and observe what writes through to it during gameplay. Chapter 3 will resolve.
+The `$3E` fill is just a neutral default palette entry. So the session-1 "attribute table buffer?" guess is **refuted** (these are palettes), and the "hot ZP shadow of a main-RAM master" framing is refined: not a hot/cold copy of one buffer but the **live palette and its swap target**. (Resolves the open question below.)
 
 ### Untracked regions ($10-$1B, $20-$4F minus $50, $51-$65, $6A-$72, $75-$7F minus key locations, $87-$88, $8A-$8F, $A0-$AF partial, $B1-$FF)
 
 These show sporadic usage in the access stats — some quite heavy (e.g., $7A has 34 accesses, all in bank 15, 30 of them indirect — clearly a kernel-internal scratch pointer). Naming them requires either deeper trace work or runtime observation.
 
 What we know from the access stats:
-- **$7A** is a bank-15-only heavy-indirect pointer (kernel scratch, never escapes)
+- **$7A/$7B = `music_ptr`** [grounded 2026-06-11] — the music driver's pointer into the current voice record at `$0734+N*9` (with `$79 = music_voice_idx`). Bank-15-only because it *is* the kernel music engine — ties to the `$0734` voice-state array (ch.1's `$0734` correction). The session-1 "kernel scratch, never escapes" read was directionally right; it's specifically the audio driver's record pointer.
 - **$AA** is hit 14 times in 3 banks (7, 8, 13), mostly indexed — likely a multi-bank coordinated register
 - **$D7** is RMW-heavy (11 RMWs) — a counter that decrements (the `dec $d7` pattern dominates)
 - **$CF** has 23 reads but 0 writes in the disassembled code — likely written via indexed addressing we'd need to grep more carefully to catch, OR it's a constant table set up elsewhere
@@ -146,6 +148,8 @@ What we know from the access stats:
 | Does $B0 actually skip the NMI body, or is it gating something else? | Set $B0=1 via debugger mid-game, observe |
 | Is $7A really kernel-local, or does some bank reach it indirectly? | Mem-access breakpoint on $7A, run gameplay |
 
+> **[Pass-2, 2026-06-11]** Three of the runtime questions above are now answered statically from the grounded labels: **$90-$AF** = `palette_alt` (written by `palette_swap`), **$B0** = `nmi_skip_all` (does gate the NMI body), **$7A** = `music_ptr` (kernel-local, the audio driver). The $50-writer and $20/$30-updater questions remain good Mesen targets.
+
 ## Method note
 
 The harvest used a 60-line Python script against the disasm6 output. The script lives in `tools/zp-harvest.py` (to be committed next session). This is reusable — future chapters that need a "where is X referenced" pass can call the same machinery. Same idea as the chapter-2 retrospective tools from the Mappy project: build the tool you need; reuse it as the corpus grows.
@@ -159,10 +163,10 @@ The cost of static-only analysis is visible in the **untracked** sections above.
 - Two concrete instances of **byte-meaning-by-context** at the kernel level ($68/$69 and $83-$86)
 - An explicit list of **runtime-only questions** for the next Mesen session
 
-What chapter 3 needs:
-- Resolve the $90-$AF + $0700-$071F buffer pair via NMI/PPU pipeline tracing
-- Confirm or refute the "$1C/$1D and $1E/$1F point to the PPU upload queue" hypothesis
-- Name $74's subsystem (the routines at $C36C)
+What chapter 3 needs — **most now resolved (pass-2 2026-06-11):**
+- ~~Resolve the $90-$AF + $0700-$071F buffer pair~~ → `palette_alt` / `palette_shadow` (above).
+- ~~Confirm the "$1C/$1D and $1E/$1F = PPU upload queue" hypothesis~~ → confirmed (`ppu_queue_a/b`).
+- ~~Name $74's subsystem~~ → `palette_dirty`. Chapter 3 still owns the queue-*drain* plumbing + the audio/voice detail.
 
 ## Tags
 

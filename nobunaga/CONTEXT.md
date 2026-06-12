@@ -16,6 +16,7 @@ created: 2026-05-29
 | **Data / dumps** | "where is that SRAM/PPU/trace, and what does it represent?" | [traces/README.md](./traces/README.md) |
 | **Plans / frontier** | "what's done, what's open, what's parked?" | [ROADMAP.md](./ROADMAP.md) |
 | **Command tests** | "how do I snap a command's effect? what's the field layout?" | [commands/README.md](./commands/README.md) |
+| **Assets** | "where do rendered/extracted assets go? (animations/maps/portraits/screens/rom)" | [assets/README.md](./assets/README.md) — structured 2026-06-11; replaced the flat `atlas/` dumping ground |
 
 ## Canonical artifacts — the single source of truth for each thing
 
@@ -62,7 +63,7 @@ created: 2026-05-29
 - **Capture data / find what a dump is:** `tools/data-index.py add <file> --note "..."` registers provenance; `scan` lists un-contextualized files; `show` prints the index. Never leave a capture un-noted — see [traces/README.md](./traces/README.md).
 - **Simulate the economy / check a formula:** `tools/econ_sim.py`.
 - **Province adjacency / strategic map:** `tools/adjacency.py` / `tools/render-strategic-atlas.py` (`--variant 17|50`).
-- **Render the daimyo portrait anthology (per scenario, NES-exact):** `tools/render-portrait.py anthology [17|50]` → `atlas/daimyo-anthology-{17,50}.png`. Preset portrait path (historical daimyo): descriptor table bank 8 `$BBD0` → CHR banks 7-8 → per-portrait 6×6 tile-index map bank 8 `$B144`+mapid×36 (tile base `0x5B`) → palette `$F7CC`. [[project_nobunaga_daimyo_portraits]]
+- **Render the daimyo portrait anthology (per scenario, NES-exact):** `tools/render-portrait.py anthology [17|50]` → `assets/portraits/daimyo-anthology-{17,50}.png`. Preset portrait path (historical daimyo): descriptor table bank 8 `$BBD0` → CHR banks 7-8 → per-portrait 6×6 tile-index map bank 8 `$B144`+mapid×36 (tile base `0x5B`) → palette `$F7CC`. [[project_nobunaga_daimyo_portraits]]
 - **Extract & render ANY ROM graphic in true NES color:** follow the recipe in [appendix-asset-extraction.md](./appendix-asset-extraction.md) (CHR via `ppu_upload_block_wrap` descriptor + tile-index map via `ppu_copy_rect_wrap` + palette via `palette_write_wrap`; ⚠️ read the BYTECODE for the real args + resolve cross-bank pointers by the upload's BANK arg). Reusable primitives (NES master palette, 2bpp decoder) in `render-portrait.py`. Candidate-asset inventory (title/map-tiles/units/UI) is in the appendix.
 
 ## The discipline (why this file exists)

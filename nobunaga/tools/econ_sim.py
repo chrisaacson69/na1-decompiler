@@ -62,6 +62,14 @@ def pct_op(b: int, p: int) -> int:
 # Commands — verified formulas
 # ============================================================================
 
+# SKILL LEVEL / difficulty (const_two $6D63, 1-5; game default 2). The 5 develop
+# commands scale their gain by (6 - SKILL): skill 1 -> x5 (the long-mistaken "x5"
+# was just skill-1), skill 5 -> x1 — a ~5x swing. Set econ_sim.SKILL before calling
+# to model a difficulty. (Discovered 2026-06-02; this tool was hardcoded at *5 until 2026-06-11.)
+SKILL = 2
+def _dev_mult() -> int:
+    return 6 - SKILL
+
 def grow(f: Fief, amount: int) -> Fief:
     """gold -> output. Drains loyalty and dams percentage-wise. Caps at header."""
     f = f.copy()
@@ -69,7 +77,7 @@ def grow(f: Fief, amount: int) -> Fief:
         return f
     f.gold -= amount
     sqrt_val = isqrt(f.output + amount)
-    gain = 2 * ((amount * 5) // sqrt_val)
+    gain = 2 * ((amount * _dev_mult()) // sqrt_val)
     gain = min(gain, f.header - f.output)  # cap at header
     drain_pct = (50 * gain) // (f.output + gain) if (f.output + gain) > 0 else 0
     f.output += gain
@@ -85,7 +93,7 @@ def build(f: Fief, amount: int) -> Fief:
         return f
     f.gold -= amount
     sqrt_val = isqrt(f.town + amount)
-    half_gain = (amount * 5) // sqrt_val
+    half_gain = (amount * _dev_mult()) // sqrt_val
     gain = min(2 * half_gain, f.header - f.town)  # cap at header
     drain_pct = (50 * half_gain) // (f.town + half_gain) if (f.town + half_gain) > 0 else 0
     f.town += gain
@@ -101,11 +109,11 @@ def give_peasants(f: Fief, amount: int) -> Fief:
     f.rice -= amount
     # Loyalty step (sub $891D): pairs with OUTPUT
     denom_L = (f.output + f.loyalty) // 2 + amount
-    loy_gain = 2 * ((amount * 5) // isqrt(denom_L))
+    loy_gain = 2 * ((amount * _dev_mult()) // isqrt(denom_L))
     f.loyalty += loy_gain
     # Wealth step (sub $896F): pairs with TOWN
     denom_W = (f.town + f.wealth) // 2 + amount
-    wlt_gain = 2 * ((amount * 5) // isqrt(denom_W))
+    wlt_gain = 2 * ((amount * _dev_mult()) // isqrt(denom_W))
     f.wealth += wlt_gain
     # Caps at 100ish (game soft-clamps)
     f.loyalty = min(f.loyalty, 100)

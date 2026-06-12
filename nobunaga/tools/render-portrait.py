@@ -326,10 +326,10 @@ if __name__ == "__main__":
         arg = sys.argv[2] if len(sys.argv) > 2 else None
         scenarios = [int(arg)] if arg in ("17", "50") else [17, 50]
         for sc in scenarios:
-            anthology(sc, f"atlas/daimyo-anthology-{sc}.png")
+            anthology(sc, f"assets/portraits/daimyo-anthology-{sc}.png")
     elif cmd == "random":
         seed = int(sys.argv[2]) if len(sys.argv) > 2 else 1573
-        random_faces("atlas/daimyo-random-36.png", n=36, cols=9, seed=seed)
+        random_faces("assets/portraits/daimyo-random-36.png", n=36, cols=9, seed=seed)
     else:
-        out = sys.argv[2] if len(sys.argv) > 2 else f"atlas/portrait-{cmd}.png"
+        out = sys.argv[2] if len(sys.argv) > 2 else f"assets/portraits/portrait-{cmd}.png"
         {"sheet": sheet, "faces": faces}[cmd](out)
