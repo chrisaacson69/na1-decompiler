@@ -63,6 +63,7 @@ The IRQ handler is the most interesting find from session 1: a 23-entry dispatch
 | A | [Appendix: per-command effect formulas + AI thresholds; province adjacency](./appendix-formulas.md) | ongoing |
 | B | [Appendix: true-color ROM asset extraction](./appendix-asset-extraction.md) — the recipe (CHR + tile-map + palette), proven on daimyo portraits, with the candidate-asset inventory | active |
 | C | [Appendix: The VM Opcode Reference (canonical)](./appendix-vm-opcodes.md) — the authoritative 256-opcode table; **generated** by `tools/gen-opcode-appendix.py` from `vm-opcodes-v2.toml` + `OPCODE_INFO`. Cited by chs. 6 & 8 | active (pass-2 2026-06-11) |
+| D | [Appendix: The Event System (season · trigger · result)](./appendix-events.md) — every bank-0 event (flood/ravage/riot/revolt/illness/death/AI-diplomacy), its trigger and consequences; cited by ch.13 | active (pass-2 2026-06-12) |
 
 Plan note: per-command effect formulas (Grow's `$87F0`, Tax's rate→loyalty, etc.) go in an **appendix** rather than their own chapters — they turned out simpler than expected. The daimyo AI is tackled **before** combat (combat needs map generation + the battle engine and will span several chapters). men/morale/skill/arms feed the combat formula.
 
