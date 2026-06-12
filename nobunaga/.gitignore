@@ -3,9 +3,10 @@
 # so we don't version them. Regenerate: py -3 -m mesen-labels --asm (from tools/)
 source/1-asm-6502/*_named.asm
 
-# Rendered tactical fief maps — regenerable from ROM via tools/batch-render-fief-maps.py
-# (the decoded map_populate + CHR + palette path). High byte-count, deterministic,
-# repeatable, so we don't version them. Regenerate: py batch-render-fief-maps.py
-assets/maps/fiefs/17/
-assets/maps/fiefs/50/
-assets/maps/fiefs/*.png
+# Rendered tactical fief maps (tools/batch-render-fief-maps.py) ARE versioned: small,
+# and likely reused in the wiki. Regenerate after a renderer change:
+#   py batch-render-fief-maps.py --scenario all
+
+# Exception: raw in-game PPU captures kept only to validate the renderer's colors.
+# Not versioned — they live here for local cross-checking, nothing more.
+assets/maps/fiefs/ppu-render/
