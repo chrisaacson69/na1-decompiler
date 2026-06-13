@@ -93,26 +93,34 @@ def analyze(path):
 
     cas_ev = [e for e in events if e["d"] < 0 and e["vmpc"].startswith("9D")]
     print(f"\n-- {len(cas_ev)} casualties; exchanges scored flat / sym / def --")
-    # pair: consecutive casualties sharing the attacker (cs,cu) = one exchange (target loss + cur own loss)
+    # one exchange = ONE target loss (opposite side from cur) + the IMMEDIATELY following
+    # cur own-loss (same cur, the cur unit). resolve_mutual applies target then own, so they
+    # are adjacent. Do NOT lump a run of same-cur hits (those are separate days/exchanges).
     i = 0
     while i < len(cas_ev):
-        grp = [cas_ev[i]]; j = i+1
-        while j < len(cas_ev) and cas_ev[j]["cs"]==cas_ev[i]["cs"] and cas_ev[j]["cu"]==cas_ev[i]["cu"]:
-            grp.append(cas_ev[j]); j += 1
-        cs, cu = grp[0]["cs"], grp[0]["cu"]; curU = cs*5+cu
-        tgt = next((g for g in grp if g["u"]//5 != cs), None)   # target = OPPOSITE side from cur
-        own = next((g for g in grp if g["u"] == curU), None)
+        e = cas_ev[i]; cs, cu = e["cs"], e["cu"]; curU = cs*5+cu
+        if e["u"]//5 == cs:        # an orphan own-loss with no preceding target — skip
+            i += 1; continue
+        tgt = e; own = None; j = i + 1
+        if j < len(cas_ev) and cas_ev[j]["cs"]==cs and cas_ev[j]["cu"]==cu and cas_ev[j]["u"]==curU:
+            own = cas_ev[j]; j += 1
         if tgt:
-            tcCur = terr_class(dfn, scen, grp[0]["r"]["col"][curU], grp[0]["r"]["row"][curU])
+            tcCur = terr_class(dfn, scen, tgt["r"]["col"][curU], tgt["r"]["row"][curU])
             tcTgt = terr_class(dfn, scen, tgt["col"], tgt["row"])
-            cur_men = own["before"] if own else grp[0]["r"]["men"][curU]
+            cur_men = own["before"] if own else tgt["r"]["men"][curU]
             tgt_men = tgt["before"]
             Wc = w1 if cs==1 else w0; Wt = w1 if tgt["u"]//5==1 else w0
             momC, momT = tgt["mom"][tgt["u"]%5], tgt["mom"][cu]
             lowfi = cur_men <= 2 or tgt_men <= 2
             obsT = -tgt["d"]; obsC = -own["d"] if own else None
+            # implausibility guard: even a max-bonus attacker (~5x its men) vs a min defender
+            # can't exceed this many casualties; if observed exceeds it, the logged `cur` is the
+            # WRONG attacker (stale register) -> flag, don't fit to it.
+            max_cas = cas(tgt_men, math32(cur_men*5, tgt_men))
+            bad_attr = obsT > max_cas
             hdr = (f"  EXCH cur(s{cs}u{cu})@{TNAME[tcCur]} x{cur_men} -> s{tgt['u']//5}u{tgt['u']%5}@{TNAME[tcTgt]} x{tgt_men}"
-                   f" | obs tgt-{obsT}" + (f" own-{obsC}" if obsC is not None else "") + ("  [LOW-FI]" if lowfi else ""))
+                   f" | obs tgt-{obsT}" + (f" own-{obsC}" if obsC is not None else "")
+                   + ("  [LOW-FI]" if lowfi else "") + ("  [!ATTRIB? attacker too weak]" if bad_attr else ""))
             print(hdr)
             for model in ("flat","sym","def"):
                 if model == "def":
