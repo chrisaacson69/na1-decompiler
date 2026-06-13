@@ -1,7 +1,7 @@
--- combat-certify.lua  (v6 — THIN RECORDER, "log now, calc later")
+-- combat-certify.lua  (v7 — THIN RECORDER, "log now, calc later")
 -- ============================================================================
 -- The live-prediction versions (v2-v5) kept fooling us: pairing exchanges and
--- computing strength IN the callback raced against deployment/+1 writes. v6 does
+-- computing strength IN the callback raced against deployment/+1 writes. v7 does
 -- ZERO interpretation. On every write to the unit-men array it dumps the COMPLETE
 -- state as one CSV line. All pairing / formula / terrain / conservation analysis
 -- happens OFFLINE in tools/combat-check.py against this log, where it's auditable
@@ -73,5 +73,5 @@ end
 local WRITE = emu.callbackType and (emu.callbackType.write or emu.callbackType.cpuWrite)
 assert(WRITE ~= nil, "no write callback type in emu.callbackType")
 emu.addMemoryCallback(onWrite, WRITE, STR, STR + 19)
-emu.displayMessage("Lua", "combat-certify v6 (thin recorder) armed")
-emu.log("# combat-certify v6 thin recorder: CSV per men-write; B=battle header, W=write. Calc offline.")
+emu.displayMessage("Lua", "combat-certify v7 (thin recorder) armed")
+emu.log("# combat-certify v7 thin recorder: CSV per men-write; B=battle header, W=write. Calc offline.")

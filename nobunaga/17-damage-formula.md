@@ -43,7 +43,8 @@ Each unit's effective strength, for `m` = its men:
 ```
 S = ( m                                            base men
     + (your side is the DEFENDER ? m : 0)          +100% HOME bonus  (war_side_state_flag bit7 = defender)
-    + terrain_term                                 affects casualties (likely DEFENSIVE — see below); rule not yet locked
+    # NOTE: terrain is NOT in the attacker's S — it is a DEFENSIVE term applied to the
+    # unit BEING ATTACKED (boosts its S in the casualty calc -> it takes fewer losses). See below.
     + province_stat_diff                           small: fief skill/arms edge over the enemy
     + (wrap(slot) > wrap(enemy_slot) ? m : 0)      +100% unit-rank   (Rifles slot2 > Cavalry slot1 > Infantry)
     + m·(1 + 0.4·W/100)                            the 8-STAT term (re-adds one ·m)
@@ -150,20 +151,24 @@ The Pass-1 memory-write trace on `$6FBC–$6FCF` across three battles still stan
 
 Damage is gradual (0–3/exchange), units die at 0, and the casualty *ratio* varies by battle because it falls straight out of `p` — there is no hardcoded attacker multiplier. (What asymmetry exists favors the **defender**, via the home bonus.)
 
-## Terrain — it affects melee; the exact rule is still under investigation
+## Terrain is a DEFENSIVE bonus — confirmed
 
-What is **solid**: terrain affects melee casualties. Every exchange fought on castle/forest deviates from the no-terrain prediction, in the direction `ai_terrain_strength_term $9BB4` implies (castle +270%, forest +60%, town +30% of a unit's men). Holding the castle is unambiguously the strongest defensive position.
+Terrain (`ai_terrain_strength_term $9BB4`: castle +270%, forest +60%, town +30% of a unit's men, via `terrain_strength_mult_table $B9C2`) enters combat as a **defensive** term: it strengthens the unit **being attacked** — reducing the casualties it takes — and does **nothing** for the attacker. A unit's `S` in the *attacker* role carries no terrain; in the *defender* (under-attack) role it does.
 
-What is **not yet locked**: *how* it enters. A symmetric strength-term (terrain boosts whoever stands on it, attacker or defender) fits some exchanges but not others — a unit on the castle while **attacking** showed no offensive boost, while a unit on the castle while **being attacked** clearly took fewer casualties. The leading hypothesis is therefore a **defensive** bonus — terrain helps the unit *being attacked*, not the one attacking — but the certifying tool isn't yet reliable enough to confirm it (see below), and one forest exchange contradicts even that.
+This was settled by an offline analyzer scoring each exchange under three models — `flat` (no terrain), `sym` (terrain in both units' `S`), and `def` (terrain only on the unit being hit). Two castle situations split them decisively:
 
-Three tool problems block the final rule, and they are reliability issues, not formula gaps:
-1. **Deployment/combat write interleave** — in a full 5v5, some exchanges fire before a unit's deployment write is captured, so the men values used in the prediction are momentarily wrong (a unit can read as 0 strength).
-2. **The mystery mid-combat `+1`** to a unit's men (supply/redistribution or a bribe defection), which shifts the men the prediction depends on.
-3. **Low fidelity** — when units are down to 1–2 men, integer rounding makes every prediction collapse to the same value, so nothing discriminates.
+| Castle unit's role | flat | sym | def |
+|---|:---:|:---:|:---:|
+| **attacking** a clear-tile enemy | OK | ✗ (over-predicts) | **OK** |
+| **being attacked** on the castle | ✗ (over-predicts) | OK | **OK** |
 
-The fix is to harden the logger (guard exchanges whose units were just non-combat-written, track per-side total men to classify the `+1`, flag low-fidelity exchanges) and re-run on a high-strength battle. Until then the terrain *rule* is honestly open.
+`flat` fails when the castle unit is attacked; `sym` fails when it attacks; **only `def` survives both.** The casualties an attacked unit takes are `pct_op(men, p)` where `p = math32(S_attacker, S_defender_WITH_terrain)` — the defender's terrain inflates its `S`, shrinking `p`, so it loses fewer men. Castle (×3.7 effective) ≫ forest > town.
 
-What terrain unambiguously **also** does is the **breach** — an attacker reaching the castle cell halves the defending fief's morale, once per day, geometrically collapsing the garrison (confirmed `63 → 31` mid-battle).
+This is why getting terrain right took several passes: it can't be seen by predicting *flat* (it diverges only when a unit is attacked on terrain), and it isn't *symmetric* (a unit attacking from a castle gets no edge). The result also vindicates the early "tanky castle" observation — real, just defensive and asymmetric.
+
+Terrain's **other** combat effect is the **breach**: an attacker reaching the castle cell halves the defending fief's morale, once per day, geometrically collapsing the garrison (confirmed `63 → 31` mid-battle). So the castle defends in two ways — every unit on it takes fewer casualties, and reaching it as the attacker craters the garrison's morale.
+
+(Method note: this was only resolvable after rearchitecting the certifier to "log now, calc later" — a thin Mesen recorder dumping the full men/position arrays per write, with all pairing and model-scoring done offline, since live in-callback prediction kept racing deployment writes and fooling earlier passes.)
 
 ## The rice-exhaustion attack — a dominance-frontier edge
 

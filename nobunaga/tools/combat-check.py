@@ -87,7 +87,7 @@ def analyze(path):
         while j < len(cas_ev) and cas_ev[j]["cs"]==cas_ev[i]["cs"] and cas_ev[j]["cu"]==cas_ev[i]["cu"]:
             grp.append(cas_ev[j]); j += 1
         cs, cu = grp[0]["cs"], grp[0]["cu"]; curU = cs*5+cu
-        tgt = next((g for g in grp if g["u"] != curU), None)
+        tgt = next((g for g in grp if g["u"]//5 != cs), None)   # target = OPPOSITE side from cur
         own = next((g for g in grp if g["u"] == curU), None)
         if tgt:
             tcCur = terr_class(dfn, scen, grp[0]["r"]["col"][curU], grp[0]["r"]["row"][curU])
