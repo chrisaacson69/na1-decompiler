@@ -9,15 +9,15 @@
 --
 -- side 0 = ATTACKER (selected_province_idx);  side 1 = DEFENDER (battle_defending_province).
 --
--- OUTPUT:
+-- OUTPUT (v7 — log the full ARRAYS; the analyzer DIFFs them, since the write-address
+-- label desyncs from the men-array change during combat bursts):
 --   B,scenario, atkFief,atkOwn, defFief,defOwn,
 --     atkMor,atkSkl,atkArm, atkHp,atkDr,atkLk,atkCh,atkIq,
 --     defMor,defSkl,defArm, defHp,defDr,defLk,defCh,defIq
---   W,seq,vmpc, chSide,chSlot,newMen, curSide,curSlot,
---     m0..m9 (all unit men, post-write),
---     chCol,chRow, curCol,curRow,
+--   W,seq,vmpc, curSide,curSlot,
+--     m0..m9 (all unit men, post-write), c0..c9 (all cols), r0..r9 (all rows),
 --     mom0..mom4, atkMor,defMor
--- (men index = side*5+slot: m0..m4 = attacker u0..u4, m5..m9 = defender u0..u4)
+-- (unit index = side*5+slot: 0..4 = attacker u0..u4, 5..9 = defender u0..u4)
 --
 -- TO RUN: Mesen 2 -> Debug -> Script Window -> open -> Run; play a battle; copy log.
 -- ============================================================================
@@ -56,17 +56,16 @@ local function onWrite(address, value)
   if d ~= curDef then curDef = d; started = false; seq = 0 end
   if not started then started = true; emit_B() end
   seq = seq + 1
-  local wi = (address - STR) // 2
-  local chS, chU = wi // 5, wi % 5
   local cs, cu = rd(CSIDE), rd(CSLOT)
-  -- Build the CSV via table.concat (no fragile %d counting). Column order matches
-  -- combat-check.py: seq,vmpc,chS,chU,new,cs,cu, m0..m9, chCol,chRow,curCol,curRow,
-  --                  mom0..mom4, atkMor,defMor
-  local t = {"W", seq, string.format("$%04X", vmpc()), chS, chU, rd16(STR + wi*2), cs, cu}
-  for i = 0, 9 do t[#t+1] = rd16(STR + i*2) end
-  t[#t+1] = rd(COL+chS*5+chU); t[#t+1] = rd(ROW+chS*5+chU)
-  t[#t+1] = rd(COL+cs*5+cu);   t[#t+1] = rd(ROW+cs*5+cu)
-  for i = 0, 4 do t[#t+1] = rd(MOM+i) end
+  -- Log the COMPLETE state every write (the men/pos ARRAYS are ground truth; the
+  -- write-address label desyncs from the men-array change during combat bursts, so
+  -- the analyzer must DIFF the arrays, not trust a label). Columns (match combat-check.py):
+  --   seq, vmpc, cs, cu, m0..m9, c0..c9, r0..r9, mom0..mom4, atkMor, defMor
+  local t = {"W", seq, string.format("$%04X", vmpc()), cs, cu}
+  for i = 0, 9 do t[#t+1] = rd16(STR + i*2) end        -- men (post-write)
+  for i = 0, 9 do t[#t+1] = rd(COL + i) end             -- all unit cols (side*5+slot layout)
+  for i = 0, 9 do t[#t+1] = rd(ROW + i) end             -- all unit rows
+  for i = 0, 4 do t[#t+1] = rd(MOM + i) end
   t[#t+1] = rd16(PROV+rd(ATKP)*26+18); t[#t+1] = rd16(PROV+rd(DEFP)*26+18)
   emu.log(table.concat(t, ","))
 end
