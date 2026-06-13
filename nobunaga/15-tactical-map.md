@@ -118,7 +118,7 @@ With the bank-2 placement and the map data location, the combat structure refine
         v
    day loop (per day):
         unit-action inner loop ($828B family on $6FD0 unit data)
-            damage math:  $827E -> $838F -> $D70D (percentage)  +  $CA52/$CA46 (RNG)
+            Attack = resolve_mutual $9E20 (DETERMINISTIC, ch.17); Bribe/AI = $9E73 (+RNG)
         end-of-day check: supplies, casualties, leader, retreat
         |
         v
@@ -130,7 +130,7 @@ With the bank-2 placement and the map data location, the combat structure refine
 ## What's open
 
 - **`$822A` walked end to end** — what its bytecode actually orchestrates. The chapter-16 deep dive starts here, since `$822A` is the combat *entry from inside bank 2* (the AI's war path host_calls it after the bank switch).
-- **The damage formula**, validated against the day-4 and day-5 exchange numbers Chris gave (3-unit attacker 8 → 6, 2-unit defender 5–6 → 0–2; then 3-unit attacker 5 → 3, 3-unit defender 6 → 2). The `$827E → $838F → $D70D` triple plus the `$828B` unit reads is the call shape; reading them tells us `(strength, type, terrain, RNG) → casualties`.
+- **The damage formula — now DECODED & emulator-certified (chapter 17).** Pass 2 recovered it from the bytecode: Attack is the deterministic mutual-attrition strength-share `resolve_mutual $9E20` → `ai_eval_battle_strength_total $9C88` (no RNG); Bribe/AI use `$9E73`. The `$827E/$838F/$D70D` calls are helpers (resource ptr / side-province / percentage op), not the formula itself. See ch.17 for the certified math and the open terrain question.
 - **The cell tile-index → terrain map.** Disassembly of `$DC66`/`$DC88`'s renderer plus the bank-12 CHR-RAM tile data will pin which byte means woods, mountain, river, castle, etc. Once decoded, all 17 fief maps can be rendered and the doughnut/chokepoint archetypes located in the data.
 - **The 5-byte unit record's field layout.** A targeted memory-watch trace of `$6FD0–$6FF3` across a single attack exchange would expose which byte stores the men count (the one that drops from 8 to 6 in your day-4 exchange).
 

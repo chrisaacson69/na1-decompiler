@@ -1,121 +1,107 @@
 ---
 status: active
 created: 2026-05-14
+updated: 2026-06-13
 ---
 # Chapter 14 — Combat: Structure, Strings, and the Day Loop
 
-> Chapter 13 stitched together the strategic loop and noted that two wars were *folded into* the AI's turn. This chapter opens the war door. A targeted Mesen `$EB7A` trace across one full battle — Oda invading a revolt-weakened province — surfaces combat's call-graph shape, while a string sweep across the ROM reveals the in-battle command set, the unit types, the failure modes, and the day counter. Together they give us the *map of combat* — entry point, inner loop, the 3-unit-type model, the 5-verb tactical menu, and the four ways a battle ends — without yet decoding the per-cell damage formula. That formula lives inside `$828B` and is the next chapter's static walk; this chapter gives every later chapter their anchor.
+> Chapter 13 stitched together the strategic loop and noted that two wars were *folded into* the AI's turn. This chapter opens the war door: the entry point, the day loop, the tactical command menu, the 3-unit-type model, and the four ways a battle ends. It is the *map* of combat; chapters 15–16 walk the tactical-map data and render, and **chapter 17 carries the now-decoded, emulator-certified damage formula**. (Pass 2, 2026-06: the formula that the Pass-1 walk left deferred has been recovered from the decompiled bytecode and confirmed against live battles — the call-graph anchors below are corrected accordingly.)
 
-**Links:** [Chapter 13 — Turn Loop](./13-turn-loop-and-harvest.md) · [Chapter 11 — Strategic Engine](./11-strategic-engine-complete.md) · [Nobunaga README](./README.md) · [project_nobunaga_combat_fief_maps](../../../../.claude/projects/C--Users-Chris-Isaacson-Vault/memory/project_nobunaga_combat_fief_maps.md)
+**Links:** [Chapter 13 — Turn Loop](./13-turn-loop-and-harvest.md) · [Chapter 11 — Strategic Engine](./11-strategic-engine-complete.md) · [Chapter 17 — Damage Formula](./17-damage-formula.md) · [Nobunaga README](./README.md)
 
-## The combat shape, from the trace
+## Where combat lives
 
-41 474 `$EB7A` events over ~4 900 frames of one battle decompose into three phases:
+Combat is its **own bank — bank 2**. The strategic loop (bank 0) and the AI/command layer (bank 1) call into it via `call_bank_wrap(2)`, whose entry is **`battle_init_driver $AFE1`**. A war can be launched three ways (an AI invasion, a player attack, or a revolt/uprising), and all of them converge on `$AFE1`.
 
 ```
-1) Entry / war announcement   (Fr ≈ 12780)
-2) Tactical-map setup loop    (Fr 12789 – 12930, ~25 iterations)
-3) Combat inner loop          (Fr 12930+, continuous until battle ends)
+        AI war / player War / uprising
+                  │  call_bank_wrap(2)
+                  ▼
+      battle_init_driver  $AFE1
+        ├─ map_populate $8903        build the 11×5 terrain grid (ch.15)
+        ├─ render_combat_map_screen  $8977
+        ├─ battle_init_defender      read defended fief's gold/rice/men; if
+        │                            rice≤0 or men≤0 → undefended → instant resolve
+        ├─ deploy_both_sides_units_loop
+        └─ DAY LOOP (max 30 days)
+             run_both_sides_combat_turn $ADD1
+               ├─ halve_defender_morale_for_breaching_attackers
+               └─ per side, in order:
+                    AI side    → ai_run_all_units_combat_actions $ABB7
+                    player side→ combat_command_dispatch_loop_per_unit $AC7F
+             consume_daily_battle_rice      supply tick (the rice clock)
+                  │
+                  ▼
+        dispatch_battle_resolution $AF3B    end-of-battle: succession + conquest
 ```
 
-Phase 1 is one-time setup: a single `$81FC` call announces the invasion. (`$81FC` is *not* a separate sub; it's a label **+500 bytes into the bank-0 bytecode sub `$8003`** that the AI's war path jumps to. The whole combat-init body lives in `$8003`.)
+**Side convention** (confirmed via `get_battle_side_province $838F`): **side 0 = attacker** (`selected_province_idx`), **side 1 = defender** (`battle_defending_province`).
 
-Phase 2 iterates the tactical grid: a six-call pattern `$82DB → $DC88 → $DC66 → $83C6 → $DC88 → $DC66` per cell, ~25 cells visible in the visible iterations. The per-fief map data — where the doughnut-fief, the chokepoint fiefs, and every terrain type come from — is what `$82DB` reads. Chapter 15's static walk of `$82DB` locates that data; for now we know the shape: a cell-by-cell setup pass.
+## The tactical command menu — **6 verbs** (not 5)
 
-Phase 3 dominates the trace. `$828B` fires **1 005 times** in the visible battle, supported by `$829A` (212), `$82A9` (95), `$82B9` (86) — its sub-handlers. The inner loop runs *continuously* with no input gaps; combat doesn't pause between unit actions. Two clean exchanges Chris observed (day 4 attacker 8 → 6, defender 5–6 → 0–2; day 5 attacker 5 → 3, defender 6 → 2) are folded inside this continuous activity — the trace alone can't separate them. Their *damage formula* is `$828B`'s body, a chapter-16 read.
+The Pass-1 string sweep missed one. The menu is six packed strings at `combat_command_menu_str_ptrs $B4F0`, dispatched through `combat_command_jumptab $B9F8`:
 
-The damage *primitive* is already visible though. `$827E → $838F → $D70D` is a recurring triple — and `$D70D` is the **percentage operator** decoded all the way back in chapter 9. So:
+| # | Verb | String | Handler | What it does |
+|---|---|---|---|---|
+| 0 | **Move** | `$B4FC` | `$A90E` | step the unit to a free in-bounds tile |
+| 1 | **Attack** | `$B501` | `$A96C` | step *into* an enemy-occupied tile → **`resolve_attack_apply_mutual_casualties $9E20`** (the melee math, ch.17) |
+| 2 | **Bribe** | `$B508` | `$A9FB` | pick a target + spend gold → **`resolve_attack_apply_casualties $9E73`** (enemy men defect to your commander) |
+| 3 | **Flee** | `$B50E` | `$AAA7` | retreat to a chosen fief; relocates the capital; ends the battle |
+| 4 | **Pass** | `$B513` | `$AB37` | take no action, advance to the next unit |
+| 5 | **View** | `$B518` | `$AB6A` | show the roster, hit-any-key |
 
-> **The combat damage primitive is the same percentage-operator-plus-RNG-roll that drives the harvest, the develop commands, and the revolt's economic ripple.** One arithmetic primitive, four jobs. Combat is more numerous applications of it; not a different math.
+Each unit slot 0–4 is prompted in turn (`combat_command_dispatch_loop_per_unit`); a verb whose handler returns truthy re-prompts the same unit, falsy advances. **Move** is the verb the original walk overlooked — and it matters, because *Attack is Move-into-contact*: you reach an enemy by moving onto its tile, which is also what triggers the **castle breach** (an attacker reaching the castle cell halves the defender's morale — ch.15/17).
 
-## The tactical command menu — 5 verbs
+Two verbs reach across layers:
 
-Bank 2 `$B501–$B518` holds five packed null-terminated strings:
-
-| Verb | Address |
-|---|---|
-| `Attack` | `$B501` |
-| `Bribe` | `$B508` |
-| `Flee` | `$B50E` |
-| `Pass` | `$B513` |
-| `View` | `$B518` |
-
-Five tactical verbs against the strategic layer's twenty-one. Two are interesting:
-
-- **`Bribe`** in combat means the diplomacy subsystem (chapter 11's `$E510/$879F/$804C` cluster) reaches into the battle screen — you can spend gold mid-fight to flip an enemy unit. That's a strategic-layer mechanic surfaced as a tactical option.
-- **`Flee`** is a separate verb from being *forced* out by attrition. The four ending strings (next section) cover the forced cases; `Flee` is voluntary withdrawal at the player's choice.
+- **Bribe** spends gold mid-battle to peel enemy soldiers into your **commander's** unit (a defection, not a kill). It's a morale-and-Charisma contest with a flat per-soldier gold price — the full formula is in chapter 17.
+- **Flee** is *voluntary* withdrawal, distinct from being forced out by attrition (the failure modes below cover the forced cases).
 
 ## The unit-type model — 3 types in 5 slots
 
-Bank 15 `$F9AF` is a 3-entry pointer table into a packed string region:
+`unit_type_name_table $F9AF` is a 3-entry pointer table:
 
-| Type | String addr | String |
+| Type | String | Note |
 |---|---|---|
-| 0 | `$F9B5` | `Rifles ` (note trailing space — 7-char fixed slot) |
-| 1 | `$F9BD` | `Infntry` (abbreviated for the 7-char slot) |
-| 2 | `$F9C5` | `Cavalry` |
+| 0 | `Rifles ` | trailing space — 7-char fixed slot |
+| 1 | `Infntry` | abbreviated for the 7-char slot |
+| 2 | `Cavalry` | |
 
-So a fielded army is **5 unit slots × 1 of 3 types each + 1 commander**. Chris's read fits exactly: slot 1 is the commander (losing him ends the battle — see failure modes below), and slots 2–5 are a composition of Rifles / Infantry / Cavalry. The strategic-layer `Hire` command (chapter 11) chooses *type*; the army's *composition* (how many of each) is what produces the offensive-bonus / defensive-bonus asymmetry Chris flagged early in the project (offense: thin-leader + max Rifles/Cavalry; defense: invert).
+An army is **5 fixed-position slots**, each with a deterministic type via `(wrap_0_2(slot)+1) % 3`: slot 0 → Infantry (the **commander** — losing it ends the battle), slot 1 → Cavalry, slot 2 → Rifles, slots 3–4 → Infantry. The strategic-layer **Assign** distributes the men-% across these slots (`distribute_men_into_unit_strengths`); 0% is allowed for every slot except the commander. So it is *not* "5 types" — it's 3 types in 5 fixed positions, and the composition (how many men in which slot) drives the unit-rank term of the damage formula (ch.17).
 
-## The four failure modes
+## The four failure modes (plus retreat and timeout)
 
-Combat ends in one of four ways, each with its own message:
+`dispatch_battle_resolution` ends a battle on a resolution code, each with its message:
 
 | Message | Address | Mechanic |
 |---|---|---|
-| `"this is truly unfortunate..."` | bank 2 `$B7B1` | **commander killed** → that side loses the battle |
-| `"your men are exhausted!"` | bank 2 `$B7F3` | **morale/exhaustion zero** → forced rout |
-| `"you have no rice!"` | bank 2 `$B8A9` | **supply attrition** → attacker forced out (the **doughnut-fief mechanic** in code) |
-| `"you have no soldiers!"` | bank 2 `$B8BB` | **all units destroyed** → annihilation |
+| `"this is truly unfortunate..."` | `$B7B1` | **commander killed** (unit 0 gone) → that side loses |
+| `"your men are exhausted!"` | `$B7F3` | **morale/exhaustion** → forced rout |
+| `"you have no rice!"` | `$B8A9` | **supply attrition** → attacker starved out (the **doughnut-fief** mechanic) |
+| `"you have no soldiers!"` | `$B8BB` | **annihilation** → all units destroyed |
 
-The supply-attrition string is the find. Chris flagged the doughnut-fief — "you can just run in circles until the attacker runs out of rice" — as a real defensive pattern very early in the project. That's exactly this string: when the attacker's rice supply hits zero, the game prints *"you have no rice!"* and the attacker leaves. It is not a soft penalty; it's a discrete ending. Defenders who can run out the clock force this outcome and lose nothing.
+Plus voluntary withdrawal (`"%s has retreated"`, `$B96E`) and the **30-day timeout** (the battle is capped at 30 days; the rice clock runs underneath it). The supply-attrition ending is the find Chris flagged at the very start: a defender who evades contact on a doughnut/chokepoint map runs the attacker's rice to zero and wins, losing nothing — quantified in chapter 17's rice analysis.
 
-A fifth outcome — voluntary withdrawal — uses `"%s has retreated"` (bank 2 `$B96E`). And the per-day display uses `"Day %2d"` (bank 2 `$B56B`).
+## Two combat formulas, by who fights
 
-## What this gives us
+A subtlety the map must record: **whether a battle is *watched* decides which math resolves it** (gated at bank-1 `$9130`: `ui_confirm_flag_6e7d || defender is the player`).
 
-After this chapter the combat picture is structurally complete *as a map*:
+- **Watched / player-involved** → the full tactical engine above runs (`battle_init_driver`, the day loop, the per-unit menu). This is the engine chapter 17 decodes.
+- **Unwatched AI-vs-AI** → bank 2 is skipped entirely and a single abstract resolver runs instead (`resolve_siege_assault_outcome $8DFD`, bank 1): one strength comparison, `men·(2+bonus) + arms + skill + morale`, +10% to the higher-**Drive** daimyo, higher total wins. Same *cleanup* (`apply_conquest_outcome`), different *fight*.
 
-```
-        AI war path (chapter 12 pipeline)
-                  │
-                  ▼
-       [combat entry] $8003 / label $81FC  (bank 0)
-                  │
-                  ▼
-       [map setup loop]  $82DB / $DC66 / $DC88 / $83C6
-                  │       (per cell, reads per-fief map data — chapter 15)
-                  ▼
-       [day / round loop]   ──┐
-            │                 │
-            ▼                 │
-       [inner loop]  $828B / $829A / $82A9 / $82B9
-            │     uses  $827E / $838F / $D70D + $CA52/$CA46
-            ▼
-       [unit action] -> casualty math (chapter 16)
-            │
-            ▼
-       [end-of-battle check]
-            │
-            ▼
-       one of: commander dead / men exhausted / no rice / no soldiers / retreat / victory
-                  │
-                  ▼
-       [resolution]  message + spoils + return to strategy (chapter 17)
-```
+So the "Watch Battles" option isn't cosmetic — it changes how AI wars on the map resolve.
 
-## What's open
+## What this gives the next chapters
 
-This chapter is deliberately a *map*, not a *walk*. The deep reads it enables:
+After this chapter the combat map is complete and the deep reads are anchored:
 
-- **Chapter 15 — the tactical map.** `$82DB` walked to find where per-fief map cell data lives in the ROM. That gives us terrain per cell, the doughnut/chokepoint topology baked in code, and the data structure the inner loop reads. Likely bank 12 candidates need re-examination (graphics tiles plausibly share a bank with map cell types).
-- **Chapter 16 — the battle engine.** `$828B` walked, `$827E / $838F` decoded. The damage formula `(attacker_strength, defender_strength, terrain, unit_type, RNG) → (att_loss, def_loss)` validated against Chris's day-4 and day-5 exchange numbers (attacker lost 2, dealt 4 — a 1:2 ratio across both exchanges despite a strength reversal — suggesting a structural attacker-initiative bonus).
-- **Chapter 17 — resolution.** What happens on each of the five outcomes: commander-death does *what* to the survivors? Province ownership change after annihilation. The cost the loser pays. The `$D70D`-percentage ripple seen in revolts — does the same shape fire after a combat?
-- **Appendix items** — exact per-unit-type modifiers (Rifles vs Infantry vs Cavalry), terrain modifier table, supply-tick rate (how fast rice depletes), and the commander-death formula (does Charisma or another stat modify survivability?).
+- **Chapter 15** — the tactical map: where per-fief cell/terrain data lives (`tactical_map_cell_pool $A57E`, selected by the province→map-id table) and the doughnut/chokepoint topology.
+- **Chapter 16** — the render pipeline that turns that cell data + combat CHR + the combat palette into the on-screen battle.
+- **Chapter 17** — the damage formula, now **decoded and emulator-certified**: the mutual-attrition strength-share for Attack, the Charisma-contest defection for Bribe, the battle cleanup, and the still-open terrain question.
 
-## Method note — the trace as map
+## Method note
 
-The trace did *not* give the combat formula — that lives below the call-graph layer it exposes. What it gave was the right surface: every sub the battle uses, in roughly the right counts, with the dominant inner-loop entry pinned. Combined with the string sweep — which produced the menu, the unit-type table, the failure-mode messages, and the day counter — we have a complete *frame* for the next three chapters' work. The string sweep is itself worth recording as a method: when a runtime trace gives counts but not contents, the strings the same code displays *are the contents*. The game narrates itself if you ask the ROM rather than the trace.
+The Pass-1 trace gave the right *surface* (every sub the battle uses, in roughly the right counts) but mis-attributed the damage math to the high-frequency pointer helper `unit_col_ptr $828B` — it fires ~1000×/battle because *every* tile/position read goes through it, not because it computes damage. The lesson held up: when a trace gives counts but not contents, the **strings** the same code displays are the contents (the menu, the unit types, the failure modes all came from the ROM string sweep). What the trace could *not* give — the actual coefficients — needed the decompiled bytecode plus a live emulator pass, which is chapter 17's story.
 
 ## Tags
 
