@@ -1,103 +1,147 @@
 #!/usr/bin/env python3
-"""Offline certifier for the bank-2 melee combat formula (ledger #29/#30).
+"""Offline analyzer for the combat-certify.lua v6 thin recorder ("log now, calc later").
 
-Replicates ai_eval_battle_strength_total + the mutual-attrition casualty math
-(pct_op / math32_2arg exact), reads per-fief TERRAIN from the ROM (always the
-DEFENDER's fief map), parses a combat-certify.lua v2 log, and prints PREDICTED
-vs OBSERVED casualties per attack. Melee is deterministic (no rng), so a correct
-formula matches the counts exactly.
+Parses the B/W CSV log, reconstructs per-write deltas from the men time-series,
+classifies each write (casualty / deploy / gain), checks per-side men conservation
+(to explain the mystery +1), pairs melee exchanges, reads terrain from the ROM, and
+scores each exchange against THREE terrain models so the data picks the rule:
 
-Usage:  py combat-check.py <log.txt> [--scenario 17|50]
+  flat : no terrain in S
+  sym  : terrain added to BOTH units' S (symmetric strength term)
+  def  : each unit's OWN terrain boosts its S only when it is the one being hit
+         (asymmetric/defensive — can reproduce "deal a lot, take little" on a castle)
+
+Low-fidelity (<=2-man) and deploy-poisoned exchanges are flagged, not trusted.
+
+Usage:  py combat-check.py <log.txt>
 """
-import sys, re, argparse
+import sys, re
 from pathlib import Path
 
 ROM = (Path(__file__).parent / "Nobunaga's Ambition (USA).nes").read_bytes()[16:]
-def _b(bank, addr): return bank*0x4000 + (addr-0x8000)
-def _b15(addr): return 15*0x4000 + (addr-(0xC000 if addr>=0xC000 else 0x8000))
+def _b(bank, addr): return bank*0x4000 + (addr - 0x8000)
+def _b15(addr): return 15*0x4000 + (addr - 0xC000)
 
-STAT_W    = [5,10,10,5,20, 10,25,15]   # hp,dr,lk,ch,iq, mor,skl,arm  ($B5B1)
-TERR_MULT = [90,20,10,0]                # terrain class 0..3            ($B9C2)
+STAT_W    = [5,10,10,5,20, 10,25,15]      # hp,dr,lk,ch,iq, mor,skl,arm
+TERR_MULT = {0:90, 1:20, 2:10, 3:0}        # class 0=castle 1=forest 2=town 3=plains/imp
+TNAME     = {0:"CAS", 1:"for", 2:"TWN", 3:"."}
 
 def pct_op(a, b):
     if b == 100: return a
     return ((b%10)*(a//10))//10 + ((a%10)*b)//100 + (b//10)*(a//10)
 def math32(a, b): return (a*100)//(a+b) if (a+b) else 0
+def wrap(x): return x if x <= 2 else 0
 
-def map_id(prov, scen): return ROM[_b15(0xF70E)+prov] if scen==17 else ROM[_b(3,0x8E18)+prov]
-def terrain(def_prov, scen, col, row):
-    if col > 10 or row > 4: return 3      # unplaced/out of bounds -> class 3 (no bonus)
-    cell = ROM[_b(4,0xA57E) + map_id(def_prov,scen)*55 + row*11 + col] & 254
-    return {32:0,16:1,8:2}.get(cell, 3)
+def map_id(prov, scen): return ROM[_b15(0xF70E)+prov] if scen == 17 else ROM[_b(3,0x8E18)+prov]
+def terr_class(defprov, scen, col, row):
+    if col > 10 or row > 4: return 3
+    cell = ROM[_b(4,0xA57E) + map_id(defprov,scen)*55 + row*11 + col] & 254
+    return {32:0, 16:1, 8:2}.get(cell, 3)
 
-def strength(men, is_def, slot, oslot, col, row, W, mom_o, defprov, scen, scale=100):
-    base = men
-    t1 = base if is_def else 0
-    t2 = pct_op(base, TERR_MULT[terrain(defprov, scen, col, row)]) * 3
-    t3 = 0                                 # fief stat-diff term: //100 rounds to 0 at these magnitudes
-    wrap = lambda x: x if x <= 2 else 0
-    t4 = base if wrap(slot) > wrap(oslot) else 0
-    t5 = pct_op(pct_op(base, 40), W) + base
-    t6 = pct_op(base, mom_o * 20)
-    return pct_op(base + t1+t2+t3+t4+t5+t6, scale)
+def cas(men, pct):
+    c = pct_op(men, pct) + (1 if pct >= 50 else 0)
+    return min(c, men)
 
-# ---- log parsing -----------------------------------------------------------
-HDR = re.compile(r"BATTLE: atk fief (\d+).*?def fief (\d+)")
-ATK = re.compile(r"ATK.*?dmy\[hp=(\d+) dr=(\d+) lk=(\d+) ch=(\d+) iq=(\d+)\]")
-DEF = re.compile(r"DEF.*?dmy\[hp=(\d+) dr=(\d+) lk=(\d+) ch=(\d+) iq=(\d+)\]")
-AFS = re.compile(r"ATK.*?fief\[mor=(\d+) skl=(\d+) arm=(\d+)\]")
-DFS = re.compile(r"DEF.*?fief\[mor=(\d+) skl=(\d+) arm=(\d+)\]")
-REC = re.compile(r"\[#\s*(\d+)\]\s+s(\d)u(\d)\s+(\d+)->(\d+)\s+\(([+-])(\d+).*?pos\((\d+),(\d+)\)\s+cur\(s(\d),u(\d)\).*?mom\[([\d,]+)\]\s+vmpc=\$([0-9A-Fa-f]+)")
+class Battle:
+    def __init__(self, b):
+        f = list(map(int, b))
+        self.scen, self.atk, self.atkown, self.dfn, self.dfnown = f[0:5]
+        self.aF = f[5:8];  self.aD = f[8:13]      # atk fief mor/skl/arm ; daimyo hp/dr/lk/ch/iq
+        self.dF = f[13:16]; self.dD = f[16:21]
+        # won-weights: A = daimyo(hp,dr,lk,ch,iq)+fief(mor,skl,arm)
+        A = self.aD + self.aF; D = self.dD + self.dF
+        self.w0 = sum(STAT_W[i] for i in range(8) if A[i] >  D[i])   # attacker-won
+        self.w1 = sum(STAT_W[i] for i in range(8) if A[i] <= D[i])   # defender-won
 
-def won_weights(a_dmy, a_fief, d_dmy, d_fief):
-    A = list(a_dmy) + list(a_fief); D = list(d_dmy) + list(d_fief)
-    w0 = w1 = 0
-    for i in range(8):
-        if A[i] <= D[i]: w1 += STAT_W[i]
-        else:            w0 += STAT_W[i]
-    return w0, w1   # w0 = attacker-province wins, w1 = defender-province wins
+def S(men, is_def, slot, oslot, W, mom_o, tclass, use_terr):
+    s = men
+    s += men if is_def else 0
+    s += men if wrap(slot) > wrap(oslot) else 0
+    s += pct_op(pct_op(men, 40), W) + men
+    s += pct_op(men, mom_o * 20)
+    if use_terr: s += pct_op(men, TERR_MULT[tclass]) * 3
+    return s
 
-def run(path, scen):
-    text = Path(path).read_text()
-    atkf, deff = map(int, HDR.search(text).groups())
-    a_dmy = tuple(map(int, ATK.search(text).groups())); a_fief = tuple(map(int, AFS.search(text).groups()))
-    d_dmy = tuple(map(int, DEF.search(text).groups())); d_fief = tuple(map(int, DFS.search(text).groups()))
-    w0, w1 = won_weights(a_dmy, a_fief, d_dmy, d_fief)
-    print(f"battle: atk fief {atkf} vs def fief {deff} (scen {scen})")
-    print(f"  won-weights: attacker(side0)={w0}  defender(side1)={w1}  (of 100)")
-    print(f"  {'rec':>4} {'unit':>5} {'role':<8} {'men':>4} {'pos':>7} {'p':>4} {'pred':>4} {'obs':>4}  ok")
+def analyze(path):
+    lines = Path(path).read_text().splitlines()
+    bt = None; writes = []
+    for ln in lines:
+        ln = ln.strip()
+        if ln.startswith("B,"):
+            bt = Battle(ln[2:].split(","))
+        elif ln.startswith("W,"):
+            p = ln[2:].split(",")
+            writes.append(dict(seq=int(p[0]), vmpc=p[1].lstrip("$").upper(),
+                chS=int(p[2]), chU=int(p[3]), new=int(p[4]), cs=int(p[5]), cu=int(p[6]),
+                men=[int(x) for x in p[7:17]],
+                chCol=int(p[17]), chRow=int(p[18]), curCol=int(p[19]), curRow=int(p[20]),
+                mom=[int(x) for x in p[21:26]], atkMor=int(p[26]), defMor=int(p[27])))
+    if not bt:
+        print("no B (battle header) line found"); return
+    print(f"battle: atk fief {bt.atk}(own {bt.atkown}) vs def fief {bt.dfn}(own {bt.dfnown}) "
+          f"scen {bt.scen}  won-wt atk={bt.w0} def={bt.w1}")
 
-    men = {}; pos = {}
-    ok = bad = 0
-    for line in text.splitlines():
-        m = REC.search(line)
-        if not m: continue
-        n, s, u, old, new, sign, delta, col, row, cs, cu, mom, vmpc = \
-            int(m[1]),int(m[2]),int(m[3]),int(m[4]),int(m[5]),m[6],int(m[7]),int(m[8]),int(m[9]),int(m[10]),int(m[11]),m[12],m[13].upper()
-        momv = [int(x) for x in mom.split(",")]
-        # update tracking from this record's 'old' (state before the change) + pos
-        men[(s,u)] = old; pos[(s,u)] = (col,row)
-        if sign == '-' and vmpc.startswith('8A'):   # a casualty application (not deploy/remove)
-            # attacker = cur(cs,cu); defender-of-exchange = the other
-            a_men = men.get((cs,cu), old if (s,u)==(cs,cu) else None)
-            a_pos = pos.get((cs,cu), (col,row))
-            if a_men is None:
-                men[(s,u)] = new; continue
-            Sa = strength(a_men, cs==1, cu, (u if (s,u)!=(cs,cu) else None) or 0, a_pos[0], a_pos[1],
-                          w1 if cs==1 else w0, momv[u if (s,u)!=(cs,cu) else cu], deff, scen)
-            # the enemy unit (target)
-            if (s,u) == (cs,cu):     # this record is the ATTACKER's own loss -> need the target
-                men[(s,u)] = new; continue   # handled when the target record appears (we verify target rows)
-            t_men, t_pos = old, (col,row)
-            Sd = strength(t_men, s==1, u, cu, col, row, w1 if s==1 else w0, momv[cu], deff, scen)
-            p = math32(Sa, Sd)
-            pred = min(pct_op(t_men, p) + (1 if p>=50 else 0), t_men)
-            good = (pred == delta)
-            ok += good; bad += (not good)
-            print(f"  {n:>4} s{s}u{u} {'target':<8} {t_men:>4} ({col},{row}) {p:>3}% {pred:>4} {delta:>4}  {'OK' if good else 'XX'}")
-        men[(s,u)] = new
-    print(f"\n  target-casualty predictions: {ok} OK / {bad} mismatch")
+    # reconstruct deltas + conservation
+    run = [0]*10
+    for w in writes:
+        w["delta"] = w["new"] - run[w["chS"]*5 + w["chU"]]
+        run = list(w["men"])
+        w["atkTot"] = sum(w["men"][0:5]); w["defTot"] = sum(w["men"][5:10])
+
+    # classify + report the mystery gains (conservation)
+    print("\n-- non-casualty gains (the +N mystery): conservation check --")
+    prevA = prevD = None
+    for w in writes:
+        if w["delta"] > 0 and not w["vmpc"].startswith("92"):   # a gain outside the deploy-splitter
+            dA = "" if prevA is None else f"{w['atkTot']-prevA:+d}"
+            dD = "" if prevD is None else f"{w['defTot']-prevD:+d}"
+            print(f"  seq{w['seq']:>3} s{w['chS']}u{w['chU']} +{w['delta']} vmpc${w['vmpc']}  sideTot Δ(atk {dA}, def {dD})")
+        prevA, prevD = w["atkTot"], w["defTot"]
+
+    # pair casualty exchanges (consecutive '-' at $9D, same cur)
+    casw = [w for w in writes if w["delta"] < 0 and w["vmpc"].startswith("9D")]
+    print(f"\n-- {len(casw)} casualty applications; exchanges scored flat / sym / def --")
+    # pre-exchange men: men_before = new - delta
+    for w in casw: w["before"] = w["new"] - w["delta"]
+    # group consecutive casw sharing cur
+    i = 0
+    while i < len(casw):
+        grp = [casw[i]]; j = i+1
+        while j < len(casw) and casw[j]["cs"]==casw[i]["cs"] and casw[j]["cu"]==casw[i]["cu"]:
+            grp.append(casw[j]); j += 1
+        ex = grp[0]; cs, cu = ex["cs"], ex["cu"]
+        tgt = next((g for g in grp if not (g["chS"]==cs and g["chU"]==cu)), None)
+        own = next((g for g in grp if g["chS"]==cs and g["chU"]==cu), None)
+        if tgt:
+            tcCur = terr_class(bt.dfn, bt.scen, ex["curCol"], ex["curRow"])
+            tcTgt = terr_class(bt.dfn, bt.scen, tgt["chCol"], tgt["chRow"])
+            cur_men, tgt_men = (own["before"] if own else ex["men"][cs*5+cu]), tgt["before"]
+            Wc = bt.w1 if cs==1 else bt.w0
+            Wt = bt.w1 if tgt["chS"]==1 else bt.w0
+            momC, momT = tgt["mom"][tgt["chU"]], tgt["mom"][cu]
+            lowfi = (cur_men <= 2 or tgt_men <= 2)
+            def predict(model):
+                if model == "def":
+                    # each unit's own terrain boosts its S only when it is the victim
+                    pT = math32(S(cur_men,cs==1,cu,tgt["chU"],Wc,momC,tcCur,False),
+                                S(tgt_men,tgt["chS"]==1,tgt["chU"],cu,Wt,momT,tcTgt,True))
+                    pC = math32(S(cur_men,cs==1,cu,tgt["chU"],Wc,momC,tcCur,True),
+                                S(tgt_men,tgt["chS"]==1,tgt["chU"],cu,Wt,momT,tcTgt,False))
+                    return cas(tgt_men, pT), cas(cur_men, 100-pC)
+                ut = (model == "sym")
+                p = math32(S(cur_men,cs==1,cu,tgt["chU"],Wc,momC,tcCur,ut),
+                           S(tgt_men,tgt["chS"]==1,tgt["chU"],cu,Wt,momT,tcTgt,ut))
+                return cas(tgt_men, p), cas(cur_men, 100-p)
+            obsT, obsC = -tgt["delta"], (-own["delta"] if own else None)
+            row = f"  EXCH cur(s{cs}u{cu})@{TNAME[tcCur]} x{cur_men} -> s{tgt['chS']}u{tgt['chU']}@{TNAME[tcTgt]} x{tgt_men} | obs tgt-{obsT}" + (f" own-{obsC}" if obsC is not None else "")
+            if lowfi: row += "  [LOW-FI]"
+            print(row)
+            for model in ("flat","sym","def"):
+                pt, pc = predict(model)
+                mark = lambda pred,obs: "OK" if (obs is not None and pred==obs) else "x"
+                print(f"      {model:>4}: tgt-{pt} {mark(pt,obsT)}" + (f"  own-{pc} {mark(pc,obsC)}" if obsC is not None else ""))
+        i = j
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("log"); ap.add_argument("--scenario", type=int, default=17)
-    a = ap.parse_args(); run(a.log, a.scenario)
+    if len(sys.argv) < 2: print(__doc__); sys.exit(1)
+    analyze(sys.argv[1])
