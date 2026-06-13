@@ -141,6 +141,42 @@ def analyze(path):
             print(f"      terms tgt S={St} [{fmt(tt)}]")
         i = j
 
+# ---- ArmyBV: a FIXED pre-combat army rating (men + the 8 combat-weighted stats) ----
+# BV = total_men * (1 + 0.4 * StatQuality/100); StatQuality = Sum weight_i * min(stat_i/120, 1).
+# Deliberately EXCLUDES situational terms (defensive terrain, defender home, momentum).
+# 17-fief START tables in ROM bank 3 (c2p = (cpu-0x8000)+3*0x4000): province stats $B002
+# (men+16/mor+18/skl+20/arm+22, stride 26), daimyo $B532 (hp+1/dr+2/lk+3/ch+4/iq+5, stride 7).
+NAMES17 = ["Noto","Echigo","Musashi","Kaga","Echizen","Hida","Suruga","Mikawa","Mino",
+           "Yamato","Omi","Iga","Iseshima","Yamashiro","Settsu","Shinano","Owari"]
+SW = {'hp':5,'dr':10,'lk':10,'ch':5,'iq':20,'mor':10,'skl':25,'arm':15}
+
+def fief_stats_rom(i):
+    c = lambda cpu: (cpu-0x8000)+3*0x4000
+    r16 = lambda o: ROM[o] | (ROM[o+1] << 8)
+    p = c(0xB002)+i*26; d = c(0xB532)+i*7
+    return dict(hp=ROM[d+1], dr=ROM[d+2], lk=ROM[d+3], ch=ROM[d+4], iq=ROM[d+5],
+                mor=r16(p+18), skl=r16(p+20), arm=r16(p+22), men=r16(p+16))
+
+def army_bv(stats):
+    Q = sum(SW[k]*min(stats[k]/120, 1) for k in SW)         # 0..100 stat quality
+    return round(stats['men'] * (1 + 0.4*Q/100)), round(Q)
+
+def rank():
+    rows = []
+    for i in range(17):
+        s = fief_stats_rom(i); bv, q = army_bv(s)
+        rows.append((bv, q, i, s))
+    print("ArmyBV ranking - 17-fief START values (men x stat-quality; excludes terrain/home/momentum)")
+    print(f"  {'rk':>2} {'fief':<11} {'BV':>4} {'men':>3} {'Q':>3} | hp dr lk ch iq  mor skl arm   rifle-cap")
+    for rk,(bv,q,i,s) in enumerate(sorted(rows, reverse=True), 1):
+        cap = s['arm']//50 + 20
+        print(f"  {rk:>2} {NAMES17[i]:<8}(#{i:2}) {bv:>4} {s['men']:>3} {q:>3} |"
+              f"{s['hp']:3}{s['dr']:3}{s['lk']:3}{s['ch']:3}{s['iq']:3} {s['mor']:3}{s['skl']:3}{s['arm']:3}   {cap}%")
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2: print(__doc__); sys.exit(1)
-    analyze(sys.argv[1])
+    if len(sys.argv) >= 2 and sys.argv[1] == "--rank":
+        rank()
+    elif len(sys.argv) >= 2:
+        analyze(sys.argv[1])
+    else:
+        print(__doc__)
