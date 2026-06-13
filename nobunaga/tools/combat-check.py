@@ -32,11 +32,20 @@ def terr_class(defprov, scen, col, row):
 def cas(men, pct):
     return min(pct_op(men, pct) + (1 if pct >= 50 else 0), men)
 
-def Sfn(men, is_def, slot, oslot, W, mom_o, tclass, use_terr):
-    s = men + (men if is_def else 0) + (men if wrap(slot) > wrap(oslot) else 0)
-    s += pct_op(pct_op(men, 40), W) + men + pct_op(men, mom_o * 20)
-    if use_terr: s += pct_op(men, TERR_MULT[tclass]) * 3
-    return s
+def Sterms(men, is_def, slot, oslot, W, mom_o, tclass, use_terr):
+    """Return (total_S, {term: value}) — every factor broken out."""
+    t = {
+        "base":  men,
+        "home":  men if is_def else 0,                          # DEFENDER home bonus (situational)
+        "rank":  men if wrap(slot) > wrap(oslot) else 0,        # unit-type ladder Rifles>Cav>Inf (situational)
+        "stat8": pct_op(pct_op(men, 40), W) + men,              # the 8-factor term (men + men*0.4*W/100)
+        "mom":   pct_op(men, mom_o * 20),                       # momentum +20%/prior contest (situational)
+        "terr":  pct_op(men, TERR_MULT[tclass]) * 3 if use_terr else 0,  # DEFENSIVE terrain (situational)
+    }
+    return sum(t.values()), t
+
+def Sfn(*a):
+    return Sterms(*a)[0]
 
 def analyze(path):
     B = None; rows = []
@@ -55,6 +64,9 @@ def analyze(path):
     w0 = sum(STAT_W[i] for i in range(8) if A8[i] >  D8[i])
     w1 = sum(STAT_W[i] for i in range(8) if A8[i] <= D8[i])
     print(f"battle: atk fief {atk}(own {atkown}) vs def fief {dfn}(own {dfnown}) scen {scen}  won-wt atk={w0} def={w1}")
+    SN = ["hp","dr","lk","ch","iq","mor","skl","arm"]
+    print("  8-factor contest (stat: atk vs def -> winner xWeight):")
+    print("   " + "  ".join(f"{SN[i]}:{A8[i]}v{D8[i]}{'A' if A8[i]>D8[i] else 'D'}{STAT_W[i]}" for i in range(8)))
 
     # dedup consecutive identical men arrays, then diff to find real changes
     kept = []
@@ -72,11 +84,12 @@ def analyze(path):
         prev = r["men"]
 
     # conservation: classify gains
-    print("\n-- gains (mystery +N) — conservation --")
+    print("\n-- gains (mystery +N) - conservation -")
     for e in events:
         if e["d"] > 0 and not e["vmpc"].startswith("92"):   # gain outside deploy-splitter
             tot = sum(e["r"]["men"][(e["u"]//5)*5:(e["u"]//5)*5+5])
-            print(f"  s{e['u']//5}u{e['u']%5} +{e['d']} vmpc${e['vmpc']} sideTot={tot}")
+            leader = " <- COMMANDER (slot0): bribe-defection signature" if e["u"]%5 == 0 else ""
+            print(f"  s{e['u']//5}u{e['u']%5} +{e['d']} vmpc${e['vmpc']} sideTot={tot}{leader}")
 
     cas_ev = [e for e in events if e["d"] < 0 and e["vmpc"].startswith("9D")]
     print(f"\n-- {len(cas_ev)} casualties; exchanges scored flat / sym / def --")
@@ -112,6 +125,12 @@ def analyze(path):
                 pt = cas(tgt_men, pT); pc = cas(cur_men, 100-pC)
                 mk = lambda pred,obs: "OK" if (obs is not None and pred==obs) else "x"
                 print(f"      {model:>4}: tgt-{pt} {mk(pt,obsT)}" + (f"  own-{pc} {mk(pc,obsC)}" if obsC is not None else ""))
+            # term breakdown under the confirmed DEF model (cur attacks w/o terrain; tgt defends w/ terrain)
+            Sc, tc = Sterms(cur_men, cs==1, cu, tgt['u']%5, Wc, momC, tcCur, False)
+            St, tt = Sterms(tgt_men, tgt['u']//5==1, tgt['u']%5, cu, Wt, momT, tcTgt, True)
+            fmt = lambda d: " ".join(f"{k}={v}" for k,v in d.items() if v)
+            print(f"      terms cur S={Sc} [{fmt(tc)}]")
+            print(f"      terms tgt S={St} [{fmt(tt)}]")
         i = j
 
 if __name__ == "__main__":
