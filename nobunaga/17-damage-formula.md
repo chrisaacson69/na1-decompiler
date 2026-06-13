@@ -43,7 +43,7 @@ Each unit's effective strength, for `m` = its men:
 ```
 S = ( m                                            base men
     + (your side is the DEFENDER ? m : 0)          +100% HOME bonus  (war_side_state_flag bit7 = defender)
-    + terrain_term                                 see "the terrain question" below
+    + terrain_term                                 affects casualties (likely DEFENSIVE — see below); rule not yet locked
     + province_stat_diff                           small: fief skill/arms edge over the enemy
     + (wrap(slot) > wrap(enemy_slot) ? m : 0)      +100% unit-rank   (Rifles slot2 > Cavalry slot1 > Infantry)
     + m·(1 + 0.4·W/100)                            the 8-STAT term (re-adds one ·m)
@@ -150,13 +150,20 @@ The Pass-1 memory-write trace on `$6FBC–$6FCF` across three battles still stan
 
 Damage is gradual (0–3/exchange), units die at 0, and the casualty *ratio* varies by battle because it falls straight out of `p` — there is no hardcoded attacker multiplier. (What asymmetry exists favors the **defender**, via the home bonus.)
 
-## The terrain question — the one open piece
+## Terrain — it affects melee; the exact rule is still under investigation
 
-Everything above is certified on **open ground**. Terrain is not. The strength core *bytecode* sums a terrain term (`ai_terrain_strength_term $9BB4`: castle +270%, forest +60%, town +30% of men, via `terrain_strength_mult_table $B9C2`), yet live castle battles **contradict** a symmetric strength bonus:
+What is **solid**: terrain affects melee casualties. Every exchange fought on castle/forest deviates from the no-terrain prediction, in the direction `ai_terrain_strength_term $9BB4` implies (castle +270%, forest +60%, town +30% of a unit's men). Holding the castle is unambiguously the strongest defensive position.
 
-- A unit on the castle repeatedly **deals 4–5 and takes only 1**. For two equal units `(deal 5, take 1)` is impossible under any single `p` — the occupant is protected *asymmetrically*, outside the symmetric `resolve_mutual` math (which the bytecode confirms is clean).
+What is **not yet locked**: *how* it enters. A symmetric strength-term (terrain boosts whoever stands on it, attacker or defender) fits some exchanges but not others — a unit on the castle while **attacking** showed no offensive boost, while a unit on the castle while **being attacked** clearly took fewer casualties. The leading hypothesis is therefore a **defensive** bonus — terrain helps the unit *being attacked*, not the one attacking — but the certifying tool isn't yet reliable enough to confirm it (see below), and one forest exchange contradicts even that.
 
-So terrain's real in-combat effect is a **defensive casualty reduction applied somewhere other than the exchange formula** — the strength-term version likely feeds only the AI's attack decision. Locating it (suspect: `validate_phase_unit_cells_draw_cursor $9B4A`, which runs at the top of every exchange) is the next combat task. The breach mechanic *is* confirmed: an attacker reaching the castle cell halves the defending fief's morale, once per day, geometrically collapsing the garrison.
+Three tool problems block the final rule, and they are reliability issues, not formula gaps:
+1. **Deployment/combat write interleave** — in a full 5v5, some exchanges fire before a unit's deployment write is captured, so the men values used in the prediction are momentarily wrong (a unit can read as 0 strength).
+2. **The mystery mid-combat `+1`** to a unit's men (supply/redistribution or a bribe defection), which shifts the men the prediction depends on.
+3. **Low fidelity** — when units are down to 1–2 men, integer rounding makes every prediction collapse to the same value, so nothing discriminates.
+
+The fix is to harden the logger (guard exchanges whose units were just non-combat-written, track per-side total men to classify the `+1`, flag low-fidelity exchanges) and re-run on a high-strength battle. Until then the terrain *rule* is honestly open.
+
+What terrain unambiguously **also** does is the **breach** — an attacker reaching the castle cell halves the defending fief's morale, once per day, geometrically collapsing the garrison (confirmed `63 → 31` mid-battle).
 
 ## The rice-exhaustion attack — a dominance-frontier edge
 

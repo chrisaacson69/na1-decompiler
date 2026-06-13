@@ -1,0 +1,12 @@
+======== BATTLE: atk fief 8 (own 16=Oda) vs def fief 12 (Iseshima, own 9=Yamato) [scen 17, map-id 25] ========
+v5 dual-prediction (flat vs +terrain). DECISIVE: terrain confirmed in melee.
+  ATK fief[mor=179 skl=134 arm=85] dmy[106/122/135/118/115]   DEF fief[mor=82 skl=163 arm=41] dmy[90/57/92/61/86]
+  won-weights: attacker=75 defender=25 | DEF +home
+KEY castle exchanges (def fief 12 castle at 4,2):
+  #15 cur(s0u1,clear) -> s1u0@CAS : flat p=60 pred-4 X | +terr p=46 pred-2 OK (obs-2)
+       tgt[base5 home5 rank0 s40 5 mom0 terr12] flat15 terr27   <- castle adds terr=12
+  #16  cur s0u1 own loss obs-4 : flat-2 X | +terr-4 OK
+  #17/#18 castle defender attacks: own loss obs-1 : flat-2 X | +terr-1 OK
+CONCLUSION: terrain DOES feed melee strength (ai_terrain_strength_term). The full formula
+(men+home+rank+8stat40+momentum+TERRAIN) is correct; the flat model was the error.
+Residual: #13 corrupted (cur base=0, deploy write landed after the exchange); ±1 on tiny units.
