@@ -1,0 +1,5 @@
+BATTLE: atk fief 10 (Omi, own 10) vs def fief 12 (Iseshima, own 16=Oda). 17-fief. v3 write-callback log.
+ATK fief[mor=89 skl=293 arm=69] dmy[90/95/98/90/97]  DEF fief[mor=153 skl=88 arm=84] dmy[106/122/134/116/115]
+Key: plains exchanges match symmetric formula (#23/24 p=62 -> 5/2 exact).
+Castle unit Ise u0 @(4,2): deals 4-5, takes only 1 (impossible under symmetric p) -> asymmetric defensive terrain.
+Per-action +1: cur unit gains +1 men when it acts (#6,#8,#12,#20) -> unmapped reinforcement step.

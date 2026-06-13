@@ -1,0 +1,189 @@
+Loading script...
+--- emu.eventType keys in this build: ---
+    endFrame = 3
+    startFrame = 2
+    reset = 4
+    nmi = 0
+    stateLoaded = 7
+    codeBreak = 9
+    stateSaved = 8
+    irq = 1
+    inputPolled = 6
+    scriptEnded = 5
+=== combat-certify: polling unit men each frame; start/play a battle ===
+Script loaded successfully.
+
+==================== BATTLE START (def fief 16) ====================
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=85]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=00
+    DEF fief=16 own=16  fief[mor=164 skl=83 arm=85]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 11) ====================
+    ATK fief=11 own=11  fief[mor=51 skl=129 arm=32]  dmy[hp=95 dr=41 lk=57 ch=65 iq=86]  flag=00
+    DEF fief=11 own=11  fief[mor=51 skl=129 arm=32]  dmy[hp=95 dr=41 lk=57 ch=65 iq=86]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 11) ====================
+    ATK fief=11 own=11  fief[mor=51 skl=129 arm=32]  dmy[hp=95 dr=41 lk=57 ch=65 iq=86]  flag=00
+    DEF fief=11 own=11  fief[mor=51 skl=129 arm=32]  dmy[hp=95 dr=41 lk=57 ch=65 iq=86]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 5) ====================
+    ATK fief=5 own=5  fief[mor=79 skl=68 arm=55]  dmy[hp=95 dr=90 lk=46 ch=114 iq=93]  flag=00
+    DEF fief=5 own=5  fief[mor=79 skl=68 arm=55]  dmy[hp=95 dr=90 lk=46 ch=114 iq=93]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 5) ====================
+    ATK fief=5 own=5  fief[mor=79 skl=68 arm=55]  dmy[hp=95 dr=90 lk=46 ch=115 iq=93]  flag=00
+    DEF fief=5 own=5  fief[mor=79 skl=68 arm=55]  dmy[hp=95 dr=90 lk=46 ch=115 iq=93]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 3) ====================
+    ATK fief=3 own=3  fief[mor=58 skl=46 arm=43]  dmy[hp=88 dr=101 lk=90 ch=86 iq=70]  flag=00
+    DEF fief=3 own=3  fief[mor=58 skl=46 arm=43]  dmy[hp=88 dr=101 lk=90 ch=86 iq=70]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 8) ====================
+    ATK fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=00
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 4) ====================
+    ATK fief=4 own=4  fief[mor=129 skl=63 arm=64]  dmy[hp=76 dr=108 lk=106 ch=89 iq=106]  flag=00
+    DEF fief=4 own=4  fief[mor=129 skl=63 arm=64]  dmy[hp=76 dr=108 lk=106 ch=89 iq=106]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 4) ====================
+    ATK fief=4 own=4  fief[mor=129 skl=63 arm=64]  dmy[hp=76 dr=108 lk=106 ch=90 iq=106]  flag=00
+    DEF fief=4 own=4  fief[mor=129 skl=63 arm=64]  dmy[hp=76 dr=108 lk=106 ch=90 iq=106]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 0) ====================
+    ATK fief=0 own=0  fief[mor=36 skl=140 arm=56]  dmy[hp=100 dr=86 lk=89 ch=51 iq=75]  flag=00
+    DEF fief=0 own=0  fief[mor=36 skl=140 arm=56]  dmy[hp=100 dr=86 lk=89 ch=51 iq=75]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 6) ====================
+    ATK fief=6 own=6  fief[mor=74 skl=77 arm=68]  dmy[hp=57 dr=118 lk=32 ch=93 iq=96]  flag=00
+    DEF fief=6 own=6  fief[mor=74 skl=77 arm=68]  dmy[hp=57 dr=118 lk=32 ch=93 iq=96]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 12) ====================
+    ATK fief=12 own=12  fief[mor=77 skl=130 arm=76]  dmy[hp=120 dr=115 lk=111 ch=90 iq=93]  flag=00
+    DEF fief=12 own=12  fief[mor=77 skl=130 arm=76]  dmy[hp=120 dr=115 lk=111 ch=90 iq=93]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 14) ====================
+    ATK fief=14 own=14  fief[mor=80 skl=200 arm=63]  dmy[hp=101 dr=111 lk=86 ch=106 iq=86]  flag=00
+    DEF fief=14 own=14  fief[mor=80 skl=200 arm=63]  dmy[hp=101 dr=111 lk=86 ch=106 iq=86]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+
+==================== BATTLE START (def fief 8) ====================
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=85]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=00
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=00  cur(side=0 slot=0)
+    INITIAL men  atk[0/0/0/0/0]  def[0/0/0/0/0]
+  [#1] side0 slot0  men 0 -> 23  (+23, 0.0% of before)  vmpc=$D724
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#2] side0 slot1  men 0 -> 21  (+21, 0.0% of before)  vmpc=$D72E
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#3] side0 slot2  men 0 -> 15  (+15, 0.0% of before)  vmpc=$D72E
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#4] side0 slot0  men 23 -> 24  (+1, 4.3% of before)  vmpc=$9264
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#5] side0 slot1  men 21 -> 22  (+1, 4.8% of before)  vmpc=$9264
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#6] side0 slot2  men 15 -> 16  (+1, 6.7% of before)  vmpc=$9264
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#7] side0 slot3  men 0 -> 7  (+7, 0.0% of before)  vmpc=$9264
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#8] side0 slot4  men 0 -> 7  (+7, 0.0% of before)  vmpc=$9264
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=80  cur(side=0 slot=0)
+  [#9] side0 slot0  men 24 -> 25  (+1, 4.2% of before)  vmpc=$920E
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#10] side0 slot3  men 7 -> 8  (+1, 14.3% of before)  vmpc=$920E
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#11] side0 slot4  men 7 -> 8  (+1, 14.3% of before)  vmpc=$920E
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#12] side1 slot0  men 0 -> 5  (+5, 0.0% of before)  vmpc=$920E
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#13] side1 slot1  men 0 -> 5  (+5, 0.0% of before)  vmpc=$D721
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#14] side1 slot2  men 0 -> 5  (+5, 0.0% of before)  vmpc=$D721
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#15] side1 slot3  men 0 -> 5  (+5, 0.0% of before)  vmpc=$92A2
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#16] side1 slot4  men 0 -> 5  (+5, 0.0% of before)  vmpc=$92A2
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=0)
+  [#17] side1 slot1  men 5 -> 1  (-4, 80.0% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=2)
+  [#18] side0 slot2  men 16 -> 13  (-3, 18.8% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=2)
+  [#19] side1 slot1  men 1 -> 0  (-1, 100.0% of before)  vmpc=$CBC6
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9F  cur(side=0 slot=2)
+  [#20] side1 slot2  men 5 -> 1  (-4, 80.0% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9D  cur(side=0 slot=1)
+  [#21] side0 slot1  men 22 -> 17  (-5, 22.7% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9D  cur(side=0 slot=1)
+  [#22] side1 slot2  men 1 -> 0  (-1, 100.0% of before)  vmpc=$CBC6
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=9D  cur(side=1 slot=2)
+  [#23] side1 slot3  men 5 -> 1  (-4, 80.0% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=99  cur(side=0 slot=1)
+  [#24] side0 slot1  men 17 -> 14  (-3, 17.6% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=99  cur(side=0 slot=1)
+  [#25] side1 slot0  men 5 -> 1  (-4, 80.0% of before)  vmpc=$8AD7
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=99  cur(side=0 slot=2)
+  [#26] side0 slot2  men 13 -> 9  (-4, 30.8% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=99  cur(side=0 slot=2)
+  [#27] side1 slot3  men 1 -> 0  (-1, 100.0% of before)  vmpc=$CBC6
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=63 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=99  cur(side=0 slot=4)
+  [#28] side0 slot2  men 9 -> 7  (-2, 22.2% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=31 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=91  cur(side=1 slot=4)
+  [#29] side1 slot4  men 5 -> 1  (-4, 80.0% of before)  vmpc=$8AEC
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=31 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=91  cur(side=1 slot=4)
+  [#30] side1 slot0  men 1 -> 0  (-1, 100.0% of before)  vmpc=$CBC6
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=120 lk=121 ch=111 iq=113]  flag=1F
+    DEF fief=8 own=8  fief[mor=31 skl=26 arm=77]  dmy[hp=62 dr=52 lk=38 ch=48 iq=56]  flag=91  cur(side=0 slot=1)
+
+==================== BATTLE START (def fief 2) ====================
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=121 lk=121 ch=112 iq=114]  flag=1F
+    DEF fief=2 own=2  fief[mor=146 skl=73 arm=70]  dmy[hp=96 dr=106 lk=105 ch=93 iq=111]  flag=90  cur(side=0 slot=1)
+    INITIAL men  atk[25/14/7/8/8]  def[0/0/0/0/1]
+
+==================== BATTLE START (def fief 12) ====================
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=121 lk=121 ch=112 iq=114]  flag=1F
+    DEF fief=12 own=12  fief[mor=77 skl=130 arm=76]  dmy[hp=120 dr=115 lk=111 ch=90 iq=93]  flag=90  cur(side=0 slot=1)
+    INITIAL men  atk[25/14/7/8/8]  def[0/0/0/0/1]
+
+==================== BATTLE START (def fief 8) ====================
+    ATK fief=16 own=16  fief[mor=164 skl=83 arm=86]  dmy[hp=107 dr=121 lk=121 ch=112 iq=114]  flag=1F
+    DEF fief=8 own=16  fief[mor=160 skl=80 arm=84]  dmy[hp=107 dr=121 lk=121 ch=112 iq=114]  flag=90  cur(side=0 slot=1)
+    INITIAL men  atk[25/14/7/8/8]  def[0/0/0/0/1]

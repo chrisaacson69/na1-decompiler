@@ -1,0 +1,38 @@
+=== combat-certify v2: side0=attacker side1=defender; play a battle ===
+
+======== BATTLE: atk fief 12 (own 12) vs def fief 11 (own 11) ========
+  ATK(side0) fief[mor=77 skl=130 arm=76] dmy[hp=120 dr=115 lk=111 ch=91 iq=93] flag=9F
+  DEF(side1) fief[mor=60 skl=129 arm=32] dmy[hp=95 dr=41 lk=60 ch=66 iq=86] flag=80
+  [# 1] s0u0    25->18   (-7, 28.0%)  pos(1,0)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D723
+  [# 2] s0u1    14->15   (+1,  7.1%)  pos(5,0)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D72D
+  [# 3] s0u2     7->11   (+4, 57.1%)  pos(6,1)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D72D
+  [# 4] s0u0    18->19   (+1,  5.6%)  pos(1,0)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9264
+  [# 5] s0u1    15->16   (+1,  6.7%)  pos(5,0)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9264
+  [# 6] s0u2    11->12   (+1,  9.1%)  pos(6,1)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9264
+  [# 7] s0u3     8->5    (-3, 37.5%)  pos(3,0)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9264
+  [# 8] s0u4     8->5    (-3, 37.5%)  pos(5,1)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9264
+  [# 9] s0u3     5->6    (+1, 20.0%)  pos(3,0)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D71E
+  [#10] s0u4     5->6    (+1, 20.0%)  pos(5,1)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D71E
+  [#11] s1u0     0->7    (+7,  0.0%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D71E
+  [#12] s1u1     0->6    (+6,  0.0%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D728
+  [#13] s1u2     0->5    (+5,  0.0%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$D728
+  [#14] s1u0     7->8    (+1, 14.3%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9274
+  [#15] s1u1     6->7    (+1, 16.7%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9274
+  [#16] s1u2     5->6    (+1, 20.0%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9274
+  [#17] s1u3     0->2    (+2,  0.0%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9274
+  [#18] s1u4     1->2    (+1, 100.0%)  pos(7,0)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$9274
+  [#19] s1u3     2->3    (+1, 50.0%)  pos(200,200)  cur(s0,u1)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$8291
+  [#20] s1u4     2->0    (-2, 100.0%)  pos(6,1)  cur(s0,u0)  atkMor=77 defMor=60  mom[0,0,0,0,1]  vmpc=$CBC6
+  [#21] s1u3     3->0    (-3, 100.0%)  pos(5,2)  cur(s0,u2)  atkMor=77 defMor=60  mom[0,0,0,1,1]  vmpc=$CBC6
+  [#22] s0u2    12->11   (-1,  8.3%)  pos(6,3)  cur(s0,u2)  atkMor=77 defMor=60  mom[0,0,0,1,1]  vmpc=$8AEC
+  [#23] s0u4     6->2    (-4, 66.7%)  pos(5,3)  cur(s1,u2)  atkMor=77 defMor=60  mom[0,0,0,0,1]  vmpc=$8AEC
+  [#24] s1u2     6->4    (-2, 33.3%)  pos(4,3)  cur(s1,u2)  atkMor=77 defMor=60  mom[0,0,0,0,1]  vmpc=$8AEB
+  [#25] s1u2     4->3    (-1, 25.0%)  pos(4,3)  cur(s0,u4)  atkMor=77 defMor=60  mom[0,0,1,0,0]  vmpc=$8AEB
+  [#26] s0u4     2->0    (-2, 100.0%)  pos(5,3)  cur(s0,u4)  atkMor=77 defMor=60  mom[0,0,1,0,0]  vmpc=$CBC6
+  [#27] s0u2    11->10   (-1,  9.1%)  pos(5,2)  cur(s1,u2)  atkMor=77 defMor=60  mom[0,0,1,0,0]  vmpc=$8AE0
+  [#28] s1u2     3->0    (-3, 100.0%)  pos(4,3)  cur(s1,u2)  atkMor=77 defMor=60  mom[0,0,1,0,0]  vmpc=$CBC3
+  [#29] s1u0     8->3    (-5, 62.5%)  pos(4,2)  cur(s0,u2)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$8AC5
+  [#30] s0u2    10->6    (-4, 40.0%)  pos(5,2)  cur(s0,u2)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$8AEC
+  [#31] s1u0     3->1    (-2, 66.7%)  pos(4,2)  cur(s0,u2)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$8AC5
+  [#32] s0u2     6->4    (-2, 33.3%)  pos(5,2)  cur(s0,u2)  atkMor=77 defMor=60  mom[1,0,0,0,0]  vmpc=$8AEC
+  [#33] s1u0     1->0    (-1, 100.0%)  pos(4,2)  cur(s0,u3)  atkMor=77 defMor=60  mom[2,0,0,0,0]  vmpc=$CBC3

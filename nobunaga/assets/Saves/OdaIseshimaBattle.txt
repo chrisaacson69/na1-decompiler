@@ -1,0 +1,4 @@
+======== BATTLE: atk fief 16 (own 16) vs def fief 12 (own 12) ========
+  ATK(side0) fief[mor=167 skl=83 arm=87] dmy[hp=107 dr=121 lk=126 ch=114 iq=114] flag=1F
+  DEF(side1) fief[mor=77 skl=130 arm=76] dmy[hp=120 dr=116 lk=111 ch=92 iq=94] flag=00
+(see chat log #1-#25; def fief 12 Iseshima, castle at (4,2), town at (7,2))
