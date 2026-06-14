@@ -58,8 +58,8 @@ The IRQ handler is the most interesting find from session 1: a 23-entry dispatch
 | 18 | [The Window Update Model: How a Turn-Based Game Renders](./18-window-updates.md) | session 18 draft |
 | 19 | [Bank 15: The Layered Map (Firmware, BIOS, Interpreter, Bytecode Band)](./19-bank15-memory-map.md) | session 19 draft |
 | 20 | [The Strategic Map Render: The Overworld in 28×16 Tiles](./20-strategic-map-render.md) | session 20 draft |
-| 21 | Combat: resolution (commander death, retreats, supplies) | planned |
-| — | Synthesis: from bytecode to the strategy counter-graph | planned |
+| 21 | [Combat Resolution: How a Battle Ends and Who Inherits](./21-combat-resolution.md) | session 21 draft |
+| — | Synthesis: from bytecode to the strategy counter-graph | planned (deferred — material gathered in synthesis-frontier.md, needs digesting) |
 | A | [Appendix: per-command effect formulas + AI thresholds; province adjacency](./appendix-formulas.md) | ongoing |
 | B | [Appendix: true-color ROM asset extraction](./appendix-asset-extraction.md) — the recipe (CHR + tile-map + palette), proven on daimyo portraits, with the candidate-asset inventory | active |
 | C | [Appendix: The VM Opcode Reference (canonical)](./appendix-vm-opcodes.md) — the authoritative 256-opcode table; **generated** by `tools/gen-opcode-appendix.py` from `vm-opcodes-v2.toml` + `OPCODE_INFO`. Cited by chs. 6 & 8 | active (pass-2 2026-06-11) |
