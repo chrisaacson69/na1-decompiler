@@ -161,16 +161,18 @@ def text_report(title, fiefs, adj):
 def html_table(title, fiefs, adj):
     R = analyze(fiefs, adj)
     rows = []
+    keyed = 3 if len(fiefs) == 17 else 20      # Honganji ($DB12): owner==3 (17) / 20 (50)
     pclass = {"PLAYABLE": "g", "hard": "a", "UNPLAYABLE": "r"}
     dclass = {"safe": "g", "revolt->VULN": "a", "VULNERABLE": "r"}
     for f in sorted(fiefs, key=lambda x: (R[x]["play"] != "UNPLAYABLE", R[x]["men"])):
         r = R[f]
+        name = r["name"] + (" &#9873;" if f == keyed else "")
         tgt = f"{r['target']} ({r['target_men']})" if r["target"] else "&mdash;"
         rev = (f"REVOLT&rarr;dies (~{revolt_elig_pct(r['morale'])}% elig)" if r["revolt_risk"]
                else ("&mdash;" if r["human_threats"] else "no"))
         revc = "a" if r["revolt_risk"] else ""
         rows.append(
-            f"<tr><td>{r['name']}</td><td class=n>{r['men']}</td><td class=n>{r['morale']}</td>"
+            f"<tr><td>{name}</td><td class=n>{r['men']}</td><td class=n>{r['morale']}</td>"
             f"<td class=n>{r['ndeg']}</td><td>{tgt}</td><td class=n>{r['atk_share']}%</td>"
             f"<td>{r['atk']}</td><td class={dclass[r['def_status']]}>{r['def_status']}</td>"
             f"<td class=n>{r['m_safe']}</td>"
@@ -180,8 +182,17 @@ def html_table(title, fiefs, adj):
     head = ("<tr><th>fief</th><th>men</th><th>morale</th><th>nbrs</th><th>weakest target</th>"
             "<th>atk&nbsp;share</th><th>AI&nbsp;attack?</th><th>AI&nbsp;defense</th><th>m_safe</th>"
             "<th>human&nbsp;threats</th><th>playable?</th><th>revolt&nbsp;risk</th></tr>")
+    keyed_note = ""
+    if keyed in fiefs:
+        keyed_note = (f"\n<p class=note>&#9873; <b>{fiefs[keyed]['name']} (Honganji / Ikkō-ikki)</b> is the engine's "
+                      f"\"keyed daimyo\" (<code>$DB12</code>): tax is hard-capped at <b>30%</b> (<code>driver_tax $999A</code>) "
+                      f"&mdash; roughly half a rival's harvest, since income scales with tax &mdash; and its base revolt "
+                      f"floor is <b>50&times;</b> higher (<code>rng(20)</code> vs <code>rng(1000)</code>). An <i>economic</i> "
+                      f"hard-mode the military columns don't show.</p>")
     return (f"<h2>{title}</h2>\n<p class=note><b>UNPLAYABLE human starts:</b> "
-            f"{', '.join(unplay) or 'none'}.</p>\n<table>\n{head}\n" + "\n".join(rows) + "\n</table>")
+            f"{', '.join(unplay) or 'none'}. <i>(Note: counts who CAN grudge-attack, an upper bound — each AI takes one "
+            f"action/turn and usually hits its own weakest neighbour, so realized invasions are fewer.)</i></p>{keyed_note}"
+            f"\n<table>\n{head}\n" + "\n".join(rows) + "\n</table>")
 
 
 def build_html(src):
