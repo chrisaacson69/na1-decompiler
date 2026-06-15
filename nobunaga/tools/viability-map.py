@@ -30,6 +30,24 @@ SCENARIOS = [("17-fief", "17fief.txt", "adjacency.txt"),
 
 MORALE_REVOLT = 45          # exact revolt cutoff: square_over_2025 needs morale<45 ($9D86/$9E21)
 
+# Chris's expert human-start tier read (17-fief), keyed by fief index. Adds the
+# long-game dimension (economy catch-up, character re-roll, buffering) the turn-1
+# math can't see. Letter + one-line assessment.
+TIERS_17 = {
+    11: ("F", "Lost cause — invaded even moving first (2 big + 2 mid threats); too weak to hold even if you win."),
+    8:  ("F", "Lost — likely to revolt; even if it doesn't, it's surrounded and can't survive."),
+    3:  ("F", "Unplayable — the Ikkō-ikki nerfs (30% tax cap + revolt-proneness) mean you can't keep up; eventually outclassed and hunted."),
+    9:  ("D", "Too hard — not in immediate danger, but so far behind it can't catch up; Settsu & Iseshima keep it pressured."),
+    0:  ("C-", "Barely playable — survive the early revolts/uprisings to get your house in order; buffered by Kaga (1 neighbour), so you have time."),
+    5:  ("C", "A challenge — nothing fantastic, but a reasonable neighbourhood; a long way to catch up."),
+    13: ("C", "Risky — still dodging revolts/uprisings, but recovers more easily and is fairly even with its neighbours."),
+    4:  ("C", "The floor of the reasonable picks (with Suruga) — nothing special, but solid."),
+    6:  ("B", "The player's to make — historically a short-lived old man, but a strong starting army and you re-roll the weak daimyo; punches above the AI."),
+}
+DEFAULT_TIER = ("B", "Comfortable — strong enough to play well (C-class and up).")
+TIER_RANK = {"A": 0, "B": 1, "C+": 2, "C": 3, "C-": 4, "D": 5, "F": 6, "": 9}
+TIER_CLASS = {"F": "r", "D": "a", "C-": "a", "C": "", "C+": "g", "B": "g", "A": "g", "": ""}
+
 
 def revolt_elig_pct(morale):
     """Per-check revolt eligibility from morale: square_roll(morale) passes with
@@ -173,25 +191,32 @@ def text_report(title, fiefs, adj):
 def html_table(title, fiefs, adj):
     R = analyze(fiefs, adj)
     rows = []
-    keyed = 3 if len(fiefs) == 17 else 20      # Honganji ($DB12): owner==3 (17) / 20 (50)
+    is17 = len(fiefs) == 17
+    keyed = 3 if is17 else 20      # Honganji ($DB12): owner==3 (17) / 20 (50)
+    tier_of = (lambda f: TIERS_17.get(f, DEFAULT_TIER)) if is17 else (lambda f: ("", ""))
     pclass = {"PLAYABLE": "g", "hard": "a", "UNPLAYABLE": "r"}
     dclass = {"safe": "g", "revolt->VULN": "a", "VULNERABLE": "r"}
-    for f in sorted(fiefs, key=lambda x: (R[x]["play"] != "UNPLAYABLE", R[x]["men"])):
+    order = (lambda x: (TIER_RANK[tier_of(x)[0]], R[x]["men"])) if is17 \
+        else (lambda x: (R[x]["play"] != "UNPLAYABLE", R[x]["men"]))
+    for f in sorted(fiefs, key=order):
         r = R[f]
+        tier, note = tier_of(f)
         name = r["name"] + (" &#9873;" if f == keyed else "")
         tgt = f"{r['target']} ({r['target_men']})" if r["target"] else "&mdash;"
         rev = (f"REVOLT&rarr;dies (~{revolt_elig_pct(r['morale'])}% elig)" if r["revolt_risk"]
                else ("&mdash;" if r["human_threats"] else "no"))
         revc = "a" if r["revolt_risk"] else ""
+        tcell = f"<td class={TIER_CLASS[tier]}><b>{tier}</b></td><td class=note>{note}</td>" if is17 else ""
         rows.append(
-            f"<tr><td>{name}</td><td class=n>{r['men']}</td><td class=n>{r['morale']}</td>"
+            f"<tr>{tcell}<td>{name}</td><td class=n>{r['men']}</td><td class=n>{r['morale']}</td>"
             f"<td class=n>{r['ndeg']}</td><td>{tgt}</td><td class=n>{r['atk_share']}%</td>"
             f"<td>{r['atk']}</td><td class={dclass[r['def_status']]}>{r['def_status']}</td>"
             f"<td class=n>{r['m_safe']}</td>"
             f"<td class=n>{r['human_threats']}</td><td class={pclass[r['play']]}>{r['play']}</td>"
             f"<td class={revc}>{rev}</td></tr>")
     unplay = [r["name"] for r in R.values() if r["play"] == "UNPLAYABLE"]
-    head = ("<tr><th>fief</th><th>men</th><th>morale</th><th>nbrs</th><th>weakest target</th>"
+    th_tier = "<th>tier</th><th>assessment</th>" if is17 else ""
+    head = (f"<tr>{th_tier}<th>fief</th><th>men</th><th>morale</th><th>nbrs</th><th>weakest target</th>"
             "<th>atk&nbsp;share</th><th>AI&nbsp;attack?</th><th>AI&nbsp;defense</th><th>m_safe</th>"
             "<th>human&nbsp;threats</th><th>playable?</th><th>revolt&nbsp;risk</th></tr>")
     keyed_note = ""
@@ -201,11 +226,14 @@ def html_table(title, fiefs, adj):
                       f"&mdash; roughly half a rival's harvest, since income scales with tax &mdash; and its base revolt "
                       f"floor is <b>50&times;</b> higher (<code>rng(20)</code> vs <code>rng(1000)</code>). An <i>economic</i> "
                       f"hard-mode the military columns don't show.</p>")
+    tier_note = ("\n<p class=note><b>tier / assessment</b> is the human-play read &mdash; it layers the "
+                 "<i>long game</i> (economy catch-up, the player's character re-roll, buffering) on top of the "
+                 "turn-1 mechanics the other columns compute. Rows are tier-sorted.</p>") if is17 else ""
     return (f"<h2>{title}</h2>\n<p class=note><b>UNPLAYABLE human starts:</b> "
             f"{', '.join(unplay) or 'none'}. <i>(A neighbour threatens you only if YOU are ITS weakest neighbour "
             f"&mdash; the AI's <code>pick_weakest_men_fief</code> &mdash; AND it clears the grudge + logistics gates. "
-            f"So strong fiefs that aren't anyone's weakest are safe; the weakest-of-many (Mino) get piled on.)</i></p>{keyed_note}"
-            f"\n<table>\n{head}\n" + "\n".join(rows) + "\n</table>")
+            f"So strong fiefs that aren't anyone's weakest are safe; the weakest-of-many (Mino) get piled on.)</i></p>"
+            f"{tier_note}{keyed_note}\n<table>\n{head}\n" + "\n".join(rows) + "\n</table>")
 
 
 def build_html(src):
@@ -225,7 +253,7 @@ PAGE_TMPL = """\
  a{{color:#7a2e2e;}} .lead{{font-size:1.08em;}} .note{{color:#5a534a;font-size:.95em;}}
  table{{border-collapse:collapse;width:100%;font-size:.86em;margin:10px 0 4px;}}
  th,td{{border:1px solid #ddd6c8;padding:4px 8px;text-align:left;}}
- th{{background:#efe7d6;color:#7a2e2e;}} td.n{{text-align:right;}}
+ th{{background:#efe7d6;color:#7a2e2e;}} td.n{{text-align:right;}} td.note{{font-size:.82em;color:#5a534a;max-width:340px;}}
  td.g{{background:#dce8d4;}} td.a{{background:#f6eccb;}} td.r{{background:#f3d4d4;font-weight:bold;}}
  .key{{font-size:.9em;color:#5a534a;}} code{{background:#eee;padding:1px 4px;border-radius:3px;}}
  .footer{{margin-top:40px;border-top:1px solid #ddd6c8;padding-top:14px;font-size:.85em;color:#5a534a;}}
