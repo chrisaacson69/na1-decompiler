@@ -87,6 +87,16 @@ def m_safe(nbr_men, line):
     return M
 
 
+def weakest_neighbour_is(n, f, men_f, fiefs, adj):
+    """Is fief f (holding men_f) the weakest-men neighbour of n? The AI's
+    pick_weakest_men_fief ($93B3) targets only its WEAKEST neighbour, so a fief
+    that isn't anyone's weakest is ignored no matter how the men/logistics gates
+    look (Chris's structural point). men_f is parameterised so a revolt (men/2)
+    can make f BECOME a neighbour's weakest."""
+    return all(men_f <= fiefs[m]["men"]
+               for m in adj.get(n, []) if m in fiefs and m != f)
+
+
 def analyze(fiefs, adj):
     R = {}
     for f, fd in fiefs.items():
@@ -107,25 +117,27 @@ def analyze(fiefs, adj):
         r["men2"] = fd["men"] // 2
         r["def_status"] = ("VULNERABLE" if fd["men"] < ms
                            else "revolt->VULN" if r["men2"] < ms else "safe")
-        # human playability: a neighbour is a REAL turn-1 threat only if it clears
-        # BOTH gates — stage-1 grudge men-share (>47%, ~0.89x you) AND stage-2
-        # logistics ($9046): its gold/rice-capped attack_budget must cover your
-        # min(rice,men), or it aborts at commit. (DRIVE/relations skip-gate never
+        # human playability: a neighbour n is a REAL threat only if (1) F is n's
+        # WEAKEST neighbour (else n attacks its weaker target instead), (2) stage-1
+        # grudge men-share >47%, and (3) stage-2 logistics ($9046): n's gold/rice-
+        # capped budget covers your min(rice,men). (DRIVE/relations skip-gate never
         # fires at start: every daimyo has drive>=50.)
         def_min = min(fd["rice"], fd["men"])
         r["human_threats"] = sum(
             1 for n in nbrs
-            if share(fiefs[n]["men"], fd["men"]) > 47
+            if weakest_neighbour_is(n, f, fd["men"], fiefs, adj)
+            and share(fiefs[n]["men"], fd["men"]) > 47
             and budget(fiefs[n]) >= 5
             and def_min <= budget(fiefs[n]))
         r["play"] = ("PLAYABLE" if r["human_threats"] == 0
                      else "hard" if r["human_threats"] <= 2 else "UNPLAYABLE")
-        # revolt overlay: if a low-morale revolt (men/2) opens a human threat that
-        # isn't there at full strength, the start can still die by RNG (Noto).
+        # revolt overlay: a low-morale revolt (men/2) can make F become a
+        # neighbour's weakest AND open a threat absent at full strength (Noto).
         half = fd["men"] // 2
         dmin_h = min(fd["rice"], half)
         rt = sum(1 for n in nbrs
-                 if share(fiefs[n]["men"], half) > 47
+                 if weakest_neighbour_is(n, f, half, fiefs, adj)
+                 and share(fiefs[n]["men"], half) > 47
                  and budget(fiefs[n]) >= 5 and dmin_h <= budget(fiefs[n]))
         r["revolt_threats"] = rt
         # only a real RNG-death risk if morale is low enough to actually revolt.
@@ -190,8 +202,9 @@ def html_table(title, fiefs, adj):
                       f"floor is <b>50&times;</b> higher (<code>rng(20)</code> vs <code>rng(1000)</code>). An <i>economic</i> "
                       f"hard-mode the military columns don't show.</p>")
     return (f"<h2>{title}</h2>\n<p class=note><b>UNPLAYABLE human starts:</b> "
-            f"{', '.join(unplay) or 'none'}. <i>(Note: counts who CAN grudge-attack, an upper bound — each AI takes one "
-            f"action/turn and usually hits its own weakest neighbour, so realized invasions are fewer.)</i></p>{keyed_note}"
+            f"{', '.join(unplay) or 'none'}. <i>(A neighbour threatens you only if YOU are ITS weakest neighbour "
+            f"&mdash; the AI's <code>pick_weakest_men_fief</code> &mdash; AND it clears the grudge + logistics gates. "
+            f"So strong fiefs that aren't anyone's weakest are safe; the weakest-of-many (Mino) get piled on.)</i></p>{keyed_note}"
             f"\n<table>\n{head}\n" + "\n".join(rows) + "\n</table>")
 
 
@@ -233,8 +246,9 @@ from the bytecode; every number below is computed from the scenario's starting s
 <b>grudge gate</b> (share&nbsp;&gt;&nbsp;47% &asymp; only <b>0.89&times;</b> you). But a neighbour is only a
 <i>real</i> threat if it ALSO clears the <b>stage-2 logistics gate</b> (<code>$9046</code>): its gold/rice-capped
 <code>attack_budget = min(2&middot;rice, men, gold)</code> must cover your <code>min(rice,men)</code>, or it aborts at
-commit. Attacker budgets are gold-capped (~40&ndash;70 at start), so a high-men, well-supplied fief
-(e.g. Mikawa) makes most "threats" abort. "human threats" counts neighbours clearing <i>both</i> gates:
+commit. <b>And the AI only attacks its WEAKEST neighbour</b> (<code>pick_weakest_men_fief</code>), so a neighbour
+threatens you only if <i>you</i> are <i>its</i> weakest &mdash; strong fiefs that aren't anyone's weakest are ignored.
+"human threats" counts neighbours that target you AND clear <i>both</i> gates:
 <span style="background:#f3d4d4">UNPLAYABLE</span> = 3+, <span style="background:#f6eccb">hard</span> = 1&ndash;2,
 <span style="background:#dce8d4">PLAYABLE</span> = 0. (DRIVE/relations skip-gate never fires at start &mdash;
 every daimyo has drive&nbsp;&ge;&nbsp;50.)<br>
