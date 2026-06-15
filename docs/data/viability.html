@@ -34,9 +34,12 @@ commit. Attacker budgets are gold-capped (~40&ndash;70 at start), so a high-men,
 <span style="background:#f3d4d4">UNPLAYABLE</span> = 3+, <span style="background:#f6eccb">hard</span> = 1&ndash;2,
 <span style="background:#dce8d4">PLAYABLE</span> = 0. (DRIVE/relations skip-gate never fires at start &mdash;
 every daimyo has drive&nbsp;&ge;&nbsp;50.)<br>
-<b>revolt&nbsp;risk</b> &mdash; a PLAYABLE start with low morale can still die by RNG: a revolt halves
-men (<code>MEN/2</code>) and may open a threat that wasn't there at full strength
-(<span style="background:#f6eccb">REVOLT&rarr;dies</span>). Noto is the case &mdash; safe at 48 men, but morale 23.</p>
+<b>revolt&nbsp;risk</b> &mdash; a PLAYABLE start can still die by RNG: a troop revolt halves men
+(<code>MEN/2</code>) and may open a threat absent at full strength. Revolt eligibility is exact
+(<code>$9E21</code>): a fief qualifies when <code>min(morale,50)&sup2; &lt; rng(2025)</code> &mdash; impossible at
+<b>morale&nbsp;&ge;&nbsp;45</b>, then rising as <code>(2024&minus;morale&sup2;)/2025</code> ("elig" shown). The per-season
+chance is that &times; the ~75% uprising branch &times; handler/variant constants (a low-charisma daimyo adds a
+second path). Noto is the case &mdash; safe at 48 men, but morale 23 (&asymp;74% eligible).</p>
 <h2>17-fief</h2>
 <p class=note><b>UNPLAYABLE human starts:</b> Kaga, Suruga, Mino, Yamato, Iga, Shinano.</p>
 <table>
@@ -47,7 +50,7 @@ men (<code>MEN/2</code>) and may open a threat that wasn't there at full strengt
 <tr><td>Kaga</td><td class=n>41</td><td class=n>53</td><td class=n>5</td><td>Noto (48)</td><td class=n>46%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>31</td><td class=n>3</td><td class=r>UNPLAYABLE</td><td class=>&mdash;</td></tr>
 <tr><td>Shinano</td><td class=n>72</td><td class=n>73</td><td class=n>7</td><td>Mino (38)</td><td class=n>65%</td><td>-</td><td class=g>safe</td><td class=n>31</td><td class=n>4</td><td class=r>UNPLAYABLE</td><td class=>&mdash;</td></tr>
 <tr><td>Suruga</td><td class=n>73</td><td class=n>61</td><td class=n>3</td><td>Musashi (70)</td><td class=n>51%</td><td>-</td><td class=g>safe</td><td class=n>30</td><td class=n>3</td><td class=r>UNPLAYABLE</td><td class=>&mdash;</td></tr>
-<tr><td>Noto</td><td class=n>48</td><td class=n>23</td><td class=n>1</td><td>Kaga (41)</td><td class=n>53%</td><td>-</td><td class=g>safe</td><td class=n>17</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies</td></tr>
+<tr><td>Noto</td><td class=n>48</td><td class=n>23</td><td class=n>1</td><td>Kaga (41)</td><td class=n>53%</td><td>-</td><td class=g>safe</td><td class=n>17</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies (~73% elig)</td></tr>
 <tr><td>Yamashir</td><td class=n>52</td><td class=n>36</td><td class=n>4</td><td>Iga (21)</td><td class=n>71%</td><td>invades?</td><td class=a>revolt->VULN</td><td class=n>29</td><td class=n>2</td><td class=a>hard</td><td class=>&mdash;</td></tr>
 <tr><td>Hida</td><td class=n>54</td><td class=n>68</td><td class=n>4</td><td>Mino (38)</td><td class=n>58%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>30</td><td class=n>2</td><td class=a>hard</td><td class=>&mdash;</td></tr>
 <tr><td>Omi</td><td class=n>58</td><td class=n>61</td><td class=n>5</td><td>Iga (21)</td><td class=n>73%</td><td>INVADES</td><td class=a>revolt->VULN</td><td class=n>31</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=>no</td></tr>
@@ -93,17 +96,17 @@ men (<code>MEN/2</code>) and may open a threat that wasn't there at full strengt
 <tr><td>Hitachi</td><td class=n>46</td><td class=n>40</td><td class=n>3</td><td>Shimotsu (25)</td><td class=n>64%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>29</td><td class=n>1</td><td class=a>hard</td><td class=>&mdash;</td></tr>
 <tr><td>Awa</td><td class=n>46</td><td class=n>62</td><td class=n>1</td><td>Musashi (70)</td><td class=n>39%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>29</td><td class=n>1</td><td class=a>hard</td><td class=>&mdash;</td></tr>
 <tr><td>Buzen</td><td class=n>46</td><td class=n>38</td><td class=n>3</td><td>Bungo (62)</td><td class=n>42%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>32</td><td class=n>2</td><td class=a>hard</td><td class=>&mdash;</td></tr>
-<tr><td>Noto</td><td class=n>48</td><td class=n>23</td><td class=n>2</td><td>Ecchu (27)</td><td class=n>64%</td><td>-</td><td class=g>safe</td><td class=n>17</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies</td></tr>
+<tr><td>Noto</td><td class=n>48</td><td class=n>23</td><td class=n>2</td><td>Ecchu (27)</td><td class=n>64%</td><td>-</td><td class=g>safe</td><td class=n>17</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies (~73% elig)</td></tr>
 <tr><td>Izumo</td><td class=n>49</td><td class=n>53</td><td class=n>3</td><td>Sanbi (28)</td><td class=n>63%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>28</td><td class=n>1</td><td class=a>hard</td><td class=>&mdash;</td></tr>
 <tr><td>Inaba</td><td class=n>50</td><td class=n>26</td><td class=n>5</td><td>Tanba (20)</td><td class=n>71%</td><td>invades?</td><td class=g>safe</td><td class=n>21</td><td class=n>1</td><td class=a>hard</td><td class=>&mdash;</td></tr>
-<tr><td>Sanuki</td><td class=n>51</td><td class=n>40</td><td class=n>2</td><td>Iyo (37)</td><td class=n>57%</td><td>-</td><td class=g>safe</td><td class=n>22</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies</td></tr>
+<tr><td>Sanuki</td><td class=n>51</td><td class=n>40</td><td class=n>2</td><td>Iyo (37)</td><td class=n>57%</td><td>-</td><td class=g>safe</td><td class=n>22</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies (~20% elig)</td></tr>
 <tr><td>Yamashir</td><td class=n>52</td><td class=n>36</td><td class=n>5</td><td>Tanba (20)</td><td class=n>72%</td><td>invades?</td><td class=a>revolt->VULN</td><td class=n>29</td><td class=n>2</td><td class=a>hard</td><td class=>&mdash;</td></tr>
-<tr><td>Awa</td><td class=n>53</td><td class=n>37</td><td class=n>4</td><td>Iyo (37)</td><td class=n>58%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>31</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies</td></tr>
+<tr><td>Awa</td><td class=n>53</td><td class=n>37</td><td class=n>4</td><td>Iyo (37)</td><td class=n>58%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>31</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies (~32% elig)</td></tr>
 <tr><td>Hida</td><td class=n>54</td><td class=n>68</td><td class=n>6</td><td>Ecchu (27)</td><td class=n>66%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>30</td><td class=n>2</td><td class=a>hard</td><td class=>&mdash;</td></tr>
 <tr><td>Omi</td><td class=n>58</td><td class=n>61</td><td class=n>7</td><td>Tanba (20)</td><td class=n>74%</td><td>INVADES</td><td class=a>revolt->VULN</td><td class=n>31</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=>no</td></tr>
 <tr><td>Satuma</td><td class=n>60</td><td class=n>63</td><td class=n>2</td><td>Higo (28)</td><td class=n>68%</td><td>-</td><td class=g>safe</td><td class=n>15</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=>no</td></tr>
 <tr><td>Echizen</td><td class=n>62</td><td class=n>56</td><td class=n>5</td><td>Mino (38)</td><td class=n>62%</td><td>-</td><td class=g>safe</td><td class=n>24</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=>no</td></tr>
-<tr><td>Bungo</td><td class=n>62</td><td class=n>41</td><td class=n>5</td><td>Higo (28)</td><td class=n>68%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>32</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies</td></tr>
+<tr><td>Bungo</td><td class=n>62</td><td class=n>41</td><td class=n>5</td><td>Higo (28)</td><td class=n>68%</td><td>-</td><td class=a>revolt->VULN</td><td class=n>32</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=a>REVOLT&rarr;dies (~16% elig)</td></tr>
 <tr><td>Aki</td><td class=n>68</td><td class=n>79</td><td class=n>3</td><td>Sanbi (28)</td><td class=n>70%</td><td>-</td><td class=g>safe</td><td class=n>21</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=>no</td></tr>
 <tr><td>Settsu</td><td class=n>69</td><td class=n>70</td><td class=n>5</td><td>Tanba (20)</td><td class=n>77%</td><td>INVADES</td><td class=g>safe</td><td class=n>22</td><td class=n>0</td><td class=g>PLAYABLE</td><td class=>no</td></tr>
 <tr><td>Musashi</td><td class=n>70</td><td class=n>68</td><td class=n>6</td><td>Shimotsu (25)</td><td class=n>73%</td><td>INVADES</td><td class=g>safe</td><td class=n>31</td><td class=n>1</td><td class=a>hard</td><td class=>&mdash;</td></tr>

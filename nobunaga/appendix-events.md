@@ -106,6 +106,25 @@ a marriage), `ai_scan_idle_fiefs_run_diplomacy_action` (run a Pact/diplomacy act
 `random_ravage_sweep_bounded_fiefs`. These are **AI behaviour, not world events**, so they are documented with
 the AI turn in **[Chapter 12 — Daimyo AI](./12-daimyo-ai.md)** rather than here.
 
+## Trigger probabilities (exact) — bytecode-walked 2026-06-15
+
+The eligibility primitive `square_over_2025_probability_roll(x)` (`$9D86`) is `min(x,50)² < rng_mod(2025)` → **passes with P = (2024 − min(x,50)²)/2025** (rng ∈ [0,2024]); **zero at x ≥ 45** (45²=2025). Low stat → high chance; this is how "bad" events home in on weak fiefs.
+
+**Revolt** (`ai_event_eligibility_check_morale_variant $9E21`), per fief, given the uprising-revolt branch:
+```
+eligible  ⇔  men > 2  AND  [ square_roll(morale) OR square_roll(charisma) OR rng(1000)==0 ]
+```
+- `morale` = record+18, `charisma` = daimyo+4. So a fief revolts when **morale ≤ 44** *or* its daimyo's **charisma ≤ 44** (+ a 0.1% floor). Morale → P: **23→74%, 21→78%, 35→39%, 40→21%, 44→4%, ≥45→0**.
+- **Per-season compound** = P(uprising branch) × P(planner gate) × P(revolt-not-riot) × eligibility:
+  - uprising branch = **75%** of non-summer seasons (Summer: 50% typhoon first → 37.5%);
+  - planner gate = "≥1 fief clears the **3%** inclusion roll" (`roll_3pct_event_chance = rng(100)<3`);
+  - the dispatcher (`$9ED9`) picks **revolt vs riot 50/50** (`rng(2)`, retrying the other variant if the first finds nobody).
+  - ⇒ a low-morale fief's turn-1 revolt ≈ eligibility × ~0.3 (so **~10–25%** for morale 20–35) — common over a full game.
+
+**Riot** is the loyalty twin (`ai_event_eligibility_check_loyalty_variant $9DA3`): `square_roll(loyalty) OR square_roll(100−tax) OR square_roll(charisma) OR rng(1000)`, gated `men>2 & output>0`. So **high tax** (low `100−tax`) and **low loyalty** drive riots (recoverable) — vs **morale** driving revolts (ownership flip). Confirms the tax-ceiling synthesis above.
+
+**Illness** (per daimyo, every season): `rng(400) < 100 − health` → **P = (100 − health)/400** (health 80 → 5%/season, 50 → 12.5%); flags the daimyo *weak* / *"taken ill."*
+
 ## Open follow-ups
 - **⚠verify the Spring player-decay offsets** (which three province stats; the `const_two>1` gate) against bytecode.
 - **The uprising→combat staging path** (`battle_defender_province_staging` / `append_candidate_priority1`) into bank 2.
