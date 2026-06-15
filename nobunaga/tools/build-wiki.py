@@ -186,7 +186,7 @@ See **[Commands](Commands)** for the overview, or the sidebar for the full list.
     print("Pushing wiki…")
     sh(["git", "push", "origin", "HEAD"], cwd=wiki)
     print(f"Done: {len(cmd_files)} command pages + Home + Commands + _Sidebar pushed.")
-    print(f"  → https://github.com/{OWNER}/{REPO}/wiki")
+    print(f"  -> https://github.com/{OWNER}/{REPO}/wiki")
 
 
 if __name__ == "__main__":
