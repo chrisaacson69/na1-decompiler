@@ -75,6 +75,25 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #32 — THE AI INVADE PREDICATE quantified from bytecode → the "deterrence frontier" win (Chris's playthrough thesis, certified) — 2026-06-15
+Chris's Pass-2 playthrough win (7→9 fiefs vs a richer, stat-capped Oda) made the thesis; the bytecode now certifies and quantifies it. **The AI's decision to invade is a MEN-COUNT ratio, NOT the 8-stat combat strength** — the 8-stat (`$8E7D`, ledger #31) only resolves *who wins the battle*, not *whether the AI starts one*. `fief_men_ratio_pct(a,b) = math32_2arg(men(a),men(b)) = ⌊100·men(a)/(men(a)+men(b))⌋` (a's men-share %; `fief_men_if_provisioned` zeroes a fief with no rice).
+
+**Two-stage AI war flow:**
+- **Stage 1 — `ai_try_war_attack $949A` (decide + pick):** precondition = attacker daimyo not weakness-flagged AND has men (record+16) AND rice (record+6) — *no rice, no war*. Target = weakest-men enemy (`pick_weakest_men_fief $93B3`). Then:
+  - **vs another AI:** attack iff `men_ratio_pct(atk,tgt) − 10 − rng(0..3·const_two) > 60` → share > ~70–72% → **atk men > ~2.3–2.6× target** (overwhelming-force rule — why AI houses sit frozen vs each other).
+  - **vs a PLAYER fief (grudge path $952E):** attack weakest *player* neighbor (`pick_ai_attack_target_fief $9423`) iff `men_ratio_pct > 47` → **atk men > ~0.89× yours** (near parity → the AI WILL come at you with up to ~11% fewer men; Chris saw this). Gated by relations + **DRIVE** (`ai_relations_and_low_drive_skip_gate $93DD`: low-drive <50 + good relations → skip; **drive ≥ 50 → wars regardless** — confirms ai-war-experiment H2 from code).
+  - plus a flat **1-in-100** random attack.
+- **Stage 2 — `ai_commit_attack_deduct_resources $9046` (logistics + commit):** `attack_budget = min(2·rice, men, gold)` (logistics cap — broke/starving fiefs can't deploy). Abort if budget < 5. **Second defender gate: abort if `min(def.rice, def.men) > attack_budget`.** Commit only **~50–70%** of budget (60–90% if the capital/rng flag set), deducting men+gold+rice from home → the attacker keeps a reserve and its home fief is weaker right after (counterattack window).
+
+**THE WIN (deterrence frontier), now exact:**
+- Vulnerability is **per-edge, men-relative** ("only as weak as your neighbors"). **Interior fiefs (no enemy adjacency) need ZERO men** — pure economy, untouchable.
+- **Two ways a border fief is unattackable:** (1) men ≥ ~1.13× the strongest adjacent AI (their share < 47% → fails stage 1); OR (2) `min(your rice, your men)` > each adjacent AI's `attack_budget` (fails stage 2). **Rice/gold are a defensive lever**, not just economy.
+- **Offense = "take what you can hold":** you commit a chosen force (player `driver_war $9850`: `number_input`), leaving a home garrison; after winning, your residual in the new fief must keep *its* new neighbors below their thresholds. Strategic position can beat weakness (Noto = central/high-degree → needs "gusto").
+- **Economy is capability-without-leverage for the AI:** it never reinforces/transfers to the front and never buys men, so an economic lead can't be converted — you out-tempo a "winning" economy despite the AI's 210 stat cap (you at 140–150).
+
+**Promotes:** Chris's playthrough specimen → thesis; a clean worked example of vault [[capability-without-leverage]] and [[dominance-frontier-lens]] ("random-start viability as the design verdict"). **Unblocks:** (a) `army-bv.lua` invade-risk column (men-share 47%, separate from BV); (b) the **starting-fief viability/patsy map** (per fief: any adjacent AI men-share > 47% at t=0? Noto-17fief = hypothesis-zero patsy) — Pages data artifact #5 + how-to-play #4.
+**Open:** exact `fief_men_if_provisioned` rice-gating; `relations_rng_predicate`/`$6E7F` minority-owner override specifics; `const_two` (difficulty) effect on the +rng spread.
+
 ### #29 — The combat MENU walked verb-by-verb + a CORRECTION to #28's "damage formula" — 2026-06-12
 Chris's focus: the per-unit tactical menu (turn loop is well-understood: each side orders units 0→4 in succession, then rice drains, next day). Ground-read the 6-verb jumptab `combat_command_jumptab $B9F8` and every handler; verb labels confirmed from `combat_command_menu_str_ptrs $B4F0` strings.
 - **THE 6 VERBS (index → handler → real semantics):**

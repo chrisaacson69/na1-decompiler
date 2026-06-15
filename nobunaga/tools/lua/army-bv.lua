@@ -13,6 +13,9 @@
 --        per side: S = men * (FLOOR + 0.4 * Wself/100)   FLOOR = 2 (atk) / 3 (def,+home)
 --        Wself = sum of weights of the stats that side WINS  (hp5 dr10 lk10 ch5 iq20 mor10 skl25 arm15)
 --        p = S_atk*100/(S_atk+S_def)   -> p>50 means you're favoured (terrain is per-battle, excluded)
+--      Plus an INVADE-RISK column: the engine's actual *attack decision* ($949A) is a MEN-COUNT
+--      share, not this BV. An AI fief comes at YOU when its men-share vs you > 47 (~>0.89x your
+--      men); "men-safe" = your men >= ~1.13x theirs. BV = who'd WIN; invade-risk = who'll COME.
 --
 --  (2) DAIMYO ECONOMY: every daimyo's fiefs, current gold/rice + the EXPECTED Fall
 --      harvest gold/rice (the bytecode-certified §4 formula — appendix-formulas.md),
@@ -62,6 +65,13 @@ local function headtohead(A, D)
   return p, Wa
 end
 
+-- INVADE decision is a MEN-COUNT share, NOT the 8-stat BV (bytecode $949A / $939D):
+-- men_share(a,b) = 100*men(a)/(men(a)+men(b)) (= math32_2arg). An AI fief attacks a
+-- PLAYER neighbour when its share vs you > 47 (~it has > 0.89x your men); among AI it
+-- needs > ~70 (2.3x). So you're "men-safe" on an edge when your men >= ~1.13x theirs.
+-- (The 8-stat BV above is the separate question of who'd WIN the resulting battle.)
+local function men_share(a, b) return (a+b > 0) and math.floor(a*100/(a+b)) or 0 end
+
 -- pct_op (§6): ⌊b·p/100⌋ computed in three pieces, exactly as the engine ($D70D)
 local function pct_op(b, p)
   b = math.floor(b); p = math.floor(p)
@@ -108,10 +118,12 @@ local function headtohead_report()
     for _,n in ipairs(neighbours(p)) do
       local D = fstats(n)
       if D.own ~= A.own then                                        -- skip own fiefs: not valid targets
-        local pr, Wa = headtohead(A, D)
+        local pr, Wa = headtohead(A, D)                              -- TAKE: would I win the battle? (8-stat BV)
         local tag = (pr >= 60) and "FAVOURED" or (pr >= 45 and "even" or "RISKY")
-        emu.log(string.format("      vs %-10s#%-2d  p=%2d%%  (Wyou=%d) men %d vs %d   %s",
-          NAMES[n] or "?", n, pr, Wa, A.men, D.men, tag))
+        local risk = men_share(D.men, A.men)                        -- INVADE: will they come? (men-share $949A)
+        local rtag = (risk > 47) and "THEY CAN INVADE" or "men-safe"
+        emu.log(string.format("      vs %-10s#%-2d  TAKE p=%2d%% (Wyou=%d) %-8s | INVADE-RISK their-share=%2d%% %s  (men %d vs %d)",
+          NAMES[n] or "?", n, pr, Wa, tag, risk, rtag, A.men, D.men))
       end
     end
   end
