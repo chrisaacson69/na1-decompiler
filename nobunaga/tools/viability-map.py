@@ -240,7 +240,33 @@ ROM adjacency. See the analysis chapters and the <a href="https://github.com/chr
 """
 
 
+def why(name, fiefs, adj):
+    f = next((k for k, v in fiefs.items() if v["name"].lower() == name.lower()), None)
+    if f is None:
+        return
+    fd = fiefs[f]
+    dmin = min(fd["rice"], fd["men"])
+    print(f"\n  {fd['name']}: men={fd['men']} rice={fd['rice']} gold={fd['gold']} "
+          f"-> stage-2 bar min(rice,men)={dmin}")
+    for n in adj.get(f, []):
+        if n not in fiefs:
+            continue
+        nd = fiefs[n]
+        s = share(nd["men"], fd["men"])
+        b = budget(nd)
+        g1 = s > 47
+        g2 = b >= 5 and dmin <= b
+        verdict = "THREAT" if (g1 and g2) else ("blocked@stage2" if g1 else "blocked@stage1")
+        print(f"    {nd['name']:<10} men={nd['men']:>3} budget={b:>3}  "
+              f"share={s:>2}%{'(>47)' if g1 else '(<=47)':<6}  vs bar {dmin}: {'ok' if g2 else 'abort'}  -> {verdict}")
+
+
 def main():
+    if "--why" in sys.argv:
+        name = sys.argv[sys.argv.index("--why") + 1]
+        for sc, ff, af in SCENARIOS[:1]:
+            why(name, load_fiefs(SRC / ff), load_adj(SRC / af))
+        return
     if "--html" in sys.argv:
         out = Path(sys.argv[sys.argv.index("--html") + 1])
         out.parent.mkdir(parents=True, exist_ok=True)
