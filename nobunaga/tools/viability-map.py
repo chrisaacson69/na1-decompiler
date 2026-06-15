@@ -33,9 +33,21 @@ def load_fiefs(path):
             continue
         idx = int(p[0])
         name = " ".join(p[1:-13])
-        gold, rice, men = int(p[-12]), int(p[-9]), int(p[-4])
-        fiefs[idx] = dict(name=name, gold=gold, rice=rice, men=men)
+        gold, rice, men, morale = int(p[-12]), int(p[-9]), int(p[-4]), int(p[-3])
+        fiefs[idx] = dict(name=name, gold=gold, rice=rice, men=men, morale=morale)
     return fiefs
+
+
+def m_safe(nbr_men):
+    """Smallest own-men level at which NO neighbour clears the invade line
+    (share > 70). Below it the fief is a valid target; revolt (men/2) can drop
+    a safe fief under it."""
+    if not nbr_men:
+        return 0
+    M = 0
+    while any(share(n, M) > 70 for n in nbr_men):
+        M += 1
+    return M
 
 
 def load_adj(path):
@@ -117,6 +129,32 @@ def report(title, fief_path, adj_path):
           f"  -> {', '.join(fiefs[f]['name'] for f in invaders) or 'none'}")
     patsy_str = ", ".join("{}(x{})".format(fiefs[t]["name"], len(attacked[t])) for t in patsies)
     print("  patsies (attacked turn-1): " + (patsy_str or "none"))
+
+    # reverse view: vulnerability threshold + revolt exposure
+    print(f"\n  --- vulnerability thresholds (m_safe = own men needed so NO neighbour clears 2.3x) ---")
+    print(f"  {'fief':<12} {'men':>4} {'mor':>4} {'m_safe':>6} {'margin':>6} {'men/2':>5}  {'status':<16} strongest nbr")
+    recs = []
+    for f, fd in fiefs.items():
+        nbrs = [n for n in adj.get(f, []) if n in fiefs]
+        if not nbrs:
+            continue
+        ms = m_safe([fiefs[n]["men"] for n in nbrs])
+        strong = max(nbrs, key=lambda n: fiefs[n]["men"])
+        cur, rev = fd["men"], fd["men"] // 2
+        if cur < ms:
+            status = "VULNERABLE now"
+        elif rev < ms:
+            status = "revolt->VULN"
+        else:
+            status = "safe"
+        recs.append((f, fd, ms, cur - ms, rev, status, strong))
+    order = {"VULNERABLE now": 0, "revolt->VULN": 1, "safe": 2}
+    for f, fd, ms, margin, rev, status, strong in sorted(recs, key=lambda r: (order[r[5]], r[3])):
+        if status == "safe":
+            continue
+        esc = "" if status != "VULNERABLE now" else "  (need +{} men; gold {})".format(ms - fd["men"], fd["gold"])
+        print(f"  {fd['name']:<12} {fd['men']:>4} {fd['morale']:>4} {ms:>6} {margin:>6} {rev:>5}  "
+              f"{status:<16} {fiefs[strong]['name']}({fiefs[strong]['men']}){esc}")
 
 
 if __name__ == "__main__":
