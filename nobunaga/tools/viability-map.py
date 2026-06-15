@@ -28,6 +28,8 @@ SRC = Path(__file__).resolve().parent.parent
 SCENARIOS = [("17-fief", "17fief.txt", "adjacency.txt"),
              ("50-fief", "50Fief.txt", "adjacency-50.txt")]
 
+MORALE_REVOLT = 50          # approximate revolt-prone threshold (pending event-trigger walk)
+
 
 def load_fiefs(path):
     fiefs = {}
@@ -62,6 +64,11 @@ def share(a, b):
     return (a * 100) // (a + b) if (a + b) else 0
 
 
+def budget(d):
+    # attacker deployable force cap ($9046): min(2*rice, men, gold)
+    return min(2 * d["rice"], d["men"], d["gold"])
+
+
 def m_safe(nbr_men, line):
     if not nbr_men:
         return 0
@@ -91,10 +98,30 @@ def analyze(fiefs, adj):
         r["men2"] = fd["men"] // 2
         r["def_status"] = ("VULNERABLE" if fd["men"] < ms
                            else "revolt->VULN" if r["men2"] < ms else "safe")
-        # human playability (47% grudge line): how many neighbours can come at YOU
-        r["human_threats"] = sum(1 for n in nbrs if share(fiefs[n]["men"], fd["men"]) > 47)
+        # human playability: a neighbour is a REAL turn-1 threat only if it clears
+        # BOTH gates — stage-1 grudge men-share (>47%, ~0.89x you) AND stage-2
+        # logistics ($9046): its gold/rice-capped attack_budget must cover your
+        # min(rice,men), or it aborts at commit. (DRIVE/relations skip-gate never
+        # fires at start: every daimyo has drive>=50.)
+        def_min = min(fd["rice"], fd["men"])
+        r["human_threats"] = sum(
+            1 for n in nbrs
+            if share(fiefs[n]["men"], fd["men"]) > 47
+            and budget(fiefs[n]) >= 5
+            and def_min <= budget(fiefs[n]))
         r["play"] = ("PLAYABLE" if r["human_threats"] == 0
                      else "hard" if r["human_threats"] <= 2 else "UNPLAYABLE")
+        # revolt overlay: if a low-morale revolt (men/2) opens a human threat that
+        # isn't there at full strength, the start can still die by RNG (Noto).
+        half = fd["men"] // 2
+        dmin_h = min(fd["rice"], half)
+        rt = sum(1 for n in nbrs
+                 if share(fiefs[n]["men"], half) > 47
+                 and budget(fiefs[n]) >= 5 and dmin_h <= budget(fiefs[n]))
+        r["revolt_threats"] = rt
+        # only a real RNG-death risk if morale is low enough to actually revolt.
+        # MORALE_REVOLT is approximate, pending the event-trigger walk.
+        r["revolt_risk"] = r["human_threats"] == 0 and rt > 0 and fd["morale"] < MORALE_REVOLT
         R[f] = r
     # who gets eaten turn-1 under AI rules
     for r in R.values():
@@ -130,16 +157,19 @@ def html_table(title, fiefs, adj):
     for f in sorted(fiefs, key=lambda x: (R[x]["play"] != "UNPLAYABLE", R[x]["men"])):
         r = R[f]
         tgt = f"{r['target']} ({r['target_men']})" if r["target"] else "&mdash;"
+        rev = "REVOLT&rarr;dies" if r["revolt_risk"] else ("&mdash;" if r["human_threats"] else "no")
+        revc = "a" if r["revolt_risk"] else ""
         rows.append(
             f"<tr><td>{r['name']}</td><td class=n>{r['men']}</td><td class=n>{r['morale']}</td>"
             f"<td class=n>{r['ndeg']}</td><td>{tgt}</td><td class=n>{r['atk_share']}%</td>"
             f"<td>{r['atk']}</td><td class={dclass[r['def_status']]}>{r['def_status']}</td>"
             f"<td class=n>{r['m_safe']}</td>"
-            f"<td class=n>{r['human_threats']}</td><td class={pclass[r['play']]}>{r['play']}</td></tr>")
+            f"<td class=n>{r['human_threats']}</td><td class={pclass[r['play']]}>{r['play']}</td>"
+            f"<td class={revc}>{rev}</td></tr>")
     unplay = [r["name"] for r in R.values() if r["play"] == "UNPLAYABLE"]
     head = ("<tr><th>fief</th><th>men</th><th>morale</th><th>nbrs</th><th>weakest target</th>"
             "<th>atk&nbsp;share</th><th>AI&nbsp;attack?</th><th>AI&nbsp;defense</th><th>m_safe</th>"
-            "<th>human&nbsp;threats</th><th>playable?</th></tr>")
+            "<th>human&nbsp;threats</th><th>playable?</th><th>revolt&nbsp;risk</th></tr>")
     return (f"<h2>{title}</h2>\n<p class=note><b>UNPLAYABLE human starts:</b> "
             f"{', '.join(unplay) or 'none'}.</p>\n<table>\n{head}\n" + "\n".join(rows) + "\n</table>")
 
@@ -179,10 +209,17 @@ from the bytecode; every number below is computed from the scenario's starting s
 2.3&times; you; <span style="background:#f3d4d4">VULNERABLE</span> = below it now,
 <span style="background:#f6eccb">revolt&rarr;VULN</span> = a low-morale revolt (men&nbsp;/2) drops you under it.<br>
 <b>human&nbsp;threats</b> / <b>playable?</b> &mdash; against a <b>human</b> the AI uses the harsher
-<b>grudge gate</b> (share&nbsp;&gt;&nbsp;47% &asymp; only <b>0.89&times;</b> you), so it attacks at near parity.
-"human threats" counts neighbours that clear it; <span style="background:#f3d4d4">UNPLAYABLE</span> = 3+
-(swamped even moving first), <span style="background:#f6eccb">hard</span> = 1&ndash;2,
-<span style="background:#dce8d4">PLAYABLE</span> = 0.</p>
+<b>grudge gate</b> (share&nbsp;&gt;&nbsp;47% &asymp; only <b>0.89&times;</b> you). But a neighbour is only a
+<i>real</i> threat if it ALSO clears the <b>stage-2 logistics gate</b> (<code>$9046</code>): its gold/rice-capped
+<code>attack_budget = min(2&middot;rice, men, gold)</code> must cover your <code>min(rice,men)</code>, or it aborts at
+commit. Attacker budgets are gold-capped (~40&ndash;70 at start), so a high-men, well-supplied fief
+(e.g. Mikawa) makes most "threats" abort. "human threats" counts neighbours clearing <i>both</i> gates:
+<span style="background:#f3d4d4">UNPLAYABLE</span> = 3+, <span style="background:#f6eccb">hard</span> = 1&ndash;2,
+<span style="background:#dce8d4">PLAYABLE</span> = 0. (DRIVE/relations skip-gate never fires at start &mdash;
+every daimyo has drive&nbsp;&ge;&nbsp;50.)<br>
+<b>revolt&nbsp;risk</b> &mdash; a PLAYABLE start with low morale can still die by RNG: a revolt halves
+men (<code>MEN/2</code>) and may open a threat that wasn't there at full strength
+(<span style="background:#f6eccb">REVOLT&rarr;dies</span>). Noto is the case &mdash; safe at 48 men, but morale 23.</p>
 {body}
 <div class="footer">Generated by <code>tools/viability-map.py</code> from the scenario starting stats +
 ROM adjacency. See the analysis chapters and the <a href="https://github.com/chrisaacson69/na1-decompiler/wiki">wiki</a>.</div>
