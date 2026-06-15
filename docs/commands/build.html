@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build — Nobunaga’s Ambition Command Reference</title>
+<style>
+  :root{
+    --bg:#15151c; --panel:#1f1f2b; --ink:#e8e6df; --dim:#9a97a8;
+    --gold:#f0b429; --red:#e8431f; --blue:#3a6ee8; --green:#5ad05a;
+    --line:#33303f; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px}
+  header{border-bottom:2px solid var(--gold);padding-bottom:14px;margin-bottom:8px}
+  .cmdno{color:var(--gold);font:600 13px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase}
+  h1{margin:.18em 0 .1em;font-size:38px;letter-spacing:.01em}
+  .tag{color:var(--dim);font-style:italic}
+  .skills{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 28px}
+  .skills span{font:600 11px/1 var(--mono);letter-spacing:.06em;color:var(--dim);
+    border:1px solid var(--line);border-radius:999px;padding:6px 11px;text-transform:uppercase}
+  h2{margin:38px 0 4px;font-size:22px;border-left:4px solid var(--gold);padding-left:12px}
+  .sub{color:var(--dim);margin:0 0 16px;padding-left:16px;font-size:14px}
+  .anim{display:flex;gap:24px;align-items:center;flex-wrap:wrap;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:14px}
+  .anim img{image-rendering:pixelated;width:256px;height:240px;background:#6b6b6b;border-radius:6px}
+  .anim .cap{flex:1;min-width:240px}
+  .anim .cap b{color:var(--gold)}
+  .pill{display:inline-block;font:600 11px/1 var(--mono);color:var(--bg);background:var(--green);
+    border-radius:4px;padding:3px 7px;margin-left:6px;vertical-align:middle}
+  ol.flow{counter-reset:step;list-style:none;padding:0;margin:14px 0}
+  ol.flow li{position:relative;padding:12px 0 12px 52px;border-bottom:1px solid var(--line)}
+  ol.flow li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:10px;
+    width:34px;height:34px;border-radius:50%;background:var(--panel);border:1px solid var(--gold);
+    color:var(--gold);font:700 15px/34px var(--mono);text-align:center}
+  ol.flow .scr{color:var(--green);font-family:var(--mono);font-size:14px}
+  ol.flow .addr{color:var(--dim);font-family:var(--mono);font-size:12px;float:right}
+  pre{background:#101019;border:1px solid var(--line);border-left:3px solid var(--blue);
+    border-radius:8px;padding:16px;overflow:auto;font:13.5px/1.5 var(--mono);color:#d6e4ff}
+  pre .c{color:#6f7b96}
+  pre .k{color:var(--gold)}
+  .callout{background:#241a12;border:1px solid #6b4a1e;border-left:4px solid var(--red);
+    border-radius:8px;padding:14px 18px;margin:18px 0}
+  .callout b{color:var(--red)}
+  .rabbit{background:#1a1426;border:1px solid #4a2e6b;border-left:4px solid #9a6ef0;
+    border-radius:8px;padding:14px 18px;margin:14px 0}
+  .rabbit b{color:#b89af0}
+  .rabbit a{color:var(--blue);text-decoration:none}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:var(--panel);color:var(--gold);font-weight:600}
+  td .ok{color:var(--green)}
+  code{font-family:var(--mono);color:var(--gold);font-size:.92em}
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+  footer a{color:var(--blue);text-decoration:none}
+  .roi{color:var(--dim);font-style:italic;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="cmdno">Lord Command · No. 13</div>
+  <h1>Build</h1>
+  <div class="tag">Spend gold to raise a province's <b>town</b> infrastructure — the gold-income engine — on the same diminishing-returns curve as Grow, at the cost of wealth.</div>
+</header>
+
+<div class="skills">
+  <span>① decompiler → C</span>
+  <span>② data-walk labels</span>
+  <span>③ bytecode-validated formula</span>
+  <span>④ animation VM → ROM render</span>
+</div>
+
+<h2>What you see</h2>
+<p class="sub">The in-game Build animation, rendered <b>purely from ROM bytes</b> — no emulator capture.</p>
+<div class="anim">
+  <img src="data:image/gif;base64,R0lGODlh8AC9AIEAAPjYePygRGiI/Hx8fCH/C05FVFNDQVBFMi4wAwEAAAAh+QQIDAAAACwAAAAA8AC9AEAI/wAHCBxIsKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJjQFSqgTA8iTDlSxjxnRJs6ZNgSphAjgZU+dDnTJb3twYFIDKoR5zKj2pNGdIoEFJFj1a0CdShU2zat3KtavXr2DDhn2ZcmbBqSkNFmW49upTpWZLNo1LUidViD3TRswbwC1TrX+zBrYKkfDPskL9khXLuLHjx04F0nW4VWJTy0sV14WbWPPDoqA7K77sWWTl0p9Dt224OininagRQp79uKbq26EH643tOudk05xhT8RNXDhblnZfJw/Atzly5a95FwZs8vTw4jIHGqYcPeJ26QNoi/8fLx5lZoXOjUJn/py9evfL04Pn7ls08PrGKQrYz7+/f+3nHRbZdAPOl5F1mwl2kX8MNjjQb4tBuNBdAzX431VjSZabhqABSB55CTFYoYUiehfgQiSmeKGBBKn24IYfzWWfRCQaVKOJBRakYn8jCtAjfwa6yOFqQh5IHV64HdehQzsCKZCTA5QYpYosVmnllVhmqeWWXHbp5ZdghinmmGSWaeaZaFaEYGlQZZfmAK1tKWN+932n5mtx2oRWX2/2KWCRFe2pFnZ5+mlobxISZGeYc+rmnqMU0hdpQ6QdailR7aUXX6acviffpdLFBWhHi2LVnZ+NjvThXUXGZd1q5eH/tJ6mp4J6p3uEqlZpka9GNWSut3k4qa1bAhssjokmVGqZqcoVXKDACrubgMNOeCKxxUarUaXUToutl1CGu595jyI745nNJrgsk036KGuOlF67WLXfctkujw7RCt+s7f3YbpatwmjljVM2+ee5BN27Y5AwBrykkfhB6yZrAke08JPjYoxvwVKG2vDHD2OU7kLEpRYySBdzvGK9LLfs8sswxyzzzDTXbPPNOOes88489+zzzyI/OxqevgI9dMQmfRovrkVzKSijR6orL32jxva0mSPXWetFbSabdFD0Gi1d1wibzNegxtJpW6ebeso2v27H3fbccNO9b7kHka32WWB7/7u010itKvjghPtt0HdXvzhxQoVCjbSzjyd49l79Uv7eoWtqDe9bkVNdtmxbp5k15+tylPm8hlu7udhm6uv623crPdTrctdte+yw0263qInpHnqEn+f9O2+FF0+44pgpSGDYoK+OtdBaEooat2+eTirRabOKneJEFp120+8CLubo16/KvfeJ9TpxrOHdLrvOehu7K4zq8/49/VNbnfv+tePev9LGSx2SHjY4D4nvaAEcz9rutzhV5Y9Z0JMa3iTCwOApbnf8w+DermS9GEXNcgeEWAgNaEHHlY5cJ0SIsaTFp+UJUFkPZJ1UtAUx5gnPeajxnf80yEP3ZVCA0gtfCf8VNTxTTXA+CUwibVD4Qg71cIc+3KCVyOfBzk3kXixMng0PF8MxdbA31Lviv4QoxeaNkIyYi6ADrUijMbYPh83bYlW6KMOTKCxjFPvfD1t4R3chhXaY0qMgnzi5g0DJXylK3hlVpjC3ZAhOIIOVEh9poxVhEUdyZGQfARZJ8JlOjWJ0kI4spEUBXrJgiJThFy22MpINkSEEE5fB5uOw7p3MIlRUUgir9pCUyfKXrdTfw2rpyVulEJLHymPjOOJLUtbxmdCMpjSnSc1qWvOa2MymNrfJzW5685vgDKc4x0nOcprznOhMpzrXyc52cg2UQ9GbO7sFx8Bhb5GcbKCWVmn/T6bps0zLnCI8QfI+I/ISS4nzEj+ZWE8Y+hOfNEmoFz+ouUxy8aGvvIlExzfQKh4TeLdcYCH7tNBtUZRcB+WIRD+KpZLWkI4UkedIVlrEeXoupCCsXIu+5xYd+nSPPx1kFNvm0JSe73LmKuMfgcpUoULxqUHVYFErdpCNqg6ikJukVpUIUrSN9FdKDahNNVM6lo7VJmWtqUI7Cka1fvJuFNSpySy6VuVJkK64ZKsZM/pGrGbJpUGz6xrNSli3cpSNIMll+cKIuhbSM42CrWgT31rYI/6Nr1wC7DsjSzrDztGyXT3rUp0aVbj1tKmERO1Qo4g8J7I2qYrErEZVC1Xa/5a2tsKxn1Rhy1sWbfW3X2mtCxv6Wbwy1qb2E2teQXtV2Y4zucU0KXMN6ty/6hU8QfTMcZ/H2fJVEKnILBlYoZvbCl7Ury09qXcrqL3iHJW876UhCZV6WLOWUoHj7V36jiTJ2cx3t13SrGeyq8vqNpe+JoSpMMWrTANTF8E/ix+w5kdA/qLvu+tT8GlJa9umsrCAF+GV4OZrpduamH8fHnGI8Wc+NFYJuLWJKIYhHFi8onPGNHYxgdD73BnHNsd9dbBAEetRz1bVvPnqMIfj9iUBG1PDfPtnYo1MYkM5OabqbTCQb7VI+8rpugzF6grfZVwov9HGX+5ukYl75FxVef/HfPXyPrPcVjZ7dXs6PhiQ5VzOMb/UsZKarGZOvOTUFno9jMNzkPdM5TzTUsmGjvRqAb1T9zr6soye7vRgzOnt3ldJksYtn7Epyx6hNM6NZmepNXbqTPN4yKMeLo9P6ek4Crq4twbTlSeya0QSrLJdTnVm6bxYM1dylov+sbKtDGbpxprWZq71DdE8ZzXXmdq+phKHlk2gYxNs2NYutp0Rsslt91ZA3nbmPMudx1BnO5FXAaRGCO1ucuPx3R27aRv76MfZoXjekJ70VxN2b42lTM/7Znc8wRLf8la409uV0ikfyy5+H7JKxJQyeGLpxtAqxOKivFLGX00TjiPb4yGVAnkwGTZMqobZwd82+MpVR69TArPfQOv1KDempI2YHN8z55nOCc5zV27Z3iG/ecwXfGFbKpeeYo5um5+O9J/L3I9Lz2EnJ2ZUTJqZwYnGqSHdeHOg45zpXN86yc/89SQZneqaVHfZr55vtJP37kIms5HB/nap+1zbcT+7aAdP+MIb/vCIT7ziF8/4xjv+8ZCPvOTHFBAAOw==" alt="Build animation">
+  <div class="cap">
+    A carpenter raises scaffolding and lumber as the <b>town</b> grows around him.
+    <span class="pill">FROM ROM</span><br><br>
+    Produced headless by <code>tools/run-animation.py 24</code>, which runs the game’s
+    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>24</code> from
+    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write
+    and sprite placement to reconstruct each frame — real NES palette.
+  </div>
+</div>
+
+<h2>How it works</h2>
+<p class="sub">The driver <code>$A853</code> reads as a step-by-step script:</p>
+<ol class="flow">
+  <li><span class="addr">$A858</span>Select <b>Build</b> from the command menu, then the province.</li>
+  <li><span class="addr">$A863</span><b>Limit check.</b> If <code>town ≥ header</code> (development ceiling) → <span class="scr">"We’re at our limit."</span> and the command aborts.</li>
+  <li><span class="addr">$A87C</span><b>Gold check.</b> If the province has no gold → <span class="scr">"You have no gold."</span></li>
+  <li><span class="addr">$A881</span>Prompt: <span class="scr">"Town is <i>N</i>. Spend how much on it?"</span></li>
+  <li><span class="addr">$A896</span><b>Number entry</b>, capped at the province’s current gold.</li>
+  <li><span class="addr">$A8A2</span><code>gold −= amount</code> — the driver debits gold <i>before</i> the effect runs.</li>
+  <li><span class="addr">$A8A9</span><code>effect_build</code> applies the formula (below).</li>
+  <li><span class="addr">$A8B0</span><b>The animation plays</b> — <code>ui_helper_e80c(24)</code> hands id 24 to the bank-14 animation VM.</li>
+  <li><span class="addr">$A8B6</span><span class="scr">"Town value is now <i>N</i>."</span> → confirm.</li>
+</ol>
+
+<h2>The formula</h2>
+<p class="sub">Read directly from <code>$88A6</code> bytecode and execution-verified.</p>
+<pre><span class="c">// gain — inverse-sqrt diminishing returns (Grow’s kernel, on TOWN)</span>
+sqrt = <span class="k">int_sqrt</span>(town + amount)
+g    = &lfloor;amount &times; (6 &minus; skill) &divide; sqrt&rfloor;       <span class="c">// skill = const_two $6D63 = the DIFFICULTY level (1-5, default 2)</span>
+g    = <span class="k">max</span>(g, 1)
+g    = <span class="k">min</span>(g, header &minus; town)             <span class="c">// headroom clamp (rarely fires)</span>
+
+<span class="c">// secondary drain — ONE field (wealth); pct computed LIVE, capped 50%</span>
+pct  = (g &gt; town) ? <b>50</b> : &lfloor;100 &times; g &divide; (g + town)&rfloor; &divide; 2
+wealth &minus;= <span class="k">pct_op</span>(wealth, pct)              <span class="c">// ⌊wealth × pct ÷ 100⌋</span>
+
+<span class="c">// town write — routed through helper_dam_rounding(town_ptr, 2g)</span>
+town &plus;= 2 &times; g                             <span class="c">// full add in peacetime; halved if the province is at war</span>
+gold &minus;= amount                           <span class="c">// debited by the driver</span>
+return g                                <span class="c">// (un-doubled) for the confirm screen</span></pre>
+<p class="roi">ROI ≈ <code>10 / √(town + amount)</code> — the identical curve to Grow, but Build feeds <b>gold</b> income (town is in the gold-harvest formula) where Grow feeds rice. Front-load Build while town is low.</p>
+<div class="callout"><b>The hidden SKILL-LEVEL dial.</b> The <code>(6&nbsp;&minus;&nbsp;skill)</code> term is the game's difficulty knob (<code>const_two&nbsp;$6D63</code>, 1–5, default 2): on one province (town&nbsp;66, spend&nbsp;100) the town gain is <b>82 / 66 / 50 / 32 / 16</b> for skill&nbsp;1–5 — the same ~5.4× swing as Grow, invisible in the UI (emulator + <code>econ_sim</code> verified). Higher skill = slower development = harder.<br><br><b>Two corrections to the earlier notes (2026-06-02, full bytecode walk + ROM re-execution).</b> <b>(1)</b> The wealth-drain percentage is <b>not the constant 20</b> — exactly like Grow, the bytecode at <code>$88E4–$88FF</code> computes it live from the gain-to-town ratio, capped at 50%. <b>(2)</b> There is <b>no separate “main + secondary” town add</b>. The whole gain (<code>2g</code>) is added <i>once</i>, through <code>helper_dam_rounding</code> (<code>$887D</code>), which only halves the amount when the province is at war (<code>war_helper_d972</code>), then calls <code>helper_82AC</code> to cap town at its <code>header</code> ceiling. The “secondary bump” in the old draft was a misread of that single routed write.</div>
+
+<h2>Validated against the ROM</h2>
+<p class="sub">Five Builds run through the real ROM effect handler (one province, town=176, wealth=235) — predicted vs. observed, exact every time.</p>
+<table>
+  <tr><th>amount</th><th>√(town+amt)</th><th>g</th><th>town += 2g</th><th>wealth −</th><th>✓</th></tr>
+  <tr><td>30</td><td>14</td><td>10</td><td>+20</td><td>−4</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>50</td><td>15</td><td>16</td><td>+32</td><td>−9</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>80</td><td>16</td><td>25</td><td>+50</td><td>−13</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>120</td><td>17</td><td>35</td><td>+70</td><td>−18</td><td><span class="ok">✓</span></td></tr>
+  <tr><td>200</td><td>19</td><td>52</td><td>+104</td><td>−25</td><td><span class="ok">✓</span></td></tr>
+</table>
+<p class="sub">Args captured mid-call from the VM (amount&nbsp;200): <code>math32_3arg(200,5,19)=52</code> → <code>town += 104</code>; <code>math32_2arg(52,176)=22</code> → <code>pct=11</code> → <code>pct_op(235,11)=25</code> drained from wealth. The earlier in-game Test&nbsp;1 (town 320→396, amount 170) also fits: <code>√490=22</code>, <code>g=⌊850/22⌋=38</code>, <code>town += 76</code> ✓.</p>
+
+<footer>
+  <b>Fields touched:</b> <code>town</code>&nbsp;(+2g) · <code>wealth</code>&nbsp;(−drain) · <code>gold</code>&nbsp;(−amount). &nbsp;·&nbsp;
+  Sources: <code>decompiled/bank_01.c</code> · <code>tools/run-animation.py</code> ·
+  <a href="../appendix-formulas.md">appendix-formulas.md</a> · <a href="./build.md">build.md</a>.
+</footer>
+</div>
+</body>
+</html>

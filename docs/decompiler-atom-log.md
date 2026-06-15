@@ -1,0 +1,997 @@
+---
+status: active
+created: 2026-06-05
+layout: default
+title: "Decompiler Atom Log \u2014 the running case ledger"
+---
+# Decompiler Atom Log — the running case ledger
+> One row per CFG-structuring **atom** (a missing inverse-lowering) discovered while folding the
+> codebase function-by-function. The discipline (Chris, 2026-06-05): **fix as we go, but LOG each
+> case** so we can see whether a fix GENERALIZES (clears many subs) or is a 1-off (clears one). An
+> atom that only ever clears its discovery sub is a smell — it means we pattern-matched a shape
+> instead of inverting a compiler lowering.
+
+**Links:** [decompiler-bottom-up-thesis](./decompiler-bottom-up-thesis.md) · [decompiler-method](./decompiler-method.md) (push/pull + atlas grounding, the lessons, and the **emit-order working section** — the next lever) · [ROADMAP](./ROADMAP.md) (CFG epic) · **forward atom table → [lowering-atlas/atom-table.md](../lowering-atlas/atom-table.md)** (compile-and-catalog PoC: which inversions exist, sourced forward) · tools: `vm_reduce.py` · `v2-corpus.py` · `probe-cfg-reducibility.py`
+
+## How to read this
+
+Each atom = the inverse of one structured-source → bytecode lowering the compiler did. The forward
+direction (codegen) is finite; so is the inverse table. A row records: the **shape** (what the CFG
+looks like), the **forward lowering** it inverts, **where found**, the **fix** (where in the
+reducer), and the **generalization** (subs cleared / corpus Δgotos). "Subs cleared" counts subs
+whose goto-count dropped because of THIS atom — the generalization signal.
+
+## Registry
+
+| # | Atom | Forward lowering it inverts | Found in | Subs cleared | Δgotos | Status |
+|---|---|---|---|---|---|---|
+| 1 | multi-latch `while(1)`-with-`continue`s | each `continue` → jump-to-header (extra back-edge) | `vm_bootstrap $A778` | 2 (`$88AC`, `$D59D`) + enables #2 | part of −20 | ✅ landed `3c10cf6` |
+| 2 | multi-level break = honest goto | nested-loop break to a far target → goto (C has only 1-level break) | `vm_bootstrap $A778` | 1 (`$A778` 14→1) | part of −20 | ✅ landed `3c10cf6` |
+| 3 | routing-block absorption (adjacent) | a fall-through between regions → a standalone `goto L_X` forwarding block | `init_new_game_state $89A3` | **7** (`$89A3` 16→0, `$83E2` 34→30, `$813C` 6→0, `$90E8`/`$911E` 5→1, `$A066` 1→0, `$840B` 2→0) | **−37** (1025→988) | ✅ generalized |
+| 4 | switch shared-merge — **empty-default == merge slice** (`if(x){…break…}` per case) | the VM `switch` where the `default` target IS the post-dom merge M (empty default; every case → M) — M is the shared EXIT, interleaved by address | `$A30D` (atlas-sourced: `06_switch_shared_merge` `sm_default_preswitch_share`) | **4** (V2; **0 worse**; `$A30D` 8→0) | **V2 −16** (899→883) | ✅ landed (default==merge shape; other switch shapes still 🔬) |
+| 5 | multi-statement terminal-block duplication | N branches to a shared block that ENDS in `return`/`break` → duplicate it into each arm (`$AD38`). 1-statement case already inlines; ≥2-statement needs gate change | `$AD38`, `$8FF8`, `$918D` … | ~54 / 14 subs (probe below) | blocked by address-based gate | 🔬 not implemented |
+| 6 | **forward-sink as merge (Track A, family-1)** | a branch to a SHARED TERMINAL sink (`→EXIT`, incl. multi-statement) emitted ONCE as the address-tail fall-through — invert the base lowering where guards converge on a trailing `return` | `$9F04` | **4** (`$9F04` 1→0, `$A003` 4→2, `$A068` 4→2, `$A113` 5→2) | **−8** (988→980) | ✅ landed |
+| 7 | **incremental peephole** (emit-quality, not an inverse-lowering) | a real bytecode `goto L_h; // $a` whose header is the emit-next line (pre-test loop entry-jump, routing stub) — clip it when the gate agrees | `$A30D` | clips the head-goto/stub on any sub where a SOUND goto-to-next was batched with an unsound one | **−2** (980→978) | ✅ landed |
+| 8 | **non-adjacent forward merge (Track B)** + global acceptance | a forward shared-merge that is NOT the address-next leader, lowered as an honest `goto L_merge` — build the `if` anyway (suppress `merge_not_adjacent`) when the whole-sub self-validates leaner | corpus-wide (the 77%-non-sink majority) | **11** (`per_turn_age…` 13→0, `issue_province_command` 11→0, `dispatch_battle_resolution` 5→0, `ai_resolve_province_takeover_attempt` 4→0, …) | **−49** (978→929) | ✅ landed |
+| 9 | **control short-circuit `if(c1\|\|c2…){body}`** (the `\|\|` goto-into-block) | a `\|\|` condition → a guard CHAIN that all short-circuit INTO one body block; the body gets a 2nd entry edge, which a region tree reads as a cross-edge and bails (`$9A5D` residue) | `$9A5D` (atlas-sourced: GCC `b_or`); generalized corpus-wide | **13** (V2; **0 worse**) | **V2 −30** (929→899), V1 −42, raw −36 | ✅ landed (gate change era) |
+
+Corpus: atom-3 start **V2 1025** → 988; **atom-6 988 → 980**; **atom-7 980 → 978**; **atom-8 978 → 929** vs V1 1151; behind-V1 59 → 57 → 53 → **51**. Atom 6 is the FORWARD slice of the sink family; atom 7 the per-clip-validated peephole; atom 8 the Track-B non-adjacent-merge fold (`merge_nonadj`) in the WHOLE-SUB trial, gated by global goto-count acceptance. **Atom 9 (control `||`) is the first ATLAS-SOURCED atom: V2 929 → 899 (−30, 13 subs, 0 worse), V1 1080 → 1038, raw 2032.** V2 is now well ahead of V1 overall; the still-behind subs are the BACKWARD non-sink remainder + the switch shared-merge mini-epic (atom 4) + mixed `&&/||` (atom-9's successor).
+
+---
+
+## Atom 1 — multi-latch `while(1)`-with-`continue`s
+**Shape.** A natural loop with >1 back-edge to its header (latches). The extra back-edges are
+`continue` statements; the compiler lowered each `continue` to a jump-to-header.
+**Why it bailed.** `_structure_loop` flat-spanned *every* multi-latch loop (a blanket bail), plus a
+rung-4d `nested_loop` guard refused any loop containing a multi-latch inner loop.
+**Fix (`vm_reduce.py`).** Attempt `while(1)` for a multi-latch loop (header→`continue`, exit→`break`),
+reduce()'s self-validation the backstop; deleted the `nested_loop` guard. The one unsound shape — a
+body-TAIL `if(C) continue;` whose fall IS the loop-back (the gate collapses the exit into the
+back-edge) — is collapsed by the both-terminal walk to a single `if(!C) break;`.
+**Generalized?** YES — cleared `$88AC` (the session-7a "4 stacked loops", now beats V1) and `$D59D`,
+and is the enabler for atom 2 on the spine. Not a 1-off (a fundamental loop shape).
+
+## Atom 2 — multi-level break = honest goto
+**Shape.** A loop exit edge whose target escapes the PARENT loop too (e.g. `goto DISPLAY` firing from
+3 nested loops). C's single-level `break` can't reach it.
+**Why it bailed.** The reducer treated the far target as a loop exit and tangled (convergent-exit
+grabbed a block shared with the parent loop → `cross_edge_top`).
+**Fix (`vm_reduce.py`).** `far_by_loop` (computed in `_structure_loop` relative to `outer_loop`)
+records exits that escape the parent; `_terminal` emits them as honest `goto L_t`, and they're
+dropped from the loop's exit set so the remaining single-level exit folds. Each inner loop keeps the
+goto; only the outermost loop still CONTAINING the target breaks to it.
+**Generalized?** Partially — the multi-level break is rarer (it folded `vm_bootstrap` 14→1, the
+project spine). Sound and correct; broader reach TBD as more nested-loop subs are walked.
+
+## Atom 3 — routing-block absorption (adjacent)  ✅
+**Shape.** A standalone **`L_X: goto L_Y;`** block — single successor, NO statement — sitting between
+two regions (here, between chained `for` loops). The compiler emitted it as a fall-through-forwarding
+stub. Canonical instance: `init_new_game_state`'s `$8A05: goto L_8A13;` between the `daimyo_turn_order`
+loop and the `province_ai_state` loop.
+**Why it bailed.** `_structure_loop`'s adjacency guard bailed any loop whose exit is a pure-routing
+block (`bounded and len(succ)==1 and no stmt`) — on the theory that "it emits nothing, so the
+address-based gate can't anchor the loop's exit on it." The `$89FC` loop flat-spanned for this
+reason; worse, the near-complete tier-1 fold (got to just **1 goto**) then FAILED the gate, so tier-2
+kept ~10 regions flat → **16 gotos** for a sub that is otherwise entirely reducible.
+**Forward lowering.** A `for(...){...} for(...){...}` sequence where the first loop's fall-out lands
+on a label the next loop's entry also targets → the compiler keeps the forwarding `goto`.
+**Fix (`vm_reduce.py`).** The theory was wrong: a routing exit emits as an EMPTY block, so the gate's
+`first_real_block` scans PAST it to the real target `t`, AND `contract()` drops the stub on BOTH
+sides (raw + struct) so they match. So the guard was simply DELETED (the `bounded and routing(e)`
+clause; the now-dead `bounded` param removed too). Only the genuine `nxt[max(region)] != e` (exit not
+address-adjacent) bail remains. reduce()'s self-validation is the backstop for any real mis-route.
+**Generalized? YES — 7 subs, not 1.** Cleared `$89A3` (16→0) plus 6 others across banks 0/15
+(`$83E2`, `$813C`, `$90E8`, `$911E`, `$A066`, `$840B`); corpus −37 (1025→988); 0 gate-rejects, hard
+gate 495/495, 114/114 tests, deterministic, default `*.c` byte-identical. **Lesson:** the bail was a
+defensive guess ("the gate can't handle this") that was never tested against the gate — the gate
+*could* handle it. Worth auditing the other `bounded`/adjacency bails the same way.
+**Still open (NON-adjacent routing).** When the routing stub is NOT the address-next block
+(`nxt[max(region)] != e`), the loop still bails — that's the rest of the `none` bucket ("redirect
+predecessors", the address-ordered-emitter work). A candidate atom #4 — but the audit below shows
+the obvious "routing-skip the adjacency check" refinement does NOT work (it re-breaks atom 3).
+
+---
+
+## Atom 4 candidate — switch convergence / shared-merge folding  🔬 (deep-dive 2026-06-05)
+**The lever.** 36 subs have a `switch`; together they carry **365 gotos — >⅓ of the whole 988-goto
+corpus.** Switches are the single biggest remaining target. The user's read (switches are first-class
+in this VM but mis-folded) is correct.
+
+**VM switch format (confirmed from `vm-disasm.py`):**
+- **`$D5` contiguous:** bytecode `[offs(2), limit(2), default(2), target_0 … target_{limit-1}]` — the
+  **`default` target is stored BEFORE the case targets** (the user's "switch{ default; case0; … }").
+  Keys are `offs..offs+limit-1` (signed; the disasm renders `offs=0xFFFF` as `65535,65536,…` instead
+  of `-1,0,1,…` — a cosmetic key-wrap bug, structure is fine).
+- **`$D9` noncontiguous:** `[count(1)+1, (key,target)×count, default(2)]` — default LAST.
+- Cases **fall through** (C-style) and converge on a merge.
+
+**Two failure modes, BOTH rooted in the merge being a SHARED block:**
+- **(A) detection — 11 subs not foldable.** `switch_dispatches` requires every case target to be
+  single-entry-dominated by the switch block S, and the enclosed span to be S-dominated. But the
+  switch's exit `M = post-dom(S)` is routinely a SHARED block — a shared `return` (`$9C84`: all 3
+  cases converge on `9CA6 return marry()`, which the early `if(!rng) return marry()` guard ALSO
+  jumps to) or a pre-switch block (`$9ED9`: `default => M=9F10`, also reached from `9F0D`). So M
+  isn't S-dominated and the check rejects. Same shared-continuation theme as the cross-edge atoms.
+  **Excluding M from the checks recovers only 2/11** — the rest have shared CASE targets, interleaved
+  merges (`$9C84`'s M sits BETWEEN case addresses), or empty regions. Multi-shape, not one fix.
+- **(B) in-context — 8 of the 25 DETECTED switches still render dispatch+goto** (incl. the corpus's
+  single biggest sub `$A2D2` = **42 gotos**, plus `$D14E` 23, `$D3ED` 21, `$B6B4` 20, `$AC11` 17,
+  `$9954` 15, `$94B1`/`$A30D` 10). `_structure_switch` CAN inline them (the test suite proves it),
+  but the whole-sub self-validation fails (other improper regions in the sub), so tier-2 region-
+  fallback FLAT-SPANS the switch region instead of switch-folding it. The fold capability exists;
+  the region fallback just doesn't reach for it.
+
+**Assessment.** Switches are a focused mini-epic, not a one-line atom: model `M=post-dom(S)` as the
+(possibly shared) switch EXIT — excluded from the case-target + enclosed checks — and teach the
+region fallback to switch-fold a region, not just flat-span it. Highest-leverage tractable start is
+likely (B) (the 8 detected subs ≈ 158 gotos: the fold already works in isolation). DEFERRED pending a
+plan decision — logged so the diagnosis isn't re-derived.
+
+**B exploration (2026-06-05) — B IS A.** Traced why the 8 detected switches flat-span in context.
+`$A30D`: `merge=A381` is the `default` target AND a post-dom spine articulation point AND
+**interleaved** (sits between case 0 `A37E` and case 1 `A385` by address). `_structure_switch`
+consumes the territory `{A352..A391}` and returns `after=A399` — PAST the merge — but tier-2's
+post-dom spine cuts the region boundary exactly AT `A381`, so the switch territory STRADDLES the cut
+→ the region walk runs past its `stop` → `cross_edge_top` (3 of 4 traced subs bail this way; `$A2D2`
+inlines but with 31 internal gotos that gate-fail). So the in-context failure is the SAME
+shared/interleaved-merge problem: the merge is simultaneously the switch exit and a spine point, and
+tier-2's decomposition fights the switch's territory. **You cannot fix B without modeling the shared
+merge (A).** Confirms A is the principled root; B was a symptom. → defer to the principled A plan.
+
+## Residue-cause experiment (2026-06-05) — the EXPERIMENT decides atom-4 vs atom-5, and corrects both
+> Chris's call: trust the [lowering-atlas](../lowering-atlas/atom-table.md) experiment over the atom-4
+> theory. `tools/probe-residue-cause.py` classifies all **220 recoverable gotos** (the 57 behind-V1
+> subs) by which atom OWNS each, from CFG shape (independent of the flat-bail, so a self_gate sub's
+> cause is read from structure not its raw goto dump). Result:
+
+| relevant atom (by shape) | subs | gotos | |
+|---|---|---|---|
+| terminal_only (atom-5) | 13 | 31 | shared block ends in return/break |
+| switch_only (atom-4) | 7 | 36 | has a switch dispatch |
+| both (`$A2D2`) | 1 | 23 | the one sub with a switch AND a shared terminal |
+| **neither** | **36** | **130** | **cross-edge / non-terminal shared merge / address-layout** |
+
+Marginal reach: **atom-5 (terminal-dup) ≈ 14 subs / 54 gotos; atom-4 (switch) ≈ 8 subs / 59 gotos —
+essentially TIED**, overlapping only on `$A2D2`.
+
+**Two corrections the experiment forces:**
+1. **Atom-4 was over-hyped.** "365 gotos / 36 subs" counted ALL switch subs; but **only 8 of the 57
+   behind-V1 subs have a switch** — the other ~28 already fold ≥ V1 (rung 5 got them). Atom-4's
+   *marginal* prize is ~59 gotos / 8 subs, not 365. Theory ≫ measurement; the experiment was right.
+2. **NEITHER atom is the main lever.** The majority — **130 gotos / 36 subs (59%)** — is the cross-edge
+   / non-terminal-shared-continuation / address-layout family (incl. the big self_gate subs `$A221`
+   +11, `$9A5D` +10, which are cross-edge tangles, NOT clean guards). This is the 7f "address-ordered
+   emitter" residue + the guard-audit `merge_not_adjacent` per-region-trial lever.
+
+**The decision (1=evolve-gate-for-terminal-dup vs 2=switch):** the two atoms tie on raw leverage, but
+the **gate change atom-5 needs — let the address-based gate accept a block emitted at a NON-address
+position (a duplicated terminal) — is the SAME capability the dominant 130-goto "neither" bucket
+needs.** Atom-4 (switch) is an isolated 8-sub fold with no spillover; evolving the gate unlocks atom-5
+AND chips at the real majority. → **Recommend option 1 (evolve the gate).** Tool: `probe-residue-cause.py`.
+
+## $AD38 dissection (2026-06-05) — atom-5 splits into TWO sub-families; the gain=+1 was a trap
+> Started atom-5 on `$AD38` (smallest, +1). Dissection (`vm_cfg.py 2 AD38`, hand-built gate probe)
+> shows it is NOT the clean minimal case — it's one of the HARDEST. Its CFG:
+> `AD3D→{AD47,AD7B}; AD47→{AD58}; AD58→{EXIT}; AD67→{AD58}; AD7B→{AD67,AD85}; AD85→{EXIT}`.
+> The shared terminal `AD58` (3 stmts, ends `return`) is reached by `AD47` AND `AD67`. The 0-goto form
+> duplicates `AD58` into both arms — BUT `AD67` (a LOW address) is logically in the else-arm that
+> starts at the HIGH address `AD7B`, so **there is no address-monotonic 0-goto layout.** Hand-feeding
+> the ideal duplicated structuring to `structured_equivalent` REJECTS: the gate derives `else_start =
+> next_leader[then_top=AD58] = AD67` (≠ the real `AD7B`) because the duplicated `AD58` is the then-arm's
+> max address. So `$AD38` needs the gate's **lexical==address invariant lifted** — the big rearchitecture.
+
+**Atom-5 is really two sub-families:**
+1. **Address-ORDERED multi-stmt terminal merge** (`$8FF8` and likely most `terminal_only` +N). The
+   shared terminal sits at its natural position AFTER its guard predecessors; V1 folds by nesting the
+   guards with the terminal as the fall-through tail (no duplication). V2 leaves `if(C) goto L_term`
+   ONLY because `_is_return_block` requires `len(stmts)==1` so the multi-stmt terminal isn't recognized
+   as a guard/merge target. **Fix = reducer only, gate UNCHANGED** (generalize the terminal-merge
+   recognition). The genuine clean first win.
+2. **Address-INVERTED** (`$AD38`, and the 130-goto "neither" majority). A logical predecessor sits at a
+   higher address than its successor → no address-monotonic form → needs the gate to become
+   emit-order-aware (drop lexical==address). The rearchitecture; multi-session.
+
+**Pivot:** the clean entry is family (1) — the address-ordered multi-statement terminal merge — NOT
+`$AD38`. `$AD38`'s tiny +1 hid that it belongs to the hard family (2).
+
+## Compiler reproduction (2026-06-05) — $AD38 is an UNDONE OPTIMIZATION, and the gate fix is NARROW
+> Chris's question: can the two atoms be reproduced in [lowering-atlas](../lowering-atlas/atom-table.md)?
+> Yes — and it reframes atom-5. `corpus/07_terminal_merge.c` + `tools/probe-opt-levels.py` compile the
+> `$AD38` shape (two arms, common multi-stmt tail ending in `return`) at -O0 AND -O2:
+> - **-O0 DUPLICATES the tail** (one copy per arm, address-ordered, 0 goto) — *this is the decompiler's target.*
+> - **-O2 MERGES it** (one copy; the later arm `jmp`s BACKWARD into it) — *this is `$AD38` exactly.*
+>
+> **So `$AD38` is a TAIL-MERGE / CROSS-JUMP OPTIMIZATION, not a base lowering.** Three consequences:
+> 1. **NA1's compiler did cross-jumping.** The ROM has the merged form → NA1's toolchain optimized to
+>    at least the tail-merge level (non-optimizing for *structure* — reducibility holds — but it
+>    cross-jumped). Refines the [thesis](./decompiler-bottom-up-thesis.md): "non-optimizing EXCEPT tail-merge."
+> 2. **Atom-5 = invert the cross-jump = duplicate the shared terminal back to the -O0 layout.** The
+>    inverse is well-defined and provably sound (duplicating a sink/terminal block is CFG-preserving);
+>    the -O0 output is the witness for the correct decompile.
+> 3. **The gate fix is NARROW, not the feared rearchitecture.** The gate's lexical==address invariant
+>    is exactly the -O0 assumption; only cross-jumped (-O2) code violates it. Because a duplicated tail
+>    is a TERMINAL (→EXIT sink), its multiple lexical positions add NO ordering ambiguity for other
+>    blocks — so the gate only needs "a →EXIT block may appear at >1 lexical position; the
+>    then_top/else_start boundary computation must not derive the next boundary FROM a terminal-ending
+>    arm (it doesn't fall through)." That is a small, principled change, NOT "drop lexical==address."
+>
+> **Revised plan:** atom-5 splits — (1) address-ordered family-1 (`$8FF8`) is a base lowering, reducer-
+> only (fold the loop-body guard→multi-stmt-terminal merge); (2) the cross-jump family (`$AD38` + much
+> of the 130-goto "neither" bucket) = duplicate-the-terminal pre-contraction + the NARROW gate tweak
+> above. The 130-goto majority may be mostly un-cross-jump too — worth re-running probe-residue-cause
+> after the gate tweak to see how far "terminal-dup as cross-jump inverse" reaches.
+
+## Gate-tweak crack (2026-06-05) — $AD38 needs FOUR emit-order fixes; 2 safe, 2 hard. REVERTED.
+> Took a test-driven crack at the gate change (hand-built the ideal duplicated `$AD38` structuring,
+> iterated `lower_struct_cfg` against `structured_equivalent`, gated by the 114-test suite). The
+> "narrow tweak" is **not** narrow — the cross-jump inverts the layout so the gate's if-handling needs
+> emit-order (text-span) boundaries in FOUR places, derived address-based today:
+
+| # | derivation | change | result |
+|---|---|---|---|
+| 1 | `then_true` (then-arm entry) | `first_real_block(then span)` vs `next_leader[hb]` | **SAFE** (114/114) — bounded by the if's braces; fixed `$AD3D` & inner-if true edge |
+| 2 | `else_start` (else-arm entry) | `first_real_block(else span)` | **SAFE** (114/114) — bounded; fixed `$AD3D` false edge |
+| 3 | `merge` (post-if continuation) | emit-order `first_real_block(close+1, …)` | **UNSAFE** — leaks across scope, **broke 4 tests** (`$885E` do-while, `$9778` break: an if nested in a loop pulled its merge past the loop). Needs nesting-DEPTH-bounded search. |
+| 4 | per-block fall-through of the DUP terminal | — | **UNSOLVED** — the duplicated `AD58` lines keep `AD58`'s addresses, so the gate assigns them to block `AD58` (not the predecessor `AD67`); `AD67` then falls by address to `AD7B`. The dup must either be re-tagged to the predecessor's address range, or the fall-through made emit-order. |
+
+Fixes 1+2 took `$AD38`'s hand-form from 3 wrong edges to **1** (only `$AD67→{AD7B}` remains, the #4 collision). Both are CFG-equivalent no-ops on the current corpus (988/57/0 unchanged) — i.e. **inert** until #3+#4 land and the reducer emits the dup. Per the build-ladder discipline (land gate-green + MEASURED), **reverted to keep the gate pristine**; the map above is the deliverable so next session re-applies 1+2 and tackles 3+4 without re-deriving.
+
+**Takeaway:** confirmed `$AD38` (cross-jump family) is the address-INVERTED hard case — the gate is pervasively address-based and the fix is the emit-order rearchitecture, scope-bounded. The genuinely tractable win remains **family-1 (`$8FF8`, base lowering, reducer-only, no gate change)**. Next session: do family-1 first; treat the $AD38 emit-order-gate as its own bounded sub-project (the 4-row table is the spec).
+
+## Family-1 attempt (2026-06-05) — built the atom + the acceptance infra; BOTH sound, BOTH inert. REVERTED.
+> Tried family-1 on the cleanest exemplars (`$A003` +1 no-loop, `$A95E` +5 DAG). V2 emits `if(!C) goto
+> L_term` where V1 nests `if(C){…}` with the shared multi-statement terminal tail (`$A003`'s `$A063` =
+> d759;cc89;return 0) emitted ONCE. The reducer CROSS-EDGES on the shared terminal because `imm_post_dom`
+> returns EXIT (an early `return` on the `$A042`=return-1 path hides the reconvergence).
+>
+> **Two changes built + validated (both REVERTED — sound but inert):**
+> 1. **`_common_merge(fall, goto_block, n)`** — when post-dom is EXIT, find the terminal sink both arms
+>    reconverge on; use it as the if's merge. (Fired correctly: `_common_merge=A063` for `$A003`.)
+> 2. **Goto-count-aware whole-sub acceptance** — a SECOND whole-sub pass with `ctx.aggressive_merge`,
+>    offered as a candidate at every `reduce()` return, kept ONLY if it validates AND has strictly fewer
+>    gotos. Proven **regression-proof** (988/57 unchanged, 114/114) — solves the first naive try's
+>    +25-goto regression (forcing the merge made arms need internal gotos; first-valid-wins kept the
+>    worse fold). This is the right acceptance model and it's safe.
+>
+> **Why still inert: `$A003` is ADDRESS-LAYOUT-bound, not a clean family-1 case.** The aggressive
+> structuring `if(number_input){return 1;}else{cc89;return 0;}` **ORPHANS `$A05C`** (redraw_no_rice;
+> d759): `A05C` is a low-address block with real content sitting BETWEEN the if-body and the merge
+> `A063`, reached by the guards `goto A059/A053`. V1 only folds it by placing `A05C` INSIDE the
+> `if(number_input){}` braces and jumping INTO it (goto-into-block) — the address-inversion trick a
+> region reducer can't do. So the whole-sub fold gate-REJECTS (drops `A05C`), and `_common_merge`/the
+> acceptance infra can't help — the blocker is the layout, exactly like `$AD38`.
+>
+> **DECISIVE META-FINDING ($AD38 + $8FF8 + $A003 all hit the SAME wall):** the terminal family is
+> dominated by cross-jump address-inversions (the compiler experiment predicted this — NA1 tail-merged).
+> Every one needs the **emit-order gate** (let a block be emitted at a non-address position / inside an
+> if-body it's address-before). That ONE infrastructure change is the universal unlock for the terminal
+> family; the `_common_merge` + goto-aware-acceptance infra (above) is sound and ready to compose ON TOP
+> of it (re-apply both from this log — they're regression-proof). **There is no cheap localized atom
+> here; the 57-behind residue is gate-architecture-limited.** Next-session target is unambiguous: the
+> scope-bounded emit-order gate (the 4-row spec above), THEN re-apply family-1's two changes.
+
+**`$8FF8` caveat (the family-1 exemplar is also non-trivial).** Traced: `reduce()` raises NO
+`_NotReducible` for `$8FF8` (LAST_BAIL=None, whole-sub structuring SUCCEEDS + gate-validates) — its 8
+gotos come from the **loop body being `_flat_span`'d** (the session-7e loop-local fallback, not a bail).
+The multi-stmt terminal `L_908A` (reached by 3 guards) lives INSIDE that flat-spanned loop body, so
+clearing it means getting `_structure_loop`'s body walk to fold the guard→multi-stmt-terminal merge
+rather than flat-spanning the body. Still reducer-only / gate-unchanged, but it's a loop-body
+structuring change, not a one-line `_is_return_block` widening. **Next session:** instrument WHY the
+loop body flat-spans (which `_structure`/`_structure_loop` guard declines it), then fold the
+multi-stmt-terminal merge there; re-validate (114 tests, hard gate, 0-reject, byte-identical, census).
+
+## Guard audit (2026-06-05) — globalizing the atom-3 lesson
+> Atom 3's bailed guard was an untested "the gate can't anchor this" GUESS. Are the OTHER bails the
+> same? Because `reduce()` self-validates against the CFG gate, suppressing a guard is safe (a wrong
+> guess → gate-reject / worse fold; a correct removal → win). Audited every guard whose fall-through
+> builds a CFG-validatable node, via `tools/probe-bail-audit.py` (one-line per guard,
+> `vm_reduce._AUDIT_SKIP`). Semantic guards (`compound_pretest` — update-timing the CFG gate can't
+> police) and crash/loop-risk guards (`cross_edge_top`, `goto_not_succ`, `no_fall`) are NOT audited.
+
+| guard suppressed | Δgotos | subs worse | verdict |
+|---|---|---|---|
+| `goto_past_merge` | +0 | 0 | no-op (the case is caught by another bail) |
+| `empty_then` | −1 | 0 | trivial — leave it |
+| `else_before_then` | +0 | 0 | no-op |
+| **`arm_order`** | **+30** | 2 | **GENUINE — the gate really rejects** (`char_classify $CDCA` 2→29) |
+| **`merge_not_adjacent`** | **−21** | **5** | **over-broad but RIGHT sometimes** — see below |
+| `exit_is_dowhile_latch` | +0 | 0 | no-op (already tightened in session 8) |
+
+**Headline lesson: atom 3 was the EXCEPTION, not the rule.** 5 of 6 audited guards are well-calibrated
+(genuine soundness or no-ops). Do NOT assume a guard is a bad guess — the gate audit is the arbiter,
+and most of these guards are doing real work. `arm_order` in particular is load-bearing (suppressing
+it sends `char_classify` 2→29 gotos — the gate genuinely can't handle reversed arm order).
+
+**`merge_not_adjacent` — the one real lever, but no cheap refinement.** Suppressing it is net −21 yet
+breaks 5 subs (`$8C75` 3→14, `$AAA7` 1→7…), so it's right for those 5 and over-conservative for the
+rest. Two refinements TRIED and REVERTED:
+- **routing-skip the if-merge adjacency** (atom-3's idea on if-merges): DISASTER — +49 (1037), 32
+  subs worse, even `vm_bootstrap` 1→2. A routing block between an if-body and its merge is NOT
+  droppable the way a loop-exit stub is; skipping it makes the guard accept CFG-wrong if-nodes.
+- **routing-skip the non-adjacent LOOP-exit** (the atom-#4 candidate): also regressed (−0 net, 10
+  worse) AND re-broke atom 3 — when `e` IS the stub (atom-3's adjacent case) `_routing_skip` skips
+  PAST it, so the check wrongly bails. `$89A3` went 0→16.
+
+**So routing absorption (atom 3) is LOOP-EXIT-specific and does NOT generalize** to if-merges or
+non-adjacent exits. The latent −21 in `merge_not_adjacent` is real but needs a per-region TRIAL
+(build the if-node, keep it only if it self-validates AND beats the local honest-goto), not a
+condition tweak — deferred. **Net code change from the audit: none to the folds** (the harness
+`_audit_bail`/`_AUDIT_SKIP` stays as 0-cost instrumentation for future audits); the deliverable is
+the lessons above + `tools/probe-bail-audit.py` to re-run them.
+
+## Cross-jump forward-experiment (2026-06-05) — the optimization is PINNED + its reversibility MAPPED
+> Chris's call: the cross-jump feels like the big culprit; the [lowering-atlas](../lowering-atlas/atom-table.md)
+> tests confirmed NA1's compiler optimizes, so go deconstruct the optimization at different `-O` levels
+> and decide if it's reversible. Done in the compiler sub-project (`corpus/08_crossjump_reversibility.c`
+> + `tools/probe-crossjump.py`). Result is sharper than "build the emit-order gate."
+
+**The forward pass is GCC's RTL CROSS-JUMPING (`-fcrossjumping`, on at -O2+).** Flag bisection at -O2:
+`-fno-crossjumping` alone restores the -O0 duplicated form; `-fno-tree-tail-merge` does nothing. So the
+"address-inverted shared tail" the gate can't place = the output of one named, well-understood pass that
+merges identical block SUFFIXES (emitting the backward `jmp`).
+
+**Reversibility boundary (7 graded shapes, measured -O0/-O1/-O2/-Os):**
+- **GCC cross-jumps SINKS ONLY.** Every backward-jmp inversion (switch-cases→return, partial-suffix→return,
+  the `07` `$AD38` family) merges a suffix ending in `return`/tail-call. The one **non-sink** merge with a
+  real successor GCC handled by **DUPLICATION, never cross-jump** — so it stayed address-ordered.
+- **⇒ the sink inverse (tail-duplication) is provably sound AND address-monotonic** (a →EXIT block
+  constrains no successor ordering, so each duplicate lands at its predecessor's natural address). This is
+  why the "narrow gate change" is the *right* scope. The earlier `$AD38` 4-row gate-crack wall (#4: the dup
+  block keeps `AD58`'s address) is an *implementation* detail of that narrow change — **re-tag the duplicate
+  to the predecessor's address range** — not a refutation.
+- **The inversion is an -O2 LAYOUT choice:** at `-Os` the *same* merges come out **forward-only** (emittable).
+  So a cross-jumped CFG has both an emittable and a non-emittable linearization; the decompiler just picks
+  the forward one (= duplicate the sink). It's layout, not structural loss — fully recoverable.
+
+**Reframes the plan (vs the family-1/$AD38 meta-finding above):**
+1. The provably-reversible slice is the **SINK** inversions = `terminal_only` (13 subs/31) + `switch_only`
+   (7/36) + `both` `$A2D2` (1/23) ≈ **21 subs / ~90 gotos**. The atom = duplicate the shared sink + the
+   narrow (re-tag-the-dup) gate change. Compiler proves the inverse is sound and emittable.
+2. **The 130-goto "neither" bucket is probably NOT cross-jump.** GCC never cross-jumps a non-sink, so a
+   genuine non-terminal shared merge is most likely real irreducibility / address-ordered-emitter layout,
+   not an undo-able optimization. **Don't build a blanket emit-order rearchitecture for it on a hunch.**
+   **▶ NEXT: extend `probe-residue-cause.py` to tag each NA1 residue inversion SINK-vs-NON-SINK** (read the
+   merge block's terminator from CFG). If the residue is sink-dominated (expected), the narrow sink-dup atom
+   is the whole game; if not, the non-sink subs are a separate, harder problem to scope on their own.
+
+## Sink/non-sink classification RESULT (2026-06-05) — the residue is NOT sink-dominated. Hypothesis REFUTED.
+> Ran the test above: `tools/probe-inversion-sink.py` classifies every residue `goto L_T` by the TARGET
+> block's forward cone (SINK = T reaches EXIT and its whole cone is privately T-dominated = freely
+> duplicable; NON-SINK = the cone has a foreign predecessor / a loop = a non-terminal shared merge).
+> Validated: it tags every known dissection correctly ($AD38→1 sink AD58, $A2D2→14 sink case-tails,
+> $A003→1 sink A063, $8FF8→4 sink guard-targets) and its recoverable total (221) matches the
+> residue-cause probe's 220. So the classes are trustworthy.
+
+| target cone | V2 | V1 | **recoverable** | subs | back | fwd |
+|---|---|---|---|---|---|---|
+| **sink** (reversible by dup) | 99 | 56 | **44 (22%)** | 37 | 9 | 90 |
+| **non-sink** (non-terminal shared merge) | 411 | 258 | **153 (77%)** | 56 | 70 | **341** |
+| loop (latch/continue) | 61 | 37 | 24 | 30 | 57 | 4 |
+
+**Two hard conclusions, both correcting the optimistic cross-jump read:**
+1. **The cross-jump (sink) slice is a MINORITY lever — 44 recoverable gotos (22%), not the prize.** The
+   provably-correct sink-dup atom is real and worth doing, but it does NOT clear the residue. "The cross-jump
+   is the big culprit" was the wrong read; it's a small one.
+2. **The residue is 77% NON-SINK, and overwhelmingly FORWARD (341 fwd vs 70 back).** Cross-jumping produces
+   *backward* jmps into *sink* suffixes (lowering-atlas, confirmed); GCC *never* cross-jumps a non-sink (it
+   duplicates — corpus shape `E`). So these 153 forward non-sink gotos are **NOT cross-jump artifacts to
+   invert** — they are genuine non-terminal shared merges = the **reducer/emitter capability gap** (fold a
+   forward goto into a shared if-merge under the address-based gate), i.e. the guard-audit's `merge_not_adjacent`
+   per-region-TRIAL lever + the 7f/7g address-ordered-emitter "redirect predecessors" work. This is the real
+   majority and it is NOT an optimization to undo.
+
+**▶ Revised plan.** Two independent tracks, sized by the data: **(track A, small+sound)** the sink-dup atom
++ narrow re-tag gate change → ~44 recoverable gotos / the terminal+switch families; **(track B, the actual
+majority)** the non-terminal-shared-merge fold = a per-region if-node TRIAL (build the if, keep iff it
+self-validates AND beats the honest-goto), the latent −21 from `merge_not_adjacent` generalized. Track B is
+where 77% of the residue lives, and it is a reducer/gate problem, not a cross-jump inversion. Tool:
+`tools/probe-inversion-sink.py` (`--detail` for per-sub).
+
+## Atom 6 LANDED (2026-06-05) — Track A forward-sink-as-merge. −8 gotos, 4 subs, 0 worse, all-green.
+> The clean, sound, reducer-only slice of Track A. **Root cause** (traced on `$9F04`, the minimal +1
+> case): when a branch's goto-arm targets a SHARED TERMINAL sink (a block flowing only to EXIT — e.g.
+> a multi-statement trailing `return`) and the local post-dom is EXIT (the fall arm RETURNS on some
+> path before the join), the reducer DIDN'T recognize the sink as the merge. So an inner `if` CONSUMED
+> the sink as its else-arm → `max(consumed) == the sink` → `nxt[sink] != merge` tripped
+> `merge_not_adjacent` → the whole branch fell back to an honest `goto L_sink`. V1 instead emits the
+> sink ONCE as the address-tail fall-through (it is address-last on the forward slice), 0 gotos.
+
+**Fix (`vm_reduce.py`, reducer-only, NO gate change).** In `_structure`'s if-then/else handler, when
+`merge is EXIT and goto_block` is a sink (`full_cfg[goto_block] == {EXIT}`), use it as the merge
+(the `ctx.sink_merge` atom). The sink then folds once after the if; on the forward slice it is
+address-last so `merge_not_adjacent` is satisfied; on the address-INVERTED slice (an interleaved
+predecessor, e.g. `$93BF`'s `$9453 > $944E`, family-2) the adjacency check still bails to goto — so the
+atom self-limits to the reversible forward slice without touching family-2.
+
+**Goto-count-aware acceptance (the key to 0-worse).** Forcing the sink-merge regressed `$A853` (0→3):
+a *valid* fold with MORE gotos won under first-valid-wins (the gate proves equivalence, not goto-count
+— the exact trap the family-1 dissection flagged). Fix: `reduce()` now runs the whole-sub structuring
+**both** with `sink_merge` off and on and keeps whichever VALIDATES with **fewer gotos**; the region
+fallback likewise tries both per region (its existing per-region goto guard already protected it). This
+is the regression-proof acceptance model the earlier family-1 attempt designed — now landed.
+
+**Result.** V2 988→**980** (−8); behind-V1 57→**53**; `$9F04` 1→0, `$A003` 4→2, `$A068` 4→2, `$A113`
+5→2; **0 subs worse**; folded 350 unchanged; **0 gate-rejects; hard gate 495/495 + 495/495; 114/114
+tests; dispatcher green; deterministic; default `*.c` byte-identical** (V2-only path). Notably cracked
+`$A003` (4→2), which the family-1 dissection had filed as family-2-stuck — its FORWARD portion folds
+now; only its address-inverted remainder stays. recoverable-sink 44→**39** (`probe-inversion-sink`).
+
+**Still open (the rest of Track A + Track B).** The address-INVERTED sink slice (family-2: 9 back-jmp
+gotos — `$AD38`, `$93BF`'s `$9453`, …) needs the narrow re-tag gate change (duplicate the sink, tag the
+copy to the predecessor's address range). The 77% non-sink majority (Track B) is the per-region if-node
+trial. Atom 6 took the slice that needed neither — the honest reducer-only win.
+
+## Track B PROTOTYPE (2026-06-05) — −49 gotos / 11 subs potential; ONE regression isolates the next fix. REVERTED.
+> Prototyped the per-region if-node trial = the guard audit's `merge_not_adjacent` lever, made safe.
+> The audit found suppressing `merge_not_adjacent` is net −21 but regressed 5 subs WITHOUT goto-aware
+> acceptance; the prototype pairs the suppression with atom 6's acceptance machinery so a worse fold
+> can't win. Built, MEASURED, reverted (the map below is the deliverable — re-apply next session).
+
+**The change (5 small edits, all reducer-only, gate UNCHANGED):**
+1. `_Ctx`: add a `merge_nonadj` flag (slot + init `False`), alongside `sink_merge`.
+2. The bail: `if merge is not EXIT and nxt[max(consumed)] != merge and not ctx.merge_nonadj:
+   _audit_bail('merge_not_adjacent')` — i.e. under the flag, build the if-node even when the merge
+   isn't address-adjacent. (Orphaned gap blocks → gate-reject → fall back; self-validation backstops.)
+3. `_fresh_ctx(sink_merge=False, merge_nonadj=False)` + `_structure_region(..., merge_nonadj=False)`.
+4. A combo list `_COMBOS = [(F,F),(T,F),(F,T),(T,T)]` (sink_merge × merge_nonadj).
+5. The whole-sub trial AND the region-fallback per-region loop iterate `_COMBOS`, keeping the
+   fewest-goto VALIDATING result (extends atom 6's two-pass to four).
+
+**Measured: V2 980 → 933 (−49); behind-V1 53 → 51; folded 351; 0 gate-rejects; hard gate
+495/495 + 495/495.** 11 subs better. The −49 is large vs the −2 behind because most of it is
+EMIT-QUALITY on subs already ahead of V1 (a non-adjacent forward merge that was an honest goto becomes
+a folded `if`), not just behind-sub recovery — i.e. Track B improves the whole corpus, not only the
+work-list. (Confirms the 77%-non-sink-is-the-majority finding: this is the lever.)
+
+**The ONE regression — `$8694` 9 → 11 — pins the next fix precisely (root cause CONFIRMED).** With
+`merge_nonadj` on, `$8694`'s WHOLE-SUB structuring now VALIDATES (LAST_BAIL=None) at 11 gotos, so
+`reduce()` returns it — **short-circuiting the region-fallback that yields 9** (at atom-6 no whole-sub
+combo validated, so it fell to the leaner region-fallback). The acceptance is **LOCAL** (the whole-sub
+trial returns as soon as any combo validates) instead of **GLOBAL** (whole-sub-best should compete with
+region-fallback-best on goto-count). This is the only thing between the prototype and a clean −49/0-worse
+landing.
+
+**▶ NEXT SESSION (Track B, the plan):** (1) make `reduce()` acceptance GLOBAL — compute the best
+validating whole-sub result AND the region-fallback result, return whichever has FEWER gotos (don't let
+whole-sub short-circuit a leaner region-fallback). (2) Re-apply the 5-edit `merge_nonadj` prototype
+above. (3) Re-measure — expect ≈ −49, behind ≤51, **0 worse** (the `$8694` regression dissolves once
+acceptance is global). (4) Full discipline (hard gate 495/495, 114/114, dispatcher, deterministic,
+default `*.c` byte-identical) then land as atom 7. Then revisit the ~70 BACKWARD non-sink gotos (the
+address-inverted remainder) — those still need emit-order gate work, the harder tail of B.
+> NOTE: the Track B `merge_nonadj` + global-acceptance work above is now **atom 8** — the
+> incremental-peephole fix below landed first and took the atom-7 slot.
+
+## Atom 7 LANDED (2026-06-05) — incremental peephole: real goto-to-next jumps now clip. V2 980→978, all-green.
+> Surfaced from `$A30D` (`per_period_fief_daimyo_update_driver`): the function opened with a redundant
+> `goto L_A349;` immediately before `L_A349:` (the pre-test loop's entry jump-to-condition), and a
+> `L_A381: goto L_A3A0;` routing stub — both goto-to-emit-NEXT, both surviving the cleanup. V1 emits
+> neither; they were a V2-reducer artifact. Two compounding root causes, both in `_peephole`:
+
+**(1) the matcher.** `_RE_GOTO_ONLY = r'^goto L_(....);$'` is anchored at the `;`, so it matched only
+the reducer's SYNTHETIC (comment-less) honest-goto cuts. A REAL bytecode jump carried verbatim from a
+block node keeps its `// $addr` provenance comment (`goto L_A349;    // $A313`) → never matched → never
+clipped. **Fix:** tolerate a trailing comment — `r'^goto L_(....);\s*(//.*)?$'`.
+
+**(2) the all-or-nothing batch (the real bug).** `_peephole` dropped ALL candidates, then `_validates`
+re-checked the batch ONCE and reverted EVERYTHING on any single failure. On `$A30D` three clips were
+candidates; dropping each INDIVIDUALLY: head `goto L_A349` ✓ valid, `goto L_A381` ✓ valid, but the
+`goto L_A3A0` stub ✗ INVALID — because the switch flat-span emits its territory OUT of address order, so
+that stub's emit-NEXT label is NOT its address-next leader, and the gate's address-order re-lowering
+rejects the drop. The one unsound clip poisoned the batch → all three reverted → the head goto survived.
+**Fix:** `_peephole(out, validate=…)` now applies each goto-drop INCREMENTALLY, keeping only those that
+still pass the equivalence gate; unsound reordered stubs stay as honest gotos. (Without a validator —
+the test path — it drops all, caller re-checks; behaviour preserved.)
+
+**Result.** `$A30D` 10→**8** gotos (head goto + `L_A381` clip land; `L_A3A0` stub correctly kept); V2
+**980→978** (−2 corpus-wide, the gate-validated sound-clip total the old batch suppressed). 114/114
+tests; hard gate 495/495 + 495/495 clean; deterministic; default `*.c` (V1 path) byte-identical (the
+change is V2-only). The lever is small as predicted, but it's principled (per-clip gate validation, not a
+heuristic) and makes the canonical switch-sub read cleanly down to its real residue.
+
+**Still open (unchanged by this).** `$A30D`'s switch itself is still flat-spanned — that's the atom-4
+**switch shared-merge** mini-epic (merge `$A381` is the `default` target + a post-dom spine articulation
+point + interleaved between case 0 `$A37E` and case 1 `$A385`; "B is A"). Separate from atom 8 (Track B
+`merge_nonadj`, the non-switch forward-merge majority).
+
+## Atom 8 LANDED (2026-06-05) — Track B non-adjacent forward merge + global acceptance. V2 978→929 (−49), 0 worse.
+> The 77%-non-sink majority: a forward shared-merge that is NOT the address-next leader was lowered as an
+> honest `goto L_merge` because the `merge_not_adjacent` guard bailed the if-node. Atom 8 builds the if
+> anyway (under a `merge_nonadj` flag) in the WHOLE-SUB trial, kept only when the whole sub self-validates
+> with fewer gotos. Matches the prototype prediction (V2 980→933 then; from atom-7's 978 → **929**), 11
+> subs better, **0 worse**, behind-V1 53→**51**.
+
+**The 5-edit prototype, re-applied (all reducer-only, gate UNCHANGED):** (1) `_Ctx.merge_nonadj` slot+init.
+(2) `merge_not_adjacent` bail suppressed under `not ctx.merge_nonadj`. (3) `_fresh_ctx` /
+`_structure_region` take `merge_nonadj`. (4) `_COMBOS = (F,F),(T,F),(F,T),(T,T)` (sink_merge × merge_nonadj).
+(5) the whole-sub trial iterates `_COMBOS`, keeping the fewest-goto validating result. **Plus global
+acceptance:** `reduce()` now computes whole-sub-best AND region-fallback-best and returns the fewer-goto one
+(whole-sub wins ties), with a 0-goto whole-sub early-out so the common case skips the now-always-run region
+decomposition.
+
+**The predicted root cause was WRONG — and the data corrected it.** The prototype log predicted `$8694`'s
+regression (9→11) was "whole-sub validates at 11, short-circuiting the 9 region-fallback," to be dissolved
+by global acceptance. Instrumented reality: `whole_best=None` (the whole sub never validates) and the
+**region-fallback ITSELF regressed 9→11**. Cause: the region-fallback's per-region acceptance is GREEDY
+(commit region i's leanest validating structuring, then region j); a `merge_nonadj` fold leaner for region i
+greedily commits and BLOCKS a later region from structuring → more gotos than leaving i flat. Global
+acceptance alone did NOT fix it (region_best was the 11). **Fix:** keep `merge_nonadj` OUT of the
+region-fallback — it pays off only in the WHOLE-SUB trial (one global structuring, no greedy seam). Added
+`_REGION_COMBOS = (F,F),(T,F)` (sink-only) for the fallback; the full grid stays in the whole-sub trial.
+That recovered `$8694` to 9 AND kept every gain (−47 → −49). Lesson: a greedy local optimizer can regress
+when you hand it more options; the safe place for an aggressive fold is the global (whole-sub) pass.
+
+**Result.** V2 **978→929** (−49); 11 subs better (`per_turn_age_daimyo_decay_health_and_province_stats`
+13→0, `issue_province_command` 11→0, `dispatch_battle_resolution`/`effect_give_c`/`ai_resolve_province_takeover_attempt`
+…), **0 worse**; behind-V1 **51** / 208 excess gotos; V2 now **222 gotos ahead of V1**. 114/114 tests; hard
+gate 495/495 + 495/495 clean; dispatcher green; deterministic; default `*.c` (V1) byte-identical.
+
+**Still open (the harder tail of B).** The ~70 BACKWARD non-sink gotos (address-inverted merges) still need
+emit-order gate work — `merge_nonadj` only reaches the FORWARD slice (a backward merge re-orders the emit,
+which the address-based gate rejects). And the greedy region-fallback could become a GLOBAL region
+assignment (try all per-region combos jointly) to let `merge_nonadj` help there too — deferred, low marginal
+value vs the switch mini-epic (atom 4).
+
+## GATE CHANGE — reorder-invariant if/else merge (approach B, 2026-06-05) — LANDED, sound, V1 −71. V2 enabler.
+> The ROADMAP recalibration's bet: stop grinding emitter atoms; make the GATE reorder-invariant so backward
+> merges validate as-is. Tested it. The bet is **half-right** — the gate WAS rejecting valid backward/shared
+> merges, but only the EMITTER that produces them (V1 templates) benefits; the V2 reducer is INERT until it
+> learns to emit them. B *enables*; the emitter (C) must *exploit*. Not alternatives — complementary.
+
+**The wall, exactly.** `vm_cfg.lower_struct_cfg` derived an if/else's MERGE from ADDRESS order
+(`next_leader` / `_span_max_leader`) — but the while/do-while/switch handling right beside it already read
+boundaries LEXICALLY (`first_real_block`/`last_real_block` over the brace span). So a structuring whose merge
+sits at a LOWER address than the if-body (a backward/shared merge) computed the wrong merge edge → gate
+REJECT, even though the structuring is CFG-correct.
+
+**The fix (`lower_struct_cfg`, MERGE-only).** New `merge_after(close_idx)`: read the merge LEXICALLY from the
+first significant line after the if's `}` — and resolve it by its **LABEL** (`L_M:` → M), not `block_of(first
+statement)`. The label is the flush-safe leader: a join is always labelled (the stripped then-arm `goto L_M`
+referenced it), and a BACKWARD merge is ALWAYS labelled (you cannot fall backward, only goto) — exactly the
+case B needs. The `$885E` trap proved why label-not-statement: `redraw_window` is a flushed call tagged
+`$88CE` but emitted after `L_88D2:`, so `block_of(stmt)` mis-attributes it; the label `L_88D2` is correct.
+`then_true`/`else_start` stay ADDRESS-based (the then-body is always laid right after the header — flush-safe
+and never backward); only the merge target + the two arm-tail redirects (`_span_max_leader`, counts a trailing
+empty merge-of-inner-gotos block — `last_real_block` skips it and over-shoots, the 1st-try `$9778` bug) use
+the lexical merge. A dedent/unlabelled-plain continuation → None → ADDRESS fallback (former behaviour, no
+regression on forward/scope-ending ifs).
+
+**Why this is SOUND (more faithful, not more permissive-by-fudge).** Reading the merge by its label IS the
+true C semantics (control flows to the lexical continuation after an if). The OLD address-based merge was the
+*approximation* (correct only when emit-order == address-order). So the change can only REMOVE false rejects,
+never ADD false accepts. Confirmed: 114/114 incl. the inject-a-misroute negative tests; hard gate 495/495 +
+495/495 both paths; witness `lower(raw)==bytecode` 495/495 (untouched — only `lower_struct_cfg` changed);
+disasm 0 BAD ×4; drift-guard clean; regen deterministic.
+
+**Measured.** V1 templates **1151 → 1080 (−71 gotos, fallbacks 35 → 15)**; `source/4-c/*.c` gained real
+structure (73 gotos → `if`/`while`, e.g. `if (x != 24) goto L_merge` → `if (x == 24) { … }`). **V2 reducer
+929 → 929 (INERT).** behind-V1 51 → 57 (rose only because V1 improved; V2 still leads 929 < 1080).
+
+**Why V2 is inert (the actionable finding).** The behind-V1 subs FAIL the whole-sub trial (other improper
+regions) and route to the **region-fallback**, whose `_REGION_COMBOS` DISABLES `merge_nonadj` (atom 8 turned
+it off to dodge a greedy-seam regression). So the reducer never GENERATES a backward-merge candidate for the
+now-permissive gate. Tested re-enabling it (`_REGION_COMBOS = _COMBOS`) → V2 **929 → 931** (the exact greedy
+seam atom 8 logged: a leaner `merge_nonadj` fold for region i blocks region j). Reverted.
+
+**▶ CHASE-V2 ATTEMPT (2026-06-05) — GLOBAL region assignment + merge_nonadj-in-fallback: PROVEN INERT for
+V2. REVERTED.** Built the atom-8 deferred work to let the now-lexical gate pay off in the reducer: replaced
+the region-fallback's GREEDY per-region commit (`reduce()` step 2) with a **coordinate-descent GLOBAL
+assignment** (each region picks the candidate that lowers the WHOLE-sub validated goto count given the others;
+monotonic from all-flat so it can't regress), and widened the fallback to the full `_COMBOS` grid
+(merge_nonadj on). First cut used a cheap no-peephole rank → V2 929→930 (a peephole-sensitive misrank, +1);
+fixing the rank to the exact peephole-aware `_validates` → **V2 929→929, byte-identical** (folded 351, behind
+57 — same as gate-only HEAD). So with the gate reorder-invariant AND the reducer free to use merge_nonadj
+globally, V2 captures **ZERO** new wins. Reverted (inert + ~2× runtime + complexity, against
+high-quality-not-more-code).
+**CONCLUSION — the gate was NOT V2's wall.** atom-8 already harvested the forward non-adjacent merges in the
+whole-sub trial; the remaining behind-V1 residue is NOT backward-merges the fallback can now fold — it is
+**shape-specific**: goto-into-block short-circuit `||` (`$9A5D`: `if(a) goto L; if(b){ L: body }` =
+`if(a||b){body}` — a region tree can't jump into a sibling's then-body; likely a missed `boolean_regions`
+shape), rotated-for with the increment in an `else` arm (`$9C22`), and the switch shared-merge (atom 4). The
+NEXT V2 lever is one of THOSE atoms (start with the `||` goto-into-block as a `boolean_regions` extension, or
+atom-4 switch), NOT merge/gate/region-assignment work — that lane is now exhausted.
+
+## Atom 9 — control short-circuit `if(c1||c2…){body}`  ✅ (2026-06-05, ATLAS-SOURCED)
+**The method test (Chris): is the atlas-driven approach real, or more goto-chasing?** Verdict: **real** —
+it sourced a generalizing atom forward, deductively, and the inverse folds far beyond its discovery sub.
+
+**Forward source of truth (lowering-atlas `b_or`).** GCC lowers `if(a||b){r=1;}` to: `bb2: if(a) goto bb4;
+else bb3 / bb3: if(b) goto bb4; else bb5 / bb4: r=1 (BODY) / bb5: merge`. The BODY (`bb4`) is reached from
+BOTH the `a`-true and `b`-true edges — a second entry. `$9A5D`'s bytecode is identical
+(`9B2C→{9B30,9B34}`, `9B30→{9B34,9B7C}`, body `9B34` reached from both). So the goto-into-block residue is a
+real `||`, not irreducibility.
+
+**The architecture gap it named.** `boolean_regions` only inverts the VALUE diamond (K conds + 2 value-LOAD
+arms → `cond ? a : b`). A control `||` (`if(a||b){statements}`) had NO inverse — the body's 2nd entry edge
+reads as a cross-edge and the reducer bails. Missing *rule*, located by the forward catalog. (This is the
+"understand the mechanism → know the architecture is correct" path, not a `+/- gotos` poke.)
+
+**The atom (`vm_cfg.control_shortcircuits` + `bytecode_cfg` contraction + decoder fold).** Detector: a BODY
+with ≥2 conditional preds (the `||` convergence signature) where those guards form an address-contiguous,
+single-entry chain with exactly two external exits {body, skip}, the tail FALLS into the body (clean if-then
+layout). Reuses `recover_bool_formula` (body & skip as its two terminals) to get the compound condition.
+`bytecode_cfg` contracts the chain to one branch `entry → {body, skip}` (the middle guards' addresses absorb
+into the entry block); the decoder captures each guard's condition (suppressing the individual
+`if(ci) goto body` lines) and emits ONE `if(!(c1||c2…)) goto skip` at the tail, which the existing if-then
+structurer folds into `if(c1||c2…){body}`. So the reducer needs NO new rule — same playbook as value-diamonds.
+
+**Two soundness traps caught (both gate-invisible — the lesson re-confirmed):**
+1. **Side-effect hoist.** A non-entry guard is only evaluated when the earlier ones short-circuit false;
+   hoisting its block before the compound branch would run it (and a call-valued condition) UNCONDITIONALLY.
+   The CFG gate can't see this (it's structural, not data) → the detector REQUIRES every non-entry guard
+   block side-effect-free (no store/call/switch/syscall).
+2. **Layout / witness break.** First cut emitted `if(!formula) goto skip` assuming the body is the
+   fall-through; on 19 subs the tail's fall-through layout differed, so `lower_raw` diverged from the
+   contracted `bytecode_cfg` — the WITNESS gate (`lower(raw)==bytecode`, the foundation) broke. Fixed by
+   requiring the tail to fall into the body AND the chain to be address-contiguous `[entry, body)` (so the
+   contraction makes `body` the entry's fall) + non-entry guards reached only from inside the chain (else a
+   removed middle guard dangles an external edge → reducer KeyError).
+
+**Result.** V2 **929 → 899 (−30, 13 subs better, 0 worse)** — the FIRST atlas-sourced atom AND the first
+real V2 drop since the merge/gate lane was exhausted; V1 1080 → 1038 (−42), raw 2068 → 2032 (−36). All gates
+green: witness 495/495, structuring 495/495, soundness 114/114, drift clean, disasm 0 BAD ×4, deterministic;
+`source/4-c/*.c` regenerated (`$9A5D` now reads `if ((local11 || local10)) { … }`). The discovery sub `$9A5D`
+itself only went 13→12 in V2 (its OTHER regions still flat-span) — the −30 is almost entirely OTHER subs, i.e.
+the atom folds **beyond its intended purpose** (Chris's bar for "real issue, not chasing": met).
+
+**▶ NEXT (the natural successors):** mixed `(a&&b)||c` (a guard that does NOT branch straight to body — a
+later detector pass), and atom 4 (switch shared-merge). Both are now clearly atlas-sourceable shapes.
+
+## Atom 4 (FIRST SHAPE) — switch with empty-default == merge  ✅ (2026-06-05, ATLAS-SOURCED)
+The long-deferred switch mini-epic, attacked on the canonical sub `per_period_fief_daimyo_update_driver
+$A30D` (Chris's target). Landed the **default-target == post-dom-merge M** shape — the most common
+switch residue.
+
+**Forward source of truth + a correctness catch.** Chris's first-pass desired output had `case 0: …; break;`,
+which I flagged as a possible fall-through (the decompiled TEXT shows `L_A37E`/`L_A385` adjacent with no
+goto). **The bytecode settled it: `A37E → {A381}`** — case 0 jumps to the merge, NOT to case 1; the adjacency
+is the flushed-call display artifact (the `L_A381:` label even prints between them). So **case 0 breaking is
+correct**; my fall-through worry was wrong. The atlas `06_switch_shared_merge.sm_default_preswitch_share`
+confirms GCC lowers `switch{…default:break;}` to exactly this (each case → merge, empty default → merge).
+
+**The architecture gap, and why V1 "folds" it but reads WRONG.** `switch_dispatches` detects the switch but
+sets `break_target=None` because M=`$A381` is INTERLEAVED (`A381 < brace_close A391` — it sits between case
+bodies by address). So the cases couldn't render `break`. Worse, V1 emits `case 0: default: L_A381:
+per_turn_age(); goto L_A3A0;` — gate-equivalent (the gate reads address tags) but it READS as "default runs
+per_turn_age," which is FALSE. A gate-equivalent-yet-mis-reading fold — exactly the "C must read as game
+logic" gap a single structural metric misses.
+
+**The fix (3 coordinated changes; the gate change is the keystone).**
+1. **`switch_dispatches`**: detect `default_is_merge` (default target == M) and set `break_target = M` even
+   when M is interleaved (M < brace_close) — the label-aware gate tolerates the out-of-address-order merge.
+2. **`_structure_switch`**: when `default_is_merge`, EXCLUDE M from the inlined case bodies (it's pulled out
+   past the `}`), OMIT the empty default's label, convert each case's trailing `goto M` → `break;` (and a
+   case that FALLS to M with no terminator — `$A30D` case 0 — gets an appended `break;`; a case that falls to
+   the NEXT case keeps real C fall-through), and resume the walk at M.
+3. **gate `lower_struct_cfg`** (the keystone, kept INERT until #1/#2 emit breaks): (a) model `break` inside a
+   switch → the post-switch merge (today `break` resolved only in LOOP context; split into `break_exit`
+   [innermost loop OR switch] vs `continue_hdr` [innermost loop, skipping switches] = C semantics); (b) an
+   inlined no-default switch's unmatched-selector fall = the LEXICAL merge (block after `}`), not
+   `next_leader[sb]` (which is case 0 in an inlined switch).
+
+**Result.** `$A30D` 8→0 gotos — folds to the EXACT clean form (each case `break;`, empty default omitted, both
+`while` loops + the switch reading as game logic). V2 **899 → 883 (−16, 4 subs, 0 worse)**; V1 unchanged
+(`source/4-c/*.c` byte-identical — this is a V2-reducer + gate change, not a decoder fold). All gates green:
+witness 495/495, structuring 495/495, soundness 114/114, drift clean, disasm 0 BAD, deterministic. The gate
+change is the reusable keystone: switch-`break` now models correctly, so the remaining switch shapes
+(shared-RETURN merge `$9C84`, pre-switch-shared `$9ED9`, non-empty default) compose on top of it.
+
+**▶ NEXT switch shapes:** shared-return merge (`$9C84`: the merge is a `return` reached by an early guard too)
+and non-empty default — both now have the break-modeling foundation; they need the merge-identification to
+handle a merge that is a return/has-content rather than empty-routing.
+
+## Atom 5 retry (2026-06-05) — naive terminal-bypass gate is UNSOUND; sound path identified. REVERTED.
+Took "my pick" (`$AD38`, the cross-jump / multi-statement terminal duplication) now that atom B's
+lexical-merge gate landed. Confirmed the shape: `AD58` (4 stmts ending `return`) is reached from `AD47`
+(fall) and `AD67` (goto) — GCC cross-jumped it; the clean inverse DUPLICATES `AD58` into both arms.
+
+**Tried the cheap gate change — the negative tests killed it in seconds (the discipline working).** Made
+`contract()` bypass a terminal SINK (sole successor EXIT) even when observable, so a duplicated terminal
+would match the shared-sink witness. Result: **5 soundness tests FAILED** — `guard inversion (then/else swap)
+REJECTED` (`$862B`, `$87F0`) and `dropped case (dispatch edge lost) REJECTED` (`$B09D`, `$9BB4`, `$DE78`).
+Root cause: bypassing a terminal sink COLLAPSES distinct `return A`/`return B` arms (and distinct switch
+cases) to a single `EXIT`, so the gate can no longer tell a then/else swap or a dropped case from the
+original — it loses orientation + dispatch fidelity. (V2 also "dropped" 883→759, but that was the gate
+WRONGLY accepting, not a real win.) **Reverted; the gate stays pristine.**
+
+**The sound path (for a future focused session).** Don't bypass in `contract` (content-blind). DUPLICATE the
+terminal as a BYTECODE-side pre-contraction (the value-diamond playbook): `bytecode_cfg`, `lower_raw`
+(decoder), and `lower_struct` (reducer) ALL duplicate the shared terminal into each predecessor CONSISTENTLY
+(re-tagged to the predecessor's address range), so the three views agree at full fidelity — orientation/
+dispatch preserved because the copies are distinct content-bearing blocks, not a collapsed EXIT. Plus a
+**copies == in-edges guard** (every predecessor that reached the sink gets a copy → no path silently drops
+its content, the guarantee `contract` can't carry). This is the "rearchitecture" the earlier `$AD38`
+dissections flagged — NOT a one-line gate tweak. **Lesson reaffirmed (correctness-over-results): the push-pull
+negative tests are the backstop; a cheap gate relaxation that "improves" the goto count is exactly what they
+exist to reject.**
+
+## Atom 5 retry #2 (2026-06-05) — the SOUND duplication WORKS; the wall is the address-inverted ARM, not the dup
+Built the layered-grounding version Chris asked for and it is SOUND — but it pinpointed the real blocker much
+more sharply than before.
+
+**What landed (then reverted as inert):** (1) a TARGETED gate bypass — `contract()` bypasses a terminal sink
+only when it has ≥2 preds in the WITNESS (the genuine cross-jump merge target); the ≥2-pred restriction keeps
+1-pred terminal arms intact, so the then/else-swap + dropped-case negative tests STILL pass (114/114) — fixing
+the unsoundness of retry #1's blanket bypass. (2) `_is_crossjump_terminal` + a `dup_terminals` reducer flag
+that DUPLICATES the shared tail into each arm at the cross-edge cut, re-tagged to the predecessor's address.
+(3) the **`copies == in-edges` guard** (`1 + dup_count[T] == |preds(T)|`) — the per-arm content check the
+routing gate is blind to (Chris's layered grounding). (4) the lowering-atlas `06`/`07` -O0 form as the content
+oracle.
+
+**Proven on `$AD38`: the duplication produces the EXACT clean form** — `if(ai_state(def)){…; return} else {
+if(!ai_state(sel)) return…; …; return}`, 0 gotos, `dup_count={AD58:1}`, guard satisfied. So the dup half is
+correct and sound.
+
+**But the gate REJECTS it — and NOT because of the dup.** Contracted CFGs diverge at the ELSE-ARM: `$AD38`'s
+correct form is ADDRESS-INVERTED — `AD67` (0xAD67) is emitted AFTER `AD7B` (0xAD7B) yet has a LOWER address, so
+`lower_struct`'s address-based fall-through computes `AD7B → next_leader = AD85` instead of the emitted
+`AD7B → AD67`. The terminal dup is fine; the blocker is the **guard/ifreturn fall-through still being
+address-based**. Atom B fixed exactly this for if-MERGES (label-based `merge_after`), but the general
+fall-through is harder — `AD67` is reached by FALL (no label), so a label-based fix doesn't reach it.
+
+**Corpus: V2 883 → 883 (INERT).** Every cross-jump sub has the same address-inverted arm, so the gate rejects
+every dup'd form (reduce() self-validates → falls back). Reverted — sound but inert, same call as the
+chase-V2 region assignment (no inert complexity).
+
+**SHARPENED conclusion.** Atom 5 = terminal-dup (DONE, sound, banked here) **+** lexical fall-through for
+guards/ifreturns (the remaining wall). The latter is the broad EMIT-ORDER gate the `$AD38` dissections kept
+naming — now pinned to one concrete mechanism: `lower_struct`'s `fall_thru = next_leader[L]` must become
+emit-order-aware for reordered (address-inverted) arms, the way `merge_after` did for merges, but without a
+label to anchor on. That is the real multi-session rearchitecture; the dup machinery above re-applies on top of
+it. **Grounding scorecard (Chris's "all forms"): routing = the ≥2-pred bypass (sound, 114/114); content =
+copies==in-edges guard + atlas -O0 oracle (sound); the gap is purely LAYOUT (emit-order fall-through).**
+
+## Atom 5 — approach-B gate built (else_start + lex_fall); it EXPOSES gate-laundered mis-reads (2026-06-06)
+Built the emit-order gate (method.md §3.5 approach B) test-first against a HAND-BUILT ideal `$AD38` dup
+form. Two coordinated changes in `vm_cfg.lower_struct_cfg`:
+
+1. **`else_start` lexical** — the if-then-else else entry is read as `first_real_block(else_idx+1, close)`
+   (the FIRST block emitted after `} else {`), not `next_leader[then_top]`. `$AD38`'s else is internally
+   address-inverted (entry `AD7B` guard > body `AD67`), so the address read landed on the interior `AD67`;
+   the lexical read gives `AD7B`. **INERT on the corpus (V2 883 unchanged), 114/114** — for an address-
+   ordered arm the two agree.
+2. **`lex_fall` (the general fall-through)** — a one-pass forward walk records, for block L, a BACKWARD
+   label-anchored emit-next (`L_X:` with `X < prev`) as L's fall, overriding `next_leader[L]`. Backward-only
+   is the soundness key: a genuine address-inverted fall (the reducer emitting a lower-addr block later —
+   `AD7B→AD67`) is always backward, while FLUSH only ever DELAYS a block's body FORWARD past a label (e.g.
+   `$A778`'s `L_A7AD` printed before `A7A8`'s flushed body), which a forward record would mis-catch. The
+   `< prev` guard keeps the walk inert on flush-interleaved address-ordered emit (raw/V1).
+
+**Result on the hand form:** both `$AD38` inversions resolve — `AD3D→{AD47,AD7B}` and `AD7B→{AD67,EXIT}` now
+match raw. The ONLY remaining hand-form gap is the DUP itself (`AD67→{AD58}` raw vs `→{EXIT}` struct) — needs
+the ≥2-pred terminal-sink bypass (retry #2's sound version) + the reducer actually emitting the dup.
+
+**THE FINDING (the fork): `lex_fall` is sound but NOT inert — it costs +7 (V2 883→890) on `$ADF6` (+6) and
+`$CEC4` (+1), and the reason is a CORRECTNESS bug it EXPOSES, not a gate bug.** Dissected `$ADF6`: bytecode
+`AE74 (flag=1) → AE77(empty) → AE78`. The reducer REORDERED `AE2A` to sit physically right after `AE74` and
+emitted NO compensating `goto` — so the shipped C reads `*(fp-45)=1; <falls into> L_AE2A: ppu_blit(); goto
+AEA2;` which is the WRONG successor (correct is `AE78`). The faithful RAW witness has `AE75 flag=1; L_AE77:;
+L_AE78: …` (correct fall). The address-based gate laundered the reorder (`next_leader[AE74]=AE77→AE78` ✓);
+the emit-order gate reads the TRUE physical fall (`AE74→AE2A`) and rejects → the sub falls back to honest
+goto (+gotos). **This is Lesson 2 ("gate-equivalent ≠ reads-correctly") caught by a tool, not by eye.**
+
+**Reframe.** Approach B is not merely the atom-5 dup enabler — it is a CORRECTNESS upgrade: the reducer is
+currently allowed to emit reordered single-successor blocks WITHOUT the compensating `goto`, and the
+address gate accepts the resulting mis-read. The reducer side of approach B (emit `goto L_<real-succ>` — or a
+proper labelled reorder — whenever a block's emit-next ≠ its CFG successor) is the FOUNDATION; it fixes these
+mis-reads AND is what the dup re-applies on top of. State left: gate code in place, 114/114, hard gate CLEAN
+(the 2 exposed subs fall back honestly — no corruption), V2 = 890 pending the reducer honesty fix.
+
+### LANDED (2026-06-06): emit-order gate + reducer-honesty repair — V2 883→878, 2 mis-reads FIXED
+Chris's call: **reducer honesty first.** Added `_honest_repair` (vm_reduce) wired into `_validates`: when a
+fold fails the (now emit-order) gate because a PLAIN single-successor block physically falls into a
+NON-successor (the reorder seam), insert an explicit `goto L_<succ>` after that block (succ chased through
+empty blocks to a labelable target) and keep the rest of the structuring — instead of collapsing the whole
+sub to flat. Invoked ONLY on a validation failure, touches ONLY a plain fall whose emit-successor differs
+from its single CFG successor (a clean fold / sound backward reorder is never given a spurious goto), and the
+caller re-labels + re-validates. Also made `_insert_labels` idempotent (pre-seed `placed` with existing
+labels) so the double-label-pass leaves no `L_x: L_x:`.
+
+**Result:** `$ADF6` now reads `*(fp-45)=1; goto L_AE78;` (CORRECT) instead of falling into `$AE2A` (wrong);
+`$CEC4` likewise. The honest forms cost +1 each ($ADF6 20→21, $CEC4 6→7), but the emit-order gate also lets
+several previously-rejected-but-CORRECT reorders validate → **net V2 883 → 878 (−5), folded 351→353, behind
+56→55.** All gates green: 114/114 soundness, V1 hard gate 495/495, V2 hard gate 495/495, deterministic. The
+emit-order foundation (method.md §3 approach B) is DONE and net-positive; atom-5's terminal-dup re-applies on
+top of it next (the `$AD38` hand form's layout already resolves; only the ≥2-pred terminal-sink bypass + the
+reducer emitting the dup remain).
+
+## Atom 5 LANDED (2026-06-06) — cross-jump terminal DUPLICATION on the emit-order foundation. V2 878→875.
+With the emit-order gate + honesty repair in place, re-applied the reverted retry-#2 dup machinery — and
+this time it LANDS (the address-inverted-arm wall is gone). Five coordinated pieces:
+
+1. **`contract()` ≥2-pred terminal-sink bypass** (`vm_cfg`, the keystone). A terminal sink (→EXIT) with ≥2
+   WITNESS preds is bypassed on BOTH sides even though observable, so a DUPLICATED tail (struct) compares
+   equal to the shared tail (raw). The set is computed from the raw witness so it's identical for both
+   contractions. The ≥2-pred restriction is the soundness key (a 1-pred `return A`/`return B` arm stays
+   distinct → then/else-swap + dropped-case negative tests still REJECT — 114/114 held).
+2. **The dup at the cross-edge cut** (`vm_reduce._structure`). When a strand cross-edge-cuts onto an
+   already-emitted block `s` that is a ≥2-pred terminal sink (not a switch), DUPLICATE `s`'s stmts into the
+   host arm (`('dup', host, s, stmts)`) instead of `goto L_s`; the copy is re-tagged to the host's block
+   (`block_of → host`) so the host arm ends in its OWN tail (→EXIT) while the first predecessor keeps the
+   original. Trialled on/off in the whole-sub `_COMBOS` grid (fewest-goto validating wins → dup sticks only
+   where it removes gotos).
+3. **`copies == in-edges` content guard** (`_dup_guard_ok`) — `1 + dup_count[T] == |preds(T)|` per duplicated
+   sink, the per-arm content check the routing gate is BLIND to (contract bypasses T, so a dropped copy reads
+   identical to it). A fold that duplicated incompletely is rejected.
+4. **`_label_reordered_falls`** (approach B, reducer side) — the dup removes the `goto L_s` that used to label
+   the reordered body block ($AD67), so the emit-order gate (lex_fall keys on labels) couldn't anchor
+   $AD7B→$AD67. Emit an explicit `L_X:` on any BACKWARD fall target (X physically after a fall-through block P
+   but X < P). INERT on address-ordered emit (X always forward). Run after _insert_labels AND after _peephole
+   (its dead-label sweep would drop a goto-less anchor).
+5. Region-fallback dup was trialled but gave 0 corpus gain → NOT landed (whole-sub dup owns the shape).
+
+**Result:** `$AD38` folds to the EXACT §3.2 clean form — `if(ai_state(def)){…;return} else { if(!ai_state(sel))
+return…; L_AD67: …; <AD58 dup>; return }`, **0 gotos** (was 3), both arms ending in their own copy of the
+`redraw;redraw;return` tail, reading as game logic. **V2 878→875 (−3); behind 55→54.** All gates green:
+114/114 soundness (incl. the swap/dispatch negatives the ≥2-pred restriction protects), V1 + V2 hard gates
+495/495 each, deterministic. The `L_AD67:` anchor label is a (harmless) cosmetic artifact of the emit-order
+gate. **Session total: V2 883→875 (−8) + 2 latent mis-reads fixed.**
+
+**Still open (the cross-jump family beyond $AD38):** ~32 subs / ~43 sink-recoverable gotos (probe-inversion-
+sink) carry the SAME optimization but in DIFFERENT shapes (sink reached as an if-merge, via switch case-tails
+`$A2D2`, etc.) — the cross-edge-cut dup only owns the guard→block→cut shape. Each remaining shape is a
+follow-on dup insertion point on this same foundation.
+
+### A5 completion investigation (2026-06-06) — the cross-jump dup is DONE at $AD38; the rest of the "terminal" residue is NOT cross-jump
+Dissected all 10 remaining `shared_terminal` subs (probe-residue-cause) to finish atom 5. Result: the genuine
+cross-jump shape — a BACKWARD (address-inverted) terminal sink reached via a single-succ cut, where the host
+strand →EXIT after the dup — is essentially UNIQUE to $AD38. The others are different idioms:
+
+| sub | sink | preds | classification |
+|---|---|---|---|
+| $A95E, $9DC4 | A9A6 / 9EAB,9EFF | 2 FORWARD cut | **forward shared-merge** (emit once after the if) — atom-6/Track-A gap, not dup |
+| $93BF | 944E | 8 (6 guard+2) | **short-circuit-OR / early-return** guard chain — duping = 7 copies, wrong inverse |
+| $8FF8, $918D, $9E73, $A9FB | — | 3–5, guard-heavy | guard chains (same) |
+| $8327 | 8354 | 2 cut | **noise-return**: `return arg1` + an `// ext_op` nop comment counted as a 2nd stmt |
+| $A2D2 | — | switch | switch case-tails (the switch family, atom-4 follow-on) |
+
+**Two architectural facts that bound A5:**
+1. **The cross-edge dup fires only when a predecessor's SOLE successor is the sink** (the host strand then
+   →EXIT after the dup, giving a valid re-tag target — $AD38's $AD67). A GUARD pred (`if(c) goto sink`) does
+   NOT →EXIT (it continues to its fall), so the address-based gate has NO leader to re-tag a nested
+   `if(c){dup}` copy to — multiple guard-dups of one sink all collide on the sink's address. Guard-goto dup
+   needs a gate-model change (label-keyed dup blocks), not just a new emit site.
+2. The forward shared-merge cases want MERGE-folding (emit the sink once after the if — Track A/atom 6), not
+   duplication; duping them would be wrong (they're not cross-jumped).
+
+**Conclusion (matches the ledger's own "residue is 77% non-sink, sink is a minority lever" finding): atom 5
+is COMPLETE.** The cross-jump terminal-duplication inverse is implemented, sound, and lands its clean case
+($AD38, 0 gotos). The remaining "terminal" residue belongs to other atoms — forward-merge folding (the
+non-sink majority, ~148 gotos, the real lever), guard short-circuit/early-return, the switch family, and
+cosmetic noise-return cleanup — none of which are cross-jump duplication.
+
+### Noise-return cleanup (2026-06-06) — comment lines no longer block early-return inline. V2 875→874.
+Forward-merge-adjacent: `_real_stmts` filters cosmetic `// ext_op …` provenance comments from a block's
+statement count, so a `return X;` tail padded with an ext_op nop comment ($8327's $8354) is recognized as a
+bare-return block and inlined as the early-return idiom (both `_is_return_block` and `_terminal` updated).
+`$8327` 1→0 (clean if/else, each arm `return arg1`). V2 875→874, behind 54→53, 114/114, both hard gates
+495/495, deterministic. (The broad forward-merge MAJORITY — ~148 non-sink gotos across loops / multi-way /
+acyclic shared merges — remains its own focused epic; several of those subs V1 itself can't fully fold.)
+
+### Terminal-exit un-sharing — theory TESTED, sound, 0 yield (2026-06-06). Machinery REVERTED, finding banked.
+Chris's hypothesis: a shared terminal exit is compile-time-shared code; un-share it (give each path its own
+exit copy) and test if it collapses — generalizing atom 5 + the early-return inline into one mechanism. Built
+the clean version that handles the case the address-based gate couldn't before (a guard inlining a
+MULTI-statement shared tail, `if(c){ tail }`): copies emitted at a SYNTHETIC address (≥0x100000) so N copies
+don't collide on the sink's address; `lower_struct_cfg` self-augments its leader set with synth addrs; `then_true`
+read lexically (synth-aware); `contract()` bypasses synth terminals; `_dupable_sink` + a guard-arm dup path +
+`copies==in-edges` guard (visited-based) + dup_count rollback on arm-probe bail. All SOUND: 114/114, both hard
+gates 495/495, `$AD38` still folds.
+
+**Result: V2 874 → 874 — ZERO additional subs.** Characterized why on every candidate:
+- `$9E73`: the dup fires on 1 of `$9F46`'s 3 preds; the other 2 split across spine regions, so `copies==in-edges`
+  fails (incomplete) → rejected. And the whole-sub never validates anyway (its gotos are non-terminal merges
+  `$9F37`/`$9FC7`, not the sink).
+- `$8FF8`, `$A9FB`: the dup-guard never fires — the sink is reached as a MERGE / loop-edge, not a clean
+  single-sided `if(c) goto sink` guard.
+
+**Conclusion (theory confirmed by construction + measurement): the terminal-exit slice is EXHAUSTED at `$AD38`.**
+Every remaining "terminal sink" lives inside a function whose gotos come from non-terminal shared merges and
+loop continue/break — which duplication cannot touch (the cone isn't empty; duplicating it explodes). So the
+residue bottleneck is definitively NON-TERMINAL merges + loops (the ledger's long-standing "77% non-sink"
+finding, now proven by building the terminal lever and measuring it dry). Reverted the synth machinery (don't
+land inert complexity); the design is banked here for re-application IF the non-terminal/loop blockers are ever
+cleared. The real lever remains forward shared-merge folding + loop continue/break recognition.
+
+## Forward-primitive MODEL VALIDATION (2026-06-06) — model recovers all primitives; gap is COMPOSITION, fix is un-sharing
+Chris's reframe: stop steering by goto-count / "behind V1" (metric-chasing); instead forward-test — author each
+known source primitive as its COLLAPSED goto/label form and ask "can the structurer put it back?" Built
+`tools/probe-primitives.py` (synthetic raw line-lists → lower_goto_cfg → whole-sub structurer → recovered C +
+self-validation). No instructions/assembly needed (the gate runs on lines+leaders).
+
+**The model is SOUND on every primitive AND every pairwise combination, all 0 gotos:** nested ifs (3 deep —
+the shared-merge case), if-else, sequential diamonds, code-after-inner-if, pre-test while, break, continue,
+2-guard (continue+break), rotated entry-jump loop, shared-increment loop, break-to-shared-tail. So the residue
+is NOT a missing primitive — the recovery logic works.
+
+**The gap is COMPOSITION DENSITY.** Reconstructing `$9C22`'s exact CFG (outer-if + rotated loop + shared incr +
+break) FAILS (flat, 7 gotos) though each piece folds alone. Bisected to the minimal breaker — `rot_incr_break`
+(no outer if needed): **a loop whose body has BOTH a continue-via-SHARED-prologue (guards → a shared `incr`
+block → header) AND a break (body → exit).** The single-pass-walk + post-dom-merge structurer can't compose
+"continue to a shared block (not the header)" with "break" in one body — it hits the shared `incr` as a
+cross-edge and cuts to goto.
+
+**The fix is UN-SHARING, exactly the reverted synthetic-leader capability — now aimed at a NON-terminal bounded
+cone.** Duplicating the 1-block `incr` prologue into each guard gives clean `while(c){ if(a){incr();continue;}
+if(b){incr();continue;} body(); break; }`, 0 gotos. So the lever is duplication of a bounded shared block
+(Chris's "phantom boundaries"), generalizing atom 5 from terminal sinks (cone=∅) to bounded non-terminal cones
+(cone ends at the header / a continue point). Reverting the synth-leader machinery on the goto-metric was the
+mistake the forward method exposes. ▶ NEXT: restore synth-leaders + extend dup to bounded non-terminal cones;
+`rot_incr_break` is the regression test.
+
+## Two decisions + the loop-conditional-placement diagnosis (2026-06-06, Chris's frame)
+Chris's frame: structure recovery makes TWO choices the compiler erased — (1) IF POLARITY (invert or not:
+`if(c){body}` vs `if(!c){…}`), and (2) LOOP CONDITIONAL PLACEMENT (where the test is: `while(c){}` top-test vs
+`do{}while(c)` bottom-test vs `while(1){…break…}`). The `$9C22`/`rot_incr_break` residue is decision (2).
+
+Traced `rot_incr_break` (the minimal `$9C22` loop) through `_structure_loop` — it's a THREE-LAYER composition,
+each an address-order/loop-form gap:
+1. **Bottom-test ⇒ address-inverted exit.** The compiler put the test at the BOTTOM (`$9C7A`), so the loop's
+   exit/body sits at a LOWER address than the test. The exit-adjacency check `ctx.nxt[max(region)] != e`
+   (ADDRESS-based) bails to flat — same wall approach B fixed for if-merges, now in the loop exit. (Relaxing
+   it alone is NOT enough — layer 2 still blocks.)
+2. **Genuinely multi-exit, convergent at a shared return.** The loop exits two ways — the test→shared return,
+   AND a full guard-pass→`body_work`→that same return. `_convergent_exit` is built to handle exactly this
+   (treat `body_work` as a shim, the shared return as the real exit) BUT the `nonreturn` exit filter drops the
+   return-exit first, leaving a single wrong target (`body_work`), so convergent detection never runs.
+3. **Continue-prologue un-sharing** (the shared `incr` block the guards funnel through). The capability is
+   BUILT (synthetic-leader copies, gate self-augment + bypass + then_true lexical, `_dupable_prologue`, the
+   `ifdup` guard path, copies==in-edges guard) and SOUND + inert (874/114/gate-clean) — but it can't fire until
+   the loop folds (layers 1+2), because the guards live in the loop body and `_structure_loop` bails first.
+
+**So the model recovers every primitive; `rot_incr_break` is a dense composition of (1) address-inverted loop
+exit + (2) convergent multi-exit (return-filter pre-empts the shim logic) + (3) continue-prologue.** The next
+real step is the `_structure_loop` exit rework: let the convergent-exit logic see the shared return through the
+nonreturn filter, and read the exit emit-order (lexical) not address — then the continue-prologue un-sharing
+(built, banked in the working tree) composes on top. Forward-primitive harness (`probe-primitives.py`) has
+`rot_incr_break` + the layered variants as permanent regression targets.
+
+## LANDED (2026-06-06): loop convergent-exit fix + continue-prologue un-sharing. V2 874→829 (−45).
+The `_structure_loop` rework Chris's loop-conditional-placement frame pointed to. Two coordinated landings:
+
+1. **Convergent-exit FIRST (the −45 bulk).** Run `_convergent_exit` over ALL loop exits BEFORE the `nonreturn`
+   filter. The filter used to pick a non-return SHIM (a block that itself flows to the shared return) as a
+   phantom exit, so the convergent logic never ran and the loop bailed to flat. Now a loop whose test exits to
+   a shared return AND whose full-pass exits to `body_work`→that-same-return folds: the return is the single
+   exit, `body_work` is a shim pulled into the body (then breaks). Also fixes layer-1 for free — with the right
+   exit, it IS address-next, so the adjacency check passes. (`rot_incr_break` + `c9c22_exact` primitives → 0
+   gotos; the whole `$9C22`/`$9E73`/loop family unlocks.)
+2. **Continue-prologue un-sharing (the built capability, now firing).** A guard whose goto-arm is a shared
+   single-succ block →loop-header (the loop's increment/update) is duplicated into the guard arm as
+   `if(c){ incr(); continue; }` at a SYNTHETIC address (gate self-augments leaders + bypasses synth copies and
+   their decoded originals + `then_true` lexical; `_dupable_prologue`; copies==in-edges guard). Fires on `$AC7F`
+   → 0 gotos, reading as a for-loop increment (`if(!present){ slot++; continue; }` + the slot++ at the tail).
+
+**Result: V2 874→829 (−45), behind 53→46, ALL 16 forward primitives fold (incl. the two that failed),
+114/114 soundness, V1 + V2 hard gates 495/495 each, deterministic.** The forward-primitive method (Chris's
+reframe — stop chasing gotos, validate the model + un-share the boundaries the compiler erased) drove the
+whole thing: it proved the primitives sound, isolated `rot_incr_break` as the minimal dense composition, and
+pinned the culprit to `_structure_loop`'s exit handling. Cosmetic follow-up: a dangling reordered-fall label on
+some folded loops (`L_AC8C`), gate-harmless.
+
+## Option-1 dissection (2026-06-06) — the loop+merge model is ROBUST; residue is dense real-sub stacks
+Picked the top "neither"/cross-edge behind subs (V2 829). `$A221` (40-block nested-loop monster, too big to
+minimize), `$8669` (switch-in-loop — switch family, not pure merge), `$9778` (the representative: V1 folds the
+loop+outer-if to 4 gotos, V2 falls the WHOLE loop to flat = 9). Forward-primitive-tested every approximation of
+`$9778`'s shape — and they ALL fold to 0 gotos: `loop_diamond_merge`, `loop_chain_merge` (two chained shared
+merges in a loop), `rot_loop_break_diamond` (rotated entry-jump loop + top break-guard + if-else diamond). So
+the model handles loops + (chained) non-terminal shared merges + break + entry-jump cleanly. `$9778`'s actual
+failure is a DENSER/messier stack (cross-level nested merges where the outer-else has a guard-arm AND a nested
+diamond both converging, plus real expressions) that resists minimal reproduction — the model is in much better
+shape than the behind-count implied; the remaining "neither" residue is messy real-sub specifics, not a clean
+missing primitive.
+
+**Cosmetic REGRESSION found (from the convergent-exit/un-sharing work): a dangling loop-entry label** (`L_0002`,
+`L_AC8C`) now prints right after `while(p()){` on folded rotated loops — `_label_reordered_falls` mis-reads the
+loop-back edge (test→body, a lower address) as a backward FALL and labels the body entry, though it's reached
+via the loop structure, not a lexical fall. Gate-harmless but hurts readability on every loop the convergent
+fix folded. ▶ Fix: exclude loop-body-entry / loop-header targets from `_label_reordered_falls`. More tractable
+next wins than `$9778`'s exact stack: (a) that dangling-label cleanup; (b) the switch family (`$9C84`
+shared-return merge, non-empty default, `$A2D2`). New forward primitives banked as regression tests.
+
+### Dangling loop-entry label FIXED (2026-06-06, readability). V2 829 unchanged (cosmetic).
+`_label_reordered_falls` was treating a construct OPENER (`while/if/switch/do {`) as a falling predecessor, so
+on a rotated loop (bottom-test header addr > body addr) it labeled the body entry as a spurious backward-fall
+target — a dangling `L_xxxx:` printed right after `while(p()){`. Fixed: an opener's body is resolved by the
+construct (header_edges / body_entry), not lex_fall, so it no longer marks the body as a fall target. Removes
+the dangling labels on every loop the convergent-exit fix folded (`rot_incr_break`, `$AC7F`, …). V2 829
+unchanged (gate ignores labels), all 19 forward primitives fold clean, 114/114, V1 + V2 hard gates 495/495.

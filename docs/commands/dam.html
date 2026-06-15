@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dam — Nobunaga’s Ambition Command Reference</title>
+<style>
+  :root{
+    --bg:#15151c; --panel:#1f1f2b; --ink:#e8e6df; --dim:#9a97a8;
+    --gold:#f0b429; --red:#e8431f; --blue:#3a6ee8; --green:#5ad05a;
+    --line:#33303f; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px}
+  header{border-bottom:2px solid var(--gold);padding-bottom:14px;margin-bottom:8px}
+  .cmdno{color:var(--gold);font:600 13px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase}
+  h1{margin:.18em 0 .1em;font-size:38px;letter-spacing:.01em}
+  .tag{color:var(--dim);font-style:italic}
+  .skills{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 28px}
+  .skills span{font:600 11px/1 var(--mono);letter-spacing:.06em;color:var(--dim);
+    border:1px solid var(--line);border-radius:999px;padding:6px 11px;text-transform:uppercase}
+  h2{margin:38px 0 4px;font-size:22px;border-left:4px solid var(--gold);padding-left:12px}
+  .sub{color:var(--dim);margin:0 0 16px;padding-left:16px;font-size:14px}
+  .anim{display:flex;gap:24px;align-items:center;flex-wrap:wrap;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:14px}
+  .anim img{image-rendering:pixelated;width:256px;height:240px;background:#6b6b6b;border-radius:6px}
+  .anim .cap{flex:1;min-width:240px}
+  .anim .cap b{color:var(--gold)}
+  .pill{display:inline-block;font:600 11px/1 var(--mono);color:var(--bg);background:var(--green);
+    border-radius:4px;padding:3px 7px;margin-left:6px;vertical-align:middle}
+  ol.flow{counter-reset:step;list-style:none;padding:0;margin:14px 0}
+  ol.flow li{position:relative;padding:12px 0 12px 52px;border-bottom:1px solid var(--line)}
+  ol.flow li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:10px;
+    width:34px;height:34px;border-radius:50%;background:var(--panel);border:1px solid var(--gold);
+    color:var(--gold);font:700 15px/34px var(--mono);text-align:center}
+  ol.flow .scr{color:var(--green);font-family:var(--mono);font-size:14px}
+  ol.flow .addr{color:var(--dim);font-family:var(--mono);font-size:12px;float:right}
+  pre{background:#101019;border:1px solid var(--line);border-left:3px solid var(--blue);
+    border-radius:8px;padding:16px;overflow:auto;font:13.5px/1.5 var(--mono);color:#d6e4ff}
+  pre .c{color:#6f7b96}
+  pre .k{color:var(--gold)}
+  .callout{background:#241a12;border:1px solid #6b4a1e;border-left:4px solid var(--red);
+    border-radius:8px;padding:14px 18px;margin:18px 0}
+  .callout b{color:var(--red)}
+  .rabbit{background:#1a1426;border:1px solid #4a2e6b;border-left:4px solid #9a6ef0;
+    border-radius:8px;padding:14px 18px;margin:14px 0}
+  .rabbit b{color:#b89af0}
+  .rabbit a{color:var(--blue);text-decoration:none}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:var(--panel);color:var(--gold);font-weight:600}
+  td .ok{color:var(--green)}
+  code{font-family:var(--mono);color:var(--gold);font-size:.92em}
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+  footer a{color:var(--blue);text-decoration:none}
+  .roi{color:var(--dim);font-style:italic;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="cmdno">Lord Command · No. 5</div>
+  <h1>Dam</h1>
+  <div class="tag">Spend gold on flood-control to raise <b>dams</b> (0–100) — a rice-harvest multiplier. The only capped stat, and the gain shrinks as the fief’s output grows.</div>
+</header>
+
+<div class="skills">
+  <span>① decompiler → C</span>
+  <span>② data-walk labels</span>
+  <span>③ bytecode-validated formula</span>
+  <span>④ animation VM → ROM render</span>
+</div>
+
+<h2>What you see</h2>
+<p class="sub">The in-game Dam animation, rendered <b>purely from ROM bytes</b> — no emulator capture.</p>
+<div class="anim">
+  <img src="data:image/gif;base64,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" alt="Dam animation">
+  <div class="cap">
+    A laborer drives stakes along the riverbank, holding back the blue water below.
+    <span class="pill">FROM ROM</span><br><br>
+    Produced headless by <code>tools/run-animation.py 21</code>, which runs the game’s
+    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>21</code> from
+    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write
+    and sprite placement to reconstruct each frame — real NES palette.
+  </div>
+</div>
+
+<h2>How it works</h2>
+<p class="sub">The driver <code>$9B7E</code> reads as a step-by-step script:</p>
+<ol class="flow">
+  <li><span class="addr">$9B83</span>Select <b>Dam</b>, the province. If <code>output == 0</code> → <span class="scr">"You have no peasants!"</span> (you can’t dam undeveloped land).</li>
+  <li><span class="addr">$9BAA</span><b>Limit check.</b> If <code>dams ≥ 100</code> → <span class="scr">"We’re at our limit."</span> (dams is the only 0–100-capped stat).</li>
+  <li><span class="addr">$9BBE</span><b>Gold check.</b> No gold → <span class="scr">"You have no gold."</span></li>
+  <li><span class="addr">$9BCF</span><b>Spend cap</b> = min(gold, (100 − dams) × √output ÷ 2).</li>
+  <li><span class="addr">$9BEA</span>Prompt: <span class="scr">"Dams is <i>N</i>. Spend how much on it?"</span> → number entry.</li>
+  <li><span class="addr">$9C08</span><code>gold −= amount</code>.</li>
+  <li><span class="addr">$9C0F</span><code>gain = ⌊2 × amount ÷ √output⌋</code> (min 1); <code>dams += gain</code> via <code>helper_dam_rounding</code> (war-halves).</li>
+  <li><span class="addr">$9C26</span><b>The animation plays</b> — <code>ui_helper_e80c(21)</code> hands id 21 to the bank-14 animation VM.</li>
+  <li><span class="addr">$9C2C</span><code>dams</code> clamped to 100; <span class="scr">"Dams value is now <i>N</i>."</span> → confirm.</li>
+</ol>
+
+<h2>The formula</h2>
+<p class="sub">Read directly from <code>$9B7E</code> bytecode and execution-verified.</p>
+<pre><span class="c">// preconditions (driver $9B7E)</span>
+<span class="k">if</span> output == 0:  <span class="c">// "you have no peasants" — can’t dam undeveloped land</span>
+<span class="k">if</span> dams  &gt;= 100: <span class="c">// "we’re at our limit" — dams is the ONLY 0–100-capped stat</span>
+<span class="k">if</span> gold  == 0:   <span class="c">// "you have no gold"</span>
+
+sqrt = <span class="k">int_sqrt</span>(output)                       <span class="c">// via $87D8 (the real "effect_dam" is just this)</span>
+
+<span class="c">// spend cap — couples to output AND remaining dam headroom</span>
+max_spend = <span class="k">min</span>( gold, (100 &minus; dams) &times; sqrt &divide; 2 )
+amount    = <span class="k">number_input</span>(cap = max_spend)
+gold     &minus;= amount
+
+<span class="c">// gain — INVERSELY proportional to √output</span>
+gain  = <span class="k">max</span>(1, &lfloor; 2 &times; amount &divide; sqrt &rfloor;)
+dams &plus;= gain                            <span class="c">// helper_dam_rounding $887D: war-halves, caps at 100</span></pre>
+<p class="roi">Dam multiplies with output in the rice harvest (<code>rice += pct_op(output × dams, tax)</code>), so its ROI <i>rises</i> with output even as the gold cost does. Rule of thumb: Dam beats Grow for rice once <code>output² &gt; ~38 × dams</code> — i.e. dam your already-high-output rice fiefs.</p>
+<div class="callout"><b>The last open formula — and it never lived where the labels said.</b> <code>$87D8</code> (tagged “effect_dam”) is merely a <code>sqrt(output)</code> helper; the real dam math is computed <b>inline in the driver $9B7E</b> and applied through <code>helper_dam_rounding</code> (<code>$887D</code>, shared with Build). Two defining properties: dams is the <b>only</b> province stat capped at 0–100, and the gain is <b>inversely proportional to √output</b> — a developed fief pays far more gold per dam point. The spend cap <code>(100−dams)×√output÷2</code> is exactly the amount that lifts dams to 100, so “spend the max” always tops out the dam. Dams matter because the rice harvest multiplies <b>output × dams</b> (appendix §4). <b>Skill-immune (2026-06-11):</b> unlike Grow/Build/Give, Dam’s gain has <b>no <code>(6&nbsp;&minus;&nbsp;skill)</code> term</b> — it is the one development command the difficulty dial does <i>not</i> slow (dams&nbsp;+25 at skill&nbsp;1 and skill&nbsp;5 alike, <code>econ_sim</code> verified), so Dam grows <i>relatively</i> more valuable at high difficulty when everything else is up to 5× slower.</div>
+
+<h2>Validated against the ROM</h2>
+<p class="sub">Dam at Tokugawa’s state (output 254 → √=15, dams 39). The +56 row is the in-game capture; the others apply the validated formula at the same state.</p>
+<table>
+  <tr><th>amount</th><th>gain = ⌊2·amount/15⌋</th><th>dams →</th><th>note</th></tr>
+  <tr><td>100</td><td>⌊200/15⌋ = 13</td><td>52</td><td></td></tr>
+  <tr><td>250</td><td>⌊500/15⌋ = 33</td><td>72</td><td></td></tr>
+  <tr><td>424 (all gold)</td><td>⌊848/15⌋ = 56</td><td>95</td><td>in-game ✓</td></tr>
+  <tr><td>457 (cap)</td><td>⌊914/15⌋ = 60</td><td>99</td><td>max spend</td></tr>
+</table>
+<p class="sub">Spend cap = min(gold, (100−dams)×√output÷2) = min(424, 61×15/2 = 457) = 424 → all gold spent. Validated against the <code>dam-mikawa</code> capture: dams 39 → 95 (+56), exact. Gain is inversely proportional to √output — a high-output fief pays MORE gold per dam point.</p>
+
+<footer>
+  <b>Fields touched:</b> <code>dams</code>&nbsp;+gain (capped 0–100) · <code>gold</code>&nbsp;−amount. &nbsp;·&nbsp;
+  Sources: <code>decompiled/bank_01.c</code> · <code>tools/run-animation.py</code> ·
+  <a href="../appendix-formulas.md">appendix-formulas.md</a> · <a href="./dam.md">dam.md</a>.
+</footer>
+</div>
+</body>
+</html>

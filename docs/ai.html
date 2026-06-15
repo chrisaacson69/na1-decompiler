@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How the AI Plays — Nobunaga’s Ambition</title>
+<style>
+  :root{
+    --bg:#15151c; --panel:#1f1f2b; --ink:#e8e6df; --dim:#9a97a8;
+    --gold:#f0b429; --red:#e8431f; --blue:#3a6ee8; --green:#5ad05a;
+    --line:#33303f; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:860px;margin:0 auto;padding:32px 20px 80px}
+  header{border-bottom:2px solid var(--gold);padding-bottom:14px;margin-bottom:8px}
+  .cmdno{color:var(--gold);font:600 13px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase}
+  h1{margin:.18em 0 .1em;font-size:38px;letter-spacing:.01em}
+  .tag{color:var(--dim);font-style:italic}
+  .skills{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 28px}
+  .skills span{font:600 11px/1 var(--mono);letter-spacing:.06em;color:var(--dim);
+    border:1px solid var(--line);border-radius:999px;padding:6px 11px;text-transform:uppercase}
+  h2{margin:38px 0 4px;font-size:22px;border-left:4px solid var(--gold);padding-left:12px}
+  .sub{color:var(--dim);margin:0 0 16px;padding-left:16px;font-size:14px}
+  .anim{display:flex;gap:24px;align-items:center;flex-wrap:wrap;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:14px}
+  .anim img{image-rendering:pixelated;width:256px;height:240px;background:#6b6b6b;border-radius:6px}
+  .anim .cap{flex:1;min-width:240px}
+  .anim .cap b{color:var(--gold)}
+  .pill{display:inline-block;font:600 11px/1 var(--mono);color:var(--bg);background:var(--green);
+    border-radius:4px;padding:3px 7px;margin-left:6px;vertical-align:middle}
+  ol.flow{counter-reset:step;list-style:none;padding:0;margin:14px 0}
+  ol.flow li{position:relative;padding:12px 0 12px 52px;border-bottom:1px solid var(--line)}
+  ol.flow li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:10px;
+    width:34px;height:34px;border-radius:50%;background:var(--panel);border:1px solid var(--gold);
+    color:var(--gold);font:700 15px/34px var(--mono);text-align:center}
+  ol.flow .scr{color:var(--green);font-family:var(--mono);font-size:14px}
+  ol.flow .addr{color:var(--dim);font-family:var(--mono);font-size:12px;float:right}
+  pre{background:#101019;border:1px solid var(--line);border-left:3px solid var(--blue);
+    border-radius:8px;padding:16px;overflow:auto;font:13.5px/1.5 var(--mono);color:#d6e4ff}
+  pre .c{color:#6f7b96}
+  pre .k{color:var(--gold)}
+  .callout{background:#241a12;border:1px solid #6b4a1e;border-left:4px solid var(--red);
+    border-radius:8px;padding:14px 18px;margin:18px 0}
+  .callout b{color:var(--red)}
+  .rabbit{background:#1a1426;border:1px solid #4a2e6b;border-left:4px solid #9a6ef0;
+    border-radius:8px;padding:14px 18px;margin:14px 0}
+  .rabbit b{color:#b89af0}
+  .rabbit a{color:var(--blue);text-decoration:none}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:var(--panel);color:var(--gold);font-weight:600}
+  td .ok{color:var(--green)}
+  code{font-family:var(--mono);color:var(--gold);font-size:.92em}
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+  footer a{color:var(--blue);text-decoration:none}
+  .roi{color:var(--dim);font-style:italic;margin-top:6px}
+
+  .lead{color:var(--ink);font-size:16px;margin:6px 0 26px}
+  .lead b{color:var(--gold)}
+  .map{list-style:none;counter-reset:step;padding:0;margin:14px 0 8px}
+  .map li{position:relative;padding:11px 0 11px 52px;border-bottom:1px solid var(--line)}
+  .map li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:9px;
+    width:34px;height:34px;border-radius:50%;background:var(--panel);border:1px solid var(--gold);
+    color:var(--gold);font:700 15px/34px var(--mono);text-align:center}
+  .map a{color:var(--ink);text-decoration:none;font-weight:600}
+  .map a:hover{color:var(--gold)}
+  .map .addr{color:var(--dim);font-family:var(--mono);font-size:12px;float:right;margin-top:3px}
+  .map .gloss{display:block;color:var(--dim);font-size:13.5px;font-weight:400;margin-top:2px}
+  .st{display:inline-block;font:700 10px/1 var(--mono);letter-spacing:.05em;border-radius:4px;
+    padding:4px 7px;margin-right:8px;vertical-align:middle;text-transform:uppercase}
+  .st-inline{background:var(--green);color:var(--bg)}
+  .st-page{background:var(--blue);color:#fff}
+  .st-stub{background:var(--panel);color:var(--dim);border:1px solid var(--line)}
+  .phase{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;margin:16px 0}
+  .phase h3{margin:0 0 4px;font-size:19px}
+  .phase h3 .addr{color:var(--dim);font-family:var(--mono);font-size:12px;font-weight:400}
+  .phase .bank{color:var(--dim);font-family:var(--mono);font-size:11px;text-transform:uppercase;
+    letter-spacing:.08em}
+  .phase p{margin:10px 0 0}
+  .phase a{color:var(--blue);text-decoration:none}
+  .branch{background:#10131f;border:1px solid #2a3358;border-left:4px solid var(--blue);
+    border-radius:8px;padding:14px 18px;margin:12px 0}
+  .branch b{color:#9ab8ff}
+  .branch a{color:#9ab8ff;text-decoration:none;font-weight:600}
+  .find{background:#241a12;border:1px solid #6b4a1e;border-left:4px solid var(--gold);
+    border-radius:8px;padding:14px 18px;margin:14px 0}
+  .find b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="cmdno">Nobunaga’s Ambition · NES · The Engine</div>
+  <h1>How the AI Plays</h1>
+  <div class="tag">The enemy daimyo, end to end — one consolidated map over the turn-loop deep dives.</div>
+</header>
+
+<div class="skills">
+  <span>① decompiler → C</span>
+  <span>② data-walk labels</span>
+  <span>③ bytecode-verified flow</span>
+  <span>④ emulator/census oracle</span>
+</div>
+
+<p class="lead">An enemy daimyo never runs a grand strategy. Its whole existence is <b>four acts</b> repeated every season — the world ticks, each fief takes one command, a fief may go to war, and battles resolve — and we’ve decoded every act against the post-fix decompile. This page is the <b>map over them</b>; each act links to its full deep-dive. The surprise the walk turned up: the AI is far <b>simpler than it looks</b> — one probabilistic loop, copied across every fief, with the apparent cunning emerging from state rather than from any planner.</p>
+
+<h2>An AI daimyo’s turn, in four acts</h2>
+<ol class="map">
+  <li><a href="#act1">Plan — The world ticks</a><span class="addr">ai_strategic_turn_planner $A455</span><span class="gloss">→ turn-loop-planner.html</span></li>
+  <li><a href="#act2">Act — Each fief takes its turn</a><span class="addr">ai_per_fief_command_driver $B89B</span><span class="gloss">→ turn-loop-command.html</span></li>
+  <li><a href="#act3">War — Whether — and whom — to attack</a><span class="addr">ai_try_war_attack $949A</span><span class="gloss">→ turn-loop-command.html (war section)</span></li>
+  <li><a href="#act4">Fight — The battle resolves</a><span class="addr">battle_init_driver $AFE1 (bank 2)</span><span class="gloss">→ turn-loop-combat.html</span></li>
+</ol>
+
+<h2>The four acts</h2>
+<div class="phase" id="act1">
+  <div class="bank">Act 1 · Plan</div>
+  <h3>The world ticks <span class="addr">ai_strategic_turn_planner $A455</span></h3>
+  <p>Before any daimyo acts, the planner runs the whole world forward one season: the calendar, the season-phased economy (stat drift, the tax→income harvest, aging + natural death), and the <b>random-event engine</b> (floods, quakes, riots, revolts). Two outputs matter to the AI specifically:</p><ul><li>It sets the <code>daimyo_weakness_flag</code> on low-health lords (<code>P(mark) = (100 − health) / 400</code>) — a vulnerability mark the war step reads.</li><li>The ravage event <code>random_event_ravage_output_hidden_mark_weakness $9D00</code> (men &amp; output × 50–99%) is one of the disasters it can fire — <b>not</b> an AI command, and no longer an unknown routine.</li></ul>
+  <div class="branch"><b>Deep dive:</b> <a href="./turn-loop-planner.html">→ turn-loop-planner.html</a></div>
+</div>
+<div class="phase" id="act2">
+  <div class="bank">Act 2 · Act</div>
+  <h3>Each fief takes its turn <span class="addr">ai_per_fief_command_driver $B89B</span></h3>
+  <p>The turn order is reshuffled, then every fief is handed to the command driver, which dispatches on <code>province_ai_state</code> — the Grant policy. <b>The headline we proved by save-state census:</b> those six policies are a <i>player</i> tool (the Grant command); the enemy never uses them. Every AI fief sits permanently at state 0 (Home), which routes to the RNG-weighted <b>Balanced</b> dispatcher <code>ai_econ_command_dispatch</code>:</p><pre>~9/10 turns:  try recruit / arm / train  (and this is where war is attempted)
+else:         develop town  +  dam / grow output</pre><p>So the AI is <b>monomorphic</b>: one universal loop on every fief. The variety you see between AI fiefs is their differing resource surplus + RNG + daimyo stats, not a chosen personality. Spending also <b>scales with the year</b> (<code>(year − 1559) × N</code>) — the AI escalates on a calendar ramp.</p>
+  <div class="branch"><b>Deep dive:</b> <a href="./turn-loop-command.html">→ turn-loop-command.html</a></div>
+</div>
+<div class="phase" id="act3">
+  <div class="bank">Act 3 · War</div>
+  <h3>Whether — and whom — to attack <span class="addr">ai_try_war_attack $949A</span></h3>
+  <p>Inside the command pass, a fief may try for war. The decision is a filter, not a gamble — and re-walking it this pass closed both of the project's parked AI threads:</p><ol><li><b>Self-gate.</b> No attack if the attacker's own daimyo is weakness-marked, or has no men, or no gold.</li><li><b>Candidates = adjacent enemies only.</b> The list is seeded from the adjacency table (<code>$8004</code>) and filtered to active, enemy-owned fiefs. Geography is hard-coded into the target set.</li><li><b>Target = the weakest neighbour.</b> <code>pick_weakest_men_fief</code> returns the adjacent enemy with the <b>fewest provisioned men</b> — and a fief <b>out of rice counts as zero men</b>, so supply attrition makes a fief prey. A grudge override (rival <code>$6E7F</code>) and a Drive-gated diplomatic pick can replace it.</li><li><b>Commit gate.</b> Muster ≈ 60–89% of <code>min(gold, men, rice×2)</code>, and attack <b>only if that force ≥ the defender's weaker of {men, rice}</b>. Weakest-prey selection, but a genuine strength check — the AI isn't reckless.</li></ol><p class='sub'><b>Thread 1 closed — the tiebreak locus.</b> The “which of several valid targets” logic lives entirely in this picker chain, and it keys on <b>provisioned men</b> (<code>fief_men_if_provisioned</code>), not the long-hypothesised men×morale×arms “power.”</p><p class='sub'><b>Thread 2 closed — the $6DA2 flag.</b> A save-state census proved <code>$6DA2 = fief_is_daimyo_capital</code> (exactly one home-seat per living daimyo). It transfers on conquest, gives a <b>defensive bonus</b> when a capital is the fief under attack, and the living-daimyo count drives the victory check.</p>
+  <div class="branch"><b>Deep dive:</b> <a href="./turn-loop-command.html">→ turn-loop-command.html (war section)</a></div>
+</div>
+<div class="phase" id="act4">
+  <div class="bank">Act 4 · Fight</div>
+  <h3>The battle resolves <span class="addr">battle_init_driver $AFE1 (bank 2)</span></h3>
+  <p>Once an attack commits, control passes to the bank-2 battle engine — its own deep dive. The piece that closes the AI loop is the <b>battle brain</b> <code>ai_sum_battle_strength $8E5D</code>: a weighted attacker-vs-defender tally with weights <code>[HEALTH 5, DRIVE 10, LUCK 10, CHARISMA 5, IQ 20, morale 10, skill 25]</code>. <b>IQ (20) is the dominant daimyo stat</b>; province skill (25) the biggest term overall; and the capital flag adds its defensive <code>(capital+2)×weight</code> here. Casualties then come from the three-mechanism model (rice clock / relative-strength kills / charisma capture).</p>
+  <div class="branch"><b>Deep dive:</b> <a href="./turn-loop-combat.html">→ turn-loop-combat.html</a></div>
+</div>
+
+<h2>What this AI actually is</h2>
+<p class="sub">The conclusions that survived re-walking and oracle checks:</p>
+<div class="find"><b>The enemy AI is monomorphic — it never picks a style.</b> <code>province_ai_state</code>’s six Grant policies are a player affordance. A census across every save (<code>tools/probe-ai-policy-distribution.py</code>) shows every AI fief permanently at 0 (Home); states 1–4 appear only where the player granted them. The AI runs one loop — the Balanced dispatcher — on every fief, every turn.</div>
+<div class="find"><b>It hunts the weakest neighbour, but checks it can win.</b> Target selection (<code>pick_weakest_men_fief</code>, ROM-confirmed via <code>probe-ai-war-target.py</code>) prefers the fewest-provisioned-men adjacent enemy; the commit gate then requires the mustered force to beat the defender’s weaker of {men, rice}. Soft target + winnable fight — which is why under-strength AI attacks are uncommon, not the rule.</div>
+<div class="find"><b>It escalates on the calendar, not just on conquest.</b> Every AI spend cap is <code>(year − 1559) × N</code>, so the opponent plays small early and commits far more per command in the late game — a built-in difficulty ramp independent of territory.</div>
+<div class="find"><b>Strategy emerges from state, not from a planner.</b> There is no global AI strategist choosing builds or fronts. Each fief independently runs the same probabilistic loop against its own resources and its daimyo’s stats; the macro behaviour (snowballing, border wars, capital defence) is emergent from 49 copies of one simple rule.</div>
+
+<footer>
+  ← <a href="./turn-loop.html">the main turn-loop map</a> &nbsp;·&nbsp;
+  Sources: <code>decompiled/bank_0{0,1}.c</code> · <code>tools/probe-ai-war-target.py</code> · <code>tools/probe-ai-policy-distribution.py</code> · deep dives <a href="./turn-loop-planner.html">planner</a> / <a href="./turn-loop-command.html">command</a> / <a href="./turn-loop-combat.html">combat</a> · memory <code>project_nobunaga_ai_command_pass</code>.
+  Generated by <code>tools/build-ai-overview.py</code> — do not hand-edit; edit the registry and regen.
+</footer>
+</div>
+</body>
+</html>
