@@ -113,6 +113,14 @@ def main():
         if src.exists():
             shutil.copytree(src, OUT / "assets" / d)
 
+    # generated data pages (#5) — viability map, emitted by viability-map.py
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("viability_map", SCRIPT.parent / "viability-map.py")
+    vm = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(vm)
+    (OUT / "data").mkdir(parents=True, exist_ok=True)
+    (OUT / "data" / "viability.html").write_text(vm.build_html(SRC), encoding="utf-8")
+
     write_index(sections)
     n_html = len(list((OUT / "commands").glob("*.html"))) if (OUT / "commands").exists() else 0
     print(f"Built docs/ : {len(chapters)} chapters, {len(appendices)} appendices, "
@@ -192,6 +200,12 @@ actually works.</p>
 <h2 id="appendices">Appendices &amp; Verified Formulas</h2>
 <ul>
 {appendices}
+</ul>
+
+<h2 id="data">Generated Data</h2>
+<p class="muted">Numbers pulled straight from the engine &mdash; never shown as a whole before.</p>
+<ul>
+  <li><a href="data/viability.html">Starting-Fief Viability</a> &mdash; which clans survive the opening (both scenarios; AI-vs-AI map + human playability, from the bytecode invade predicate)</li>
 </ul>
 
 <h2 id="reference">Command Reference</h2>

@@ -89,6 +89,12 @@ actually works.</p>
       <li><a href="appendix-vm-opcodes.html">Appendix — The VM Opcode Reference (canonical)</a> &mdash; The authoritative 256-entry opcode table for the Sea-16 VM. **Generated** by `tools/gen-opcode-appendix.py` from `tools/na1dream/vm-opcodes-v2.toml` (pops/pushes/semantics) fused with `nobunaga_vm.OPCODE_INFO` (execution-validated mnemonic + operand byte-length). Do not hand-edit — edit a source and regenerate. Cited by [ch.6 (VM Disassembler)](./06-vm-disassembler.md) and [ch.8 (VM Instruction Set)](./08-vm-instruction-set.md).</li>
 </ul>
 
+<h2 id="data">Generated Data</h2>
+<p class="muted">Numbers pulled straight from the engine &mdash; never shown as a whole before.</p>
+<ul>
+  <li><a href="data/viability.html">Starting-Fief Viability</a> &mdash; which clans survive the opening (both scenarios; AI-vs-AI map + human playability, from the bytecode invade predicate)</li>
+</ul>
+
 <h2 id="reference">Command Reference</h2>
 <p class="muted">Rich per-command walkthroughs (driver flow + bytecode-validated formula + embedded
 from-ROM animation). The <a href="https://github.com/chrisaacson69/na1-decompiler/wiki">Wiki</a>

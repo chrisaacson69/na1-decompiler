@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
 """
-viability-map.py — starting-fief invasion viability ("who gets eaten turn 1").
+viability-map.py — starting-fief invasion viability ("who survives the opening").
 
-Grounds the deterrence-frontier thesis (synthesis-frontier #32). At game start
-every fief is its own daimyo, so ALL adjacencies are hostile (no possession
-check). Each AI fief scans its neighbours, picks the weakest by men, and invades
-iff the men-share check passes. We treat ALL fiefs as AI (no human), so the
-AI-vs-AI threshold applies:
+Grounds synthesis-frontier #32. The AI's invade decision is a MEN-COUNT share
+(fief_men_ratio_pct = math32_2arg = 100*men(a)/(men(a)+men(b)); $939D/$949A) —
+NOT the 8-stat combat strength. Two thresholds:
 
-  share(atk,tgt) = floor(100*men(atk)/(men(atk)+men(tgt)))      # math32_2arg / $939D
-  attack iff  share - 10 - rng(0..2*const_two) > 60   (+1% random; ignored here)
-    -> share > 72  : INVADES (clears even rng=2)
-    -> 70 < s <= 72: invades?  (rng-dependent band)
-    -> share <= 70 : safe (1% fluke only)
+  * AI-vs-AI:  attack iff share > ~70  (attacker > ~2.3x target)  -> the map is
+    mostly frozen; only a fief with a single >=2.3x neighbour gets eaten.
+  * vs a PLAYER (grudge path $952E): attack iff share > 47 (attacker > ~0.89x
+    you) -> the AI is FAR more aggressive toward the human. A fief safe in the
+    all-AI map can be unplayable for a human.
 
-Stage-2 logistics ($9046): attack_budget = min(2*rice, men, gold); the attacker
-also aborts if min(tgt.rice, tgt.men) > attack_budget. We flag that too.
+At game start every fief is its own daimyo, so every adjacency is hostile (no
+possession check). Revolt (low morale -> MEN/2, appendix-events) can drop a
+"safe" fief below its threshold -> the event system feeds the war system.
 
-Run:  py nobunaga/tools/viability-map.py
+Run:  py nobunaga/tools/viability-map.py            # text report
+      py nobunaga/tools/viability-map.py --html out.html   # write the data page
 """
 import re
+import sys
 from pathlib import Path
 
 SRC = Path(__file__).resolve().parent.parent
+
+SCENARIOS = [("17-fief", "17fief.txt", "adjacency.txt"),
+             ("50-fief", "50Fief.txt", "adjacency-50.txt")]
 
 
 def load_fiefs(path):
@@ -31,35 +35,18 @@ def load_fiefs(path):
         p = ln.split()
         if len(p) < 15 or not p[0].isdigit():
             continue
-        idx = int(p[0])
-        name = " ".join(p[1:-13])
-        gold, rice, men, morale = int(p[-12]), int(p[-9]), int(p[-4]), int(p[-3])
-        fiefs[idx] = dict(name=name, gold=gold, rice=rice, men=men, morale=morale)
+        fiefs[int(p[0])] = dict(name=" ".join(p[1:-13]), gold=int(p[-12]),
+                                rice=int(p[-9]), men=int(p[-4]), morale=int(p[-3]))
     return fiefs
 
 
-def m_safe(nbr_men):
-    """Smallest own-men level at which NO neighbour clears the invade line
-    (share > 70). Below it the fief is a valid target; revolt (men/2) can drop
-    a safe fief under it."""
-    if not nbr_men:
-        return 0
-    M = 0
-    while any(share(n, M) > 70 for n in nbr_men):
-        M += 1
-    return M
-
-
 def load_adj(path):
-    # Two formats: 17-fief has "N: ... [hex]" on one line; 50-fief has a
-    # "N Name : ..." header then a separate "raw: [hex]" line. Track current fief.
-    adj = {}
-    cur = None
+    adj, cur = {}, None
     for ln in path.read_text(encoding="utf-8").splitlines():
-        hm = re.search(r"\[([0-9A-Fa-f ]+)\]", ln)
         nm = re.match(r"\s*(\d+)[\s:]", ln)
         if nm and "raw:" not in ln:
-            cur = int(nm.group(1)) - 1                   # leading number is 1-based
+            cur = int(nm.group(1)) - 1
+        hm = re.search(r"\[([0-9A-Fa-f ]+)\]", ln)
         if hm and cur is not None:
             nbrs = []
             for h in hm.group(1).split():
@@ -75,88 +62,144 @@ def share(a, b):
     return (a * 100) // (a + b) if (a + b) else 0
 
 
-def verdict(s):
-    if s > 72:
-        return "INVADES"
-    if s > 70:
-        return "invades?"
-    return "-"
+def m_safe(nbr_men, line):
+    if not nbr_men:
+        return 0
+    M = 0
+    while any(share(n, M) > line for n in nbr_men):
+        M += 1
+    return M
 
 
 def analyze(fiefs, adj):
-    rows = {}
+    R = {}
     for f, fd in fiefs.items():
         nbrs = [n for n in adj.get(f, []) if n in fiefs]
-        if not nbrs:
-            rows[f] = dict(target=None, share=0, v="(no neighbours)", logi=True)
-            continue
-        tgt = min(nbrs, key=lambda n: fiefs[n]["men"])
-        s = share(fd["men"], fiefs[tgt]["men"])
-        budget = min(2 * fd["rice"], fd["men"], fd["gold"])
-        logi = budget >= 5 and min(fiefs[tgt]["rice"], fiefs[tgt]["men"]) <= budget
-        rows[f] = dict(target=tgt, share=s, v=verdict(s), logi=logi, budget=budget)
-    # patsy: who is actually targeted-and-attacked this turn
-    attacked = {}
-    for f, r in rows.items():
-        if r["target"] is not None and r["v"] != "-" and r["logi"]:
-            attacked.setdefault(r["target"], []).append(f)
-    # latent exposure: how many neighbours could clear >70 vs me if they targeted me
-    latent = {}
-    for f in fiefs:
-        latent[f] = [n for n in adj.get(f, []) if n in fiefs and share(fiefs[n]["men"], fiefs[f]["men"]) > 70]
-    return rows, attacked, latent
-
-
-def report(title, fief_path, adj_path):
-    fiefs = load_fiefs(fief_path)
-    adj = load_adj(adj_path)
-    rows, attacked, latent = analyze(fiefs, adj)
-    print(f"\n===== {title} : {len(fiefs)} fiefs =====")
-    print(f"{'#':>3} {'fief':<12} {'men':>4} {'nbrs':>4}  {'weakest target':<16} {'share':>5}  {'verdict':<9} {'logi':<4} {'eaten-by':>8} {'latent':>6}")
-    print("-" * 96)
-    for f in sorted(fiefs, key=lambda x: fiefs[x]["men"]):
-        r = rows[f]
-        tgt = f"{fiefs[r['target']]['name']}({fiefs[r['target']]['men']})" if r["target"] is not None else "-"
-        eat = len(attacked.get(f, []))
-        lat = len(latent.get(f, []))
-        logi = "" if r["v"] == "—" or r.get("logi", True) else "BLK"
-        print(f"{f:>3} {fiefs[f]['name']:<12} {fiefs[f]['men']:>4} {len(adj.get(f,[])):>4}  "
-              f"{tgt:<16} {r['share']:>4}%  {r['v']:<9} {logi:<4} "
-              f"{('<-'+str(eat)) if eat else '':>8} {lat:>6}")
-    invaders = [f for f in fiefs if rows[f]["v"] != "-" and rows[f].get("logi", True) and rows[f]["target"] is not None]
-    patsies = sorted(attacked, key=lambda t: -len(attacked[t]))
-    print(f"\n  aggressors turn-1 (clear threshold + logistics): {len(invaders)}/{len(fiefs)}"
-          f"  -> {', '.join(fiefs[f]['name'] for f in invaders) or 'none'}")
-    patsy_str = ", ".join("{}(x{})".format(fiefs[t]["name"], len(attacked[t])) for t in patsies)
-    print("  patsies (attacked turn-1): " + (patsy_str or "none"))
-
-    # reverse view: vulnerability threshold + revolt exposure
-    print(f"\n  --- vulnerability thresholds (m_safe = own men needed so NO neighbour clears 2.3x) ---")
-    print(f"  {'fief':<12} {'men':>4} {'mor':>4} {'m_safe':>6} {'margin':>6} {'men/2':>5}  {'status':<16} strongest nbr")
-    recs = []
-    for f, fd in fiefs.items():
-        nbrs = [n for n in adj.get(f, []) if n in fiefs]
-        if not nbrs:
-            continue
-        ms = m_safe([fiefs[n]["men"] for n in nbrs])
-        strong = max(nbrs, key=lambda n: fiefs[n]["men"])
-        cur, rev = fd["men"], fd["men"] // 2
-        if cur < ms:
-            status = "VULNERABLE now"
-        elif rev < ms:
-            status = "revolt->VULN"
+        nm = [fiefs[n]["men"] for n in nbrs]
+        r = dict(fd, idx=f, ndeg=len(nbrs))
+        # offense: weakest neighbour + AI threshold
+        if nbrs:
+            tgt = min(nbrs, key=lambda n: fiefs[n]["men"])
+            s = share(fd["men"], fiefs[tgt]["men"])
+            r.update(target_idx=tgt, target=fiefs[tgt]["name"], target_men=fiefs[tgt]["men"],
+                     atk_share=s, atk=("INVADES" if s > 72 else "invades?" if s > 70 else "-"))
         else:
-            status = "safe"
-        recs.append((f, fd, ms, cur - ms, rev, status, strong))
-    order = {"VULNERABLE now": 0, "revolt->VULN": 1, "safe": 2}
-    for f, fd, ms, margin, rev, status, strong in sorted(recs, key=lambda r: (order[r[5]], r[3])):
-        if status == "safe":
-            continue
-        esc = "" if status != "VULNERABLE now" else "  (need +{} men; gold {})".format(ms - fd["men"], fd["gold"])
-        print(f"  {fd['name']:<12} {fd['men']:>4} {fd['morale']:>4} {ms:>6} {margin:>6} {rev:>5}  "
-              f"{status:<16} {fiefs[strong]['name']}({fiefs[strong]['men']}){esc}")
+            r.update(target_idx=None, target=None, target_men=0, atk_share=0, atk="-")
+        # AI-rules defense (2.3x) + revolt exposure
+        ms = m_safe(nm, 70)
+        r["m_safe"] = ms
+        r["men2"] = fd["men"] // 2
+        r["def_status"] = ("VULNERABLE" if fd["men"] < ms
+                           else "revolt->VULN" if r["men2"] < ms else "safe")
+        # human playability (47% grudge line): how many neighbours can come at YOU
+        r["human_threats"] = sum(1 for n in nbrs if share(fiefs[n]["men"], fd["men"]) > 47)
+        r["play"] = ("PLAYABLE" if r["human_threats"] == 0
+                     else "hard" if r["human_threats"] <= 2 else "UNPLAYABLE")
+        R[f] = r
+    # who gets eaten turn-1 under AI rules
+    for r in R.values():
+        r["eaten_by"] = 0
+    for f, r in R.items():
+        if r["target_idx"] is not None and r["atk"] != "-":
+            R[r["target_idx"]]["eaten_by"] += 1
+    return R
+
+
+# ---------- text report ----------
+def text_report(title, fiefs, adj):
+    R = analyze(fiefs, adj)
+    print(f"\n===== {title} : {len(fiefs)} fiefs =====")
+    print(f"{'fief':<12} {'men':>4} {'mor':>4} {'deg':>3}  {'AI-atk':<9} {'AI-def':<13} "
+          f"{'play':<10} {'threats':>7} {'eaten':>5}")
+    print("-" * 78)
+    for f in sorted(fiefs, key=lambda x: R[x]["play"] == "PLAYABLE"):
+        r = R[f]
+        print(f"{r['name']:<12} {r['men']:>4} {r['morale']:>4} {r['ndeg']:>3}  "
+              f"{r['atk']:<9} {r['def_status']:<13} {r['play']:<10} "
+              f"{r['human_threats']:>7} {('<-'+str(r['eaten_by'])) if r['eaten_by'] else '':>5}")
+    unplay = [r["name"] for r in R.values() if r["play"] == "UNPLAYABLE"]
+    print("  UNPLAYABLE human starts: " + (", ".join(unplay) or "none"))
+
+
+# ---------- HTML data page ----------
+def html_table(title, fiefs, adj):
+    R = analyze(fiefs, adj)
+    rows = []
+    pclass = {"PLAYABLE": "g", "hard": "a", "UNPLAYABLE": "r"}
+    dclass = {"safe": "g", "revolt->VULN": "a", "VULNERABLE": "r"}
+    for f in sorted(fiefs, key=lambda x: (R[x]["play"] != "UNPLAYABLE", R[x]["men"])):
+        r = R[f]
+        tgt = f"{r['target']} ({r['target_men']})" if r["target"] else "&mdash;"
+        rows.append(
+            f"<tr><td>{r['name']}</td><td class=n>{r['men']}</td><td class=n>{r['morale']}</td>"
+            f"<td class=n>{r['ndeg']}</td><td>{tgt}</td><td class=n>{r['atk_share']}%</td>"
+            f"<td>{r['atk']}</td><td class={dclass[r['def_status']]}>{r['def_status']}</td>"
+            f"<td class=n>{r['m_safe']}</td>"
+            f"<td class=n>{r['human_threats']}</td><td class={pclass[r['play']]}>{r['play']}</td></tr>")
+    unplay = [r["name"] for r in R.values() if r["play"] == "UNPLAYABLE"]
+    head = ("<tr><th>fief</th><th>men</th><th>morale</th><th>nbrs</th><th>weakest target</th>"
+            "<th>atk&nbsp;share</th><th>AI&nbsp;attack?</th><th>AI&nbsp;defense</th><th>m_safe</th>"
+            "<th>human&nbsp;threats</th><th>playable?</th></tr>")
+    return (f"<h2>{title}</h2>\n<p class=note><b>UNPLAYABLE human starts:</b> "
+            f"{', '.join(unplay) or 'none'}.</p>\n<table>\n{head}\n" + "\n".join(rows) + "\n</table>")
+
+
+def build_html(src):
+    parts = [html_table(name, load_fiefs(src / ff), load_adj(src / af))
+             for name, ff, af in SCENARIOS]
+    return PAGE_TMPL.format(body="\n".join(parts))
+
+
+PAGE_TMPL = """\
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starting-Fief Viability — Nobunaga's Ambition (NES)</title>
+<style>
+ body{{font-family:Georgia,serif;color:#1a1a1a;background:#fbf8f2;line-height:1.6;max-width:1000px;margin:0 auto;padding:48px 28px;}}
+ h1{{color:#7a2e2e;}} h2{{color:#7a2e2e;border-bottom:1px solid #ddd6c8;padding-bottom:5px;margin-top:38px;}}
+ a{{color:#7a2e2e;}} .lead{{font-size:1.08em;}} .note{{color:#5a534a;font-size:.95em;}}
+ table{{border-collapse:collapse;width:100%;font-size:.86em;margin:10px 0 4px;}}
+ th,td{{border:1px solid #ddd6c8;padding:4px 8px;text-align:left;}}
+ th{{background:#efe7d6;color:#7a2e2e;}} td.n{{text-align:right;}}
+ td.g{{background:#dce8d4;}} td.a{{background:#f6eccb;}} td.r{{background:#f3d4d4;font-weight:bold;}}
+ .key{{font-size:.9em;color:#5a534a;}} code{{background:#eee;padding:1px 4px;border-radius:3px;}}
+ .footer{{margin-top:40px;border-top:1px solid #ddd6c8;padding-top:14px;font-size:.85em;color:#5a534a;}}
+</style></head><body>
+<p><a href="index.html">&larr; Home</a></p>
+<h1>Starting-Fief Viability — who survives the opening</h1>
+<p class="lead">Which clans are doomed from turn one? The engine's <b>invade decision is a pure men-count
+ratio</b> (<code>fief_men_ratio_pct = 100&middot;men(atk)/(men(atk)+men(def))</code>, <code>$949A</code>) &mdash;
+<i>not</i> the 8-stat combat strength, which only resolves who <i>wins</i> a battle once started. Derived
+from the bytecode; every number below is computed from the scenario's starting stats.</p>
+<p class="key">
+<b>AI&nbsp;attack?</b> &mdash; will this fief invade its weakest neighbour under the AI-vs-AI gate
+(share&nbsp;&gt;&nbsp;~70% &asymp; <b>2.3&times;</b> the target). <code>INVADES</code> = certain, <code>invades?</code> = rng band.<br>
+<b>AI&nbsp;defense</b> / <b>m_safe</b> &mdash; <code>m_safe</code> is the men level at which no neighbour clears
+2.3&times; you; <span style="background:#f3d4d4">VULNERABLE</span> = below it now,
+<span style="background:#f6eccb">revolt&rarr;VULN</span> = a low-morale revolt (men&nbsp;/2) drops you under it.<br>
+<b>human&nbsp;threats</b> / <b>playable?</b> &mdash; against a <b>human</b> the AI uses the harsher
+<b>grudge gate</b> (share&nbsp;&gt;&nbsp;47% &asymp; only <b>0.89&times;</b> you), so it attacks at near parity.
+"human threats" counts neighbours that clear it; <span style="background:#f3d4d4">UNPLAYABLE</span> = 3+
+(swamped even moving first), <span style="background:#f6eccb">hard</span> = 1&ndash;2,
+<span style="background:#dce8d4">PLAYABLE</span> = 0.</p>
+{body}
+<div class="footer">Generated by <code>tools/viability-map.py</code> from the scenario starting stats +
+ROM adjacency. See the analysis chapters and the <a href="https://github.com/chrisaacson69/na1-decompiler/wiki">wiki</a>.</div>
+</body></html>
+"""
+
+
+def main():
+    if "--html" in sys.argv:
+        out = Path(sys.argv[sys.argv.index("--html") + 1])
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(build_html(SRC), encoding="utf-8")
+        print(f"wrote {out}")
+        return
+    for name, ff, af in SCENARIOS:
+        text_report(name, load_fiefs(SRC / ff), load_adj(SRC / af))
 
 
 if __name__ == "__main__":
-    report("17-FIEF", SRC / "17fief.txt", SRC / "adjacency.txt")
-    report("50-FIEF", SRC / "50Fief.txt", SRC / "adjacency-50.txt")
+    main()
