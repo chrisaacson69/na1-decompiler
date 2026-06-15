@@ -1,17 +1,25 @@
 -- army-bv.lua  —  Nobunaga's Ambition (USA), Mesen 2 Lua
 -- ============================================================================
--- On-demand HEAD-TO-HEAD readout: for each of YOUR fiefs (province_ai_state != 0),
--- compares it against each adjacent fief using the engine's OWN relative stat
--- contest — you bank a stat's weight when your stat beats theirs (ties to the
--- defender, as the engine does). This is a DIRECT compare (no 120 normalization),
--- so stat-bumps past 120 are handled naturally, and it answers "can I take this
--- neighbour?" for real.
+-- On-demand readout, two sections:
 --
---   per side: S = men * (FLOOR + 0.4 * Wself/100)   FLOOR = 2 (attacker) or 3 (defender, +home)
---   Wself = sum of weights of the stats that side WINS   (weights: hp5 dr10 lk10 ch5 iq20 mor10 skl25 arm15)
---   p = S_atk*100/(S_atk+S_def)   -> p>50 means you're favoured (terrain is per-battle, excluded)
+--  (1) HEAD-TO-HEAD: for each of YOUR fiefs (province_ai_state != 0), compare it
+--      against each adjacent fief you do NOT own — the engine's OWN relative stat
+--      contest. You bank a stat's weight when your stat beats theirs (ties to the
+--      defender). DIRECT compare (no 120 normalization), so stat-bumps past 120
+--      are handled naturally. Answers "can I take this neighbour?" for real.
+--      Same-owner neighbours are skipped (can't attack yourself) — a fief with no
+--      foreign neighbours still prints its header, just with no targets listed.
+--
+--        per side: S = men * (FLOOR + 0.4 * Wself/100)   FLOOR = 2 (atk) / 3 (def,+home)
+--        Wself = sum of weights of the stats that side WINS  (hp5 dr10 lk10 ch5 iq20 mor10 skl25 arm15)
+--        p = S_atk*100/(S_atk+S_def)   -> p>50 means you're favoured (terrain is per-battle, excluded)
+--
+--  (2) DAIMYO ECONOMY: every daimyo's fiefs, current gold/rice + the EXPECTED Fall
+--      harvest gold/rice (the bytecode-certified §4 formula — appendix-formulas.md),
+--      summed per daimyo. The harvest sums are each house's economic potential.
 --
 -- Press 'B' (or call report()).  Reads LIVE values + adjacency from ROM ($8300).
+-- Output goes to the Mesen Script Window log; an on-screen toast confirms a refresh.
 -- ============================================================================
 local MT  = emu.memType.nesMemory
 local PRG = emu.memType.nesPrgRom or emu.memType.prgRom
@@ -20,7 +28,10 @@ local function rd16(a) return rd(a) + rd(a+1)*256 end
 local function prg(o)  return PRG and emu.read(o, PRG) or 0xFF end
 
 local PROV, DMY, OWNER, AISTATE = 0x7001, 0x752F, 0x6E15, 0x6CF7   -- live tables
-local ADJ = 0x10300                                                -- bank4 $8300 adjacency in PRG-ROM
+local TAX   = 0x6D2D                                               -- fief_tax_rate[] (byte/fief)
+local MARK  = 0x6000                                               -- low-water mark table (8 B/fief, words)
+local ADJ   = 0x10300                                              -- bank4 $8300 adjacency in PRG-ROM
+local NF    = 17                                                   -- 17-fief scenario
 -- the 8 combat stats in order, with weights:
 local STATS = {{"hp",5},{"dr",10},{"lk",10},{"ch",5},{"iq",20},{"mor",10},{"skl",25},{"arm",15}}
 local NAMES = {[0]="Noto","Echigo","Musashi","Kaga","Echizen","Hida","Suruga","Mikawa","Mino",
@@ -51,30 +62,114 @@ local function headtohead(A, D)
   return p, Wa
 end
 
-function report()
+-- pct_op (§6): ⌊b·p/100⌋ computed in three pieces, exactly as the engine ($D70D)
+local function pct_op(b, p)
+  b = math.floor(b); p = math.floor(p)
+  return math.floor(b/10)*math.floor(p/10)
+       + math.floor((b%10)*p/100)
+       + math.floor((p%10)*math.floor(b/10)/10)
+end
+
+-- EXPECTED Fall harvest income for fief p (appendix §4, Pass-2 bytecode-certified).
+-- Returns gold_income, rice_income, upkeep(men/2).  Uses the harvest-time ratchet:
+-- each low-water mark is min(stored_mark, current_live) before the income calc.
+local function harvest(p)
+  local b   = PROV + p*26
+  local o   = rd(OWNER + p)
+  local tax = rd(TAX + p)
+  local ch  = rd(DMY + o*7 + 4)            -- $946D = daimyo Charisma (daimyo_record+4)
+  local loy = rd16(b+12)
+  local upkeep = math.floor(rd16(b+16) / 2)
+  if loy == 0 then return 0, 0, upkeep end -- full revolt earns nothing
+  -- marks ratcheted down to current at harvest ($A0A9): min(mark, live)
+  local lm   = math.min(rd16(MARK+7+p*8), loy)
+  local wm   = math.min(rd16(MARK+9+p*8), rd16(b+14))
+  local omax = math.min(rd16(MARK+3+p*8), rd16(b+8))
+  local dmax = math.min(rd16(MARK+5+p*8), rd16(b+10))
+  local town = rd16(b+4)
+  local header = rd16(b+24)
+  local base = pct_op(pct_op(lm, 40), tax) + pct_op(wm, tax)
+  local ev_rng = math.floor(pct_op(math.floor(ch/2), tax) / 2)  -- E[rng(0..ceil)] = ceil/2
+  local g = base + pct_op(town, tax) + ev_rng
+  local r = base + pct_op(pct_op(omax, dmax), tax) + ev_rng
+  if g > header then g = header end
+  if r > header then r = header end
+  return g, r, upkeep
+end
+
+local function headtohead_report()
   local mine = {}
-  for p = 0, 16 do if rd(AISTATE + p) ~= 0 then mine[#mine+1] = p end end
-  if #mine == 0 then for p = 0, 16 do mine[#mine+1] = p end end   -- fallback: show all
-  emu.log("==== ArmyBV head-to-head (your fiefs vs neighbours; p>50 = you favoured; terrain excl.) ====")
+  for p = 0, NF-1 do if rd(AISTATE + p) ~= 0 then mine[#mine+1] = p end end
+  if #mine == 0 then for p = 0, NF-1 do mine[#mine+1] = p end end   -- fallback: show all
+  emu.log("==== ArmyBV head-to-head (your fiefs vs FOREIGN neighbours; p>50 = you favoured; terrain excl.) ====")
   for _,p in ipairs(mine) do
     local A = fstats(p)
     emu.log(string.format("  %s#%d (own %d) men=%d  state=%d", NAMES[p] or "?", p, A.own, A.men, rd(AISTATE+p)))
     for _,n in ipairs(neighbours(p)) do
-      local D = fstats(n); local pr, Wa = headtohead(A, D)
-      local tag = (pr >= 60) and "FAVOURED" or (pr >= 45 and "even" or "RISKY")
-      emu.log(string.format("      vs %-10s#%-2d  p=%2d%%  (Wyou=%d) men %d vs %d   %s",
-        NAMES[n] or "?", n, pr, Wa, A.men, D.men, tag))
+      local D = fstats(n)
+      if D.own ~= A.own then                                        -- skip own fiefs: not valid targets
+        local pr, Wa = headtohead(A, D)
+        local tag = (pr >= 60) and "FAVOURED" or (pr >= 45 and "even" or "RISKY")
+        emu.log(string.format("      vs %-10s#%-2d  p=%2d%%  (Wyou=%d) men %d vs %d   %s",
+          NAMES[n] or "?", n, pr, Wa, A.men, D.men, tag))
+      end
     end
   end
 end
 
+local function econ_report()
+  -- group fiefs by owning daimyo
+  local houses = {}      -- owner -> { fiefs={...} }
+  local order  = {}
+  for p = 0, NF-1 do
+    local o = rd(OWNER + p)
+    if not houses[o] then houses[o] = {}; order[#order+1] = o end
+    houses[o][#houses[o]+1] = p
+  end
+  table.sort(order)
+  emu.log("==== ArmyBV daimyo economy (current gold/rice + expected Fall harvest; potential = harvest sums) ====")
+  for _,o in ipairs(order) do
+    local ch = rd(DMY + o*7 + 4)
+    local tg, tr, thg, thr, tup = 0, 0, 0, 0, 0
+    emu.log(string.format("  Daimyo #%d (Ch=%d)  [%d fief(s)]", o, ch, #houses[o]))
+    for _,p in ipairs(houses[o]) do
+      local b = PROV + p*26
+      local gold, rice = rd16(b+0), rd16(b+6)
+      local hg, hr, up = harvest(p)
+      tg, tr, thg, thr, tup = tg+gold, tr+rice, thg+hg, thr+hr, tup+up
+      emu.log(string.format("      %-10s#%-2d  gold=%-5d rice=%-5d   harvest +%-4d/+%-4d (upkeep -%d)",
+        NAMES[p] or "?", p, gold, rice, hg, hr, up))
+    end
+    emu.log(string.format("    -- TOTAL  gold=%-5d rice=%-5d   harvest +%d/+%d   net +%d/+%d",
+      tg, tr, thg, thr, thg-tup, thr-tup))
+  end
+end
+
+function report()
+  headtohead_report()
+  econ_report()
+end
+
+local function runAll()
+  report()
+  pcall(function() emu.displayMessage("ArmyBV", "refreshed — see Script Window log") end)
+end
+
+-- pick a key name this Mesen build accepts (silently no-ops on an unknown name)
+local KEYNAME = "B"
+for _,k in ipairs({"B", "KeyB"}) do
+  local ok = pcall(function() return emu.isKeyPressed(k) end)
+  if ok then KEYNAME = k; break end
+end
+
 local prevB = false
 local function onFrame()
-  local ok, down = pcall(function() return emu.isKeyPressed("KeyB") end)
-  if ok and down and not prevB then report() end
-  prevB = ok and down or false
+  local ok, down = pcall(function() return emu.isKeyPressed(KEYNAME) end)
+  down = ok and down or false
+  if down and not prevB then runAll() end
+  prevB = down
 end
-pcall(function() emu.addEventCallback(onFrame, (emu.eventType.startFrame or emu.eventType.endFrame)) end)
+pcall(function() emu.addEventCallback(onFrame, emu.eventType.endFrame) end)
 
-report()
-emu.displayMessage("Lua", "army-bv head-to-head armed (press B / report())")
+runAll()
+emu.displayMessage("Lua", string.format("army-bv armed (press %s / report())", KEYNAME))

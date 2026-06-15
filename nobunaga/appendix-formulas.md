@@ -107,48 +107,57 @@ pct_op(b, p) = ⌊b ÷ 10⌋ × ⌊p ÷ 10⌋
 
 This is just `⌊b × p ÷ 100⌋` computed in three pieces to keep all intermediates in 16-bit. Pixel-perfect on 8+ observed drain calls.
 
-## 4. Harvest income ($A26F dispatcher → $A1E2 gold + $A21F rice) — **VERIFIED 2026-05-26**
+## 4. Harvest income ($A26F sweep → $A1E2 gold + $A21F rice) — **VERIFIED 2026-05-26; PASS-2 BYTECODE-CERTIFIED 2026-06-14**
 
-The fall transition iterates over all 17 fiefs. For each fief:
-1. **`$A0A9` updates high-water marks** (output_max, dams_max, loyalty_mark, wealth_mark) at the $6003 table
-2. **`$D98D` gate check** — if non-zero, skip income deposit (war/famine condition)
-3. **`$A128` deposits**: gold via `$A1E2`, rice via `$A21F`
-4. **`$A15B` subtractor** runs after deposit, taking MEN/2 from both gold and rice (army upkeep)
-5. **`$D836` cap_fief_stats** finally clamps any field below 0 to 0, above header to header
+> **Pass-2 certification (2026-06-14):** the whole sweep walked in the grounded C (`source/4-c/bank_00.c`) **and re-checked opcode-for-opcode** in `source/2-asm-vm/bank_00_vm.asm`. The §4 formula holds exactly; the **`$946D` open question is resolved (= daimyo Charisma)**; two mechanics Pass-1 missed are added (army **starvation**, the AI **gold subsidy**); and three step-labels below are corrected. The named subs: `harvest_income_sweep_all_fiefs $A26F`, `calc_fief_harvest_base_term $A1AA`, `calc_fief_gold_income $A1E2`, `calc_fief_rice_income $A21F`, `calc_charisma_scaled_income_variance $A191`, `event_boost_province_gold_output $A128`, `consume_province_army_upkeep $A15B`, `repay_province_debt_from_gold $92A9`, `update_province_highwater_marks $A0A9`, `get_fief_daimyo_charisma $946D`.
+
+The fall transition (`current_season == 2`) calls `harvest_income_sweep_all_fiefs`, which **decays relations once at the top** (`normalize_relations_matrix_lower(2)` — so relations drift in BOTH Fall and Winter, ledger note), then iterates every fief. Per fief, in this exact order:
+1. **`$A0A9 update_province_highwater_marks`** — ratchet the low-water marks (output_max, dams_max, lm, wm) at the `$6000`-base table (8 B/fief: +3 output_max, +5 dams_max, +7 lm, +9 wm).
+2. **`$A128 event_boost_province_gold_output`** — **AI-owned fiefs only** (`province_ai_state == 0`). NOT a deposit — it's the rubber-band subsidy (see Critical mechanics).
+3. **Income gate = loyalty (record +12) > 0.** A fief in full revolt (loyalty 0) earns nothing. *(The old "`$D98D` war/famine gate" was a misread.)* If loyalty > 0: `gold += calc_fief_gold_income`, `rice += calc_fief_rice_income` (deposits are **inline in the sweep**, not a `$A128` call).
+4. **`$92A9 repay_province_debt_from_gold`** — auto-repay debt from the new gold (`pay = min(gold, debt)`), **before** upkeep.
+5. **`$A15B consume_province_army_upkeep`** — MEN/2 from both gold and rice (with the starvation clause below).
+6. **`$D836 cap_fief_stats`** — clamp each field to [0, header].
+
+Province-record offsets (base `$7001 + fief*26`): gold +0, debt +2, town +4, rice +6, output +8, dams +10, **loyalty +12**, wealth +14, men +16, header +24.
 
 ### Gold formula
 
+> Both incomes share one base term (`calc_fief_harvest_base_term $A1AA`) and one RNG term (`calc_charisma_scaled_income_variance $A191`); MEN/2 is **not** part of the income calc — it is the separate upkeep step (5) that drains gold *and* rice after deposit.
+
 ```
-GOLD = pct_op(pct_op(lm, 40), tax)        ; loyalty contrib via 40% pre-scaling
+base = pct_op(pct_op(lm, 40), tax)        ; loyalty contrib via 40% pre-scaling
      + pct_op(wm, tax)                     ; wealth contrib
-     + pct_op(town, tax)                   ; town contrib
-     + rng(0..⌊$946D × tax / 200⌋)         ; RNG_G — small variance
-     − ⌊MEN / 2⌋                           ; army upkeep cost
-     (clamped ≥ 0 by $D836)
+rng  = rng_mod( pct_op(charisma/2, tax) + 1 )   ; = rng in [0 .. ⌊charisma × tax / 200⌋]; independent roll for gold vs rice
+
+GOLD = base + pct_op(town, tax)            ; town contrib (gold-specialized)
+     + rng                                 ; RNG_G
+     (then clamped to ≤ header in the calc; ≥ 0 by $D836 after upkeep)
 ```
 
 ### Rice formula
 
 ```
-RICE = pct_op(pct_op(lm, 40), tax)
-     + pct_op(wm, tax)
-     + pct_op(pct_op(output_max, dams_max), tax)   ; output × dams instead of town
-     + rng(0..⌊$946D × tax / 200⌋)                  ; RNG_R — independent roll
-     − ⌊MEN / 2⌋
-     (clamped ≥ 0)
+RICE = base + pct_op(pct_op(output_max, dams_max), tax)   ; output × dams (rice-specialized)
+     + rng                                                 ; RNG_R — independent roll
+     (then clamped to ≤ header in the calc; ≥ 0 by $D836 after upkeep)
 ```
+
+Then, regardless of loyalty: **debt is repaid** (step 4), and **upkeep** (step 5) drains `⌊MEN/2⌋` from gold AND rice — so the net deposit a player sees is `income − debt_repaid − ⌊MEN/2⌋`.
 
 ### Critical mechanics
 
-- **lm and wm are LOW-water marks** (`cmp_sle` in $A0A9 is inverted from disasm — they track DOWN to current at fall harvest, never up). Once loyalty/wealth dip, future income permanently reduced unless they dip lower again.
-- **MEN/2 is the army-upkeep tax** — subtracted from BOTH gold AND rice every harvest. Big armies eat substantially into harvest.
-- **`$946D`** returns a small daimyo-dependent value (~50-120) controlling RNG range. Same-owner fiefs share the same $946D. Exact derivation involves iteration with $D772/$939D helpers — not blocking the formula.
+- **lm/wm/output_max/dams_max are LOW-water marks**, but **re-seeded every Summer.** `$A0A9` ratchets each mark DOWN to current when current is lower (`if mark >= current: mark = current` — confirmed in grounded C, resolving the old "inverted `cmp_sle`" note); but **Summer (`current_season == 1`) calls `init_province_highwater_from_records`**, which re-seeds the marks from the live records. So a stat dip hurts income **only for the rest of that year** — the marks reset each Summer, not "permanently." Income each Fall is computed off `min(summer_snapshot, fall_current)` per stat.
+- **`$946D` = daimyo Charisma** *(RESOLVED 2026-06-14)*. `get_fief_daimyo_charisma` reads `daimyo_record + 4` (the Charisma byte, BYTE_DEREF). The RNG range `⌊$946D × tax / 200⌋` is exactly `pct_op(charisma/2, tax)`. Same-owner fiefs share it because they share a daimyo. Tokugawa's Charisma 68 is the "$946D=68" in the Mikawa check below. **No `$D772/$939D` iteration is involved — that earlier guess is withdrawn.**
+- **Army STARVATION** *(NEW, Pass-2)*: `consume_province_army_upkeep` is not a flat −MEN/2. If `min(gold, rice) < ⌊MEN/2⌋` (you can't afford upkeep), then upkeep is capped at `min(gold, rice)` **and `men` is cut to `min(gold,rice) × 2`** — you lose the soldiers you can't feed. Then both gold and rice are drained by the (capped) upkeep. So a cash/rice-starved big army bleeds men every Fall.
+- **AI gold SUBSIDY** *(NEW, Pass-2)*: `event_boost_province_gold_output` fires only on AI fiefs (`ai_state == 0`): `gold += rng(0..9) + ⌊charisma/10⌋`, then a **50% coin (`rng_mod(2)`)** also does `output += rng(0..9) + ⌊charisma/10⌋`. This is the rubber-band — the AI economy is quietly topped up; the player's is not.
+- **MEN/2 is the army-upkeep tax** — subtracted from BOTH gold AND rice every harvest. Big armies eat substantially into harvest (and can starve, above).
 - **Tax dominates income SIGN**: below break-even (where positive contributions = MEN/2), income clamps to 0. For undeveloped fiefs, break-even ≈ 25-30% tax.
 - **TOWN is in gold formula, OUTPUT×DAMS is in rice formula** — confirms Build's direct gold ROI and Grow+Dam's direct rice ROI.
 
 ### Verification (Mikawa, fief 7)
 
-State: town=66, dams_max=64, output_max=136, lm=40, wm=51, men=71, tax=55, $946D=68
+State: town=66, dams_max=64, output_max=136, lm=40, wm=51, men=71, tax=55, **Charisma=68** (Tokugawa; was the "$946D=68")
 
 | field | calc | value |
 |---|---|---:|
@@ -156,7 +165,7 @@ State: town=66, dams_max=64, output_max=136, lm=40, wm=51, men=71, tax=55, $946D
 | wealth contrib | pct_op(51, 55) | 27 |
 | town contrib | pct_op(66, 55) | 36 |
 | OD_pct (rice only) | pct_op(pct_op(136, 64), 55) = pct_op(87, 55) | 47 |
-| RNG range | pct_op(34, 55) | 0–18 |
+| RNG range | pct_op(charisma/2, tax) = pct_op(34, 55) | 0–18 |
 | RNG_G (this run) | from trace | 4 |
 | RNG_R (this run) | derived from obs | 14 |
 | MEN/2 | 71/2 | 35 |
@@ -170,11 +179,13 @@ State: town=66, dams_max=64, output_max=136, lm=40, wm=51, men=71, tax=55, $946D
 2. **Loyalty_mark has half-ROI** (40% pre-scale before tax multiply)
 3. **Town: gold-only**, **Output×Dams: rice-only** — Build vs Grow specialize
 4. **MEN/2 is tax-independent** → at low tax + big army, harvest clamps to 0
-5. **Marks only decrease** → never let stats dip; if they do, accept lower permanent income or wait for them to dip lower
+5. **Marks ratchet down within a year, reset each Summer** → don't let stats dip *going into Fall*; the damage is one year, not permanent (Summer re-seeds the marks). Spend the Spring/Summer window restoring loyalty/wealth before the Fall snapshot.
+6. **Charisma quietly matters** → high-Charisma daimyo get a bigger income RNG ceiling (`⌊charisma×tax/200⌋`), and AI fiefs get a Charisma-scaled gold/output subsidy each Fall.
+7. **Feed your army** → keep `min(gold, rice) ≥ MEN/2` each Fall or the upkeep step culls men down to `2·min(gold,rice)`.
 
-### Open question on $946D
+### `$946D` — RESOLVED (2026-06-14)
 
-$946D walked but exact iteration semantics opaque. Owner-dependent. Likely tied to daimyo Charisma or another daimyo-record byte. Sub-task left for future investigation.
+`$946D` is `get_fief_daimyo_charisma` = `byte[daimyo_record + 4]` (Charisma). The "owner-dependent ~50–120 value" was Charisma all along; the income RNG ceiling is `pct_op(charisma/2, tax) = ⌊charisma × tax / 200⌋`. The prior "$D772/$939D iteration" hypothesis is withdrawn — there is no iteration, just a one-byte daimyo-record read.
 
 ## 5. math32_3arg ($D6B8) — 3-arg math helper
 

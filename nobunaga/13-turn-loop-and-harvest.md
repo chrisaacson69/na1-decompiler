@@ -30,6 +30,8 @@ created: 2026-05-14
 >
 > **The harvest itself** (`harvest_income_sweep_all_fiefs`): per fief, if loyalty>0 add `calc_fief_gold_income` + `calc_fief_rice_income` (the tax%-scaled formula, appendix §4); **then auto-repay debt from the new gold** (`repay_province_debt_from_gold` — the Trade-loan counterpart) and **subtract army upkeep** (`consume_province_army_upkeep`). One twist: an **AI-run fief (state 0) gets a bonus** `event_boost_province_gold_output` — the AI economy is quietly subsidized (rubber-banding). A fief in full revolt (loyalty 0) earns nothing.
 >
+> **✔ Harvest Pass-2 bytecode-certified (2026-06-14)** — every sub above walked in grounded C and re-checked opcode-for-opcode in `bank_00_vm.asm`; the appendix-§4 formula holds exactly. Three refinements landed there: (a) the income RNG ceiling's `$946D` is **daimyo Charisma** (`daimyo_record+4`); (b) upkeep includes **army starvation** — if `min(gold,rice) < MEN/2`, `men` is cut to `2·min(gold,rice)`; (c) two **timing** facts that touch this chapter's seasonal table — relations actually decay **twice a year** (`normalize_relations_matrix_lower` runs at the *top of the Fall harvest sweep* as well as in Winter), and the low-water marks are **re-seeded each Summer** (`init_province_highwater_from_records`, season 1), so a stat dip costs only one year of income, not "permanently."
+>
 > **Correction to the trace below:** the *"harvest = the `$E03C` cluster"* identification in Phase 4 was wrong — `$E03C` is `apply_conquest_outcome` and `$DA24` is `scaled_force_transfer` (Move's arms blend). The trace caught those because an AI war *resolved* in that window; the real harvest is `harvest_income_sweep_all_fiefs` (bank 0), fired only in Fall.
 
 ## What the trace shows
