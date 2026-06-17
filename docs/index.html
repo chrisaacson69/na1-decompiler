@@ -5,48 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nobunaga's Ambition (NES) — Decompiled &amp; Analyzed</title>
 <style>
+  @font-face { font-family:'NA'; src:url('assets/fonts/nobunaga.ttf') format('truetype'); }
   :root { --bg:#fbf8f2; --text:#1a1a1a; --muted:#5a534a; --accent:#7a2e2e; --border:#ddd6c8; --card:#fff; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:Georgia,'Times New Roman',serif; color:var(--text); background:var(--bg);
-         line-height:1.7; max-width:860px; margin:0 auto; padding:56px 36px; }
-  h1 { font-size:2.1em; color:var(--accent); line-height:1.15; margin-bottom:6px; }
-  .subtitle { font-size:1.1em; color:var(--muted); font-style:italic; margin-bottom:24px;
-              padding-bottom:18px; border-bottom:2px solid var(--accent); }
-  .lead { font-size:1.1em; margin-bottom:8px; }
-  h2 { font-size:1.35em; color:var(--accent); margin-top:38px; margin-bottom:14px;
+  body { font-family:Georgia,'Times New Roman',serif; color:var(--text); background:var(--bg); line-height:1.7; }
+
+  /* ---- flashy hero: the player draw ---- */
+  .hero { background:#0a0a12; text-align:center; padding:40px 20px 46px; border-bottom:3px solid #45e082; }
+  .hero-art { display:block; margin:0 auto; width:100%; max-width:512px; image-rendering:pixelated; }
+  .hero-menu { display:flex; justify-content:center; gap:54px; margin-top:26px; font-family:'NA',monospace; }
+  .hm-col { text-align:left; }
+  .hm-h { display:block; color:#fffeff; font-size:23px; letter-spacing:2px; margin-bottom:8px; }
+  .hero-menu a { display:block; color:#45e082; font-size:20px; margin:5px 0; text-decoration:none; }
+  .hero-menu a:hover { text-decoration:underline; }
+  .hero-tag { max-width:620px; margin:24px auto 0; color:#9a9ab0; font-style:italic; }
+
+  /* ---- light content: the deeper layers ---- */
+  .content { max-width:860px; margin:0 auto; padding:50px 36px; }
+  h1 { font-size:2.0em; color:var(--accent); line-height:1.15; margin-bottom:6px; }
+  .subtitle { font-size:1.08em; color:var(--muted); font-style:italic; margin-bottom:20px;
+              padding-bottom:16px; border-bottom:2px solid var(--accent); }
+  .lead { font-size:1.08em; margin-bottom:8px; }
+  h2 { font-size:1.3em; color:var(--accent); margin-top:36px; margin-bottom:13px;
        padding-bottom:5px; border-bottom:1px solid var(--border); }
   ul { list-style:none; }
   li { margin-bottom:7px; }
   li::before { content:"\2192 "; color:var(--accent); }
   a { color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; }
-  a:hover { border-bottom-color:var(--accent); }
+  .content a:hover { border-bottom-color:var(--accent); }
   .muted { color:var(--muted); font-size:0.95em; }
-  .nav-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:18px 0 8px; }
+  .nav-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:30px 0 8px; }
   .nav-cards a { display:block; background:var(--card); border:1px solid var(--border);
-                 border-radius:6px; padding:14px 16px; border-bottom:1px solid var(--border); }
+                 border-radius:6px; padding:14px 16px; }
   .nav-cards a:hover { border-color:var(--accent); }
   .nav-cards strong { color:var(--accent); }
-  @media (max-width:640px) { .nav-cards { grid-template-columns:1fr; } body { padding:30px 18px; } }
+  @media (max-width:640px) { .hero-menu { gap:30px; } .content { padding:34px 18px; } }
   .footer { margin-top:48px; padding-top:18px; border-top:1px solid var(--border);
             font-size:0.85em; color:var(--muted); text-align:center; }
 </style>
 </head>
 <body>
 
-<h1>Nobunaga's Ambition (NES)</h1>
-<p class="subtitle">A bytecode-VM decompiler, chapter-by-chapter analysis, and verified game formulas for the 1989 Koei strategy classic.</p>
+<header class="hero">
+  <img class="hero-art" src="assets/screens/title-home.png" alt="Nobunaga's Ambition (NES)">
+  <nav class="hero-menu">
+    <div class="hm-col"><span class="hm-h">Fiefs</span>
+      <a href="atlas/fief-17.html">17-fief map</a>
+      <a href="atlas/fief-50.html">50-fief map</a></div>
+    <div class="hm-col"><span class="hm-h">Daimyo</span>
+      <a href="atlas/daimyo-17.html">17-fief lords</a>
+      <a href="atlas/daimyo-50.html">50-fief lords</a></div>
+  </nav>
+  <p class="hero-tag">Click the map &mdash; every province and lord, with stats, portraits, banners and
+  battle maps, rendered from the ROM in the game's own font.</p>
+</header>
 
-<p class="lead">This site is the reader-facing companion to the
-<a href="https://github.com/chrisaacson69/na1-decompiler">na1-decompiler</a> project &mdash;
-the game's logic was lifted from stack-VM bytecode to C, then mined for how the engine
-actually works.</p>
+<main class="content">
 
-<div class="nav-cards">
-  <a href="atlas/index.html"><strong>🗺️ Fief &amp; Daimyo Atlas</strong><br><span class="muted">interactive maps &amp; stats</span></a>
-  <a href="#chapters"><strong>📖 Analysis</strong><br><span class="muted">chapter-by-chapter</span></a>
-  <a href="https://github.com/chrisaacson69/na1-decompiler/wiki"><strong>📚 Game Wiki</strong><br><span class="muted">concepts &amp; formulas</span></a>
-  <a href="https://github.com/chrisaacson69/na1-decompiler"><strong>🔧 The Code</strong><br><span class="muted">decompiler &amp; tools</span></a>
-</div>
+<h1>Under the hood</h1>
+<p class="subtitle">The 1989 Koei strategy classic, lifted from stack-VM bytecode to readable C &mdash; then mined for how the engine actually works.</p>
+
+<p class="lead">The maps and stats above are the surface. Below is the research that produced them:
+the full decompilation, chapter-by-chapter analysis, and bytecode-verified formulas. Everything
+here was recovered from the ROM &mdash; see <a href="https://github.com/chrisaacson69/na1-decompiler">the code</a>.</p>
 
 <h2 id="chapters">Chapter-by-Chapter Analysis</h2>
 <ul>
@@ -90,14 +111,6 @@ actually works.</p>
       <li><a href="appendix-vm-opcodes.html">Appendix — The VM Opcode Reference (canonical)</a> &mdash; The authoritative 256-entry opcode table for the Sea-16 VM. **Generated** by `tools/gen-opcode-appendix.py` from `tools/na1dream/vm-opcodes-v2.toml` (pops/pushes/semantics) fused with `nobunaga_vm.OPCODE_INFO` (execution-validated mnemonic + operand byte-length). Do not hand-edit — edit a source and regenerate. Cited by [ch.6 (VM Disassembler)](./06-vm-disassembler.md) and [ch.8 (VM Instruction Set)](./08-vm-instruction-set.md).</li>
 </ul>
 
-<h2 id="atlas">🗺️ Fief &amp; Daimyo Atlas</h2>
-<p class="muted">Every province and lord, rendered in the game's own font from ROM data &mdash; province stats, daimyo stats, portraits, banners, and battle maps, indexed off the clickable strategic map.</p>
-<ul>
-  <li><a href="atlas/index.html">Atlas home</a> &mdash; title screen + menu</li>
-  <li>Clickable strategic map: <a href="atlas/fief-17.html">Fiefs (17)</a> &middot; <a href="atlas/fief-50.html">Fiefs (50)</a></li>
-  <li>Portrait index: <a href="atlas/daimyo-17.html">Daimyo (17)</a> &middot; <a href="atlas/daimyo-50.html">Daimyo (50)</a></li>
-</ul>
-
 <h2 id="data">Generated Data</h2>
 <p class="muted">Numbers pulled straight from the engine &mdash; never shown as a whole before.</p>
 <ul>
@@ -114,7 +127,13 @@ holds the same reference in linkable markdown form.</p>
   <li><a href="ai.html">The daimyo AI</a> &mdash; the decision engine</li>
 </ul>
 
+<div class="nav-cards">
+  <a href="https://github.com/chrisaacson69/na1-decompiler/wiki"><strong>📚 Game Wiki</strong><br><span class="muted">concepts &amp; formulas</span></a>
+  <a href="https://github.com/chrisaacson69/na1-decompiler"><strong>🔧 The Code</strong><br><span class="muted">decompiler &amp; tools</span></a>
+</div>
+
 <div class="footer">Built from bytecode. Generated by <code>tools/build-site.py</code>.</div>
 
+</main>
 </body>
 </html>

@@ -81,10 +81,14 @@ img { image-rendering: pixelated; display: block; }
 .hot { position: absolute; transform: translate(-50%, -50%); width: 5.2%; height: 8%;
        border: 2px solid transparent; border-radius: 3px; }
 .hot:hover { border-color: #e4e594; background: rgba(228,229,148,0.28); }
-.hot .tip { position: absolute; left: 50%; bottom: 112%; transform: translateX(-50%);
-            white-space: nowrap; background: #000; color: #45e082; font-size: 16px;
-            line-height: 1.1; padding: 3px 6px; border: 1px solid #45e082; display: none; }
-.hot:hover .tip { display: block; }
+.hot .tip { position: absolute; left: 50%; bottom: 116%; transform: translateX(-50%);
+            display: none; background: #000; border: 1px solid #45e082; padding: 6px 8px;
+            white-space: nowrap; z-index: 5; }
+.hot:hover .tip { display: flex; align-items: center; gap: 9px; }
+.tip-portrait { width: 52px; height: 52px; image-rendering: pixelated; flex: none; }
+.tip-banner { width: 52px; height: auto; image-rendering: pixelated; flex: none; }
+.tip-text { font-size: 17px; line-height: 1.25; color: #fffeff; }
+.tip-text b { color: #45e082; }
 </style>
 </head><body><div class="panel">
 <div class="nav"><a href="fief-50.html">All fiefs</a><span class="sep">&middot;</span><a href="daimyo-50.html">All daimyo</a> <span class="sep">|</span> 50-fief</div><div class="row"><div class="art"><img class="portrait" src="../assets/portraits/50/daimyo-49.png" alt="Shimazu portrait"><img class="banner" src="../assets/banners/50/banner-49.png" alt="Shimazu banner"></div><div class="info"><div class="name">Shimazu</div><div class="home">Home fief <a href="fief-50-49.html">Satuma</a></div><div class="stats daimyo"><div class="stat"><span class="k">Age</span><span class="v">46</span></div><div class="stat"><span class="k">Hlth</span><span class="v">103</span></div><div class="stat"><span class="k">Driv</span><span class="v">83</span></div><div class="stat"><span class="k">Luck</span><span class="v">69</span></div><div class="stat"><span class="k">Char</span><span class="v">96</span></div><div class="stat"><span class="k">IQ</span><span class="v">95</span></div></div></div></div>

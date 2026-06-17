@@ -140,10 +140,14 @@ img { image-rendering: pixelated; display: block; }
 .hot { position: absolute; transform: translate(-50%%, -50%%); width: 5.2%%; height: 8%%;
        border: 2px solid transparent; border-radius: 3px; }
 .hot:hover { border-color: %(home)s; background: rgba(228,229,148,0.28); }
-.hot .tip { position: absolute; left: 50%%; bottom: 112%%; transform: translateX(-50%%);
-            white-space: nowrap; background: #000; color: %(daimyo)s; font-size: 16px;
-            line-height: 1.1; padding: 3px 6px; border: 1px solid %(daimyo)s; display: none; }
-.hot:hover .tip { display: block; }
+.hot .tip { position: absolute; left: 50%%; bottom: 116%%; transform: translateX(-50%%);
+            display: none; background: #000; border: 1px solid %(daimyo)s; padding: 6px 8px;
+            white-space: nowrap; z-index: 5; }
+.hot:hover .tip { display: flex; align-items: center; gap: 9px; }
+.tip-portrait { width: 52px; height: 52px; image-rendering: pixelated; flex: none; }
+.tip-banner { width: 52px; height: auto; image-rendering: pixelated; flex: none; }
+.tip-text { font-size: 17px; line-height: 1.25; color: %(title)s; }
+.tip-text b { color: %(daimyo)s; }
 """
 
 PAGE = """<!DOCTYPE html>
@@ -253,6 +257,7 @@ def render_fief_index(sc: int) -> str:
     iw, ih = coords["size"]
     s = load_scenario(sc)
     names = {e.idx: e.name for e in s.entries}        # 0-based idx -> fief name
+    clans = {e.idx: e.daimyo["clan"] for e in s.entries}
     title = f"Fiefs - {sc}-fief - Nobunaga's Ambition"
     nav = (f'<div class="nav"><a href="{_daimyo_index_href(sc)}">All daimyo</a>'
            f'<span class="sep">|</span> {sc}-fief</div>')
@@ -260,10 +265,15 @@ def render_fief_index(sc: int) -> str:
     for num_str, (cx, cy) in coords["fiefs"].items():
         idx = int(num_str) - 1                        # coords keys are 1-based fief numbers
         name = names.get(idx, num_str)
+        clan = clans.get(idx, "")
+        tip = (f'<span class="tip">'
+               f'<img class="tip-portrait" src="{_portrait_rel(sc, idx)}" alt="">'
+               f'<span class="tip-text"><b>{int(num_str)} {_esc(name)}</b><br>{_esc(clan)}</span>'
+               f'<img class="tip-banner" src="{_banner_rel(sc, idx)}" alt="">'
+               f'</span>')
         hots.append(
             f'<a class="hot" style="left:{cx / iw * 100:.2f}%;top:{cy / ih * 100:.2f}%" '
-            f'href="{_fief_href(sc, idx)}">'
-            f'<span class="tip">{int(num_str)} {_esc(name)}</span></a>')
+            f'href="{_fief_href(sc, idx)}">{tip}</a>')
     body = (f'{nav}<div class="ix-title">Fiefs &mdash; {sc}-fief scenario '
             f'({len(s.entries)})</div>'
             f'<div class="map-index"><img src="{_strat_map_rel(sc)}" alt="{sc}-fief map">'
