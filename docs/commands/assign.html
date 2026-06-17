@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 <style>@font-face{font-family:'NA';src:url('../assets/fonts/nobunaga.ttf') format('truetype')}.topbar{background:#0a0a12;display:flex;justify-content:center;gap:4px;flex-wrap:wrap;padding:9px 12px;position:sticky;top:0;z-index:9999;border-bottom:2px solid #45e082}.topbar a{color:#cfcfe0;font-family:'NA',monospace;font-size:15px;text-decoration:none;padding:6px 13px;border-radius:4px;border:none}.topbar a:hover{color:#fff;background:rgba(255,255,255,.08)}.topbar a.active{color:#45e082}</style></head>
 <body>
@@ -68,33 +79,30 @@
   <div class="tag">Reorganize a garrison — interactively reallocate its soldiers across the unit types. An editor screen, not a one-shot effect. Costs a flat 30 gold.</div>
 </header>
 
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>② data-walk labels</span>
-  <span>⚡ instant — no animation</span>
-</div>
-
 <h2>What it does</h2>
 <p>Assign (<code>driver_assign $AD67</code>) opens an <b>interactive arms-allocation editor</b> for the selected province. It requires soldiers (else <span class="scr">You have no soldiers.</span>) and a flat <b>30 gold</b> (else <span class="scr">You have no gold.</span>), which is debited up front. <code>effect_assign ($AC11)</code> then draws the arms-edit screen (<code>render_arms_edit_screen</code> over the province’s arms region at <code>$7017</code>) and runs an input loop: the d-pad moves a cursor across the rows and adjusts each, A/B (<code>poll_input</code> cases) commit or cancel. The five rows are the army’s <b>unit-type composition</b> — the foot / cavalry / musket mix that feeds straight into the combat damage model (different unit types carry different damage multipliers). Unlike the econ commands there is no formula and no animation: it’s a UI editor that writes the arms fields directly.</p>
 
-<h2>How it works</h2>
-<p class="sub">The driver reads as a step-by-step script:</p>
+<h2>Where it goes</h2>
+<p class="sub">This command hands off to a bigger subsystem; the depth lives there.</p>
+<div class="rabbit"><b>🕳️ Unit types & damage.</b> the five-row composition feeds the tactical damage model — unit-type multipliers, the 4-quadrant <code>{1,2,4,7}</code> selector, and arms in the casualty math (see the combat engine). <a href="../12-combat-engine.md">→ deep page</a></div>
+
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
+<h3>How it works</h3>
+<p class="sub">Driver <code>$AD67</code> reads as a step-by-step script:</p>
 <ol class="flow">
   <li><span class="addr">$AD7D</span><b>Soldier check</b> — no men → <span class="scr">"You have no soldiers."</span></li>
   <li><span class="addr">$AD91</span><b>Gold check</b> — a flat <b>30 gold</b> is required and debited.</li>
   <li><span class="addr">$AC26</span><code>effect_assign</code> draws the arms-edit screen over <code>$7017</code> (the province arms region).</li>
   <li><span class="addr">$AC36</span><b>Input loop:</b> d-pad moves the cursor over the five unit-type rows and adjusts the allocation; A/B commit or cancel.</li>
 </ol>
-
-
 <div class="callout"><b>The army-composition command.</b> Where Train raises <i>skill</i> and Hire adds <i>bodies</i>, Assign decides <b>what kind</b> of soldiers they are — the foot/cavalry/musket split that the combat engine multiplies into damage (foot ×1, cavalry ×2, musket ×3 in the damage model). It’s an editor rather than a formula, which is why it gets a functional page: the depth is the combat model the composition feeds, not Assign itself. The flat 30-gold fee is a small reorganization tax — cheap, but it still spends one of your four action-slots.</div>
-
-<h2>Where it goes — the rabbit holes</h2>
-<p class="sub">This command is a simple page on purpose: the depth lives in the subsystem it hands off to. Those get their own pages.</p>
-<div class="rabbit"><b>🕳️ Unit types & damage.</b> the five-row composition feeds the tactical damage model — unit-type multipliers, the 4-quadrant <code>{1,2,4,7}</code> selector, and arms in the casualty math (see the combat engine). <a href="../12-combat-engine.md">→ deep page</a></div>
+  </div>
+</details>
 
 <footer>
-  Driver <code>$AD67</code> · <code>tools/run-animation.py</code> · <a href="./README.md">commands index</a>.
+  The exact, code-referenced detail lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>

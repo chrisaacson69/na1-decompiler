@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 </head>
 <body>
@@ -67,31 +78,29 @@
   <div class="tag">Inspect any province — your own for free, an enemy’s for gold (and the risk of a caught spy). The information hub: fief stats, vassals, and the strategic map.</div>
 </header>
 
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>④ animation VM → ROM render</span>
-  <span>⚠ subsystem entry point</span>
-</div>
-
-<h2>What you see</h2>
+<h2>In game</h2>
 <p class="sub">The View animation, rendered from ROM bytes.</p>
 <div class="anim">
   <img src="data:image/gif;base64,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" alt="View animation">
   <div class="cap">
     The view/inspection animation (id 14).
-    <span class="pill">FROM ROM</span><br><br>
-    Produced headless by <code>tools/run-animation.py 14</code>, which runs the game’s
-    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>14</code> from
-    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write
-    and sprite placement to reconstruct each frame — real NES palette.
+    <span class="pill">FROM ROM</span>
   </div>
 </div>
 
 <h2>What it does</h2>
 <p>View (<code>driver_view $A6C7</code>) is the game’s <b>intelligence command</b>, and the widest of the non-econ commands — it’s a loop over several screens. <span class="scr">View which fief?</span> lets you inspect any province’s stats (<code>effect_view_a</code>); your own fiefs are free, but <b>spying on an enemy costs 10 gold</b> per look (no gold → <span class="scr">You have no gold.</span>). Spying is a <b>Luck+IQ contest</b>: <code>effect_view_d = rng(Luck) + IQ</code> for each daimyo — beat the target (and a <code>1-in-skill</code> roll) and the look is clean; otherwise a 2-in-3 fallback still succeeds, but the remaining third gets <span class="scr">Our spy was caught.</span> (animation 14). From the same command you can list a daimyo’s vassals (<span class="scr">View vassals</span>, <code>effect_view_b/c</code>) and open the strategic <b>map</b> (<code>map_helper_e5f2 / map_helper_af10</code> — the very same render path the Map command uses, branched on <code>scenario_fief_count</code>).</p>
 
-<h2>How it works</h2>
-<p class="sub">The driver reads as a step-by-step script:</p>
+<h2>Where it goes</h2>
+<p class="sub">This command hands off to a bigger subsystem; the depth lives there.</p>
+<div class="rabbit"><b>🕳️ Spy-contest math.</b> <code>effect_view_d ($A6B3) = rng(Luck) + IQ</code> — the daimyo-vs-daimyo roll behind a successful inspection vs a caught spy. High Luck+IQ → reliable espionage; a <code>1-in-skill</code> term makes it harder at higher difficulty.</div>
+<div class="rabbit"><b>🕳️ The illustrated strategic map.</b> <code>map_helper_e5f2</code> blits a 9-section map from bank 4 — rendering it from ROM (both 17 & 50 fief) is an open task (ROADMAP Inbox).</div>
+
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
+<h3>How it works</h3>
+<p class="sub">Driver <code>$A6C7</code> reads as a step-by-step script:</p>
 <ol class="flow">
   <li><span class="addr">$A716</span><span class="scr">"View which fief?"</span> — pick any province.</li>
   <li><span class="addr">$A6EE</span><b>Own fief:</b> view its full stats free (<code>effect_view_a</code>).</li>
@@ -100,17 +109,12 @@
   <li><span class="addr">$A843</span><b>Caught</b> → <span class="scr">"Our spy was caught."</span> (animation 14).</li>
   <li><span class="addr">$A743</span><b>Map sub-screen</b> — opens the strategic map (<code>map_helper_e5f2/af10</code>, the same renderer as the Map command).</li>
 </ol>
-
-
 <div class="callout"><b>The information hub — and a second door to the map.</b> View bundles three things the other commands keep separate: province inspection, vassal lists, and the strategic map. Reading your own holdings is free; reading an <i>enemy’s</i> is espionage — 10 gold a look and a <b>Luck+IQ</b> roll (<code>rng(Luck)+IQ</code> each side) that can get your spy caught. The map sub-screen calls the identical <code>map_helper_e5f2</code> path as the <a href="./map.html">Map command</a> (and the kernel <code>$E694</code> standalone viewer), which is why all three share one render core — and why pulling that illustrated map from ROM is filed as its own task.</div>
-
-<h2>Where it goes — the rabbit holes</h2>
-<p class="sub">This command is a simple page on purpose: the depth lives in the subsystem it hands off to. Those get their own pages.</p>
-<div class="rabbit"><b>🕳️ Spy-contest math.</b> <code>effect_view_d ($A6B3) = rng(Luck) + IQ</code> — the daimyo-vs-daimyo roll behind a successful inspection vs a caught spy. High Luck+IQ → reliable espionage; a <code>1-in-skill</code> term makes it harder at higher difficulty. <i>(deep page TBD)</i></div>
-<div class="rabbit"><b>🕳️ The illustrated strategic map.</b> <code>map_helper_e5f2</code> blits a 9-section map from bank 4 — rendering it from ROM (both 17 & 50 fief) is an open task (ROADMAP Inbox). <i>(deep page TBD)</i></div>
+  </div>
+</details>
 
 <footer>
-  Driver <code>$A6C7</code> · <code>tools/run-animation.py</code> · <a href="./README.md">commands index</a>.
+  The exact, code-referenced detail lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>

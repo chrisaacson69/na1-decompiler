@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 </head>
 <body>
@@ -67,29 +78,25 @@
   <div class="tag">Set a province’s tax rate. Raising it drains loyalty <i>and</i> wealth (and costs charisma); lowering it restores them. Symmetric, one-shot — and scales with the CHANGE.</div>
 </header>
 
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>② data-walk labels</span>
-  <span>③ bytecode-validated formula</span>
-  <span>④ animation VM → ROM render</span>
-</div>
-
-<h2>What you see</h2>
-<p class="sub">The in-game Tax animation, rendered <b>purely from ROM bytes</b> — no emulator capture.</p>
+<h2>In game</h2>
+<p class="sub">The Tax animation, rendered <b>purely from ROM bytes</b> &mdash; no emulator capture.</p>
 <div class="anim">
   <img src="data:image/gif;base64,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" alt="Tax animation">
   <div class="cap">
     Peasants sit amid the koku they owe — then the coins are taken and discontent sets in (the tax-<i>raised</i> animation, id 19).
-    <span class="pill">FROM ROM</span><br><br>
-    Produced headless by <code>tools/run-animation.py 19</code>, which runs the game’s
-    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>19</code> from
-    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write
-    and sprite placement to reconstruct each frame — real NES palette.
+    <span class="pill">FROM ROM</span>
   </div>
 </div>
 
-<h2>How it works</h2>
-<p class="sub">The driver <code>$999A</code> reads as a step-by-step script:</p>
+<h2>When to use it</h2>
+<p class="roi">Set tax high — <b>~55% is the sweet spot</b> — on turn one and <b>leave it</b>. Every re-fiddle re-charges the loyalty/wealth penalty, so a province whose rate you keep flipping bleeds far more than its harvest gains. Pushing past ~55–60% also opens Riot vulnerability (see the event system).</p>
+<div class="effect"><b>Changes:</b> <code>loyalty</code>&nbsp;±pct · <code>wealth</code>&nbsp;±pct (same %, opposite the tax move) · province <code>tax</code>&nbsp;:= new rate · daimyo <code>charisma</code>&nbsp;∓1.</div>
+
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
+<h3>How it works</h3>
+<p class="sub">Driver <code>$999A</code> reads as a step-by-step script:</p>
 <ol class="flow">
   <li><span class="addr">$999F</span>Select <b>Tax</b> and the province; the window shows the current rate.</li>
   <li><span class="addr">$99BC</span>Prompt: <span class="scr">"Tax is <i>N</i>. Enter new tax."</span> (capped at 100, or 30 under <code>tax_helper_db12</code>).</li>
@@ -100,9 +107,8 @@
   <li><span class="addr">$9A42</span><code>loyalty ±= pct_op(loyalty, |Δtax|)</code> via <code>effect_tax</code> ($82D6) — drops on a raise, recovers on a cut.</li>
   <li><span class="addr">$9A4C</span><code>wealth ±= pct_op(wealth, |Δtax|)</code> — same magnitude. → confirm.</li>
 </ol>
-
-<h2>The formula</h2>
-<p class="sub">Read directly from <code>$82D6</code> bytecode and execution-verified.</p>
+<h3>The exact formula</h3>
+<p class="sub">Read straight from <code>$82D6</code> bytecode and execution-verified.</p>
 <pre><span class="c">// Tax is symmetric: the hit scales with the CHANGE, not the level</span>
 &Delta;      = new_tax &minus; old_tax            <span class="c">// signed</span>
 
@@ -116,10 +122,8 @@ loyalty  = stat_adjust(loyalty)        <span class="c">// record +12</span>
 wealth   = stat_adjust(wealth)         <span class="c">// record +14</span>
 charisma &plus;= (&Delta; &gt; 0) ? &minus;1 : &plus;1        <span class="c">// daimyo record +4</span>
 tax[fief] = new_tax</pre>
-<p class="roi">Set tax high — <b>~55% is the sweet spot</b> — on turn one and <b>leave it</b>. Every re-fiddle re-charges the loyalty/wealth penalty, so a province whose rate you keep flipping bleeds far more than its harvest gains. Pushing past ~55–60% also opens Riot vulnerability (see the event system).</p>
 <div class="callout"><b>Symmetric and one-shot — the key strategic property.</b> Raising the rate by |Δ| points immediately drains <b>both</b> loyalty and wealth by |Δ|% (and costs the daimyo 1 charisma); lowering it <b>restores</b> the same percentage (and earns 1 charisma). Because the penalty scales with the <b>change</b> and not the level, the optimal play is to set tax high <i>once</i>, early, and never touch it again — every adjustment is a fresh tax on your own people. Note the underlying <code>effect_tax</code> ($82D6) is a generic signed-percent primitive; the driver $999A calls it twice (loyalty, then wealth) with the tax delta.</div>
-
-<h2>Validated against the ROM</h2>
+<h3>Validated against the ROM</h3>
 <p class="sub">A tax change of |Δ| points moves BOTH loyalty and wealth by pct_op(stat, |Δ|), opposite the tax direction. Worked from the unit-verified pct_op primitive.</p>
 <table>
   <tr><th>stat (pre)</th><th>|Δtax|</th><th>pct_op(stat,|Δ|)</th><th>raise tax →</th><th>lower tax →</th></tr>
@@ -129,11 +133,11 @@ tax[fief] = new_tax</pre>
   <tr><td>wealth 50</td><td>40</td><td>20</td><td>30</td><td>70</td></tr>
 </table>
 <p class="sub"><code>pct_op</code> is verified to the unit across 8+ observed drain calls (appendix §6). Charisma moves the <i>other</i> way: <code>+1</code> when you lower tax, <code>−1</code> when you raise it. In-game verified — see <a href='../appendix-formulas.md'>the tax-penalty formula</a>.</p>
+  </div>
+</details>
 
 <footer>
-  <b>Fields touched:</b> <code>loyalty</code>&nbsp;±pct · <code>wealth</code>&nbsp;±pct (same %, opposite the tax move) · province <code>tax</code>&nbsp;:= new rate · daimyo <code>charisma</code>&nbsp;∓1. &nbsp;·&nbsp;
-  Sources: <code>decompiled/bank_01.c</code> · <code>tools/run-animation.py</code> ·
-  <a href="../appendix-formulas.md">appendix-formulas.md</a> · <a href="./tax.md">tax.md</a>.
+  The exact, code-referenced math lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>

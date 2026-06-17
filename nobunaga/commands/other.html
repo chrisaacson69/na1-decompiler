@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 </head>
 <body>
@@ -66,12 +77,6 @@
   <h1>Other</h1>
   <div class="tag">The system menu — sound, animation and message-speed toggles, plus Save and the end-turn / quit options. Settings, not strategy.</div>
 </header>
-
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>② data-walk labels</span>
-  <span>⚡ instant — no animation</span>
-</div>
 
 <h2>What it does</h2>
 <p>Other (<code>driver_other $B23E</code>) opens a <b>seven-entry system menu</b> (<span class="scr">Change which?</span>). Each pick is dispatched through a jump table (<code>jumptab_b9e8</code>) to its own handler, and the menu loops until a handler signals exit or you choose <b>End</b>. The labels come straight from <code>driver_other_data_ff1a</code>. Most entries just flip a preference; <b>Save</b> writes the battery-backed game; and only <b>End</b> (option index 5) returns true to actually conclude the turn.</p>
@@ -89,11 +94,15 @@
   <tr><td>7</td><td>Menu</td><td>back out to the command menu (index 6)</td></tr>
 </table>
 <p class="sub">These are the same preferences the engine reads elsewhere — the <b>Animat</b> bit in <code>ai_turn_flags</code> gates every <code>ui_helper_e80c</code> command animation the other pages show; <b>Wait</b>’s <code>delay_loop_count</code> times every text box; <b>Battle</b>’s <code>ui_confirm_flag_6e7d</code> decides whether you spectate AI wars; and <b>Save</b> routes through the checksummed SRAM writer. IDing these is the grounding for the code that consumes them.</p>
-
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
 <div class="callout"><b>A settings command that quietly controls the rest of the game.</b> Nothing here touches a province or a daimyo, but two entries matter: <b>Save</b> is the only persistence path, and the <b>Animat</b> toggle is the master switch for the command-animation VM every other page on this site renders. The seven handlers behind <code>jumptab_b9e8</code> are small, self-contained UI routines — a settings panel, not a subsystem.</div>
+  </div>
+</details>
 
 <footer>
-  Driver <code>$B23E</code> · <code>tools/run-animation.py</code> · <a href="./README.md">commands index</a>.
+  The exact, code-referenced detail lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>

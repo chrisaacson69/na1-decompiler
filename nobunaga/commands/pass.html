@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 </head>
 <body>
@@ -67,20 +78,18 @@
   <div class="tag">Skip the season. Spend an action slot on nothing — and the game lets you know how it feels about that.</div>
 </header>
 
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>② data-walk labels</span>
-  <span>⚡ instant — no animation</span>
-</div>
-
 <h2>What it does</h2>
 <p>Pass (<code>driver_pass $B2A1</code>) is the whole function: it prints <span class="scr">What a waste.</span>, waits for a confirm (<code>confirm_prompt</code>), and <b>returns 1</b> — consuming the action so the turn advances. No province field, no daimyo record, no roll. It exists because the turn structure needs an explicit “do nothing” when you’ve no good move (or want to bank gold/rice into the harvest without developing).</p>
 
-
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
 <div class="callout"><b>The shortest driver in the game — and a strategic statement.</b> With only four action-slots a year, deliberately spending one on Pass is almost always wrong; the game agrees (<span class="scr">What a waste.</span>). It’s here for completeness — the one command whose entire decompiled body is three lines.</div>
+  </div>
+</details>
 
 <footer>
-  Driver <code>$B2A1</code> · <code>tools/run-animation.py</code> · <a href="./README.md">commands index</a>.
+  The exact, code-referenced detail lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>

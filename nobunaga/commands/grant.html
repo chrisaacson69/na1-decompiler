@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 </head>
 <body>
@@ -67,39 +78,18 @@
   <div class="tag">Hand a province over to AI governance and tell it what to prioritize — develop, arm, farm, or balance. Delegation, so you can spend your slots elsewhere.</div>
 </header>
 
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>④ animation VM → ROM render</span>
-  <span>⚠ subsystem entry point</span>
-</div>
-
-<h2>What you see</h2>
+<h2>In game</h2>
 <p class="sub">The Grant animation, rendered from ROM bytes.</p>
 <div class="anim">
   <img src="data:image/gif;base64,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" alt="Grant animation">
   <div class="cap">
     The orders-given scene (id 11).
-    <span class="pill">FROM ROM</span><br><br>
-    Produced headless by <code>tools/run-animation.py 11</code>, which runs the game’s
-    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>11</code> from
-    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write
-    and sprite placement to reconstruct each frame — real NES palette.
+    <span class="pill">FROM ROM</span>
   </div>
 </div>
 
 <h2>What it does</h2>
 <p>Grant (<code>driver_grant $AF66</code>) sets a province’s <b>AI governance policy</b> (<code>province_ai_state</code>). Gated on your daimyo being present, you pick the fief (<span class="scr">Which fief?</span>), the game asks <span class="scr">What are your orders?</span>, and you choose one of six stances from the menu. The chosen value (1–5) is written to <code>province_ai_state[fief]</code> (<code>$B050</code>); the game confirms <span class="scr">It’s currently a &lt;X&gt; state. OK to…?</span> (or <span class="scr">It’s already a &lt;X&gt; state.</span>), plays the animation (<code>ui_helper_e80c(11)</code>), and replies <span class="scr">Lord, you are truly wise.</span> The state is read every turn by the per-fief command driver (<code>ai_per_fief_command_driver $B89B</code>), which <code>switch</code>es on it to pick that fief’s auto-action. <b>State 5 = “Direct”</b> is the one that means <i>you</i> run it by hand (<code>issue_province_command</code> — your own capital starts here); <b>state 0 = “Home”</b> is the AI’s general-economy default (every conquered/AI fief sits here); states 1–4 delegate to a <i>themed</i> AI loop.</p>
-
-<h2>How it works</h2>
-<p class="sub">The driver reads as a step-by-step script:</p>
-<ol class="flow">
-  <li><span class="addr">$AF73</span><b>Daimyo-present gate</b> (<code>$6DA2</code>).</li>
-  <li><span class="addr">$AFA0</span>Select the fief — <span class="scr">"Which fief?"</span> — then <span class="scr">"What are your orders?"</span>.</li>
-  <li><span class="addr">$AFCC</span>The six-option policy menu is drawn (from the <code>$F7D4</code> name table).</li>
-  <li><span class="addr">$AFFB</span><code>submenu_prompt(6)</code> → pick a policy; option 6 backs out.</li>
-  <li><span class="addr">$B00B</span>Already that policy → <span class="scr">"It’s already a &lt;X&gt; state."</span></li>
-  <li><span class="addr">$B050</span><b>Set</b> <code>province_ai_state[fief] = policy</code>; animation <code>11</code>; <span class="scr">"Lord, you are truly wise."</span></li>
-</ol>
 
 <h2>The six governance policies</h2>
 <p class="sub">Index = the stored <code>province_ai_state</code> value; the third column is the actual turn-engine handler the driver (<code>$B89B</code>) <code>switch</code>es to for that fief each turn.</p>
@@ -113,11 +103,25 @@
   <tr><td>5</td><td>Direct</td><td><code>issue_province_command</code> — <b>YOU control it by hand</b>. Your own capital starts in this state; it is the opposite of hands-off.</td></tr>
 </table>
 <p class="sub">Per the SRAM census the AI <i>never</i> uses states 1–4 — every AI fief is 0 (Home), the human capital 5 (Direct). And <b>the player can never have a Home fief</b>: conquest inherits the <i>attacker's</i> state (<code>ai_state(conquered) = ai_state(attacker) ? 5 : 0</code>, <code>$E194</code>), and you always attack from a Direct/granted fief — so every conquest comes out <b>Direct (5)</b>, to micro or Grant. <b>Home (0) is strictly better than Balanced (3)</b> (same cascade + the AI-only 10% stat boost / 25% arms bump / spring boon, no decay) — but it's an <b>AI-only</b> mode you can't reach. So states 1–4 are your <i>only</i> way to stop micro-ing a fief: <b>Grant to focus</b> — Farming a breadbasket, Industrial a gold mint, Military an autonomous aggressor — accepting the state-≠0 spring decay and no subsidies. All delegated fiefs auto-set their own tax (≈35–64%, re-randomised each turn).</p>
-
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
+<h3>How it works</h3>
+<p class="sub">Driver <code>$AF66</code> reads as a step-by-step script:</p>
+<ol class="flow">
+  <li><span class="addr">$AF73</span><b>Daimyo-present gate</b> (<code>$6DA2</code>).</li>
+  <li><span class="addr">$AFA0</span>Select the fief — <span class="scr">"Which fief?"</span> — then <span class="scr">"What are your orders?"</span>.</li>
+  <li><span class="addr">$AFCC</span>The six-option policy menu is drawn (from the <code>$F7D4</code> name table).</li>
+  <li><span class="addr">$AFFB</span><code>submenu_prompt(6)</code> → pick a policy; option 6 backs out.</li>
+  <li><span class="addr">$B00B</span>Already that policy → <span class="scr">"It’s already a &lt;X&gt; state."</span></li>
+  <li><span class="addr">$B050</span><b>Set</b> <code>province_ai_state[fief] = policy</code>; animation <code>11</code>; <span class="scr">"Lord, you are truly wise."</span></li>
+</ol>
 <div class="callout"><b>Genuinely a mechanic, not a UI screen.</b> Grant writes <code>province_ai_state</code>, the very field the AI command driver reads each turn to decide that fief’s actions — and the same field the conquest/neutralize code resets (<code>neutralize_fief</code> forces it to −1). It is the player’s hook into the AI economy: where the player gets <b>one command per fief per season</b>, an AI-run fief executes its whole cascade — recruit, arm, train, build — every turn. Since the player can’t reach Home (every conquest comes out Direct), <b>Grant is your only way to buy back that action throughput</b>: a delegated fief develops, and a Military one wages war, for free, no slot spent — at the cost of the spring decay and the Home subsidies you never had.</div>
+  </div>
+</details>
 
 <footer>
-  Driver <code>$AF66</code> · <code>tools/run-animation.py</code> · <a href="./README.md">commands index</a>.
+  The exact, code-referenced detail lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>

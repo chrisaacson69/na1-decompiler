@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 <style>@font-face{font-family:'NA';src:url('../assets/fonts/nobunaga.ttf') format('truetype')}.topbar{background:#0a0a12;display:flex;justify-content:center;gap:4px;flex-wrap:wrap;padding:9px 12px;position:sticky;top:0;z-index:9999;border-bottom:2px solid #45e082}.topbar a{color:#cfcfe0;font-family:'NA',monospace;font-size:15px;text-decoration:none;padding:6px 13px;border-radius:4px;border:none}.topbar a:hover{color:#fff;background:rgba(255,255,255,.08)}.topbar a.active{color:#45e082}</style></head>
 <body>
@@ -68,39 +79,18 @@
   <div class="tag">Pay a spy to bribe an enemy fief’s peasants into defecting to you — the gold-for-spy command. A loyalty/charisma contest, not a sabotage menu.</div>
 </header>
 
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>④ animation VM → ROM render</span>
-  <span>⚠ subsystem entry point</span>
-</div>
-
-<h2>What you see</h2>
+<h2>In game</h2>
 <p class="sub">The Bribe animation, rendered from ROM bytes.</p>
 <div class="anim">
   <img src="data:image/gif;base64,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" alt="Bribe animation">
   <div class="cap">
     A spy (blue) approaches a banner-waving peasant — the defection scene (id 26). A thin 2-frame clip (the un-seeded-CHR caveat the develop animations also hit).
-    <span class="pill">FROM ROM</span><br><br>
-    Produced headless by <code>tools/run-animation.py 26</code>, which runs the game’s
-    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>26</code> from
-    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write
-    and sprite placement to reconstruct each frame — real NES palette.
+    <span class="pill">FROM ROM</span>
   </div>
 </div>
 
 <h2>What it does</h2>
-<p>Bribe (<code>driver_bribe $AAAE → effect_bribe $8D4D</code>) is the <b>separate</b> espionage command — distinct from Hire▸Ninja’s sabotage menu (see <a href="./ninja.html">ninja.html</a>). You need more than 10 gold; you pick a target fief (<span class="scr">Bribe which?</span>) and answer <span class="scr">Gold for spy?</span> with how much to spend. A contest (<code>bribe_success_check $8D02</code>) then decides the outcome. On <b>success</b> a slice of the target’s <b>output</b> — its peasant/agricultural base — defects to your fief (<span class="scr">%d peasants have defected</span>); on <b>failure</b> (<span class="scr">No peasants defected!</span>) your daimyo loses a charisma point and part of the spent gold is forfeit. The number of peasants moved is <code>loyalty − (⌊(30 + rng%25) × (min(loyalty, √gold) + 1) ÷ 100⌋ + 1)</code> — it scales with the <b>target’s loyalty</b> (emulator: loyalty 80 → 63–76, loyalty 40 → 23–30, loyalty 10 → 4–6), <i>not</i> a flat percentage of output (<code>compute_bribe_effect_value $8BC1</code>, emulator-confirmed).</p>
-
-<h2>How it works</h2>
-<p class="sub">The driver reads as a step-by-step script:</p>
-<ol class="flow">
-  <li><span class="addr">$AAC2</span><b>Gold gate.</b> Need <code>gold &gt; 10</code>, else <span class="scr">"You have no gold."</span></li>
-  <li><span class="addr">$AAD8</span>Prompt <span class="scr">"Bribe which?"</span> — pick the target province.</li>
-  <li><span class="addr">$AAF6</span>Prompt <span class="scr">"Gold for spy?"</span> → number entry (your gold, less the base stake).</li>
-  <li><span class="addr">$8D74</span><b>The contest</b> (<code>bribe_success_check $8D02</code>) — see the table below.</li>
-  <li><span class="addr">$8D9D</span><b>On success</b> the defection animation plays — <code>ui_helper_e80c(26)</code> — and a slice of the target’s output moves to your fief: <span class="scr">"%d peasants have defected."</span></li>
-  <li><span class="addr">$8DBF</span><b>On failure</b> → <span class="scr">"No peasants defected!"</span>, daimyo <code>−1</code> charisma, part of the stake forfeit.</li>
-</ol>
+<p>Bribe (<code>driver_bribe $AAAE → effect_bribe $8D4D</code>) is the <b>separate</b> espionage command — distinct from Hire▸Ninja’s sabotage menu (see <a href="hire.html#ninja">Hire ▸ Ninja</a>). You need more than 10 gold; you pick a target fief (<span class="scr">Bribe which?</span>) and answer <span class="scr">Gold for spy?</span> with how much to spend. A contest (<code>bribe_success_check $8D02</code>) then decides the outcome. On <b>success</b> a slice of the target’s <b>output</b> — its peasant/agricultural base — defects to your fief (<span class="scr">%d peasants have defected</span>); on <b>failure</b> (<span class="scr">No peasants defected!</span>) your daimyo loses a charisma point and part of the spent gold is forfeit. The number of peasants moved is <code>loyalty − (⌊(30 + rng%25) × (min(loyalty, √gold) + 1) ÷ 100⌋ + 1)</code> — it scales with the <b>target’s loyalty</b> (emulator: loyalty 80 → 63–76, loyalty 40 → 23–30, loyalty 10 → 4–6), <i>not</i> a flat percentage of output (<code>compute_bribe_effect_value $8BC1</code>, emulator-confirmed).</p>
 
 <h2>The contest — who wins</h2>
 <p class="sub">The success roll, read straight from <code>bribe_success_check</code> bytecode (<code>$8D3D SCMPGT</code> → <code>$8D3E JUMPF</code>).</p>
@@ -110,15 +100,29 @@
   <tr><td>Failure</td><td>otherwise</td><td>nothing transfers; your daimyo <b>−1 charisma</b>; part of the spent gold is forfeit</td></tr>
 </table>
 <p class="sub">The win condition is the <b>intuitive</b> one — a loyal, charismatic lord bribes a <i>weaker</i> enemy fief’s peasants away. The direction was settled from the bytecode: <code>bribe_success_check</code> compares <code>local11</code> (built from the LAST-pushed arg = <b>your</b> fief) against <code>local10</code> (the target + rng), and the VM passes call args into frame slots in <b>reverse</b> push order (the same convention probe-math32 documented). The <code>$8BD0 DEREF</code> of that same slot — only the pointer arg can be dereferenced — independently confirms the reverse mapping. (Field identities: loyalty@+12, daimyo charisma@+4.)</p>
+<h2>Where it goes</h2>
+<p class="sub">This command hands off to a bigger subsystem; the depth lives there.</p>
+<div class="rabbit"><b>🕳️ The spy-gold quirk.</b> the closed form is settled, but it has a counter-intuitive twist: <b>more</b> spy gold raises <code>√gold</code>, which raises the subtracted resistance (until <code>√gold ≥ loyalty</code>) — so <i>minimal</i> gold maximizes the peasant transfer. Bytecode + emulator agree; worth an in-game sanity check that gold isn’t buying something else (success odds are gold-independent in <code>$8D02</code>).</div>
 
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
+<h3>How it works</h3>
+<p class="sub">Driver <code>$AAAE</code> reads as a step-by-step script:</p>
+<ol class="flow">
+  <li><span class="addr">$AAC2</span><b>Gold gate.</b> Need <code>gold &gt; 10</code>, else <span class="scr">"You have no gold."</span></li>
+  <li><span class="addr">$AAD8</span>Prompt <span class="scr">"Bribe which?"</span> — pick the target province.</li>
+  <li><span class="addr">$AAF6</span>Prompt <span class="scr">"Gold for spy?"</span> → number entry (your gold, less the base stake).</li>
+  <li><span class="addr">$8D74</span><b>The contest</b> (<code>bribe_success_check $8D02</code>) — see the table below.</li>
+  <li><span class="addr">$8D9D</span><b>On success</b> the defection animation plays — <code>ui_helper_e80c(26)</code> — and a slice of the target’s output moves to your fief: <span class="scr">"%d peasants have defected."</span></li>
+  <li><span class="addr">$8DBF</span><b>On failure</b> → <span class="scr">"No peasants defected!"</span>, daimyo <code>−1</code> charisma, part of the stake forfeit.</li>
+</ol>
 <div class="callout"><b>Bribe is NOT the sabotage menu.</b> An earlier note filed the Uprising/Revolt/Dams/Assassin/Arson menu under “Bribe”; the bytecode shows that menu belongs to <b>Hire▸Ninja</b> (<a href="./ninja.html">ninja.html</a>). Bribe (<code>$8D4D</code>) is its own, simpler thing: <b>gold-for-spy peasant defection</b> — one contested effect that steals a chunk of the target’s peasant output. Both are gold-funded espionage, which is why they blurred together; the code keeps them firmly apart.</div>
-
-<h2>Where it goes — the rabbit holes</h2>
-<p class="sub">This command is a simple page on purpose: the depth lives in the subsystem it hands off to. Those get their own pages.</p>
-<div class="rabbit"><b>🕳️ The spy-gold quirk.</b> the closed form is settled, but it has a counter-intuitive twist: <b>more</b> spy gold raises <code>√gold</code>, which raises the subtracted resistance (until <code>√gold ≥ loyalty</code>) — so <i>minimal</i> gold maximizes the peasant transfer. Bytecode + emulator agree; worth an in-game sanity check that gold isn’t buying something else (success odds are gold-independent in <code>$8D02</code>). <i>(deep page TBD)</i></div>
+  </div>
+</details>
 
 <footer>
-  Driver <code>$AAAE</code> · <code>tools/run-animation.py</code> · <a href="./README.md">commands index</a>.
+  The exact, code-referenced detail lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>

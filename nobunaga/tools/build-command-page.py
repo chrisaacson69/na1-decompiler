@@ -462,16 +462,18 @@ COMMANDS = {
   },
 
   "hire": {
-    "type": "atomic", "no": 10, "name": "Hire",
+    "type": "atomic", "no": 10, "name": "Hire", "merge_sub": "ninja",
     "driver": 0xA5F4, "effect": 0xA553, "anim_id": 33,
-    "tagline": "Spend gold to recruit <b>men</b> into a garrison. Recruits arrive at mediocre stats and "
-               "are blended into the army by a men-weighted average — so Hire <i>dilutes</i> quality.",
+    "tagline": "Hire opens a <b>(Men / Ninja)?</b> prompt &mdash; two very different actions. "
+               "<b>Men</b> recruits soldiers into a garrison (blended in by a men-weighted average, so "
+               "Hire <i>dilutes</i> quality); <b>Ninja</b> buys a saboteur for a covert mission against "
+               "an enemy fief.",
     "anim_cap": "Fresh spearmen fall into formation as the garrison’s headcount climbs.",
     "flow": [
       (0xA5FC, 'Select <b>Hire</b>; validate the province.'),
-      (0xA615, 'Prompt <span class="scr">"(Men/Ninja)?"</span> — <b>Men</b> recruits soldiers (this page); '
+      (0xA615, 'Prompt <span class="scr">"(Men/Ninja)?"</span> — <b>Men</b> recruits soldiers (above); '
                '<b>Ninja</b> opens the sabotage-mission menu (→ <code>$A2D2</code>, see '
-               '<a href="./ninja.html">ninja.html</a>).'),
+               '<a href="#ninja">the Ninja section below</a>).'),
       (0xA558, '(Men path, <code>effect_hire_men</code> $A553) army headroom = <code>header − men</code>.'),
       (0xA564, '<b>Affordability:</b> max men = f(gold, hire rate). No gold → '
                '<span class="scr">"You have no gold."</span>'),
@@ -503,7 +505,7 @@ COMMANDS = {
     "callout": (
 "<b>Two commands behind one prompt.</b> “(Men/Ninja)?” — <b>Men</b> recruits soldiers (this page); "
 "<b>Ninja</b> opens the sabotage-mission menu (Uprising / Revolt / Dams / Assassin / Arson at "
-"<code>$A2D2</code>, animation 12) — its own page, <a href=\"./ninja.html\">ninja.html</a>. "
+"<code>$A2D2</code>, animation 12) — <a href=\"#ninja\">the Ninja section below</a>. "
 "<i>(The earlier docs labeled <code>$A2D2</code> “effect_hire” and filed this menu under <b>Bribe</b>; the "
 "bytecode shows it is the Hire▸Ninja path — now <code>effect_ninja_sabotage</code> — recruit-men lives in "
 "<code>$A553</code>, and Bribe is a separate gold-for-spy command.)</i> For recruiting, the catch is "
@@ -663,8 +665,13 @@ COMMANDS = {
 
   # ---- Hire ▸ Ninja: the sabotage subsystem (the "buy → ninja" path) ----
   "ninja": {
-    "type": "functional", "no": 10, "name": "Ninja (Hire ▸ Ninja)",
+    "type": "functional", "no": 10, "name": "Ninja (Hire ▸ Ninja)", "merged_into": "hire",
     "driver": 0xA5F4, "effect": 0xA2D2, "anim_id": 12,
+    "roi": "Pure denial &mdash; you gain nothing, so use it to soften a target before war. Cost is linear "
+           "in ninjas but the drain only scales with <b>√ninjas</b>, so small batches are the efficient buy. "
+           "Every mission rides a <b>Luck gate</b> (your daimyo's Luck + 30 vs. the target's), and you forfeit "
+           "the gold on a miss. Assassin (4) aimed at a daimyo's <b>capital</b> can collapse a whole faction, "
+           "but it grinds health over several turns and can rebound on your own lord.",
     "tagline": "Buy a ninja and send him on a sabotage mission against an enemy fief — "
                "uprising, revolt, flood, assassination or arson. The covert half of the Hire command.",
     "anim_cap": "The hired ninja steals out toward the target province (the shared mission-launch "
@@ -760,7 +767,7 @@ COMMANDS = {
                 "A thin 2-frame clip (the un-seeded-CHR caveat the develop animations also hit).",
     "summary": (
       "Bribe (<code>driver_bribe $AAAE → effect_bribe $8D4D</code>) is the <b>separate</b> espionage "
-      "command — distinct from Hire▸Ninja’s sabotage menu (see <a href=\"./ninja.html\">ninja.html</a>). "
+      "command — distinct from Hire▸Ninja’s sabotage menu (see <a href=\"hire.html#ninja\">Hire ▸ Ninja</a>). "
       "You need more than 10 gold; you pick a target fief (<span class=\"scr\">Bribe which?</span>) and "
       "answer <span class=\"scr\">Gold for spy?</span> with how much to spend. A contest "
       "(<code>bribe_success_check $8D02</code>) then decides the outcome. On <b>success</b> a slice of the "
@@ -1417,6 +1424,17 @@ CSS = """
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\\25B8\\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\\25BE\\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 """
 
 def _gif_src(cmd):
@@ -1431,16 +1449,11 @@ def _anim_block(s, cmd):
     if not src:
         return ('<div class="anim"><div class="cap"><i>animation not yet rendered — '
                 f'run <code>tools/run-animation.py {s.get("anim_id","?")}</code></i></div></div>')
-    aid = s.get("anim_id", "?")
     return (
       '<div class="anim">\n'
       f'  <img src="{src}" alt="{s["name"]} animation">\n'
       '  <div class="cap">\n'
-      f'    {s["anim_cap"]}\n    <span class="pill">FROM ROM</span><br><br>\n'
-      f'    Produced headless by <code>tools/run-animation.py {aid}</code>, which runs the game’s\n'
-      f'    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>{aid}</code> from\n'
-      '    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write\n'
-      '    and sprite placement to reconstruct each frame — real NES palette.\n'
+      f'    {s["anim_cap"]}\n    <span class="pill">FROM ROM</span>\n'
       '  </div>\n</div>')
 
 def _page(title, body):
@@ -1448,6 +1461,37 @@ def _page(title, body):
             f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
             f'<title>{title}</title>\n<style>{CSS}</style>\n</head>\n<body>\n<div class="wrap">\n'
             f'{body}\n</div>\n</body>\n</html>\n')
+
+def _render_merged_sub(sub):
+    """Render a merged sub-command (e.g. Hire ▸ Ninja) as a friendly section: heading +
+    summary + the visible gameplay table + 'when to use' + an Under-the-hood drawer."""
+    t = sub.get("table")
+    table = ""
+    if t:
+        head = "".join(f"<th>{h}</th>" for h in t["headers"])
+        rows = ""
+        for r in t["rows"]:
+            cells = "".join(
+                f'<td><span class="ok">✓</span></td>' if c == "ok" else f"<td>{c}</td>" for c in r)
+            rows += f"  <tr>{cells}</tr>\n"
+        cap = f'<p class="sub">{t["caption"]}</p>\n' if t.get("caption") else ""
+        table = (f'<h3>{sub.get("table_heading","The options")}</h3>\n{cap}'
+                 f'<table>\n  <tr>{head}</tr>\n{rows}</table>\n')
+    roi = f'<h3>When to use it</h3>\n<p class="roi">{sub["roi"]}</p>\n' if sub.get("roi") else ""
+    flow = "\n".join(f'  <li><span class="addr">${a:04X}</span>{h}</li>' for a, h in sub.get("flow", []))
+    note = f'<h3>Drain magnitude</h3>\n<p class="sub">{t["note"]}</p>\n' if (t and t.get("note")) else ""
+    callout = f'<div class="callout">{sub["callout"]}</div>\n' if sub.get("callout") else ""
+    rabbits = ""
+    for label, desc, link in sub.get("rabbit_holes", []):
+        tgt = f' <a href="{link}">→</a>' if link else ''
+        rabbits += f'<div class="rabbit"><b>{label}.</b> {desc}{tgt}</div>\n'
+    drawer = ('<details class="deep">\n  <summary>Under the hood &mdash; the verified bytecode</summary>\n'
+              '  <div class="deep-body">\n'
+              f'<h3>How it works</h3>\n<ol class="flow">\n{flow}\n</ol>\n'
+              f'{note}{callout}{rabbits}'
+              '  </div>\n</details>')
+    return (f'<h2 id="ninja">Ninja &#9656; Sabotage</h2>\n<p>{sub["summary"]}</p>\n{table}{roi}{drawer}')
+
 
 def render_atomic(cmd, s):
     flow = "\n".join(f'  <li><span class="addr">${a:04X}</span>{html}</li>' for a, html in s["flow"])
@@ -1457,33 +1501,39 @@ def render_atomic(cmd, s):
         head = "".join(f"<th>{h}</th>" for h in v["headers"])
         rows = ""
         for r in v["rows"]:
-            cells = ""
-            for i, c in enumerate(r):
-                cells += f'<td><span class="ok">✓</span></td>' if c == "ok" else f"<td>{c}</td>"
+            cells = "".join(
+                f'<td><span class="ok">✓</span></td>' if c == "ok" else f"<td>{c}</td>" for c in r)
             rows += f"  <tr>{cells}</tr>\n"
-        vtable = (f'<h2>Validated against the ROM</h2>\n<p class="sub">{v["caption"]}</p>\n'
+        vtable = (f'<h3>Validated against the ROM</h3>\n<p class="sub">{v["caption"]}</p>\n'
                   f'<table>\n  <tr>{head}</tr>\n{rows}</table>\n'
-                  f'<p class="sub">{v["note"]}</p>')
+                  f'<p class="sub">{v["note"]}</p>\n')
     callout = f'<div class="callout">{s["callout"]}</div>\n' if s.get("callout") else ""
-    roi = f'<p class="roi">{s["roi"]}</p>\n' if s.get("roi") else ""
+    roi = (f'<h2>When to use it</h2>\n<p class="roi">{s["roi"]}</p>\n' if s.get("roi")
+           else '')
+    # the verified bytecode detail, folded away by default (one click for the curious)
+    deep = (
+      '<details class="deep">\n  <summary>Under the hood &mdash; the verified bytecode</summary>\n'
+      '  <div class="deep-body">\n'
+      f'<h3>How it works</h3>\n<p class="sub">Driver <code>${s["driver"]:04X}</code> reads as a '
+      'step-by-step script:</p>\n'
+      f'<ol class="flow">\n{flow}\n</ol>\n'
+      f'<h3>The exact formula</h3>\n<p class="sub">Read straight from <code>${s["effect"]:04X}</code> '
+      f'bytecode and execution-verified.</p>\n<pre>{s["formula"]}</pre>\n'
+      f'{callout}{vtable}'
+      '  </div>\n</details>')
     body = (
       f'<header>\n  <div class="cmdno">Lord Command · No. {s["no"]}</div>\n'
       f'  <h1>{s["name"]}</h1>\n  <div class="tag">{s["tagline"]}</div>\n</header>\n\n'
-      '<div class="skills">\n  <span>① decompiler → C</span>\n  <span>② data-walk labels</span>\n'
-      '  <span>③ bytecode-validated formula</span>\n  <span>④ animation VM → ROM render</span>\n</div>\n\n'
-      f'<h2>What you see</h2>\n<p class="sub">The in-game {s["name"]} animation, rendered '
-      '<b>purely from ROM bytes</b> — no emulator capture.</p>\n'
+      f'<h2>In game</h2>\n<p class="sub">The {s["name"]} animation, rendered '
+      '<b>purely from ROM bytes</b> &mdash; no emulator capture.</p>\n'
       f'{_anim_block(s, cmd)}\n\n'
-      f'<h2>How it works</h2>\n<p class="sub">The driver <code>${s["driver"]:04X}</code> reads as a '
-      'step-by-step script:</p>\n'
-      f'<ol class="flow">\n{flow}\n</ol>\n\n'
-      f'<h2>The formula</h2>\n<p class="sub">Read directly from <code>${s["effect"]:04X}</code> bytecode '
-      f'and execution-verified.</p>\n<pre>{s["formula"]}</pre>\n{roi}{callout}\n'
-      f'{vtable}\n\n'
-      f'<footer>\n  <b>Fields touched:</b> {s["fields"]}. &nbsp;·&nbsp;\n'
-      f'  Sources: <code>decompiled/bank_01.c</code> · <code>tools/run-animation.py</code> ·\n'
-      f'  <a href="../appendix-formulas.md">appendix-formulas.md</a> · <a href="./{cmd}.md">{cmd}.md</a>.\n'
-      f'</footer>')
+      f'{roi}'
+      f'<div class="effect"><b>Changes:</b> {s["fields"]}.</div>\n\n'
+      f'{deep}\n\n'
+      + (_render_merged_sub(COMMANDS[s["merge_sub"]]) + '\n\n' if s.get("merge_sub") else '')
+      + f'<footer>\n  The exact, code-referenced math lives in the technical '
+      f'<a href="../papers.html">appendices</a>. &nbsp;·&nbsp; '
+      f'<a href="./index.html">All commands</a>.\n</footer>')
     return _page(f'{s["name"]} — Nobunaga’s Ambition Command Reference', body)
 
 def _table_html(t, heading):
@@ -1503,39 +1553,31 @@ def _table_html(t, heading):
 def render_functional(cmd, s):
     rabbits = ""
     for label, desc, link in s.get("rabbit_holes", []):
-        tgt = f' <a href="{link}">→ deep page</a>' if link else ' <i>(deep page TBD)</i>'
+        tgt = f' <a href="{link}">→ deep page</a>' if link else ''
         rabbits += f'<div class="rabbit"><b>\U0001f573️ {label}.</b> {desc}{tgt}</div>\n'
     flow = ""
     if s.get("flow"):
         items = "\n".join(f'  <li><span class="addr">${a:04X}</span>{h}</li>' for a, h in s["flow"])
-        flow = ('<h2>How it works</h2>\n<p class="sub">The driver reads as a step-by-step '
-                f'script:</p>\n<ol class="flow">\n{items}\n</ol>\n\n')
+        flow = (f'<h3>How it works</h3>\n<p class="sub">Driver <code>${s["driver"]:04X}</code> reads as a '
+                f'step-by-step script:</p>\n<ol class="flow">\n{items}\n</ol>\n')
     table = _table_html(s.get("table"), s.get("table_heading", "The options"))
     callout = f'<div class="callout">{s["callout"]}</div>\n' if s.get("callout") else ""
-    # Some commands are instant (no ui_helper_e80c → no animation): skip the "What you see" block.
-    if s.get("anim_id") is None:
-        skills = ('<div class="skills">\n  <span>① decompiler → C</span>\n  '
-                  '<span>② data-walk labels</span>\n  <span>⚡ instant — no animation</span>\n</div>\n\n')
-        seen = ''
-    else:
-        skills = ('<div class="skills">\n  <span>① decompiler → C</span>\n  '
-                  '<span>④ animation VM → ROM render</span>\n  <span>⚠ subsystem entry point</span>\n</div>\n\n')
-        seen = (f'<h2>What you see</h2>\n<p class="sub">The {s["name"]} animation, '
-                f'rendered from ROM bytes.</p>\n{_anim_block(s, cmd)}\n\n')
+    deep = ('<details class="deep">\n  <summary>Under the hood &mdash; the verified bytecode</summary>\n'
+            f'  <div class="deep-body">\n{flow}{callout}  </div>\n</details>\n\n') if (flow or callout) else ""
+    seen = (f'<h2>In game</h2>\n<p class="sub">The {s["name"]} animation, rendered from ROM bytes.</p>\n'
+            f'{_anim_block(s, cmd)}\n\n') if s.get("anim_id") is not None else ""
+    roi = f'<h2>When to use it</h2>\n<p class="roi">{s["roi"]}</p>\n\n' if s.get("roi") else ""
+    rh = ('<h2>Where it goes</h2>\n<p class="sub">This command hands off to a bigger subsystem; '
+          f'the depth lives there.</p>\n{rabbits}\n' if rabbits else "")
     body = (
       f'<header>\n  <div class="cmdno">Lord Command · No. {s["no"]}</div>\n'
       f'  <h1>{s["name"]}</h1>\n  <div class="tag">{s["tagline"]}</div>\n</header>\n\n'
-      f'{skills}'
       f'{seen}'
       f'<h2>What it does</h2>\n<p>{s["summary"]}</p>\n\n'
-      f'{flow}'
-      f'{table}\n{callout}\n'
-      + ('<h2>Where it goes — the rabbit holes</h2>\n'
-         '<p class="sub">This command is a simple page on purpose: the depth lives in the subsystem it '
-         'hands off to. Those get their own pages.</p>\n'
-         f'{rabbits}\n' if s.get("rabbit_holes") else "")
-      + (f'<footer>\n  Driver <code>${s["driver"]:04X}</code> · '
-      f'<code>tools/run-animation.py</code> · <a href="./README.md">commands index</a>.\n</footer>'))
+      f'{roi}{table}{rh}{deep}'
+      f'<footer>\n  The exact, code-referenced detail lives in the technical '
+      f'<a href="../papers.html">appendices</a>. &nbsp;·&nbsp; '
+      f'<a href="./index.html">All commands</a>.\n</footer>')
     return _page(f'{s["name"]} — Nobunaga’s Ambition Command Reference', body)
 
 INDEX_CSS = CSS + """
@@ -1610,10 +1652,10 @@ def index_page():
                  f'<div class="rname">{fontimg(s["name"], INK, 4, "gname")}</div>'
                  f'<div class="rtag">{tag}</div>'
                  f'<div class="rtype t-{t}">{t}</div></a>\n')
-        if cmd == "hire" and "ninja" in have:
+        if cmd == "hire":
             n = COMMANDS["ninja"]
             ntag = re.sub(r"</?(b|i|code|span)[^>]*>", "", n["tagline"]).split(". ")[0].rstrip(".") + "."
-            rows += (f'<a class="row sub-row" href="./ninja.html">'
+            rows += (f'<a class="row sub-row" href="./hire.html#ninja">'
                      f'<div class="num">{fontimg("+", PURPLE, 4, "gnum")}</div>'
                      f'<div class="rname">{fontimg("Ninja", PURPLE, 4, "gname")}</div>'
                      f'<div class="rtag">{ntag}</div>'
@@ -1653,6 +1695,9 @@ def index_page():
 
 def build(cmd):
     s = COMMANDS[cmd]
+    if s.get("merged_into"):                       # rendered inline on its parent's page
+        print(f"  (skipped {cmd} — merged into {s['merged_into']}.html)")
+        return
     # rabbit-hole guard: an atomic page whose driver fans into a subsystem is suspect
     warn = classify(cmd, quiet=True)
     if s["type"] == "atomic" and warn["subsystems"]:

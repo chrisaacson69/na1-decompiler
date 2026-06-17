@@ -57,6 +57,17 @@
   footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
   footer a{color:var(--blue);text-decoration:none}
   .roi{color:var(--dim);font-style:italic;margin-top:6px}
+  .effect{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+  .effect b{color:var(--gold)}
+  details.deep{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;background:#191922;overflow:hidden}
+  details.deep>summary{cursor:pointer;padding:14px 18px;font:600 13.5px/1 var(--mono);color:var(--dim);
+    letter-spacing:.04em;list-style:none;user-select:none}
+  details.deep>summary::-webkit-details-marker{display:none}
+  details.deep>summary:before{content:"\25B8\00a0 ";color:var(--gold)}
+  details.deep[open]>summary:before{content:"\25BE\00a0 "}
+  details.deep>summary:hover{color:var(--ink)}
+  details.deep .deep-body{padding:6px 18px 18px;border-top:1px solid var(--line)}
+  details.deep h3{margin:24px 0 4px;font-size:16px;color:var(--gold);font-weight:700}
 </style>
 </head>
 <body>
@@ -64,35 +75,31 @@
 <header>
   <div class="cmdno">Lord Command · No. 10</div>
   <h1>Hire</h1>
-  <div class="tag">Spend gold to recruit <b>men</b> into a garrison. Recruits arrive at mediocre stats and are blended into the army by a men-weighted average — so Hire <i>dilutes</i> quality.</div>
+  <div class="tag">Hire opens a <b>(Men / Ninja)?</b> prompt &mdash; two very different actions. <b>Men</b> recruits soldiers into a garrison (blended in by a men-weighted average, so Hire <i>dilutes</i> quality); <b>Ninja</b> buys a saboteur for a covert mission against an enemy fief.</div>
 </header>
 
-<div class="skills">
-  <span>① decompiler → C</span>
-  <span>② data-walk labels</span>
-  <span>③ bytecode-validated formula</span>
-  <span>④ animation VM → ROM render</span>
-</div>
-
-<h2>What you see</h2>
-<p class="sub">The in-game Hire animation, rendered <b>purely from ROM bytes</b> — no emulator capture.</p>
+<h2>In game</h2>
+<p class="sub">The Hire animation, rendered <b>purely from ROM bytes</b> &mdash; no emulator capture.</p>
 <div class="anim">
   <img src="data:image/gif;base64,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" alt="Hire animation">
   <div class="cap">
     Fresh spearmen fall into formation as the garrison’s headcount climbs.
-    <span class="pill">FROM ROM</span><br><br>
-    Produced headless by <code>tools/run-animation.py 33</code>, which runs the game’s
-    own <b>animation scripting VM</b> (bank&nbsp;14 <code>$80AD</code>, id <code>33</code> from
-    the descriptor table at <code>$AF80</code>) and intercepts every CHR upload, palette write
-    and sprite placement to reconstruct each frame — real NES palette.
+    <span class="pill">FROM ROM</span>
   </div>
 </div>
 
-<h2>How it works</h2>
-<p class="sub">The driver <code>$A5F4</code> reads as a step-by-step script:</p>
+<h2>When to use it</h2>
+<p class="roi">Hire when current stats are low (recruits don’t drag much) or to refill after combat losses. <b>Never</b> hire into a small high-skill army — you’ll wreck its average. Watch the per-turn hire rate; it fluctuates, so some seasons recruiting is markedly cheaper.</p>
+<div class="effect"><b>Changes:</b> <code>men</code>&nbsp;+amount · <code>morale</code>/<code>skill</code>/<code>arms</code> diluted toward recruit bases · <code>gold</code>&nbsp;−(amount × hire rate).</div>
+
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
+<h3>How it works</h3>
+<p class="sub">Driver <code>$A5F4</code> reads as a step-by-step script:</p>
 <ol class="flow">
   <li><span class="addr">$A5FC</span>Select <b>Hire</b>; validate the province.</li>
-  <li><span class="addr">$A615</span>Prompt <span class="scr">"(Men/Ninja)?"</span> — <b>Men</b> recruits soldiers (this page); <b>Ninja</b> opens the sabotage-mission menu (→ <code>$A2D2</code>, see <a href="./ninja.html">ninja.html</a>).</li>
+  <li><span class="addr">$A615</span>Prompt <span class="scr">"(Men/Ninja)?"</span> — <b>Men</b> recruits soldiers (above); <b>Ninja</b> opens the sabotage-mission menu (→ <code>$A2D2</code>, see <a href="#ninja">the Ninja section below</a>).</li>
   <li><span class="addr">$A558</span>(Men path, <code>effect_hire_men</code> $A553) army headroom = <code>header − men</code>.</li>
   <li><span class="addr">$A564</span><b>Affordability:</b> max men = f(gold, hire rate). No gold → <span class="scr">"You have no gold."</span></li>
   <li><span class="addr">$A573</span>Prompt <span class="scr">"How many?"</span> → number entry (capped).</li>
@@ -101,9 +108,8 @@
   <li><span class="addr">$A5AE</span><b>The animation plays</b> — <code>ui_helper_e80c(33)</code> hands id 33 to the bank-14 animation VM.</li>
   <li><span class="addr">$A5C7</span><span class="scr">"Lord, we now have <i>N</i> men."</span> → confirm.</li>
 </ol>
-
-<h2>The formula</h2>
-<p class="sub">Read directly from <code>$A553</code> bytecode and execution-verified.</p>
+<h3>The exact formula</h3>
+<p class="sub">Read straight from <code>$A553</code> bytecode and execution-verified.</p>
 <pre><span class="c">// COST   (effect_hire_men $A553)</span>
 headroom = header &minus; men                          <span class="c">// army cap</span>
 max_buy  = <span class="k">affordable</span>(gold, gold_men_hire_rate, headroom)
@@ -118,10 +124,8 @@ arms_base   = <span class="k">rng</span>%10 + 50                    <span class=
 <span class="c">// DILUTION — men-weighted average, capped at header (morale, skill, arms)</span>
 new_stat = <span class="k">min</span>( header, (stat &times; men + base &times; amount) &divide; (men + amount) )
 men &plus;= amount</pre>
-<p class="roi">Hire when current stats are low (recruits don’t drag much) or to refill after combat losses. <b>Never</b> hire into a small high-skill army — you’ll wreck its average. Watch the per-turn hire rate; it fluctuates, so some seasons recruiting is markedly cheaper.</p>
-<div class="callout"><b>Two commands behind one prompt.</b> “(Men/Ninja)?” — <b>Men</b> recruits soldiers (this page); <b>Ninja</b> opens the sabotage-mission menu (Uprising / Revolt / Dams / Assassin / Arson at <code>$A2D2</code>, animation 12) — its own page, <a href="./ninja.html">ninja.html</a>. <i>(The earlier docs labeled <code>$A2D2</code> “effect_hire” and filed this menu under <b>Bribe</b>; the bytecode shows it is the Hire▸Ninja path — now <code>effect_ninja_sabotage</code> — recruit-men lives in <code>$A553</code>, and Bribe is a separate gold-for-spy command.)</i> For recruiting, the catch is <b>dilution</b>: fresh recruits (morale 40–59, skill 60–79, arms 50–59) are blended in by a men-weighted average, so hiring into a small elite garrison drags its skill <b>down</b>. That is exactly why elite armies are <b>trained</b> (no dilution — see train.html) and Hire is for restoring body-count or staffing a new fief.</div>
-
-<h2>Validated against the ROM</h2>
+<div class="callout"><b>Two commands behind one prompt.</b> “(Men/Ninja)?” — <b>Men</b> recruits soldiers (this page); <b>Ninja</b> opens the sabotage-mission menu (Uprising / Revolt / Dams / Assassin / Arson at <code>$A2D2</code>, animation 12) — <a href="#ninja">the Ninja section below</a>. <i>(The earlier docs labeled <code>$A2D2</code> “effect_hire” and filed this menu under <b>Bribe</b>; the bytecode shows it is the Hire▸Ninja path — now <code>effect_ninja_sabotage</code> — recruit-men lives in <code>$A553</code>, and Bribe is a separate gold-for-spy command.)</i> For recruiting, the catch is <b>dilution</b>: fresh recruits (morale 40–59, skill 60–79, arms 50–59) are blended in by a men-weighted average, so hiring into a small elite garrison drags its skill <b>down</b>. That is exactly why elite armies are <b>trained</b> (no dilution — see train.html) and Hire is for restoring body-count or staffing a new fief.</div>
+<h3>Validated against the ROM</h3>
 <p class="sub">In-game (Fall 1566, fief 6 hired 30 men into 55) — the post-state matches the men-weighted dilution of the recruit bases.</p>
 <table>
   <tr><th>stat</th><th>pre (55 men)</th><th>recruit base</th><th>post (85 men)</th><th>implied base</th></tr>
@@ -130,11 +134,47 @@ men &plus;= amount</pre>
   <tr><td>arms</td><td>70</td><td>50–59</td><td>66</td><td>59 ✓</td></tr>
 </table>
 <p class="sub">Dilution: <code>new = (stat×55 + base×30) / 85</code>. E.g. arms <code>(70×55 + 59×30)/85 = 66</code> ✓. *Skill’s implied 55 sits just below the 60–79 band — consistent with the session being multiple batched hires. men: 55 → 85 (+30).</p>
+  </div>
+</details>
+
+<h2 id="ninja">Ninja &#9656; Sabotage</h2>
+<p>Reached from the <b>Hire</b> command’s <span class="scr">(Men/Ninja)?</span> prompt — pick <b>Ninja</b> and you leave the recruiting sandbox for an offensive espionage subsystem (<code>effect_ninja_sabotage $A2D2</code>). You pay gold to hire the ninja (rate <code>hire_gold_rate $6E13</code>, which re-rolls every turn), choose a target fief (<span class="scr">Send where?</span>), then choose one of five missions. A <b>Luck attempt-gate</b> gates every mission: it proceeds only when your daimyo’s <b>Luck</b> stat (<code>record +3</code>) <b>+ 30</b> beats the target daimyo’s Luck — otherwise <span class="scr">Your ninja failed!</span> and you forfeit the gold anyway (<code>effect_ninja_failed $A29B</code>). On success the target loses the mission’s fields and you see <span class="scr">Fief X’s &lt;stat&gt; has declined by N</span>. <i>This is the system the old notes mis-filed under “Bribe” — see the correction below; the genuinely separate Bribe command gets its own page.</i></p>
+<h3>The five missions</h3>
+<p class="sub">Each mission drains specific fields of the TARGET fief and plays its own animation. Read straight from the <code>switch</code> at <code>$A39A</code>.</p>
+<table>
+  <tr><th>#</th><th>Mission</th><th>Drains on the target fief</th><th>Anim</th><th>Code</th></tr>
+  <tr><td>1</td><td>Uprising</td><td>loyalty + wealth</td><td>28</td><td>$A3AB</td></tr>
+  <tr><td>2</td><td>Revolt</td><td>morale</td><td>27</td><td>$A45A</td></tr>
+  <tr><td>3</td><td>Dams</td><td>dams + rice (flood)</td><td>30</td><td>$A497</td></tr>
+  <tr><td>4</td><td>Assassin</td><td>grinds the daimyo’s health to 0 (attrition) — requires targeting the daimyo’s CAPITAL ($6DA2 = fief_is_daimyo_capital); a capital kill collapses the whole faction; resolves in ninja_mission_resolve_vs_defender $918D</td><td>1*</td><td>$A508</td></tr>
+  <tr><td>5</td><td>Arson</td><td>town</td><td>29</td><td>$A510</td></tr>
+</table>
+<h3>When to use it</h3>
+<p class="roi">Pure denial &mdash; you gain nothing, so use it to soften a target before war. Cost is linear in ninjas but the drain only scales with <b>√ninjas</b>, so small batches are the efficient buy. Every mission rides a <b>Luck gate</b> (your daimyo's Luck + 30 vs. the target's), and you forfeit the gold on a miss. Assassin (4) aimed at a daimyo's <b>capital</b> can collapse a whole faction, but it grinds health over several turns and can rebound on your own lord.</p>
+<details class="deep">
+  <summary>Under the hood &mdash; the verified bytecode</summary>
+  <div class="deep-body">
+<h3>How it works</h3>
+<ol class="flow">
+  <li><span class="addr">$A615</span>From <b>Hire</b>, answer <span class="scr">(Men/Ninja)?</span> with <b>Ninja</b> (<code>ui_helper_d351</code>) → <code>effect_ninja_sabotage $A2D2</code>.</li>
+  <li><span class="addr">$A2ED</span>Prompt <span class="scr">"How many"</span> — number entry (gated by affordability vs <code>hire_gold_rate</code>; no gold → <span class="scr">"You have no gold."</span>).</li>
+  <li><span class="addr">$A31B</span>Prompt <span class="scr">"Send where?"</span> — pick the target province.</li>
+  <li><span class="addr">$A335</span>Prompt <span class="scr">"What mission"</span> → the menu <span class="scr">"1-Uprisng 2-Revolt 3-Dams 4-Assassin 5-Arson"</span> (<code>$BD8F</code>).</li>
+  <li><span class="addr">$A36D</span><b>The ninja sets out</b> — <code>ui_helper_e80c(12)</code> plays the mission-launch animation (each mission then has its own effect animation; see the table).</li>
+  <li><span class="addr">$A396</span><b>Luck attempt-gate (all 5 missions).</b> Proceeds only if <code>target_daimyo.Luck &lt; your_daimyo.Luck + 30</code> (record <code>+3</code> = Luck) — a fixed +30 attacker edge.</li>
+  <li><span class="addr">$A39A</span><b>Mission switch</b> — dispatch to the chosen sabotage effect (drains via <code>hire_stat_drain_rng</code>, clamped so a field never goes below 0).</li>
+  <li><span class="addr">$A2AD</span><b>On failure</b> → <span class="scr">"Your ninja failed!"</span>; gold is spent regardless (<code>effect_ninja_failed</code>).</li>
+</ol>
+<h3>Drain magnitude</h3>
+<p class="sub">Drain magnitude (from <code>hire_stat_drain_rng $A255</code> bytecode, confirmed 2026-06-11): <code>drain = (rng % max(1, ⌊field × √(unit_count) ÷ 100⌋) + 1) × 5</code> — always a multiple of 5, scaling with the target field’s value and <b>√(unit_count)</b> (the ninjas you hired). <b>Economics:</b> cost ∝ <code>unit_count</code> (linear) but drain ∝ <code>√unit_count</code> → strong diminishing returns; it is pure denial (you gain nothing), best as small-batch pre-war softening. Each drain is clamped to the field (can zero a stat, never negative). <b>Emulator-confirmed</b> shape across the full RNG band (<code>tools/probe-espionage.py</code> — drains matched <code>{5,10,…,X×5}</code>). ⚠ Earlier text put the √ over <code>your_skill+30</code> — wrong: it is <code>√(unit_count)</code>; the <code>+30</code> is the separate Luck attempt-gate. *Assassin has no field-drain animation — it runs the resolution sub (animation 1).</p>
+<div class="callout"><b>This is the “buy → ninja” system — and it is NOT Bribe.</b> The toml long labeled <code>$A2D2</code> <code>effect_hire</code>, and an earlier note filed the whole Uprising/Revolt/Dams/Assassin/Arson menu under the <b>Bribe</b> command. The bytecode says otherwise: this menu hangs off <b>Hire ▸ Ninja</b> (<code>driver_hire $A5F4</code>), while the recruit-men path is <code>effect_hire_men $A553</code> and the real <b>Bribe</b> command (<code>$8D4D</code>) is a separate gold-for-spy peasant-defection. The label is now <code>effect_ninja_sabotage</code>. The sabotage mechanics the old note described were all real — only the command attribution was wrong.</div>
+<div class="rabbit"><b>Assassination resolution (RESOLVED).</b> <code>ninja_mission_resolve_vs_defender $918D</code> — a <b>Charisma+IQ</b> resolution contest with a Charisma <span class="scr">counterattack</span> / <span class="scr">you have repelled</span> that can hurt <b>your own</b> daimyo (the confirmed source of “Tokugawa’s mystery health loss”). On success it grinds the target’s health to 0 (attrition, ~2 un-countered hits); at a capital it collapses the whole faction (<code>find_fiefs_of_owner</code>). Full trace: <a href="../synthesis-frontier.md">synthesis-frontier.md §1</a>.</div>
+<div class="rabbit"><b>Drain magnitude (RESOLVED).</b> <code>hire_stat_drain_rng $A255</code> — <code>(rng % max(1, ⌊field × √(unit_count) ÷ 100⌋) + 1) × 5</code>; the scaling term is <b>√(unit_count)</b>, confirmed C+bytecode 2026-06-11. Cost ∝ ninjas, drain ∝ √ninjas = diminishing returns (denial, not profit).</div>
+  </div>
+</details>
 
 <footer>
-  <b>Fields touched:</b> <code>men</code>&nbsp;+amount · <code>morale</code>/<code>skill</code>/<code>arms</code> diluted toward recruit bases · <code>gold</code>&nbsp;−(amount × hire rate). &nbsp;·&nbsp;
-  Sources: <code>decompiled/bank_01.c</code> · <code>tools/run-animation.py</code> ·
-  <a href="../appendix-formulas.md">appendix-formulas.md</a> · <a href="./hire.md">hire.md</a>.
+  The exact, code-referenced math lives in the technical <a href="../papers.html">appendices</a>. &nbsp;·&nbsp; <a href="./index.html">All commands</a>.
 </footer>
 </div>
 </body>
