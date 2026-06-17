@@ -5,9 +5,7 @@ layout: default
 title: "Chapter 1 \u2014 Boot, Vectors, and the Syscall Dispatcher"
 ---
 # Chapter 1 — Boot, Vectors, and the Syscall Dispatcher
-> First architectural cut into a 256 KB cartridge: decode the iNES header, find the reset code, identify the interrupt handlers, and discover that the IRQ vector doubles as an OS-style **syscall dispatcher** over 23 kernel primitives.
-
-> **⚠ Pass-2 fact-check (2026-06-11).** This session-1 chapter was written before the kernel was grounded; several hypotheses are now settled, corrected inline below. **(1)** The dispatcher is **not** a "BRK-VM": game/VM code requests a service via `jsr syscall_dispatch ($F226)`, which *fakes* a BRK with `PHP + JMP ($FFFE)` so the IRQ handler dispatches on the B flag — the "1-byte BRK saves bytes" rationale is **refuted** (the trampoline is larger, not smaller; the win is a central return + parameter passing). **(2)** The 23 entries are now all **named** — 19 OS-style kernel primitives + 4 RTS no-op slots, not 23 game subsystems. **(3)** The "5×9-byte records at $0734 = daimyo slots" guess is **refuted** — it is the **music engine's voice-state array**. **(4)** The bytecode-VM "working hypothesis" is **confirmed** (see ch.5). The accurate parts (iNES decode, MMC1 init, NMI shape, the paired wall-clocks) stand.
+> First architectural cut into a 256 KB cartridge: decode the iNES header, find the reset code, trace the interrupt handlers, and discover that the IRQ vector doubles as an OS-style **syscall dispatcher** over 23 kernel primitives. Every routine and variable below carries its grounded name from `mesen-labels.toml`; the bare-address forms are in the `_labeled.asm` listings.
 
 **Links:** [Nobunaga README](./README.md) · [NES mappers reference](../../../research/nes/mappers-reference.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
 
@@ -35,203 +33,142 @@ The MMC1 control register is set to `$0E` during reset (see below). Decoded:
 - Bits 2–3 = `11` → **PRG mode 3** (16 KB switchable at $8000–$BFFF; 16 KB fixed at $C000–$FFFF, set to the last bank)
 - Bit 4 = `0` → CHR 8 KB mode
 
-So **bank 15 is permanently mapped at $C000–$FFFF** and holds the boot code, interrupt handlers, and presumably the most critical "always live" routines. Banks 0–15 (well, 0–14 in practice; selecting 15 into the switchable region duplicates the fixed bank) rotate through $8000–$BFFF as the game switches subsystems.
+So **bank 15 is permanently mapped at $C000–$FFFF** and holds the boot code, interrupt handlers, and the kernel of always-live routines. Banks 0–14 rotate through $8000–$BFFF as the game switches subsystems (selecting bank 15 into the switchable window just duplicates the fixed bank).
 
-The reset vector points to **$C000** — i.e., the very first byte of bank 15. The Koei signature `"NOBU-NES10      "` sits at $FFE0–$FFEF, just above the vector table.
+The reset vector points to **$C000** — the first byte of bank 15. The Koei signature `"NOBU-NES10      "` sits at $FFE0–$FFEF, just above the vector table.
 
 ## The 6502 vector table at $FFFA–$FFFF
 
 ```
-$FFFA  DA C0   → NMI   = $C0DA
-$FFFC  00 C0   → RESET = $C000
-$FFFE  39 C1   → IRQ   = $C139
+$FFFA  DA C0   → NMI   = nmi_handler   ($C0DA)
+$FFFC  00 C0   → RESET = reset_handler ($C000)
+$FFFE  39 C1   → IRQ   = irq_handler   ($C139)   ← also the syscall gate (see below)
 ```
 
-## Reset handler ($C000–$C0D9)
+## Reset handler (`reset_handler` $C000–$C0D9)
 
-The reset code follows the canonical NES boot pattern with MMC1-specific register sequencing layered in.
+The canonical NES boot pattern with MMC1 register sequencing layered in.
 
 ```asm
-; --- CPU init ---
-$C000: SEI                  ; mask IRQs (which point at the BRK dispatcher — see below)
-$C001: CLD                  ; clear decimal (no-op on NES 6502 but standard)
-$C002: LDX #$FD
-$C004: TXS                  ; SP = $FD (note: not the usual $FF)
-                            ; — by booting with SP one slot lower the boot code can drop
-                            ;   a sentinel into $01FE without disturbing later use of the stack
+; --- CPU + MMC1 init ---
+SEI / CLD / LDX #$FD / TXS          ; mask IRQ, decimal off, SP = $FD
+LDA #$FF / STA $9FFF                ; MMC1 reset (bit 7 high)
+LDA #$0E / STA $9FFF / LSR×4 + STA  ; CONTROL = $0E, 5 serial LSB writes:
+                                    ;   vertical mirror + PRG mode 3 + CHR 8 KB
+LDA #$00 / STA $BFFF ×5             ; CHR bank-0 register = 0
+            STA $FFF0 ×5            ; PRG bank register = 0 (bank 0 at $8000)
+            STA prg_bank_shadow     ; record current PRG bank = 0 (reuses the live A)
 
-; --- MMC1 control register: 5 serial writes of bit 0, then a reset preamble ---
-$C005: LDA #$FF
-$C007: STA $9FFF            ; bit 7 high → MMC1 internal reset
-$C00A: LDA #$0E             ; control value = 01110
-$C00C: STA $9FFF            ; serial write 1 (LSB)
-$C00F: LSR A                ; A = $07
-$C010: STA $9FFF            ; write 2
-$C013: LSR A                ; A = $03
-$C014: STA $9FFF            ; write 3
-$C017: LSR A                ; A = $01
-$C018: STA $9FFF            ; write 4
-$C01B: LSR A                ; A = $00
-$C01C: STA $9FFF            ; write 5 — commits CONTROL = $0E
+; --- clear the two NMI gate flags ---
+LDA #$00 / STA skip_vblank_wait     ; $0080
+            STA nmi_skip_all        ; $00B0
 
-; --- CHR bank 0 register = 0 (5 writes, all zeros) ---
-$C01F: LDA #$00
-$C021: STA $BFFF            ; ×5
+; --- PPU warm-up ---
+LDA #$10 / JSR write_ppuctrl        ; PPUCTRL ($2000) = $10  (sets ppuctrl_shadow $0071)
+JSR wait_vblank / JSR wait_vblank   ; two VBlanks before touching PPU (the standard warm-up)
+LDA #$1E / JSR write_ppumask        ; PPUMASK ($2001) = $1E
 
-; --- PRG bank register = 0 (5 writes to anywhere in $E000-$FFFF) ---
-$C030: STA $FFF0            ; ×5  (selects bank 0 at $8000–$BFFF on entry)
+; --- fill both palette buffers with $3E (medium grey) ---
+LDX #$00 / LDA #$3E
+.loop: STA palette_alt,x  ($0090)   ; 32 bytes
+       STA palette_shadow,x ($0700) ; 32 bytes
+       INX / CPX #$20 / BNE .loop
+LDA #$FF / STA palette_dirty        ; force a palette upload on the first NMI
+
+; --- hide every sprite: shadow-OAM Y and X = $F8 (off-screen) ---
+LDX #$00 / LDA #$F8
+.loop: STA oam_shadow,x    ($0600)  ; byte 0 of each sprite (Y)
+       STA oam_shadow+3,x  ($0603)  ; byte 3 of each sprite (X)
+       INX ×4 / BNE .loop           ; stride 4 = one sprite per pass, all 64
+
+; --- ZP pointer pairs ---
+ptr1        = $05FF   ($02/$03)
+ppu_queue_a = $0020   ($1C/$1D)
+ppu_queue_b = $0030   ($1E/$1F)
+
+; --- APU ---
+LDA #$1F / STA SND_CHN ($4015)      ; enable all 5 channels
+LDA #$C0 / STA $4017                ; frame counter: 5-step mode, no frame IRQ
+
+; --- clear audio + music state ---
+LDX #$00 / LDA #$00
+.loop: STA audio_mute_triangle,x    ; clear $0720–$0724 (5 bytes)
+       INX / CPX #$05 / BNE .loop
+LDX #$00
+.loop: STA v0_trigger,x ($0734)     ; 5 music voices × 9-byte stride → $0734–$0760
+       X += 9 / CPX #$2D / BNE .loop
+
+; --- two wall-clocks, both = $04D2 (1234) ---
+LDA #$04 / STA clock_a_hi / STA clock_b_hi   ; $0083 / $0085
+LDA #$D2 / STA clock_a_lo / STA clock_b_lo   ; $0084 / $0086
+LDA #$00 / STA skip_wallclock                ; $0089
+
+; --- finalize + hand off ---
+JSR nmi_on                          ; enable NMI generation (PPUCTRL bit 7)
+JSR reset_ppu_init                  ; upload the initial tiles, turn the screen on
+JMP $8000                           ; → bank0_entry
 ```
 
-The `STA $FFF0` trick is the standard MMC1 idiom: any write to $E000–$FFFF routes to the PRG-bank register. Writing the address `$FFF0` rather than `$E000` is purely cosmetic — but it does mean the 5-write commit sequence is invisible to anyone grepping for `$E000`.
+Two pieces of this clear loop are worth naming, because both were easy to mis-guess and both are now grounded:
 
-Continuing:
+- **The 5×9-byte records at `v0_trigger` ($0734–$0760) are the music engine's per-voice state**: 5 voices × 9 bytes (trigger / vol-duty / sweep / timer-lo / timer-hi / tempo-div / ptr-lo / ptr-hi / countdown), advanced by `music_driver` each NMI and configured by `syscall_audio_load_voice` (ID 9). The adjacent `$0725–$0733` is the 5×3-byte voice **config** array.
+- **`clock_a` ($0083/$0084) and `clock_b` ($0085/$0086) are two wall-clocks**, both seeded to `$04D2 = 1234`. The NMI bumps each by 2 every frame, gated by `skip_wallclock`. This is the game-time/RNG clock that **freezes while the player holds a button** (ch.2/3).
+
+## NMI handler (`nmi_handler` $C0DA–$C138)
+
+VBlank fires while rendering is off and the PPU is writable, so the order of operations matters: sprites first (DMA has a hard VBlank deadline), then the gated frame work.
 
 ```asm
-; --- Zero misc RAM, fill defaults ---
-$C03F: STA $0073            ; clear var $73
-$C042: LDA #$00 / STA $0080 / STA $00B0    ; clear $80, $B0
+PHA / TXA/PHA / TYA/PHA              ; save A, X, Y
+LDA PPUSTATUS                        ; clear the VBlank flag
+JSR nmi_off                          ; guard against NMI re-entry (paired with nmi_on at exit)
+LDA #$00 / STA OAMADDR
+LDA #$06 / STA OAMDMA ($4014)        ; DMA oam_shadow ($0600) → PPU OAM
 
-; --- Two init subroutines (likely PPU warmup / wait-for-VBlank) ---
-$C04A: LDA #$10
-$C04C: JSR $C6A6
-$C04F: JSR $C537            ; called twice — almost certainly the standard
-$C052: JSR $C537            ;   "wait for two VBlanks before touching PPU" pattern
-$C055: LDA #$1E
-$C057: JSR $C570
+LDA nmi_skip_all / BNE .done         ; $B0 set → bail right after sprites (pause / cutscene)
+LDA #$00 / JSR controller_poll       ; P1 buttons → $006E
+LDA #$01 / JSR controller_poll       ; P2 buttons → $006F
+JSR palette_upload                   ; if palette_dirty: push palette_shadow → PPU $3F00
+JSR music_driver                     ; advance the 5 music voices
 
-; --- Fill RAM regions with $3E (some neutral-default tile or value) ---
-$C05A: LDX #$00
-$C05C: LDA #$3E
-$C05E: STA $0090,X          ; $0090–$00AF (32 bytes of zero-page-ish RAM)
-$C061: STA $0700,X          ; $0700–$071F (32 bytes of $0700 page)
-$C064: INX / CPX #$20 / BNE $C05E
-
-; --- Fill OAM-shadow buffer at $0600 with $F8 (Y = off-screen) ---
-$C069: LDA #$FF / STA $0074
-$C06E: LDX #$00
-$C070: LDA #$F8
-$C072: STA $0600,X          ; Y = $F8 (sprite off-screen)
-$C075: STA $0603,X          ;   (also writing every 4th-byte offset — sprite Y again?
-$C078: INX × 4              ;    actually since both target the +0 and +3 columns and
-$C07C: BNE $C072            ;    INX runs 4× per loop, we hit Y at +0 then again at +3,
-                            ;    +4, +7, +8, +11... which is *every* byte alternating.
-                            ;    Closer read: $0600,X and $0603,X with X stepped by 4
-                            ;    fills offsets [0,3,4,7,8,11,...] — covers all positions
-                            ;    that hold sprite Y (bytes 0 of each 4-byte sprite) and
-                            ;    sprite X (byte 3). Initializes Y and X to $F8 so unused
-                            ;    sprites are off-screen and don't smear.)
-
-; --- Set up ZP indirect-pointer pairs ---
-$C07E: LDA #$FF / STA $02   ; ZP $02/$03 = $05FF  (wait — high byte stored first?)
-$C082: LDA #$05 / STA $03   ;   actually 6502 stores high in $03 → pointer = $05FF
-$C086: LDA #$20 / STA $1C   ; $1C/$1D = $0020
-$C08A: LDA #$00 / STA $1D
-$C08E: LDA #$30 / STA $1E   ; $1E/$1F = $0030
-$C092: LDA #$00 / STA $1F
-
-; --- APU init ---
-$C096: LDA #$1F / STA $4015 ; enable all 5 channels (pulse1, pulse2, tri, noise, DMC)
-$C09B: LDA #$C0 / STA $4017 ; frame counter: 5-step mode, no IRQ
-
-; --- Clear small tables ---
-$C0A0: LDX #$00 / LDA #$00 / STA $0720,X / INX / CPX #$05 / BNE  ; clear $0720–$0724
-$C0AC: clear every byte at $0734 + N×9 for N=0..4     ; 5 records, 9-byte stride
-                                                       ; — this is the player/daimyo
-                                                       ;   record skeleton: 5 slots
-                                                       ;   of 9-byte fixed-size records.
-
-; --- Default state vars ---
-$C0BC: LDA #$04 / STA $0083 / STA $0085   ; $83 and $85 = 4
-$C0C4: LDA #$D2 / STA $0084 / STA $0086   ; $84 and $86 = $D2
-$C0CC: LDA #$00 / STA $0089                ; $89 = 0
-
-; --- Two more init calls ---
-$C0D1: JSR $C68A
-$C0D4: JSR $C757
-
-; --- Hand off to main program in bank 0 ---
-$C0D7: JMP $8000
+LDA skip_wallclock / BNE .skipclk    ; $89 set → run the frame but freeze game-time
+   clock_b += 2  (lo $86, hi $85)    ; 16-bit add, carry into the high byte
+   clock_a += 2  (lo $84, hi $83)
+.skipclk:
+.done:
+LDA #$00 / STA nmi_busy ($0081)      ; release the "wait for VBlank" handshake
+JSR nmi_on                           ; re-enable NMI generation
+PLA/TAY / PLA/TAX / PLA / RTI
 ```
 
-Two findings worth flagging:
+The two gate flags are the engine's pause levers: **`nmi_skip_all` ($00B0)** set → NMI does the sprite DMA and bails (a hard pause that still shows the last frame's sprites — cutscenes); **`skip_wallclock` ($0089)** set → the frame runs normally but game-time and the RNG clock don't advance (the strategic-level pause that freezes time while rendering continues). **`nmi_busy` ($0081)** is the handshake semaphore: foreground code sets it to 1 and spin-waits for the NMI to clear it — the classic "block until the next VBlank" wait.
 
-1. **Five slots of 9-byte records at $0734 — the MUSIC voice-state array, NOT daimyo slots.** [REFUTED 2026-06-11] The clear loop initializes 5 records of 9-byte stride; session 1 guessed "5 daimyo player slots." Grounded: `$0734-$0760` is the **music engine's per-voice state** (5 voices × 9 bytes — trigger / vol-duty / sweep / timer-lo / timer-hi / tempo-div / ptr-lo / ptr-hi / countdown), driven by `music_driver` each NMI and configured by `syscall_audio_load_voice` (ID 9). The daimyo records live elsewhere (the 7-byte `$752F` table, ch.7). A clean-looking guess that was simply wrong — the kind of thing this pass exists to catch. *(The adjacent `$0725-$0733` is the 5×3-byte voice **config** array.)*
+## IRQ handler (`irq_handler` $C139–$C172) — the syscall dispatcher
 
-2. **Paired 16-bit counters at $83/$84 and $85/$86 — two wall-clocks.** [CONFIRMED 2026-06-11] Both initialise to `$04D2 = 1234`; the NMI increments each pair by 2 every frame, gated by `skip_wallclock $0089`. Grounded as `clock_a`/`clock_b` (`$0083-$0086`): synchronized but independently-gateable game-time counters — this is the clock that **freezes while the player holds a button** (the `skip_wallclock` finding: game-time and RNG pause during input).
-
-## NMI handler ($C0DA–$C138)
-
-Standard VBlank shape; the order of operations matters because NMI fires while rendering is off and the PPU is writable.
+The board has no mapper IRQ, so a hardware IRQ effectively never fires. Instead the IRQ vector is repurposed as the **kernel's syscall gate**: the handler inspects the B flag to tell a (synthesized) software request from a spurious interrupt.
 
 ```asm
-$C0DA: PHA / TXA / PHA / TYA / PHA       ; save A, X, Y
-$C0DF: LDA $2002                         ; clear VBlank flag
-$C0E2: JSR $C54F                         ; nmi_off — disable NMI re-entry (paired with nmi_on $C68A at frame end)
-$C0E5: LDA #$00 / STA $2003              ; OAMADDR = 0
-$C0EA: LDA #$06 / STA $4014              ; OAM DMA from page $0600 → PPU OAM
-$C0EF: LDA $00B0
-$C0F2: BNE skip_periodic                 ; if $B0 set, skip the rest of frame work
-$C0F4: LDA #$00 / JSR $C628              ; controller read pass 1 (player 1)
-$C0F9: LDA #$01 / JSR $C628              ; controller read pass 2 (player 2)
-$C0FE: JSR $C6D4                         ; (audio engine tick?)
-$C101: JSR $C7A5                         ; (some other periodic update)
-$C104: LDA $0089
-$C107: BNE skip_clock                    ; if $89 set, skip the wall clock
-$C109: ; 16-bit add $0002 to ($86 high / $85 low)  — but wait, address order:
-$C109: CLC
-$C10A: LDA $0086 / ADC #$02 / STA $0086  ; low byte += 2
-$C112: LDA $0085 / ADC #$00 / STA $0085  ; high byte += carry
-$C11A: CLC
-$C11B: LDA $0084 / ADC #$02 / STA $0084  ; second counter low += 2
-$C123: LDA $0083 / ADC #$00 / STA $0083  ; second counter high += carry
-skip_clock:
-$C12B: LDA #$00 / STA $0081              ; clear "NMI busy" semaphore
-$C12E: JSR $C68A                         ; (same routine as reset — likely PPU finalize)
-$C133: PLA/TAY / PLA/TAX / PLA           ; restore Y, X, A
-$C138: RTI
+PHA / TXA/PHA / TYA/PHA              ; save A, X, Y
+TSX / LDA $0104,X / AND #$10         ; isolate the B flag from the pushed P
+BEQ .spurious                        ; B=0 → not a syscall; plain IRQ exit
+
+; --- syscall path ---
+LDA #$00 / STA brk_scratch_lo ($0066) / STA $0067   ; clear scratch
+LDA #$C1 / PHA / LDA #$6C / PHA      ; push fall-through return = $C16C (where a task's RTS lands)
+LDX brk_dispatch_id ($0050)          ; X = task ID
+LDY #$03 / JSR mul_xy_by_3           ; scale the ID by the 3-byte table stride
+CLC
+TYA / ADC #$73 / STA brk_jmp_target_lo ($0068)   ; target = $C173 + id*3
+TXA / ADC #$C1 / STA $0069
+JMP (brk_jmp_target_lo)              ; → syscall_dispatch_table[id]
+
+.spurious:                            ; ($C16C — also the landing pad for a task's RTS)
+NOP / PLA/TAY / PLA/TAX / PLA / RTI
 ```
 
-The `$B0` and `$89` flags are grounded as **frame-work gates** [CONFIRMED 2026-06-11]: `nmi_skip_all $00B0` set → NMI bails right after OAM DMA (skip controller / audio / palette / clock — pause, cutscene); `skip_wallclock $0089` set → run the frame but skip the wall-clock tick (strategic-level pause, rendering continues). Both session-1 readings were right.
+The indirect JMP lands in a 3-byte-per-entry jump table at `syscall_dispatch_table` ($C173). **23 entries: 19 active OS-style kernel primitives + 4 `RTS` no-op slots** (IDs 2/11/14/15 — reserved slots in a generic Koei kernel that this title doesn't use). Names are grounded in ch.4:
 
-The `$81` semaphore (`nmi_busy $0081`) is cleared at the end of NMI; foreground code sets it to 1 and spin-waits for the clear — the classic "wait for next VBlank" handshake. [CONFIRMED]
-
-## IRQ handler ($C139–$C172) — the BRK dispatcher
-
-This is the architectural find of the session.
-
-```asm
-$C139: PHA / TXA / PHA / TYA / PHA       ; save A, X, Y
-$C13E: TSX                               ; X = SP
-$C13F: LDA $0104,X                       ; load saved P from stack frame
-$C142: AND #$10                          ; isolate B flag
-$C144: BEQ real_irq_C16C                 ; if not BRK, fall through to plain IRQ exit
-                                         ; (no MMC1 IRQ; this branch handles spurious only)
-
-; --- BRK path: software dispatch ---
-$C146: LDA #$00 / STA $0066 / STA $0067  ; clear scratch
-$C14E: LDA #$C1 / PHA                    ; push return-high = $C1
-$C151: LDA #$6C / PHA                    ; push return-low  = $6C
-                                         ; → return address $C16C-1 wraps to $C16B
-                                         ;   wait — actually the dispatch JMP doesn't
-                                         ;   return; this push is the "fall-through"
-                                         ;   if the dispatched task RTS's.
-$C154: LDX $0050                         ; X = task ID
-$C157: LDY #$03                          ; Y = stride
-$C159: JSR $C6AD                         ; multiply X by 3 with carry into X high
-
-$C15C: CLC
-$C15D: TYA / ADC #$73 / STA $0068        ; low  = $73 + (X*3 lo)
-$C163: TXA / ADC #$C1 / STA $0069        ; high = $C1 + (X*3 hi) + carry
-$C169: JMP ($0068)                       ; INDIRECT — jump to $C173 + task_id*3
-
-real_irq_C16C:
-$C16C: NOP                               ; (also the RTS-return landing for dispatched tasks)
-$C16D: PLA/TAY / PLA/TAX / PLA / RTI
-```
-
-The dispatched task lands inside a 3-byte-per-entry JMP table starting at $C173 (`syscall_dispatch_table`). **23 entries** before the table runs out — now fully grounded (names from ch.4): **19 active OS-style kernel primitives + 4 RTS no-op slots** (IDs 2/11/14/15, reserved generic-Koei-kernel slots this title doesn't use):
-
-| ID | Entry | Target | Grounded name (ch.4) | Role |
+| ID | Entry | Target | Name (ch.4) | Role |
 |----|-------|--------|----------------------|------|
 |  0 | $C173 | $C000  | `reset_handler` | soft reboot (jumps to RESET) |
 |  1 | $C176 | $C264  | `syscall_ppu_upload_block` | bank-switched bulk PRG→PPU copy |
@@ -257,42 +194,21 @@ The dispatched task lands inside a 3-byte-per-entry JMP table starting at $C173 
 | 21 | $C1B2 | $C60C  | `syscall_set_chr_bank0_reg` | write MMC1 CHR bank |
 | 22 | $C1B5 | $C5AA  | `syscall_sram_block_with_checksum` | SRAM block I/O + checksum |
 
-**All 23 targets land in bank 15 ($C000–$FFFF).** The table routes only inside the fixed bank — it is a **kernel syscall surface** (PPU/OAM/palette/audio/RNG/SRAM/bank-call primitives), not a game-subsystem scheduler. Game logic lives in the bytecode VM (banks 0/1/2/10/14) and reaches these services through it (`syscall_call_bank`, ID 7, is the trampoline that JSRs another bank's $8000). The four `syscall_noop_*` slots (2/11/14/15) are bare `RTS` — a generic Koei-kernel layout with slots other titles fill. *(Earlier "fallthrough pair" reading of #2/#4 and #14/#15 was wrong — they are separate no-op stubs.)*
+**All 23 targets land in bank 15 ($C000–$FFFF).** The table routes only inside the fixed bank — it is a **kernel syscall surface** (PPU / OAM / palette / audio / RNG / SRAM / bank-call primitives), not a game-subsystem scheduler. Game logic lives in the bytecode VM (banks 0/1/2/10/14) and reaches these services through it; `syscall_call_bank` (ID 7) is the trampoline that JSRs another bank's $8000.
 
-### Why a faked BRK, not a real one?
+### How the syscall gate works (the synthesized BRK)
 
-Game/VM code does **not** scatter 1-byte `BRK`s. It calls `jsr syscall_dispatch ($F226)`, a 22-byte wrapper that copies the request parameters, then **`PHP` + `JMP ($FFFE)`** — synthesising the exact stack frame a BRK would, so execution lands in the IRQ handler ($C139) with the **B flag set** and the dispatch path runs. The IRQ handler thus serves double duty: real hardware IRQ (B=0, plain exit) vs. syscall request (B=1, dispatch on `brk_dispatch_id $0050`).
+Code does not scatter 1-byte `BRK`s. To request a service it calls `syscall_dispatch ($F226)`, a small wrapper that loads the request into `brk_dispatch_id ($0050)` and then does **`PHP` + `JMP ($FFFE)`** — assembling by hand the exact stack frame a `BRK` would leave, so execution enters `irq_handler` with the **B flag set**. The handler reads B: clear ⇒ a (spurious) hardware IRQ, plain `RTI`; set ⇒ a syscall, so it scales the task ID by 3 and indirect-JMPs through `syscall_dispatch_table`.
 
-So the original "BRK is 1 byte, saving bytes over JSR across thousands of sites" rationale is **refuted** — the actual path is a 3-byte `jsr` into a multi-instruction trampoline, *larger* than a JSR, not smaller. The real payoff is architectural: one uniform kernel entry with parameter marshalling and a single return point, callable identically from native code and from the VM (via the `host_call $E9 → $F226` opcode). The pattern still echoes Adventure's hardware-feature reuse and Mappy's NMI kernel — "use the CPU's accidental capabilities as load-bearing structure" — but the capability here is the **interrupt vector as a syscall gate**, not BRK's byte count.
+The win is architectural, not byte-count (the trampoline is *larger* than a plain `JSR`): one uniform kernel entry, parameter marshalling, and a single return point, reachable identically from native 6502 and from the VM — the VM's `host_call` opcode (`$E9`) routes to the same `$F226`. The interrupt vector, in other words, is load-bearing structure: an OS-style trap gate built out of the CPU's BRK/IRQ machinery.
 
-## Bank 0 main entry ($8000)
+## Bank 0 hand-off ($8000)
 
 ```asm
-$8000: JMP $A778
+$8000: JMP $A778        ; bank0_entry
 ```
 
-A single shim. Bank 0 at $8000 immediately jumps into $A778. Inspection of $A778-onward shows **byte patterns inconsistent with raw 6502** — long runs of `E9 / CF / CC / 8D / AC / 89 / A8`-flavored data interleaved with what *look* like opcodes but produce nonsense flow when traced linearly.
-
-**Working hypothesis:** there is a bytecode VM running in bank 0 (or possibly several banks), and $A778 is its main interpreter or program entry. The 23-entry BRK dispatcher and the bytecode VM are likely the same architecture seen from two sides: BRK from native code calls the dispatcher; the dispatcher invokes the VM for menu/script/AI logic.
-
-If confirmed, this game runs **two layers of code**: native 6502 for the hot path (NMI, OAM, controllers, math) and a custom bytecode for the strategy layer (orders, AI, dialog, save state). That's a Koei-typical design and would explain how they fit a home-computer strategy engine into a 256 KB cartridge with a 2 KB RAM budget.
-
-**[CONFIRMED 2026-06-11]** The hypothesis holds. `$8000` is `bank0_entry` (`JMP $A778`), and `$A778` onward is **VM bytecode** — the Sea-16 interpreter the rest of the project decompiles (chs. 5–6). The two-layer architecture — native bank-15 kernel + a bytecode VM in banks 0/1/2/10/14 — is the confirmed shape of the whole engine.
-
-## What we have after session 1
-
-- iNES decode confirmed; MMC1/SOROM identified.
-- Reset code traced; MMC1 init sequence understood.
-- NMI handler decoded — standard VBlank kernel with 2 paired wall-clocks and 2 gating flags.
-- IRQ handler decoded — discovered the **23-entry BRK dispatcher** at $C173.
-- Bank 0 entry $8000 shimmed into $A778; **bytecode-VM hypothesis** flagged.
-
-What session 1 left open — **all since resolved (pass-2 note, 2026-06-11):**
-- The semantic role of the 23 dispatch IDs → all named kernel syscalls (table above; ch.4).
-- The memory map (zero-page / RAM / SRAM) → chs. 2 and 7; every boot-touched RAM byte is grounded above.
-- Whether $A778 onward is native or VM bytecode → it is **VM bytecode** (chs. 5–6).
-
-Those were Chapters 2–4 (and 7); this chapter now carries their resolutions inline.
+A one-instruction shim: `bank0_entry` jumps straight to `$A778`, which is **Sea-16 VM bytecode** — the interpreter the rest of the project decompiles (chs. 5–6). So the engine is two layers: a native bank-15 kernel (NMI, OAM, controllers, palette, audio, math, SRAM — everything above) and a custom bytecode VM in banks 0/1/2/10/14 for the strategy layer (orders, AI, dialog, save state). That split is how Koei fit a home-computer strategy engine into 256 KB of PRG and a 2 KB RAM budget, and it is the shape of the whole engine.
 
 ## Tags
 

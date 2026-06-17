@@ -6,33 +6,19 @@ title: "Chapter 4 \u2014 The Syscall API"
 ---
 # Chapter 4 — The Syscall API
 
-> The 23-entry dispatch table is a syscall surface, not a subsystem state machine. Every dispatch goes through a single callable wrapper at $F226 that copies a parameter block from a caller-supplied struct into ZP and faking a BRK via PHP + JMP($FFFE). Chapter 1's "BRK-VM" framing was wrong scope — these are OS-style primitives ($read_controller$, $palette_write$, $set_sprite$), not game subsystems.
-
-> **✅ Pass-2 fact-check (2026-06-11) — VERIFIED, holds.** This chapter was (re)grounded through pass 1 and is current: all 23 catalog entries match the grounded `[prg.bank15]` labels, the `$F226` dispatch mechanism is correct, and rows 12/20 carry the hand-decoded arg-maps. The **"Errata to chapters 1-3"** below are now **applied inline** in chapters 1/2/3 (those chapters no longer carry the errors — the table here is retained as discovery history). Confirmed cross-link: `syscall_rng_next` ($17) runs its 48-bit transform over the wall-clock state `$0083-$0088`, which is **why game-time and RNG pause together** under `skip_wallclock $0089` (ties chs. 1/2/4).
+> The 23-entry dispatch table is a syscall surface, not a subsystem state machine. Every dispatch goes through a single callable wrapper at $F226 that copies a parameter block from a caller-supplied struct into ZP, then fakes a BRK via PHP + JMP($FFFE). These are OS-style primitives (`read_controller`, `palette_write`, `set_sprite`), not game subsystems.
 
 **Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Chapter 3 — NMI Pipeline](./03-nmi-pipeline.md) · [Nobunaga README](./README.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
 
-## The reframe
+## The syscall surface
 
-Chapter 1 found a 23-entry indirect-JMP table at `syscall_dispatch_table` ($C173) and named it the "BRK dispatcher," with each entry conceived as a major game subsystem. After cataloging all 23 handlers in this session, that framing collapses cleanly into a sharper one:
-
-**The 23 entries are an OS-style syscall API.** Each handler is a 5-50 instruction routine implementing one primitive operation — read a controller, write a palette byte, blit a tile block, switch banks. Game code in banks 0-14 invokes these primitives through a uniform calling convention whenever it needs kernel services. The bank-15 fixed kernel **is** the OS; the rest of the ROM is application code that runs on it.
+The 23-entry indirect-JMP table at `syscall_dispatch_table` ($C173) is an **OS-style syscall API.** Each handler is a 5-50 instruction routine implementing one primitive operation — read a controller, write a palette byte, blit a tile block, switch banks. Game code in banks 0-14 invokes these primitives through a uniform calling convention whenever it needs kernel services. The bank-15 fixed kernel **is** the OS; the rest of the ROM is application code that runs on it.
 
 The syscall analogy is exact:
 - A **dispatcher** turns a numbered request into a handler call
 - A **parameter block** carries arguments from caller to handler
 - A **return-value register** carries results back
 - Each handler is **stateless** between calls; it operates on the parameters and any shared kernel state (palette buffers, audio state, PPU shadows)
-
-## Method note
-
-Chapter 3 introduced trace logging with `MarkEvent` breakpoints. Chapter 4's investigation used three new tooling pieces that build on that foundation:
-
-1. **Mesen 2 Trace Logger condition filter** (`pc == $F22A || pc == $F228 || pc == $F238 || pc == $F239`). Reduces a 14-million-line raw trace to ~22k lines (4 per dispatch event), preserving exactly the moment each syscall fires. Labels render inline so the trace reads as `STA $004E,Y [brk_dispatch_id]` rather than raw hex.
-2. **Dispatch event log** extracted from the trace: 6880 events with `(frame, task_id, source_struct_addr)` per row. Reveals the task-ID distribution (one syscall, $06, dominates at 92%+) and tags each invocation by structure base, exposing the family of pre-baked request templates that game code uses.
-3. **Parallel handler walks** in the labeled disasm. With chapter 3's labels already in place (`nmi_off`, `palette_dirty`, `v0_trigger`, etc.), reading a handler is a matter of pattern-matching the param-block reads ($0050-$0065) against the body of the routine. Each handler decodes in 1-3 minutes.
-
-This was the first chapter where the trace, the labels, and the asm reading all reinforced each other. Each tool's output became another tool's input — the compounding flywheel chapter 3 set up.
 
 ## The dispatch mechanism — code walkthrough
 
@@ -72,11 +58,9 @@ Six findings packed into this routine:
 5. **A custom return address is pushed.** `lda #$F2 / pha / lda #$3C / pha` puts $F23C-style return on the stack so the dispatched handler's `RTS` lands in syscall_dispatch_return, not back at the BRK site. This decouples handler return from caller's stack frame.
 6. **Return values flow through `$66/$67 → $08/$09`.** The dispatcher pre-clears $66/$67 at $C148, the handler stores its return into $66/$67, and `syscall_dispatch_return` copies to $08/$09 for the actual caller. Two-stage return: kernel-private (66/67) and caller-visible (08/09).
 
-### Why this and not BRK?
+### Why a faked BRK, not a real one?
 
-Chapter 1 speculated that BRK was used as a 1-byte yield to save bytes vs. JSR. Now that we see the actual mechanism — 10 bytes (PHA+PHA+PHP+JMP indirect) per dispatch site — that hypothesis is wrong. The mechanism is *bigger* than BRK by 8 bytes.
-
-The motivation is functional, not bytewise:
+The mechanism is *bigger* than a real `BRK` — 10 bytes (PHA+PHA+PHP+JMP indirect) per dispatch, plus the 22-byte parameter copy in the wrapper — so it's not a byte-saving trick. The motivation is functional:
 
 - A real `BRK $XX` would push the BRK-site PC as the return address. The dispatched routine would have to manage that. The Nobunaga design pushes a **single, central return PC** ($F23C-1) so the handler's RTS goes to one predictable cleanup site.
 - The parameter copy loop runs **outside** the handler, in a callable subroutine. Each syscall site is one `jsr syscall_dispatch`, not 23 bytes of inline setup. Game code stays compact.
@@ -105,7 +89,7 @@ All 23 entries are characterized. 16 fired during the captured trace (startup + 
 | 14 | $C535 | (RTS placeholder) | Single `RTS` byte. Reserved slot |
 | 15 | $C536 | (RTS placeholder) | Single `RTS` byte. Reserved slot (sequential to #14 — `60 60` at $C535-$C536) |
 | 16 | $C22C | `syscall_memcpy_banked` | Bank-switched general memcpy with 16-bit length. struct[2]=src bank, [4:5]=src ptr, [6:7]=dest ptr, [8:9]=length |
-| 17 | $C1C3 | `syscall_rng_next` | 48-bit shift-and-add transform over wall-clock state ($0083-$0088). Returns 16-bit pseudo-random in $66/$67. The game's RNG |
+| 17 | $C1C3 | `syscall_rng_next` | 48-bit shift-and-add transform over the wall-clock words ($0083-$0088). Returns a 16-bit value in $66/$67. The game's RNG — and since it churns the wall-clock state, **game-time and the RNG pause together** under `skip_wallclock` ($0089) |
 | 18 | $C36C | `syscall_palette_swap` | Atomically swap palette_shadow ($0700-$071F) with palette_alt ($0090-$00AF). Used for fade/transition effects |
 | 19 | $C1B8 | `syscall_wait_for_nmi` | Set nmi_busy=1, spin until NMI clears it. The canonical "wait for next VBlank" primitive |
 | 20 | $C428 | `syscall_ppu_copy_rect` | Byte-stream COPY into an inclusive nametable rect (same rect math as #12, mode flag $82=1). Saves PRG bank, switches to $5E, copies width*height bytes from the ($5C/$5D) source pointer (post-incremented, row-major) into the rect, restores bank. struct → $52=nt sel, $54=left, $56=top, $58=right, $5A=bottom, $5C/$5D=src ptr, $5E=src bank. Proof: $E621 copies a 28×16 = 0x1C0 B strategic-map section. The workhorse for screen content (menus, maps, portraits). (Hand-decoded 2026-06-10, see ch.18.) |
@@ -133,20 +117,9 @@ The hottest 4 syscalls together account for **97.0%** of all dispatch traffic. G
 
 While walking the handlers, several internal helpers were identified:
 
-- **`set_prg_bank` ($C577)** — the MMC1 bank-switch helper. Saves NMI state, writes the 5-bit serial sequence to $FFF0 (the MMC1 PRG bank register), updates `kernel_var_73` ($0073) which tracks the current bank, restores NMI state. Called by every bank-switching syscall. The "BRK + 5×STA $FFF0 + restore" sequence is canonical MMC1 bank-switching with NMI-safe wrappers around it.
+- **`set_prg_bank` ($C577)** — the MMC1 bank-switch helper. Saves NMI state, writes the 5-bit serial sequence to $FFF0 (the MMC1 PRG bank register), updates `prg_bank_shadow` ($0073, the current-bank tracker), restores NMI state. Called by every bank-switching syscall. The "BRK + 5×STA $FFF0 + restore" sequence is canonical MMC1 bank-switching with NMI-safe wrappers around it.
 
 - **`mul_xy_by_3` ($C6AD)** — same routine the IRQ handler uses to scale a task ID by 3 (the table stride). Reused inside handlers for similar small-N multiplications.
-
-## Errata to chapters 1-3
-
-This session produced four chapter-1-to-3 corrections. **[Pass-2, 2026-06-11: all four are now applied inline in chapters 1/2/3 — this table is retained as discovery history.]**
-
-| Chapter | Said | Actually |
-|---|---|---|
-| **1** | "BRK is the syscall instruction (1-byte yield, saves bytes vs. JSR)" | The syscall is `PHP + JMP ($FFFE)` at $F239, called via a wrapper at `syscall_dispatch` ($F226). Total cost is 10+ bytes per dispatch site (4 stack pushes + the indirect JMP + 22-byte parameter copy in the wrapper) — bigger than BRK, not smaller. The motivation is functional (central return address, parameter passing, single dispatcher entry) not bytewise. |
-| **1** | "23 dispatch entries = 23 game subsystems" | 23 OS-style syscall primitives. The dispatch table is a syscall surface, not a state machine. Game subsystems live in banks 0-14; bank 15 is the kernel that provides syscall services |
-| **2** | "$0090-$00AF: parallel buffer to $0700-$071F, both filled with $3E at reset — purpose TBD" | $0090-$00AF is `palette_alt`, the alt palette buffer. Used by `syscall_palette_swap` (task $12) for fade/transition effects. The two buffers are paired by design: foreground builds a new palette in palette_alt, then atomically swaps it into palette_shadow for NMI to upload |
-| **3** | "Audio: $0730-$0733 is the 4-byte song header (active flag + tempo + base pointer)" | The bytes at $0730-$0733 are actually the tail of the **5×3-byte voice config array at $0725-$0733**. Each 3-byte record holds `(tempo_div, song_ptr_lo, song_ptr_hi)` per voice. `syscall_audio_load_voice` (task $09) writes these. No global song header — each voice has its own continuation state |
 
 ## Three structural insights this chapter establishes
 
@@ -156,24 +129,11 @@ This session produced four chapter-1-to-3 corrections. **[Pass-2, 2026-06-11: al
 
 3. **The dispatch event log + the call-site struct addresses are an inventory of game-code intentions.** Each invocation of `syscall_dispatch` with struct base $05XX corresponds to a specific request template in main RAM. Cataloging those templates would surface the **set of syscall sequences** the game uses — which syscall combinations form a "draw a menu" or "play a sound effect" idiom. That's a chapter 5+ direction.
 
-## What's open for chapter 5+
+## What's open
 
-- **The static request templates** at $05B2, $05B4, $05BF, $05C7, $05CB etc. carry the syscall arguments that game code uses repeatedly. Walking the 22-byte content of each template tells us what each "macro" does (e.g., "this is the template for rendering the main map prompt").
-- **The SRAM save format.** Now that `syscall_sram_block_with_checksum` ($16) and `syscall_set_chr_bank0_reg` ($15) are named, the next investigation is to find the call sites and walk the SRAM layout — what fields make up the save record? This is the natural chapter 5 topic (province table + daimyo records + game state).
-- **Cross-game kernel comparison.** Other Koei MMC1 titles (Romance of the Three Kingdoms, Genghis Khan, Bandit Kings of Ancient China) likely share the same dispatcher template and use the 4 "placeholder" slots for their game-specific primitives. A short cross-game investigation could confirm the "generic Koei kernel" hypothesis.
-- **The chapter-4 ZP additions** ($66/$67/$08/$09 as syscall return values) are now stable. Future chapters can rely on the calling convention without re-deriving it.
-- **The Lua dispatch logger** stays in the project at `tools/dispatch-logger.lua` for the day we want caller PCs (which game routine invoked which syscall). The condition-filtered trace handles the simpler cases; Lua is reserved for when stack-walking is required.
-- **The disasm6-vs-real-code disagreements** (e.g., $C7A5 misread as a data table in chapter 3) continue to be a meaningful signal axis. Whenever disasm6 emits `hex XX XX XX` where the trace shows actual execution, the bytes are code mislabeled as data — and worth a closer look.
-
-## Method note — what the toolchain became
-
-Going into chapter 4, we had: labels file (TOML → Mesen JSON), workspace presets (TOML → JSON), and an asm-relabeler (TOML → labeled disasm). This chapter pushed each one further:
-
-- **`asm-relabel.py` now injects label headers** at known PRG addresses where disasm6 didn't anchor a `b15_cXXXX:` label. The labeled disasm now reads as documented code: `syscall_read_controller:` appears as its own line above the handler body. 17 new label headers injected in bank 15 alone.
-- **The Mesen condition-filter syntax** is now characterized: `pc == $XXXX || pc == $YYYY || ...` works; `state.pc` does not. The filtered trace format (`STA $004E,Y [brk_dispatch_id]`) renders labels inline, making the trace human-readable without post-processing.
-- **The dispatch event log** at `dispatch-events-startup-to-turn1.txt` (6880 rows, frame + task_id) is now part of the project's permanent artifacts. Future captures can produce the same format and we can cross-compare game phases.
-
-The pattern that's emerging: **each chapter both consumes labels from the prior chapter and contributes new labels to the next one**. Chapter 3 named the NMI subsystems; that let chapter 4 read syscall handlers as `jsr nmi_off` instead of `jsr $C54F`. Chapter 4 named the syscall API; chapter 5 can read calling code as `jsr syscall_set_sprite` instead of `jsr $F226` with a struct.
+- **The static request templates** at $05B2, $05B4, $05BF, $05C7, $05CB, etc. carry the syscall arguments game code reuses. Walking the 22-byte content of each tells us what each "macro" does (e.g. the template behind the main-map prompt).
+- **Cross-game kernel comparison.** Other Koei MMC1 titles (Romance of the Three Kingdoms, Genghis Khan, Bandit Kings of Ancient China) likely share this dispatcher and fill the 4 placeholder slots with their own primitives — a short investigation could confirm the "generic Koei kernel" hypothesis.
+- **disasm6 code/data misreads.** The dispatch table itself renders as `hex 4c XX XX` (it's reached only via the indirect JMP, so disasm6 can't tell it's code-targeted), and the same happens wherever the only inbound reference is indirect. Where disasm6 emits `hex` and a trace shows execution, the bytes are code — worth a split (as done for `music_driver` at $C7A5).
 
 ## Tags
 

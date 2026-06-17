@@ -101,12 +101,20 @@ The uprising eligibility ties tax directly to revolt risk, and revolt is **non-m
 | **Illness / sickness** | every season | low-health daimyo: `rng(400) < 100 − health` | flagged weak; if it's the player's seat, *"&lt;Lord&gt; has taken ill."* (the View screen shows a *"sick"* marker). A **personal** event — distinct from the province-wide **Plague** above |
 | **Natural death** | every season | `check_and_process_daimyo_natural_death` (age ≥ 70 + a health-scaled roll) | the daimyo dies; capital death collapses the faction (`find_fiefs_of_owner`) |
 
-## AI-initiated events — see the Daimyo AI chapter
-A separate roll (`random_event_type_dispatch`, fired at the tail of the uprising dispatcher): **50% nothing**,
-else the AI exercises the *player's* own verbs autonomously — `ai_event_marry_random_eligible_fief` (propose
-a marriage), `ai_scan_idle_fiefs_run_diplomacy_action` (run a Pact/diplomacy action), or
-`random_ravage_sweep_bounded_fiefs`. These are **AI behaviour, not world events**, so they are documented with
-the AI turn in **[Chapter 12 — Daimyo AI](./12-daimyo-ai.md)** rather than here.
+## AI-initiated events (vs the human)
+A separate roll at the tail of the uprising dispatcher (`random_event_type_dispatch`): **50% nothing**, else
+`rng(4)` picks one of three actions in which an AI faction turns the *player's* own verbs against the human.
+Each first points `selected_province_idx` at a **Direct (state-5) = human** fief
+(`flag_turn_abort_if_no_state5_province`); with no human fief, the event aborts. Full cascade in
+**[Chapter 12 — Daimyo AI](./12-daimyo-ai.md)**; in event terms:
+
+| event | handler | what the human sees |
+|---|---|---|
+| **Marriage proposal** | `ai_event_marry_random_eligible_fief` | an AI offers a marriage alliance (transfers gold between the fiefs) |
+| **Pact / diplomacy** | `ai_scan_idle_fiefs_run_diplomacy_action` | an AI sues for a Pact, raising the relation value |
+| **Ninja sweep** | `random_ravage_sweep_bounded_fiefs` → `ravage_defending_province_sweep` | *"Someone has sent ninja against you"* — up to `(8 − ai_player_count)` AI (state-0) fiefs each ravage **one** economic field (loyalty / morale / wealth / town / output / rice) of the human fief. **Economic harassment only — never an assassination:** the capital-only assassination resolver `$918D` is unreachable from the AI. A rare all-whiffed fallback chips the target daimyo's Charisma/Health by `rng(0–4)` — incidental, not a kill. |
+
+The ninja sweep is the fallback arm (`rng(4)` cases 2–3), so it is the most common of the three when the roll fires — but the outer 50%-nothing gate keeps the whole class rare.
 
 ## Trigger probabilities (exact) — bytecode-walked 2026-06-15
 
