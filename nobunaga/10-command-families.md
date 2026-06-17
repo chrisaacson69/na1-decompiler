@@ -8,8 +8,6 @@ created: 2026-05-14
 
 **Links:** [Chapter 9 — Command System & Grow](./09-command-system-and-grow.md) · [Chapter 8 — VM Instruction Set](./08-vm-instruction-set.md) · [Appendix A — Formulas](./appendix-formulas.md) · [commands/](./commands/README.md) · [Nobunaga README](./README.md)
 
-> **⚠ Pass-2 fact-check (2026-06-11) — taxonomy partly wrong; reconcile to the verified `commands/` pages.** The core insight (Grow/Build/Dam share one √-develop template) is real, but session 10 over-fit two commands and missed the skill dial. Corrections, grounded in the per-command pages + [appendix-formulas.md](./appendix-formulas.md): **(1)** the effect skeleton's "`− word[$6D63]` (= 2)" is the **skill-level `(6−skill)` multiplier** (ch.9) — universal to the develop family: `gain = 2·⌊amount·(6−skill)/√(field+amount)⌋`. **(2) Bribe (idx 14, `effect_bribe $8D4D`) is NOT a develop command** — it's **gold-for-spy peasant defection** (`peasants = loy − (⌊(30+rng%25)·(min(loy,√gold)+1)/100⌋+1)`, emulator-confirmed; [bribe.md](./commands/bribe.md)), not a √-grow. **(3) Assign (idx 15, `effect_assign $AC11`) is the interactive arms-allocation editor** (5 unit-type rows; soldiers + 30 gold; [assign.md](./commands/assign.md)), not "assign a retainer." **(4)** `$879F`/`$804C` are the **generic province-target-select** helpers (War/Bribe/Pact/View/Ninja), not a "diplomacy subsystem." The verified √-develop family is **Grow/Build/Dam/Give**.
-
 ## The signature was too coarse
 
 `command-table.py` grouped table indices **4, 5, 6, 10, 12, 13, 14, 15** together because they share an eight-byte opening signature. That signature, decoded, is just the province-access idiom from chapter 9 — `regA = word[$6F5F] × 26 + $7001`, "pointer to the selected province's record." *Every* command opens that way. So the eight-byte grouping is real but shallow: it means "operates on the current province," not "is the same command."
@@ -21,7 +19,7 @@ Disassembling all eight with the flow-following tool splits them on a sharper li
 
 That single fact — "does it ask the player for an amount" — is the genuine family boundary.
 
-> All field names below use the **confirmed `$7001` layout** (chapter 9 §5d, chapter 7 erratum): `gold@0 debt@2 town@4 rice@6 output@8 dams@10 loyalty@12 wealth@14 men@16 morale@18 skill@20 arms@22 header@24`, little-endian. Field *offsets* are read directly from the bytecode; field *names* are the verified mapping.
+> All field names below use the **confirmed `$7001` layout** (ch.7 / ch.9): `gold@0 debt@2 town@4 rice@6 output@8 dams@10 loyalty@12 wealth@14 men@16 morale@18 skill@20 arms@22 header@24`, little-endian. Field *offsets* are read directly from the bytecode; the *names* are the verified mapping.
 
 ## Template A — prompt-and-apply (idx 4, 6, 12, 14)
 
@@ -39,7 +37,7 @@ result = <effect handler>(record, amount)
 display result ; redraw ; return
 ```
 
-And the effect skeleton (chapter 9 §5b/5d, **corrected**) is equally fixed: `amount < 1` guard → `$CBCD` integer square root of `field + amount` → the **`(6−skill)` skill-level multiplier** (`word[$6D63]` = `const_two` = difficulty 1–5, **NOT a constant**) → `$D6B8` 32-bit math → clamp against `field@24` → a **live-computed** pct (flat-50 ceiling) → `$D70D` percentage redistribution out of other fields. The verified develop gain is `2·⌊amount·(6−skill)/√(field+amount)⌋`.
+And the effect skeleton (the same one Grow uses, ch.9 §5b) is equally fixed: `amount < 1` guard → `$CBCD` integer square root of `field + amount` (the divisor) → the **`(6−skill)` skill-level multiplier** (`word[$6D63]` = `const_two`, difficulty 1–5) → `$D6B8` 32-bit math → clamp against `header@24` → a **live-computed** drain pct (flat-50 ceiling) → `$D70D` percentage redistribution out of other fields. The verified develop gain is `2·⌊amount·(6−skill)/√(field+amount)⌋`.
 
 What varies — the entire content of the diff (command names confirmed from the in-game menu, item N = table index N+1):
 
@@ -48,11 +46,11 @@ What varies — the entire content of the diff (command names confirmed from the
 | 6 | **Grow** | `$9D3D` / `$87F0` | **output** (`@8`) | dams (`@10`), loyalty (`@12`) | fully traced in ch 9 |
 | 12 | **Build** | `$A858` / `$88A6` | **town** (`@4`) | wealth (`@14`) | effect also chains `$887D` |
 | 4 | **Dam** | `$9B83` / `$87D8` + `$887D` | **output** (`@8`) + **debt** (`@2`) | — | two effect handlers — a two-field command |
-| 14 | **Bribe** ⚠ | `$AAB3` / `effect_bribe $8D4D` | *(NOT a develop command)* | — | **MISCLASSIFIED** — `$8D4D` is gold-for-spy **peasant defection**, not a √-grow of town/debt/output. It shares the *prompt* skeleton (asks for gold) but has a different effect. See banner + [bribe.md](./commands/bribe.md). |
+| 14 | **Bribe** | `$AAB3` / `effect_bribe $8D4D` | *(not a develop command)* | — | Shares the *prompt* skeleton (asks for gold) but a different effect: `$8D4D` is **gold-for-spy peasant defection** — `peasants = loyalty − (⌊(30+rng%25)·(min(loyalty,√gold)+1)/100⌋+1)`. See [bribe.md](./commands/bribe.md). |
 
-So the readable picture: **Grow develops agricultural output, Build develops the town (commerce), Dam touches output and debt, Bribe is the compound diplomatic-spend command.** Every one costs **gold** (debited from `field@0`, the prompt capped at it) and every one is gated by **`header == 0`** and a development-ceiling precondition. The √-curve diminishing returns and the silent cross-field drain are universal to the template — they are not Grow-specific quirks, they are *how this whole class of command works.*
+So the readable picture: **Grow develops agricultural output, Build develops the town (commerce), Dam touches output and debt** — three √-develop commands sharing one effect — while **Bribe** rides the same gold-prompt skeleton with an entirely different (peasant-defection) effect. The three develop commands each cost **gold** (debited from `gold@0`, the prompt capped at it), are gated by **`header == 0`** and a development-ceiling precondition, and carry the √-curve diminishing returns plus the silent cross-field drain — those are not Grow-specific quirks, they are *how this whole class of command works.*
 
-That Bribe rides the same template as Dam/Grow/Build is a small surprise worth noting: mechanically, "bribe a target" is built as "spend gold to move province fields" — the same shape as developing your own land, just pointed elsewhere. And Bribe sharing the `$E510/$879F/$804C` cluster with **Pact** (the immediate-action group, below) means that cluster is the **diplomacy subsystem** — the two diplomatic commands both invoke it.
+That Bribe rides the same *prompt* skeleton as the develop commands is a small surprise: "bribe a target" is built as "ask for a gold amount, then run an effect" — the same front end, a different back end. The `$879F`/`$804C` helpers it shares with Pact (and War/View/Ninja) are the **generic province-target-select** routines — how *any* command picks a target province — not a diplomacy subsystem.
 
 That is a strong result for the counter-graph: four menu options that look independent are one mechanic with four parameterizations, and they share a cost model (gold), a curve (√), and a hidden tax (redistribution).
 
@@ -62,31 +60,26 @@ These four never call `$D5E9` — they take no amount from the player. They read
 
 | idx | command | driver | touches | calls | reading |
 |---:|---|---|---|---|---|
-| 5 | **Pact** | `driver_pact $9C4F` | relations matrix | `$879F $804C $CEC4 …` | diplomacy — pay gold to a rival for an alliance. *(Correction: `$879F`/`$804C` are the **generic province-target-select** helpers used across War/Bribe/View/Ninja, not a "diplomacy subsystem".)* |
+| 5 | **Pact** | `driver_pact $9C4F` | relations matrix | `$879F $804C $CEC4 …` | diplomacy — pay gold to a rival for an alliance (`$879F`/`$804C` = the generic target-select helpers). |
 | 10 | **Train** | `$A63C` | header (`@24`), skill (`@20`), men (`@16`) | `$CEC4` | trains troops — reads men/skill against a header-derived cap, raises skill |
 | 13 | **Give** | `$AA24` | header, morale (`@18`), loyalty (`@12`), wealth (`@14`), town (`@4`) | `$A93A $A9D5 $A95E` | charity to the people — touches the most fields (loyalty/morale up); three bank-1 helpers |
-| 15 | **Assign** | `$AD6C` | arms (`@22`), men (`@16`) | `effect_assign $AC11` | **interactive arms-allocation editor** (5 unit-type rows; needs soldiers + flat 30 gold) — NOT "assign a retainer". [assign.md](./commands/assign.md) |
+| 15 | **Assign** | `$AD6C` | arms (`@22`), men (`@16`) | `effect_assign $AC11` | **interactive arms-allocation editor** — 5 unit-type rows; needs soldiers + a flat 30 gold ([assign.md](./commands/assign.md)). |
 
-The names make these legible: **Pact** is diplomacy (and confirms the shared cluster's role), **Train** raises skill against a cap, **Give** is the loyalty/morale charity command, **Assign** moves a retainer. None prompts for a number because none *needs* one — they are state transitions, not investments.
+The names make these legible: **Pact** is diplomacy, **Train** raises skill against a cap, **Give** is the loyalty/morale charity command, **Assign** is the arms-allocation editor. None calls the shared `$D5E9` number prompt (Assign has its own per-row arms UI) — they read province state and act, rather than taking a single √-develop investment.
 
-Two things stand out. First, the immediate-action commands lean on **byte-level** field access (`loadA_ind_byte`/`storeA_ind_byte`, opcodes `$D3`/`$D4`) where Group A used word access — they are editing sub-fields or flags, not whole 16-bit stats. Second, the `$E510 / $879F / $804C` call cluster appears in **both idx 5 and idx 14**, which means there is a shared sub-system (cross-province? military?) those two commands both invoke — a thread worth pulling in a later chapter.
+The immediate-action commands also lean on **byte-level** field access (`loadA_ind_byte`/`storeA_ind_byte`, opcodes `$D3`/`$D4`) where Group A used word access — they edit sub-fields or flags, not whole 16-bit stats.
 
-## What the diff bought us
+## The full command menu
 
-Chapter 9 cost a full session and produced one decoded command plus a pile of reusable infrastructure. This chapter, on that infrastructure, decoded **seven more** — four of them (Group A) to full structural clarity, three of them (Group B) to a confident characterization — in a fraction of the time. That is the flywheel doing exactly what it was built to do.
+The 21 lord commands, in menu order: Move, War, Tax, Send, Dam, Pact, Grow, Marry, Trade, Hire, Train, View, Build, Give, Bribe, Assign, Rest, Map, Grant, Other (save), Pass. Item N = table index N−1 (item 7 = Grow = index 6, matching the trace), so the menu is indices 0–20; the remaining `$B9B2` entries (21–33) are sub-handlers, not top-level items.
 
-The honest limits:
-
-- **Menu names — resolved.** The full command menu, transcribed from the game: Move, War, Tax, Send, Dam, Pact, Grow, Marry, Trade, Hire, Train, View, Build, Give, Bribe, Assign, Rest, Map, Grant, Other (save), Pass. Item N = table index N−1; item 7 = Grow = index 6 matches the trace. So the 21 menu commands are indices 0–20; the remaining table entries (21–33) are sub-handlers, not top-level menu items.
-- **Group B internals.** Pact, Train, Give, Assign are characterized, not fully traced. Each is a ~30-minute walk now that the convention is known.
-- **The shared clusters.** `$E510/$879F/$804C` is the **diplomacy subsystem** (Pact + Bribe both call it); the bank-1 helpers `$A93A/$A9D5/$A95E` belong to Give. Named here, not yet opened.
+So four menu options that look independent — Grow, Build, Dam (and Give's develop-like effect) — are one mechanic with several parameterizations, sharing a cost model (gold), a curve (√), and a hidden cross-field tax. Bribe and Assign borrow only the *front end* (the gold prompt / the target-select helpers), with their own effects.
 
 ## What's open
 
-- **The display-command family** — table indices 20–32, the `8E xx / host_call $D326` group from chapter 9's command-table survey. Twelve commands, almost certainly status/info screens; a cheap sweep.
-- **The unique commands** — indices 0, 1, 2, 3, 7, 8, 9, 11, 17, 19 — the special actions (war, move, cede, search…). Each is its own decode, but the calling convention and province idiom carry straight over.
-- **The `$D5E9` prompt routine itself** — Group A's shared input primitive. Decoding it tells us exactly how the amount cap is computed and enforced.
-- **Chapter 7's body rewrite** — still queued; the erratum at its head carries the corrected layout in the meantime.
+- **The display-command family** — `$B9B2` indices 20–32, the `8E xx / host_call $D326` group: status/info screens. Ch.11 sweeps the remaining commands.
+- **The unique commands** — indices 0, 1, 2, 3, 7, 8, 9, 11, 17, 19 (War, Move, Cede, Search…), each its own decode but on the same convention/idiom.
+- **The `$D5E9` number-prompt primitive** and Group B's per-command effects (`effect_assign`, Give's `$A93A/$A9D5/$A95E`, Train's cap math) — short follow-up walks.
 
 ## Tags
 

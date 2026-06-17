@@ -22,9 +22,9 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 **War** (`$9855`) — launch an attack. Heavy pre-roll setup (`$9368`/`$9351`/`$9323`/`$933A`/`$9814` — combat-prep subroutines), then *"Attack where?"*, blocked by *"They are your allies!"*. Prompts: *"How many men"*, *"How much rice will they take"* (supplies — the doughnut-fief attrition mechanic lives downstream of this), *"Will you lead them personally"*. War is the **front end to combat**; the battle resolution itself is elsewhere (a later chapter).
 
-**Hire** (`driver_hire $A5F4`) — recruit, gated by `effect_war_combat_prep_c` (a *"you have no gold"* check — recruiting costs gold). *"Recruit which"* → *"(Men/Ninja)?"* (`prompt_ab_window`) routes to **two different callees**: the *Men* branch is `effect_hire_men $A553` (the recruiting proper); the *Ninja* branch is `effect_ninja_sabotage $A2D2` — i.e. Hire▸Ninja is the front door to the whole sabotage/assassination system (chapters covered in the ninja deep-dive). *(Correction 2026-06-12: chapter's earlier "recruiting logic is `$A2D2`" conflated the Ninja branch with recruiting.)*
+**Hire** (`driver_hire $A5F4`) — recruit, gated by `effect_war_combat_prep_c` (a *"you have no gold"* check — recruiting costs gold). *"Recruit which"* → *"(Men/Ninja)?"* (`prompt_ab_window`) routes to **two different callees**: the *Men* branch is `effect_hire_men $A553` (the recruiting proper); the *Ninja* branch is `effect_ninja_sabotage $A2D2` — i.e. Hire▸Ninja is the front door to the whole sabotage/assassination system (the ninja deep-dive covers it).
 
-**Train** (`$A637`) and **Assign** (`effect_assign $AC11`, driver `$AD67`) — decoded in chapter 10. Train raises skill against a header-derived cap; **Assign is the arms-allocation editor** (distribute a fief's weapon stores across the three arms types), *not* "place a retainer" (corrected in ch.10 / ledger #12).
+**Train** (`$A637`) and **Assign** (`effect_assign $AC11`, driver `$AD67`) — decoded in chapter 10. Train raises skill against a header-derived cap; **Assign is the arms-allocation editor** (distribute a fief's weapon stores across the three arms types).
 
 ### Province development
 
@@ -32,9 +32,9 @@ Once `op_8E push_imm_word` operands resolve to text (chapter 9), a command drive
 
 ### Diplomacy
 
-**Pact** (`driver_pact $9C4F` → price `prompt_diplomacy_pact $E3A4`) — buy peace from a rival. **Not free** (ch.11's table previously said "—"): vs an AI house the price = `pct_op(gold,50) + pct_op(gold, rng(0..49)) + 20` ≈ **50–99% of your own treasury + 20**, and the AI only *offers* a pact at `1/skill` odds (refusing the militarily-weak 2/3 of the time, `fief_owner_weakness`). The gold **transfers to the target daimyo** — peace is literally bought. On success `set_pact_relation $DA4F` writes **70** into the **relation matrix** at `$6193` (a 54-stride fief×fief table, `relations_matrix_cell_addr $8C35`). Each attempt costs the player daimyo **−1 Drive**, **−2** if you decline the named price or are refused. The `$879F/$804C` helpers it shares with War/Bribe/View/Ninja are *generic province-target-select* primitives, **not** a "diplomacy subsystem" (over-read corrected in ch.10 / ledger #12).
+**Pact** (`driver_pact $9C4F` → price `prompt_diplomacy_pact $E3A4`) — buy peace from a rival. **Not free**: vs an AI house the price = `pct_op(gold,50) + pct_op(gold, rng(0..49)) + 20` ≈ **50–99% of your own treasury + 20**, and the AI only *offers* a pact at `1/skill` odds (refusing the militarily-weak 2/3 of the time, `fief_owner_weakness`). The gold **transfers to the target daimyo** — peace is literally bought. On success `set_pact_relation $DA4F` writes **70** into the **relation matrix** at `$6193` (a 54-stride fief×fief table, `relations_matrix_cell_addr $8C35`). Each attempt costs the player daimyo **−1 Drive**, **−2** if you decline the named price or are refused. The `$879F/$804C` helpers it shares with War/Bribe/View/Ninja are *generic province-target-select* primitives, **not** a dedicated "diplomacy subsystem."
 
-**Bribe** (`driver_bribe $AAAE` → `effect_bribe $8D4D`) — **gold-for-spy peasant defection**, *not* a develop-√ command (ch.10 / ledger #12). `sqrt(gold)` peasants defect from the target's `output` into your fief's `wealth`. Gated by a **Charisma contest** (`bribe_success_check $8D02`): success iff `your(loyalty+Charisma) > target(loyalty+Charisma) + rng(10)·skill` *and* a coin flip — *"%d peasants have defected"* on success.
+**Bribe** (`driver_bribe $AAAE` → `effect_bribe $8D4D`) — **gold-for-spy peasant defection**, not a develop-√ command. `sqrt(gold)` peasants defect from the target's `output` into your fief's `wealth`. Gated by a **Charisma contest** (`bribe_success_check $8D02`): success iff `your(loyalty+Charisma) > target(loyalty+Charisma) + rng(10)·skill` *and* a coin flip — *"%d peasants have defected"* on success.
 
 **Marry** (`driver_marry $9DC9` → dowry `marriage_pact_handler $E314`) — alliance by marriage, the strongest tie. Available only from your capital (`fief_is_daimyo_capital[src]`). Select a fief; the dowry (vs an AI house) = `pct_op(gold, rng(50..79)) + 200` ≈ **half-to-three-quarters of your treasury + 200**, gated on your gold > 200, offered only at `1/skill` odds. *"Lord %s, %s wants %d gold. Pay"* → the gold transfers to the target and `set_marriage_relation $DA7D` writes **90** into the `$6193` matrix (vs Pact's 70). **Refusal is costly**: your daimyo permanently loses **−1 Drive, −1 Luck, −1 Charisma** (`$9EE8`/`$9EEE`/`$9EF4`). Each attempt also costs **−1 Drive** up front. (Flavor: a rolled bride-portrait, *"Don't you long to hear the pitter-patter…"*.)
 
@@ -98,20 +98,18 @@ A few things the full picture makes clear:
 
 **Three of the 21 are pure information** (View, Map) **or pure pacing** (Rest, Pass) — the engine budgets real screen time for *looking* and *waiting*, not just acting. View doubles as espionage, which folds information-gathering into the same risk economy as everything else (it costs gold, the spy can be caught).
 
-**Diplomacy writes a relation matrix, but there is no "diplomacy subsystem" of code.** The earlier read — that Pact/Bribe/Marry "route through a `$E510/$879F/$804C` diplomacy cluster" — was an over-read (ch.10 / ledger #12): `$879F/$804C` are *generic province-target-select* primitives shared by War/View/Ninja too. What diplomacy genuinely shares is **state, not code**: a pairwise **relation matrix at `$6193`** (packed triangular, `max·54+min`). Pact sets a pair to 70, Marry to 90 — and War's *"They are your allies!"* block reads the same table. Diplomacy is a data structure several commands poke, not a dedicated machine.
+**Diplomacy writes a relation matrix, but there is no "diplomacy subsystem" of code.** The `$879F/$804C` helpers Pact/Bribe/Marry use are *generic province-target-select* primitives shared by War/View/Ninja too. What diplomacy genuinely shares is **state, not code**: a pairwise **relation matrix at `$6193`** (packed triangular, `max·54+min`). Pact sets a pair to 70, Marry to 90 — and War's *"They are your allies!"* block reads the same table. Diplomacy is a data structure several commands poke, not a dedicated machine.
 
 **One UI substrate underneath all 21.** Every command is built from the same parts: `$804C` (province select), `$D5E9` (number input), `$CEC4` (confirm/yes-no), `$D326`/`$D134` (text / formatted text), `$B1A6` (generic option submenu), `$E80C` (commit & display result). The command drivers are thin orchestration over a fixed widget set — which is exactly why decoding one (Grow) made the other twenty cheap.
 
 ## What's open
 
-The **command layer** is now mapped. What remains for the strategic engine:
+The **command layer** is mapped. What remains at this layer:
 
-- **The effect formulas.** Each command's effect handler (Grow's `$87F0` is the only one fully traced) holds the exact numbers — Tax's rate→loyalty curve, War's combat-strength roll, Marry's success probability, Send's caps. These are the per-command deep dives, each now a short walk.
-- **The shared subsystems.** `$B1A6` (the submenu used by Trade/Grant/Other), the generic `$879F/$804C` province-target-select primitives (War/Pact/Bribe/View/Ninja), the `$6193` relation matrix, and `$D5E9` (the input primitive with its cap logic) — naming these opens several commands at once.
-- **Combat resolution.** War is the front end; the battle itself — on the per-fief tactical maps Chris described (doughnut, chokepoint, the offense/defense leader tradeoff) — is the next major system.
-- **The daimyo AI.** The 21 commands are the player's verbs; the AI uses the same verbs. The decision engine that chooses among them is the counterpart to this chapter.
+- **The effect formulas.** Each command's effect handler (Grow's `$87F0` is the only one fully traced) holds the exact numbers — Tax's rate→loyalty curve, Marry's success probability, Send's caps. Each is a short per-command walk.
+- **The shared subsystems** — `$B1A6` (the Trade/Grant/Other submenu), the generic `$879F/$804C` target-select primitives, the `$6193` relation matrix, and `$D5E9` (the input primitive + its cap logic) — naming these opens several commands at once.
 
-With the command set complete, the project has the player's half of the strategic engine. Combat and AI are the other half — and then the synthesis chapter can draw the dominance-frontier counter-graph the project was built for.
+The two big systems the commands feed are the player's-half counterpart: **combat** (War's back end, ch.14–17) and the **daimyo AI** (the engine that picks among these same verbs, ch.12). With both, the synthesis chapter draws the dominance-frontier counter-graph the project was built for.
 
 ## Tags
 
