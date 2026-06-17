@@ -1,6 +1,7 @@
 ---
 status: active
 created: 2026-06-12
+updated: 2026-06-17
 ---
 # Appendix D — The Event System (season · trigger · result)
 
@@ -40,7 +41,7 @@ weak fiefs.
 
 Every season also runs, per fief: **`drift_daimyo_luck`** and a **natural-death check**.
 
-### The Spring AI-boon / player-decay (the rubber-band) — BYTECODE-VERIFIED 2026-06-12
+### The Spring AI-boon / player-decay (the rubber-band)
 In the Spring aging pass, fiefs split by `province_ai_state` (gates confirmed in the `$9F8C` bytecode):
 - **state 0 (Home = AI-run)** → `event_boost_province_wealth_loyalty`: 50% chance, **wealth += rng(10)+Cha/10, loyalty += rng(40)+Cha/10**. (Boost is gated `ai_state == 0` — `$9FD8` JUMPT skips it otherwise.) The AI economy is handed free loyalty and wealth.
 - **state ≠ 0 (the player's Direct capital + any Granted fiefs)** → at difficulty `const_two > 1`, **three province stats each drain by `rng(const_two)`** per year. (Gated `ai_state != 0` *and* `const_two != 1` — `$9FF7` JUMPF + `$9FFF` CMPNE/JUMPF.) The three stats sit in the loyalty(+12)–skill(+20) block; the decompiler renders them wealth/men/skill via a `(p+2)−2` pointer idiom, but a hand-trace of the stack ops reads loyalty/wealth/morale — **the exact trio wants an emulator diff** (run a difficulty-2 Spring, diff a player fief). All three readings agree it drains **wealth (+14)**; the structural finding does not depend on the trio.

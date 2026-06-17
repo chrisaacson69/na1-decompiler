@@ -58,7 +58,7 @@ title: "Appendix \u2014 The VM Opcode Reference (canonical)"
 | `$A5` | `BYTE_LOADL_abs` | 2 bytes | 0→0 | ✓ | regL = (byte at absolute address, zero-extended) |
 | `$A6` | `LOADR_abs` | 2 bytes | 0→0 | ✓ | regR = word at absolute address |
 | `$A7` | `BYTE_LOADR_abs` | 2 bytes | — | · | — |
-| `$A8` | `STORE_abs` | 2 bytes | 0→0 | ✓ | word at absolute address = regL  (THIS IS THE KEY ONE — old disasm called it loadA_mem_word, which was WRONG) |
+| `$A8` | `STORE_abs` | 2 bytes | 0→0 | ✓ | word at absolute address = regL  (a **store**, not a load — distinct from `$A4 LOADL_abs`) |
 | `$A9` | `BYTE_STORE_abs` | 2 bytes | 0→0 | ✓ | byte at absolute address = regL low byte |
 | `$AA` | `PUSH_abs` | 2 bytes | 0→1 | ✓ | push word from absolute address |
 | `$AB` | `BYTE_PUSH_abs` | 2 bytes | — | · | — |

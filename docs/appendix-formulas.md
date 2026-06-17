@@ -1,12 +1,13 @@
 ---
 status: active
 created: 2026-05-26
+updated: 2026-06-17
 layout: default
 title: "Appendix A \u2014 Verified Game Formulas"
 ---
 # Appendix A — Verified Game Formulas
 
-> Exact equations derived from bytecode walk + empirical verification across multiple in-game tests. Each formula listed here has been **proven against ≥3 controlled SRAM snapshots** with matching predictions.
+> Exact equations from the bytecode walk, checked against controlled in-game tests. Most are **emulator-certified to the digit** across ≥3 SRAM snapshots; a few (Move, Marry, View, parts of Trade) are **derived by composition** of already-certified primitives and flagged as such in their sections.
 
 **Links:** [commands README](./commands/README.md) · [Chapter 11 — strategic engine complete](./11-strategic-engine-complete.md) · `source/2-asm-vm/bank_01_vm.asm`, `source/2-asm-vm/bank_15_vm.asm`
 
@@ -35,14 +36,14 @@ gold    -= amount                 ; debited by driver before effect runs
 
 **Drain sequence verified from bytecode** ($8859-$8870): two `host_call $D70D (pct_op)` invocations, one for loyalty (record+12), one for dams (record+10). Both use the SAME pct computed once at $884D.
 
-**pct CORRECTED 2026-06-02 (full bytecode walk of `$8833-$884E`):** the drain percentage is **computed live**, not a constant. `math32_2arg(gain, output) = ⌊100·gain/(gain+output)⌋` is halved to give `pct`; if `gain/2 > output` (gain > 2·output) a flat `pct = 50` ceiling applies. The old "empirically 20" was a **coincidence of the single drain-measured test** (gain=56, output=80 → ⌊5600/136⌋/2 = 20), and the `pct = 100÷const_two` hypothesis is withdrawn. See [[project_nobunaga_grow_formula_corrected]]; the same `6−const_two` multiplier (not a literal 5) and live-pct drain apply to Build/Give.
+**The drain percentage is computed live** ($8833-$884E), not a constant: `math32_2arg(gain, output) = ⌊100·gain/(gain+output)⌋` is halved to give `pct`, with a flat `pct = 50` ceiling when `gain > 2·output`. The same `6−const_two` multiplier and live-pct drain apply to Build and Give.
 
 - **ROI**: `gain / amount ≈ 10 / √(output + amount)` — pure inverse-sqrt diminishing returns
 - **Strategic implication**: front-load Grow when output is low; ROI drops sharply past output ~300
 - **Verified**: 5/5 controlled tests (2026-05-26). See [grow.md](./commands/grow.md).
 - **Source bytecode**: $87F0–$881x; math at $D6B8
 
-## 2. Build ($88A6) — develop town — **VERIFIED 2026-05-26**
+## 2. Build ($88A6) — develop town
 
 ```
 g    = ⌊amount × (6 − const_two) ÷ √(town + amount)⌋   ; const_two=$6D63, normally 1 → ×5
@@ -53,18 +54,16 @@ town   += 2 × g                                        ; via helper_dam_roundin
 gold   -= amount                                       ; debited by the driver
 ```
 
-**Only ONE drain** (wealth), vs Grow's TWO drains (loyalty + dams). Same `pct_op` primitive.
-
-**CORRECTED 2026-06-02 (full bytecode walk of `$88AB-$891C` + 5 ROM re-executions):**
-- **`pct` is NOT the constant 20.** Like Grow, the bytecode computes it live from the gain-to-town ratio (`math32_2arg(g, town)` halved), capped at 50%. The earlier "empirically 20" was the same single-test coincidence that bit Grow.
-- **There is no "main + secondary" town add.** Build does ONE write of `2g`, routed through `helper_dam_rounding` ($887D) — which adds the full `2g` in peacetime, halves it only when `war_helper_d972(province)` is true, then calls `helper_82AC` to cap `town` at `header`. The old "secondary TOWN bump" was a misread of that single routed write.
+**Only ONE drain** (wealth), vs Grow's TWO drains (loyalty + dams). Same `pct_op` primitive. From the bytecode walk of `$88AB-$891C` (+ 5 ROM re-executions):
+- **`pct` is computed live**, like Grow — from the gain-to-town ratio (`math32_2arg(g, town)` halved), capped at 50%.
+- **Build does ONE town write of `2g`**, routed through `helper_dam_rounding` ($887D) — which adds the full `2g` in peacetime, halves it only when `war_helper_d972(province)` is true, then calls `helper_82AC` to cap `town` at `header`. (There is no separate "secondary" town add — it's that single routed write.)
 - **`g` is the UN-doubled gain** (math32_3arg result, stored without `<<1`); the `×2` is applied at the town write (`gain << 1` passed to the helper), and `effect_build` returns `g` for the confirm screen. (Grow doubles early; Build doubles late — same magnitude, slightly different `pct` ratio input.)
 
 - **K = 5** — same `6 − const_two` multiplier as Grow/Give. Develop-family universal constant.
 - **Verified**: bytecode + 5/5 ROM-executed tests (town=176, wealth=235; amounts 30/50/80/120/200 all exact) + in-game Test 1 (amount=170, town 320→396 = +76, √490=22, g=⌊850/22⌋=38, 2g=76). See [build.html](./commands/build.html).
 - **Source bytecode**: $88A6 (+ $887D helper); math at $D6B8
 
-## 3. Give-Peasants ($A8D3 → $891D + $896F) — convert resource → loyalty + wealth — **VERIFIED 2026-05-26**
+## 3. Give-Peasants ($A8D3 → $891D + $896F) — convert resource → loyalty + wealth
 
 ```
 rice -= amount                               ; or gold if gold-mode (1:1 source drain)
@@ -84,7 +83,7 @@ This prevents runaway-pumping by pulling the gain toward whichever of the pair i
 - **Verified**: 2 controlled Give-Rice-Peasants tests (give.md test 1 + 2026-05-26 new-game test). Both predicted gains (loyalty +48, wealth +58) matched exactly.
 - **Source bytecode**: $891D (loyalty helper, walked 2026-05-26 to confirm pairing), $896F (wealth helper, parallel structure)
 
-## 4. Train ($9586) — skill growth
+## Train ($9586) — skill growth
 
 ```
 skill_gain = (rng%20 + 10) × 4 + bonus       ; (rng%20 + 10) << 2, confirmed $959A-$95A2
@@ -92,14 +91,14 @@ bonus = 10 if (daimyo[+3] + daimyo[+5]) > (rng%10 + 90) else 0   ; aptitude pair
 skill += skill_gain                          ; capped at the fief ceiling by the driver
 ```
 
-- Range: **40–116 per training session** (without bonus), **50–126** (with bonus). *(Corrected 2026-06-02 from the bytecode — the earlier "40–80" was wrong; `(rng%20+10)×4` with `rng%20 ∈ [0,19]` spans 40–116.)*
+- Range: **40–116 per training session** (without bonus), **50–126** (with bonus) — `(rng%20+10)×4` with `rng%20 ∈ [0,19]` spans 40–116.
 - For Tokugawa (aptitude pair = 167 > max threshold 99): bonus **always fires**, so his band is 50–126
 - No drains, no cost — pure skill stat-up; the animation plays *before* the effect (driver $A671 → $A676)
 - Requires soldiers (`men > 0`) — you can't drill an empty garrison
 - **Verified**: bytecode ($9586) + 9/9 controlled tests (2026-05-24/25). See [train.html](./commands/train.html) · [train.md](./commands/train.md).
 - **Source bytecode**: $9586; uses `rng_mod` ($CA52) and `ui_helper_d7ea` (daimyo getter)
 
-## 6. pct_op ($D70D) — percentage drain primitive
+## pct_op ($D70D) — percentage drain primitive
 
 ```
 pct_op(b, p) = ⌊b ÷ 10⌋ × ⌊p ÷ 10⌋
@@ -109,14 +108,14 @@ pct_op(b, p) = ⌊b ÷ 10⌋ × ⌊p ÷ 10⌋
 
 This is just `⌊b × p ÷ 100⌋` computed in three pieces to keep all intermediates in 16-bit. Pixel-perfect on 8+ observed drain calls.
 
-## 4. Harvest income ($A26F sweep → $A1E2 gold + $A21F rice) — **VERIFIED 2026-05-26; PASS-2 BYTECODE-CERTIFIED 2026-06-14**
+## 4. Harvest income ($A26F sweep → $A1E2 gold + $A21F rice)
 
-> **Pass-2 certification (2026-06-14):** the whole sweep walked in the grounded C (`source/4-c/bank_00.c`) **and re-checked opcode-for-opcode** in `source/2-asm-vm/bank_00_vm.asm`. The §4 formula holds exactly; the **`$946D` open question is resolved (= daimyo Charisma)**; two mechanics Pass-1 missed are added (army **starvation**, the AI **gold subsidy**); and three step-labels below are corrected. The named subs: `harvest_income_sweep_all_fiefs $A26F`, `calc_fief_harvest_base_term $A1AA`, `calc_fief_gold_income $A1E2`, `calc_fief_rice_income $A21F`, `calc_charisma_scaled_income_variance $A191`, `event_boost_province_gold_output $A128`, `consume_province_army_upkeep $A15B`, `repay_province_debt_from_gold $92A9`, `update_province_highwater_marks $A0A9`, `get_fief_daimyo_charisma $946D`.
+> **The named subroutines** (walked in the grounded C `source/4-c/bank_00.c` and re-checked opcode-for-opcode in `source/2-asm-vm/bank_00_vm.asm`): `harvest_income_sweep_all_fiefs $A26F`, `calc_fief_harvest_base_term $A1AA`, `calc_fief_gold_income $A1E2`, `calc_fief_rice_income $A21F`, `calc_charisma_scaled_income_variance $A191`, `event_boost_province_gold_output $A128`, `consume_province_army_upkeep $A15B`, `repay_province_debt_from_gold $92A9`, `update_province_highwater_marks $A0A9`, `get_fief_daimyo_charisma $946D`.
 
 The fall transition (`current_season == 2`) calls `harvest_income_sweep_all_fiefs`, which **decays relations once at the top** (`normalize_relations_matrix_lower(2)` — so relations drift in BOTH Fall and Winter, ledger note), then iterates every fief. Per fief, in this exact order:
 1. **`$A0A9 update_province_highwater_marks`** — ratchet the low-water marks (output_max, dams_max, lm, wm) at the `$6000`-base table (8 B/fief: +3 output_max, +5 dams_max, +7 lm, +9 wm).
 2. **`$A128 event_boost_province_gold_output`** — **AI-owned fiefs only** (`province_ai_state == 0`). NOT a deposit — it's the rubber-band subsidy (see Critical mechanics).
-3. **Income gate = loyalty (record +12) > 0.** A fief in full revolt (loyalty 0) earns nothing. *(The old "`$D98D` war/famine gate" was a misread.)* If loyalty > 0: `gold += calc_fief_gold_income`, `rice += calc_fief_rice_income` (deposits are **inline in the sweep**, not a `$A128` call).
+3. **Income gate = loyalty (record +12) > 0.** A fief in full revolt (loyalty 0) earns nothing. If loyalty > 0: `gold += calc_fief_gold_income`, `rice += calc_fief_rice_income` (deposits are **inline in the sweep**, not a `$A128` call).
 4. **`$92A9 repay_province_debt_from_gold`** — auto-repay debt from the new gold (`pay = min(gold, debt)`), **before** upkeep.
 5. **`$A15B consume_province_army_upkeep`** — MEN/2 from both gold and rice (with the starvation clause below).
 6. **`$D836 cap_fief_stats`** — clamp each field to [0, header].
@@ -150,16 +149,16 @@ Then, regardless of loyalty: **debt is repaid** (step 4), and **upkeep** (step 5
 ### Critical mechanics
 
 - **lm/wm/output_max/dams_max are LOW-water marks**, but **re-seeded every Summer.** `$A0A9` ratchets each mark DOWN to current when current is lower (`if mark >= current: mark = current` — confirmed in grounded C, resolving the old "inverted `cmp_sle`" note); but **Summer (`current_season == 1`) calls `init_province_highwater_from_records`**, which re-seeds the marks from the live records. So a stat dip hurts income **only for the rest of that year** — the marks reset each Summer, not "permanently." Income each Fall is computed off `min(summer_snapshot, fall_current)` per stat.
-- **`$946D` = daimyo Charisma** *(RESOLVED 2026-06-14)*. `get_fief_daimyo_charisma` reads `daimyo_record + 4` (the Charisma byte, BYTE_DEREF). The RNG range `⌊$946D × tax / 200⌋` is exactly `pct_op(charisma/2, tax)`. Same-owner fiefs share it because they share a daimyo. Tokugawa's Charisma 68 is the "$946D=68" in the Mikawa check below. **No `$D772/$939D` iteration is involved — that earlier guess is withdrawn.**
-- **Army STARVATION** *(NEW, Pass-2)*: `consume_province_army_upkeep` is not a flat −MEN/2. If `min(gold, rice) < ⌊MEN/2⌋` (you can't afford upkeep), then upkeep is capped at `min(gold, rice)` **and `men` is cut to `min(gold,rice) × 2`** — you lose the soldiers you can't feed. Then both gold and rice are drained by the (capped) upkeep. So a cash/rice-starved big army bleeds men every Fall.
-- **AI gold SUBSIDY** *(NEW, Pass-2)*: `event_boost_province_gold_output` fires only on AI fiefs (`ai_state == 0`): `gold += rng(0..9) + ⌊charisma/10⌋`, then a **50% coin (`rng_mod(2)`)** also does `output += rng(0..9) + ⌊charisma/10⌋`. This is the rubber-band — the AI economy is quietly topped up; the player's is not.
+- **`$946D` = daimyo Charisma.** `get_fief_daimyo_charisma` reads `daimyo_record + 4` (the Charisma byte, BYTE_DEREF). The RNG range `⌊$946D × tax / 200⌋` is exactly `pct_op(charisma/2, tax)`; same-owner fiefs share it because they share a daimyo (Tokugawa's Charisma 68 drives the Mikawa check below).
+- **Army STARVATION**: `consume_province_army_upkeep` is not a flat −MEN/2. If `min(gold, rice) < ⌊MEN/2⌋` (you can't afford upkeep), then upkeep is capped at `min(gold, rice)` **and `men` is cut to `min(gold,rice) × 2`** — you lose the soldiers you can't feed. Then both gold and rice are drained by the (capped) upkeep. So a cash/rice-starved big army bleeds men every Fall.
+- **AI gold SUBSIDY**: `event_boost_province_gold_output` fires only on AI fiefs (`ai_state == 0`): `gold += rng(0..9) + ⌊charisma/10⌋`, then a **50% coin (`rng_mod(2)`)** also does `output += rng(0..9) + ⌊charisma/10⌋`. This is the rubber-band — the AI economy is quietly topped up; the player's is not.
 - **MEN/2 is the army-upkeep tax** — subtracted from BOTH gold AND rice every harvest. Big armies eat substantially into harvest (and can starve, above).
 - **Tax dominates income SIGN**: below break-even (where positive contributions = MEN/2), income clamps to 0. For undeveloped fiefs, break-even ≈ 25-30% tax.
 - **TOWN is in gold formula, OUTPUT×DAMS is in rice formula** — confirms Build's direct gold ROI and Grow+Dam's direct rice ROI.
 
 ### Verification (Mikawa, fief 7)
 
-State: town=66, dams_max=64, output_max=136, lm=40, wm=51, men=71, tax=55, **Charisma=68** (Tokugawa; was the "$946D=68")
+State: town=66, dams_max=64, output_max=136, lm=40, wm=51, men=71, tax=55, **Charisma=68** (Tokugawa)
 
 | field | calc | value |
 |---|---|---:|
@@ -185,11 +184,7 @@ State: town=66, dams_max=64, output_max=136, lm=40, wm=51, men=71, tax=55, **Cha
 6. **Charisma quietly matters** → high-Charisma daimyo get a bigger income RNG ceiling (`⌊charisma×tax/200⌋`), and AI fiefs get a Charisma-scaled gold/output subsidy each Fall.
 7. **Feed your army** → keep `min(gold, rice) ≥ MEN/2` each Fall or the upkeep step culls men down to `2·min(gold,rice)`.
 
-### `$946D` — RESOLVED (2026-06-14)
-
-`$946D` is `get_fief_daimyo_charisma` = `byte[daimyo_record + 4]` (Charisma). The "owner-dependent ~50–120 value" was Charisma all along; the income RNG ceiling is `pct_op(charisma/2, tax) = ⌊charisma × tax / 200⌋`. The prior "$D772/$939D iteration" hypothesis is withdrawn — there is no iteration, just a one-byte daimyo-record read.
-
-## 5. math32_3arg ($D6B8) — 3-arg math helper
+## math32_3arg ($D6B8) — 3-arg math helper
 
 ```
 if arg3 == 0: return -1
@@ -201,7 +196,7 @@ return ⌊(arg1 × arg2) ÷ arg3⌋
 - **Verified**: by trace of Test 5 Grow (2026-05-26)
 - **Underlying ALU**: 47 extended opcodes (B7-prefix dispatch table at $F261); 32-bit shift-add multiply at $F2C1, 64-bit/32-bit restoring divide at $F2FE
 
-## Send ($9A5D driver + $8BE5 capacity helper) — **VERIFIED 2026-05-26**
+## Send ($9A5D driver + $8BE5 capacity helper)
 
 ### Formula
 ```
@@ -221,7 +216,7 @@ source_field -= effective_amount   (no attrition)
 - Send to high-HEADER fiefs for biggest transfers
 - Pairs with Give-Peasants: Send moves rice, Give converts rice to stats
 
-## Trade — the merchant market ($A1B6 driver; rate table $6E0B) — **DERIVED + part-CERTIFIED 2026-06-12**
+## Trade — the merchant market ($A1B6 driver; rate table $6E0B)
 
 > A global commodity/credit market behind one menu. Prices come from a **period-rolled rate table** (`$6E0B`, re-rolled once per **year** at the season wrap by `roll_period_market_rates $924A` — see ledger #24) that **also drifts ±1 per transaction**. Every quantity cap uses `ratio_times10_capped(a,rate,cap) = min(⌊a·10/rate⌋, cap)` (CERTIFIED); every price uses `math32_muladddiv(rate,N) = ⌈rate·N/10⌉` (CERTIFIED) — so **rates are stored ×10** (a rate of 15 = 1.5 gold/unit).
 
@@ -248,7 +243,7 @@ Arms  ($A113):        needs men>0 ; max = min(⌊gold·10/arms_rate⌋, header�
 - **Caps everywhere are the `header` ceiling** (treasury/storehouse/armory room) — the same development ceiling the develop commands fight.
 - All field offsets per the `$7001` province-record map (gold +0, debt +2, town +4, rice +6, arms +22, header +24).
 
-## Move ($96D1 driver → effect_move $8CA5; arms blend $DA24) — **DERIVED 2026-06-12 (by composition)**
+## Move ($96D1 driver → effect_move $8CA5; arms blend $DA24) — *derived by composition*
 
 > Move relocates men **and** arms between two of your own fiefs. The men transfer is Send's capacity-clamp; the arms transfer is Hire's men-weighted dilution — so Move is verified *by composition* of two already-certified primitives (not independently emulator-run yet).
 
@@ -280,7 +275,7 @@ cap_arms_at_index(dest)                     ; re-caps the SEPARATE $76A9 unit-ty
 - **Move is the only no-gold way to reposition force** — pairs with Send (resources) for staging before War.
 - **Capital mobility = assassination defense** — relocate your seat (lead-personally Move from the capital) so `$A349` can't find the daimyo "in."
 
-## Pact ($9C4F driver; AI price $E3A4; relation $DA4F) — **BYTECODE-CERTIFIED 2026-06-12**
+## Pact ($9C4F driver; AI price $E3A4; relation $DA4F)
 
 > Buy peace from a rival. The price is sized to **your own treasury** (not the target's anything), the AI gates whether it even offers, and the gold is **paid to the target daimyo**. Plus a hidden Drive cost.
 
@@ -299,7 +294,7 @@ else: your.gold −= price ;  target.gold += price ;  relation[$6193] := 70   ; 
 - **vs a human house** (`ai_state != 0`): the other player simply types a demand (1–9999).
 - Verified: bytecode `$E3A4` matches the C line-for-line; `pct_op` is ROM-certified, so the price is emulator-grade.
 
-## Marry ($9DC4 driver; AI dowry $E314; relation $DA7D) — **DERIVED 2026-06-12 (sibling of Pact)**
+## Marry ($9DC4 driver; AI dowry $E314; relation $DA7D) — *derived (sibling of Pact)*
 
 > The strongest tie (relation 90 vs Pact's 70), capital-gated, with the harshest refusal penalty in the game.
 
@@ -315,7 +310,7 @@ dowry = pct_op(your.gold, rng(50..79)) + 200                  ; ≈ 50–79% of 
 - **Refusal penalty (permanent):** `daimyo +2 (Drive) −1`, `+3 (Luck) −1`, `+4 (Charisma) −1` — you lose three core stats for the snub. (Declining the dowry after it's named costs nothing extra.)
 - Flavor: rolls a composite bride-portrait (`rng%22 + 53`).
 
-## View — spy contest ($A6C7 driver; roll $A6B3) — **DERIVED 2026-06-12**
+## View — spy contest ($A6C7 driver; roll $A6B3) — *derived*
 
 > Viewing your own fiefs is free. Spying an enemy costs **10 gold** a look and runs a Luck+IQ contest.
 
@@ -331,9 +326,9 @@ else:                                              clean look          ; neutral
 - **High Luck + IQ → reliable espionage.** The `rng(skill)` term makes the auto-success leg rarer at higher difficulty (another `const_two` dial).
 - Adds spying to the IQ and Luck stat-effect rows (synthesis stat table).
 
-## 7. Hire ($A5F4 driver → Men:$A553 / Ninja:$A2D2; dilution $8BF4) — **VERIFIED 2026-05-26; effect addr CORRECTED 2026-06-02**
+## 7. Hire ($A5F4 driver → Men:$A553 / Ninja:$A2D2; dilution $8BF4)
 
-> **CORRECTION (2026-06-02, bytecode walk).** The driver `$A5F4` prompts **"(Men/Ninja)?"** and branches: **Men → `effect_hire_men` ($A553)** (the recruit-soldiers formula below, animation **id 33**); **Ninja → `$A2D2`** (the *sabotage*-mission menu — Uprising/Revolt/Dams/Assassin/Arson, animation id 12 — the same subsystem **Bribe** uses, NOT recruitment). The earlier "$A2D2 = effect_hire dispatcher" label was wrong: `$A2D2` is the ninja path. The per-man gold cost uses `gold_men_hire_rate` ($6E11), which **re-rolls every turn** (market-rate table) — so hiring is cheaper some seasons.
+> The driver `$A5F4` prompts **"(Men/Ninja)?"** and branches: **Men → `effect_hire_men` ($A553)** (the recruit-soldiers formula below, animation **id 33**); **Ninja → `$A2D2`** (the *sabotage*-mission menu — Uprising/Revolt/Dams/Assassin/Arson, animation id 12 — the same subsystem **Bribe** uses, NOT recruitment). The per-man gold cost uses `gold_men_hire_rate` ($6E11), which **re-rolls every turn** (market-rate table) — so hiring is cheaper some seasons.
 
 ### Recruit base stats (random per hire)
 ```
@@ -357,7 +352,7 @@ new_stat = min(cap, (current_stat × current_men + recruit_stat × new_men) / (c
 - **Hire early when current stats are low** (recruits don't drag down much)
 - **Hire restores body count** after combat losses
 
-## Dam ($9B7E driver; √output helper $87D8; apply $887D) — **DERIVED + VERIFIED 2026-06-02**
+## Dam ($9B7E driver; √output helper $87D8; apply $887D)
 
 > The last open economic formula. It is **not** in `$87D8` (that sub, mislabeled "effect_dam", is just `sqrt(output)` — returns 10000 if output==0). The dam math is computed **inline in the driver $9B7E** and applied through `helper_dam_rounding` ($887D, shared with Build).
 
@@ -380,7 +375,7 @@ dams     += gain                                  ; helper_dam_rounding: war-hal
 - **Verified**: bytecode + `dam-mikawa` capture (Tokugawa output=254 → √=15, spent all 424 gold → dams 39 → 95 = +56; `⌊848/15⌋ = 56` exact). See [dam.html](./commands/dam.html).
 - **Source bytecode**: driver $9B7E; helpers $87D8 (√output), $887D (apply+cap), animation id 21.
 
-## 8. Daimyo passive aging — **VERIFIED 2026-05-26 (Fall 1566)**
+## 8. Daimyo passive aging
 
 Daimyo records ($752F+, 7 bytes each: age, H, D, L, Ch, IQ, status) — daimyo stats DRIFT UP each season turnover, independent of Train command:
 - Drive +1-2 per season (observed daimyos 1, 2)
@@ -389,56 +384,12 @@ Daimyo records ($752F+, 7 bytes each: age, H, D, L, Ch, IQ, status) — daimyo s
 
 So Train command ACCELERATES what would happen anyway. The drift might be conditional on age/health (younger daimyos grow faster?).
 
-## 9. Event system (STRUCTURAL only — probabilities unverified)
+## 9. Event system
 
-### Three event classes
-- **Global** (typhoon, plague): season-RNG-gated, hits multiple fiefs. Messages at $94C4 ("Summer brings typhoons"), $94E9 ("Plague has come"). Plague reuses typhoon's display code at $94C7.
-- **Local** (troop revolt, peasant defection): per-fief stat-gated. Effect at $A5E6 = `MEN /= 2` (army splits, half rebel). Message "Disloyal troops have revolted" at $A7CF.
-- **Daimyo** (sickness, death): age + health driven. "[name] died of %s" at $91E8. Lives in daimyo-turn code, not harvest.
+The disaster / uprising / illness / death catalogue — with each event's season, trigger, exact probability, and result — is **[Appendix D — The Event System](./appendix-events.md)** (bytecode-walked). The economic hooks those events touch (the harvest, the AI subsidy, army upkeep) are §4 above.
 
-### Trigger flow (best inference)
-```
-1. Seasonal flag check (likely ~30% chance per season — verified events didn't fire Fall 1566)
-2. If flag set, per-fief loop rolls stat-vs-RNG:
-   - low loyalty → peasant defection prob
-   - low morale → troop revolt prob
-   - low wealth → famine?
-3. Triggered events set $6F63 (fief idx), $6F67 (type), $6F68 (subtype)
-4. Post-loop display + apply via $A5E6
-```
+## All atomic economic formulas are verified
 
-### Key state bytes
-- `$6DA1` — state flag toggling between $0C/$0D (likely "in transition" bit 0); bit 7 = skip-events flag
-- `$6F63` — current target fief idx for events
-- `$6F67`/`$6F68` — event type flags (= $FF when no event)
-- `$7515` — zealot uprising slot (26-byte province record used as transient rebel army)
-
-### What's NOT yet known
-- Exact probability formulas for each event
-- Damage magnitudes beyond MEN /= 2 for revolt
-- Seasonal flag formula (which seasons can have events)
-
-## Pending — all atomic economic formulas now verified
-
-**As of 2026-06-02 every atomic/economic command is bytecode-verified** — the prior "pending" rows (Give-Men, Hire, Send, Fall harvest) are all resolved above or in their command pages, and **Dam** (the last holdout) is derived. Notes superseding old guesses:
-- **Give-Men** = `give_morale` ($89C1): `morale += 2 × ⌊amount × (6−const_two) ÷ √((men+morale)/2 + amount)⌋` — the predicted template, confirmed by bytecode. See [give.html](./commands/give.html).
-- **Hire**: `$A2D2` was the **Ninja/sabotage** path, not recruitment — recruit-men is `$A553` (+ dilution `$8BF4`). See §7 + [hire.html](./commands/hire.html).
-- **Send**: **no attrition** — `$8BE5 = min(header−current, requested)`; the earlier "~3% travel attrition" was a misread. See [send.html](./commands/send.html).
-- **Fall harvest**: verified in §4.
+Every atomic/economic command is bytecode-verified — the develop family (Grow/Build/Give/Dam), Train, Send, Hire, Trade, Move, Pact, Marry, View, and the Fall harvest are all closed above or in their command pages. **Give-Men** = `give_morale` ($89C1): `morale += 2 × ⌊amount × (6−const_two) ÷ √((men+morale)/2 + amount)⌋` — the develop-family template on the morale↔men pair.
 
 The per-command HTML walkthroughs (driver flow + bytecode-validated formula + embedded from-ROM animation) live in [commands/](./commands/) — `grow` `build` `give` `train` `tax` `send` `hire` `dam`.
-
-## Methodology notes
-
-The breakthrough on Grow's formula came from:
-1. **Walking the 47 ext-opcodes** to confirm math32_3arg is `(a × b) ÷ c` (not something exotic)
-2. **VM trace through math32_3arg's bytecode** to capture actual arg values mid-call
-3. **5 controlled tests** with varying `amount` to fit + verify
-
-The previous session-memory hypothesis that arg3 came from "uninitialized stack memory" was **wrong** — it was just `sqrt(output + amount)` deliberately pushed by Grow's bytecode. The mystery was a misread of the call-site arg order, not a real ambiguity in the VM.
-
-**General approach for cracking remaining commands**:
-1. Run command in-game, capture before/after SRAM
-2. Set Mesen trace condition to fire during the command's host_call to its math kernel
-3. Read frame offsets +0xB/+0xD/+0xF from the trace to identify args
-4. Fit closed form, then verify with 2-3 more controlled tests
