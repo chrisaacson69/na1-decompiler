@@ -18,7 +18,7 @@ word call_bank10_entry(word arg1) {
 
 word deduct_byte_at(word arg1, word arg2) {
     *(byte*)(arg1) = (*(byte*)(arg1) - *(byte*)&arg2);    // $CA2F
-    return (*(byte*)(arg1) - *(byte*)&arg2);    // $CA30
+    return *(byte*)(arg1);    // $CA30
 }
 
 // $CA31 word_sub_saturating
@@ -76,7 +76,7 @@ word strlen(word arg1) {
 word fill_bytes(word arg1, word arg2, word arg3) {
     while (arg2) {    // $CAAB
         arg1 = (arg1 + 1);    // $CAA1
-        *(byte*)(((arg1 + 1) - 1)) = *(byte*)&arg3;    // $CAA7
+        *(byte*)((arg1 - 1)) = *(byte*)&arg3;    // $CAA7
         arg2 = (arg2 - 1);    // $CAAA
     }
     return arg2;    // $CAAF
@@ -110,8 +110,8 @@ word strcpy(word arg1, word arg2) {
     do {    // $CAE0
         arg1 = (arg1 + 1);    // $CAE2
         arg2 = (arg2 + 1);    // $CAE7
-        *(byte*)(((arg1 + 1) - 1)) = *(byte*)(((arg2 + 1) - 1));    // $CAEA
-    } while (*(byte*)(((arg2 + 1) - 1)));
+        *(byte*)((arg1 - 1)) = *(byte*)((arg2 - 1));    // $CAEA
+    } while (*(byte*)((arg2 - 1)));
     return local11;    // $CAEF
 }
 
@@ -340,7 +340,7 @@ word repaint_screen(void) {
 word cursor_advance_row(void) {
     ui_window_col = 2;    // $CDB5
     ui_cursor_row = (ui_cursor_row + 1);    // $CDBC
-    phi_ret_cdc9 = ((unsigned)(ui_cursor_row + 1) > (unsigned)27);    // $CDC2
+    phi_ret_cdc9 = ((unsigned)ui_cursor_row > (unsigned)27);    // $CDC2
     if (phi_ret_cdc9) {    // $CDB4
         ui_cursor_row = 3;    // $CDC6
         phi_ret_cdc9 = 3;    // $CDC6
@@ -432,7 +432,7 @@ word char_advance_width(word arg1) {
         *(byte*)&arg1 = char_classify(*(byte*)&arg1);    // $CE9A
         syscall_ppu_fill_rect(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&arg1);    // $CEAF
         ui_window_col = (ui_window_col + 1);    // $CEB7
-        phi_ret_cec3 = ((unsigned)(ui_window_col + 1) > (unsigned)31);    // $CEBD
+        phi_ret_cec3 = ((unsigned)ui_window_col > (unsigned)31);    // $CEBD
         if (phi_ret_cec3) {    // $CE92
             phi_ret_cec3 = cursor_advance_row();    // $CEC0
         }
@@ -455,17 +455,17 @@ L_CECC:
     goto L_CF13;    // $CEE9
 L_CEEC:
     buf_ptr = (buf_ptr + 1);    // $CEEF
-    *(byte*)(((buf_ptr + 1) - 1)) = char_classify(cur_char);    // $CEFB
+    *(byte*)((buf_ptr - 1)) = char_classify(cur_char);    // $CEFB
     ui_window_col = (ui_window_col + 1);    // $CF00
-    if (!(((ui_window_col + 1) == 32))) goto L_CF27;    // $CF06
+    if ((ui_window_col != 32)) goto L_CF27;    // $CF06
 L_CF13:
     ppu_copy_rect_wrap(local11, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // $CF17
 L_CF1B:
     cursor_advance_row();    // $CF1B
 L_CF27:
     arg1 = (arg1 + 1);    // $CF29
-    cur_char = *(byte*)(((arg1 + 1) - 1));    // $CF2C
-    if (*(byte*)(((arg1 + 1) - 1))) goto L_CECC;    // $CF2F
+    cur_char = *(byte*)((arg1 - 1));    // $CF2C
+    if (*(byte*)((arg1 - 1))) goto L_CECC;    // $CF2F
     phi_ret_cf4f = (local11 != ui_window_col);    // $CF37
     if (!(phi_ret_cf4f)) return phi_ret_cf4f;    // $CF37
     phi_ret_cf4f = ppu_copy_rect_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // $CF4B
@@ -514,7 +514,7 @@ word palette_write_wrap(word arg1, word arg2) {
 word num_to_ascii(word arg1, word arg2, word arg3) {
     if (((unsigned)arg2 < (unsigned)arg3)) {    // $CF9D
         *(word*)(arg1) = (*(word*)(arg1) + 1);    // $CFA7
-        *(byte*)(((*(word*)(arg1) + 1) - 1)) = (((unsigned)arg2 < (unsigned)10) ? (arg2 + 48) : (arg2 + 55));    // $CFB9
+        *(byte*)((*(word*)(arg1) - 1)) = (((unsigned)arg2 < (unsigned)10) ? (arg2 + 48) : (arg2 + 55));    // $CFB9
         return 1;    // $CFBB
     } else {
         local11 = num_to_ascii(arg1, ((unsigned)arg2 / (unsigned)arg3), arg3);    // $CFC6
@@ -546,16 +546,16 @@ word atoi_decimal(word arg1) {
 
 word format_string(word arg1, word arg2) {
     arg1 = (arg1 + 2);    // $D003
-    fmt_cursor = *(word*)(((arg1 + 2) + -2));    // $D007
+    fmt_cursor = *(word*)((arg1 + -2));    // $D007
     vararg_ptr = arg1;    // $D00A
     goto L_D018;    // $D00A
 L_D00F:
     arg2 = (arg2 + 1);    // $D011
-    *(byte*)(((arg2 + 1) - 1)) = ch;    // $D017
+    *(byte*)((arg2 - 1)) = ch;    // $D017
 L_D018:
     fmt_cursor = (fmt_cursor + 1);    // $D01B
-    ch = *(byte*)(((fmt_cursor + 1) - 1));    // $D01F
-    if (!(*(byte*)(((fmt_cursor + 1) - 1)))) goto L_D130;    // $D022
+    ch = *(byte*)((fmt_cursor - 1));    // $D01F
+    if (!(*(byte*)((fmt_cursor - 1)))) goto L_D130;    // $D022
     if (!((ch == 37))) goto L_D00F;    // $D02B
     out_cursor = &conv_buf;    // $D031
     width = 6;    // $D034
@@ -565,12 +565,12 @@ L_D018:
     atoi_decimal(&fmt_cursor);    // $D04E
     pad = 0;    // $D056
     fmt_cursor = (fmt_cursor + 1);    // $D05B
-    ch = *(byte*)(((fmt_cursor + 1) - 1));    // $D05F
-    if (!((*(byte*)(((fmt_cursor + 1) - 1)) == 46))) goto L_D07F;    // $D065
+    ch = *(byte*)((fmt_cursor - 1));    // $D05F
+    if (!((*(byte*)((fmt_cursor - 1)) == 46))) goto L_D07F;    // $D065
     width = atoi_decimal(&fmt_cursor);    // $D070
     has_precision = 1;    // $D073
     fmt_cursor = (fmt_cursor + 1);    // $D078
-    ch = *(byte*)(((fmt_cursor + 1) - 1));    // $D07C
+    ch = *(byte*)((fmt_cursor - 1));    // $D07C
 L_D07F:
     switch (to_upper(ch)) {    // $D087
     case 0: goto L_D12F;    // $D087
@@ -581,18 +581,18 @@ L_D07F:
     }    // $D087
 L_D09C:
     vararg_ptr = (vararg_ptr + 2);    // $D0A0
-    pad = (pad - num_to_ascii(&out_cursor, *(word*)(((vararg_ptr + 2) + -2)), 10));    // $D0B2
+    pad = (pad - num_to_ascii(&out_cursor, *(word*)((vararg_ptr + -2)), 10));    // $D0B2
     goto L_D0E5;    // $D0B4
 L_D0B7:
     vararg_ptr = (vararg_ptr + 2);    // $D0BA
-    out_cursor = *(word*)(((vararg_ptr + 2) + -2));    // $D0BF
+    out_cursor = *(word*)((vararg_ptr + -2));    // $D0BF
     pad = (pad - strlen(out_cursor));    // $D0CB
     goto L_D0FC;    // $D0CD
 L_D0D0:
     pad = (pad - 1);    // $D0D3
     out_cursor = (out_cursor + 1);    // $D0D8
     vararg_ptr = (vararg_ptr + 2);    // $D0DF
-    *(byte*)(((out_cursor + 1) - 1)) = *(word*)(((vararg_ptr + 2) + -2));    // $D0E4
+    *(byte*)((out_cursor - 1)) = *(word*)((vararg_ptr + -2));    // $D0E4
 L_D0E5:
     *(byte*)(out_cursor) = 0;    // $D0E8
     out_cursor = &conv_buf;    // $D0EC
@@ -600,21 +600,21 @@ L_D0E5:
     goto L_D0FC;    // $D0F1
 L_D0F4:
     arg2 = (arg2 + 1);    // $D0F6
-    *(byte*)(((arg2 + 1) - 1)) = 32;    // $D0FB
+    *(byte*)((arg2 - 1)) = 32;    // $D0FB
 L_D0FC:
     pad = (pad - 1);    // $D0FF
-    if ((((pad - 1) + 1) > 0)) goto L_D0F4;    // $D104
+    if (((pad + 1) > 0)) goto L_D0F4;    // $D104
 L_D107:
     if (!(*(byte*)(out_cursor))) goto L_D018;    // $D10A
     if (!((!(has_precision) || (width > 0)))) goto L_D127;    // $D116
     arg2 = (arg2 + 1);    // $D11B
-    *(byte*)(((arg2 + 1) - 1)) = *(byte*)(out_cursor);    // $D121
+    *(byte*)((arg2 - 1)) = *(byte*)(out_cursor);    // $D121
     width = (width - 1);    // $D125
 L_D127:
     out_cursor = (out_cursor + 1);    // $D12A
     goto L_D107;    // $D12C
 L_D12F:
-    return (out_cursor + 1);    // $D12F
+    return out_cursor;    // $D12F
 L_D130:
     *(byte*)(arg2) = 0;    // $D132
     return 0;    // $D133
@@ -700,7 +700,7 @@ word poll_input(void) {
         }
     }
     local11 = (local11 & 1);    // $D174
-    if (((local11 & 1) != ui_input_sel_latch_7fdf)) {    // $D171
+    if ((local11 != ui_input_sel_latch_7fdf)) {    // $D171
         local9 = ui_window_col;    // $D17F
         local8 = ui_cursor_row;    // $D183
         ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $D18D
@@ -711,7 +711,7 @@ word poll_input(void) {
     }
     if ((ui_timer_gate_flag_7fe7 != 2)) {    // $D1AD
         frame_counter = (frame_counter - 1);    // $D1B9
-        switch ((frame_counter - 1)) {    // $D1B5
+        switch (frame_counter) {    // $D1B5
             case 100:
                 syscall_set_sprite(0, (ui_window_col << 3), ((ui_cursor_row << 3) - 1), 0, ui_timer_gate_flag_7fe7);    // $D265
                 break;
@@ -904,7 +904,7 @@ L_D460:
     goto L_D573;    // $D466
 L_D469:
     *(word*)(((local4 << 1) + &local6)) = (*(word*)(((local4 << 1) + &local6)) + 1);    // $D474
-    if (!(((unsigned)(*(word*)(((local4 << 1) + &local6)) + 1) >= (unsigned)10))) goto L_D485;    // $D477
+    if (!(((unsigned)*(word*)(((local4 << 1) + &local6)) >= (unsigned)10))) goto L_D485;    // $D477
     *(word*)(((local4 << 1) + &local6)) = 0;    // $D484
 L_D485:
     phi_d492_0 = 0xF6A1;    // $D48F
@@ -918,7 +918,7 @@ L_D492:
     goto L_D460;    // $D4AC
 L_D4AF:
     *(word*)(((local4 << 1) + &local6)) = (*(word*)(((local4 << 1) + &local6)) - 1);    // $D4BA
-    if (!(((unsigned)(*(word*)(((local4 << 1) + &local6)) - 1) >= (unsigned)10))) goto L_D4CB;    // $D4BD
+    if (!(((unsigned)*(word*)(((local4 << 1) + &local6)) >= (unsigned)10))) goto L_D4CB;    // $D4BD
     *(word*)(((local4 << 1) + &local6)) = 9;    // $D4CA
 L_D4CB:
     phi_d492_0 = 0xF6A4;    // $D4D8
@@ -931,7 +931,7 @@ L_D4DB:
     ui_window_col = (ui_window_col - 2);    // $D4F1
     read_frame_timer(1);    // $D4F5
     local4 = (local4 - 1);    // $D4FF
-    *(word*)(((((local4 - 1) + 1) << 1) + &local6)) = 255;    // $D508
+    *(word*)((((local4 + 1) << 1) + &local6)) = 255;    // $D508
 L_D509:
     delay_loop(2);    // $D50A
     goto L_D460;    // $D50E
@@ -943,7 +943,7 @@ L_D528:
     read_frame_timer(0);    // $D529
     ui_window_col = (ui_window_col + 1);    // $D531
     local4 = (local4 + 1);    // $D53A
-    *(word*)((((local4 + 1) << 1) + &local6)) = 0;    // $D540
+    *(word*)(((local4 << 1) + &local6)) = 0;    // $D540
     draw_message(0xF6A9, *(word*)(((local4 << 1) + &local6)));    // $D54E
     ui_window_col = (ui_window_col - 1);    // $D556
     read_frame_timer(1);    // $D55A
@@ -1124,8 +1124,8 @@ L_D74A:
     if (local11) goto L_D74A;    // $D74E
 L_D751:
     arg1 = (arg1 - 1);    // $D753
-    if (((arg1 - 1) + 1)) goto L_D746;    // $D755
-    return ((arg1 - 1) + 1);    // $D758
+    if ((arg1 + 1)) goto L_D746;    // $D755
+    return (arg1 + 1);    // $D758
 }
 
 // $D759 standard_delay
@@ -1312,7 +1312,7 @@ word develop_gain_capped_wealth(word arg1, word arg2) {
 word record_apply_two_grows(word arg1, word arg2) {
     arg1->loyalty = (arg1->loyalty + develop_gain_capped_loyalty(arg1, arg2));    // $D952
     arg1->wealth = (arg1->wealth + develop_gain_capped_wealth(arg1, arg2));    // $D960
-    return (arg1->wealth + develop_gain_capped_wealth(arg1, arg2));    // $D961
+    return arg1->wealth;    // $D961
 }
 
 // $D962 set_6da1_bit7
@@ -1320,7 +1320,7 @@ word record_apply_two_grows(word arg1, word arg2) {
 
 word set_6da1_bit7(void) {
     ai_turn_flags = (ai_turn_flags | -128);    // $D96E
-    return (ai_turn_flags | -128);    // $D971
+    return ai_turn_flags;    // $D971
 }
 
 // $D972 fief_owner_weakness
@@ -1439,7 +1439,7 @@ word compact_relation_list(void) {
     while ((*(byte*)(src) != 255)) {    // $DB04
         if ((get_province_ai_state(*(byte*)(src)) != 255)) {    // $DAEB
             dst = (dst + 1);    // $DAFB
-            *(byte*)(((dst + 1) - 1)) = *(byte*)(src);    // $DB00
+            *(byte*)((dst - 1)) = *(byte*)(src);    // $DB00
         }
         src = (src + 1);    // $DB03
     }
@@ -1575,14 +1575,14 @@ word generate_daimyo_name(word arg1) {
         *(byte*)(local9) = msg_aiaoieueoikakikusasisusotatuto[local11];    // $DCD0
         local9 = (local9 + 1);    // $DCD3
         local11 = (local11 + 1);    // $DCD7
-        *(byte*)((local9 + 1)) = *(byte*)(((local11 + 1) + msg_aiaoieueoikakikusasisusotatuto));    // $DCDD
+        *(byte*)(local9) = msg_aiaoieueoikakikusasisusotatuto[local11];    // $DCDD
         local9 = (local9 + 1);    // $DCE0
-        *(byte*)((local9 + 1)) = msg_setenohomamimemoyarawagagizaze[local10];    // $DCE8
+        *(byte*)(local9) = msg_setenohomamimemoyarawagagizaze[local10];    // $DCE8
         local9 = (local9 + 1);    // $DCEB
         local10 = (local10 + 1);    // $DCEF
-        *(byte*)((local9 + 1)) = *(byte*)(((local10 + 1) + msg_setenohomamimemoyarawagagizaze));    // $DCF5
+        *(byte*)(local9) = msg_setenohomamimemoyarawagagizaze[local10];    // $DCF5
         local9 = (local9 + 1);    // $DCF8
-        *(byte*)((local9 + 1)) = 0;    // $DCFB
+        *(byte*)(local9) = 0;    // $DCFB
         local8 = 0;    // $DCFD
         phi_val_dd1c = 0;    // $DCFF
         while (1) {    // $DD1C
@@ -1615,7 +1615,7 @@ word filter_province_list_by_owner(word match_enemy, word out_list) {
             if (!((is_enemy_owned(*(byte*)(src_ptr)) ^ match_enemy))) {    // $DD47
                 if (!(province_state_is_FF(*(byte*)(src_ptr)))) {    // $DD53
                     write_ptr = (write_ptr + 1);    // $DD5F
-                    *(byte*)(((write_ptr + 1) - 1)) = *(byte*)(src_ptr);    // $DD64
+                    *(byte*)((write_ptr - 1)) = *(byte*)(src_ptr);    // $DD64
                 }
             }
             phi_val_dd67 = (src_ptr + 1);    // $DD66
@@ -1755,7 +1755,7 @@ word daimyo_stat_transfer(word arg1, word arg2) {
     *(byte*)((local11 + 2)) = (*(byte*)((local11 + 2)) - 1);    // $DF65
     *(byte*)((local11 + 4)) = (*(byte*)((local11 + 4)) - 1);    // $DF6B
     *(byte*)((local11 + 5)) = (*(byte*)((local11 + 5)) - 1);    // $DF71
-    return (*(byte*)((local11 + 5)) - 1);    // $DF72
+    return *(byte*)((local11 + 5));    // $DF72
 }
 
 // $DF73 transfer_force_triplet
@@ -1958,7 +1958,7 @@ word copy_arms_record_5(word arg1, word arg2) {
     while (((unsigned)local10 < (unsigned)5)) {    // $E2CF
         local11 = (local11 + 1);    // $E2C3
         arg2 = (arg2 + 1);    // $E2C8
-        *(byte*)(((local11 + 1) - 1)) = *(byte*)(((arg2 + 1) - 1));    // $E2CB
+        *(byte*)((local11 - 1)) = *(byte*)((arg2 - 1));    // $E2CB
         local10 = (local10 + 1);    // $E2CE
     }
     return ((unsigned)local10 < (unsigned)5);    // $E2D5
@@ -2091,7 +2091,7 @@ word build_owned_fief_list(void) {
         if (((unsigned)selected_province_idx < (unsigned)scenario_fief_count)) {    // $E4C6
             if (get_6da2_cur()) {    // $E4B3
                 write_ptr = (write_ptr + 1);    // $E4BB
-                *(byte*)(((write_ptr + 1) - 1)) = selected_province_idx;    // $E4C1
+                *(byte*)((write_ptr - 1)) = selected_province_idx;    // $E4C1
             }
             phi_val_e4c6 = (selected_province_idx + 1);    // $E4C5
             continue;
@@ -2116,7 +2116,7 @@ word build_fiefs_excluding_daimyo(word arg1) {
         if ((*(byte*)(local11) != 255)) {    // $E501
             if ((fief_owner(*(byte*)(local11)) != arg1)) {    // $E4EB
                 local10 = (local10 + 1);    // $E4F9
-                *(byte*)(((local10 + 1) - 1)) = *(byte*)(local11);    // $E4FE
+                *(byte*)((local10 - 1)) = *(byte*)(local11);    // $E4FE
             }
             phi_val_e501 = (local11 + 1);    // $E500
             continue;
@@ -2142,7 +2142,7 @@ word build_eligible_province_list(word arg1) {
                 if (!((is_enemy_owned(local11) ^ arg1))) {    // $E527
                     if ((selected_province_idx != local11)) {    // $E531
                         local9 = (local9 + 1);    // $E53B
-                        *(byte*)(((local9 + 1) - 1)) = local11;    // $E53F
+                        *(byte*)((local9 - 1)) = local11;    // $E53F
                         local10 = (local10 + 1);    // $E542
                     }
                 }
@@ -2170,11 +2170,11 @@ word redraw_fief_on_map(word arg1) {
         while (1) {    // $E584
             if ((*(byte*)(rec_cursor) != 255)) {    // $E584
                 rec_cursor = (rec_cursor + 1);    // $E598
-                ui_window_col = *(byte*)(((rec_cursor + 1) - 1));    // $E59C
+                ui_window_col = *(byte*)((rec_cursor - 1));    // $E59C
                 rec_cursor = (rec_cursor + 1);    // $E5A2
-                ui_cursor_row = *(byte*)(((rec_cursor + 1) - 1));    // $E5A6
+                ui_cursor_row = *(byte*)((rec_cursor - 1));    // $E5A6
                 rec_cursor = (rec_cursor + 1);    // $E5AC
-                if ((*(byte*)(((rec_cursor + 1) - 1)) == arg1)) {    // $E595
+                if ((*(byte*)((rec_cursor - 1)) == arg1)) {    // $E595
                     break;
                 } else {
                     continue;
@@ -2208,11 +2208,11 @@ word render_map_section(word arg1) {
         cursor = &record_buf;    // $E659
         while ((*(byte*)(cursor) != 255)) {    // $E67E
             cursor = (cursor + 1);    // $E661
-            ui_window_col = *(byte*)(((cursor + 1) - 1));    // $E665
+            ui_window_col = *(byte*)((cursor - 1));    // $E665
             cursor = (cursor + 1);    // $E66B
-            ui_cursor_row = *(byte*)(((cursor + 1) - 1));    // $E66F
+            ui_cursor_row = *(byte*)((cursor - 1));    // $E66F
             cursor = (cursor + 1);    // $E675
-            draw_province_lord_name(*(byte*)(((cursor + 1) - 1)));    // $E67A
+            draw_province_lord_name(*(byte*)((cursor - 1)));    // $E67A
         }
         set_cursor(local11, local10);    // $E68A
         phi_ret_e693 = palette_swap(0);    // $E68F

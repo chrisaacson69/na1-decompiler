@@ -116,7 +116,7 @@ b15_c0da:   pha                         ; 3C0DA:  48
             lda #$01                    ; 3C0F9:  a9 01
             jsr b15_c628                ; 3C0FB:  20 28 c6
             jsr b15_c6d4                ; 3C0FE:  20 d4 c6
-            jsr tab_b15_c794+17         ; 3C101:  20 a5 c7
+            jsr b15_c7a5         ; 3C101:  20 a5 c7
             hex ad 89 00 ; lda $0089    ; 3C104:  ad 89 00
             bne b15_c12b                ; 3C107:  d0 22
             clc                         ; 3C109:  18
@@ -597,7 +597,7 @@ b15_c537:   hex ad 80 00 ; lda $0080    ; 3C537:  ad 80 00
             pha                         ; 3C53E:  48
             tya                         ; 3C53F:  98
             pha                         ; 3C540:  48
-            jsr tab_b15_c794+17         ; 3C541:  20 a5 c7
+            jsr b15_c7a5         ; 3C541:  20 a5 c7
             pla                         ; 3C544:  68
             tay                         ; 3C545:  a8
             pla                         ; 3C546:  68
@@ -885,12 +885,13 @@ tab_b15_c775: ; 17 bytes
             sei                         ; 3C792:  78
             rts                         ; 3C793:  60
 
-tab_b15_c794: ; 22 bytes
+tab_b15_c794: ; 17 bytes (data pad; music_driver code follows at $C7A5)
             hex 00 00 00 00 00 00 00 00 ; 3C794:  00 00 00 00 00 00 00 00
             hex 00 00 00 00 00 00 00 00 ; 3C79C:  00 00 00 00 00 00 00 00
-            hex 00 20 ac c7 20 17       ; 3C7A4:  00 20 ac c7 20 17
+            hex 00                      ; 3C7A4:  00
 
-            iny                         ; 3C7AA:  c8
+b15_c7a5:   jsr b15_c7ac                ; 3C7A5:  20 ac c7
+            jsr b15_c817                ; 3C7A8:  20 17 c8
             rts                         ; 3C7AB:  60
 
             lda #$00                    ; 3C7AC:  a9 00

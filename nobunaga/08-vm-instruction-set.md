@@ -6,22 +6,22 @@ created: 2026-05-14
 
 > Chapter 6 gave every one of the 256 opcodes a correct operand *length* — enough to walk bytecode without losing byte-alignment — but ~140 of them still had no *meaning*. This chapter hand-decodes the core of the instruction set: the register-file load/store matrix, the full ALU (add, sub, multiply, divide, modulo, shifts, bitwise, compares), and control flow. With those decoded, VM bytecode stops being a byte-aligned mystery and starts reading like source. The chapter ends by following that capability straight into the first real game mechanic: the value-clamp routine that caps resources at **9999** — the "big number" that kept surfacing in earlier sessions.
 
-> **⚠ Pass-2 fact-check (2026-06-11) — solid analysis; opcode names → Appendix C.** The ALU decode, the compare-then-branch idiom, and the 9999-cap find all **hold**. Reconcile names with the canonical **[opcode reference (Appendix C)](./appendix-vm-opcodes.md)**: this chapter's `regA`/`regB` are the spec's **`regL` ($08) / `regR` ($0C)**, and its descriptive mnemonics map to the canonical set (`add`→`ADD`, `mul`→`MULT`, `div_signed`→`SDIV`, `cmp_sgt`→`SCMPGT`, `host_call`→`CALL_abs_imm1`, `vm_return`→`RETURN`, `loadA_imm_word`→`LOADL_imm2`). **Two real corrections below:** (1) `$30-$3F` is **`PUSH_quick`** (push a frame local onto the stack), not "store regB to frame" — the quick grid's 4th row is *push*; (2) `$D8` is **`JUMPF_abs`** (a 2-byte **absolute** branch target), not a relative "+sbyte" branch — the relative branches are `$E3-$E8`. (The chapter's own `$8A/$8C` = word-load correction is right and matches Appendix C.)
+> The descriptive opcode mnemonics here (`add`, `mul`, `cmp_sgt`, `host_call`, `loadA_local_neg`…) are the readable forms; the canonical names, lengths, and stack effects are in **[Appendix C — the opcode reference](./appendix-vm-opcodes.md)** (`add`→`ADD`, `mul`→`MULT`, `cmp_sgt`→`SCMPGT`, `host_call`→`CALL_abs_imm1`, `loadA_imm_word`→`LOADL_imm2`, …). The two working registers `regA`/`regB` are the appendix's **`regL` ($08) / `regR` ($0C)**.
 
 **Links:** [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [Chapter 5 — Bytecode VM](./05-bytecode-vm.md) · [Chapter 7 — SRAM Save Layer](./07-sram-save-layer.md) · [Appendix C — Opcode Reference](./appendix-vm-opcodes.md) · [Nobunaga README](./README.md)
 
 ## The VM is a register machine
 
-Chapter 5 called the VM "stack-based." That was half right. It *has* a data stack (ptr1), but the bulk of the work happens in **two 16-bit working registers** plus a frame-relative local array. The decoded picture:
+Chapter 5 called the VM "stack-based." That was half right. It *has* a data stack (`vm_sp`), but the bulk of the work happens in **two 16-bit working registers** plus a frame-relative local array. The decoded picture:
 
 | Zero-page | Role |
 |---|---|
-| `$08/$09` | **regA** — primary 16-bit accumulator |
-| `$0C/$0D` | **regB** — secondary 16-bit operand register |
-| `$04/$05` (ptr2) | **frame pointer** — base of the current subroutine's local array |
-| `$06/$07` (ptr3) | **program counter** — points at the next bytecode byte |
-| `$02/$03` (ptr1) | **data stack pointer** — grows downward; used to spill regA across calls |
-| `$00/$01` (ptr0) | scratch pointer — target of indirect loads/stores and native calls |
+| `$08/$09` | **regA** (= `regL`) — primary 16-bit accumulator |
+| `$0C/$0D` | **regB** (= `regR`) — secondary 16-bit operand register |
+| `$04/$05` | **`vm_fp`** — frame pointer; base of the current subroutine's local array |
+| `$06/$07` | **`vm_ip`** — program counter; points at the next bytecode byte |
+| `$02/$03` | **`vm_sp`** — data stack pointer; grows downward, spills regA across calls |
+| `$00/$01` | **`scratch_ptr`** — target of indirect loads/stores and native calls |
 
 Almost every opcode is "do something to regA, optionally using regB." Binary operators are uniformly `regA = regA OP regB`. This is why the bytecode is so dense: there are no register names to encode — the operands are implicit.
 
@@ -40,7 +40,7 @@ The first 64 opcodes are a single, beautifully regular structure: **four 16-opco
 | `$30–$3B` | `PUSH_quick` — **push** frame local → stack | frame[−24 .. −2] |
 | `$3C–$3F` | `PUSH_quick` — **push** arg → stack | frame[+0x0B .. +0x11] |
 
-*(Correction 2026-06-11: the `$30` row is **push to the data stack**, not "store regB to frame" as the earlier draft had it — the four rows are LOADL/LOADR/STORE/PUSH, not loadA/loadB/storeA/storeB.)* The negative offsets reach the caller's arguments and outer locals; the positive offsets are the current frame's own scratch. The handlers are tiny `LDY #imm / LDA (ptr2),Y` stubs sharing a common tail. In disassembly these now read as `loadA_local_neg #11`, `storeB_local_pos #1`, and so on — the bytecode's variable accesses are legible.
+The negative offsets reach the caller's arguments and outer locals; the positive offsets are the current frame's own scratch. The handlers are tiny `LDY #imm / LDA (vm_fp),Y` stubs sharing a common tail. In disassembly these read as `loadA_local_neg #11`, `push_local_pos #1`, and so on — the bytecode's variable accesses are legible.
 
 ## The ALU ($B0–$DC)
 
@@ -62,7 +62,7 @@ This is the heart of the chapter. The arithmetic and logic opcodes are all no-op
 | `$8F` | `addA_imm_sbyte` | regA += sign-extended byte literal |
 | `$71–$7F` | `addA_imm4` | regA += (opcode & 0x0F) |
 
-The multiply at `$B5` ($ECF0) is a classic 16-bit shift-and-add loop. The divides at `$ED2E` are a restoring shift-subtract: quotient accumulates in regA, remainder in ptr0 — `$B8`/`$BA` simply choose which one to keep. The signed variants (`$B6`, `$B9`) wrap the unsigned core in a sign-extraction prologue (`$ED7A`) that records the result sign in `$0A`/`$0B` and negates at the end.
+The multiply at `$B5` ($ECF0) is a classic 16-bit shift-and-add loop. The divides at `$ED2E` are a restoring shift-subtract: quotient accumulates in regA, remainder in scratch_ptr — `$B8`/`$BA` simply choose which one to keep. The signed variants (`$B6`, `$B9`) wrap the unsigned core in a sign-extraction prologue (`$ED7A`) that records the result sign in `$0A`/`$0B` and negates at the end.
 
 **This is the find that unlocks the economy.** A "fall harvest = f(town, rice, output, dams)" formula is, at the bytecode level, exactly a sequence of `loadA_local / loadB_local / mul / add / div` operations. Until this chapter those bytes were `op_BX_DX (auto-classified)`; now they are arithmetic.
 
@@ -83,22 +83,18 @@ The compares are the key control-flow primitive. `cmp_sgt` ($C4) computes `regA 
 
 | Opcode | Name | Operation |
 |---|---|---|
-| `$E3` / `$E6` | `jump_rel` | ptr3 += signed byte (unconditional) |
-| `$E4` / `$E7` | `branch_nz_rel` | if regA ≠ 0: ptr3 += signed byte |
-| `$E5` / `$E8` | `branch_z_rel` | if regA == 0: ptr3 += signed byte |
-| `$D8` | `JUMPF_abs` | if regL == 0: PC = abs (2-byte **absolute** target) — the dominant conditional branch. *(Not a relative "+sbyte" branch; the relative forms are $E3–$E8.)* |
+| `$E3` / `$E6` | `jump_rel` | vm_ip += signed byte (unconditional) |
+| `$E4` / `$E7` | `branch_nz_rel` | if regA ≠ 0: vm_ip += signed byte |
+| `$E5` / `$E8` | `branch_z_rel` | if regA == 0: vm_ip += signed byte |
+| `$D8` | `JUMPF_abs` | if regA == 0: PC = abs (2-byte **absolute** target) — the dominant conditional branch (the relative branch forms are $E3–$E8) |
 | `$D5` | `switch` | jump-table dispatch on regA over inline (value,target) pairs |
 | `$E9` / `$AC` | `host_call` / `host_call_simple` | call native code or a bytecode subroutine |
 | `$DD` / `$EA` | `host_call_indirect*` | call through an address held in regA |
-| `$CF` | `vm_return` | restore the caller's frame and `JMP (ptr0)` — subroutine return |
+| `$CF` | `vm_return` | restore the caller's frame and `JMP (scratch_ptr)` — subroutine return |
 
 The idiom is **compare-then-branch**: a `cmp_*` opcode sets regA to 0/1, and the very next opcode is `branch_z` ($D8) or `branch_nz` ($E4). `if (x > 9999) goto clamp` compiles to exactly three opcodes: `loadB_imm_word 9999 / cmp_sgt / branch_z`.
 
 `vm_return` ($CF) at `$EF75` copies 8 bytes of saved frame state back from `frame[0..7]` and does an indirect jump — confirming chapter 5's model that each `host_call` into a bytecode subroutine pushes a frame whose first 8 bytes are the saved caller context.
-
-### A tooling correction: $8A and $8C are word loads
-
-The operand classifier (then `opcode-classify.py`, now `tools/analyze-vm-opcodes.py classify`) tagged `$8A` and `$8C` as `byte + sbyte` (2 operand bytes). The 9999-clamp sites prove otherwise: the bytes `8C 0F 27` decode as `loadB_imm_word 9999`, and `8A 0F 27` as `loadA_imm_word 9999`. The handlers ($EAB9 / $EAC8) use the variable-length-immediate fetch helper, which the classifier's straight-line walk mis-read. The operand *length* is still 2 bytes, so disassembly alignment was never wrong — only the rendering. `vm-opcodes.toml` is corrected; this is exactly the kind of conditional-fetch over-count chapter 6 flagged for `$A7`/`$A8`.
 
 ## The 9999 cap — the "big number," confirmed
 
@@ -122,7 +118,7 @@ $AB47  add                      ; regA = local[11]*2 + local[13]   -> element ad
 $AB48  loadA_ind_word           ; regA = word[that address]   (current value)
 $AB49  loadB_imm_word 9999      ; regB = 9999
 $AB4C  cmp_sgt                  ; regA = (value > 9999)
-$AB4D  JUMPF_abs <skip>         ; if regL==0 (NOT over cap), jump past the clamp  ($D8 is absolute — the old "+89" was a relative-render artifact)
+$AB4D  JUMPF_abs <skip>         ; if regA==0 (NOT over cap), jump past the clamp ($D8 = 2-byte absolute target)
 $AB4F  ...                      ; (over cap:)
 $AB50  loadA_local_neg #11      ; recompute the element address
 $AB53  add
@@ -139,20 +135,13 @@ In other words, the clamp sites are not isolated guards — they are the **tails
 
 Three things are now true that were not before:
 
-1. **The disassembler renders arithmetic.** Re-running `vm-disasm.py` with the updated `vm-opcodes.toml` turns the `op_BX_DX` blanks into `mul`, `div_unsigned`, `add`, `cmp_sgt`. Any bytecode region we point it at is readable.
+1. **The disassembler renders arithmetic.** With the operand formats grounded, `na1dream.vm_disasm` turns the `op_BX_DX` blanks into `mul`, `div_unsigned`, `add`, `cmp_sgt` — any bytecode region reads as operations.
 2. **The economy's location is known.** The resource-update routines live around the bank-1/bank-2 clamp sites (`$AB40`-ish, `$9F10`-ish). The harvest, tax, and development handlers are reachable from there.
 3. **The cap is a known quantity.** 9999 is the stockpile ceiling. The per-province stats (town, rice, output, dams, loyalty, etc.) are byte-or-small-word fields with their own lower ceilings — finding *those* clamps is the same scan with different constants, and is the natural next step.
 
-## What's open for chapter 9+
+## Where this goes
 
-- **The fall-gold formula.** Disassemble the bank-2 `$9F10` pipeline fully: what is `word[ptr+4]`, what is `local[11]`, and where does the income value come from? That sequence, walked to its `host_call` boundaries, *is* "how gold is determined in the fall."
-- **The development commands.** "Develop town," "build dams," "give rice/gold" — each is a menu handler that reads a province record, applies a formula, and clamps. Locating the menu command dispatch (a `switch` opcode, `$D5`, on the selected command index) gives the entry point to all of them. A Mesen exec-breakpoint set while choosing a menu command would pin the dispatch address in one capture.
-- **The lower stat ceilings.** Re-run the constant scan for `$0064` (100), `$03E7` (999), `$00FF` (255) and correlate hits with `cmp_*` opcodes to find each per-stat clamp. This answers "what are the maximums" precisely, per field.
-- **`$D6/$D7`, `$E0–$E2`, the `$8x` cluster.** A dozen-odd opcodes still have only operand lengths. They are not on the critical path for the economy, but each session can retire a few.
-
-## Method note
-
-This chapter is the clearest instance yet of the project's flywheel. The 9999 question was a vague "you keep hitting a big number." Answering it required (a) the disassembler from chapter 6, (b) the opcode handler table, and (c) one afternoon of hand-walking bank 15. Once the ALU was decoded, a 30-second `grep` for one constant located the game's entire economic subsystem — because in a register VM, a formula *is* its arithmetic opcodes, and a cap *is* its compare-and-store. The structure did the work; the demo just made it visible.
+With the ALU decoded, an economic formula reads as its arithmetic opcodes and a cap reads as its compare-and-store — so the resource-update routines around the bank-1/bank-2 clamp sites become legible. The chapters that follow walk them as readable C: the command handlers (ch.9–11), the turn loop and the fall-harvest gold formula (ch.13), and the daimyo AI (ch.12). The remaining un-named opcodes and the per-stat ceilings (scan for `$0064`/`$03E7`/`$00FF` near `cmp_*`) are catalogued in **[Appendix C](./appendix-vm-opcodes.md)**.
 
 ## Tags
 

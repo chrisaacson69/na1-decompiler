@@ -40,7 +40,7 @@ word draw_sprite_grid(word arg1, word arg2, word arg3, word arg4) {
             *(word*)(fp - 146) = (*(word*)(fp - 146) + 1);    // $806C
             *(word*)(fp - 144) = (*(word*)(fp - 144) + 1);    // $8076
             local5 = (local5 + 1);    // $8080
-            syscall_set_sprite(((local5 + 1) - 1), local9, local8, *(byte*)(((*(word*)(fp - 144) + 1) - 1)), *(byte*)(((*(word*)(fp - 146) + 1) - 1)));    // $8084
+            syscall_set_sprite((local5 - 1), local9, local8, *(byte*)((*(word*)(fp - 144) - 1)), *(byte*)((*(word*)(fp - 146) - 1)));    // $8084
             local10 = (local10 + 1);    // $808A
             local9 = (local9 + 8);    // $8090
         }
@@ -62,7 +62,7 @@ word run_cutscene(void) {
     phi_val_80f8 = 16;    // $80D9
     while ((local11 < 32)) {    // $80F8
         *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $80E4
-        syscall16_sram_wrap(local7, ((*(word*)(fp - 35) + 1) - 1), (fp - 36), 1);    // $80E9
+        syscall16_sram_wrap(local7, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
         palette_write_wrap(local11, *(byte*)(fp - 36));    // $80F2
         phi_val_80f8 = (local11 + 1);    // $80F7
         local11 = phi_val_80f8;    // $80F8
@@ -72,7 +72,7 @@ L_8118:
     *(word*)(fp - 35) = *(word*)((*(word*)(fp - 41) + 3));    // $8118
 L_811A:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $811D
-    switch (*(byte*)(((*(word*)(fp - 35) + 1) - 1))) {    // $8121
+    switch (*(byte*)((*(word*)(fp - 35) - 1))) {    // $8121
     case 67: goto L_81EC;    // $8121
     case 68: goto L_8195;    // $8121
     case 69: goto L_81DC;    // $8121
@@ -99,37 +99,37 @@ L_811A:
     }    // $8121
 L_8154:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8157
-    local10 = *(byte*)(((*(word*)(fp - 35) + 1) - 1));    // $815B
+    local10 = *(byte*)((*(word*)(fp - 35) - 1));    // $815B
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $815F
-    local9 = *(byte*)(((*(word*)(fp - 35) + 1) - 1));    // $8163
+    local9 = *(byte*)((*(word*)(fp - 35) - 1));    // $8163
     goto L_811A;    // $8164
 L_8167:
     local10 = (local10 + *(byte*)(*(word*)(fp - 35)));    // $816D
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8171
-    if (!((*(byte*)(((*(word*)(fp - 35) + 1) - 1)) > 127))) goto L_811A;    // $8178
+    if (!((*(byte*)((*(word*)(fp - 35) - 1)) > 127))) goto L_811A;    // $8178
     local10 = (local10 - 0x0100);    // $8181
     goto L_811A;    // $8182
 L_8185:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8188
-    local10 = *(byte*)(((*(word*)(fp - 35) + 1) - 1));    // $818C
+    local10 = *(byte*)((*(word*)(fp - 35) - 1));    // $818C
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8190
-    local9 = *(byte*)(((*(word*)(fp - 35) + 1) - 1));    // $8194
+    local9 = *(byte*)((*(word*)(fp - 35) - 1));    // $8194
 L_8195:
     syscall16_sram_wrap(local7, *(word*)((*(word*)(fp - 33) + 19)), (fp - 53), 10);    // $81A1
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81AC
-    draw_sprite_grid(local7, local10, local9, *(word*)(((*(byte*)(((*(word*)(fp - 35) + 1) - 1)) << 1) + (fp - 53))));    // $81B8
+    draw_sprite_grid(local7, local10, local9, *(word*)(((*(byte*)((*(word*)(fp - 35) - 1)) << 1) + (fp - 53))));    // $81B8
 L_81BC:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81BF
-    cutscene_delay(*(byte*)(((*(word*)(fp - 35) + 1) - 1)));    // $81C4
+    cutscene_delay(*(byte*)((*(word*)(fp - 35) - 1)));    // $81C4
     goto L_811A;    // $81C8
 L_81CB:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81CE
-    *(byte*)(fp - 39) = *(byte*)(((*(word*)(fp - 35) + 1) - 1));    // $81D2
+    *(byte*)(fp - 39) = *(byte*)((*(word*)(fp - 35) - 1));    // $81D2
     *(word*)(fp - 38) = *(word*)(fp - 35);    // $81D7
     goto L_811A;    // $81D9
 L_81DC:
     *(byte*)(fp - 39) = (*(byte*)(fp - 39) - 1);    // $81E0
-    if (!(((*(byte*)(fp - 39) - 1) + 1))) goto L_811A;    // $81E4
+    if (!((*(byte*)(fp - 39) + 1))) goto L_811A;    // $81E4
     goto L_8118;    // $81E9
 L_81EC:
     delay_loop(50);    // $81EE
@@ -143,9 +143,9 @@ L_81F5:
     goto L_811A;    // $8213
 L_8216:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8219
-    call_bank10_entry(*(byte*)(((*(word*)(fp - 35) + 1) - 1)));    // $821E
+    call_bank10_entry(*(byte*)((*(word*)(fp - 35) - 1)));    // $821E
     goto L_811A;    // $8222
 L_8225:
-    return call_bank10_entry(*(byte*)(((*(word*)(fp - 35) + 1) - 1)));    // $8225
+    return call_bank10_entry(*(byte*)((*(word*)(fp - 35) - 1)));    // $8225
 }
 

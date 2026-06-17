@@ -95,7 +95,8 @@ source/
   4-c/          structured C, DREAM canonical (bank_NN.c) — what you read
 ```
 Writers: `mesen-labels.py` owns stage 1 (`--asm`); `na1dream.cli.decompile_all` writes stages
-2–4 (and `--basic` writes 3). Stage 1 `*_named.asm` are gitignored (regenerable from the toml).
+2–4 (and `--basic` writes 3). Stage 1 `*_labeled.asm` are **committed** (regenerated from the toml by
+`mesen-labels.py --asm`; `--verify` exits 1 if they drift, so labels can't go silently stale).
 
 Deciding where a new tool's output lands:
 

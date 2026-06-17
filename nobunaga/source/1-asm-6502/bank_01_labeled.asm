@@ -242,7 +242,7 @@ tab_b1_81e0: ; 338 bytes
             inc $b3b0,x                 ; 0469C:  fe b0 b3
             stx $bb06                   ; 0469F:  8e 06 bb
             sbc #$34                    ; 046A2:  e9 34
-            cmp (ptr2_lo),y                 ; 046A4:  d1 04
+            cmp (vm_fp_lo),y                 ; 046A4:  d1 04
             rti                         ; 046A6:  40
 
             hex 28 06 d1 a8 cd 7f 09 72 ; 046A7:  28 06 d1 a8 cd 7f 09 72
@@ -789,7 +789,7 @@ tab_b1_8dd9: ; 293 bytes
             hex cf                      ; 054C4:  cf
 
             ldy $dad7                   ; 054C5:  ac d7 da
-            stx $6f4f                   ; 054C8:  8e 4f 6f
+            stx deduped_owner_list                   ; 054C8:  8e 4f 6f
             rts                         ; 054CB:  60
 
 tab_b1_94cc: ; 752 bytes
@@ -934,7 +934,7 @@ tab_b1_94cc: ; 752 bytes
             hex 99 39 e9 3a 93 02 d8 98 ; 0587B:  99 39 e9 3a 93 02 d8 98
             hex 99 ac d7 da             ; 05883:  99 ac d7 da
 
-            stx $6f4f                   ; 05887:  8e 4f 6f
+            stx deduped_owner_list                   ; 05887:  8e 4f 6f
             rts                         ; 0588A:  60
 
             hex e9 3a dd 04 de ea ff b3 ; 0588B:  e9 3a dd 04 de ea ff b3
@@ -1155,7 +1155,7 @@ tab_b1_9bce: ; 403 bytes
             bcs tab_b1_9bce+399         ; 05DA8:  b0 b3
             stx $fb58                   ; 05DAA:  8e 58 fb
             sbc #$34                    ; 05DAD:  e9 34
-            cmp (ptr2_lo),y                 ; 05DAF:  d1 04
+            cmp (vm_fp_lo),y                 ; 05DAF:  d1 04
             ldy $d766                   ; 05DB1:  ac 66 d7
             eor ($cf,x)                 ; 05DB4:  41 cf
             rti                         ; 05DB6:  40
@@ -1591,7 +1591,7 @@ tab_b1_a3ef: ; 343 bytes
             cpx #$7b                    ; 0672E:  e0 7b
             sta $6163                   ; 06730:  8d 63 61
             sbc #$9d                    ; 06733:  e9 9d
-            cmp ptr2_lo,x                   ; 06735:  d5 04
+            cmp vm_fp_lo,x                   ; 06735:  d5 04
             rol a                       ; 06737:  2a
             rti                         ; 06738:  40
 
@@ -1790,7 +1790,7 @@ tab_b1_ab21: ; 103 bytes
             bne tab_b1_ab21+28          ; 06B88:  d0 b3
             stx $be47                   ; 06B8A:  8e 47 be
             sbc #$34                    ; 06B8D:  e9 34
-            cmp (ptr3_lo),y                 ; 06B8F:  d1 06
+            cmp (vm_ip_lo),y                 ; 06B8F:  d1 06
             sta $6519                   ; 06B91:  8d 19 65
             sbc #$7b                    ; 06B94:  e9 7b
             cpy tab_b1_8dd9+43          ; 06B96:  cc 04 8e
@@ -2030,8 +2030,8 @@ tab_b1_afcb: ; 184 bytes
             hex e9 26 d3 02 8e d0 be e9 ; 070A5:  e9 26 d3 02 8e d0 be e9
             hex 51 d3 02                ; 070AD:  51 d3 02
 
-            hex d9 02 00 ; cmp ptr1_lo,y  ; 070B0:  d9 02 00
-            ora (ptr0_lo,x)                 ; 070B3:  01 00
+            hex d9 02 00 ; cmp vm_sp_lo,y  ; 070B0:  d9 02 00
+            ora (scratch_ptr_lo,x)                 ; 070B3:  01 00
             hex bd b0 00 ; lda nmi_skip_all,x  ; 070B5:  bd b0 00
             brk                         ; 070B8:  00
             hex c8                      ; 070B9:  c8
@@ -2372,7 +2372,7 @@ tab_b1_b247: ; 79 bytes
             hex d0 b1 cf 20 23 e8 fc ff ; 07898:  d0 b1 cf 20 23 e8 fc ff
             hex 41 a8 d3 7f             ; 078A0:  41 a8 d3 7f
 
-            ldy ptr0_hi                     ; 078A4:  a4 01
+            ldy scratch_ptr_hi                     ; 078A4:  a4 01
             rts                         ; 078A6:  60
 
             hex d6 9e b9 89 fe cd a5 a1 ; 078A7:  d6 9e b9 89 fe cd a5 a1
@@ -2493,7 +2493,7 @@ tab_b1_b247: ; 79 bytes
             hex 74 74 61 63 6b          ; 07B95:  74 74 61 63 6b
 
             adc $64                     ; 07B9A:  65 64
-            and (ptr0_lo,x)                 ; 07B9C:  21 00
+            and (scratch_ptr_lo,x)                 ; 07B9C:  21 00
             asl a                       ; 07B9E:  0a
             eor $756f,y                 ; 07B9F:  59 6f 75
             jsr $6168                   ; 07BA2:  20 68 61
@@ -2567,9 +2567,9 @@ tab_b1_bbf9: ; 42 bytes
             hex 6f 75 20 62 75 79 00 53 ; 07CAF:  6f 75 20 62 75 79 00 53
             hex 74 6f 72 65 68 6f       ; 07CB7:  74 6f 72 65 68 6f
 
-            adc kernel_var_73,x                   ; 07CBD:  75 73
+            adc prg_bank_shadow,x                   ; 07CBD:  75 73
             adc $20                     ; 07CBF:  65 20
-            ror $75                     ; 07CC1:  66 75
+            ror mul_acc_lo                     ; 07CC1:  66 75
             jmp ($006c)                 ; 07CC3:  6c 6c 00
 
             hex 53 6f 72 72 79 2c 20 6e ; 07CC6:  53 6f 72 72 79 2c 20 6e
@@ -2596,7 +2596,7 @@ tab_b1_bbf9: ; 42 bytes
 
             adc ppumask_shadow                     ; 07D29:  65 72
             ror $65,x                   ; 07D2B:  76 65
-            jsr $6f79                   ; 07D2D:  20 79 6f
+            jsr ai_turn_loop_redispatch_flag                   ; 07D2D:  20 79 6f
             adc $3f,x                   ; 07D30:  75 3f
             brk                         ; 07D32:  00
             hex 4c                      ; 07D33:  4c
@@ -2658,7 +2658,7 @@ tab_b1_bbf9: ; 42 bytes
             hex 65 6e 29 3f 20 00 0a 00 ; 07E3B:  65 6e 29 3f 20 00 0a 00
             hex 25 33 64 00 25 64       ; 07E43:  25 33 64 00 25 64
 
-            and kernel_var_73                     ; 07E49:  25 73
+            and prg_bank_shadow                     ; 07E49:  25 73
             brk                         ; 07E4B:  00
             hex 61                      ; 07E4C:  61
             ror $61,x                   ; 07E4D:  76 61
@@ -2727,4 +2727,3 @@ tab_b1_bbf9: ; 42 bytes
             hex ff ff ff ff ff ff ff ff ; 07FE9:  ff ff ff ff ff ff ff ff
             hex ff ff ff ff ff ff ff ff ; 07FF1:  ff ff ff ff ff ff ff ff
             hex ff ff ff ff ff ff ff    ; 07FF9:  ff ff ff ff ff ff ff
-

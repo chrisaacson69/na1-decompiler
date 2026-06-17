@@ -4,7 +4,7 @@
 
             ldx #$00                    ; 08003:  a2 00
             ldy #$07                    ; 08005:  a0 07
-b2_8007:    lda (ptr1_lo),y                 ; 08007:  b1 02
+b2_8007:    lda (vm_sp_lo),y                 ; 08007:  b1 02
             hex 99 08 00 ; sta $0008,y  ; 08009:  99 08 00
             dey                         ; 0800C:  88
             bne b2_8007                 ; 0800D:  d0 f8
@@ -263,13 +263,13 @@ tab_b2_81a1: ; 437 bytes
             dec $ef,x                   ; 084DF:  d6 ef
             sty $65                     ; 084E1:  84 65
             sbc #$0e                    ; 084E3:  e9 0e
-            stx ptr1_lo,y                   ; 084E5:  96 02
+            stx vm_sp_lo,y                   ; 084E5:  96 02
             cld                         ; 084E7:  d8
             inc $6a84                   ; 084E8:  ee 84 6a
             dec $ef,x                   ; 084EB:  d6 ef
             sty $60                     ; 084ED:  84 60
             sbc #$be                    ; 084EF:  e9 be
-            sta ptr1_lo,x                   ; 084F1:  95 02
+            sta vm_sp_lo,x                   ; 084F1:  95 02
             rti                         ; 084F3:  40
 
             hex d6 bf 84 20 23 e8 fc ff ; 084F4:  d6 bf 84 20 23 e8 fc ff
@@ -293,7 +293,7 @@ tab_b2_81a1: ; 437 bytes
             hex e8 fc ff 3d 3c e9 70 82 ; 08563:  e8 fc ff 3d 3c e9 70 82
             hex 04 61 e9 0b             ; 0856B:  04 61 e9 0b
 
-            sty ptr1_lo                     ; 0856F:  84 02
+            sty vm_sp_lo                     ; 0856F:  84 02
             rti                         ; 08571:  40
 
             hex 2a ac 88 84 2b d7 84 85 ; 08572:  2a ac 88 84 2b d7 84 85
@@ -321,7 +321,7 @@ tab_b2_81a1: ; 437 bytes
             hex 85 20 23 e8 fc ff 3d 3c ; 08622:  85 20 23 e8 fc ff 3d 3c
             hex e9 70 82 04 61 e9 0b    ; 0862A:  e9 70 82 04 61 e9 0b
 
-            sty ptr1_lo                     ; 08631:  84 02
+            sty vm_sp_lo                     ; 08631:  84 02
             rti                         ; 08633:  40
 
             hex 2a ac a7 85 2b d7 46 86 ; 08634:  2a ac a7 85 2b d7 46 86
@@ -999,7 +999,7 @@ tab_b2_8b60: ; 889 bytes
             hex de fe ff b3             ; 0975B:  de fe ff b3
 
             sbc #$47                    ; 0975F:  e9 47
-            stx ptr2_lo,y                   ; 09761:  96 04
+            stx vm_fp_lo,y                   ; 09761:  96 04
             rti                         ; 09763:  40
 
             hex 27 0b 29 0a 28 37 de f8 ; 09764:  27 0b 29 0a 28 37 de f8
@@ -1166,20 +1166,20 @@ tab_b2_9a1e: ; 239 bytes
             hex 80 9b 3a                ; 09B79:  80 9b 3a
 
             sbc #$be                    ; 09B7C:  e9 be
-            sta ptr1_lo,x                   ; 09B7E:  95 02
+            sta vm_sp_lo,x                   ; 09B7E:  95 02
             rti                         ; 09B80:  40
 
             hex 2b ac b9 82 d3 b3 ac a9 ; 09B81:  2b ac b9 82 d3 b3 ac a9
             hex 82 d3 b3 e9 70 82 04 61 ; 09B89:  82 d3 b3 e9 70 82 04 61
             hex e9 0b                   ; 09B91:  e9 0b
 
-            sty ptr1_lo                     ; 09B93:  84 02
+            sty vm_sp_lo                     ; 09B93:  84 02
             rts                         ; 09B95:  60
 
             hex e9 0b 84 02 39 3a e9 70 ; 09B96:  e9 0b 84 02 39 3a e9 70
             hex 82 04 61 e9 0b          ; 09B9E:  82 04 61 e9 0b
 
-            sty ptr1_lo                     ; 09BA3:  84 02
+            sty vm_sp_lo                     ; 09BA3:  84 02
             rts                         ; 09BA5:  60
 
 tab_b2_9ba6: ; 131 bytes
@@ -1753,7 +1753,7 @@ tab_b2_a505: ; 255 bytes
             hex 9e 02 b3                ; 0A9E5:  9e 02 b3
 
             sbc #$f6                    ; 0A9E8:  e9 f6
-            sty ptr2_lo,x                   ; 0A9EA:  94 04
+            sty vm_fp_lo,x                   ; 0A9EA:  94 04
             rti                         ; 0A9EC:  40
 
             hex cf aa c0 b1 e9 26 d3 02 ; 0A9ED:  cf aa c0 b1 e9 26 d3 02
@@ -2135,7 +2135,7 @@ tab_b2_aca8: ; 235 bytes
 
             adc $20                     ; 0B2F7:  65 20
             pla                         ; 0B2F9:  68
-            adc ($76,x)                 ; 0B2FA:  61 76
+            adc (mul_acc_hi,x)                 ; 0B2FA:  61 76
             adc $0a                     ; 0B2FC:  65 0a
             jmp ($736f)                 ; 0B2FE:  6c 6f 73
 
@@ -2202,7 +2202,7 @@ tab_b2_b36f: ; 94 bytes
 
             asl a                       ; 0B426:  0a
             pla                         ; 0B427:  68
-            adc ($76,x)                 ; 0B428:  61 76
+            adc (mul_acc_hi,x)                 ; 0B428:  61 76
             adc $0a                     ; 0B42A:  65 0a
             jmp ($776f)                 ; 0B42C:  6c 6f 77
 
@@ -2378,7 +2378,7 @@ tab_b2_b36f: ; 94 bytes
 
             adc $20                     ; 0B86E:  65 20
             pla                         ; 0B870:  68
-            adc ($76,x)                 ; 0B871:  61 76
+            adc (mul_acc_hi,x)                 ; 0B871:  61 76
             adc $20                     ; 0B873:  65 20
             jmp ($736f)                 ; 0B875:  6c 6f 73
 
@@ -2414,7 +2414,7 @@ tab_b2_b36f: ; 94 bytes
             brk                         ; 0B94E:  00
             hex 20                      ; 0B94F:  20
             pla                         ; 0B950:  68
-            adc (kernel_var_73,x)                 ; 0B951:  61 73
+            adc (prg_bank_shadow,x)                 ; 0B951:  61 73
             jsr $6f6e                   ; 0B953:  20 6e 6f
             jsr $6f73                   ; 0B956:  20 73 6f
             jmp ($6964)                 ; 0B959:  6c 64 69
@@ -2429,7 +2429,7 @@ tab_b2_b36f: ; 94 bytes
             hex 0a 61 6e 64             ; 0B994:  0a 61 6e 64
 
             jsr $6f77                   ; 0B998:  20 77 6f
-            hex 6e 00 00 ; ror ptr0_lo    ; 0B99B:  6e 00 00
+            hex 6e 00 00 ; ror scratch_ptr_lo    ; 0B99B:  6e 00 00
             brk                         ; 0B99E:  00
             hex 00                      ; 0B99F:  00
             jmp $726f                   ; 0B9A0:  4c 6f 72
@@ -2655,4 +2655,3 @@ tab_b2_b36f: ; 94 bytes
             hex ff ff ff ff ff ff ff ff ; 0BFEE:  ff ff ff ff ff ff ff ff
             hex ff ff ff ff ff ff ff ff ; 0BFF6:  ff ff ff ff ff ff ff ff
             hex ff ff                   ; 0BFFE:  ff ff
-

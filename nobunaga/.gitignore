@@ -1,7 +1,8 @@
-# Regenerable build artifacts from tools/mesen-labels.py --asm (project the toml
-# onto the native disasm). Deterministic from mesen-labels.toml + source/1-asm-6502/bank_NN.asm,
-# so we don't version them. Regenerate: py -3 -m mesen-labels --asm (from tools/)
-source/1-asm-6502/*_named.asm
+# NOTE: source/1-asm-6502/bank_NN_labeled.asm (code banks 0/1/2/15) ARE versioned.
+# They are regenerated from mesen-labels.toml by `py -3 mesen-labels.py --asm` and
+# MUST stay in sync with it — `py -3 mesen-labels.py --verify` exits 1 on drift
+# (wire into CI / pre-commit). The old gitignored tool-output name *_named.asm is
+# retired: the tool now writes the committed *_labeled.asm directly.
 
 # Rendered tactical fief maps (tools/batch-render-fief-maps.py) ARE versioned: small,
 # and likely reused in the wiki. Regenerate after a renderer change:

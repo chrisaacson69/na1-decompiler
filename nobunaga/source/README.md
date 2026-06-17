@@ -10,7 +10,7 @@
 
 | Dir | Stage | What it holds |
 |---|---|---|
-| `1-asm-6502/` | native disassembly | every bank decoded to 6502 — `bank_NN.asm` (raw), `bank_NN_labeled.asm` / `bank_NN_named.asm` (toml labels applied), the full-ROM `.asm`, `chr_rom.bin`. |
+| `1-asm-6502/` | native disassembly | every bank decoded to 6502 — `bank_NN.asm` (raw), `bank_NN_labeled.asm` (raw + toml labels applied; committed, kept in sync via `mesen-labels.py --verify`), the full-ROM `.asm`, `chr_rom.bin`. |
 | `2-asm-vm/` | VM bytecode | `bank_NN_vm.asm` — the Sea-16 VM bytecode disassembly for the 4 code banks (the interpreted layer the game logic actually runs in). |
 | `3-c-basic/` | basic decompile | `bank_NN.raw.c` — bytecode → **direct goto/label C, no structuring**. The intermediary the structure engine folds, AND the **CFG-equivalence witness** the gate proves `4-c/bank_NN.c` equivalent to. |
 | `4-c/` | structured C (canonical) | `bank_NN.c` — the readable C (`if`/`while`/`switch`/`do-while`), structured by **DREAM** (owns 479/495) with the **V2** reducer as the per-sub fallback. **This is what you read.** |
@@ -25,7 +25,8 @@
 cd ../tools                                  # run from the tools/ dir (so `na1dream` resolves)
 py -3 -m na1dream.cli.decompile_all          # stages 2-4: 2-asm-vm/ + 4-c/ + merged
 py -3 -m na1dream.cli.decompile_all --basic  # stage 3: 3-c-basic/ (the goto witness)
-py -3 -m mesen-labels --asm                  # stage 1: 1-asm-6502/*_named.asm (from the toml)
+py -3 -m mesen-labels --asm                  # stage 1: 1-asm-6502/*_labeled.asm (from the toml)
+py -3 -m mesen-labels --verify               #          fail if any *_labeled.asm drifted from the toml
 py -3 -m na1dream.cli.decompile_all --v2     # V2 audit/diff only -> 4-c/bank_NN.v2.c
 ```
 

@@ -887,6 +887,32 @@ def inline_trivial_temps(text):
     return "\n".join(out)
 
 
+def _rebind_self_store(state, dest):
+    """Emit-time fix for the "name-stale after a self-modifying store" class.
+
+    The VM leaves the stored value live in regA (a STORE does not pop the accumulator --
+    that's how `... INC; STORE x; DEC; DEREF` derefs the OLD pointer). So after a store
+    `x = EXPR` where EXPR still names `x`, the variable `x` now HOLDS that value; rebind
+    regA to the bare name `x` so subsequent ops fold the post-store name instead of the
+    stale pre-store expression. Without it, `x = x+1` followed by a live-regA use renders
+    off by the self-store delta: `*(((x+1)-1))` (post-increment `*p++`) or the double
+    store `y = (x+1)` -- both read as `+N` too high when taken as sequential C.
+
+    `dest` is usually a plain C identifier (local_name / _mem_name) -> word-boundary match
+    (won't confuse local1 with local11). For an indirect self-store it is a deref
+    expression like `*(word*)(arg1)` (the `(*p)++` pointer-in-memory case) -> substring
+    match. regA is unchanged by the store, so rebinding to `dest` is always value-sound: the
+    store just wrote regA's value to `dest`, so `dest` now equals it."""
+    if state.regA == dest:
+        return
+    if re.fullmatch(r'[A-Za-z_]\w*', dest):
+        hit = re.search(r'(?<!\w)' + re.escape(dest) + r'(?!\w)', state.regA)
+    else:
+        hit = dest in state.regA          # deref dest (indirect self-store)
+    if hit:
+        state.regA = dest
+
+
 def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
     body_addr, instructions = parse_listing(filepath, sub_addr)
     if not instructions:
@@ -1192,10 +1218,12 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         elif mnem == 'storeA_local_pos':
             name = local_name(opcode & 0x0F, 'pos')
             state.emit(f"{name} = {state.regA};")
+            _rebind_self_store(state, name)
         elif mnem == 'storeA_local_neg':
             name = local_name(opcode & 0x0F, 'neg')
             state.emit(f"{name} = {state.regA};")
             state.locals[opcode & 0x0F] = state.regA
+            _rebind_self_store(state, name)
         elif mnem == 'push_local_neg':
             # $30-$3B PUSH_quick: push a frame LOCAL's value onto the data stack.
             # (Oracle-confirmed: $38 pushes local8, sp -= 2 — not a store of regB.)
@@ -1245,10 +1273,14 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         elif mnem == 'storeA_ind_byte':
             # regB has the pointer (from stack); regA is the value
             ptr = state.stack.pop() if state.stack else state.regB
-            state.emit(f"*(byte*)({ptr}) = {state.regA};")
+            dest = f"*(byte*)({ptr})"
+            state.emit(f"{dest} = {state.regA};")
+            _rebind_self_store(state, dest)
         elif mnem == 'storeA_ind_word':
             ptr = state.stack.pop() if state.stack else state.regB
-            state.emit(f"*(word*)({ptr}) = {state.regA};")
+            dest = f"*(word*)({ptr})"
+            state.emit(f"{dest} = {state.regA};")
+            _rebind_self_store(state, dest)
 
         # === Stack ===
         elif mnem == 'pushA':
@@ -1411,7 +1443,9 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
         elif mnem in ('op_83_byte', 'op_84_bwb'):
             state.regB = frame_word(_signed_operand(operand))
         elif mnem in ('op_85_byte', 'op_86_bwb'):
-            state.emit(f"{frame_word(_signed_operand(operand))} = {state.regA};")
+            dest = frame_word(_signed_operand(operand))
+            state.emit(f"{dest} = {state.regA};")
+            _rebind_self_store(state, dest)
         elif mnem in ('op_87_byte', 'op_88_bwb'):
             state.stack.append(frame_word(_signed_operand(operand)))
         elif mnem == 'op_A0_A3_byte':
@@ -1422,7 +1456,9 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             elif sel == 1:    # $A1 byte load -> B
                 state.regB = frame_byte(off)
             elif sel == 2:    # $A2 store A -> byte
-                state.emit(f"{frame_byte(off)} = {state.regA};")
+                dest = frame_byte(off)
+                state.emit(f"{dest} = {state.regA};")
+                _rebind_self_store(state, dest)
             else:             # $A3 push byte
                 state.stack.append(frame_byte(off))
         elif mnem == 'loadA_frameaddr':
@@ -1457,9 +1493,13 @@ def decompile(filepath, sub_addr, labels=None, var_names=None, collect=None):
             # mapped to loadA_mem_word: every $A8 store rendered as a phantom read.
             # PROVEN $A8=store by the year++ at $A48E LOADL_abs / INC / $A492 STORE_abs.)
             # regA is the SOURCE and is left unchanged by the store.
-            state.emit(f"{_mem_name(operand, _op_hex(operand), labels)} = {state.regA};")
+            dest = _mem_name(operand, _op_hex(operand), labels)
+            state.emit(f"{dest} = {state.regA};")
+            _rebind_self_store(state, dest)
         elif mnem == 'storeA_mem_byte':
-            state.emit(f"{_mem_name(operand, _op_hex(operand), labels)} = {state.regA};")
+            dest = _mem_name(operand, _op_hex(operand), labels)
+            state.emit(f"{dest} = {state.regA};")
+            _rebind_self_store(state, dest)
 
         # === Misc ===
         else:

@@ -6,8 +6,6 @@ created: 2026-05-11
 
 > Every 1/60s the NMI handler runs five subsystems in a strict order, bracketed by NMI-disable/enable, with all PPU register access funneled through a shadow-state API. First chapter with runtime correlation: a 1-2 second Mesen trace (912k lines) confirmed the architecture and decoded the music driver completely.
 
-> **⚠ Pass-2 fact-check (2026-06-11).** Written WITH a runtime trace, this chapter largely **holds** against the grounded labels — the NMI handler, PPU shadow API, palette pipeline, controller poll, and two-pass music driver are all correct. Two updates: **(1)** the "4-byte song header at $0730-$0733" is **refuted** — that region is the tail of the **5×3-byte per-voice config array** (`$0725-$0733`: `v0..v4_config`, each `tempo_div / song_ptr_lo / song_ptr_hi`, written by `audio_load_voice $C3AD`); the snapshot read v3/v4 config as a header. **(2)** The "Open for chapter 4" items are now **resolved** (see the closing). Sub names grounded: `music_trigger_pass $C7AC`, `music_sequencer_pass $C817`, `reset_ppu_init $C757`.
-
 **Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Nobunaga README](./README.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
 
 ## The frame
@@ -26,43 +24,31 @@ Nobunaga's NMI uses exactly **5 of those ~9000 cycles' worth of routines** in a 
 
 The two gating flags `$00B0` and `$0089` let the engine selectively skip work — `$B0` skips everything after OAM, `$89` skips just the clock. Useful for menu transitions and pause states.
 
-## Method note: the trace
+## How the audio engine was grounded
 
-This is the first chapter with runtime correlation. Setup:
+The music driver was decoded from a ~1–2 second Mesen trace (≈912k lines): filtering for accesses into the `$0734-$0760` voice-record region (`\[\$07[3-5][0-9A-F]\]`) surfaced the whole driver in ~50 lines, which pinned down the 9-byte record layout and the two-pass structure below.
 
-- **Mesen 2** debugger, ROM running normally on a screen with active music.
-- **Trace Logger** enabled with the default format string (which already shows effective address + memory value for every indirect/indexed instruction, e.g. `LDA ($06),Y [$D1BD] = $02`).
-- ~1-2 seconds captured → 912,423 lines of trace.
+## The NMI handler (`nmi_handler` $C0DA-$C138)
 
-The trace is large but greppable. Filtering for `\[\$07[3-5][0-9A-F]\]` pulled every access into the 5-voice audio-record region; that single grep revealed the entire music driver in ~50 lines. The CDL (Code/Data Logger) was also enabled to mark code vs. data bytes, which will be folded into the labels file next session.
-
-## The NMI handler ($C0DA-$C138) — completely named
-
-Chapter 1 traced the structure but mis-identified three of the four JSRs. Here it is with every routine resolved:
+The five subsystems in fixed order, bracketed by `nmi_off`/`nmi_on`:
 
 ```asm
-$C0DA: PHA / TXA / PHA / TYA / PHA       ; save A, X, Y
-$C0DF: LDA $2002                         ; clear VBlank flag
-$C0E2: JSR $C54F                         ; NMI off (bracket)              ← was: "deferred PPU updates"
-$C0E5: LDA #$00 / STA $2003              ; OAMADDR = 0
-$C0EA: LDA #$06 / STA $4014              ; OAM DMA $0600 → PPU OAM
-$C0EF: LDA $00B0
-$C0F2: BNE skip_periodic                 ; gate: skip subsystems
-$C0F4: LDA #$00 / JSR $C628              ; P1 controller poll → $6E
-$C0F9: LDA #$01 / JSR $C628              ; P2 controller poll → $6F
-$C0FE: JSR $C6D4                         ; palette upload (if $74 set)     ← was: "audio engine tick?"
-$C101: JSR $C7A5                         ; music driver (2 passes)         ← was: "some other periodic"
-$C104: LDA $0089
-$C107: BNE skip_clock                    ; gate: skip wall clock
-$C109-$C12A: two 16-bit counters += 2    ; wall clocks at $83/84 and $85/86
-skip_clock:
-$C12B: LDA #$00 / STA $0081              ; clear NMI-busy semaphore
-$C12E: JSR $C68A                         ; NMI on (bracket)
-$C133: PLA/TAY / PLA/TAX / PLA           ; restore Y, X, A
-$C138: RTI
+$C0DA: PHA / TXA/PHA / TYA/PHA           ; save A, X, Y
+$C0DF: LDA PPUSTATUS                     ; clear the VBlank flag
+$C0E2: JSR nmi_off                       ; bracket: disable NMI re-entry
+$C0E5: LDA #$00 / STA OAMADDR
+$C0EA: LDA #$06 / STA OAMDMA             ; OAM DMA: oam_shadow ($0600) → PPU OAM
+$C0EF: LDA nmi_skip_all / BNE .done      ; $B0 set → bail after sprites
+$C0F4: LDA #$00 / JSR controller_poll    ; P1 → p1_buttons ($6E)
+$C0F9: LDA #$01 / JSR controller_poll    ; P2 → p2_buttons ($6F)
+$C0FE: JSR palette_upload                ; if palette_dirty ($74): ship palette_shadow → PPU $3F00
+$C101: JSR music_driver                  ; two passes: trigger + sequencer
+$C104: LDA skip_wallclock / BNE .clk     ; $89 set → freeze game-time
+$C109: clock_a += 2 ; clock_b += 2       ; the two wall-clocks (16-bit, +2/frame)
+.clk:  LDA #$00 / STA nmi_busy           ; release the VBlank handshake
+$C12E: JSR nmi_on                        ; bracket: re-enable NMI
+$C133: PLA/TAY / PLA/TAX / PLA / RTI     ; .done lands here
 ```
-
-The chapter 1 errata get a dedicated section at the end.
 
 ## The PPU register-shadow API
 
@@ -77,13 +63,13 @@ Seven routines manage them:
 
 | Routine | Function | Code |
 |---|---|---|
-| `$C6A6` | write A → PPUCTRL + shadow | `sta $2000 ; sta $71 ; rts` |
-| `$C570` | write A → PPUMASK + shadow | `sta $2001 ; sta $72 ; rts` |
-| `$C54F` | **NMI off** (bit 7 of $71 cleared) | `lda $71 ; and #$7F ; jsr $C6A6 ; rts` |
-| `$C68A` | **NMI on**  (bit 7 of $71 set) | `lda $71 ; ora #$80 ; jsr $C6A6 ; rts` |
-| `$C567` | **rendering on** (bits 3,4 of $72 set) | `lda $72 ; ora #$18 ; jsr $C570 ; rts` |
-| `$C69D` | **rendering off** (bits 3,4 of $72 cleared) | `lda $72 ; and #$E7 ; jsr $C570 ; rts` |
-| `$C693` | **safe-PPU gate** (composite) | `jsr $C54F ; jsr $C537 ; jsr $C69D ; rts` |
+| `write_ppuctrl` ($C6A6) | write A → PPUCTRL + shadow | `sta $2000 ; sta ppuctrl_shadow` |
+| `write_ppumask` ($C570) | write A → PPUMASK + shadow | `sta $2001 ; sta ppumask_shadow` |
+| `nmi_off` ($C54F) | clear bit 7 of `ppuctrl_shadow` | `lda ppuctrl_shadow ; and #$7F ; jsr write_ppuctrl` |
+| `nmi_on` ($C68A) | set bit 7 of `ppuctrl_shadow` | `lda ppuctrl_shadow ; ora #$80 ; jsr write_ppuctrl` |
+| `rendering_on` ($C567) | set bits 3,4 of `ppumask_shadow` | `lda ppumask_shadow ; ora #$18 ; jsr write_ppumask` |
+| `rendering_off` ($C69D) | clear bits 3,4 of `ppumask_shadow` | `lda ppumask_shadow ; and #$E7 ; jsr write_ppumask` |
+| `ppu_safe_gate` ($C693) | the long-PPU-update preamble | `jsr nmi_off ; jsr wait_vblank ; jsr rendering_off` |
 
 The composite `$C693` is the canonical "I'm about to do a long PPU update from foreground code" preamble:
 
@@ -93,21 +79,21 @@ The composite `$C693` is the canonical "I'm about to do a long PPU update from f
 
 That's the standard NES pattern (see [NES PPU reference](../../../research/nes/ppu-reference.md) — VBlank window discipline), here factored into named routines instead of inlined everywhere. **The codebase never reads $2000 or $2001 directly.** Discipline is strict and project-wide.
 
-### `$C537` (wait-for-VBlank) and the chapter-2 $0080 mystery
+### `wait_vblank` ($C537) — and the audio-during-spin trick
 
 ```asm
-b15_c537:   lda $0080
-            bne done             ; if $80 != 0, skip the wait entirely
-            ; (save regs, jsr $C7A5, restore regs)
-            lda PPUSTATUS
-            bpl spin             ; spin until bit 7 (VBlank flag) set
-done:       rts
+wait_vblank:  lda skip_vblank_wait     ; $0080
+              bne done                 ; non-zero → skip the wait entirely
+              ; (save regs, jsr music_driver, restore regs)
+spin:         lda PPUSTATUS
+              bpl spin                 ; spin until bit 7 (VBlank) is set
+done:         rts
 ```
 
-Two findings:
+Two things worth noting:
 
-1. **`$0080` = "skip VBlank wait" flag** (chapter 2 had it as "pure toggle bit, EOR'd at b15_c376" — purpose now named).
-2. **`$C7A5` is called from inside `$C537`** as "productive work during the spin." Audio ticks happen both inside the wait loop and in the NMI handler proper — the music driver runs every frame regardless of foreground state, and runs *twice* if the foreground happens to be waiting for VBlank when NMI fires. That's a feature: it keeps audio rock-solid through any heavy update.
+1. **`skip_vblank_wait` ($0080)** lets boot / long operations bypass the spin and return immediately.
+2. **`music_driver` is called from inside the spin** — so audio ticks both here and in the NMI proper. The driver runs every frame regardless of foreground state, and *twice* if the foreground is waiting for VBlank when NMI fires. Deliberate: it keeps audio rock-solid through any heavy PPU update.
 
 ## The palette pipeline
 
@@ -144,7 +130,7 @@ Three named ZP locations:
 
 Note the `$3E` reset fill: 32 grey-grey-grey palette entries. The game boots with a neutral palette until the title screen overwrites it.
 
-The parallel reset fill of `$0090-$00AF` (also 32 bytes of `$3E`, also $0090-$00AF) remains unexplained — the trace did not touch `$0090-$00AF`, so it's either a second palette buffer used by another subsystem (overlay? menu palette?), or a different mechanism that happens to share the `$3E` default. Park for chapter 4.
+The parallel reset fill of `$0090-$00AF` with `$3E` is the second palette buffer, **`palette_alt`** — the swap target that `palette_swap` ($C36C, syscall $12) atomically exchanges with `palette_shadow` for fade/transition effects (ch.2).
 
 ## OAM DMA
 
@@ -202,23 +188,21 @@ These are **held** state with no edge detection. Just-pressed / just-released de
 
 ## The music driver — two passes
 
-Chapter 1 called this "audio engine tick?" Chapter 2 mentioned the 5×9-byte records at `$0734` (and mis-guessed "5 daimyo player slots"). Static analysis got us a hypothesis for the record layout. The trace confirmed it and, more usefully, **revealed that the driver runs in two distinct passes per frame.**
+The music driver advances five voices over the 9-byte records at `v0_trigger` ($0734), and it runs in **two distinct passes per frame** — a trigger pass that starts newly-queued notes, and a sequencer pass that advances each voice's song stream.
 
-### Dispatcher ($C7A5)
+### Dispatcher (`music_driver` $C7A5)
 
-The disasm6 tool got confused at $C7A5 — interpreted the leading bytes as a data table. The actual code is three instructions:
+Three instructions — call each pass in turn:
 
 ```asm
-$C7A5: JSR $C7AC      ; pass 1: trigger any voice with byte0 ∈ [1..4]
-$C7A8: JSR $C817      ; pass 2: tick countdown / load next note
+$C7A5: JSR music_trigger_pass    ; pass 1: start any voice with byte0 ∈ [1..4]
+$C7A8: JSR music_sequencer_pass  ; pass 2: tick countdown / load the next note
 $C7AB: RTS
 ```
 
-That single `JSR $C817` is what the disassembler missed.
-
 ### Voice state records ($0734-$0760) + the per-voice config array ($0725-$0733)
 
-Five 9-byte voice **state** records at `$0734-$0760`, preceded by the 5×3-byte per-voice **config** array `$0725-$0733` (corrected 2026-06-11 — session 3 read part of it as a "4-byte song header at $0730," a misalignment):
+Five 9-byte voice **state** records at `$0734-$0760`, preceded by the 5×3-byte per-voice **config** array `$0725-$0733`:
 
 ```
 $0721-$0724: audio_active_v0..v3       (per-voice enable flags)
@@ -230,12 +214,12 @@ $074F-$0757: Voice 3
 $0758-$0760: Voice 4
 ```
 
-(The snapshot below shows `$0730: 81 0A AF 84` — under the grounded layout that is `v3_config`'s song-ptr-hi `$81`, then `v4_config = (tempo_div $0A, song_ptr $84AF)`, not a song header.)
+(In the snapshot below, the `$0730` row reads as `v3_config`'s song-ptr-hi `$81` followed by `v4_config = (tempo_div $0A, song_ptr $84AF)`.)
 
 A snapshot during gameplay (R1=Pulse1, R2=Pulse2, R3=Triangle active):
 
 ```
-$0730: 81 0A AF 84   ; song-active, tempo $0A, song base $84AF
+$0730: 81 0A AF 84   ; v3_config ptr-hi $81; v4_config = tempo $0A, song-ptr $84AF
 $0734: 00 0F 00 35 08 0A A6 84 00   ; V0 (idle)
 $073D: 05 0F 00 7F 08 0A 57 81 05   ; V1 (Pulse1: just played, cursor $8157, count 5)
 $0746: 06 0F 00 D5 08 0A 92 81 3D   ; V2 (Pulse2: just played, cursor $8192, count $3D)
@@ -357,50 +341,20 @@ $C109-$C12A:
 
 Two paired 16-bit counters, each += 2 per frame, gated by `$0089`. Reset-initialized to `$04D2` = 1234 decimal (a calibration value, not random — picked deliberately, role TBD). Likely roles: in-game month/year counter, animation/timeout timer.
 
-## Chapter 1 errata
-
-Chapter 1's NMI walkthrough mis-identified three of the four interior JSRs. Corrections:
-
-| Address | Chapter 1 said | Actually |
-|---|---|---|
-| `JSR $C54F` (at $C0E2) | "deferred PPU updates (tile/palette uploads)" | **Disable NMI re-entry** (clear bit 7 of PPUCTRL shadow) |
-| `JSR $C6D4` (at $C0FE) | "audio engine tick?" | **Palette upload** gated by `$0074` |
-| `JSR $C7A5` (at $C101) | "some other periodic update" | **Music driver** (two passes: trigger + sequencer) |
-| `JSR $C68A` (at $C12E) | "same routine as reset — likely PPU finalize" | **Re-enable NMI** (set bit 7 of PPUCTRL shadow) |
-
-Plus one chapter-2 erratum:
-
-| Region | Chapter 2 said | Actually |
-|---|---|---|
-| `$0734 + N×9` (5 × 9-byte records) | "5 daimyo player slots" | **5 audio voice records.** Daimyo records live elsewhere. |
-
-The mistake pattern is instructive: in chapter 1 the *structure* (4 JSRs in order, brackets, gates) was right, but the *semantic labels* were wrong without runtime evidence to constrain them. Chapter 2 saw 5 × 9-byte stride and guessed daimyo because Nobunaga is a strategy game with 5-ish warlord slots — anchored on subject-matter expectation, not code semantics. Both are predictable failure modes of static-only analysis; both are exactly what runtime correlation fixes.
-
 ## What chapter 3 establishes
 
-- The NMI handler runs **5 named subsystems** in fixed order, bracketed by NMI off/on.
-- A **PPU register shadow API** at `$0071/$0072` with 7 helpers — strictly enforced, never bypassed.
-- The **palette pipeline**: `$0074` dirty flag, `$0700-$071F` shadow, `$C6D4` uploader.
-- The **OAM DMA** uses page $0600, with sprite Y/X both pre-set to $F8 for off-screen idle.
-- The **controller poll** at `$C628` stores held state in `$006E` / `$006F`.
-- The **music driver** runs as **two passes per frame** (trigger + sequencer) over 5 voice records at `$0734`. Each record is 9 bytes with a known field layout, runtime-confirmed.
-- The `$0720` byte is a **triangle-mute flag**; `$0721-$0724` are per-voice always-active flags.
-- A 4-byte **song header** at `$0730-$0733` holds song-active marker + tempo + base pointer.
+- The NMI handler runs **5 named subsystems** in fixed order, bracketed by `nmi_off`/`nmi_on`.
+- A **PPU register shadow API** at `ppuctrl_shadow`/`ppumask_shadow` ($0071/$0072) with 7 helpers — strictly enforced, never bypassed.
+- The **palette pipeline**: `palette_dirty` ($0074), `palette_shadow` ($0700-$071F), the `palette_upload` ($C6D4) uploader, and `palette_alt` ($0090-$00AF) the fade swap-target.
+- The **OAM DMA** ships `oam_shadow` ($0600), with sprite Y/X both pre-set to $F8 for off-screen idle.
+- The **controller poll** (`controller_poll` $C628) stores held state in `p1_buttons`/`p2_buttons` ($006E/$006F).
+- The **music driver** runs **two passes per frame** (`music_trigger_pass` + `music_sequencer_pass`) over the 5 voice records at `v0_trigger` ($0734), each 9 bytes with the runtime-confirmed layout above.
+- `$0720` is the **triangle-mute flag**; `$0721-$0724` are per-voice always-active flags; `$0725-$0733` is the 5×3-byte per-voice config array (`v0..v4_config`).
 
-Plus three chapter-1 errata blocks and one chapter-2 erratum.
+## Open
 
-## Open for chapter 4 — mostly RESOLVED (pass-2 2026-06-11)
-
-- ~~**Music data format at $81xx / $84xx**~~ → per-voice song tracks driven by `music_sequencer_pass`; the packed byte format is the audio-engine detail (ties to the bank-10 `play_audio_by_id` path). The one genuinely-open audio item.
-- ~~**`$0090-$00AF` parallel buffer**~~ → `palette_alt`, the swap target for fades (`palette_swap $C36C`); ch.2.
-- ~~**`$1C/$1D` and `$1E/$1F` pointers**~~ → `ppu_queue_a/b` (the PPU upload queues into $0020/$0030); ch.2.
-- **Just-pressed / just-released edge detection** — downstream of the dispatcher (the VM input path); still a fair forward pointer.
-- ~~**`$C757`**~~ → `reset_ppu_init` (PPU init: safe-gate, upload $30 bytes from `tab_c775` to PPU $0000, screen-on).
-- ~~**The BRK dispatcher's invocation pattern**~~ → **confirmed**: a **syscall surface, not a scheduler** (ch.1/ch.4) — game/VM code calls it via `jsr syscall_dispatch ($F226)` (a faked BRK), event-driven. The session-3 inference ("`$0050` never written in a passive trace ⇒ event-driven") was exactly right.
-
-## Method note — toward better tooling
-
-This was the first chapter to use Mesen's trace logger. The 912k-line trace was grep-able and yielded full music-driver semantics in one short pass. But the trace is hard to *read* — every address is a hex number, every label is `$C7AC` rather than `audio_dispatch`. Next session's tooling improvement: build a **labels file** (Mesen `.mlb` format) that decorates the trace with every name discovered across chapters 1-3 (PPU API helpers, palette routines, audio passes, controller poll, ZP semantic labels). The CDL (Code/Data Logger) data from this run is already saved alongside the trace — folding that plus the labels file into the disasm6 output will make chapter 4's deep dives substantially faster.
+- **The packed song-data format** ($81xx/$84xx per-voice tracks) — the note/duration encoding each `music_sequencer_pass` walks; the one genuinely-open audio item (ties to the bank-10 `play_audio_by_id` path).
+- **Just-pressed / just-released edge detection** — `p1_buttons`/`p2_buttons` hold raw state; edge detection lives downstream in the VM input path.
 
 ## Tags
 

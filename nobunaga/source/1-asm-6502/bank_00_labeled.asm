@@ -1,6 +1,5 @@
 .base $8000
 
-bank0_entry:
             hex 4c 78 a7 20 23 e8 fa ff ; 00000:  4c 78 a7 20 23 e8 fa ff
             hex 60 60 6a e9 26 f2 06 ac ; 00008:  60 60 6a e9 26 f2 06 ac
             hex 20 cd ac 28 d6 d8 1c 81 ; 00010:  20 cd ac 28 d6 d8 1c 81
@@ -126,7 +125,7 @@ bank0_entry:
             hex e9 a4 cb 02             ; 00257:  e9 a4 cb 02
 
             hex 8e ff 00 ; stx $00ff    ; 0025B:  8e ff 00
-            stx $6001                   ; 0025E:  8e 01 60
+            stx ai_per_fief_loop_index                   ; 0025E:  8e 01 60
             rts                         ; 00261:  60
 
             hex 61 8d 16 e9 26 f2 0a 28 ; 00262:  61 8d 16 e9 26 f2 0a 28
@@ -297,10 +296,8 @@ bank0_entry:
             hex f8 b8 e9 26 d3 02 3c 8e ; 00685:  f8 b8 e9 26 d3 02 3c 8e
             hex 00 b9 e9 34 d1 04 cf 20 ; 0068D:  00 b9 e9 34 d1 04 cf 20
             hex 23 e8 fc ff a4 9d 6d 8b ; 00695:  23 e8 fc ff a4 9d 6d 8b
-rendering_off:
             hex 32 c0 d8 a6 86 42 d6 a7 ; 0069D:  32 c0 d8 a6 86 42 d6 a7
             hex 86 40 b3 e9 f2 e5 02 41 ; 006A5:  86 40 b3 e9 f2 e5 02 41
-mul_xy_by_3:
             hex a8 e0 7b 42 2b 3c e9 7f ; 006AD:  a8 e0 7b 42 2b 3c e9 7f
             hex 86 02 d6 f1 86 a4 cf 7f ; 006B5:  86 02 d6 f1 86 a4 cf 7f
             hex d1 a8 cf 7f 0a 8b ff c0 ; 006BD:  d1 a8 cf 7f 0a 8b ff c0
@@ -332,7 +329,6 @@ mul_xy_by_3:
             hex 8d 10 e9 6a cf 0a 62 8d ; 0078D:  8d 10 e9 6a cf 0a 62 8d
             hex 12 8d 1a 8d 12 6e e9 6a ; 00795:  12 8d 1a 8d 12 6e e9 6a
             hex cf 0a 64 63 e9 7b cc 04 ; 0079D:  cf 0a 64 63 e9 7b cc 04
-music_driver:
             hex a4 5f 6f d0 b3 8e 57 b9 ; 007A5:  a4 5f 6f d0 b3 8e 57 b9
             hex e9 34 d1 04 66 63 e9 7b ; 007AD:  e9 34 d1 04 66 63 e9 7b
             hex cc 04 a4 5f 6f 5a b5 8c ; 007B5:  cc 04 a4 5f 6f 5a b5 8c
@@ -889,7 +885,7 @@ tab_b0_9053: ; 279 bytes
 
             hex 8e ff 00 ; stx $00ff    ; 0147F:  8e ff 00
             sbc #$dc                    ; 01482:  e9 dc
-            cpx ptr1_lo                     ; 01484:  e4 02
+            cpx vm_sp_lo                     ; 01484:  e4 02
             rti                         ; 01486:  40
 
             hex 29 40 2a 8a 89 6f 2b d6 ; 01487:  29 40 2a 8a 89 6f 2b d6
@@ -1093,7 +1089,7 @@ tab_b0_9053: ; 279 bytes
             hex 6e 41 a9 c0 6d 45 a9 15 ; 01A46:  6e 41 a9 c0 6d 45 a9 15
             hex 6d 8d 1e e9 54          ; 01A4E:  6d 8d 1e e9 54
 
-            sbc ptr1_lo                     ; 01A53:  e5 02
+            sbc vm_sp_lo                     ; 01A53:  e5 02
             rti                         ; 01A55:  40
 
             hex 28 08 8c d5 7f bb d3 8b ; 01A56:  28 08 8c d5 7f bb d3 8b
@@ -1303,7 +1299,7 @@ tab_b0_9ee7: ; 186 bytes
             hex 02 62                   ; 01F9F:  02 62
 
             sbc #$1e                    ; 01FA1:  e9 1e
-            sta (ptr1_lo),y                 ; 01FA3:  91 02
+            sta (vm_sp_lo),y                 ; 01FA3:  91 02
             rti                         ; 01FA5:  40
 
             hex 2b 60 e9 cd d7 02 29 d6 ; 01FA6:  2b 60 e9 cd d7 02 29 d6
@@ -1638,7 +1634,7 @@ tab_b0_a27a: ; 258 bytes
             adc tab_b0_a7d1+367         ; 026CE:  6d 40 a9
             adc p2_buttons                     ; 026D1:  65 6f
             txa                         ; 026D3:  8a
-            ora $75,x                   ; 026D4:  15 75
+            ora mul_acc_lo,x                   ; 026D4:  15 75
             plp                         ; 026D6:  28
             ora $27                     ; 026D7:  05 27
             rti                         ; 026D9:  40
@@ -1841,7 +1837,7 @@ tab_b0_a7d1: ; 745 bytes
             hex 0c 06 06 06 0c f8 00 f8 ; 02C7B:  0c 06 06 06 0c f8 00 f8
             hex 0c                      ; 02C83:  0c
 
-            asl ptr3_lo                     ; 02C84:  06 06
+            asl vm_ip_lo                     ; 02C84:  06 06
             asl $0c                     ; 02C86:  06 0c
             sed                         ; 02C88:  f8
             brk                         ; 02C89:  00
@@ -1945,7 +1941,7 @@ tab_b0_ac94: ; 242 bytes
             hex 02 03 fb 63             ; 02ECE:  02 03 fb 63
 
             sbc $01f9,y                 ; 02ED2:  f9 f9 01
-            ora (ptr0_hi,x)                 ; 02ED5:  01 01
+            ora (scratch_ptr_hi,x)                 ; 02ED5:  01 01
             ora ($f9,x)                 ; 02ED7:  01 f9
             sbc $d04f,y                 ; 02ED9:  f9 4f d0
             rts                         ; 02EDC:  60
@@ -1954,8 +1950,8 @@ tab_b0_ac94: ; 242 bytes
             hex 38 38 3f 3f 00 f2 02 03 ; 02EE5:  38 38 3f 3f 00 f2 02 03
             hex 02 02 c2 82 f3          ; 02EED:  02 02 c2 82 f3
 
-            ora (ptr0_hi,x)                 ; 02EF2:  01 01
-            ora (ptr0_hi,x)                 ; 02EF4:  01 01
+            ora (scratch_ptr_hi,x)                 ; 02EF2:  01 01
+            ora (scratch_ptr_hi,x)                 ; 02EF4:  01 01
             ora ($f9,x)                 ; 02EF6:  01 f9
             sbc $e000,y                 ; 02EF8:  f9 00 e0
             jsr $6020                   ; 02EFB:  20 20 60
@@ -1983,7 +1979,7 @@ tab_b0_af0b: ; 100 bytes
             hex 00 00 00 07             ; 02F6B:  00 00 00 07
 
             stx clock_b_lo                     ; 02F6F:  86 86
-            dec ptr0_lo                     ; 02F71:  c6 00
+            dec scratch_ptr_lo                     ; 02F71:  c6 00
             brk                         ; 02F73:  00
             hex 00                      ; 02F74:  00
             brk                         ; 02F75:  00
@@ -2183,7 +2179,7 @@ tab_b0_af0b: ; 100 bytes
             ror $7e                     ; 0323D:  66 7e
             rts                         ; 0323F:  60
 
-            hex 3e 00 00 ; rol ptr0_lo,x  ; 03240:  3e 00 00
+            hex 3e 00 00 ; rol scratch_ptr_lo,x  ; 03240:  3e 00 00
             brk                         ; 03243:  00
             hex 3c                      ; 03244:  3c
             ror $7e                     ; 03245:  66 7e
@@ -2425,13 +2421,13 @@ b0_b5d7:    brk                         ; 035D7:  00
             hex 00                      ; 035DA:  00
             brk                         ; 035DB:  00
             hex 3e                      ; 035DC:  3e
-            ror $76,x                   ; 035DD:  76 76
+            ror mul_acc_hi,x                   ; 035DD:  76 76
             ror $3a,x                   ; 035DF:  76 3a
             brk                         ; 035E1:  00
             hex 00                      ; 035E2:  00
             brk                         ; 035E3:  00
             hex 3e                      ; 035E4:  3e
-            ror $76,x                   ; 035E5:  76 76
+            ror mul_acc_hi,x                   ; 035E5:  76 76
             ror $3a,x                   ; 035E7:  76 3a
             brk                         ; 035E9:  00
             hex 60                      ; 035EA:  60
@@ -2460,12 +2456,12 @@ b0_b5d7:    brk                         ; 035D7:  00
             brk                         ; 03609:  00
             hex 06                      ; 0360A:  06
             asl $3e                     ; 0360B:  06 3e
-            ror $76,x                   ; 0360D:  76 76
+            ror mul_acc_hi,x                   ; 0360D:  76 76
             ror $3e,x                   ; 0360F:  76 3e
             brk                         ; 03611:  00
             hex 06                      ; 03612:  06
             asl $3e                     ; 03613:  06 3e
-            ror $76,x                   ; 03615:  76 76
+            ror mul_acc_hi,x                   ; 03615:  76 76
             ror $3e,x                   ; 03617:  76 3e
             brk                         ; 03619:  00
             hex 00                      ; 0361A:  00
@@ -2546,7 +2542,7 @@ b0_b667:    sec                         ; 03667:  38
 
             hex 66 6c 78 7c             ; 0367C:  66 6c 78 7c
 
-            ror ptr0_lo                     ; 03680:  66 00
+            ror scratch_ptr_lo                     ; 03680:  66 00
             rts                         ; 03682:  60
 
 tab_b0_b683: ; 345 bytes
@@ -2612,7 +2608,7 @@ tab_b0_b683: ; 345 bytes
             hex 61 6d 65 20 6f 76 65 72 ; 03818:  61 6d 65 20 6f 76 65 72
             hex 00 57 6f 75 6c 64       ; 03820:  00 57 6f 75 6c 64
 
-            jsr $6f79                   ; 03826:  20 79 6f
+            jsr ai_turn_loop_redispatch_flag                   ; 03826:  20 79 6f
             adc $20,x                   ; 03829:  75 20
             jmp ($6b69)                 ; 0382B:  6c 69 6b
 
@@ -2631,7 +2627,7 @@ tab_b0_b683: ; 345 bytes
             hex 49 00 4e 6f 20 73 61 76 ; 0388E:  49 00 4e 6f 20 73 61 76
             hex 65 64 20 64 61 74       ; 03896:  65 64 20 64 61 74
 
-            adc (ptr0_lo,x)                 ; 0389C:  61 00
+            adc (scratch_ptr_lo,x)                 ; 0389C:  61 00
             brk                         ; 0389E:  00
             hex 44                      ; 0389F:  44
             adc (palette_dirty,x)                 ; 038A0:  61 74
@@ -2657,7 +2653,7 @@ tab_b0_b683: ; 345 bytes
             hex 0a 66 69 65 66 20 77 6f ; 03909:  0a 66 69 65 66 20 77 6f
             hex 75 6c 64                ; 03911:  75 6c 64
 
-            jsr $6f79                   ; 03914:  20 79 6f
+            jsr ai_turn_loop_redispatch_flag                   ; 03914:  20 79 6f
             adc $0a,x                   ; 03917:  75 0a
             jmp ($6b69)                 ; 03919:  6c 69 6b
 
@@ -2724,7 +2720,7 @@ tab_b0_b683: ; 345 bytes
             hex 6c 73 20 20 00 00 0a 57 ; 03A59:  6c 73 20 20 00 00 0a 57
             hex 6f 75 6c 64             ; 03A61:  6f 75 6c 64
 
-            jsr $6f79                   ; 03A65:  20 79 6f
+            jsr ai_turn_loop_redispatch_flag                   ; 03A65:  20 79 6f
             adc $20,x                   ; 03A68:  75 20
             jmp ($6b69)                 ; 03A6A:  6c 69 6b
 
@@ -2774,7 +2770,7 @@ tab_b0_b683: ; 345 bytes
 
             adc #$74                    ; 03B59:  69 74
             pla                         ; 03B5B:  68
-            jsr $6f67                   ; 03B5C:  20 67 6f
+            jsr battle_defender_province_staging                   ; 03B5C:  20 67 6f
             jmp ($0064)                 ; 03B5F:  6c 64 00
 
             hex 47 69 76 69 6e 67       ; 03B62:  47 69 76 69 6e 67
@@ -2898,7 +2894,7 @@ b0_bc1a:    jmp ($6761)                 ; 03C1A:  6c 61 67
             hex 69 74 73                ; 03E25:  69 74 73
 
             jsr $666f                   ; 03E28:  20 6f 66
-            jsr $6f67                   ; 03E2B:  20 67 6f
+            jsr battle_defender_province_staging                   ; 03E2B:  20 67 6f
             jmp ($0064)                 ; 03E2E:  6c 64 00
 
             hex 54 68 69 73 20 70 61 63 ; 03E31:  54 68 69 73 20 70 61 63
@@ -2924,7 +2920,7 @@ b0_bc1a:    jmp ($6761)                 ; 03C1A:  6c 61 67
             hex 69 74 73                ; 03E8F:  69 74 73
 
             jsr $666f                   ; 03E92:  20 6f 66
-            jsr $6f67                   ; 03E95:  20 67 6f
+            jsr battle_defender_province_staging                   ; 03E95:  20 67 6f
             jmp ($0a64)                 ; 03E98:  6c 64 0a
 
             hex 66 72 6f 6d 20 66 69 65 ; 03E9B:  66 72 6f 6d 20 66 69 65
@@ -2980,4 +2976,3 @@ b0_bc1a:    jmp ($6761)                 ; 03C1A:  6c 61 67
             hex ff ff ff ff ff ff ff ff ; 03FEE:  ff ff ff ff ff ff ff ff
             hex ff ff ff ff ff ff ff ff ; 03FF6:  ff ff ff ff ff ff ff ff
             hex ff ff                   ; 03FFE:  ff ff
-

@@ -9,10 +9,15 @@ The toml is authoritative; this tool NEVER writes back to it. Targets:
                  (Type:Address:Label:Comment; types NesPrgRom / NesInternalRam /
                   NesSaveRam / NesMemory. Mesen rejects a .mlb with empty prefixes.)
 
-  --asm          Emit disasm/bank_NN_named.asm for each raw disasm/bank_NN.asm,
-                 rewriting code labels (b{NN}_{addr} definitions + jsr/jmp/branch
-                 operands) and RAM/SaveRAM operands ($0000-$07FF / $6000-$7FFF) to
-                 their toml names. Leaves the curated *_labeled.asm untouched.
+  --asm          Regenerate source/1-asm-6502/bank_NN_labeled.asm (code banks
+                 0/1/2/15) from each raw bank_NN.asm, rewriting code labels
+                 (b{NN}_{addr} definitions + jsr/jmp/branch operands) and RAM/SaveRAM
+                 operands ($0000-$07FF / $6000-$7FFF) to their toml names. These files
+                 are COMMITTED and must stay in sync with the toml -- see --verify.
+
+  --verify       Check each committed *_labeled.asm against a fresh regen; exit 1 if
+                 any is stale (toml changed but --asm not re-run). Wire into CI /
+                 pre-commit so the labeled disasm can never silently drift again.
 
   --check        Parse + classify only; print coverage stats, no files written.
 
@@ -261,22 +266,51 @@ def build_anchor_map(labels):
     return anchors
 
 
-def emit_named_asm(labels, dry_run=False):
+def _regen_one(bank, code, ram, anchors):
+    """Return (raw_path, labeled_path, regenerated_text, nc, nr, inserted) or None."""
+    raw = DISASM / f"bank_{bank:02d}.asm"
+    if not raw.exists():
+        return None
+    text = raw.read_text(encoding="utf-8")
+    # Anchor insertion is fixed-bank only -> bank 15's file.
+    bank_anchors = anchors if bank == 15 else None
+    labeled, nc, nr, inserted = apply_to_asm(text, code, ram, bank_anchors)
+    out = raw.with_name(raw.stem + "_labeled.asm")
+    return raw, out, labeled, nc, nr, inserted
+
+
+def emit_labeled_asm(labels, dry_run=False):
     code, ram = build_name_maps(labels)
     anchors = build_anchor_map(labels)
     results = []
     for bank in CODE_BANKS:
-        raw = DISASM / f"bank_{bank:02d}.asm"
-        if not raw.exists():
+        r = _regen_one(bank, code, ram, anchors)
+        if r is None:
             continue
-        text = raw.read_text(encoding="utf-8")
-        # Anchor insertion is fixed-bank only -> bank 15's file.
-        bank_anchors = anchors if bank == 15 else None
-        named, nc, nr, inserted = apply_to_asm(text, code, ram, bank_anchors)
+        _, out, labeled, nc, nr, inserted = r
         if not dry_run:
-            out = raw.with_name(raw.stem + "_named.asm")
-            out.write_text(named, encoding="utf-8")
-        results.append((f"bank_{bank:02d}_named.asm", nc, nr, inserted))
+            out.write_text(labeled, encoding="utf-8")
+        results.append((out.name, nc, nr, inserted))
+    return results
+
+
+def verify_labeled_asm(labels):
+    """Compare each committed *_labeled.asm against a fresh in-memory regen.
+    Returns list of (filename, status) where status is 'ok' | 'STALE' | 'missing'."""
+    code, ram = build_name_maps(labels)
+    anchors = build_anchor_map(labels)
+    results = []
+    for bank in CODE_BANKS:
+        r = _regen_one(bank, code, ram, anchors)
+        if r is None:
+            continue
+        _, out, labeled, _, _, _ = r
+        if not out.exists():
+            results.append((out.name, "missing"))
+        elif out.read_text(encoding="utf-8") == labeled:
+            results.append((out.name, "ok"))
+        else:
+            results.append((out.name, "STALE"))
     return results
 
 
@@ -286,7 +320,9 @@ def main():
     ap.add_argument("--mlb", nargs="?", const="__default__", metavar="PATH",
                     help="write Mesen .mlb (default: beside ROM, ROM basename)")
     ap.add_argument("--asm", action="store_true",
-                    help="write disasm/bank_NN_named.asm with toml names applied")
+                    help="regenerate committed source/1-asm-6502/bank_NN_labeled.asm from the toml")
+    ap.add_argument("--verify", action="store_true",
+                    help="check committed *_labeled.asm match a fresh regen; exit 1 if stale")
     ap.add_argument("--check", action="store_true",
                     help="parse + classify only; print stats, write nothing")
     ap.add_argument("--dry-run", action="store_true",
@@ -295,6 +331,19 @@ def main():
 
     labels = parse_toml()
     print(f"Parsed {len(labels)} labels from {TOML.name}")
+
+    if args.verify:
+        stale = []
+        for name, status in verify_labeled_asm(labels):
+            print(f"  {status:8s} {name}")
+            if status != "ok":
+                stale.append(name)
+        if stale:
+            print(f"\nSTALE: {len(stale)} file(s) out of date with the toml. "
+                  f"Run `py -3 mesen-labels.py --asm` and commit.")
+            sys.exit(1)
+        print("\nAll committed *_labeled.asm are current with the toml.")
+        return
 
     if args.check or not (args.mlb or args.asm):
         by_type = {}
@@ -305,7 +354,7 @@ def main():
         for t, n in sorted(by_type.items()):
             print(f"  {t:16s} {n}")
         if not (args.mlb or args.asm):
-            print("\n(no target given; use --mlb and/or --asm. --check = stats only)")
+            print("\n(no target given; use --mlb, --asm, or --verify. --check = stats only)")
             return
 
     if args.mlb:
@@ -321,7 +370,7 @@ def main():
 
     if args.asm or args.dry_run:
         verb = "Would write" if args.dry_run else "Wrote"
-        for name, nc, nr, inserted in emit_named_asm(labels, dry_run=args.dry_run):
+        for name, nc, nr, inserted in emit_labeled_asm(labels, dry_run=args.dry_run):
             tail = f", {len(inserted)} anchors inserted" if inserted else ""
             print(f"{verb} {name}: {nc} code labels, {nr} RAM operands applied{tail}")
             for off, nm in inserted:

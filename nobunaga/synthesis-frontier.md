@@ -40,6 +40,18 @@ Read this doc to resume — it carries the method, the verified ledger, and the 
   watching for a *general method* to uncover the whole data-bank set — secondary, not the job.
 - **Label as you go + ledger every finding here** with a `[LEVEL STATUS DATE]` tag and the recovered
   expression. Only CONFIRMED facts promote into the chapters.
+- **★ OVERWRITE doctrine — a chapter carries ONE grounded layer, never a fossil record (Chris, 2026-06-16).**
+  Each chapter/page states the *current* ground truth as if we always knew it. When a later pass supersedes
+  earlier text, **delete the old text** — never leave it below as a stratum with a "⚠️ earlier this said X"
+  note. Corrections become the prose, not annotations; provenance is at most a single `verified YYYY-MM-DD`
+  tag per hard claim, NOT a changelog of what we used to believe. A **"What's open" list holds only what is
+  still open** — a resolved item moves into the body as fact and is struck from the list. *Why:* the layered
+  Pass-1-guess-under-Pass-2-note style re-confuses every reader (you, me, anyone) on every re-read, and it
+  hides live findings. Poster child: ch.12 simultaneously names the six executors (Pass 2) **and** lists them
+  as "four un-named, likely war/diplomacy" open items (Pass 1), and asserts the AI "never uses ninja/diplomacy"
+  while the AI's random-event ninja sweep vs the human (`random_ravage_sweep_bounded_fiefs`) sat un-cited.
+  Applies to ALL chapters; the early-chapter re-grounding **overwrites, it does not append**. (Git is the
+  history; the prose is not.)
 
 ## The dominance lens (threads, not a checklist)
 
@@ -52,8 +64,12 @@ The thesis decomposes into questions the re-read answers as it goes. Current sta
 - **Combat = strength + supply, secondary** — 8-stat weighted compare, rice exhaustion. [from ch.14-17]
 - **The AI is structurally exploitable** — monomorphic (always `ai_state==0`), attack-first cascade of
   `rng(10)` gates (`ai_econ_command_dispatch`); war target = weakest adjacent (`pick_weakest_men_fief`);
-  never specializes / assassinates / uses diplomacy; defends its seat only reflexively; subsidized by the
-  `const_two` dial + a harvest gold bonus. [CONFIRMED, ledger #24 + ch.12 rewrite]
+  never specializes; its command cascade never assassinates or plays diplomacy strategically. Its *only*
+  ninja/marry/pact use is the rare **random-event** path vs the human (`random_event_type_dispatch` →
+  `random_ravage_sweep_bounded_fiefs`): AI-fief senders, human (`state==5`) victim, **economic ravage only,
+  never an assassination** (`$918D` is unreachable from the AI) — so there is still no AI counter to the
+  player's assassination. Defends its seat only reflexively; subsidized by the `const_two` dial + a harvest
+  gold bonus. [CONFIRMED 2026-06-16, ledger #24 + ch.12]
 - **Luck decays → early-game window** — `drift_daimyo_luck $A2ED`, called **per fief EVERY season** from `per_period_fief_daimyo_update_driver` (cadence found, ledger #24). [PARTIAL — cadence confirmed; sign/magnitude of the drift still to read in `$A2ED`]
 - **Diplomacy & the relation value** — the `$6193` relation byte (0–100; Pact→70, Marry→90) is read as
   an **AI-aggression probability**: `$9422` spares an AI war-target when `rng(100) < relation` (AND the
