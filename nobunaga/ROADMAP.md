@@ -46,6 +46,41 @@ created: 2026-05-29
 
 ## Now — current frontier
 
+> ### 🟢 EPIC: PAGES SITE RESTRUCTURE + REFERENCE REWORK (Chris, 2026-06-17)
+> **The site grew an information architecture.** The atlas/fief-daimyo work (see [[wiki-fief-pages-plan]]) made the
+> flashy interactive layer; now organize the WHOLE Pages site around **two registers**:
+> **GAMEPLAY (the accessible front, the player draw)** = `Atlas` (maps/stats), `Reference` (the player's manual),
+> `Synthesis` (strategy/dominance); and **THE PAPERS (the hidden research, two stories)** = `The Journey` (the 21
+> engine chapters = the main decoding narrative) + `The Decompiler` (the DREAM/RE story). Nav = **grouped**:
+> `Home · Atlas · Reference · Synthesis · Papers` (Papers = a quiet landing introducing the two stories; homepage
+> shows the 3 gameplay pillars big + a subdued Papers strip). Chapters move OUT of Reference (they're a paper).
+>
+> **✅ SKELETON (structural reorg) — building 2026-06-17:** atlas-as-homepage (dark hero + game-font Fiefs/Daimyo
+> menu → light pillars), the 5-section grouped nav (sticky topbar, BASEURL-absolute links, on standalone pages
+> AND a custom Jekyll `_layouts/default.html` replacing the Cayman theme so the md chapters get the same nav+CSS),
+> and the section landing pages (Reference / Decompiler / Synthesis / Journey / Papers) wired to the EXISTING
+> content. Synthesis seeded with the viability map (moved from "Generated Data") + dominance-thesis links + a
+> capstone placeholder. In `tools/build-site.py` (`nav`/`SITE_CSS`/`page`/`write_index`/`write_sections` +
+> JEKYLL_LAYOUT). Ships the navigable frame; content swaps into the Reference slot later (structure stays put).
+>
+> **🛒 REFERENCE REWORK — the shopping list (the content thread; do AFTER the skeleton, as passes):**
+> Current command + appendix pages are written for ENGINEERS (front-load driver-flow/bytecode); they need a
+> user-friendliness pass. Captured so we don't forget:
+>   1. **Present commands by the IN-GAME MENU, not the code `effect_*` functions.** The decompiler split things by
+>      function; players see menu verbs. **Re-merge: Hire = recruit men + its Ninja submenu** (Uprising/Revolt/
+>      Dams/Assassin/Arson) on ONE page (currently split `hire.html` + `ninja.html`). Audit the rest the same way:
+>      Trade (Loan/Repay/Sell/Buy/Arms), Give (3 sub-modes), View (inspect/spy), Bribe as its own verb. The command
+>      index mirrors the **21-verb menu** as the player navigates it.
+>   2. **Formulas live in THREE places** (Chris's call): (a) the **command page** — user-friendly, plain terms +
+>      animation; (b) the **paper appendix** — TECHNICAL, with direct code references / bytecode-verified formula
+>      (ALL the technical stuff stays here, in the Papers); (c) a **separate "formulas at-a-glance" reference file**
+>      players can scan (consolidated quick-ref). The principle: technical depth stays in the paper appendices, but
+>      the USEFULNESS is also gameplay → surface it in the friendly forms.
+>   3. **Categorize for friendliness** — group commands/content by category, not a flat list.
+>   4. **New non-command pages** — e.g. **Events** (events aren't commands but players want them), + more TBD.
+>   5. **Trim** the existing command/appendix pages for players; demote the deep stuff to the technical tier.
+>   6. **+ more stuff** — Chris's running floor; keep adding.
+
 > ### 🟢 PASS 2 — LAYER 1: VALIDATE THE VM (started 2026-06-03)
 > Pass 1 is done (all subsystems decoded, but via guess-and-reguess). **Pass 2 = facts-first**: solidify
 > what we know, prove the tools accurate, refine labels as we go → a documented codebase + an HTML wiki

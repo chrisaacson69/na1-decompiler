@@ -1,6 +1,5 @@
 title: "Nobunaga's Ambition (NES) — Decompiled & Analyzed"
 description: "A bytecode-VM decompiler, chapter-by-chapter analysis, verified game formulas, and never-before-seen data from the 1989 Koei strategy classic."
-theme: jekyll-theme-cayman
 baseurl: "/na1-decompiler"
 plugins:
   - jekyll-relative-links
