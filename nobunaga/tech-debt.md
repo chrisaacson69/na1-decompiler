@@ -43,15 +43,17 @@ real dream.py switch-handling extension (apply the phi machinery across switch c
 certified census needs the full differential harness** (oracle vs a 4-c executor / DREAM-AST evaluator) — the
 structural "duplicate arm-address line" proxy gives 29 candidates but most are legit (shared loop bodies, jump tables).
 Snapshot of the pre-fix corpus is at `/tmp/all_banks_before_1_2.c` for a regression-diff gate.
-| 1.3 | 32-bit ext-op math chains render as a placeholder `return <local>` | 🟡 CENSUSED + CERTIFIED 2026-06-10 (formulas known; DREAM emit-fix pending) | **exactly 5 subs corpus-wide** (bank1 ×3, bank15 ×2, **bank0 ×0**) | `$8303 math32_muladddiv`, `$8357 ratio_times10_capped` |
+| 1.3 | 32-bit ext-op math chains render as a placeholder `return <local>` | ✅ FIXED 2026-06-10 (certified body-override `_EXTOP_OVERRIDE`, wired at `vm_decompile.py:946`; 0 `// ext_op` stubs remain) | **exactly 5 subs corpus-wide** (bank1 ×3, bank15 ×2, **bank0 ×0**) | `$8303 math32_muladddiv`, `$8357 ratio_times10_capped` |
 
 **★ value-golden ORACLE built 2026-06-10 (`tools/value-oracle.py`).** Runs any VM sub from the REAL ROM via the
 6502 emulator (na1dream.cpu6502/nobunaga_vm) → ground truth by construction. `certify-extop` proved all 5 ext-op
 formulas against the ROM (and CORRECTED a wrong grounding: math32_2arg = (a*100)/(a+b), not a*b/c). Certified
-formulas now in the toml `[CERTIFIED]` comments. This is the gate the whole capstone needed. **Remaining 1.3 work:**
-make DREAM emit these (a 5-entry body-override, like the enum table — safe, bounded) instead of the ext-op stub.
-**Remaining 1.2 work:** extend the oracle to a full differential census (oracle vs a 4-c executor) to find every
-value-merge sub, then the dream.py fold fix.
+formulas now in the toml `[CERTIFIED]` comments. This is the gate the whole capstone needed. **1.3 DONE 2026-06-10:**
+the certified formulas ship as a 5-entry body-override (`_EXTOP_OVERRIDE`, `vm_decompile.py:55`/wired at `:946`) —
+value-exact (oracle-certified, stronger than the CFG gate), bounded, no `// ext_op` stubs left. The general
+aux-32-bit-stack modeling in DREAM stays deliberately unbuilt (not worth it for 5 subs). **Remaining 1.2 work:**
+extend the oracle to a full differential census (oracle vs a 4-c executor) to find every value-merge sub, then the
+dream.py fold fix.
 | 1.4 | return-phi reached by a conditional-branch taken edge | ✅ FIXED 2026-06-10 | — | `$E80C` |
 
 | 1.5 | SWITCH_contig case KEYS rendered as `offs+k` instead of `(k-offs)&0xFFFF` | ✅ FIXED 2026-06-11 | 6 subs (contig switches with offs!=0) | `$8C61`, `$8D5D` |
@@ -66,7 +68,7 @@ check clean, deterministic. offs=0 switches were coincidentally already correct 
 
 | # | Bug | Status | Blast radius | Example subs |
 |---|-----|--------|-------------|--------------|
-| 1.6 | Switch case whose terminator is a JUMP to the shared tail is emitted with NO trailing break → renders as a false FALL-THROUGH into the next case | 🟡 FOUND 2026-06-11 (pass-2; needs census) | ≥1 (one-off vs class unknown) | `$A2D2` (case 4 assassinate "falls into" case 5 arson) |
+| 1.6 | Switch case whose terminator is a JUMP to a case-root that is ALSO the shared tail/merge is emitted with NO trailing break/goto → renders as a false FALL-THROUGH into the next case | 🟡 DIAGNOSED + CENSUSED 2026-06-17 (root cause pinned; emit-only) | **13 fall-through cases corpus-wide, of which ~6 are GENUINE** (bank_02 bit-count cascades `case 128/32/16/8: local11--`); the false ones are a subset (`$A2D2` confirmed; ~6 others need per-case bytecode check) | `$A2D2` (case 4 assassinate "falls into" case 5 arson) |
 
 **Bug 1.6 (false switch fall-through) — FOUND 2026-06-11 during the pass-2 ninja read.** In
 `effect_ninja_sabotage $A2D2` the C (`source/4-c/bank_01.c:2199-2201`) shows `case 4` (assassinate,
@@ -76,9 +78,20 @@ assassinate. **Gate-INVISIBLE and most likely EMIT-only:** the hard gate proves 
 CFG-preserving 499/499, so DREAM's AST routes case 4 → `$A41D` correctly; `_emit_ast` just dropped the
 visual `break`/`goto` to the shared tail, so the TEXT misleads (shows code that doesn't run) — same
 class of "text wrong, behavior right" as 1.5, not a value bug. Found by READING the C against bytecode
-(the "C looks off → drop to bytecode" backup). **Open:** census whether other shared-tail switches
-mis-render the same way; the fix is in `dream.py`'s switch emit (land a terminating `break`/`goto` on a
-case whose body ends in a jump to the merge), label-only.
+(the "C looks off → drop to bytecode" backup).
+
+**ROOT CAUSE PINNED 2026-06-17.** In `dream.py` `_case_region_tc` (~line 1153) a case's outgoing edge is
+classified: `s == merge → break`, **`s in case_targets → fall-through (_ft_sink)`**, else → break. The ROM
+sends case 4 (`$A509`) backward to **`$A41D`**, which is the **default case's root** (basic-C: `default: goto
+L_A41D`) AND the shared report/charge/return tail — so `$A41D ∈ case_targets`, the edge is tagged `_ft_sink`,
+and a BACKWARD jump to the default/merge renders as a silent fall-through. **C fall-through is only valid when the
+target is the case emitted IMMEDIATELY NEXT and reached by a genuine fall (contiguous), NOT a jump.** Fix:
+`_ft_sink` should apply only to the textually-adjacent next case; a jump to any other case-root (backward, or
+skipping cases — esp. the default-as-shared-tail) must emit `goto L_X` (gotosink), not fall-through. CFG-invisible
+(the AST routes correctly), so it needs a VISUAL/value check, not the CFG gate. **Census (2026-06-17): 13 non-empty
+fall-through cases corpus-wide; ~6 are GENUINE cascades (bank_02 `local11--`/`terrain_class_idx--` bit-counts that
+DO flow contiguously); the false ones are the subset whose case jumps away — confirm each via the basic-C
+(`source/3-c-basic`) `goto L_X` vs contiguous flow.** Localized, attended (not unattended) work.
 
 **Shared root cause:** value materialization across a control-flow join (if/else, switch, the 32-bit aux stack)
 keeps only ONE arm's value. The proper fix is one AST-level change in `dream.py`'s fold — emit each arm's value to
@@ -86,8 +99,9 @@ the merge — plus a **value-golden harness** (assert 4-c expression values == V
 entire class **at the gate** instead of by eye. The 32-bit ext-op case (1.3) additionally needs DREAM to model the
 VM's aux 32-bit stack + ext-ops (`sign_extend16_to_32`/`umul32`/`sdiv32`/`add32`) rather than emitting a stub.
 
-**Good news:** both open bugs are *bounded and known*, concentrated in math/formula primitives — not a broad rot.
-Find ext-op subs with `grep -l '// ext_op' source/4-c/bank_NN.c`.
+**Good news:** the remaining open bugs (1.2 name-source subclass, 1.6 false switch fall-through) are *bounded and
+known* — text/value issues in a few math/formula + switch-emit spots, not a broad rot. (1.3 is now FIXED; 1.1/1.4/1.5
+fixed.) Find any residual ext-op subs with `grep -l '// ext_op' source/4-c/bank_NN.c` (currently 0).
 
 **Plan (decided 2026-06-10): DEFER the fix, finish grounding first.** The grounding pass is the quantification pass —
 every affected sub gets hit, read against bytecode, and **flagged inline** in its toml comment (`grep -n 'DREAM\|ext-op\|value-wrong' mesen-labels.toml`).
