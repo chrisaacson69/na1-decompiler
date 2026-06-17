@@ -5,23 +5,24 @@ updated: 2026-06-17
 ---
 # Chapter 16 — The Render Pipeline: How a Tactical Map Becomes Pixels
 
-> Chapter 15 located the per-fief tactical map — a 55-byte cell array addressed by `$A57E + mapid×55` — but couldn't decode what those bytes *meant*. This chapter takes a 1-MB filtered Mesen trace of a battle scene-build, walks the bytecode statically alongside it, and a paused-game SRAM dump from Mino (fief 9) — together they reconstruct the entire render pipeline end-to-end: from the cell-byte in ROM, through the SRAM staging buffer at **`$7B4E`**, through the metatile dictionary at `$B100`, to the per-row PPU writes that paint the screen. The chapter also surfaces the **isometric stagger** baked into the buffer (odd columns offset +8 bytes), the **`$C2`-bit feature-flag encoding** in the cell array, and a confirmed **terrain dictionary** (A=clear, B=forest, C=mountain, D=town, F=castle) verified against six independent landmarks in Mino. The 55-byte fief array is now translatable into a rendered map — the doughnut-fief, the chokepoint terrain, the diagonal mountain ridges, all locatable as concrete bits in concrete bytes.
+> Chapter 15 located the per-fief tactical map — a 55-byte cell array addressed by `$A57E + map_id×55` — but couldn't decode what those bytes *meant*. This chapter reconstructs the entire render pipeline end-to-end, from a 1-MB filtered Mesen trace, the bytecode, and a paused-game SRAM dump from Mino (fief 9): from the cell-byte in ROM, through the SRAM staging buffer at **`$7B4E`**, through the **terrain dictionary at `$B11E`**, to the per-row PPU writes that paint the screen. The core finding is the **cell byte itself**: a **one-hot terrain code** (`& $FE`, a single set bit → terrain type 0–5: castle / forest / town / mountain / clear / river), read by three independent consumers — graphics (`$B11E + type×16`), combat (`$B9C2` multiplier), and movement-blocking (the `$C2` mask). The chapter also surfaces the **isometric stagger** baked into the buffer (odd columns offset +8 bytes). The whole mapping is verified against six independent landmarks in Mino, so the 55-byte array is now translatable into a rendered map — the doughnut-fief, the chokepoint terrain, the diagonal mountain ridges, all locatable as concrete bits in concrete bytes.
 
 **Links:** [Chapter 15 — The Tactical Map](./15-tactical-map.md) · [Chapter 4 — Syscall API](./04-syscall-api.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [Nobunaga README](./README.md)
 
 ## The pipeline, in one diagram
 
 ```
-   ROM bank 2 (or other data bank)                    SRAM ($6000-$7FFF)
+   ROM bank 4 cell pool                               SRAM ($6000-$7FFF)
    ───────────                                        ──────────────────
-   $A57E + fief×55    ──[1]──→  cell-byte (1 B)
+   $A57E + map_id×55  ──[1]──→  cell-byte (1 B, one-hot terrain bitmask)
                                        │
-                                       │ bits 7,6,1 ($C2)
-                                       │ ────────────────[5]───→ feature-flag scan (separate buffer)
-                                       │
-                                       │ bits 5-2,0 (metatile id)
+                                       │ & $FE → which bit (32/16/8/128/4/64)?
+                                       │ ──→ terrain type 0-5
+                                       │         │
+                                       │         ├──[combat]→ $B9C2 mult, ch.17
+                                       │         └──[block ]→ $C2 mask scan ($9019), pathfinding
                                        ▼
-   $B100-$B17D       ──[2]──→  metatile dict (16 B/entry)
+   $B11E + type×16   ──[2]──→  terrain_attr_table (16 B/type, 6 types)
                                        │
                                        ▼
                                 $7B4E + col×88 + stagger    SRAM staging buffer
@@ -43,48 +44,62 @@ updated: 2026-06-17
 
 Each numbered arrow corresponds to one of the sections below.
 
-## [1] The cell-byte: bits 7-6-1 = features, bits 5-2-0 = metatile id
+## [1] The cell-byte is a one-hot terrain bitmask
 
-Chapter 15 dumped fief 11 (Omi) and found bytes like `179` (=$B3), `232` (=$E8), `123` (=$7B) for what Chris identified as castle, town, mountain. The values span the full byte range and don't form a clean 0..N enum — that's because the byte is **two encodings packed in one**.
+Each cell byte is **not** a packed two-field word; it is a **one-hot terrain code**. Exactly one of six bits names the terrain, and bit 0 is a low flag stripped before the decode. The canonical decode is `lookup_terrain_attr_record $83C6` (bytecode-decompiled):
 
-The proof is at bank-2 `$A24A-$A263`, the pathfinding scan inside subroutine `$A221`:
-
+```c
+word lookup_terrain_attr_record(col, row) {
+    type = 5;
+    switch (read_map_cell(col, row) & 254) {   // & $FE — drop bit 0
+        case 32:  type--;   // fall-through
+        case 16:  type--;
+        case 8:   type--;
+        case 128: type--;
+        case 4:   type--; break;
+        case 64:  default: break;
+    }
+    return terrain_attr_table + type*16;        // $B11E + type×16
+}
 ```
-$A251  host_call $DC88        ; reads cell-byte from $A57E + fief×55 + idx
-$A255  loadB_imm_word $00C2   ; regB = $C2  (= %11000010)
-$A258  bitand                 ; regA &= $C2
-$A259  branch_z $A262         ; if (cell & $C2) == 0:
-$A25C    loadA_imm_word $0080 ;   regA = $80   (one branch)
-$A262  clearA                 ; else: regA = 0  (other branch)
-$A263  storeA_ind_byte        ; write the resulting byte into [regB]
-```
 
-The mask `$C2 = 1100 0010` extracts bits 7, 6, and 1. If *any* of those is set, the routine writes `$80` (i.e. "this cell has a special feature"). Otherwise it writes `$00`.
+The `switch` matches `cell & $FE` against a **single** power-of-two value, so each terrain cell carries exactly one terrain bit. The fall-through assigns the type:
 
-This is **the feature scan** — what `$A221` does is read all 55 cells of the fief and build a 55-byte buffer of "is this cell special?" flags at `$7BE8+`. The buffer drives pathfinding (units can't enter fortress cells without bribing; rivers block movement; etc.).
+| `cell & $FE` | type | terrain | combat (§ ch.17) | attr tiles |
+|---|:---:|---|---|---|
+| `$20` (32) | 0 | **castle** | +270% | `$63-72` |
+| `$10` (16) | 1 | **forest** | +60% | `$A2-B1` |
+| `$08` (8) | 2 | **town** | +30% | `$73-81` |
+| `$80` (128) | 3 | mountain (blocks, bit 7) | 0 | `$92-A1` |
+| `$04` (4) | 4 | **clear** | 0 | `$82-91` |
+| `$40` (64) or none | 5 | river / sea (blocks, bit 6) | 0 | `$57-66` |
 
-The remaining five bits (`$3D = 0011 1101`, bits 5-4-3-2-0) form a 5-bit value with 32 possible patterns — exactly the right size for indexing a per-fief **metatile dictionary**. That's the second encoding.
+(Types 0–2 are certified by the combat multiplier and ch.17; types 3–5 are read from the attribute-record tile clusters and the Mino landmark map below.)
 
-This is also why the cross-fief comparison from chapter 15 hit "232 = town AND 232 = mountain in Omi" — bytes with the same low 5 bits but different high bits *would* render the same metatile but with different feature flags. They are the same shape, just one is a town and the other a passable mountain.
+This refutes the earlier "low 5 bits = a 0–31 metatile index" reading: a multi-bit value would fall straight to `default` (type 5), so the low bits cannot be an index — they are mutually-exclusive terrain flags. The terrain dictionary it indexes therefore has **6 entries, not 32** (section [2]).
 
-## [2] The metatile dictionary at bank-2 `$B100-$B17D`
+The **same byte** is read by three independent consumers, each masking differently — which is what made it look like "packed fields":
 
-Static search for the 16-byte signature `82 83 86 87 84 85 88 89 8A 8B 8E 8F 8C 8D 90 91` (one of the metatile patterns we observed in the combat trace) found it at bank-2 `$B15E`. Adjacent 16-byte aligned slots hold the other patterns:
+- **graphics** — `lookup_terrain_attr_record` above (`& $FE`, 6 types) → the tile block to draw.
+- **combat** — `ai_terrain_strength_term $9BB4` (`& $FE`, collapsed to 4 classes: 32→0, 16→1, 8→2, else→3) → `terrain_strength_mult_table $B9C2 = [90,20,10,0]` → the defensive bonus (ch.17).
+- **movement-blocking** — `is_map_cell_blocked $9019` tests the mask **`$C2`** (bits 7,6,1): a cell with bit 7 (mountain/wall), bit 6, or bit 1 (water/border) blocks a unit's path. `$A221`'s BFS uses the same `$C2` mask to mark impassable cells. This is the real role of the `$C2` scan — pathfinding, not a "feature-flag half of the byte."
 
-| Entry | Address | First 8 bytes | Probable terrain |
-|---|---|---|---|
-| #-2 | `$B100` | `12 13 17 19 18 1A 17 18` | UI/border (uses fixed tiles $10-$1F) |
-| #-1 | `$B110` | `13 14 14 18 1B 18 1B 1B` | UI/border continuation |
-| #0  | `$B11E` | `63 64 67 68 65 66 69 6A` | per-fief F |
-| #1  | `$B12E` | `A2 A3 A6 A7 A4 A5 A8 A9` | per-fief B (mountain-like) |
-| #2  | `$B13E` | `73 74 77 78 75 76 79 7A` | per-fief D |
-| #3  | `$B14E` | `92 93 96 97 94 95 98 99` | per-fief C |
-| #4  | `$B15E` | `82 83 86 87 84 85 88 89` | per-fief A (castle-like) |
-| #5  | `$B16E` | `57 58 5B 5C 59 5A 5D 59` | per-fief E |
+## [2] The terrain dictionary — `terrain_attr_table $B11E`, 6 records of 16 bytes
 
-Each entry is **16 bytes** = a 4×4 NES-tile metatile, laid out as four rows of four tiles. The per-fief entries (#0-#5) reference CHR-RAM tiles in the range `$57-$B1` — the same range the combat-init bulk-uploads from ROM `$A05E+` (115 tiles, chapter trace evidence). The UI entries (#-1, #-2) reference fixed tiles `$10-$1F` that don't change per fief.
+`lookup_terrain_attr_record` returns `$B11E + type×16`, so the dictionary is **six 16-byte records** at `$B11E-$B17D`, indexed by terrain type 0–5 — not a 32-entry table indexed by a low-5-bit field. Each record is a **4×4 NES-tile metatile** (four rows of four tiles) drawn for that terrain, in the per-fief CHR range `$57-$B3` the combat-init bulk-uploads from ROM `$A05E+`:
 
-After the metatiles, the region continues with **attribute table data** at `$B17E-$B195` (20 bytes of palette indices in groups of 4 — one quad per metatile, matching the NES PPU's 2×2-tile attribute granularity) and a **pointer table at `$B196+`** with little-endian addresses into `$B1D8-$B4C8`. The pointer table is the next mystery — likely per-fief variant dictionaries, or unit-graphic patterns, both possibilities still open.
+| type | Address | First 8 tiles | terrain |
+|:---:|---|---|---|
+| 0 | `$B11E` | `63 64 67 68 65 66 69 6A` | castle |
+| 1 | `$B12E` | `A2 A3 A6 A7 A4 A5 A8 A9` | forest |
+| 2 | `$B13E` | `73 74 77 78 75 76 79 7A` | town |
+| 3 | `$B14E` | `92 93 96 97 94 95 98 99` | mountain |
+| 4 | `$B15E` | `82 83 86 87 84 85 88 89` | clear |
+| 5 | `$B16E` | `57 58 5B 5C 59 5A 5D 59` | river / sea |
+
+The earlier reading of this region as a `$B100-$B17D` "metatile dictionary" placed the table start **30 bytes too early and mis-indexed it**. The bytes at `$B100` and `$B110` (`12 13 17 19 18 1A …` = decimal 18–27) are not tile graphics — they are the tail of **`strategic_map_fief_y $B0EC`**, the 50-byte per-fief strategic-map Y-coordinate table (Y values run 3–31), which ends exactly at `$B11E` (`$B0EC + 50`). Two adjacent but unrelated tables; the real terrain records begin at `$B11E`. (The "32 possible metatiles" never existed — there are six terrains.)
+
+After the records, `$B17E-$B195` holds **attribute (palette) data** — one quad per terrain — and a **pointer table at `$B196+`** with little-endian addresses into `$B1D8-$B4C8` (still open, item 1 below).
 
 The hot subroutine `$CBBD` shows up *27 times* across the codebase. That's because it's the **VM→syscall bridge** — not the renderer itself, just a thin wrapper that marshals VM arguments into the syscall parameter block at `$0050-$0065` and invokes `syscall_dispatch` ($F226). The underlying syscall is `$C4E0 = syscall_ppu_render_rect`, labeled by chapter 4's syscall sweep as the **"2D nametable region renderer ... used for menu borders, status panels, *map sections*."**
 
@@ -204,19 +219,19 @@ That's exactly **2-3 full scene repaints** (55 cells × 4 row-uploads/cell = 220
 
 ## Putting it all together: a worked example (validated against Mino)
 
-A paused-state SRAM dump from Mino (fief 9, 1-based = index 8, 0-based) was decoded against this model on 2026-05-20. Every cell in the 11×5 grid resolved cleanly to a known metatile pattern from the `$B100` dictionary:
+A paused-state SRAM dump from Mino (fief 9, 1-based = index 8, 0-based) was decoded against this model. Every cell in the 11×5 grid resolved cleanly to a known terrain record from the `$B11E` table:
 
 **Terrain dictionary** (cross-validated against Chris's hand-mapped Mino landmarks):
 
-| Metatile | Tile cluster | Terrain | Validation |
-|---|---|---|---|
-| **A** | `82-91` | clear | bottom-row clear lanes match Chris's description |
-| **B** | `A2-B1` | forest | border cols (0-2 and 10) match Chris's edge-forest pattern |
-| **C** | `92-A1` | mountain | (r2, c6) = mountain between fortress and town ✓; diagonal (0,8)→(3,3) ✓ |
-| **D** | `73-81` | town | (r3, c6) = town ✓ |
-| **F** | `63-72` | castle | (r1, c6) = castle ✓ (Chris's "fortress" position — castle in NA terminology) |
+| type | Tile cluster | Terrain | Validation |
+|:---:|---|---|---|
+| 4 | `82-91` | clear | bottom-row clear lanes match Chris's description |
+| 1 | `A2-B1` | forest | border cols (0-2 and 10) match Chris's edge-forest pattern |
+| 3 | `92-A1` | mountain | (r2, c6) = mountain between fortress and town ✓; diagonal (0,8)→(3,3) ✓ |
+| 2 | `73-81` | town | (r3, c6) = town ✓ |
+| 0 | `63-72` | castle | (r1, c6) = castle ✓ (Chris's "fortress" position — castle in NA terminology) |
 
-(`$B100`'s entries `#-1`/`#-2` use fixed CHR tiles `$10-$1F` and are border/HUD metatiles, not terrain. The dictionary slot at `$B16E` (terrain "E") didn't appear in Mino — likely a river or shrine seen in other fiefs.)
+(Type 5 (`57-66`, river/sea) didn't appear in Mino — seen in coastal fiefs. The earlier table had two extra "border metatile" rows; those bytes were `strategic_map_fief_y`, not terrain — section [2].)
 
 **Decoded Mino battle map** (5 rows × 11 cols, with isometric stagger):
 
@@ -229,23 +244,21 @@ A paused-state SRAM dump from Mino (fief 9, 1-based = index 8, 0-based) was deco
   r4:  frst frst frst cler cler cler cler cler cler cler frst
 ```
 
-Six independent landmarks line up: fortress/castle at (c6, r1), town at (c6, r3), mountain barrier between them at (c6, r2), diagonal mountain ridge from (c8, r0) to (c3, r3), additional mountain band from (c2, r1) to (c4, r2), and clear forest borders on cols 0-2 and 10. **That's full validation of the staging buffer model AND the metatile-to-terrain mapping AND the column/row indexing.**
+Six independent landmarks line up: fortress/castle at (c6, r1), town at (c6, r3), mountain barrier between them at (c6, r2), diagonal mountain ridge from (c8, r0) to (c3, r3), additional mountain band from (c2, r1) to (c4, r2), and clear forest borders on cols 0-2 and 10. **That's full validation of the staging buffer model AND the terrain-type mapping AND the column/row indexing.**
 
 The 55-byte map array at `$A57E + map_id×55` (keyed through `province_to_mapid_table $F70E`, so fiefs can share a map — ch.15) is no longer opaque. It lives in **bank 4**, and the populator `map_populate $8903` reads it one metatile byte at a time. This is validated end-to-end: a blank SRAM seeded with only province=8 (Mino) + the scenario fief-count reproduces the Mino grid **byte-for-byte (1027/1027)** against the paused-state dump. With the terrain dictionary, *every tactical map can now be decoded* straight from bank 4.
 
 ## What's still open (appendix material)
 
-The cell table's location (bank 4) and the populator (`map_populate $8903`) are settled — the byte-for-byte Mino reproduction closes them. What remains:
+The cell table (bank 4), the populator (`map_populate $8903`), and the cell-byte decode (one-hot terrain → `terrain_attr_table $B11E`, sections [1]/[2]) are all settled — closed by the byte-for-byte Mino reproduction and the `$83C6`/`$9BB4` bytecode. What remains:
 
-1. **Reconcile the cell-byte bit-decode with the synthesis reading.** This chapter reads the cell byte as `$C2`-mask feature flags (bits 7,6,1) plus a low-5-bit metatile index into `$B100`. The later synthesis/populate work reads it as `read_map_cell & 254` → a one-hot bitmask (`32/16/8/128/4/64`) → terrain index 0–5 → a 16-byte record in `terrain_attr_table $B11E` (the combat-modifier table). `$B11E` falls *inside* this chapter's `$B100` dictionary range, so the two models overlap and need a single reconciled account — likely "same byte, two consumers" (graphics metatile vs combat-modifier record), but the exact bit assignment must be pinned.
+1. **The pointer table at `$B196`** — 50-ish word pointers into `$B1D8-$B4C8`. Could be per-fief variant terrain dictionaries, unit graphic patterns, or attribute-override tables.
 
-2. **The pointer table at `$B196`** — 50-ish word pointers into `$B1D8-$B4C8`. Could be per-fief variant metatile dictionaries, unit graphic patterns, or attribute-override tables.
+2. **The unit-overlay writer** — the code that stamps unit graphics on the rendered nametable. The terrain layer at `$7B4E+` is unit-free, so unit composition happens at render-time, not in the staging buffer.
 
-3. **The unit-overlay writer** — the code that stamps unit graphics on the rendered nametable. The terrain layer at `$7B4E+` is unit-free, so unit composition happens at render-time, not in the staging buffer.
+3. **The actual viewport-section variable** — the three 5×5 page-views are real but `$6FFE` doesn't drive them. The actual section selector is at an unknown SRAM byte set by the scroll-input handler.
 
-4. **The actual viewport-section variable** — the three 5×5 page-views are real but `$6FFE` doesn't drive them. The actual section selector is at an unknown SRAM byte set by the scroll-input handler.
-
-5. **The reachability buffer destination** — `$A221`'s `$C2`-mask scan writes flag bytes somewhere, but not to `$7BE8` (which is inside the terrain staging buffer). Where exactly the path-find scratchpad lives is open.
+4. **The reachability buffer destination** — `$A221`'s `$C2`-mask scan writes flag bytes somewhere, but not to `$7BE8` (which is inside the terrain staging buffer). Where exactly the path-find scratchpad lives is open.
 
 ## Tags
 
