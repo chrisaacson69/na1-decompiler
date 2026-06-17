@@ -135,6 +135,17 @@ def main():
 
     write_index(sections)
     write_sections(sections)
+
+    # stamp the site nav onto pages from OTHER generators (depth-aware relative links)
+    for h in OUT.glob("turn-loop*.html"):
+        inject_nav(h, "", "Reference")
+    inject_nav(OUT / "ai.html", "", "Reference")
+    for h in (OUT / "commands").glob("*.html"):
+        inject_nav(h, "../", "Reference")
+    inject_nav(OUT / "data" / "viability.html", "../", "Synthesis")
+    for h in (OUT / "atlas").glob("*.html"):
+        inject_nav(h, "../", "Atlas")
+
     n_html = len(list((OUT / "commands").glob("*.html"))) if (OUT / "commands").exists() else 0
     print(f"Built docs/ : {len(chapters)} chapters, {len(appendices)} appendices, "
           f"{len(decompiler)} decompiler pages, {n_html} command HTML, "
@@ -145,12 +156,40 @@ NAV_LINKS = [("Home", "index.html"), ("Atlas", "atlas/"), ("Reference", "referen
              ("Synthesis", "synthesis.html"), ("Papers", "papers.html")]
 
 
-def nav(active=""):
+def nav(active="", prefix=""):
     out = []
     for label, path in NAV_LINKS:
         cls = ' class="active"' if label == active else ''
-        out.append(f'<a href="{path}"{cls}>{label}</a>')
+        out.append(f'<a href="{prefix}{path}"{cls}>{label}</a>')
     return '<nav class="topbar">' + "".join(out) + "</nav>"
+
+
+def nav_css(prefix=""):
+    """Self-contained nav-bar CSS, for injecting into pages made by OTHER generators
+    (command/turn-loop/ai/viability/atlas) that don't share SITE_CSS. Scoped to .topbar
+    so it won't fight a page's own styles. `prefix` ('../' one level deep) points the
+    font at docs/assets/fonts/."""
+    return ("@font-face{font-family:'NA';src:url('" + prefix + "assets/fonts/nobunaga.ttf') format('truetype')}"
+            ".topbar{background:#0a0a12;display:flex;justify-content:center;gap:4px;flex-wrap:wrap;"
+            "padding:9px 12px;position:sticky;top:0;z-index:9999;border-bottom:2px solid #45e082}"
+            ".topbar a{color:#cfcfe0;font-family:'NA',monospace;font-size:15px;text-decoration:none;"
+            "padding:6px 13px;border-radius:4px;border:none}"
+            ".topbar a:hover{color:#fff;background:rgba(255,255,255,.08)}"
+            ".topbar a.active{color:#45e082}")
+
+
+def inject_nav(html_path, prefix="", active=""):
+    """Stamp the site nav onto a page produced by another generator (idempotent)."""
+    if not html_path.exists():
+        return
+    html = html_path.read_text(encoding="utf-8")
+    if 'class="topbar"' in html:
+        return
+    css = "<style>" + nav_css(prefix) + "</style>"
+    html = html.replace("</head>", css + "</head>", 1) if "</head>" in html else css + html
+    m = re.search(r"<body[^>]*>", html)
+    html = (html[:m.end()] + "\n" + nav(active, prefix) + html[m.end():]) if m else nav(active, prefix) + html
+    html_path.write_text(html, encoding="utf-8")
 
 
 def footer():
