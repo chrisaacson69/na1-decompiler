@@ -57,6 +57,7 @@ NES_PALETTE = [
 BANK_MAP = 4
 TILEMAP = 0x8D5C       # 0x1C0 bytes/section
 ATTR    = 0x9D1C       # 0x20 bytes/section
+RECORDS = 0x9E3C       # 34 bytes/section: (col, row, fief_id) triples, 0xFF-terminated
 CHR_BASE = 0x845C      # bank4 byte addr that uploads to PT1 tile 91 ($15B0)
 CHR_TILE0 = 91         # tile index that CHR_BASE corresponds to
 SEC_W, SEC_H = 28, 16  # tiles
@@ -64,16 +65,28 @@ N_SEC = 9
 PAL_TABLE = 0xF67A     # bank 15 (fixed)
 
 
+# The strategic map's 4 BG sub-palettes, captured from a live PPU dump taken on the
+# Map screen (traces/17fiefmapAPPU.dmp, $3F00-$3F1F). These are AUTHORITATIVE.
+#
+# Why not read them from ROM: repaint_screen ($CD20) only loads sub-palette 0 from
+# strategic_map_bg_palette ($F67A); sub-palettes 1-3 are inherited ambient PPU state set
+# by earlier screens, so there is no ROM table for them. (The old loader read the 8 bytes
+# at $F682 = the TITLE-SCREEN palette [$3E,$16,$38,$30], stored just before the
+# "Control"/"(Y/N)" strings, as sub-pal 1 and copied it into 2/3 -- the bogus RED.)
+# The palette is scenario-independent (same Map display code), so this covers 17 and 50.
+MAP_BG_PALETTE = [
+    [0x3E, 0x12, 0x29, 0x30],   # sub-pal0: backdrop / sea / land / white
+    [0x3E, 0x02, 0x12, 0x21],   # sub-pal1: deep-sea depth gradient
+    [0x3E, 0x18, 0x29, 0x30],   # sub-pal2: gold-brown earth / green / white (dominant land)
+    [0x3E, 0x18, 0x01, 0x30],   # sub-pal3: gold-brown / dark-blue / white (mountain/coast)
+]
+
+
 def load_palettes(vm):
-    """4 BG sub-palettes. We know sub-palette 0 & 1 from $F67A; fill the rest by
-    repeating so attribute bytes that select pal 2/3 still draw something sane."""
-    raw = [vm.read_banked(15, PAL_TABLE + i) for i in range(16)]
-    # stored as words (color, 0x00); colors at even offsets
-    cols = [raw[i * 2] & 0x3F for i in range(8)]
-    sub = [cols[0:4], cols[4:8]]
-    sub.append(cols[0:4])
-    sub.append(cols[4:8])
-    return [[NES_PALETTE[c] for c in s] for s in sub]
+    """The strategic map's 4 BG sub-palettes (authoritative; see MAP_BG_PALETTE). `vm`
+    is accepted for signature compatibility but unused -- the palette is a PPU capture,
+    not a ROM read."""
+    return [[NES_PALETTE[c] for c in s] for s in MAP_BG_PALETTE]
 
 
 def decode_tile(vm, tile_idx, rom):
@@ -95,15 +108,22 @@ def decode_tile(vm, tile_idx, rom):
 
 
 def attr_palette(attr_bytes, tx, ty):
-    """Which BG sub-palette (0-3) applies at tile (tx,ty). NES attribute layout:
-    1 byte per 32x32px (4x4 tile) area; 2 bits per 16x16 (2x2 tile) quadrant."""
-    # attribute table is 8 bytes/row of 4x4-tile cells; section is 28 wide -> 7 cells
-    cell_x, cell_y = tx // 4, ty // 4
+    """Which BG sub-palette (0-3) applies at section-local tile (tx,ty). NES attribute
+    layout: 1 byte per 32x32px (4x4 tile) area; 2 bits per 16x16 (2x2 tile) quadrant.
+
+    The section is blitted to screen cols 2-29, rows 4-19, and its 32-byte attribute table
+    is uploaded to PPU $23C8 (the attribute byte for screen rows 4-7). Rows land on a 4-tile
+    attribute-cell boundary (row 4), so ty maps straight through -- but COLUMNS start at
+    screen col 2, which is MID-cell. So we must decode at screen col (tx+2); using the raw
+    section-local tx puts every other quad-column in the wrong cell, swapping sub-palettes
+    on adjacent quads (lakes/mountains flip colour). The table is 8 bytes/row (32 tiles)."""
+    sx = tx + 2                                   # section col 0 -> screen col 2
+    cell_x, cell_y = sx // 4, ty // 4
     idx = cell_y * 8 + cell_x
     if idx >= len(attr_bytes):
         return 0
     b = attr_bytes[idx]
-    quad = ((ty % 4) // 2) * 2 + ((tx % 4) // 2)  # 0 TL,1 TR,2 BL,3 BR
+    quad = ((ty % 4) // 2) * 2 + ((sx % 4) // 2)  # 0 TL,1 TR,2 BL,3 BR
     return (b >> (quad * 2)) & 3
 
 
@@ -211,6 +231,227 @@ def contact_sheet(vm, pals, sections, cols, scale=2):
     return sheet
 
 
+# ---------------------------------------------------------------------------
+# FAITHFUL stitch: align sections by their per-section fief RECORD LIST ($9E3C),
+# merge onto an unbounded virtual tilemap (first-writer-wins dedups boundary
+# labels), then nearest-neighbour-fill the notch corners with adjacent terrain.
+# ---------------------------------------------------------------------------
+def read_records(vm, sec):
+    """{fief_id: (tx, ty)} in tilemap coords, from the section's record list.
+    Records are screen-space (col 0-27, row 4-19); ty = row-4."""
+    base = RECORDS + sec * 34
+    recs = {}
+    for i in range(11):
+        c = vm.read_banked(BANK_MAP, base + i * 3)
+        if c == 0xFF:
+            break
+        r = vm.read_banked(BANK_MAP, base + i * 3 + 1)
+        fid = vm.read_banked(BANK_MAP, base + i * 3 + 2)
+        recs[fid] = (c, r - 4)
+    return recs
+
+
+def _section_tiles(vm, sec):
+    tm = [vm.read_banked(BANK_MAP, TILEMAP + sec * 0x1C0 + i) for i in range(0x1C0)]
+    at = [vm.read_banked(BANK_MAP, ATTR + sec * 0x20 + i) for i in range(0x20)]
+    return tm, at
+
+
+def _record_offset(ra, rb):
+    """Placement of section b relative to a (tilemap-cell delta), from the median
+    of (pos_a - pos_b) over fiefs both record lists share. None if no shared fief."""
+    shared = set(ra) & set(rb)
+    if not shared:
+        return None
+    dxs = sorted(ra[f][0] - rb[f][0] for f in shared)
+    dys = sorted(ra[f][1] - rb[f][1] for f in shared)
+    m = len(shared) // 2
+    return dxs[m], dys[m]
+
+
+def faithful_layout(vm, sections, seed=0):
+    """{section: (ax, ay)} by chaining record offsets from the seed (spanning tree)."""
+    recs = {s: read_records(vm, s) for s in sections}
+    placed = {seed: (0, 0)}
+    remaining = [s for s in sections if s != seed]
+    progress = True
+    while remaining and progress:
+        progress = False
+        for s in list(remaining):
+            for p, (px_, py_) in placed.items():
+                off = _record_offset(recs[p], recs[s])
+                if off is not None:
+                    placed[s] = (px_ + off[0], py_ + off[1])
+                    remaining.remove(s)
+                    progress = True
+                    print(f"  placed sec {s} at {placed[s]} (record-aligned to {p})")
+                    break
+    if remaining:
+        print(f"  (no shared-fief link for sections {remaining}; left unplaced)")
+    return placed
+
+
+def _interp_by_row(anchors, n=SEC_H):
+    """anchors {section_row: dx} -> list[n] of int dx, linearly interpolated + clamped.
+    Models the vertical shear between two pannable map pages (x-offset varies by row)."""
+    pts = sorted(anchors.items())
+    out = []
+    for ty in range(n):
+        if ty <= pts[0][0]:
+            out.append(pts[0][1])
+        elif ty >= pts[-1][0]:
+            out.append(pts[-1][1])
+        else:
+            for (r0, d0), (r1, d1) in zip(pts, pts[1:]):
+                if r0 <= ty <= r1:
+                    out.append(round(d0 + (d1 - d0) * (ty - r0) / (r1 - r0)))
+                    break
+    return out
+
+
+def _pair_shear(ra, rb):
+    """Align section b onto section a from shared-fief records (tilemap coords).
+    Returns (dy:int, dx_by_row:list[SEC_H]) -- a constant row shift + a per-row x shift."""
+    shared = set(ra) & set(rb)
+    dys = sorted(ra[f][1] - rb[f][1] for f in shared)
+    dy = dys[len(dys) // 2]
+    anchors = {rb[f][1]: ra[f][0] - rb[f][0] for f in shared}   # b's row -> x offset
+    return dy, _interp_by_row(anchors)
+
+
+def faithful_layout_sheared(vm, sections, seed=0, shear=False):
+    """{section: (dy, dx_by_row)} via a spanning tree from the seed.
+
+    With shear=False (CANONICAL) each section gets a CONSTANT x-offset = its mid-row
+    alignment (for 17-fief that is -16, the version we settled on); the per-row shear it
+    interpolates is kept but collapsed. With shear=True it keeps the full per-row x shift
+    (experimental: removes the seam squish but adds artifacts elsewhere -- parked).
+    Chained links (the 50-fief case) compose with the parent's mid dx -- a proper global
+    least-squares solve is the planned 50-fief fix."""
+    recs = {s: read_records(vm, s) for s in sections}
+    placed = {seed: (0, [0] * SEC_H)}
+    remaining = [s for s in sections if s != seed]
+    progress = True
+    while remaining and progress:
+        progress = False
+        for s in list(remaining):
+            for p, (pdy, pdx) in placed.items():
+                if set(recs[p]) & set(recs[s]):
+                    dy, dxby = _pair_shear(recs[p], recs[s])
+                    base = pdx[SEC_H // 2]                  # parent mid-row dx (0 for seed)
+                    row_dx = [base + d for d in dxby]
+                    if not shear:
+                        row_dx = [row_dx[SEC_H // 2]] * SEC_H   # collapse to a constant
+                    placed[s] = (pdy + dy, row_dx)
+                    remaining.remove(s)
+                    progress = True
+                    print(f"  placed sec {s}: dy={pdy + dy}, dx {row_dx[0]}..{row_dx[-1]} "
+                          f"({'shear' if shear else 'constant'} to {p})")
+                    break
+    if remaining:
+        print(f"  (no shared-fief link for {remaining}; unplaced)")
+    return placed
+
+
+def _nn_fill(grid, x0, y0, x1, y1):
+    """Fill any cell in the bbox missing from grid with its nearest set neighbour."""
+    import collections
+    missing = [(x, y) for y in range(y0, y1) for x in range(x0, x1) if (x, y) not in grid]
+    for (x, y) in missing:
+        for radius in range(1, max(x1 - x0, y1 - y0)):
+            found = None
+            for dy in range(-radius, radius + 1):
+                for dx in range(-radius, radius + 1):
+                    if (x + dx, y + dy) in grid:
+                        found = grid[(x + dx, y + dy)]
+                        break
+                if found:
+                    break
+            if found:
+                grid[(x, y)] = found
+                break
+
+
+def _draw_label(px, W, H, lx, ly, text):
+    """Draw `text` as white font glyphs on a 1px black box, top-left at native px (lx,ly)."""
+    bw, bh = len(text) * 8 + 2, 10
+    for yy in range(-1, bh - 1):
+        for xx in range(-1, bw - 1):
+            x, y = lx + xx, ly + yy
+            if 0 <= x < W and 0 <= y < H:
+                px[x, y] = (0, 0, 0)                 # box backdrop
+    for i, ch in enumerate(text):
+        tile = _rt.char_to_tile(ch)
+        if tile is None:
+            continue
+        bmp = _rt._tile_bitmap(_rt._rom(), tile)
+        for yy in range(8):
+            for xx in range(8):
+                if bmp[yy][xx]:
+                    x, y = lx + i * 8 + xx, ly + yy
+                    if 0 <= x < W and 0 <= y < H:
+                        px[x, y] = (255, 255, 255)
+
+
+def render_faithful_stitch(vm, pals, sections, scale=2, seed=0, placed=None, shear=False):
+    """Record-aligned virtual-tilemap stitch:
+      - place sections by their fief-record offsets onto an unbounded canvas;
+      - keep TERRAIN tiles only (skip baked font/number tiles, v<=80) so boundary
+        fiefs don't double; lower section number wins on overlap;
+      - nearest-neighbour fill the notch corners + the stripped label cells;
+      - redraw each fief's number ONCE from the record list, at its true position.
+
+    `placed` overrides the layout with explicit {section: (dy, dx_by_row)}.
+    Returns (img, fief_px) where fief_px = {fief_id: (cx, cy)} is each fief number's
+    centre in OUTPUT (scaled) pixels -- the anchor for clickable hotspots."""
+    rom = _rt._rom()
+    if placed is None:
+        placed = faithful_layout_sheared(vm, sections, seed=seed, shear=shear)
+    recs = {s: read_records(vm, s) for s in placed}
+    grid = {}  # (vx, vy) -> (tile_value, sub_palette); terrain only
+    for s in sorted(placed):                         # section order = overlap priority
+        dy, dxby = placed[s]
+        tm, at = _section_tiles(vm, s)
+        for ty in range(SEC_H):
+            dx = dxby[ty]                            # per-row x shift (the page shear)
+            for tx in range(SEC_W):
+                v = tm[ty * SEC_W + tx]
+                if v <= FONT_MAX_TILE:               # baked number -> leave a hole
+                    continue
+                key = (tx + dx, ty + dy)
+                if key not in grid:                  # first writer wins
+                    grid[key] = (v, attr_palette(at, tx, ty))
+    xs = [x for x, y in grid]; ys = [y for x, y in grid]
+    x0, x1, y0, y1 = min(xs), max(xs) + 1, min(ys), max(ys) + 1
+    _nn_fill(grid, x0, y0, x1, y1)                    # notch/shear gaps + stripped labels
+    W, H = (x1 - x0) * 8, (y1 - y0) * 8
+    img = Image.new("RGB", (W, H), (0, 0, 0))
+    px = img.load()
+    for (vx, vy), (v, p) in grid.items():
+        tile = decode_tile(vm, v, rom)
+        ox, oy = (vx - x0) * 8, (vy - y0) * 8
+        for yy in range(8):
+            for xx in range(8):
+                px[ox + xx, oy + yy] = pals[p][tile[yy][xx]]
+    # one number per fief, at its record position (priority = lowest placed section)
+    fief_pos = {}
+    for s in sorted(placed):
+        dy, dxby = placed[s]
+        for fid, (tx, ty) in recs[s].items():
+            fief_pos.setdefault(fid, (tx + dxby[ty], ty + dy))
+    fief_px = {}
+    for fid, (vx, vy) in fief_pos.items():
+        text = str(fid + 1)
+        lx = min(max(0, (vx - x0) * 8), W - (len(text) * 8 + 2))
+        ly = min(max(1, (vy - y0) * 8), H - 10)      # keep the box on-canvas
+        _draw_label(px, W, H, lx, ly, text)
+        # 1-based fief number -> centre of the label box, in output (scaled) pixels
+        fief_px[fid + 1] = ((lx + len(text) * 4) * scale, (ly + 4) * scale)
+    if scale != 1:
+        img = img.resize((W * scale, H * scale), Image.NEAREST)
+    return img, fief_px
+
+
 def main():
     args = sys.argv[1:]
     scale = int(args[args.index("--scale") + 1]) if "--scale" in args else 2
@@ -226,10 +467,17 @@ def main():
     # NOT a single scrolling map (edge-match + scroll-overlap both ~0.1).
     scenario = int(args[args.index("--scenario") + 1]) if "--scenario" in args else 50
     sections = [0, 1] if scenario == 17 else list(range(N_SEC))
+    fief_px = None
     if "--section" in args:
         sec = int(args[args.index("--section") + 1])
         img = render_section(vm, sec, pals, scale)
         out = out or f"assets/maps/strategic/strategic-section-{sec}.png"
+    elif "--faithful" in args:
+        shear = "--shear" in args                       # default: constant offset (canonical)
+        print(f"Record-aligned faithful stitch, scenario-{scenario} sections {sections} "
+              f"({'shear' if shear else 'constant'})...")
+        img, fief_px = render_faithful_stitch(vm, pals, sections, scale=scale, shear=shear)
+        out = out or f"assets/maps/strategic/strategic-map-{scenario}-stitched.png"
     elif "--stitch" in args:
         print(f"Auto-stitching scenario-{scenario} sections {sections}...")
         img = render_stitch(vm, pals, sections, scale=scale)
@@ -240,6 +488,13 @@ def main():
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
     print(f"wrote {out}  ({img.width}x{img.height})")
+    if fief_px is not None:                             # coords manifest for clickable hotspots
+        import json
+        coords = {"image": Path(out).name, "size": [img.width, img.height],
+                  "fiefs": {str(k): list(v) for k, v in sorted(fief_px.items())}}
+        cpath = Path(out).with_suffix(".coords.json")
+        cpath.write_text(json.dumps(coords, indent=1), encoding="utf-8")
+        print(f"wrote {cpath.name}  ({len(fief_px)} fief hotspots)")
 
 
 if __name__ == "__main__":

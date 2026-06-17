@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daimyo - 50-fief - Nobunaga&#x27;s Ambition</title>
+<style>
+@font-face {
+  font-family: 'NobunagaFont';
+  src: url('../assets/fonts/nobunaga.ttf') format('truetype');
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 32px 16px;
+  background: #000000; color: #fffeff;
+  font-family: 'NobunagaFont', monospace;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  font-size: 24px; line-height: 1.35;
+}
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+.panel { max-width: 640px; margin: 0 auto; }
+.row { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+img { image-rendering: pixelated; display: block; }
+.portrait { width: 192px; height: 192px; }
+.banner   { width: 192px; height: auto; margin-top: 12px; }
+/* full-bleed: let the map escape the narrow panel and span the viewport */
+.mapwrap  { width: 100vw; position: relative; left: 50%; transform: translateX(-50%);
+            margin-top: 28px; text-align: center; }
+.battlemap{ height: auto; max-width: 100%; display: inline-block;
+            image-rendering: pixelated; }
+
+/* stat block: label left, value right-aligned, like the in-game column */
+.stats { width: 260px; }
+.stat { display: flex; justify-content: space-between; }
+.stat .v { padding-left: 24px; }
+
+/* daimyo page (green) */
+.name { color: #45e082; font-size: 40px; letter-spacing: 2px; margin-bottom: 8px; }
+.home { color: #e4e594; margin-bottom: 14px; }
+.home a { color: #45e082; }
+.stats.daimyo .stat, .stats.daimyo .k, .stats.daimyo .v { color: #45e082; }
+
+/* fief page (white title, purple labels, white values) */
+.title { color: #fffeff; font-size: 36px; letter-spacing: 2px; margin-bottom: 8px; }
+.lord { color: #c676ff; margin-bottom: 14px; }
+.lord a { color: #45e082; }
+.stats.fief .k { color: #c676ff; }
+.stats.fief .v { color: #fffeff; }
+
+/* nav back to the indexes */
+.nav { font-size: 18px; margin-bottom: 22px; }
+.nav a { color: #45e082; }
+.nav .sep { color: #555; padding: 0 8px; }
+
+/* index pages: a clickable grid of portrait tiles */
+.panel.wide { max-width: 1040px; }
+.ix-title { color: #fffeff; font-size: 36px; letter-spacing: 2px; margin-bottom: 18px; }
+.grid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+.cell { width: 148px; text-align: center; }
+.cell img { width: 112px; height: 112px; image-rendering: pixelated; margin: 0 auto; }
+.cell .clan { color: #45e082; font-size: 16px; margin-top: 6px; display: block;
+              white-space: nowrap; }
+.cell .num { color: #6a6a80; font-size: 13px; display: block; white-space: nowrap; }
+.cell a { color: inherit; display: block; }
+.cell .dlink:hover .clan { text-decoration: underline; }
+.cell .flink:hover .num { text-decoration: underline; }
+
+/* homepage: title art banner + a menu of index links */
+.home-banner { text-align: center; }
+.home-banner img { max-width: 100%; image-rendering: pixelated; margin: 0 auto; }
+.menu { text-align: center; margin-top: 34px; font-size: 26px; }
+.menu .col { display: inline-block; vertical-align: top; margin: 0 36px; }
+.menu .head { color: #fffeff; margin-bottom: 10px; letter-spacing: 2px; }
+.menu a { color: #45e082; display: block; margin: 5px 0; }
+.menu .soon { color: #555; display: block; margin: 5px 0; }
+
+/* clickable strategic-map index: hotspots overlaid on the map image */
+.map-index { position: relative; display: inline-block; max-width: 100%; line-height: 0; }
+.map-index img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.hot { position: absolute; transform: translate(-50%, -50%); width: 5.2%; height: 8%;
+       border: 2px solid transparent; border-radius: 3px; }
+.hot:hover { border-color: #e4e594; background: rgba(228,229,148,0.28); }
+.hot .tip { position: absolute; left: 50%; bottom: 112%; transform: translateX(-50%);
+            white-space: nowrap; background: #000; color: #45e082; font-size: 16px;
+            line-height: 1.1; padding: 3px 6px; border: 1px solid #45e082; display: none; }
+.hot:hover .tip { display: block; }
+</style>
+</head><body><div class="panel wide">
+<div class="nav"><a href="daimyo-17.html">17-fief daimyo</a></div><div class="ix-title">Daimyo &mdash; 50-fief scenario (50)</div><div class="grid"><div class="cell"><a class="dlink" href="daimyo-50-00.html"><img src="../assets/portraits/50/daimyo-00.png" alt="Kakizaki"><span class="clan">Kakizaki</span></a><a class="flink" href="fief-50-00.html"><span class="num">1 Ezo</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-01.html"><img src="../assets/portraits/50/daimyo-01.png" alt="Tsugaru"><span class="clan">Tsugaru</span></a><a class="flink" href="fief-50-01.html"><span class="num">2 Mutsu</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-02.html"><img src="../assets/portraits/50/daimyo-02.png" alt="Nanbu"><span class="clan">Nanbu</span></a><a class="flink" href="fief-50-02.html"><span class="num">3 Morioka</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-03.html"><img src="../assets/portraits/50/daimyo-03.png" alt="Kasai"><span class="clan">Kasai</span></a><a class="flink" href="fief-50-03.html"><span class="num">4 Iwasaki</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-04.html"><img src="../assets/portraits/50/daimyo-04.png" alt="Akita"><span class="clan">Akita</span></a><a class="flink" href="fief-50-04.html"><span class="num">5 Ugo</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-05.html"><img src="../assets/portraits/50/daimyo-05.png" alt="Date"><span class="clan">Date</span></a><a class="flink" href="fief-50-05.html"><span class="num">6 Rikuzen</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-06.html"><img src="../assets/portraits/50/daimyo-06.png" alt="Mogami"><span class="clan">Mogami</span></a><a class="flink" href="fief-50-06.html"><span class="num">7 Uzen</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-07.html"><img src="../assets/portraits/50/daimyo-07.png" alt="Yuki"><span class="clan">Yuki</span></a><a class="flink" href="fief-50-07.html"><span class="num">8 Iwaki</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-08.html"><img src="../assets/portraits/50/daimyo-08.png" alt="Ashina"><span class="clan">Ashina</span></a><a class="flink" href="fief-50-08.html"><span class="num">9 Iwashiro</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-09.html"><img src="../assets/portraits/50/daimyo-09.png" alt="Uesugi"><span class="clan">Uesugi</span></a><a class="flink" href="fief-50-09.html"><span class="num">10 Echigo</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-10.html"><img src="../assets/portraits/50/daimyo-10.png" alt="Satake"><span class="clan">Satake</span></a><a class="flink" href="fief-50-10.html"><span class="num">11 Hitachi</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-11.html"><img src="../assets/portraits/50/daimyo-11.png" alt="Utsunomi"><span class="clan">Utsunomi</span></a><a class="flink" href="fief-50-11.html"><span class="num">12 Shimotsu</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-12.html"><img src="../assets/portraits/50/daimyo-12.png" alt="Satomi"><span class="clan">Satomi</span></a><a class="flink" href="fief-50-12.html"><span class="num">13 Awa</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-13.html"><img src="../assets/portraits/50/daimyo-13.png" alt="Hojo"><span class="clan">Hojo</span></a><a class="flink" href="fief-50-13.html"><span class="num">14 Musashi</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-14.html"><img src="../assets/portraits/50/daimyo-14.png" alt="Takeda"><span class="clan">Takeda</span></a><a class="flink" href="fief-50-14.html"><span class="num">15 Shinano</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-15.html"><img src="../assets/portraits/50/daimyo-15.png" alt="Hatakeya"><span class="clan">Hatakeya</span></a><a class="flink" href="fief-50-15.html"><span class="num">16 Noto</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-16.html"><img src="../assets/portraits/50/daimyo-16.png" alt="Jinbo"><span class="clan">Jinbo</span></a><a class="flink" href="fief-50-16.html"><span class="num">17 Ecchu</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-17.html"><img src="../assets/portraits/50/daimyo-17.png" alt="Anekoji"><span class="clan">Anekoji</span></a><a class="flink" href="fief-50-17.html"><span class="num">18 Hida</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-18.html"><img src="../assets/portraits/50/daimyo-18.png" alt="Kiso"><span class="clan">Kiso</span></a><a class="flink" href="fief-50-18.html"><span class="num">19 Kiso</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-19.html"><img src="../assets/portraits/50/daimyo-19.png" alt="Imagawa"><span class="clan">Imagawa</span></a><a class="flink" href="fief-50-19.html"><span class="num">20 Suruga</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-20.html"><img src="../assets/portraits/50/daimyo-20.png" alt="Honganji"><span class="clan">Honganji</span></a><a class="flink" href="fief-50-20.html"><span class="num">21 Kaga</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-21.html"><img src="../assets/portraits/50/daimyo-21.png" alt="Asakura"><span class="clan">Asakura</span></a><a class="flink" href="fief-50-21.html"><span class="num">22 Echizen</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-22.html"><img src="../assets/portraits/50/daimyo-22.png" alt="Saito"><span class="clan">Saito</span></a><a class="flink" href="fief-50-22.html"><span class="num">23 Mino</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-23.html"><img src="../assets/portraits/50/daimyo-23.png" alt="Tokugawa"><span class="clan">Tokugawa</span></a><a class="flink" href="fief-50-23.html"><span class="num">24 Mikawa</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-24.html"><img src="../assets/portraits/50/daimyo-24.png" alt="Oda"><span class="clan">Oda</span></a><a class="flink" href="fief-50-24.html"><span class="num">25 Owari</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-25.html"><img src="../assets/portraits/50/daimyo-25.png" alt="Kitabata"><span class="clan">Kitabata</span></a><a class="flink" href="fief-50-25.html"><span class="num">26 Iseshima</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-26.html"><img src="../assets/portraits/50/daimyo-26.png" alt="Asai"><span class="clan">Asai</span></a><a class="flink" href="fief-50-26.html"><span class="num">27 Omi</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-27.html"><img src="../assets/portraits/50/daimyo-27.png" alt="Rokkaku"><span class="clan">Rokkaku</span></a><a class="flink" href="fief-50-27.html"><span class="num">28 Iga</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-28.html"><img src="../assets/portraits/50/daimyo-28.png" alt="Isshiki"><span class="clan">Isshiki</span></a><a class="flink" href="fief-50-28.html"><span class="num">29 Tango</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-29.html"><img src="../assets/portraits/50/daimyo-29.png" alt="Hatano"><span class="clan">Hatano</span></a><a class="flink" href="fief-50-29.html"><span class="num">30 Tanba</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-30.html"><img src="../assets/portraits/50/daimyo-30.png" alt="Ashikaga"><span class="clan">Ashikaga</span></a><a class="flink" href="fief-50-30.html"><span class="num">31 Yamashir</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-31.html"><img src="../assets/portraits/50/daimyo-31.png" alt="Tsutsui"><span class="clan">Tsutsui</span></a><a class="flink" href="fief-50-31.html"><span class="num">32 Yamato</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-32.html"><img src="../assets/portraits/50/daimyo-32.png" alt="Miyoshi"><span class="clan">Miyoshi</span></a><a class="flink" href="fief-50-32.html"><span class="num">33 Settsu</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-33.html"><img src="../assets/portraits/50/daimyo-33.png" alt="Horiuchi"><span class="clan">Horiuchi</span></a><a class="flink" href="fief-50-33.html"><span class="num">34 Kii</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-34.html"><img src="../assets/portraits/50/daimyo-34.png" alt="Yamana"><span class="clan">Yamana</span></a><a class="flink" href="fief-50-34.html"><span class="num">35 Inaba</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-35.html"><img src="../assets/portraits/50/daimyo-35.png" alt="Bessho"><span class="clan">Bessho</span></a><a class="flink" href="fief-50-35.html"><span class="num">36 Harima</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-36.html"><img src="../assets/portraits/50/daimyo-36.png" alt="Amako"><span class="clan">Amako</span></a><a class="flink" href="fief-50-36.html"><span class="num">37 Izumo</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-37.html"><img src="../assets/portraits/50/daimyo-37.png" alt="Ukita"><span class="clan">Ukita</span></a><a class="flink" href="fief-50-37.html"><span class="num">38 Sanbi</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-38.html"><img src="../assets/portraits/50/daimyo-38.png" alt="Mori"><span class="clan">Mori</span></a><a class="flink" href="fief-50-38.html"><span class="num">39 Aki</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-39.html"><img src="../assets/portraits/50/daimyo-39.png" alt="Sogo"><span class="clan">Sogo</span></a><a class="flink" href="fief-50-39.html"><span class="num">40 Sanuki</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-40.html"><img src="../assets/portraits/50/daimyo-40.png" alt="Hosokawa"><span class="clan">Hosokawa</span></a><a class="flink" href="fief-50-40.html"><span class="num">41 Awa</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-41.html"><img src="../assets/portraits/50/daimyo-41.png" alt="Kono"><span class="clan">Kono</span></a><a class="flink" href="fief-50-41.html"><span class="num">42 Iyo</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-42.html"><img src="../assets/portraits/50/daimyo-42.png" alt="Chosokab"><span class="clan">Chosokab</span></a><a class="flink" href="fief-50-42.html"><span class="num">43 Tosa</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-43.html"><img src="../assets/portraits/50/daimyo-43.png" alt="Ichijo"><span class="clan">Ichijo</span></a><a class="flink" href="fief-50-43.html"><span class="num">44 Nakamura</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-44.html"><img src="../assets/portraits/50/daimyo-44.png" alt="Kinoi"><span class="clan">Kinoi</span></a><a class="flink" href="fief-50-44.html"><span class="num">45 Buzen</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-45.html"><img src="../assets/portraits/50/daimyo-45.png" alt="Ruzoji"><span class="clan">Ruzoji</span></a><a class="flink" href="fief-50-45.html"><span class="num">46 Chikuhi</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-46.html"><img src="../assets/portraits/50/daimyo-46.png" alt="Otomo"><span class="clan">Otomo</span></a><a class="flink" href="fief-50-46.html"><span class="num">47 Bungo</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-47.html"><img src="../assets/portraits/50/daimyo-47.png" alt="Aso"><span class="clan">Aso</span></a><a class="flink" href="fief-50-47.html"><span class="num">48 Higo</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-48.html"><img src="../assets/portraits/50/daimyo-48.png" alt="Ito"><span class="clan">Ito</span></a><a class="flink" href="fief-50-48.html"><span class="num">49 Hiyuga</span></a></div><div class="cell"><a class="dlink" href="daimyo-50-49.html"><img src="../assets/portraits/50/daimyo-49.png" alt="Shimazu"><span class="clan">Shimazu</span></a><a class="flink" href="fief-50-49.html"><span class="num">50 Satuma</span></a></div></div>
+</div></body></html>

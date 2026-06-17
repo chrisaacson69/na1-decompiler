@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tokugawa - 50-fief - Nobunaga&#x27;s Ambition</title>
+<style>
+@font-face {
+  font-family: 'NobunagaFont';
+  src: url('../assets/fonts/nobunaga.ttf') format('truetype');
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 32px 16px;
+  background: #000000; color: #fffeff;
+  font-family: 'NobunagaFont', monospace;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  font-size: 24px; line-height: 1.35;
+}
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+.panel { max-width: 640px; margin: 0 auto; }
+.row { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+img { image-rendering: pixelated; display: block; }
+.portrait { width: 192px; height: 192px; }
+.banner   { width: 192px; height: auto; margin-top: 12px; }
+/* full-bleed: let the map escape the narrow panel and span the viewport */
+.mapwrap  { width: 100vw; position: relative; left: 50%; transform: translateX(-50%);
+            margin-top: 28px; text-align: center; }
+.battlemap{ height: auto; max-width: 100%; display: inline-block;
+            image-rendering: pixelated; }
+
+/* stat block: label left, value right-aligned, like the in-game column */
+.stats { width: 260px; }
+.stat { display: flex; justify-content: space-between; }
+.stat .v { padding-left: 24px; }
+
+/* daimyo page (green) */
+.name { color: #45e082; font-size: 40px; letter-spacing: 2px; margin-bottom: 8px; }
+.home { color: #e4e594; margin-bottom: 14px; }
+.home a { color: #45e082; }
+.stats.daimyo .stat, .stats.daimyo .k, .stats.daimyo .v { color: #45e082; }
+
+/* fief page (white title, purple labels, white values) */
+.title { color: #fffeff; font-size: 36px; letter-spacing: 2px; margin-bottom: 8px; }
+.lord { color: #c676ff; margin-bottom: 14px; }
+.lord a { color: #45e082; }
+.stats.fief .k { color: #c676ff; }
+.stats.fief .v { color: #fffeff; }
+
+/* nav back to the indexes */
+.nav { font-size: 18px; margin-bottom: 22px; }
+.nav a { color: #45e082; }
+.nav .sep { color: #555; padding: 0 8px; }
+
+/* index pages: a clickable grid of portrait tiles */
+.panel.wide { max-width: 1040px; }
+.ix-title { color: #fffeff; font-size: 36px; letter-spacing: 2px; margin-bottom: 18px; }
+.grid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+.cell { width: 148px; text-align: center; }
+.cell img { width: 112px; height: 112px; image-rendering: pixelated; margin: 0 auto; }
+.cell .clan { color: #45e082; font-size: 16px; margin-top: 6px; display: block;
+              white-space: nowrap; }
+.cell .num { color: #6a6a80; font-size: 13px; display: block; white-space: nowrap; }
+.cell a { color: inherit; display: block; }
+.cell .dlink:hover .clan { text-decoration: underline; }
+.cell .flink:hover .num { text-decoration: underline; }
+
+/* homepage: title art banner + a menu of index links */
+.home-banner { text-align: center; }
+.home-banner img { max-width: 100%; image-rendering: pixelated; margin: 0 auto; }
+.menu { text-align: center; margin-top: 34px; font-size: 26px; }
+.menu .col { display: inline-block; vertical-align: top; margin: 0 36px; }
+.menu .head { color: #fffeff; margin-bottom: 10px; letter-spacing: 2px; }
+.menu a { color: #45e082; display: block; margin: 5px 0; }
+.menu .soon { color: #555; display: block; margin: 5px 0; }
+
+/* clickable strategic-map index: hotspots overlaid on the map image */
+.map-index { position: relative; display: inline-block; max-width: 100%; line-height: 0; }
+.map-index img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.hot { position: absolute; transform: translate(-50%, -50%); width: 5.2%; height: 8%;
+       border: 2px solid transparent; border-radius: 3px; }
+.hot:hover { border-color: #e4e594; background: rgba(228,229,148,0.28); }
+.hot .tip { position: absolute; left: 50%; bottom: 112%; transform: translateX(-50%);
+            white-space: nowrap; background: #000; color: #45e082; font-size: 16px;
+            line-height: 1.1; padding: 3px 6px; border: 1px solid #45e082; display: none; }
+.hot:hover .tip { display: block; }
+</style>
+</head><body><div class="panel">
+<div class="nav"><a href="fief-50.html">All fiefs</a><span class="sep">&middot;</span><a href="daimyo-50.html">All daimyo</a> <span class="sep">|</span> 50-fief</div><div class="row"><div class="art"><img class="portrait" src="../assets/portraits/50/daimyo-23.png" alt="Tokugawa portrait"><img class="banner" src="../assets/banners/50/banner-23.png" alt="Tokugawa banner"></div><div class="info"><div class="name">Tokugawa</div><div class="home">Home fief <a href="fief-50-23.html">Mikawa</a></div><div class="stats daimyo"><div class="stat"><span class="k">Age</span><span class="v">18</span></div><div class="stat"><span class="k">Hlth</span><span class="v">104</span></div><div class="stat"><span class="k">Driv</span><span class="v">102</span></div><div class="stat"><span class="k">Luck</span><span class="v">115</span></div><div class="stat"><span class="k">Char</span><span class="v">110</span></div><div class="stat"><span class="k">IQ</span><span class="v">115</span></div></div></div></div>
+</div></body></html>

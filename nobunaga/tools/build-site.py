@@ -43,7 +43,8 @@ defaults:
 
 # generated standalone HTML served as-is (no front matter -> Jekyll static copy)
 HTML_PAGES = sorted(SRC.glob("turn-loop*.html")) + [SRC / "ai.html"]
-ASSET_DIRS = ["maps", "portraits", "screens", "animations"]
+# fonts + banners added for the fief/daimyo atlas (docs/atlas/, generated below).
+ASSET_DIRS = ["maps", "portraits", "screens", "animations", "fonts", "banners"]
 
 
 def meta(md_text):
@@ -107,11 +108,12 @@ def main():
         if h.exists():
             shutil.copy2(h, OUT / h.name)
 
-    # assets (presentational subset; skip Saves)
+    # assets (presentational subset; skip Saves and _-prefixed diagnostics)
     for d in ASSET_DIRS:
         src = SRC / "assets" / d
         if src.exists():
-            shutil.copytree(src, OUT / "assets" / d)
+            shutil.copytree(src, OUT / "assets" / d,
+                            ignore=shutil.ignore_patterns("_*", "*.coords.json"))
 
     # generated data pages (#5) — viability map, emitted by viability-map.py
     import importlib.util
@@ -121,11 +123,19 @@ def main():
     (OUT / "data").mkdir(parents=True, exist_ok=True)
     (OUT / "data" / "viability.html").write_text(vm.build_html(SRC), encoding="utf-8")
 
+    # interactive fief & daimyo atlas (wikipages package) -> docs/atlas/.
+    # Its pages reference ../assets/... which, one level deep, resolves to docs/assets/.
+    import sys as _sys
+    if str(SCRIPT.parent) not in _sys.path:
+        _sys.path.insert(0, str(SCRIPT.parent))
+    from wikipages import pages as wpages
+    n_atlas = wpages.build_all(OUT / "atlas")
+
     write_index(sections)
     n_html = len(list((OUT / "commands").glob("*.html"))) if (OUT / "commands").exists() else 0
     print(f"Built docs/ : {len(chapters)} chapters, {len(appendices)} appendices, "
           f"{len(decompiler)} decompiler pages, {n_html} command HTML, "
-          f"{len(HTML_PAGES)} turn-loop/ai pages.")
+          f"{len(HTML_PAGES)} turn-loop/ai pages, {n_atlas} atlas pages.")
 
 
 def write_index(sections):
@@ -161,7 +171,7 @@ INDEX_TMPL = """\
   a {{ color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; }}
   a:hover {{ border-bottom-color:var(--accent); }}
   .muted {{ color:var(--muted); font-size:0.95em; }}
-  .nav-cards {{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:18px 0 8px; }}
+  .nav-cards {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:18px 0 8px; }}
   .nav-cards a {{ display:block; background:var(--card); border:1px solid var(--border);
                  border-radius:6px; padding:14px 16px; border-bottom:1px solid var(--border); }}
   .nav-cards a:hover {{ border-color:var(--accent); }}
@@ -182,6 +192,7 @@ the game's logic was lifted from stack-VM bytecode to C, then mined for how the 
 actually works.</p>
 
 <div class="nav-cards">
+  <a href="atlas/index.html"><strong>🗺️ Fief &amp; Daimyo Atlas</strong><br><span class="muted">interactive maps &amp; stats</span></a>
   <a href="#chapters"><strong>📖 Analysis</strong><br><span class="muted">chapter-by-chapter</span></a>
   <a href="https://github.com/chrisaacson69/na1-decompiler/wiki"><strong>📚 Game Wiki</strong><br><span class="muted">concepts &amp; formulas</span></a>
   <a href="https://github.com/chrisaacson69/na1-decompiler"><strong>🔧 The Code</strong><br><span class="muted">decompiler &amp; tools</span></a>
@@ -200,6 +211,14 @@ actually works.</p>
 <h2 id="appendices">Appendices &amp; Verified Formulas</h2>
 <ul>
 {appendices}
+</ul>
+
+<h2 id="atlas">🗺️ Fief &amp; Daimyo Atlas</h2>
+<p class="muted">Every province and lord, rendered in the game's own font from ROM data &mdash; province stats, daimyo stats, portraits, banners, and battle maps, indexed off the clickable strategic map.</p>
+<ul>
+  <li><a href="atlas/index.html">Atlas home</a> &mdash; title screen + menu</li>
+  <li>Clickable strategic map: <a href="atlas/fief-17.html">Fiefs (17)</a> &middot; <a href="atlas/fief-50.html">Fiefs (50)</a></li>
+  <li>Portrait index: <a href="atlas/daimyo-17.html">Daimyo (17)</a> &middot; <a href="atlas/daimyo-50.html">Daimyo (50)</a></li>
 </ul>
 
 <h2 id="data">Generated Data</h2>
