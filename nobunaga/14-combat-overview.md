@@ -1,11 +1,11 @@
 ---
 status: active
 created: 2026-05-14
-updated: 2026-06-13
+updated: 2026-06-17
 ---
 # Chapter 14 — Combat: Structure, Strings, and the Day Loop
 
-> Chapter 13 stitched together the strategic loop and noted that two wars were *folded into* the AI's turn. This chapter opens the war door: the entry point, the day loop, the tactical command menu, the 3-unit-type model, and the four ways a battle ends. It is the *map* of combat; chapters 15–16 walk the tactical-map data and render, and **chapter 17 carries the now-decoded, emulator-certified damage formula**. (Pass 2, 2026-06: the formula that the Pass-1 walk left deferred has been recovered from the decompiled bytecode and confirmed against live battles — the call-graph anchors below are corrected accordingly.)
+> Chapter 13 stitched together the strategic loop and noted that two wars were *folded into* the AI's turn. This chapter opens the war door: the entry point, the day loop, the tactical command menu, the 3-unit-type model, and the four ways a battle ends. It is the *map* of combat; chapters 15–16 walk the tactical-map data and render, and **chapter 17 carries the emulator-certified damage formula** — recovered from the decompiled bytecode and confirmed against live battles.
 
 **Links:** [Chapter 13 — Turn Loop](./13-turn-loop-and-harvest.md) · [Chapter 11 — Strategic Engine](./11-strategic-engine-complete.md) · [Chapter 17 — Damage Formula](./17-damage-formula.md) · [Nobunaga README](./README.md)
 
@@ -39,7 +39,7 @@ Combat is its **own bank — bank 2**. The strategic loop (bank 0) and the AI/co
 
 ## The tactical command menu — **6 verbs** (not 5)
 
-The Pass-1 string sweep missed one. The menu is six packed strings at `combat_command_menu_str_ptrs $B4F0`, dispatched through `combat_command_jumptab $B9F8`:
+The menu is six packed strings at `combat_command_menu_str_ptrs $B4F0`, dispatched through `combat_command_jumptab $B9F8`:
 
 | # | Verb | String | Handler | What it does |
 |---|---|---|---|---|
@@ -50,7 +50,7 @@ The Pass-1 string sweep missed one. The menu is six packed strings at `combat_co
 | 4 | **Pass** | `$B513` | `$AB37` | take no action, advance to the next unit |
 | 5 | **View** | `$B518` | `$AB6A` | show the roster, hit-any-key |
 
-Each unit slot 0–4 is prompted in turn (`combat_command_dispatch_loop_per_unit`); a verb whose handler returns truthy re-prompts the same unit, falsy advances. **Move** is the verb the original walk overlooked — and it matters, because *Attack is Move-into-contact*: you reach an enemy by moving onto its tile, which is also what triggers the **castle breach** (an attacker reaching the castle cell halves the defender's morale — ch.15/17).
+Each unit slot 0–4 is prompted in turn (`combat_command_dispatch_loop_per_unit`); a verb whose handler returns truthy re-prompts the same unit, falsy advances. **Move** matters because *Attack is Move-into-contact*: you reach an enemy by moving onto its tile, which is also what triggers the **castle breach** (an attacker reaching the castle cell halves the defender's morale — ch.15/17).
 
 Two verbs reach across layers:
 
@@ -97,11 +97,7 @@ After this chapter the combat map is complete and the deep reads are anchored:
 
 - **Chapter 15** — the tactical map: where per-fief cell/terrain data lives (`tactical_map_cell_pool $A57E`, selected by the province→map-id table) and the doughnut/chokepoint topology.
 - **Chapter 16** — the render pipeline that turns that cell data + combat CHR + the combat palette into the on-screen battle.
-- **Chapter 17** — the damage formula, now **decoded and emulator-certified**: the mutual-attrition strength-share for Attack, the Charisma-contest defection for Bribe, the battle cleanup, and the still-open terrain question.
-
-## Method note
-
-The Pass-1 trace gave the right *surface* (every sub the battle uses, in roughly the right counts) but mis-attributed the damage math to the high-frequency pointer helper `unit_col_ptr $828B` — it fires ~1000×/battle because *every* tile/position read goes through it, not because it computes damage. The lesson held up: when a trace gives counts but not contents, the **strings** the same code displays are the contents (the menu, the unit types, the failure modes all came from the ROM string sweep). What the trace could *not* give — the actual coefficients — needed the decompiled bytecode plus a live emulator pass, which is chapter 17's story.
+- **Chapter 17** — the damage formula, **decoded and emulator-certified**: the mutual-attrition strength-share for Attack, the Charisma-contest defection for Bribe, the battle cleanup, and terrain as a confirmed defensive bonus.
 
 ## Tags
 

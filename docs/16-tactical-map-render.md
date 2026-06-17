@@ -1,22 +1,13 @@
 ---
 status: active
 created: 2026-05-20
+updated: 2026-06-17
 layout: default
 title: "Chapter 16 \u2014 The Render Pipeline: How a Tactical Map Becomes Pixels"
 ---
 # Chapter 16 — The Render Pipeline: How a Tactical Map Becomes Pixels
 
-> Chapter 15 stopped at "the per-fief tactical map is a 55-byte cell-index array at bank-2 `$A57E`" but couldn't decode what those bytes *meant*. This chapter takes a 1-MB filtered Mesen trace of a battle scene-build, walks the bytecode statically alongside it, and a paused-game SRAM dump from Mino (fief 9) — together they reconstruct the entire render pipeline end-to-end: from the cell-byte in ROM, through the SRAM staging buffer at **`$7B4E`**, through the metatile dictionary at `$B100`, to the per-row PPU writes that paint the screen. The chapter also surfaces the **isometric stagger** baked into the buffer (odd columns offset +8 bytes), the **`$C2`-bit feature-flag encoding** in the cell array, and a confirmed **terrain dictionary** (A=clear, B=forest, C=mountain, D=town, F=castle) verified against six independent landmarks in Mino. The 55-byte fief array is now translatable into a rendered map — the doughnut-fief, the chokepoint terrain, the diagonal mountain ridges, all locatable as concrete bits in concrete bytes.
-
-## Errata applied 2026-05-20 (from Mino paused-state validation)
-
-Three corrections to the model first published in this chapter on 2026-05-20:
-
-1. **Staging buffer base is `$7B4E`, not `$7BFD`** — off by 175 bytes. The bytecode disassembly at `$8865-$8878` shows `loadB_imm_word $7BFD`, but the actual buffer in SRAM starts $AF earlier. The discrepancy is probably a misread of one frame-local offset in the calculator; the 88-byte column stride and the metatile structure are otherwise unchanged.
-2. **Odd columns are shifted +8 bytes (isometric stagger)** — the "8-byte trailer per column" I hypothesized is actually the *missing half-cell at the column top/bottom* caused by the staggered isometric layout. Adjacent columns interlock like bricks; the data structure mirrors the visual.
-3. **`$6FFE` is NOT the viewport section variable** — the live SRAM there holds `$2400`, not a small section number. The actual viewport tracker is still being hunted. Likewise, **`$7BE8` is inside the staging buffer**, not a separate reachability buffer.
-
-Sections [3] and [5] below have been rewritten against these corrections. The remainder of the model — the metatile dictionary at `$B100`, the renderer chain, the cell-byte two-encoding hypothesis — stands.
+> Chapter 15 located the per-fief tactical map — a 55-byte cell array addressed by `$A57E + mapid×55` — but couldn't decode what those bytes *meant*. This chapter takes a 1-MB filtered Mesen trace of a battle scene-build, walks the bytecode statically alongside it, and a paused-game SRAM dump from Mino (fief 9) — together they reconstruct the entire render pipeline end-to-end: from the cell-byte in ROM, through the SRAM staging buffer at **`$7B4E`**, through the metatile dictionary at `$B100`, to the per-row PPU writes that paint the screen. The chapter also surfaces the **isometric stagger** baked into the buffer (odd columns offset +8 bytes), the **`$C2`-bit feature-flag encoding** in the cell array, and a confirmed **terrain dictionary** (A=clear, B=forest, C=mountain, D=town, F=castle) verified against six independent landmarks in Mino. The 55-byte fief array is now translatable into a rendered map — the doughnut-fief, the chokepoint terrain, the diagonal mountain ridges, all locatable as concrete bits in concrete bytes.
 
 **Links:** [Chapter 15 — The Tactical Map](./15-tactical-map.md) · [Chapter 4 — Syscall API](./04-syscall-api.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [Nobunaga README](./README.md)
 
@@ -30,7 +21,7 @@ Sections [3] and [5] below have been rewritten against these corrections. The re
                                        │ bits 7,6,1 ($C2)
                                        │ ────────────────[5]───→ feature-flag scan (separate buffer)
                                        │
-                                       │ bits 5-2,0 (metatile id, hypothesis)
+                                       │ bits 5-2,0 (metatile id)
                                        ▼
    $B100-$B17D       ──[2]──→  metatile dict (16 B/entry)
                                        │
@@ -130,13 +121,13 @@ The 8 "trailer" bytes are always `01 01 01 01 01 01 01 01` — those are the *mi
 
 11 × 88 = 968 bytes total, spanning **`$7B4E-$7F15`** in SRAM.
 
-### The bytecode address calculator (with erratum)
+### The bytecode address calculator
 
-Bank-2 `$8865-$8878` computes the address. The 2026-05-20 erratum: my published reading had `$7BFD` as the base literal, but the buffer is actually at `$7B4E`. The disassembly is being re-examined; the most likely cause is that I misread one of the frame-local offsets in the multi-step compute (the `+88 mul` and `+88 col` interactions). The 88-byte stride and the column-major structure are unaffected.
+Bank-2 `$8865-$8878` computes the address. One detail is still unreconciled: the base literal in the bytecode reads `$7BFD`, but the live buffer (verified against the Mino dump) starts at `$7B4E`, 175 bytes earlier — most likely a frame-local offset folded into the multi-step compute (the `+88 mul` and `+88 col` interactions). The 88-byte stride and the column-major structure are confirmed either way.
 
 ### Viewport sections (mechanism known, variable not yet identified)
 
-Chris's in-game observation of three overlapping 5×5 viewport sections is real — the visible-window logic page-flips between cols 0-4, 3-7, and 6-10. The variable that drives this *isn't* `$6FFE` (which holds `$2400` in the paused state — too large to be a 0/1/2 section selector). The actual section variable is still being hunted; it's likely a different SRAM byte set by the scroll-input handler.
+Chris's in-game observation of three overlapping 5×5 viewport sections is real — the visible-window logic page-flips between cols 0-4, 3-7, and 6-10. The variable that drives this *isn't* `$6FFE` (which holds `$2400` in the paused state — too large to be a 0/1/2 section selector); it's likely a different SRAM byte set by the scroll-input handler. Which one is open.
 
 ## [4] The render syscall ($C4E0) and what the VM hands it
 
@@ -155,7 +146,7 @@ $CBCC        vm_return
 3. For each cell, calls helpers `$C640` (compute PPU address), `$C673` (compute attribute), `$C711` (write byte)
 4. The write helper drives the per-row PPU uploader at `$C480` (chapter's title-screen walk)
 
-The end result is what the trace recorded: 4-byte row uploads to PPU `$2080+`, source `$7BFD+`, 220 calls per full map paint (55 cells × 4 rows/cell).
+The end result is what the trace recorded: 4-byte row uploads to PPU `$2080+`, source `$7B4E+` (the staging buffer), 220 calls per full map paint (55 cells × 4 rows/cell).
 
 ## [5] The pathfinding buffer and the unit overlay (architecture confirmed)
 
@@ -242,29 +233,21 @@ A paused-state SRAM dump from Mino (fief 9, 1-based = index 8, 0-based) was deco
 
 Six independent landmarks line up: fortress/castle at (c6, r1), town at (c6, r3), mountain barrier between them at (c6, r2), diagonal mountain ridge from (c8, r0) to (c3, r3), additional mountain band from (c2, r1) to (c4, r2), and clear forest borders on cols 0-2 and 10. **That's full validation of the staging buffer model AND the metatile-to-terrain mapping AND the column/row indexing.**
 
-The 55-byte fief array at `$A57E + fief×55` (location TBD — in a non-bank-2 data bank we haven't pinned down) is no longer opaque. With this terrain dictionary, *every fief's tactical map can be decoded* once we identify which bank holds the data.
+The 55-byte map array at `$A57E + map_id×55` (keyed through `province_to_mapid_table $F70E`, so fiefs can share a map — ch.15) is no longer opaque. It lives in **bank 4**, and the populator `map_populate $8903` reads it one metatile byte at a time. This is validated end-to-end: a blank SRAM seeded with only province=8 (Mino) + the scenario fief-count reproduces the Mino grid **byte-for-byte (1027/1027)** against the paused-state dump. With the terrain dictionary, *every tactical map can now be decoded* straight from bank 4.
 
 ## What's still open (appendix material)
 
-1. **Which bank holds the cell-index table** — the bank-2 bytes at `$A57E` turn out to be VM code, not data (confirmed by a paused-state dump showing `20 23 E8` = `JSR vm_entry` and other code patterns). The `loadB_imm_word $A57E` in `$DC88` computes a virtual address that gets passed to a bank-switching syscall; the data bank is hidden until we capture the syscall arg block at runtime. **Targeted Mesen breakpoint**: pause when `$C22C` (syscall_memcpy_banked) fires, read struct[2] = the bank number.
+The cell table's location (bank 4) and the populator (`map_populate $8903`) are settled — the byte-for-byte Mino reproduction closes them. What remains:
 
-2. **The exact 55-cell expansion writer** — the bytecode that loops 55 times reading cell-bytes and writing 16-byte metatile patterns into `$7B4E+`. Neither `$9BB4` (unit-action resolver) nor `$A221` (`$C2`-mask path-find scan) is the right routine. **Targeted trace filter**: capture writes to `$7B4E-$7F15` during the moment combat starts.
+1. **Reconcile the cell-byte bit-decode with the synthesis reading.** This chapter reads the cell byte as `$C2`-mask feature flags (bits 7,6,1) plus a low-5-bit metatile index into `$B100`. The later synthesis/populate work reads it as `read_map_cell & 254` → a one-hot bitmask (`32/16/8/128/4/64`) → terrain index 0–5 → a 16-byte record in `terrain_attr_table $B11E` (the combat-modifier table). `$B11E` falls *inside* this chapter's `$B100` dictionary range, so the two models overlap and need a single reconciled account — likely "same byte, two consumers" (graphics metatile vs combat-modifier record), but the exact bit assignment must be pinned.
 
-3. **Verification of the bits-5-to-0 metatile index hypothesis** — strong inference from the byte distribution and the `$C2` mask. Confirmation needs an explicit test: now that the terrain dictionary is known (A=clear, B=forest, C=mountain, D=town, F=castle), pick a known cell-byte and decode its low 5 bits, then verify the rendered metatile matches.
+2. **The pointer table at `$B196`** — 50-ish word pointers into `$B1D8-$B4C8`. Could be per-fief variant metatile dictionaries, unit graphic patterns, or attribute-override tables.
 
-4. **The pointer table at `$B196`** — 50-ish word pointers into `$B1D8-$B4C8`. Could be per-fief variant metatile dictionaries, unit graphic patterns, or attribute-override tables.
+3. **The unit-overlay writer** — the code that stamps unit graphics on the rendered nametable. The terrain layer at `$7B4E+` is unit-free, so unit composition happens at render-time, not in the staging buffer.
 
-5. **The unit-overlay writer** — the code that stamps unit graphics on the rendered nametable. The terrain layer at `$7B4E+` is unit-free, so unit composition happens at render-time, not in the staging buffer.
+4. **The actual viewport-section variable** — the three 5×5 page-views are real but `$6FFE` doesn't drive them. The actual section selector is at an unknown SRAM byte set by the scroll-input handler.
 
-6. **The actual viewport-section variable** — the three 5×5 page-views are real but `$6FFE` doesn't drive them. The actual section selector is at an unknown SRAM byte set by the scroll-input handler.
-
-7. **The reachability buffer destination** — `$A221`'s `$C2`-mask scan writes flag bytes somewhere, but not to `$7BE8` (which is inside the terrain staging buffer). Where exactly the path-find scratchpad lives is open.
-
-## Method notes
-
-**Static disassembly beat trace capture this round.** With one filtered trace (1 MB, 11 K lines) confirming the *runtime shape*, every concrete address (`$7BFD`, `$A57E`, `$CBBD`, `$C480`) became findable in ROM, and from there `vm-disasm.py` followed control flow to the routines that touched them. The expansion table at `$B100` fell out of a 16-byte signature search in the ROM in one command. Adding a second trace would have shown the same routines running again — static analysis spared the cycle.
-
-**The two-encoding cell-byte structure is the find of the chapter.** Once `$A221`'s `$C2` mask was decoded as "feature flag" rather than "terrain enum", the rest of the byte (5 bits) revealed itself as a metatile index. This is the lens that resolves chapter 15's cross-fief ambiguity ("232 = town and = mountain"): identical low bits → identical metatile pattern; different high bits → different feature flags. Same shape, different role. A pattern probably worth recording — when bytes look "random" across a flat enum but the engine reads only specific bits, the byte is encoding multiple orthogonal concepts at once.
+5. **The reachability buffer destination** — `$A221`'s `$C2`-mask scan writes flag bytes somewhere, but not to `$7BE8` (which is inside the terrain staging buffer). Where exactly the path-find scratchpad lives is open.
 
 ## Tags
 

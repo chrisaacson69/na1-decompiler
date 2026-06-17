@@ -1,26 +1,26 @@
 ---
 status: active
 created: 2026-05-20
-updated: 2026-06-13
+updated: 2026-06-17
 layout: default
 title: "Chapter 17 \u2014 The Damage Formula: How Soldiers Die"
 ---
 # Chapter 17 — The Damage Formula: How Soldiers Die
 
-> Chapter 14 mapped the combat loop; chapters 15–16 placed the tactical map and its render. This chapter carries the payoff the Pass-1 walk left deferred: **the damage formula, decoded from the bytecode and emulator-certified against live battles.** The Pass-1 reading guessed it lived in native 6502 and depended on RNG. Neither is true. Melee is a **deterministic strength-ratio** computed entirely in VM bytecode; only *Bribe* and the AI's off-screen path roll dice. What follows is the certified math, the Charisma-contest defection that is Bribe, the battle cleanup, and the one genuinely open question — terrain.
+> Chapter 14 mapped the combat loop; chapters 15–16 placed the tactical map and its render. This chapter carries the payoff: **the damage formula, decoded from the bytecode and emulator-certified against live battles.** Melee is a **deterministic strength-ratio** computed entirely in VM bytecode — no native code, no RNG; only *Bribe* and the AI's off-screen path roll dice. What follows is the certified math, the Charisma-contest defection that is Bribe, the battle cleanup, and terrain — confirmed as an asymmetric defensive bonus.
 
 **Links:** [Chapter 14 — Combat Overview](./14-combat-overview.md) · [Chapter 15 — Tactical Map](./15-tactical-map.md) · [Chapter 16 — Render Pipeline](./16-tactical-map-render.md) · [Nobunaga README](./README.md)
 
 ## Two resolvers, not one
 
-The Pass-1 walk conflated them. There are **two** casualty paths:
+There are **two** casualty paths, easy to conflate because both end in dead soldiers:
 
 | Path | Function | Used by | Character |
 |---|---|---|---|
 | **Melee** | `resolve_attack_apply_mutual_casualties $9E20` | the **Attack** verb (Move-into-contact) | deterministic mutual attrition |
 | **Defection** | `resolve_attack_apply_casualties $9E73` | the **Bribe** verb + the AI's own attacks | a morale+Charisma+rng contest; men switch sides |
 
-When the player attacks, melee runs. The earlier "the real damage formula is a Charisma contest" claim was reading `$9E73` — that's **Bribe**, below. The actual sword-on-sword math is `$9E20`, and it has no Charisma term and no dice.
+When the player attacks, melee (`$9E20`) runs — sword-on-sword math with no Charisma term and no dice. The Charisma contest is `$9E73`, which is **Bribe** (below), a different verb entirely.
 
 ## The melee formula (Attack `$9E20`) — certified
 
@@ -36,7 +36,7 @@ enemy unit  loses      p%      of its men
 casualties = pct_op(men, pct) + (pct ≥ 50 ? 1 : 0)     # capped at the unit's men
 ```
 
-Both sides bleed every exchange; there is no "free" attack. `p = 50` is an even trade, `p > 50` means you came out ahead. The result feeds `apply_pct_reduction_to_unit_strength $9D03` twice — once per side — and a unit dies when its men reach 0 (no special "kill" path, confirming the Pass-1 observation).
+Both sides bleed every exchange; there is no "free" attack. `p = 50` is an even trade, `p > 50` means you came out ahead. The result feeds `apply_pct_reduction_to_unit_strength $9D03` twice — once per side — and a unit dies when its men reach 0 (there is no special "kill" path).
 
 ### The strength core `S` (`ai_eval_battle_strength_total $9C88`)
 
@@ -136,11 +136,11 @@ Both resolvers finish through the same cleanup:
 
 ## The `/30` — that's the *supply* clock, not damage
 
-Pass-1 read a `/30` fixed-point accumulator and called it the damage tracker. It is the **rice supply tick**: `consume_daily_battle_rice` drains each side's stockpile ≈ `rice/30` per combat day. Melee casualties are integer `pct_op` results with no `/30` carry. So the `/30` belongs to the rice clock below — which is exactly what makes the doughnut defence work.
+The `/30` fixed-point accumulator in the combat loop is the **rice supply tick**, not a damage tracker: `consume_daily_battle_rice` drains each side's stockpile ≈ `rice/30` per combat day. Melee casualties are integer `pct_op` results with no `/30` carry. So the `/30` belongs to the rice clock below — which is exactly what makes the doughnut defence work.
 
-### Captured damage events (re-read correctly)
+### Captured damage events
 
-The Pass-1 memory-write trace on `$6FBC–$6FCF` across three battles still stands as evidence — now correctly interpreted:
+A memory-write trace on `$6FBC–$6FCF` across three battles shows the casualty model in the raw writes:
 
 | Pair | Unit | Side | Old → New | Notes |
 |---|---|---|---|---|
@@ -166,11 +166,9 @@ This was settled by an offline analyzer scoring each exchange under three models
 
 `flat` fails when the castle unit is attacked; `sym` fails when it attacks; **only `def` survives both.** The casualties an attacked unit takes are `pct_op(men, p)` where `p = math32(S_attacker, S_defender_WITH_terrain)` — the defender's terrain inflates its `S`, shrinking `p`, so it loses fewer men. Castle (×3.7 effective) ≫ forest > town.
 
-This is why getting terrain right took several passes: it can't be seen by predicting *flat* (it diverges only when a unit is attacked on terrain), and it isn't *symmetric* (a unit attacking from a castle gets no edge). The result also vindicates the early "tanky castle" observation — real, just defensive and asymmetric.
+Terrain is easy to miss precisely because of this asymmetry: it can't be seen by predicting *flat* (it diverges only when a unit is attacked on terrain), and it isn't *symmetric* (a unit attacking from a castle gets no edge). The result confirms the "tanky castle" intuition — real, just defensive and asymmetric.
 
 Terrain's **other** combat effect is the **breach**: an attacker reaching the castle cell halves the defending fief's morale, once per day, geometrically collapsing the garrison (confirmed `63 → 31` mid-battle). So the castle defends in two ways — every unit on it takes fewer casualties, and reaching it as the attacker craters the garrison's morale.
-
-(Method note: this was only resolvable after rearchitecting the certifier to "log now, calc later" — a thin Mesen recorder dumping the full men/position arrays per write, with all pairing and model-scoring done offline, since live in-callback prediction kept racing deployment writes and fooling earlier passes.)
 
 ## The rice-exhaustion attack — a dominance-frontier edge
 
@@ -211,10 +209,6 @@ The attacker must be able to **evade contact** for the full clock — a doughnut
 - **The exploit gap**: the AI decides to attack on the 8-stat *look* (`ai_sum_battle_strength`), but you win battles by maximizing what the *same core* rewards — men, the higher-rank unit, training, and IQ — while the AI never optimizes composition. Look weak, be strong.
 - **Charisma's two faces**: useless in the sword-fight, decisive in the bribe — pump it and *buy* armies instead of grinding them.
 - **The rice clock** turns the map graph into the real win condition: who borders whom, and which fiefs can run the doughnut.
-
-## Method note
-
-Static disassembly carried the *structure* (the day driver, the supply clock, the 30-day limit, the dominance-frontier analysis). It could **not** give the coefficients, and it produced a confident-but-wrong story (formula "hidden in native code," RNG-driven, `/30` damage). Reading the **decompiled bytecode** recovered the real formula; the **emulator** certified it to the soldier and then caught two things the static read never showed — the defender home bonus and the asymmetric terrain protection. The combination — decompile for structure, bytecode for coefficients, emulator for truth — is the method that turned a deferred chapter into a certified one.
 
 ## Tags
 
