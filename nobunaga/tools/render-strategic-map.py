@@ -353,6 +353,60 @@ def faithful_layout_sheared(vm, sections, seed=0, shear=False):
     return placed
 
 
+def _gauss(A, b):
+    """Solve A x = b for a small dense system (Gaussian elimination, partial pivot)."""
+    n = len(b)
+    M = [row[:] + [b[i]] for i, row in enumerate(A)]
+    for col in range(n):
+        piv = max(range(col, n), key=lambda r: abs(M[r][col]))
+        M[col], M[piv] = M[piv], M[col]
+        d = M[col][col] or 1e-9
+        for r in range(n):
+            if r != col:
+                f = M[r][col] / d
+                for k in range(col, n + 1):
+                    M[r][k] -= f * M[col][k]
+    return [M[i][n + 1 - 1] / (M[i][i] or 1e-9) for i in range(n)]
+
+
+def faithful_layout_global(vm, sections, seed=0):
+    """GLOBAL least-squares section placement. Each shared fief between two sections
+    contributes a constraint (A_a - A_b = pos_b - pos_a) per axis; we solve all section
+    offsets simultaneously (graph-Laplacian normal equations, gauge-fixed at the seed)
+    so the residual shear error is DISTRIBUTED across the map rather than CHAINED from a
+    seed (which compounds across the 50-fief map's 9 sections). Returns {s: (dy, [dx]*H)}
+    -- a constant offset per section, the format render_faithful_stitch consumes."""
+    recs = {s: read_records(vm, s) for s in sections}
+    idx = {s: i for i, s in enumerate(sections)}
+    n = len(sections)
+
+    def solve(axis):                                   # axis 0 = x (col), 1 = y (row)
+        L = [[0.0] * n for _ in range(n)]
+        c = [0.0] * n
+        for a in sections:
+            for b in sections:
+                if a >= b:
+                    continue
+                for f in set(recs[a]) & set(recs[b]):
+                    d = recs[b][f][axis] - recs[a][f][axis]   # A_a - A_b = d
+                    ia, ib = idx[a], idx[b]
+                    L[ia][ia] += 1; L[ib][ib] += 1
+                    L[ia][ib] -= 1; L[ib][ia] -= 1
+                    c[ia] += d; c[ib] -= d
+        si = idx[seed]                                 # gauge: pin seed at 0
+        L[si] = [1.0 if j == si else 0.0 for j in range(n)]
+        c[si] = 0.0
+        return _gauss(L, c)
+
+    xs, ys = solve(0), solve(1)
+    placed = {}
+    for s in sections:
+        ax, ay = round(xs[idx[s]]), round(ys[idx[s]])
+        placed[s] = (ay, [ax] * SEC_H)
+        print(f"  sec {s}: ({ax},{ay})  [global LS]")
+    return placed
+
+
 def _nn_fill(grid, x0, y0, x1, y1):
     """Fill any cell in the bbox missing from grid with its nearest set neighbour."""
     import collections
@@ -406,7 +460,8 @@ def render_faithful_stitch(vm, pals, sections, scale=2, seed=0, placed=None, she
     centre in OUTPUT (scaled) pixels -- the anchor for clickable hotspots."""
     rom = _rt._rom()
     if placed is None:
-        placed = faithful_layout_sheared(vm, sections, seed=seed, shear=shear)
+        placed = (faithful_layout_sheared(vm, sections, seed=seed, shear=True) if shear
+                  else faithful_layout_global(vm, sections, seed=seed))
     recs = {s: read_records(vm, s) for s in placed}
     grid = {}  # (vx, vy) -> (tile_value, sub_palette); terrain only
     for s in sorted(placed):                         # section order = overlap priority
