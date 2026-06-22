@@ -181,6 +181,25 @@ governed by this cycle/acyclic property the scalar can't see. Echigo and Mikawa 
 a 50%-ratio yet be opposite fiefs for a player: cyclic = kiter's fortress, acyclic =
 survivable grind.
 
+## Strategic subordination: defense is a floor-raiser, never the strategy
+All of the above is tactical and **subordinate to the one finding that dominates: don't
+be a target.** The war-commit gate selects the *weakest-provisioned* fief in a neighbour's
+border set and only then checks the ratio — so not-being-the-local-weakest means you are
+never *selected*: the battle never happens, zero rice / men / turns spent. That strictly
+dominates winning a fight, because every defended battle (even a clean kite) is pure cost.
+It matters MORE for a human: the `get_province_ai_state` bypass makes the AI commit against
+a human target ~2× more readily than vs another AI.
+
+Kiting/terrain only raises the survival FLOOR, and is bounded three ways: **rice-bounded**
+(each defense burns ~a fief's rice; sustained siege wins by exhaustion), **topology-bounded**
+(few fiefs have the cycle), **gain-bounded** (a kite ends with you holding *your* fief — a
+survival tool, not an expansion engine). So Echigo is human-winnable *despite* a tough
+neighbourhood — but only because kiteability buys enough floor to then execute the normal
+doctrine: get off the weakest-target list, develop, and expand only when taking the new
+fief leaves BOTH fiefs above the weakest-in-border threshold. A conquest that makes either
+fief the new local-weakest just relocates the target — net negative. Defensibility is
+insurance; non-weakness is the policy.
+
 ## Stats: binary in tactical, proportional off-screen
 Within the tactical strength formula the 8 stats are **binary** (the `W` term flags
 who's higher; ties go to the defender, so 200 vs 2000 is the same as 200 vs 150):
