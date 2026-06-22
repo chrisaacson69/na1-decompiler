@@ -65,8 +65,13 @@ def _run_boost(m: "M.Memory", rng_state: int) -> None:
         m.m[a] = vm.mem.read(a)
 
 
-def build_board(skill: int = 2, seed: int = 0, player_fief=None) -> "M.Memory":
-    """Build a faithful flat-memory board. player_fief=None -> all-AI (player==0)."""
+def build_board(skill: int = 2, seed: int = 0, player_fief=None,
+                watch_battles: bool = False) -> "M.Memory":
+    """Build a faithful flat-memory board. player_fief=None -> all-AI (player==0).
+    watch_battles mirrors init_new_game_state's "Watch other daimyos battle"
+    setting (ui_confirm_flag_6e7d $6E7D): True routes every AI-vs-AI battle through
+    the on-screen tactical engine (ACCURACY), False uses the off-screen $8DFD
+    auto-resolve (SPEED). The A/B switch for terrain/defensibility experiments."""
     provs = loader.load_provinces()                   # base stats incl. BASE header (1000/500/0)
     daimyos = loader.load_daimyos()
     adj = loader.load_adjacency()
@@ -78,6 +83,7 @@ def build_board(skill: int = 2, seed: int = 0, player_fief=None) -> "M.Memory":
     m.w16(M.CONST_TWO, skill)
     m.w16(M.SCENARIO_FIEF_COUNT, len(provs))
     m.w16(M.CURRENT_GAME_YEAR, 1560)
+    m.w8(M.UI_CONFIRM_FLAG, 1 if watch_battles else 0)   # the Watch-battles setting
 
     for p in provs:
         f = m.fief(p.idx)
@@ -87,6 +93,8 @@ def build_board(skill: int = 2, seed: int = 0, player_fief=None) -> "M.Memory":
         m.w8(M.FIEF_IS_CAPITAL + p.idx, 1)
         m.w8(M.PROVINCE_AI_STATE + p.idx, M.AI_HOME)
         m.neighbor_rows[p.idx] = list(adj.get(p.idx, []))
+        for k, v in enumerate((50, 5, 5, 5, 5)):       # the AI base unit-type split
+            m.w8(M.PROVINCE_UNIT_TYPE_PCT + p.idx * 5 + k, v)   # ai_reinforce $960C re-rolls it
 
     if player_fief is not None:
         m.w8(M.PROVINCE_AI_STATE + player_fief, M.PLAYER_DIRECT)

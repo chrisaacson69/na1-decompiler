@@ -140,14 +140,22 @@ def develop_dam_and_grow(m: "M.Memory", idx: int) -> int:
 # military prep
 # ---------------------------------------------------------------------------
 def reinforce_arms_econ_10pct(m: "M.Memory") -> int:
-    """ai_reinforce_province_arms_and_econ_10pct $960C (1% rare): bump a daimyo
-    stat; (the per-unit arms-composition reroll over men>8 is APPROXIMATED -- our
-    arms is a scalar +22, not the 5-type record); +10% gold/rice/men."""
+    """ai_reinforce_province_arms_and_econ_10pct $960C (1% rare): bump the daimyo's
+    Drive; if the fief has >8 men, (re)seed its unit-type composition table
+    (province_unit_type_pct $76A9) = [50,5,5,5,5] + 5 random +5 boosts + 1 more to
+    slot 0/1; then +10% gold/rice/men. This is THE AI distribution the tactical
+    battle's distribute_men splits on (Chris: fair for an AI-v-AI battle)."""
     daimyo = m.fief_daimyo(m.selected)
-    m.w8(daimyo + 2, m.r8(daimyo + 2) + m.rng_mod(m.skill + 1))
+    m.w8(daimyo + M.D_DRIVE, m.r8(daimyo + M.D_DRIVE) + m.rng_mod(m.skill + 1))
     fief = m.cur_fief()
-    # [APPROX] the arms_buf 5-type reroll + copy_arms_record_5 is skipped; the
-    # aggregate +22 arms field is not directly written by the ROM here either.
+    if m.r16(fief + M.F_MEN) > 8:
+        arms = [50, 5, 5, 5, 5]
+        for _ in range(5):
+            arms[m.rng_mod(5)] += 5
+        arms[1 + m.rng_mod(2)] += 5                  # +5 to a MIDDLE unit (arms_record_scratch = &arms_buf[1])
+        base = M.PROVINCE_UNIT_TYPE_PCT + m.selected * 5    # copy_arms_record_5 $E2AF
+        for i in range(5):
+            m.w8(base + i, arms[i] & 0xFF)
     m.w16(fief + M.F_GOLD, m.r16(fief + M.F_GOLD) + P.pct_op(m.r16(fief + M.F_GOLD) + 1, 10))
     m.w16(fief + M.F_RICE, m.r16(fief + M.F_RICE) + P.pct_op(m.r16(fief + M.F_RICE) + 1, 10))
     m.w16(fief + M.F_MEN, m.r16(fief + M.F_MEN) + P.pct_op(m.r16(fief + M.F_MEN) + 1, 10))

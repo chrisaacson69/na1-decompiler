@@ -42,6 +42,41 @@ C directly** against a flat memory model, validated against the na1dream bytecod
 - `game.py` — the FLAT-NATIVE turn loop (one source of truth, no World sync):
   flat harvest_fief + resolve_siege ($8DFD resolution; ai_vm already did the
   commit) + command_pass (ai_vm) + base_test. **player==0 RUNS (2026-06-19).**
+- `tactical.py` — **THE ON-SCREEN TACTICAL BATTLE (bank 2), NEW 2026-06-20.** The
+  full 8-stat/terrain/unit-rank/home-double/momentum strength formula, the melee +
+  bribe/defection casualty resolvers, men-distribution, the 6-direction HEX-grid
+  movement (native `sub_8003 $8003`, NOT the 4-dir d-pad step), BFS targeting, the
+  per-unit AI action chain, the 30-day driver + rice clock + morale-breach, and the
+  conquest resolution. Wired into game.py via `command_pass(..., tactical=True)` as
+  the alternative to the off-screen $8DFD resolver ("Watch Battles").
+  **oracle_vm now 17/17: the ENTIRE combat-math layer + the per-day driver
+  (run_both_sides_combat_turn, both AI sides) are BIT-EXACT vs na1dream.** Source of
+  truth = decompiled C + bytecode, not ch.17 (which it corrects: the supply clock
+  drains men_total/30, not rice/30). Gotchas logged: the hex step; the OAM-shadow
+  arg clobber (drive the day-driver with fp=0x0480 so args clear $0600); the
+  day-number param gates AI commander aggression after day 5.
+  **2026-06-20 COMPLETE: oracle now 19/19** -- deploy_both_sides_units_loop AND
+  apply_conquest_outcome are BIT-EXACT, and a FULL-BATTLE emulator lockstep
+  (battle_init_driver vs run_tactical_battle) matches the final board to the digit.
+  The deploy bug was VM arg-eval order (rng_mod(5)/Y draws before rng_mod(11)/X).
+  $76A9 seed: ai_reinforce_province_arms ($960C) ported bit-exact into ai_vm
+  (build_board seeds the [50,5,5,5,5] AI base). Tactical combat fully done.
+  **DEFENSIBILITY STUDY (2026-06-20): see `FINDINGS-defensibility.md`** + the
+  reproducible harness `experiments.py` (`py -3 -m na1sim.experiments terrain|factors
+  |dual|offscreen`). Key results: factor hierarchy men>>home-bonus>terrain>castle>stats;
+  tactical stats binary, off-screen Skill/Arms proportional; tactical ranks fiefs by
+  terrain, off-screen by quality (orders ~uncorrelated); watching favours the defender.
+- **INTEGRATION (2026-06-20): the SPEED-vs-ACCURACY switch.** The battle boundary is
+  `game.resolve_battle`, injected as the war hook in command_pass. It reads
+  `ai_turn_loop_redispatch_flag` (which ai_vm's commit already sets from the faithful
+  `$9130` condition `ui_confirm_flag_6e7d || defender==player`): watched battles ->
+  `tactical.run_tactical_battle`, else the off-screen $8DFD `resolve_siege`. The
+  switch is the ROM's own "Watch other daimyos battle" setting (`ui_confirm_flag_6e7d
+  $6E7D`), surfaced as `setup.build_board(watch_battles=True/False)`. Both sides run
+  the AI logic regardless of players (no combat-policy.py needed). A/B over 12 seeds
+  x 12 yr shows per-clan survival diverging between the two engines (the terrain/
+  defensibility experiment, e.g. Echigo's tactical map) -- the whole point of the
+  switch.
 - **RESULT: the men-overdevelopment fix is CONFIRMED.** Avg AI men sits BELOW
   the (year-1559)*40 year-cap now (e.g. 285 @ 1570 vs cap 440) -- the old port
   hit ~450 (at the cap); faithful gold-sinks gold-starve recruiting -> ~285

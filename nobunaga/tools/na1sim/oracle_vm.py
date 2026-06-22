@@ -90,6 +90,29 @@ def run_rom(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=200000, 
     return bytes(vm.mem.read(a) for a in range(0x6000, 0x8000))
 
 
+def run_rom_ret(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=200000, stubs=()):
+    """Like run_rom but ALSO returns the routine's return value (regL/$08 at the
+    outermost RETURN) -- for the pure combat strength functions that return a
+    number rather than mutating the fief region. Returns (post_image, regL)."""
+    vm = NobunagaVM()
+    vm.mem.sram[:] = bytes(m_state.m[0x6000:0x8000])
+    for addr, fn in stubs:
+        vm.install_stub(addr, fn)
+    vm.switch_bank(bank)
+    vm.vm_fp = fp
+    vm.vm_sp = fp + frame_off
+    for i, a in enumerate(args):
+        vm.mem.write_word(fp + 11 + i * 2, a)
+    vm.vm_pc = body
+    vm.cpu.pc = vm.DISPATCHER_ADDR
+    try:
+        vm.run_until_outermost_return(max_ops=max_ops)
+    except Exception:
+        pass
+    post = bytes(vm.mem.read(a) for a in range(0x6000, 0x8000))
+    return post, vm.regL
+
+
 def diff_region(pre, rom_post, py_mem):
     """Compare ROM-post vs Python-post against the same pre, over the selected
     fief record, its daimyo record, and the market table. Returns (label->...)."""
@@ -266,6 +289,420 @@ def combat_check():
     return ok
 
 
+def _combat_battle_setup(m, atk, deff, *, atk_men=10, def_men=8,
+                         atk_col=3, def_col=5, row=2, def_home=True,
+                         ai_state=0, momentum=0):
+    """A minimal 2-unit (slot 0 each) tactical melee on the DEFENDER's real map.
+    Sets scenario/const_two, ownership+daimyo, fief stats, unit men/positions,
+    presence flags (defender bit7 = home), and the cur_combat cursors."""
+    m.w16(M.SCENARIO_FIEF_COUNT, 17)
+    m.w16(M.CONST_TWO, 2)
+    m.selected = atk
+    m.defending = deff
+    m.w8(M.FIEF_TO_DAIMYO_MAP + atk, 1)
+    m.w8(M.FIEF_TO_DAIMYO_MAP + deff, 2)
+    da, dd = m.daimyo(1), m.daimyo(2)
+    for off, v in [(M.D_HEALTH, 50), (M.D_DRIVE, 60), (M.D_LUCK, 40),
+                   (M.D_CHARISMA, 30), (M.D_IQ, 70)]:
+        m.w8(da + off, v)
+    for off, v in [(M.D_HEALTH, 45), (M.D_DRIVE, 55), (M.D_LUCK, 50),
+                   (M.D_CHARISMA, 60), (M.D_IQ, 50)]:
+        m.w8(dd + off, v)
+    fa, fd = m.fief(atk), m.fief(deff)
+    for off, v in [(M.F_MORALE, 60), (M.F_SKILL, 80), (M.F_ARMS, 70), (M.F_HEADER, 1900)]:
+        m.w16(fa + off, v)
+    for off, v in [(M.F_MORALE, 50), (M.F_SKILL, 60), (M.F_ARMS, 55), (M.F_HEADER, 1900)]:
+        m.w16(fd + off, v)
+    m.w8(M.PROVINCE_AI_STATE + atk, ai_state)
+    m.w8(M.PROVINCE_AI_STATE + deff, ai_state)
+    m.w16(m.unit_strength_ptr(0, 0), atk_men)
+    m.w16(m.unit_strength_ptr(1, 0), def_men)
+    m.w8(m.unit_col_ptr(0, 0), atk_col); m.w8(m.unit_row_ptr(0, 0), row)
+    m.w8(m.unit_col_ptr(1, 0), def_col); m.w8(m.unit_row_ptr(1, 0), row)
+    # side resource men totals (+4) -- used by the casualty path
+    m.w16(m.side_resource_ptr(0) + M.SR_MEN, atk_men)
+    m.w16(m.side_resource_ptr(1) + M.SR_MEN, def_men)
+    m.w8(M.WAR_SIDE_STATE_FLAG + 0, 0x01)                 # attacker slot0 present
+    m.w8(M.WAR_SIDE_STATE_FLAG + 1, 0x81 if def_home else 0x01)  # +home bit7
+    m.w8(M.UNIT_EXCHANGE_COUNT + 0, momentum)
+    m.cur_combat_side = 0
+    m.cur_combat_unit_slot = 0
+
+
+def combat_tactical_check():
+    """Validate the deterministic strength core vs na1dream: for several battle
+    states diff the RETURN value of ai_eval_battle_strength_total ($9C8D, both
+    sides) and calc_battle_strength_pct_one_side ($9D7A)."""
+    from . import tactical as T
+    EVAL = (0x9C8D, -4, 2)        # ai_eval_battle_strength_total(side,slot,other)
+    PCT  = (0x9D7A, 0, 2)         # calc_battle_strength_pct_one_side(unit_type)
+
+    cases = [
+        dict(label="home-def, AI-home(scale100)", atk_men=10, def_men=8, ai_state=0),
+        dict(label="no home, player(scale85)", atk_men=12, def_men=12, def_home=False, ai_state=5),
+        dict(label="momentum=2", atk_men=9, def_men=6, momentum=2),
+        dict(label="big attacker", atk_men=40, def_men=10, ai_state=0),
+    ]
+    ok = True
+    for c in cases:
+        label = c.pop("label")
+        # ai_eval for the attacker (0,0,0) and defender (1,0,0)
+        for side in (0, 1):
+            mr = M.Memory(rng=DreamRNG())
+            _combat_battle_setup(mr, 5, 8, **c)
+            _, rom_ret = run_rom_ret(mr, *EVAL[:2], EVAL[2], args=(side, 0, 0))
+            mp = M.Memory(rng=DreamRNG())
+            _combat_battle_setup(mp, 5, 8, **c)
+            py_ret = T.ai_eval_battle_strength_total(mp, side, 0, 0)
+            match = (rom_ret == py_ret)
+            ok = ok and match
+            print(f"--- eval[{label}] side{side}: ROM {rom_ret}  py {py_ret}"
+                  f"  => {'MATCH' if match else 'MISMATCH'}")
+        # p-share
+        mr = M.Memory(rng=DreamRNG())
+        _combat_battle_setup(mr, 5, 8, **c)
+        _, rom_p = run_rom_ret(mr, *PCT[:2], PCT[2], args=(0,))
+        mp = M.Memory(rng=DreamRNG())
+        _combat_battle_setup(mp, 5, 8, **c)
+        py_p = T.calc_battle_strength_pct_one_side(mp, 0)
+        match = (rom_p == py_p)
+        ok = ok and match
+        print(f"--- pct [{label}]: ROM {rom_p}  py {py_p}  => {'MATCH' if match else 'MISMATCH'}")
+
+    # explicit TERRAIN exercise: scan the defender map for a castle(32)/forest(16)
+    # cell, stand the defender unit on it, confirm the big terrain bonus matches.
+    for feat, fname in [(32, "castle"), (16, "forest"), (8, "town")]:
+        cell = None
+        mscan = M.Memory(rng=DreamRNG()); mscan.w16(M.SCENARIO_FIEF_COUNT, 17); mscan.defending = 8
+        for r in range(5):
+            for col in range(11):
+                if (T.read_map_cell(mscan, col, r) & 254) == feat:
+                    cell = (col, r); break
+            if cell:
+                break
+        if not cell:
+            print(f"--- terrain[{fname}]: (no {fname} cell on map 8, skipped)")
+            continue
+        col, r = cell
+        mr = M.Memory(rng=DreamRNG()); _combat_battle_setup(mr, 5, 8, def_men=20)
+        mr.w8(mr.unit_col_ptr(1, 0), col); mr.w8(mr.unit_row_ptr(1, 0), r)
+        _, rom_ret = run_rom_ret(mr, 0x9C8D, -4, 2, args=(1, 0, 0))
+        mp = M.Memory(rng=DreamRNG()); _combat_battle_setup(mp, 5, 8, def_men=20)
+        mp.w8(mp.unit_col_ptr(1, 0), col); mp.w8(mp.unit_row_ptr(1, 0), r)
+        py_ret = T.ai_eval_battle_strength_total(mp, 1, 0, 0)
+        match = (rom_ret == py_ret)
+        ok = ok and match
+        print(f"--- terrain[{fname}] @({col},{r}) def S: ROM {rom_ret}  py {py_ret}"
+              f"  => {'MATCH' if match else 'MISMATCH'}")
+    return ok
+
+
+def _combat_state_addrs(m):
+    """The (addr,size,name) tuples that fully describe a 2-unit melee state --
+    both units' men/positions, both army totals, momentum, presence, the
+    defending town. Used to diff ROM-post vs Python-post after a casualty op."""
+    addrs = []
+    for side in (0, 1):
+        for slot in (0, 1):
+            addrs.append((m.unit_strength_ptr(side, slot), 2, f"men[{side}][{slot}]"))
+            addrs.append((m.unit_col_ptr(side, slot), 1, f"col[{side}][{slot}]"))
+            addrs.append((m.unit_row_ptr(side, slot), 1, f"row[{side}][{slot}]"))
+        addrs.append((m.side_resource_ptr(side) + M.SR_MEN, 2, f"army_men[{side}]"))
+        addrs.append((M.WAR_SIDE_STATE_FLAG + side, 1, f"presence[{side}]"))
+    for slot in range(5):
+        addrs.append((M.UNIT_EXCHANGE_COUNT + slot, 1, f"momentum[{slot}]"))
+    addrs.append((m.fief(m.defending) + M.F_TOWN, 2, "def_town"))
+    return addrs
+
+
+def _read_buf(buf, addr, size):
+    o = addr - 0x6000
+    return buf[o] if size == 1 else (buf[o] | (buf[o + 1] << 8))
+
+
+def combat_casualty_check():
+    """Validate apply_pct_reduction_to_unit_strength ($9D08) and the melee
+    resolve_attack_apply_mutual_casualties ($9E25) vs na1dream, diffing the full
+    2-unit combat state (men/positions/army-totals/momentum/presence/town)."""
+    from . import tactical as T
+
+    ok = True
+    # --- apply_pct_reduction_to_unit_strength: deterministic, no UI cursor ---
+    for side, slot, pct in [(1, 0, 40), (1, 0, 50), (1, 0, 100), (0, 0, 30)]:
+        mr = M.Memory(rng=DreamRNG()); _combat_battle_setup(mr, 5, 8, atk_men=10, def_men=8)
+        rom_post, _ = run_rom_ret(mr, 0x9D08, -4, 2, args=(side, slot, pct))
+        mp = M.Memory(rng=DreamRNG()); _combat_battle_setup(mp, 5, 8, atk_men=10, def_men=8)
+        T.apply_pct_reduction_to_unit_strength(mp, side, slot, pct)
+        diffs = [n for a, s, n in _combat_state_addrs(mp)
+                 if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        match = not diffs
+        ok = ok and match
+        print(f"--- apply_pct_reduction(side{side},slot{slot},{pct}%): "
+              f"{'MATCH' if match else 'MISMATCH ' + ','.join(diffs)}")
+
+    # --- melee exchange: resolve_attack_apply_mutual_casualties(enemy_slot) ---
+    for label, atk_men, def_men in [("even", 12, 12), ("atk-ahead", 30, 8), ("atk-behind", 6, 30)]:
+        mr = M.Memory(rng=DreamRNG()); _combat_battle_setup(mr, 5, 8, atk_men=atk_men, def_men=def_men)
+        # stub validate_phase_unit_cells_draw_cursor ($9B4A) -- pure cursor/audio UI
+        rom_post, rom_ret = run_rom_ret(mr, 0x9E25, -2, 2, args=(0,),
+                                        stubs=[(0x9B4A, lambda vm: 0)])
+        mp = M.Memory(rng=DreamRNG()); _combat_battle_setup(mp, 5, 8, atk_men=atk_men, def_men=def_men)
+        py_ret = T.resolve_attack_apply_mutual_casualties(mp, 0)
+        diffs = [n for a, s, n in _combat_state_addrs(mp)
+                 if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        match = (not diffs) and rom_ret == py_ret
+        ok = ok and match
+        det = "" if match else (f"ret ROM{rom_ret}/py{py_ret} " + ",".join(diffs))
+        print(f"--- melee[{label}] atk{atk_men}/def{def_men}: "
+              f"{'MATCH' if match else 'MISMATCH ' + det}")
+
+    # --- defection / Bribe: resolve_attack_apply_casualties(enemy_slot, gold) ---
+    def bribe_setup(m, cha, gold, def_men=8):
+        _combat_battle_setup(m, 5, 8, atk_men=10, def_men=def_men)
+        m.w8(m.daimyo(1) + M.D_CHARISMA, cha)          # attacker Charisma -> wins/loses contest
+        return gold
+    for label, cha, gold, def_men in [("win-buy", 100, 40, 8),
+                                      ("lose-contest", 10, 40, 8),
+                                      ("underpaid", 100, 3, 8)]:
+        mr = M.Memory(rng=DreamRNG()); g = bribe_setup(mr, cha, gold, def_men)
+        rom_post, _ = run_rom_ret(mr, 0x9E78, -10, 2, args=(0, g),
+                                  stubs=[(0x9B4A, lambda vm: 0)])
+        mp = M.Memory(rng=DreamRNG()); bribe_setup(mp, cha, gold, def_men)
+        T.resolve_attack_apply_casualties(mp, 0, g)
+        addrs = _combat_state_addrs(mp) + [
+            (mp.side_resource_ptr(0) + M.SR_GOLD, 2, "own_gold"),
+            (mp.fief(8) + M.F_MORALE, 2, "enemy_morale"),
+            (M.COMBAT_CASUALTY_SKIP, 1, "skip_flag")]
+        diffs = [n for a, s, n in addrs
+                 if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        match = not diffs
+        ok = ok and match
+        print(f"--- bribe[{label}] cha{cha} gold{gold}: "
+              f"{'MATCH' if match else 'MISMATCH ' + ','.join(diffs)}")
+    return ok
+
+
+def combat_setup_check():
+    """Validate distribute_men_into_unit_strengths ($91DA) and battle_init_defender
+    ($92CF) vs na1dream -- the men->units split and the defender snapshot."""
+    from . import tactical as T
+
+    def set_split(m, prov, pcts):
+        for i, v in enumerate(pcts):
+            m.w8(M.PROVINCE_UNIT_TYPE_PCT + prov * 5 + i, v)
+
+    ok = True
+    # --- distribute_men: total men split across slots by the % table ---
+    for label, a_men, d_men, a_split, d_split in [
+            ("even-split", 100, 60, (50, 30, 20, 0, 0), (40, 40, 20, 0, 0)),
+            ("remainder", 97, 33, (33, 33, 34, 0, 0), (50, 25, 25, 0, 0)),
+            ("five-way", 120, 50, (20, 20, 20, 20, 20), (60, 10, 10, 10, 10))]:
+        mr = M.Memory(rng=DreamRNG()); _combat_battle_setup(mr, 5, 8)
+        mr.w16(mr.side_resource_ptr(0) + M.SR_MEN, a_men)
+        mr.w16(mr.side_resource_ptr(1) + M.SR_MEN, d_men)
+        mr.w8(M.WAR_SIDE_STATE_FLAG + 0, 0); mr.w8(M.WAR_SIDE_STATE_FLAG + 1, 0)
+        set_split(mr, 5, a_split); set_split(mr, 8, d_split)
+        rom_post, _ = run_rom_ret(mr, 0x91DA, -12, 2)
+        mp = M.Memory(rng=DreamRNG()); _combat_battle_setup(mp, 5, 8)
+        mp.w16(mp.side_resource_ptr(0) + M.SR_MEN, a_men)
+        mp.w16(mp.side_resource_ptr(1) + M.SR_MEN, d_men)
+        mp.w8(M.WAR_SIDE_STATE_FLAG + 0, 0); mp.w8(M.WAR_SIDE_STATE_FLAG + 1, 0)
+        set_split(mp, 5, a_split); set_split(mp, 8, d_split)
+        T.distribute_men_into_unit_strengths(mp)
+        addrs = []
+        for side in (0, 1):
+            for slot in range(5):
+                addrs.append((mp.unit_strength_ptr(side, slot), 2, f"men[{side}][{slot}]"))
+                addrs.append((mp.unit_col_ptr(side, slot), 1, f"col[{side}][{slot}]"))
+            addrs.append((M.WAR_SIDE_STATE_FLAG + side, 1, f"presence[{side}]"))
+        diffs = [n for a, s, n in addrs
+                 if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        match = not diffs
+        ok = ok and match
+        print(f"--- distribute_men[{label}]: {'MATCH' if match else 'MISMATCH ' + ','.join(diffs)}")
+
+    # --- battle_init_defender: snapshot + distribute ---
+    for label, dg, dr, dm, cap in [("normal", 100, 200, 60, 0),
+                                   ("capital", 80, 150, 90, 1),
+                                   ("no-rice(depleted)", 50, 0, 40, 0),
+                                   ("no-men(depleted)", 50, 80, 0, 0)]:
+        mr = M.Memory(rng=DreamRNG()); _combat_battle_setup(mr, 5, 8)
+        mr.w16(mr.side_resource_ptr(0) + M.SR_MEN, 80)         # attacker total (pre-set)
+        set_split(mr, 5, (50, 30, 20, 0, 0)); set_split(mr, 8, (40, 40, 20, 0, 0))
+        fd = mr.fief(8)
+        mr.w16(fd + M.F_GOLD, dg); mr.w16(fd + M.F_RICE, dr); mr.w16(fd + M.F_MEN, dm)
+        mr.w8(M.FIEF_IS_CAPITAL + 8, cap)
+        mr.w8(M.WAR_SIDE_STATE_FLAG + 0, 0); mr.w8(M.WAR_SIDE_STATE_FLAG + 1, 0)
+        rom_post, rom_ret = run_rom_ret(mr, 0x92CF, -2, 2)
+        mp = M.Memory(rng=DreamRNG()); _combat_battle_setup(mp, 5, 8)
+        mp.w16(mp.side_resource_ptr(0) + M.SR_MEN, 80)
+        set_split(mp, 5, (50, 30, 20, 0, 0)); set_split(mp, 8, (40, 40, 20, 0, 0))
+        fd = mp.fief(8)
+        mp.w16(fd + M.F_GOLD, dg); mp.w16(fd + M.F_RICE, dr); mp.w16(fd + M.F_MEN, dm)
+        mp.w8(M.FIEF_IS_CAPITAL + 8, cap)
+        mp.w8(M.WAR_SIDE_STATE_FLAG + 0, 0); mp.w8(M.WAR_SIDE_STATE_FLAG + 1, 0)
+        py_ret = T.battle_init_defender(mp)
+        addrs = [(mp.side_resource_ptr(1) + M.SR_GOLD, 2, "wd_gold"),
+                 (mp.side_resource_ptr(1) + M.SR_RICE, 2, "wd_rice"),
+                 (mp.side_resource_ptr(1) + M.SR_MEN, 2, "wd_men"),
+                 (M.BATTLE_DEFENDER_STATUS, 1, "status66"),
+                 (M.CUR_COMBAT_SIDE, 2, "cur_side"),
+                 (M.BATTLE_WINNER_PROV, 2, "winner")]
+        for slot in range(5):
+            addrs.append((mp.unit_strength_ptr(1, slot), 2, f"dmen[{slot}]"))
+        diffs = [n for a, s, n in addrs
+                 if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        match = (not diffs) and rom_ret == py_ret
+        ok = ok and match
+        det = "" if match else (f"ret ROM{rom_ret}/py{py_ret} " + ",".join(diffs))
+        print(f"--- battle_init_defender[{label}]: {'MATCH' if match else 'MISMATCH ' + det}")
+    return ok
+
+
+def _deploy_setup(m, cur_side=0):
+    """A pre-DEPLOYED 2v2 melee: attacker (5) slots 0/1, defender (8) slots 0/1,
+    units adjacent so the AI engages. No RNG spent on placement (deploy skipped),
+    so the only draws in the turn are the per-unit ai_rng_resolve_combat rolls."""
+    _combat_battle_setup(m, 5, 8, atk_men=30, def_men=24)
+    # two units a side
+    for side, men0, men1 in [(0, 18, 12), (1, 14, 10)]:
+        m.w16(m.unit_strength_ptr(side, 0), men0)
+        m.w16(m.unit_strength_ptr(side, 1), men1)
+        m.w16(m.side_resource_ptr(side) + M.SR_MEN, men0 + men1)
+        m.w16(m.side_resource_ptr(side) + M.SR_RICE, 200)
+        m.w16(m.side_resource_ptr(side) + M.SR_GOLD, 50)
+        m.w8(M.WAR_SIDE_STATE_FLAG + side, 0x03 | (0x80 if side == 1 else 0))
+    # positions: attacker col 4, defender col 5 (adjacent), rows 1 & 2
+    m.w8(m.unit_col_ptr(0, 0), 4); m.w8(m.unit_row_ptr(0, 0), 2)
+    m.w8(m.unit_col_ptr(0, 1), 4); m.w8(m.unit_row_ptr(0, 1), 1)
+    m.w8(m.unit_col_ptr(1, 0), 5); m.w8(m.unit_row_ptr(1, 0), 2)
+    m.w8(m.unit_col_ptr(1, 1), 5); m.w8(m.unit_row_ptr(1, 1), 1)
+    # arena rect = full grid
+    m.w16(M.COMBAT_ARENA_X_MIN, 0); m.w16(M.COMBAT_ARENA_Y_MIN, 0)
+    m.w16(M.COMBAT_ARENA_X_MAX, 10); m.w16(M.COMBAT_ARENA_Y_MAX, 4)
+    m.cur_combat_side = cur_side
+
+
+def combat_turn_check():
+    """Validate run_both_sides_combat_turn ($ADD6) vs na1dream -- one full combat
+    day of AI actions for both sides, in LCG lockstep. Diffs every unit's
+    men/position/presence, both army totals, the defending fief morale (breach),
+    and the winner selector."""
+    from . import tactical as T
+
+    ok = True
+    for cur_side in (0, 1):
+        mr = M.Memory(rng=DreamRNG()); _deploy_setup(mr, cur_side)
+        # fp=0x0480 keeps the `day` arg (fp+11) BELOW the $0600 OAM sprite shadow
+        # that the combat UI scribbles -- else na1dream's 2nd side reads a clobbered
+        # day (>5) and turns aggressive while py stays on day 1.
+        rom_post, rom_ret = run_rom_ret(mr, 0xADD6, -6, 2, args=(1,), fp=0x0480,
+                                        stubs=[(0x9B4A, lambda vm: 0)])
+        mp = M.Memory(rng=DreamRNG()); _deploy_setup(mp, cur_side)
+        py_ret = T.run_both_sides_combat_turn(mp, 1)
+        addrs = []
+        for side in (0, 1):
+            for slot in range(5):
+                addrs.append((mp.unit_strength_ptr(side, slot), 2, f"men[{side}][{slot}]"))
+                addrs.append((mp.unit_col_ptr(side, slot), 1, f"col[{side}][{slot}]"))
+                addrs.append((mp.unit_row_ptr(side, slot), 1, f"row[{side}][{slot}]"))
+            addrs.append((M.WAR_SIDE_STATE_FLAG + side, 1, f"presence[{side}]"))
+            addrs.append((mp.side_resource_ptr(side) + M.SR_MEN, 2, f"army[{side}]"))
+        addrs.append((mp.fief(8) + M.F_MORALE, 2, "def_morale"))
+        addrs.append((M.BATTLE_WINNER_PROV, 2, "winner"))
+        diffs = [n for a, s, n in addrs
+                 if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        match = (not diffs) and rom_ret == py_ret
+        ok = ok and match
+        det = "" if match else (f"ret ROM{rom_ret}/py{py_ret} " + ",".join(diffs[:8]))
+        print(f"--- combat_turn[cur_side={cur_side}]: {'MATCH' if match else 'MISMATCH ' + det}")
+    return ok
+
+
+def _pre_deploy_state(m, splits=(50, 30, 20, 0, 0), a_men=120, d_men=90):
+    """A post-battle_init_defender image (RNG-free): committed attacker force in
+    side 0, defender snapshot + men distributed into units, positions off-map,
+    cur_combat_side=1 -- the exact state deploy_both_sides_units_loop starts from."""
+    from . import tactical as T
+    _combat_battle_setup(m, 5, 8)
+    m.w16(m.side_resource_ptr(0) + M.SR_MEN, a_men)
+    m.w16(m.side_resource_ptr(0) + M.SR_GOLD, 100)
+    m.w16(m.side_resource_ptr(0) + M.SR_RICE, 200)
+    fd = m.fief(8)
+    m.w16(fd + M.F_MEN, d_men); m.w16(fd + M.F_GOLD, 60); m.w16(fd + M.F_RICE, 150)
+    for p in (5, 8):
+        for i, v in enumerate(splits):
+            m.w8(M.PROVINCE_UNIT_TYPE_PCT + p * 5 + i, v)
+    T.battle_init_defender(m)             # RNG-free: distribute + clear positions + cur_side=1
+
+
+def combat_deploy_check():
+    """Validate deploy_both_sides_units_loop ($9B0D) vs na1dream in LCG lockstep --
+    the RNG-driven unit placement (approach rect + rng cell search + random fill).
+    Diffs every unit's column/row/presence on both sides."""
+    from . import tactical as T
+    ok = True
+    for label, a_men, d_men in [("std", 120, 90), ("big-atk", 200, 60), ("even", 80, 80)]:
+        mp = M.Memory(rng=DreamRNG()); _pre_deploy_state(mp, a_men=a_men, d_men=d_men)
+        pre = bytes(mp.m[0x6000:0x8000])
+        mr = M.Memory(rng=DreamRNG()); mr.m[0x6000:0x8000] = pre
+        rom_post, _ = run_rom_ret(mr, 0x9B0D, -4, 2, fp=0x0480)
+        mp.rng = DreamRNG()
+        T.deploy_both_sides_units_loop(mp)
+        diffs = []
+        for side in (0, 1):
+            for slot in range(5):
+                for a, s, n in [(mp.unit_col_ptr(side, slot), 1, f"col{side}{slot}"),
+                                (mp.unit_row_ptr(side, slot), 1, f"row{side}{slot}")]:
+                    if _read_buf(rom_post, a, s) != mp.r8(a):
+                        diffs.append(f"{n}:R{_read_buf(rom_post,a,s)}/p{mp.r8(a)}")
+            if _read_buf(rom_post, M.WAR_SIDE_STATE_FLAG + side, 1) != mp.r8(M.WAR_SIDE_STATE_FLAG + side):
+                diffs.append(f"present{side}")
+        ok = ok and not diffs
+        print(f"--- deploy[{label}]: {'MATCH' if not diffs else 'MISMATCH ' + ' '.join(diffs[:6])}")
+    return ok
+
+
+def combat_conquest_check():
+    """Validate apply_conquest_outcome ($E041, bank 15) vs na1dream -- survivors
+    sum into the conquered fief, ownership flips, stats blend, lords shift. Diffs
+    the defending fief record + ownership/capital + both lords' stat bytes."""
+    from . import tactical as T
+
+    def setup(m, atk_won, cap_fell):
+        _combat_battle_setup(m, 5, 8)
+        m.w16(M.BATTLE_WINNER_PROV, 8 if atk_won else 5)
+        m.w16(M.WAR_ATTACKER_GOLD, 70); m.w16(M.WAR_ATTACKER_RICE, 40); m.w16(M.WAR_ATTACKER_MEN, 55)
+        m.w16(M.WAR_DEFENDER_GOLD, 20); m.w16(M.WAR_DEFENDER_RICE, 15); m.w16(M.WAR_DEFENDER_MEN, 18)
+        m.w8(M.WAR_SIDE_STATE_FLAG + 0, 0x80 if cap_fell else 0x01)   # bit7 -> capital fell
+        m.w8(M.WAR_SIDE_STATE_FLAG + 1, 0x80 if cap_fell else 0x01)
+        fd = m.fief(8)
+        for off, v in [(M.F_MORALE, 50), (M.F_SKILL, 60), (M.F_ARMS, 55), (M.F_HEADER, 1900),
+                       (M.F_OUTPUT, 200), (M.F_MEN, 18)]:
+            m.w16(fd + off, v)
+
+    ok = True
+    for label, atk_won, cap_fell in [("atk-won", True, False), ("atk-lost", False, False),
+                                     ("capital-fell", True, True)]:
+        mr = M.Memory(rng=DreamRNG()); setup(mr, atk_won, cap_fell)
+        rom_post, _ = run_rom_ret(mr, 0xE041, -12, 15, fp=0x0480)
+        mp = M.Memory(rng=DreamRNG()); setup(mp, atk_won, cap_fell)
+        T.apply_conquest_outcome(mp, mp.rng)
+        fd = mp.fief(8)
+        addrs = [(fd + off, 2, n) for off, n in [(M.F_GOLD, "gold"), (M.F_RICE, "rice"),
+                 (M.F_MEN, "men"), (M.F_MORALE, "mor"), (M.F_SKILL, "skl"), (M.F_ARMS, "arm")]]
+        addrs += [(M.FIEF_TO_DAIMYO_MAP + 8, 1, "owner8"), (M.FIEF_IS_CAPITAL + 8, 1, "cap8"),
+                  (M.FIEF_IS_CAPITAL + 5, 1, "cap5")]
+        for off, n in [(M.D_DRIVE, "Dwin"), (M.D_CHARISMA, "Chwin"), (M.D_IQ, "IQwin")]:
+            addrs.append((mp.daimyo(1) + off, 1, n))
+            addrs.append((mp.daimyo(2) + off, 1, n + "L"))
+        diffs = [n for a, s, n in addrs
+                 if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        ok = ok and not diffs
+        print(f"--- conquest[{label}]: {'MATCH' if not diffs else 'MISMATCH ' + ','.join(diffs)}")
+    return ok
+
+
 def main():
     sram = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_SRAM
     m = base_memory(sram)
@@ -357,6 +794,19 @@ def main():
 
     print("\n  --- COMBAT (game.resolve_siege vs ROM $8DFD) ---")
     results.append(combat_check())
+
+    print("\n  --- TACTICAL: strength core (ai_eval / calc_pct / terrain) ---")
+    results.append(combat_tactical_check())
+    print("\n  --- TACTICAL: casualties (apply_pct / melee / bribe) ---")
+    results.append(combat_casualty_check())
+    print("\n  --- TACTICAL: setup (distribute_men / battle_init_defender) ---")
+    results.append(combat_setup_check())
+    print("\n  --- TACTICAL: per-day driver (run_both_sides_combat_turn) ---")
+    results.append(combat_turn_check())
+    print("\n  --- TACTICAL: deploy (deploy_both_sides_units_loop, LCG lockstep) ---")
+    results.append(combat_deploy_check())
+    print("\n  --- TACTICAL: conquest resolution (apply_conquest_outcome $E041) ---")
+    results.append(combat_conquest_check())
 
     print(f"\n=== {sum(results)}/{len(results)} routines MATCH ===")
 

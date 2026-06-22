@@ -270,11 +270,25 @@ def events(m: "M.Memory", season: int, rng: random.Random):
 # ===========================================================================
 # Season loop
 # ===========================================================================
+def resolve_battle(m: "M.Memory", rng: random.Random):
+    """The battle-boundary dispatcher (mirrors bank_01.c $9130). ai_vm's commit
+    already set ai_turn_loop_redispatch_flag from `ui_confirm_flag_6e7d ||
+    defender==player`: a WATCHED battle (the 'Watch other daimyos battle' setting,
+    or a human defender) runs the full on-screen tactical engine; otherwise the
+    off-screen $8DFD auto-resolve. SPEED (auto) vs ACCURACY (tactical), one switch.
+    Both sides always run the AI logic here (no combat-policy yet, by design)."""
+    if m.r16(M.AI_REDISPATCH_FLAG):
+        from . import tactical as T
+        T.run_tactical_battle(m, rng)
+    else:
+        resolve_siege(m, rng)
+
+
 def command_pass(m: "M.Memory", rng: random.Random, player_policy=None):
     n = m.r16(M.SCENARIO_FIEF_COUNT)
     order = list(range(n))
     rng.shuffle(order)
-    war = ai_vm.war_hook(lambda mm: resolve_siege(mm, rng))
+    war = ai_vm.war_hook(lambda mm: resolve_battle(mm, rng))
     for idx in order:
         st = m.province_ai_state(idx)
         if st == M.EMPTY:
@@ -567,6 +581,66 @@ def player_ab(player_fief=5, n_seeds=40, years=30):
         print(f"    {sk}   |    {base:4.0%}       ->   {play:4.0%}  | {play - base:+5.0%}")
 
 
+def combat_ab(skill=2, n_seeds=12, years=20):
+    """Does the TACTICAL defensive advantage (terrain) change strategic OUTCOMES,
+    or just buy time before the dogpile wins? Same seeds/AI, two combat engines:
+    watch_battles=False (off-screen $8DFD, quality-only) vs True (on-screen tactical,
+    terrain-aware). Reports per-clan survival under each + the delta. Falsifier:
+    if terrain matters, the moat-fortress Tokugawa(Mikawa) RISES and the open-ground
+    quality-fortress Oda(Owari) FALLS when we switch auto->tactical."""
+    from .loader import load_daimyos, load_provinces
+    names = [d.name for d in load_daimyos()]
+    provs = [getattr(p, 'name', '?') for p in load_provinces()]
+    nc = len(names)
+
+    def run(watch):
+        survive = [0] * nc
+        deaths = [[] for _ in range(nc)]
+        clans_yr = [0.0] * years
+        for seed in range(n_seeds):
+            m = setup.build_board(skill=skill, seed=seed, watch_battles=watch)
+            rng = random.Random(seed)
+            year, prev = 1560, set(range(nc))
+            for yr in range(years):
+                for season in range(4):
+                    step_season(m, season, rng)
+                year += 1
+                m.w16(M.CURRENT_GAME_YEAR, year)
+                facs = living_factions(m)
+                clans_yr[yr] += len(facs)
+                alive = {o for o in facs if o < nc}
+                for d in prev - alive:
+                    deaths[d].append(year - 1)
+                prev = alive
+            for d in prev:
+                survive[d] += 1
+        return survive, deaths, clans_yr
+
+    print(f"=== COMBAT A/B: off-screen vs tactical ({n_seeds} seeds, {years} yrs, "
+          f"skill {skill}) ===")
+    auto_s, auto_d, auto_c = run(False)
+    tac_s,  tac_d,  tac_c  = run(True)
+
+    def med(xs):
+        xs = sorted(xs)
+        return xs[len(xs) // 2] if xs else None
+
+    print("  consolidation (avg living factions): year  auto / tactical")
+    for yr in range(0, years, 3):
+        print(f"    {1560+yr}:  {auto_c[yr]/n_seeds:4.1f} / {tac_c[yr]/n_seeds:4.1f}")
+    print(f"\n  per-clan survival  (sorted by terrain effect, tactical - auto):")
+    print(f"    {'clan':10}{'fief':10} {'auto':>5} {'tac':>5} {'d-surv':>6}  "
+          f"{'med-death auto/tac':>18}")
+    rows = []
+    for c in range(nc):
+        rows.append((tac_s[c] - auto_s[c], c))
+    for delta, c in sorted(rows, reverse=True):
+        a, t = auto_s[c] / n_seeds, tac_s[c] / n_seeds
+        dm_a, dm_t = med(auto_d[c]), med(tac_d[c])
+        ds = f"Y{dm_a or '-'}/Y{dm_t or '-'}"
+        print(f"    {names[c]:10}{provs[c]:10} {a:4.0%} {t:4.0%} {delta/n_seeds:+5.0%}  {ds:>18}")
+
+
 if __name__ == "__main__":
     import sys
     mode = sys.argv[1] if len(sys.argv) > 1 else "base"
@@ -575,5 +649,7 @@ if __name__ == "__main__":
         tourney(skill=sk)
     elif mode == "player":
         player_ab()
+    elif mode == "combat_ab":
+        combat_ab(skill=sk)
     else:
         base_test(skill=sk)

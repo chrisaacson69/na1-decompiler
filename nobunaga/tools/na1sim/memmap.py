@@ -141,6 +141,50 @@ WAR_DEFENDER_GOLD    = 0x6F83   # defender snapshot triple
 WAR_DEFENDER_RICE    = 0x6F85
 WAR_DEFENDER_MEN     = 0x6F87
 
+# --- bank-2 TACTICAL combat state ----------------------------------------
+# The on-screen battle. Two sides (0=attacker, 1=defender), each up to 5 unit
+# slots. Geometry on an 11x5 grid (cols 0..10, rows 0..4). Sources: bank_02.c
+# accessors + mesen-labels.toml [HIGH CONFIRMED] entries.
+#
+# side_resource_ptr(side) = side*6 + 0x6F7D  -> the attacker/defender triples
+#   ABOVE are exactly side 0 / side 1 of this table: +0 gold, +2 rice, +4 MEN
+#   (the per-side army TOTAL; consume_daily_battle_rice drains rice by men/30).
+SIDE_RESOURCE_BASE   = 0x6F7D   # = WAR_ATTACKER_GOLD; side*6, +0 gold +2 rice +4 men
+SR_GOLD = 0
+SR_RICE = 2
+SR_MEN  = 4
+UNIT_STRENGTH_BASE   = 0x6FBC   # word[2][5]: side*10 + slot*2 -> a unit's men
+UNIT_COL_BASE        = 0x6FD0   # byte[2][5]: side*5 + slot -> map column (X); 200=off-map
+UNIT_ROW_BASE        = 0x6FDA   # byte[2][5]: side*5 + slot -> map row (Y)
+# war_side_state_flag[side] ($6F65) is PACKED: bits 0..4 = unit-slot presence,
+# bit 7 = war/siege (home) state.  is_unit_present = bit slot; test bit7 = home.
+UNIT_PRESENCE_MASK_ALL = 31     # bits 0..4 (distribute_men sets these)
+COMBAT_ARENA_X_MIN   = 0x6FF6   # tactical bounding rect [x_min,y_min,x_max,y_max]
+COMBAT_ARENA_Y_MIN   = 0x6FF8
+COMBAT_ARENA_X_MAX   = 0x6FFA
+COMBAT_ARENA_Y_MAX   = 0x6FFC
+BATTLE_WINNER_PROV   = 0x6F57   # winner/survivor province selector ($DEC6 reassign)
+BATTLE_DEFENDER_STATUS = 0x6F66 # bit7 = defending fief's capital flag (snapshot)
+CUR_COMBAT_UNIT_SLOT = 0x7BE4   # word: current unit slot 0..4
+CUR_COMBAT_SIDE      = 0x7BE8   # word: current side (0=attacker / 1=defender)
+BATTLE_SIDE_STR_MOD  = 0x7BEA   # word[2]: per-side 8-stat weight sum (ai_sum_battle_strength)
+UNIT_EXCHANGE_COUNT  = 0x7BEE   # byte[5]: per-enemy-slot prior-exchange count (momentum)
+COMBAT_CASUALTY_SKIP = 0x7BF3   # gate suppressing the defection casualty-apply branch
+PROVINCE_UNIT_TYPE_PCT = 0x76A9 # byte[51][5]: prov*5 -> per-unit-type composition %
+
+# ROM constant tables (bank 2, fixed) -- inlined as Python (read once, never written)
+# battle_strength_stat_weights $B5B1: the 8-stat weighted-contest weights, in the
+#   order ai_sum_battle_strength reads them -> daimyo [Health,Drive,Luck,Charisma,IQ]
+#   then fief [Morale,Skill,Arms].
+BATTLE_STRENGTH_STAT_WEIGHTS = (5, 10, 10, 5, 20, 10, 25, 15)
+# terrain_strength_mult_table $B9C2: indexed by terrain_class 0..3
+#   (0=castle, 1=forest, 2=town, 3=clear); applied pct_op(men, t)*3 -> the
+#   +270/+60/+30/+0% defensive terrain bonus.
+TERRAIN_STRENGTH_MULT_TABLE = (90, 20, 10, 0)
+# province_to_mapid_table $F70E (bank 15) -- 17-fief scenario tactical-map ids.
+PROVINCE_TO_MAPID_17 = (15, 9, 13, 20, 21, 17, 19, 23, 22, 31, 26, 27, 25, 30, 32, 14, 24)
+MAP_CELL_POOL = 0xA57E          # bank-4 ROM tactical_map_cell_pool; stride 55/map
+
 # --- province_ai_state values --------------------------------------------
 AI_HOME       = 0     # AI-owned fief: runs ai_econ_command_dispatch
 PLAYER_DIRECT = 5     # human-owned fief
@@ -241,6 +285,52 @@ class Memory:
         """fief_men_if_provisioned $9382: men if rice>0, else 0 (provisioned men)."""
         f = self.fief(idx)
         return self.r16(f + F_MEN) if self.r16(f + F_RICE) else 0
+
+    # --- bank-2 tactical accessors (mirror the bank_02.c pointer helpers) --
+    def side_resource_ptr(self, side: int) -> int:
+        """side_resource_ptr $828A = side*6 + 0x6F7D (+0 gold/+2 rice/+4 men)."""
+        return side * 6 + SIDE_RESOURCE_BASE
+
+    def unit_strength_ptr(self, side: int, slot: int) -> int:
+        """unit_strength_ptr $82C9 = side*10 + slot*2 + 0x6FBC (word = unit men)."""
+        return side * 10 + (slot << 1) + UNIT_STRENGTH_BASE
+
+    def unit_col_ptr(self, side: int, slot: int) -> int:
+        """unit_col_ptr $828B = side*5 + slot + 0x6FD0 (byte = map column X)."""
+        return side * 5 + slot + UNIT_COL_BASE
+
+    def unit_row_ptr(self, side: int, slot: int) -> int:
+        """unit_row_ptr $829A = side*5 + slot + 0x6FDA (byte = map row Y)."""
+        return side * 5 + slot + UNIT_ROW_BASE
+
+    def get_battle_side_province(self, side: int) -> int:
+        """get_battle_side_province $838F: side 0 -> attacker (selected),
+        side!=0 -> defender (battle_defending_province)."""
+        return self.defending if side else self.selected
+
+    def is_unit_present(self, side: int, slot: int) -> int:
+        """is_unit_present $8F79: bit `slot` of war_side_state_flag[side] ($6F65)."""
+        return (self.r8(WAR_SIDE_STATE_FLAG + side) >> slot) & 1 if slot < 5 else 0
+
+    def test_6f65_bit7(self, side: int) -> int:
+        """test_6f65_bit7 $D9E5: bit7 (war/siege/home) of war_side_state_flag[side]."""
+        return 1 if (self.r8(WAR_SIDE_STATE_FLAG + side) & 0x80) else 0
+
+    @property
+    def cur_combat_side(self) -> int:
+        return self.r16(CUR_COMBAT_SIDE)
+
+    @cur_combat_side.setter
+    def cur_combat_side(self, v: int) -> None:
+        self.w16(CUR_COMBAT_SIDE, v)
+
+    @property
+    def cur_combat_unit_slot(self) -> int:
+        return self.r16(CUR_COMBAT_UNIT_SLOT)
+
+    @cur_combat_unit_slot.setter
+    def cur_combat_unit_slot(self, v: int) -> None:
+        self.w16(CUR_COMBAT_UNIT_SLOT, v)
 
     # --- the two ambient cursors most AI routines key off -----------------
     @property
