@@ -153,6 +153,16 @@ for the patterns as the backstop). Fixing now would mean investing blind to the 
   to tell them from genuine merges, AND that pass is **NOT gate-protected** (copy-prop is CFG-preserving, so the CFG-iso
   gate is BLIND to a bad inline — it would need value-oracle verification). **Deferred: ~62 lines is not worth the
   liveness machinery + oracle harness; the phi density is mostly inherent.** Measurement script logic in this entry.
+- **4.3 switch-tail-hoist + per-arm phi — CONFIRMED CROSS-GAME (ROTK, 2026-06-22).** Specimen `cursor_newline_wrap`
+  (ROTK `$CB87`, a real `SWITCH_noncontig`): each arm renders as `phi_val = N; goto L_tail`, with the shared
+  continuation (`text_cursor_col = phi_val; row++; wrap…`) living *inside case 1*. Two distinct cleanups: **(a)** the
+  per-arm phi is the §4.2 deferred class (shared name across arms → needs liveness + value-oracle, NOT gate-safe);
+  **(b)** NEW and separable — **switch-tail-hoist**: a STRUCTURER *placement* fix — DREAM/V2 emits the join node inside
+  an arm + `goto`s instead of hoisting it after the `switch` with `break`s. This is **CFG-preserving → gate-safe**
+  (unlike the phi inline), so it's the cheaper, lower-risk half. **ROI shift:** this is na1dream output verbatim
+  (1368 `phi_*` in NA1's own 4-c — not a ROTK bug), so a fix lands on **every KOEI title at once** once na1dream
+  graduates to `koei-nes`. The per-game ROI that made §4.2 "deferred, low" now multiplies across games — **reconsider
+  (b) the tail-hoist at the koei-nes graduation.** Not a walk blocker: output is correct + nameable as-is.
 
 ---
 
