@@ -36,6 +36,13 @@ class Memory:
         self.rom = rom_bytes  # full .nes file (including $10-byte iNES header)
         self.bank_lo = 0  # switchable bank index ($8000-$BFFF)
         # bank_hi is always 15 (fixed at $C000-$FFFF)
+        # Switchable-window granularity: 0x4000 = MMC1 16K bank @ $8000-$BFFF (na1/ro3k/gk);
+        # 0x2000 = MMC5 8K bank @ $8000-$9FFF, with $A000-$BFFF = the next 8K bank (na2). The
+        # fixed $C000-$FFFF region is the last 16K (= bank 30||31) in both modes, unchanged.
+        self.bank_size = 0x4000
+        self.bank_base = 0x8000   # CPU base of the switchable window (na2 bytecode banks map at $A000)
+        # MMC5 hardware multiplier ($5205=multiplicand, $5206=multiplier; read back = 16-bit product).
+        self._mult = [0, 0]
 
         # write trace for debugging
         self.trace_writes = False
@@ -50,6 +57,13 @@ class Memory:
         Returns None if not a ROM address.
         """
         if 0x8000 <= addr <= 0xBFFF:
+            if self.bank_size == 0x2000:                     # MMC5 8K windows
+                b = self.bank_base                           # the bank_lo window ($A000 for na2 bytecode)
+                if b <= addr < b + 0x2000:
+                    return 0x10 + self.bank_lo * 0x2000 + (addr - b)
+                # the other 8K half holds the adjacent bank (rarely read during disasm)
+                other = 0x8000 if b == 0xA000 else 0xA000
+                return 0x10 + self.bank_lo * 0x2000 + (addr - other)
             return 0x10 + self.bank_lo * 0x4000 + (addr - 0x8000)
         if 0xC000 <= addr <= 0xFFFF:
             return 0x10 + 15 * 0x4000 + (addr - 0xC000)
@@ -61,6 +75,10 @@ class Memory:
             return self.ram[addr & 0x7FF]
         if 0x6000 <= addr < 0x8000:
             return self.sram[addr - 0x6000]
+        if addr == 0x5205:                                   # MMC5 mult: product low byte
+            return (self._mult[0] * self._mult[1]) & 0xFF
+        if addr == 0x5206:                                   # MMC5 mult: product high byte
+            return ((self._mult[0] * self._mult[1]) >> 8) & 0xFF
         rom_ofs = self._rom_offset(addr)
         if rom_ofs is not None:
             return self.rom[rom_ofs]
@@ -76,6 +94,10 @@ class Memory:
             self.ram[addr & 0x7FF] = val
         elif 0x6000 <= addr < 0x8000:
             self.sram[addr - 0x6000] = val
+        elif addr == 0x5205:                                 # MMC5 mult: multiplicand
+            self._mult[0] = val
+        elif addr == 0x5206:                                 # MMC5 mult: multiplier
+            self._mult[1] = val
         # ROM writes ignored (we don't emulate MMC1 register writes here;
         # bank switching is done explicitly via switch_bank())
 

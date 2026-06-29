@@ -66,7 +66,16 @@ ABS_BRANCH_OPS = {0xD6, 0xD7, 0xD8}           # word-target jump/branch (collect
 UNCOND_TERMINATORS = {0xCF, 0xD6, 0xE3, 0xE6, 0xD5, 0xD9}  # RET / JMP / Jback / Jahead / switch×2
 
 
+# Switchable-bank granularity, patched per-title by the driver (koei_vm) from games.toml.
+# 0x4000 = MMC1 16K window @ $8000-$BFFF (na1/ro3k/gk, bank 15 = fixed $C000); 0x2000 = MMC5 8K
+# window @ $8000-$9FFF (na2). Default preserves the historical 16K behavior exactly.
+BANK_SIZE = 0x4000
+BANK_BASE = 0x8000          # CPU base of a bytecode bank's window (na2 = $A000, the $5115 window)
+
+
 def cpu_to_file(bank, addr):
+    if BANK_SIZE == 0x2000 and addr < 0xC000:                # MMC5 8K bytecode bank @ BANK_BASE
+        return 0x10 + bank * 0x2000 + (addr - BANK_BASE)
     if bank == 15:
         return 0x10 + 15 * 0x4000 + (addr - 0xC000)
     return 0x10 + bank * 0x4000 + (addr - 0x8000)
@@ -74,6 +83,8 @@ def cpu_to_file(bank, addr):
 
 def bank_range(bank):
     """(cpu_base, size) for a bank's address window."""
+    if BANK_SIZE == 0x2000:                                  # MMC5 8K bytecode banks
+        return (BANK_BASE, 0x2000)
     return (0xC000, 0x4000) if bank == 15 else (0x8000, 0x4000)
 
 
