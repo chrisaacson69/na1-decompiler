@@ -74,8 +74,8 @@ BANK_BASE = 0x8000          # CPU base of a bytecode bank's window (na2 = $A000,
 
 
 def cpu_to_file(bank, addr):
-    if BANK_SIZE == 0x2000 and addr < 0xC000:                # MMC5 8K bytecode bank @ BANK_BASE
-        return 0x10 + bank * 0x2000 + (addr - BANK_BASE)
+    if BANK_SIZE == 0x2000:                                  # MMC5 8K bytecode bank @ BANK_BASE
+        return 0x10 + bank * 0x2000 + (addr - BANK_BASE)     # works for $8000/$A000/$C000 windows
     if bank == 15:
         return 0x10 + 15 * 0x4000 + (addr - 0xC000)
     return 0x10 + bank * 0x4000 + (addr - 0x8000)
