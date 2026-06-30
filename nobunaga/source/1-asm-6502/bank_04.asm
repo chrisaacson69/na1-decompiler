@@ -1,2304 +1,13880 @@
 .base $8000
 
-            hex 4c 00 00 00 01 ff 00 00 ; 10000:  4c 00 00 00 01 ff 00 00
-            hex 00 00 00 00 00 02 04 ff ; 10008:  00 00 00 00 00 02 04 ff
-            hex 00 00 00 00 01 03 04 ff ; 10010:  00 00 00 00 01 03 04 ff
-            hex 00 00 00 00 02 04 05 ff ; 10018:  00 00 00 00 02 04 05 ff
-            hex 00 00 00 00 01 02 03 05 ; 10020:  00 00 00 00 01 02 03 05
-            hex 06 ff 00 00 03 04 06 07 ; 10028:  06 ff 00 00 03 04 06 07
-            hex ff 00 00 00 04 05 07 08 ; 10030:  ff 00 00 00 04 05 07 08
-            hex 09 ff 00 00 05 06 08 0a ; 10038:  09 ff 00 00 05 06 08 0a
-            hex 0b ff 00 00 06 07 09 0b ; 10040:  0b ff 00 00 06 07 09 0b
-            hex ff 00 00 00 06 08 0b 0d ; 10048:  ff 00 00 00 06 08 0b 0d
-            hex 0e 10 ff 00 07 0b 0d ff ; 10050:  0e 10 ff 00 07 0b 0d ff
-            hex 00 00 00 00 07 08 09 0a ; 10058:  00 00 00 00 07 08 09 0a
-            hex 0d ff 00 00 0d ff 00 00 ; 10060:  0d ff 00 00 0d ff 00 00
-            hex 00 00 00 00 09 0a 0b 0c ; 10068:  00 00 00 00 09 0a 0b 0c
-            hex 0e 13 ff 00 09 0d 10 11 ; 10070:  0e 13 ff 00 09 0d 10 11
-            hex 12 13 ff 00 10 14 ff 00 ; 10078:  12 13 ff 00 10 14 ff 00
-            hex 00 00 00 00 09 0e 0f 11 ; 10080:  00 00 00 00 09 0e 0f 11
-            hex 14 ff 00 00 0e 10 12 14 ; 10088:  14 ff 00 00 0e 10 12 14
-            hex 15 16 ff 00 0e 11 13 16 ; 10090:  15 16 ff 00 0e 11 13 16
-            hex 17 ff 00 00 0d 0e 12 17 ; 10098:  17 ff 00 00 0d 0e 12 17
-            hex ff 00 00 00 0f 10 11 15 ; 100A0:  ff 00 00 00 0f 10 11 15
-            hex ff 00 00 00 11 14 16 1a ; 100A8:  ff 00 00 00 11 14 16 1a
-            hex 1c ff 00 00 11 12 15 17 ; 100B0:  1c ff 00 00 11 12 15 17
-            hex 18 19 1a ff 12 13 16 18 ; 100B8:  18 19 1a ff 12 13 16 18
-            hex ff 00 00 00 16 17 19 ff ; 100C0:  ff 00 00 00 16 17 19 ff
-            hex 00 00 00 00 16 18 1a 1b ; 100C8:  00 00 00 00 16 18 1a 1b
-            hex 1f 21 ff 00 15 16 19 1b ; 100D0:  1f 21 ff 00 15 16 19 1b
-            hex 1c 1d 1e ff 19 1a 1e 1f ; 100D8:  1c 1d 1e ff 19 1a 1e 1f
-            hex ff 00 00 00 15 1a 1d 22 ; 100E0:  ff 00 00 00 15 1a 1d 22
-            hex ff 00 00 00 1a 1c 1e 20 ; 100E8:  ff 00 00 00 1a 1c 1e 20
-            hex 22 23 ff 00 1a 1b 1d 1f ; 100F0:  22 23 ff 00 1a 1b 1d 1f
-            hex 20 ff 00 00 19 1b 1e 20 ; 100F8:  20 ff 00 00 19 1b 1e 20
-            hex 21 ff 00 00 1d 1e 1f 21 ; 10100:  21 ff 00 00 1d 1e 1f 21
-            hex 23 ff 00 00 19 1f 20 ff ; 10108:  23 ff 00 00 19 1f 20 ff
-            hex 00 00 00 00 1c 1d 23 24 ; 10110:  00 00 00 00 1c 1d 23 24
-            hex 25 ff 00 00 1d 20 22 25 ; 10118:  25 ff 00 00 1d 20 22 25
-            hex 28 ff 00 00 22 25 26 ff ; 10120:  28 ff 00 00 22 25 26 ff
-            hex 00 00 00 00 22 23 24 26 ; 10128:  00 00 00 00 22 23 24 26
-            hex ff 00 00 00 24 25 2c ff ; 10130:  ff 00 00 00 24 25 2c ff
-            hex 00 00 00 00 28 29 ff 00 ; 10138:  00 00 00 00 28 29 ff 00
-            hex 00 00 00 00 23 27 29 2a ; 10140:  00 00 00 00 23 27 29 2a
-            hex ff 00 00 00 27 28 2a 2b ; 10148:  ff 00 00 00 27 28 2a 2b
-            hex 2e ff 00 00 28 29 2b ff ; 10150:  2e ff 00 00 28 29 2b ff
-            hex 00 00 00 00 29 2a ff 00 ; 10158:  00 00 00 00 29 2a ff 00
-            hex 00 00 00 00 26 2d 2e ff ; 10160:  00 00 00 00 26 2d 2e ff
-            hex 00 00 00 00 2c 2e 2f ff ; 10168:  00 00 00 00 2c 2e 2f ff
-            hex 00 00 00 00 29 2c 2d 2f ; 10170:  00 00 00 00 29 2c 2d 2f
-            hex 30 ff 00 00 2d 2e 30 31 ; 10178:  30 ff 00 00 2d 2e 30 31
-            hex ff 00 00 00 2e 2f 31 ff ; 10180:  ff 00 00 00 2e 2f 31 ff
-            hex 00 00 00 00 2f 30 ff 00 ; 10188:  00 00 00 00 2f 30 ff 00
-            hex 00 00 00 00 00 36 0c 01 ; 10190:  00 00 00 00 00 36 0c 01
-            hex 2f 38 02 2b 64 03 20 68 ; 10198:  2f 38 02 2b 64 03 20 68
-            hex 04 21 38 05 16 7c 06 13 ; 101A0:  04 21 38 05 16 7c 06 13
-            hex 54 07 0b                ; 101A8:  54 07 0b
-
-            sty $0b08                   ; 101AB:  8c 08 0b
-            jmp ($0809)                 ; 101AE:  6c 09 08
-
-            hex 40 0a 00 90 0b 00 71 ff ; 101B1:  40 0a 00 90 0b 00 71 ff
-            hex 00 00 00 00 00 00 00 00 ; 101B9:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 06 ; 101C1:  00 00 00 00 00 00 00 06
-            hex 36 17 08 35 3c 09 27 44 ; 101C9:  36 17 08 35 3c 09 27 44
-            hex 0b 32 70 0d 2a 90 0e 1c ; 101D1:  0b 32 70 0d 2a 90 0e 1c
-            hex 70 0f 11 2c 10 14 53 11 ; 101D9:  70 0f 11 2c 10 14 53 11
-            hex 0f 72 12 15 90 14 09 53 ; 101E1:  0f 72 12 15 90 14 09 53
-            hex 15 03 70 16 06 90 ff 00 ; 101E9:  15 03 70 16 06 90 ff 00
-            hex 00 00 00 00 00 00 00 00 ; 101F1:  00 00 00 00 00 00 00 00
-            hex 00 00 00 07 36 16 08 2a ; 101F9:  00 00 00 07 36 16 08 2a
-            hex 0c 09 1e 28 0a 30 4c 0b ; 10201:  0c 09 1e 28 0a 30 4c 0b
-            hex 2a 2e 0c 2d 7b 0d 24 56 ; 10209:  2a 2e 0c 2d 7b 0d 24 56
-            hex 0e 16 47 10 0c 10 11 09 ; 10211:  0e 16 47 10 0c 10 11 09
-            hex 30 12 0e 5f 13 0f 80 16 ; 10219:  30 12 0e 5f 13 0f 80 16
-            hex 03 48 17 04 8a 18 02 66 ; 10221:  03 48 17 04 8a 18 02 66
-            hex ff 00 00 00 00 00 00 11 ; 10229:  ff 00 00 00 00 00 00 11
-            hex 36 2b 12 36 53 13 36 90 ; 10231:  36 2b 12 36 53 13 36 90
-            hex 14 2d 15 15 23 34 16 2e ; 10239:  14 2d 15 15 23 34 16 2e
-            hex 41 17 2b 90 18 30 64 19 ; 10241:  41 17 2b 90 18 30 64 19
-            hex 24 7d 1a 23 54 1b 1e 90 ; 10249:  24 7d 1a 23 54 1b 1e 90
-            hex 1c 11 35 1d 14 4b 1e 19 ; 10251:  1c 11 35 1d 14 4b 1e 19
-            hex 69 20 10 86 22 01 47 23 ; 10259:  69 20 10 86 22 01 47 23
-            hex 07 64 ff 16 36 25 18 33 ; 10261:  07 64 ff 16 36 25 18 33
-            hex 42 19 2d 6a 1a 2d 0c 1b ; 10269:  42 19 2d 6a 1a 2d 0c 1b
-            hex 26 48 1d 1b 00 1e 26 29 ; 10271:  26 48 1d 1b 00 1e 26 29
-            hex 1f 21 6d 20 1b 41 21 19 ; 10279:  1f 21 6d 20 1b 41 21 19
-            hex 87 23 10 24 27 05 54 28 ; 10281:  87 23 10 24 27 05 54 28
-            hex 0a 79 ff 00 00 00 00 00 ; 10289:  0a 79 ff 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 1c ; 10291:  00 00 00 00 00 00 00 1c
-            hex 36 05 1d 36 3a 20 36 5c ; 10299:  36 05 1d 36 3a 20 36 5c
-            hex 21 33 85 22 2c 1d 23 2b ; 102A1:  21 33 85 22 2c 1d 23 2b
-            hex 3c 24 1d 13 25 1c 33 26 ; 102A9:  3c 24 1d 13 25 1c 33 26
-            hex 0e 30 27 22 57 28 25 79 ; 102B1:  0e 30 27 22 57 28 25 79
-            hex 29 11 50 2a 19 75 2b 12 ; 102B9:  29 11 50 2a 19 75 2b 12
-            hex 90 2c 01 58 2e 02 80 ff ; 102C1:  90 2c 01 58 2e 02 80 ff
-            hex 00 00 00 26 2f 12 29 2f ; 102C9:  00 00 00 26 2f 12 29 2f
-            hex 32 2a 36 4e 2b 2f 6e 2c ; 102D1:  32 2a 36 4e 2b 2f 6e 2c
-            hex 20 1c 2d 15 25 2e 22 41 ; 102D9:  20 1c 2d 15 25 2e 22 41
-            hex 2f 16 4c 30 17 75 31 0d ; 102E1:  2f 16 4c 30 17 75 31 0d
-            hex 8c ff 00 00 00 00 00 00 ; 102E9:  8c ff 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 102F1:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 03 ; 102F9:  00 00 00 00 00 00 00 03
-            hex ff 00 00 00 00 00 00 02 ; 10301:  ff 00 00 00 00 00 00 02
-            hex 03 0f ff 00 00 00 00 01 ; 10309:  03 0f ff 00 00 00 00 01
-            hex 06 0f ff 00 00 00 00 00 ; 10311:  06 0f ff 00 00 00 00 00
-            hex 01 04 05 0f ff 00 00 03 ; 10319:  01 04 05 0f ff 00 00 03
-            hex 05 08 0a ff 00 00 00 03 ; 10321:  05 08 0a ff 00 00 00 03
-            hex 04 08 0f ff 00 00 00 02 ; 10329:  04 08 0f ff 00 00 00 02
-            hex 07 0f ff 00 00 00 00 06 ; 10331:  07 0f ff 00 00 00 00 06
-            hex 08 0f 10 ff 00 00 00 04 ; 10339:  08 0f 10 ff 00 00 00 04
-            hex 05 07 0a 0c 0f 10 ff 0b ; 10341:  05 07 0a 0c 0f 10 ff 0b
-            hex 0c 0d 0e ff 00 00 00 04 ; 10349:  0c 0d 0e ff 00 00 00 04
-            hex 08 0b 0c 0d ff 00 00 09 ; 10351:  08 0b 0c 0d ff 00 00 09
-            hex 0a 0c 0d ff 00 00 00 08 ; 10359:  0a 0c 0d ff 00 00 00 08
-            hex 09 0a 0b 10 ff 00 00 09 ; 10361:  09 0a 0b 10 ff 00 00 09
-            hex 0a 0b 0e ff 00 00 00 09 ; 10369:  0a 0b 0e ff 00 00 00 09
-            hex 0d ff 00 00 00 00 00 01 ; 10371:  0d ff 00 00 00 00 00 01
-            hex 02 03 05 06 07 08 ff 07 ; 10379:  02 03 05 06 07 08 ff 07
-            hex 08 0c ff                ; 10381:  08 0c ff
-
-            brk                         ; 10384:  00
-            hex 00                      ; 10385:  00
-            brk                         ; 10386:  00
-            hex 00                      ; 10387:  00
-            brk                         ; 10388:  00
-            hex 2d                      ; 10389:  2d
-            brk                         ; 1038A:  00
-            hex 01                      ; 1038B:  01
-            sec                         ; 1038C:  38
-            jmp $3802                   ; 1038D:  4c 02 38
-
-            hex 7c 03 28 20 04 14 30 05 ; 10390:  7c 03 28 20 04 14 30 05
-            hex 23 3c 06 26 90 07 19 90 ; 10398:  23 3c 06 26 90 07 19 90
-            hex 08 1b 50 09 02 8c 0a 12 ; 103A0:  08 1b 50 09 02 8c 0a 12
-            hex 54 0b 10 70 0c 0e 90 0d ; 103A8:  54 0b 10 70 0c 0e 90 0d
-            hex 09 5c 0e 00 68 0f 2c 58 ; 103B0:  09 5c 0e 00 68 0f 2c 58
-            hex 10 1b 70 ff ff ff ff ff ; 103B8:  10 1b 70 ff ff ff ff ff
-            hex ff ff ff ff 00 10 00 02 ; 103C0:  ff ff ff ff 00 10 00 02
-            hex 00 20 00 00 f4 f0 f0 f0 ; 103C8:  00 20 00 00 f4 f0 f0 f0
-            hex f0 f2 f0 f0 0f 2f 0f 0f ; 103D0:  f0 f2 f0 f0 0f 2f 0f 0f
-            hex 4f 0f 1f 0f 04          ; 103D8:  4f 0f 1f 0f 04
-
-            jsr $0000                   ; 103DD:  20 00 00
-            rti                         ; 103E0:  40
-
-            hex 02 10 00 ff ff ff ff ff ; 103E1:  02 10 00 ff ff ff ff ff
-            hex ff ff ff f4 f8 fc fe ff ; 103E9:  ff ff ff f4 f8 fc fe ff
-            hex ff ff ff 0f 27 03 01 40 ; 103F1:  ff ff ff 0f 27 03 01 40
-            hex 02 10 00 04 20 00 00 ff ; 103F9:  02 10 00 04 20 00 00 ff
-            hex ff ff ff ff ff ff ff 40 ; 10401:  ff ff ff ff ff ff ff 40
-            hex 02 10 00 f0 f0 f0 f0 f0 ; 10409:  02 10 00 f0 f0 f0 f0 f0
-            hex f0 f0 f0 0f 2f 0f 0f 4f ; 10411:  f0 f0 f0 0f 2f 0f 0f 4f
-            hex 0f 1f 0f                ; 10419:  0f 1f 0f
-
-            brk                         ; 1041C:  00
-            hex 02                      ; 1041D:  02
-            rti                         ; 1041E:  40
-
-            hex 00 00 02 20 00 ff fd bf ; 1041F:  00 00 02 20 00 ff fd bf
-            hex ff ff fd df ff f0 f8 fc ; 10427:  ff ff fd df ff f0 f8 fc
-            hex fe ff ff ff ff 0f 27 03 ; 1042F:  fe ff ff ff ff 0f 27 03
-            hex 01 40 02 10 00 00 00 00 ; 10437:  01 40 02 10 00 00 00 00
-            hex 00 ff ff ff ff ff ff ff ; 1043F:  00 ff ff ff ff ff ff ff
-            hex ff 00 02 10 00 00 00 00 ; 10447:  ff 00 02 10 00 00 00 00
-            hex 00 80 c0 e0 f0 ff ff ff ; 1044F:  00 80 c0 e0 f0 ff ff ff
-            hex ff 7f 3f 1f 0f 0f 0f 0f ; 10457:  ff 7f 3f 1f 0f 0f 0f 0f
-            hex 0f 0f 0f 0f 0f f0 f0 f0 ; 1045F:  0f 0f 0f 0f 0f f0 f0 f0
-            hex f0 f0 f0 f0 f0 ef c7 8b ; 10467:  f0 f0 f0 f0 f0 ef c7 8b
-            hex 51 e1 e2 d5 fa 10 30 70 ; 1046F:  51 e1 e2 d5 fa 10 30 70
-            hex a4 0c 1c 28 04 0f 07 03 ; 10477:  a4 0c 1c 28 04 0f 07 03
-            hex 01 00 00 00 00 f0 f8 fc ; 1047F:  01 00 00 00 00 f0 f8 fc
-            hex fe ff ff ff ff ff ff ff ; 10487:  fe ff ff ff ff ff ff ff
-            hex ff 00 00 00 00 00 00 00 ; 1048F:  ff 00 00 00 00 00 00 00
-            hex 00 ff ff ff ff ff ff ff ; 10497:  00 ff ff ff ff ff ff ff
-            hex ff 40 02 10 00 04 20 00 ; 1049F:  ff 40 02 10 00 04 20 00
-            hex 00 ff ff ff ff ff ff ff ; 104A7:  00 ff ff ff ff ff ff ff
-            hex ff 7f 3f 1f 0f 04 20 00 ; 104AF:  ff 7f 3f 1f 0f 04 20 00
-            hex 00 c0 c2 f0 f0 0f 27 03 ; 104B7:  00 c0 c2 f0 f0 0f 27 03
-            hex 01 40 02 10 00 f4 f8 fc ; 104BF:  01 40 02 10 00 f4 f8 fc
-            hex fe ff ff ff ff f4 e0 c0 ; 104C7:  fe ff ff ff ff f4 e0 c0
-            hex 80 40 02 10 00 0f 3f 3f ; 104CF:  80 40 02 10 00 0f 3f 3f
-            hex 7f ff ff ff ff ff ff ff ; 104D7:  7f ff ff ff ff ff ff ff
-            hex ff fe fe f8 f0 04 20 00 ; 104DF:  ff fe fe f8 f0 04 20 00
-            hex 00 41 03 17 0f ff ff ff ; 104E7:  00 41 03 17 0f ff ff ff
-            hex ff ff ff ff ff 04       ; 104EF:  ff ff ff ff ff 04
-
-            jsr $0000                   ; 104F5:  20 00 00
-            rti                         ; 104F8:  40
-
-tab_b4_84f9: ; 1616 bytes
-            hex 02 10 00 ff ff ff ff fe ; 104F9:  02 10 00 ff ff ff ff fe
-            hex fc f8 f0 04 20 00 00 41 ; 10501:  fc f8 f0 04 20 00 00 41
-            hex 03 17 0f ff ff ff ff 0f ; 10509:  03 17 0f ff ff ff ff 0f
-            hex 0f 0f 0f 04 20 00 00 f0 ; 10511:  0f 0f 0f 04 20 00 00 f0
-            hex f2 f0 f0 7f 3f 1f 0f 47 ; 10519:  f2 f0 f0 7f 3f 1f 0f 47
-            hex 03 11 00 84 e0 e0 f0 f8 ; 10521:  03 11 00 84 e0 e0 f0 f8
-            hex fe fe ff ff ff ff ff 00 ; 10529:  fe fe ff ff ff ff ff 00
-            hex 00 00 00 04 20 00 00 ff ; 10531:  00 00 00 04 20 00 00 ff
-            hex ff ff ff ff ff ff ff ef ; 10539:  ff ff ff ff ff ff ff ef
-            hex cf 8f 0f 04 20 00 00 50 ; 10541:  cf 8f 0f 04 20 00 00 50
-            hex 32 70 f0 0f 0f 0f 0f 0f ; 10549:  32 70 f0 0f 0f 0f 0f 0f
-            hex 0f 0f 0f f4 f0 f0 f0 f0 ; 10551:  0f 0f 0f f4 f0 f0 f0 f0
-            hex f2 f0 f0 7f 3f 1f 0f 00 ; 10559:  f2 f0 f0 7f 3f 1f 0f 00
-            hex 00 00 00 84 c0 e0 f0 ff ; 10561:  00 00 00 84 c0 e0 f0 ff
-            hex ff ff ff ff ff ff ff 00 ; 10569:  ff ff ff ff ff ff ff 00
-            hex 00 00 00 04 20 00 00 f7 ; 10571:  00 00 00 04 20 00 00 f7
-            hex f7 f7 f7 0f 0f 0f 0f 07 ; 10579:  f7 f7 f7 0f 0f 0f 0f 07
-            hex 03 01 00 f4 f0 f0 f0 f8 ; 10581:  03 01 00 f4 f0 f0 f0 f8
-            hex fc fe ff 0f 07 03 01 00 ; 10589:  fc fe ff 0f 07 03 01 00
-            hex 00 00 00 f4 f8 fc fe ff ; 10591:  00 00 00 f4 f8 fc fe ff
-            hex ff ff ff f0 e0 c0 80 00 ; 10599:  ff ff ff f0 e0 c0 80 00
-            hex 00 00 00 0f 1f 3f 7f ff ; 105A1:  00 00 00 0f 1f 3f 7f ff
-            hex ff ff ff 00 00 00 00 ff ; 105A9:  ff ff ff 00 00 00 00 ff
-            hex ff ff ff ff ff ff ff 00 ; 105B1:  ff ff ff ff ff ff ff 00
-            hex 00 00 00 ff ff ff ff fe ; 105B9:  00 00 00 ff ff ff ff fe
-            hex fd fb f7 00 00 00 00 00 ; 105C1:  fd fb f7 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff 00 ; 105C9:  00 00 00 ff ff ff ff 00
-            hex ff ff ff 00 00 00 00 00 ; 105D1:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 01 03 07 0f 1f ; 105D9:  00 00 00 01 03 07 0f 1f
-            hex 3f 7f ff fe fc f8 f0 e0 ; 105E1:  3f 7f ff fe fc f8 f0 e0
-            hex c0 80 00 f7 f7 f7 f7 f7 ; 105E9:  c0 80 00 f7 f7 f7 f7 f7
-            hex f7 f7 f7 00 00 00 00 00 ; 105F1:  f7 f7 f7 00 00 00 00 00
-            hex 00 00 00 ef df bf 7f ff ; 105F9:  00 00 00 ef df bf 7f ff
-            hex ff ff ff 00 00 00 00 00 ; 10601:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 f0 f0 f0 f0 f0 ; 10609:  00 00 00 f0 f0 f0 f0 f0
-            hex f0 f0 f0 0f 0f 0f 0f 0f ; 10611:  f0 f0 f0 0f 0f 0f 0f 0f
-            hex 0f 0f 0f f7 f7 f7 fb fc ; 10619:  0f 0f 0f f7 f7 f7 fb fc
-            hex ff ff ff 00 00 00 00 00 ; 10621:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff 7f ; 10629:  00 00 00 ff ff ff ff 7f
-            hex 3f 1f 0f 00 00 00 00 80 ; 10631:  3f 1f 0f 00 00 00 00 80
-            hex c0 e0 f0 ff ff ff ff 7f ; 10639:  c0 e0 f0 ff ff ff ff 7f
-            hex bf df ef 00 00 00 00 00 ; 10641:  bf df ef 00 00 00 00 00
-            hex 00 00 00 80 c0 e0 f0 ff ; 10649:  00 00 00 80 c0 e0 f0 ff
-            hex ff ff ff 7f 3f 1f 0f 00 ; 10651:  ff ff ff 7f 3f 1f 0f 00
-            hex 00 00 00 f7 fb fd fe ff ; 10659:  00 00 00 f7 fb fd fe ff
-            hex ff ff ff 00 00 00 00 00 ; 10661:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff 00 ; 10669:  00 00 00 ff ff ff ff 00
-            hex f7 f7 f7 00 00 00 00 00 ; 10671:  f7 f7 f7 00 00 00 00 00
-            hex 00 00 00 0f 1f 3f 7f ff ; 10679:  00 00 00 0f 1f 3f 7f ff
-            hex ff ff ff f0 e0 c0 80 00 ; 10681:  ff ff ff f0 e0 c0 80 00
-            hex 00 00 00 ff ff ff ff 1f ; 10689:  00 00 00 ff ff ff ff 1f
-            hex ef f7 f7 00 00 00 00 00 ; 10691:  ef f7 f7 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 01 ; 10699:  00 00 00 00 00 00 00 01
-            hex 03 07 0f ff ff ff ff fe ; 106A1:  03 07 0f ff ff ff ff fe
-            hex fc f8 f0 f0 f0 f0 f0 f8 ; 106A9:  fc f8 f0 f0 f0 f0 f0 f8
-            hex fc fe ff 0f 0f 0f 0f 07 ; 106B1:  fc fe ff 0f 0f 0f 0f 07
-            hex 03 01 00 ff ff ff ff e0 ; 106B9:  03 01 00 ff ff ff ff e0
-            hex df bf 7f 00 00 00 00 00 ; 106C1:  df bf 7f 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 106C9:  00 00 00 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff 00 ; 106D1:  00 00 00 ff ff ff ff 00
-            hex ff ff ff 07 03 01 00 00 ; 106D9:  ff ff ff 07 03 01 00 00
-            hex 00 00 00 f8 fc fe ff 00 ; 106E1:  00 00 00 f8 fc fe ff 00
-            hex ff ff ff f7 f7 f7 f7 07 ; 106E9:  ff ff ff f7 f7 f7 f7 07
-            hex f7 f7 f7 00 00 00 00 00 ; 106F1:  f7 f7 f7 00 00 00 00 00
-            hex 00 00 00 f0 f8 fc fe ff ; 106F9:  00 00 00 f0 f8 fc fe ff
-            hex ff ff ff 0f 07 03 01 00 ; 10701:  ff ff ff 0f 07 03 01 00
-            hex 00 00 00 01 03 07 0f ff ; 10709:  00 00 00 01 03 07 0f ff
-            hex ff ff ff fe fc f8 f0 00 ; 10711:  ff ff ff fe fc f8 f0 00
-            hex 00 00 00 ff ff ff ff fc ; 10719:  00 00 00 ff ff ff ff fc
-            hex fb f7 f7 00 00 00 00 00 ; 10721:  fb f7 f7 00 00 00 00 00
-            hex 00 00 00 fe fd fb f7 0f ; 10729:  00 00 00 fe fd fb f7 0f
-            hex ff ff ff 00 00 00 00 00 ; 10731:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff fe ; 10739:  00 00 00 ff ff ff ff fe
-            hex fc f8 f0 00 00 00 00 01 ; 10741:  fc f8 f0 00 00 00 00 01
-            hex 03 07 0f ff ff ff ff fe ; 10749:  03 07 0f ff ff ff ff fe
-            hex f0 a8 f3 00 00 00 00 03 ; 10751:  f0 a8 f3 00 00 00 00 03
-            hex 0f 55 08 f7 f7 f7 f7 f0 ; 10759:  0f 55 08 f7 f7 f7 f7 f0
-            hex f7 f7 f7 00 00 00 00 00 ; 10761:  f7 f7 f7 00 00 00 00 00
-            hex 00 00 00 ff ff fb d1 00 ; 10769:  00 00 00 ff ff fb d1 00
-            hex 00 88 77 08 1c 7f ff be ; 10771:  00 88 77 08 1c 7f ff be
-            hex ef 55 88 ff ff ff ff 7f ; 10779:  ef 55 88 ff ff ff ff 7f
-            hex 07 15 4f 00 00 00 80 c0 ; 10781:  07 15 4f 00 00 00 80 c0
-            hex f8 2a 90 f7 f7 f7 ef 1f ; 10789:  f8 2a 90 f7 f7 f7 ef 1f
-            hex ff ff ff 00 00 00 00 00 ; 10791:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 ff fe fc f8 f0 ; 10799:  00 00 00 ff fe fc f8 f0
-            hex f0 f0 f0 00 01 03 07 0f ; 107A1:  f0 f0 f0 00 01 03 07 0f
-            hex 0f 0f 0f 00 00 00 00 00 ; 107A9:  0f 0f 0f 00 00 00 00 00
-            hex 01 03 07 ff ff ff ff 00 ; 107B1:  01 03 07 ff ff ff ff 00
-            hex fe fc f8 ff ff ff 73 11 ; 107B9:  fe fc f8 ff ff ff 73 11
-            hex 00 88 66 00 84 de ff 77 ; 107C1:  00 88 66 00 84 de ff 77
-            hex ff 55 88 ff ff ff ff 0f ; 107C9:  ff 55 88 ff ff ff ff 0f
-            hex 07 03 01 00 00 00 00 f0 ; 107D1:  07 03 01 00 00 00 00 f0
-            hex f8 fc fe 0f 1f 3f 7f ff ; 107D9:  f8 fc fe 0f 1f 3f 7f ff
-            hex ff ff ff f4 e0 c0 80 40 ; 107E1:  ff ff ff f4 e0 c0 80 40
-            hex 02 10 00 ff fe fc f8 f0 ; 107E9:  02 10 00 ff fe fc f8 f0
-            hex e0 c0 80 00 01 03 07 0f ; 107F1:  e0 c0 80 00 01 03 07 0f
-            hex 1f 3f 7f 00 00 00 00 0f ; 107F9:  1f 3f 7f 00 00 00 00 0f
-            hex 0f 0f 0f f7 f7 f7 f7 f0 ; 10801:  0f 0f 0f f7 f7 f7 f7 f0
-            hex f2 f0 f0 00 00 00 00 f0 ; 10809:  f2 f0 f0 00 00 00 00 f0
-            hex f0 f0 f0 ff ff ff ff 0f ; 10811:  f0 f0 f0 ff ff ff ff 0f
-            hex 0f 0f 0f f0 f0 f0 f0 00 ; 10819:  0f 0f 0f f0 f0 f0 f0 00
-            hex 00 00 00 0f 2f 0f 0f ff ; 10821:  00 00 00 0f 2f 0f 0f ff
-            hex ff ff ff 00 00 00 00 0f ; 10829:  ff ff ff 00 00 00 00 0f
-            hex 1f 3f 7f ff ff ff ff f0 ; 10831:  1f 3f 7f ff ff ff ff f0
-            hex e0 d0 80 00 00 00 00 00 ; 10839:  e0 d0 80 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff fc ; 10841:  00 00 00 ff ff ff ff fc
-            hex fb f7 f7 00 00 00 00 00 ; 10849:  fb f7 f7 00 00 00 00 00
-            hex 00 00 00 f7 f7 f7 ef 1f ; 10851:  00 00 00 f7 f7 f7 ef 1f
-            hex ff ff ff 00 00 00 00 ff ; 10859:  ff ff ff 00 00 00 00 ff
-            hex ff ff ff f7 f7 f7 f7 00 ; 10861:  ff ff ff f7 f7 f7 f7 00
-            hex 02 10 00 04 21 03 07 4f ; 10869:  02 10 00 04 21 03 07 4f
-            hex 1f 3f 7f ff fe fc f8 f0 ; 10871:  1f 3f 7f ff fe fc f8 f0
-            hex e2 d0 80 ef df bf 7f fe ; 10879:  e2 d0 80 ef df bf 7f fe
-            hex fd fb f7 00 00 00 00 00 ; 10881:  fd fb f7 00 00 00 00 00
-            hex 00 00 00 fe fd fb f7 f7 ; 10889:  00 00 00 fe fd fb f7 f7
-            hex f7 f7 f7 00 00 00 00 00 ; 10891:  f7 f7 f7 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff f0 ; 10899:  00 00 00 ff ff ff ff f0
-            hex e0 c0 80 00 00 00 00 0f ; 108A1:  e0 c0 80 00 00 00 00 0f
-            hex 1f 3f 7f 00 00 00 00 00 ; 108A9:  1f 3f 7f 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff 1f ; 108B1:  00 00 00 ff ff ff ff 1f
-            hex ef f7 f7 ef df bf 7f 7f ; 108B9:  ef f7 f7 ef df bf 7f 7f
-            hex bf df ef 00 00 00 00 00 ; 108C1:  bf df ef 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 108C9:  00 00 00 00 00 00 00 00
-            hex 00 00 00 f7 f7 f7 fb fc ; 108D1:  00 00 00 f7 f7 f7 fb fc
-            hex ff ff ff 00 00 00 00 0f ; 108D9:  ff ff ff 00 00 00 00 0f
-            hex 0f 0f 0f ff ff ff ff 00 ; 108E1:  0f 0f 0f ff ff ff ff 00
-            hex f2 f0 f0 f7 f7 f7 f7 00 ; 108E9:  f2 f0 f0 f7 f7 f7 f7 00
-            hex ff ff ff 00 00 00 00 00 ; 108F1:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 ff 7f 3f 1f 0f ; 108F9:  00 00 00 ff 7f 3f 1f 0f
-            hex 07 03 01 00 80 c0 e0 f0 ; 10901:  07 03 01 00 80 c0 e0 f0
-            hex f8 fc fe 00 00 00 00 00 ; 10909:  f8 fc fe 00 00 00 00 00
-            hex 00 00 00 f7 fb fd fe ff ; 10911:  00 00 00 f7 fb fd fe ff
-            hex ff ff ff 00 00 00 00 00 ; 10919:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff 7f ; 10921:  00 00 00 ff ff ff ff 7f
-            hex bf df ef 04 20 00 00 41 ; 10929:  bf df ef 04 20 00 00 41
-            hex 03 17 0f ff ff ff ff fe ; 10931:  03 17 0f ff ff ff ff fe
-            hex fe f8 f0 0f 3f 3f 7f ff ; 10939:  fe f8 f0 0f 3f 3f 7f ff
-            hex ff ff ff f4 e0 c0 80 40 ; 10941:  ff ff ff f4 e0 c0 80 40
-            hex 02 10 00 00 80 c0 e0 f0 ; 10949:  02 10 00 00 80 c0 e0 f0
-            hex f0 f0 f0 ff 7f 3f 1f 4f ; 10951:  f0 f0 f0 ff 7f 3f 1f 4f
-            hex 0f 0f 0f 00 00 00 00 0f ; 10959:  0f 0f 0f 00 00 00 00 0f
-            hex 0f 0f 0f ff ff ff ff f0 ; 10961:  0f 0f 0f ff ff ff ff f0
-            hex f2 f0 f0 00 01 03 07 0f ; 10969:  f2 f0 f0 00 01 03 07 0f
-            hex 0f 0f 0f ff fe fc f8 f0 ; 10971:  0f 0f 0f ff fe fc f8 f0
-            hex f2 f0 f0 00 00 00 00 f0 ; 10979:  f2 f0 f0 00 00 00 00 f0
-            hex f0 f0 f0 ff ff ff ff 00 ; 10981:  f0 f0 f0 ff ff ff ff 00
-            hex 0f 0f 0f 00 00 00 00 00 ; 10989:  0f 0f 0f 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff fe ; 10991:  00 00 00 ff ff ff ff fe
-            hex fd fb f7 00 00 00 00 00 ; 10999:  fd fb f7 00 00 00 00 00
-            hex 00 00 00 ef df bf 7f ff ; 109A1:  00 00 00 ef df bf 7f ff
-            hex ff ff ff 00 01 03 07 0f ; 109A9:  ff ff ff 00 01 03 07 0f
-            hex 1f 3f 7f ff fe fc f8 f0 ; 109B1:  1f 3f 7f ff fe fc f8 f0
-            hex e2 d0 80 00 00 00 00 00 ; 109B9:  e2 d0 80 00 00 00 00 00
-            hex 00 00 00 f7 fb fd fe 7f ; 109C1:  00 00 00 f7 fb fd fe 7f
-            hex bf df ef 0f 2f 0f 0f 4f ; 109C9:  bf df ef 0f 2f 0f 0f 4f
-            hex 0f 1f 0f f4 f0 f0 f0 f0 ; 109D1:  0f 1f 0f f4 f0 f0 f0 f0
-            hex f2 f0 f0 00 00 00 00 00 ; 109D9:  f2 f0 f0 00 00 00 00 00
-            hex 00 00 00 f7 f7 f7 f7 f7 ; 109E1:  00 00 00 f7 f7 f7 f7 f7
-            hex f7 f7 f7 f0 f0 f0 f0 ff ; 109E9:  f7 f7 f7 f0 f0 f0 f0 ff
-            hex ff ff ff 0f 2f 0f 0f 40 ; 109F1:  ff ff ff 0f 2f 0f 0f 40
-            hex 02 10 00 ff ff ff ff e0 ; 109F9:  02 10 00 ff ff ff ff e0
-            hex c0 80 00 04 20 00 00 5f ; 10A01:  c0 80 00 04 20 00 00 5f
-            hex 3f 7f ff 00 00 00 00 f0 ; 10A09:  3f 7f ff 00 00 00 00 f0
-            hex f8 fc fe ff ff ff ff 0f ; 10A11:  f8 fc fe ff ff ff ff 0f
-            hex 07 13 01 0f 0f 0f 0f 0f ; 10A19:  07 13 01 0f 0f 0f 0f 0f
-            hex 1f 3f 7f f4 f0 f0 f0 f0 ; 10A21:  1f 3f 7f f4 f0 f0 f0 f0
-            hex e2 d0 80 fe fc f8 f0 00 ; 10A29:  e2 d0 80 fe fc f8 f0 00
-            hex 00 00 00 01 23 07 0f ff ; 10A31:  00 00 00 01 23 07 0f ff
-            hex ff ff ff f0 f0 f0 f0 e0 ; 10A39:  ff ff ff f0 f0 f0 f0 e0
-            hex c0 80 00 0f 2f 0f 0f 5f ; 10A41:  c0 80 00 0f 2f 0f 0f 5f
-            hex 3f 7f ff 7f 3f 1f 0f 0f ; 10A49:  3f 7f ff 7f 3f 1f 0f 0f
-            hex 0f 0f 0f 84 c0 e0 f0 f0 ; 10A51:  0f 0f 0f 84 c0 e0 f0 f0
-            hex f2 f0 f0 fe fc f8 f0 f0 ; 10A59:  f2 f0 f0 fe fc f8 f0 f0
-            hex f0 f0 f0 05 23 07 0f 4f ; 10A61:  f0 f0 f0 05 23 07 0f 4f
-            hex 0f 0f 0f f7 f7 f7 f7 f7 ; 10A69:  0f 0f 0f f7 f7 f7 f7 f7
-            hex fb fd fe 00 00 00 00 00 ; 10A71:  fb fd fe 00 00 00 00 00
-            hex 00 00 00 7f bf df ef f0 ; 10A79:  00 00 00 7f bf df ef f0
-            hex ff ff ff 00 00 00 00 00 ; 10A81:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 10A89:  00 00 00 00 00 00 00 00
-            hex 00 00 00 ff ff ff ff 07 ; 10A91:  00 00 00 ff ff ff ff 07
-            hex fb fd fe 00 00 00 00 00 ; 10A99:  fb fd fe 00 00 00 00 00
-            hex 00 00 00 7f bf df ef f0 ; 10AA1:  00 00 00 7f bf df ef f0
-            hex ff ff ff f7 f7 f7 f7 ef ; 10AA9:  ff ff ff f7 f7 f7 f7 ef
-            hex df bf 7f 00 00 00 00 00 ; 10AB1:  df bf 7f 00 00 00 00 00
-            hex 00 00 00 f0 f0 f0 f0 00 ; 10AB9:  00 00 00 f0 f0 f0 f0 00
-            hex 00 00 00 0f 2f 0f 0f f7 ; 10AC1:  00 00 00 0f 2f 0f 0f f7
-            hex f7 f7 f7 fe fc f8 f0 e0 ; 10AC9:  f7 f7 f7 fe fc f8 f0 e0
-            hex c0 80 00 05 23 07 0f 5f ; 10AD1:  c0 80 00 05 23 07 0f 5f
-            hex 3f 7f ff 00 00 00 00 00 ; 10AD9:  3f 7f ff 00 00 00 00 00
-            hex 00 00 00 f7 f7 f7 f7 f0 ; 10AE1:  00 00 00 f7 f7 f7 f7 f0
-            hex f7 f7 f7 00 00 00 00 00 ; 10AE9:  f7 f7 f7 00 00 00 00 00
-            hex 00 00 00 f7 f7 f7 f7 07 ; 10AF1:  00 00 00 f7 f7 f7 f7 07
-            hex f7 f7 f7 00 00 00 00 0f ; 10AF9:  f7 f7 f7 00 00 00 00 0f
-            hex 1f 3f 7f f7 f7 f7 f7 f0 ; 10B01:  1f 3f 7f f7 f7 f7 f7 f0
-            hex e2 d0 80 ff 7f 3f 1f 0f ; 10B09:  e2 d0 80 ff 7f 3f 1f 0f
-            hex 0f 0f 0f 00 80 c0 e0 f0 ; 10B11:  0f 0f 0f 00 80 c0 e0 f0
-            hex f0 f0 f0 ff ff fa e1 00 ; 10B19:  f0 f0 f0 ff ff fa e1 00
-            hex 22 44 99 03 07 0f 3b fe ; 10B21:  22 44 99 03 07 0f 3b fe
-            hex 55 aa 44 ff ff af 15 00 ; 10B29:  55 aa 44 ff ff af 15 00
-            hex 8a 45 99 e0 f0 f8 be ea ; 10B31:  8a 45 99 e0 f0 f8 be ea
-            hex 55 aa 44 ff ff ff ff 7f ; 10B39:  55 aa 44 ff ff ff ff 7f
-            hex 0f 01 9f 00 00 00 00 80 ; 10B41:  0f 01 9f 00 00 00 00 80
-
-            bvc tab_b4_84f9+1532        ; 10B49:  50 aa
-            rti                         ; 10B4B:  40
-
-            hex 80 c0 e0 f0 f8 fc fe ff ; 10B4C:  80 c0 e0 f0 f8 fc fe ff
-            hex 7f 3f 1f 0f 07 03 01 00 ; 10B54:  7f 3f 1f 0f 07 03 01 00
-            hex 00 80 c0 e0 f0 f8 fc fe ; 10B5C:  00 80 c0 e0 f0 f8 fc fe
-            hex ff 7f 3f 1f 4f 07 13 01 ; 10B64:  ff 7f 3f 1f 4f 07 13 01
-            hex 0f 0f 0f 0f ff ff ff ff ; 10B6C:  0f 0f 0f 0f ff ff ff ff
-            hex f4 f0 f0 f0 00 02 10 00 ; 10B74:  f4 f0 f0 f0 00 02 10 00
-            hex 00 80 c0 e0 ff ff ff ff ; 10B7C:  00 80 c0 e0 ff ff ff ff
-            hex ff 7f 3f 1f 40 02 10 00 ; 10B84:  ff 7f 3f 1f 40 02 10 00
-            hex 00 00 00 00 f0 f0 f0 f0 ; 10B8C:  00 00 00 00 f0 f0 f0 f0
-            hex f7 f7 f7 f7 0f 0f 0f 0f ; 10B94:  f7 f7 f7 f7 0f 0f 0f 0f
-            hex ff ff ff ff 07 03 01 00 ; 10B9C:  ff ff ff ff 07 03 01 00
-            hex 04 20 00 00 f8 fc fe ff ; 10BA4:  04 20 00 00 f8 fc fe ff
-            hex 00 01 03 07 ff ff ff ff ; 10BAC:  00 01 03 07 ff ff ff ff
-            hex ff fe fc f8 00 02 10 00 ; 10BB4:  ff fe fc f8 00 02 10 00
-            hex 0f 0f 0f 0f 00 00 00 00 ; 10BBC:  0f 0f 0f 0f 00 00 00 00
-            hex f4 f0 f0 f0 f7 f7 f7 f7 ; 10BC4:  f4 f0 f0 f0 f7 f7 f7 f7
-            hex fe fc f8 f0 e0 c2 90 00 ; 10BCC:  fe fc f8 f0 e0 c2 90 00
-            hex 05 23 07 0f 5f 3f 7f ff ; 10BD4:  05 23 07 0f 5f 3f 7f ff
-            hex 00 00 00 00 00 00 00 00 ; 10BDC:  00 00 00 00 00 00 00 00
-            hex ff ff ff ff e0 df bf 7f ; 10BE4:  ff ff ff ff e0 df bf 7f
-            hex 00 00 00 00 00 00 00 00 ; 10BEC:  00 00 00 00 00 00 00 00
-            hex fe fd fb f7 0f ff ff ff ; 10BF4:  fe fd fb f7 0f ff ff ff
-            hex ff ff ff ff 07 fb fd fe ; 10BFC:  ff ff ff ff 07 fb fd fe
-            hex 00 00 00 00 00 00 00 00 ; 10C04:  00 00 00 00 00 00 00 00
-            hex 0f 0f 0f 0f 00 00 00 00 ; 10C0C:  0f 0f 0f 0f 00 00 00 00
-            hex f4 f0 f0 f0 ff ff ff ff ; 10C14:  f4 f0 f0 f0 ff ff ff ff
-            hex 00 00 00 00 00 00 00 00 ; 10C1C:  00 00 00 00 00 00 00 00
-            hex ff ff ff ff 00 f7 f7 f7 ; 10C24:  ff ff ff ff 00 f7 f7 f7
-            hex ff ff ff ff f0 f0 f0 f0 ; 10C2C:  ff ff ff ff f0 f0 f0 f0
-            hex 04 20 00 00 4f 0f 0f 0f ; 10C34:  04 20 00 00 4f 0f 0f 0f
-            hex 0f 0f 0f 0f 1f 3f 7f ff ; 10C3C:  0f 0f 0f 0f 1f 3f 7f ff
-            hex f0 f0 f0 f0 e0 c0 80 00 ; 10C44:  f0 f0 f0 f0 e0 c0 80 00
-            hex f0 f0 f0 f0 00 00 00 00 ; 10C4C:  f0 f0 f0 f0 00 00 00 00
-            hex 0f 2f 0f 0f f0 ff ff ff ; 10C54:  0f 2f 0f 0f f0 ff ff ff
-            hex 00 00 00 00 00 01 03 07 ; 10C5C:  00 00 00 00 00 01 03 07
-            hex ff ff ff ff 7f be dc e0 ; 10C64:  ff ff ff ff 7f be dc e0
-            hex 04 20 00 00 c0 c2 f0 f0 ; 10C6C:  04 20 00 00 c0 c2 f0 f0
-            hex ff ff ff ff 7f 3f 1f 0f ; 10C74:  ff ff ff ff 7f 3f 1f 0f
-            hex ff ff ff ff 07 03 01 00 ; 10C7C:  ff ff ff ff 07 03 01 00
-            hex 00 00 00 00 f0 f4 f6 f7 ; 10C84:  00 00 00 00 f0 f4 f6 f7
-            hex fe fc f8 f0 ff ff ff ff ; 10C8C:  fe fc f8 f0 ff ff ff ff
-            hex 05 23 07 0f 40 02 10 00 ; 10C94:  05 23 07 0f 40 02 10 00
-            hex 7f bf df ef f7 f7 f7 f7 ; 10C9C:  7f bf df ef f7 f7 f7 f7
-            hex 00 00 00 00 00 00 00 00 ; 10CA4:  00 00 00 00 00 00 00 00
-            hex 0f 0f 0f 0f 0f 0f 0f 0f ; 10CAC:  0f 0f 0f 0f 0f 0f 0f 0f
-            hex f4 f0 f0 f0 00 f2 f0 f0 ; 10CB4:  f4 f0 f0 f0 00 f2 f0 f0
-            hex 00 00 00 00 00 00 00 00 ; 10CBC:  00 00 00 00 00 00 00 00
-            hex 7f bf df ef f7 f7 f7 f7 ; 10CC4:  7f bf df ef f7 f7 f7 f7
-            hex 00 00 00 00 00 80 c0 e0 ; 10CCC:  00 00 00 00 00 80 c0 e0
-            hex f7 f7 f7 f7 f7 77 37 17 ; 10CD4:  f7 f7 f7 f7 f7 77 37 17
-            hex 0f 8f cf ef ff ff ff ff ; 10CDC:  0f 8f cf ef ff ff ff ff
-            hex f4 70 30 10 40 02 10 00 ; 10CE4:  f4 70 30 10 40 02 10 00
-            hex f0 f0 f0 f0 e0 c0 80 00 ; 10CEC:  f0 f0 f0 f0 e0 c0 80 00
-            hex 0f 2f 0f 0f 10 3f 7f ff ; 10CF4:  0f 2f 0f 0f 10 3f 7f ff
-            hex fe fd fb f7 ef df bf 7f ; 10CFC:  fe fd fb f7 ef df bf 7f
-            hex 00 00 00 00 00 00 00 00 ; 10D04:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 10D0C:  00 00 00 00 00 00 00 00
-            hex f7 f7 f7 f7 f7 fb fd fe ; 10D14:  f7 f7 f7 f7 f7 fb fd fe
-            hex 00 00 00 00 00 00 00 00 ; 10D1C:  00 00 00 00 00 00 00 00
-            hex f7 f7 f7 f7 ef df bf 7f ; 10D24:  f7 f7 f7 f7 ef df bf 7f
-            hex ff ff ff ff ff fa d4 f9 ; 10D2C:  ff ff ff ff ff fa d4 f9
-            hex 00 00 00 00 00 05 2a 04 ; 10D34:  00 00 00 00 00 05 2a 04
-            hex 7f bf df ef f7 fb fd fe ; 10D3C:  7f bf df ef f7 fb fd fe
-            hex 00 00 00 00 00 00 00 00 ; 10D44:  00 00 00 00 00 00 00 00
-            hex 7f 3f 1f 0f 07 03 01 00 ; 10D4C:  7f 3f 1f 0f 07 03 01 00
-            hex 84 c0 e0 f0 f8 fc fe ff ; 10D54:  84 c0 e0 f0 f8 fc fe ff
-            hex 51 51 51 d2 56 09 57 57 ; 10D5C:  51 51 51 d2 56 09 57 57
-            hex 57 57 57 57 57 57 ac 64 ; 10D64:  57 57 57 57 57 57 ac 64
-            hex 61 5f 64 64 64 64 b5 68 ; 10D6C:  61 5f 64 64 64 64 b5 68
-            hex 6f 57 57 57 51 d2 53 53 ; 10D74:  6f 57 57 57 51 d2 53 53
-            hex e4 82 a3 59 59 59 59 59 ; 10D7C:  e4 82 a3 59 59 59 59 59
-            hex 59 59 93 64 53 53 64 b5 ; 10D84:  59 59 93 64 53 53 64 b5
-            hex 68 b8 57 57 57 57 57 57 ; 10D8C:  68 b8 57 57 57 57 57 57
-            hex 64 b5 6c 6f 7f 0c       ; 10D94:  64 b5 6c 6f 7f 0c
-
-            dec $68,x                   ; 10D9A:  d6 68
-            pla                         ; 10D9C:  68
-            pla                         ; 10D9D:  68
-            pla                         ; 10D9E:  68
-            pla                         ; 10D9F:  68
-            pla                         ; 10DA0:  68
-            pla                         ; 10DA1:  68
-            jmp ($6f68)                 ; 10DA2:  6c 68 6f
-
-            hex 57 57 0a 73 5c 85 57 57 ; 10DA5:  57 57 0a 73 5c 85 57 57
-            hex 57 57 73 64 57 b3 57 d9 ; 10DAD:  57 57 73 64 57 b3 57 d9
-            hex 5c 57 57 57 57 57 57 57 ; 10DB5:  5c 57 57 57 57 57 57 57
-            hex 57 c3 82 be 57 73 5c 5c ; 10DBD:  57 c3 82 be 57 73 5c 5c
-            hex 5c 5c 5c 7a 70 86 5c b8 ; 10DC5:  5c 5c 5c 7a 70 86 5c b8
-            hex 57 a6 d7 72 72 72 79 7a ; 10DCD:  57 a6 d7 72 72 72 79 7a
-            hex 70 70 70 86 71 75 8a 8d ; 10DD5:  70 70 70 86 71 75 8a 8d
-            hex df 5c 81 72 72 72 72 7e ; 10DDD:  df 5c 81 72 72 72 72 7e
-            hex 5c 5c 5c 57 0d 57 b3 5c ; 10DE5:  5c 5c 5c 57 0d 57 b3 5c
-            hex 0e 5c 7b 72 72 72 72 72 ; 10DED:  0e 5c 7b 72 72 72 72 72
-            hex 84 8a 8c 8d 77 88 5c 5c ; 10DF5:  84 8a 8c 8d 77 88 5c 5c
-            hex 5c 71 72 75 5c 5c 5c 82 ; 10DFD:  5c 71 72 75 5c 5c 5c 82
-            hex a7 7d bc 5c 5c 5c 5c 5c ; 10E05:  a7 7d bc 5c 5c 5c 5c 5c
-            hex 5c 5c 5c 5c 74 09 0e 5c ; 10E0D:  5c 5c 5c 5c 74 09 0e 5c
-            hex 5c 8a 8c 91 8d 77 7e 5c ; 10E15:  5c 8a 8c 91 8d 77 7e 5c
-            hex 5e 92 5c 58 b3 5c e5 bd ; 10E1D:  5e 92 5c 58 b3 5c e5 bd
-            hex 72 72 72 72 72 7e 5c 5c ; 10E25:  72 72 72 72 72 7e 5c 5c
-            hex 74 5c 5c 5c 5c 5c 5c 5c ; 10E2D:  74 5c 5c 5c 5c 5c 5c 5c
-            hex 5c 71 75 87 be 57 57 65 ; 10E35:  5c 71 75 87 be 57 57 65
-            hex e6 e5 9f 11 5e 5e 78 5c ; 10E3D:  e6 e5 9f 11 5e 5e 78 5c
-            hex 5c 77 72 72 a4 7e 5c 5c ; 10E45:  5c 77 72 72 a4 7e 5c 5c
-            hex 5c 5c 5c 81 72 a4 72 75 ; 10E4D:  5c 5c 5c 81 72 a4 72 75
-            hex 57 bf 82 57 57 bd a0 57 ; 10E55:  57 bf 82 57 57 bd a0 57
-            hex 57 57 57 57 5d 5c 5c 5c ; 10E5D:  57 57 57 57 5d 5c 5c 5c
-            hex 5c 74 8a 8c 91 8d 9e 0b ; 10E65:  5c 74 8a 8c 91 8d 9e 0b
-            hex 5c 5c 5c 5c ca 57 57 7a ; 10E6D:  5c 5c 5c 5c ca 57 57 7a
-            hex 86 5c b3 ae 82 82 82 82 ; 10E75:  86 5c b3 ae 82 82 82 82
-            hex be 78 8a 8c 8d 74 5c 8a ; 10E7D:  be 78 8a 8c 8d 74 5c 8a
-            hex 8c 8d 74 5c 5c 5c 5c 5c ; 10E85:  8c 8d 74 5c 5c 5c 5c 5c
-            hex 5c 57 57 5c 09 09 c3 c4 ; 10E8D:  5c 57 57 5c 09 09 c3 c4
-            hex 09 0f 57 57 57 bf 72 72 ; 10E95:  09 0f 57 57 57 bf 72 72
-            hex 7e 74 5c 5c 87 79 77 72 ; 10E9D:  7e 74 5c 5c 87 79 77 72
-            hex 72 72 72 7e 5c 5a 57 5c ; 10EA5:  72 72 72 7e 5c 5a 57 5c
-            hex 5c 57 e7 c5 57 57 57 57 ; 10EAD:  5c 57 e7 c5 57 57 57 57
-            hex 57 73 5c 5c 74 74 71 72 ; 10EB5:  57 73 5c 5c 74 74 71 72
-            hex 8e 7b 72 72 d5 5c 71 75 ; 10EBD:  8e 7b 72 72 d5 5c 71 75
-            hex 5c 76 57 72 72 d4 b0 c2 ; 10EC5:  5c 76 57 72 72 d4 b0 c2
-            hex 57 d3 82 72 72 72 72 72 ; 10ECD:  57 d3 82 72 72 72 72 72
-            hex a4 a4 84 0f 5c e8 c7 c8 ; 10ED5:  a4 a4 84 0f 5c e8 c7 c8
-            hex c9 bd a4 7e 89 6f 57 09 ; 10EDD:  c9 bd a4 7e 89 6f 57 09
-            hex 0b 7f 64 57 93 57 10 a5 ; 10EE5:  0b 7f 64 57 93 57 10 a5
-            hex 5c 5c 8a 91 8d 5c 74 5c ; 10EED:  5c 5c 8a 91 8d 5c 74 5c
-            hex 94 57 57 57 57 57 57 c0 ; 10EF5:  94 57 57 57 57 57 57 c0
-            hex 76 98 59 5c 57 93 64 ac ; 10EFD:  76 98 59 5c 57 93 64 ac
-            hex 64 57 57 57 57 57 a5 5c ; 10F05:  64 57 57 57 57 57 a5 5c
-            hex 5c 5c c0 89 57 57 ac 64 ; 10F0D:  5c 5c c0 89 57 57 ac 64
-            hex 64 64 d8 c6 76 64 64 5c ; 10F15:  64 64 d8 c6 76 64 64 5c
-            hex 5c 5c 5c 94 57 5b 5c e9 ; 10F1D:  5c 5c 5c 94 57 5b 5c e9
-            hex 70 5a 57                ; 10F25:  70 5a 57
-
-            pla                         ; 10F28:  68
-            rts                         ; 10F29:  60
-
-            hex 64 64 64 57 b3 0c 73 5c ; 10F2A:  64 64 64 57 b3 0c 73 5c
-            hex 57 57 57 57 57 57 5c 8f ; 10F32:  57 57 57 57 57 57 5c 8f
-            hex 57 57 57 57 d9 5c 5c e9 ; 10F3A:  57 57 57 57 d9 5c 5c e9
-            hex 80 0d 57 6e 68 68 b8 57 ; 10F42:  80 0d 57 6e 68 68 b8 57
-            hex a6 d7 72 72 72 7e 7a 70 ; 10F4A:  a6 d7 72 72 72 7e 7a 70
-            hex 70 70 5c 76 73 5c 81 72 ; 10F52:  70 70 5c 76 73 5c 81 72
-            hex 72 72 d5 e5 e9 5c 5c ca ; 10F5A:  72 72 d5 e5 e9 5c 5c ca
-            hex 57 57 57 57 57 b3 0e 5c ; 10F62:  57 57 57 57 57 b3 0e 5c
-            hex 5c 7b 72 72 72 72 9f 6f ; 10F6A:  5c 7b 72 72 72 72 9f 6f
-            hex 87 88 5c 5c 5c 5c 5c e9 ; 10F72:  87 88 5c 5c 5c 5c 5c e9
-            hex 5c bd 72 72 72 72 72 79 ; 10F7A:  5c bd 72 72 72 72 72 79
-            hex 5c bc 5c 5c 5c 5c 5c 5c ; 10F82:  5c bc 5c 5c 5c 5c 5c 5c
-            hex 5c 5c 70 86 74 09 0c 5c ; 10F8A:  5c 5c 70 86 74 09 0c 5c
-            hex 8a 8c 91 8d e9 5c 5c 8f ; 10F92:  8a 8c 91 8d e9 5c 5c 8f
-            hex 7f 64 58 b3 5c e5 bd 72 ; 10F9A:  7f 64 58 b3 5c e5 bd 72
-            hex 72 72 72 72 72 72 72 72 ; 10FA2:  72 72 72 72 72 72 72 72
-            hex 84 5c 5c 5c 5c 5c 5c 5c ; 10FAA:  84 5c 5c 5c 5c 5c 5c 5c
-            hex 5c df 9f 6f 93 64 65 e6 ; 10FB2:  5c df 9f 6f 93 64 65 e6
-            hex e5 9f 11 5e 5e 78 5c 5c ; 10FBA:  e5 9f 11 5e 5e 78 5c 5c
-            hex 5c 5c 09 0d 7b 72 72 72 ; 10FC2:  5c 5c 09 0d 7b 72 72 72
-            hex 72 72 79 5c 71 75 ac 65 ; 10FCA:  72 72 79 5c 71 75 ac 65
-            hex 68 6f 7f 7d bd a0 57 57 ; 10FD2:  68 6f 7f 7d bd a0 57 57
-            hex 57 57 57 5d 5c 5c 5c 5c ; 10FDA:  57 57 57 5d 5c 5c 5c 5c
-            hex 9f 6f 57 57 a5 5c 74 6f ; 10FE2:  9f 6f 57 57 a5 5c 74 6f
-            hex b3 89 d6 97 57 57 d9 8a ; 10FEA:  b3 89 d6 97 57 57 d9 8a
-            hex 8d b3 ae 82 82 82 82 be ; 10FF2:  8d b3 ae 82 82 82 82 be
-            hex 78 5c 57 57 57 57 ae 82 ; 10FFA:  78 5c 57 57 57 57 ae 82
-            hex 82 82 af 57 b3 09 09 7d ; 11002:  82 82 af 57 b3 09 09 7d
-            hex 5c 5c 5c 5c 94 c3 c4 09 ; 1100A:  5c 5c 5c 5c 94 c3 c4 09
-            hex 0f 57 57 57 bf 72 59 93 ; 11012:  0f 57 57 57 bf 72 59 93
-            hex 56 ae af 57 57 7d 80 57 ; 1101A:  56 ae af 57 57 7d 80 57
-            hex b3 57 73 5c 5c 5c 5c 5c ; 11022:  b3 57 73 5c 5c 5c 5c 5c
-            hex 57 e7 c5 57 57 57 57 57 ; 1102A:  57 e7 c5 57 57 57 57 57
-            hex 73 5c 64 64 56 b3 57 ae ; 11032:  73 5c 64 64 56 b3 57 ae
-            hex 72 72 72 72 a4 72 72 72 ; 1103A:  72 72 72 72 a4 72 72 72
-            hex 72 72 7c 72 d4 b0 c2 57 ; 11042:  72 72 7c 72 d4 b0 c2 57
-            hex d3 82 72 72 72 72 64 65 ; 1104A:  d3 82 72 72 72 72 64 65
-            hex 6f c3 82 c4 09 0a 5c 5c ; 11052:  6f c3 82 c4 09 0a 5c 5c
-            hex 8a 8c 91 8d 5c 5c c0 94 ; 1105A:  8a 8c 91 8d 5c 5c c0 94
-            hex 7f 64 57 93 57 57 a5 10 ; 11062:  7f 64 57 93 57 57 a5 10
-            hex 5c 5c 65 6f 57 e7 7d 74 ; 1106A:  5c 5c 65 6f 57 e7 7d 74
-            hex 5c 5c 5c 5c 5c 5c 8a 8d ; 11072:  5c 5c 5c 5c 5c 5c 8a 8d
-            hex 5c e5 8f 57 93 64 ac 64 ; 1107A:  5c e5 8f 57 93 64 ac 64
-            hex 57 57 57 57 57 a5 82 82 ; 11082:  57 57 57 57 57 a5 82 82
-            hex d4 73 5c 77 72 72 7c 72 ; 1108A:  d4 73 5c 77 72 72 7c 72
-            hex 72 72 72 72 88 5c 76 57 ; 11092:  72 72 72 72 88 5c 76 57
-            hex 64 64 e3 64 b5 68 57 57 ; 1109A:  64 64 e3 64 b5 68 57 57
-            hex 57 57 7f 09 08 5c 8a 8c ; 110A2:  57 57 7f 09 08 5c 8a 8c
-            hex 91 8d bc 5c 09 0b 5c 5c ; 110AA:  91 8d bc 5c 09 0b 5c 5c
-            hex 5c 5c 5c 85 ea 64 58 59 ; 110B2:  5c 5c 5c 85 ea 64 58 59
-            hex 5a 57 57 98 59 59 5b 5c ; 110BA:  5a 57 57 98 59 59 5b 5c
-            hex 5c 5c 5c 8a 8c 8d 5c df ; 110C2:  5c 5c 5c 8a 8c 8d 5c df
-            hex 5c 5c 5c 5c 5c 5c 5c 5c ; 110CA:  5c 5c 5c 5c 5c 5c 5c 5c
-            hex 57 57 57 6b 60 64 64 64 ; 110D2:  57 57 57 6b 60 64 64 64
-            hex 64 64 51 51 51 51 51 51 ; 110DA:  64 64 51 51 51 51 51 51
-            hex 51 51 51 51 51 51 51 51 ; 110E2:  51 51 51 51 51 51 51 51
-            hex 51 51 52 53 56 09 57 57 ; 110EA:  51 51 52 53 56 09 57 57
-            hex 57 57 57 57 5b 5c 51 51 ; 110F2:  57 57 57 57 5b 5c 51 51
-            hex 51 51 51 51 51 51 51 51 ; 110FA:  51 51 51 51 51 51 51 51
-            hex 51 51 51 51 51 51 54 55 ; 11102:  51 51 51 51 51 51 54 55
-            hex 58 59 5a 57 57 59 59 59 ; 1110A:  58 59 5a 57 57 59 59 59
-            hex 5d 5e 5f 5f 60 51 51 51 ; 11112:  5d 5e 5f 5f 60 51 51 51
-            hex 51 51 51 51 51 51 63 62 ; 1111A:  51 51 51 51 51 51 63 62
-            hex 64 64 67 51 64 64 64 64 ; 11122:  64 64 67 51 64 64 64 64
-
-            pla                         ; 1112A:  68
-            pla                         ; 1112B:  68
-            rts                         ; 1112C:  60
-
-            hex 69 5a 57 53 53 53 53 53 ; 1112D:  69 5a 57 53 53 53 53 53
-            hex 61 5f 5f 5f 5f 62 53 53 ; 11135:  61 5f 5f 5f 5f 62 53 53
-            hex 53 65 66 53 51 64 65 57 ; 1113D:  53 65 66 53 51 64 65 57
-            hex 64 57 57 57 6a 64 64    ; 11145:  64 57 57 57 6a 64 64
-
-            pla                         ; 1114C:  68
-            pla                         ; 1114D:  68
-            pla                         ; 1114E:  68
-            rts                         ; 1114F:  60
-
-            hex 64 64 64 64 64 64 64 64 ; 11150:  64 64 64 64 64 64 64 64
-            hex 64 64 56 6d 64 64 64 57 ; 11158:  64 64 56 6d 64 64 64 57
-            hex 57 64                   ; 11160:  57 64
-
-            pla                         ; 11162:  68
-            rts                         ; 11163:  60
-
-            hex 56 6e 64 64 09 08 57 57 ; 11164:  56 6e 64 64 09 08 57 57
-            hex 6b 68 57 6b 6c 68 6c 60 ; 1116C:  6b 68 57 6b 6c 68 6c 60
-            hex 64 64 65 59 6e 6c 6f 0a ; 11174:  64 64 65 59 6e 6c 6f 0a
-            hex 57 57 57 57 57 57 6e 60 ; 1117C:  57 57 57 57 57 57 6e 60
-            hex 70 70 70 70 5a 57 57 73 ; 11184:  70 70 70 70 5a 57 57 73
-            hex 74 57 74 5a 6b 6f 57 68 ; 1118C:  74 57 74 5a 6b 6f 57 68
-            hex 57 77 79 7a 70 7d 5c 5a ; 11194:  57 77 79 7a 70 7d 5c 5a
-            hex 7f 80 57 6a 5c 71 72 72 ; 1119C:  7f 80 57 6a 5c 71 72 72
-            hex 72 72 72 72 75 57 74 0d ; 111A4:  72 72 72 72 75 57 74 0d
-            hex 57 57 57 57 57 78 7b 7c ; 111AC:  57 57 57 57 57 78 7b 7c
-            hex 72 72 72 7e 5c 81 82 83 ; 111B4:  72 72 72 7e 5c 81 82 83
-            hex 5c 74 0f 5c 5c 5c 5e 57 ; 111BC:  5c 74 0f 5c 5c 5c 5e 57
-            hex 57 7f 74 85 70 7d 5c 85 ; 111C4:  57 7f 74 85 70 7d 5c 85
-            hex 57 57 5c 74 0b 5c 5c 77 ; 111CC:  57 57 5c 74 0b 5c 5c 77
-            hex 88 5c 7a 57 72 84 5c 5c ; 111D4:  88 5c 7a 57 72 84 5c 5c
-            hex 5c 5c 5c 5c 5c 5c 7b 72 ; 111DC:  5c 5c 5c 5c 5c 5c 7b 72
-            hex 79 5c 5c 5c 86 87 72 84 ; 111E4:  79 5c 5c 5c 86 87 72 84
-            hex 5c 5c 5c 5c 5c 5c 89 57 ; 111EC:  5c 5c 5c 5c 5c 5c 89 57
-            hex 11 7b 72 72 72 72 72 72 ; 111F4:  11 7b 72 72 72 72 72 72
-            hex 79 8a 8c 8d 8b 72 7e 5c ; 111FC:  79 8a 8c 8d 8b 72 7e 5c
-            hex 71 8e 5c 7b 72 72 72 79 ; 11204:  71 8e 5c 7b 72 72 72 79
-            hex 5c 8f 57 57 5c 5c 5c 5c ; 1120C:  5c 8f 57 57 5c 5c 5c 5c
-            hex 5c 5c 5c 5c 8b 7c 72 72 ; 11214:  5c 5c 5c 5c 8b 7c 72 72
-            hex 75 5c 77 7c 75 5c 5c 0c ; 1121C:  75 5c 77 7c 75 5c 5c 0c
-            hex 5c 5c 5c 7b 72 72 82 90 ; 11224:  5c 5c 5c 7b 72 72 82 90
-            hex 72 72 7e 8a 8c 91 8d 71 ; 1122C:  72 72 7e 8a 8c 91 8d 71
-            hex 75 74 0e 5c 6f 7f 70 7b ; 11234:  75 74 0e 5c 6f 7f 70 7b
-            hex 72 72 79 5c 5c 5c 5c 6f ; 1123C:  72 72 79 5c 5c 5c 5c 6f
-            hex 57 57 57 6a 10 5c 77 72 ; 11244:  57 57 57 6a 10 5c 77 72
-            hex 72 72 72 8e 71 8e 6f 57 ; 1124C:  72 72 72 8e 71 8e 6f 57
-            hex 57 5b 89 5e 5e 92 7b 72 ; 11254:  57 5b 89 5e 5e 92 7b 72
-            hex 72 7e 89 57 57 7f 59 93 ; 1125C:  72 7e 89 57 57 7f 59 93
-            hex 5c 5c 5c 94 57 57 57 57 ; 11264:  5c 5c 5c 94 57 57 57 57
-            hex 95 59 59 96 57 57 57 57 ; 1126C:  95 59 59 96 57 57 57 57
-            hex 98 59 57 57 99 9a 57 59 ; 11274:  98 59 57 57 99 9a 57 59
-            hex 64 64 53 53 5e 5e 6f 57 ; 1127C:  64 64 53 53 5e 5e 6f 57
-            hex 7f 59 59 59 93 64 64 97 ; 11284:  7f 59 59 59 93 64 64 97
-            hex 98 59 93 64 64 64 64 58 ; 1128C:  98 59 93 64 64 64 64 58
-            hex 9b 59 93 64 64 64 9c 51 ; 11294:  9b 59 93 64 64 64 9c 51
-            hex 64 64 64 64 64 64 64 64 ; 1129C:  64 64 64 64 64 64 64 64
-            hex 64 64 b9 09 0e 57 57 57 ; 112A4:  64 64 b9 09 0e 57 57 57
-            hex 57 57 57 57 ba 64 53 64 ; 112AC:  57 57 57 57 ba 64 53 64
-            hex 64 64 64 64 64 65 68 68 ; 112B4:  64 64 64 64 64 65 68 68
-            hex 68 68 68 68 b8 b3 57 57 ; 112BC:  68 68 68 68 b8 b3 57 57
-            hex 57 57 57 57 57 57 57 7f ; 112C4:  57 57 57 57 57 57 57 7f
-            hex 93 64 53 67 51 64 51 64 ; 112CC:  93 64 53 67 51 64 51 64
-            hex bb b3 0a 09 57 7f 70 70 ; 112D4:  bb b3 0a 09 57 7f 70 70
-            hex 86 77 7c 82 82 82 59 59 ; 112DC:  86 77 7c 82 82 82 59 59
-            hex 59 59 59 93 64 64 64 64 ; 112E4:  59 59 59 93 64 64 64 64
-            hex 60 51 64 64 97 b3 70 57 ; 112EC:  60 51 64 64 97 b3 70 57
-            hex 7d 5c 5c 5c 5c 5c 74 09 ; 112F4:  7d 5c 5c 5c 5c 5c 74 09
-            hex 0f 57 6b 68 68 57 a2 a0 ; 112FC:  0f 57 6b 68 68 57 a2 a0
-            hex 57 57 6b 60 53 53 67 64 ; 11304:  57 57 6b 60 53 53 67 64
-            hex 86 7b 7e 7f 87 72 72 72 ; 1130C:  86 7b 7e 7f 87 72 72 72
-            hex 72 72 84 5c 85 5a 57 57 ; 11314:  72 72 84 5c 85 5a 57 57
-            hex 7f 86 5c 74 5c 85 57 57 ; 1131C:  7f 86 5c 74 5c 85 57 57
-            hex 64 64 64 64 0a 0a 8b 72 ; 11324:  64 64 64 64 0a 0a 8b 72
-            hex 8e 5c 8a 8c 91 8d 77 72 ; 1132C:  8e 5c 8a 8c 91 8d 77 72
-            hex 79 5c 5c 8a 8c 91 8d 74 ; 11334:  79 5c 5c 8a 8c 91 8d 74
-            hex 09 08 57 57 57 6b 68 68 ; 1133C:  09 08 57 57 57 6b 68 68
-            hex 5c 5c 74 5c 09 10 5c 5c ; 11344:  5c 5c 74 5c 09 10 5c 5c
-            hex 5c 5c 5c 5c 7b 7c 72 72 ; 1134C:  5c 5c 5c 5c 7b 7c 72 72
-            hex 79 5c 5c 74 5c 5c 5a 57 ; 11354:  79 5c 5c 74 5c 5c 5a 57
-            hex 57 57 57 57 87 72 a4 7e ; 1135C:  57 57 57 57 87 72 a4 7e
-            hex 5c 5c 5c 5c 5c 5c 5c 5c ; 11364:  5c 5c 5c 5c 5c 5c 5c 5c
-            hex 71 75 5c 5c 77 72 72 84 ; 1136C:  71 75 5c 5c 77 72 72 84
-            hex 5c 5c 85 70 70 5a 57 57 ; 11374:  5c 5c 85 70 70 5a 57 57
-            hex 8e 5c 87 8e 5c 5c 5c 5c ; 1137C:  8e 5c 87 8e 5c 5c 5c 5c
-            hex 5c 71 72 7c 75 09 0d 5c ; 11384:  5c 71 72 7c 75 09 0d 5c
-            hex 5c 5c 5c 7b 72 72 72 79 ; 1138C:  5c 5c 5c 7b 72 72 72 79
-            hex 5c 5c 76 7f 5c 5c 77 72 ; 11394:  5c 5c 76 7f 5c 5c 77 72
-            hex 7c 72 72 72 72 75 5c bc ; 1139C:  7c 72 72 72 72 75 5c bc
-            hex 5c 5c 5c 5c 5c 5c 5c 5c ; 113A4:  5c 5c 5c 5c 5c 5c 5c 5c
-            hex 8a 8c 8d 74 5c 5c 71 72 ; 113AC:  8a 8c 8d 74 5c 5c 71 72
-            hex 5c 0a 0b 5c 74 09 11 5c ; 113B4:  5c 0a 0b 5c 74 09 11 5c
-            hex 5c 5c 5c 5c bd 7e 5c 5c ; 113BC:  5c 5c 5c 5c bd 7e 5c 5c
-            hex 5c 5c 87 72 72 72 72 8e ; 113C4:  5c 5c 87 72 72 72 72 8e
-            hex 5c 87 8e 5c 5e 5e 92 5c ; 113CC:  5c 87 8e 5c 5e 5e 92 5c
-            hex 74 5c 5c 5c 5c 5c 5c 5c ; 113D4:  74 5c 5c 5c 5c 5c 5c 5c
-            hex 5c 74 5c 5c 5c 5c 77 72 ; 113DC:  5c 74 5c 5c 5c 5c 77 72
-            hex 72 7e 5c 5c 5c 74 09 0a ; 113E4:  72 7e 5c 5c 5c 74 09 0a
-            hex 82 82 be 5d 7b 72 7e 5c ; 113EC:  82 82 be 5d 7b 72 7e 5c
-            hex 5c 5c 5c 5c 81 84 8a 8c ; 113F4:  5c 5c 5c 5c 81 84 8a 8c
-            hex 8c 91 8d 71 72 8e 5c 5c ; 113FC:  8c 91 8d 71 72 8e 5c 5c
-            hex 5c 74 5c 9f 57 57 57 bf ; 11404:  5c 74 5c 9f 57 57 57 bf
-            hex 7e 5c 74 5c 5c 5c 5c 9e ; 1140C:  7e 5c 74 5c 5c 5c 5c 9e
-            hex 5c 74 8a 8c 91 8d 71 a4 ; 11414:  5c 74 8a 8c 91 8d 71 a4
-            hex 72 7e 6f 99 79 74 5c 57 ; 1141C:  72 7e 6f 99 79 74 5c 57
-            hex 57 0a 0d 57 74 5c 74 5c ; 11424:  57 0a 0d 57 74 5c 74 5c
-            hex 8a 8c 8d c0 5c 74 87 79 ; 1142C:  8a 8c 8d c0 5c 74 87 79
-            hex 5c 71 75 09 0c 77 82 9a ; 11434:  5c 71 75 09 0c 77 82 9a
-            hex 7b a4 72 82 82 82 82 82 ; 1143C:  7b a4 72 82 82 82 82 82
-            hex a4 72 84 5c 71 72 88 0a ; 11444:  a4 72 84 5c 71 72 88 0a
-            hex 08 77 8e 7b 72 a4 79 5c ; 1144C:  08 77 8e 7b 72 a4 79 5c
-            hex 5c 5c 57 57 a5 5c 5c 57 ; 11454:  5c 5c 57 57 a5 5c 5c 57
-            hex 5c 09 0f 74 7a 70 5a 57 ; 1145C:  5c 09 0f 74 7a 70 5a 57
-            hex 09 08 57 57 57 57 7f 70 ; 11464:  09 08 57 57 57 57 7f 70
-            hex 70 7d 5c 74 0f 5c 5c 5c ; 1146C:  70 7d 5c 74 0f 5c 5c 5c
-            hex 5e 57 57 57 72 72 72 84 ; 11474:  5e 57 57 57 72 72 72 84
-            hex 5c 5c 85 70 70 5a 57 57 ; 1147C:  5c 5c 85 70 70 5a 57 57
-            hex 57 57 5c 5c 87 72 72 84 ; 11484:  57 57 5c 5c 87 72 72 84
-            hex 5c 5c 5c 5c 5c 5c 5c 5c ; 1148C:  5c 5c 5c 5c 5c 5c 5c 5c
-            hex 09 0d 5c 7b 72 72 72 72 ; 11494:  09 0d 5c 7b 72 72 72 72
-            hex 79 5c 76 7f 5c 87 72 72 ; 1149C:  79 5c 76 7f 5c 87 72 72
-            hex 84 5c 11 7b 72 72 72 72 ; 114A4:  84 5c 11 7b 72 72 72 72
-            hex 72 72 79 5c 5c 5c 5c 5c ; 114AC:  72 72 79 5c 5c 5c 5c 5c
-            hex 5c 5c 5c 5c 74 5c 71 72 ; 114B4:  5c 5c 5c 5c 74 5c 71 72
-            hex 72 8e 5c 5c 74 5c 5c 5c ; 114BC:  72 8e 5c 5c 74 5c 5c 5c
-            hex 5c 5c 5c 5c 5c 5c 8b 7c ; 114C4:  5c 5c 5c 5c 5c 5c 8b 7c
-            hex 5c 5c 87 72 72 72 72 72 ; 114CC:  5c 5c 87 72 72 72 72 72
-            hex 8e 87 8e 5c 5c 5c 8a 8d ; 114D4:  8e 87 8e 5c 5c 5c 8a 8d
-            hex 7b 72 7c 72 72 7e 8a 8c ; 114DC:  7b 72 7c 72 72 7e 8a 8c
-            hex 8d 71 9d 8e 5c 5c 77 72 ; 114E4:  8d 71 9d 8e 5c 5c 77 72
-            hex 72 7e 5c 5c 5c 74 09 0a ; 114EC:  72 7e 5c 5c 5c 74 09 0a
-            hex 5c 5c 8a 8c 91 8d 74 5c ; 114F4:  5c 5c 8a 8c 91 8d 74 5c
-            hex 5c 77 72 72 72 8e 74 0e ; 114FC:  5c 77 72 72 72 8e 74 0e
-            hex 8a 8c 91 8d 81 8e 5c 5c ; 11504:  8a 8c 91 8d 81 8e 5c 5c
-            hex 5c 74 5c 9f 5e 5e 78 5c ; 1150C:  5c 74 5c 9f 5e 5e 78 5c
-            hex 5c 5c 74 10 5c 5c 5c 5c ; 11514:  5c 5c 74 10 5c 5c 5c 5c
-            hex 5c 89 a2 a3 8a 8c 8d 9e ; 1151C:  5c 89 a2 a3 8a 8c 8d 9e
-            hex 5c 6f 57 87 79 74 87 82 ; 11524:  5c 6f 57 87 79 74 87 82
-            hex 82 a0 5d 78 71 72 a1 5c ; 1152C:  82 a0 5d 78 71 72 a1 5c
-            hex 89 5e 5e 5e 6f 57 57 6a ; 11534:  89 5e 5e 5e 6f 57 57 6a
-            hex 5c 87 72 a4 72 72 82 9a ; 1153C:  5c 87 72 a4 72 72 82 9a
-            hex 7b 84 74 09 09 a2 82 82 ; 11544:  7b 84 74 09 09 a2 82 82
-            hex 75 5c a6 82 a0 57 57 98 ; 1154C:  75 5c a6 82 a0 57 57 98
-            hex 59 59 59 93 72 a4 7e 5c ; 11554:  59 59 59 93 72 a4 7e 5c
-            hex 5c 89 57 57 a5 8b 8e 57 ; 1155C:  5c 89 57 57 a5 8b 8e 57
-            hex 57 57 57 57 5d 89 57 7f ; 11564:  57 57 57 57 5d 89 57 7f
-            hex 64 64 64 64 64 64 64 64 ; 1156C:  64 64 64 64 64 64 64 64
-            hex 0a 08 74 09 0c 6f 57 57 ; 11574:  0a 08 74 09 0c 6f 57 57
-            hex 57 a6 82 82 a7 57 57 57 ; 1157C:  57 a6 82 82 a7 57 57 57
-            hex 57 57 57 6a 53 53 53 a8 ; 11584:  57 57 57 6a 53 53 53 a8
-            hex a9 51 51 51 5d 81 8e 89 ; 1158C:  a9 51 51 51 5d 81 8e 89
-            hex 57 57 57 57 57 57 57 57 ; 11594:  57 57 57 57 57 57 57 57
-            hex a6 82 82 a7 57 57 7f 93 ; 1159C:  a6 82 82 a7 57 57 7f 93
-            hex 53 a8 55 a9 51 51 51 51 ; 115A4:  53 a8 55 a9 51 51 51 51
-            hex 64 aa 57 ab 59 5a 98 ad ; 115AC:  64 aa 57 ab 59 5a 98 ad
-            hex 82 82 a0 ae 82 a7 57 a6 ; 115B4:  82 82 a0 ae 82 a7 57 a6
-            hex a7 b0 53 a8 55 a9 51 51 ; 115BC:  a7 b0 53 a8 55 a9 51 51
-            hex 51 51 51 51 65 97 ac 64 ; 115C4:  51 51 51 51 65 97 ac 64
-            hex 64 56 66 56 09 0b a2 af ; 115CC:  64 56 66 56 09 0b a2 af
-            hex 57 a6 82 82 b1 64 53 b2 ; 115D4:  57 a6 82 82 b1 64 53 b2
-            hex 51 51 51 51 51 51 51 51 ; 115DC:  51 51 51 51 51 51 51 51
-            hex 56 57 6a 64 64 b4 b5 57 ; 115E4:  56 57 6a 64 64 b4 b5 57
-            hex 57 57 57 57 57 57 57 57 ; 115EC:  57 57 57 57 57 57 57 57
-            hex 6a 64 a8 a9 51 51 51 51 ; 115F4:  6a 64 a8 a9 51 51 51 51
-            hex 51 51 51 51 58 59 93 64 ; 115FC:  51 51 51 51 58 59 93 64
-            hex 64 64 59 b6 57 57 57 57 ; 11604:  64 64 59 b6 57 57 57 57
-            hex 98 59 59 59 93 64 b2 51 ; 1160C:  98 59 59 59 93 64 b2 51
-            hex 51 51 51 51 51 51 51 51 ; 11614:  51 51 51 51 51 51 51 51
-            hex 68 68 c1 0a 0a 5c 5c 5c ; 1161C:  68 68 c1 0a 0a 5c 5c 5c
-            hex 5c 5c 5c 74 5c 5c 5c 5c ; 11624:  5c 5c 5c 74 5c 5c 5c 5c
-            hex 5c 5c 5c 74 09 0f 5c 5c ; 1162C:  5c 5c 5c 74 09 0f 5c 5c
-            hex 5c 74 5c 5c 0a 11 b3 57 ; 11634:  5c 74 5c 5c 0a 11 b3 57
-            hex 5c 5c 5c 5c 5c 5c 5c 74 ; 1163C:  5c 5c 5c 5c 5c 5c 5c 74
-            hex 09 10 5c 5c 5c 5c 5c 7b ; 11644:  09 10 5c 5c 5c 5c 5c 7b
-            hex 72 7c 72 72 79 74 09 08 ; 1164C:  72 7c 72 72 79 74 09 08
-            hex 82 82 a4 7c 72 72 7e 5c ; 11654:  82 82 a4 7c 72 72 7e 5c
-            hex 71 72 72 84 5c 5c 5c 5c ; 1165C:  71 72 72 84 5c 5c 5c 5c
-            hex 8a 8c 91 8d 71 75 5c 5c ; 11664:  8a 8c 91 8d 71 75 5c 5c
-            hex 77 a4 72 72 98 57 5c 74 ; 1166C:  77 a4 72 72 98 57 5c 74
-            hex 5c 5c 77 72 75 71 72 75 ; 11674:  5c 5c 77 72 75 71 72 75
-            hex 5c 5c 5c 5c 8a 8d 71 7c ; 1167C:  5c 5c 5c 5c 8a 8d 71 7c
-            hex 75 09 0d 5c 5c 5c 5c 5c ; 11684:  75 09 0d 5c 5c 5c 5c 5c
-            hex 64 56 5c 74 5c 5c 5c 5c ; 1168C:  64 56 5c 74 5c 5c 5c 5c
-            hex 5c 77 72 72 7c 72 72 72 ; 11694:  5c 77 72 72 7c 72 72 72
-            hex 72 72 75 bc 5c 5c 5c 5c ; 1169C:  72 72 75 bc 5c 5c 5c 5c
-            hex 5c 5c 5c 5c c2 57 5c 74 ; 116A4:  5c 5c 5c 5c c2 57 5c 74
-            hex 0a 0b 5c 5c 5c 5c 5c 5c ; 116AC:  0a 0b 5c 5c 5c 5c 5c 5c
-            hex 74 09 11 5c 5c 5c 5c 5c ; 116B4:  74 09 11 5c 5c 5c 5c 5c
-            hex bd 7e 5c 5c 5c 5c 87 72 ; 116BC:  bd 7e 5c 5c 5c 5c 87 72
-            hex 57 86 8f b3 57 57 57 57 ; 116C4:  57 86 8f b3 57 57 57 57
-            hex 57 57 a5 5c 74 5c 5c 5c ; 116CC:  57 57 a5 5c 74 5c 5c 5c
-            hex 5c 5c 5c 5c 5c 74 8a 8c ; 116D4:  5c 5c 5c 5c 5c 74 8a 8c
-            hex 91 8d 77 72 7f 5c 76 b3 ; 116DC:  91 8d 77 72 7f 5c 76 b3
-            hex ae 82 82 82 82 82 be 5c ; 116E4:  ae 82 82 82 82 82 be 5c
-            hex 7b 72 72 7e 5c 5c 5c 5c ; 116EC:  7b 72 72 7e 5c 5c 5c 5c
-            hex 81 84 8a 8c 8c 91 91 8d ; 116F4:  81 84 8a 8c 8c 91 91 8d
-            hex 5c 5c 6f c3 c4 0a 0d 57 ; 116FC:  5c 5c 6f c3 c4 0a 0d 57
-            hex 57 57 57 bd 72 79 5c 74 ; 11704:  57 57 57 bd 72 79 5c 74
-            hex 5c 5c 5c 9e 5c 74 5c 5c ; 1170C:  5c 5c 5c 9e 5c 74 5c 5c
-            hex 5c 5c 8a 8d 5c 5c 57 b3 ; 11714:  5c 5c 8a 8d 5c 5c 57 b3
-            hex b3 57 57 57 57 57 57 5c ; 1171C:  b3 57 57 57 57 57 57 5c
-            hex 5c 74 5c 74 5c 5c 5c c0 ; 11724:  5c 74 5c 74 5c 5c 5c c0
-            hex 5c 74 87 79 5c 71 72 72 ; 1172C:  5c 74 87 79 5c 71 72 72
-            hex 0a 0f 99 9a c5 96 7f 82 ; 11734:  0a 0f 99 9a c5 96 7f 82
-            hex 82 82 82 72 72 a4 72 84 ; 1173C:  82 82 82 72 72 a4 72 84
-            hex 71 72 88 8a 8d 77 8e 7b ; 11744:  71 72 88 8a 8d 77 8e 7b
-            hex 72 a4 7e 5c 5c 5c b3 57 ; 1174C:  72 a4 7e 5c 5c 5c b3 57
-            hex 64 56 6a 57 0a 0c 57 c6 ; 11754:  64 56 6a 57 0a 0c 57 c6
-            hex 5c 5c 5c 77 84 0a 08 8a ; 1175C:  5c 5c 5c 77 84 0a 08 8a
-            hex 8d 8a c7 c8 c9 87 8e 5c ; 11764:  8d 8a c7 c8 c9 87 8e 5c
-            hex 72 7c 8e 57 64 56 6a cb ; 1176C:  72 7c 8e 57 64 56 6a cb
-            hex 57 57 57 5b 5c 5c 5c 5c ; 11774:  57 57 57 5b 5c 5c 5c 5c
-            hex 74 5c 5c 89 57 57 57 57 ; 1177C:  74 5c 5c 89 57 57 57 57
-            hex 57 b3 09 0c 5c 77 7e ca ; 11784:  57 b3 09 0c 5c 77 7e ca
-            hex 6b 58 cc cd 59 57 57 5d ; 1178C:  6b 58 cc cd 59 57 57 5d
-            hex 5e 92 5c 87 8e 9f 5e 6f ; 11794:  5e 92 5c 87 8e 9f 5e 6f
-            hex 7f 59 59 59 59 ce 57 ab ; 1179C:  7f 59 59 59 59 ce 57 ab
-            hex 0a 10 74 0a 0e 6b 68 68 ; 117A4:  0a 10 74 0a 0e 6b 68 68
-            hex 68 68 cf cd 59 57 57 b3 ; 117AC:  68 68 cf cd 59 57 57 b3
-            hex 57 57 7f d0 53 53 53 53 ; 117B4:  57 57 7f d0 53 53 53 53
-            hex 65 97 ac 64 5c 5c 74 5c ; 117BC:  65 97 ac 64 5c 5c 74 5c
-            hex 57 57 57 57 57 57 57 6a ; 117C4:  57 57 57 57 57 57 57 6a
-            hex 64 64 64 64 64 aa 64 64 ; 117CC:  64 64 64 64 64 aa 64 64
-            hex 9c 51 54 53 56 57 6a 64 ; 117D4:  9c 51 54 53 56 57 6a 64
-            hex 64 64 64 64 64 64 67 64 ; 117DC:  64 64 64 64 64 64 67 64
-            hex 64 64 51 d2 64 64 64 64 ; 117E4:  64 64 51 d2 64 64 64 64
-            hex cf 64 b5 65 57 5b 5c 74 ; 117EC:  cf 64 b5 65 57 5b 5c 74
-            hex 0a 0a 5c 5c 57 57 d1 68 ; 117F4:  0a 0a 5c 5c 57 57 d1 68
-            hex 68 66 53 61 5f 5f 62 53 ; 117FC:  68 66 53 61 5f 5f 62 53
-            hex 64 cf 57 68 57 97 d3 82 ; 11804:  64 cf 57 68 57 97 d3 82
-            hex 82 72 72 a4 7c 72 7e 5c ; 1180C:  82 72 72 a4 7c 72 7e 5c
-            hex 0b 0d b3 0a 11 6e 68 68 ; 11814:  0b 0d b3 0a 11 6e 68 68
-            hex 68 68 6f 97 6f 57 73 81 ; 1181C:  68 68 6f 97 6f 57 73 81
-            hex 82 d4 7f b4 96 98 57 57 ; 11824:  82 d4 7f b4 96 98 57 57
-            hex 74 5c 77 72 5c 5c 74 85 ; 1182C:  74 5c 77 72 5c 5c 74 85
-            hex 57 57 57 57 57 57 57 57 ; 11834:  57 57 57 57 57 57 57 57
-            hex d3 82 88 89 98 59 cc 64 ; 1183C:  d3 82 88 89 98 59 cc 64
-            hex 64 64 56 57 74 5c 5c 5c ; 11844:  64 64 56 57 74 5c 5c 5c
-            hex 72 79 8b 72 72 72 72 d5 ; 1184C:  72 79 8b 72 72 72 72 d5
-            hex 5c 5c 5c 9e 57 57 57 d0 ; 11854:  5c 5c 5c 9e 57 57 57 d0
-            hex 64 64 64 64 64 c2 57 73 ; 1185C:  64 64 64 64 64 c2 57 73
-            hex 74 0a 0b 5c 5c 7b 84 0b ; 11864:  74 0a 0b 5c 5c 7b 84 0b
-            hex 08 5c 5c 5c bd 72 72 84 ; 1186C:  08 5c 5c 5c bd 72 72 84
-            hex 57 ac 65 68 57 6f d6 b8 ; 11874:  57 ac 65 68 57 6f d6 b8
-            hex 57 57 86 8f b3 57 57 57 ; 1187C:  57 57 86 8f b3 57 57 57
-            hex 0b 0e 74 5c 5c 9f 5e 5e ; 11884:  0b 0e 74 5c 5c 9f 5e 5e
-            hex 92 5c 5c 8b a0 d6 97 57 ; 1188C:  92 5c 5c 8b a0 d6 97 57
-            hex 0a 0f 70 70 86 5c 5c 76 ; 11894:  0a 0f 70 70 86 5c 5c 76
-            hex b3 ae 82 82 b6 57 a6 82 ; 1189C:  b3 ae 82 82 b6 57 a6 82
-            hex d7 82 82 82 a0 a5 81 84 ; 118A4:  d7 82 82 82 a0 a5 81 84
-            hex a2 82 be 57 73 5c 5c 5c ; 118AC:  a2 82 be 57 73 5c 5c 5c
-            hex 5c 5c 5c 6f c3 c4 0a 0d ; 118B4:  5c 5c 5c 6f c3 c4 0a 0d
-            hex 64 64 64 59 ce 0b 0b 57 ; 118BC:  64 64 64 59 ce 0b 0b 57
-            hex a2 d4 57 7b 72 a7 7f bd ; 118C4:  a2 d4 57 7b 72 a7 7f bd
-            hex 72 7e 5c 5c 5c 5c 5c 57 ; 118CC:  72 7e 5c 5c 5c 5c 5c 57
-            hex b3 b3 57 57 68 64 d8 6f ; 118D4:  b3 b3 57 57 68 64 d8 6f
-            hex 56 57 57 57 57 57 57 57 ; 118DC:  56 57 57 57 57 57 57 57
-            hex 57 b3 0b 09 5c 77 72 72 ; 118E4:  57 b3 0b 09 5c 77 72 72
-            hex 72 72 79 87 9a c5 96 7f ; 118EC:  72 72 79 87 9a c5 96 7f
-            hex 57 6e b4 57 58 59 57 ae ; 118F4:  57 6e b4 57 58 59 57 ae
-            hex 82 82 82 82 82 84 5c 5c ; 118FC:  82 82 82 82 82 84 5c 5c
-            hex 5c 5c 5c 5c 5c 5c 74 74 ; 11904:  5c 5c 5c 5c 5c 5c 74 74
-            hex 57 64 56 6a 82 d4 6e 68 ; 1190C:  57 64 56 6a 82 d4 6e 68
-            hex 64 64 82 c4 0b 0a 57 57 ; 11914:  64 64 82 c4 0b 0a 57 57
-            hex 73 77 72 72 7c 72 72 72 ; 1191C:  73 77 72 72 7c 72 72 72
-            hex 72 72 a4 84 57 64 56 6a ; 11924:  72 72 a4 84 57 64 56 6a
-            hex 5c 0c 09 57 6a 64 56 b3 ; 1192C:  5c 0c 09 57 6a 64 56 b3
-            hex 70 70 70 70 5c 5c 5c 5c ; 11934:  70 70 70 70 5c 5c 5c 5c
-            hex 74 0a 10 5c 5c 5c 5c 7b ; 1193C:  74 0a 10 5c 5c 5c 5c 7b
-            hex 82 a0 58 cc 5c 5c 94 57 ; 11944:  82 a0 58 cc 5c 5c 94 57
-            hex b7 65 6f a6 72 7e 5c 5c ; 1194C:  b7 65 6f a6 72 7e 5c 5c
-            hex 71 72 7c 7c 75 5c 5c 5c ; 11954:  71 72 7c 7c 75 5c 5c 5c
-            hex 5c 5c 5c 5c ca b3 6b 68 ; 1195C:  5c 5c 5c 5c ca b3 6b 68
-            hex 79 5c 57 ab 64 57 0b 0c ; 11964:  79 5c 57 ab 64 57 0b 0c
-            hex 5c 77 72 72 75 5c 74 7b ; 1196C:  5c 77 72 72 75 5c 74 7b
-            hex 72 72 72 72 72 72 72 72 ; 11974:  72 72 72 72 72 72 72 72
-            hex 72 75 57 57 74 8f 57 b7 ; 1197C:  72 75 57 57 74 8f 57 b7
-            hex 64 aa 57 5c 5c 5c 5c 5c ; 11984:  64 aa 57 5c 5c 5c 5c 5c
-            hex 5c 5c 74 5c 0a 0e 5c 5c ; 1198C:  5c 5c 74 5c 0a 0e 5c 5c
-            hex 5c 5c 5c 5c 5c 94 57 98 ; 11994:  5c 5c 5c 5c 5c 94 57 98
-            hex 64 65 68 c1 0b 0f 73 5c ; 1199C:  64 65 68 c1 0b 0f 73 5c
-            hex 8a 8c 91 8d 74 0b 0d 5c ; 119A4:  8a 8c 91 8d 74 0b 0d 5c
-            hex 5c 8a 8c 8d ca b3 0a 11 ; 119AC:  5c 8a 8c 8d ca b3 0a 11
-            hex 57 57 57 57 57 57 57 b3 ; 119B4:  57 57 57 57 57 57 57 b3
-            hex 70 86 5c 5c 5c 5c 5c 5c ; 119BC:  70 86 5c 5c 5c 5c 5c 5c
-            hex c0 5c 5c 5c 5c 5c 5c 5c ; 119C4:  c0 5c 5c 5c 5c 5c 5c 5c
-            hex 5c 74 85 57 57 57 57 57 ; 119CC:  5c 74 85 57 57 57 57 57
-            hex 57 0b 11 c3 72 72 72 72 ; 119D4:  57 0b 11 c3 72 72 72 72
-            hex 72 72 7c 88 71 72 72 72 ; 119DC:  72 72 7c 88 71 72 72 72
-            hex 72 72 72 72 79 8b 72 72 ; 119E4:  72 72 72 72 79 8b 72 72
-            hex 72 72 d5 5c 57 57 57 b3 ; 119EC:  72 72 d5 5c 57 57 57 b3
-            hex 0b 10 89 5e 5e 92 77 72 ; 119F4:  0b 10 89 5e 5e 92 77 72
-            hex 84 0b 0e 57 57 57 a5 5c ; 119FC:  84 0b 0e 57 57 57 a5 5c
-            hex 7b 84 0b 08 5c 5c 5c bd ; 11A04:  7b 84 0b 08 5c 5c 5c bd
-            hex 59 59 59 ce 57 57 57 57 ; 11A0C:  59 59 59 ce 57 57 57 57
-            hex 57 57 57 57 b3 57 57 57 ; 11A14:  57 57 57 57 b3 57 57 57
-            hex 57 57 57 57 57 74 5c 5c ; 11A1C:  57 57 57 57 57 74 5c 5c
-            hex 89                      ; 11A24:  89
-
-            lsr $5e5e,x                 ; 11A25:  5e 5e 5e
-            jmp ($6068)                 ; 11A28:  6c 68 60
-
-            hex 58 59 59 59 59 59 5a ab ; 11A2B:  58 59 59 59 59 59 5a ab
-            hex 59 9b 59 59 59 59 59 b6 ; 11A33:  59 9b 59 59 59 59 59 b6
-            hex 57 57 a6 d7 82 82 82 82 ; 11A3B:  57 57 a6 d7 82 82 82 82
-            hex a0 8e ca 6a 64 64 64 64 ; 11A43:  a0 8e ca 6a 64 64 64 64
-            hex b5 66 64                ; 11A4B:  b5 66 64
-
-            cld                         ; 11A4E:  d8
-            pla                         ; 11A4F:  68
-            pla                         ; 11A50:  68
-            pla                         ; 11A51:  68
-            rts                         ; 11A52:  60
-
-            hex 64 64 64 64 64 64 59 ce ; 11A53:  64 64 64 64 64 64 59 ce
-            hex 57 0b 0b 57 a2 5c 5c 6a ; 11A5B:  57 0b 0b 57 a2 5c 5c 6a
-            hex 64 64 64 64 57 6d 64 56 ; 11A63:  64 64 64 64 57 6d 64 56
-            hex 57 0c 08 d6 68 97 6e 68 ; 11A6B:  57 0c 08 d6 68 97 6e 68
-            hex 60 d8 6f 56 57 57 57 57 ; 11A73:  60 d8 6f 56 57 57 57 57
-            hex 57 5c 8f 60 65 68 68 6f ; 11A7B:  57 5c 8f 60 65 68 68 6f
-            hex 57 80 57 c1 57 57 57 7d ; 11A83:  57 80 57 c1 57 57 57 7d
-            hex 5c 5c 7a 57 6e b4 57 58 ; 11A8B:  5c 5c 7a 57 6e b4 57 58
-            hex 59 57 99 82 82 0c 0f 6a ; 11A93:  59 57 99 82 82 0c 0f 6a
-            hex 56 0c 0a 57 57 5c ca a2 ; 11A9B:  56 0c 0a 57 57 5c ca a2
-            hex 72 7c 72 72 72 72 72 72 ; 11AA3:  72 7c 72 72 72 72 72 72
-            hex d4 6e 64 64 64 82 c4 0b ; 11AAB:  d4 6e 64 64 64 82 c4 0b
-            hex 0a 57 57 b7 6f 7f 86 5c ; 11AB3:  0a 57 57 b7 6f 7f 86 5c
-            hex 5c 5c 5c 5c 5c 74 0c 09 ; 11ABB:  5c 5c 5c 5c 5c 74 0c 09
-            hex 5c 5c 5c 5c 5c 5c 57 57 ; 11AC3:  5c 5c 5c 5c 5c 5c 57 57
-            hex 64 56 b3 70 70 ac 64 64 ; 11ACB:  64 56 b3 70 70 ac 64 64
-            hex 56 5e 5c 71 7c 72 72 72 ; 11AD3:  56 5e 5c 71 7c 72 72 72
-            hex 72 a4 72 72 72 72 72 79 ; 11ADB:  72 a4 72 72 72 72 72 79
-            hex 5c 94 57 d0 65 6f a6 72 ; 11AE3:  5c 94 57 d0 65 6f a6 72
-            hex 7e cc 64 65 da 82 82 8e ; 11AEB:  7e cc 64 65 da 82 82 8e
-            hex 74 0c 0b 57 57 57 57 57 ; 11AF3:  74 0c 0b 57 57 57 57 57
-            hex 57 57 57 74 5c 57 ab 64 ; 11AFB:  57 57 57 74 5c 57 ab 64
-            hex 57 57 0b 0c 77 64 64 56 ; 11B03:  57 57 0b 0c 77 64 64 56
-            hex 0c 0c 5c 5c 7b 72 82 82 ; 11B0B:  0c 0c 5c 5c 7b 72 82 82
-            hex db 59 59 59 59 59 5a bc ; 11B13:  db 59 59 59 59 59 5a bc
-            hex 57 59 93 64 cd 57 5c 5c ; 11B1B:  57 59 93 64 cd 57 5c 5c
-            hex 5c 54 53 56 57 5c 5c 57 ; 11B23:  5c 54 53 56 57 5c 5c 57
-            hex 57 57 57 57 6a a8 55 dc ; 11B2B:  57 57 57 57 6a a8 55 dc
-            hex 53 64 56 ac 64 53 a8 55 ; 11B33:  53 64 56 ac 64 53 a8 55
-            hex dc 5a 57 92 5c 64 dc b4 ; 11B3B:  dc 5a 57 92 5c 64 dc b4
-            hex 5a a5 5c 57 59 59 59 59 ; 11B43:  5a a5 5c 57 59 59 59 59
-            hex 93 b2 64 64 54 64 58 cc ; 11B4B:  93 b2 64 64 54 64 58 cc
-            hex 64 9c 64 64 52 64 b6 57 ; 11B53:  64 9c 64 64 52 64 b6 57
-            hex 57 64 64 56 6a b5 68 64 ; 11B5B:  57 64 64 56 6a b5 68 64
-            hex 64 64 64 65 68 68 dd 56 ; 11B63:  64 64 64 65 68 68 dd 56
-            hex 0b 11 5d 92 5c 5c 5c 5c ; 11B6B:  0b 11 5d 92 5c 5c 5c 5c
-            hex 74 0b 0f 5c 5c 6f 64 b9 ; 11B73:  74 0b 0f 5c 5c 6f 64 b9
-            hex 57 57 57 57 57 57 57 57 ; 11B7B:  57 57 57 57 57 57 57 57
-            hex 57 d3 9a 56 57 57 57 57 ; 11B83:  57 d3 9a 56 57 57 57 57
-            hex 57 57 57 57 c3 72 72 72 ; 11B8B:  57 57 57 57 c3 72 72 72
-            hex 72 57 56 0c 0e 73 5c 5c ; 11B93:  72 57 56 0c 0e 73 5c 5c
-            hex 80 57 5b 87 d4 89 57 60 ; 11B9B:  80 57 5b 87 d4 89 57 60
-            hex 59 59 59 59 59 59 59 5a ; 11BA3:  59 59 59 59 59 59 59 5a
-            hex b3 0b 10 57 57 57 56 57 ; 11BAB:  b3 0b 10 57 57 57 56 57
-            hex 57 92 5c 5c 9f 57 5b 74 ; 11BB3:  57 92 5c 5c 9f 57 5b 74
-            hex 0c                      ; 11BBB:  0c
-
-            ora $5757                   ; 11BBC:  0d 57 57
-            pla                         ; 11BBF:  68
-            pla                         ; 11BC0:  68
-            pla                         ; 11BC1:  68
-            pla                         ; 11BC2:  68
-            jmp ($6460)                 ; 11BC3:  6c 60 64
-
-            hex 64 9b 59 59 59 5a 5a 57 ; 11BC6:  64 9b 59 59 59 5a 5a 57
-            hex 57 59 59 59 57 70 70 7d ; 11BCE:  57 59 59 59 57 70 70 7d
-            hex 74 5c 5c 7a 70 70 70 7d ; 11BD6:  74 5c 5c 7a 70 70 70 7d
-            hex 5c 74 6a 64 64 64 64 b5 ; 11BDE:  5c 74 6a 64 64 64 64 b5
-            hex 66 64 de 59 57 6a 64 b5 ; 11BE6:  66 64 de 59 57 6a 64 b5
-            hex 57 92 5c 87 a4 72 72 72 ; 11BEE:  57 92 5c 87 a4 72 72 72
-            hex d5 5c 5c 87 72 75 6a 64 ; 11BF6:  d5 5c 5c 87 72 75 6a 64
-            hex 64 64 64 57 6d 64 55 53 ; 11BFE:  64 64 64 57 6d 64 55 53
-            hex 59 93 68 82 82 82 72 84 ; 11C06:  59 93 68 82 82 82 72 84
-            hex 8a 8d 0c 0f 5c bd 72 8e ; 11C0E:  8a 8d 0c 0f 5c bd 72 8e
-            hex 5c 94 6a b5 68 68 6f 57 ; 11C16:  5c 94 6a b5 68 68 6f 57
-            hex 80 57 63 53 64 56 0c 10 ; 11C1E:  80 57 63 53 64 56 0c 10
-            hex 57 7f 5c 7b 72 d5 5c 5c ; 11C26:  57 7f 5c 7b 72 d5 5c 5c
-            hex 5c 5c 5e 5e 5e 57 6a 0c ; 11C2E:  5c 5c 5e 5e 5e 57 6a 0c
-            hex 0a 57 57 57 5c ca 64 65 ; 11C36:  0a 57 57 57 5c ca 64 65
-            hex 6c 6f 57 73 5c 5c 8a 8c ; 11C3E:  6c 6f 57 73 5c 5c 8a 8c
-            hex 91 8d df 8a 8c 8d 7a 70 ; 11C46:  91 8d df 8a 8c 8d 7a 70
-            hex 57 59 93 57 86 5c 5c 5c ; 11C4E:  57 59 93 57 86 5c 5c 5c
-            hex 5c 5c 64 97 a6 d7 72 72 ; 11C56:  5c 5c 64 97 a6 d7 72 72
-            hex 72 72 72 72 72 72 a4 72 ; 11C5E:  72 72 72 72 72 72 a4 72
-            hex 72 72 72 7e ac 64 64 57 ; 11C66:  72 72 72 7e ac 64 64 57
-            hex 92 5c 71 7c 72 72 65 57 ; 11C6E:  92 5c 71 7c 72 72 65 57
-            hex 73 74 8a 8c 8c 91 8d 0c ; 11C76:  73 74 8a 8c 8c 91 8d 0c
-            hex 11 5c 5c 5c 5c 5c 5c 77 ; 11C7E:  11 5c 5c 5c 5c 5c 5c 77
-            hex e0 64 65 82 82 82 8e 74 ; 11C86:  e0 64 65 82 82 82 8e 74
-            hex 5c 5c 56 0d 08 7b 72 72 ; 11C8E:  5c 5c 56 0d 08 7b 72 72
-            hex 72 72 d5 5c 5c 5c 5c 5c ; 11C96:  72 72 d5 5c 5c 5c 5c 5c
-            hex 9f 5e 6f 57 6a 64 b9 0c ; 11C9E:  9f 5e 6f 57 6a 64 b9 0c
-            hex 0c 5c 5c 7b 72 72 57 57 ; 11CA6:  0c 5c 5c 7b 72 72 57 57
-            hex 57 57 5d 5c 5c 76 57 e1 ; 11CAE:  57 57 5d 5c 5c 76 57 e1
-            hex 57 57 57 57 57 57 57 59 ; 11CB6:  57 57 57 57 57 57 57 59
-            hex 93 64 57 57 5c 5c 57 57 ; 11CBE:  93 64 57 57 5c 5c 57 57
-            hex 57 57 5a 7f 59 59 57 89 ; 11CC6:  57 57 5a 7f 59 59 57 89
-            hex 5e ae 82 af 57 98 59 59 ; 11CCE:  5e ae 82 af 57 98 59 59
-            hex 93 64 64 64 64 64 cd 5a ; 11CD6:  93 64 64 64 64 64 cd 5a
-            hex a5 8f 57 98 59 59 64 6a ; 11CDE:  a5 8f 57 98 59 59 64 6a
-            hex 65 57 57 57 59 e2 57 93 ; 11CE6:  65 57 57 57 59 e2 57 93
-            hex 53 53 53 53 53 53 a8 55 ; 11CEE:  53 53 53 53 53 53 a8 55
-            hex a9 64 53 53 59 ac 53 53 ; 11CF6:  a9 64 53 53 59 ac 53 53
-            hex a8 55 64 68 57 57 98 59 ; 11CFE:  a8 55 64 68 57 57 98 59
-            hex 64 64 64 64 9c 64 51 64 ; 11D06:  64 64 64 64 9c 64 51 64
-            hex 51 64 64 51 64 51 54 dc ; 11D0E:  51 64 64 51 64 51 54 dc
-            hex 64 e3 53 9c 51 64 04 81 ; 11D16:  64 e3 53 9c 51 64 04 81
-            hex 00 00 04 a0 a0 20 00 a8 ; 11D1E:  00 00 04 a0 a0 20 00 a8
-            hex aa aa af aa aa 22 80 2a ; 11D26:  aa aa af aa aa 22 80 2a
-            hex 0a aa aa aa aa 20 88 00 ; 11D2E:  0a aa aa aa aa 20 88 00
-            hex 88 aa aa 0f 8a 02 88 aa ; 11D36:  88 aa aa 0f 8a 02 88 aa
-            hex aa a2 a0 a8 aa 22 88 aa ; 11D3E:  aa a2 a0 a8 aa 22 88 aa
-            hex aa 2a 80 2a 8a 22 00 00 ; 11D46:  aa 2a 80 2a 8a 22 00 00
-            hex aa f8 aa 02 80 22 80 ea ; 11D4E:  aa f8 aa 02 80 22 80 ea
-            hex ba ae aa 00 00 02 44 55 ; 11D56:  ba ae aa 00 00 02 44 55
-            hex 55 55 45 00 00 02 80 a0 ; 11D5E:  55 55 45 00 00 02 80 a0
-            hex a0 20 80 a0 a0 00 88 aa ; 11D66:  a0 20 80 a0 a0 00 88 aa
-            hex aa aa aa aa aa 02 88 2f ; 11D6E:  aa aa aa aa aa 02 88 2f
-            hex 0b 0a 0a 0a 02 10 00 a0 ; 11D76:  0b 0a 0a 0a 02 10 00 a0
-            hex a0 a0 00 00 45 11 88 aa ; 11D7E:  a0 a0 00 00 45 11 88 aa
-            hex af aa aa aa a0 00 88 aa ; 11D86:  af aa aa aa a0 00 88 aa
-            hex aa aa aa ae ab 22 80 aa ; 11D8E:  aa aa aa ae ab 22 80 aa
-            hex ea aa aa aa aa 22 88 aa ; 11D96:  ea aa aa aa aa 22 88 aa
-            hex aa aa aa aa aa 22 88 aa ; 11D9E:  aa aa aa aa aa 22 88 aa
-            hex aa aa af aa aa 02       ; 11DA6:  aa aa af aa aa 02
-
-            dey                         ; 11DAC:  88
-            tax                         ; 11DAD:  aa
-            php                         ; 11DAE:  08
-            asl a                       ; 11DAF:  0a
-            php                         ; 11DB0:  08
-            rti                         ; 11DB1:  40
-
-            hex 50 10 00 00 00 00 00 55 ; 11DB2:  50 10 00 00 00 00 00 55
-            hex 55 11 00 a8 aa aa ea ba ; 11DBA:  55 11 00 a8 aa aa ea ba
-            hex aa 22 80 2a 0a aa aa aa ; 11DC2:  aa 22 80 2a 0a aa aa aa
-            hex aa 22 88 02 00 aa aa ea ; 11DCA:  aa 22 88 02 00 aa aa ea
-            hex fa 22 88 22 00 0a 0a 42 ; 11DD2:  fa 22 88 22 00 0a 0a 42
-            hex 10 00 80 20 05 01 20 08 ; 11DDA:  10 00 80 20 05 01 20 08
-            hex 8a 22 08 aa aa 22 80 a0 ; 11DE2:  8a 22 08 aa aa 22 80 a0
-            hex 2a 02 00 00 08 8a aa aa ; 11DEA:  2a 02 00 00 08 8a aa aa
-            hex 22 00 88 02 a8 aa aa aa ; 11DF2:  22 00 88 02 a8 aa aa aa
-            hex aa 00 00 88 aa aa aa aa ; 11DFA:  aa 00 00 88 aa aa aa aa
-            hex aa 22 80 00 00 00 00 08 ; 11E02:  aa 22 80 00 00 00 00 08
-            hex 0a 02 08 80             ; 11E0A:  0a 02 08 80
-
-            tay                         ; 11E0E:  a8
-            tax                         ; 11E0F:  aa
-            tax                         ; 11E10:  aa
-            ldx #$00                    ; 11E11:  a2 00
-            jsr tab_b4_84f9+839         ; 11E13:  20 40 88
-            asl a                       ; 11E16:  0a
-            rti                         ; 11E17:  40
-
-            hex 10 42 18 22 00 80 a0 a0 ; 11E18:  10 42 18 22 00 80 a0 a0
-            hex 08 0a 0a 02 40 00 aa aa ; 11E20:  08 0a 0a 02 40 00 aa aa
-            hex aa 22 00 20 00 a8 ae af ; 11E28:  aa 22 00 20 00 a8 ae af
-            hex ab 00 aa 22 00 08 02 50 ; 11E30:  ab 00 aa 22 00 08 02 50
-            hex 50 50 42 10 08 04 00 15 ; 11E38:  50 50 42 10 08 04 00 15
-            hex 07 01 16 0e 02 07 07 03 ; 11E40:  07 01 16 0e 02 07 07 03
-            hex 07 0a 05 12 12 06 09 13 ; 11E48:  07 0a 05 12 12 06 09 13
-            hex 07 06 0d 08 10 0b 0f 07 ; 11E50:  07 06 0d 08 10 0b 0f 07
-            hex 10 10 ff 00 00 00 16 04 ; 11E58:  10 10 ff 00 00 00 16 04
-            hex 03 0d 06 04 16 07 05 16 ; 11E60:  03 0d 06 04 16 07 05 16
-            hex 0a 08 03 13 09 0d 0d 0a ; 11E68:  0a 08 03 13 09 0d 0d 0a
-            hex 08 10 0b 0c 13 0c 05 09 ; 11E70:  08 10 0b 0c 13 0c 05 09
-            hex 0d 02 0b 0e 17 0d 10 ff ; 11E78:  0d 02 0b 0e 17 0d 10 ff
-            hex 16 04 00 15 0a 01 16 0d ; 11E80:  16 04 00 15 0a 01 16 0d
-            hex 02 15 10 03 0d 0c 04 0c ; 11E88:  02 15 10 03 0d 0c 04 0c
-            hex 11 05 04 0d 06 02 12 07 ; 11E90:  11 05 04 0d 06 02 12 07
-            hex 02 0f 08 02 0a 09 ff 00 ; 11E98:  02 0f 08 02 0a 09 ff 00
-            hex 00 00 16 0a 09 15 13 0d ; 11EA0:  00 00 16 0a 09 15 13 0d
-            hex 0f 0d 0e 0d 05 0f 0d 08 ; 11EA8:  0f 0d 0e 0d 05 0f 0d 08
-            hex 10 06 0b 11 07 0f 12 04 ; 11EB0:  10 06 0b 11 07 0f 12 04
-            hex 07 14 ff 00 00 00 00 00 ; 11EB8:  07 14 ff 00 00 00 00 00
-            hex 00 00 00 00 16 05 06 15 ; 11EC0:  00 00 00 00 16 05 06 15
-            hex 0b 07 14 07 08 0a 05 09 ; 11EC8:  0b 07 14 07 08 0a 05 09
-            hex 0d 0d 0a 0c 0a 0b 0a 12 ; 11ED0:  0d 0d 0a 0c 0a 0b 0a 12
-            hex 0c 05 0f 0d 02 07 0e ff ; 11ED8:  0c 05 0f 0d 02 07 0e ff
-            hex 00 00 00 00 00 00 17 08 ; 11EE0:  00 00 00 00 00 00 17 08
-            hex 0e 0e 06 11 0f 0a 12 13 ; 11EE8:  0e 0e 06 11 0f 0a 12 13
-            hex 10 13 05 05 15 06 0a 16 ; 11EF0:  10 13 05 05 15 06 0a 16
-            hex 0a 10 17 07 0d 18 05 13 ; 11EF8:  0a 10 17 07 0d 18 05 13
-            hex 19 ff 00 00 00 00 00 00 ; 11F00:  19 ff 00 00 00 00 00 00
-            hex 14 13 19 12 0b 1a 13 11 ; 11F08:  14 13 19 12 0b 1a 13 11
-            hex 1b 05 07 1c 05 0a 1d 10 ; 11F10:  1b 05 07 1c 05 0a 1d 10
-            hex 0e 1e 0a 10 1f 07 0d 20 ; 11F18:  0e 1e 0a 10 1f 07 0d 20
-            hex 08 13 21 ff 00 00 00 00 ; 11F20:  08 13 21 ff 00 00 00 00
-            hex 00 00 18 05 1c 18 08 1d ; 11F28:  00 00 18 05 1c 18 08 1d
-            hex 0f 05 22 0f 08 23 06 05 ; 11F30:  0f 05 22 0f 08 23 06 05
-            hex 24 06 08 25 0e 0c 27 11 ; 11F38:  24 06 08 25 0e 0c 27 11
-            hex 0e 28 06 0e 29 0c 10 2a ; 11F40:  0e 28 06 0e 29 0c 10 2a
-            hex 05 12 2b ff 11 05 26 17 ; 11F48:  05 12 2b ff 11 05 26 17
-            hex 0c 29 17 10 2b 0d 08 2c ; 11F50:  0c 29 17 10 2b 0d 08 2c
-            hex 04 07 2d 0e 0b 2e 06 0c ; 11F58:  04 07 2d 0e 0b 2e 06 0c
-            hex 2f 0b 0f 30 03 10 31 ff ; 11F60:  2f 0b 0f 30 03 10 31 ff
-            hex 00 00 00 00 00 00 3f 7d ; 11F68:  00 00 00 00 00 00 3f 7d
-            hex 79 b6 cf fb f3 6d 00 02 ; 11F70:  79 b6 cf fb f3 6d 00 02
-            hex 86 49 30 04 0c 92 ff f7 ; 11F78:  86 49 30 04 0c 92 ff f7
-            hex e7 db 3c ef cf b6 00 08 ; 11F80:  e7 db 3c ef cf b6 00 08
-            hex 18 24 c3 10 30 49 9e f7 ; 11F88:  18 24 c3 10 30 49 9e f7
-            hex e7 db 3c ef cf b6 61 08 ; 11F90:  e7 db 3c ef cf b6 61 08
-            hex 18 24 c3 10 30 49 79 df ; 11F98:  18 24 c3 10 30 49 79 df
-            hex 9e 6d f3 be 3c db 86 20 ; 11FA0:  9e 6d f3 be 3c db 86 20
-            hex 61 92 0c 41 c3 24 ff df ; 11FA8:  61 92 0c 41 c3 24 ff df
-            hex 9e 6d f3 be 3c db 00 20 ; 11FB0:  9e 6d f3 be 3c db 00 20
-            hex 61 92 0c 41 c3 24 fc 7c ; 11FB8:  61 92 0c 41 c3 24 fc 7c
-            hex 79 b6 cf fb f3 6d 00 82 ; 11FC0:  79 b6 cf fb f3 6d 00 82
-            hex 86 49 30 04 0c 92 e7 7d ; 11FC8:  86 49 30 04 0c 92 e7 7d
-            hex 79 b6 cf fb f3 6d 18 82 ; 11FD0:  79 b6 cf fb f3 6d 18 82
-            hex 86 49 30 04 0c 92 79 df ; 11FD8:  86 49 30 04 0c 92 79 df
-            hex 9e 6d f3 be bc 5b 86 20 ; 11FE0:  9e 6d f3 be bc 5b 86 20
-            hex 61 92 0c 41 43 a4 e7 7d ; 11FE8:  61 92 0c 41 43 a4 e7 7d
-            hex 79 b6 cf fb 73 3f 18 82 ; 11FF0:  79 b6 cf fb 73 3f 18 82
-            hex 86 49 30 04 0c 00 9e f7 ; 11FF8:  86 49 30 04 0c 00 9e f7
-            hex e7 db 3c ef cf ff 61 08 ; 12000:  e7 db 3c ef cf ff 61 08
-            hex 18 24 c3 10 30 00 79 df ; 12008:  18 24 c3 10 30 00 79 df
-            hex 9e 6d f3 be 3c ff 86 20 ; 12010:  9e 6d f3 be 3c ff 86 20
-            hex 61 92 0c 41 c3 00 e7 7d ; 12018:  61 92 0c 41 c3 00 e7 7d
-            hex 79 b6 cf fb f2 fc 18 82 ; 12020:  79 b6 cf fb f2 fc 18 82
-            hex 86 49 30 04 0c 00 00 00 ; 12028:  86 49 30 04 0c 00 00 00
-            hex 00 00 00 01 03 0f 3f 7f ; 12030:  00 00 00 01 03 0f 3f 7f
-            hex ff ff ff fe fc f0 00 20 ; 12038:  ff ff ff fe fc f0 00 20
-            hex 7f aa ff ff ff ff 9f af ; 12040:  7f aa ff ff ff ff 9f af
-            hex 80 00 55 aa aa 00 00 00 ; 12048:  80 00 55 aa aa 00 00 00
-            hex 00 03 07 1f 00 02 f8 fe ; 12050:  00 03 07 1f 00 02 f8 fe
-            hex fe fe fd e0 f0 fa 00 03 ; 12058:  fe fe fd e0 f0 fa 00 03
-            hex f7 f8 ff ff 00 44 00 ab ; 12060:  f7 f8 ff ff 00 44 00 ab
-            hex f7 a8 5f 00 00 6e 00 02 ; 12068:  f7 a8 5f 00 00 6e 00 02
-            hex ff aa ff ff ff ff fc fa ; 12070:  ff aa ff ff ff ff fc fa
-            hex 00 00 55 aa aa 00 00 00 ; 12078:  00 00 55 aa aa 00 00 00
-            hex 00 00 00 00 80 c0 fc fe ; 12080:  00 00 00 00 80 c0 fc fe
-            hex ff 7f 3f 1f 8f 07 00 00 ; 12088:  ff 7f 3f 1f 8f 07 00 00
-            hex 9f c3 e7 ff 00 44 00 35 ; 12090:  9f c3 e7 ff 00 44 00 35
-            hex 9f c2 e5 00 00 6e 00 00 ; 12098:  9f c2 e5 00 00 6e 00 00
-            hex 00 80 c0 e0 00 40 0f 3f ; 120A0:  00 80 c0 e0 00 40 0f 3f
-            hex 1f 8f 07 03 07 0f 01 07 ; 120A8:  1f 8f 07 03 07 0f 01 07
-            hex 0c 1f 7f 00 00 08 f9 fb ; 120B0:  0c 1f 7f 00 00 08 f9 fb
-            hex f4 ef 80 80 e5 e8 3d 9f ; 120B8:  f4 ef 80 80 e5 e8 3d 9f
-            hex dc ff ff 00 00 78 3d 8b ; 120C0:  dc ff ff 00 00 78 3d 8b
-            hex d4 ef 00 00 55 78 0f 00 ; 120C8:  d4 ef 00 00 55 78 0f 00
-            hex 1b 15 2e 55 3b 15 ef c0 ; 120D0:  1b 15 2e 55 3b 15 ef c0
-            hex c0 c0 80 00 00 00 ff 00 ; 120D8:  c0 c0 80 00 00 00 ff 00
-            hex bb 55 ee 55 bb 55 ff 00 ; 120E0:  bb 55 ee 55 bb 55 ff 00
-            hex 00 00 00 00 00 00 3d 9f ; 120E8:  00 00 00 00 00 00 3d 9f
-            hex fc ff ff 00 00 78 3d 8b ; 120F0:  fc ff ff 00 00 78 3d 8b
-            hex d4 ef 00 00 55 78 00 80 ; 120F8:  d4 ef 00 00 55 78 00 80
-            hex c0 e0 f0 00 00 60 0f 87 ; 12100:  c0 e0 f0 00 00 60 0f 87
-            hex c3 e1 00 00 61 61 ff 00 ; 12108:  c3 e1 00 00 61 61 ff 00
-            hex bb 55 ae 75 ab 5d ff 00 ; 12110:  bb 55 ae 75 ab 5d ff 00
-            hex 00 00 00 00 00 00 e0 00 ; 12118:  00 00 00 00 00 00 e0 00
-            hex b0 50 e0 50 b8 50 e1 01 ; 12120:  b0 50 e0 50 b8 50 e1 01
-            hex 00 00 00 00 00 00 3f 55 ; 12128:  00 00 00 00 00 00 3f 55
-            hex 55 55 00 2a 3e 00 00 00 ; 12130:  55 55 00 2a 3e 00 00 00
-            hex 00 00 00 2a 3e 3e ff 55 ; 12138:  00 00 00 2a 3e 3e ff 55
-            hex 55 55 00 e7 db bd 00 00 ; 12140:  55 55 00 e7 db bd 00 00
-            hex 00 00 00 00 00 00 ab ff ; 12148:  00 00 00 00 00 00 ab ff
-            hex ff 00 00 ff 55 55 00 00 ; 12150:  ff 00 00 ff 55 55 00 00
-            hex 00 ff ff 00 00 00 66 db ; 12158:  00 ff ff 00 00 00 66 db
-            hex bd 66 db ff 55 55 00 00 ; 12160:  bd 66 db ff 55 55 00 00
-            hex 00 00 00 00 00 00 ff 55 ; 12168:  00 00 00 00 00 00 ff 55
-            hex 55 55 00 2a 7e 00 00 00 ; 12170:  55 55 00 2a 7e 00 00 00
-            hex 00 00 00 2a 7e 7e 00 00 ; 12178:  00 00 00 2a 7e 7e 00 00
-            hex 00 00 00 00 00 00 fc f6 ; 12180:  00 00 00 00 00 00 fc f6
-            hex 7f ff bf fe ef ff 55 7f ; 12188:  7f ff bf fe ef ff 55 7f
-            hex 7f 00 00 ff 55 55 80 80 ; 12190:  7f 00 00 ff 55 55 80 80
-            hex 80 ff ff 00 00 00 ff ff ; 12198:  80 ff ff 00 00 00 ff ff
-            hex ff 38 38 38 38 38 00 00 ; 121A0:  ff 38 38 38 38 38 00 00
-            hex 00 c7 c7 c7 c7 c7 55 55 ; 121A8:  00 c7 c7 c7 c7 c7 55 55
-            hex 00 2a 3e 00 00 00 00 00 ; 121B0:  00 2a 3e 00 00 00 00 00
-            hex 00 2a 3e 00 ff ff 55 55 ; 121B8:  00 2a 3e 00 ff ff 55 55
-            hex 00 54 ff aa aa aa 00 00 ; 121C0:  00 54 ff aa aa aa 00 00
-            hex 00 54 00 00 00 00 ff ff ; 121C8:  00 54 00 00 00 00 ff ff
-            hex 1c 1c 1c 1c 1f 1f 00 00 ; 121D0:  1c 1c 1c 1c 1f 1f 00 00
-            hex e3 e3 e3 e3 60 20 aa 00 ; 121D8:  e3 e3 e3 e3 60 20 aa 00
-            hex 2a 3e 00 55 ff ff 00 00 ; 121E0:  2a 3e 00 55 ff ff 00 00
-            hex 2a 3e 00 00 00 00 38 38 ; 121E8:  2a 3e 00 00 00 00 38 38
-            hex 38 38 ff aa aa aa c7 c7 ; 121F0:  38 38 ff aa aa aa c7 c7
-            hex c7 c7 00 00 00 00 aa 00 ; 121F8:  c7 c7 00 00 00 00 aa 00
-            hex 54 7c 00 55 ff ff 00 00 ; 12200:  54 7c 00 55 ff ff 00 00
-            hex 54 7c 00 00 00 00 aa 00 ; 12208:  54 7c 00 00 00 00 aa 00
-            hex 54 7c 00 57 fe fc 00 00 ; 12210:  54 7c 00 57 fe fc 00 00
-            hex 54 7c 00 00 00 00 00 00 ; 12218:  54 7c 00 00 00 00 00 00
-            hex 00 80 00 80 00 80 3f 7f ; 12220:  00 80 00 80 00 80 3f 7f
-            hex ff 7f f7 7e ff 7f 00 00 ; 12228:  ff 7f f7 7e ff 7f 00 00
-            hex 00 00 00 00 00 00 ff df ; 12230:  00 00 00 00 00 00 ff df
-            hex ff fd bf ff ef 7f 00 80 ; 12238:  ff fd bf ff ef 7f 00 80
-            hex 00 80 00 80 00 80 fd 77 ; 12240:  00 80 00 80 00 80 fd 77
-            hex ff 7f f7 7e df 7f 00 00 ; 12248:  ff 7f f7 7e df 7f 00 00
-            hex 00 00 00 00 00 00 fe f7 ; 12250:  00 00 00 00 00 00 fe f7
-            hex 7f fb bf fe ef bf 00 00 ; 12258:  7f fb bf fe ef bf 00 00
-            hex 00 00 00 00 00 00 ff f7 ; 12260:  00 00 00 00 00 00 ff f7
-            hex ff ff bf fe ef fe 00 00 ; 12268:  ff ff bf fe ef fe 00 00
-            hex 00 00 00 00 00 00 fc fe ; 12270:  00 00 00 00 00 00 fc fe
-            hex df ff bf ff ef ff 00 00 ; 12278:  df ff bf ff ef ff 00 00
-            hex 00 00 00 00 00 00 fd f7 ; 12280:  00 00 00 00 00 00 fd f7
-            hex 7f ff bf fe ef ff 00 00 ; 12288:  7f ff bf fe ef ff 00 00
-            hex 00 00 00 00 00 00 df ff ; 12290:  00 00 00 00 00 00 df ff
-            hex 7f fb bf ff ef ff 00 80 ; 12298:  7f fb bf ff ef ff 00 80
-            hex 00 80 00 80 00 80 fd 77 ; 122A0:  00 80 00 80 00 80 fd 77
-            hex ff 7f ff 5b ff 7f 00 00 ; 122A8:  ff 7f ff 5b ff 7f 00 00
-            hex 00 00 00 00 00 00 fd f7 ; 122B0:  00 00 00 00 00 00 fd f7
-            hex 7f fb bf fe ef ff 00 80 ; 122B8:  7f fb bf fe ef ff 00 80
-            hex 00 80 00 80 00 2a fd 77 ; 122C0:  00 80 00 80 00 2a fd 77
-            hex ff 7f ff 7b 7f 15 00 00 ; 122C8:  ff 7f ff 7b 7f 15 00 00
-            hex 00 00 00 00 00 aa fd f7 ; 122D0:  00 00 00 00 00 aa fd f7
-            hex 7f ff ef ff ff 55 00 00 ; 122D8:  7f ff ef ff ff 55 00 00
-            hex 00 00 00 00 00 00 7d f7 ; 122E0:  00 00 00 00 00 00 7d f7
-            hex 7f fb bf fe ef ff 00 00 ; 122E8:  7f fb bf fe ef ff 00 00
-            hex 00 00 00 00 00 00 6f ff ; 122F0:  00 00 00 00 00 00 6f ff
-            hex 7f fb bf ff ef ff 00 00 ; 122F8:  7f fb bf ff ef ff 00 00
-            hex 00 00 00 00 00 aa fd f7 ; 12300:  00 00 00 00 00 aa fd f7
-            hex 7f f7 ff de ff 55 00 00 ; 12308:  7f f7 ff de ff 55 00 00
-            hex 00 00 00 00 00 a8 ff ff ; 12310:  00 00 00 00 00 a8 ff ff
-            hex 7b ff df ff fe 54 3f 7f ; 12318:  7b ff df ff fe 54 3f 7f
-            hex ff ff ff fd f8 e5 3f 7f ; 12320:  ff ff ff fd f8 e5 3f 7f
-            hex ff ff ff f1 e0 80 ff ff ; 12328:  ff ff ff f1 e0 80 ff ff
-            hex ff ff fe ff fe dd ff fe ; 12330:  ff ff fe ff fe dd ff fe
-            hex f8 f0 e0 c0 00 00 d9 b7 ; 12338:  f8 f0 e0 c0 00 00 d9 b7
-            hex fb f7 ff ff ff aa 00 00 ; 12340:  fb f7 ff ff ff aa 00 00
-            hex 00 00 70 ff ff aa fa d5 ; 12348:  00 00 70 ff ff aa fa d5
-            hex ba 51 9a 47 fc a8 00 00 ; 12350:  ba 51 9a 47 fc a8 00 00
-            hex 00 00 00 00 fc a8 ff 9f ; 12358:  00 00 00 00 fc a8 ff 9f
-            hex 87 43 81 30 28 14 ff 1f ; 12360:  87 43 81 30 28 14 ff 1f
-            hex 07 03 01 00 00 00 fc fe ; 12368:  07 03 01 00 00 00 fc fe
-            hex ff ff ff f7 53 e9 fc fe ; 12370:  ff ff ff f7 53 e9 fc fe
-            hex ff ff ff c7 03 01 3f d5 ; 12378:  ff ff ff c7 03 01 3f d5
-            hex 88 10 a8 d4 ba d4 3f d5 ; 12380:  88 10 a8 d4 ba d4 3f d5
-            hex 00 00 00 00 00 00 fc 54 ; 12388:  00 00 00 00 00 00 fc 54
-            hex 00 04 c4 42 20 10 f8 54 ; 12390:  00 04 c4 42 20 10 f8 54
-            hex 00 00 00 00 00 00 aa 00 ; 12398:  00 00 00 00 00 00 aa 00
-            hex fa d5 e0 d1 aa f1 00 00 ; 123A0:  fa d5 e0 d1 aa f1 00 00
-            hex 00 00 00 00 00 00 a3 17 ; 123A8:  00 00 00 00 00 00 a3 17
-            hex 6f 77 ef 77 eb d7 00 00 ; 123B0:  6f 77 ef 77 eb d7 00 00
-            hex 00 00 00 00 00 00 a0 55 ; 123B8:  00 00 00 00 00 00 a0 55
-            hex eb 44 ab 43 17 2f 00 00 ; 123C0:  eb 44 ab 43 17 2f 00 00
-            hex 00 00 00 00 00 00 e9 d3 ; 123C8:  00 00 00 00 00 00 e9 d3
-            hex eb f5 e3 f3 d7 ab 00 00 ; 123D0:  eb f5 e3 f3 d7 ab 00 00
-            hex 00 00 00 00 00 00 88 45 ; 123D8:  00 00 00 00 00 00 88 45
-            hex a8 c1 23 51 ab 81 00 00 ; 123E0:  a8 c1 23 51 ab 81 00 00
-            hex 00 00 00 00 00 00 08 04 ; 123E8:  00 00 00 00 00 00 08 04
-            hex 48 24 16 8e 45 02 00 00 ; 123F0:  48 24 16 8e 45 02 00 00
-            hex 00 00 00 00 00 00 c0 a9 ; 123F8:  00 00 00 00 00 00 c0 a9
-            hex f4 fa ad d2 e9 f4 00 00 ; 12400:  f4 fa ad d2 e9 f4 00 00
-            hex 00 00 00 00 00 00 20 08 ; 12408:  00 00 00 00 00 00 20 08
-            hex c8 04 22 12 1a 18 00 00 ; 12410:  c8 04 22 12 1a 18 00 00
-            hex 00 00 00 00 00 00 00 00 ; 12418:  00 00 00 00 00 00 00 00
-            hex 00 00 00 38 fe ff 3f 77 ; 12420:  00 00 00 38 fe ff 3f 77
-            hex ff fe c0 00 00 00 00 00 ; 12428:  ff fe c0 00 00 00 00 00
-            hex 1c 7a fd 7a 18 47 ff 63 ; 12430:  1c 7a fd 7a 18 47 ff 63
-            hex 80 00 00 00 00 00 e8 f2 ; 12438:  80 00 00 00 00 00 e8 f2
-            hex cd 3f fd fe ff 8f 00 00 ; 12440:  cd 3f fd fe ff 8f 00 00
-            hex 00 00 00 00 00 00 8f 3f ; 12448:  00 00 00 00 00 00 8f 3f
-            hex 1f 83 40 ad 07 3f 00 00 ; 12450:  1f 83 40 ad 07 3f 00 00
-            hex 00 00 00 00 00 00 00 00 ; 12458:  00 00 00 00 00 00 00 00
-            hex 01 07 0f 1e 89 43 f7 fe ; 12460:  01 07 0f 1e 89 43 f7 fe
-            hex d8 70 00 00 00 00 00 00 ; 12468:  d8 70 00 00 00 00 00 00
-            hex c0 a0 f0 2a 84 43 fc 3e ; 12470:  c0 a0 f0 2a 84 43 fc 3e
-            hex 0b 07 01 00 00 00 a2 d8 ; 12478:  0b 07 01 00 00 00 a2 d8
-            hex e1 10 c9 e3 d7 ab 00 00 ; 12480:  e1 10 c9 e3 d7 ab 00 00
-            hex 00 00 00 00 00 00 a4 d2 ; 12488:  00 00 00 00 00 00 a4 d2
-            hex f5 1a 45 a1 d4 aa 00 00 ; 12490:  f5 1a 45 a1 d4 aa 00 00
-            hex 00 00 00 00 00 00 76 e9 ; 12498:  00 00 00 00 00 00 76 e9
-            hex f7 fb f5 fa fc fc 00 00 ; 124A0:  f7 fb f5 fa fc fc 00 00
-            hex 00 00 00 00 00 00 1d bb ; 124A8:  00 00 00 00 00 00 1d bb
-            hex 57 e7 a2 ed 52 cf 00 00 ; 124B0:  57 e7 a2 ed 52 cf 00 00
-            hex 00 00 00 00 00 00 aa 00 ; 124B8:  00 00 00 00 00 00 aa 00
-            hex 00 00 00 00 00 00 00 ff ; 124C0:  00 00 00 00 00 00 00 ff
-            hex f6 fe df ff 7b 3f 3f 7f ; 124C8:  f6 fe df ff 7b 3f 3f 7f
-            hex ff aa 00 00 00 00 00 00 ; 124D0:  ff aa 00 00 00 00 00 00
-            hex 00 00 df ff 7d ff f5 ea ; 124D8:  00 00 df ff 7d ff f5 ea
-            hex f4 a8 04 b9 d7 ef 00 00 ; 124E0:  f4 a8 04 b9 d7 ef 00 00
-            hex 00 00 00 00 00 00 f1 68 ; 124E8:  00 00 00 00 00 00 f1 68
-            hex 35 2a c7 a7 e1 d0 00 00 ; 124F0:  35 2a c7 a7 e1 d0 00 00
-            hex 00 00 00 00 00 00 df be ; 124F8:  00 00 00 00 00 00 df be
-            hex 7d fb 55 00 00 00 00 00 ; 12500:  7d fb 55 00 00 00 00 00
-            hex 00 00 00 ff ef fb e8 fa ; 12508:  00 00 00 ff ef fb e8 fa
-            hex fd fa 55 00 00 00 00 00 ; 12510:  fd fa 55 00 00 00 00 00
-            hex 00 00 00 ff be fc 00 18 ; 12518:  00 00 00 ff be fc 00 18
-            hex 24 42 42 24 18 00 00 18 ; 12520:  24 42 42 24 18 00 00 18
-            hex 24 42 42 24 18 00 00 42 ; 12528:  24 42 42 24 18 00 00 42
-            hex 24 18 18 24 42 00 00 42 ; 12530:  24 18 18 24 42 00 00 42
-            hex 24 18 18 24 42 00 02 06 ; 12538:  24 18 18 24 42 00 02 06
-            hex 0f 1f 3f 7f ff 00 02 06 ; 12540:  0f 1f 3f 7f ff 00 02 06
-            hex 0f 1f 3f 7f ff 00 00 00 ; 12548:  0f 1f 3f 7f ff 00 00 00
-            hex ff ff ff ff ff 00 00 00 ; 12550:  ff ff ff ff ff 00 00 00
-            hex ff ff ff ff ff 00 00 00 ; 12558:  ff ff ff ff ff 00 00 00
-            hex ff ff ff ff ff 00 00 00 ; 12560:  ff ff ff ff ff 00 00 00
-            hex ff ff ff ff ff          ; 12568:  ff ff ff ff ff
-
-            brk                         ; 1256D:  00
-            hex 40                      ; 1256E:  40
-            rts                         ; 1256F:  60
-
-            hex f0 f8 fc                ; 12570:  f0 f8 fc
-
-            hex fe ff 00 ; inc $00ff,x  ; 12573:  fe ff 00
-            rti                         ; 12576:  40
-
-            hex 60 f0 f8 fc             ; 12577:  60 f0 f8 fc
-
-            hex fe ff 00 ; inc $00ff,x  ; 1257B:  fe ff 00
-            rti                         ; 1257E:  40
-
-            hex 04 10 04 04 04 10 04 04 ; 1257F:  04 10 04 04 04 10 04 04
-
-            jsr DMC_FREQ                ; 12587:  20 10 40
-            rti                         ; 1258A:  40
-
-            bpl tab_b4_a58e+3           ; 1258B:  10 04
-            rti                         ; 1258D:  40
-
-tab_b4_a58e: ; 112 bytes
-            hex 40 08 04 04 04 10 40 04 ; 1258E:  40 08 04 04 04 10 40 04
-            hex 04 04 40 40 04 04 04 04 ; 12596:  04 04 40 40 04 04 04 04
-            hex 04 04 04 04 04 04 04 40 ; 1259E:  04 04 04 04 04 04 04 40
-            hex 04 04 04 40 04 40 40 40 ; 125A6:  04 04 04 40 04 40 40 40
-            hex 04 40 40 40 40 40 40 40 ; 125AE:  04 40 40 40 40 40 40 40
-            hex 04 04 04 40 40 40 04 04 ; 125B6:  04 04 04 40 40 40 04 04
-            hex 04 40 40 40 04 04 40 40 ; 125BE:  04 40 40 40 04 04 40 40
-            hex 40 40 04 04 40 40 04 04 ; 125C6:  40 40 04 04 40 40 04 04
-            hex 04 40 04 40 04 04 40 40 ; 125CE:  04 40 04 40 04 04 40 40
-            hex 10 10 80 80 20 04 08 04 ; 125D6:  10 10 80 80 20 04 08 04
-            hex 04 04 40 10 10 10 10 80 ; 125DE:  04 04 40 10 10 10 10 80
-            hex 80 80 80 04 04 04 80 10 ; 125E6:  80 80 80 04 04 04 80 10
-            hex 80 80 80 80 10 10 04 04 ; 125EE:  80 80 80 80 10 10 04 04
-            hex 40 10 80 80 80 80 80 80 ; 125F6:  40 10 80 80 80 80 80 80
-
-            php                         ; 125FE:  08
-            bpl tab_b4_a602+3           ; 125FF:  10 04
-            rti                         ; 12601:  40
-
-tab_b4_a602: ; 33 bytes
-            hex 10 80 10 10 20 10 04 04 ; 12602:  10 80 10 10 20 10 04 04
-            hex 04 04 40 10 80 10 10 80 ; 1260A:  04 04 40 10 80 10 10 80
-            hex 04 04 80 80 04 40 10 10 ; 12612:  04 04 80 80 04 40 10 10
-            hex 10 80 10 04 04 80 80 04 ; 1261A:  10 80 10 04 04 80 80 04
-            hex 40                      ; 12622:  40
-
-            bpl b4_a634+1               ; 12623:  10 10
-            bpl tab_b4_a58e+25          ; 12625:  10 80
-            bpl tab_b4_a639+16          ; 12627:  10 20
-            bpl tab_b4_a58e+29          ; 12629:  10 80
-            bpl b4_a630+1               ; 1262B:  10 04
-            rti                         ; 1262D:  40
-
-            bpl tab_b4_a58e+34          ; 1262E:  10 80
-b4_a630:    bpl tab_b4_a58e+36          ; 12630:  10 80
-            bpl b4_a638                 ; 12632:  10 04
-b4_a634:    bpl tab_b4_a639+5           ; 12634:  10 08
-            bpl tab_b4_a639+3           ; 12636:  10 04
-b4_a638:    rti                         ; 12638:  40
-
-tab_b4_a639: ; 76 bytes
-            hex 80 10 10 80 04 04 04 02 ; 12639:  80 10 10 80 04 04 04 02
-            hex 04 04 40 80 10 80 80 04 ; 12641:  04 04 40 80 10 80 80 04
-            hex 04 04 04 02 02 04 02 02 ; 12649:  04 04 04 02 02 04 02 02
-            hex 10 10 04 04 04 04 04 02 ; 12651:  10 10 04 04 04 04 04 02
-            hex 02 40 40 40 04 04 04 04 ; 12659:  02 40 40 40 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12661:  04 04 04 04 04 04 04 04
-            hex 04 80 80 04 04 10 04 04 ; 12669:  04 80 80 04 04 10 04 04
-            hex 04 04 40 04 80 80 04 04 ; 12671:  04 04 40 04 80 80 04 04
-            hex 10 10 04 40 40 20 04 08 ; 12679:  10 10 04 40 40 20 04 08
-            hex 80 80 04 04             ; 12681:  80 80 04 04
-
-            bpl tab_b4_a688+3           ; 12685:  10 04
-            rti                         ; 12687:  40
-
-tab_b4_a688: ; 17 bytes
-            hex 04 04 04 80 80 80 04 04 ; 12688:  04 04 04 80 80 80 04 04
-            hex 04 10 10 80 80 02 02 02 ; 12690:  04 10 10 80 80 02 02 02
-            hex 04                      ; 12698:  04
-
-            bpl tab_b4_a69c+15          ; 12699:  10 10
-            rti                         ; 1269B:  40
-
-tab_b4_a69c: ; 25 bytes
-            hex 10 10 80 80 10 04 02 08 ; 1269C:  10 10 80 80 10 04 02 08
-            hex 04 04 40 10 80 80 80 10 ; 126A4:  04 04 40 10 80 80 80 10
-            hex 20 04 04 04 04 40 10 10 ; 126AC:  20 04 04 04 04 40 10 10
-            hex 80                      ; 126B4:  80
-
-            bpl tab_b4_a6c2+5           ; 126B5:  10 10
-            rti                         ; 126B7:  40
-
-            hex 40 40 04 04 40          ; 126B8:  40 40 04 04 40
-
-            bpl tab_b4_a6c2+13          ; 126BD:  10 10
-            bpl tab_b4_a6c2+63          ; 126BF:  10 40
-            rti                         ; 126C1:  40
-
-tab_b4_a6c2: ; 111 bytes
-            hex 40 40 40 40 40 40 40 20 ; 126C2:  40 40 40 40 40 40 40 20
-            hex 02 02 02 04 04 10 04 04 ; 126CA:  02 02 02 04 04 10 04 04
-            hex 04 40 04 04 10 02 10 10 ; 126D2:  04 40 04 04 10 02 10 10
-            hex 04 04 04 04 40 10 80 10 ; 126DA:  04 04 04 04 40 10 80 10
-            hex 10 08 04 10 04 04 04 40 ; 126E2:  10 08 04 10 04 04 04 40
-            hex 04 10 04 04 04 04 10 10 ; 126EA:  04 10 04 04 04 04 10 10
-            hex 10 10 04 04 04 04 04 04 ; 126F2:  10 10 04 04 04 04 04 04
-            hex 10 10 10 10 10 10 10 10 ; 126FA:  10 10 10 10 10 10 10 10
-            hex 10 04 04 04 04 04 04 04 ; 12702:  10 04 04 04 04 04 04 04
-            hex 02 02 10 04 04 04 04 04 ; 1270A:  02 02 10 04 04 04 04 04
-            hex 04 04 40 02 02 02 04 04 ; 12712:  04 04 40 02 02 02 04 04
-            hex 04 04 04 04 04 40 10 10 ; 1271A:  04 04 04 04 04 40 10 10
-            hex 10 04 04 04 04 04 04 20 ; 12722:  10 04 04 04 04 04 04 20
-            hex 40 10 10 10 10 04 04    ; 1272A:  40 10 10 10 10 04 04
-
-            php                         ; 12731:  08
-            rti                         ; 12732:  40
-
-            hex 40 40 40 80 10 10 10 08 ; 12733:  40 40 40 80 10 10 10 08
-            hex 10 20 80 80 10 10 10 10 ; 1273B:  10 20 80 80 10 10 10 10
-            hex 80 80 80 80 80 80 80 10 ; 12743:  80 80 80 80 80 80 80 10
-            hex 10 10 80 10 10 10 10 10 ; 1274B:  10 10 80 10 10 10 10 10
-            hex 80 80 10 10 10 80 80 10 ; 12753:  80 80 10 10 10 80 80 10
-            hex 10 80                   ; 1275B:  10 80
-
-            bpl tab_b4_a6c2+29          ; 1275D:  10 80
-            bpl tab_b4_a76e+3           ; 1275F:  10 10
-            bpl tab_b4_a76e+5           ; 12761:  10 10
-            bpl tab_b4_a76e+7           ; 12763:  10 10
-            bpl tab_b4_a6c2+37          ; 12765:  10 80
-            bpl tab_b4_a76e+11          ; 12767:  10 10
-            bpl tab_b4_a76e+13          ; 12769:  10 10
-            bpl b4_a77d                 ; 1276B:  10 10
-            rti                         ; 1276D:  40
-
-tab_b4_a76e: ; 15 bytes
-            hex 40 40 40 40 40 40 40 40 ; 1276E:  40 40 40 40 40 40 40 40
-            hex 40 40 04 04 04 04 40    ; 12776:  40 40 04 04 04 04 40
-
-b4_a77d:    php                         ; 1277D:  08
-            rti                         ; 1277E:  40
-
-            hex 04 04 04 04 04 80 80 80 ; 1277F:  04 04 04 04 04 80 80 80
-            hex 04 20 04 80 80 80 04 10 ; 12787:  04 20 04 80 80 80 04 10
-            hex 80 80 80 80 80 80 80 80 ; 1278F:  80 80 80 80 80 80 80 80
-            hex 80 10 10 10 10 10 10 10 ; 12797:  80 10 10 10 10 10 10 10
-            hex 10 10 10 10 10 04 04 04 ; 1279F:  10 10 10 10 10 04 04 04
-            hex 04 04 04 04 04 04 20 40 ; 127A7:  04 04 04 04 04 04 20 40
-            hex 04 04 04 04 04 04 04 08 ; 127AF:  04 04 04 04 04 04 04 08
-            hex 04 40 40 04 04 04 04 04 ; 127B7:  04 40 40 04 04 04 04 04
-            hex 04 04 04 40 40 40 04 04 ; 127BF:  04 04 04 40 40 40 04 04
-            hex 04 04 04 04 04 04 04 04 ; 127C7:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 127CF:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 127D7:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 127DF:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 08 04 04 04 ; 127E7:  04 04 04 04 08 04 04 04
-            hex 80 10 10 80 80 80 04 10 ; 127EF:  80 10 10 80 80 80 04 10
-            hex 80 80 80 10 10 10 10 80 ; 127F7:  80 80 80 10 10 10 10 80
-            hex 80 80 20 80 10 10 10 10 ; 127FF:  80 80 20 80 10 10 10 10
-            hex 10 10 10 10 80 80 80    ; 12807:  10 10 10 10 80 80 80
-
-            bpl tab_b4_a813+13          ; 1280E:  10 10
-            bpl tab_b4_a813+15          ; 12810:  10 10
-            rti                         ; 12812:  40
-
-tab_b4_a813: ; 41 bytes
-            hex 40 40 40 40 40 40 04 04 ; 12813:  40 40 40 40 40 40 04 04
-            hex 04 04 40 04 04 04 04 04 ; 1281B:  04 04 40 04 04 04 04 04
-            hex 04 04 04 08 04 40 04 04 ; 12823:  04 04 04 08 04 40 04 04
-            hex 04 04 04 04 04 04 04 04 ; 1282B:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 40 04 40 ; 12833:  04 04 04 04 04 40 04 40
-            hex 04                      ; 1283B:  04
-
-            jsr $0404                   ; 1283C:  20 04 04
-            rti                         ; 1283F:  40
-
-            hex 40 40 40 40 40 40 40 40 ; 12840:  40 40 40 40 40 40 40 40
-            hex 40 10 10 80 80 04 04 04 ; 12848:  40 10 10 80 80 04 04 04
-            hex 04 04 04 04 10 10 10 04 ; 12850:  04 04 04 04 10 10 10 04
-            hex 04 04 04 40 40 40 04    ; 12858:  04 04 04 40 40 40 04
-
-            bpl b4_a865                 ; 1285F:  10 04
-            rti                         ; 12861:  40
-
-            hex 40 04 04                ; 12862:  40 04 04
-
-b4_a865:    php                         ; 12865:  08
-            rti                         ; 12866:  40
-
-            hex 40 40 04                ; 12867:  40 40 04
-
-            bpl tab_b4_a86d+3           ; 1286A:  10 04
-            rti                         ; 1286C:  40
-
-tab_b4_a86d: ; 73 bytes
-            hex 40 40 04 04 40 04 40 04 ; 1286D:  40 40 04 04 40 04 40 04
-            hex 04 40 40 40 40 40 20 40 ; 12875:  04 40 40 40 40 40 20 40
-            hex 04 04 04 04 04 04 10 10 ; 1287D:  04 04 04 04 04 04 10 10
-            hex 10 10 80 80 10 10 04 10 ; 12885:  10 10 80 80 10 10 04 10
-            hex 10 80 10 80 80 10 80 10 ; 1288D:  10 80 10 80 80 10 80 10
-            hex 10 10 10 10 80 10 80 10 ; 12895:  10 10 10 10 80 10 80 10
-            hex 10 10 80 10 10 80 80 10 ; 1289D:  10 10 80 10 10 80 80 10
-            hex 80 10 08 80 80 10 10 10 ; 128A5:  80 10 08 80 80 10 10 10
-            hex 10 10 10 20 10 80 04 04 ; 128AD:  10 10 10 20 10 80 04 04
-            hex 04                      ; 128B5:  04
-
-            bpl tab_b4_a8b9+63          ; 128B6:  10 40
-            rti                         ; 128B8:  40
-
-tab_b4_a8b9: ; 324 bytes
-            hex 40 40 04 04 04 04 40 04 ; 128B9:  40 40 04 04 04 04 40 04
-            hex 40 40 40 40 04 04 04 04 ; 128C1:  40 40 40 40 04 04 04 04
-            hex 08 04 20 40 40 04 04 04 ; 128C9:  08 04 20 40 40 04 04 04
-            hex 04 04 04 04 40 40 40 40 ; 128D1:  04 04 04 04 40 40 40 40
-            hex 04 04 04 04 04 04 04 04 ; 128D9:  04 04 04 04 04 04 04 04
-            hex 04 04 40 04 04 04 04 04 ; 128E1:  04 04 40 04 04 04 04 04
-            hex 04 04 04 04 04 02 02 04 ; 128E9:  04 04 04 04 04 02 02 04
-            hex 04 40 40 40 40 40 04 04 ; 128F1:  04 40 40 40 40 40 04 04
-            hex 02 04 04 40 40 40 40 40 ; 128F9:  02 04 04 40 40 40 40 40
-            hex 40 04 04 04 04 04 04 40 ; 12901:  40 04 04 04 04 04 04 40
-            hex 40 40 04 04 80 10 04 04 ; 12909:  40 40 04 04 80 10 04 04
-            hex 04 04 40 04 04 10 80 08 ; 12911:  04 04 40 04 04 10 80 08
-            hex 10 04 04 04 04 04 80 80 ; 12919:  10 04 04 04 04 04 80 80
-            hex 20 10 10 10 04 10 10 10 ; 12921:  20 10 10 10 04 10 10 10
-            hex 80 04 04 04 10 10 10 04 ; 12929:  80 04 04 04 10 10 10 04
-            hex 10 10 80 08 04 04 80 80 ; 12931:  10 10 80 08 04 04 80 80
-            hex 10 10 04 10 10 80 04 80 ; 12939:  10 10 04 10 10 80 04 80
-            hex 80 10 10 04 04 10 80 80 ; 12941:  80 10 10 04 04 10 80 80
-            hex 10 20 10 10 80 10 04 04 ; 12949:  10 20 10 10 80 10 04 04
-            hex 10 10 10 10 80 80 80 10 ; 12951:  10 10 10 10 80 80 80 10
-            hex 10 04 04 80 80 80 80 80 ; 12959:  10 04 04 80 80 80 80 80
-            hex 10 10 10 80 10 10 80 80 ; 12961:  10 10 10 80 10 10 80 80
-            hex 10 10 10 80 80 08 80 10 ; 12969:  10 10 10 80 80 08 80 10
-            hex 10 80 10 10 80 80 20 10 ; 12971:  10 80 10 10 80 80 20 10
-            hex 80 80 10 10 10 10 10 10 ; 12979:  80 80 10 10 10 10 10 10
-            hex 80 80 80 10 10 10 10 10 ; 12981:  80 80 80 10 10 10 10 10
-            hex 10 10 10 10 10 10 80 80 ; 12989:  10 10 10 10 10 10 80 80
-            hex 80 80 02 02 04 04 04 10 ; 12991:  80 80 02 02 04 04 04 10
-            hex 10 10 80 10 04 02 04 04 ; 12999:  10 10 80 10 04 02 04 04
-            hex 04 04 10 80 80 10 04 04 ; 129A1:  04 04 10 80 80 10 04 04
-            hex 04 04 04 08 04 80 80 04 ; 129A9:  04 04 04 08 04 80 80 04
-            hex 04 04 04 04 40 40 04 80 ; 129B1:  04 04 04 04 40 40 04 80
-            hex 20 04 40 04 04 04 40 40 ; 129B9:  20 04 40 04 04 04 40 40
-            hex 40 40 04 04 40 40 40 40 ; 129C1:  40 40 04 04 40 40 40 40
-            hex 40 40 40 40 40 40 40 40 ; 129C9:  40 40 40 40 40 40 40 40
-            hex 04 04 04 04 04 40 40 40 ; 129D1:  04 04 04 04 04 40 40 40
-            hex 40 04 04 04 04 04 04 04 ; 129D9:  40 04 04 04 04 04 04 04
-            hex 04 40 04 20 04 04 04 04 ; 129E1:  04 40 04 20 04 04 04 04
-            hex 04 04 04 04 04 08 04 04 ; 129E9:  04 04 04 04 04 08 04 04
-            hex 04 04 04 10 10 04 04 04 ; 129F1:  04 04 04 10 10 04 04 04
-            hex 04 04 04 04             ; 129F9:  04 04 04 04
-
-            bpl tab_b4_aa02+13          ; 129FD:  10 10
-            bpl tab_b4_aa02+15          ; 129FF:  10 10
-            rti                         ; 12A01:  40
-
-tab_b4_aa02: ; 241 bytes
-            hex 40 40 04 20 04 04 04 04 ; 12A02:  40 40 04 20 04 04 04 04
-            hex 04 04 40 04 04 04 04 08 ; 12A0A:  04 04 40 04 04 04 04 08
-            hex 04 04 04 04 04 40 04 04 ; 12A12:  04 04 04 04 04 40 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12A1A:  04 04 04 04 04 04 04 04
-            hex 40 04 04 04 04 04 04 04 ; 12A22:  40 04 04 04 04 04 04 04
-            hex 04 04 04 04 10 10 10 04 ; 12A2A:  04 04 04 04 10 10 10 04
-            hex 04 04 04 04 10 10 04 04 ; 12A32:  04 04 04 04 10 10 04 04
-            hex 04 10 10 10 10 10 80 10 ; 12A3A:  04 10 10 10 10 10 80 10
-            hex 10 10 10 80 80 10 10 20 ; 12A42:  10 10 10 80 80 10 10 20
-            hex 80 80 10 10 10 10 10 10 ; 12A4A:  80 80 10 10 10 10 10 10
-            hex 80 80 80 04 80 80 10 10 ; 12A52:  80 80 80 04 80 80 10 10
-            hex 10 10 80 80 04 08 04 04 ; 12A5A:  10 10 80 80 04 08 04 04
-            hex 04 10 10 10 10 04 04 04 ; 12A62:  04 10 10 10 10 04 04 04
-            hex 04 04 04 04 10 04 04 04 ; 12A6A:  04 04 04 04 10 04 04 04
-            hex 04 04 04 04 04 80 80 80 ; 12A72:  04 04 04 04 04 80 80 80
-            hex 04 04 04 04 04 04 04 04 ; 12A7A:  04 04 04 04 04 04 04 04
-            hex 04 04 10 04 04 04 40 04 ; 12A82:  04 04 10 04 04 04 40 04
-            hex 04 04 04 04 04 04 40 40 ; 12A8A:  04 04 04 04 04 04 40 40
-            hex 40 04 40 40 40 40 40 04 ; 12A92:  40 04 40 40 40 40 40 04
-            hex 40 20 04 04 08 04 04 04 ; 12A9A:  40 20 04 04 08 04 04 04
-            hex 04 04 40 40 04 04 04 04 ; 12AA2:  04 04 40 40 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12AAA:  04 04 04 04 04 04 04 04
-            hex 04 04 40 40 40 04 04 04 ; 12AB2:  04 04 40 40 40 04 04 04
-            hex 04 04 04 04 04 40 40 40 ; 12ABA:  04 04 04 04 04 40 40 40
-            hex 40 04 04 04 04 04 40 40 ; 12AC2:  40 04 04 04 04 04 40 40
-            hex 40 40 20 40 04 04 04 04 ; 12ACA:  40 40 20 40 04 04 04 04
-            hex 40 40 40 40 40 04 04 08 ; 12AD2:  40 40 40 40 40 04 04 08
-            hex 04 04 04 02 02 02 02 02 ; 12ADA:  04 04 04 02 02 02 02 02
-            hex 80 80 04 04 04 40 02 02 ; 12AE2:  80 80 04 04 04 40 02 02
-            hex 02 04 80 04 04 04 04 40 ; 12AEA:  02 04 80 04 04 04 04 40
-            hex 40                      ; 12AF2:  40
-
-            bpl tab_b4_aafc+9           ; 12AF3:  10 10
-            bpl tab_b4_aafc+11          ; 12AF5:  10 10
-            jsr $0404                   ; 12AF7:  20 04 04
-            php                         ; 12AFA:  08
-            rti                         ; 12AFB:  40
-
-tab_b4_aafc: ; 36 bytes
-            hex 40 40 10 10 10 80 80 04 ; 12AFC:  40 40 10 10 10 80 80 04
-            hex 04 04 04 04 40 10 10 10 ; 12B04:  04 04 04 04 40 10 10 10
-            hex 04 04 04 04 04 04 04 04 ; 12B0C:  04 04 04 04 04 04 04 04
-            hex 04 04 04 10 10 10 10 10 ; 12B14:  04 04 04 10 10 10 10 10
-            hex 04 04 04 04             ; 12B1C:  04 04 04 04
-
-            bpl tab_b4_ab2e+4           ; 12B20:  10 10
-            rti                         ; 12B22:  40
-
-            hex 40 40 40 40 10 04 04 04 ; 12B23:  40 40 40 40 10 04 04 04
-
-            bpl tab_b4_ab2e+63          ; 12B2B:  10 40
-            rti                         ; 12B2D:  40
-
-tab_b4_ab2e: ; 538 bytes
-            hex 40 40 40 10 10 04 04 04 ; 12B2E:  40 40 40 10 10 04 04 04
-            hex 40 40 40 40 10 10 80 80 ; 12B36:  40 40 40 40 10 10 80 80
-            hex 80 80 04 10 10 80 20 04 ; 12B3E:  80 80 04 10 10 80 20 04
-            hex 08 80 80 80 80 04 04 04 ; 12B46:  08 80 80 80 80 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12B4E:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12B56:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 20 ; 12B5E:  04 04 04 04 04 04 04 20
-            hex 08 04 04 04 04 04 04 04 ; 12B66:  08 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12B6E:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12B76:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 40 40 40 40 ; 12B7E:  04 04 04 04 40 40 40 40
-            hex 40 40 40 40 40 40 40 04 ; 12B86:  40 40 40 40 40 40 40 04
-            hex 04 04 04 04 04 04 04 20 ; 12B8E:  04 04 04 04 04 04 04 20
-            hex 40 40 80 80 80 04 04 04 ; 12B96:  40 40 80 80 80 04 04 04
-            hex 04 04 04 04 40 10 10 80 ; 12B9E:  04 04 04 04 40 10 10 80
-            hex 80 80 80 08 04 04 04 04 ; 12BA6:  80 80 80 08 04 04 04 04
-            hex 10 10 10 10 10 10 04 04 ; 12BAE:  10 10 10 10 10 10 04 04
-            hex 04 04 04 10 10 80 10 80 ; 12BB6:  04 04 04 10 10 80 10 80
-            hex 80 04 04 04 04 04 10 80 ; 12BBE:  80 04 04 04 04 04 10 80
-            hex 20 80 10 10 04 04 04 04 ; 12BC6:  20 80 10 10 04 04 04 04
-            hex 04 10 10 10 10 80 10 10 ; 12BCE:  04 10 10 10 10 80 10 10
-            hex 04 04 04 04 04 04 04 04 ; 12BD6:  04 04 04 04 04 04 04 04
-            hex 08 04 10 04 04 04 04 04 ; 12BDE:  08 04 10 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12BE6:  04 04 04 04 04 04 04 04
-            hex 04 04 04 80 80 80 80 80 ; 12BEE:  04 04 04 80 80 80 80 80
-            hex 80 80 80 80 80 04 10 04 ; 12BF6:  80 80 80 80 80 04 10 04
-            hex 04 04 04 80 80 80 10 80 ; 12BFE:  04 04 04 80 80 80 10 80
-            hex 04 10 80 80 20 80 80 04 ; 12C06:  04 10 80 80 20 80 80 04
-            hex 04 04 04 04 04 04 04 08 ; 12C0E:  04 04 04 04 04 04 04 08
-            hex 04 04 04 04 04 04 04 04 ; 12C16:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12C1E:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12C26:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 10 04 80 ; 12C2E:  04 04 04 04 04 10 04 80
-            hex 04 80 04 80 04 80 04 10 ; 12C36:  04 80 04 80 04 80 04 10
-            hex 80 80 10 10 80 80 80 80 ; 12C3E:  80 80 10 10 80 80 80 80
-            hex 80 10 10 10 20 08 80 10 ; 12C46:  80 10 10 10 20 08 80 10
-            hex 80 10 80 10 10 80 80 80 ; 12C4E:  80 10 80 10 10 80 80 80
-            hex 10 10 10 10 10 10 10 10 ; 12C56:  10 10 10 10 10 10 10 10
-            hex 04 04 04 04 04 04 04 04 ; 12C5E:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 40 40 40 40 ; 12C66:  04 04 04 04 40 40 40 40
-            hex 40 40 08 04 04 04 40 40 ; 12C6E:  40 40 08 04 04 04 40 40
-            hex 40 40 40 40 40 20 04 04 ; 12C76:  40 40 40 40 40 20 04 04
-            hex 04 40 04 40 40 40 40 40 ; 12C7E:  04 40 04 40 40 40 40 40
-            hex 04 04 04 04 04 04 04 04 ; 12C86:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 40 ; 12C8E:  04 04 04 04 04 04 04 40
-            hex 40 40 10 10 02 02 02 02 ; 12C96:  40 40 10 10 02 02 02 02
-            hex 04 04 40 04 10 10 02 02 ; 12C9E:  04 04 40 04 10 10 02 02
-            hex 02 02 04 04 04 40 04 10 ; 12CA6:  02 02 04 04 04 40 04 10
-            hex 10 02 02 02 80 04 04 04 ; 12CAE:  10 02 02 02 80 04 04 04
-            hex 40 04 10 10 20 80 80 04 ; 12CB6:  40 04 10 10 20 80 80 04
-            hex 04 40 40 40 40 04 04 08 ; 12CBE:  04 40 40 40 40 04 04 08
-            hex 04 04 40 40 40 40 02 02 ; 12CC6:  04 04 40 40 40 40 02 02
-            hex 02 02 02 02 40 40 40 40 ; 12CCE:  02 02 02 02 40 40 40 40
-            hex 40 02 10 10 10 02 02 04 ; 12CD6:  40 02 10 10 10 02 02 04
-            hex 04 04 04 04 10 80 80 10 ; 12CDE:  04 04 04 04 10 80 80 10
-            hex 02 20 10 08 04 80 04 10 ; 12CE6:  02 20 10 08 04 80 04 10
-            hex 10 10 80 10 80 10 80 10 ; 12CEE:  10 10 80 10 80 10 80 10
-            hex 80 10 10 10 10 10 80 80 ; 12CF6:  80 10 10 10 10 10 80 80
-            hex 80 10 10 80 80 10 10 10 ; 12CFE:  80 10 10 80 80 10 10 10
-            hex 10 80 10 04 04 04 04 04 ; 12D06:  10 80 10 04 04 04 04 04
-            hex 10 04 04 04 10 80 08 04 ; 12D0E:  10 04 04 04 10 80 08 04
-            hex 04 04 04 04 04 40 40 20 ; 12D16:  04 04 04 04 04 40 40 20
-            hex 04 04 04 04 04 04 04 40 ; 12D1E:  04 04 04 04 04 04 04 40
-            hex 40 40 40 40 40 40 04 04 ; 12D26:  40 40 40 40 40 40 04 04
-            hex 04 40 40 40 40 40 40 40 ; 12D2E:  04 40 40 40 40 40 40 40
-            hex 40 04 04 04 04 04 04 04 ; 12D36:  40 04 04 04 04 04 04 04
-            hex 04 40 40 40 40 40 40 04 ; 12D3E:  04 40 40 40 40 40 40 04
-            hex 04 04                   ; 12D46:  04 04
-
-            php                         ; 12D48:  08
-            rti                         ; 12D49:  40
-
-            hex 40 40 04 04 04 04 04 04 ; 12D4A:  40 40 04 04 04 04 04 04
-            hex 04 80 20 04 04 04 04 10 ; 12D52:  04 80 20 04 04 04 04 10
-            hex 04 04 80 80 80 10 04 04 ; 12D5A:  04 04 80 80 80 10 04 04
-            hex 04 04 80 10 10 10 10 10 ; 12D62:  04 04 80 10 10 10 10 10
-            hex 04 04 04 04 80 80 10 10 ; 12D6A:  04 04 04 04 80 80 10 10
-            hex 10 10 80 80 80 80 02 02 ; 12D72:  10 10 80 80 80 80 02 02
-            hex 02 02 10 10 80 80 80 04 ; 12D7A:  02 02 10 10 80 80 80 04
-            hex 20 02 02 10 10 10 80 80 ; 12D82:  20 02 02 10 10 10 80 80
-            hex 80 04 80 04 04 10 10 10 ; 12D8A:  80 04 80 04 04 10 10 10
-            hex 04 04 10 04 04 04 08 10 ; 12D92:  04 04 10 04 04 04 08 10
-            hex 04 04 04 40 40 40 40 40 ; 12D9A:  04 04 04 40 40 40 40 40
-            hex 40 40 40 40 40 40 40 40 ; 12DA2:  40 40 40 40 40 40 40 40
-            hex 40 40 40 40 04 04 04 04 ; 12DAA:  40 40 40 40 04 04 04 04
-            hex 04 04 04 04 04 20 80 04 ; 12DB2:  04 04 04 04 04 20 80 04
-            hex 04 04 80 10 04 04 04 80 ; 12DBA:  04 04 80 10 04 04 04 80
-            hex 80 80 04 40 10 10 10 04 ; 12DC2:  80 80 04 40 10 10 10 04
-            hex 04 04 08 80 04 04 40 40 ; 12DCA:  04 04 08 80 04 04 40 40
-            hex 04 04 04 40 40 40 04 04 ; 12DD2:  04 04 04 40 40 40 04 04
-            hex 40 40 40 04 04 40 40 40 ; 12DDA:  40 40 40 04 04 40 40 40
-            hex 40 40 40 40 40 40 40 40 ; 12DE2:  40 40 40 40 40 40 40 40
-            hex 04 04 04 04 04 04 40 04 ; 12DEA:  04 04 04 04 04 04 40 04
-            hex 40 04 40 04 04 04 04 04 ; 12DF2:  40 04 40 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 04 ; 12DFA:  04 04 04 04 04 04 04 04
-            hex 04 04 04 04 04 04 04 08 ; 12E02:  04 04 04 04 04 04 04 08
-            hex 04 04 04 04 04 04 04 04 ; 12E0A:  04 04 04 04 04 04 04 04
-            hex 20 04 04 04 04 04 04 10 ; 12E12:  20 04 04 04 04 04 04 10
-            hex 10 10 10 10 04 04 40 04 ; 12E1A:  10 10 10 10 04 04 40 04
-            hex 10 10 80 80 10 10 80 04 ; 12E22:  10 10 80 80 10 10 80 04
-            hex 04 40 10 10 80 20 10 80 ; 12E2A:  04 40 10 10 80 20 10 80
-            hex 80 04 04 04 40 10 02 02 ; 12E32:  80 04 04 04 40 10 02 02
-            hex 10 08 04 04 04 04 40 40 ; 12E3A:  10 08 04 04 04 04 40 40
-            hex 02 02 02 02 04 04 04 40 ; 12E42:  02 02 02 02 04 04 04 40
-            hex 40 40 40 40 40 40 40 40 ; 12E4A:  40 40 40 40 40 40 40 40
-            hex 04 04 40 40 40 40 04 04 ; 12E52:  04 04 40 40 40 40 04 04
-            hex 04 04 04 04 04 40 40 40 ; 12E5A:  04 04 04 04 04 40 40 40
-            hex 40 40 40 40 04 80 80 04 ; 12E62:  40 40 40 40 04 80 80 04
-            hex 04 04 04 04 40 04 04 04 ; 12E6A:  04 04 04 04 40 04 04 04
-            hex 80 20 10 10 10 10 04 40 ; 12E72:  80 20 10 10 10 10 04 40
-            hex 04 04 04 08 10 80 80 10 ; 12E7A:  04 04 04 08 10 80 80 10
-            hex 10 10 02 02 02 10 10 10 ; 12E82:  10 10 02 02 02 10 10 10
-            hex 10 10 02 02 02 02 10 10 ; 12E8A:  10 10 02 02 02 02 10 10
-            hex 80 10 80 10 10 10 10 02 ; 12E92:  80 10 80 10 10 10 10 02
-            hex 10 80 80 80 20 80 80 80 ; 12E9A:  10 80 80 80 20 80 80 80
-            hex 10 10 02 10 10 80 80 10 ; 12EA2:  10 10 02 10 10 80 80 10
-            hex 80 80 10 10 10 10 04 04 ; 12EAA:  80 80 10 10 10 10 04 04
-            hex 04 04 08 04 04 04 04 04 ; 12EB2:  04 04 08 04 04 04 04 04
-            hex 04 02 02 04 02 02 04 04 ; 12EBA:  04 02 02 04 02 02 04 04
-            hex 04 10 10 10 02 02 04 04 ; 12EC2:  04 10 10 10 02 02 04 04
-            hex 02 04 04 04 04 04 10 40 ; 12ECA:  02 04 04 04 04 04 10 40
-            hex 04 04 04 20 08 04 04 04 ; 12ED2:  04 04 04 20 08 04 04 04
-            hex 04 40 40 04 04 04 04 40 ; 12EDA:  04 40 40 04 04 04 04 40
-            hex 40 40 04 40 40 40 04 04 ; 12EE2:  40 40 04 40 40 40 04 04
-            hex 04 40 40 40 40 40 40 40 ; 12EEA:  04 40 40 40 40 40 40 40
-            hex 02 02 02 04 04 04 40 40 ; 12EF2:  02 02 02 04 04 04 40 40
-            hex 40 40 40 02 04 04 04 04 ; 12EFA:  40 40 40 02 04 04 04 04
-            hex 04 40 40 40 40 40 04 04 ; 12F02:  04 40 40 40 40 40 04 04
-            hex 04 04 04 04 20 04 40 04 ; 12F0A:  04 04 04 04 20 04 40 04
-            hex 04 02 02 04 04 04 08 04 ; 12F12:  04 02 02 04 04 04 08 04
-            hex 04 04 04 04 02 02 02 02 ; 12F1A:  04 04 04 04 02 02 02 02
-            hex 04 04 04 04 04 04 04 04 ; 12F22:  04 04 04 04 04 04 04 04
-            hex 04 04 40 40 04 04 04 40 ; 12F2A:  04 04 40 40 04 04 04 40
-            hex 40 40 40 40 04 04 04 80 ; 12F32:  40 40 40 40 04 04 04 80
-            hex 80 80 04 04 04 20 04 40 ; 12F3A:  80 80 04 04 04 20 04 40
-            hex 04 04 04 04 04 80 40 04 ; 12F42:  04 04 04 04 04 80 40 04
-            hex 04 40 08 04 04 40 40 04 ; 12F4A:  04 40 08 04 04 40 40 04
-            hex 40 40 04 40 04 04 04 40 ; 12F52:  40 40 04 40 04 04 04 40
-            hex 40 40 04 40 40 04 04 04 ; 12F5A:  40 40 04 40 40 04 04 04
-            hex 04 04 04 04 40 40 40 40 ; 12F62:  04 04 04 04 40 40 40 40
-            hex 40 04 04 04 80 04 04 04 ; 12F6A:  40 04 04 04 80 04 04 04
-            hex 04 40 40 40 04 04 02 80 ; 12F72:  04 40 40 40 04 04 02 80
-            hex 04 08 04 04 04 04 40 04 ; 12F7A:  04 08 04 04 04 04 40 04
-            hex 02 02 10 80 80 04 04 04 ; 12F82:  02 02 10 80 80 04 04 04
-            hex 40 04 02 02 02 20 10 10 ; 12F8A:  40 04 02 02 02 20 10 10
-            hex 04 04 04 04 40 40 40 40 ; 12F92:  04 04 04 04 40 40 40 40
-            hex 40 40 04 80 80          ; 12F9A:  40 40 04 80 80
-
-            bpl tab_b4_afa4+13          ; 12F9F:  10 10
-            bpl tab_b4_afa4+63          ; 12FA1:  10 40
-            rti                         ; 12FA3:  40
-
-tab_b4_afa4: ; 105 bytes
-            hex 40 20 40 04 04 04 80 80 ; 12FA4:  40 20 40 04 04 04 80 80
-            hex 10 04 04 40 08 04 04 80 ; 12FAC:  10 04 04 40 08 04 04 80
-            hex 80 04 10 10 04 04 04 04 ; 12FB4:  80 04 10 10 04 04 04 04
-            hex 04 80 80 10 10 10 10 04 ; 12FBC:  04 80 80 10 10 10 10 04
-            hex 04 04 04 04 10 10 10 10 ; 12FC4:  04 04 04 04 10 10 10 10
-            hex 10 10 04 04 04 10 10 20 ; 12FCC:  10 10 04 04 04 10 10 20
-            hex 80 80 10 10 10 10 80 10 ; 12FD4:  80 80 10 10 10 10 80 10
-            hex 10 08 80 80 80 10 04 04 ; 12FDC:  10 08 80 80 80 10 04 04
-            hex 10 80 10 80 80 80 80 04 ; 12FE4:  10 80 10 80 80 80 80 04
-            hex 04 40 04 10 10 80 80 80 ; 12FEC:  04 40 04 10 10 80 80 80
-            hex 04 04 40 40 40 04 10 10 ; 12FF4:  04 04 40 40 40 04 10 10
-            hex 10 04 04 04 40 40 40 40 ; 12FFC:  10 04 04 04 40 40 40 40
-            hex 40 40 40 04 04 04 04 04 ; 13004:  40 40 40 04 04 04 04 04
-            hex 04                      ; 1300C:  04
-
-            bpl tab_b4_b012+13          ; 1300D:  10 10
-            bpl tab_b4_b03c+21          ; 1300F:  10 40
-            rti                         ; 13011:  40
-
-tab_b4_b012: ; 26 bytes
-            hex 04 04 04 04 04 40 04 04 ; 13012:  04 04 04 04 04 40 04 04
-            hex 10 40 04 04 04 04 40 40 ; 1301A:  10 40 04 04 04 04 40 40
-            hex 40 80 80 04 40 04 04 04 ; 13022:  40 80 80 04 40 04 04 04
-            hex 04 40                   ; 1302A:  04 40
-
-            jsr TRI_LINEAR              ; 1302C:  20 08 40
-            bpl tab_b4_b032+3           ; 1302F:  10 04
-            rti                         ; 13031:  40
-
-tab_b4_b032: ; 7 bytes
-            hex 40 04 04 04 40 04 04    ; 13032:  40 04 04 04 40 04 04
-
-            bpl tab_b4_b03c+63          ; 13039:  10 40
-            rti                         ; 1303B:  40
-
-tab_b4_b03c: ; 4036 bytes
-            hex ff ff ff ff ff ff ff ff ; 1303C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13044:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1304C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13054:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1305C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13064:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1306C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13074:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1307C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13084:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1308C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13094:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1309C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 130FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13104:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1310C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13114:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1311C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13124:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1312C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13134:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1313C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13144:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1314C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13154:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1315C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13164:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1316C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13174:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1317C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13184:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1318C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13194:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1319C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 131FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13204:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1320C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13214:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1321C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13224:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1322C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13234:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1323C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13244:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1324C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13254:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1325C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13264:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1326C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13274:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1327C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13284:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1328C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13294:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1329C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 132FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13304:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1330C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13314:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1331C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13324:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1332C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13334:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1333C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13344:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1334C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13354:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1335C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13364:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1336C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13374:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1337C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13384:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1338C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13394:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1339C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 133FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13404:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1340C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13414:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1341C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13424:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1342C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13434:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1343C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13444:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1344C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13454:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1345C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13464:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1346C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13474:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1347C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13484:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1348C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13494:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1349C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 134FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13504:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1350C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13514:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1351C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13524:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1352C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13534:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1353C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13544:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1354C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13554:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1355C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13564:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1356C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13574:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1357C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13584:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1358C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13594:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1359C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 135FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13604:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1360C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13614:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1361C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13624:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1362C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13634:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1363C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13644:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1364C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13654:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1365C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13664:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1366C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13674:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1367C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13684:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1368C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13694:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1369C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 136FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13704:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1370C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13714:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1371C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13724:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1372C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13734:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1373C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13744:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1374C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13754:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1375C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13764:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1376C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13774:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1377C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13784:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1378C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13794:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1379C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 137FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13804:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1380C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13814:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1381C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13824:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1382C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13834:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1383C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13844:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1384C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13854:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1385C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13864:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1386C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13874:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1387C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13884:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1388C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13894:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1389C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 138FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13904:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1390C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13914:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1391C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13924:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1392C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13934:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1393C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13944:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1394C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13954:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1395C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13964:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1396C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13974:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1397C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13984:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1398C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13994:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1399C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139A4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139AC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139B4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139BC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139C4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139CC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139D4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139DC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139E4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139EC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139F4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 139FC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A04:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A0C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A14:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A1C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A24:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A2C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A34:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A3C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A44:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A4C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A54:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A5C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A64:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A6C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A74:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A7C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A84:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A8C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A94:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13A9C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AA4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AAC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AB4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13ABC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AC4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13ACC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AD4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13ADC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AE4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AEC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AF4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13AFC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B04:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B0C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B14:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B1C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B24:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B2C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B34:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B3C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B44:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B4C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B54:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B5C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B64:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B6C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B74:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B7C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B84:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B8C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B94:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13B9C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BA4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BAC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BB4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BBC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BC4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BCC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BD4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BDC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BE4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BEC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BF4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13BFC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C04:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C0C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C14:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C1C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C24:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C2C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C34:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C3C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C44:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C4C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C54:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C5C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C64:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C6C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C74:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C7C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C84:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C8C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C94:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13C9C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CA4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CAC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CB4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CBC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CC4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CCC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CD4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CDC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CE4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CEC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CF4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13CFC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D04:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D0C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D14:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D1C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D24:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D2C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D34:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D3C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D44:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D4C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D54:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D5C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D64:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D6C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D74:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D7C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D84:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D8C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D94:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13D9C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DA4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DAC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DB4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DBC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DC4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DCC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DD4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DDC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DE4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DEC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DF4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13DFC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E04:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E0C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E14:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E1C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E24:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E2C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E34:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E3C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E44:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E4C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E54:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E5C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E64:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E6C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E74:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E7C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E84:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E8C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E94:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13E9C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EA4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EAC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EB4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EBC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EC4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13ECC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13ED4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EDC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EE4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EEC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EF4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13EFC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F04:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F0C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F14:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F1C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F24:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F2C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F34:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F3C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F44:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F4C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F54:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F5C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F64:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F6C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F74:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F7C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F84:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F8C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F94:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13F9C:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FA4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FAC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FB4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FBC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FC4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FCC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FD4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FDC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FE4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FEC:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 13FF4:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff             ; 13FFC:  ff ff ff ff
-
+b04_8000:   jmp $0000                   ; 10000:  4c 00 00
+b04_8003:   brk                         ; 10003:  00
+b04_8004:   ora ($ff,x)                 ; 10004:  01 ff
+b04_8006:   brk                         ; 10006:  00
+b04_8007:   brk                         ; 10007:  00
+b04_8008:   brk                         ; 10008:  00
+b04_8009:   brk                         ; 10009:  00
+b04_800a:   brk                         ; 1000A:  00
+b04_800b:   brk                         ; 1000B:  00
+b04_800c:   brk                         ; 1000C:  00
+b04_800d:   .db $02                     ; 1000D:  02
+b04_800e:   .db $04                     ; 1000E:  04
+b04_800f:   .db $ff                     ; 1000F:  ff
+b04_8010:   brk                         ; 10010:  00
+b04_8011:   brk                         ; 10011:  00
+b04_8012:   brk                         ; 10012:  00
+b04_8013:   brk                         ; 10013:  00
+b04_8014:   ora ($03,x)                 ; 10014:  01 03
+b04_8016:   .db $04                     ; 10016:  04
+b04_8017:   .db $ff                     ; 10017:  ff
+b04_8018:   brk                         ; 10018:  00
+b04_8019:   brk                         ; 10019:  00
+b04_801a:   brk                         ; 1001A:  00
+b04_801b:   brk                         ; 1001B:  00
+b04_801c:   .db $02                     ; 1001C:  02
+b04_801d:   .db $04                     ; 1001D:  04
+b04_801e:   ora $ff                     ; 1001E:  05 ff
+b04_8020:   brk                         ; 10020:  00
+b04_8021:   brk                         ; 10021:  00
+b04_8022:   brk                         ; 10022:  00
+b04_8023:   brk                         ; 10023:  00
+b04_8024:   ora ($02,x)                 ; 10024:  01 02
+b04_8026:   .db $03                     ; 10026:  03
+b04_8027:   ora $06                     ; 10027:  05 06
+b04_8029:   .db $ff                     ; 10029:  ff
+b04_802a:   brk                         ; 1002A:  00
+b04_802b:   brk                         ; 1002B:  00
+b04_802c:   .db $03                     ; 1002C:  03
+b04_802d:   .db $04                     ; 1002D:  04
+b04_802e:   asl $07                     ; 1002E:  06 07
+b04_8030:   .db $ff                     ; 10030:  ff
+b04_8031:   brk                         ; 10031:  00
+b04_8032:   brk                         ; 10032:  00
+b04_8033:   brk                         ; 10033:  00
+b04_8034:   .db $04                     ; 10034:  04
+b04_8035:   ora $07                     ; 10035:  05 07
+b04_8037:   php                         ; 10037:  08
+b04_8038:   ora #$ff                    ; 10038:  09 ff
+b04_803a:   brk                         ; 1003A:  00
+b04_803b:   brk                         ; 1003B:  00
+b04_803c:   ora $06                     ; 1003C:  05 06
+b04_803e:   php                         ; 1003E:  08
+b04_803f:   asl a                       ; 1003F:  0a
+b04_8040:   .db $0b                     ; 10040:  0b
+b04_8041:   .db $ff                     ; 10041:  ff
+b04_8042:   brk                         ; 10042:  00
+b04_8043:   brk                         ; 10043:  00
+b04_8044:   asl $07                     ; 10044:  06 07
+b04_8046:   ora #$0b                    ; 10046:  09 0b
+b04_8048:   .db $ff                     ; 10048:  ff
+b04_8049:   brk                         ; 10049:  00
+b04_804a:   brk                         ; 1004A:  00
+b04_804b:   brk                         ; 1004B:  00
+b04_804c:   asl $08                     ; 1004C:  06 08
+b04_804e:   .db $0b                     ; 1004E:  0b
+b04_804f:   ora $100e                   ; 1004F:  0d 0e 10
+b04_8052:   .db $ff                     ; 10052:  ff
+b04_8053:   brk                         ; 10053:  00
+b04_8054:   .db $07                     ; 10054:  07
+b04_8055:   .db $0b                     ; 10055:  0b
+b04_8056:   ora $00ff                   ; 10056:  0d ff 00
+b04_8059:   brk                         ; 10059:  00
+b04_805a:   brk                         ; 1005A:  00
+b04_805b:   brk                         ; 1005B:  00
+b04_805c:   .db $07                     ; 1005C:  07
+b04_805d:   php                         ; 1005D:  08
+b04_805e:   ora #$0a                    ; 1005E:  09 0a
+b04_8060:   ora $00ff                   ; 10060:  0d ff 00
+b04_8063:   brk                         ; 10063:  00
+b04_8064:   ora $00ff                   ; 10064:  0d ff 00
+b04_8067:   brk                         ; 10067:  00
+b04_8068:   brk                         ; 10068:  00
+b04_8069:   brk                         ; 10069:  00
+b04_806a:   brk                         ; 1006A:  00
+b04_806b:   brk                         ; 1006B:  00
+b04_806c:   ora #$0a                    ; 1006C:  09 0a
+b04_806e:   .db $0b                     ; 1006E:  0b
+b04_806f:   .db $0c                     ; 1006F:  0c
+b04_8070:   asl $ff13                   ; 10070:  0e 13 ff
+b04_8073:   brk                         ; 10073:  00
+b04_8074:   ora #$0d                    ; 10074:  09 0d
+b04_8076:   bpl $8089                   ; 10076:  10 11
+b04_8078:   .db $12                     ; 10078:  12
+b04_8079:   .db $13                     ; 10079:  13
+b04_807a:   .db $ff                     ; 1007A:  ff
+b04_807b:   brk                         ; 1007B:  00
+b04_807c:   bpl $8092                   ; 1007C:  10 14
+b04_807e:   .db $ff                     ; 1007E:  ff
+b04_807f:   brk                         ; 1007F:  00
+b04_8080:   brk                         ; 10080:  00
+b04_8081:   brk                         ; 10081:  00
+b04_8082:   brk                         ; 10082:  00
+b04_8083:   brk                         ; 10083:  00
+b04_8084:   ora #$0e                    ; 10084:  09 0e
+b04_8086:   .db $0f                     ; 10086:  0f
+b04_8087:   ora ($14),y                 ; 10087:  11 14
+b04_8089:   .db $ff                     ; 10089:  ff
+b04_808a:   brk                         ; 1008A:  00
+b04_808b:   brk                         ; 1008B:  00
+b04_808c:   asl $1210                   ; 1008C:  0e 10 12
+b04_808f:   .db $14                     ; 1008F:  14
+b04_8090:   ora $16,x                   ; 10090:  15 16
+b04_8092:   .db $ff                     ; 10092:  ff
+b04_8093:   brk                         ; 10093:  00
+b04_8094:   asl $1311                   ; 10094:  0e 11 13
+b04_8097:   asl $17,x                   ; 10097:  16 17
+b04_8099:   .db $ff                     ; 10099:  ff
+b04_809a:   brk                         ; 1009A:  00
+b04_809b:   brk                         ; 1009B:  00
+b04_809c:   ora $120e                   ; 1009C:  0d 0e 12
+b04_809f:   .db $17                     ; 1009F:  17
+b04_80a0:   .db $ff                     ; 100A0:  ff
+b04_80a1:   brk                         ; 100A1:  00
+b04_80a2:   brk                         ; 100A2:  00
+b04_80a3:   brk                         ; 100A3:  00
+b04_80a4:   .db $0f                     ; 100A4:  0f
+b04_80a5:   bpl $80b8                   ; 100A5:  10 11
+b04_80a7:   ora $ff,x                   ; 100A7:  15 ff
+b04_80a9:   brk                         ; 100A9:  00
+b04_80aa:   brk                         ; 100AA:  00
+b04_80ab:   brk                         ; 100AB:  00
+b04_80ac:   ora ($14),y                 ; 100AC:  11 14
+b04_80ae:   asl $1a,x                   ; 100AE:  16 1a
+b04_80b0:   .db $1c                     ; 100B0:  1c
+b04_80b1:   .db $ff                     ; 100B1:  ff
+b04_80b2:   brk                         ; 100B2:  00
+b04_80b3:   brk                         ; 100B3:  00
+b04_80b4:   ora ($12),y                 ; 100B4:  11 12
+b04_80b6:   ora $17,x                   ; 100B6:  15 17
+b04_80b8:   clc                         ; 100B8:  18
+b04_80b9:   ora $ff1a,y                 ; 100B9:  19 1a ff
+b04_80bc:   .db $12                     ; 100BC:  12
+b04_80bd:   .db $13                     ; 100BD:  13
+b04_80be:   asl $18,x                   ; 100BE:  16 18
+b04_80c0:   .db $ff                     ; 100C0:  ff
+b04_80c1:   brk                         ; 100C1:  00
+b04_80c2:   brk                         ; 100C2:  00
+b04_80c3:   brk                         ; 100C3:  00
+b04_80c4:   asl $17,x                   ; 100C4:  16 17
+b04_80c6:   ora $00ff,y                 ; 100C6:  19 ff 00
+b04_80c9:   brk                         ; 100C9:  00
+b04_80ca:   brk                         ; 100CA:  00
+b04_80cb:   brk                         ; 100CB:  00
+b04_80cc:   asl $18,x                   ; 100CC:  16 18
+b04_80ce:   .db $1a                     ; 100CE:  1a
+b04_80cf:   .db $1b                     ; 100CF:  1b
+b04_80d0:   .db $1f                     ; 100D0:  1f
+b04_80d1:   and ($ff,x)                 ; 100D1:  21 ff
+b04_80d3:   brk                         ; 100D3:  00
+b04_80d4:   ora $16,x                   ; 100D4:  15 16
+b04_80d6:   ora $1c1b,y                 ; 100D6:  19 1b 1c
+b04_80d9:   ora $ff1e,x                 ; 100D9:  1d 1e ff
+b04_80dc:   ora $1e1a,y                 ; 100DC:  19 1a 1e
+b04_80df:   .db $1f                     ; 100DF:  1f
+b04_80e0:   .db $ff                     ; 100E0:  ff
+b04_80e1:   brk                         ; 100E1:  00
+b04_80e2:   brk                         ; 100E2:  00
+b04_80e3:   brk                         ; 100E3:  00
+b04_80e4:   ora $1a,x                   ; 100E4:  15 1a
+b04_80e6:   ora $ff22,x                 ; 100E6:  1d 22 ff
+b04_80e9:   brk                         ; 100E9:  00
+b04_80ea:   brk                         ; 100EA:  00
+b04_80eb:   brk                         ; 100EB:  00
+b04_80ec:   .db $1a                     ; 100EC:  1a
+b04_80ed:   .db $1c                     ; 100ED:  1c
+b04_80ee:   asl $2220,x                 ; 100EE:  1e 20 22
+b04_80f1:   .db $23                     ; 100F1:  23
+b04_80f2:   .db $ff                     ; 100F2:  ff
+b04_80f3:   brk                         ; 100F3:  00
+b04_80f4:   .db $1a                     ; 100F4:  1a
+b04_80f5:   .db $1b                     ; 100F5:  1b
+b04_80f6:   ora $201f,x                 ; 100F6:  1d 1f 20
+b04_80f9:   .db $ff                     ; 100F9:  ff
+b04_80fa:   brk                         ; 100FA:  00
+b04_80fb:   brk                         ; 100FB:  00
+b04_80fc:   ora $1e1b,y                 ; 100FC:  19 1b 1e
+b04_80ff:   jsr $ff21                   ; 100FF:  20 21 ff
+b04_8102:   brk                         ; 10102:  00
+b04_8103:   brk                         ; 10103:  00
+b04_8104:   ora $1f1e,x                 ; 10104:  1d 1e 1f
+b04_8107:   and ($23,x)                 ; 10107:  21 23
+b04_8109:   .db $ff                     ; 10109:  ff
+b04_810a:   brk                         ; 1010A:  00
+b04_810b:   brk                         ; 1010B:  00
+b04_810c:   ora $201f,y                 ; 1010C:  19 1f 20
+b04_810f:   .db $ff                     ; 1010F:  ff
+b04_8110:   brk                         ; 10110:  00
+b04_8111:   brk                         ; 10111:  00
+b04_8112:   brk                         ; 10112:  00
+b04_8113:   brk                         ; 10113:  00
+b04_8114:   .db $1c                     ; 10114:  1c
+b04_8115:   ora $2423,x                 ; 10115:  1d 23 24
+b04_8118:   and $ff                     ; 10118:  25 ff
+b04_811a:   brk                         ; 1011A:  00
+b04_811b:   brk                         ; 1011B:  00
+b04_811c:   ora $2220,x                 ; 1011C:  1d 20 22
+b04_811f:   and $28                     ; 1011F:  25 28
+b04_8121:   .db $ff                     ; 10121:  ff
+b04_8122:   brk                         ; 10122:  00
+b04_8123:   brk                         ; 10123:  00
+b04_8124:   .db $22                     ; 10124:  22
+b04_8125:   and $26                     ; 10125:  25 26
+b04_8127:   .db $ff                     ; 10127:  ff
+b04_8128:   brk                         ; 10128:  00
+b04_8129:   brk                         ; 10129:  00
+b04_812a:   brk                         ; 1012A:  00
+b04_812b:   brk                         ; 1012B:  00
+b04_812c:   .db $22                     ; 1012C:  22
+b04_812d:   .db $23                     ; 1012D:  23
+b04_812e:   bit $26                     ; 1012E:  24 26
+b04_8130:   .db $ff                     ; 10130:  ff
+b04_8131:   brk                         ; 10131:  00
+b04_8132:   brk                         ; 10132:  00
+b04_8133:   brk                         ; 10133:  00
+b04_8134:   bit $25                     ; 10134:  24 25
+b04_8136:   bit $00ff                   ; 10136:  2c ff 00
+b04_8139:   brk                         ; 10139:  00
+b04_813a:   brk                         ; 1013A:  00
+b04_813b:   brk                         ; 1013B:  00
+b04_813c:   plp                         ; 1013C:  28
+b04_813d:   and #$ff                    ; 1013D:  29 ff
+b04_813f:   brk                         ; 1013F:  00
+b04_8140:   brk                         ; 10140:  00
+b04_8141:   brk                         ; 10141:  00
+b04_8142:   brk                         ; 10142:  00
+b04_8143:   brk                         ; 10143:  00
+b04_8144:   .db $23                     ; 10144:  23
+b04_8145:   .db $27                     ; 10145:  27
+b04_8146:   and #$2a                    ; 10146:  29 2a
+b04_8148:   .db $ff                     ; 10148:  ff
+b04_8149:   brk                         ; 10149:  00
+b04_814a:   brk                         ; 1014A:  00
+b04_814b:   brk                         ; 1014B:  00
+b04_814c:   .db $27                     ; 1014C:  27
+b04_814d:   plp                         ; 1014D:  28
+b04_814e:   rol a                       ; 1014E:  2a
+b04_814f:   .db $2b                     ; 1014F:  2b
+b04_8150:   rol $00ff                   ; 10150:  2e ff 00
+b04_8153:   brk                         ; 10153:  00
+b04_8154:   plp                         ; 10154:  28
+b04_8155:   and #$2b                    ; 10155:  29 2b
+b04_8157:   .db $ff                     ; 10157:  ff
+b04_8158:   brk                         ; 10158:  00
+b04_8159:   brk                         ; 10159:  00
+b04_815a:   brk                         ; 1015A:  00
+b04_815b:   brk                         ; 1015B:  00
+b04_815c:   and #$2a                    ; 1015C:  29 2a
+b04_815e:   .db $ff                     ; 1015E:  ff
+b04_815f:   brk                         ; 1015F:  00
+b04_8160:   brk                         ; 10160:  00
+b04_8161:   brk                         ; 10161:  00
+b04_8162:   brk                         ; 10162:  00
+b04_8163:   brk                         ; 10163:  00
+b04_8164:   rol $2d                     ; 10164:  26 2d
+b04_8166:   rol $00ff                   ; 10166:  2e ff 00
+b04_8169:   brk                         ; 10169:  00
+b04_816a:   brk                         ; 1016A:  00
+b04_816b:   brk                         ; 1016B:  00
+b04_816c:   bit $2f2e                   ; 1016C:  2c 2e 2f
+b04_816f:   .db $ff                     ; 1016F:  ff
+b04_8170:   brk                         ; 10170:  00
+b04_8171:   brk                         ; 10171:  00
+b04_8172:   brk                         ; 10172:  00
+b04_8173:   brk                         ; 10173:  00
+b04_8174:   and #$2c                    ; 10174:  29 2c
+b04_8176:   and $302f                   ; 10176:  2d 2f 30
+b04_8179:   .db $ff                     ; 10179:  ff
+b04_817a:   brk                         ; 1017A:  00
+b04_817b:   brk                         ; 1017B:  00
+b04_817c:   and $302e                   ; 1017C:  2d 2e 30
+b04_817f:   and ($ff),y                 ; 1017F:  31 ff
+b04_8181:   brk                         ; 10181:  00
+b04_8182:   brk                         ; 10182:  00
+b04_8183:   brk                         ; 10183:  00
+b04_8184:   rol $312f                   ; 10184:  2e 2f 31
+b04_8187:   .db $ff                     ; 10187:  ff
+b04_8188:   brk                         ; 10188:  00
+b04_8189:   brk                         ; 10189:  00
+b04_818a:   brk                         ; 1018A:  00
+b04_818b:   brk                         ; 1018B:  00
+b04_818c:   .db $2f                     ; 1018C:  2f
+b04_818d:   bmi $818e                   ; 1018D:  30 ff
+b04_818f:   brk                         ; 1018F:  00
+b04_8190:   brk                         ; 10190:  00
+b04_8191:   brk                         ; 10191:  00
+b04_8192:   brk                         ; 10192:  00
+b04_8193:   brk                         ; 10193:  00
+b04_8194:   brk                         ; 10194:  00
+b04_8195:   rol $0c,x                   ; 10195:  36 0c
+b04_8197:   ora ($2f,x)                 ; 10197:  01 2f
+b04_8199:   sec                         ; 10199:  38
+b04_819a:   .db $02                     ; 1019A:  02
+b04_819b:   .db $2b                     ; 1019B:  2b
+b04_819c:   .db $64                     ; 1019C:  64
+b04_819d:   .db $03                     ; 1019D:  03
+b04_819e:   jsr $0468                   ; 1019E:  20 68 04
+b04_81a1:   and ($38,x)                 ; 101A1:  21 38
+b04_81a3:   ora $16                     ; 101A3:  05 16
+b04_81a5:   .db $7c                     ; 101A5:  7c
+b04_81a6:   asl $13                     ; 101A6:  06 13
+b04_81a8:   .db $54                     ; 101A8:  54
+b04_81a9:   .db $07                     ; 101A9:  07
+b04_81aa:   .db $0b                     ; 101AA:  0b
+b04_81ab:   sty $0b08                   ; 101AB:  8c 08 0b
+b04_81ae:   jmp ($0809)                 ; 101AE:  6c 09 08
+b04_81b1:   rti                         ; 101B1:  40
+b04_81b2:   asl a                       ; 101B2:  0a
+b04_81b3:   brk                         ; 101B3:  00
+b04_81b4:   bcc $81c1                   ; 101B4:  90 0b
+b04_81b6:   brk                         ; 101B6:  00
+b04_81b7:   adc ($ff),y                 ; 101B7:  71 ff
+b04_81b9:   brk                         ; 101B9:  00
+b04_81ba:   brk                         ; 101BA:  00
+b04_81bb:   brk                         ; 101BB:  00
+b04_81bc:   brk                         ; 101BC:  00
+b04_81bd:   brk                         ; 101BD:  00
+b04_81be:   brk                         ; 101BE:  00
+b04_81bf:   brk                         ; 101BF:  00
+b04_81c0:   brk                         ; 101C0:  00
+b04_81c1:   brk                         ; 101C1:  00
+b04_81c2:   brk                         ; 101C2:  00
+b04_81c3:   brk                         ; 101C3:  00
+b04_81c4:   brk                         ; 101C4:  00
+b04_81c5:   brk                         ; 101C5:  00
+b04_81c6:   brk                         ; 101C6:  00
+b04_81c7:   brk                         ; 101C7:  00
+b04_81c8:   asl $36                     ; 101C8:  06 36
+b04_81ca:   .db $17                     ; 101CA:  17
+b04_81cb:   php                         ; 101CB:  08
+b04_81cc:   and $3c,x                   ; 101CC:  35 3c
+b04_81ce:   ora #$27                    ; 101CE:  09 27
+b04_81d0:   .db $44                     ; 101D0:  44
+b04_81d1:   .db $0b                     ; 101D1:  0b
+b04_81d2:   .db $32                     ; 101D2:  32
+b04_81d3:   bvs $81e2                   ; 101D3:  70 0d
+b04_81d5:   rol a                       ; 101D5:  2a
+b04_81d6:   bcc $81e6                   ; 101D6:  90 0e
+b04_81d8:   .db $1c                     ; 101D8:  1c
+b04_81d9:   bvs $81ea                   ; 101D9:  70 0f
+b04_81db:   ora ($2c),y                 ; 101DB:  11 2c
+b04_81dd:   bpl $81f3                   ; 101DD:  10 14
+b04_81df:   .db $53                     ; 101DF:  53
+b04_81e0:   ora ($0f),y                 ; 101E0:  11 0f
+b04_81e2:   .db $72                     ; 101E2:  72
+b04_81e3:   .db $12                     ; 101E3:  12
+b04_81e4:   ora $90,x                   ; 101E4:  15 90
+b04_81e6:   .db $14                     ; 101E6:  14
+b04_81e7:   ora #$53                    ; 101E7:  09 53
+b04_81e9:   ora $03,x                   ; 101E9:  15 03
+b04_81eb:   bvs $8203                   ; 101EB:  70 16
+b04_81ed:   asl $90                     ; 101ED:  06 90
+b04_81ef:   .db $ff                     ; 101EF:  ff
+b04_81f0:   brk                         ; 101F0:  00
+b04_81f1:   brk                         ; 101F1:  00
+b04_81f2:   brk                         ; 101F2:  00
+b04_81f3:   brk                         ; 101F3:  00
+b04_81f4:   brk                         ; 101F4:  00
+b04_81f5:   brk                         ; 101F5:  00
+b04_81f6:   brk                         ; 101F6:  00
+b04_81f7:   brk                         ; 101F7:  00
+b04_81f8:   brk                         ; 101F8:  00
+b04_81f9:   brk                         ; 101F9:  00
+b04_81fa:   brk                         ; 101FA:  00
+b04_81fb:   brk                         ; 101FB:  00
+b04_81fc:   .db $07                     ; 101FC:  07
+b04_81fd:   rol $16,x                   ; 101FD:  36 16
+b04_81ff:   php                         ; 101FF:  08
+b04_8200:   rol a                       ; 10200:  2a
+b04_8201:   .db $0c                     ; 10201:  0c
+b04_8202:   ora #$1e                    ; 10202:  09 1e
+b04_8204:   plp                         ; 10204:  28
+b04_8205:   asl a                       ; 10205:  0a
+b04_8206:   bmi $8254                   ; 10206:  30 4c
+b04_8208:   .db $0b                     ; 10208:  0b
+b04_8209:   rol a                       ; 10209:  2a
+b04_820a:   rol $2d0c                   ; 1020A:  2e 0c 2d
+b04_820d:   .db $7b                     ; 1020D:  7b
+b04_820e:   ora $5624                   ; 1020E:  0d 24 56
+b04_8211:   asl $4716                   ; 10211:  0e 16 47
+b04_8214:   bpl $8222                   ; 10214:  10 0c
+b04_8216:   bpl $8229                   ; 10216:  10 11
+b04_8218:   ora #$30                    ; 10218:  09 30
+b04_821a:   .db $12                     ; 1021A:  12
+b04_821b:   asl $135f                   ; 1021B:  0e 5f 13
+b04_821e:   .db $0f                     ; 1021E:  0f
+b04_821f:   .db $80                     ; 1021F:  80
+b04_8220:   asl $03,x                   ; 10220:  16 03
+b04_8222:   pha                         ; 10222:  48
+b04_8223:   .db $17                     ; 10223:  17
+b04_8224:   .db $04                     ; 10224:  04
+b04_8225:   txa                         ; 10225:  8a
+b04_8226:   clc                         ; 10226:  18
+b04_8227:   .db $02                     ; 10227:  02
+b04_8228:   ror $ff                     ; 10228:  66 ff
+b04_822a:   brk                         ; 1022A:  00
+b04_822b:   brk                         ; 1022B:  00
+b04_822c:   brk                         ; 1022C:  00
+b04_822d:   brk                         ; 1022D:  00
+b04_822e:   brk                         ; 1022E:  00
+b04_822f:   brk                         ; 1022F:  00
+b04_8230:   ora ($36),y                 ; 10230:  11 36
+b04_8232:   .db $2b                     ; 10232:  2b
+b04_8233:   .db $12                     ; 10233:  12
+b04_8234:   rol $53,x                   ; 10234:  36 53
+b04_8236:   .db $13                     ; 10236:  13
+b04_8237:   rol $90,x                   ; 10237:  36 90
+b04_8239:   .db $14                     ; 10239:  14
+b04_823a:   and $1515                   ; 1023A:  2d 15 15
+b04_823d:   .db $23                     ; 1023D:  23
+b04_823e:   .db $34                     ; 1023E:  34
+b04_823f:   asl $2e,x                   ; 1023F:  16 2e
+b04_8241:   eor ($17,x)                 ; 10241:  41 17
+b04_8243:   .db $2b                     ; 10243:  2b
+b04_8244:   bcc $825e                   ; 10244:  90 18
+b04_8246:   bmi $82ac                   ; 10246:  30 64
+b04_8248:   ora $7d24,y                 ; 10248:  19 24 7d
+b04_824b:   .db $1a                     ; 1024B:  1a
+b04_824c:   .db $23                     ; 1024C:  23
+b04_824d:   .db $54                     ; 1024D:  54
+b04_824e:   .db $1b                     ; 1024E:  1b
+b04_824f:   asl $1c90,x                 ; 1024F:  1e 90 1c
+b04_8252:   ora ($35),y                 ; 10252:  11 35
+b04_8254:   ora $4b14,x                 ; 10254:  1d 14 4b
+b04_8257:   asl $6919,x                 ; 10257:  1e 19 69
+b04_825a:   jsr $8610                   ; 1025A:  20 10 86
+b04_825d:   .db $22                     ; 1025D:  22
+b04_825e:   ora ($47,x)                 ; 1025E:  01 47
+b04_8260:   .db $23                     ; 10260:  23
+b04_8261:   .db $07                     ; 10261:  07
+b04_8262:   .db $64                     ; 10262:  64
+b04_8263:   .db $ff                     ; 10263:  ff
+b04_8264:   asl $36,x                   ; 10264:  16 36
+b04_8266:   and $18                     ; 10266:  25 18
+b04_8268:   .db $33                     ; 10268:  33
+b04_8269:   .db $42                     ; 10269:  42
+b04_826a:   ora $6a2d,y                 ; 1026A:  19 2d 6a
+b04_826d:   .db $1a                     ; 1026D:  1a
+b04_826e:   and $1b0c                   ; 1026E:  2d 0c 1b
+b04_8271:   rol $48                     ; 10271:  26 48
+b04_8273:   ora $001b,x                 ; 10273:  1d 1b 00
+b04_8276:   asl $2926,x                 ; 10276:  1e 26 29
+b04_8279:   .db $1f                     ; 10279:  1f
+b04_827a:   and ($6d,x)                 ; 1027A:  21 6d
+b04_827c:   jsr $411b                   ; 1027C:  20 1b 41
+b04_827f:   and ($19,x)                 ; 1027F:  21 19
+b04_8281:   .db $87                     ; 10281:  87
+b04_8282:   .db $23                     ; 10282:  23
+b04_8283:   bpl $82a9                   ; 10283:  10 24
+b04_8285:   .db $27                     ; 10285:  27
+b04_8286:   ora $54                     ; 10286:  05 54
+b04_8288:   plp                         ; 10288:  28
+b04_8289:   asl a                       ; 10289:  0a
+b04_828a:   adc $00ff,y                 ; 1028A:  79 ff 00
+b04_828d:   brk                         ; 1028D:  00
+b04_828e:   brk                         ; 1028E:  00
+b04_828f:   brk                         ; 1028F:  00
+b04_8290:   brk                         ; 10290:  00
+b04_8291:   brk                         ; 10291:  00
+b04_8292:   brk                         ; 10292:  00
+b04_8293:   brk                         ; 10293:  00
+b04_8294:   brk                         ; 10294:  00
+b04_8295:   brk                         ; 10295:  00
+b04_8296:   brk                         ; 10296:  00
+b04_8297:   brk                         ; 10297:  00
+b04_8298:   .db $1c                     ; 10298:  1c
+b04_8299:   rol $05,x                   ; 10299:  36 05
+b04_829b:   ora $3a36,x                 ; 1029B:  1d 36 3a
+b04_829e:   jsr $5c36                   ; 1029E:  20 36 5c
+b04_82a1:   and ($33,x)                 ; 102A1:  21 33
+b04_82a3:   sta $22                     ; 102A3:  85 22
+b04_82a5:   bit $231d                   ; 102A5:  2c 1d 23
+b04_82a8:   .db $2b                     ; 102A8:  2b
+b04_82a9:   .db $3c                     ; 102A9:  3c
+b04_82aa:   bit $1d                     ; 102AA:  24 1d
+b04_82ac:   .db $13                     ; 102AC:  13
+b04_82ad:   and $1c                     ; 102AD:  25 1c
+b04_82af:   .db $33                     ; 102AF:  33
+b04_82b0:   rol $0e                     ; 102B0:  26 0e
+b04_82b2:   bmi $82db                   ; 102B2:  30 27
+b04_82b4:   .db $22                     ; 102B4:  22
+b04_82b5:   .db $57                     ; 102B5:  57
+b04_82b6:   plp                         ; 102B6:  28
+b04_82b7:   and $79                     ; 102B7:  25 79
+b04_82b9:   and #$11                    ; 102B9:  29 11
+b04_82bb:   bvc $82e7                   ; 102BB:  50 2a
+b04_82bd:   ora $2b75,y                 ; 102BD:  19 75 2b
+b04_82c0:   .db $12                     ; 102C0:  12
+b04_82c1:   bcc $82ef                   ; 102C1:  90 2c
+b04_82c3:   ora ($58,x)                 ; 102C3:  01 58
+b04_82c5:   rol $8002                   ; 102C5:  2e 02 80
+b04_82c8:   .db $ff                     ; 102C8:  ff
+b04_82c9:   brk                         ; 102C9:  00
+b04_82ca:   brk                         ; 102CA:  00
+b04_82cb:   brk                         ; 102CB:  00
+b04_82cc:   rol $2f                     ; 102CC:  26 2f
+b04_82ce:   .db $12                     ; 102CE:  12
+b04_82cf:   and #$2f                    ; 102CF:  29 2f
+b04_82d1:   .db $32                     ; 102D1:  32
+b04_82d2:   rol a                       ; 102D2:  2a
+b04_82d3:   rol $4e,x                   ; 102D3:  36 4e
+b04_82d5:   .db $2b                     ; 102D5:  2b
+b04_82d6:   .db $2f                     ; 102D6:  2f
+b04_82d7:   ror $202c                   ; 102D7:  6e 2c 20
+b04_82da:   .db $1c                     ; 102DA:  1c
+b04_82db:   and $2515                   ; 102DB:  2d 15 25
+b04_82de:   rol $4122                   ; 102DE:  2e 22 41
+b04_82e1:   .db $2f                     ; 102E1:  2f
+b04_82e2:   asl $4c,x                   ; 102E2:  16 4c
+b04_82e4:   bmi $82fd                   ; 102E4:  30 17
+b04_82e6:   adc $31,x                   ; 102E6:  75 31
+b04_82e8:   ora $ff8c                   ; 102E8:  0d 8c ff
+b04_82eb:   brk                         ; 102EB:  00
+b04_82ec:   brk                         ; 102EC:  00
+b04_82ed:   brk                         ; 102ED:  00
+b04_82ee:   brk                         ; 102EE:  00
+b04_82ef:   brk                         ; 102EF:  00
+b04_82f0:   brk                         ; 102F0:  00
+b04_82f1:   brk                         ; 102F1:  00
+b04_82f2:   brk                         ; 102F2:  00
+b04_82f3:   brk                         ; 102F3:  00
+b04_82f4:   brk                         ; 102F4:  00
+b04_82f5:   brk                         ; 102F5:  00
+b04_82f6:   brk                         ; 102F6:  00
+b04_82f7:   brk                         ; 102F7:  00
+b04_82f8:   brk                         ; 102F8:  00
+b04_82f9:   brk                         ; 102F9:  00
+b04_82fa:   brk                         ; 102FA:  00
+b04_82fb:   brk                         ; 102FB:  00
+b04_82fc:   brk                         ; 102FC:  00
+b04_82fd:   brk                         ; 102FD:  00
+b04_82fe:   brk                         ; 102FE:  00
+b04_82ff:   brk                         ; 102FF:  00
+b04_8300:   .db $03                     ; 10300:  03
+b04_8301:   .db $ff                     ; 10301:  ff
+b04_8302:   brk                         ; 10302:  00
+b04_8303:   brk                         ; 10303:  00
+b04_8304:   brk                         ; 10304:  00
+b04_8305:   brk                         ; 10305:  00
+b04_8306:   brk                         ; 10306:  00
+b04_8307:   brk                         ; 10307:  00
+b04_8308:   .db $02                     ; 10308:  02
+b04_8309:   .db $03                     ; 10309:  03
+b04_830a:   .db $0f                     ; 1030A:  0f
+b04_830b:   .db $ff                     ; 1030B:  ff
+b04_830c:   brk                         ; 1030C:  00
+b04_830d:   brk                         ; 1030D:  00
+b04_830e:   brk                         ; 1030E:  00
+b04_830f:   brk                         ; 1030F:  00
+b04_8310:   ora ($06,x)                 ; 10310:  01 06
+b04_8312:   .db $0f                     ; 10312:  0f
+b04_8313:   .db $ff                     ; 10313:  ff
+b04_8314:   brk                         ; 10314:  00
+b04_8315:   brk                         ; 10315:  00
+b04_8316:   brk                         ; 10316:  00
+b04_8317:   brk                         ; 10317:  00
+b04_8318:   brk                         ; 10318:  00
+b04_8319:   ora ($04,x)                 ; 10319:  01 04
+b04_831b:   ora $0f                     ; 1031B:  05 0f
+b04_831d:   .db $ff                     ; 1031D:  ff
+b04_831e:   brk                         ; 1031E:  00
+b04_831f:   brk                         ; 1031F:  00
+b04_8320:   .db $03                     ; 10320:  03
+b04_8321:   ora $08                     ; 10321:  05 08
+b04_8323:   asl a                       ; 10323:  0a
+b04_8324:   .db $ff                     ; 10324:  ff
+b04_8325:   brk                         ; 10325:  00
+b04_8326:   brk                         ; 10326:  00
+b04_8327:   brk                         ; 10327:  00
+b04_8328:   .db $03                     ; 10328:  03
+b04_8329:   .db $04                     ; 10329:  04
+b04_832a:   php                         ; 1032A:  08
+b04_832b:   .db $0f                     ; 1032B:  0f
+b04_832c:   .db $ff                     ; 1032C:  ff
+b04_832d:   brk                         ; 1032D:  00
+b04_832e:   brk                         ; 1032E:  00
+b04_832f:   brk                         ; 1032F:  00
+b04_8330:   .db $02                     ; 10330:  02
+b04_8331:   .db $07                     ; 10331:  07
+b04_8332:   .db $0f                     ; 10332:  0f
+b04_8333:   .db $ff                     ; 10333:  ff
+b04_8334:   brk                         ; 10334:  00
+b04_8335:   brk                         ; 10335:  00
+b04_8336:   brk                         ; 10336:  00
+b04_8337:   brk                         ; 10337:  00
+b04_8338:   asl $08                     ; 10338:  06 08
+b04_833a:   .db $0f                     ; 1033A:  0f
+b04_833b:   bpl $833c                   ; 1033B:  10 ff
+b04_833d:   brk                         ; 1033D:  00
+b04_833e:   brk                         ; 1033E:  00
+b04_833f:   brk                         ; 1033F:  00
+b04_8340:   .db $04                     ; 10340:  04
+b04_8341:   ora $07                     ; 10341:  05 07
+b04_8343:   asl a                       ; 10343:  0a
+b04_8344:   .db $0c                     ; 10344:  0c
+b04_8345:   .db $0f                     ; 10345:  0f
+b04_8346:   bpl $8347                   ; 10346:  10 ff
+b04_8348:   .db $0b                     ; 10348:  0b
+b04_8349:   .db $0c                     ; 10349:  0c
+b04_834a:   ora $ff0e                   ; 1034A:  0d 0e ff
+b04_834d:   brk                         ; 1034D:  00
+b04_834e:   brk                         ; 1034E:  00
+b04_834f:   brk                         ; 1034F:  00
+b04_8350:   .db $04                     ; 10350:  04
+b04_8351:   php                         ; 10351:  08
+b04_8352:   .db $0b                     ; 10352:  0b
+b04_8353:   .db $0c                     ; 10353:  0c
+b04_8354:   ora $00ff                   ; 10354:  0d ff 00
+b04_8357:   brk                         ; 10357:  00
+b04_8358:   ora #$0a                    ; 10358:  09 0a
+b04_835a:   .db $0c                     ; 1035A:  0c
+b04_835b:   ora $00ff                   ; 1035B:  0d ff 00
+b04_835e:   brk                         ; 1035E:  00
+b04_835f:   brk                         ; 1035F:  00
+b04_8360:   php                         ; 10360:  08
+b04_8361:   ora #$0a                    ; 10361:  09 0a
+b04_8363:   .db $0b                     ; 10363:  0b
+b04_8364:   bpl $8365                   ; 10364:  10 ff
+b04_8366:   brk                         ; 10366:  00
+b04_8367:   brk                         ; 10367:  00
+b04_8368:   ora #$0a                    ; 10368:  09 0a
+b04_836a:   .db $0b                     ; 1036A:  0b
+b04_836b:   asl $00ff                   ; 1036B:  0e ff 00
+b04_836e:   brk                         ; 1036E:  00
+b04_836f:   brk                         ; 1036F:  00
+b04_8370:   ora #$0d                    ; 10370:  09 0d
+b04_8372:   .db $ff                     ; 10372:  ff
+b04_8373:   brk                         ; 10373:  00
+b04_8374:   brk                         ; 10374:  00
+b04_8375:   brk                         ; 10375:  00
+b04_8376:   brk                         ; 10376:  00
+b04_8377:   brk                         ; 10377:  00
+b04_8378:   ora ($02,x)                 ; 10378:  01 02
+b04_837a:   .db $03                     ; 1037A:  03
+b04_837b:   ora $06                     ; 1037B:  05 06
+b04_837d:   .db $07                     ; 1037D:  07
+b04_837e:   php                         ; 1037E:  08
+b04_837f:   .db $ff                     ; 1037F:  ff
+b04_8380:   .db $07                     ; 10380:  07
+b04_8381:   php                         ; 10381:  08
+b04_8382:   .db $0c                     ; 10382:  0c
+b04_8383:   .db $ff                     ; 10383:  ff
+b04_8384:   brk                         ; 10384:  00
+b04_8385:   brk                         ; 10385:  00
+b04_8386:   brk                         ; 10386:  00
+b04_8387:   brk                         ; 10387:  00
+b04_8388:   brk                         ; 10388:  00
+b04_8389:   and $0100                   ; 10389:  2d 00 01
+b04_838c:   sec                         ; 1038C:  38
+b04_838d:   jmp $3802                   ; 1038D:  4c 02 38
+b04_8390:   .db $7c                     ; 10390:  7c
+b04_8391:   .db $03                     ; 10391:  03
+b04_8392:   plp                         ; 10392:  28
+b04_8393:   jsr $1404                   ; 10393:  20 04 14
+b04_8396:   bmi $839d                   ; 10396:  30 05
+b04_8398:   .db $23                     ; 10398:  23
+b04_8399:   .db $3c                     ; 10399:  3c
+b04_839a:   asl $26                     ; 1039A:  06 26
+b04_839c:   bcc $83a5                   ; 1039C:  90 07
+b04_839e:   ora $0890,y                 ; 1039E:  19 90 08
+b04_83a1:   .db $1b                     ; 103A1:  1b
+b04_83a2:   bvc $83ad                   ; 103A2:  50 09
+b04_83a4:   .db $02                     ; 103A4:  02
+b04_83a5:   sty $120a                   ; 103A5:  8c 0a 12
+b04_83a8:   .db $54                     ; 103A8:  54
+b04_83a9:   .db $0b                     ; 103A9:  0b
+b04_83aa:   bpl $841c                   ; 103AA:  10 70
+b04_83ac:   .db $0c                     ; 103AC:  0c
+b04_83ad:   asl $0d90                   ; 103AD:  0e 90 0d
+b04_83b0:   ora #$5c                    ; 103B0:  09 5c
+b04_83b2:   asl $6800                   ; 103B2:  0e 00 68
+b04_83b5:   .db $0f                     ; 103B5:  0f
+b04_83b6:   bit $1058                   ; 103B6:  2c 58 10
+b04_83b9:   .db $1b                     ; 103B9:  1b
+b04_83ba:   bvs $83bb                   ; 103BA:  70 ff
+b04_83bc:   .db $ff                     ; 103BC:  ff
+b04_83bd:   .db $ff                     ; 103BD:  ff
+b04_83be:   .db $ff                     ; 103BE:  ff
+b04_83bf:   .db $ff                     ; 103BF:  ff
+b04_83c0:   .db $ff                     ; 103C0:  ff
+b04_83c1:   .db $ff                     ; 103C1:  ff
+b04_83c2:   .db $ff                     ; 103C2:  ff
+b04_83c3:   .db $ff                     ; 103C3:  ff
+b04_83c4:   brk                         ; 103C4:  00
+b04_83c5:   bpl $83c7                   ; 103C5:  10 00
+b04_83c7:   .db $02                     ; 103C7:  02
+b04_83c8:   brk                         ; 103C8:  00
+b04_83c9:   jsr $0000                   ; 103C9:  20 00 00
+b04_83cc:   .db $f4                     ; 103CC:  f4
+b04_83cd:   beq $83bf                   ; 103CD:  f0 f0
+b04_83cf:   beq $83c1                   ; 103CF:  f0 f0
+b04_83d1:   .db $f2                     ; 103D1:  f2
+b04_83d2:   beq $83c4                   ; 103D2:  f0 f0
+b04_83d4:   .db $0f                     ; 103D4:  0f
+b04_83d5:   .db $2f                     ; 103D5:  2f
+b04_83d6:   .db $0f                     ; 103D6:  0f
+b04_83d7:   .db $0f                     ; 103D7:  0f
+b04_83d8:   .db $4f                     ; 103D8:  4f
+b04_83d9:   .db $0f                     ; 103D9:  0f
+b04_83da:   .db $1f                     ; 103DA:  1f
+b04_83db:   .db $0f                     ; 103DB:  0f
+b04_83dc:   .db $04                     ; 103DC:  04
+b04_83dd:   jsr $0000                   ; 103DD:  20 00 00
+b04_83e0:   rti                         ; 103E0:  40
+b04_83e1:   .db $02                     ; 103E1:  02
+b04_83e2:   bpl $83e4                   ; 103E2:  10 00
+b04_83e4:   .db $ff                     ; 103E4:  ff
+b04_83e5:   .db $ff                     ; 103E5:  ff
+b04_83e6:   .db $ff                     ; 103E6:  ff
+b04_83e7:   .db $ff                     ; 103E7:  ff
+b04_83e8:   .db $ff                     ; 103E8:  ff
+b04_83e9:   .db $ff                     ; 103E9:  ff
+b04_83ea:   .db $ff                     ; 103EA:  ff
+b04_83eb:   .db $ff                     ; 103EB:  ff
+b04_83ec:   .db $f4                     ; 103EC:  f4
+b04_83ed:   sed                         ; 103ED:  f8
+b04_83ee:   .db $fc                     ; 103EE:  fc
+b04_83ef:   inc $ffff,x                 ; 103EF:  fe ff ff
+b04_83f2:   .db $ff                     ; 103F2:  ff
+b04_83f3:   .db $ff                     ; 103F3:  ff
+b04_83f4:   .db $0f                     ; 103F4:  0f
+b04_83f5:   .db $27                     ; 103F5:  27
+b04_83f6:   .db $03                     ; 103F6:  03
+b04_83f7:   ora ($40,x)                 ; 103F7:  01 40
+b04_83f9:   .db $02                     ; 103F9:  02
+b04_83fa:   bpl $83fc                   ; 103FA:  10 00
+b04_83fc:   .db $04                     ; 103FC:  04
+b04_83fd:   jsr $0000                   ; 103FD:  20 00 00
+b04_8400:   .db $ff                     ; 10400:  ff
+b04_8401:   .db $ff                     ; 10401:  ff
+b04_8402:   .db $ff                     ; 10402:  ff
+b04_8403:   .db $ff                     ; 10403:  ff
+b04_8404:   .db $ff                     ; 10404:  ff
+b04_8405:   .db $ff                     ; 10405:  ff
+b04_8406:   .db $ff                     ; 10406:  ff
+b04_8407:   .db $ff                     ; 10407:  ff
+b04_8408:   rti                         ; 10408:  40
+b04_8409:   .db $02                     ; 10409:  02
+b04_840a:   bpl $840c                   ; 1040A:  10 00
+b04_840c:   beq $83fe                   ; 1040C:  f0 f0
+b04_840e:   beq $8400                   ; 1040E:  f0 f0
+b04_8410:   beq $8402                   ; 10410:  f0 f0
+b04_8412:   beq $8404                   ; 10412:  f0 f0
+b04_8414:   .db $0f                     ; 10414:  0f
+b04_8415:   .db $2f                     ; 10415:  2f
+b04_8416:   .db $0f                     ; 10416:  0f
+b04_8417:   .db $0f                     ; 10417:  0f
+b04_8418:   .db $4f                     ; 10418:  4f
+b04_8419:   .db $0f                     ; 10419:  0f
+b04_841a:   .db $1f                     ; 1041A:  1f
+b04_841b:   .db $0f                     ; 1041B:  0f
+b04_841c:   brk                         ; 1041C:  00
+b04_841d:   .db $02                     ; 1041D:  02
+b04_841e:   rti                         ; 1041E:  40
+b04_841f:   brk                         ; 1041F:  00
+b04_8420:   brk                         ; 10420:  00
+b04_8421:   .db $02                     ; 10421:  02
+b04_8422:   jsr $ff00                   ; 10422:  20 00 ff
+b04_8425:   sbc $ffbf,x                 ; 10425:  fd bf ff
+b04_8428:   .db $ff                     ; 10428:  ff
+b04_8429:   sbc $ffdf,x                 ; 10429:  fd df ff
+b04_842c:   beq $8426                   ; 1042C:  f0 f8
+b04_842e:   .db $fc                     ; 1042E:  fc
+b04_842f:   inc $ffff,x                 ; 1042F:  fe ff ff
+b04_8432:   .db $ff                     ; 10432:  ff
+b04_8433:   .db $ff                     ; 10433:  ff
+b04_8434:   .db $0f                     ; 10434:  0f
+b04_8435:   .db $27                     ; 10435:  27
+b04_8436:   .db $03                     ; 10436:  03
+b04_8437:   ora ($40,x)                 ; 10437:  01 40
+b04_8439:   .db $02                     ; 10439:  02
+b04_843a:   bpl $843c                   ; 1043A:  10 00
+b04_843c:   brk                         ; 1043C:  00
+b04_843d:   brk                         ; 1043D:  00
+b04_843e:   brk                         ; 1043E:  00
+b04_843f:   brk                         ; 1043F:  00
+b04_8440:   .db $ff                     ; 10440:  ff
+b04_8441:   .db $ff                     ; 10441:  ff
+b04_8442:   .db $ff                     ; 10442:  ff
+b04_8443:   .db $ff                     ; 10443:  ff
+b04_8444:   .db $ff                     ; 10444:  ff
+b04_8445:   .db $ff                     ; 10445:  ff
+b04_8446:   .db $ff                     ; 10446:  ff
+b04_8447:   .db $ff                     ; 10447:  ff
+b04_8448:   brk                         ; 10448:  00
+b04_8449:   .db $02                     ; 10449:  02
+b04_844a:   bpl $844c                   ; 1044A:  10 00
+b04_844c:   brk                         ; 1044C:  00
+b04_844d:   brk                         ; 1044D:  00
+b04_844e:   brk                         ; 1044E:  00
+b04_844f:   brk                         ; 1044F:  00
+b04_8450:   .db $80                     ; 10450:  80
+b04_8451:   cpy #$e0                    ; 10451:  c0 e0
+b04_8453:   beq $8454                   ; 10453:  f0 ff
+b04_8455:   .db $ff                     ; 10455:  ff
+b04_8456:   .db $ff                     ; 10456:  ff
+b04_8457:   .db $ff                     ; 10457:  ff
+b04_8458:   .db $7f                     ; 10458:  7f
+b04_8459:   .db $3f                     ; 10459:  3f
+b04_845a:   .db $1f                     ; 1045A:  1f
+b04_845b:   .db $0f                     ; 1045B:  0f
+b04_845c:   .db $0f                     ; 1045C:  0f
+b04_845d:   .db $0f                     ; 1045D:  0f
+b04_845e:   .db $0f                     ; 1045E:  0f
+b04_845f:   .db $0f                     ; 1045F:  0f
+b04_8460:   .db $0f                     ; 10460:  0f
+b04_8461:   .db $0f                     ; 10461:  0f
+b04_8462:   .db $0f                     ; 10462:  0f
+b04_8463:   .db $0f                     ; 10463:  0f
+b04_8464:   beq $8456                   ; 10464:  f0 f0
+b04_8466:   beq $8458                   ; 10466:  f0 f0
+b04_8468:   beq $845a                   ; 10468:  f0 f0
+b04_846a:   beq $845c                   ; 1046A:  f0 f0
+b04_846c:   .db $ef                     ; 1046C:  ef
+b04_846d:   .db $c7                     ; 1046D:  c7
+b04_846e:   .db $8b                     ; 1046E:  8b
+b04_846f:   eor ($e1),y                 ; 1046F:  51 e1
+b04_8471:   .db $e2                     ; 10471:  e2
+b04_8472:   cmp $fa,x                   ; 10472:  d5 fa
+b04_8474:   bpl $84a6                   ; 10474:  10 30
+b04_8476:   bvs $841c                   ; 10476:  70 a4
+b04_8478:   .db $0c                     ; 10478:  0c
+b04_8479:   .db $1c                     ; 10479:  1c
+b04_847a:   plp                         ; 1047A:  28
+b04_847b:   .db $04                     ; 1047B:  04
+b04_847c:   .db $0f                     ; 1047C:  0f
+b04_847d:   .db $07                     ; 1047D:  07
+b04_847e:   .db $03                     ; 1047E:  03
+b04_847f:   ora ($00,x)                 ; 1047F:  01 00
+b04_8481:   brk                         ; 10481:  00
+b04_8482:   brk                         ; 10482:  00
+b04_8483:   brk                         ; 10483:  00
+b04_8484:   beq $847e                   ; 10484:  f0 f8
+b04_8486:   .db $fc                     ; 10486:  fc
+b04_8487:   inc $ffff,x                 ; 10487:  fe ff ff
+b04_848a:   .db $ff                     ; 1048A:  ff
+b04_848b:   .db $ff                     ; 1048B:  ff
+b04_848c:   .db $ff                     ; 1048C:  ff
+b04_848d:   .db $ff                     ; 1048D:  ff
+b04_848e:   .db $ff                     ; 1048E:  ff
+b04_848f:   .db $ff                     ; 1048F:  ff
+b04_8490:   brk                         ; 10490:  00
+b04_8491:   brk                         ; 10491:  00
+b04_8492:   brk                         ; 10492:  00
+b04_8493:   brk                         ; 10493:  00
+b04_8494:   brk                         ; 10494:  00
+b04_8495:   brk                         ; 10495:  00
+b04_8496:   brk                         ; 10496:  00
+b04_8497:   brk                         ; 10497:  00
+b04_8498:   .db $ff                     ; 10498:  ff
+b04_8499:   .db $ff                     ; 10499:  ff
+b04_849a:   .db $ff                     ; 1049A:  ff
+b04_849b:   .db $ff                     ; 1049B:  ff
+b04_849c:   .db $ff                     ; 1049C:  ff
+b04_849d:   .db $ff                     ; 1049D:  ff
+b04_849e:   .db $ff                     ; 1049E:  ff
+b04_849f:   .db $ff                     ; 1049F:  ff
+b04_84a0:   rti                         ; 104A0:  40
+b04_84a1:   .db $02                     ; 104A1:  02
+b04_84a2:   bpl $84a4                   ; 104A2:  10 00
+b04_84a4:   .db $04                     ; 104A4:  04
+b04_84a5:   jsr $0000                   ; 104A5:  20 00 00
+b04_84a8:   .db $ff                     ; 104A8:  ff
+b04_84a9:   .db $ff                     ; 104A9:  ff
+b04_84aa:   .db $ff                     ; 104AA:  ff
+b04_84ab:   .db $ff                     ; 104AB:  ff
+b04_84ac:   .db $ff                     ; 104AC:  ff
+b04_84ad:   .db $ff                     ; 104AD:  ff
+b04_84ae:   .db $ff                     ; 104AE:  ff
+b04_84af:   .db $ff                     ; 104AF:  ff
+b04_84b0:   .db $7f                     ; 104B0:  7f
+b04_84b1:   .db $3f                     ; 104B1:  3f
+b04_84b2:   .db $1f                     ; 104B2:  1f
+b04_84b3:   .db $0f                     ; 104B3:  0f
+b04_84b4:   .db $04                     ; 104B4:  04
+b04_84b5:   jsr $0000                   ; 104B5:  20 00 00
+b04_84b8:   cpy #$c2                    ; 104B8:  c0 c2
+b04_84ba:   beq $84ac                   ; 104BA:  f0 f0
+b04_84bc:   .db $0f                     ; 104BC:  0f
+b04_84bd:   .db $27                     ; 104BD:  27
+b04_84be:   .db $03                     ; 104BE:  03
+b04_84bf:   ora ($40,x)                 ; 104BF:  01 40
+b04_84c1:   .db $02                     ; 104C1:  02
+b04_84c2:   bpl $84c4                   ; 104C2:  10 00
+b04_84c4:   .db $f4                     ; 104C4:  f4
+b04_84c5:   sed                         ; 104C5:  f8
+b04_84c6:   .db $fc                     ; 104C6:  fc
+b04_84c7:   inc $ffff,x                 ; 104C7:  fe ff ff
+b04_84ca:   .db $ff                     ; 104CA:  ff
+b04_84cb:   .db $ff                     ; 104CB:  ff
+b04_84cc:   .db $f4                     ; 104CC:  f4
+b04_84cd:   cpx #$c0                    ; 104CD:  e0 c0
+b04_84cf:   .db $80                     ; 104CF:  80
+b04_84d0:   rti                         ; 104D0:  40
+b04_84d1:   .db $02                     ; 104D1:  02
+b04_84d2:   bpl $84d4                   ; 104D2:  10 00
+b04_84d4:   .db $0f                     ; 104D4:  0f
+b04_84d5:   .db $3f                     ; 104D5:  3f
+b04_84d6:   .db $3f                     ; 104D6:  3f
+b04_84d7:   .db $7f                     ; 104D7:  7f
+b04_84d8:   .db $ff                     ; 104D8:  ff
+b04_84d9:   .db $ff                     ; 104D9:  ff
+b04_84da:   .db $ff                     ; 104DA:  ff
+b04_84db:   .db $ff                     ; 104DB:  ff
+b04_84dc:   .db $ff                     ; 104DC:  ff
+b04_84dd:   .db $ff                     ; 104DD:  ff
+b04_84de:   .db $ff                     ; 104DE:  ff
+b04_84df:   .db $ff                     ; 104DF:  ff
+b04_84e0:   inc $f8fe,x                 ; 104E0:  fe fe f8
+b04_84e3:   beq $84e9                   ; 104E3:  f0 04
+b04_84e5:   jsr $0000                   ; 104E5:  20 00 00
+b04_84e8:   eor ($03,x)                 ; 104E8:  41 03
+b04_84ea:   .db $17                     ; 104EA:  17
+b04_84eb:   .db $0f                     ; 104EB:  0f
+b04_84ec:   .db $ff                     ; 104EC:  ff
+b04_84ed:   .db $ff                     ; 104ED:  ff
+b04_84ee:   .db $ff                     ; 104EE:  ff
+b04_84ef:   .db $ff                     ; 104EF:  ff
+b04_84f0:   .db $ff                     ; 104F0:  ff
+b04_84f1:   .db $ff                     ; 104F1:  ff
+b04_84f2:   .db $ff                     ; 104F2:  ff
+b04_84f3:   .db $ff                     ; 104F3:  ff
+b04_84f4:   .db $04                     ; 104F4:  04
+b04_84f5:   jsr $0000                   ; 104F5:  20 00 00
+b04_84f8:   rti                         ; 104F8:  40
+b04_84f9:   .db $02                     ; 104F9:  02
+b04_84fa:   bpl $84fc                   ; 104FA:  10 00
+b04_84fc:   .db $ff                     ; 104FC:  ff
+b04_84fd:   .db $ff                     ; 104FD:  ff
+b04_84fe:   .db $ff                     ; 104FE:  ff
+b04_84ff:   .db $ff                     ; 104FF:  ff
+b04_8500:   inc $f8fc,x                 ; 10500:  fe fc f8
+b04_8503:   beq $8509                   ; 10503:  f0 04
+b04_8505:   jsr $0000                   ; 10505:  20 00 00
+b04_8508:   eor ($03,x)                 ; 10508:  41 03
+b04_850a:   .db $17                     ; 1050A:  17
+b04_850b:   .db $0f                     ; 1050B:  0f
+b04_850c:   .db $ff                     ; 1050C:  ff
+b04_850d:   .db $ff                     ; 1050D:  ff
+b04_850e:   .db $ff                     ; 1050E:  ff
+b04_850f:   .db $ff                     ; 1050F:  ff
+b04_8510:   .db $0f                     ; 10510:  0f
+b04_8511:   .db $0f                     ; 10511:  0f
+b04_8512:   .db $0f                     ; 10512:  0f
+b04_8513:   .db $0f                     ; 10513:  0f
+b04_8514:   .db $04                     ; 10514:  04
+b04_8515:   jsr $0000                   ; 10515:  20 00 00
+b04_8518:   beq $850c                   ; 10518:  f0 f2
+b04_851a:   beq $850c                   ; 1051A:  f0 f0
+b04_851c:   .db $7f                     ; 1051C:  7f
+b04_851d:   .db $3f                     ; 1051D:  3f
+b04_851e:   .db $1f                     ; 1051E:  1f
+b04_851f:   .db $0f                     ; 1051F:  0f
+b04_8520:   .db $47                     ; 10520:  47
+b04_8521:   .db $03                     ; 10521:  03
+b04_8522:   ora ($00),y                 ; 10522:  11 00
+b04_8524:   sty $e0                     ; 10524:  84 e0
+b04_8526:   cpx #$f0                    ; 10526:  e0 f0
+b04_8528:   sed                         ; 10528:  f8
+b04_8529:   inc $fffe,x                 ; 10529:  fe fe ff
+b04_852c:   .db $ff                     ; 1052C:  ff
+b04_852d:   .db $ff                     ; 1052D:  ff
+b04_852e:   .db $ff                     ; 1052E:  ff
+b04_852f:   .db $ff                     ; 1052F:  ff
+b04_8530:   brk                         ; 10530:  00
+b04_8531:   brk                         ; 10531:  00
+b04_8532:   brk                         ; 10532:  00
+b04_8533:   brk                         ; 10533:  00
+b04_8534:   .db $04                     ; 10534:  04
+b04_8535:   jsr $0000                   ; 10535:  20 00 00
+b04_8538:   .db $ff                     ; 10538:  ff
+b04_8539:   .db $ff                     ; 10539:  ff
+b04_853a:   .db $ff                     ; 1053A:  ff
+b04_853b:   .db $ff                     ; 1053B:  ff
+b04_853c:   .db $ff                     ; 1053C:  ff
+b04_853d:   .db $ff                     ; 1053D:  ff
+b04_853e:   .db $ff                     ; 1053E:  ff
+b04_853f:   .db $ff                     ; 1053F:  ff
+b04_8540:   .db $ef                     ; 10540:  ef
+b04_8541:   .db $cf                     ; 10541:  cf
+b04_8542:   .db $8f                     ; 10542:  8f
+b04_8543:   .db $0f                     ; 10543:  0f
+b04_8544:   .db $04                     ; 10544:  04
+b04_8545:   jsr $0000                   ; 10545:  20 00 00
+b04_8548:   bvc $857c                   ; 10548:  50 32
+b04_854a:   bvs $853c                   ; 1054A:  70 f0
+b04_854c:   .db $0f                     ; 1054C:  0f
+b04_854d:   .db $0f                     ; 1054D:  0f
+b04_854e:   .db $0f                     ; 1054E:  0f
+b04_854f:   .db $0f                     ; 1054F:  0f
+b04_8550:   .db $0f                     ; 10550:  0f
+b04_8551:   .db $0f                     ; 10551:  0f
+b04_8552:   .db $0f                     ; 10552:  0f
+b04_8553:   .db $0f                     ; 10553:  0f
+b04_8554:   .db $f4                     ; 10554:  f4
+b04_8555:   beq $8547                   ; 10555:  f0 f0
+b04_8557:   beq $8549                   ; 10557:  f0 f0
+b04_8559:   .db $f2                     ; 10559:  f2
+b04_855a:   beq $854c                   ; 1055A:  f0 f0
+b04_855c:   .db $7f                     ; 1055C:  7f
+b04_855d:   .db $3f                     ; 1055D:  3f
+b04_855e:   .db $1f                     ; 1055E:  1f
+b04_855f:   .db $0f                     ; 1055F:  0f
+b04_8560:   brk                         ; 10560:  00
+b04_8561:   brk                         ; 10561:  00
+b04_8562:   brk                         ; 10562:  00
+b04_8563:   brk                         ; 10563:  00
+b04_8564:   sty $c0                     ; 10564:  84 c0
+b04_8566:   cpx #$f0                    ; 10566:  e0 f0
+b04_8568:   .db $ff                     ; 10568:  ff
+b04_8569:   .db $ff                     ; 10569:  ff
+b04_856a:   .db $ff                     ; 1056A:  ff
+b04_856b:   .db $ff                     ; 1056B:  ff
+b04_856c:   .db $ff                     ; 1056C:  ff
+b04_856d:   .db $ff                     ; 1056D:  ff
+b04_856e:   .db $ff                     ; 1056E:  ff
+b04_856f:   .db $ff                     ; 1056F:  ff
+b04_8570:   brk                         ; 10570:  00
+b04_8571:   brk                         ; 10571:  00
+b04_8572:   brk                         ; 10572:  00
+b04_8573:   brk                         ; 10573:  00
+b04_8574:   .db $04                     ; 10574:  04
+b04_8575:   jsr $0000                   ; 10575:  20 00 00
+b04_8578:   .db $f7                     ; 10578:  f7
+b04_8579:   .db $f7                     ; 10579:  f7
+b04_857a:   .db $f7                     ; 1057A:  f7
+b04_857b:   .db $f7                     ; 1057B:  f7
+b04_857c:   .db $0f                     ; 1057C:  0f
+b04_857d:   .db $0f                     ; 1057D:  0f
+b04_857e:   .db $0f                     ; 1057E:  0f
+b04_857f:   .db $0f                     ; 1057F:  0f
+b04_8580:   .db $07                     ; 10580:  07
+b04_8581:   .db $03                     ; 10581:  03
+b04_8582:   ora ($00,x)                 ; 10582:  01 00
+b04_8584:   .db $f4                     ; 10584:  f4
+b04_8585:   beq $8577                   ; 10585:  f0 f0
+b04_8587:   beq $8581                   ; 10587:  f0 f8
+b04_8589:   .db $fc                     ; 10589:  fc
+b04_858a:   inc $0fff,x                 ; 1058A:  fe ff 0f
+b04_858d:   .db $07                     ; 1058D:  07
+b04_858e:   .db $03                     ; 1058E:  03
+b04_858f:   ora ($00,x)                 ; 1058F:  01 00
+b04_8591:   brk                         ; 10591:  00
+b04_8592:   brk                         ; 10592:  00
+b04_8593:   brk                         ; 10593:  00
+b04_8594:   .db $f4                     ; 10594:  f4
+b04_8595:   sed                         ; 10595:  f8
+b04_8596:   .db $fc                     ; 10596:  fc
+b04_8597:   inc $ffff,x                 ; 10597:  fe ff ff
+b04_859a:   .db $ff                     ; 1059A:  ff
+b04_859b:   .db $ff                     ; 1059B:  ff
+b04_859c:   beq $857e                   ; 1059C:  f0 e0
+b04_859e:   cpy #$80                    ; 1059E:  c0 80
+b04_85a0:   brk                         ; 105A0:  00
+b04_85a1:   brk                         ; 105A1:  00
+b04_85a2:   brk                         ; 105A2:  00
+b04_85a3:   brk                         ; 105A3:  00
+b04_85a4:   .db $0f                     ; 105A4:  0f
+b04_85a5:   .db $1f                     ; 105A5:  1f
+b04_85a6:   .db $3f                     ; 105A6:  3f
+b04_85a7:   .db $7f                     ; 105A7:  7f
+b04_85a8:   .db $ff                     ; 105A8:  ff
+b04_85a9:   .db $ff                     ; 105A9:  ff
+b04_85aa:   .db $ff                     ; 105AA:  ff
+b04_85ab:   .db $ff                     ; 105AB:  ff
+b04_85ac:   brk                         ; 105AC:  00
+b04_85ad:   brk                         ; 105AD:  00
+b04_85ae:   brk                         ; 105AE:  00
+b04_85af:   brk                         ; 105AF:  00
+b04_85b0:   .db $ff                     ; 105B0:  ff
+b04_85b1:   .db $ff                     ; 105B1:  ff
+b04_85b2:   .db $ff                     ; 105B2:  ff
+b04_85b3:   .db $ff                     ; 105B3:  ff
+b04_85b4:   .db $ff                     ; 105B4:  ff
+b04_85b5:   .db $ff                     ; 105B5:  ff
+b04_85b6:   .db $ff                     ; 105B6:  ff
+b04_85b7:   .db $ff                     ; 105B7:  ff
+b04_85b8:   brk                         ; 105B8:  00
+b04_85b9:   brk                         ; 105B9:  00
+b04_85ba:   brk                         ; 105BA:  00
+b04_85bb:   brk                         ; 105BB:  00
+b04_85bc:   .db $ff                     ; 105BC:  ff
+b04_85bd:   .db $ff                     ; 105BD:  ff
+b04_85be:   .db $ff                     ; 105BE:  ff
+b04_85bf:   .db $ff                     ; 105BF:  ff
+b04_85c0:   inc $fbfd,x                 ; 105C0:  fe fd fb
+b04_85c3:   .db $f7                     ; 105C3:  f7
+b04_85c4:   brk                         ; 105C4:  00
+b04_85c5:   brk                         ; 105C5:  00
+b04_85c6:   brk                         ; 105C6:  00
+b04_85c7:   brk                         ; 105C7:  00
+b04_85c8:   brk                         ; 105C8:  00
+b04_85c9:   brk                         ; 105C9:  00
+b04_85ca:   brk                         ; 105CA:  00
+b04_85cb:   brk                         ; 105CB:  00
+b04_85cc:   .db $ff                     ; 105CC:  ff
+b04_85cd:   .db $ff                     ; 105CD:  ff
+b04_85ce:   .db $ff                     ; 105CE:  ff
+b04_85cf:   .db $ff                     ; 105CF:  ff
+b04_85d0:   brk                         ; 105D0:  00
+b04_85d1:   .db $ff                     ; 105D1:  ff
+b04_85d2:   .db $ff                     ; 105D2:  ff
+b04_85d3:   .db $ff                     ; 105D3:  ff
+b04_85d4:   brk                         ; 105D4:  00
+b04_85d5:   brk                         ; 105D5:  00
+b04_85d6:   brk                         ; 105D6:  00
+b04_85d7:   brk                         ; 105D7:  00
+b04_85d8:   brk                         ; 105D8:  00
+b04_85d9:   brk                         ; 105D9:  00
+b04_85da:   brk                         ; 105DA:  00
+b04_85db:   brk                         ; 105DB:  00
+b04_85dc:   ora ($03,x)                 ; 105DC:  01 03
+b04_85de:   .db $07                     ; 105DE:  07
+b04_85df:   .db $0f                     ; 105DF:  0f
+b04_85e0:   .db $1f                     ; 105E0:  1f
+b04_85e1:   .db $3f                     ; 105E1:  3f
+b04_85e2:   .db $7f                     ; 105E2:  7f
+b04_85e3:   .db $ff                     ; 105E3:  ff
+b04_85e4:   inc $f8fc,x                 ; 105E4:  fe fc f8
+b04_85e7:   beq $85c9                   ; 105E7:  f0 e0
+b04_85e9:   cpy #$80                    ; 105E9:  c0 80
+b04_85eb:   brk                         ; 105EB:  00
+b04_85ec:   .db $f7                     ; 105EC:  f7
+b04_85ed:   .db $f7                     ; 105ED:  f7
+b04_85ee:   .db $f7                     ; 105EE:  f7
+b04_85ef:   .db $f7                     ; 105EF:  f7
+b04_85f0:   .db $f7                     ; 105F0:  f7
+b04_85f1:   .db $f7                     ; 105F1:  f7
+b04_85f2:   .db $f7                     ; 105F2:  f7
+b04_85f3:   .db $f7                     ; 105F3:  f7
+b04_85f4:   brk                         ; 105F4:  00
+b04_85f5:   brk                         ; 105F5:  00
+b04_85f6:   brk                         ; 105F6:  00
+b04_85f7:   brk                         ; 105F7:  00
+b04_85f8:   brk                         ; 105F8:  00
+b04_85f9:   brk                         ; 105F9:  00
+b04_85fa:   brk                         ; 105FA:  00
+b04_85fb:   brk                         ; 105FB:  00
+b04_85fc:   .db $ef                     ; 105FC:  ef
+b04_85fd:   .db $df                     ; 105FD:  df
+b04_85fe:   .db $bf                     ; 105FE:  bf
+b04_85ff:   .db $7f                     ; 105FF:  7f
+b04_8600:   .db $ff                     ; 10600:  ff
+b04_8601:   .db $ff                     ; 10601:  ff
+b04_8602:   .db $ff                     ; 10602:  ff
+b04_8603:   .db $ff                     ; 10603:  ff
+b04_8604:   brk                         ; 10604:  00
+b04_8605:   brk                         ; 10605:  00
+b04_8606:   brk                         ; 10606:  00
+b04_8607:   brk                         ; 10607:  00
+b04_8608:   brk                         ; 10608:  00
+b04_8609:   brk                         ; 10609:  00
+b04_860a:   brk                         ; 1060A:  00
+b04_860b:   brk                         ; 1060B:  00
+b04_860c:   beq $85fe                   ; 1060C:  f0 f0
+b04_860e:   beq $8600                   ; 1060E:  f0 f0
+b04_8610:   beq $8602                   ; 10610:  f0 f0
+b04_8612:   beq $8604                   ; 10612:  f0 f0
+b04_8614:   .db $0f                     ; 10614:  0f
+b04_8615:   .db $0f                     ; 10615:  0f
+b04_8616:   .db $0f                     ; 10616:  0f
+b04_8617:   .db $0f                     ; 10617:  0f
+b04_8618:   .db $0f                     ; 10618:  0f
+b04_8619:   .db $0f                     ; 10619:  0f
+b04_861a:   .db $0f                     ; 1061A:  0f
+b04_861b:   .db $0f                     ; 1061B:  0f
+b04_861c:   .db $f7                     ; 1061C:  f7
+b04_861d:   .db $f7                     ; 1061D:  f7
+b04_861e:   .db $f7                     ; 1061E:  f7
+b04_861f:   .db $fb                     ; 1061F:  fb
+b04_8620:   .db $fc                     ; 10620:  fc
+b04_8621:   .db $ff                     ; 10621:  ff
+b04_8622:   .db $ff                     ; 10622:  ff
+b04_8623:   .db $ff                     ; 10623:  ff
+b04_8624:   brk                         ; 10624:  00
+b04_8625:   brk                         ; 10625:  00
+b04_8626:   brk                         ; 10626:  00
+b04_8627:   brk                         ; 10627:  00
+b04_8628:   brk                         ; 10628:  00
+b04_8629:   brk                         ; 10629:  00
+b04_862a:   brk                         ; 1062A:  00
+b04_862b:   brk                         ; 1062B:  00
+b04_862c:   .db $ff                     ; 1062C:  ff
+b04_862d:   .db $ff                     ; 1062D:  ff
+b04_862e:   .db $ff                     ; 1062E:  ff
+b04_862f:   .db $ff                     ; 1062F:  ff
+b04_8630:   .db $7f                     ; 10630:  7f
+b04_8631:   .db $3f                     ; 10631:  3f
+b04_8632:   .db $1f                     ; 10632:  1f
+b04_8633:   .db $0f                     ; 10633:  0f
+b04_8634:   brk                         ; 10634:  00
+b04_8635:   brk                         ; 10635:  00
+b04_8636:   brk                         ; 10636:  00
+b04_8637:   brk                         ; 10637:  00
+b04_8638:   .db $80                     ; 10638:  80
+b04_8639:   cpy #$e0                    ; 10639:  c0 e0
+b04_863b:   beq $863c                   ; 1063B:  f0 ff
+b04_863d:   .db $ff                     ; 1063D:  ff
+b04_863e:   .db $ff                     ; 1063E:  ff
+b04_863f:   .db $ff                     ; 1063F:  ff
+b04_8640:   .db $7f                     ; 10640:  7f
+b04_8641:   .db $bf                     ; 10641:  bf
+b04_8642:   .db $df                     ; 10642:  df
+b04_8643:   .db $ef                     ; 10643:  ef
+b04_8644:   brk                         ; 10644:  00
+b04_8645:   brk                         ; 10645:  00
+b04_8646:   brk                         ; 10646:  00
+b04_8647:   brk                         ; 10647:  00
+b04_8648:   brk                         ; 10648:  00
+b04_8649:   brk                         ; 10649:  00
+b04_864a:   brk                         ; 1064A:  00
+b04_864b:   brk                         ; 1064B:  00
+b04_864c:   .db $80                     ; 1064C:  80
+b04_864d:   cpy #$e0                    ; 1064D:  c0 e0
+b04_864f:   beq $8650                   ; 1064F:  f0 ff
+b04_8651:   .db $ff                     ; 10651:  ff
+b04_8652:   .db $ff                     ; 10652:  ff
+b04_8653:   .db $ff                     ; 10653:  ff
+b04_8654:   .db $7f                     ; 10654:  7f
+b04_8655:   .db $3f                     ; 10655:  3f
+b04_8656:   .db $1f                     ; 10656:  1f
+b04_8657:   .db $0f                     ; 10657:  0f
+b04_8658:   brk                         ; 10658:  00
+b04_8659:   brk                         ; 10659:  00
+b04_865a:   brk                         ; 1065A:  00
+b04_865b:   brk                         ; 1065B:  00
+b04_865c:   .db $f7                     ; 1065C:  f7
+b04_865d:   .db $fb                     ; 1065D:  fb
+b04_865e:   sbc $fffe,x                 ; 1065E:  fd fe ff
+b04_8661:   .db $ff                     ; 10661:  ff
+b04_8662:   .db $ff                     ; 10662:  ff
+b04_8663:   .db $ff                     ; 10663:  ff
+b04_8664:   brk                         ; 10664:  00
+b04_8665:   brk                         ; 10665:  00
+b04_8666:   brk                         ; 10666:  00
+b04_8667:   brk                         ; 10667:  00
+b04_8668:   brk                         ; 10668:  00
+b04_8669:   brk                         ; 10669:  00
+b04_866a:   brk                         ; 1066A:  00
+b04_866b:   brk                         ; 1066B:  00
+b04_866c:   .db $ff                     ; 1066C:  ff
+b04_866d:   .db $ff                     ; 1066D:  ff
+b04_866e:   .db $ff                     ; 1066E:  ff
+b04_866f:   .db $ff                     ; 1066F:  ff
+b04_8670:   brk                         ; 10670:  00
+b04_8671:   .db $f7                     ; 10671:  f7
+b04_8672:   .db $f7                     ; 10672:  f7
+b04_8673:   .db $f7                     ; 10673:  f7
+b04_8674:   brk                         ; 10674:  00
+b04_8675:   brk                         ; 10675:  00
+b04_8676:   brk                         ; 10676:  00
+b04_8677:   brk                         ; 10677:  00
+b04_8678:   brk                         ; 10678:  00
+b04_8679:   brk                         ; 10679:  00
+b04_867a:   brk                         ; 1067A:  00
+b04_867b:   brk                         ; 1067B:  00
+b04_867c:   .db $0f                     ; 1067C:  0f
+b04_867d:   .db $1f                     ; 1067D:  1f
+b04_867e:   .db $3f                     ; 1067E:  3f
+b04_867f:   .db $7f                     ; 1067F:  7f
+b04_8680:   .db $ff                     ; 10680:  ff
+b04_8681:   .db $ff                     ; 10681:  ff
+b04_8682:   .db $ff                     ; 10682:  ff
+b04_8683:   .db $ff                     ; 10683:  ff
+b04_8684:   beq $8666                   ; 10684:  f0 e0
+b04_8686:   cpy #$80                    ; 10686:  c0 80
+b04_8688:   brk                         ; 10688:  00
+b04_8689:   brk                         ; 10689:  00
+b04_868a:   brk                         ; 1068A:  00
+b04_868b:   brk                         ; 1068B:  00
+b04_868c:   .db $ff                     ; 1068C:  ff
+b04_868d:   .db $ff                     ; 1068D:  ff
+b04_868e:   .db $ff                     ; 1068E:  ff
+b04_868f:   .db $ff                     ; 1068F:  ff
+b04_8690:   .db $1f                     ; 10690:  1f
+b04_8691:   .db $ef                     ; 10691:  ef
+b04_8692:   .db $f7                     ; 10692:  f7
+b04_8693:   .db $f7                     ; 10693:  f7
+b04_8694:   brk                         ; 10694:  00
+b04_8695:   brk                         ; 10695:  00
+b04_8696:   brk                         ; 10696:  00
+b04_8697:   brk                         ; 10697:  00
+b04_8698:   brk                         ; 10698:  00
+b04_8699:   brk                         ; 10699:  00
+b04_869a:   brk                         ; 1069A:  00
+b04_869b:   brk                         ; 1069B:  00
+b04_869c:   brk                         ; 1069C:  00
+b04_869d:   brk                         ; 1069D:  00
+b04_869e:   brk                         ; 1069E:  00
+b04_869f:   brk                         ; 1069F:  00
+b04_86a0:   ora ($03,x)                 ; 106A0:  01 03
+b04_86a2:   .db $07                     ; 106A2:  07
+b04_86a3:   .db $0f                     ; 106A3:  0f
+b04_86a4:   .db $ff                     ; 106A4:  ff
+b04_86a5:   .db $ff                     ; 106A5:  ff
+b04_86a6:   .db $ff                     ; 106A6:  ff
+b04_86a7:   .db $ff                     ; 106A7:  ff
+b04_86a8:   inc $f8fc,x                 ; 106A8:  fe fc f8
+b04_86ab:   beq $869d                   ; 106AB:  f0 f0
+b04_86ad:   beq $869f                   ; 106AD:  f0 f0
+b04_86af:   beq $86a9                   ; 106AF:  f0 f8
+b04_86b1:   .db $fc                     ; 106B1:  fc
+b04_86b2:   inc $0fff,x                 ; 106B2:  fe ff 0f
+b04_86b5:   .db $0f                     ; 106B5:  0f
+b04_86b6:   .db $0f                     ; 106B6:  0f
+b04_86b7:   .db $0f                     ; 106B7:  0f
+b04_86b8:   .db $07                     ; 106B8:  07
+b04_86b9:   .db $03                     ; 106B9:  03
+b04_86ba:   ora ($00,x)                 ; 106BA:  01 00
+b04_86bc:   .db $ff                     ; 106BC:  ff
+b04_86bd:   .db $ff                     ; 106BD:  ff
+b04_86be:   .db $ff                     ; 106BE:  ff
+b04_86bf:   .db $ff                     ; 106BF:  ff
+b04_86c0:   cpx #$df                    ; 106C0:  e0 df
+b04_86c2:   .db $bf                     ; 106C2:  bf
+b04_86c3:   .db $7f                     ; 106C3:  7f
+b04_86c4:   brk                         ; 106C4:  00
+b04_86c5:   brk                         ; 106C5:  00
+b04_86c6:   brk                         ; 106C6:  00
+b04_86c7:   brk                         ; 106C7:  00
+b04_86c8:   brk                         ; 106C8:  00
+b04_86c9:   brk                         ; 106C9:  00
+b04_86ca:   brk                         ; 106CA:  00
+b04_86cb:   brk                         ; 106CB:  00
+b04_86cc:   brk                         ; 106CC:  00
+b04_86cd:   brk                         ; 106CD:  00
+b04_86ce:   brk                         ; 106CE:  00
+b04_86cf:   brk                         ; 106CF:  00
+b04_86d0:   brk                         ; 106D0:  00
+b04_86d1:   brk                         ; 106D1:  00
+b04_86d2:   brk                         ; 106D2:  00
+b04_86d3:   brk                         ; 106D3:  00
+b04_86d4:   .db $ff                     ; 106D4:  ff
+b04_86d5:   .db $ff                     ; 106D5:  ff
+b04_86d6:   .db $ff                     ; 106D6:  ff
+b04_86d7:   .db $ff                     ; 106D7:  ff
+b04_86d8:   brk                         ; 106D8:  00
+b04_86d9:   .db $ff                     ; 106D9:  ff
+b04_86da:   .db $ff                     ; 106DA:  ff
+b04_86db:   .db $ff                     ; 106DB:  ff
+b04_86dc:   .db $07                     ; 106DC:  07
+b04_86dd:   .db $03                     ; 106DD:  03
+b04_86de:   ora ($00,x)                 ; 106DE:  01 00
+b04_86e0:   brk                         ; 106E0:  00
+b04_86e1:   brk                         ; 106E1:  00
+b04_86e2:   brk                         ; 106E2:  00
+b04_86e3:   brk                         ; 106E3:  00
+b04_86e4:   sed                         ; 106E4:  f8
+b04_86e5:   .db $fc                     ; 106E5:  fc
+b04_86e6:   inc $00ff,x                 ; 106E6:  fe ff 00
+b04_86e9:   .db $ff                     ; 106E9:  ff
+b04_86ea:   .db $ff                     ; 106EA:  ff
+b04_86eb:   .db $ff                     ; 106EB:  ff
+b04_86ec:   .db $f7                     ; 106EC:  f7
+b04_86ed:   .db $f7                     ; 106ED:  f7
+b04_86ee:   .db $f7                     ; 106EE:  f7
+b04_86ef:   .db $f7                     ; 106EF:  f7
+b04_86f0:   .db $07                     ; 106F0:  07
+b04_86f1:   .db $f7                     ; 106F1:  f7
+b04_86f2:   .db $f7                     ; 106F2:  f7
+b04_86f3:   .db $f7                     ; 106F3:  f7
+b04_86f4:   brk                         ; 106F4:  00
+b04_86f5:   brk                         ; 106F5:  00
+b04_86f6:   brk                         ; 106F6:  00
+b04_86f7:   brk                         ; 106F7:  00
+b04_86f8:   brk                         ; 106F8:  00
+b04_86f9:   brk                         ; 106F9:  00
+b04_86fa:   brk                         ; 106FA:  00
+b04_86fb:   brk                         ; 106FB:  00
+b04_86fc:   beq $86f6                   ; 106FC:  f0 f8
+b04_86fe:   .db $fc                     ; 106FE:  fc
+b04_86ff:   inc $ffff,x                 ; 106FF:  fe ff ff
+b04_8702:   .db $ff                     ; 10702:  ff
+b04_8703:   .db $ff                     ; 10703:  ff
+b04_8704:   .db $0f                     ; 10704:  0f
+b04_8705:   .db $07                     ; 10705:  07
+b04_8706:   .db $03                     ; 10706:  03
+b04_8707:   ora ($00,x)                 ; 10707:  01 00
+b04_8709:   brk                         ; 10709:  00
+b04_870a:   brk                         ; 1070A:  00
+b04_870b:   brk                         ; 1070B:  00
+b04_870c:   ora ($03,x)                 ; 1070C:  01 03
+b04_870e:   .db $07                     ; 1070E:  07
+b04_870f:   .db $0f                     ; 1070F:  0f
+b04_8710:   .db $ff                     ; 10710:  ff
+b04_8711:   .db $ff                     ; 10711:  ff
+b04_8712:   .db $ff                     ; 10712:  ff
+b04_8713:   .db $ff                     ; 10713:  ff
+b04_8714:   inc $f8fc,x                 ; 10714:  fe fc f8
+b04_8717:   beq $8719                   ; 10717:  f0 00
+b04_8719:   brk                         ; 10719:  00
+b04_871a:   brk                         ; 1071A:  00
+b04_871b:   brk                         ; 1071B:  00
+b04_871c:   .db $ff                     ; 1071C:  ff
+b04_871d:   .db $ff                     ; 1071D:  ff
+b04_871e:   .db $ff                     ; 1071E:  ff
+b04_871f:   .db $ff                     ; 1071F:  ff
+b04_8720:   .db $fc                     ; 10720:  fc
+b04_8721:   .db $fb                     ; 10721:  fb
+b04_8722:   .db $f7                     ; 10722:  f7
+b04_8723:   .db $f7                     ; 10723:  f7
+b04_8724:   brk                         ; 10724:  00
+b04_8725:   brk                         ; 10725:  00
+b04_8726:   brk                         ; 10726:  00
+b04_8727:   brk                         ; 10727:  00
+b04_8728:   brk                         ; 10728:  00
+b04_8729:   brk                         ; 10729:  00
+b04_872a:   brk                         ; 1072A:  00
+b04_872b:   brk                         ; 1072B:  00
+b04_872c:   inc $fbfd,x                 ; 1072C:  fe fd fb
+b04_872f:   .db $f7                     ; 1072F:  f7
+b04_8730:   .db $0f                     ; 10730:  0f
+b04_8731:   .db $ff                     ; 10731:  ff
+b04_8732:   .db $ff                     ; 10732:  ff
+b04_8733:   .db $ff                     ; 10733:  ff
+b04_8734:   brk                         ; 10734:  00
+b04_8735:   brk                         ; 10735:  00
+b04_8736:   brk                         ; 10736:  00
+b04_8737:   brk                         ; 10737:  00
+b04_8738:   brk                         ; 10738:  00
+b04_8739:   brk                         ; 10739:  00
+b04_873a:   brk                         ; 1073A:  00
+b04_873b:   brk                         ; 1073B:  00
+b04_873c:   .db $ff                     ; 1073C:  ff
+b04_873d:   .db $ff                     ; 1073D:  ff
+b04_873e:   .db $ff                     ; 1073E:  ff
+b04_873f:   .db $ff                     ; 1073F:  ff
+b04_8740:   inc $f8fc,x                 ; 10740:  fe fc f8
+b04_8743:   beq $8745                   ; 10743:  f0 00
+b04_8745:   brk                         ; 10745:  00
+b04_8746:   brk                         ; 10746:  00
+b04_8747:   brk                         ; 10747:  00
+b04_8748:   ora ($03,x)                 ; 10748:  01 03
+b04_874a:   .db $07                     ; 1074A:  07
+b04_874b:   .db $0f                     ; 1074B:  0f
+b04_874c:   .db $ff                     ; 1074C:  ff
+b04_874d:   .db $ff                     ; 1074D:  ff
+b04_874e:   .db $ff                     ; 1074E:  ff
+b04_874f:   .db $ff                     ; 1074F:  ff
+b04_8750:   inc $a8f0,x                 ; 10750:  fe f0 a8
+b04_8753:   .db $f3                     ; 10753:  f3
+b04_8754:   brk                         ; 10754:  00
+b04_8755:   brk                         ; 10755:  00
+b04_8756:   brk                         ; 10756:  00
+b04_8757:   brk                         ; 10757:  00
+b04_8758:   .db $03                     ; 10758:  03
+b04_8759:   .db $0f                     ; 10759:  0f
+b04_875a:   eor $08,x                   ; 1075A:  55 08
+b04_875c:   .db $f7                     ; 1075C:  f7
+b04_875d:   .db $f7                     ; 1075D:  f7
+b04_875e:   .db $f7                     ; 1075E:  f7
+b04_875f:   .db $f7                     ; 1075F:  f7
+b04_8760:   beq $8759                   ; 10760:  f0 f7
+b04_8762:   .db $f7                     ; 10762:  f7
+b04_8763:   .db $f7                     ; 10763:  f7
+b04_8764:   brk                         ; 10764:  00
+b04_8765:   brk                         ; 10765:  00
+b04_8766:   brk                         ; 10766:  00
+b04_8767:   brk                         ; 10767:  00
+b04_8768:   brk                         ; 10768:  00
+b04_8769:   brk                         ; 10769:  00
+b04_876a:   brk                         ; 1076A:  00
+b04_876b:   brk                         ; 1076B:  00
+b04_876c:   .db $ff                     ; 1076C:  ff
+b04_876d:   .db $ff                     ; 1076D:  ff
+b04_876e:   .db $fb                     ; 1076E:  fb
+b04_876f:   cmp ($00),y                 ; 1076F:  d1 00
+b04_8771:   brk                         ; 10771:  00
+b04_8772:   dey                         ; 10772:  88
+b04_8773:   .db $77                     ; 10773:  77
+b04_8774:   php                         ; 10774:  08
+b04_8775:   .db $1c                     ; 10775:  1c
+b04_8776:   .db $7f                     ; 10776:  7f
+b04_8777:   .db $ff                     ; 10777:  ff
+b04_8778:   ldx $55ef,y                 ; 10778:  be ef 55
+b04_877b:   dey                         ; 1077B:  88
+b04_877c:   .db $ff                     ; 1077C:  ff
+b04_877d:   .db $ff                     ; 1077D:  ff
+b04_877e:   .db $ff                     ; 1077E:  ff
+b04_877f:   .db $ff                     ; 1077F:  ff
+b04_8780:   .db $7f                     ; 10780:  7f
+b04_8781:   .db $07                     ; 10781:  07
+b04_8782:   ora $4f,x                   ; 10782:  15 4f
+b04_8784:   brk                         ; 10784:  00
+b04_8785:   brk                         ; 10785:  00
+b04_8786:   brk                         ; 10786:  00
+b04_8787:   .db $80                     ; 10787:  80
+b04_8788:   cpy #$f8                    ; 10788:  c0 f8
+b04_878a:   rol a                       ; 1078A:  2a
+b04_878b:   bcc $8784                   ; 1078B:  90 f7
+b04_878d:   .db $f7                     ; 1078D:  f7
+b04_878e:   .db $f7                     ; 1078E:  f7
+b04_878f:   .db $ef                     ; 1078F:  ef
+b04_8790:   .db $1f                     ; 10790:  1f
+b04_8791:   .db $ff                     ; 10791:  ff
+b04_8792:   .db $ff                     ; 10792:  ff
+b04_8793:   .db $ff                     ; 10793:  ff
+b04_8794:   brk                         ; 10794:  00
+b04_8795:   brk                         ; 10795:  00
+b04_8796:   brk                         ; 10796:  00
+b04_8797:   brk                         ; 10797:  00
+b04_8798:   brk                         ; 10798:  00
+b04_8799:   brk                         ; 10799:  00
+b04_879a:   brk                         ; 1079A:  00
+b04_879b:   brk                         ; 1079B:  00
+b04_879c:   .db $ff                     ; 1079C:  ff
+b04_879d:   inc $f8fc,x                 ; 1079D:  fe fc f8
+b04_87a0:   beq $8792                   ; 107A0:  f0 f0
+b04_87a2:   beq $8794                   ; 107A2:  f0 f0
+b04_87a4:   brk                         ; 107A4:  00
+b04_87a5:   ora ($03,x)                 ; 107A5:  01 03
+b04_87a7:   .db $07                     ; 107A7:  07
+b04_87a8:   .db $0f                     ; 107A8:  0f
+b04_87a9:   .db $0f                     ; 107A9:  0f
+b04_87aa:   .db $0f                     ; 107AA:  0f
+b04_87ab:   .db $0f                     ; 107AB:  0f
+b04_87ac:   brk                         ; 107AC:  00
+b04_87ad:   brk                         ; 107AD:  00
+b04_87ae:   brk                         ; 107AE:  00
+b04_87af:   brk                         ; 107AF:  00
+b04_87b0:   brk                         ; 107B0:  00
+b04_87b1:   ora ($03,x)                 ; 107B1:  01 03
+b04_87b3:   .db $07                     ; 107B3:  07
+b04_87b4:   .db $ff                     ; 107B4:  ff
+b04_87b5:   .db $ff                     ; 107B5:  ff
+b04_87b6:   .db $ff                     ; 107B6:  ff
+b04_87b7:   .db $ff                     ; 107B7:  ff
+b04_87b8:   brk                         ; 107B8:  00
+b04_87b9:   inc $f8fc,x                 ; 107B9:  fe fc f8
+b04_87bc:   .db $ff                     ; 107BC:  ff
+b04_87bd:   .db $ff                     ; 107BD:  ff
+b04_87be:   .db $ff                     ; 107BE:  ff
+b04_87bf:   .db $73                     ; 107BF:  73
+b04_87c0:   ora ($00),y                 ; 107C0:  11 00
+b04_87c2:   dey                         ; 107C2:  88
+b04_87c3:   ror $00                     ; 107C3:  66 00
+b04_87c5:   sty $de                     ; 107C5:  84 de
+b04_87c7:   .db $ff                     ; 107C7:  ff
+b04_87c8:   .db $77                     ; 107C8:  77
+b04_87c9:   .db $ff                     ; 107C9:  ff
+b04_87ca:   eor $88,x                   ; 107CA:  55 88
+b04_87cc:   .db $ff                     ; 107CC:  ff
+b04_87cd:   .db $ff                     ; 107CD:  ff
+b04_87ce:   .db $ff                     ; 107CE:  ff
+b04_87cf:   .db $ff                     ; 107CF:  ff
+b04_87d0:   .db $0f                     ; 107D0:  0f
+b04_87d1:   .db $07                     ; 107D1:  07
+b04_87d2:   .db $03                     ; 107D2:  03
+b04_87d3:   ora ($00,x)                 ; 107D3:  01 00
+b04_87d5:   brk                         ; 107D5:  00
+b04_87d6:   brk                         ; 107D6:  00
+b04_87d7:   brk                         ; 107D7:  00
+b04_87d8:   beq $87d2                   ; 107D8:  f0 f8
+b04_87da:   .db $fc                     ; 107DA:  fc
+b04_87db:   inc $1f0f,x                 ; 107DB:  fe 0f 1f
+b04_87de:   .db $3f                     ; 107DE:  3f
+b04_87df:   .db $7f                     ; 107DF:  7f
+b04_87e0:   .db $ff                     ; 107E0:  ff
+b04_87e1:   .db $ff                     ; 107E1:  ff
+b04_87e2:   .db $ff                     ; 107E2:  ff
+b04_87e3:   .db $ff                     ; 107E3:  ff
+b04_87e4:   .db $f4                     ; 107E4:  f4
+b04_87e5:   cpx #$c0                    ; 107E5:  e0 c0
+b04_87e7:   .db $80                     ; 107E7:  80
+b04_87e8:   rti                         ; 107E8:  40
+b04_87e9:   .db $02                     ; 107E9:  02
+b04_87ea:   bpl $87ec                   ; 107EA:  10 00
+b04_87ec:   .db $ff                     ; 107EC:  ff
+b04_87ed:   inc $f8fc,x                 ; 107ED:  fe fc f8
+b04_87f0:   beq $87d2                   ; 107F0:  f0 e0
+b04_87f2:   cpy #$80                    ; 107F2:  c0 80
+b04_87f4:   brk                         ; 107F4:  00
+b04_87f5:   ora ($03,x)                 ; 107F5:  01 03
+b04_87f7:   .db $07                     ; 107F7:  07
+b04_87f8:   .db $0f                     ; 107F8:  0f
+b04_87f9:   .db $1f                     ; 107F9:  1f
+b04_87fa:   .db $3f                     ; 107FA:  3f
+b04_87fb:   .db $7f                     ; 107FB:  7f
+b04_87fc:   brk                         ; 107FC:  00
+b04_87fd:   brk                         ; 107FD:  00
+b04_87fe:   brk                         ; 107FE:  00
+b04_87ff:   brk                         ; 107FF:  00
+b04_8800:   .db $0f                     ; 10800:  0f
+b04_8801:   .db $0f                     ; 10801:  0f
+b04_8802:   .db $0f                     ; 10802:  0f
+b04_8803:   .db $0f                     ; 10803:  0f
+b04_8804:   .db $f7                     ; 10804:  f7
+b04_8805:   .db $f7                     ; 10805:  f7
+b04_8806:   .db $f7                     ; 10806:  f7
+b04_8807:   .db $f7                     ; 10807:  f7
+b04_8808:   beq $87fc                   ; 10808:  f0 f2
+b04_880a:   beq $87fc                   ; 1080A:  f0 f0
+b04_880c:   brk                         ; 1080C:  00
+b04_880d:   brk                         ; 1080D:  00
+b04_880e:   brk                         ; 1080E:  00
+b04_880f:   brk                         ; 1080F:  00
+b04_8810:   beq $8802                   ; 10810:  f0 f0
+b04_8812:   beq $8804                   ; 10812:  f0 f0
+b04_8814:   .db $ff                     ; 10814:  ff
+b04_8815:   .db $ff                     ; 10815:  ff
+b04_8816:   .db $ff                     ; 10816:  ff
+b04_8817:   .db $ff                     ; 10817:  ff
+b04_8818:   .db $0f                     ; 10818:  0f
+b04_8819:   .db $0f                     ; 10819:  0f
+b04_881a:   .db $0f                     ; 1081A:  0f
+b04_881b:   .db $0f                     ; 1081B:  0f
+b04_881c:   beq $880e                   ; 1081C:  f0 f0
+b04_881e:   beq $8810                   ; 1081E:  f0 f0
+b04_8820:   brk                         ; 10820:  00
+b04_8821:   brk                         ; 10821:  00
+b04_8822:   brk                         ; 10822:  00
+b04_8823:   brk                         ; 10823:  00
+b04_8824:   .db $0f                     ; 10824:  0f
+b04_8825:   .db $2f                     ; 10825:  2f
+b04_8826:   .db $0f                     ; 10826:  0f
+b04_8827:   .db $0f                     ; 10827:  0f
+b04_8828:   .db $ff                     ; 10828:  ff
+b04_8829:   .db $ff                     ; 10829:  ff
+b04_882a:   .db $ff                     ; 1082A:  ff
+b04_882b:   .db $ff                     ; 1082B:  ff
+b04_882c:   brk                         ; 1082C:  00
+b04_882d:   brk                         ; 1082D:  00
+b04_882e:   brk                         ; 1082E:  00
+b04_882f:   brk                         ; 1082F:  00
+b04_8830:   .db $0f                     ; 10830:  0f
+b04_8831:   .db $1f                     ; 10831:  1f
+b04_8832:   .db $3f                     ; 10832:  3f
+b04_8833:   .db $7f                     ; 10833:  7f
+b04_8834:   .db $ff                     ; 10834:  ff
+b04_8835:   .db $ff                     ; 10835:  ff
+b04_8836:   .db $ff                     ; 10836:  ff
+b04_8837:   .db $ff                     ; 10837:  ff
+b04_8838:   beq $881a                   ; 10838:  f0 e0
+b04_883a:   bne $87bc                   ; 1083A:  d0 80
+b04_883c:   brk                         ; 1083C:  00
+b04_883d:   brk                         ; 1083D:  00
+b04_883e:   brk                         ; 1083E:  00
+b04_883f:   brk                         ; 1083F:  00
+b04_8840:   brk                         ; 10840:  00
+b04_8841:   brk                         ; 10841:  00
+b04_8842:   brk                         ; 10842:  00
+b04_8843:   brk                         ; 10843:  00
+b04_8844:   .db $ff                     ; 10844:  ff
+b04_8845:   .db $ff                     ; 10845:  ff
+b04_8846:   .db $ff                     ; 10846:  ff
+b04_8847:   .db $ff                     ; 10847:  ff
+b04_8848:   .db $fc                     ; 10848:  fc
+b04_8849:   .db $fb                     ; 10849:  fb
+b04_884a:   .db $f7                     ; 1084A:  f7
+b04_884b:   .db $f7                     ; 1084B:  f7
+b04_884c:   brk                         ; 1084C:  00
+b04_884d:   brk                         ; 1084D:  00
+b04_884e:   brk                         ; 1084E:  00
+b04_884f:   brk                         ; 1084F:  00
+b04_8850:   brk                         ; 10850:  00
+b04_8851:   brk                         ; 10851:  00
+b04_8852:   brk                         ; 10852:  00
+b04_8853:   brk                         ; 10853:  00
+b04_8854:   .db $f7                     ; 10854:  f7
+b04_8855:   .db $f7                     ; 10855:  f7
+b04_8856:   .db $f7                     ; 10856:  f7
+b04_8857:   .db $ef                     ; 10857:  ef
+b04_8858:   .db $1f                     ; 10858:  1f
+b04_8859:   .db $ff                     ; 10859:  ff
+b04_885a:   .db $ff                     ; 1085A:  ff
+b04_885b:   .db $ff                     ; 1085B:  ff
+b04_885c:   brk                         ; 1085C:  00
+b04_885d:   brk                         ; 1085D:  00
+b04_885e:   brk                         ; 1085E:  00
+b04_885f:   brk                         ; 1085F:  00
+b04_8860:   .db $ff                     ; 10860:  ff
+b04_8861:   .db $ff                     ; 10861:  ff
+b04_8862:   .db $ff                     ; 10862:  ff
+b04_8863:   .db $ff                     ; 10863:  ff
+b04_8864:   .db $f7                     ; 10864:  f7
+b04_8865:   .db $f7                     ; 10865:  f7
+b04_8866:   .db $f7                     ; 10866:  f7
+b04_8867:   .db $f7                     ; 10867:  f7
+b04_8868:   brk                         ; 10868:  00
+b04_8869:   .db $02                     ; 10869:  02
+b04_886a:   bpl $886c                   ; 1086A:  10 00
+b04_886c:   .db $04                     ; 1086C:  04
+b04_886d:   and ($03,x)                 ; 1086D:  21 03
+b04_886f:   .db $07                     ; 1086F:  07
+b04_8870:   .db $4f                     ; 10870:  4f
+b04_8871:   .db $1f                     ; 10871:  1f
+b04_8872:   .db $3f                     ; 10872:  3f
+b04_8873:   .db $7f                     ; 10873:  7f
+b04_8874:   .db $ff                     ; 10874:  ff
+b04_8875:   inc $f8fc,x                 ; 10875:  fe fc f8
+b04_8878:   beq $885c                   ; 10878:  f0 e2
+b04_887a:   bne $87fc                   ; 1087A:  d0 80
+b04_887c:   .db $ef                     ; 1087C:  ef
+b04_887d:   .db $df                     ; 1087D:  df
+b04_887e:   .db $bf                     ; 1087E:  bf
+b04_887f:   .db $7f                     ; 1087F:  7f
+b04_8880:   inc $fbfd,x                 ; 10880:  fe fd fb
+b04_8883:   .db $f7                     ; 10883:  f7
+b04_8884:   brk                         ; 10884:  00
+b04_8885:   brk                         ; 10885:  00
+b04_8886:   brk                         ; 10886:  00
+b04_8887:   brk                         ; 10887:  00
+b04_8888:   brk                         ; 10888:  00
+b04_8889:   brk                         ; 10889:  00
+b04_888a:   brk                         ; 1088A:  00
+b04_888b:   brk                         ; 1088B:  00
+b04_888c:   inc $fbfd,x                 ; 1088C:  fe fd fb
+b04_888f:   .db $f7                     ; 1088F:  f7
+b04_8890:   .db $f7                     ; 10890:  f7
+b04_8891:   .db $f7                     ; 10891:  f7
+b04_8892:   .db $f7                     ; 10892:  f7
+b04_8893:   .db $f7                     ; 10893:  f7
+b04_8894:   brk                         ; 10894:  00
+b04_8895:   brk                         ; 10895:  00
+b04_8896:   brk                         ; 10896:  00
+b04_8897:   brk                         ; 10897:  00
+b04_8898:   brk                         ; 10898:  00
+b04_8899:   brk                         ; 10899:  00
+b04_889a:   brk                         ; 1089A:  00
+b04_889b:   brk                         ; 1089B:  00
+b04_889c:   .db $ff                     ; 1089C:  ff
+b04_889d:   .db $ff                     ; 1089D:  ff
+b04_889e:   .db $ff                     ; 1089E:  ff
+b04_889f:   .db $ff                     ; 1089F:  ff
+b04_88a0:   beq $8882                   ; 108A0:  f0 e0
+b04_88a2:   cpy #$80                    ; 108A2:  c0 80
+b04_88a4:   brk                         ; 108A4:  00
+b04_88a5:   brk                         ; 108A5:  00
+b04_88a6:   brk                         ; 108A6:  00
+b04_88a7:   brk                         ; 108A7:  00
+b04_88a8:   .db $0f                     ; 108A8:  0f
+b04_88a9:   .db $1f                     ; 108A9:  1f
+b04_88aa:   .db $3f                     ; 108AA:  3f
+b04_88ab:   .db $7f                     ; 108AB:  7f
+b04_88ac:   brk                         ; 108AC:  00
+b04_88ad:   brk                         ; 108AD:  00
+b04_88ae:   brk                         ; 108AE:  00
+b04_88af:   brk                         ; 108AF:  00
+b04_88b0:   brk                         ; 108B0:  00
+b04_88b1:   brk                         ; 108B1:  00
+b04_88b2:   brk                         ; 108B2:  00
+b04_88b3:   brk                         ; 108B3:  00
+b04_88b4:   .db $ff                     ; 108B4:  ff
+b04_88b5:   .db $ff                     ; 108B5:  ff
+b04_88b6:   .db $ff                     ; 108B6:  ff
+b04_88b7:   .db $ff                     ; 108B7:  ff
+b04_88b8:   .db $1f                     ; 108B8:  1f
+b04_88b9:   .db $ef                     ; 108B9:  ef
+b04_88ba:   .db $f7                     ; 108BA:  f7
+b04_88bb:   .db $f7                     ; 108BB:  f7
+b04_88bc:   .db $ef                     ; 108BC:  ef
+b04_88bd:   .db $df                     ; 108BD:  df
+b04_88be:   .db $bf                     ; 108BE:  bf
+b04_88bf:   .db $7f                     ; 108BF:  7f
+b04_88c0:   .db $7f                     ; 108C0:  7f
+b04_88c1:   .db $bf                     ; 108C1:  bf
+b04_88c2:   .db $df                     ; 108C2:  df
+b04_88c3:   .db $ef                     ; 108C3:  ef
+b04_88c4:   brk                         ; 108C4:  00
+b04_88c5:   brk                         ; 108C5:  00
+b04_88c6:   brk                         ; 108C6:  00
+b04_88c7:   brk                         ; 108C7:  00
+b04_88c8:   brk                         ; 108C8:  00
+b04_88c9:   brk                         ; 108C9:  00
+b04_88ca:   brk                         ; 108CA:  00
+b04_88cb:   brk                         ; 108CB:  00
+b04_88cc:   brk                         ; 108CC:  00
+b04_88cd:   brk                         ; 108CD:  00
+b04_88ce:   brk                         ; 108CE:  00
+b04_88cf:   brk                         ; 108CF:  00
+b04_88d0:   brk                         ; 108D0:  00
+b04_88d1:   brk                         ; 108D1:  00
+b04_88d2:   brk                         ; 108D2:  00
+b04_88d3:   brk                         ; 108D3:  00
+b04_88d4:   .db $f7                     ; 108D4:  f7
+b04_88d5:   .db $f7                     ; 108D5:  f7
+b04_88d6:   .db $f7                     ; 108D6:  f7
+b04_88d7:   .db $fb                     ; 108D7:  fb
+b04_88d8:   .db $fc                     ; 108D8:  fc
+b04_88d9:   .db $ff                     ; 108D9:  ff
+b04_88da:   .db $ff                     ; 108DA:  ff
+b04_88db:   .db $ff                     ; 108DB:  ff
+b04_88dc:   brk                         ; 108DC:  00
+b04_88dd:   brk                         ; 108DD:  00
+b04_88de:   brk                         ; 108DE:  00
+b04_88df:   brk                         ; 108DF:  00
+b04_88e0:   .db $0f                     ; 108E0:  0f
+b04_88e1:   .db $0f                     ; 108E1:  0f
+b04_88e2:   .db $0f                     ; 108E2:  0f
+b04_88e3:   .db $0f                     ; 108E3:  0f
+b04_88e4:   .db $ff                     ; 108E4:  ff
+b04_88e5:   .db $ff                     ; 108E5:  ff
+b04_88e6:   .db $ff                     ; 108E6:  ff
+b04_88e7:   .db $ff                     ; 108E7:  ff
+b04_88e8:   brk                         ; 108E8:  00
+b04_88e9:   .db $f2                     ; 108E9:  f2
+b04_88ea:   beq $88dc                   ; 108EA:  f0 f0
+b04_88ec:   .db $f7                     ; 108EC:  f7
+b04_88ed:   .db $f7                     ; 108ED:  f7
+b04_88ee:   .db $f7                     ; 108EE:  f7
+b04_88ef:   .db $f7                     ; 108EF:  f7
+b04_88f0:   brk                         ; 108F0:  00
+b04_88f1:   .db $ff                     ; 108F1:  ff
+b04_88f2:   .db $ff                     ; 108F2:  ff
+b04_88f3:   .db $ff                     ; 108F3:  ff
+b04_88f4:   brk                         ; 108F4:  00
+b04_88f5:   brk                         ; 108F5:  00
+b04_88f6:   brk                         ; 108F6:  00
+b04_88f7:   brk                         ; 108F7:  00
+b04_88f8:   brk                         ; 108F8:  00
+b04_88f9:   brk                         ; 108F9:  00
+b04_88fa:   brk                         ; 108FA:  00
+b04_88fb:   brk                         ; 108FB:  00
+b04_88fc:   .db $ff                     ; 108FC:  ff
+b04_88fd:   .db $7f                     ; 108FD:  7f
+b04_88fe:   .db $3f                     ; 108FE:  3f
+b04_88ff:   .db $1f                     ; 108FF:  1f
+b04_8900:   .db $0f                     ; 10900:  0f
+b04_8901:   .db $07                     ; 10901:  07
+b04_8902:   .db $03                     ; 10902:  03
+b04_8903:   ora ($00,x)                 ; 10903:  01 00
+b04_8905:   .db $80                     ; 10905:  80
+b04_8906:   cpy #$e0                    ; 10906:  c0 e0
+b04_8908:   beq $8902                   ; 10908:  f0 f8
+b04_890a:   .db $fc                     ; 1090A:  fc
+b04_890b:   inc $0000,x                 ; 1090B:  fe 00 00
+b04_890e:   brk                         ; 1090E:  00
+b04_890f:   brk                         ; 1090F:  00
+b04_8910:   brk                         ; 10910:  00
+b04_8911:   brk                         ; 10911:  00
+b04_8912:   brk                         ; 10912:  00
+b04_8913:   brk                         ; 10913:  00
+b04_8914:   .db $f7                     ; 10914:  f7
+b04_8915:   .db $fb                     ; 10915:  fb
+b04_8916:   sbc $fffe,x                 ; 10916:  fd fe ff
+b04_8919:   .db $ff                     ; 10919:  ff
+b04_891a:   .db $ff                     ; 1091A:  ff
+b04_891b:   .db $ff                     ; 1091B:  ff
+b04_891c:   brk                         ; 1091C:  00
+b04_891d:   brk                         ; 1091D:  00
+b04_891e:   brk                         ; 1091E:  00
+b04_891f:   brk                         ; 1091F:  00
+b04_8920:   brk                         ; 10920:  00
+b04_8921:   brk                         ; 10921:  00
+b04_8922:   brk                         ; 10922:  00
+b04_8923:   brk                         ; 10923:  00
+b04_8924:   .db $ff                     ; 10924:  ff
+b04_8925:   .db $ff                     ; 10925:  ff
+b04_8926:   .db $ff                     ; 10926:  ff
+b04_8927:   .db $ff                     ; 10927:  ff
+b04_8928:   .db $7f                     ; 10928:  7f
+b04_8929:   .db $bf                     ; 10929:  bf
+b04_892a:   .db $df                     ; 1092A:  df
+b04_892b:   .db $ef                     ; 1092B:  ef
+b04_892c:   .db $04                     ; 1092C:  04
+b04_892d:   jsr $0000                   ; 1092D:  20 00 00
+b04_8930:   eor ($03,x)                 ; 10930:  41 03
+b04_8932:   .db $17                     ; 10932:  17
+b04_8933:   .db $0f                     ; 10933:  0f
+b04_8934:   .db $ff                     ; 10934:  ff
+b04_8935:   .db $ff                     ; 10935:  ff
+b04_8936:   .db $ff                     ; 10936:  ff
+b04_8937:   .db $ff                     ; 10937:  ff
+b04_8938:   inc $f8fe,x                 ; 10938:  fe fe f8
+b04_893b:   beq $894c                   ; 1093B:  f0 0f
+b04_893d:   .db $3f                     ; 1093D:  3f
+b04_893e:   .db $3f                     ; 1093E:  3f
+b04_893f:   .db $7f                     ; 1093F:  7f
+b04_8940:   .db $ff                     ; 10940:  ff
+b04_8941:   .db $ff                     ; 10941:  ff
+b04_8942:   .db $ff                     ; 10942:  ff
+b04_8943:   .db $ff                     ; 10943:  ff
+b04_8944:   .db $f4                     ; 10944:  f4
+b04_8945:   cpx #$c0                    ; 10945:  e0 c0
+b04_8947:   .db $80                     ; 10947:  80
+b04_8948:   rti                         ; 10948:  40
+b04_8949:   .db $02                     ; 10949:  02
+b04_894a:   bpl $894c                   ; 1094A:  10 00
+b04_894c:   brk                         ; 1094C:  00
+b04_894d:   .db $80                     ; 1094D:  80
+b04_894e:   cpy #$e0                    ; 1094E:  c0 e0
+b04_8950:   beq $8942                   ; 10950:  f0 f0
+b04_8952:   beq $8944                   ; 10952:  f0 f0
+b04_8954:   .db $ff                     ; 10954:  ff
+b04_8955:   .db $7f                     ; 10955:  7f
+b04_8956:   .db $3f                     ; 10956:  3f
+b04_8957:   .db $1f                     ; 10957:  1f
+b04_8958:   .db $4f                     ; 10958:  4f
+b04_8959:   .db $0f                     ; 10959:  0f
+b04_895a:   .db $0f                     ; 1095A:  0f
+b04_895b:   .db $0f                     ; 1095B:  0f
+b04_895c:   brk                         ; 1095C:  00
+b04_895d:   brk                         ; 1095D:  00
+b04_895e:   brk                         ; 1095E:  00
+b04_895f:   brk                         ; 1095F:  00
+b04_8960:   .db $0f                     ; 10960:  0f
+b04_8961:   .db $0f                     ; 10961:  0f
+b04_8962:   .db $0f                     ; 10962:  0f
+b04_8963:   .db $0f                     ; 10963:  0f
+b04_8964:   .db $ff                     ; 10964:  ff
+b04_8965:   .db $ff                     ; 10965:  ff
+b04_8966:   .db $ff                     ; 10966:  ff
+b04_8967:   .db $ff                     ; 10967:  ff
+b04_8968:   beq $895c                   ; 10968:  f0 f2
+b04_896a:   beq $895c                   ; 1096A:  f0 f0
+b04_896c:   brk                         ; 1096C:  00
+b04_896d:   ora ($03,x)                 ; 1096D:  01 03
+b04_896f:   .db $07                     ; 1096F:  07
+b04_8970:   .db $0f                     ; 10970:  0f
+b04_8971:   .db $0f                     ; 10971:  0f
+b04_8972:   .db $0f                     ; 10972:  0f
+b04_8973:   .db $0f                     ; 10973:  0f
+b04_8974:   .db $ff                     ; 10974:  ff
+b04_8975:   inc $f8fc,x                 ; 10975:  fe fc f8
+b04_8978:   beq $896c                   ; 10978:  f0 f2
+b04_897a:   beq $896c                   ; 1097A:  f0 f0
+b04_897c:   brk                         ; 1097C:  00
+b04_897d:   brk                         ; 1097D:  00
+b04_897e:   brk                         ; 1097E:  00
+b04_897f:   brk                         ; 1097F:  00
+b04_8980:   beq $8972                   ; 10980:  f0 f0
+b04_8982:   beq $8974                   ; 10982:  f0 f0
+b04_8984:   .db $ff                     ; 10984:  ff
+b04_8985:   .db $ff                     ; 10985:  ff
+b04_8986:   .db $ff                     ; 10986:  ff
+b04_8987:   .db $ff                     ; 10987:  ff
+b04_8988:   brk                         ; 10988:  00
+b04_8989:   .db $0f                     ; 10989:  0f
+b04_898a:   .db $0f                     ; 1098A:  0f
+b04_898b:   .db $0f                     ; 1098B:  0f
+b04_898c:   brk                         ; 1098C:  00
+b04_898d:   brk                         ; 1098D:  00
+b04_898e:   brk                         ; 1098E:  00
+b04_898f:   brk                         ; 1098F:  00
+b04_8990:   brk                         ; 10990:  00
+b04_8991:   brk                         ; 10991:  00
+b04_8992:   brk                         ; 10992:  00
+b04_8993:   brk                         ; 10993:  00
+b04_8994:   .db $ff                     ; 10994:  ff
+b04_8995:   .db $ff                     ; 10995:  ff
+b04_8996:   .db $ff                     ; 10996:  ff
+b04_8997:   .db $ff                     ; 10997:  ff
+b04_8998:   inc $fbfd,x                 ; 10998:  fe fd fb
+b04_899b:   .db $f7                     ; 1099B:  f7
+b04_899c:   brk                         ; 1099C:  00
+b04_899d:   brk                         ; 1099D:  00
+b04_899e:   brk                         ; 1099E:  00
+b04_899f:   brk                         ; 1099F:  00
+b04_89a0:   brk                         ; 109A0:  00
+b04_89a1:   brk                         ; 109A1:  00
+b04_89a2:   brk                         ; 109A2:  00
+b04_89a3:   brk                         ; 109A3:  00
+b04_89a4:   .db $ef                     ; 109A4:  ef
+b04_89a5:   .db $df                     ; 109A5:  df
+b04_89a6:   .db $bf                     ; 109A6:  bf
+b04_89a7:   .db $7f                     ; 109A7:  7f
+b04_89a8:   .db $ff                     ; 109A8:  ff
+b04_89a9:   .db $ff                     ; 109A9:  ff
+b04_89aa:   .db $ff                     ; 109AA:  ff
+b04_89ab:   .db $ff                     ; 109AB:  ff
+b04_89ac:   brk                         ; 109AC:  00
+b04_89ad:   ora ($03,x)                 ; 109AD:  01 03
+b04_89af:   .db $07                     ; 109AF:  07
+b04_89b0:   .db $0f                     ; 109B0:  0f
+b04_89b1:   .db $1f                     ; 109B1:  1f
+b04_89b2:   .db $3f                     ; 109B2:  3f
+b04_89b3:   .db $7f                     ; 109B3:  7f
+b04_89b4:   .db $ff                     ; 109B4:  ff
+b04_89b5:   inc $f8fc,x                 ; 109B5:  fe fc f8
+b04_89b8:   beq $899c                   ; 109B8:  f0 e2
+b04_89ba:   bne $893c                   ; 109BA:  d0 80
+b04_89bc:   brk                         ; 109BC:  00
+b04_89bd:   brk                         ; 109BD:  00
+b04_89be:   brk                         ; 109BE:  00
+b04_89bf:   brk                         ; 109BF:  00
+b04_89c0:   brk                         ; 109C0:  00
+b04_89c1:   brk                         ; 109C1:  00
+b04_89c2:   brk                         ; 109C2:  00
+b04_89c3:   brk                         ; 109C3:  00
+b04_89c4:   .db $f7                     ; 109C4:  f7
+b04_89c5:   .db $fb                     ; 109C5:  fb
+b04_89c6:   sbc $7ffe,x                 ; 109C6:  fd fe 7f
+b04_89c9:   .db $bf                     ; 109C9:  bf
+b04_89ca:   .db $df                     ; 109CA:  df
+b04_89cb:   .db $ef                     ; 109CB:  ef
+b04_89cc:   .db $0f                     ; 109CC:  0f
+b04_89cd:   .db $2f                     ; 109CD:  2f
+b04_89ce:   .db $0f                     ; 109CE:  0f
+b04_89cf:   .db $0f                     ; 109CF:  0f
+b04_89d0:   .db $4f                     ; 109D0:  4f
+b04_89d1:   .db $0f                     ; 109D1:  0f
+b04_89d2:   .db $1f                     ; 109D2:  1f
+b04_89d3:   .db $0f                     ; 109D3:  0f
+b04_89d4:   .db $f4                     ; 109D4:  f4
+b04_89d5:   beq $89c7                   ; 109D5:  f0 f0
+b04_89d7:   beq $89c9                   ; 109D7:  f0 f0
+b04_89d9:   .db $f2                     ; 109D9:  f2
+b04_89da:   beq $89cc                   ; 109DA:  f0 f0
+b04_89dc:   brk                         ; 109DC:  00
+b04_89dd:   brk                         ; 109DD:  00
+b04_89de:   brk                         ; 109DE:  00
+b04_89df:   brk                         ; 109DF:  00
+b04_89e0:   brk                         ; 109E0:  00
+b04_89e1:   brk                         ; 109E1:  00
+b04_89e2:   brk                         ; 109E2:  00
+b04_89e3:   brk                         ; 109E3:  00
+b04_89e4:   .db $f7                     ; 109E4:  f7
+b04_89e5:   .db $f7                     ; 109E5:  f7
+b04_89e6:   .db $f7                     ; 109E6:  f7
+b04_89e7:   .db $f7                     ; 109E7:  f7
+b04_89e8:   .db $f7                     ; 109E8:  f7
+b04_89e9:   .db $f7                     ; 109E9:  f7
+b04_89ea:   .db $f7                     ; 109EA:  f7
+b04_89eb:   .db $f7                     ; 109EB:  f7
+b04_89ec:   beq $89de                   ; 109EC:  f0 f0
+b04_89ee:   beq $89e0                   ; 109EE:  f0 f0
+b04_89f0:   .db $ff                     ; 109F0:  ff
+b04_89f1:   .db $ff                     ; 109F1:  ff
+b04_89f2:   .db $ff                     ; 109F2:  ff
+b04_89f3:   .db $ff                     ; 109F3:  ff
+b04_89f4:   .db $0f                     ; 109F4:  0f
+b04_89f5:   .db $2f                     ; 109F5:  2f
+b04_89f6:   .db $0f                     ; 109F6:  0f
+b04_89f7:   .db $0f                     ; 109F7:  0f
+b04_89f8:   rti                         ; 109F8:  40
+b04_89f9:   .db $02                     ; 109F9:  02
+b04_89fa:   bpl $89fc                   ; 109FA:  10 00
+b04_89fc:   .db $ff                     ; 109FC:  ff
+b04_89fd:   .db $ff                     ; 109FD:  ff
+b04_89fe:   .db $ff                     ; 109FE:  ff
+b04_89ff:   .db $ff                     ; 109FF:  ff
+b04_8a00:   cpx #$c0                    ; 10A00:  e0 c0
+b04_8a02:   .db $80                     ; 10A02:  80
+b04_8a03:   brk                         ; 10A03:  00
+b04_8a04:   .db $04                     ; 10A04:  04
+b04_8a05:   jsr $0000                   ; 10A05:  20 00 00
+b04_8a08:   .db $5f                     ; 10A08:  5f
+b04_8a09:   .db $3f                     ; 10A09:  3f
+b04_8a0a:   .db $7f                     ; 10A0A:  7f
+b04_8a0b:   .db $ff                     ; 10A0B:  ff
+b04_8a0c:   brk                         ; 10A0C:  00
+b04_8a0d:   brk                         ; 10A0D:  00
+b04_8a0e:   brk                         ; 10A0E:  00
+b04_8a0f:   brk                         ; 10A0F:  00
+b04_8a10:   beq $8a0a                   ; 10A10:  f0 f8
+b04_8a12:   .db $fc                     ; 10A12:  fc
+b04_8a13:   inc $ffff,x                 ; 10A13:  fe ff ff
+b04_8a16:   .db $ff                     ; 10A16:  ff
+b04_8a17:   .db $ff                     ; 10A17:  ff
+b04_8a18:   .db $0f                     ; 10A18:  0f
+b04_8a19:   .db $07                     ; 10A19:  07
+b04_8a1a:   .db $13                     ; 10A1A:  13
+b04_8a1b:   ora ($0f,x)                 ; 10A1B:  01 0f
+b04_8a1d:   .db $0f                     ; 10A1D:  0f
+b04_8a1e:   .db $0f                     ; 10A1E:  0f
+b04_8a1f:   .db $0f                     ; 10A1F:  0f
+b04_8a20:   .db $0f                     ; 10A20:  0f
+b04_8a21:   .db $1f                     ; 10A21:  1f
+b04_8a22:   .db $3f                     ; 10A22:  3f
+b04_8a23:   .db $7f                     ; 10A23:  7f
+b04_8a24:   .db $f4                     ; 10A24:  f4
+b04_8a25:   beq $8a17                   ; 10A25:  f0 f0
+b04_8a27:   beq $8a19                   ; 10A27:  f0 f0
+b04_8a29:   .db $e2                     ; 10A29:  e2
+b04_8a2a:   bne $89ac                   ; 10A2A:  d0 80
+b04_8a2c:   inc $f8fc,x                 ; 10A2C:  fe fc f8
+b04_8a2f:   beq $8a31                   ; 10A2F:  f0 00
+b04_8a31:   brk                         ; 10A31:  00
+b04_8a32:   brk                         ; 10A32:  00
+b04_8a33:   brk                         ; 10A33:  00
+b04_8a34:   ora ($23,x)                 ; 10A34:  01 23
+b04_8a36:   .db $07                     ; 10A36:  07
+b04_8a37:   .db $0f                     ; 10A37:  0f
+b04_8a38:   .db $ff                     ; 10A38:  ff
+b04_8a39:   .db $ff                     ; 10A39:  ff
+b04_8a3a:   .db $ff                     ; 10A3A:  ff
+b04_8a3b:   .db $ff                     ; 10A3B:  ff
+b04_8a3c:   beq $8a2e                   ; 10A3C:  f0 f0
+b04_8a3e:   beq $8a30                   ; 10A3E:  f0 f0
+b04_8a40:   cpx #$c0                    ; 10A40:  e0 c0
+b04_8a42:   .db $80                     ; 10A42:  80
+b04_8a43:   brk                         ; 10A43:  00
+b04_8a44:   .db $0f                     ; 10A44:  0f
+b04_8a45:   .db $2f                     ; 10A45:  2f
+b04_8a46:   .db $0f                     ; 10A46:  0f
+b04_8a47:   .db $0f                     ; 10A47:  0f
+b04_8a48:   .db $5f                     ; 10A48:  5f
+b04_8a49:   .db $3f                     ; 10A49:  3f
+b04_8a4a:   .db $7f                     ; 10A4A:  7f
+b04_8a4b:   .db $ff                     ; 10A4B:  ff
+b04_8a4c:   .db $7f                     ; 10A4C:  7f
+b04_8a4d:   .db $3f                     ; 10A4D:  3f
+b04_8a4e:   .db $1f                     ; 10A4E:  1f
+b04_8a4f:   .db $0f                     ; 10A4F:  0f
+b04_8a50:   .db $0f                     ; 10A50:  0f
+b04_8a51:   .db $0f                     ; 10A51:  0f
+b04_8a52:   .db $0f                     ; 10A52:  0f
+b04_8a53:   .db $0f                     ; 10A53:  0f
+b04_8a54:   sty $c0                     ; 10A54:  84 c0
+b04_8a56:   cpx #$f0                    ; 10A56:  e0 f0
+b04_8a58:   beq $8a4c                   ; 10A58:  f0 f2
+b04_8a5a:   beq $8a4c                   ; 10A5A:  f0 f0
+b04_8a5c:   inc $f8fc,x                 ; 10A5C:  fe fc f8
+b04_8a5f:   beq $8a51                   ; 10A5F:  f0 f0
+b04_8a61:   beq $8a53                   ; 10A61:  f0 f0
+b04_8a63:   beq $8a6a                   ; 10A63:  f0 05
+b04_8a65:   .db $23                     ; 10A65:  23
+b04_8a66:   .db $07                     ; 10A66:  07
+b04_8a67:   .db $0f                     ; 10A67:  0f
+b04_8a68:   .db $4f                     ; 10A68:  4f
+b04_8a69:   .db $0f                     ; 10A69:  0f
+b04_8a6a:   .db $0f                     ; 10A6A:  0f
+b04_8a6b:   .db $0f                     ; 10A6B:  0f
+b04_8a6c:   .db $f7                     ; 10A6C:  f7
+b04_8a6d:   .db $f7                     ; 10A6D:  f7
+b04_8a6e:   .db $f7                     ; 10A6E:  f7
+b04_8a6f:   .db $f7                     ; 10A6F:  f7
+b04_8a70:   .db $f7                     ; 10A70:  f7
+b04_8a71:   .db $fb                     ; 10A71:  fb
+b04_8a72:   sbc $00fe,x                 ; 10A72:  fd fe 00
+b04_8a75:   brk                         ; 10A75:  00
+b04_8a76:   brk                         ; 10A76:  00
+b04_8a77:   brk                         ; 10A77:  00
+b04_8a78:   brk                         ; 10A78:  00
+b04_8a79:   brk                         ; 10A79:  00
+b04_8a7a:   brk                         ; 10A7A:  00
+b04_8a7b:   brk                         ; 10A7B:  00
+b04_8a7c:   .db $7f                     ; 10A7C:  7f
+b04_8a7d:   .db $bf                     ; 10A7D:  bf
+b04_8a7e:   .db $df                     ; 10A7E:  df
+b04_8a7f:   .db $ef                     ; 10A7F:  ef
+b04_8a80:   beq $8a81                   ; 10A80:  f0 ff
+b04_8a82:   .db $ff                     ; 10A82:  ff
+b04_8a83:   .db $ff                     ; 10A83:  ff
+b04_8a84:   brk                         ; 10A84:  00
+b04_8a85:   brk                         ; 10A85:  00
+b04_8a86:   brk                         ; 10A86:  00
+b04_8a87:   brk                         ; 10A87:  00
+b04_8a88:   brk                         ; 10A88:  00
+b04_8a89:   brk                         ; 10A89:  00
+b04_8a8a:   brk                         ; 10A8A:  00
+b04_8a8b:   brk                         ; 10A8B:  00
+b04_8a8c:   brk                         ; 10A8C:  00
+b04_8a8d:   brk                         ; 10A8D:  00
+b04_8a8e:   brk                         ; 10A8E:  00
+b04_8a8f:   brk                         ; 10A8F:  00
+b04_8a90:   brk                         ; 10A90:  00
+b04_8a91:   brk                         ; 10A91:  00
+b04_8a92:   brk                         ; 10A92:  00
+b04_8a93:   brk                         ; 10A93:  00
+b04_8a94:   .db $ff                     ; 10A94:  ff
+b04_8a95:   .db $ff                     ; 10A95:  ff
+b04_8a96:   .db $ff                     ; 10A96:  ff
+b04_8a97:   .db $ff                     ; 10A97:  ff
+b04_8a98:   .db $07                     ; 10A98:  07
+b04_8a99:   .db $fb                     ; 10A99:  fb
+b04_8a9a:   sbc $00fe,x                 ; 10A9A:  fd fe 00
+b04_8a9d:   brk                         ; 10A9D:  00
+b04_8a9e:   brk                         ; 10A9E:  00
+b04_8a9f:   brk                         ; 10A9F:  00
+b04_8aa0:   brk                         ; 10AA0:  00
+b04_8aa1:   brk                         ; 10AA1:  00
+b04_8aa2:   brk                         ; 10AA2:  00
+b04_8aa3:   brk                         ; 10AA3:  00
+b04_8aa4:   .db $7f                     ; 10AA4:  7f
+b04_8aa5:   .db $bf                     ; 10AA5:  bf
+b04_8aa6:   .db $df                     ; 10AA6:  df
+b04_8aa7:   .db $ef                     ; 10AA7:  ef
+b04_8aa8:   beq $8aa9                   ; 10AA8:  f0 ff
+b04_8aaa:   .db $ff                     ; 10AAA:  ff
+b04_8aab:   .db $ff                     ; 10AAB:  ff
+b04_8aac:   .db $f7                     ; 10AAC:  f7
+b04_8aad:   .db $f7                     ; 10AAD:  f7
+b04_8aae:   .db $f7                     ; 10AAE:  f7
+b04_8aaf:   .db $f7                     ; 10AAF:  f7
+b04_8ab0:   .db $ef                     ; 10AB0:  ef
+b04_8ab1:   .db $df                     ; 10AB1:  df
+b04_8ab2:   .db $bf                     ; 10AB2:  bf
+b04_8ab3:   .db $7f                     ; 10AB3:  7f
+b04_8ab4:   brk                         ; 10AB4:  00
+b04_8ab5:   brk                         ; 10AB5:  00
+b04_8ab6:   brk                         ; 10AB6:  00
+b04_8ab7:   brk                         ; 10AB7:  00
+b04_8ab8:   brk                         ; 10AB8:  00
+b04_8ab9:   brk                         ; 10AB9:  00
+b04_8aba:   brk                         ; 10ABA:  00
+b04_8abb:   brk                         ; 10ABB:  00
+b04_8abc:   beq $8aae                   ; 10ABC:  f0 f0
+b04_8abe:   beq $8ab0                   ; 10ABE:  f0 f0
+b04_8ac0:   brk                         ; 10AC0:  00
+b04_8ac1:   brk                         ; 10AC1:  00
+b04_8ac2:   brk                         ; 10AC2:  00
+b04_8ac3:   brk                         ; 10AC3:  00
+b04_8ac4:   .db $0f                     ; 10AC4:  0f
+b04_8ac5:   .db $2f                     ; 10AC5:  2f
+b04_8ac6:   .db $0f                     ; 10AC6:  0f
+b04_8ac7:   .db $0f                     ; 10AC7:  0f
+b04_8ac8:   .db $f7                     ; 10AC8:  f7
+b04_8ac9:   .db $f7                     ; 10AC9:  f7
+b04_8aca:   .db $f7                     ; 10ACA:  f7
+b04_8acb:   .db $f7                     ; 10ACB:  f7
+b04_8acc:   inc $f8fc,x                 ; 10ACC:  fe fc f8
+b04_8acf:   beq $8ab1                   ; 10ACF:  f0 e0
+b04_8ad1:   cpy #$80                    ; 10AD1:  c0 80
+b04_8ad3:   brk                         ; 10AD3:  00
+b04_8ad4:   ora $23                     ; 10AD4:  05 23
+b04_8ad6:   .db $07                     ; 10AD6:  07
+b04_8ad7:   .db $0f                     ; 10AD7:  0f
+b04_8ad8:   .db $5f                     ; 10AD8:  5f
+b04_8ad9:   .db $3f                     ; 10AD9:  3f
+b04_8ada:   .db $7f                     ; 10ADA:  7f
+b04_8adb:   .db $ff                     ; 10ADB:  ff
+b04_8adc:   brk                         ; 10ADC:  00
+b04_8add:   brk                         ; 10ADD:  00
+b04_8ade:   brk                         ; 10ADE:  00
+b04_8adf:   brk                         ; 10ADF:  00
+b04_8ae0:   brk                         ; 10AE0:  00
+b04_8ae1:   brk                         ; 10AE1:  00
+b04_8ae2:   brk                         ; 10AE2:  00
+b04_8ae3:   brk                         ; 10AE3:  00
+b04_8ae4:   .db $f7                     ; 10AE4:  f7
+b04_8ae5:   .db $f7                     ; 10AE5:  f7
+b04_8ae6:   .db $f7                     ; 10AE6:  f7
+b04_8ae7:   .db $f7                     ; 10AE7:  f7
+b04_8ae8:   beq $8ae1                   ; 10AE8:  f0 f7
+b04_8aea:   .db $f7                     ; 10AEA:  f7
+b04_8aeb:   .db $f7                     ; 10AEB:  f7
+b04_8aec:   brk                         ; 10AEC:  00
+b04_8aed:   brk                         ; 10AED:  00
+b04_8aee:   brk                         ; 10AEE:  00
+b04_8aef:   brk                         ; 10AEF:  00
+b04_8af0:   brk                         ; 10AF0:  00
+b04_8af1:   brk                         ; 10AF1:  00
+b04_8af2:   brk                         ; 10AF2:  00
+b04_8af3:   brk                         ; 10AF3:  00
+b04_8af4:   .db $f7                     ; 10AF4:  f7
+b04_8af5:   .db $f7                     ; 10AF5:  f7
+b04_8af6:   .db $f7                     ; 10AF6:  f7
+b04_8af7:   .db $f7                     ; 10AF7:  f7
+b04_8af8:   .db $07                     ; 10AF8:  07
+b04_8af9:   .db $f7                     ; 10AF9:  f7
+b04_8afa:   .db $f7                     ; 10AFA:  f7
+b04_8afb:   .db $f7                     ; 10AFB:  f7
+b04_8afc:   brk                         ; 10AFC:  00
+b04_8afd:   brk                         ; 10AFD:  00
+b04_8afe:   brk                         ; 10AFE:  00
+b04_8aff:   brk                         ; 10AFF:  00
+b04_8b00:   .db $0f                     ; 10B00:  0f
+b04_8b01:   .db $1f                     ; 10B01:  1f
+b04_8b02:   .db $3f                     ; 10B02:  3f
+b04_8b03:   .db $7f                     ; 10B03:  7f
+b04_8b04:   .db $f7                     ; 10B04:  f7
+b04_8b05:   .db $f7                     ; 10B05:  f7
+b04_8b06:   .db $f7                     ; 10B06:  f7
+b04_8b07:   .db $f7                     ; 10B07:  f7
+b04_8b08:   beq $8aec                   ; 10B08:  f0 e2
+b04_8b0a:   bne $8a8c                   ; 10B0A:  d0 80
+b04_8b0c:   .db $ff                     ; 10B0C:  ff
+b04_8b0d:   .db $7f                     ; 10B0D:  7f
+b04_8b0e:   .db $3f                     ; 10B0E:  3f
+b04_8b0f:   .db $1f                     ; 10B0F:  1f
+b04_8b10:   .db $0f                     ; 10B10:  0f
+b04_8b11:   .db $0f                     ; 10B11:  0f
+b04_8b12:   .db $0f                     ; 10B12:  0f
+b04_8b13:   .db $0f                     ; 10B13:  0f
+b04_8b14:   brk                         ; 10B14:  00
+b04_8b15:   .db $80                     ; 10B15:  80
+b04_8b16:   cpy #$e0                    ; 10B16:  c0 e0
+b04_8b18:   beq $8b0a                   ; 10B18:  f0 f0
+b04_8b1a:   beq $8b0c                   ; 10B1A:  f0 f0
+b04_8b1c:   .db $ff                     ; 10B1C:  ff
+b04_8b1d:   .db $ff                     ; 10B1D:  ff
+b04_8b1e:   .db $fa                     ; 10B1E:  fa
+b04_8b1f:   sbc ($00,x)                 ; 10B1F:  e1 00
+b04_8b21:   .db $22                     ; 10B21:  22
+b04_8b22:   .db $44                     ; 10B22:  44
+b04_8b23:   sta $0703,y                 ; 10B23:  99 03 07
+b04_8b26:   .db $0f                     ; 10B26:  0f
+b04_8b27:   .db $3b                     ; 10B27:  3b
+b04_8b28:   inc $aa55,x                 ; 10B28:  fe 55 aa
+b04_8b2b:   .db $44                     ; 10B2B:  44
+b04_8b2c:   .db $ff                     ; 10B2C:  ff
+b04_8b2d:   .db $ff                     ; 10B2D:  ff
+b04_8b2e:   .db $af                     ; 10B2E:  af
+b04_8b2f:   ora $00,x                   ; 10B2F:  15 00
+b04_8b31:   txa                         ; 10B31:  8a
+b04_8b32:   eor $99                     ; 10B32:  45 99
+b04_8b34:   cpx #$f0                    ; 10B34:  e0 f0
+b04_8b36:   sed                         ; 10B36:  f8
+b04_8b37:   ldx $55ea,y                 ; 10B37:  be ea 55
+b04_8b3a:   tax                         ; 10B3A:  aa
+b04_8b3b:   .db $44                     ; 10B3B:  44
+b04_8b3c:   .db $ff                     ; 10B3C:  ff
+b04_8b3d:   .db $ff                     ; 10B3D:  ff
+b04_8b3e:   .db $ff                     ; 10B3E:  ff
+b04_8b3f:   .db $ff                     ; 10B3F:  ff
+b04_8b40:   .db $7f                     ; 10B40:  7f
+b04_8b41:   .db $0f                     ; 10B41:  0f
+b04_8b42:   ora ($9f,x)                 ; 10B42:  01 9f
+b04_8b44:   brk                         ; 10B44:  00
+b04_8b45:   brk                         ; 10B45:  00
+b04_8b46:   brk                         ; 10B46:  00
+b04_8b47:   brk                         ; 10B47:  00
+b04_8b48:   .db $80                     ; 10B48:  80
+b04_8b49:   bvc $8af5                   ; 10B49:  50 aa
+b04_8b4b:   rti                         ; 10B4B:  40
+b04_8b4c:   .db $80                     ; 10B4C:  80
+b04_8b4d:   cpy #$e0                    ; 10B4D:  c0 e0
+b04_8b4f:   beq $8b49                   ; 10B4F:  f0 f8
+b04_8b51:   .db $fc                     ; 10B51:  fc
+b04_8b52:   inc $7fff,x                 ; 10B52:  fe ff 7f
+b04_8b55:   .db $3f                     ; 10B55:  3f
+b04_8b56:   .db $1f                     ; 10B56:  1f
+b04_8b57:   .db $0f                     ; 10B57:  0f
+b04_8b58:   .db $07                     ; 10B58:  07
+b04_8b59:   .db $03                     ; 10B59:  03
+b04_8b5a:   ora ($00,x)                 ; 10B5A:  01 00
+b04_8b5c:   brk                         ; 10B5C:  00
+b04_8b5d:   .db $80                     ; 10B5D:  80
+b04_8b5e:   cpy #$e0                    ; 10B5E:  c0 e0
+b04_8b60:   beq $8b5a                   ; 10B60:  f0 f8
+b04_8b62:   .db $fc                     ; 10B62:  fc
+b04_8b63:   inc $7fff,x                 ; 10B63:  fe ff 7f
+b04_8b66:   .db $3f                     ; 10B66:  3f
+b04_8b67:   .db $1f                     ; 10B67:  1f
+b04_8b68:   .db $4f                     ; 10B68:  4f
+b04_8b69:   .db $07                     ; 10B69:  07
+b04_8b6a:   .db $13                     ; 10B6A:  13
+b04_8b6b:   ora ($0f,x)                 ; 10B6B:  01 0f
+b04_8b6d:   .db $0f                     ; 10B6D:  0f
+b04_8b6e:   .db $0f                     ; 10B6E:  0f
+b04_8b6f:   .db $0f                     ; 10B6F:  0f
+b04_8b70:   .db $ff                     ; 10B70:  ff
+b04_8b71:   .db $ff                     ; 10B71:  ff
+b04_8b72:   .db $ff                     ; 10B72:  ff
+b04_8b73:   .db $ff                     ; 10B73:  ff
+b04_8b74:   .db $f4                     ; 10B74:  f4
+b04_8b75:   beq $8b67                   ; 10B75:  f0 f0
+b04_8b77:   beq $8b79                   ; 10B77:  f0 00
+b04_8b79:   .db $02                     ; 10B79:  02
+b04_8b7a:   bpl $8b7c                   ; 10B7A:  10 00
+b04_8b7c:   brk                         ; 10B7C:  00
+b04_8b7d:   .db $80                     ; 10B7D:  80
+b04_8b7e:   cpy #$e0                    ; 10B7E:  c0 e0
+b04_8b80:   .db $ff                     ; 10B80:  ff
+b04_8b81:   .db $ff                     ; 10B81:  ff
+b04_8b82:   .db $ff                     ; 10B82:  ff
+b04_8b83:   .db $ff                     ; 10B83:  ff
+b04_8b84:   .db $ff                     ; 10B84:  ff
+b04_8b85:   .db $7f                     ; 10B85:  7f
+b04_8b86:   .db $3f                     ; 10B86:  3f
+b04_8b87:   .db $1f                     ; 10B87:  1f
+b04_8b88:   rti                         ; 10B88:  40
+b04_8b89:   .db $02                     ; 10B89:  02
+b04_8b8a:   bpl $8b8c                   ; 10B8A:  10 00
+b04_8b8c:   brk                         ; 10B8C:  00
+b04_8b8d:   brk                         ; 10B8D:  00
+b04_8b8e:   brk                         ; 10B8E:  00
+b04_8b8f:   brk                         ; 10B8F:  00
+b04_8b90:   beq $8b82                   ; 10B90:  f0 f0
+b04_8b92:   beq $8b84                   ; 10B92:  f0 f0
+b04_8b94:   .db $f7                     ; 10B94:  f7
+b04_8b95:   .db $f7                     ; 10B95:  f7
+b04_8b96:   .db $f7                     ; 10B96:  f7
+b04_8b97:   .db $f7                     ; 10B97:  f7
+b04_8b98:   .db $0f                     ; 10B98:  0f
+b04_8b99:   .db $0f                     ; 10B99:  0f
+b04_8b9a:   .db $0f                     ; 10B9A:  0f
+b04_8b9b:   .db $0f                     ; 10B9B:  0f
+b04_8b9c:   .db $ff                     ; 10B9C:  ff
+b04_8b9d:   .db $ff                     ; 10B9D:  ff
+b04_8b9e:   .db $ff                     ; 10B9E:  ff
+b04_8b9f:   .db $ff                     ; 10B9F:  ff
+b04_8ba0:   .db $07                     ; 10BA0:  07
+b04_8ba1:   .db $03                     ; 10BA1:  03
+b04_8ba2:   ora ($00,x)                 ; 10BA2:  01 00
+b04_8ba4:   .db $04                     ; 10BA4:  04
+b04_8ba5:   jsr $0000                   ; 10BA5:  20 00 00
+b04_8ba8:   sed                         ; 10BA8:  f8
+b04_8ba9:   .db $fc                     ; 10BA9:  fc
+b04_8baa:   inc $00ff,x                 ; 10BAA:  fe ff 00
+b04_8bad:   ora ($03,x)                 ; 10BAD:  01 03
+b04_8baf:   .db $07                     ; 10BAF:  07
+b04_8bb0:   .db $ff                     ; 10BB0:  ff
+b04_8bb1:   .db $ff                     ; 10BB1:  ff
+b04_8bb2:   .db $ff                     ; 10BB2:  ff
+b04_8bb3:   .db $ff                     ; 10BB3:  ff
+b04_8bb4:   .db $ff                     ; 10BB4:  ff
+b04_8bb5:   inc $f8fc,x                 ; 10BB5:  fe fc f8
+b04_8bb8:   brk                         ; 10BB8:  00
+b04_8bb9:   .db $02                     ; 10BB9:  02
+b04_8bba:   bpl $8bbc                   ; 10BBA:  10 00
+b04_8bbc:   .db $0f                     ; 10BBC:  0f
+b04_8bbd:   .db $0f                     ; 10BBD:  0f
+b04_8bbe:   .db $0f                     ; 10BBE:  0f
+b04_8bbf:   .db $0f                     ; 10BBF:  0f
+b04_8bc0:   brk                         ; 10BC0:  00
+b04_8bc1:   brk                         ; 10BC1:  00
+b04_8bc2:   brk                         ; 10BC2:  00
+b04_8bc3:   brk                         ; 10BC3:  00
+b04_8bc4:   .db $f4                     ; 10BC4:  f4
+b04_8bc5:   beq $8bb7                   ; 10BC5:  f0 f0
+b04_8bc7:   beq $8bc0                   ; 10BC7:  f0 f7
+b04_8bc9:   .db $f7                     ; 10BC9:  f7
+b04_8bca:   .db $f7                     ; 10BCA:  f7
+b04_8bcb:   .db $f7                     ; 10BCB:  f7
+b04_8bcc:   inc $f8fc,x                 ; 10BCC:  fe fc f8
+b04_8bcf:   beq $8bb1                   ; 10BCF:  f0 e0
+b04_8bd1:   .db $c2                     ; 10BD1:  c2
+b04_8bd2:   bcc $8bd4                   ; 10BD2:  90 00
+b04_8bd4:   ora $23                     ; 10BD4:  05 23
+b04_8bd6:   .db $07                     ; 10BD6:  07
+b04_8bd7:   .db $0f                     ; 10BD7:  0f
+b04_8bd8:   .db $5f                     ; 10BD8:  5f
+b04_8bd9:   .db $3f                     ; 10BD9:  3f
+b04_8bda:   .db $7f                     ; 10BDA:  7f
+b04_8bdb:   .db $ff                     ; 10BDB:  ff
+b04_8bdc:   brk                         ; 10BDC:  00
+b04_8bdd:   brk                         ; 10BDD:  00
+b04_8bde:   brk                         ; 10BDE:  00
+b04_8bdf:   brk                         ; 10BDF:  00
+b04_8be0:   brk                         ; 10BE0:  00
+b04_8be1:   brk                         ; 10BE1:  00
+b04_8be2:   brk                         ; 10BE2:  00
+b04_8be3:   brk                         ; 10BE3:  00
+b04_8be4:   .db $ff                     ; 10BE4:  ff
+b04_8be5:   .db $ff                     ; 10BE5:  ff
+b04_8be6:   .db $ff                     ; 10BE6:  ff
+b04_8be7:   .db $ff                     ; 10BE7:  ff
+b04_8be8:   cpx #$df                    ; 10BE8:  e0 df
+b04_8bea:   .db $bf                     ; 10BEA:  bf
+b04_8beb:   .db $7f                     ; 10BEB:  7f
+b04_8bec:   brk                         ; 10BEC:  00
+b04_8bed:   brk                         ; 10BED:  00
+b04_8bee:   brk                         ; 10BEE:  00
+b04_8bef:   brk                         ; 10BEF:  00
+b04_8bf0:   brk                         ; 10BF0:  00
+b04_8bf1:   brk                         ; 10BF1:  00
+b04_8bf2:   brk                         ; 10BF2:  00
+b04_8bf3:   brk                         ; 10BF3:  00
+b04_8bf4:   inc $fbfd,x                 ; 10BF4:  fe fd fb
+b04_8bf7:   .db $f7                     ; 10BF7:  f7
+b04_8bf8:   .db $0f                     ; 10BF8:  0f
+b04_8bf9:   .db $ff                     ; 10BF9:  ff
+b04_8bfa:   .db $ff                     ; 10BFA:  ff
+b04_8bfb:   .db $ff                     ; 10BFB:  ff
+b04_8bfc:   .db $ff                     ; 10BFC:  ff
+b04_8bfd:   .db $ff                     ; 10BFD:  ff
+b04_8bfe:   .db $ff                     ; 10BFE:  ff
+b04_8bff:   .db $ff                     ; 10BFF:  ff
+b04_8c00:   .db $07                     ; 10C00:  07
+b04_8c01:   .db $fb                     ; 10C01:  fb
+b04_8c02:   sbc $00fe,x                 ; 10C02:  fd fe 00
+b04_8c05:   brk                         ; 10C05:  00
+b04_8c06:   brk                         ; 10C06:  00
+b04_8c07:   brk                         ; 10C07:  00
+b04_8c08:   brk                         ; 10C08:  00
+b04_8c09:   brk                         ; 10C09:  00
+b04_8c0a:   brk                         ; 10C0A:  00
+b04_8c0b:   brk                         ; 10C0B:  00
+b04_8c0c:   .db $0f                     ; 10C0C:  0f
+b04_8c0d:   .db $0f                     ; 10C0D:  0f
+b04_8c0e:   .db $0f                     ; 10C0E:  0f
+b04_8c0f:   .db $0f                     ; 10C0F:  0f
+b04_8c10:   brk                         ; 10C10:  00
+b04_8c11:   brk                         ; 10C11:  00
+b04_8c12:   brk                         ; 10C12:  00
+b04_8c13:   brk                         ; 10C13:  00
+b04_8c14:   .db $f4                     ; 10C14:  f4
+b04_8c15:   beq $8c07                   ; 10C15:  f0 f0
+b04_8c17:   beq $8c18                   ; 10C17:  f0 ff
+b04_8c19:   .db $ff                     ; 10C19:  ff
+b04_8c1a:   .db $ff                     ; 10C1A:  ff
+b04_8c1b:   .db $ff                     ; 10C1B:  ff
+b04_8c1c:   brk                         ; 10C1C:  00
+b04_8c1d:   brk                         ; 10C1D:  00
+b04_8c1e:   brk                         ; 10C1E:  00
+b04_8c1f:   brk                         ; 10C1F:  00
+b04_8c20:   brk                         ; 10C20:  00
+b04_8c21:   brk                         ; 10C21:  00
+b04_8c22:   brk                         ; 10C22:  00
+b04_8c23:   brk                         ; 10C23:  00
+b04_8c24:   .db $ff                     ; 10C24:  ff
+b04_8c25:   .db $ff                     ; 10C25:  ff
+b04_8c26:   .db $ff                     ; 10C26:  ff
+b04_8c27:   .db $ff                     ; 10C27:  ff
+b04_8c28:   brk                         ; 10C28:  00
+b04_8c29:   .db $f7                     ; 10C29:  f7
+b04_8c2a:   .db $f7                     ; 10C2A:  f7
+b04_8c2b:   .db $f7                     ; 10C2B:  f7
+b04_8c2c:   .db $ff                     ; 10C2C:  ff
+b04_8c2d:   .db $ff                     ; 10C2D:  ff
+b04_8c2e:   .db $ff                     ; 10C2E:  ff
+b04_8c2f:   .db $ff                     ; 10C2F:  ff
+b04_8c30:   beq $8c22                   ; 10C30:  f0 f0
+b04_8c32:   beq $8c24                   ; 10C32:  f0 f0
+b04_8c34:   .db $04                     ; 10C34:  04
+b04_8c35:   jsr $0000                   ; 10C35:  20 00 00
+b04_8c38:   .db $4f                     ; 10C38:  4f
+b04_8c39:   .db $0f                     ; 10C39:  0f
+b04_8c3a:   .db $0f                     ; 10C3A:  0f
+b04_8c3b:   .db $0f                     ; 10C3B:  0f
+b04_8c3c:   .db $0f                     ; 10C3C:  0f
+b04_8c3d:   .db $0f                     ; 10C3D:  0f
+b04_8c3e:   .db $0f                     ; 10C3E:  0f
+b04_8c3f:   .db $0f                     ; 10C3F:  0f
+b04_8c40:   .db $1f                     ; 10C40:  1f
+b04_8c41:   .db $3f                     ; 10C41:  3f
+b04_8c42:   .db $7f                     ; 10C42:  7f
+b04_8c43:   .db $ff                     ; 10C43:  ff
+b04_8c44:   beq $8c36                   ; 10C44:  f0 f0
+b04_8c46:   beq $8c38                   ; 10C46:  f0 f0
+b04_8c48:   cpx #$c0                    ; 10C48:  e0 c0
+b04_8c4a:   .db $80                     ; 10C4A:  80
+b04_8c4b:   brk                         ; 10C4B:  00
+b04_8c4c:   beq $8c3e                   ; 10C4C:  f0 f0
+b04_8c4e:   beq $8c40                   ; 10C4E:  f0 f0
+b04_8c50:   brk                         ; 10C50:  00
+b04_8c51:   brk                         ; 10C51:  00
+b04_8c52:   brk                         ; 10C52:  00
+b04_8c53:   brk                         ; 10C53:  00
+b04_8c54:   .db $0f                     ; 10C54:  0f
+b04_8c55:   .db $2f                     ; 10C55:  2f
+b04_8c56:   .db $0f                     ; 10C56:  0f
+b04_8c57:   .db $0f                     ; 10C57:  0f
+b04_8c58:   beq $8c59                   ; 10C58:  f0 ff
+b04_8c5a:   .db $ff                     ; 10C5A:  ff
+b04_8c5b:   .db $ff                     ; 10C5B:  ff
+b04_8c5c:   brk                         ; 10C5C:  00
+b04_8c5d:   brk                         ; 10C5D:  00
+b04_8c5e:   brk                         ; 10C5E:  00
+b04_8c5f:   brk                         ; 10C5F:  00
+b04_8c60:   brk                         ; 10C60:  00
+b04_8c61:   ora ($03,x)                 ; 10C61:  01 03
+b04_8c63:   .db $07                     ; 10C63:  07
+b04_8c64:   .db $ff                     ; 10C64:  ff
+b04_8c65:   .db $ff                     ; 10C65:  ff
+b04_8c66:   .db $ff                     ; 10C66:  ff
+b04_8c67:   .db $ff                     ; 10C67:  ff
+b04_8c68:   .db $7f                     ; 10C68:  7f
+b04_8c69:   ldx $e0dc,y                 ; 10C69:  be dc e0
+b04_8c6c:   .db $04                     ; 10C6C:  04
+b04_8c6d:   jsr $0000                   ; 10C6D:  20 00 00
+b04_8c70:   cpy #$c2                    ; 10C70:  c0 c2
+b04_8c72:   beq $8c64                   ; 10C72:  f0 f0
+b04_8c74:   .db $ff                     ; 10C74:  ff
+b04_8c75:   .db $ff                     ; 10C75:  ff
+b04_8c76:   .db $ff                     ; 10C76:  ff
+b04_8c77:   .db $ff                     ; 10C77:  ff
+b04_8c78:   .db $7f                     ; 10C78:  7f
+b04_8c79:   .db $3f                     ; 10C79:  3f
+b04_8c7a:   .db $1f                     ; 10C7A:  1f
+b04_8c7b:   .db $0f                     ; 10C7B:  0f
+b04_8c7c:   .db $ff                     ; 10C7C:  ff
+b04_8c7d:   .db $ff                     ; 10C7D:  ff
+b04_8c7e:   .db $ff                     ; 10C7E:  ff
+b04_8c7f:   .db $ff                     ; 10C7F:  ff
+b04_8c80:   .db $07                     ; 10C80:  07
+b04_8c81:   .db $03                     ; 10C81:  03
+b04_8c82:   ora ($00,x)                 ; 10C82:  01 00
+b04_8c84:   brk                         ; 10C84:  00
+b04_8c85:   brk                         ; 10C85:  00
+b04_8c86:   brk                         ; 10C86:  00
+b04_8c87:   brk                         ; 10C87:  00
+b04_8c88:   beq $8c7e                   ; 10C88:  f0 f4
+b04_8c8a:   inc $f7,x                   ; 10C8A:  f6 f7
+b04_8c8c:   inc $f8fc,x                 ; 10C8C:  fe fc f8
+b04_8c8f:   beq $8c90                   ; 10C8F:  f0 ff
+b04_8c91:   .db $ff                     ; 10C91:  ff
+b04_8c92:   .db $ff                     ; 10C92:  ff
+b04_8c93:   .db $ff                     ; 10C93:  ff
+b04_8c94:   ora $23                     ; 10C94:  05 23
+b04_8c96:   .db $07                     ; 10C96:  07
+b04_8c97:   .db $0f                     ; 10C97:  0f
+b04_8c98:   rti                         ; 10C98:  40
+b04_8c99:   .db $02                     ; 10C99:  02
+b04_8c9a:   bpl $8c9c                   ; 10C9A:  10 00
+b04_8c9c:   .db $7f                     ; 10C9C:  7f
+b04_8c9d:   .db $bf                     ; 10C9D:  bf
+b04_8c9e:   .db $df                     ; 10C9E:  df
+b04_8c9f:   .db $ef                     ; 10C9F:  ef
+b04_8ca0:   .db $f7                     ; 10CA0:  f7
+b04_8ca1:   .db $f7                     ; 10CA1:  f7
+b04_8ca2:   .db $f7                     ; 10CA2:  f7
+b04_8ca3:   .db $f7                     ; 10CA3:  f7
+b04_8ca4:   brk                         ; 10CA4:  00
+b04_8ca5:   brk                         ; 10CA5:  00
+b04_8ca6:   brk                         ; 10CA6:  00
+b04_8ca7:   brk                         ; 10CA7:  00
+b04_8ca8:   brk                         ; 10CA8:  00
+b04_8ca9:   brk                         ; 10CA9:  00
+b04_8caa:   brk                         ; 10CAA:  00
+b04_8cab:   brk                         ; 10CAB:  00
+b04_8cac:   .db $0f                     ; 10CAC:  0f
+b04_8cad:   .db $0f                     ; 10CAD:  0f
+b04_8cae:   .db $0f                     ; 10CAE:  0f
+b04_8caf:   .db $0f                     ; 10CAF:  0f
+b04_8cb0:   .db $0f                     ; 10CB0:  0f
+b04_8cb1:   .db $0f                     ; 10CB1:  0f
+b04_8cb2:   .db $0f                     ; 10CB2:  0f
+b04_8cb3:   .db $0f                     ; 10CB3:  0f
+b04_8cb4:   .db $f4                     ; 10CB4:  f4
+b04_8cb5:   beq $8ca7                   ; 10CB5:  f0 f0
+b04_8cb7:   beq $8cb9                   ; 10CB7:  f0 00
+b04_8cb9:   .db $f2                     ; 10CB9:  f2
+b04_8cba:   beq $8cac                   ; 10CBA:  f0 f0
+b04_8cbc:   brk                         ; 10CBC:  00
+b04_8cbd:   brk                         ; 10CBD:  00
+b04_8cbe:   brk                         ; 10CBE:  00
+b04_8cbf:   brk                         ; 10CBF:  00
+b04_8cc0:   brk                         ; 10CC0:  00
+b04_8cc1:   brk                         ; 10CC1:  00
+b04_8cc2:   brk                         ; 10CC2:  00
+b04_8cc3:   brk                         ; 10CC3:  00
+b04_8cc4:   .db $7f                     ; 10CC4:  7f
+b04_8cc5:   .db $bf                     ; 10CC5:  bf
+b04_8cc6:   .db $df                     ; 10CC6:  df
+b04_8cc7:   .db $ef                     ; 10CC7:  ef
+b04_8cc8:   .db $f7                     ; 10CC8:  f7
+b04_8cc9:   .db $f7                     ; 10CC9:  f7
+b04_8cca:   .db $f7                     ; 10CCA:  f7
+b04_8ccb:   .db $f7                     ; 10CCB:  f7
+b04_8ccc:   brk                         ; 10CCC:  00
+b04_8ccd:   brk                         ; 10CCD:  00
+b04_8cce:   brk                         ; 10CCE:  00
+b04_8ccf:   brk                         ; 10CCF:  00
+b04_8cd0:   brk                         ; 10CD0:  00
+b04_8cd1:   .db $80                     ; 10CD1:  80
+b04_8cd2:   cpy #$e0                    ; 10CD2:  c0 e0
+b04_8cd4:   .db $f7                     ; 10CD4:  f7
+b04_8cd5:   .db $f7                     ; 10CD5:  f7
+b04_8cd6:   .db $f7                     ; 10CD6:  f7
+b04_8cd7:   .db $f7                     ; 10CD7:  f7
+b04_8cd8:   .db $f7                     ; 10CD8:  f7
+b04_8cd9:   .db $77                     ; 10CD9:  77
+b04_8cda:   .db $37                     ; 10CDA:  37
+b04_8cdb:   .db $17                     ; 10CDB:  17
+b04_8cdc:   .db $0f                     ; 10CDC:  0f
+b04_8cdd:   .db $8f                     ; 10CDD:  8f
+b04_8cde:   .db $cf                     ; 10CDE:  cf
+b04_8cdf:   .db $ef                     ; 10CDF:  ef
+b04_8ce0:   .db $ff                     ; 10CE0:  ff
+b04_8ce1:   .db $ff                     ; 10CE1:  ff
+b04_8ce2:   .db $ff                     ; 10CE2:  ff
+b04_8ce3:   .db $ff                     ; 10CE3:  ff
+b04_8ce4:   .db $f4                     ; 10CE4:  f4
+b04_8ce5:   bvs $8d17                   ; 10CE5:  70 30
+b04_8ce7:   bpl $8d29                   ; 10CE7:  10 40
+b04_8ce9:   .db $02                     ; 10CE9:  02
+b04_8cea:   bpl $8cec                   ; 10CEA:  10 00
+b04_8cec:   beq $8cde                   ; 10CEC:  f0 f0
+b04_8cee:   beq $8ce0                   ; 10CEE:  f0 f0
+b04_8cf0:   cpx #$c0                    ; 10CF0:  e0 c0
+b04_8cf2:   .db $80                     ; 10CF2:  80
+b04_8cf3:   brk                         ; 10CF3:  00
+b04_8cf4:   .db $0f                     ; 10CF4:  0f
+b04_8cf5:   .db $2f                     ; 10CF5:  2f
+b04_8cf6:   .db $0f                     ; 10CF6:  0f
+b04_8cf7:   .db $0f                     ; 10CF7:  0f
+b04_8cf8:   bpl $8d39                   ; 10CF8:  10 3f
+b04_8cfa:   .db $7f                     ; 10CFA:  7f
+b04_8cfb:   .db $ff                     ; 10CFB:  ff
+b04_8cfc:   inc $fbfd,x                 ; 10CFC:  fe fd fb
+b04_8cff:   .db $f7                     ; 10CFF:  f7
+b04_8d00:   .db $ef                     ; 10D00:  ef
+b04_8d01:   .db $df                     ; 10D01:  df
+b04_8d02:   .db $bf                     ; 10D02:  bf
+b04_8d03:   .db $7f                     ; 10D03:  7f
+b04_8d04:   brk                         ; 10D04:  00
+b04_8d05:   brk                         ; 10D05:  00
+b04_8d06:   brk                         ; 10D06:  00
+b04_8d07:   brk                         ; 10D07:  00
+b04_8d08:   brk                         ; 10D08:  00
+b04_8d09:   brk                         ; 10D09:  00
+b04_8d0a:   brk                         ; 10D0A:  00
+b04_8d0b:   brk                         ; 10D0B:  00
+b04_8d0c:   brk                         ; 10D0C:  00
+b04_8d0d:   brk                         ; 10D0D:  00
+b04_8d0e:   brk                         ; 10D0E:  00
+b04_8d0f:   brk                         ; 10D0F:  00
+b04_8d10:   brk                         ; 10D10:  00
+b04_8d11:   brk                         ; 10D11:  00
+b04_8d12:   brk                         ; 10D12:  00
+b04_8d13:   brk                         ; 10D13:  00
+b04_8d14:   .db $f7                     ; 10D14:  f7
+b04_8d15:   .db $f7                     ; 10D15:  f7
+b04_8d16:   .db $f7                     ; 10D16:  f7
+b04_8d17:   .db $f7                     ; 10D17:  f7
+b04_8d18:   .db $f7                     ; 10D18:  f7
+b04_8d19:   .db $fb                     ; 10D19:  fb
+b04_8d1a:   sbc $00fe,x                 ; 10D1A:  fd fe 00
+b04_8d1d:   brk                         ; 10D1D:  00
+b04_8d1e:   brk                         ; 10D1E:  00
+b04_8d1f:   brk                         ; 10D1F:  00
+b04_8d20:   brk                         ; 10D20:  00
+b04_8d21:   brk                         ; 10D21:  00
+b04_8d22:   brk                         ; 10D22:  00
+b04_8d23:   brk                         ; 10D23:  00
+b04_8d24:   .db $f7                     ; 10D24:  f7
+b04_8d25:   .db $f7                     ; 10D25:  f7
+b04_8d26:   .db $f7                     ; 10D26:  f7
+b04_8d27:   .db $f7                     ; 10D27:  f7
+b04_8d28:   .db $ef                     ; 10D28:  ef
+b04_8d29:   .db $df                     ; 10D29:  df
+b04_8d2a:   .db $bf                     ; 10D2A:  bf
+b04_8d2b:   .db $7f                     ; 10D2B:  7f
+b04_8d2c:   .db $ff                     ; 10D2C:  ff
+b04_8d2d:   .db $ff                     ; 10D2D:  ff
+b04_8d2e:   .db $ff                     ; 10D2E:  ff
+b04_8d2f:   .db $ff                     ; 10D2F:  ff
+b04_8d30:   .db $ff                     ; 10D30:  ff
+b04_8d31:   .db $fa                     ; 10D31:  fa
+b04_8d32:   .db $d4                     ; 10D32:  d4
+b04_8d33:   sbc $0000,y                 ; 10D33:  f9 00 00
+b04_8d36:   brk                         ; 10D36:  00
+b04_8d37:   brk                         ; 10D37:  00
+b04_8d38:   brk                         ; 10D38:  00
+b04_8d39:   ora $2a                     ; 10D39:  05 2a
+b04_8d3b:   .db $04                     ; 10D3B:  04
+b04_8d3c:   .db $7f                     ; 10D3C:  7f
+b04_8d3d:   .db $bf                     ; 10D3D:  bf
+b04_8d3e:   .db $df                     ; 10D3E:  df
+b04_8d3f:   .db $ef                     ; 10D3F:  ef
+b04_8d40:   .db $f7                     ; 10D40:  f7
+b04_8d41:   .db $fb                     ; 10D41:  fb
+b04_8d42:   sbc $00fe,x                 ; 10D42:  fd fe 00
+b04_8d45:   brk                         ; 10D45:  00
+b04_8d46:   brk                         ; 10D46:  00
+b04_8d47:   brk                         ; 10D47:  00
+b04_8d48:   brk                         ; 10D48:  00
+b04_8d49:   brk                         ; 10D49:  00
+b04_8d4a:   brk                         ; 10D4A:  00
+b04_8d4b:   brk                         ; 10D4B:  00
+b04_8d4c:   .db $7f                     ; 10D4C:  7f
+b04_8d4d:   .db $3f                     ; 10D4D:  3f
+b04_8d4e:   .db $1f                     ; 10D4E:  1f
+b04_8d4f:   .db $0f                     ; 10D4F:  0f
+b04_8d50:   .db $07                     ; 10D50:  07
+b04_8d51:   .db $03                     ; 10D51:  03
+b04_8d52:   ora ($00,x)                 ; 10D52:  01 00
+b04_8d54:   sty $c0                     ; 10D54:  84 c0
+b04_8d56:   cpx #$f0                    ; 10D56:  e0 f0
+b04_8d58:   sed                         ; 10D58:  f8
+b04_8d59:   .db $fc                     ; 10D59:  fc
+b04_8d5a:   inc $51ff,x                 ; 10D5A:  fe ff 51
+b04_8d5d:   eor ($51),y                 ; 10D5D:  51 51
+b04_8d5f:   .db $d2                     ; 10D5F:  d2
+b04_8d60:   lsr $09,x                   ; 10D60:  56 09
+b04_8d62:   .db $57                     ; 10D62:  57
+b04_8d63:   .db $57                     ; 10D63:  57
+b04_8d64:   .db $57                     ; 10D64:  57
+b04_8d65:   .db $57                     ; 10D65:  57
+b04_8d66:   .db $57                     ; 10D66:  57
+b04_8d67:   .db $57                     ; 10D67:  57
+b04_8d68:   .db $57                     ; 10D68:  57
+b04_8d69:   .db $57                     ; 10D69:  57
+b04_8d6a:   ldy $6164                   ; 10D6A:  ac 64 61
+b04_8d6d:   .db $5f                     ; 10D6D:  5f
+b04_8d6e:   .db $64                     ; 10D6E:  64
+b04_8d6f:   .db $64                     ; 10D6F:  64
+b04_8d70:   .db $64                     ; 10D70:  64
+b04_8d71:   .db $64                     ; 10D71:  64
+b04_8d72:   lda $68,x                   ; 10D72:  b5 68
+b04_8d74:   .db $6f                     ; 10D74:  6f
+b04_8d75:   .db $57                     ; 10D75:  57
+b04_8d76:   .db $57                     ; 10D76:  57
+b04_8d77:   .db $57                     ; 10D77:  57
+b04_8d78:   eor ($d2),y                 ; 10D78:  51 d2
+b04_8d7a:   .db $53                     ; 10D7A:  53
+b04_8d7b:   .db $53                     ; 10D7B:  53
+b04_8d7c:   cpx $82                     ; 10D7C:  e4 82
+b04_8d7e:   .db $a3                     ; 10D7E:  a3
+b04_8d7f:   eor $5959,y                 ; 10D7F:  59 59 59
+b04_8d82:   eor $5959,y                 ; 10D82:  59 59 59
+b04_8d85:   eor $6493,y                 ; 10D85:  59 93 64
+b04_8d88:   .db $53                     ; 10D88:  53
+b04_8d89:   .db $53                     ; 10D89:  53
+b04_8d8a:   .db $64                     ; 10D8A:  64
+b04_8d8b:   lda $68,x                   ; 10D8B:  b5 68
+b04_8d8d:   clv                         ; 10D8D:  b8
+b04_8d8e:   .db $57                     ; 10D8E:  57
+b04_8d8f:   .db $57                     ; 10D8F:  57
+b04_8d90:   .db $57                     ; 10D90:  57
+b04_8d91:   .db $57                     ; 10D91:  57
+b04_8d92:   .db $57                     ; 10D92:  57
+b04_8d93:   .db $57                     ; 10D93:  57
+b04_8d94:   .db $64                     ; 10D94:  64
+b04_8d95:   lda $6c,x                   ; 10D95:  b5 6c
+b04_8d97:   .db $6f                     ; 10D97:  6f
+b04_8d98:   .db $7f                     ; 10D98:  7f
+b04_8d99:   .db $0c                     ; 10D99:  0c
+b04_8d9a:   dec $68,x                   ; 10D9A:  d6 68
+b04_8d9c:   pla                         ; 10D9C:  68
+b04_8d9d:   pla                         ; 10D9D:  68
+b04_8d9e:   pla                         ; 10D9E:  68
+b04_8d9f:   pla                         ; 10D9F:  68
+b04_8da0:   pla                         ; 10DA0:  68
+b04_8da1:   pla                         ; 10DA1:  68
+b04_8da2:   jmp ($6f68)                 ; 10DA2:  6c 68 6f
+b04_8da5:   .db $57                     ; 10DA5:  57
+b04_8da6:   .db $57                     ; 10DA6:  57
+b04_8da7:   asl a                       ; 10DA7:  0a
+b04_8da8:   .db $73                     ; 10DA8:  73
+b04_8da9:   .db $5c                     ; 10DA9:  5c
+b04_8daa:   sta $57                     ; 10DAA:  85 57
+b04_8dac:   .db $57                     ; 10DAC:  57
+b04_8dad:   .db $57                     ; 10DAD:  57
+b04_8dae:   .db $57                     ; 10DAE:  57
+b04_8daf:   .db $73                     ; 10DAF:  73
+b04_8db0:   .db $64                     ; 10DB0:  64
+b04_8db1:   .db $57                     ; 10DB1:  57
+b04_8db2:   .db $b3                     ; 10DB2:  b3
+b04_8db3:   .db $57                     ; 10DB3:  57
+b04_8db4:   cmp $575c,y                 ; 10DB4:  d9 5c 57
+b04_8db7:   .db $57                     ; 10DB7:  57
+b04_8db8:   .db $57                     ; 10DB8:  57
+b04_8db9:   .db $57                     ; 10DB9:  57
+b04_8dba:   .db $57                     ; 10DBA:  57
+b04_8dbb:   .db $57                     ; 10DBB:  57
+b04_8dbc:   .db $57                     ; 10DBC:  57
+b04_8dbd:   .db $57                     ; 10DBD:  57
+b04_8dbe:   .db $c3                     ; 10DBE:  c3
+b04_8dbf:   .db $82                     ; 10DBF:  82
+b04_8dc0:   ldx $7357,y                 ; 10DC0:  be 57 73
+b04_8dc3:   .db $5c                     ; 10DC3:  5c
+b04_8dc4:   .db $5c                     ; 10DC4:  5c
+b04_8dc5:   .db $5c                     ; 10DC5:  5c
+b04_8dc6:   .db $5c                     ; 10DC6:  5c
+b04_8dc7:   .db $5c                     ; 10DC7:  5c
+b04_8dc8:   .db $7a                     ; 10DC8:  7a
+b04_8dc9:   bvs $8d51                   ; 10DC9:  70 86
+b04_8dcb:   .db $5c                     ; 10DCB:  5c
+b04_8dcc:   clv                         ; 10DCC:  b8
+b04_8dcd:   .db $57                     ; 10DCD:  57
+b04_8dce:   ldx $d7                     ; 10DCE:  a6 d7
+b04_8dd0:   .db $72                     ; 10DD0:  72
+b04_8dd1:   .db $72                     ; 10DD1:  72
+b04_8dd2:   .db $72                     ; 10DD2:  72
+b04_8dd3:   adc $707a,y                 ; 10DD3:  79 7a 70
+b04_8dd6:   bvs $8e48                   ; 10DD6:  70 70
+b04_8dd8:   stx $71                     ; 10DD8:  86 71
+b04_8dda:   adc $8a,x                   ; 10DDA:  75 8a
+b04_8ddc:   sta $5cdf                   ; 10DDC:  8d df 5c
+b04_8ddf:   sta ($72,x)                 ; 10DDF:  81 72
+b04_8de1:   .db $72                     ; 10DE1:  72
+b04_8de2:   .db $72                     ; 10DE2:  72
+b04_8de3:   .db $72                     ; 10DE3:  72
+b04_8de4:   ror $5c5c,x                 ; 10DE4:  7e 5c 5c
+b04_8de7:   .db $5c                     ; 10DE7:  5c
+b04_8de8:   .db $57                     ; 10DE8:  57
+b04_8de9:   ora $b357                   ; 10DE9:  0d 57 b3
+b04_8dec:   .db $5c                     ; 10DEC:  5c
+b04_8ded:   asl $7b5c                   ; 10DED:  0e 5c 7b
+b04_8df0:   .db $72                     ; 10DF0:  72
+b04_8df1:   .db $72                     ; 10DF1:  72
+b04_8df2:   .db $72                     ; 10DF2:  72
+b04_8df3:   .db $72                     ; 10DF3:  72
+b04_8df4:   .db $72                     ; 10DF4:  72
+b04_8df5:   sty $8a                     ; 10DF5:  84 8a
+b04_8df7:   sty $778d                   ; 10DF7:  8c 8d 77
+b04_8dfa:   dey                         ; 10DFA:  88
+b04_8dfb:   .db $5c                     ; 10DFB:  5c
+b04_8dfc:   .db $5c                     ; 10DFC:  5c
+b04_8dfd:   .db $5c                     ; 10DFD:  5c
+b04_8dfe:   adc ($72),y                 ; 10DFE:  71 72
+b04_8e00:   adc $5c,x                   ; 10E00:  75 5c
+b04_8e02:   .db $5c                     ; 10E02:  5c
+b04_8e03:   .db $5c                     ; 10E03:  5c
+b04_8e04:   .db $82                     ; 10E04:  82
+b04_8e05:   .db $a7                     ; 10E05:  a7
+b04_8e06:   adc $5cbc,x                 ; 10E06:  7d bc 5c
+b04_8e09:   .db $5c                     ; 10E09:  5c
+b04_8e0a:   .db $5c                     ; 10E0A:  5c
+b04_8e0b:   .db $5c                     ; 10E0B:  5c
+b04_8e0c:   .db $5c                     ; 10E0C:  5c
+b04_8e0d:   .db $5c                     ; 10E0D:  5c
+b04_8e0e:   .db $5c                     ; 10E0E:  5c
+b04_8e0f:   .db $5c                     ; 10E0F:  5c
+b04_8e10:   .db $5c                     ; 10E10:  5c
+b04_8e11:   .db $74                     ; 10E11:  74
+b04_8e12:   ora #$0e                    ; 10E12:  09 0e
+b04_8e14:   .db $5c                     ; 10E14:  5c
+b04_8e15:   .db $5c                     ; 10E15:  5c
+b04_8e16:   txa                         ; 10E16:  8a
+b04_8e17:   sty $8d91                   ; 10E17:  8c 91 8d
+b04_8e1a:   .db $77                     ; 10E1A:  77
+b04_8e1b:   ror $5e5c,x                 ; 10E1B:  7e 5c 5e
+b04_8e1e:   .db $92                     ; 10E1E:  92
+b04_8e1f:   .db $5c                     ; 10E1F:  5c
+b04_8e20:   cli                         ; 10E20:  58
+b04_8e21:   .db $b3                     ; 10E21:  b3
+b04_8e22:   .db $5c                     ; 10E22:  5c
+b04_8e23:   sbc $bd                     ; 10E23:  e5 bd
+b04_8e25:   .db $72                     ; 10E25:  72
+b04_8e26:   .db $72                     ; 10E26:  72
+b04_8e27:   .db $72                     ; 10E27:  72
+b04_8e28:   .db $72                     ; 10E28:  72
+b04_8e29:   .db $72                     ; 10E29:  72
+b04_8e2a:   ror $5c5c,x                 ; 10E2A:  7e 5c 5c
+b04_8e2d:   .db $74                     ; 10E2D:  74
+b04_8e2e:   .db $5c                     ; 10E2E:  5c
+b04_8e2f:   .db $5c                     ; 10E2F:  5c
+b04_8e30:   .db $5c                     ; 10E30:  5c
+b04_8e31:   .db $5c                     ; 10E31:  5c
+b04_8e32:   .db $5c                     ; 10E32:  5c
+b04_8e33:   .db $5c                     ; 10E33:  5c
+b04_8e34:   .db $5c                     ; 10E34:  5c
+b04_8e35:   .db $5c                     ; 10E35:  5c
+b04_8e36:   adc ($75),y                 ; 10E36:  71 75
+b04_8e38:   .db $87                     ; 10E38:  87
+b04_8e39:   ldx $5757,y                 ; 10E39:  be 57 57
+b04_8e3c:   adc $e6                     ; 10E3C:  65 e6
+b04_8e3e:   sbc $9f                     ; 10E3E:  e5 9f
+b04_8e40:   ora ($5e),y                 ; 10E40:  11 5e
+b04_8e42:   lsr $5c78,x                 ; 10E42:  5e 78 5c
+b04_8e45:   .db $5c                     ; 10E45:  5c
+b04_8e46:   .db $77                     ; 10E46:  77
+b04_8e47:   .db $72                     ; 10E47:  72
+b04_8e48:   .db $72                     ; 10E48:  72
+b04_8e49:   ldy $7e                     ; 10E49:  a4 7e
+b04_8e4b:   .db $5c                     ; 10E4B:  5c
+b04_8e4c:   .db $5c                     ; 10E4C:  5c
+b04_8e4d:   .db $5c                     ; 10E4D:  5c
+b04_8e4e:   .db $5c                     ; 10E4E:  5c
+b04_8e4f:   .db $5c                     ; 10E4F:  5c
+b04_8e50:   sta ($72,x)                 ; 10E50:  81 72
+b04_8e52:   ldy $72                     ; 10E52:  a4 72
+b04_8e54:   adc $57,x                   ; 10E54:  75 57
+b04_8e56:   .db $bf                     ; 10E56:  bf
+b04_8e57:   .db $82                     ; 10E57:  82
+b04_8e58:   .db $57                     ; 10E58:  57
+b04_8e59:   .db $57                     ; 10E59:  57
+b04_8e5a:   lda $57a0,x                 ; 10E5A:  bd a0 57
+b04_8e5d:   .db $57                     ; 10E5D:  57
+b04_8e5e:   .db $57                     ; 10E5E:  57
+b04_8e5f:   .db $57                     ; 10E5F:  57
+b04_8e60:   .db $57                     ; 10E60:  57
+b04_8e61:   eor $5c5c,x                 ; 10E61:  5d 5c 5c
+b04_8e64:   .db $5c                     ; 10E64:  5c
+b04_8e65:   .db $5c                     ; 10E65:  5c
+b04_8e66:   .db $74                     ; 10E66:  74
+b04_8e67:   txa                         ; 10E67:  8a
+b04_8e68:   sty $8d91                   ; 10E68:  8c 91 8d
+b04_8e6b:   .db $9e                     ; 10E6B:  9e
+b04_8e6c:   .db $0b                     ; 10E6C:  0b
+b04_8e6d:   .db $5c                     ; 10E6D:  5c
+b04_8e6e:   .db $5c                     ; 10E6E:  5c
+b04_8e6f:   .db $5c                     ; 10E6F:  5c
+b04_8e70:   .db $5c                     ; 10E70:  5c
+b04_8e71:   dex                         ; 10E71:  ca
+b04_8e72:   .db $57                     ; 10E72:  57
+b04_8e73:   .db $57                     ; 10E73:  57
+b04_8e74:   .db $7a                     ; 10E74:  7a
+b04_8e75:   stx $5c                     ; 10E75:  86 5c
+b04_8e77:   .db $b3                     ; 10E77:  b3
+b04_8e78:   ldx $8282                   ; 10E78:  ae 82 82
+b04_8e7b:   .db $82                     ; 10E7B:  82
+b04_8e7c:   .db $82                     ; 10E7C:  82
+b04_8e7d:   ldx $8a78,y                 ; 10E7D:  be 78 8a
+b04_8e80:   sty $748d                   ; 10E80:  8c 8d 74
+b04_8e83:   .db $5c                     ; 10E83:  5c
+b04_8e84:   txa                         ; 10E84:  8a
+b04_8e85:   sty $748d                   ; 10E85:  8c 8d 74
+b04_8e88:   .db $5c                     ; 10E88:  5c
+b04_8e89:   .db $5c                     ; 10E89:  5c
+b04_8e8a:   .db $5c                     ; 10E8A:  5c
+b04_8e8b:   .db $5c                     ; 10E8B:  5c
+b04_8e8c:   .db $5c                     ; 10E8C:  5c
+b04_8e8d:   .db $5c                     ; 10E8D:  5c
+b04_8e8e:   .db $57                     ; 10E8E:  57
+b04_8e8f:   .db $57                     ; 10E8F:  57
+b04_8e90:   .db $5c                     ; 10E90:  5c
+b04_8e91:   ora #$09                    ; 10E91:  09 09
+b04_8e93:   .db $c3                     ; 10E93:  c3
+b04_8e94:   cpy $09                     ; 10E94:  c4 09
+b04_8e96:   .db $0f                     ; 10E96:  0f
+b04_8e97:   .db $57                     ; 10E97:  57
+b04_8e98:   .db $57                     ; 10E98:  57
+b04_8e99:   .db $57                     ; 10E99:  57
+b04_8e9a:   .db $bf                     ; 10E9A:  bf
+b04_8e9b:   .db $72                     ; 10E9B:  72
+b04_8e9c:   .db $72                     ; 10E9C:  72
+b04_8e9d:   ror $5c74,x                 ; 10E9D:  7e 74 5c
+b04_8ea0:   .db $5c                     ; 10EA0:  5c
+b04_8ea1:   .db $87                     ; 10EA1:  87
+b04_8ea2:   adc $7277,y                 ; 10EA2:  79 77 72
+b04_8ea5:   .db $72                     ; 10EA5:  72
+b04_8ea6:   .db $72                     ; 10EA6:  72
+b04_8ea7:   .db $72                     ; 10EA7:  72
+b04_8ea8:   ror $5a5c,x                 ; 10EA8:  7e 5c 5a
+b04_8eab:   .db $57                     ; 10EAB:  57
+b04_8eac:   .db $5c                     ; 10EAC:  5c
+b04_8ead:   .db $5c                     ; 10EAD:  5c
+b04_8eae:   .db $57                     ; 10EAE:  57
+b04_8eaf:   .db $e7                     ; 10EAF:  e7
+b04_8eb0:   cmp $57                     ; 10EB0:  c5 57
+b04_8eb2:   .db $57                     ; 10EB2:  57
+b04_8eb3:   .db $57                     ; 10EB3:  57
+b04_8eb4:   .db $57                     ; 10EB4:  57
+b04_8eb5:   .db $57                     ; 10EB5:  57
+b04_8eb6:   .db $73                     ; 10EB6:  73
+b04_8eb7:   .db $5c                     ; 10EB7:  5c
+b04_8eb8:   .db $5c                     ; 10EB8:  5c
+b04_8eb9:   .db $74                     ; 10EB9:  74
+b04_8eba:   .db $74                     ; 10EBA:  74
+b04_8ebb:   adc ($72),y                 ; 10EBB:  71 72
+b04_8ebd:   stx $727b                   ; 10EBD:  8e 7b 72
+b04_8ec0:   .db $72                     ; 10EC0:  72
+b04_8ec1:   cmp $5c,x                   ; 10EC1:  d5 5c
+b04_8ec3:   adc ($75),y                 ; 10EC3:  71 75
+b04_8ec5:   .db $5c                     ; 10EC5:  5c
+b04_8ec6:   ror $57,x                   ; 10EC6:  76 57
+b04_8ec8:   .db $72                     ; 10EC8:  72
+b04_8ec9:   .db $72                     ; 10EC9:  72
+b04_8eca:   .db $d4                     ; 10ECA:  d4
+b04_8ecb:   bcs $8e8f                   ; 10ECB:  b0 c2
+b04_8ecd:   .db $57                     ; 10ECD:  57
+b04_8ece:   .db $d3                     ; 10ECE:  d3
+b04_8ecf:   .db $82                     ; 10ECF:  82
+b04_8ed0:   .db $72                     ; 10ED0:  72
+b04_8ed1:   .db $72                     ; 10ED1:  72
+b04_8ed2:   .db $72                     ; 10ED2:  72
+b04_8ed3:   .db $72                     ; 10ED3:  72
+b04_8ed4:   .db $72                     ; 10ED4:  72
+b04_8ed5:   ldy $a4                     ; 10ED5:  a4 a4
+b04_8ed7:   sty $0f                     ; 10ED7:  84 0f
+b04_8ed9:   .db $5c                     ; 10ED9:  5c
+b04_8eda:   inx                         ; 10EDA:  e8
+b04_8edb:   .db $c7                     ; 10EDB:  c7
+b04_8edc:   iny                         ; 10EDC:  c8
+b04_8edd:   cmp #$bd                    ; 10EDD:  c9 bd
+b04_8edf:   ldy $7e                     ; 10EDF:  a4 7e
+b04_8ee1:   .db $89                     ; 10EE1:  89
+b04_8ee2:   .db $6f                     ; 10EE2:  6f
+b04_8ee3:   .db $57                     ; 10EE3:  57
+b04_8ee4:   ora #$0b                    ; 10EE4:  09 0b
+b04_8ee6:   .db $7f                     ; 10EE6:  7f
+b04_8ee7:   .db $64                     ; 10EE7:  64
+b04_8ee8:   .db $57                     ; 10EE8:  57
+b04_8ee9:   .db $93                     ; 10EE9:  93
+b04_8eea:   .db $57                     ; 10EEA:  57
+b04_8eeb:   bpl $8e92                   ; 10EEB:  10 a5
+b04_8eed:   .db $5c                     ; 10EED:  5c
+b04_8eee:   .db $5c                     ; 10EEE:  5c
+b04_8eef:   txa                         ; 10EEF:  8a
+b04_8ef0:   sta ($8d),y                 ; 10EF0:  91 8d
+b04_8ef2:   .db $5c                     ; 10EF2:  5c
+b04_8ef3:   .db $74                     ; 10EF3:  74
+b04_8ef4:   .db $5c                     ; 10EF4:  5c
+b04_8ef5:   sty $57,x                   ; 10EF5:  94 57
+b04_8ef7:   .db $57                     ; 10EF7:  57
+b04_8ef8:   .db $57                     ; 10EF8:  57
+b04_8ef9:   .db $57                     ; 10EF9:  57
+b04_8efa:   .db $57                     ; 10EFA:  57
+b04_8efb:   .db $57                     ; 10EFB:  57
+b04_8efc:   cpy #$76                    ; 10EFC:  c0 76
+b04_8efe:   tya                         ; 10EFE:  98
+b04_8eff:   eor $575c,y                 ; 10EFF:  59 5c 57
+b04_8f02:   .db $93                     ; 10F02:  93
+b04_8f03:   .db $64                     ; 10F03:  64
+b04_8f04:   ldy $5764                   ; 10F04:  ac 64 57
+b04_8f07:   .db $57                     ; 10F07:  57
+b04_8f08:   .db $57                     ; 10F08:  57
+b04_8f09:   .db $57                     ; 10F09:  57
+b04_8f0a:   .db $57                     ; 10F0A:  57
+b04_8f0b:   lda $5c                     ; 10F0B:  a5 5c
+b04_8f0d:   .db $5c                     ; 10F0D:  5c
+b04_8f0e:   .db $5c                     ; 10F0E:  5c
+b04_8f0f:   cpy #$89                    ; 10F0F:  c0 89
+b04_8f11:   .db $57                     ; 10F11:  57
+b04_8f12:   .db $57                     ; 10F12:  57
+b04_8f13:   ldy $6464                   ; 10F13:  ac 64 64
+b04_8f16:   .db $64                     ; 10F16:  64
+b04_8f17:   cld                         ; 10F17:  d8
+b04_8f18:   dec $76                     ; 10F18:  c6 76
+b04_8f1a:   .db $64                     ; 10F1A:  64
+b04_8f1b:   .db $64                     ; 10F1B:  64
+b04_8f1c:   .db $5c                     ; 10F1C:  5c
+b04_8f1d:   .db $5c                     ; 10F1D:  5c
+b04_8f1e:   .db $5c                     ; 10F1E:  5c
+b04_8f1f:   .db $5c                     ; 10F1F:  5c
+b04_8f20:   sty $57,x                   ; 10F20:  94 57
+b04_8f22:   .db $5b                     ; 10F22:  5b
+b04_8f23:   .db $5c                     ; 10F23:  5c
+b04_8f24:   sbc #$70                    ; 10F24:  e9 70
+b04_8f26:   .db $5a                     ; 10F26:  5a
+b04_8f27:   .db $57                     ; 10F27:  57
+b04_8f28:   pla                         ; 10F28:  68
+b04_8f29:   rts                         ; 10F29:  60
+b04_8f2a:   .db $64                     ; 10F2A:  64
+b04_8f2b:   .db $64                     ; 10F2B:  64
+b04_8f2c:   .db $64                     ; 10F2C:  64
+b04_8f2d:   .db $57                     ; 10F2D:  57
+b04_8f2e:   .db $b3                     ; 10F2E:  b3
+b04_8f2f:   .db $0c                     ; 10F2F:  0c
+b04_8f30:   .db $73                     ; 10F30:  73
+b04_8f31:   .db $5c                     ; 10F31:  5c
+b04_8f32:   .db $57                     ; 10F32:  57
+b04_8f33:   .db $57                     ; 10F33:  57
+b04_8f34:   .db $57                     ; 10F34:  57
+b04_8f35:   .db $57                     ; 10F35:  57
+b04_8f36:   .db $57                     ; 10F36:  57
+b04_8f37:   .db $57                     ; 10F37:  57
+b04_8f38:   .db $5c                     ; 10F38:  5c
+b04_8f39:   .db $8f                     ; 10F39:  8f
+b04_8f3a:   .db $57                     ; 10F3A:  57
+b04_8f3b:   .db $57                     ; 10F3B:  57
+b04_8f3c:   .db $57                     ; 10F3C:  57
+b04_8f3d:   .db $57                     ; 10F3D:  57
+b04_8f3e:   cmp $5c5c,y                 ; 10F3E:  d9 5c 5c
+b04_8f41:   sbc #$80                    ; 10F41:  e9 80
+b04_8f43:   ora $6e57                   ; 10F43:  0d 57 6e
+b04_8f46:   pla                         ; 10F46:  68
+b04_8f47:   pla                         ; 10F47:  68
+b04_8f48:   clv                         ; 10F48:  b8
+b04_8f49:   .db $57                     ; 10F49:  57
+b04_8f4a:   ldx $d7                     ; 10F4A:  a6 d7
+b04_8f4c:   .db $72                     ; 10F4C:  72
+b04_8f4d:   .db $72                     ; 10F4D:  72
+b04_8f4e:   .db $72                     ; 10F4E:  72
+b04_8f4f:   ror $707a,x                 ; 10F4F:  7e 7a 70
+b04_8f52:   bvs $8fc4                   ; 10F52:  70 70
+b04_8f54:   .db $5c                     ; 10F54:  5c
+b04_8f55:   ror $73,x                   ; 10F55:  76 73
+b04_8f57:   .db $5c                     ; 10F57:  5c
+b04_8f58:   sta ($72,x)                 ; 10F58:  81 72
+b04_8f5a:   .db $72                     ; 10F5A:  72
+b04_8f5b:   .db $72                     ; 10F5B:  72
+b04_8f5c:   cmp $e5,x                   ; 10F5C:  d5 e5
+b04_8f5e:   sbc #$5c                    ; 10F5E:  e9 5c
+b04_8f60:   .db $5c                     ; 10F60:  5c
+b04_8f61:   dex                         ; 10F61:  ca
+b04_8f62:   .db $57                     ; 10F62:  57
+b04_8f63:   .db $57                     ; 10F63:  57
+b04_8f64:   .db $57                     ; 10F64:  57
+b04_8f65:   .db $57                     ; 10F65:  57
+b04_8f66:   .db $57                     ; 10F66:  57
+b04_8f67:   .db $b3                     ; 10F67:  b3
+b04_8f68:   asl $5c5c                   ; 10F68:  0e 5c 5c
+b04_8f6b:   .db $7b                     ; 10F6B:  7b
+b04_8f6c:   .db $72                     ; 10F6C:  72
+b04_8f6d:   .db $72                     ; 10F6D:  72
+b04_8f6e:   .db $72                     ; 10F6E:  72
+b04_8f6f:   .db $72                     ; 10F6F:  72
+b04_8f70:   .db $9f                     ; 10F70:  9f
+b04_8f71:   .db $6f                     ; 10F71:  6f
+b04_8f72:   .db $87                     ; 10F72:  87
+b04_8f73:   dey                         ; 10F73:  88
+b04_8f74:   .db $5c                     ; 10F74:  5c
+b04_8f75:   .db $5c                     ; 10F75:  5c
+b04_8f76:   .db $5c                     ; 10F76:  5c
+b04_8f77:   .db $5c                     ; 10F77:  5c
+b04_8f78:   .db $5c                     ; 10F78:  5c
+b04_8f79:   sbc #$5c                    ; 10F79:  e9 5c
+b04_8f7b:   lda $7272,x                 ; 10F7B:  bd 72 72
+b04_8f7e:   .db $72                     ; 10F7E:  72
+b04_8f7f:   .db $72                     ; 10F7F:  72
+b04_8f80:   .db $72                     ; 10F80:  72
+b04_8f81:   adc $bc5c,y                 ; 10F81:  79 5c bc
+b04_8f84:   .db $5c                     ; 10F84:  5c
+b04_8f85:   .db $5c                     ; 10F85:  5c
+b04_8f86:   .db $5c                     ; 10F86:  5c
+b04_8f87:   .db $5c                     ; 10F87:  5c
+b04_8f88:   .db $5c                     ; 10F88:  5c
+b04_8f89:   .db $5c                     ; 10F89:  5c
+b04_8f8a:   .db $5c                     ; 10F8A:  5c
+b04_8f8b:   .db $5c                     ; 10F8B:  5c
+b04_8f8c:   bvs $8f14                   ; 10F8C:  70 86
+b04_8f8e:   .db $74                     ; 10F8E:  74
+b04_8f8f:   ora #$0c                    ; 10F8F:  09 0c
+b04_8f91:   .db $5c                     ; 10F91:  5c
+b04_8f92:   txa                         ; 10F92:  8a
+b04_8f93:   sty $8d91                   ; 10F93:  8c 91 8d
+b04_8f96:   sbc #$5c                    ; 10F96:  e9 5c
+b04_8f98:   .db $5c                     ; 10F98:  5c
+b04_8f99:   .db $8f                     ; 10F99:  8f
+b04_8f9a:   .db $7f                     ; 10F9A:  7f
+b04_8f9b:   .db $64                     ; 10F9B:  64
+b04_8f9c:   cli                         ; 10F9C:  58
+b04_8f9d:   .db $b3                     ; 10F9D:  b3
+b04_8f9e:   .db $5c                     ; 10F9E:  5c
+b04_8f9f:   sbc $bd                     ; 10F9F:  e5 bd
+b04_8fa1:   .db $72                     ; 10FA1:  72
+b04_8fa2:   .db $72                     ; 10FA2:  72
+b04_8fa3:   .db $72                     ; 10FA3:  72
+b04_8fa4:   .db $72                     ; 10FA4:  72
+b04_8fa5:   .db $72                     ; 10FA5:  72
+b04_8fa6:   .db $72                     ; 10FA6:  72
+b04_8fa7:   .db $72                     ; 10FA7:  72
+b04_8fa8:   .db $72                     ; 10FA8:  72
+b04_8fa9:   .db $72                     ; 10FA9:  72
+b04_8faa:   sty $5c                     ; 10FAA:  84 5c
+b04_8fac:   .db $5c                     ; 10FAC:  5c
+b04_8fad:   .db $5c                     ; 10FAD:  5c
+b04_8fae:   .db $5c                     ; 10FAE:  5c
+b04_8faf:   .db $5c                     ; 10FAF:  5c
+b04_8fb0:   .db $5c                     ; 10FB0:  5c
+b04_8fb1:   .db $5c                     ; 10FB1:  5c
+b04_8fb2:   .db $5c                     ; 10FB2:  5c
+b04_8fb3:   .db $df                     ; 10FB3:  df
+b04_8fb4:   .db $9f                     ; 10FB4:  9f
+b04_8fb5:   .db $6f                     ; 10FB5:  6f
+b04_8fb6:   .db $93                     ; 10FB6:  93
+b04_8fb7:   .db $64                     ; 10FB7:  64
+b04_8fb8:   adc $e6                     ; 10FB8:  65 e6
+b04_8fba:   sbc $9f                     ; 10FBA:  e5 9f
+b04_8fbc:   ora ($5e),y                 ; 10FBC:  11 5e
+b04_8fbe:   lsr $5c78,x                 ; 10FBE:  5e 78 5c
+b04_8fc1:   .db $5c                     ; 10FC1:  5c
+b04_8fc2:   .db $5c                     ; 10FC2:  5c
+b04_8fc3:   .db $5c                     ; 10FC3:  5c
+b04_8fc4:   ora #$0d                    ; 10FC4:  09 0d
+b04_8fc6:   .db $7b                     ; 10FC6:  7b
+b04_8fc7:   .db $72                     ; 10FC7:  72
+b04_8fc8:   .db $72                     ; 10FC8:  72
+b04_8fc9:   .db $72                     ; 10FC9:  72
+b04_8fca:   .db $72                     ; 10FCA:  72
+b04_8fcb:   .db $72                     ; 10FCB:  72
+b04_8fcc:   adc $715c,y                 ; 10FCC:  79 5c 71
+b04_8fcf:   adc $ac,x                   ; 10FCF:  75 ac
+b04_8fd1:   adc $68                     ; 10FD1:  65 68
+b04_8fd3:   .db $6f                     ; 10FD3:  6f
+b04_8fd4:   .db $7f                     ; 10FD4:  7f
+b04_8fd5:   adc $a0bd,x                 ; 10FD5:  7d bd a0
+b04_8fd8:   .db $57                     ; 10FD8:  57
+b04_8fd9:   .db $57                     ; 10FD9:  57
+b04_8fda:   .db $57                     ; 10FDA:  57
+b04_8fdb:   .db $57                     ; 10FDB:  57
+b04_8fdc:   .db $57                     ; 10FDC:  57
+b04_8fdd:   eor $5c5c,x                 ; 10FDD:  5d 5c 5c
+b04_8fe0:   .db $5c                     ; 10FE0:  5c
+b04_8fe1:   .db $5c                     ; 10FE1:  5c
+b04_8fe2:   .db $9f                     ; 10FE2:  9f
+b04_8fe3:   .db $6f                     ; 10FE3:  6f
+b04_8fe4:   .db $57                     ; 10FE4:  57
+b04_8fe5:   .db $57                     ; 10FE5:  57
+b04_8fe6:   lda $5c                     ; 10FE6:  a5 5c
+b04_8fe8:   .db $74                     ; 10FE8:  74
+b04_8fe9:   .db $6f                     ; 10FE9:  6f
+b04_8fea:   .db $b3                     ; 10FEA:  b3
+b04_8feb:   .db $89                     ; 10FEB:  89
+b04_8fec:   dec $97,x                   ; 10FEC:  d6 97
+b04_8fee:   .db $57                     ; 10FEE:  57
+b04_8fef:   .db $57                     ; 10FEF:  57
+b04_8ff0:   cmp $8d8a,y                 ; 10FF0:  d9 8a 8d
+b04_8ff3:   .db $b3                     ; 10FF3:  b3
+b04_8ff4:   ldx $8282                   ; 10FF4:  ae 82 82
+b04_8ff7:   .db $82                     ; 10FF7:  82
+b04_8ff8:   .db $82                     ; 10FF8:  82
+b04_8ff9:   ldx $5c78,y                 ; 10FF9:  be 78 5c
+b04_8ffc:   .db $57                     ; 10FFC:  57
+b04_8ffd:   .db $57                     ; 10FFD:  57
+b04_8ffe:   .db $57                     ; 10FFE:  57
+b04_8fff:   .db $57                     ; 10FFF:  57
+b04_9000:   ldx $8282                   ; 11000:  ae 82 82
+b04_9003:   .db $82                     ; 11003:  82
+b04_9004:   .db $af                     ; 11004:  af
+b04_9005:   .db $57                     ; 11005:  57
+b04_9006:   .db $b3                     ; 11006:  b3
+b04_9007:   ora #$09                    ; 11007:  09 09
+b04_9009:   adc $5c5c,x                 ; 11009:  7d 5c 5c
+b04_900c:   .db $5c                     ; 1100C:  5c
+b04_900d:   .db $5c                     ; 1100D:  5c
+b04_900e:   sty $c3,x                   ; 1100E:  94 c3
+b04_9010:   cpy $09                     ; 11010:  c4 09
+b04_9012:   .db $0f                     ; 11012:  0f
+b04_9013:   .db $57                     ; 11013:  57
+b04_9014:   .db $57                     ; 11014:  57
+b04_9015:   .db $57                     ; 11015:  57
+b04_9016:   .db $bf                     ; 11016:  bf
+b04_9017:   .db $72                     ; 11017:  72
+b04_9018:   eor $5693,y                 ; 11018:  59 93 56
+b04_901b:   ldx $57af                   ; 1101B:  ae af 57
+b04_901e:   .db $57                     ; 1101E:  57
+b04_901f:   adc $5780,x                 ; 1101F:  7d 80 57
+b04_9022:   .db $b3                     ; 11022:  b3
+b04_9023:   .db $57                     ; 11023:  57
+b04_9024:   .db $73                     ; 11024:  73
+b04_9025:   .db $5c                     ; 11025:  5c
+b04_9026:   .db $5c                     ; 11026:  5c
+b04_9027:   .db $5c                     ; 11027:  5c
+b04_9028:   .db $5c                     ; 11028:  5c
+b04_9029:   .db $5c                     ; 11029:  5c
+b04_902a:   .db $57                     ; 1102A:  57
+b04_902b:   .db $e7                     ; 1102B:  e7
+b04_902c:   cmp $57                     ; 1102C:  c5 57
+b04_902e:   .db $57                     ; 1102E:  57
+b04_902f:   .db $57                     ; 1102F:  57
+b04_9030:   .db $57                     ; 11030:  57
+b04_9031:   .db $57                     ; 11031:  57
+b04_9032:   .db $73                     ; 11032:  73
+b04_9033:   .db $5c                     ; 11033:  5c
+b04_9034:   .db $64                     ; 11034:  64
+b04_9035:   .db $64                     ; 11035:  64
+b04_9036:   lsr $b3,x                   ; 11036:  56 b3
+b04_9038:   .db $57                     ; 11038:  57
+b04_9039:   ldx $7272                   ; 11039:  ae 72 72
+b04_903c:   .db $72                     ; 1103C:  72
+b04_903d:   .db $72                     ; 1103D:  72
+b04_903e:   ldy $72                     ; 1103E:  a4 72
+b04_9040:   .db $72                     ; 11040:  72
+b04_9041:   .db $72                     ; 11041:  72
+b04_9042:   .db $72                     ; 11042:  72
+b04_9043:   .db $72                     ; 11043:  72
+b04_9044:   .db $7c                     ; 11044:  7c
+b04_9045:   .db $72                     ; 11045:  72
+b04_9046:   .db $d4                     ; 11046:  d4
+b04_9047:   bcs $900b                   ; 11047:  b0 c2
+b04_9049:   .db $57                     ; 11049:  57
+b04_904a:   .db $d3                     ; 1104A:  d3
+b04_904b:   .db $82                     ; 1104B:  82
+b04_904c:   .db $72                     ; 1104C:  72
+b04_904d:   .db $72                     ; 1104D:  72
+b04_904e:   .db $72                     ; 1104E:  72
+b04_904f:   .db $72                     ; 1104F:  72
+b04_9050:   .db $64                     ; 11050:  64
+b04_9051:   adc $6f                     ; 11051:  65 6f
+b04_9053:   .db $c3                     ; 11053:  c3
+b04_9054:   .db $82                     ; 11054:  82
+b04_9055:   cpy $09                     ; 11055:  c4 09
+b04_9057:   asl a                       ; 11057:  0a
+b04_9058:   .db $5c                     ; 11058:  5c
+b04_9059:   .db $5c                     ; 11059:  5c
+b04_905a:   txa                         ; 1105A:  8a
+b04_905b:   sty $8d91                   ; 1105B:  8c 91 8d
+b04_905e:   .db $5c                     ; 1105E:  5c
+b04_905f:   .db $5c                     ; 1105F:  5c
+b04_9060:   cpy #$94                    ; 11060:  c0 94
+b04_9062:   .db $7f                     ; 11062:  7f
+b04_9063:   .db $64                     ; 11063:  64
+b04_9064:   .db $57                     ; 11064:  57
+b04_9065:   .db $93                     ; 11065:  93
+b04_9066:   .db $57                     ; 11066:  57
+b04_9067:   .db $57                     ; 11067:  57
+b04_9068:   lda $10                     ; 11068:  a5 10
+b04_906a:   .db $5c                     ; 1106A:  5c
+b04_906b:   .db $5c                     ; 1106B:  5c
+b04_906c:   adc $6f                     ; 1106C:  65 6f
+b04_906e:   .db $57                     ; 1106E:  57
+b04_906f:   .db $e7                     ; 1106F:  e7
+b04_9070:   adc $5c74,x                 ; 11070:  7d 74 5c
+b04_9073:   .db $5c                     ; 11073:  5c
+b04_9074:   .db $5c                     ; 11074:  5c
+b04_9075:   .db $5c                     ; 11075:  5c
+b04_9076:   .db $5c                     ; 11076:  5c
+b04_9077:   .db $5c                     ; 11077:  5c
+b04_9078:   txa                         ; 11078:  8a
+b04_9079:   sta $e55c                   ; 11079:  8d 5c e5
+b04_907c:   .db $8f                     ; 1107C:  8f
+b04_907d:   .db $57                     ; 1107D:  57
+b04_907e:   .db $93                     ; 1107E:  93
+b04_907f:   .db $64                     ; 1107F:  64
+b04_9080:   ldy $5764                   ; 11080:  ac 64 57
+b04_9083:   .db $57                     ; 11083:  57
+b04_9084:   .db $57                     ; 11084:  57
+b04_9085:   .db $57                     ; 11085:  57
+b04_9086:   .db $57                     ; 11086:  57
+b04_9087:   lda $82                     ; 11087:  a5 82
+b04_9089:   .db $82                     ; 11089:  82
+b04_908a:   .db $d4                     ; 1108A:  d4
+b04_908b:   .db $73                     ; 1108B:  73
+b04_908c:   .db $5c                     ; 1108C:  5c
+b04_908d:   .db $77                     ; 1108D:  77
+b04_908e:   .db $72                     ; 1108E:  72
+b04_908f:   .db $72                     ; 1108F:  72
+b04_9090:   .db $7c                     ; 11090:  7c
+b04_9091:   .db $72                     ; 11091:  72
+b04_9092:   .db $72                     ; 11092:  72
+b04_9093:   .db $72                     ; 11093:  72
+b04_9094:   .db $72                     ; 11094:  72
+b04_9095:   .db $72                     ; 11095:  72
+b04_9096:   dey                         ; 11096:  88
+b04_9097:   .db $5c                     ; 11097:  5c
+b04_9098:   ror $57,x                   ; 11098:  76 57
+b04_909a:   .db $64                     ; 1109A:  64
+b04_909b:   .db $64                     ; 1109B:  64
+b04_909c:   .db $e3                     ; 1109C:  e3
+b04_909d:   .db $64                     ; 1109D:  64
+b04_909e:   lda $68,x                   ; 1109E:  b5 68
+b04_90a0:   .db $57                     ; 110A0:  57
+b04_90a1:   .db $57                     ; 110A1:  57
+b04_90a2:   .db $57                     ; 110A2:  57
+b04_90a3:   .db $57                     ; 110A3:  57
+b04_90a4:   .db $7f                     ; 110A4:  7f
+b04_90a5:   ora #$08                    ; 110A5:  09 08
+b04_90a7:   .db $5c                     ; 110A7:  5c
+b04_90a8:   txa                         ; 110A8:  8a
+b04_90a9:   sty $8d91                   ; 110A9:  8c 91 8d
+b04_90ac:   ldy $095c,x                 ; 110AC:  bc 5c 09
+b04_90af:   .db $0b                     ; 110AF:  0b
+b04_90b0:   .db $5c                     ; 110B0:  5c
+b04_90b1:   .db $5c                     ; 110B1:  5c
+b04_90b2:   .db $5c                     ; 110B2:  5c
+b04_90b3:   .db $5c                     ; 110B3:  5c
+b04_90b4:   .db $5c                     ; 110B4:  5c
+b04_90b5:   sta $ea                     ; 110B5:  85 ea
+b04_90b7:   .db $64                     ; 110B7:  64
+b04_90b8:   cli                         ; 110B8:  58
+b04_90b9:   eor $575a,y                 ; 110B9:  59 5a 57
+b04_90bc:   .db $57                     ; 110BC:  57
+b04_90bd:   tya                         ; 110BD:  98
+b04_90be:   eor $5b59,y                 ; 110BE:  59 59 5b
+b04_90c1:   .db $5c                     ; 110C1:  5c
+b04_90c2:   .db $5c                     ; 110C2:  5c
+b04_90c3:   .db $5c                     ; 110C3:  5c
+b04_90c4:   .db $5c                     ; 110C4:  5c
+b04_90c5:   txa                         ; 110C5:  8a
+b04_90c6:   sty $5c8d                   ; 110C6:  8c 8d 5c
+b04_90c9:   .db $df                     ; 110C9:  df
+b04_90ca:   .db $5c                     ; 110CA:  5c
+b04_90cb:   .db $5c                     ; 110CB:  5c
+b04_90cc:   .db $5c                     ; 110CC:  5c
+b04_90cd:   .db $5c                     ; 110CD:  5c
+b04_90ce:   .db $5c                     ; 110CE:  5c
+b04_90cf:   .db $5c                     ; 110CF:  5c
+b04_90d0:   .db $5c                     ; 110D0:  5c
+b04_90d1:   .db $5c                     ; 110D1:  5c
+b04_90d2:   .db $57                     ; 110D2:  57
+b04_90d3:   .db $57                     ; 110D3:  57
+b04_90d4:   .db $57                     ; 110D4:  57
+b04_90d5:   .db $6b                     ; 110D5:  6b
+b04_90d6:   rts                         ; 110D6:  60
+b04_90d7:   .db $64                     ; 110D7:  64
+b04_90d8:   .db $64                     ; 110D8:  64
+b04_90d9:   .db $64                     ; 110D9:  64
+b04_90da:   .db $64                     ; 110DA:  64
+b04_90db:   .db $64                     ; 110DB:  64
+b04_90dc:   eor ($51),y                 ; 110DC:  51 51
+b04_90de:   eor ($51),y                 ; 110DE:  51 51
+b04_90e0:   eor ($51),y                 ; 110E0:  51 51
+b04_90e2:   eor ($51),y                 ; 110E2:  51 51
+b04_90e4:   eor ($51),y                 ; 110E4:  51 51
+b04_90e6:   eor ($51),y                 ; 110E6:  51 51
+b04_90e8:   eor ($51),y                 ; 110E8:  51 51
+b04_90ea:   eor ($51),y                 ; 110EA:  51 51
+b04_90ec:   .db $52                     ; 110EC:  52
+b04_90ed:   .db $53                     ; 110ED:  53
+b04_90ee:   lsr $09,x                   ; 110EE:  56 09
+b04_90f0:   .db $57                     ; 110F0:  57
+b04_90f1:   .db $57                     ; 110F1:  57
+b04_90f2:   .db $57                     ; 110F2:  57
+b04_90f3:   .db $57                     ; 110F3:  57
+b04_90f4:   .db $57                     ; 110F4:  57
+b04_90f5:   .db $57                     ; 110F5:  57
+b04_90f6:   .db $5b                     ; 110F6:  5b
+b04_90f7:   .db $5c                     ; 110F7:  5c
+b04_90f8:   eor ($51),y                 ; 110F8:  51 51
+b04_90fa:   eor ($51),y                 ; 110FA:  51 51
+b04_90fc:   eor ($51),y                 ; 110FC:  51 51
+b04_90fe:   eor ($51),y                 ; 110FE:  51 51
+b04_9100:   eor ($51),y                 ; 11100:  51 51
+b04_9102:   eor ($51),y                 ; 11102:  51 51
+b04_9104:   eor ($51),y                 ; 11104:  51 51
+b04_9106:   eor ($51),y                 ; 11106:  51 51
+b04_9108:   .db $54                     ; 11108:  54
+b04_9109:   eor $58,x                   ; 11109:  55 58
+b04_910b:   eor $575a,y                 ; 1110B:  59 5a 57
+b04_910e:   .db $57                     ; 1110E:  57
+b04_910f:   eor $5959,y                 ; 1110F:  59 59 59
+b04_9112:   eor $5f5e,x                 ; 11112:  5d 5e 5f
+b04_9115:   .db $5f                     ; 11115:  5f
+b04_9116:   rts                         ; 11116:  60
+b04_9117:   eor ($51),y                 ; 11117:  51 51
+b04_9119:   eor ($51),y                 ; 11119:  51 51
+b04_911b:   eor ($51),y                 ; 1111B:  51 51
+b04_911d:   eor ($51),y                 ; 1111D:  51 51
+b04_911f:   eor ($63),y                 ; 1111F:  51 63
+b04_9121:   .db $62                     ; 11121:  62
+b04_9122:   .db $64                     ; 11122:  64
+b04_9123:   .db $64                     ; 11123:  64
+b04_9124:   .db $67                     ; 11124:  67
+b04_9125:   eor ($64),y                 ; 11125:  51 64
+b04_9127:   .db $64                     ; 11127:  64
+b04_9128:   .db $64                     ; 11128:  64
+b04_9129:   .db $64                     ; 11129:  64
+b04_912a:   pla                         ; 1112A:  68
+b04_912b:   pla                         ; 1112B:  68
+b04_912c:   rts                         ; 1112C:  60
+b04_912d:   adc #$5a                    ; 1112D:  69 5a
+b04_912f:   .db $57                     ; 1112F:  57
+b04_9130:   .db $53                     ; 11130:  53
+b04_9131:   .db $53                     ; 11131:  53
+b04_9132:   .db $53                     ; 11132:  53
+b04_9133:   .db $53                     ; 11133:  53
+b04_9134:   .db $53                     ; 11134:  53
+b04_9135:   adc ($5f,x)                 ; 11135:  61 5f
+b04_9137:   .db $5f                     ; 11137:  5f
+b04_9138:   .db $5f                     ; 11138:  5f
+b04_9139:   .db $5f                     ; 11139:  5f
+b04_913a:   .db $62                     ; 1113A:  62
+b04_913b:   .db $53                     ; 1113B:  53
+b04_913c:   .db $53                     ; 1113C:  53
+b04_913d:   .db $53                     ; 1113D:  53
+b04_913e:   adc $66                     ; 1113E:  65 66
+b04_9140:   .db $53                     ; 11140:  53
+b04_9141:   eor ($64),y                 ; 11141:  51 64
+b04_9143:   adc $57                     ; 11143:  65 57
+b04_9145:   .db $64                     ; 11145:  64
+b04_9146:   .db $57                     ; 11146:  57
+b04_9147:   .db $57                     ; 11147:  57
+b04_9148:   .db $57                     ; 11148:  57
+b04_9149:   ror a                       ; 11149:  6a
+b04_914a:   .db $64                     ; 1114A:  64
+b04_914b:   .db $64                     ; 1114B:  64
+b04_914c:   pla                         ; 1114C:  68
+b04_914d:   pla                         ; 1114D:  68
+b04_914e:   pla                         ; 1114E:  68
+b04_914f:   rts                         ; 1114F:  60
+b04_9150:   .db $64                     ; 11150:  64
+b04_9151:   .db $64                     ; 11151:  64
+b04_9152:   .db $64                     ; 11152:  64
+b04_9153:   .db $64                     ; 11153:  64
+b04_9154:   .db $64                     ; 11154:  64
+b04_9155:   .db $64                     ; 11155:  64
+b04_9156:   .db $64                     ; 11156:  64
+b04_9157:   .db $64                     ; 11157:  64
+b04_9158:   .db $64                     ; 11158:  64
+b04_9159:   .db $64                     ; 11159:  64
+b04_915a:   lsr $6d,x                   ; 1115A:  56 6d
+b04_915c:   .db $64                     ; 1115C:  64
+b04_915d:   .db $64                     ; 1115D:  64
+b04_915e:   .db $64                     ; 1115E:  64
+b04_915f:   .db $57                     ; 1115F:  57
+b04_9160:   .db $57                     ; 11160:  57
+b04_9161:   .db $64                     ; 11161:  64
+b04_9162:   pla                         ; 11162:  68
+b04_9163:   rts                         ; 11163:  60
+b04_9164:   lsr $6e,x                   ; 11164:  56 6e
+b04_9166:   .db $64                     ; 11166:  64
+b04_9167:   .db $64                     ; 11167:  64
+b04_9168:   ora #$08                    ; 11168:  09 08
+b04_916a:   .db $57                     ; 1116A:  57
+b04_916b:   .db $57                     ; 1116B:  57
+b04_916c:   .db $6b                     ; 1116C:  6b
+b04_916d:   pla                         ; 1116D:  68
+b04_916e:   .db $57                     ; 1116E:  57
+b04_916f:   .db $6b                     ; 1116F:  6b
+b04_9170:   jmp ($6c68)                 ; 11170:  6c 68 6c
+b04_9173:   rts                         ; 11173:  60
+b04_9174:   .db $64                     ; 11174:  64
+b04_9175:   .db $64                     ; 11175:  64
+b04_9176:   adc $59                     ; 11176:  65 59
+b04_9178:   ror $6f6c                   ; 11178:  6e 6c 6f
+b04_917b:   asl a                       ; 1117B:  0a
+b04_917c:   .db $57                     ; 1117C:  57
+b04_917d:   .db $57                     ; 1117D:  57
+b04_917e:   .db $57                     ; 1117E:  57
+b04_917f:   .db $57                     ; 1117F:  57
+b04_9180:   .db $57                     ; 11180:  57
+b04_9181:   .db $57                     ; 11181:  57
+b04_9182:   ror $7060                   ; 11182:  6e 60 70
+b04_9185:   bvs $91f7                   ; 11185:  70 70
+b04_9187:   bvs $91e3                   ; 11187:  70 5a
+b04_9189:   .db $57                     ; 11189:  57
+b04_918a:   .db $57                     ; 1118A:  57
+b04_918b:   .db $73                     ; 1118B:  73
+b04_918c:   .db $74                     ; 1118C:  74
+b04_918d:   .db $57                     ; 1118D:  57
+b04_918e:   .db $74                     ; 1118E:  74
+b04_918f:   .db $5a                     ; 1118F:  5a
+b04_9190:   .db $6b                     ; 11190:  6b
+b04_9191:   .db $6f                     ; 11191:  6f
+b04_9192:   .db $57                     ; 11192:  57
+b04_9193:   pla                         ; 11193:  68
+b04_9194:   .db $57                     ; 11194:  57
+b04_9195:   .db $77                     ; 11195:  77
+b04_9196:   adc $707a,y                 ; 11196:  79 7a 70
+b04_9199:   adc $5a5c,x                 ; 11199:  7d 5c 5a
+b04_919c:   .db $7f                     ; 1119C:  7f
+b04_919d:   .db $80                     ; 1119D:  80
+b04_919e:   .db $57                     ; 1119E:  57
+b04_919f:   ror a                       ; 1119F:  6a
+b04_91a0:   .db $5c                     ; 111A0:  5c
+b04_91a1:   adc ($72),y                 ; 111A1:  71 72
+b04_91a3:   .db $72                     ; 111A3:  72
+b04_91a4:   .db $72                     ; 111A4:  72
+b04_91a5:   .db $72                     ; 111A5:  72
+b04_91a6:   .db $72                     ; 111A6:  72
+b04_91a7:   .db $72                     ; 111A7:  72
+b04_91a8:   adc $57,x                   ; 111A8:  75 57
+b04_91aa:   .db $74                     ; 111AA:  74
+b04_91ab:   ora $5757                   ; 111AB:  0d 57 57
+b04_91ae:   .db $57                     ; 111AE:  57
+b04_91af:   .db $57                     ; 111AF:  57
+b04_91b0:   .db $57                     ; 111B0:  57
+b04_91b1:   sei                         ; 111B1:  78
+b04_91b2:   .db $7b                     ; 111B2:  7b
+b04_91b3:   .db $7c                     ; 111B3:  7c
+b04_91b4:   .db $72                     ; 111B4:  72
+b04_91b5:   .db $72                     ; 111B5:  72
+b04_91b6:   .db $72                     ; 111B6:  72
+b04_91b7:   ror $815c,x                 ; 111B7:  7e 5c 81
+b04_91ba:   .db $82                     ; 111BA:  82
+b04_91bb:   .db $83                     ; 111BB:  83
+b04_91bc:   .db $5c                     ; 111BC:  5c
+b04_91bd:   .db $74                     ; 111BD:  74
+b04_91be:   .db $0f                     ; 111BE:  0f
+b04_91bf:   .db $5c                     ; 111BF:  5c
+b04_91c0:   .db $5c                     ; 111C0:  5c
+b04_91c1:   .db $5c                     ; 111C1:  5c
+b04_91c2:   lsr $5757,x                 ; 111C2:  5e 57 57
+b04_91c5:   .db $7f                     ; 111C5:  7f
+b04_91c6:   .db $74                     ; 111C6:  74
+b04_91c7:   sta $70                     ; 111C7:  85 70
+b04_91c9:   adc $855c,x                 ; 111C9:  7d 5c 85
+b04_91cc:   .db $57                     ; 111CC:  57
+b04_91cd:   .db $57                     ; 111CD:  57
+b04_91ce:   .db $5c                     ; 111CE:  5c
+b04_91cf:   .db $74                     ; 111CF:  74
+b04_91d0:   .db $0b                     ; 111D0:  0b
+b04_91d1:   .db $5c                     ; 111D1:  5c
+b04_91d2:   .db $5c                     ; 111D2:  5c
+b04_91d3:   .db $77                     ; 111D3:  77
+b04_91d4:   dey                         ; 111D4:  88
+b04_91d5:   .db $5c                     ; 111D5:  5c
+b04_91d6:   .db $7a                     ; 111D6:  7a
+b04_91d7:   .db $57                     ; 111D7:  57
+b04_91d8:   .db $72                     ; 111D8:  72
+b04_91d9:   sty $5c                     ; 111D9:  84 5c
+b04_91db:   .db $5c                     ; 111DB:  5c
+b04_91dc:   .db $5c                     ; 111DC:  5c
+b04_91dd:   .db $5c                     ; 111DD:  5c
+b04_91de:   .db $5c                     ; 111DE:  5c
+b04_91df:   .db $5c                     ; 111DF:  5c
+b04_91e0:   .db $5c                     ; 111E0:  5c
+b04_91e1:   .db $5c                     ; 111E1:  5c
+b04_91e2:   .db $7b                     ; 111E2:  7b
+b04_91e3:   .db $72                     ; 111E3:  72
+b04_91e4:   adc $5c5c,y                 ; 111E4:  79 5c 5c
+b04_91e7:   .db $5c                     ; 111E7:  5c
+b04_91e8:   stx $87                     ; 111E8:  86 87
+b04_91ea:   .db $72                     ; 111EA:  72
+b04_91eb:   sty $5c                     ; 111EB:  84 5c
+b04_91ed:   .db $5c                     ; 111ED:  5c
+b04_91ee:   .db $5c                     ; 111EE:  5c
+b04_91ef:   .db $5c                     ; 111EF:  5c
+b04_91f0:   .db $5c                     ; 111F0:  5c
+b04_91f1:   .db $5c                     ; 111F1:  5c
+b04_91f2:   .db $89                     ; 111F2:  89
+b04_91f3:   .db $57                     ; 111F3:  57
+b04_91f4:   ora ($7b),y                 ; 111F4:  11 7b
+b04_91f6:   .db $72                     ; 111F6:  72
+b04_91f7:   .db $72                     ; 111F7:  72
+b04_91f8:   .db $72                     ; 111F8:  72
+b04_91f9:   .db $72                     ; 111F9:  72
+b04_91fa:   .db $72                     ; 111FA:  72
+b04_91fb:   .db $72                     ; 111FB:  72
+b04_91fc:   adc $8c8a,y                 ; 111FC:  79 8a 8c
+b04_91ff:   sta $728b                   ; 111FF:  8d 8b 72
+b04_9202:   ror $715c,x                 ; 11202:  7e 5c 71
+b04_9205:   stx $7b5c                   ; 11205:  8e 5c 7b
+b04_9208:   .db $72                     ; 11208:  72
+b04_9209:   .db $72                     ; 11209:  72
+b04_920a:   .db $72                     ; 1120A:  72
+b04_920b:   adc $8f5c,y                 ; 1120B:  79 5c 8f
+b04_920e:   .db $57                     ; 1120E:  57
+b04_920f:   .db $57                     ; 1120F:  57
+b04_9210:   .db $5c                     ; 11210:  5c
+b04_9211:   .db $5c                     ; 11211:  5c
+b04_9212:   .db $5c                     ; 11212:  5c
+b04_9213:   .db $5c                     ; 11213:  5c
+b04_9214:   .db $5c                     ; 11214:  5c
+b04_9215:   .db $5c                     ; 11215:  5c
+b04_9216:   .db $5c                     ; 11216:  5c
+b04_9217:   .db $5c                     ; 11217:  5c
+b04_9218:   .db $8b                     ; 11218:  8b
+b04_9219:   .db $7c                     ; 11219:  7c
+b04_921a:   .db $72                     ; 1121A:  72
+b04_921b:   .db $72                     ; 1121B:  72
+b04_921c:   adc $5c,x                   ; 1121C:  75 5c
+b04_921e:   .db $77                     ; 1121E:  77
+b04_921f:   .db $7c                     ; 1121F:  7c
+b04_9220:   adc $5c,x                   ; 11220:  75 5c
+b04_9222:   .db $5c                     ; 11222:  5c
+b04_9223:   .db $0c                     ; 11223:  0c
+b04_9224:   .db $5c                     ; 11224:  5c
+b04_9225:   .db $5c                     ; 11225:  5c
+b04_9226:   .db $5c                     ; 11226:  5c
+b04_9227:   .db $7b                     ; 11227:  7b
+b04_9228:   .db $72                     ; 11228:  72
+b04_9229:   .db $72                     ; 11229:  72
+b04_922a:   .db $82                     ; 1122A:  82
+b04_922b:   bcc $929f                   ; 1122B:  90 72
+b04_922d:   .db $72                     ; 1122D:  72
+b04_922e:   ror $8c8a,x                 ; 1122E:  7e 8a 8c
+b04_9231:   sta ($8d),y                 ; 11231:  91 8d
+b04_9233:   adc ($75),y                 ; 11233:  71 75
+b04_9235:   .db $74                     ; 11235:  74
+b04_9236:   asl $6f5c                   ; 11236:  0e 5c 6f
+b04_9239:   .db $7f                     ; 11239:  7f
+b04_923a:   bvs $92b7                   ; 1123A:  70 7b
+b04_923c:   .db $72                     ; 1123C:  72
+b04_923d:   .db $72                     ; 1123D:  72
+b04_923e:   adc $5c5c,y                 ; 1123E:  79 5c 5c
+b04_9241:   .db $5c                     ; 11241:  5c
+b04_9242:   .db $5c                     ; 11242:  5c
+b04_9243:   .db $6f                     ; 11243:  6f
+b04_9244:   .db $57                     ; 11244:  57
+b04_9245:   .db $57                     ; 11245:  57
+b04_9246:   .db $57                     ; 11246:  57
+b04_9247:   ror a                       ; 11247:  6a
+b04_9248:   bpl $92a6                   ; 11248:  10 5c
+b04_924a:   .db $77                     ; 1124A:  77
+b04_924b:   .db $72                     ; 1124B:  72
+b04_924c:   .db $72                     ; 1124C:  72
+b04_924d:   .db $72                     ; 1124D:  72
+b04_924e:   .db $72                     ; 1124E:  72
+b04_924f:   stx $8e71                   ; 1124F:  8e 71 8e
+b04_9252:   .db $6f                     ; 11252:  6f
+b04_9253:   .db $57                     ; 11253:  57
+b04_9254:   .db $57                     ; 11254:  57
+b04_9255:   .db $5b                     ; 11255:  5b
+b04_9256:   .db $89                     ; 11256:  89
+b04_9257:   lsr $925e,x                 ; 11257:  5e 5e 92
+b04_925a:   .db $7b                     ; 1125A:  7b
+b04_925b:   .db $72                     ; 1125B:  72
+b04_925c:   .db $72                     ; 1125C:  72
+b04_925d:   ror $5789,x                 ; 1125D:  7e 89 57
+b04_9260:   .db $57                     ; 11260:  57
+b04_9261:   .db $7f                     ; 11261:  7f
+b04_9262:   eor $5c93,y                 ; 11262:  59 93 5c
+b04_9265:   .db $5c                     ; 11265:  5c
+b04_9266:   .db $5c                     ; 11266:  5c
+b04_9267:   sty $57,x                   ; 11267:  94 57
+b04_9269:   .db $57                     ; 11269:  57
+b04_926a:   .db $57                     ; 1126A:  57
+b04_926b:   .db $57                     ; 1126B:  57
+b04_926c:   sta $59,x                   ; 1126C:  95 59
+b04_926e:   eor $5796,y                 ; 1126E:  59 96 57
+b04_9271:   .db $57                     ; 11271:  57
+b04_9272:   .db $57                     ; 11272:  57
+b04_9273:   .db $57                     ; 11273:  57
+b04_9274:   tya                         ; 11274:  98
+b04_9275:   eor $5757,y                 ; 11275:  59 57 57
+b04_9278:   sta $579a,y                 ; 11278:  99 9a 57
+b04_927b:   eor $6464,y                 ; 1127B:  59 64 64
+b04_927e:   .db $53                     ; 1127E:  53
+b04_927f:   .db $53                     ; 1127F:  53
+b04_9280:   lsr $6f5e,x                 ; 11280:  5e 5e 6f
+b04_9283:   .db $57                     ; 11283:  57
+b04_9284:   .db $7f                     ; 11284:  7f
+b04_9285:   eor $5959,y                 ; 11285:  59 59 59
+b04_9288:   .db $93                     ; 11288:  93
+b04_9289:   .db $64                     ; 11289:  64
+b04_928a:   .db $64                     ; 1128A:  64
+b04_928b:   .db $97                     ; 1128B:  97
+b04_928c:   tya                         ; 1128C:  98
+b04_928d:   eor $6493,y                 ; 1128D:  59 93 64
+b04_9290:   .db $64                     ; 11290:  64
+b04_9291:   .db $64                     ; 11291:  64
+b04_9292:   .db $64                     ; 11292:  64
+b04_9293:   cli                         ; 11293:  58
+b04_9294:   .db $9b                     ; 11294:  9b
+b04_9295:   eor $6493,y                 ; 11295:  59 93 64
+b04_9298:   .db $64                     ; 11298:  64
+b04_9299:   .db $64                     ; 11299:  64
+b04_929a:   .db $9c                     ; 1129A:  9c
+b04_929b:   eor ($64),y                 ; 1129B:  51 64
+b04_929d:   .db $64                     ; 1129D:  64
+b04_929e:   .db $64                     ; 1129E:  64
+b04_929f:   .db $64                     ; 1129F:  64
+b04_92a0:   .db $64                     ; 112A0:  64
+b04_92a1:   .db $64                     ; 112A1:  64
+b04_92a2:   .db $64                     ; 112A2:  64
+b04_92a3:   .db $64                     ; 112A3:  64
+b04_92a4:   .db $64                     ; 112A4:  64
+b04_92a5:   .db $64                     ; 112A5:  64
+b04_92a6:   lda $0e09,y                 ; 112A6:  b9 09 0e
+b04_92a9:   .db $57                     ; 112A9:  57
+b04_92aa:   .db $57                     ; 112AA:  57
+b04_92ab:   .db $57                     ; 112AB:  57
+b04_92ac:   .db $57                     ; 112AC:  57
+b04_92ad:   .db $57                     ; 112AD:  57
+b04_92ae:   .db $57                     ; 112AE:  57
+b04_92af:   .db $57                     ; 112AF:  57
+b04_92b0:   tsx                         ; 112B0:  ba
+b04_92b1:   .db $64                     ; 112B1:  64
+b04_92b2:   .db $53                     ; 112B2:  53
+b04_92b3:   .db $64                     ; 112B3:  64
+b04_92b4:   .db $64                     ; 112B4:  64
+b04_92b5:   .db $64                     ; 112B5:  64
+b04_92b6:   .db $64                     ; 112B6:  64
+b04_92b7:   .db $64                     ; 112B7:  64
+b04_92b8:   .db $64                     ; 112B8:  64
+b04_92b9:   adc $68                     ; 112B9:  65 68
+b04_92bb:   pla                         ; 112BB:  68
+b04_92bc:   pla                         ; 112BC:  68
+b04_92bd:   pla                         ; 112BD:  68
+b04_92be:   pla                         ; 112BE:  68
+b04_92bf:   pla                         ; 112BF:  68
+b04_92c0:   clv                         ; 112C0:  b8
+b04_92c1:   .db $b3                     ; 112C1:  b3
+b04_92c2:   .db $57                     ; 112C2:  57
+b04_92c3:   .db $57                     ; 112C3:  57
+b04_92c4:   .db $57                     ; 112C4:  57
+b04_92c5:   .db $57                     ; 112C5:  57
+b04_92c6:   .db $57                     ; 112C6:  57
+b04_92c7:   .db $57                     ; 112C7:  57
+b04_92c8:   .db $57                     ; 112C8:  57
+b04_92c9:   .db $57                     ; 112C9:  57
+b04_92ca:   .db $57                     ; 112CA:  57
+b04_92cb:   .db $7f                     ; 112CB:  7f
+b04_92cc:   .db $93                     ; 112CC:  93
+b04_92cd:   .db $64                     ; 112CD:  64
+b04_92ce:   .db $53                     ; 112CE:  53
+b04_92cf:   .db $67                     ; 112CF:  67
+b04_92d0:   eor ($64),y                 ; 112D0:  51 64
+b04_92d2:   eor ($64),y                 ; 112D2:  51 64
+b04_92d4:   .db $bb                     ; 112D4:  bb
+b04_92d5:   .db $b3                     ; 112D5:  b3
+b04_92d6:   asl a                       ; 112D6:  0a
+b04_92d7:   ora #$57                    ; 112D7:  09 57
+b04_92d9:   .db $7f                     ; 112D9:  7f
+b04_92da:   bvs $934c                   ; 112DA:  70 70
+b04_92dc:   stx $77                     ; 112DC:  86 77
+b04_92de:   .db $7c                     ; 112DE:  7c
+b04_92df:   .db $82                     ; 112DF:  82
+b04_92e0:   .db $82                     ; 112E0:  82
+b04_92e1:   .db $82                     ; 112E1:  82
+b04_92e2:   eor $5959,y                 ; 112E2:  59 59 59
+b04_92e5:   eor $9359,y                 ; 112E5:  59 59 93
+b04_92e8:   .db $64                     ; 112E8:  64
+b04_92e9:   .db $64                     ; 112E9:  64
+b04_92ea:   .db $64                     ; 112EA:  64
+b04_92eb:   .db $64                     ; 112EB:  64
+b04_92ec:   rts                         ; 112EC:  60
+b04_92ed:   eor ($64),y                 ; 112ED:  51 64
+b04_92ef:   .db $64                     ; 112EF:  64
+b04_92f0:   .db $97                     ; 112F0:  97
+b04_92f1:   .db $b3                     ; 112F1:  b3
+b04_92f2:   bvs $934b                   ; 112F2:  70 57
+b04_92f4:   adc $5c5c,x                 ; 112F4:  7d 5c 5c
+b04_92f7:   .db $5c                     ; 112F7:  5c
+b04_92f8:   .db $5c                     ; 112F8:  5c
+b04_92f9:   .db $5c                     ; 112F9:  5c
+b04_92fa:   .db $74                     ; 112FA:  74
+b04_92fb:   ora #$0f                    ; 112FB:  09 0f
+b04_92fd:   .db $57                     ; 112FD:  57
+b04_92fe:   .db $6b                     ; 112FE:  6b
+b04_92ff:   pla                         ; 112FF:  68
+b04_9300:   pla                         ; 11300:  68
+b04_9301:   .db $57                     ; 11301:  57
+b04_9302:   ldx #$a0                    ; 11302:  a2 a0
+b04_9304:   .db $57                     ; 11304:  57
+b04_9305:   .db $57                     ; 11305:  57
+b04_9306:   .db $6b                     ; 11306:  6b
+b04_9307:   rts                         ; 11307:  60
+b04_9308:   .db $53                     ; 11308:  53
+b04_9309:   .db $53                     ; 11309:  53
+b04_930a:   .db $67                     ; 1130A:  67
+b04_930b:   .db $64                     ; 1130B:  64
+b04_930c:   stx $7b                     ; 1130C:  86 7b
+b04_930e:   ror $877f,x                 ; 1130E:  7e 7f 87
+b04_9311:   .db $72                     ; 11311:  72
+b04_9312:   .db $72                     ; 11312:  72
+b04_9313:   .db $72                     ; 11313:  72
+b04_9314:   .db $72                     ; 11314:  72
+b04_9315:   .db $72                     ; 11315:  72
+b04_9316:   sty $5c                     ; 11316:  84 5c
+b04_9318:   sta $5a                     ; 11318:  85 5a
+b04_931a:   .db $57                     ; 1131A:  57
+b04_931b:   .db $57                     ; 1131B:  57
+b04_931c:   .db $7f                     ; 1131C:  7f
+b04_931d:   stx $5c                     ; 1131D:  86 5c
+b04_931f:   .db $74                     ; 1131F:  74
+b04_9320:   .db $5c                     ; 11320:  5c
+b04_9321:   sta $57                     ; 11321:  85 57
+b04_9323:   .db $57                     ; 11323:  57
+b04_9324:   .db $64                     ; 11324:  64
+b04_9325:   .db $64                     ; 11325:  64
+b04_9326:   .db $64                     ; 11326:  64
+b04_9327:   .db $64                     ; 11327:  64
+b04_9328:   asl a                       ; 11328:  0a
+b04_9329:   asl a                       ; 11329:  0a
+b04_932a:   .db $8b                     ; 1132A:  8b
+b04_932b:   .db $72                     ; 1132B:  72
+b04_932c:   stx $8a5c                   ; 1132C:  8e 5c 8a
+b04_932f:   sty $8d91                   ; 1132F:  8c 91 8d
+b04_9332:   .db $77                     ; 11332:  77
+b04_9333:   .db $72                     ; 11333:  72
+b04_9334:   adc $5c5c,y                 ; 11334:  79 5c 5c
+b04_9337:   txa                         ; 11337:  8a
+b04_9338:   sty $8d91                   ; 11338:  8c 91 8d
+b04_933b:   .db $74                     ; 1133B:  74
+b04_933c:   ora #$08                    ; 1133C:  09 08
+b04_933e:   .db $57                     ; 1133E:  57
+b04_933f:   .db $57                     ; 1133F:  57
+b04_9340:   .db $57                     ; 11340:  57
+b04_9341:   .db $6b                     ; 11341:  6b
+b04_9342:   pla                         ; 11342:  68
+b04_9343:   pla                         ; 11343:  68
+b04_9344:   .db $5c                     ; 11344:  5c
+b04_9345:   .db $5c                     ; 11345:  5c
+b04_9346:   .db $74                     ; 11346:  74
+b04_9347:   .db $5c                     ; 11347:  5c
+b04_9348:   ora #$10                    ; 11348:  09 10
+b04_934a:   .db $5c                     ; 1134A:  5c
+b04_934b:   .db $5c                     ; 1134B:  5c
+b04_934c:   .db $5c                     ; 1134C:  5c
+b04_934d:   .db $5c                     ; 1134D:  5c
+b04_934e:   .db $5c                     ; 1134E:  5c
+b04_934f:   .db $5c                     ; 1134F:  5c
+b04_9350:   .db $7b                     ; 11350:  7b
+b04_9351:   .db $7c                     ; 11351:  7c
+b04_9352:   .db $72                     ; 11352:  72
+b04_9353:   .db $72                     ; 11353:  72
+b04_9354:   adc $5c5c,y                 ; 11354:  79 5c 5c
+b04_9357:   .db $74                     ; 11357:  74
+b04_9358:   .db $5c                     ; 11358:  5c
+b04_9359:   .db $5c                     ; 11359:  5c
+b04_935a:   .db $5a                     ; 1135A:  5a
+b04_935b:   .db $57                     ; 1135B:  57
+b04_935c:   .db $57                     ; 1135C:  57
+b04_935d:   .db $57                     ; 1135D:  57
+b04_935e:   .db $57                     ; 1135E:  57
+b04_935f:   .db $57                     ; 1135F:  57
+b04_9360:   .db $87                     ; 11360:  87
+b04_9361:   .db $72                     ; 11361:  72
+b04_9362:   ldy $7e                     ; 11362:  a4 7e
+b04_9364:   .db $5c                     ; 11364:  5c
+b04_9365:   .db $5c                     ; 11365:  5c
+b04_9366:   .db $5c                     ; 11366:  5c
+b04_9367:   .db $5c                     ; 11367:  5c
+b04_9368:   .db $5c                     ; 11368:  5c
+b04_9369:   .db $5c                     ; 11369:  5c
+b04_936a:   .db $5c                     ; 1136A:  5c
+b04_936b:   .db $5c                     ; 1136B:  5c
+b04_936c:   adc ($75),y                 ; 1136C:  71 75
+b04_936e:   .db $5c                     ; 1136E:  5c
+b04_936f:   .db $5c                     ; 1136F:  5c
+b04_9370:   .db $77                     ; 11370:  77
+b04_9371:   .db $72                     ; 11371:  72
+b04_9372:   .db $72                     ; 11372:  72
+b04_9373:   sty $5c                     ; 11373:  84 5c
+b04_9375:   .db $5c                     ; 11375:  5c
+b04_9376:   sta $70                     ; 11376:  85 70
+b04_9378:   bvs $93d4                   ; 11378:  70 5a
+b04_937a:   .db $57                     ; 1137A:  57
+b04_937b:   .db $57                     ; 1137B:  57
+b04_937c:   stx $875c                   ; 1137C:  8e 5c 87
+b04_937f:   stx $5c5c                   ; 1137F:  8e 5c 5c
+b04_9382:   .db $5c                     ; 11382:  5c
+b04_9383:   .db $5c                     ; 11383:  5c
+b04_9384:   .db $5c                     ; 11384:  5c
+b04_9385:   adc ($72),y                 ; 11385:  71 72
+b04_9387:   .db $7c                     ; 11387:  7c
+b04_9388:   adc $09,x                   ; 11388:  75 09
+b04_938a:   ora $5c5c                   ; 1138A:  0d 5c 5c
+b04_938d:   .db $5c                     ; 1138D:  5c
+b04_938e:   .db $5c                     ; 1138E:  5c
+b04_938f:   .db $7b                     ; 1138F:  7b
+b04_9390:   .db $72                     ; 11390:  72
+b04_9391:   .db $72                     ; 11391:  72
+b04_9392:   .db $72                     ; 11392:  72
+b04_9393:   adc $5c5c,y                 ; 11393:  79 5c 5c
+b04_9396:   ror $7f,x                   ; 11396:  76 7f
+b04_9398:   .db $5c                     ; 11398:  5c
+b04_9399:   .db $5c                     ; 11399:  5c
+b04_939a:   .db $77                     ; 1139A:  77
+b04_939b:   .db $72                     ; 1139B:  72
+b04_939c:   .db $7c                     ; 1139C:  7c
+b04_939d:   .db $72                     ; 1139D:  72
+b04_939e:   .db $72                     ; 1139E:  72
+b04_939f:   .db $72                     ; 1139F:  72
+b04_93a0:   .db $72                     ; 113A0:  72
+b04_93a1:   adc $5c,x                   ; 113A1:  75 5c
+b04_93a3:   ldy $5c5c,x                 ; 113A3:  bc 5c 5c
+b04_93a6:   .db $5c                     ; 113A6:  5c
+b04_93a7:   .db $5c                     ; 113A7:  5c
+b04_93a8:   .db $5c                     ; 113A8:  5c
+b04_93a9:   .db $5c                     ; 113A9:  5c
+b04_93aa:   .db $5c                     ; 113AA:  5c
+b04_93ab:   .db $5c                     ; 113AB:  5c
+b04_93ac:   txa                         ; 113AC:  8a
+b04_93ad:   sty $748d                   ; 113AD:  8c 8d 74
+b04_93b0:   .db $5c                     ; 113B0:  5c
+b04_93b1:   .db $5c                     ; 113B1:  5c
+b04_93b2:   adc ($72),y                 ; 113B2:  71 72
+b04_93b4:   .db $5c                     ; 113B4:  5c
+b04_93b5:   asl a                       ; 113B5:  0a
+b04_93b6:   .db $0b                     ; 113B6:  0b
+b04_93b7:   .db $5c                     ; 113B7:  5c
+b04_93b8:   .db $74                     ; 113B8:  74
+b04_93b9:   ora #$11                    ; 113B9:  09 11
+b04_93bb:   .db $5c                     ; 113BB:  5c
+b04_93bc:   .db $5c                     ; 113BC:  5c
+b04_93bd:   .db $5c                     ; 113BD:  5c
+b04_93be:   .db $5c                     ; 113BE:  5c
+b04_93bf:   .db $5c                     ; 113BF:  5c
+b04_93c0:   lda $5c7e,x                 ; 113C0:  bd 7e 5c
+b04_93c3:   .db $5c                     ; 113C3:  5c
+b04_93c4:   .db $5c                     ; 113C4:  5c
+b04_93c5:   .db $5c                     ; 113C5:  5c
+b04_93c6:   .db $87                     ; 113C6:  87
+b04_93c7:   .db $72                     ; 113C7:  72
+b04_93c8:   .db $72                     ; 113C8:  72
+b04_93c9:   .db $72                     ; 113C9:  72
+b04_93ca:   .db $72                     ; 113CA:  72
+b04_93cb:   stx $875c                   ; 113CB:  8e 5c 87
+b04_93ce:   stx $5e5c                   ; 113CE:  8e 5c 5e
+b04_93d1:   lsr $5c92,x                 ; 113D1:  5e 92 5c
+b04_93d4:   .db $74                     ; 113D4:  74
+b04_93d5:   .db $5c                     ; 113D5:  5c
+b04_93d6:   .db $5c                     ; 113D6:  5c
+b04_93d7:   .db $5c                     ; 113D7:  5c
+b04_93d8:   .db $5c                     ; 113D8:  5c
+b04_93d9:   .db $5c                     ; 113D9:  5c
+b04_93da:   .db $5c                     ; 113DA:  5c
+b04_93db:   .db $5c                     ; 113DB:  5c
+b04_93dc:   .db $5c                     ; 113DC:  5c
+b04_93dd:   .db $74                     ; 113DD:  74
+b04_93de:   .db $5c                     ; 113DE:  5c
+b04_93df:   .db $5c                     ; 113DF:  5c
+b04_93e0:   .db $5c                     ; 113E0:  5c
+b04_93e1:   .db $5c                     ; 113E1:  5c
+b04_93e2:   .db $77                     ; 113E2:  77
+b04_93e3:   .db $72                     ; 113E3:  72
+b04_93e4:   .db $72                     ; 113E4:  72
+b04_93e5:   ror $5c5c,x                 ; 113E5:  7e 5c 5c
+b04_93e8:   .db $5c                     ; 113E8:  5c
+b04_93e9:   .db $74                     ; 113E9:  74
+b04_93ea:   ora #$0a                    ; 113EA:  09 0a
+b04_93ec:   .db $82                     ; 113EC:  82
+b04_93ed:   .db $82                     ; 113ED:  82
+b04_93ee:   ldx $7b5d,y                 ; 113EE:  be 5d 7b
+b04_93f1:   .db $72                     ; 113F1:  72
+b04_93f2:   ror $5c5c,x                 ; 113F2:  7e 5c 5c
+b04_93f5:   .db $5c                     ; 113F5:  5c
+b04_93f6:   .db $5c                     ; 113F6:  5c
+b04_93f7:   .db $5c                     ; 113F7:  5c
+b04_93f8:   sta ($84,x)                 ; 113F8:  81 84
+b04_93fa:   txa                         ; 113FA:  8a
+b04_93fb:   sty $918c                   ; 113FB:  8c 8c 91
+b04_93fe:   sta $7271                   ; 113FE:  8d 71 72
+b04_9401:   stx $5c5c                   ; 11401:  8e 5c 5c
+b04_9404:   .db $5c                     ; 11404:  5c
+b04_9405:   .db $74                     ; 11405:  74
+b04_9406:   .db $5c                     ; 11406:  5c
+b04_9407:   .db $9f                     ; 11407:  9f
+b04_9408:   .db $57                     ; 11408:  57
+b04_9409:   .db $57                     ; 11409:  57
+b04_940a:   .db $57                     ; 1140A:  57
+b04_940b:   .db $bf                     ; 1140B:  bf
+b04_940c:   ror $745c,x                 ; 1140C:  7e 5c 74
+b04_940f:   .db $5c                     ; 1140F:  5c
+b04_9410:   .db $5c                     ; 11410:  5c
+b04_9411:   .db $5c                     ; 11411:  5c
+b04_9412:   .db $5c                     ; 11412:  5c
+b04_9413:   .db $9e                     ; 11413:  9e
+b04_9414:   .db $5c                     ; 11414:  5c
+b04_9415:   .db $74                     ; 11415:  74
+b04_9416:   txa                         ; 11416:  8a
+b04_9417:   sty $8d91                   ; 11417:  8c 91 8d
+b04_941a:   adc ($a4),y                 ; 1141A:  71 a4
+b04_941c:   .db $72                     ; 1141C:  72
+b04_941d:   ror $996f,x                 ; 1141D:  7e 6f 99
+b04_9420:   adc $5c74,y                 ; 11420:  79 74 5c
+b04_9423:   .db $57                     ; 11423:  57
+b04_9424:   .db $57                     ; 11424:  57
+b04_9425:   asl a                       ; 11425:  0a
+b04_9426:   ora $7457                   ; 11426:  0d 57 74
+b04_9429:   .db $5c                     ; 11429:  5c
+b04_942a:   .db $74                     ; 1142A:  74
+b04_942b:   .db $5c                     ; 1142B:  5c
+b04_942c:   txa                         ; 1142C:  8a
+b04_942d:   sty $c08d                   ; 1142D:  8c 8d c0
+b04_9430:   .db $5c                     ; 11430:  5c
+b04_9431:   .db $74                     ; 11431:  74
+b04_9432:   .db $87                     ; 11432:  87
+b04_9433:   adc $715c,y                 ; 11433:  79 5c 71
+b04_9436:   adc $09,x                   ; 11436:  75 09
+b04_9438:   .db $0c                     ; 11438:  0c
+b04_9439:   .db $77                     ; 11439:  77
+b04_943a:   .db $82                     ; 1143A:  82
+b04_943b:   txs                         ; 1143B:  9a
+b04_943c:   .db $7b                     ; 1143C:  7b
+b04_943d:   ldy $72                     ; 1143D:  a4 72
+b04_943f:   .db $82                     ; 1143F:  82
+b04_9440:   .db $82                     ; 11440:  82
+b04_9441:   .db $82                     ; 11441:  82
+b04_9442:   .db $82                     ; 11442:  82
+b04_9443:   .db $82                     ; 11443:  82
+b04_9444:   ldy $72                     ; 11444:  a4 72
+b04_9446:   sty $5c                     ; 11446:  84 5c
+b04_9448:   adc ($72),y                 ; 11448:  71 72
+b04_944a:   dey                         ; 1144A:  88
+b04_944b:   asl a                       ; 1144B:  0a
+b04_944c:   php                         ; 1144C:  08
+b04_944d:   .db $77                     ; 1144D:  77
+b04_944e:   stx $727b                   ; 1144E:  8e 7b 72
+b04_9451:   ldy $79                     ; 11451:  a4 79
+b04_9453:   .db $5c                     ; 11453:  5c
+b04_9454:   .db $5c                     ; 11454:  5c
+b04_9455:   .db $5c                     ; 11455:  5c
+b04_9456:   .db $57                     ; 11456:  57
+b04_9457:   .db $57                     ; 11457:  57
+b04_9458:   lda $5c                     ; 11458:  a5 5c
+b04_945a:   .db $5c                     ; 1145A:  5c
+b04_945b:   .db $57                     ; 1145B:  57
+b04_945c:   .db $5c                     ; 1145C:  5c
+b04_945d:   ora #$0f                    ; 1145D:  09 0f
+b04_945f:   .db $74                     ; 1145F:  74
+b04_9460:   .db $7a                     ; 11460:  7a
+b04_9461:   bvs $94bd                   ; 11461:  70 5a
+b04_9463:   .db $57                     ; 11463:  57
+b04_9464:   ora #$08                    ; 11464:  09 08
+b04_9466:   .db $57                     ; 11466:  57
+b04_9467:   .db $57                     ; 11467:  57
+b04_9468:   .db $57                     ; 11468:  57
+b04_9469:   .db $57                     ; 11469:  57
+b04_946a:   .db $7f                     ; 1146A:  7f
+b04_946b:   bvs $94dd                   ; 1146B:  70 70
+b04_946d:   adc $745c,x                 ; 1146D:  7d 5c 74
+b04_9470:   .db $0f                     ; 11470:  0f
+b04_9471:   .db $5c                     ; 11471:  5c
+b04_9472:   .db $5c                     ; 11472:  5c
+b04_9473:   .db $5c                     ; 11473:  5c
+b04_9474:   lsr $5757,x                 ; 11474:  5e 57 57
+b04_9477:   .db $57                     ; 11477:  57
+b04_9478:   .db $72                     ; 11478:  72
+b04_9479:   .db $72                     ; 11479:  72
+b04_947a:   .db $72                     ; 1147A:  72
+b04_947b:   sty $5c                     ; 1147B:  84 5c
+b04_947d:   .db $5c                     ; 1147D:  5c
+b04_947e:   sta $70                     ; 1147E:  85 70
+b04_9480:   bvs $94dc                   ; 11480:  70 5a
+b04_9482:   .db $57                     ; 11482:  57
+b04_9483:   .db $57                     ; 11483:  57
+b04_9484:   .db $57                     ; 11484:  57
+b04_9485:   .db $57                     ; 11485:  57
+b04_9486:   .db $5c                     ; 11486:  5c
+b04_9487:   .db $5c                     ; 11487:  5c
+b04_9488:   .db $87                     ; 11488:  87
+b04_9489:   .db $72                     ; 11489:  72
+b04_948a:   .db $72                     ; 1148A:  72
+b04_948b:   sty $5c                     ; 1148B:  84 5c
+b04_948d:   .db $5c                     ; 1148D:  5c
+b04_948e:   .db $5c                     ; 1148E:  5c
+b04_948f:   .db $5c                     ; 1148F:  5c
+b04_9490:   .db $5c                     ; 11490:  5c
+b04_9491:   .db $5c                     ; 11491:  5c
+b04_9492:   .db $5c                     ; 11492:  5c
+b04_9493:   .db $5c                     ; 11493:  5c
+b04_9494:   ora #$0d                    ; 11494:  09 0d
+b04_9496:   .db $5c                     ; 11496:  5c
+b04_9497:   .db $7b                     ; 11497:  7b
+b04_9498:   .db $72                     ; 11498:  72
+b04_9499:   .db $72                     ; 11499:  72
+b04_949a:   .db $72                     ; 1149A:  72
+b04_949b:   .db $72                     ; 1149B:  72
+b04_949c:   adc $765c,y                 ; 1149C:  79 5c 76
+b04_949f:   .db $7f                     ; 1149F:  7f
+b04_94a0:   .db $5c                     ; 114A0:  5c
+b04_94a1:   .db $87                     ; 114A1:  87
+b04_94a2:   .db $72                     ; 114A2:  72
+b04_94a3:   .db $72                     ; 114A3:  72
+b04_94a4:   sty $5c                     ; 114A4:  84 5c
+b04_94a6:   ora ($7b),y                 ; 114A6:  11 7b
+b04_94a8:   .db $72                     ; 114A8:  72
+b04_94a9:   .db $72                     ; 114A9:  72
+b04_94aa:   .db $72                     ; 114AA:  72
+b04_94ab:   .db $72                     ; 114AB:  72
+b04_94ac:   .db $72                     ; 114AC:  72
+b04_94ad:   .db $72                     ; 114AD:  72
+b04_94ae:   adc $5c5c,y                 ; 114AE:  79 5c 5c
+b04_94b1:   .db $5c                     ; 114B1:  5c
+b04_94b2:   .db $5c                     ; 114B2:  5c
+b04_94b3:   .db $5c                     ; 114B3:  5c
+b04_94b4:   .db $5c                     ; 114B4:  5c
+b04_94b5:   .db $5c                     ; 114B5:  5c
+b04_94b6:   .db $5c                     ; 114B6:  5c
+b04_94b7:   .db $5c                     ; 114B7:  5c
+b04_94b8:   .db $74                     ; 114B8:  74
+b04_94b9:   .db $5c                     ; 114B9:  5c
+b04_94ba:   adc ($72),y                 ; 114BA:  71 72
+b04_94bc:   .db $72                     ; 114BC:  72
+b04_94bd:   stx $5c5c                   ; 114BD:  8e 5c 5c
+b04_94c0:   .db $74                     ; 114C0:  74
+b04_94c1:   .db $5c                     ; 114C1:  5c
+b04_94c2:   .db $5c                     ; 114C2:  5c
+b04_94c3:   .db $5c                     ; 114C3:  5c
+b04_94c4:   .db $5c                     ; 114C4:  5c
+b04_94c5:   .db $5c                     ; 114C5:  5c
+b04_94c6:   .db $5c                     ; 114C6:  5c
+b04_94c7:   .db $5c                     ; 114C7:  5c
+b04_94c8:   .db $5c                     ; 114C8:  5c
+b04_94c9:   .db $5c                     ; 114C9:  5c
+b04_94ca:   .db $8b                     ; 114CA:  8b
+b04_94cb:   .db $7c                     ; 114CB:  7c
+b04_94cc:   .db $5c                     ; 114CC:  5c
+b04_94cd:   .db $5c                     ; 114CD:  5c
+b04_94ce:   .db $87                     ; 114CE:  87
+b04_94cf:   .db $72                     ; 114CF:  72
+b04_94d0:   .db $72                     ; 114D0:  72
+b04_94d1:   .db $72                     ; 114D1:  72
+b04_94d2:   .db $72                     ; 114D2:  72
+b04_94d3:   .db $72                     ; 114D3:  72
+b04_94d4:   stx $8e87                   ; 114D4:  8e 87 8e
+b04_94d7:   .db $5c                     ; 114D7:  5c
+b04_94d8:   .db $5c                     ; 114D8:  5c
+b04_94d9:   .db $5c                     ; 114D9:  5c
+b04_94da:   txa                         ; 114DA:  8a
+b04_94db:   sta $727b                   ; 114DB:  8d 7b 72
+b04_94de:   .db $7c                     ; 114DE:  7c
+b04_94df:   .db $72                     ; 114DF:  72
+b04_94e0:   .db $72                     ; 114E0:  72
+b04_94e1:   ror $8c8a,x                 ; 114E1:  7e 8a 8c
+b04_94e4:   sta $9d71                   ; 114E4:  8d 71 9d
+b04_94e7:   stx $5c5c                   ; 114E7:  8e 5c 5c
+b04_94ea:   .db $77                     ; 114EA:  77
+b04_94eb:   .db $72                     ; 114EB:  72
+b04_94ec:   .db $72                     ; 114EC:  72
+b04_94ed:   ror $5c5c,x                 ; 114ED:  7e 5c 5c
+b04_94f0:   .db $5c                     ; 114F0:  5c
+b04_94f1:   .db $74                     ; 114F1:  74
+b04_94f2:   ora #$0a                    ; 114F2:  09 0a
+b04_94f4:   .db $5c                     ; 114F4:  5c
+b04_94f5:   .db $5c                     ; 114F5:  5c
+b04_94f6:   txa                         ; 114F6:  8a
+b04_94f7:   sty $8d91                   ; 114F7:  8c 91 8d
+b04_94fa:   .db $74                     ; 114FA:  74
+b04_94fb:   .db $5c                     ; 114FB:  5c
+b04_94fc:   .db $5c                     ; 114FC:  5c
+b04_94fd:   .db $77                     ; 114FD:  77
+b04_94fe:   .db $72                     ; 114FE:  72
+b04_94ff:   .db $72                     ; 114FF:  72
+b04_9500:   .db $72                     ; 11500:  72
+b04_9501:   stx $0e74                   ; 11501:  8e 74 0e
+b04_9504:   txa                         ; 11504:  8a
+b04_9505:   sty $8d91                   ; 11505:  8c 91 8d
+b04_9508:   sta ($8e,x)                 ; 11508:  81 8e
+b04_950a:   .db $5c                     ; 1150A:  5c
+b04_950b:   .db $5c                     ; 1150B:  5c
+b04_950c:   .db $5c                     ; 1150C:  5c
+b04_950d:   .db $74                     ; 1150D:  74
+b04_950e:   .db $5c                     ; 1150E:  5c
+b04_950f:   .db $9f                     ; 1150F:  9f
+b04_9510:   lsr $785e,x                 ; 11510:  5e 5e 78
+b04_9513:   .db $5c                     ; 11513:  5c
+b04_9514:   .db $5c                     ; 11514:  5c
+b04_9515:   .db $5c                     ; 11515:  5c
+b04_9516:   .db $74                     ; 11516:  74
+b04_9517:   bpl $9575                   ; 11517:  10 5c
+b04_9519:   .db $5c                     ; 11519:  5c
+b04_951a:   .db $5c                     ; 1151A:  5c
+b04_951b:   .db $5c                     ; 1151B:  5c
+b04_951c:   .db $5c                     ; 1151C:  5c
+b04_951d:   .db $89                     ; 1151D:  89
+b04_951e:   ldx #$a3                    ; 1151E:  a2 a3
+b04_9520:   txa                         ; 11520:  8a
+b04_9521:   sty $9e8d                   ; 11521:  8c 8d 9e
+b04_9524:   .db $5c                     ; 11524:  5c
+b04_9525:   .db $6f                     ; 11525:  6f
+b04_9526:   .db $57                     ; 11526:  57
+b04_9527:   .db $87                     ; 11527:  87
+b04_9528:   adc $8774,y                 ; 11528:  79 74 87
+b04_952b:   .db $82                     ; 1152B:  82
+b04_952c:   .db $82                     ; 1152C:  82
+b04_952d:   ldy #$5d                    ; 1152D:  a0 5d
+b04_952f:   sei                         ; 1152F:  78
+b04_9530:   adc ($72),y                 ; 11530:  71 72
+b04_9532:   lda ($5c,x)                 ; 11532:  a1 5c
+b04_9534:   .db $89                     ; 11534:  89
+b04_9535:   lsr $5e5e,x                 ; 11535:  5e 5e 5e
+b04_9538:   .db $6f                     ; 11538:  6f
+b04_9539:   .db $57                     ; 11539:  57
+b04_953a:   .db $57                     ; 1153A:  57
+b04_953b:   ror a                       ; 1153B:  6a
+b04_953c:   .db $5c                     ; 1153C:  5c
+b04_953d:   .db $87                     ; 1153D:  87
+b04_953e:   .db $72                     ; 1153E:  72
+b04_953f:   ldy $72                     ; 1153F:  a4 72
+b04_9541:   .db $72                     ; 11541:  72
+b04_9542:   .db $82                     ; 11542:  82
+b04_9543:   txs                         ; 11543:  9a
+b04_9544:   .db $7b                     ; 11544:  7b
+b04_9545:   sty $74                     ; 11545:  84 74
+b04_9547:   ora #$09                    ; 11547:  09 09
+b04_9549:   ldx #$82                    ; 11549:  a2 82
+b04_954b:   .db $82                     ; 1154B:  82
+b04_954c:   adc $5c,x                   ; 1154C:  75 5c
+b04_954e:   ldx $82                     ; 1154E:  a6 82
+b04_9550:   ldy #$57                    ; 11550:  a0 57
+b04_9552:   .db $57                     ; 11552:  57
+b04_9553:   tya                         ; 11553:  98
+b04_9554:   eor $5959,y                 ; 11554:  59 59 59
+b04_9557:   .db $93                     ; 11557:  93
+b04_9558:   .db $72                     ; 11558:  72
+b04_9559:   ldy $7e                     ; 11559:  a4 7e
+b04_955b:   .db $5c                     ; 1155B:  5c
+b04_955c:   .db $5c                     ; 1155C:  5c
+b04_955d:   .db $89                     ; 1155D:  89
+b04_955e:   .db $57                     ; 1155E:  57
+b04_955f:   .db $57                     ; 1155F:  57
+b04_9560:   lda $8b                     ; 11560:  a5 8b
+b04_9562:   stx $5757                   ; 11562:  8e 57 57
+b04_9565:   .db $57                     ; 11565:  57
+b04_9566:   .db $57                     ; 11566:  57
+b04_9567:   .db $57                     ; 11567:  57
+b04_9568:   eor $5789,x                 ; 11568:  5d 89 57
+b04_956b:   .db $7f                     ; 1156B:  7f
+b04_956c:   .db $64                     ; 1156C:  64
+b04_956d:   .db $64                     ; 1156D:  64
+b04_956e:   .db $64                     ; 1156E:  64
+b04_956f:   .db $64                     ; 1156F:  64
+b04_9570:   .db $64                     ; 11570:  64
+b04_9571:   .db $64                     ; 11571:  64
+b04_9572:   .db $64                     ; 11572:  64
+b04_9573:   .db $64                     ; 11573:  64
+b04_9574:   asl a                       ; 11574:  0a
+b04_9575:   php                         ; 11575:  08
+b04_9576:   .db $74                     ; 11576:  74
+b04_9577:   ora #$0c                    ; 11577:  09 0c
+b04_9579:   .db $6f                     ; 11579:  6f
+b04_957a:   .db $57                     ; 1157A:  57
+b04_957b:   .db $57                     ; 1157B:  57
+b04_957c:   .db $57                     ; 1157C:  57
+b04_957d:   ldx $82                     ; 1157D:  a6 82
+b04_957f:   .db $82                     ; 1157F:  82
+b04_9580:   .db $a7                     ; 11580:  a7
+b04_9581:   .db $57                     ; 11581:  57
+b04_9582:   .db $57                     ; 11582:  57
+b04_9583:   .db $57                     ; 11583:  57
+b04_9584:   .db $57                     ; 11584:  57
+b04_9585:   .db $57                     ; 11585:  57
+b04_9586:   .db $57                     ; 11586:  57
+b04_9587:   ror a                       ; 11587:  6a
+b04_9588:   .db $53                     ; 11588:  53
+b04_9589:   .db $53                     ; 11589:  53
+b04_958a:   .db $53                     ; 1158A:  53
+b04_958b:   tay                         ; 1158B:  a8
+b04_958c:   lda #$51                    ; 1158C:  a9 51
+b04_958e:   eor ($51),y                 ; 1158E:  51 51
+b04_9590:   eor $8e81,x                 ; 11590:  5d 81 8e
+b04_9593:   .db $89                     ; 11593:  89
+b04_9594:   .db $57                     ; 11594:  57
+b04_9595:   .db $57                     ; 11595:  57
+b04_9596:   .db $57                     ; 11596:  57
+b04_9597:   .db $57                     ; 11597:  57
+b04_9598:   .db $57                     ; 11598:  57
+b04_9599:   .db $57                     ; 11599:  57
+b04_959a:   .db $57                     ; 1159A:  57
+b04_959b:   .db $57                     ; 1159B:  57
+b04_959c:   ldx $82                     ; 1159C:  a6 82
+b04_959e:   .db $82                     ; 1159E:  82
+b04_959f:   .db $a7                     ; 1159F:  a7
+b04_95a0:   .db $57                     ; 115A0:  57
+b04_95a1:   .db $57                     ; 115A1:  57
+b04_95a2:   .db $7f                     ; 115A2:  7f
+b04_95a3:   .db $93                     ; 115A3:  93
+b04_95a4:   .db $53                     ; 115A4:  53
+b04_95a5:   tay                         ; 115A5:  a8
+b04_95a6:   eor $a9,x                   ; 115A6:  55 a9
+b04_95a8:   eor ($51),y                 ; 115A8:  51 51
+b04_95aa:   eor ($51),y                 ; 115AA:  51 51
+b04_95ac:   .db $64                     ; 115AC:  64
+b04_95ad:   tax                         ; 115AD:  aa
+b04_95ae:   .db $57                     ; 115AE:  57
+b04_95af:   .db $ab                     ; 115AF:  ab
+b04_95b0:   eor $985a,y                 ; 115B0:  59 5a 98
+b04_95b3:   lda $8282                   ; 115B3:  ad 82 82
+b04_95b6:   ldy #$ae                    ; 115B6:  a0 ae
+b04_95b8:   .db $82                     ; 115B8:  82
+b04_95b9:   .db $a7                     ; 115B9:  a7
+b04_95ba:   .db $57                     ; 115BA:  57
+b04_95bb:   ldx $a7                     ; 115BB:  a6 a7
+b04_95bd:   bcs $9612                   ; 115BD:  b0 53
+b04_95bf:   tay                         ; 115BF:  a8
+b04_95c0:   eor $a9,x                   ; 115C0:  55 a9
+b04_95c2:   eor ($51),y                 ; 115C2:  51 51
+b04_95c4:   eor ($51),y                 ; 115C4:  51 51
+b04_95c6:   eor ($51),y                 ; 115C6:  51 51
+b04_95c8:   adc $97                     ; 115C8:  65 97
+b04_95ca:   ldy $6464                   ; 115CA:  ac 64 64
+b04_95cd:   lsr $66,x                   ; 115CD:  56 66
+b04_95cf:   lsr $09,x                   ; 115CF:  56 09
+b04_95d1:   .db $0b                     ; 115D1:  0b
+b04_95d2:   ldx #$af                    ; 115D2:  a2 af
+b04_95d4:   .db $57                     ; 115D4:  57
+b04_95d5:   ldx $82                     ; 115D5:  a6 82
+b04_95d7:   .db $82                     ; 115D7:  82
+b04_95d8:   lda ($64),y                 ; 115D8:  b1 64
+b04_95da:   .db $53                     ; 115DA:  53
+b04_95db:   .db $b2                     ; 115DB:  b2
+b04_95dc:   eor ($51),y                 ; 115DC:  51 51
+b04_95de:   eor ($51),y                 ; 115DE:  51 51
+b04_95e0:   eor ($51),y                 ; 115E0:  51 51
+b04_95e2:   eor ($51),y                 ; 115E2:  51 51
+b04_95e4:   lsr $57,x                   ; 115E4:  56 57
+b04_95e6:   ror a                       ; 115E6:  6a
+b04_95e7:   .db $64                     ; 115E7:  64
+b04_95e8:   .db $64                     ; 115E8:  64
+b04_95e9:   ldy $b5,x                   ; 115E9:  b4 b5
+b04_95eb:   .db $57                     ; 115EB:  57
+b04_95ec:   .db $57                     ; 115EC:  57
+b04_95ed:   .db $57                     ; 115ED:  57
+b04_95ee:   .db $57                     ; 115EE:  57
+b04_95ef:   .db $57                     ; 115EF:  57
+b04_95f0:   .db $57                     ; 115F0:  57
+b04_95f1:   .db $57                     ; 115F1:  57
+b04_95f2:   .db $57                     ; 115F2:  57
+b04_95f3:   .db $57                     ; 115F3:  57
+b04_95f4:   ror a                       ; 115F4:  6a
+b04_95f5:   .db $64                     ; 115F5:  64
+b04_95f6:   tay                         ; 115F6:  a8
+b04_95f7:   lda #$51                    ; 115F7:  a9 51
+b04_95f9:   eor ($51),y                 ; 115F9:  51 51
+b04_95fb:   eor ($51),y                 ; 115FB:  51 51
+b04_95fd:   eor ($51),y                 ; 115FD:  51 51
+b04_95ff:   eor ($58),y                 ; 115FF:  51 58
+b04_9601:   eor $6493,y                 ; 11601:  59 93 64
+b04_9604:   .db $64                     ; 11604:  64
+b04_9605:   .db $64                     ; 11605:  64
+b04_9606:   eor $57b6,y                 ; 11606:  59 b6 57
+b04_9609:   .db $57                     ; 11609:  57
+b04_960a:   .db $57                     ; 1160A:  57
+b04_960b:   .db $57                     ; 1160B:  57
+b04_960c:   tya                         ; 1160C:  98
+b04_960d:   eor $5959,y                 ; 1160D:  59 59 59
+b04_9610:   .db $93                     ; 11610:  93
+b04_9611:   .db $64                     ; 11611:  64
+b04_9612:   .db $b2                     ; 11612:  b2
+b04_9613:   eor ($51),y                 ; 11613:  51 51
+b04_9615:   eor ($51),y                 ; 11615:  51 51
+b04_9617:   eor ($51),y                 ; 11617:  51 51
+b04_9619:   eor ($51),y                 ; 11619:  51 51
+b04_961b:   eor ($68),y                 ; 1161B:  51 68
+b04_961d:   pla                         ; 1161D:  68
+b04_961e:   cmp ($0a,x)                 ; 1161E:  c1 0a
+b04_9620:   asl a                       ; 11620:  0a
+b04_9621:   .db $5c                     ; 11621:  5c
+b04_9622:   .db $5c                     ; 11622:  5c
+b04_9623:   .db $5c                     ; 11623:  5c
+b04_9624:   .db $5c                     ; 11624:  5c
+b04_9625:   .db $5c                     ; 11625:  5c
+b04_9626:   .db $5c                     ; 11626:  5c
+b04_9627:   .db $74                     ; 11627:  74
+b04_9628:   .db $5c                     ; 11628:  5c
+b04_9629:   .db $5c                     ; 11629:  5c
+b04_962a:   .db $5c                     ; 1162A:  5c
+b04_962b:   .db $5c                     ; 1162B:  5c
+b04_962c:   .db $5c                     ; 1162C:  5c
+b04_962d:   .db $5c                     ; 1162D:  5c
+b04_962e:   .db $5c                     ; 1162E:  5c
+b04_962f:   .db $74                     ; 1162F:  74
+b04_9630:   ora #$0f                    ; 11630:  09 0f
+b04_9632:   .db $5c                     ; 11632:  5c
+b04_9633:   .db $5c                     ; 11633:  5c
+b04_9634:   .db $5c                     ; 11634:  5c
+b04_9635:   .db $74                     ; 11635:  74
+b04_9636:   .db $5c                     ; 11636:  5c
+b04_9637:   .db $5c                     ; 11637:  5c
+b04_9638:   asl a                       ; 11638:  0a
+b04_9639:   ora ($b3),y                 ; 11639:  11 b3
+b04_963b:   .db $57                     ; 1163B:  57
+b04_963c:   .db $5c                     ; 1163C:  5c
+b04_963d:   .db $5c                     ; 1163D:  5c
+b04_963e:   .db $5c                     ; 1163E:  5c
+b04_963f:   .db $5c                     ; 1163F:  5c
+b04_9640:   .db $5c                     ; 11640:  5c
+b04_9641:   .db $5c                     ; 11641:  5c
+b04_9642:   .db $5c                     ; 11642:  5c
+b04_9643:   .db $74                     ; 11643:  74
+b04_9644:   ora #$10                    ; 11644:  09 10
+b04_9646:   .db $5c                     ; 11646:  5c
+b04_9647:   .db $5c                     ; 11647:  5c
+b04_9648:   .db $5c                     ; 11648:  5c
+b04_9649:   .db $5c                     ; 11649:  5c
+b04_964a:   .db $5c                     ; 1164A:  5c
+b04_964b:   .db $7b                     ; 1164B:  7b
+b04_964c:   .db $72                     ; 1164C:  72
+b04_964d:   .db $7c                     ; 1164D:  7c
+b04_964e:   .db $72                     ; 1164E:  72
+b04_964f:   .db $72                     ; 1164F:  72
+b04_9650:   adc $0974,y                 ; 11650:  79 74 09
+b04_9653:   php                         ; 11653:  08
+b04_9654:   .db $82                     ; 11654:  82
+b04_9655:   .db $82                     ; 11655:  82
+b04_9656:   ldy $7c                     ; 11656:  a4 7c
+b04_9658:   .db $72                     ; 11658:  72
+b04_9659:   .db $72                     ; 11659:  72
+b04_965a:   ror $715c,x                 ; 1165A:  7e 5c 71
+b04_965d:   .db $72                     ; 1165D:  72
+b04_965e:   .db $72                     ; 1165E:  72
+b04_965f:   sty $5c                     ; 1165F:  84 5c
+b04_9661:   .db $5c                     ; 11661:  5c
+b04_9662:   .db $5c                     ; 11662:  5c
+b04_9663:   .db $5c                     ; 11663:  5c
+b04_9664:   txa                         ; 11664:  8a
+b04_9665:   sty $8d91                   ; 11665:  8c 91 8d
+b04_9668:   adc ($75),y                 ; 11668:  71 75
+b04_966a:   .db $5c                     ; 1166A:  5c
+b04_966b:   .db $5c                     ; 1166B:  5c
+b04_966c:   .db $77                     ; 1166C:  77
+b04_966d:   ldy $72                     ; 1166D:  a4 72
+b04_966f:   .db $72                     ; 1166F:  72
+b04_9670:   tya                         ; 11670:  98
+b04_9671:   .db $57                     ; 11671:  57
+b04_9672:   .db $5c                     ; 11672:  5c
+b04_9673:   .db $74                     ; 11673:  74
+b04_9674:   .db $5c                     ; 11674:  5c
+b04_9675:   .db $5c                     ; 11675:  5c
+b04_9676:   .db $77                     ; 11676:  77
+b04_9677:   .db $72                     ; 11677:  72
+b04_9678:   adc $71,x                   ; 11678:  75 71
+b04_967a:   .db $72                     ; 1167A:  72
+b04_967b:   adc $5c,x                   ; 1167B:  75 5c
+b04_967d:   .db $5c                     ; 1167D:  5c
+b04_967e:   .db $5c                     ; 1167E:  5c
+b04_967f:   .db $5c                     ; 1167F:  5c
+b04_9680:   txa                         ; 11680:  8a
+b04_9681:   sta $7c71                   ; 11681:  8d 71 7c
+b04_9684:   adc $09,x                   ; 11684:  75 09
+b04_9686:   ora $5c5c                   ; 11686:  0d 5c 5c
+b04_9689:   .db $5c                     ; 11689:  5c
+b04_968a:   .db $5c                     ; 1168A:  5c
+b04_968b:   .db $5c                     ; 1168B:  5c
+b04_968c:   .db $64                     ; 1168C:  64
+b04_968d:   lsr $5c,x                   ; 1168D:  56 5c
+b04_968f:   .db $74                     ; 1168F:  74
+b04_9690:   .db $5c                     ; 11690:  5c
+b04_9691:   .db $5c                     ; 11691:  5c
+b04_9692:   .db $5c                     ; 11692:  5c
+b04_9693:   .db $5c                     ; 11693:  5c
+b04_9694:   .db $5c                     ; 11694:  5c
+b04_9695:   .db $77                     ; 11695:  77
+b04_9696:   .db $72                     ; 11696:  72
+b04_9697:   .db $72                     ; 11697:  72
+b04_9698:   .db $7c                     ; 11698:  7c
+b04_9699:   .db $72                     ; 11699:  72
+b04_969a:   .db $72                     ; 1169A:  72
+b04_969b:   .db $72                     ; 1169B:  72
+b04_969c:   .db $72                     ; 1169C:  72
+b04_969d:   .db $72                     ; 1169D:  72
+b04_969e:   adc $bc,x                   ; 1169E:  75 bc
+b04_96a0:   .db $5c                     ; 116A0:  5c
+b04_96a1:   .db $5c                     ; 116A1:  5c
+b04_96a2:   .db $5c                     ; 116A2:  5c
+b04_96a3:   .db $5c                     ; 116A3:  5c
+b04_96a4:   .db $5c                     ; 116A4:  5c
+b04_96a5:   .db $5c                     ; 116A5:  5c
+b04_96a6:   .db $5c                     ; 116A6:  5c
+b04_96a7:   .db $5c                     ; 116A7:  5c
+b04_96a8:   .db $c2                     ; 116A8:  c2
+b04_96a9:   .db $57                     ; 116A9:  57
+b04_96aa:   .db $5c                     ; 116AA:  5c
+b04_96ab:   .db $74                     ; 116AB:  74
+b04_96ac:   asl a                       ; 116AC:  0a
+b04_96ad:   .db $0b                     ; 116AD:  0b
+b04_96ae:   .db $5c                     ; 116AE:  5c
+b04_96af:   .db $5c                     ; 116AF:  5c
+b04_96b0:   .db $5c                     ; 116B0:  5c
+b04_96b1:   .db $5c                     ; 116B1:  5c
+b04_96b2:   .db $5c                     ; 116B2:  5c
+b04_96b3:   .db $5c                     ; 116B3:  5c
+b04_96b4:   .db $74                     ; 116B4:  74
+b04_96b5:   ora #$11                    ; 116B5:  09 11
+b04_96b7:   .db $5c                     ; 116B7:  5c
+b04_96b8:   .db $5c                     ; 116B8:  5c
+b04_96b9:   .db $5c                     ; 116B9:  5c
+b04_96ba:   .db $5c                     ; 116BA:  5c
+b04_96bb:   .db $5c                     ; 116BB:  5c
+b04_96bc:   lda $5c7e,x                 ; 116BC:  bd 7e 5c
+b04_96bf:   .db $5c                     ; 116BF:  5c
+b04_96c0:   .db $5c                     ; 116C0:  5c
+b04_96c1:   .db $5c                     ; 116C1:  5c
+b04_96c2:   .db $87                     ; 116C2:  87
+b04_96c3:   .db $72                     ; 116C3:  72
+b04_96c4:   .db $57                     ; 116C4:  57
+b04_96c5:   stx $8f                     ; 116C5:  86 8f
+b04_96c7:   .db $b3                     ; 116C7:  b3
+b04_96c8:   .db $57                     ; 116C8:  57
+b04_96c9:   .db $57                     ; 116C9:  57
+b04_96ca:   .db $57                     ; 116CA:  57
+b04_96cb:   .db $57                     ; 116CB:  57
+b04_96cc:   .db $57                     ; 116CC:  57
+b04_96cd:   .db $57                     ; 116CD:  57
+b04_96ce:   lda $5c                     ; 116CE:  a5 5c
+b04_96d0:   .db $74                     ; 116D0:  74
+b04_96d1:   .db $5c                     ; 116D1:  5c
+b04_96d2:   .db $5c                     ; 116D2:  5c
+b04_96d3:   .db $5c                     ; 116D3:  5c
+b04_96d4:   .db $5c                     ; 116D4:  5c
+b04_96d5:   .db $5c                     ; 116D5:  5c
+b04_96d6:   .db $5c                     ; 116D6:  5c
+b04_96d7:   .db $5c                     ; 116D7:  5c
+b04_96d8:   .db $5c                     ; 116D8:  5c
+b04_96d9:   .db $74                     ; 116D9:  74
+b04_96da:   txa                         ; 116DA:  8a
+b04_96db:   sty $8d91                   ; 116DB:  8c 91 8d
+b04_96de:   .db $77                     ; 116DE:  77
+b04_96df:   .db $72                     ; 116DF:  72
+b04_96e0:   .db $7f                     ; 116E0:  7f
+b04_96e1:   .db $5c                     ; 116E1:  5c
+b04_96e2:   ror $b3,x                   ; 116E2:  76 b3
+b04_96e4:   ldx $8282                   ; 116E4:  ae 82 82
+b04_96e7:   .db $82                     ; 116E7:  82
+b04_96e8:   .db $82                     ; 116E8:  82
+b04_96e9:   .db $82                     ; 116E9:  82
+b04_96ea:   ldx $7b5c,y                 ; 116EA:  be 5c 7b
+b04_96ed:   .db $72                     ; 116ED:  72
+b04_96ee:   .db $72                     ; 116EE:  72
+b04_96ef:   ror $5c5c,x                 ; 116EF:  7e 5c 5c
+b04_96f2:   .db $5c                     ; 116F2:  5c
+b04_96f3:   .db $5c                     ; 116F3:  5c
+b04_96f4:   sta ($84,x)                 ; 116F4:  81 84
+b04_96f6:   txa                         ; 116F6:  8a
+b04_96f7:   sty $918c                   ; 116F7:  8c 8c 91
+b04_96fa:   sta ($8d),y                 ; 116FA:  91 8d
+b04_96fc:   .db $5c                     ; 116FC:  5c
+b04_96fd:   .db $5c                     ; 116FD:  5c
+b04_96fe:   .db $6f                     ; 116FE:  6f
+b04_96ff:   .db $c3                     ; 116FF:  c3
+b04_9700:   cpy $0a                     ; 11700:  c4 0a
+b04_9702:   ora $5757                   ; 11702:  0d 57 57
+b04_9705:   .db $57                     ; 11705:  57
+b04_9706:   .db $57                     ; 11706:  57
+b04_9707:   lda $7972,x                 ; 11707:  bd 72 79
+b04_970a:   .db $5c                     ; 1170A:  5c
+b04_970b:   .db $74                     ; 1170B:  74
+b04_970c:   .db $5c                     ; 1170C:  5c
+b04_970d:   .db $5c                     ; 1170D:  5c
+b04_970e:   .db $5c                     ; 1170E:  5c
+b04_970f:   .db $9e                     ; 1170F:  9e
+b04_9710:   .db $5c                     ; 11710:  5c
+b04_9711:   .db $74                     ; 11711:  74
+b04_9712:   .db $5c                     ; 11712:  5c
+b04_9713:   .db $5c                     ; 11713:  5c
+b04_9714:   .db $5c                     ; 11714:  5c
+b04_9715:   .db $5c                     ; 11715:  5c
+b04_9716:   txa                         ; 11716:  8a
+b04_9717:   sta $5c5c                   ; 11717:  8d 5c 5c
+b04_971a:   .db $57                     ; 1171A:  57
+b04_971b:   .db $b3                     ; 1171B:  b3
+b04_971c:   .db $b3                     ; 1171C:  b3
+b04_971d:   .db $57                     ; 1171D:  57
+b04_971e:   .db $57                     ; 1171E:  57
+b04_971f:   .db $57                     ; 1171F:  57
+b04_9720:   .db $57                     ; 11720:  57
+b04_9721:   .db $57                     ; 11721:  57
+b04_9722:   .db $57                     ; 11722:  57
+b04_9723:   .db $5c                     ; 11723:  5c
+b04_9724:   .db $5c                     ; 11724:  5c
+b04_9725:   .db $74                     ; 11725:  74
+b04_9726:   .db $5c                     ; 11726:  5c
+b04_9727:   .db $74                     ; 11727:  74
+b04_9728:   .db $5c                     ; 11728:  5c
+b04_9729:   .db $5c                     ; 11729:  5c
+b04_972a:   .db $5c                     ; 1172A:  5c
+b04_972b:   cpy #$5c                    ; 1172B:  c0 5c
+b04_972d:   .db $74                     ; 1172D:  74
+b04_972e:   .db $87                     ; 1172E:  87
+b04_972f:   adc $715c,y                 ; 1172F:  79 5c 71
+b04_9732:   .db $72                     ; 11732:  72
+b04_9733:   .db $72                     ; 11733:  72
+b04_9734:   asl a                       ; 11734:  0a
+b04_9735:   .db $0f                     ; 11735:  0f
+b04_9736:   sta $c59a,y                 ; 11736:  99 9a c5
+b04_9739:   stx $7f,y                   ; 11739:  96 7f
+b04_973b:   .db $82                     ; 1173B:  82
+b04_973c:   .db $82                     ; 1173C:  82
+b04_973d:   .db $82                     ; 1173D:  82
+b04_973e:   .db $82                     ; 1173E:  82
+b04_973f:   .db $72                     ; 1173F:  72
+b04_9740:   .db $72                     ; 11740:  72
+b04_9741:   ldy $72                     ; 11741:  a4 72
+b04_9743:   sty $71                     ; 11743:  84 71
+b04_9745:   .db $72                     ; 11745:  72
+b04_9746:   dey                         ; 11746:  88
+b04_9747:   txa                         ; 11747:  8a
+b04_9748:   sta $8e77                   ; 11748:  8d 77 8e
+b04_974b:   .db $7b                     ; 1174B:  7b
+b04_974c:   .db $72                     ; 1174C:  72
+b04_974d:   ldy $7e                     ; 1174D:  a4 7e
+b04_974f:   .db $5c                     ; 1174F:  5c
+b04_9750:   .db $5c                     ; 11750:  5c
+b04_9751:   .db $5c                     ; 11751:  5c
+b04_9752:   .db $b3                     ; 11752:  b3
+b04_9753:   .db $57                     ; 11753:  57
+b04_9754:   .db $64                     ; 11754:  64
+b04_9755:   lsr $6a,x                   ; 11755:  56 6a
+b04_9757:   .db $57                     ; 11757:  57
+b04_9758:   asl a                       ; 11758:  0a
+b04_9759:   .db $0c                     ; 11759:  0c
+b04_975a:   .db $57                     ; 1175A:  57
+b04_975b:   dec $5c                     ; 1175B:  c6 5c
+b04_975d:   .db $5c                     ; 1175D:  5c
+b04_975e:   .db $5c                     ; 1175E:  5c
+b04_975f:   .db $77                     ; 1175F:  77
+b04_9760:   sty $0a                     ; 11760:  84 0a
+b04_9762:   php                         ; 11762:  08
+b04_9763:   txa                         ; 11763:  8a
+b04_9764:   sta $c78a                   ; 11764:  8d 8a c7
+b04_9767:   iny                         ; 11767:  c8
+b04_9768:   cmp #$87                    ; 11768:  c9 87
+b04_976a:   stx $725c                   ; 1176A:  8e 5c 72
+b04_976d:   .db $7c                     ; 1176D:  7c
+b04_976e:   stx $6457                   ; 1176E:  8e 57 64
+b04_9771:   lsr $6a,x                   ; 11771:  56 6a
+b04_9773:   .db $cb                     ; 11773:  cb
+b04_9774:   .db $57                     ; 11774:  57
+b04_9775:   .db $57                     ; 11775:  57
+b04_9776:   .db $57                     ; 11776:  57
+b04_9777:   .db $5b                     ; 11777:  5b
+b04_9778:   .db $5c                     ; 11778:  5c
+b04_9779:   .db $5c                     ; 11779:  5c
+b04_977a:   .db $5c                     ; 1177A:  5c
+b04_977b:   .db $5c                     ; 1177B:  5c
+b04_977c:   .db $74                     ; 1177C:  74
+b04_977d:   .db $5c                     ; 1177D:  5c
+b04_977e:   .db $5c                     ; 1177E:  5c
+b04_977f:   .db $89                     ; 1177F:  89
+b04_9780:   .db $57                     ; 11780:  57
+b04_9781:   .db $57                     ; 11781:  57
+b04_9782:   .db $57                     ; 11782:  57
+b04_9783:   .db $57                     ; 11783:  57
+b04_9784:   .db $57                     ; 11784:  57
+b04_9785:   .db $b3                     ; 11785:  b3
+b04_9786:   ora #$0c                    ; 11786:  09 0c
+b04_9788:   .db $5c                     ; 11788:  5c
+b04_9789:   .db $77                     ; 11789:  77
+b04_978a:   ror $6bca,x                 ; 1178A:  7e ca 6b
+b04_978d:   cli                         ; 1178D:  58
+b04_978e:   cpy $59cd                   ; 1178E:  cc cd 59
+b04_9791:   .db $57                     ; 11791:  57
+b04_9792:   .db $57                     ; 11792:  57
+b04_9793:   eor $925e,x                 ; 11793:  5d 5e 92
+b04_9796:   .db $5c                     ; 11796:  5c
+b04_9797:   .db $87                     ; 11797:  87
+b04_9798:   stx $5e9f                   ; 11798:  8e 9f 5e
+b04_979b:   .db $6f                     ; 1179B:  6f
+b04_979c:   .db $7f                     ; 1179C:  7f
+b04_979d:   eor $5959,y                 ; 1179D:  59 59 59
+b04_97a0:   eor $57ce,y                 ; 117A0:  59 ce 57
+b04_97a3:   .db $ab                     ; 117A3:  ab
+b04_97a4:   asl a                       ; 117A4:  0a
+b04_97a5:   bpl $981b                   ; 117A5:  10 74
+b04_97a7:   asl a                       ; 117A7:  0a
+b04_97a8:   asl $686b                   ; 117A8:  0e 6b 68
+b04_97ab:   pla                         ; 117AB:  68
+b04_97ac:   pla                         ; 117AC:  68
+b04_97ad:   pla                         ; 117AD:  68
+b04_97ae:   .db $cf                     ; 117AE:  cf
+b04_97af:   cmp $5759                   ; 117AF:  cd 59 57
+b04_97b2:   .db $57                     ; 117B2:  57
+b04_97b3:   .db $b3                     ; 117B3:  b3
+b04_97b4:   .db $57                     ; 117B4:  57
+b04_97b5:   .db $57                     ; 117B5:  57
+b04_97b6:   .db $7f                     ; 117B6:  7f
+b04_97b7:   bne $980c                   ; 117B7:  d0 53
+b04_97b9:   .db $53                     ; 117B9:  53
+b04_97ba:   .db $53                     ; 117BA:  53
+b04_97bb:   .db $53                     ; 117BB:  53
+b04_97bc:   adc $97                     ; 117BC:  65 97
+b04_97be:   ldy $5c64                   ; 117BE:  ac 64 5c
+b04_97c1:   .db $5c                     ; 117C1:  5c
+b04_97c2:   .db $74                     ; 117C2:  74
+b04_97c3:   .db $5c                     ; 117C3:  5c
+b04_97c4:   .db $57                     ; 117C4:  57
+b04_97c5:   .db $57                     ; 117C5:  57
+b04_97c6:   .db $57                     ; 117C6:  57
+b04_97c7:   .db $57                     ; 117C7:  57
+b04_97c8:   .db $57                     ; 117C8:  57
+b04_97c9:   .db $57                     ; 117C9:  57
+b04_97ca:   .db $57                     ; 117CA:  57
+b04_97cb:   ror a                       ; 117CB:  6a
+b04_97cc:   .db $64                     ; 117CC:  64
+b04_97cd:   .db $64                     ; 117CD:  64
+b04_97ce:   .db $64                     ; 117CE:  64
+b04_97cf:   .db $64                     ; 117CF:  64
+b04_97d0:   .db $64                     ; 117D0:  64
+b04_97d1:   tax                         ; 117D1:  aa
+b04_97d2:   .db $64                     ; 117D2:  64
+b04_97d3:   .db $64                     ; 117D3:  64
+b04_97d4:   .db $9c                     ; 117D4:  9c
+b04_97d5:   eor ($54),y                 ; 117D5:  51 54
+b04_97d7:   .db $53                     ; 117D7:  53
+b04_97d8:   lsr $57,x                   ; 117D8:  56 57
+b04_97da:   ror a                       ; 117DA:  6a
+b04_97db:   .db $64                     ; 117DB:  64
+b04_97dc:   .db $64                     ; 117DC:  64
+b04_97dd:   .db $64                     ; 117DD:  64
+b04_97de:   .db $64                     ; 117DE:  64
+b04_97df:   .db $64                     ; 117DF:  64
+b04_97e0:   .db $64                     ; 117E0:  64
+b04_97e1:   .db $64                     ; 117E1:  64
+b04_97e2:   .db $67                     ; 117E2:  67
+b04_97e3:   .db $64                     ; 117E3:  64
+b04_97e4:   .db $64                     ; 117E4:  64
+b04_97e5:   .db $64                     ; 117E5:  64
+b04_97e6:   eor ($d2),y                 ; 117E6:  51 d2
+b04_97e8:   .db $64                     ; 117E8:  64
+b04_97e9:   .db $64                     ; 117E9:  64
+b04_97ea:   .db $64                     ; 117EA:  64
+b04_97eb:   .db $64                     ; 117EB:  64
+b04_97ec:   .db $cf                     ; 117EC:  cf
+b04_97ed:   .db $64                     ; 117ED:  64
+b04_97ee:   lda $65,x                   ; 117EE:  b5 65
+b04_97f0:   .db $57                     ; 117F0:  57
+b04_97f1:   .db $5b                     ; 117F1:  5b
+b04_97f2:   .db $5c                     ; 117F2:  5c
+b04_97f3:   .db $74                     ; 117F3:  74
+b04_97f4:   asl a                       ; 117F4:  0a
+b04_97f5:   asl a                       ; 117F5:  0a
+b04_97f6:   .db $5c                     ; 117F6:  5c
+b04_97f7:   .db $5c                     ; 117F7:  5c
+b04_97f8:   .db $57                     ; 117F8:  57
+b04_97f9:   .db $57                     ; 117F9:  57
+b04_97fa:   cmp ($68),y                 ; 117FA:  d1 68
+b04_97fc:   pla                         ; 117FC:  68
+b04_97fd:   ror $53                     ; 117FD:  66 53
+b04_97ff:   adc ($5f,x)                 ; 117FF:  61 5f
+b04_9801:   .db $5f                     ; 11801:  5f
+b04_9802:   .db $62                     ; 11802:  62
+b04_9803:   .db $53                     ; 11803:  53
+b04_9804:   .db $64                     ; 11804:  64
+b04_9805:   .db $cf                     ; 11805:  cf
+b04_9806:   .db $57                     ; 11806:  57
+b04_9807:   pla                         ; 11807:  68
+b04_9808:   .db $57                     ; 11808:  57
+b04_9809:   .db $97                     ; 11809:  97
+b04_980a:   .db $d3                     ; 1180A:  d3
+b04_980b:   .db $82                     ; 1180B:  82
+b04_980c:   .db $82                     ; 1180C:  82
+b04_980d:   .db $72                     ; 1180D:  72
+b04_980e:   .db $72                     ; 1180E:  72
+b04_980f:   ldy $7c                     ; 1180F:  a4 7c
+b04_9811:   .db $72                     ; 11811:  72
+b04_9812:   ror $0b5c,x                 ; 11812:  7e 5c 0b
+b04_9815:   ora $0ab3                   ; 11815:  0d b3 0a
+b04_9818:   ora ($6e),y                 ; 11818:  11 6e
+b04_981a:   pla                         ; 1181A:  68
+b04_981b:   pla                         ; 1181B:  68
+b04_981c:   pla                         ; 1181C:  68
+b04_981d:   pla                         ; 1181D:  68
+b04_981e:   .db $6f                     ; 1181E:  6f
+b04_981f:   .db $97                     ; 1181F:  97
+b04_9820:   .db $6f                     ; 11820:  6f
+b04_9821:   .db $57                     ; 11821:  57
+b04_9822:   .db $73                     ; 11822:  73
+b04_9823:   sta ($82,x)                 ; 11823:  81 82
+b04_9825:   .db $d4                     ; 11825:  d4
+b04_9826:   .db $7f                     ; 11826:  7f
+b04_9827:   ldy $96,x                   ; 11827:  b4 96
+b04_9829:   tya                         ; 11829:  98
+b04_982a:   .db $57                     ; 1182A:  57
+b04_982b:   .db $57                     ; 1182B:  57
+b04_982c:   .db $74                     ; 1182C:  74
+b04_982d:   .db $5c                     ; 1182D:  5c
+b04_982e:   .db $77                     ; 1182E:  77
+b04_982f:   .db $72                     ; 1182F:  72
+b04_9830:   .db $5c                     ; 11830:  5c
+b04_9831:   .db $5c                     ; 11831:  5c
+b04_9832:   .db $74                     ; 11832:  74
+b04_9833:   sta $57                     ; 11833:  85 57
+b04_9835:   .db $57                     ; 11835:  57
+b04_9836:   .db $57                     ; 11836:  57
+b04_9837:   .db $57                     ; 11837:  57
+b04_9838:   .db $57                     ; 11838:  57
+b04_9839:   .db $57                     ; 11839:  57
+b04_983a:   .db $57                     ; 1183A:  57
+b04_983b:   .db $57                     ; 1183B:  57
+b04_983c:   .db $d3                     ; 1183C:  d3
+b04_983d:   .db $82                     ; 1183D:  82
+b04_983e:   dey                         ; 1183E:  88
+b04_983f:   .db $89                     ; 1183F:  89
+b04_9840:   tya                         ; 11840:  98
+b04_9841:   eor $64cc,y                 ; 11841:  59 cc 64
+b04_9844:   .db $64                     ; 11844:  64
+b04_9845:   .db $64                     ; 11845:  64
+b04_9846:   lsr $57,x                   ; 11846:  56 57
+b04_9848:   .db $74                     ; 11848:  74
+b04_9849:   .db $5c                     ; 11849:  5c
+b04_984a:   .db $5c                     ; 1184A:  5c
+b04_984b:   .db $5c                     ; 1184B:  5c
+b04_984c:   .db $72                     ; 1184C:  72
+b04_984d:   adc $728b,y                 ; 1184D:  79 8b 72
+b04_9850:   .db $72                     ; 11850:  72
+b04_9851:   .db $72                     ; 11851:  72
+b04_9852:   .db $72                     ; 11852:  72
+b04_9853:   cmp $5c,x                   ; 11853:  d5 5c
+b04_9855:   .db $5c                     ; 11855:  5c
+b04_9856:   .db $5c                     ; 11856:  5c
+b04_9857:   .db $9e                     ; 11857:  9e
+b04_9858:   .db $57                     ; 11858:  57
+b04_9859:   .db $57                     ; 11859:  57
+b04_985a:   .db $57                     ; 1185A:  57
+b04_985b:   bne $98c1                   ; 1185B:  d0 64
+b04_985d:   .db $64                     ; 1185D:  64
+b04_985e:   .db $64                     ; 1185E:  64
+b04_985f:   .db $64                     ; 1185F:  64
+b04_9860:   .db $64                     ; 11860:  64
+b04_9861:   .db $c2                     ; 11861:  c2
+b04_9862:   .db $57                     ; 11862:  57
+b04_9863:   .db $73                     ; 11863:  73
+b04_9864:   .db $74                     ; 11864:  74
+b04_9865:   asl a                       ; 11865:  0a
+b04_9866:   .db $0b                     ; 11866:  0b
+b04_9867:   .db $5c                     ; 11867:  5c
+b04_9868:   .db $5c                     ; 11868:  5c
+b04_9869:   .db $7b                     ; 11869:  7b
+b04_986a:   sty $0b                     ; 1186A:  84 0b
+b04_986c:   php                         ; 1186C:  08
+b04_986d:   .db $5c                     ; 1186D:  5c
+b04_986e:   .db $5c                     ; 1186E:  5c
+b04_986f:   .db $5c                     ; 1186F:  5c
+b04_9870:   lda $7272,x                 ; 11870:  bd 72 72
+b04_9873:   sty $57                     ; 11873:  84 57
+b04_9875:   ldy $6865                   ; 11875:  ac 65 68
+b04_9878:   .db $57                     ; 11878:  57
+b04_9879:   .db $6f                     ; 11879:  6f
+b04_987a:   dec $b8,x                   ; 1187A:  d6 b8
+b04_987c:   .db $57                     ; 1187C:  57
+b04_987d:   .db $57                     ; 1187D:  57
+b04_987e:   stx $8f                     ; 1187E:  86 8f
+b04_9880:   .db $b3                     ; 11880:  b3
+b04_9881:   .db $57                     ; 11881:  57
+b04_9882:   .db $57                     ; 11882:  57
+b04_9883:   .db $57                     ; 11883:  57
+b04_9884:   .db $0b                     ; 11884:  0b
+b04_9885:   asl $5c74                   ; 11885:  0e 74 5c
+b04_9888:   .db $5c                     ; 11888:  5c
+b04_9889:   .db $9f                     ; 11889:  9f
+b04_988a:   lsr $925e,x                 ; 1188A:  5e 5e 92
+b04_988d:   .db $5c                     ; 1188D:  5c
+b04_988e:   .db $5c                     ; 1188E:  5c
+b04_988f:   .db $8b                     ; 1188F:  8b
+b04_9890:   ldy #$d6                    ; 11890:  a0 d6
+b04_9892:   .db $97                     ; 11892:  97
+b04_9893:   .db $57                     ; 11893:  57
+b04_9894:   asl a                       ; 11894:  0a
+b04_9895:   .db $0f                     ; 11895:  0f
+b04_9896:   bvs $9908                   ; 11896:  70 70
+b04_9898:   stx $5c                     ; 11898:  86 5c
+b04_989a:   .db $5c                     ; 1189A:  5c
+b04_989b:   ror $b3,x                   ; 1189B:  76 b3
+b04_989d:   ldx $8282                   ; 1189D:  ae 82 82
+b04_98a0:   ldx $57,y                   ; 118A0:  b6 57
+b04_98a2:   ldx $82                     ; 118A2:  a6 82
+b04_98a4:   .db $d7                     ; 118A4:  d7
+b04_98a5:   .db $82                     ; 118A5:  82
+b04_98a6:   .db $82                     ; 118A6:  82
+b04_98a7:   .db $82                     ; 118A7:  82
+b04_98a8:   ldy #$a5                    ; 118A8:  a0 a5
+b04_98aa:   sta ($84,x)                 ; 118AA:  81 84
+b04_98ac:   ldx #$82                    ; 118AC:  a2 82
+b04_98ae:   ldx $7357,y                 ; 118AE:  be 57 73
+b04_98b1:   .db $5c                     ; 118B1:  5c
+b04_98b2:   .db $5c                     ; 118B2:  5c
+b04_98b3:   .db $5c                     ; 118B3:  5c
+b04_98b4:   .db $5c                     ; 118B4:  5c
+b04_98b5:   .db $5c                     ; 118B5:  5c
+b04_98b6:   .db $5c                     ; 118B6:  5c
+b04_98b7:   .db $6f                     ; 118B7:  6f
+b04_98b8:   .db $c3                     ; 118B8:  c3
+b04_98b9:   cpy $0a                     ; 118B9:  c4 0a
+b04_98bb:   ora $6464                   ; 118BB:  0d 64 64
+b04_98be:   .db $64                     ; 118BE:  64
+b04_98bf:   eor $0bce,y                 ; 118BF:  59 ce 0b
+b04_98c2:   .db $0b                     ; 118C2:  0b
+b04_98c3:   .db $57                     ; 118C3:  57
+b04_98c4:   ldx #$d4                    ; 118C4:  a2 d4
+b04_98c6:   .db $57                     ; 118C6:  57
+b04_98c7:   .db $7b                     ; 118C7:  7b
+b04_98c8:   .db $72                     ; 118C8:  72
+b04_98c9:   .db $a7                     ; 118C9:  a7
+b04_98ca:   .db $7f                     ; 118CA:  7f
+b04_98cb:   lda $7e72,x                 ; 118CB:  bd 72 7e
+b04_98ce:   .db $5c                     ; 118CE:  5c
+b04_98cf:   .db $5c                     ; 118CF:  5c
+b04_98d0:   .db $5c                     ; 118D0:  5c
+b04_98d1:   .db $5c                     ; 118D1:  5c
+b04_98d2:   .db $5c                     ; 118D2:  5c
+b04_98d3:   .db $57                     ; 118D3:  57
+b04_98d4:   .db $b3                     ; 118D4:  b3
+b04_98d5:   .db $b3                     ; 118D5:  b3
+b04_98d6:   .db $57                     ; 118D6:  57
+b04_98d7:   .db $57                     ; 118D7:  57
+b04_98d8:   pla                         ; 118D8:  68
+b04_98d9:   .db $64                     ; 118D9:  64
+b04_98da:   cld                         ; 118DA:  d8
+b04_98db:   .db $6f                     ; 118DB:  6f
+b04_98dc:   lsr $57,x                   ; 118DC:  56 57
+b04_98de:   .db $57                     ; 118DE:  57
+b04_98df:   .db $57                     ; 118DF:  57
+b04_98e0:   .db $57                     ; 118E0:  57
+b04_98e1:   .db $57                     ; 118E1:  57
+b04_98e2:   .db $57                     ; 118E2:  57
+b04_98e3:   .db $57                     ; 118E3:  57
+b04_98e4:   .db $57                     ; 118E4:  57
+b04_98e5:   .db $b3                     ; 118E5:  b3
+b04_98e6:   .db $0b                     ; 118E6:  0b
+b04_98e7:   ora #$5c                    ; 118E7:  09 5c
+b04_98e9:   .db $77                     ; 118E9:  77
+b04_98ea:   .db $72                     ; 118EA:  72
+b04_98eb:   .db $72                     ; 118EB:  72
+b04_98ec:   .db $72                     ; 118EC:  72
+b04_98ed:   .db $72                     ; 118ED:  72
+b04_98ee:   adc $9a87,y                 ; 118EE:  79 87 9a
+b04_98f1:   cmp $96                     ; 118F1:  c5 96
+b04_98f3:   .db $7f                     ; 118F3:  7f
+b04_98f4:   .db $57                     ; 118F4:  57
+b04_98f5:   ror $57b4                   ; 118F5:  6e b4 57
+b04_98f8:   cli                         ; 118F8:  58
+b04_98f9:   eor $ae57,y                 ; 118F9:  59 57 ae
+b04_98fc:   .db $82                     ; 118FC:  82
+b04_98fd:   .db $82                     ; 118FD:  82
+b04_98fe:   .db $82                     ; 118FE:  82
+b04_98ff:   .db $82                     ; 118FF:  82
+b04_9900:   .db $82                     ; 11900:  82
+b04_9901:   sty $5c                     ; 11901:  84 5c
+b04_9903:   .db $5c                     ; 11903:  5c
+b04_9904:   .db $5c                     ; 11904:  5c
+b04_9905:   .db $5c                     ; 11905:  5c
+b04_9906:   .db $5c                     ; 11906:  5c
+b04_9907:   .db $5c                     ; 11907:  5c
+b04_9908:   .db $5c                     ; 11908:  5c
+b04_9909:   .db $5c                     ; 11909:  5c
+b04_990a:   .db $74                     ; 1190A:  74
+b04_990b:   .db $74                     ; 1190B:  74
+b04_990c:   .db $57                     ; 1190C:  57
+b04_990d:   .db $64                     ; 1190D:  64
+b04_990e:   lsr $6a,x                   ; 1190E:  56 6a
+b04_9910:   .db $82                     ; 11910:  82
+b04_9911:   .db $d4                     ; 11911:  d4
+b04_9912:   ror $6468                   ; 11912:  6e 68 64
+b04_9915:   .db $64                     ; 11915:  64
+b04_9916:   .db $82                     ; 11916:  82
+b04_9917:   cpy $0b                     ; 11917:  c4 0b
+b04_9919:   asl a                       ; 11919:  0a
+b04_991a:   .db $57                     ; 1191A:  57
+b04_991b:   .db $57                     ; 1191B:  57
+b04_991c:   .db $73                     ; 1191C:  73
+b04_991d:   .db $77                     ; 1191D:  77
+b04_991e:   .db $72                     ; 1191E:  72
+b04_991f:   .db $72                     ; 1191F:  72
+b04_9920:   .db $7c                     ; 11920:  7c
+b04_9921:   .db $72                     ; 11921:  72
+b04_9922:   .db $72                     ; 11922:  72
+b04_9923:   .db $72                     ; 11923:  72
+b04_9924:   .db $72                     ; 11924:  72
+b04_9925:   .db $72                     ; 11925:  72
+b04_9926:   ldy $84                     ; 11926:  a4 84
+b04_9928:   .db $57                     ; 11928:  57
+b04_9929:   .db $64                     ; 11929:  64
+b04_992a:   lsr $6a,x                   ; 1192A:  56 6a
+b04_992c:   .db $5c                     ; 1192C:  5c
+b04_992d:   .db $0c                     ; 1192D:  0c
+b04_992e:   ora #$57                    ; 1192E:  09 57
+b04_9930:   ror a                       ; 11930:  6a
+b04_9931:   .db $64                     ; 11931:  64
+b04_9932:   lsr $b3,x                   ; 11932:  56 b3
+b04_9934:   bvs $99a6                   ; 11934:  70 70
+b04_9936:   bvs $99a8                   ; 11936:  70 70
+b04_9938:   .db $5c                     ; 11938:  5c
+b04_9939:   .db $5c                     ; 11939:  5c
+b04_993a:   .db $5c                     ; 1193A:  5c
+b04_993b:   .db $5c                     ; 1193B:  5c
+b04_993c:   .db $74                     ; 1193C:  74
+b04_993d:   asl a                       ; 1193D:  0a
+b04_993e:   bpl $999c                   ; 1193E:  10 5c
+b04_9940:   .db $5c                     ; 11940:  5c
+b04_9941:   .db $5c                     ; 11941:  5c
+b04_9942:   .db $5c                     ; 11942:  5c
+b04_9943:   .db $7b                     ; 11943:  7b
+b04_9944:   .db $82                     ; 11944:  82
+b04_9945:   ldy #$58                    ; 11945:  a0 58
+b04_9947:   cpy $5c5c                   ; 11947:  cc 5c 5c
+b04_994a:   sty $57,x                   ; 1194A:  94 57
+b04_994c:   .db $b7                     ; 1194C:  b7
+b04_994d:   adc $6f                     ; 1194D:  65 6f
+b04_994f:   ldx $72                     ; 1194F:  a6 72
+b04_9951:   ror $5c5c,x                 ; 11951:  7e 5c 5c
+b04_9954:   adc ($72),y                 ; 11954:  71 72
+b04_9956:   .db $7c                     ; 11956:  7c
+b04_9957:   .db $7c                     ; 11957:  7c
+b04_9958:   adc $5c,x                   ; 11958:  75 5c
+b04_995a:   .db $5c                     ; 1195A:  5c
+b04_995b:   .db $5c                     ; 1195B:  5c
+b04_995c:   .db $5c                     ; 1195C:  5c
+b04_995d:   .db $5c                     ; 1195D:  5c
+b04_995e:   .db $5c                     ; 1195E:  5c
+b04_995f:   .db $5c                     ; 1195F:  5c
+b04_9960:   dex                         ; 11960:  ca
+b04_9961:   .db $b3                     ; 11961:  b3
+b04_9962:   .db $6b                     ; 11962:  6b
+b04_9963:   pla                         ; 11963:  68
+b04_9964:   adc $575c,y                 ; 11964:  79 5c 57
+b04_9967:   .db $ab                     ; 11967:  ab
+b04_9968:   .db $64                     ; 11968:  64
+b04_9969:   .db $57                     ; 11969:  57
+b04_996a:   .db $0b                     ; 1196A:  0b
+b04_996b:   .db $0c                     ; 1196B:  0c
+b04_996c:   .db $5c                     ; 1196C:  5c
+b04_996d:   .db $77                     ; 1196D:  77
+b04_996e:   .db $72                     ; 1196E:  72
+b04_996f:   .db $72                     ; 1196F:  72
+b04_9970:   adc $5c,x                   ; 11970:  75 5c
+b04_9972:   .db $74                     ; 11972:  74
+b04_9973:   .db $7b                     ; 11973:  7b
+b04_9974:   .db $72                     ; 11974:  72
+b04_9975:   .db $72                     ; 11975:  72
+b04_9976:   .db $72                     ; 11976:  72
+b04_9977:   .db $72                     ; 11977:  72
+b04_9978:   .db $72                     ; 11978:  72
+b04_9979:   .db $72                     ; 11979:  72
+b04_997a:   .db $72                     ; 1197A:  72
+b04_997b:   .db $72                     ; 1197B:  72
+b04_997c:   .db $72                     ; 1197C:  72
+b04_997d:   adc $57,x                   ; 1197D:  75 57
+b04_997f:   .db $57                     ; 1197F:  57
+b04_9980:   .db $74                     ; 11980:  74
+b04_9981:   .db $8f                     ; 11981:  8f
+b04_9982:   .db $57                     ; 11982:  57
+b04_9983:   .db $b7                     ; 11983:  b7
+b04_9984:   .db $64                     ; 11984:  64
+b04_9985:   tax                         ; 11985:  aa
+b04_9986:   .db $57                     ; 11986:  57
+b04_9987:   .db $5c                     ; 11987:  5c
+b04_9988:   .db $5c                     ; 11988:  5c
+b04_9989:   .db $5c                     ; 11989:  5c
+b04_998a:   .db $5c                     ; 1198A:  5c
+b04_998b:   .db $5c                     ; 1198B:  5c
+b04_998c:   .db $5c                     ; 1198C:  5c
+b04_998d:   .db $5c                     ; 1198D:  5c
+b04_998e:   .db $74                     ; 1198E:  74
+b04_998f:   .db $5c                     ; 1198F:  5c
+b04_9990:   asl a                       ; 11990:  0a
+b04_9991:   asl $5c5c                   ; 11991:  0e 5c 5c
+b04_9994:   .db $5c                     ; 11994:  5c
+b04_9995:   .db $5c                     ; 11995:  5c
+b04_9996:   .db $5c                     ; 11996:  5c
+b04_9997:   .db $5c                     ; 11997:  5c
+b04_9998:   .db $5c                     ; 11998:  5c
+b04_9999:   sty $57,x                   ; 11999:  94 57
+b04_999b:   tya                         ; 1199B:  98
+b04_999c:   .db $64                     ; 1199C:  64
+b04_999d:   adc $68                     ; 1199D:  65 68
+b04_999f:   cmp ($0b,x)                 ; 1199F:  c1 0b
+b04_99a1:   .db $0f                     ; 119A1:  0f
+b04_99a2:   .db $73                     ; 119A2:  73
+b04_99a3:   .db $5c                     ; 119A3:  5c
+b04_99a4:   txa                         ; 119A4:  8a
+b04_99a5:   sty $8d91                   ; 119A5:  8c 91 8d
+b04_99a8:   .db $74                     ; 119A8:  74
+b04_99a9:   .db $0b                     ; 119A9:  0b
+b04_99aa:   ora $5c5c                   ; 119AA:  0d 5c 5c
+b04_99ad:   txa                         ; 119AD:  8a
+b04_99ae:   sty $ca8d                   ; 119AE:  8c 8d ca
+b04_99b1:   .db $b3                     ; 119B1:  b3
+b04_99b2:   asl a                       ; 119B2:  0a
+b04_99b3:   ora ($57),y                 ; 119B3:  11 57
+b04_99b5:   .db $57                     ; 119B5:  57
+b04_99b6:   .db $57                     ; 119B6:  57
+b04_99b7:   .db $57                     ; 119B7:  57
+b04_99b8:   .db $57                     ; 119B8:  57
+b04_99b9:   .db $57                     ; 119B9:  57
+b04_99ba:   .db $57                     ; 119BA:  57
+b04_99bb:   .db $b3                     ; 119BB:  b3
+b04_99bc:   bvs $9944                   ; 119BC:  70 86
+b04_99be:   .db $5c                     ; 119BE:  5c
+b04_99bf:   .db $5c                     ; 119BF:  5c
+b04_99c0:   .db $5c                     ; 119C0:  5c
+b04_99c1:   .db $5c                     ; 119C1:  5c
+b04_99c2:   .db $5c                     ; 119C2:  5c
+b04_99c3:   .db $5c                     ; 119C3:  5c
+b04_99c4:   cpy #$5c                    ; 119C4:  c0 5c
+b04_99c6:   .db $5c                     ; 119C6:  5c
+b04_99c7:   .db $5c                     ; 119C7:  5c
+b04_99c8:   .db $5c                     ; 119C8:  5c
+b04_99c9:   .db $5c                     ; 119C9:  5c
+b04_99ca:   .db $5c                     ; 119CA:  5c
+b04_99cb:   .db $5c                     ; 119CB:  5c
+b04_99cc:   .db $5c                     ; 119CC:  5c
+b04_99cd:   .db $74                     ; 119CD:  74
+b04_99ce:   sta $57                     ; 119CE:  85 57
+b04_99d0:   .db $57                     ; 119D0:  57
+b04_99d1:   .db $57                     ; 119D1:  57
+b04_99d2:   .db $57                     ; 119D2:  57
+b04_99d3:   .db $57                     ; 119D3:  57
+b04_99d4:   .db $57                     ; 119D4:  57
+b04_99d5:   .db $0b                     ; 119D5:  0b
+b04_99d6:   ora ($c3),y                 ; 119D6:  11 c3
+b04_99d8:   .db $72                     ; 119D8:  72
+b04_99d9:   .db $72                     ; 119D9:  72
+b04_99da:   .db $72                     ; 119DA:  72
+b04_99db:   .db $72                     ; 119DB:  72
+b04_99dc:   .db $72                     ; 119DC:  72
+b04_99dd:   .db $72                     ; 119DD:  72
+b04_99de:   .db $7c                     ; 119DE:  7c
+b04_99df:   dey                         ; 119DF:  88
+b04_99e0:   adc ($72),y                 ; 119E0:  71 72
+b04_99e2:   .db $72                     ; 119E2:  72
+b04_99e3:   .db $72                     ; 119E3:  72
+b04_99e4:   .db $72                     ; 119E4:  72
+b04_99e5:   .db $72                     ; 119E5:  72
+b04_99e6:   .db $72                     ; 119E6:  72
+b04_99e7:   .db $72                     ; 119E7:  72
+b04_99e8:   adc $728b,y                 ; 119E8:  79 8b 72
+b04_99eb:   .db $72                     ; 119EB:  72
+b04_99ec:   .db $72                     ; 119EC:  72
+b04_99ed:   .db $72                     ; 119ED:  72
+b04_99ee:   cmp $5c,x                   ; 119EE:  d5 5c
+b04_99f0:   .db $57                     ; 119F0:  57
+b04_99f1:   .db $57                     ; 119F1:  57
+b04_99f2:   .db $57                     ; 119F2:  57
+b04_99f3:   .db $b3                     ; 119F3:  b3
+b04_99f4:   .db $0b                     ; 119F4:  0b
+b04_99f5:   bpl $9980                   ; 119F5:  10 89
+b04_99f7:   lsr $925e,x                 ; 119F7:  5e 5e 92
+b04_99fa:   .db $77                     ; 119FA:  77
+b04_99fb:   .db $72                     ; 119FB:  72
+b04_99fc:   sty $0b                     ; 119FC:  84 0b
+b04_99fe:   asl $5757                   ; 119FE:  0e 57 57
+b04_9a01:   .db $57                     ; 11A01:  57
+b04_9a02:   lda $5c                     ; 11A02:  a5 5c
+b04_9a04:   .db $7b                     ; 11A04:  7b
+b04_9a05:   sty $0b                     ; 11A05:  84 0b
+b04_9a07:   php                         ; 11A07:  08
+b04_9a08:   .db $5c                     ; 11A08:  5c
+b04_9a09:   .db $5c                     ; 11A09:  5c
+b04_9a0a:   .db $5c                     ; 11A0A:  5c
+b04_9a0b:   lda $5959,x                 ; 11A0B:  bd 59 59
+b04_9a0e:   eor $57ce,y                 ; 11A0E:  59 ce 57
+b04_9a11:   .db $57                     ; 11A11:  57
+b04_9a12:   .db $57                     ; 11A12:  57
+b04_9a13:   .db $57                     ; 11A13:  57
+b04_9a14:   .db $57                     ; 11A14:  57
+b04_9a15:   .db $57                     ; 11A15:  57
+b04_9a16:   .db $57                     ; 11A16:  57
+b04_9a17:   .db $57                     ; 11A17:  57
+b04_9a18:   .db $b3                     ; 11A18:  b3
+b04_9a19:   .db $57                     ; 11A19:  57
+b04_9a1a:   .db $57                     ; 11A1A:  57
+b04_9a1b:   .db $57                     ; 11A1B:  57
+b04_9a1c:   .db $57                     ; 11A1C:  57
+b04_9a1d:   .db $57                     ; 11A1D:  57
+b04_9a1e:   .db $57                     ; 11A1E:  57
+b04_9a1f:   .db $57                     ; 11A1F:  57
+b04_9a20:   .db $57                     ; 11A20:  57
+b04_9a21:   .db $74                     ; 11A21:  74
+b04_9a22:   .db $5c                     ; 11A22:  5c
+b04_9a23:   .db $5c                     ; 11A23:  5c
+b04_9a24:   .db $89                     ; 11A24:  89
+b04_9a25:   lsr $5e5e,x                 ; 11A25:  5e 5e 5e
+b04_9a28:   jmp ($6068)                 ; 11A28:  6c 68 60
+b04_9a2b:   cli                         ; 11A2B:  58
+b04_9a2c:   eor $5959,y                 ; 11A2C:  59 59 59
+b04_9a2f:   eor $5a59,y                 ; 11A2F:  59 59 5a
+b04_9a32:   .db $ab                     ; 11A32:  ab
+b04_9a33:   eor $599b,y                 ; 11A33:  59 9b 59
+b04_9a36:   eor $5959,y                 ; 11A36:  59 59 59
+b04_9a39:   eor $57b6,y                 ; 11A39:  59 b6 57
+b04_9a3c:   .db $57                     ; 11A3C:  57
+b04_9a3d:   ldx $d7                     ; 11A3D:  a6 d7
+b04_9a3f:   .db $82                     ; 11A3F:  82
+b04_9a40:   .db $82                     ; 11A40:  82
+b04_9a41:   .db $82                     ; 11A41:  82
+b04_9a42:   .db $82                     ; 11A42:  82
+b04_9a43:   ldy #$8e                    ; 11A43:  a0 8e
+b04_9a45:   dex                         ; 11A45:  ca
+b04_9a46:   ror a                       ; 11A46:  6a
+b04_9a47:   .db $64                     ; 11A47:  64
+b04_9a48:   .db $64                     ; 11A48:  64
+b04_9a49:   .db $64                     ; 11A49:  64
+b04_9a4a:   .db $64                     ; 11A4A:  64
+b04_9a4b:   lda $66,x                   ; 11A4B:  b5 66
+b04_9a4d:   .db $64                     ; 11A4D:  64
+b04_9a4e:   cld                         ; 11A4E:  d8
+b04_9a4f:   pla                         ; 11A4F:  68
+b04_9a50:   pla                         ; 11A50:  68
+b04_9a51:   pla                         ; 11A51:  68
+b04_9a52:   rts                         ; 11A52:  60
+b04_9a53:   .db $64                     ; 11A53:  64
+b04_9a54:   .db $64                     ; 11A54:  64
+b04_9a55:   .db $64                     ; 11A55:  64
+b04_9a56:   .db $64                     ; 11A56:  64
+b04_9a57:   .db $64                     ; 11A57:  64
+b04_9a58:   .db $64                     ; 11A58:  64
+b04_9a59:   eor $57ce,y                 ; 11A59:  59 ce 57
+b04_9a5c:   .db $0b                     ; 11A5C:  0b
+b04_9a5d:   .db $0b                     ; 11A5D:  0b
+b04_9a5e:   .db $57                     ; 11A5E:  57
+b04_9a5f:   ldx #$5c                    ; 11A5F:  a2 5c
+b04_9a61:   .db $5c                     ; 11A61:  5c
+b04_9a62:   ror a                       ; 11A62:  6a
+b04_9a63:   .db $64                     ; 11A63:  64
+b04_9a64:   .db $64                     ; 11A64:  64
+b04_9a65:   .db $64                     ; 11A65:  64
+b04_9a66:   .db $64                     ; 11A66:  64
+b04_9a67:   .db $57                     ; 11A67:  57
+b04_9a68:   adc $5664                   ; 11A68:  6d 64 56
+b04_9a6b:   .db $57                     ; 11A6B:  57
+b04_9a6c:   .db $0c                     ; 11A6C:  0c
+b04_9a6d:   php                         ; 11A6D:  08
+b04_9a6e:   dec $68,x                   ; 11A6E:  d6 68
+b04_9a70:   .db $97                     ; 11A70:  97
+b04_9a71:   ror $6068                   ; 11A71:  6e 68 60
+b04_9a74:   cld                         ; 11A74:  d8
+b04_9a75:   .db $6f                     ; 11A75:  6f
+b04_9a76:   lsr $57,x                   ; 11A76:  56 57
+b04_9a78:   .db $57                     ; 11A78:  57
+b04_9a79:   .db $57                     ; 11A79:  57
+b04_9a7a:   .db $57                     ; 11A7A:  57
+b04_9a7b:   .db $57                     ; 11A7B:  57
+b04_9a7c:   .db $5c                     ; 11A7C:  5c
+b04_9a7d:   .db $8f                     ; 11A7D:  8f
+b04_9a7e:   rts                         ; 11A7E:  60
+b04_9a7f:   adc $68                     ; 11A7F:  65 68
+b04_9a81:   pla                         ; 11A81:  68
+b04_9a82:   .db $6f                     ; 11A82:  6f
+b04_9a83:   .db $57                     ; 11A83:  57
+b04_9a84:   .db $80                     ; 11A84:  80
+b04_9a85:   .db $57                     ; 11A85:  57
+b04_9a86:   cmp ($57,x)                 ; 11A86:  c1 57
+b04_9a88:   .db $57                     ; 11A88:  57
+b04_9a89:   .db $57                     ; 11A89:  57
+b04_9a8a:   adc $5c5c,x                 ; 11A8A:  7d 5c 5c
+b04_9a8d:   .db $7a                     ; 11A8D:  7a
+b04_9a8e:   .db $57                     ; 11A8E:  57
+b04_9a8f:   ror $57b4                   ; 11A8F:  6e b4 57
+b04_9a92:   cli                         ; 11A92:  58
+b04_9a93:   eor $9957,y                 ; 11A93:  59 57 99
+b04_9a96:   .db $82                     ; 11A96:  82
+b04_9a97:   .db $82                     ; 11A97:  82
+b04_9a98:   .db $0c                     ; 11A98:  0c
+b04_9a99:   .db $0f                     ; 11A99:  0f
+b04_9a9a:   ror a                       ; 11A9A:  6a
+b04_9a9b:   lsr $0c,x                   ; 11A9B:  56 0c
+b04_9a9d:   asl a                       ; 11A9D:  0a
+b04_9a9e:   .db $57                     ; 11A9E:  57
+b04_9a9f:   .db $57                     ; 11A9F:  57
+b04_9aa0:   .db $5c                     ; 11AA0:  5c
+b04_9aa1:   dex                         ; 11AA1:  ca
+b04_9aa2:   ldx #$72                    ; 11AA2:  a2 72
+b04_9aa4:   .db $7c                     ; 11AA4:  7c
+b04_9aa5:   .db $72                     ; 11AA5:  72
+b04_9aa6:   .db $72                     ; 11AA6:  72
+b04_9aa7:   .db $72                     ; 11AA7:  72
+b04_9aa8:   .db $72                     ; 11AA8:  72
+b04_9aa9:   .db $72                     ; 11AA9:  72
+b04_9aaa:   .db $72                     ; 11AAA:  72
+b04_9aab:   .db $d4                     ; 11AAB:  d4
+b04_9aac:   ror $6464                   ; 11AAC:  6e 64 64
+b04_9aaf:   .db $64                     ; 11AAF:  64
+b04_9ab0:   .db $82                     ; 11AB0:  82
+b04_9ab1:   cpy $0b                     ; 11AB1:  c4 0b
+b04_9ab3:   asl a                       ; 11AB3:  0a
+b04_9ab4:   .db $57                     ; 11AB4:  57
+b04_9ab5:   .db $57                     ; 11AB5:  57
+b04_9ab6:   .db $b7                     ; 11AB6:  b7
+b04_9ab7:   .db $6f                     ; 11AB7:  6f
+b04_9ab8:   .db $7f                     ; 11AB8:  7f
+b04_9ab9:   stx $5c                     ; 11AB9:  86 5c
+b04_9abb:   .db $5c                     ; 11ABB:  5c
+b04_9abc:   .db $5c                     ; 11ABC:  5c
+b04_9abd:   .db $5c                     ; 11ABD:  5c
+b04_9abe:   .db $5c                     ; 11ABE:  5c
+b04_9abf:   .db $5c                     ; 11ABF:  5c
+b04_9ac0:   .db $74                     ; 11AC0:  74
+b04_9ac1:   .db $0c                     ; 11AC1:  0c
+b04_9ac2:   ora #$5c                    ; 11AC2:  09 5c
+b04_9ac4:   .db $5c                     ; 11AC4:  5c
+b04_9ac5:   .db $5c                     ; 11AC5:  5c
+b04_9ac6:   .db $5c                     ; 11AC6:  5c
+b04_9ac7:   .db $5c                     ; 11AC7:  5c
+b04_9ac8:   .db $5c                     ; 11AC8:  5c
+b04_9ac9:   .db $57                     ; 11AC9:  57
+b04_9aca:   .db $57                     ; 11ACA:  57
+b04_9acb:   .db $64                     ; 11ACB:  64
+b04_9acc:   lsr $b3,x                   ; 11ACC:  56 b3
+b04_9ace:   bvs $9b40                   ; 11ACE:  70 70
+b04_9ad0:   ldy $6464                   ; 11AD0:  ac 64 64
+b04_9ad3:   lsr $5e,x                   ; 11AD3:  56 5e
+b04_9ad5:   .db $5c                     ; 11AD5:  5c
+b04_9ad6:   adc ($7c),y                 ; 11AD6:  71 7c
+b04_9ad8:   .db $72                     ; 11AD8:  72
+b04_9ad9:   .db $72                     ; 11AD9:  72
+b04_9ada:   .db $72                     ; 11ADA:  72
+b04_9adb:   .db $72                     ; 11ADB:  72
+b04_9adc:   ldy $72                     ; 11ADC:  a4 72
+b04_9ade:   .db $72                     ; 11ADE:  72
+b04_9adf:   .db $72                     ; 11ADF:  72
+b04_9ae0:   .db $72                     ; 11AE0:  72
+b04_9ae1:   .db $72                     ; 11AE1:  72
+b04_9ae2:   adc $945c,y                 ; 11AE2:  79 5c 94
+b04_9ae5:   .db $57                     ; 11AE5:  57
+b04_9ae6:   bne $9b4d                   ; 11AE6:  d0 65
+b04_9ae8:   .db $6f                     ; 11AE8:  6f
+b04_9ae9:   ldx $72                     ; 11AE9:  a6 72
+b04_9aeb:   ror $64cc,x                 ; 11AEB:  7e cc 64
+b04_9aee:   adc $da                     ; 11AEE:  65 da
+b04_9af0:   .db $82                     ; 11AF0:  82
+b04_9af1:   .db $82                     ; 11AF1:  82
+b04_9af2:   stx $0c74                   ; 11AF2:  8e 74 0c
+b04_9af5:   .db $0b                     ; 11AF5:  0b
+b04_9af6:   .db $57                     ; 11AF6:  57
+b04_9af7:   .db $57                     ; 11AF7:  57
+b04_9af8:   .db $57                     ; 11AF8:  57
+b04_9af9:   .db $57                     ; 11AF9:  57
+b04_9afa:   .db $57                     ; 11AFA:  57
+b04_9afb:   .db $57                     ; 11AFB:  57
+b04_9afc:   .db $57                     ; 11AFC:  57
+b04_9afd:   .db $57                     ; 11AFD:  57
+b04_9afe:   .db $74                     ; 11AFE:  74
+b04_9aff:   .db $5c                     ; 11AFF:  5c
+b04_9b00:   .db $57                     ; 11B00:  57
+b04_9b01:   .db $ab                     ; 11B01:  ab
+b04_9b02:   .db $64                     ; 11B02:  64
+b04_9b03:   .db $57                     ; 11B03:  57
+b04_9b04:   .db $57                     ; 11B04:  57
+b04_9b05:   .db $0b                     ; 11B05:  0b
+b04_9b06:   .db $0c                     ; 11B06:  0c
+b04_9b07:   .db $77                     ; 11B07:  77
+b04_9b08:   .db $64                     ; 11B08:  64
+b04_9b09:   .db $64                     ; 11B09:  64
+b04_9b0a:   lsr $0c,x                   ; 11B0A:  56 0c
+b04_9b0c:   .db $0c                     ; 11B0C:  0c
+b04_9b0d:   .db $5c                     ; 11B0D:  5c
+b04_9b0e:   .db $5c                     ; 11B0E:  5c
+b04_9b0f:   .db $7b                     ; 11B0F:  7b
+b04_9b10:   .db $72                     ; 11B10:  72
+b04_9b11:   .db $82                     ; 11B11:  82
+b04_9b12:   .db $82                     ; 11B12:  82
+b04_9b13:   .db $db                     ; 11B13:  db
+b04_9b14:   eor $5959,y                 ; 11B14:  59 59 59
+b04_9b17:   eor $5a59,y                 ; 11B17:  59 59 5a
+b04_9b1a:   ldy $5957,x                 ; 11B1A:  bc 57 59
+b04_9b1d:   .db $93                     ; 11B1D:  93
+b04_9b1e:   .db $64                     ; 11B1E:  64
+b04_9b1f:   cmp $5c57                   ; 11B1F:  cd 57 5c
+b04_9b22:   .db $5c                     ; 11B22:  5c
+b04_9b23:   .db $5c                     ; 11B23:  5c
+b04_9b24:   .db $54                     ; 11B24:  54
+b04_9b25:   .db $53                     ; 11B25:  53
+b04_9b26:   lsr $57,x                   ; 11B26:  56 57
+b04_9b28:   .db $5c                     ; 11B28:  5c
+b04_9b29:   .db $5c                     ; 11B29:  5c
+b04_9b2a:   .db $57                     ; 11B2A:  57
+b04_9b2b:   .db $57                     ; 11B2B:  57
+b04_9b2c:   .db $57                     ; 11B2C:  57
+b04_9b2d:   .db $57                     ; 11B2D:  57
+b04_9b2e:   .db $57                     ; 11B2E:  57
+b04_9b2f:   ror a                       ; 11B2F:  6a
+b04_9b30:   tay                         ; 11B30:  a8
+b04_9b31:   eor $dc,x                   ; 11B31:  55 dc
+b04_9b33:   .db $53                     ; 11B33:  53
+b04_9b34:   .db $64                     ; 11B34:  64
+b04_9b35:   lsr $ac,x                   ; 11B35:  56 ac
+b04_9b37:   .db $64                     ; 11B37:  64
+b04_9b38:   .db $53                     ; 11B38:  53
+b04_9b39:   tay                         ; 11B39:  a8
+b04_9b3a:   eor $dc,x                   ; 11B3A:  55 dc
+b04_9b3c:   .db $5a                     ; 11B3C:  5a
+b04_9b3d:   .db $57                     ; 11B3D:  57
+b04_9b3e:   .db $92                     ; 11B3E:  92
+b04_9b3f:   .db $5c                     ; 11B3F:  5c
+b04_9b40:   .db $64                     ; 11B40:  64
+b04_9b41:   .db $dc                     ; 11B41:  dc
+b04_9b42:   ldy $5a,x                   ; 11B42:  b4 5a
+b04_9b44:   lda $5c                     ; 11B44:  a5 5c
+b04_9b46:   .db $57                     ; 11B46:  57
+b04_9b47:   eor $5959,y                 ; 11B47:  59 59 59
+b04_9b4a:   eor $b293,y                 ; 11B4A:  59 93 b2
+b04_9b4d:   .db $64                     ; 11B4D:  64
+b04_9b4e:   .db $64                     ; 11B4E:  64
+b04_9b4f:   .db $54                     ; 11B4F:  54
+b04_9b50:   .db $64                     ; 11B50:  64
+b04_9b51:   cli                         ; 11B51:  58
+b04_9b52:   cpy $9c64                   ; 11B52:  cc 64 9c
+b04_9b55:   .db $64                     ; 11B55:  64
+b04_9b56:   .db $64                     ; 11B56:  64
+b04_9b57:   .db $52                     ; 11B57:  52
+b04_9b58:   .db $64                     ; 11B58:  64
+b04_9b59:   ldx $57,y                   ; 11B59:  b6 57
+b04_9b5b:   .db $57                     ; 11B5B:  57
+b04_9b5c:   .db $64                     ; 11B5C:  64
+b04_9b5d:   .db $64                     ; 11B5D:  64
+b04_9b5e:   lsr $6a,x                   ; 11B5E:  56 6a
+b04_9b60:   lda $68,x                   ; 11B60:  b5 68
+b04_9b62:   .db $64                     ; 11B62:  64
+b04_9b63:   .db $64                     ; 11B63:  64
+b04_9b64:   .db $64                     ; 11B64:  64
+b04_9b65:   .db $64                     ; 11B65:  64
+b04_9b66:   adc $68                     ; 11B66:  65 68
+b04_9b68:   pla                         ; 11B68:  68
+b04_9b69:   cmp $0b56,x                 ; 11B69:  dd 56 0b
+b04_9b6c:   ora ($5d),y                 ; 11B6C:  11 5d
+b04_9b6e:   .db $92                     ; 11B6E:  92
+b04_9b6f:   .db $5c                     ; 11B6F:  5c
+b04_9b70:   .db $5c                     ; 11B70:  5c
+b04_9b71:   .db $5c                     ; 11B71:  5c
+b04_9b72:   .db $5c                     ; 11B72:  5c
+b04_9b73:   .db $74                     ; 11B73:  74
+b04_9b74:   .db $0b                     ; 11B74:  0b
+b04_9b75:   .db $0f                     ; 11B75:  0f
+b04_9b76:   .db $5c                     ; 11B76:  5c
+b04_9b77:   .db $5c                     ; 11B77:  5c
+b04_9b78:   .db $6f                     ; 11B78:  6f
+b04_9b79:   .db $64                     ; 11B79:  64
+b04_9b7a:   lda $5757,y                 ; 11B7A:  b9 57 57
+b04_9b7d:   .db $57                     ; 11B7D:  57
+b04_9b7e:   .db $57                     ; 11B7E:  57
+b04_9b7f:   .db $57                     ; 11B7F:  57
+b04_9b80:   .db $57                     ; 11B80:  57
+b04_9b81:   .db $57                     ; 11B81:  57
+b04_9b82:   .db $57                     ; 11B82:  57
+b04_9b83:   .db $57                     ; 11B83:  57
+b04_9b84:   .db $d3                     ; 11B84:  d3
+b04_9b85:   txs                         ; 11B85:  9a
+b04_9b86:   lsr $57,x                   ; 11B86:  56 57
+b04_9b88:   .db $57                     ; 11B88:  57
+b04_9b89:   .db $57                     ; 11B89:  57
+b04_9b8a:   .db $57                     ; 11B8A:  57
+b04_9b8b:   .db $57                     ; 11B8B:  57
+b04_9b8c:   .db $57                     ; 11B8C:  57
+b04_9b8d:   .db $57                     ; 11B8D:  57
+b04_9b8e:   .db $57                     ; 11B8E:  57
+b04_9b8f:   .db $c3                     ; 11B8F:  c3
+b04_9b90:   .db $72                     ; 11B90:  72
+b04_9b91:   .db $72                     ; 11B91:  72
+b04_9b92:   .db $72                     ; 11B92:  72
+b04_9b93:   .db $72                     ; 11B93:  72
+b04_9b94:   .db $57                     ; 11B94:  57
+b04_9b95:   lsr $0c,x                   ; 11B95:  56 0c
+b04_9b97:   asl $5c73                   ; 11B97:  0e 73 5c
+b04_9b9a:   .db $5c                     ; 11B9A:  5c
+b04_9b9b:   .db $80                     ; 11B9B:  80
+b04_9b9c:   .db $57                     ; 11B9C:  57
+b04_9b9d:   .db $5b                     ; 11B9D:  5b
+b04_9b9e:   .db $87                     ; 11B9E:  87
+b04_9b9f:   .db $d4                     ; 11B9F:  d4
+b04_9ba0:   .db $89                     ; 11BA0:  89
+b04_9ba1:   .db $57                     ; 11BA1:  57
+b04_9ba2:   rts                         ; 11BA2:  60
+b04_9ba3:   eor $5959,y                 ; 11BA3:  59 59 59
+b04_9ba6:   eor $5959,y                 ; 11BA6:  59 59 59
+b04_9ba9:   eor $b35a,y                 ; 11BA9:  59 5a b3
+b04_9bac:   .db $0b                     ; 11BAC:  0b
+b04_9bad:   bpl $9c06                   ; 11BAD:  10 57
+b04_9baf:   .db $57                     ; 11BAF:  57
+b04_9bb0:   .db $57                     ; 11BB0:  57
+b04_9bb1:   lsr $57,x                   ; 11BB1:  56 57
+b04_9bb3:   .db $57                     ; 11BB3:  57
+b04_9bb4:   .db $92                     ; 11BB4:  92
+b04_9bb5:   .db $5c                     ; 11BB5:  5c
+b04_9bb6:   .db $5c                     ; 11BB6:  5c
+b04_9bb7:   .db $9f                     ; 11BB7:  9f
+b04_9bb8:   .db $57                     ; 11BB8:  57
+b04_9bb9:   .db $5b                     ; 11BB9:  5b
+b04_9bba:   .db $74                     ; 11BBA:  74
+b04_9bbb:   .db $0c                     ; 11BBB:  0c
+b04_9bbc:   ora $5757                   ; 11BBC:  0d 57 57
+b04_9bbf:   pla                         ; 11BBF:  68
+b04_9bc0:   pla                         ; 11BC0:  68
+b04_9bc1:   pla                         ; 11BC1:  68
+b04_9bc2:   pla                         ; 11BC2:  68
+b04_9bc3:   jmp ($6460)                 ; 11BC3:  6c 60 64
+b04_9bc6:   .db $64                     ; 11BC6:  64
+b04_9bc7:   .db $9b                     ; 11BC7:  9b
+b04_9bc8:   eor $5959,y                 ; 11BC8:  59 59 59
+b04_9bcb:   .db $5a                     ; 11BCB:  5a
+b04_9bcc:   .db $5a                     ; 11BCC:  5a
+b04_9bcd:   .db $57                     ; 11BCD:  57
+b04_9bce:   .db $57                     ; 11BCE:  57
+b04_9bcf:   eor $5959,y                 ; 11BCF:  59 59 59
+b04_9bd2:   .db $57                     ; 11BD2:  57
+b04_9bd3:   bvs $9c45                   ; 11BD3:  70 70
+b04_9bd5:   adc $5c74,x                 ; 11BD5:  7d 74 5c
+b04_9bd8:   .db $5c                     ; 11BD8:  5c
+b04_9bd9:   .db $7a                     ; 11BD9:  7a
+b04_9bda:   bvs $9c4c                   ; 11BDA:  70 70
+b04_9bdc:   bvs $9c5b                   ; 11BDC:  70 7d
+b04_9bde:   .db $5c                     ; 11BDE:  5c
+b04_9bdf:   .db $74                     ; 11BDF:  74
+b04_9be0:   ror a                       ; 11BE0:  6a
+b04_9be1:   .db $64                     ; 11BE1:  64
+b04_9be2:   .db $64                     ; 11BE2:  64
+b04_9be3:   .db $64                     ; 11BE3:  64
+b04_9be4:   .db $64                     ; 11BE4:  64
+b04_9be5:   lda $66,x                   ; 11BE5:  b5 66
+b04_9be7:   .db $64                     ; 11BE7:  64
+b04_9be8:   dec $5759,x                 ; 11BE8:  de 59 57
+b04_9beb:   ror a                       ; 11BEB:  6a
+b04_9bec:   .db $64                     ; 11BEC:  64
+b04_9bed:   lda $57,x                   ; 11BED:  b5 57
+b04_9bef:   .db $92                     ; 11BEF:  92
+b04_9bf0:   .db $5c                     ; 11BF0:  5c
+b04_9bf1:   .db $87                     ; 11BF1:  87
+b04_9bf2:   ldy $72                     ; 11BF2:  a4 72
+b04_9bf4:   .db $72                     ; 11BF4:  72
+b04_9bf5:   .db $72                     ; 11BF5:  72
+b04_9bf6:   cmp $5c,x                   ; 11BF6:  d5 5c
+b04_9bf8:   .db $5c                     ; 11BF8:  5c
+b04_9bf9:   .db $87                     ; 11BF9:  87
+b04_9bfa:   .db $72                     ; 11BFA:  72
+b04_9bfb:   adc $6a,x                   ; 11BFB:  75 6a
+b04_9bfd:   .db $64                     ; 11BFD:  64
+b04_9bfe:   .db $64                     ; 11BFE:  64
+b04_9bff:   .db $64                     ; 11BFF:  64
+b04_9c00:   .db $64                     ; 11C00:  64
+b04_9c01:   .db $57                     ; 11C01:  57
+b04_9c02:   adc $5564                   ; 11C02:  6d 64 55
+b04_9c05:   .db $53                     ; 11C05:  53
+b04_9c06:   eor $6893,y                 ; 11C06:  59 93 68
+b04_9c09:   .db $82                     ; 11C09:  82
+b04_9c0a:   .db $82                     ; 11C0A:  82
+b04_9c0b:   .db $82                     ; 11C0B:  82
+b04_9c0c:   .db $72                     ; 11C0C:  72
+b04_9c0d:   sty $8a                     ; 11C0D:  84 8a
+b04_9c0f:   sta $0f0c                   ; 11C0F:  8d 0c 0f
+b04_9c12:   .db $5c                     ; 11C12:  5c
+b04_9c13:   lda $8e72,x                 ; 11C13:  bd 72 8e
+b04_9c16:   .db $5c                     ; 11C16:  5c
+b04_9c17:   sty $6a,x                   ; 11C17:  94 6a
+b04_9c19:   lda $68,x                   ; 11C19:  b5 68
+b04_9c1b:   pla                         ; 11C1B:  68
+b04_9c1c:   .db $6f                     ; 11C1C:  6f
+b04_9c1d:   .db $57                     ; 11C1D:  57
+b04_9c1e:   .db $80                     ; 11C1E:  80
+b04_9c1f:   .db $57                     ; 11C1F:  57
+b04_9c20:   .db $63                     ; 11C20:  63
+b04_9c21:   .db $53                     ; 11C21:  53
+b04_9c22:   .db $64                     ; 11C22:  64
+b04_9c23:   lsr $0c,x                   ; 11C23:  56 0c
+b04_9c25:   bpl $9c7e                   ; 11C25:  10 57
+b04_9c27:   .db $7f                     ; 11C27:  7f
+b04_9c28:   .db $5c                     ; 11C28:  5c
+b04_9c29:   .db $7b                     ; 11C29:  7b
+b04_9c2a:   .db $72                     ; 11C2A:  72
+b04_9c2b:   cmp $5c,x                   ; 11C2B:  d5 5c
+b04_9c2d:   .db $5c                     ; 11C2D:  5c
+b04_9c2e:   .db $5c                     ; 11C2E:  5c
+b04_9c2f:   .db $5c                     ; 11C2F:  5c
+b04_9c30:   lsr $5e5e,x                 ; 11C30:  5e 5e 5e
+b04_9c33:   .db $57                     ; 11C33:  57
+b04_9c34:   ror a                       ; 11C34:  6a
+b04_9c35:   .db $0c                     ; 11C35:  0c
+b04_9c36:   asl a                       ; 11C36:  0a
+b04_9c37:   .db $57                     ; 11C37:  57
+b04_9c38:   .db $57                     ; 11C38:  57
+b04_9c39:   .db $57                     ; 11C39:  57
+b04_9c3a:   .db $5c                     ; 11C3A:  5c
+b04_9c3b:   dex                         ; 11C3B:  ca
+b04_9c3c:   .db $64                     ; 11C3C:  64
+b04_9c3d:   adc $6c                     ; 11C3D:  65 6c
+b04_9c3f:   .db $6f                     ; 11C3F:  6f
+b04_9c40:   .db $57                     ; 11C40:  57
+b04_9c41:   .db $73                     ; 11C41:  73
+b04_9c42:   .db $5c                     ; 11C42:  5c
+b04_9c43:   .db $5c                     ; 11C43:  5c
+b04_9c44:   txa                         ; 11C44:  8a
+b04_9c45:   sty $8d91                   ; 11C45:  8c 91 8d
+b04_9c48:   .db $df                     ; 11C48:  df
+b04_9c49:   txa                         ; 11C49:  8a
+b04_9c4a:   sty $7a8d                   ; 11C4A:  8c 8d 7a
+b04_9c4d:   bvs $9ca6                   ; 11C4D:  70 57
+b04_9c4f:   eor $5793,y                 ; 11C4F:  59 93 57
+b04_9c52:   stx $5c                     ; 11C52:  86 5c
+b04_9c54:   .db $5c                     ; 11C54:  5c
+b04_9c55:   .db $5c                     ; 11C55:  5c
+b04_9c56:   .db $5c                     ; 11C56:  5c
+b04_9c57:   .db $5c                     ; 11C57:  5c
+b04_9c58:   .db $64                     ; 11C58:  64
+b04_9c59:   .db $97                     ; 11C59:  97
+b04_9c5a:   ldx $d7                     ; 11C5A:  a6 d7
+b04_9c5c:   .db $72                     ; 11C5C:  72
+b04_9c5d:   .db $72                     ; 11C5D:  72
+b04_9c5e:   .db $72                     ; 11C5E:  72
+b04_9c5f:   .db $72                     ; 11C5F:  72
+b04_9c60:   .db $72                     ; 11C60:  72
+b04_9c61:   .db $72                     ; 11C61:  72
+b04_9c62:   .db $72                     ; 11C62:  72
+b04_9c63:   .db $72                     ; 11C63:  72
+b04_9c64:   ldy $72                     ; 11C64:  a4 72
+b04_9c66:   .db $72                     ; 11C66:  72
+b04_9c67:   .db $72                     ; 11C67:  72
+b04_9c68:   .db $72                     ; 11C68:  72
+b04_9c69:   ror $64ac,x                 ; 11C69:  7e ac 64
+b04_9c6c:   .db $64                     ; 11C6C:  64
+b04_9c6d:   .db $57                     ; 11C6D:  57
+b04_9c6e:   .db $92                     ; 11C6E:  92
+b04_9c6f:   .db $5c                     ; 11C6F:  5c
+b04_9c70:   adc ($7c),y                 ; 11C70:  71 7c
+b04_9c72:   .db $72                     ; 11C72:  72
+b04_9c73:   .db $72                     ; 11C73:  72
+b04_9c74:   adc $57                     ; 11C74:  65 57
+b04_9c76:   .db $73                     ; 11C76:  73
+b04_9c77:   .db $74                     ; 11C77:  74
+b04_9c78:   txa                         ; 11C78:  8a
+b04_9c79:   sty $918c                   ; 11C79:  8c 8c 91
+b04_9c7c:   sta $110c                   ; 11C7C:  8d 0c 11
+b04_9c7f:   .db $5c                     ; 11C7F:  5c
+b04_9c80:   .db $5c                     ; 11C80:  5c
+b04_9c81:   .db $5c                     ; 11C81:  5c
+b04_9c82:   .db $5c                     ; 11C82:  5c
+b04_9c83:   .db $5c                     ; 11C83:  5c
+b04_9c84:   .db $5c                     ; 11C84:  5c
+b04_9c85:   .db $77                     ; 11C85:  77
+b04_9c86:   cpx #$64                    ; 11C86:  e0 64
+b04_9c88:   adc $82                     ; 11C88:  65 82
+b04_9c8a:   .db $82                     ; 11C8A:  82
+b04_9c8b:   .db $82                     ; 11C8B:  82
+b04_9c8c:   stx $5c74                   ; 11C8C:  8e 74 5c
+b04_9c8f:   .db $5c                     ; 11C8F:  5c
+b04_9c90:   lsr $0d,x                   ; 11C90:  56 0d
+b04_9c92:   php                         ; 11C92:  08
+b04_9c93:   .db $7b                     ; 11C93:  7b
+b04_9c94:   .db $72                     ; 11C94:  72
+b04_9c95:   .db $72                     ; 11C95:  72
+b04_9c96:   .db $72                     ; 11C96:  72
+b04_9c97:   .db $72                     ; 11C97:  72
+b04_9c98:   cmp $5c,x                   ; 11C98:  d5 5c
+b04_9c9a:   .db $5c                     ; 11C9A:  5c
+b04_9c9b:   .db $5c                     ; 11C9B:  5c
+b04_9c9c:   .db $5c                     ; 11C9C:  5c
+b04_9c9d:   .db $5c                     ; 11C9D:  5c
+b04_9c9e:   .db $9f                     ; 11C9E:  9f
+b04_9c9f:   lsr $576f,x                 ; 11C9F:  5e 6f 57
+b04_9ca2:   ror a                       ; 11CA2:  6a
+b04_9ca3:   .db $64                     ; 11CA3:  64
+b04_9ca4:   lda $0c0c,y                 ; 11CA4:  b9 0c 0c
+b04_9ca7:   .db $5c                     ; 11CA7:  5c
+b04_9ca8:   .db $5c                     ; 11CA8:  5c
+b04_9ca9:   .db $7b                     ; 11CA9:  7b
+b04_9caa:   .db $72                     ; 11CAA:  72
+b04_9cab:   .db $72                     ; 11CAB:  72
+b04_9cac:   .db $57                     ; 11CAC:  57
+b04_9cad:   .db $57                     ; 11CAD:  57
+b04_9cae:   .db $57                     ; 11CAE:  57
+b04_9caf:   .db $57                     ; 11CAF:  57
+b04_9cb0:   eor $5c5c,x                 ; 11CB0:  5d 5c 5c
+b04_9cb3:   ror $57,x                   ; 11CB3:  76 57
+b04_9cb5:   sbc ($57,x)                 ; 11CB5:  e1 57
+b04_9cb7:   .db $57                     ; 11CB7:  57
+b04_9cb8:   .db $57                     ; 11CB8:  57
+b04_9cb9:   .db $57                     ; 11CB9:  57
+b04_9cba:   .db $57                     ; 11CBA:  57
+b04_9cbb:   .db $57                     ; 11CBB:  57
+b04_9cbc:   .db $57                     ; 11CBC:  57
+b04_9cbd:   eor $6493,y                 ; 11CBD:  59 93 64
+b04_9cc0:   .db $57                     ; 11CC0:  57
+b04_9cc1:   .db $57                     ; 11CC1:  57
+b04_9cc2:   .db $5c                     ; 11CC2:  5c
+b04_9cc3:   .db $5c                     ; 11CC3:  5c
+b04_9cc4:   .db $57                     ; 11CC4:  57
+b04_9cc5:   .db $57                     ; 11CC5:  57
+b04_9cc6:   .db $57                     ; 11CC6:  57
+b04_9cc7:   .db $57                     ; 11CC7:  57
+b04_9cc8:   .db $5a                     ; 11CC8:  5a
+b04_9cc9:   .db $7f                     ; 11CC9:  7f
+b04_9cca:   eor $5759,y                 ; 11CCA:  59 59 57
+b04_9ccd:   .db $89                     ; 11CCD:  89
+b04_9cce:   lsr $82ae,x                 ; 11CCE:  5e ae 82
+b04_9cd1:   .db $af                     ; 11CD1:  af
+b04_9cd2:   .db $57                     ; 11CD2:  57
+b04_9cd3:   tya                         ; 11CD3:  98
+b04_9cd4:   eor $9359,y                 ; 11CD4:  59 59 93
+b04_9cd7:   .db $64                     ; 11CD7:  64
+b04_9cd8:   .db $64                     ; 11CD8:  64
+b04_9cd9:   .db $64                     ; 11CD9:  64
+b04_9cda:   .db $64                     ; 11CDA:  64
+b04_9cdb:   .db $64                     ; 11CDB:  64
+b04_9cdc:   cmp $a55a                   ; 11CDC:  cd 5a a5
+b04_9cdf:   .db $8f                     ; 11CDF:  8f
+b04_9ce0:   .db $57                     ; 11CE0:  57
+b04_9ce1:   tya                         ; 11CE1:  98
+b04_9ce2:   eor $6459,y                 ; 11CE2:  59 59 64
+b04_9ce5:   ror a                       ; 11CE5:  6a
+b04_9ce6:   adc $57                     ; 11CE6:  65 57
+b04_9ce8:   .db $57                     ; 11CE8:  57
+b04_9ce9:   .db $57                     ; 11CE9:  57
+b04_9cea:   eor $57e2,y                 ; 11CEA:  59 e2 57
+b04_9ced:   .db $93                     ; 11CED:  93
+b04_9cee:   .db $53                     ; 11CEE:  53
+b04_9cef:   .db $53                     ; 11CEF:  53
+b04_9cf0:   .db $53                     ; 11CF0:  53
+b04_9cf1:   .db $53                     ; 11CF1:  53
+b04_9cf2:   .db $53                     ; 11CF2:  53
+b04_9cf3:   .db $53                     ; 11CF3:  53
+b04_9cf4:   tay                         ; 11CF4:  a8
+b04_9cf5:   eor $a9,x                   ; 11CF5:  55 a9
+b04_9cf7:   .db $64                     ; 11CF7:  64
+b04_9cf8:   .db $53                     ; 11CF8:  53
+b04_9cf9:   .db $53                     ; 11CF9:  53
+b04_9cfa:   eor $53ac,y                 ; 11CFA:  59 ac 53
+b04_9cfd:   .db $53                     ; 11CFD:  53
+b04_9cfe:   tay                         ; 11CFE:  a8
+b04_9cff:   eor $64,x                   ; 11CFF:  55 64
+b04_9d01:   pla                         ; 11D01:  68
+b04_9d02:   .db $57                     ; 11D02:  57
+b04_9d03:   .db $57                     ; 11D03:  57
+b04_9d04:   tya                         ; 11D04:  98
+b04_9d05:   eor $6464,y                 ; 11D05:  59 64 64
+b04_9d08:   .db $64                     ; 11D08:  64
+b04_9d09:   .db $64                     ; 11D09:  64
+b04_9d0a:   .db $9c                     ; 11D0A:  9c
+b04_9d0b:   .db $64                     ; 11D0B:  64
+b04_9d0c:   eor ($64),y                 ; 11D0C:  51 64
+b04_9d0e:   eor ($64),y                 ; 11D0E:  51 64
+b04_9d10:   .db $64                     ; 11D10:  64
+b04_9d11:   eor ($64),y                 ; 11D11:  51 64
+b04_9d13:   eor ($54),y                 ; 11D13:  51 54
+b04_9d15:   .db $dc                     ; 11D15:  dc
+b04_9d16:   .db $64                     ; 11D16:  64
+b04_9d17:   .db $e3                     ; 11D17:  e3
+b04_9d18:   .db $53                     ; 11D18:  53
+b04_9d19:   .db $9c                     ; 11D19:  9c
+b04_9d1a:   eor ($64),y                 ; 11D1A:  51 64
+b04_9d1c:   .db $04                     ; 11D1C:  04
+b04_9d1d:   sta ($00,x)                 ; 11D1D:  81 00
+b04_9d1f:   brk                         ; 11D1F:  00
+b04_9d20:   .db $04                     ; 11D20:  04
+b04_9d21:   ldy #$a0                    ; 11D21:  a0 a0
+b04_9d23:   jsr $a800                   ; 11D23:  20 00 a8
+b04_9d26:   tax                         ; 11D26:  aa
+b04_9d27:   tax                         ; 11D27:  aa
+b04_9d28:   .db $af                     ; 11D28:  af
+b04_9d29:   tax                         ; 11D29:  aa
+b04_9d2a:   tax                         ; 11D2A:  aa
+b04_9d2b:   .db $22                     ; 11D2B:  22
+b04_9d2c:   .db $80                     ; 11D2C:  80
+b04_9d2d:   rol a                       ; 11D2D:  2a
+b04_9d2e:   asl a                       ; 11D2E:  0a
+b04_9d2f:   tax                         ; 11D2F:  aa
+b04_9d30:   tax                         ; 11D30:  aa
+b04_9d31:   tax                         ; 11D31:  aa
+b04_9d32:   tax                         ; 11D32:  aa
+b04_9d33:   jsr $0088                   ; 11D33:  20 88 00
+b04_9d36:   dey                         ; 11D36:  88
+b04_9d37:   tax                         ; 11D37:  aa
+b04_9d38:   tax                         ; 11D38:  aa
+b04_9d39:   .db $0f                     ; 11D39:  0f
+b04_9d3a:   txa                         ; 11D3A:  8a
+b04_9d3b:   .db $02                     ; 11D3B:  02
+b04_9d3c:   dey                         ; 11D3C:  88
+b04_9d3d:   tax                         ; 11D3D:  aa
+b04_9d3e:   tax                         ; 11D3E:  aa
+b04_9d3f:   ldx #$a0                    ; 11D3F:  a2 a0
+b04_9d41:   tay                         ; 11D41:  a8
+b04_9d42:   tax                         ; 11D42:  aa
+b04_9d43:   .db $22                     ; 11D43:  22
+b04_9d44:   dey                         ; 11D44:  88
+b04_9d45:   tax                         ; 11D45:  aa
+b04_9d46:   tax                         ; 11D46:  aa
+b04_9d47:   rol a                       ; 11D47:  2a
+b04_9d48:   .db $80                     ; 11D48:  80
+b04_9d49:   rol a                       ; 11D49:  2a
+b04_9d4a:   txa                         ; 11D4A:  8a
+b04_9d4b:   .db $22                     ; 11D4B:  22
+b04_9d4c:   brk                         ; 11D4C:  00
+b04_9d4d:   brk                         ; 11D4D:  00
+b04_9d4e:   tax                         ; 11D4E:  aa
+b04_9d4f:   sed                         ; 11D4F:  f8
+b04_9d50:   tax                         ; 11D50:  aa
+b04_9d51:   .db $02                     ; 11D51:  02
+b04_9d52:   .db $80                     ; 11D52:  80
+b04_9d53:   .db $22                     ; 11D53:  22
+b04_9d54:   .db $80                     ; 11D54:  80
+b04_9d55:   nop                         ; 11D55:  ea
+b04_9d56:   tsx                         ; 11D56:  ba
+b04_9d57:   ldx $00aa                   ; 11D57:  ae aa 00
+b04_9d5a:   brk                         ; 11D5A:  00
+b04_9d5b:   .db $02                     ; 11D5B:  02
+b04_9d5c:   .db $44                     ; 11D5C:  44
+b04_9d5d:   eor $55,x                   ; 11D5D:  55 55
+b04_9d5f:   eor $45,x                   ; 11D5F:  55 45
+b04_9d61:   brk                         ; 11D61:  00
+b04_9d62:   brk                         ; 11D62:  00
+b04_9d63:   .db $02                     ; 11D63:  02
+b04_9d64:   .db $80                     ; 11D64:  80
+b04_9d65:   ldy #$a0                    ; 11D65:  a0 a0
+b04_9d67:   jsr $a080                   ; 11D67:  20 80 a0
+b04_9d6a:   ldy #$00                    ; 11D6A:  a0 00
+b04_9d6c:   dey                         ; 11D6C:  88
+b04_9d6d:   tax                         ; 11D6D:  aa
+b04_9d6e:   tax                         ; 11D6E:  aa
+b04_9d6f:   tax                         ; 11D6F:  aa
+b04_9d70:   tax                         ; 11D70:  aa
+b04_9d71:   tax                         ; 11D71:  aa
+b04_9d72:   tax                         ; 11D72:  aa
+b04_9d73:   .db $02                     ; 11D73:  02
+b04_9d74:   dey                         ; 11D74:  88
+b04_9d75:   .db $2f                     ; 11D75:  2f
+b04_9d76:   .db $0b                     ; 11D76:  0b
+b04_9d77:   asl a                       ; 11D77:  0a
+b04_9d78:   asl a                       ; 11D78:  0a
+b04_9d79:   asl a                       ; 11D79:  0a
+b04_9d7a:   .db $02                     ; 11D7A:  02
+b04_9d7b:   bpl $9d7d                   ; 11D7B:  10 00
+b04_9d7d:   ldy #$a0                    ; 11D7D:  a0 a0
+b04_9d7f:   ldy #$00                    ; 11D7F:  a0 00
+b04_9d81:   brk                         ; 11D81:  00
+b04_9d82:   eor $11                     ; 11D82:  45 11
+b04_9d84:   dey                         ; 11D84:  88
+b04_9d85:   tax                         ; 11D85:  aa
+b04_9d86:   .db $af                     ; 11D86:  af
+b04_9d87:   tax                         ; 11D87:  aa
+b04_9d88:   tax                         ; 11D88:  aa
+b04_9d89:   tax                         ; 11D89:  aa
+b04_9d8a:   ldy #$00                    ; 11D8A:  a0 00
+b04_9d8c:   dey                         ; 11D8C:  88
+b04_9d8d:   tax                         ; 11D8D:  aa
+b04_9d8e:   tax                         ; 11D8E:  aa
+b04_9d8f:   tax                         ; 11D8F:  aa
+b04_9d90:   tax                         ; 11D90:  aa
+b04_9d91:   ldx $22ab                   ; 11D91:  ae ab 22
+b04_9d94:   .db $80                     ; 11D94:  80
+b04_9d95:   tax                         ; 11D95:  aa
+b04_9d96:   nop                         ; 11D96:  ea
+b04_9d97:   tax                         ; 11D97:  aa
+b04_9d98:   tax                         ; 11D98:  aa
+b04_9d99:   tax                         ; 11D99:  aa
+b04_9d9a:   tax                         ; 11D9A:  aa
+b04_9d9b:   .db $22                     ; 11D9B:  22
+b04_9d9c:   dey                         ; 11D9C:  88
+b04_9d9d:   tax                         ; 11D9D:  aa
+b04_9d9e:   tax                         ; 11D9E:  aa
+b04_9d9f:   tax                         ; 11D9F:  aa
+b04_9da0:   tax                         ; 11DA0:  aa
+b04_9da1:   tax                         ; 11DA1:  aa
+b04_9da2:   tax                         ; 11DA2:  aa
+b04_9da3:   .db $22                     ; 11DA3:  22
+b04_9da4:   dey                         ; 11DA4:  88
+b04_9da5:   tax                         ; 11DA5:  aa
+b04_9da6:   tax                         ; 11DA6:  aa
+b04_9da7:   tax                         ; 11DA7:  aa
+b04_9da8:   .db $af                     ; 11DA8:  af
+b04_9da9:   tax                         ; 11DA9:  aa
+b04_9daa:   tax                         ; 11DAA:  aa
+b04_9dab:   .db $02                     ; 11DAB:  02
+b04_9dac:   dey                         ; 11DAC:  88
+b04_9dad:   tax                         ; 11DAD:  aa
+b04_9dae:   php                         ; 11DAE:  08
+b04_9daf:   asl a                       ; 11DAF:  0a
+b04_9db0:   php                         ; 11DB0:  08
+b04_9db1:   rti                         ; 11DB1:  40
+b04_9db2:   bvc $9dc4                   ; 11DB2:  50 10
+b04_9db4:   brk                         ; 11DB4:  00
+b04_9db5:   brk                         ; 11DB5:  00
+b04_9db6:   brk                         ; 11DB6:  00
+b04_9db7:   brk                         ; 11DB7:  00
+b04_9db8:   brk                         ; 11DB8:  00
+b04_9db9:   eor $55,x                   ; 11DB9:  55 55
+b04_9dbb:   ora ($00),y                 ; 11DBB:  11 00
+b04_9dbd:   tay                         ; 11DBD:  a8
+b04_9dbe:   tax                         ; 11DBE:  aa
+b04_9dbf:   tax                         ; 11DBF:  aa
+b04_9dc0:   nop                         ; 11DC0:  ea
+b04_9dc1:   tsx                         ; 11DC1:  ba
+b04_9dc2:   tax                         ; 11DC2:  aa
+b04_9dc3:   .db $22                     ; 11DC3:  22
+b04_9dc4:   .db $80                     ; 11DC4:  80
+b04_9dc5:   rol a                       ; 11DC5:  2a
+b04_9dc6:   asl a                       ; 11DC6:  0a
+b04_9dc7:   tax                         ; 11DC7:  aa
+b04_9dc8:   tax                         ; 11DC8:  aa
+b04_9dc9:   tax                         ; 11DC9:  aa
+b04_9dca:   tax                         ; 11DCA:  aa
+b04_9dcb:   .db $22                     ; 11DCB:  22
+b04_9dcc:   dey                         ; 11DCC:  88
+b04_9dcd:   .db $02                     ; 11DCD:  02
+b04_9dce:   brk                         ; 11DCE:  00
+b04_9dcf:   tax                         ; 11DCF:  aa
+b04_9dd0:   tax                         ; 11DD0:  aa
+b04_9dd1:   nop                         ; 11DD1:  ea
+b04_9dd2:   .db $fa                     ; 11DD2:  fa
+b04_9dd3:   .db $22                     ; 11DD3:  22
+b04_9dd4:   dey                         ; 11DD4:  88
+b04_9dd5:   .db $22                     ; 11DD5:  22
+b04_9dd6:   brk                         ; 11DD6:  00
+b04_9dd7:   asl a                       ; 11DD7:  0a
+b04_9dd8:   asl a                       ; 11DD8:  0a
+b04_9dd9:   .db $42                     ; 11DD9:  42
+b04_9dda:   bpl $9ddc                   ; 11DDA:  10 00
+b04_9ddc:   .db $80                     ; 11DDC:  80
+b04_9ddd:   jsr $0105                   ; 11DDD:  20 05 01
+b04_9de0:   jsr $8a08                   ; 11DE0:  20 08 8a
+b04_9de3:   .db $22                     ; 11DE3:  22
+b04_9de4:   php                         ; 11DE4:  08
+b04_9de5:   tax                         ; 11DE5:  aa
+b04_9de6:   tax                         ; 11DE6:  aa
+b04_9de7:   .db $22                     ; 11DE7:  22
+b04_9de8:   .db $80                     ; 11DE8:  80
+b04_9de9:   ldy #$2a                    ; 11DE9:  a0 2a
+b04_9deb:   .db $02                     ; 11DEB:  02
+b04_9dec:   brk                         ; 11DEC:  00
+b04_9ded:   brk                         ; 11DED:  00
+b04_9dee:   php                         ; 11DEE:  08
+b04_9def:   txa                         ; 11DEF:  8a
+b04_9df0:   tax                         ; 11DF0:  aa
+b04_9df1:   tax                         ; 11DF1:  aa
+b04_9df2:   .db $22                     ; 11DF2:  22
+b04_9df3:   brk                         ; 11DF3:  00
+b04_9df4:   dey                         ; 11DF4:  88
+b04_9df5:   .db $02                     ; 11DF5:  02
+b04_9df6:   tay                         ; 11DF6:  a8
+b04_9df7:   tax                         ; 11DF7:  aa
+b04_9df8:   tax                         ; 11DF8:  aa
+b04_9df9:   tax                         ; 11DF9:  aa
+b04_9dfa:   tax                         ; 11DFA:  aa
+b04_9dfb:   brk                         ; 11DFB:  00
+b04_9dfc:   brk                         ; 11DFC:  00
+b04_9dfd:   dey                         ; 11DFD:  88
+b04_9dfe:   tax                         ; 11DFE:  aa
+b04_9dff:   tax                         ; 11DFF:  aa
+b04_9e00:   tax                         ; 11E00:  aa
+b04_9e01:   tax                         ; 11E01:  aa
+b04_9e02:   tax                         ; 11E02:  aa
+b04_9e03:   .db $22                     ; 11E03:  22
+b04_9e04:   .db $80                     ; 11E04:  80
+b04_9e05:   brk                         ; 11E05:  00
+b04_9e06:   brk                         ; 11E06:  00
+b04_9e07:   brk                         ; 11E07:  00
+b04_9e08:   brk                         ; 11E08:  00
+b04_9e09:   php                         ; 11E09:  08
+b04_9e0a:   asl a                       ; 11E0A:  0a
+b04_9e0b:   .db $02                     ; 11E0B:  02
+b04_9e0c:   php                         ; 11E0C:  08
+b04_9e0d:   .db $80                     ; 11E0D:  80
+b04_9e0e:   tay                         ; 11E0E:  a8
+b04_9e0f:   tax                         ; 11E0F:  aa
+b04_9e10:   tax                         ; 11E10:  aa
+b04_9e11:   ldx #$00                    ; 11E11:  a2 00
+b04_9e13:   jsr $8840                   ; 11E13:  20 40 88
+b04_9e16:   asl a                       ; 11E16:  0a
+b04_9e17:   rti                         ; 11E17:  40
+b04_9e18:   bpl $9e5c                   ; 11E18:  10 42
+b04_9e1a:   clc                         ; 11E1A:  18
+b04_9e1b:   .db $22                     ; 11E1B:  22
+b04_9e1c:   brk                         ; 11E1C:  00
+b04_9e1d:   .db $80                     ; 11E1D:  80
+b04_9e1e:   ldy #$a0                    ; 11E1E:  a0 a0
+b04_9e20:   php                         ; 11E20:  08
+b04_9e21:   asl a                       ; 11E21:  0a
+b04_9e22:   asl a                       ; 11E22:  0a
+b04_9e23:   .db $02                     ; 11E23:  02
+b04_9e24:   rti                         ; 11E24:  40
+b04_9e25:   brk                         ; 11E25:  00
+b04_9e26:   tax                         ; 11E26:  aa
+b04_9e27:   tax                         ; 11E27:  aa
+b04_9e28:   tax                         ; 11E28:  aa
+b04_9e29:   .db $22                     ; 11E29:  22
+b04_9e2a:   brk                         ; 11E2A:  00
+b04_9e2b:   jsr $a800                   ; 11E2B:  20 00 a8
+b04_9e2e:   ldx $abaf                   ; 11E2E:  ae af ab
+b04_9e31:   brk                         ; 11E31:  00
+b04_9e32:   tax                         ; 11E32:  aa
+b04_9e33:   .db $22                     ; 11E33:  22
+b04_9e34:   brk                         ; 11E34:  00
+b04_9e35:   php                         ; 11E35:  08
+b04_9e36:   .db $02                     ; 11E36:  02
+b04_9e37:   bvc $9e89                   ; 11E37:  50 50
+b04_9e39:   bvc $9e7d                   ; 11E39:  50 42
+b04_9e3b:   bpl $9e45                   ; 11E3B:  10 08
+b04_9e3d:   .db $04                     ; 11E3D:  04
+b04_9e3e:   brk                         ; 11E3E:  00
+b04_9e3f:   ora $07,x                   ; 11E3F:  15 07
+b04_9e41:   ora ($16,x)                 ; 11E41:  01 16
+b04_9e43:   asl $0702                   ; 11E43:  0e 02 07
+b04_9e46:   .db $07                     ; 11E46:  07
+b04_9e47:   .db $03                     ; 11E47:  03
+b04_9e48:   .db $07                     ; 11E48:  07
+b04_9e49:   asl a                       ; 11E49:  0a
+b04_9e4a:   ora $12                     ; 11E4A:  05 12
+b04_9e4c:   .db $12                     ; 11E4C:  12
+b04_9e4d:   asl $09                     ; 11E4D:  06 09
+b04_9e4f:   .db $13                     ; 11E4F:  13
+b04_9e50:   .db $07                     ; 11E50:  07
+b04_9e51:   asl $0d                     ; 11E51:  06 0d
+b04_9e53:   php                         ; 11E53:  08
+b04_9e54:   bpl $9e61                   ; 11E54:  10 0b
+b04_9e56:   .db $0f                     ; 11E56:  0f
+b04_9e57:   .db $07                     ; 11E57:  07
+b04_9e58:   bpl $9e6a                   ; 11E58:  10 10
+b04_9e5a:   .db $ff                     ; 11E5A:  ff
+b04_9e5b:   brk                         ; 11E5B:  00
+b04_9e5c:   brk                         ; 11E5C:  00
+b04_9e5d:   brk                         ; 11E5D:  00
+b04_9e5e:   asl $04,x                   ; 11E5E:  16 04
+b04_9e60:   .db $03                     ; 11E60:  03
+b04_9e61:   ora $0406                   ; 11E61:  0d 06 04
+b04_9e64:   asl $07,x                   ; 11E64:  16 07
+b04_9e66:   ora $16                     ; 11E66:  05 16
+b04_9e68:   asl a                       ; 11E68:  0a
+b04_9e69:   php                         ; 11E69:  08
+b04_9e6a:   .db $03                     ; 11E6A:  03
+b04_9e6b:   .db $13                     ; 11E6B:  13
+b04_9e6c:   ora #$0d                    ; 11E6C:  09 0d
+b04_9e6e:   ora $080a                   ; 11E6E:  0d 0a 08
+b04_9e71:   bpl $9e7e                   ; 11E71:  10 0b
+b04_9e73:   .db $0c                     ; 11E73:  0c
+b04_9e74:   .db $13                     ; 11E74:  13
+b04_9e75:   .db $0c                     ; 11E75:  0c
+b04_9e76:   ora $09                     ; 11E76:  05 09
+b04_9e78:   ora $0b02                   ; 11E78:  0d 02 0b
+b04_9e7b:   asl $0d17                   ; 11E7B:  0e 17 0d
+b04_9e7e:   bpl $9e7f                   ; 11E7E:  10 ff
+b04_9e80:   asl $04,x                   ; 11E80:  16 04
+b04_9e82:   brk                         ; 11E82:  00
+b04_9e83:   ora $0a,x                   ; 11E83:  15 0a
+b04_9e85:   ora ($16,x)                 ; 11E85:  01 16
+b04_9e87:   ora $1502                   ; 11E87:  0d 02 15
+b04_9e8a:   bpl $9e8f                   ; 11E8A:  10 03
+b04_9e8c:   ora $040c                   ; 11E8C:  0d 0c 04
+b04_9e8f:   .db $0c                     ; 11E8F:  0c
+b04_9e90:   ora ($05),y                 ; 11E90:  11 05
+b04_9e92:   .db $04                     ; 11E92:  04
+b04_9e93:   ora $0206                   ; 11E93:  0d 06 02
+b04_9e96:   .db $12                     ; 11E96:  12
+b04_9e97:   .db $07                     ; 11E97:  07
+b04_9e98:   .db $02                     ; 11E98:  02
+b04_9e99:   .db $0f                     ; 11E99:  0f
+b04_9e9a:   php                         ; 11E9A:  08
+b04_9e9b:   .db $02                     ; 11E9B:  02
+b04_9e9c:   asl a                       ; 11E9C:  0a
+b04_9e9d:   ora #$ff                    ; 11E9D:  09 ff
+b04_9e9f:   brk                         ; 11E9F:  00
+b04_9ea0:   brk                         ; 11EA0:  00
+b04_9ea1:   brk                         ; 11EA1:  00
+b04_9ea2:   asl $0a,x                   ; 11EA2:  16 0a
+b04_9ea4:   ora #$15                    ; 11EA4:  09 15
+b04_9ea6:   .db $13                     ; 11EA6:  13
+b04_9ea7:   ora $0d0f                   ; 11EA7:  0d 0f 0d
+b04_9eaa:   asl $050d                   ; 11EAA:  0e 0d 05
+b04_9ead:   .db $0f                     ; 11EAD:  0f
+b04_9eae:   ora $1008                   ; 11EAE:  0d 08 10
+b04_9eb1:   asl $0b                     ; 11EB1:  06 0b
+b04_9eb3:   ora ($07),y                 ; 11EB3:  11 07
+b04_9eb5:   .db $0f                     ; 11EB5:  0f
+b04_9eb6:   .db $12                     ; 11EB6:  12
+b04_9eb7:   .db $04                     ; 11EB7:  04
+b04_9eb8:   .db $07                     ; 11EB8:  07
+b04_9eb9:   .db $14                     ; 11EB9:  14
+b04_9eba:   .db $ff                     ; 11EBA:  ff
+b04_9ebb:   brk                         ; 11EBB:  00
+b04_9ebc:   brk                         ; 11EBC:  00
+b04_9ebd:   brk                         ; 11EBD:  00
+b04_9ebe:   brk                         ; 11EBE:  00
+b04_9ebf:   brk                         ; 11EBF:  00
+b04_9ec0:   brk                         ; 11EC0:  00
+b04_9ec1:   brk                         ; 11EC1:  00
+b04_9ec2:   brk                         ; 11EC2:  00
+b04_9ec3:   brk                         ; 11EC3:  00
+b04_9ec4:   asl $05,x                   ; 11EC4:  16 05
+b04_9ec6:   asl $15                     ; 11EC6:  06 15
+b04_9ec8:   .db $0b                     ; 11EC8:  0b
+b04_9ec9:   .db $07                     ; 11EC9:  07
+b04_9eca:   .db $14                     ; 11ECA:  14
+b04_9ecb:   .db $07                     ; 11ECB:  07
+b04_9ecc:   php                         ; 11ECC:  08
+b04_9ecd:   asl a                       ; 11ECD:  0a
+b04_9ece:   ora $09                     ; 11ECE:  05 09
+b04_9ed0:   ora $0a0d                   ; 11ED0:  0d 0d 0a
+b04_9ed3:   .db $0c                     ; 11ED3:  0c
+b04_9ed4:   asl a                       ; 11ED4:  0a
+b04_9ed5:   .db $0b                     ; 11ED5:  0b
+b04_9ed6:   asl a                       ; 11ED6:  0a
+b04_9ed7:   .db $12                     ; 11ED7:  12
+b04_9ed8:   .db $0c                     ; 11ED8:  0c
+b04_9ed9:   ora $0f                     ; 11ED9:  05 0f
+b04_9edb:   ora $0702                   ; 11EDB:  0d 02 07
+b04_9ede:   asl $00ff                   ; 11EDE:  0e ff 00
+b04_9ee1:   brk                         ; 11EE1:  00
+b04_9ee2:   brk                         ; 11EE2:  00
+b04_9ee3:   brk                         ; 11EE3:  00
+b04_9ee4:   brk                         ; 11EE4:  00
+b04_9ee5:   brk                         ; 11EE5:  00
+b04_9ee6:   .db $17                     ; 11EE6:  17
+b04_9ee7:   php                         ; 11EE7:  08
+b04_9ee8:   asl $060e                   ; 11EE8:  0e 0e 06
+b04_9eeb:   ora ($0f),y                 ; 11EEB:  11 0f
+b04_9eed:   asl a                       ; 11EED:  0a
+b04_9eee:   .db $12                     ; 11EEE:  12
+b04_9eef:   .db $13                     ; 11EEF:  13
+b04_9ef0:   bpl $9f05                   ; 11EF0:  10 13
+b04_9ef2:   ora $05                     ; 11EF2:  05 05
+b04_9ef4:   ora $06,x                   ; 11EF4:  15 06
+b04_9ef6:   asl a                       ; 11EF6:  0a
+b04_9ef7:   asl $0a,x                   ; 11EF7:  16 0a
+b04_9ef9:   bpl $9f12                   ; 11EF9:  10 17
+b04_9efb:   .db $07                     ; 11EFB:  07
+b04_9efc:   ora $0518                   ; 11EFC:  0d 18 05
+b04_9eff:   .db $13                     ; 11EFF:  13
+b04_9f00:   ora $00ff,y                 ; 11F00:  19 ff 00
+b04_9f03:   brk                         ; 11F03:  00
+b04_9f04:   brk                         ; 11F04:  00
+b04_9f05:   brk                         ; 11F05:  00
+b04_9f06:   brk                         ; 11F06:  00
+b04_9f07:   brk                         ; 11F07:  00
+b04_9f08:   .db $14                     ; 11F08:  14
+b04_9f09:   .db $13                     ; 11F09:  13
+b04_9f0a:   ora $0b12,y                 ; 11F0A:  19 12 0b
+b04_9f0d:   .db $1a                     ; 11F0D:  1a
+b04_9f0e:   .db $13                     ; 11F0E:  13
+b04_9f0f:   ora ($1b),y                 ; 11F0F:  11 1b
+b04_9f11:   ora $07                     ; 11F11:  05 07
+b04_9f13:   .db $1c                     ; 11F13:  1c
+b04_9f14:   ora $0a                     ; 11F14:  05 0a
+b04_9f16:   ora $0e10,x                 ; 11F16:  1d 10 0e
+b04_9f19:   asl $100a,x                 ; 11F19:  1e 0a 10
+b04_9f1c:   .db $1f                     ; 11F1C:  1f
+b04_9f1d:   .db $07                     ; 11F1D:  07
+b04_9f1e:   ora $0820                   ; 11F1E:  0d 20 08
+b04_9f21:   .db $13                     ; 11F21:  13
+b04_9f22:   and ($ff,x)                 ; 11F22:  21 ff
+b04_9f24:   brk                         ; 11F24:  00
+b04_9f25:   brk                         ; 11F25:  00
+b04_9f26:   brk                         ; 11F26:  00
+b04_9f27:   brk                         ; 11F27:  00
+b04_9f28:   brk                         ; 11F28:  00
+b04_9f29:   brk                         ; 11F29:  00
+b04_9f2a:   clc                         ; 11F2A:  18
+b04_9f2b:   ora $1c                     ; 11F2B:  05 1c
+b04_9f2d:   clc                         ; 11F2D:  18
+b04_9f2e:   php                         ; 11F2E:  08
+b04_9f2f:   ora $050f,x                 ; 11F2F:  1d 0f 05
+b04_9f32:   .db $22                     ; 11F32:  22
+b04_9f33:   .db $0f                     ; 11F33:  0f
+b04_9f34:   php                         ; 11F34:  08
+b04_9f35:   .db $23                     ; 11F35:  23
+b04_9f36:   asl $05                     ; 11F36:  06 05
+b04_9f38:   bit $06                     ; 11F38:  24 06
+b04_9f3a:   php                         ; 11F3A:  08
+b04_9f3b:   and $0e                     ; 11F3B:  25 0e
+b04_9f3d:   .db $0c                     ; 11F3D:  0c
+b04_9f3e:   .db $27                     ; 11F3E:  27
+b04_9f3f:   ora ($0e),y                 ; 11F3F:  11 0e
+b04_9f41:   plp                         ; 11F41:  28
+b04_9f42:   asl $0e                     ; 11F42:  06 0e
+b04_9f44:   and #$0c                    ; 11F44:  29 0c
+b04_9f46:   bpl $9f72                   ; 11F46:  10 2a
+b04_9f48:   ora $12                     ; 11F48:  05 12
+b04_9f4a:   .db $2b                     ; 11F4A:  2b
+b04_9f4b:   .db $ff                     ; 11F4B:  ff
+b04_9f4c:   ora ($05),y                 ; 11F4C:  11 05
+b04_9f4e:   rol $17                     ; 11F4E:  26 17
+b04_9f50:   .db $0c                     ; 11F50:  0c
+b04_9f51:   and #$17                    ; 11F51:  29 17
+b04_9f53:   bpl $9f80                   ; 11F53:  10 2b
+b04_9f55:   ora $2c08                   ; 11F55:  0d 08 2c
+b04_9f58:   .db $04                     ; 11F58:  04
+b04_9f59:   .db $07                     ; 11F59:  07
+b04_9f5a:   and $0b0e                   ; 11F5A:  2d 0e 0b
+b04_9f5d:   rol $0c06                   ; 11F5D:  2e 06 0c
+b04_9f60:   .db $2f                     ; 11F60:  2f
+b04_9f61:   .db $0b                     ; 11F61:  0b
+b04_9f62:   .db $0f                     ; 11F62:  0f
+b04_9f63:   bmi $9f68                   ; 11F63:  30 03
+b04_9f65:   bpl $9f98                   ; 11F65:  10 31
+b04_9f67:   .db $ff                     ; 11F67:  ff
+b04_9f68:   brk                         ; 11F68:  00
+b04_9f69:   brk                         ; 11F69:  00
+b04_9f6a:   brk                         ; 11F6A:  00
+b04_9f6b:   brk                         ; 11F6B:  00
+b04_9f6c:   brk                         ; 11F6C:  00
+b04_9f6d:   brk                         ; 11F6D:  00
+b04_9f6e:   .db $3f                     ; 11F6E:  3f
+b04_9f6f:   adc $b679,x                 ; 11F6F:  7d 79 b6
+b04_9f72:   .db $cf                     ; 11F72:  cf
+b04_9f73:   .db $fb                     ; 11F73:  fb
+b04_9f74:   .db $f3                     ; 11F74:  f3
+b04_9f75:   adc $0200                   ; 11F75:  6d 00 02
+b04_9f78:   stx $49                     ; 11F78:  86 49
+b04_9f7a:   bmi $9f80                   ; 11F7A:  30 04
+b04_9f7c:   .db $0c                     ; 11F7C:  0c
+b04_9f7d:   .db $92                     ; 11F7D:  92
+b04_9f7e:   .db $ff                     ; 11F7E:  ff
+b04_9f7f:   .db $f7                     ; 11F7F:  f7
+b04_9f80:   .db $e7                     ; 11F80:  e7
+b04_9f81:   .db $db                     ; 11F81:  db
+b04_9f82:   .db $3c                     ; 11F82:  3c
+b04_9f83:   .db $ef                     ; 11F83:  ef
+b04_9f84:   .db $cf                     ; 11F84:  cf
+b04_9f85:   ldx $00,y                   ; 11F85:  b6 00
+b04_9f87:   php                         ; 11F87:  08
+b04_9f88:   clc                         ; 11F88:  18
+b04_9f89:   bit $c3                     ; 11F89:  24 c3
+b04_9f8b:   bpl $9fbd                   ; 11F8B:  10 30
+b04_9f8d:   eor #$9e                    ; 11F8D:  49 9e
+b04_9f8f:   .db $f7                     ; 11F8F:  f7
+b04_9f90:   .db $e7                     ; 11F90:  e7
+b04_9f91:   .db $db                     ; 11F91:  db
+b04_9f92:   .db $3c                     ; 11F92:  3c
+b04_9f93:   .db $ef                     ; 11F93:  ef
+b04_9f94:   .db $cf                     ; 11F94:  cf
+b04_9f95:   ldx $61,y                   ; 11F95:  b6 61
+b04_9f97:   php                         ; 11F97:  08
+b04_9f98:   clc                         ; 11F98:  18
+b04_9f99:   bit $c3                     ; 11F99:  24 c3
+b04_9f9b:   bpl $9fcd                   ; 11F9B:  10 30
+b04_9f9d:   eor #$79                    ; 11F9D:  49 79
+b04_9f9f:   .db $df                     ; 11F9F:  df
+b04_9fa0:   .db $9e                     ; 11FA0:  9e
+b04_9fa1:   adc $bef3                   ; 11FA1:  6d f3 be
+b04_9fa4:   .db $3c                     ; 11FA4:  3c
+b04_9fa5:   .db $db                     ; 11FA5:  db
+b04_9fa6:   stx $20                     ; 11FA6:  86 20
+b04_9fa8:   adc ($92,x)                 ; 11FA8:  61 92
+b04_9faa:   .db $0c                     ; 11FAA:  0c
+b04_9fab:   eor ($c3,x)                 ; 11FAB:  41 c3
+b04_9fad:   bit $ff                     ; 11FAD:  24 ff
+b04_9faf:   .db $df                     ; 11FAF:  df
+b04_9fb0:   .db $9e                     ; 11FB0:  9e
+b04_9fb1:   adc $bef3                   ; 11FB1:  6d f3 be
+b04_9fb4:   .db $3c                     ; 11FB4:  3c
+b04_9fb5:   .db $db                     ; 11FB5:  db
+b04_9fb6:   brk                         ; 11FB6:  00
+b04_9fb7:   jsr $9261                   ; 11FB7:  20 61 92
+b04_9fba:   .db $0c                     ; 11FBA:  0c
+b04_9fbb:   eor ($c3,x)                 ; 11FBB:  41 c3
+b04_9fbd:   bit $fc                     ; 11FBD:  24 fc
+b04_9fbf:   .db $7c                     ; 11FBF:  7c
+b04_9fc0:   adc $cfb6,y                 ; 11FC0:  79 b6 cf
+b04_9fc3:   .db $fb                     ; 11FC3:  fb
+b04_9fc4:   .db $f3                     ; 11FC4:  f3
+b04_9fc5:   adc $8200                   ; 11FC5:  6d 00 82
+b04_9fc8:   stx $49                     ; 11FC8:  86 49
+b04_9fca:   bmi $9fd0                   ; 11FCA:  30 04
+b04_9fcc:   .db $0c                     ; 11FCC:  0c
+b04_9fcd:   .db $92                     ; 11FCD:  92
+b04_9fce:   .db $e7                     ; 11FCE:  e7
+b04_9fcf:   adc $b679,x                 ; 11FCF:  7d 79 b6
+b04_9fd2:   .db $cf                     ; 11FD2:  cf
+b04_9fd3:   .db $fb                     ; 11FD3:  fb
+b04_9fd4:   .db $f3                     ; 11FD4:  f3
+b04_9fd5:   adc $8218                   ; 11FD5:  6d 18 82
+b04_9fd8:   stx $49                     ; 11FD8:  86 49
+b04_9fda:   bmi $9fe0                   ; 11FDA:  30 04
+b04_9fdc:   .db $0c                     ; 11FDC:  0c
+b04_9fdd:   .db $92                     ; 11FDD:  92
+b04_9fde:   adc $9edf,y                 ; 11FDE:  79 df 9e
+b04_9fe1:   adc $bef3                   ; 11FE1:  6d f3 be
+b04_9fe4:   ldy $865b,x                 ; 11FE4:  bc 5b 86
+b04_9fe7:   jsr $9261                   ; 11FE7:  20 61 92
+b04_9fea:   .db $0c                     ; 11FEA:  0c
+b04_9feb:   eor ($43,x)                 ; 11FEB:  41 43
+b04_9fed:   ldy $e7                     ; 11FED:  a4 e7
+b04_9fef:   adc $b679,x                 ; 11FEF:  7d 79 b6
+b04_9ff2:   .db $cf                     ; 11FF2:  cf
+b04_9ff3:   .db $fb                     ; 11FF3:  fb
+b04_9ff4:   .db $73                     ; 11FF4:  73
+b04_9ff5:   .db $3f                     ; 11FF5:  3f
+b04_9ff6:   clc                         ; 11FF6:  18
+b04_9ff7:   .db $82                     ; 11FF7:  82
+b04_9ff8:   stx $49                     ; 11FF8:  86 49
+b04_9ffa:   bmi $a000                   ; 11FFA:  30 04
+b04_9ffc:   .db $0c                     ; 11FFC:  0c
+b04_9ffd:   brk                         ; 11FFD:  00
+b04_9ffe:   .db $9e                     ; 11FFE:  9e
+b04_9fff:   .db $f7                     ; 11FFF:  f7
+b04_a000:   .db $e7                     ; 12000:  e7
+b04_a001:   .db $db                     ; 12001:  db
+b04_a002:   .db $3c                     ; 12002:  3c
+b04_a003:   .db $ef                     ; 12003:  ef
+b04_a004:   .db $cf                     ; 12004:  cf
+b04_a005:   .db $ff                     ; 12005:  ff
+b04_a006:   adc ($08,x)                 ; 12006:  61 08
+b04_a008:   clc                         ; 12008:  18
+b04_a009:   bit $c3                     ; 12009:  24 c3
+b04_a00b:   bpl $a03d                   ; 1200B:  10 30
+b04_a00d:   brk                         ; 1200D:  00
+b04_a00e:   adc $9edf,y                 ; 1200E:  79 df 9e
+b04_a011:   adc $bef3                   ; 12011:  6d f3 be
+b04_a014:   .db $3c                     ; 12014:  3c
+b04_a015:   .db $ff                     ; 12015:  ff
+b04_a016:   stx $20                     ; 12016:  86 20
+b04_a018:   adc ($92,x)                 ; 12018:  61 92
+b04_a01a:   .db $0c                     ; 1201A:  0c
+b04_a01b:   eor ($c3,x)                 ; 1201B:  41 c3
+b04_a01d:   brk                         ; 1201D:  00
+b04_a01e:   .db $e7                     ; 1201E:  e7
+b04_a01f:   adc $b679,x                 ; 1201F:  7d 79 b6
+b04_a022:   .db $cf                     ; 12022:  cf
+b04_a023:   .db $fb                     ; 12023:  fb
+b04_a024:   .db $f2                     ; 12024:  f2
+b04_a025:   .db $fc                     ; 12025:  fc
+b04_a026:   clc                         ; 12026:  18
+b04_a027:   .db $82                     ; 12027:  82
+b04_a028:   stx $49                     ; 12028:  86 49
+b04_a02a:   bmi $a030                   ; 1202A:  30 04
+b04_a02c:   .db $0c                     ; 1202C:  0c
+b04_a02d:   brk                         ; 1202D:  00
+b04_a02e:   brk                         ; 1202E:  00
+b04_a02f:   brk                         ; 1202F:  00
+b04_a030:   brk                         ; 12030:  00
+b04_a031:   brk                         ; 12031:  00
+b04_a032:   brk                         ; 12032:  00
+b04_a033:   ora ($03,x)                 ; 12033:  01 03
+b04_a035:   .db $0f                     ; 12035:  0f
+b04_a036:   .db $3f                     ; 12036:  3f
+b04_a037:   .db $7f                     ; 12037:  7f
+b04_a038:   .db $ff                     ; 12038:  ff
+b04_a039:   .db $ff                     ; 12039:  ff
+b04_a03a:   .db $ff                     ; 1203A:  ff
+b04_a03b:   inc $f0fc,x                 ; 1203B:  fe fc f0
+b04_a03e:   brk                         ; 1203E:  00
+b04_a03f:   jsr $aa7f                   ; 1203F:  20 7f aa
+b04_a042:   .db $ff                     ; 12042:  ff
+b04_a043:   .db $ff                     ; 12043:  ff
+b04_a044:   .db $ff                     ; 12044:  ff
+b04_a045:   .db $ff                     ; 12045:  ff
+b04_a046:   .db $9f                     ; 12046:  9f
+b04_a047:   .db $af                     ; 12047:  af
+b04_a048:   .db $80                     ; 12048:  80
+b04_a049:   brk                         ; 12049:  00
+b04_a04a:   eor $aa,x                   ; 1204A:  55 aa
+b04_a04c:   tax                         ; 1204C:  aa
+b04_a04d:   brk                         ; 1204D:  00
+b04_a04e:   brk                         ; 1204E:  00
+b04_a04f:   brk                         ; 1204F:  00
+b04_a050:   brk                         ; 12050:  00
+b04_a051:   .db $03                     ; 12051:  03
+b04_a052:   .db $07                     ; 12052:  07
+b04_a053:   .db $1f                     ; 12053:  1f
+b04_a054:   brk                         ; 12054:  00
+b04_a055:   .db $02                     ; 12055:  02
+b04_a056:   sed                         ; 12056:  f8
+b04_a057:   inc $fefe,x                 ; 12057:  fe fe fe
+b04_a05a:   sbc $f0e0,x                 ; 1205A:  fd e0 f0
+b04_a05d:   .db $fa                     ; 1205D:  fa
+b04_a05e:   brk                         ; 1205E:  00
+b04_a05f:   .db $03                     ; 1205F:  03
+b04_a060:   .db $f7                     ; 12060:  f7
+b04_a061:   sed                         ; 12061:  f8
+b04_a062:   .db $ff                     ; 12062:  ff
+b04_a063:   .db $ff                     ; 12063:  ff
+b04_a064:   brk                         ; 12064:  00
+b04_a065:   .db $44                     ; 12065:  44
+b04_a066:   brk                         ; 12066:  00
+b04_a067:   .db $ab                     ; 12067:  ab
+b04_a068:   .db $f7                     ; 12068:  f7
+b04_a069:   tay                         ; 12069:  a8
+b04_a06a:   .db $5f                     ; 1206A:  5f
+b04_a06b:   brk                         ; 1206B:  00
+b04_a06c:   brk                         ; 1206C:  00
+b04_a06d:   ror $0200                   ; 1206D:  6e 00 02
+b04_a070:   .db $ff                     ; 12070:  ff
+b04_a071:   tax                         ; 12071:  aa
+b04_a072:   .db $ff                     ; 12072:  ff
+b04_a073:   .db $ff                     ; 12073:  ff
+b04_a074:   .db $ff                     ; 12074:  ff
+b04_a075:   .db $ff                     ; 12075:  ff
+b04_a076:   .db $fc                     ; 12076:  fc
+b04_a077:   .db $fa                     ; 12077:  fa
+b04_a078:   brk                         ; 12078:  00
+b04_a079:   brk                         ; 12079:  00
+b04_a07a:   eor $aa,x                   ; 1207A:  55 aa
+b04_a07c:   tax                         ; 1207C:  aa
+b04_a07d:   brk                         ; 1207D:  00
+b04_a07e:   brk                         ; 1207E:  00
+b04_a07f:   brk                         ; 1207F:  00
+b04_a080:   brk                         ; 12080:  00
+b04_a081:   brk                         ; 12081:  00
+b04_a082:   brk                         ; 12082:  00
+b04_a083:   brk                         ; 12083:  00
+b04_a084:   .db $80                     ; 12084:  80
+b04_a085:   cpy #$fc                    ; 12085:  c0 fc
+b04_a087:   inc $7fff,x                 ; 12087:  fe ff 7f
+b04_a08a:   .db $3f                     ; 1208A:  3f
+b04_a08b:   .db $1f                     ; 1208B:  1f
+b04_a08c:   .db $8f                     ; 1208C:  8f
+b04_a08d:   .db $07                     ; 1208D:  07
+b04_a08e:   brk                         ; 1208E:  00
+b04_a08f:   brk                         ; 1208F:  00
+b04_a090:   .db $9f                     ; 12090:  9f
+b04_a091:   .db $c3                     ; 12091:  c3
+b04_a092:   .db $e7                     ; 12092:  e7
+b04_a093:   .db $ff                     ; 12093:  ff
+b04_a094:   brk                         ; 12094:  00
+b04_a095:   .db $44                     ; 12095:  44
+b04_a096:   brk                         ; 12096:  00
+b04_a097:   and $9f,x                   ; 12097:  35 9f
+b04_a099:   .db $c2                     ; 12099:  c2
+b04_a09a:   sbc $00                     ; 1209A:  e5 00
+b04_a09c:   brk                         ; 1209C:  00
+b04_a09d:   ror $0000                   ; 1209D:  6e 00 00
+b04_a0a0:   brk                         ; 120A0:  00
+b04_a0a1:   .db $80                     ; 120A1:  80
+b04_a0a2:   cpy #$e0                    ; 120A2:  c0 e0
+b04_a0a4:   brk                         ; 120A4:  00
+b04_a0a5:   rti                         ; 120A5:  40
+b04_a0a6:   .db $0f                     ; 120A6:  0f
+b04_a0a7:   .db $3f                     ; 120A7:  3f
+b04_a0a8:   .db $1f                     ; 120A8:  1f
+b04_a0a9:   .db $8f                     ; 120A9:  8f
+b04_a0aa:   .db $07                     ; 120AA:  07
+b04_a0ab:   .db $03                     ; 120AB:  03
+b04_a0ac:   .db $07                     ; 120AC:  07
+b04_a0ad:   .db $0f                     ; 120AD:  0f
+b04_a0ae:   ora ($07,x)                 ; 120AE:  01 07
+b04_a0b0:   .db $0c                     ; 120B0:  0c
+b04_a0b1:   .db $1f                     ; 120B1:  1f
+b04_a0b2:   .db $7f                     ; 120B2:  7f
+b04_a0b3:   brk                         ; 120B3:  00
+b04_a0b4:   brk                         ; 120B4:  00
+b04_a0b5:   php                         ; 120B5:  08
+b04_a0b6:   sbc $f4fb,y                 ; 120B6:  f9 fb f4
+b04_a0b9:   .db $ef                     ; 120B9:  ef
+b04_a0ba:   .db $80                     ; 120BA:  80
+b04_a0bb:   .db $80                     ; 120BB:  80
+b04_a0bc:   sbc $e8                     ; 120BC:  e5 e8
+b04_a0be:   and $dc9f,x                 ; 120BE:  3d 9f dc
+b04_a0c1:   .db $ff                     ; 120C1:  ff
+b04_a0c2:   .db $ff                     ; 120C2:  ff
+b04_a0c3:   brk                         ; 120C3:  00
+b04_a0c4:   brk                         ; 120C4:  00
+b04_a0c5:   sei                         ; 120C5:  78
+b04_a0c6:   and $d48b,x                 ; 120C6:  3d 8b d4
+b04_a0c9:   .db $ef                     ; 120C9:  ef
+b04_a0ca:   brk                         ; 120CA:  00
+b04_a0cb:   brk                         ; 120CB:  00
+b04_a0cc:   eor $78,x                   ; 120CC:  55 78
+b04_a0ce:   .db $0f                     ; 120CE:  0f
+b04_a0cf:   brk                         ; 120CF:  00
+b04_a0d0:   .db $1b                     ; 120D0:  1b
+b04_a0d1:   ora $2e,x                   ; 120D1:  15 2e
+b04_a0d3:   eor $3b,x                   ; 120D3:  55 3b
+b04_a0d5:   ora $ef,x                   ; 120D5:  15 ef
+b04_a0d7:   cpy #$c0                    ; 120D7:  c0 c0
+b04_a0d9:   cpy #$80                    ; 120D9:  c0 80
+b04_a0db:   brk                         ; 120DB:  00
+b04_a0dc:   brk                         ; 120DC:  00
+b04_a0dd:   brk                         ; 120DD:  00
+b04_a0de:   .db $ff                     ; 120DE:  ff
+b04_a0df:   brk                         ; 120DF:  00
+b04_a0e0:   .db $bb                     ; 120E0:  bb
+b04_a0e1:   eor $ee,x                   ; 120E1:  55 ee
+b04_a0e3:   eor $bb,x                   ; 120E3:  55 bb
+b04_a0e5:   eor $ff,x                   ; 120E5:  55 ff
+b04_a0e7:   brk                         ; 120E7:  00
+b04_a0e8:   brk                         ; 120E8:  00
+b04_a0e9:   brk                         ; 120E9:  00
+b04_a0ea:   brk                         ; 120EA:  00
+b04_a0eb:   brk                         ; 120EB:  00
+b04_a0ec:   brk                         ; 120EC:  00
+b04_a0ed:   brk                         ; 120ED:  00
+b04_a0ee:   and $fc9f,x                 ; 120EE:  3d 9f fc
+b04_a0f1:   .db $ff                     ; 120F1:  ff
+b04_a0f2:   .db $ff                     ; 120F2:  ff
+b04_a0f3:   brk                         ; 120F3:  00
+b04_a0f4:   brk                         ; 120F4:  00
+b04_a0f5:   sei                         ; 120F5:  78
+b04_a0f6:   and $d48b,x                 ; 120F6:  3d 8b d4
+b04_a0f9:   .db $ef                     ; 120F9:  ef
+b04_a0fa:   brk                         ; 120FA:  00
+b04_a0fb:   brk                         ; 120FB:  00
+b04_a0fc:   eor $78,x                   ; 120FC:  55 78
+b04_a0fe:   brk                         ; 120FE:  00
+b04_a0ff:   .db $80                     ; 120FF:  80
+b04_a100:   cpy #$e0                    ; 12100:  c0 e0
+b04_a102:   beq $a104                   ; 12102:  f0 00
+b04_a104:   brk                         ; 12104:  00
+b04_a105:   rts                         ; 12105:  60
+b04_a106:   .db $0f                     ; 12106:  0f
+b04_a107:   .db $87                     ; 12107:  87
+b04_a108:   .db $c3                     ; 12108:  c3
+b04_a109:   sbc ($00,x)                 ; 12109:  e1 00
+b04_a10b:   brk                         ; 1210B:  00
+b04_a10c:   adc ($61,x)                 ; 1210C:  61 61
+b04_a10e:   .db $ff                     ; 1210E:  ff
+b04_a10f:   brk                         ; 1210F:  00
+b04_a110:   .db $bb                     ; 12110:  bb
+b04_a111:   eor $ae,x                   ; 12111:  55 ae
+b04_a113:   adc $ab,x                   ; 12113:  75 ab
+b04_a115:   eor $00ff,x                 ; 12115:  5d ff 00
+b04_a118:   brk                         ; 12118:  00
+b04_a119:   brk                         ; 12119:  00
+b04_a11a:   brk                         ; 1211A:  00
+b04_a11b:   brk                         ; 1211B:  00
+b04_a11c:   brk                         ; 1211C:  00
+b04_a11d:   brk                         ; 1211D:  00
+b04_a11e:   cpx #$00                    ; 1211E:  e0 00
+b04_a120:   bcs $a172                   ; 12120:  b0 50
+b04_a122:   cpx #$50                    ; 12122:  e0 50
+b04_a124:   clv                         ; 12124:  b8
+b04_a125:   bvc $a108                   ; 12125:  50 e1
+b04_a127:   ora ($00,x)                 ; 12127:  01 00
+b04_a129:   brk                         ; 12129:  00
+b04_a12a:   brk                         ; 1212A:  00
+b04_a12b:   brk                         ; 1212B:  00
+b04_a12c:   brk                         ; 1212C:  00
+b04_a12d:   brk                         ; 1212D:  00
+b04_a12e:   .db $3f                     ; 1212E:  3f
+b04_a12f:   eor $55,x                   ; 1212F:  55 55
+b04_a131:   eor $00,x                   ; 12131:  55 00
+b04_a133:   rol a                       ; 12133:  2a
+b04_a134:   rol $0000,x                 ; 12134:  3e 00 00
+b04_a137:   brk                         ; 12137:  00
+b04_a138:   brk                         ; 12138:  00
+b04_a139:   brk                         ; 12139:  00
+b04_a13a:   brk                         ; 1213A:  00
+b04_a13b:   rol a                       ; 1213B:  2a
+b04_a13c:   rol $ff3e,x                 ; 1213C:  3e 3e ff
+b04_a13f:   eor $55,x                   ; 1213F:  55 55
+b04_a141:   eor $00,x                   ; 12141:  55 00
+b04_a143:   .db $e7                     ; 12143:  e7
+b04_a144:   .db $db                     ; 12144:  db
+b04_a145:   lda $0000,x                 ; 12145:  bd 00 00
+b04_a148:   brk                         ; 12148:  00
+b04_a149:   brk                         ; 12149:  00
+b04_a14a:   brk                         ; 1214A:  00
+b04_a14b:   brk                         ; 1214B:  00
+b04_a14c:   brk                         ; 1214C:  00
+b04_a14d:   brk                         ; 1214D:  00
+b04_a14e:   .db $ab                     ; 1214E:  ab
+b04_a14f:   .db $ff                     ; 1214F:  ff
+b04_a150:   .db $ff                     ; 12150:  ff
+b04_a151:   brk                         ; 12151:  00
+b04_a152:   brk                         ; 12152:  00
+b04_a153:   .db $ff                     ; 12153:  ff
+b04_a154:   eor $55,x                   ; 12154:  55 55
+b04_a156:   brk                         ; 12156:  00
+b04_a157:   brk                         ; 12157:  00
+b04_a158:   brk                         ; 12158:  00
+b04_a159:   .db $ff                     ; 12159:  ff
+b04_a15a:   .db $ff                     ; 1215A:  ff
+b04_a15b:   brk                         ; 1215B:  00
+b04_a15c:   brk                         ; 1215C:  00
+b04_a15d:   brk                         ; 1215D:  00
+b04_a15e:   ror $db                     ; 1215E:  66 db
+b04_a160:   lda $db66,x                 ; 12160:  bd 66 db
+b04_a163:   .db $ff                     ; 12163:  ff
+b04_a164:   eor $55,x                   ; 12164:  55 55
+b04_a166:   brk                         ; 12166:  00
+b04_a167:   brk                         ; 12167:  00
+b04_a168:   brk                         ; 12168:  00
+b04_a169:   brk                         ; 12169:  00
+b04_a16a:   brk                         ; 1216A:  00
+b04_a16b:   brk                         ; 1216B:  00
+b04_a16c:   brk                         ; 1216C:  00
+b04_a16d:   brk                         ; 1216D:  00
+b04_a16e:   .db $ff                     ; 1216E:  ff
+b04_a16f:   eor $55,x                   ; 1216F:  55 55
+b04_a171:   eor $00,x                   ; 12171:  55 00
+b04_a173:   rol a                       ; 12173:  2a
+b04_a174:   ror $0000,x                 ; 12174:  7e 00 00
+b04_a177:   brk                         ; 12177:  00
+b04_a178:   brk                         ; 12178:  00
+b04_a179:   brk                         ; 12179:  00
+b04_a17a:   brk                         ; 1217A:  00
+b04_a17b:   rol a                       ; 1217B:  2a
+b04_a17c:   ror $007e,x                 ; 1217C:  7e 7e 00
+b04_a17f:   brk                         ; 1217F:  00
+b04_a180:   brk                         ; 12180:  00
+b04_a181:   brk                         ; 12181:  00
+b04_a182:   brk                         ; 12182:  00
+b04_a183:   brk                         ; 12183:  00
+b04_a184:   brk                         ; 12184:  00
+b04_a185:   brk                         ; 12185:  00
+b04_a186:   .db $fc                     ; 12186:  fc
+b04_a187:   inc $7f,x                   ; 12187:  f6 7f
+b04_a189:   .db $ff                     ; 12189:  ff
+b04_a18a:   .db $bf                     ; 1218A:  bf
+b04_a18b:   inc $ffef,x                 ; 1218B:  fe ef ff
+b04_a18e:   eor $7f,x                   ; 1218E:  55 7f
+b04_a190:   .db $7f                     ; 12190:  7f
+b04_a191:   brk                         ; 12191:  00
+b04_a192:   brk                         ; 12192:  00
+b04_a193:   .db $ff                     ; 12193:  ff
+b04_a194:   eor $55,x                   ; 12194:  55 55
+b04_a196:   .db $80                     ; 12196:  80
+b04_a197:   .db $80                     ; 12197:  80
+b04_a198:   .db $80                     ; 12198:  80
+b04_a199:   .db $ff                     ; 12199:  ff
+b04_a19a:   .db $ff                     ; 1219A:  ff
+b04_a19b:   brk                         ; 1219B:  00
+b04_a19c:   brk                         ; 1219C:  00
+b04_a19d:   brk                         ; 1219D:  00
+b04_a19e:   .db $ff                     ; 1219E:  ff
+b04_a19f:   .db $ff                     ; 1219F:  ff
+b04_a1a0:   .db $ff                     ; 121A0:  ff
+b04_a1a1:   sec                         ; 121A1:  38
+b04_a1a2:   sec                         ; 121A2:  38
+b04_a1a3:   sec                         ; 121A3:  38
+b04_a1a4:   sec                         ; 121A4:  38
+b04_a1a5:   sec                         ; 121A5:  38
+b04_a1a6:   brk                         ; 121A6:  00
+b04_a1a7:   brk                         ; 121A7:  00
+b04_a1a8:   brk                         ; 121A8:  00
+b04_a1a9:   .db $c7                     ; 121A9:  c7
+b04_a1aa:   .db $c7                     ; 121AA:  c7
+b04_a1ab:   .db $c7                     ; 121AB:  c7
+b04_a1ac:   .db $c7                     ; 121AC:  c7
+b04_a1ad:   .db $c7                     ; 121AD:  c7
+b04_a1ae:   eor $55,x                   ; 121AE:  55 55
+b04_a1b0:   brk                         ; 121B0:  00
+b04_a1b1:   rol a                       ; 121B1:  2a
+b04_a1b2:   rol $0000,x                 ; 121B2:  3e 00 00
+b04_a1b5:   brk                         ; 121B5:  00
+b04_a1b6:   brk                         ; 121B6:  00
+b04_a1b7:   brk                         ; 121B7:  00
+b04_a1b8:   brk                         ; 121B8:  00
+b04_a1b9:   rol a                       ; 121B9:  2a
+b04_a1ba:   rol $ff00,x                 ; 121BA:  3e 00 ff
+b04_a1bd:   .db $ff                     ; 121BD:  ff
+b04_a1be:   eor $55,x                   ; 121BE:  55 55
+b04_a1c0:   brk                         ; 121C0:  00
+b04_a1c1:   .db $54                     ; 121C1:  54
+b04_a1c2:   .db $ff                     ; 121C2:  ff
+b04_a1c3:   tax                         ; 121C3:  aa
+b04_a1c4:   tax                         ; 121C4:  aa
+b04_a1c5:   tax                         ; 121C5:  aa
+b04_a1c6:   brk                         ; 121C6:  00
+b04_a1c7:   brk                         ; 121C7:  00
+b04_a1c8:   brk                         ; 121C8:  00
+b04_a1c9:   .db $54                     ; 121C9:  54
+b04_a1ca:   brk                         ; 121CA:  00
+b04_a1cb:   brk                         ; 121CB:  00
+b04_a1cc:   brk                         ; 121CC:  00
+b04_a1cd:   brk                         ; 121CD:  00
+b04_a1ce:   .db $ff                     ; 121CE:  ff
+b04_a1cf:   .db $ff                     ; 121CF:  ff
+b04_a1d0:   .db $1c                     ; 121D0:  1c
+b04_a1d1:   .db $1c                     ; 121D1:  1c
+b04_a1d2:   .db $1c                     ; 121D2:  1c
+b04_a1d3:   .db $1c                     ; 121D3:  1c
+b04_a1d4:   .db $1f                     ; 121D4:  1f
+b04_a1d5:   .db $1f                     ; 121D5:  1f
+b04_a1d6:   brk                         ; 121D6:  00
+b04_a1d7:   brk                         ; 121D7:  00
+b04_a1d8:   .db $e3                     ; 121D8:  e3
+b04_a1d9:   .db $e3                     ; 121D9:  e3
+b04_a1da:   .db $e3                     ; 121DA:  e3
+b04_a1db:   .db $e3                     ; 121DB:  e3
+b04_a1dc:   rts                         ; 121DC:  60
+b04_a1dd:   jsr $00aa                   ; 121DD:  20 aa 00
+b04_a1e0:   rol a                       ; 121E0:  2a
+b04_a1e1:   rol $5500,x                 ; 121E1:  3e 00 55
+b04_a1e4:   .db $ff                     ; 121E4:  ff
+b04_a1e5:   .db $ff                     ; 121E5:  ff
+b04_a1e6:   brk                         ; 121E6:  00
+b04_a1e7:   brk                         ; 121E7:  00
+b04_a1e8:   rol a                       ; 121E8:  2a
+b04_a1e9:   rol $0000,x                 ; 121E9:  3e 00 00
+b04_a1ec:   brk                         ; 121EC:  00
+b04_a1ed:   brk                         ; 121ED:  00
+b04_a1ee:   sec                         ; 121EE:  38
+b04_a1ef:   sec                         ; 121EF:  38
+b04_a1f0:   sec                         ; 121F0:  38
+b04_a1f1:   sec                         ; 121F1:  38
+b04_a1f2:   .db $ff                     ; 121F2:  ff
+b04_a1f3:   tax                         ; 121F3:  aa
+b04_a1f4:   tax                         ; 121F4:  aa
+b04_a1f5:   tax                         ; 121F5:  aa
+b04_a1f6:   .db $c7                     ; 121F6:  c7
+b04_a1f7:   .db $c7                     ; 121F7:  c7
+b04_a1f8:   .db $c7                     ; 121F8:  c7
+b04_a1f9:   .db $c7                     ; 121F9:  c7
+b04_a1fa:   brk                         ; 121FA:  00
+b04_a1fb:   brk                         ; 121FB:  00
+b04_a1fc:   brk                         ; 121FC:  00
+b04_a1fd:   brk                         ; 121FD:  00
+b04_a1fe:   tax                         ; 121FE:  aa
+b04_a1ff:   brk                         ; 121FF:  00
+b04_a200:   .db $54                     ; 12200:  54
+b04_a201:   .db $7c                     ; 12201:  7c
+b04_a202:   brk                         ; 12202:  00
+b04_a203:   eor $ff,x                   ; 12203:  55 ff
+b04_a205:   .db $ff                     ; 12205:  ff
+b04_a206:   brk                         ; 12206:  00
+b04_a207:   brk                         ; 12207:  00
+b04_a208:   .db $54                     ; 12208:  54
+b04_a209:   .db $7c                     ; 12209:  7c
+b04_a20a:   brk                         ; 1220A:  00
+b04_a20b:   brk                         ; 1220B:  00
+b04_a20c:   brk                         ; 1220C:  00
+b04_a20d:   brk                         ; 1220D:  00
+b04_a20e:   tax                         ; 1220E:  aa
+b04_a20f:   brk                         ; 1220F:  00
+b04_a210:   .db $54                     ; 12210:  54
+b04_a211:   .db $7c                     ; 12211:  7c
+b04_a212:   brk                         ; 12212:  00
+b04_a213:   .db $57                     ; 12213:  57
+b04_a214:   inc $00fc,x                 ; 12214:  fe fc 00
+b04_a217:   brk                         ; 12217:  00
+b04_a218:   .db $54                     ; 12218:  54
+b04_a219:   .db $7c                     ; 12219:  7c
+b04_a21a:   brk                         ; 1221A:  00
+b04_a21b:   brk                         ; 1221B:  00
+b04_a21c:   brk                         ; 1221C:  00
+b04_a21d:   brk                         ; 1221D:  00
+b04_a21e:   brk                         ; 1221E:  00
+b04_a21f:   brk                         ; 1221F:  00
+b04_a220:   brk                         ; 12220:  00
+b04_a221:   .db $80                     ; 12221:  80
+b04_a222:   brk                         ; 12222:  00
+b04_a223:   .db $80                     ; 12223:  80
+b04_a224:   brk                         ; 12224:  00
+b04_a225:   .db $80                     ; 12225:  80
+b04_a226:   .db $3f                     ; 12226:  3f
+b04_a227:   .db $7f                     ; 12227:  7f
+b04_a228:   .db $ff                     ; 12228:  ff
+b04_a229:   .db $7f                     ; 12229:  7f
+b04_a22a:   .db $f7                     ; 1222A:  f7
+b04_a22b:   ror $7fff,x                 ; 1222B:  7e ff 7f
+b04_a22e:   brk                         ; 1222E:  00
+b04_a22f:   brk                         ; 1222F:  00
+b04_a230:   brk                         ; 12230:  00
+b04_a231:   brk                         ; 12231:  00
+b04_a232:   brk                         ; 12232:  00
+b04_a233:   brk                         ; 12233:  00
+b04_a234:   brk                         ; 12234:  00
+b04_a235:   brk                         ; 12235:  00
+b04_a236:   .db $ff                     ; 12236:  ff
+b04_a237:   .db $df                     ; 12237:  df
+b04_a238:   .db $ff                     ; 12238:  ff
+b04_a239:   sbc $ffbf,x                 ; 12239:  fd bf ff
+b04_a23c:   .db $ef                     ; 1223C:  ef
+b04_a23d:   .db $7f                     ; 1223D:  7f
+b04_a23e:   brk                         ; 1223E:  00
+b04_a23f:   .db $80                     ; 1223F:  80
+b04_a240:   brk                         ; 12240:  00
+b04_a241:   .db $80                     ; 12241:  80
+b04_a242:   brk                         ; 12242:  00
+b04_a243:   .db $80                     ; 12243:  80
+b04_a244:   brk                         ; 12244:  00
+b04_a245:   .db $80                     ; 12245:  80
+b04_a246:   sbc $ff77,x                 ; 12246:  fd 77 ff
+b04_a249:   .db $7f                     ; 12249:  7f
+b04_a24a:   .db $f7                     ; 1224A:  f7
+b04_a24b:   ror $7fdf,x                 ; 1224B:  7e df 7f
+b04_a24e:   brk                         ; 1224E:  00
+b04_a24f:   brk                         ; 1224F:  00
+b04_a250:   brk                         ; 12250:  00
+b04_a251:   brk                         ; 12251:  00
+b04_a252:   brk                         ; 12252:  00
+b04_a253:   brk                         ; 12253:  00
+b04_a254:   brk                         ; 12254:  00
+b04_a255:   brk                         ; 12255:  00
+b04_a256:   inc $7ff7,x                 ; 12256:  fe f7 7f
+b04_a259:   .db $fb                     ; 12259:  fb
+b04_a25a:   .db $bf                     ; 1225A:  bf
+b04_a25b:   inc $bfef,x                 ; 1225B:  fe ef bf
+b04_a25e:   brk                         ; 1225E:  00
+b04_a25f:   brk                         ; 1225F:  00
+b04_a260:   brk                         ; 12260:  00
+b04_a261:   brk                         ; 12261:  00
+b04_a262:   brk                         ; 12262:  00
+b04_a263:   brk                         ; 12263:  00
+b04_a264:   brk                         ; 12264:  00
+b04_a265:   brk                         ; 12265:  00
+b04_a266:   .db $ff                     ; 12266:  ff
+b04_a267:   .db $f7                     ; 12267:  f7
+b04_a268:   .db $ff                     ; 12268:  ff
+b04_a269:   .db $ff                     ; 12269:  ff
+b04_a26a:   .db $bf                     ; 1226A:  bf
+b04_a26b:   inc $feef,x                 ; 1226B:  fe ef fe
+b04_a26e:   brk                         ; 1226E:  00
+b04_a26f:   brk                         ; 1226F:  00
+b04_a270:   brk                         ; 12270:  00
+b04_a271:   brk                         ; 12271:  00
+b04_a272:   brk                         ; 12272:  00
+b04_a273:   brk                         ; 12273:  00
+b04_a274:   brk                         ; 12274:  00
+b04_a275:   brk                         ; 12275:  00
+b04_a276:   .db $fc                     ; 12276:  fc
+b04_a277:   inc $ffdf,x                 ; 12277:  fe df ff
+b04_a27a:   .db $bf                     ; 1227A:  bf
+b04_a27b:   .db $ff                     ; 1227B:  ff
+b04_a27c:   .db $ef                     ; 1227C:  ef
+b04_a27d:   .db $ff                     ; 1227D:  ff
+b04_a27e:   brk                         ; 1227E:  00
+b04_a27f:   brk                         ; 1227F:  00
+b04_a280:   brk                         ; 12280:  00
+b04_a281:   brk                         ; 12281:  00
+b04_a282:   brk                         ; 12282:  00
+b04_a283:   brk                         ; 12283:  00
+b04_a284:   brk                         ; 12284:  00
+b04_a285:   brk                         ; 12285:  00
+b04_a286:   sbc $7ff7,x                 ; 12286:  fd f7 7f
+b04_a289:   .db $ff                     ; 12289:  ff
+b04_a28a:   .db $bf                     ; 1228A:  bf
+b04_a28b:   inc $ffef,x                 ; 1228B:  fe ef ff
+b04_a28e:   brk                         ; 1228E:  00
+b04_a28f:   brk                         ; 1228F:  00
+b04_a290:   brk                         ; 12290:  00
+b04_a291:   brk                         ; 12291:  00
+b04_a292:   brk                         ; 12292:  00
+b04_a293:   brk                         ; 12293:  00
+b04_a294:   brk                         ; 12294:  00
+b04_a295:   brk                         ; 12295:  00
+b04_a296:   .db $df                     ; 12296:  df
+b04_a297:   .db $ff                     ; 12297:  ff
+b04_a298:   .db $7f                     ; 12298:  7f
+b04_a299:   .db $fb                     ; 12299:  fb
+b04_a29a:   .db $bf                     ; 1229A:  bf
+b04_a29b:   .db $ff                     ; 1229B:  ff
+b04_a29c:   .db $ef                     ; 1229C:  ef
+b04_a29d:   .db $ff                     ; 1229D:  ff
+b04_a29e:   brk                         ; 1229E:  00
+b04_a29f:   .db $80                     ; 1229F:  80
+b04_a2a0:   brk                         ; 122A0:  00
+b04_a2a1:   .db $80                     ; 122A1:  80
+b04_a2a2:   brk                         ; 122A2:  00
+b04_a2a3:   .db $80                     ; 122A3:  80
+b04_a2a4:   brk                         ; 122A4:  00
+b04_a2a5:   .db $80                     ; 122A5:  80
+b04_a2a6:   sbc $ff77,x                 ; 122A6:  fd 77 ff
+b04_a2a9:   .db $7f                     ; 122A9:  7f
+b04_a2aa:   .db $ff                     ; 122AA:  ff
+b04_a2ab:   .db $5b                     ; 122AB:  5b
+b04_a2ac:   .db $ff                     ; 122AC:  ff
+b04_a2ad:   .db $7f                     ; 122AD:  7f
+b04_a2ae:   brk                         ; 122AE:  00
+b04_a2af:   brk                         ; 122AF:  00
+b04_a2b0:   brk                         ; 122B0:  00
+b04_a2b1:   brk                         ; 122B1:  00
+b04_a2b2:   brk                         ; 122B2:  00
+b04_a2b3:   brk                         ; 122B3:  00
+b04_a2b4:   brk                         ; 122B4:  00
+b04_a2b5:   brk                         ; 122B5:  00
+b04_a2b6:   sbc $7ff7,x                 ; 122B6:  fd f7 7f
+b04_a2b9:   .db $fb                     ; 122B9:  fb
+b04_a2ba:   .db $bf                     ; 122BA:  bf
+b04_a2bb:   inc $ffef,x                 ; 122BB:  fe ef ff
+b04_a2be:   brk                         ; 122BE:  00
+b04_a2bf:   .db $80                     ; 122BF:  80
+b04_a2c0:   brk                         ; 122C0:  00
+b04_a2c1:   .db $80                     ; 122C1:  80
+b04_a2c2:   brk                         ; 122C2:  00
+b04_a2c3:   .db $80                     ; 122C3:  80
+b04_a2c4:   brk                         ; 122C4:  00
+b04_a2c5:   rol a                       ; 122C5:  2a
+b04_a2c6:   sbc $ff77,x                 ; 122C6:  fd 77 ff
+b04_a2c9:   .db $7f                     ; 122C9:  7f
+b04_a2ca:   .db $ff                     ; 122CA:  ff
+b04_a2cb:   .db $7b                     ; 122CB:  7b
+b04_a2cc:   .db $7f                     ; 122CC:  7f
+b04_a2cd:   ora $00,x                   ; 122CD:  15 00
+b04_a2cf:   brk                         ; 122CF:  00
+b04_a2d0:   brk                         ; 122D0:  00
+b04_a2d1:   brk                         ; 122D1:  00
+b04_a2d2:   brk                         ; 122D2:  00
+b04_a2d3:   brk                         ; 122D3:  00
+b04_a2d4:   brk                         ; 122D4:  00
+b04_a2d5:   tax                         ; 122D5:  aa
+b04_a2d6:   sbc $7ff7,x                 ; 122D6:  fd f7 7f
+b04_a2d9:   .db $ff                     ; 122D9:  ff
+b04_a2da:   .db $ef                     ; 122DA:  ef
+b04_a2db:   .db $ff                     ; 122DB:  ff
+b04_a2dc:   .db $ff                     ; 122DC:  ff
+b04_a2dd:   eor $00,x                   ; 122DD:  55 00
+b04_a2df:   brk                         ; 122DF:  00
+b04_a2e0:   brk                         ; 122E0:  00
+b04_a2e1:   brk                         ; 122E1:  00
+b04_a2e2:   brk                         ; 122E2:  00
+b04_a2e3:   brk                         ; 122E3:  00
+b04_a2e4:   brk                         ; 122E4:  00
+b04_a2e5:   brk                         ; 122E5:  00
+b04_a2e6:   adc $7ff7,x                 ; 122E6:  7d f7 7f
+b04_a2e9:   .db $fb                     ; 122E9:  fb
+b04_a2ea:   .db $bf                     ; 122EA:  bf
+b04_a2eb:   inc $ffef,x                 ; 122EB:  fe ef ff
+b04_a2ee:   brk                         ; 122EE:  00
+b04_a2ef:   brk                         ; 122EF:  00
+b04_a2f0:   brk                         ; 122F0:  00
+b04_a2f1:   brk                         ; 122F1:  00
+b04_a2f2:   brk                         ; 122F2:  00
+b04_a2f3:   brk                         ; 122F3:  00
+b04_a2f4:   brk                         ; 122F4:  00
+b04_a2f5:   brk                         ; 122F5:  00
+b04_a2f6:   .db $6f                     ; 122F6:  6f
+b04_a2f7:   .db $ff                     ; 122F7:  ff
+b04_a2f8:   .db $7f                     ; 122F8:  7f
+b04_a2f9:   .db $fb                     ; 122F9:  fb
+b04_a2fa:   .db $bf                     ; 122FA:  bf
+b04_a2fb:   .db $ff                     ; 122FB:  ff
+b04_a2fc:   .db $ef                     ; 122FC:  ef
+b04_a2fd:   .db $ff                     ; 122FD:  ff
+b04_a2fe:   brk                         ; 122FE:  00
+b04_a2ff:   brk                         ; 122FF:  00
+b04_a300:   brk                         ; 12300:  00
+b04_a301:   brk                         ; 12301:  00
+b04_a302:   brk                         ; 12302:  00
+b04_a303:   brk                         ; 12303:  00
+b04_a304:   brk                         ; 12304:  00
+b04_a305:   tax                         ; 12305:  aa
+b04_a306:   sbc $7ff7,x                 ; 12306:  fd f7 7f
+b04_a309:   .db $f7                     ; 12309:  f7
+b04_a30a:   .db $ff                     ; 1230A:  ff
+b04_a30b:   dec $55ff,x                 ; 1230B:  de ff 55
+b04_a30e:   brk                         ; 1230E:  00
+b04_a30f:   brk                         ; 1230F:  00
+b04_a310:   brk                         ; 12310:  00
+b04_a311:   brk                         ; 12311:  00
+b04_a312:   brk                         ; 12312:  00
+b04_a313:   brk                         ; 12313:  00
+b04_a314:   brk                         ; 12314:  00
+b04_a315:   tay                         ; 12315:  a8
+b04_a316:   .db $ff                     ; 12316:  ff
+b04_a317:   .db $ff                     ; 12317:  ff
+b04_a318:   .db $7b                     ; 12318:  7b
+b04_a319:   .db $ff                     ; 12319:  ff
+b04_a31a:   .db $df                     ; 1231A:  df
+b04_a31b:   .db $ff                     ; 1231B:  ff
+b04_a31c:   inc $3f54,x                 ; 1231C:  fe 54 3f
+b04_a31f:   .db $7f                     ; 1231F:  7f
+b04_a320:   .db $ff                     ; 12320:  ff
+b04_a321:   .db $ff                     ; 12321:  ff
+b04_a322:   .db $ff                     ; 12322:  ff
+b04_a323:   sbc $e5f8,x                 ; 12323:  fd f8 e5
+b04_a326:   .db $3f                     ; 12326:  3f
+b04_a327:   .db $7f                     ; 12327:  7f
+b04_a328:   .db $ff                     ; 12328:  ff
+b04_a329:   .db $ff                     ; 12329:  ff
+b04_a32a:   .db $ff                     ; 1232A:  ff
+b04_a32b:   sbc ($e0),y                 ; 1232B:  f1 e0
+b04_a32d:   .db $80                     ; 1232D:  80
+b04_a32e:   .db $ff                     ; 1232E:  ff
+b04_a32f:   .db $ff                     ; 1232F:  ff
+b04_a330:   .db $ff                     ; 12330:  ff
+b04_a331:   .db $ff                     ; 12331:  ff
+b04_a332:   inc $feff,x                 ; 12332:  fe ff fe
+b04_a335:   cmp $feff,x                 ; 12335:  dd ff fe
+b04_a338:   sed                         ; 12338:  f8
+b04_a339:   beq $a31b                   ; 12339:  f0 e0
+b04_a33b:   cpy #$00                    ; 1233B:  c0 00
+b04_a33d:   brk                         ; 1233D:  00
+b04_a33e:   cmp $fbb7,y                 ; 1233E:  d9 b7 fb
+b04_a341:   .db $f7                     ; 12341:  f7
+b04_a342:   .db $ff                     ; 12342:  ff
+b04_a343:   .db $ff                     ; 12343:  ff
+b04_a344:   .db $ff                     ; 12344:  ff
+b04_a345:   tax                         ; 12345:  aa
+b04_a346:   brk                         ; 12346:  00
+b04_a347:   brk                         ; 12347:  00
+b04_a348:   brk                         ; 12348:  00
+b04_a349:   brk                         ; 12349:  00
+b04_a34a:   bvs $a34b                   ; 1234A:  70 ff
+b04_a34c:   .db $ff                     ; 1234C:  ff
+b04_a34d:   tax                         ; 1234D:  aa
+b04_a34e:   .db $fa                     ; 1234E:  fa
+b04_a34f:   cmp $ba,x                   ; 1234F:  d5 ba
+b04_a351:   eor ($9a),y                 ; 12351:  51 9a
+b04_a353:   .db $47                     ; 12353:  47
+b04_a354:   .db $fc                     ; 12354:  fc
+b04_a355:   tay                         ; 12355:  a8
+b04_a356:   brk                         ; 12356:  00
+b04_a357:   brk                         ; 12357:  00
+b04_a358:   brk                         ; 12358:  00
+b04_a359:   brk                         ; 12359:  00
+b04_a35a:   brk                         ; 1235A:  00
+b04_a35b:   brk                         ; 1235B:  00
+b04_a35c:   .db $fc                     ; 1235C:  fc
+b04_a35d:   tay                         ; 1235D:  a8
+b04_a35e:   .db $ff                     ; 1235E:  ff
+b04_a35f:   .db $9f                     ; 1235F:  9f
+b04_a360:   .db $87                     ; 12360:  87
+b04_a361:   .db $43                     ; 12361:  43
+b04_a362:   sta ($30,x)                 ; 12362:  81 30
+b04_a364:   plp                         ; 12364:  28
+b04_a365:   .db $14                     ; 12365:  14
+b04_a366:   .db $ff                     ; 12366:  ff
+b04_a367:   .db $1f                     ; 12367:  1f
+b04_a368:   .db $07                     ; 12368:  07
+b04_a369:   .db $03                     ; 12369:  03
+b04_a36a:   ora ($00,x)                 ; 1236A:  01 00
+b04_a36c:   brk                         ; 1236C:  00
+b04_a36d:   brk                         ; 1236D:  00
+b04_a36e:   .db $fc                     ; 1236E:  fc
+b04_a36f:   inc $ffff,x                 ; 1236F:  fe ff ff
+b04_a372:   .db $ff                     ; 12372:  ff
+b04_a373:   .db $f7                     ; 12373:  f7
+b04_a374:   .db $53                     ; 12374:  53
+b04_a375:   sbc #$fc                    ; 12375:  e9 fc
+b04_a377:   inc $ffff,x                 ; 12377:  fe ff ff
+b04_a37a:   .db $ff                     ; 1237A:  ff
+b04_a37b:   .db $c7                     ; 1237B:  c7
+b04_a37c:   .db $03                     ; 1237C:  03
+b04_a37d:   ora ($3f,x)                 ; 1237D:  01 3f
+b04_a37f:   cmp $88,x                   ; 1237F:  d5 88
+b04_a381:   bpl $a32b                   ; 12381:  10 a8
+b04_a383:   .db $d4                     ; 12383:  d4
+b04_a384:   tsx                         ; 12384:  ba
+b04_a385:   .db $d4                     ; 12385:  d4
+b04_a386:   .db $3f                     ; 12386:  3f
+b04_a387:   cmp $00,x                   ; 12387:  d5 00
+b04_a389:   brk                         ; 12389:  00
+b04_a38a:   brk                         ; 1238A:  00
+b04_a38b:   brk                         ; 1238B:  00
+b04_a38c:   brk                         ; 1238C:  00
+b04_a38d:   brk                         ; 1238D:  00
+b04_a38e:   .db $fc                     ; 1238E:  fc
+b04_a38f:   .db $54                     ; 1238F:  54
+b04_a390:   brk                         ; 12390:  00
+b04_a391:   .db $04                     ; 12391:  04
+b04_a392:   cpy $42                     ; 12392:  c4 42
+b04_a394:   jsr $f810                   ; 12394:  20 10 f8
+b04_a397:   .db $54                     ; 12397:  54
+b04_a398:   brk                         ; 12398:  00
+b04_a399:   brk                         ; 12399:  00
+b04_a39a:   brk                         ; 1239A:  00
+b04_a39b:   brk                         ; 1239B:  00
+b04_a39c:   brk                         ; 1239C:  00
+b04_a39d:   brk                         ; 1239D:  00
+b04_a39e:   tax                         ; 1239E:  aa
+b04_a39f:   brk                         ; 1239F:  00
+b04_a3a0:   .db $fa                     ; 123A0:  fa
+b04_a3a1:   cmp $e0,x                   ; 123A1:  d5 e0
+b04_a3a3:   cmp ($aa),y                 ; 123A3:  d1 aa
+b04_a3a5:   sbc ($00),y                 ; 123A5:  f1 00
+b04_a3a7:   brk                         ; 123A7:  00
+b04_a3a8:   brk                         ; 123A8:  00
+b04_a3a9:   brk                         ; 123A9:  00
+b04_a3aa:   brk                         ; 123AA:  00
+b04_a3ab:   brk                         ; 123AB:  00
+b04_a3ac:   brk                         ; 123AC:  00
+b04_a3ad:   brk                         ; 123AD:  00
+b04_a3ae:   .db $a3                     ; 123AE:  a3
+b04_a3af:   .db $17                     ; 123AF:  17
+b04_a3b0:   .db $6f                     ; 123B0:  6f
+b04_a3b1:   .db $77                     ; 123B1:  77
+b04_a3b2:   .db $ef                     ; 123B2:  ef
+b04_a3b3:   .db $77                     ; 123B3:  77
+b04_a3b4:   .db $eb                     ; 123B4:  eb
+b04_a3b5:   .db $d7                     ; 123B5:  d7
+b04_a3b6:   brk                         ; 123B6:  00
+b04_a3b7:   brk                         ; 123B7:  00
+b04_a3b8:   brk                         ; 123B8:  00
+b04_a3b9:   brk                         ; 123B9:  00
+b04_a3ba:   brk                         ; 123BA:  00
+b04_a3bb:   brk                         ; 123BB:  00
+b04_a3bc:   brk                         ; 123BC:  00
+b04_a3bd:   brk                         ; 123BD:  00
+b04_a3be:   ldy #$55                    ; 123BE:  a0 55
+b04_a3c0:   .db $eb                     ; 123C0:  eb
+b04_a3c1:   .db $44                     ; 123C1:  44
+b04_a3c2:   .db $ab                     ; 123C2:  ab
+b04_a3c3:   .db $43                     ; 123C3:  43
+b04_a3c4:   .db $17                     ; 123C4:  17
+b04_a3c5:   .db $2f                     ; 123C5:  2f
+b04_a3c6:   brk                         ; 123C6:  00
+b04_a3c7:   brk                         ; 123C7:  00
+b04_a3c8:   brk                         ; 123C8:  00
+b04_a3c9:   brk                         ; 123C9:  00
+b04_a3ca:   brk                         ; 123CA:  00
+b04_a3cb:   brk                         ; 123CB:  00
+b04_a3cc:   brk                         ; 123CC:  00
+b04_a3cd:   brk                         ; 123CD:  00
+b04_a3ce:   sbc #$d3                    ; 123CE:  e9 d3
+b04_a3d0:   .db $eb                     ; 123D0:  eb
+b04_a3d1:   sbc $e3,x                   ; 123D1:  f5 e3
+b04_a3d3:   .db $f3                     ; 123D3:  f3
+b04_a3d4:   .db $d7                     ; 123D4:  d7
+b04_a3d5:   .db $ab                     ; 123D5:  ab
+b04_a3d6:   brk                         ; 123D6:  00
+b04_a3d7:   brk                         ; 123D7:  00
+b04_a3d8:   brk                         ; 123D8:  00
+b04_a3d9:   brk                         ; 123D9:  00
+b04_a3da:   brk                         ; 123DA:  00
+b04_a3db:   brk                         ; 123DB:  00
+b04_a3dc:   brk                         ; 123DC:  00
+b04_a3dd:   brk                         ; 123DD:  00
+b04_a3de:   dey                         ; 123DE:  88
+b04_a3df:   eor $a8                     ; 123DF:  45 a8
+b04_a3e1:   cmp ($23,x)                 ; 123E1:  c1 23
+b04_a3e3:   eor ($ab),y                 ; 123E3:  51 ab
+b04_a3e5:   sta ($00,x)                 ; 123E5:  81 00
+b04_a3e7:   brk                         ; 123E7:  00
+b04_a3e8:   brk                         ; 123E8:  00
+b04_a3e9:   brk                         ; 123E9:  00
+b04_a3ea:   brk                         ; 123EA:  00
+b04_a3eb:   brk                         ; 123EB:  00
+b04_a3ec:   brk                         ; 123EC:  00
+b04_a3ed:   brk                         ; 123ED:  00
+b04_a3ee:   php                         ; 123EE:  08
+b04_a3ef:   .db $04                     ; 123EF:  04
+b04_a3f0:   pha                         ; 123F0:  48
+b04_a3f1:   bit $16                     ; 123F1:  24 16
+b04_a3f3:   stx $0245                   ; 123F3:  8e 45 02
+b04_a3f6:   brk                         ; 123F6:  00
+b04_a3f7:   brk                         ; 123F7:  00
+b04_a3f8:   brk                         ; 123F8:  00
+b04_a3f9:   brk                         ; 123F9:  00
+b04_a3fa:   brk                         ; 123FA:  00
+b04_a3fb:   brk                         ; 123FB:  00
+b04_a3fc:   brk                         ; 123FC:  00
+b04_a3fd:   brk                         ; 123FD:  00
+b04_a3fe:   cpy #$a9                    ; 123FE:  c0 a9
+b04_a400:   .db $f4                     ; 12400:  f4
+b04_a401:   .db $fa                     ; 12401:  fa
+b04_a402:   lda $e9d2                   ; 12402:  ad d2 e9
+b04_a405:   .db $f4                     ; 12405:  f4
+b04_a406:   brk                         ; 12406:  00
+b04_a407:   brk                         ; 12407:  00
+b04_a408:   brk                         ; 12408:  00
+b04_a409:   brk                         ; 12409:  00
+b04_a40a:   brk                         ; 1240A:  00
+b04_a40b:   brk                         ; 1240B:  00
+b04_a40c:   brk                         ; 1240C:  00
+b04_a40d:   brk                         ; 1240D:  00
+b04_a40e:   jsr $c808                   ; 1240E:  20 08 c8
+b04_a411:   .db $04                     ; 12411:  04
+b04_a412:   .db $22                     ; 12412:  22
+b04_a413:   .db $12                     ; 12413:  12
+b04_a414:   .db $1a                     ; 12414:  1a
+b04_a415:   clc                         ; 12415:  18
+b04_a416:   brk                         ; 12416:  00
+b04_a417:   brk                         ; 12417:  00
+b04_a418:   brk                         ; 12418:  00
+b04_a419:   brk                         ; 12419:  00
+b04_a41a:   brk                         ; 1241A:  00
+b04_a41b:   brk                         ; 1241B:  00
+b04_a41c:   brk                         ; 1241C:  00
+b04_a41d:   brk                         ; 1241D:  00
+b04_a41e:   brk                         ; 1241E:  00
+b04_a41f:   brk                         ; 1241F:  00
+b04_a420:   brk                         ; 12420:  00
+b04_a421:   brk                         ; 12421:  00
+b04_a422:   brk                         ; 12422:  00
+b04_a423:   sec                         ; 12423:  38
+b04_a424:   inc $3fff,x                 ; 12424:  fe ff 3f
+b04_a427:   .db $77                     ; 12427:  77
+b04_a428:   .db $ff                     ; 12428:  ff
+b04_a429:   inc $00c0,x                 ; 12429:  fe c0 00
+b04_a42c:   brk                         ; 1242C:  00
+b04_a42d:   brk                         ; 1242D:  00
+b04_a42e:   brk                         ; 1242E:  00
+b04_a42f:   brk                         ; 1242F:  00
+b04_a430:   .db $1c                     ; 12430:  1c
+b04_a431:   .db $7a                     ; 12431:  7a
+b04_a432:   sbc $187a,x                 ; 12432:  fd 7a 18
+b04_a435:   .db $47                     ; 12435:  47
+b04_a436:   .db $ff                     ; 12436:  ff
+b04_a437:   .db $63                     ; 12437:  63
+b04_a438:   .db $80                     ; 12438:  80
+b04_a439:   brk                         ; 12439:  00
+b04_a43a:   brk                         ; 1243A:  00
+b04_a43b:   brk                         ; 1243B:  00
+b04_a43c:   brk                         ; 1243C:  00
+b04_a43d:   brk                         ; 1243D:  00
+b04_a43e:   inx                         ; 1243E:  e8
+b04_a43f:   .db $f2                     ; 1243F:  f2
+b04_a440:   cmp $fd3f                   ; 12440:  cd 3f fd
+b04_a443:   inc $8fff,x                 ; 12443:  fe ff 8f
+b04_a446:   brk                         ; 12446:  00
+b04_a447:   brk                         ; 12447:  00
+b04_a448:   brk                         ; 12448:  00
+b04_a449:   brk                         ; 12449:  00
+b04_a44a:   brk                         ; 1244A:  00
+b04_a44b:   brk                         ; 1244B:  00
+b04_a44c:   brk                         ; 1244C:  00
+b04_a44d:   brk                         ; 1244D:  00
+b04_a44e:   .db $8f                     ; 1244E:  8f
+b04_a44f:   .db $3f                     ; 1244F:  3f
+b04_a450:   .db $1f                     ; 12450:  1f
+b04_a451:   .db $83                     ; 12451:  83
+b04_a452:   rti                         ; 12452:  40
+b04_a453:   lda $3f07                   ; 12453:  ad 07 3f
+b04_a456:   brk                         ; 12456:  00
+b04_a457:   brk                         ; 12457:  00
+b04_a458:   brk                         ; 12458:  00
+b04_a459:   brk                         ; 12459:  00
+b04_a45a:   brk                         ; 1245A:  00
+b04_a45b:   brk                         ; 1245B:  00
+b04_a45c:   brk                         ; 1245C:  00
+b04_a45d:   brk                         ; 1245D:  00
+b04_a45e:   brk                         ; 1245E:  00
+b04_a45f:   brk                         ; 1245F:  00
+b04_a460:   ora ($07,x)                 ; 12460:  01 07
+b04_a462:   .db $0f                     ; 12462:  0f
+b04_a463:   asl $4389,x                 ; 12463:  1e 89 43
+b04_a466:   .db $f7                     ; 12466:  f7
+b04_a467:   inc $70d8,x                 ; 12467:  fe d8 70
+b04_a46a:   brk                         ; 1246A:  00
+b04_a46b:   brk                         ; 1246B:  00
+b04_a46c:   brk                         ; 1246C:  00
+b04_a46d:   brk                         ; 1246D:  00
+b04_a46e:   brk                         ; 1246E:  00
+b04_a46f:   brk                         ; 1246F:  00
+b04_a470:   cpy #$a0                    ; 12470:  c0 a0
+b04_a472:   beq $a49e                   ; 12472:  f0 2a
+b04_a474:   sty $43                     ; 12474:  84 43
+b04_a476:   .db $fc                     ; 12476:  fc
+b04_a477:   rol $070b,x                 ; 12477:  3e 0b 07
+b04_a47a:   ora ($00,x)                 ; 1247A:  01 00
+b04_a47c:   brk                         ; 1247C:  00
+b04_a47d:   brk                         ; 1247D:  00
+b04_a47e:   ldx #$d8                    ; 1247E:  a2 d8
+b04_a480:   sbc ($10,x)                 ; 12480:  e1 10
+b04_a482:   cmp #$e3                    ; 12482:  c9 e3
+b04_a484:   .db $d7                     ; 12484:  d7
+b04_a485:   .db $ab                     ; 12485:  ab
+b04_a486:   brk                         ; 12486:  00
+b04_a487:   brk                         ; 12487:  00
+b04_a488:   brk                         ; 12488:  00
+b04_a489:   brk                         ; 12489:  00
+b04_a48a:   brk                         ; 1248A:  00
+b04_a48b:   brk                         ; 1248B:  00
+b04_a48c:   brk                         ; 1248C:  00
+b04_a48d:   brk                         ; 1248D:  00
+b04_a48e:   ldy $d2                     ; 1248E:  a4 d2
+b04_a490:   sbc $1a,x                   ; 12490:  f5 1a
+b04_a492:   eor $a1                     ; 12492:  45 a1
+b04_a494:   .db $d4                     ; 12494:  d4
+b04_a495:   tax                         ; 12495:  aa
+b04_a496:   brk                         ; 12496:  00
+b04_a497:   brk                         ; 12497:  00
+b04_a498:   brk                         ; 12498:  00
+b04_a499:   brk                         ; 12499:  00
+b04_a49a:   brk                         ; 1249A:  00
+b04_a49b:   brk                         ; 1249B:  00
+b04_a49c:   brk                         ; 1249C:  00
+b04_a49d:   brk                         ; 1249D:  00
+b04_a49e:   ror $e9,x                   ; 1249E:  76 e9
+b04_a4a0:   .db $f7                     ; 124A0:  f7
+b04_a4a1:   .db $fb                     ; 124A1:  fb
+b04_a4a2:   sbc $fa,x                   ; 124A2:  f5 fa
+b04_a4a4:   .db $fc                     ; 124A4:  fc
+b04_a4a5:   .db $fc                     ; 124A5:  fc
+b04_a4a6:   brk                         ; 124A6:  00
+b04_a4a7:   brk                         ; 124A7:  00
+b04_a4a8:   brk                         ; 124A8:  00
+b04_a4a9:   brk                         ; 124A9:  00
+b04_a4aa:   brk                         ; 124AA:  00
+b04_a4ab:   brk                         ; 124AB:  00
+b04_a4ac:   brk                         ; 124AC:  00
+b04_a4ad:   brk                         ; 124AD:  00
+b04_a4ae:   ora $57bb,x                 ; 124AE:  1d bb 57
+b04_a4b1:   .db $e7                     ; 124B1:  e7
+b04_a4b2:   ldx #$ed                    ; 124B2:  a2 ed
+b04_a4b4:   .db $52                     ; 124B4:  52
+b04_a4b5:   .db $cf                     ; 124B5:  cf
+b04_a4b6:   brk                         ; 124B6:  00
+b04_a4b7:   brk                         ; 124B7:  00
+b04_a4b8:   brk                         ; 124B8:  00
+b04_a4b9:   brk                         ; 124B9:  00
+b04_a4ba:   brk                         ; 124BA:  00
+b04_a4bb:   brk                         ; 124BB:  00
+b04_a4bc:   brk                         ; 124BC:  00
+b04_a4bd:   brk                         ; 124BD:  00
+b04_a4be:   tax                         ; 124BE:  aa
+b04_a4bf:   brk                         ; 124BF:  00
+b04_a4c0:   brk                         ; 124C0:  00
+b04_a4c1:   brk                         ; 124C1:  00
+b04_a4c2:   brk                         ; 124C2:  00
+b04_a4c3:   brk                         ; 124C3:  00
+b04_a4c4:   brk                         ; 124C4:  00
+b04_a4c5:   brk                         ; 124C5:  00
+b04_a4c6:   brk                         ; 124C6:  00
+b04_a4c7:   .db $ff                     ; 124C7:  ff
+b04_a4c8:   inc $fe,x                   ; 124C8:  f6 fe
+b04_a4ca:   .db $df                     ; 124CA:  df
+b04_a4cb:   .db $ff                     ; 124CB:  ff
+b04_a4cc:   .db $7b                     ; 124CC:  7b
+b04_a4cd:   .db $3f                     ; 124CD:  3f
+b04_a4ce:   .db $3f                     ; 124CE:  3f
+b04_a4cf:   .db $7f                     ; 124CF:  7f
+b04_a4d0:   .db $ff                     ; 124D0:  ff
+b04_a4d1:   tax                         ; 124D1:  aa
+b04_a4d2:   brk                         ; 124D2:  00
+b04_a4d3:   brk                         ; 124D3:  00
+b04_a4d4:   brk                         ; 124D4:  00
+b04_a4d5:   brk                         ; 124D5:  00
+b04_a4d6:   brk                         ; 124D6:  00
+b04_a4d7:   brk                         ; 124D7:  00
+b04_a4d8:   brk                         ; 124D8:  00
+b04_a4d9:   brk                         ; 124D9:  00
+b04_a4da:   .db $df                     ; 124DA:  df
+b04_a4db:   .db $ff                     ; 124DB:  ff
+b04_a4dc:   adc $f5ff,x                 ; 124DC:  7d ff f5
+b04_a4df:   nop                         ; 124DF:  ea
+b04_a4e0:   .db $f4                     ; 124E0:  f4
+b04_a4e1:   tay                         ; 124E1:  a8
+b04_a4e2:   .db $04                     ; 124E2:  04
+b04_a4e3:   lda $efd7,y                 ; 124E3:  b9 d7 ef
+b04_a4e6:   brk                         ; 124E6:  00
+b04_a4e7:   brk                         ; 124E7:  00
+b04_a4e8:   brk                         ; 124E8:  00
+b04_a4e9:   brk                         ; 124E9:  00
+b04_a4ea:   brk                         ; 124EA:  00
+b04_a4eb:   brk                         ; 124EB:  00
+b04_a4ec:   brk                         ; 124EC:  00
+b04_a4ed:   brk                         ; 124ED:  00
+b04_a4ee:   sbc ($68),y                 ; 124EE:  f1 68
+b04_a4f0:   and $2a,x                   ; 124F0:  35 2a
+b04_a4f2:   .db $c7                     ; 124F2:  c7
+b04_a4f3:   .db $a7                     ; 124F3:  a7
+b04_a4f4:   sbc ($d0,x)                 ; 124F4:  e1 d0
+b04_a4f6:   brk                         ; 124F6:  00
+b04_a4f7:   brk                         ; 124F7:  00
+b04_a4f8:   brk                         ; 124F8:  00
+b04_a4f9:   brk                         ; 124F9:  00
+b04_a4fa:   brk                         ; 124FA:  00
+b04_a4fb:   brk                         ; 124FB:  00
+b04_a4fc:   brk                         ; 124FC:  00
+b04_a4fd:   brk                         ; 124FD:  00
+b04_a4fe:   .db $df                     ; 124FE:  df
+b04_a4ff:   ldx $fb7d,y                 ; 124FF:  be 7d fb
+b04_a502:   eor $00,x                   ; 12502:  55 00
+b04_a504:   brk                         ; 12504:  00
+b04_a505:   brk                         ; 12505:  00
+b04_a506:   brk                         ; 12506:  00
+b04_a507:   brk                         ; 12507:  00
+b04_a508:   brk                         ; 12508:  00
+b04_a509:   brk                         ; 12509:  00
+b04_a50a:   brk                         ; 1250A:  00
+b04_a50b:   .db $ff                     ; 1250B:  ff
+b04_a50c:   .db $ef                     ; 1250C:  ef
+b04_a50d:   .db $fb                     ; 1250D:  fb
+b04_a50e:   inx                         ; 1250E:  e8
+b04_a50f:   .db $fa                     ; 1250F:  fa
+b04_a510:   sbc $55fa,x                 ; 12510:  fd fa 55
+b04_a513:   brk                         ; 12513:  00
+b04_a514:   brk                         ; 12514:  00
+b04_a515:   brk                         ; 12515:  00
+b04_a516:   brk                         ; 12516:  00
+b04_a517:   brk                         ; 12517:  00
+b04_a518:   brk                         ; 12518:  00
+b04_a519:   brk                         ; 12519:  00
+b04_a51a:   brk                         ; 1251A:  00
+b04_a51b:   .db $ff                     ; 1251B:  ff
+b04_a51c:   ldx $00fc,y                 ; 1251C:  be fc 00
+b04_a51f:   clc                         ; 1251F:  18
+b04_a520:   bit $42                     ; 12520:  24 42
+b04_a522:   .db $42                     ; 12522:  42
+b04_a523:   bit $18                     ; 12523:  24 18
+b04_a525:   brk                         ; 12525:  00
+b04_a526:   brk                         ; 12526:  00
+b04_a527:   clc                         ; 12527:  18
+b04_a528:   bit $42                     ; 12528:  24 42
+b04_a52a:   .db $42                     ; 1252A:  42
+b04_a52b:   bit $18                     ; 1252B:  24 18
+b04_a52d:   brk                         ; 1252D:  00
+b04_a52e:   brk                         ; 1252E:  00
+b04_a52f:   .db $42                     ; 1252F:  42
+b04_a530:   bit $18                     ; 12530:  24 18
+b04_a532:   clc                         ; 12532:  18
+b04_a533:   bit $42                     ; 12533:  24 42
+b04_a535:   brk                         ; 12535:  00
+b04_a536:   brk                         ; 12536:  00
+b04_a537:   .db $42                     ; 12537:  42
+b04_a538:   bit $18                     ; 12538:  24 18
+b04_a53a:   clc                         ; 1253A:  18
+b04_a53b:   bit $42                     ; 1253B:  24 42
+b04_a53d:   brk                         ; 1253D:  00
+b04_a53e:   .db $02                     ; 1253E:  02
+b04_a53f:   asl $0f                     ; 1253F:  06 0f
+b04_a541:   .db $1f                     ; 12541:  1f
+b04_a542:   .db $3f                     ; 12542:  3f
+b04_a543:   .db $7f                     ; 12543:  7f
+b04_a544:   .db $ff                     ; 12544:  ff
+b04_a545:   brk                         ; 12545:  00
+b04_a546:   .db $02                     ; 12546:  02
+b04_a547:   asl $0f                     ; 12547:  06 0f
+b04_a549:   .db $1f                     ; 12549:  1f
+b04_a54a:   .db $3f                     ; 1254A:  3f
+b04_a54b:   .db $7f                     ; 1254B:  7f
+b04_a54c:   .db $ff                     ; 1254C:  ff
+b04_a54d:   brk                         ; 1254D:  00
+b04_a54e:   brk                         ; 1254E:  00
+b04_a54f:   brk                         ; 1254F:  00
+b04_a550:   .db $ff                     ; 12550:  ff
+b04_a551:   .db $ff                     ; 12551:  ff
+b04_a552:   .db $ff                     ; 12552:  ff
+b04_a553:   .db $ff                     ; 12553:  ff
+b04_a554:   .db $ff                     ; 12554:  ff
+b04_a555:   brk                         ; 12555:  00
+b04_a556:   brk                         ; 12556:  00
+b04_a557:   brk                         ; 12557:  00
+b04_a558:   .db $ff                     ; 12558:  ff
+b04_a559:   .db $ff                     ; 12559:  ff
+b04_a55a:   .db $ff                     ; 1255A:  ff
+b04_a55b:   .db $ff                     ; 1255B:  ff
+b04_a55c:   .db $ff                     ; 1255C:  ff
+b04_a55d:   brk                         ; 1255D:  00
+b04_a55e:   brk                         ; 1255E:  00
+b04_a55f:   brk                         ; 1255F:  00
+b04_a560:   .db $ff                     ; 12560:  ff
+b04_a561:   .db $ff                     ; 12561:  ff
+b04_a562:   .db $ff                     ; 12562:  ff
+b04_a563:   .db $ff                     ; 12563:  ff
+b04_a564:   .db $ff                     ; 12564:  ff
+b04_a565:   brk                         ; 12565:  00
+b04_a566:   brk                         ; 12566:  00
+b04_a567:   brk                         ; 12567:  00
+b04_a568:   .db $ff                     ; 12568:  ff
+b04_a569:   .db $ff                     ; 12569:  ff
+b04_a56a:   .db $ff                     ; 1256A:  ff
+b04_a56b:   .db $ff                     ; 1256B:  ff
+b04_a56c:   .db $ff                     ; 1256C:  ff
+b04_a56d:   brk                         ; 1256D:  00
+b04_a56e:   rti                         ; 1256E:  40
+b04_a56f:   rts                         ; 1256F:  60
+b04_a570:   beq $a56a                   ; 12570:  f0 f8
+b04_a572:   .db $fc                     ; 12572:  fc
+b04_a573:   inc $00ff,x                 ; 12573:  fe ff 00
+b04_a576:   rti                         ; 12576:  40
+b04_a577:   rts                         ; 12577:  60
+b04_a578:   beq $a572                   ; 12578:  f0 f8
+b04_a57a:   .db $fc                     ; 1257A:  fc
+b04_a57b:   inc $00ff,x                 ; 1257B:  fe ff 00
+b04_a57e:   rti                         ; 1257E:  40
+b04_a57f:   .db $04                     ; 1257F:  04
+b04_a580:   bpl $a586                   ; 12580:  10 04
+b04_a582:   .db $04                     ; 12582:  04
+b04_a583:   .db $04                     ; 12583:  04
+b04_a584:   bpl $a58a                   ; 12584:  10 04
+b04_a586:   .db $04                     ; 12586:  04
+b04_a587:   jsr $4010                   ; 12587:  20 10 40
+b04_a58a:   rti                         ; 1258A:  40
+b04_a58b:   bpl $a591                   ; 1258B:  10 04
+b04_a58d:   rti                         ; 1258D:  40
+b04_a58e:   rti                         ; 1258E:  40
+b04_a58f:   php                         ; 1258F:  08
+b04_a590:   .db $04                     ; 12590:  04
+b04_a591:   .db $04                     ; 12591:  04
+b04_a592:   .db $04                     ; 12592:  04
+b04_a593:   bpl $a5d5                   ; 12593:  10 40
+b04_a595:   .db $04                     ; 12595:  04
+b04_a596:   .db $04                     ; 12596:  04
+b04_a597:   .db $04                     ; 12597:  04
+b04_a598:   rti                         ; 12598:  40
+b04_a599:   rti                         ; 12599:  40
+b04_a59a:   .db $04                     ; 1259A:  04
+b04_a59b:   .db $04                     ; 1259B:  04
+b04_a59c:   .db $04                     ; 1259C:  04
+b04_a59d:   .db $04                     ; 1259D:  04
+b04_a59e:   .db $04                     ; 1259E:  04
+b04_a59f:   .db $04                     ; 1259F:  04
+b04_a5a0:   .db $04                     ; 125A0:  04
+b04_a5a1:   .db $04                     ; 125A1:  04
+b04_a5a2:   .db $04                     ; 125A2:  04
+b04_a5a3:   .db $04                     ; 125A3:  04
+b04_a5a4:   .db $04                     ; 125A4:  04
+b04_a5a5:   rti                         ; 125A5:  40
+b04_a5a6:   .db $04                     ; 125A6:  04
+b04_a5a7:   .db $04                     ; 125A7:  04
+b04_a5a8:   .db $04                     ; 125A8:  04
+b04_a5a9:   rti                         ; 125A9:  40
+b04_a5aa:   .db $04                     ; 125AA:  04
+b04_a5ab:   rti                         ; 125AB:  40
+b04_a5ac:   rti                         ; 125AC:  40
+b04_a5ad:   rti                         ; 125AD:  40
+b04_a5ae:   .db $04                     ; 125AE:  04
+b04_a5af:   rti                         ; 125AF:  40
+b04_a5b0:   rti                         ; 125B0:  40
+b04_a5b1:   rti                         ; 125B1:  40
+b04_a5b2:   rti                         ; 125B2:  40
+b04_a5b3:   rti                         ; 125B3:  40
+b04_a5b4:   rti                         ; 125B4:  40
+b04_a5b5:   rti                         ; 125B5:  40
+b04_a5b6:   .db $04                     ; 125B6:  04
+b04_a5b7:   .db $04                     ; 125B7:  04
+b04_a5b8:   .db $04                     ; 125B8:  04
+b04_a5b9:   rti                         ; 125B9:  40
+b04_a5ba:   rti                         ; 125BA:  40
+b04_a5bb:   rti                         ; 125BB:  40
+b04_a5bc:   .db $04                     ; 125BC:  04
+b04_a5bd:   .db $04                     ; 125BD:  04
+b04_a5be:   .db $04                     ; 125BE:  04
+b04_a5bf:   rti                         ; 125BF:  40
+b04_a5c0:   rti                         ; 125C0:  40
+b04_a5c1:   rti                         ; 125C1:  40
+b04_a5c2:   .db $04                     ; 125C2:  04
+b04_a5c3:   .db $04                     ; 125C3:  04
+b04_a5c4:   rti                         ; 125C4:  40
+b04_a5c5:   rti                         ; 125C5:  40
+b04_a5c6:   rti                         ; 125C6:  40
+b04_a5c7:   rti                         ; 125C7:  40
+b04_a5c8:   .db $04                     ; 125C8:  04
+b04_a5c9:   .db $04                     ; 125C9:  04
+b04_a5ca:   rti                         ; 125CA:  40
+b04_a5cb:   rti                         ; 125CB:  40
+b04_a5cc:   .db $04                     ; 125CC:  04
+b04_a5cd:   .db $04                     ; 125CD:  04
+b04_a5ce:   .db $04                     ; 125CE:  04
+b04_a5cf:   rti                         ; 125CF:  40
+b04_a5d0:   .db $04                     ; 125D0:  04
+b04_a5d1:   rti                         ; 125D1:  40
+b04_a5d2:   .db $04                     ; 125D2:  04
+b04_a5d3:   .db $04                     ; 125D3:  04
+b04_a5d4:   rti                         ; 125D4:  40
+b04_a5d5:   rti                         ; 125D5:  40
+b04_a5d6:   bpl $a5e8                   ; 125D6:  10 10
+b04_a5d8:   .db $80                     ; 125D8:  80
+b04_a5d9:   .db $80                     ; 125D9:  80
+b04_a5da:   jsr $0804                   ; 125DA:  20 04 08
+b04_a5dd:   .db $04                     ; 125DD:  04
+b04_a5de:   .db $04                     ; 125DE:  04
+b04_a5df:   .db $04                     ; 125DF:  04
+b04_a5e0:   rti                         ; 125E0:  40
+b04_a5e1:   bpl $a5f3                   ; 125E1:  10 10
+b04_a5e3:   bpl $a5f5                   ; 125E3:  10 10
+b04_a5e5:   .db $80                     ; 125E5:  80
+b04_a5e6:   .db $80                     ; 125E6:  80
+b04_a5e7:   .db $80                     ; 125E7:  80
+b04_a5e8:   .db $80                     ; 125E8:  80
+b04_a5e9:   .db $04                     ; 125E9:  04
+b04_a5ea:   .db $04                     ; 125EA:  04
+b04_a5eb:   .db $04                     ; 125EB:  04
+b04_a5ec:   .db $80                     ; 125EC:  80
+b04_a5ed:   bpl $a56f                   ; 125ED:  10 80
+b04_a5ef:   .db $80                     ; 125EF:  80
+b04_a5f0:   .db $80                     ; 125F0:  80
+b04_a5f1:   .db $80                     ; 125F1:  80
+b04_a5f2:   bpl $a604                   ; 125F2:  10 10
+b04_a5f4:   .db $04                     ; 125F4:  04
+b04_a5f5:   .db $04                     ; 125F5:  04
+b04_a5f6:   rti                         ; 125F6:  40
+b04_a5f7:   bpl $a579                   ; 125F7:  10 80
+b04_a5f9:   .db $80                     ; 125F9:  80
+b04_a5fa:   .db $80                     ; 125FA:  80
+b04_a5fb:   .db $80                     ; 125FB:  80
+b04_a5fc:   .db $80                     ; 125FC:  80
+b04_a5fd:   .db $80                     ; 125FD:  80
+b04_a5fe:   php                         ; 125FE:  08
+b04_a5ff:   bpl $a605                   ; 125FF:  10 04
+b04_a601:   rti                         ; 12601:  40
+b04_a602:   bpl $a584                   ; 12602:  10 80
+b04_a604:   bpl $a616                   ; 12604:  10 10
+b04_a606:   jsr $0410                   ; 12606:  20 10 04
+b04_a609:   .db $04                     ; 12609:  04
+b04_a60a:   .db $04                     ; 1260A:  04
+b04_a60b:   .db $04                     ; 1260B:  04
+b04_a60c:   rti                         ; 1260C:  40
+b04_a60d:   bpl $a58f                   ; 1260D:  10 80
+b04_a60f:   bpl $a621                   ; 1260F:  10 10
+b04_a611:   .db $80                     ; 12611:  80
+b04_a612:   .db $04                     ; 12612:  04
+b04_a613:   .db $04                     ; 12613:  04
+b04_a614:   .db $80                     ; 12614:  80
+b04_a615:   .db $80                     ; 12615:  80
+b04_a616:   .db $04                     ; 12616:  04
+b04_a617:   rti                         ; 12617:  40
+b04_a618:   bpl $a62a                   ; 12618:  10 10
+b04_a61a:   bpl $a59c                   ; 1261A:  10 80
+b04_a61c:   bpl $a622                   ; 1261C:  10 04
+b04_a61e:   .db $04                     ; 1261E:  04
+b04_a61f:   .db $80                     ; 1261F:  80
+b04_a620:   .db $80                     ; 12620:  80
+b04_a621:   .db $04                     ; 12621:  04
+b04_a622:   rti                         ; 12622:  40
+b04_a623:   bpl $a635                   ; 12623:  10 10
+b04_a625:   bpl $a5a7                   ; 12625:  10 80
+b04_a627:   bpl $a649                   ; 12627:  10 20
+b04_a629:   bpl $a5ab                   ; 12629:  10 80
+b04_a62b:   bpl $a631                   ; 1262B:  10 04
+b04_a62d:   rti                         ; 1262D:  40
+b04_a62e:   bpl $a5b0                   ; 1262E:  10 80
+b04_a630:   bpl $a5b2                   ; 12630:  10 80
+b04_a632:   bpl $a638                   ; 12632:  10 04
+b04_a634:   bpl $a63e                   ; 12634:  10 08
+b04_a636:   bpl $a63c                   ; 12636:  10 04
+b04_a638:   rti                         ; 12638:  40
+b04_a639:   .db $80                     ; 12639:  80
+b04_a63a:   bpl $a64c                   ; 1263A:  10 10
+b04_a63c:   .db $80                     ; 1263C:  80
+b04_a63d:   .db $04                     ; 1263D:  04
+b04_a63e:   .db $04                     ; 1263E:  04
+b04_a63f:   .db $04                     ; 1263F:  04
+b04_a640:   .db $02                     ; 12640:  02
+b04_a641:   .db $04                     ; 12641:  04
+b04_a642:   .db $04                     ; 12642:  04
+b04_a643:   rti                         ; 12643:  40
+b04_a644:   .db $80                     ; 12644:  80
+b04_a645:   bpl $a5c7                   ; 12645:  10 80
+b04_a647:   .db $80                     ; 12647:  80
+b04_a648:   .db $04                     ; 12648:  04
+b04_a649:   .db $04                     ; 12649:  04
+b04_a64a:   .db $04                     ; 1264A:  04
+b04_a64b:   .db $04                     ; 1264B:  04
+b04_a64c:   .db $02                     ; 1264C:  02
+b04_a64d:   .db $02                     ; 1264D:  02
+b04_a64e:   .db $04                     ; 1264E:  04
+b04_a64f:   .db $02                     ; 1264F:  02
+b04_a650:   .db $02                     ; 12650:  02
+b04_a651:   bpl $a663                   ; 12651:  10 10
+b04_a653:   .db $04                     ; 12653:  04
+b04_a654:   .db $04                     ; 12654:  04
+b04_a655:   .db $04                     ; 12655:  04
+b04_a656:   .db $04                     ; 12656:  04
+b04_a657:   .db $04                     ; 12657:  04
+b04_a658:   .db $02                     ; 12658:  02
+b04_a659:   .db $02                     ; 12659:  02
+b04_a65a:   rti                         ; 1265A:  40
+b04_a65b:   rti                         ; 1265B:  40
+b04_a65c:   rti                         ; 1265C:  40
+b04_a65d:   .db $04                     ; 1265D:  04
+b04_a65e:   .db $04                     ; 1265E:  04
+b04_a65f:   .db $04                     ; 1265F:  04
+b04_a660:   .db $04                     ; 12660:  04
+b04_a661:   .db $04                     ; 12661:  04
+b04_a662:   .db $04                     ; 12662:  04
+b04_a663:   .db $04                     ; 12663:  04
+b04_a664:   .db $04                     ; 12664:  04
+b04_a665:   .db $04                     ; 12665:  04
+b04_a666:   .db $04                     ; 12666:  04
+b04_a667:   .db $04                     ; 12667:  04
+b04_a668:   .db $04                     ; 12668:  04
+b04_a669:   .db $04                     ; 12669:  04
+b04_a66a:   .db $80                     ; 1266A:  80
+b04_a66b:   .db $80                     ; 1266B:  80
+b04_a66c:   .db $04                     ; 1266C:  04
+b04_a66d:   .db $04                     ; 1266D:  04
+b04_a66e:   bpl $a674                   ; 1266E:  10 04
+b04_a670:   .db $04                     ; 12670:  04
+b04_a671:   .db $04                     ; 12671:  04
+b04_a672:   .db $04                     ; 12672:  04
+b04_a673:   rti                         ; 12673:  40
+b04_a674:   .db $04                     ; 12674:  04
+b04_a675:   .db $80                     ; 12675:  80
+b04_a676:   .db $80                     ; 12676:  80
+b04_a677:   .db $04                     ; 12677:  04
+b04_a678:   .db $04                     ; 12678:  04
+b04_a679:   bpl $a68b                   ; 12679:  10 10
+b04_a67b:   .db $04                     ; 1267B:  04
+b04_a67c:   rti                         ; 1267C:  40
+b04_a67d:   rti                         ; 1267D:  40
+b04_a67e:   jsr $0804                   ; 1267E:  20 04 08
+b04_a681:   .db $80                     ; 12681:  80
+b04_a682:   .db $80                     ; 12682:  80
+b04_a683:   .db $04                     ; 12683:  04
+b04_a684:   .db $04                     ; 12684:  04
+b04_a685:   bpl $a68b                   ; 12685:  10 04
+b04_a687:   rti                         ; 12687:  40
+b04_a688:   .db $04                     ; 12688:  04
+b04_a689:   .db $04                     ; 12689:  04
+b04_a68a:   .db $04                     ; 1268A:  04
+b04_a68b:   .db $80                     ; 1268B:  80
+b04_a68c:   .db $80                     ; 1268C:  80
+b04_a68d:   .db $80                     ; 1268D:  80
+b04_a68e:   .db $04                     ; 1268E:  04
+b04_a68f:   .db $04                     ; 1268F:  04
+b04_a690:   .db $04                     ; 12690:  04
+b04_a691:   bpl $a6a3                   ; 12691:  10 10
+b04_a693:   .db $80                     ; 12693:  80
+b04_a694:   .db $80                     ; 12694:  80
+b04_a695:   .db $02                     ; 12695:  02
+b04_a696:   .db $02                     ; 12696:  02
+b04_a697:   .db $02                     ; 12697:  02
+b04_a698:   .db $04                     ; 12698:  04
+b04_a699:   bpl $a6ab                   ; 12699:  10 10
+b04_a69b:   rti                         ; 1269B:  40
+b04_a69c:   bpl $a6ae                   ; 1269C:  10 10
+b04_a69e:   .db $80                     ; 1269E:  80
+b04_a69f:   .db $80                     ; 1269F:  80
+b04_a6a0:   bpl $a6a6                   ; 126A0:  10 04
+b04_a6a2:   .db $02                     ; 126A2:  02
+b04_a6a3:   php                         ; 126A3:  08
+b04_a6a4:   .db $04                     ; 126A4:  04
+b04_a6a5:   .db $04                     ; 126A5:  04
+b04_a6a6:   rti                         ; 126A6:  40
+b04_a6a7:   bpl $a629                   ; 126A7:  10 80
+b04_a6a9:   .db $80                     ; 126A9:  80
+b04_a6aa:   .db $80                     ; 126AA:  80
+b04_a6ab:   bpl $a6cd                   ; 126AB:  10 20
+b04_a6ad:   .db $04                     ; 126AD:  04
+b04_a6ae:   .db $04                     ; 126AE:  04
+b04_a6af:   .db $04                     ; 126AF:  04
+b04_a6b0:   .db $04                     ; 126B0:  04
+b04_a6b1:   rti                         ; 126B1:  40
+b04_a6b2:   bpl $a6c4                   ; 126B2:  10 10
+b04_a6b4:   .db $80                     ; 126B4:  80
+b04_a6b5:   bpl $a6c7                   ; 126B5:  10 10
+b04_a6b7:   rti                         ; 126B7:  40
+b04_a6b8:   rti                         ; 126B8:  40
+b04_a6b9:   rti                         ; 126B9:  40
+b04_a6ba:   .db $04                     ; 126BA:  04
+b04_a6bb:   .db $04                     ; 126BB:  04
+b04_a6bc:   rti                         ; 126BC:  40
+b04_a6bd:   bpl $a6cf                   ; 126BD:  10 10
+b04_a6bf:   bpl $a701                   ; 126BF:  10 40
+b04_a6c1:   rti                         ; 126C1:  40
+b04_a6c2:   rti                         ; 126C2:  40
+b04_a6c3:   rti                         ; 126C3:  40
+b04_a6c4:   rti                         ; 126C4:  40
+b04_a6c5:   rti                         ; 126C5:  40
+b04_a6c6:   rti                         ; 126C6:  40
+b04_a6c7:   rti                         ; 126C7:  40
+b04_a6c8:   rti                         ; 126C8:  40
+b04_a6c9:   jsr $0202                   ; 126C9:  20 02 02
+b04_a6cc:   .db $02                     ; 126CC:  02
+b04_a6cd:   .db $04                     ; 126CD:  04
+b04_a6ce:   .db $04                     ; 126CE:  04
+b04_a6cf:   bpl $a6d5                   ; 126CF:  10 04
+b04_a6d1:   .db $04                     ; 126D1:  04
+b04_a6d2:   .db $04                     ; 126D2:  04
+b04_a6d3:   rti                         ; 126D3:  40
+b04_a6d4:   .db $04                     ; 126D4:  04
+b04_a6d5:   .db $04                     ; 126D5:  04
+b04_a6d6:   bpl $a6da                   ; 126D6:  10 02
+b04_a6d8:   bpl $a6ea                   ; 126D8:  10 10
+b04_a6da:   .db $04                     ; 126DA:  04
+b04_a6db:   .db $04                     ; 126DB:  04
+b04_a6dc:   .db $04                     ; 126DC:  04
+b04_a6dd:   .db $04                     ; 126DD:  04
+b04_a6de:   rti                         ; 126DE:  40
+b04_a6df:   bpl $a661                   ; 126DF:  10 80
+b04_a6e1:   bpl $a6f3                   ; 126E1:  10 10
+b04_a6e3:   php                         ; 126E3:  08
+b04_a6e4:   .db $04                     ; 126E4:  04
+b04_a6e5:   bpl $a6eb                   ; 126E5:  10 04
+b04_a6e7:   .db $04                     ; 126E7:  04
+b04_a6e8:   .db $04                     ; 126E8:  04
+b04_a6e9:   rti                         ; 126E9:  40
+b04_a6ea:   .db $04                     ; 126EA:  04
+b04_a6eb:   bpl $a6f1                   ; 126EB:  10 04
+b04_a6ed:   .db $04                     ; 126ED:  04
+b04_a6ee:   .db $04                     ; 126EE:  04
+b04_a6ef:   .db $04                     ; 126EF:  04
+b04_a6f0:   bpl $a702                   ; 126F0:  10 10
+b04_a6f2:   bpl $a704                   ; 126F2:  10 10
+b04_a6f4:   .db $04                     ; 126F4:  04
+b04_a6f5:   .db $04                     ; 126F5:  04
+b04_a6f6:   .db $04                     ; 126F6:  04
+b04_a6f7:   .db $04                     ; 126F7:  04
+b04_a6f8:   .db $04                     ; 126F8:  04
+b04_a6f9:   .db $04                     ; 126F9:  04
+b04_a6fa:   bpl $a70c                   ; 126FA:  10 10
+b04_a6fc:   bpl $a70e                   ; 126FC:  10 10
+b04_a6fe:   bpl $a710                   ; 126FE:  10 10
+b04_a700:   bpl $a712                   ; 12700:  10 10
+b04_a702:   bpl $a708                   ; 12702:  10 04
+b04_a704:   .db $04                     ; 12704:  04
+b04_a705:   .db $04                     ; 12705:  04
+b04_a706:   .db $04                     ; 12706:  04
+b04_a707:   .db $04                     ; 12707:  04
+b04_a708:   .db $04                     ; 12708:  04
+b04_a709:   .db $04                     ; 12709:  04
+b04_a70a:   .db $02                     ; 1270A:  02
+b04_a70b:   .db $02                     ; 1270B:  02
+b04_a70c:   bpl $a712                   ; 1270C:  10 04
+b04_a70e:   .db $04                     ; 1270E:  04
+b04_a70f:   .db $04                     ; 1270F:  04
+b04_a710:   .db $04                     ; 12710:  04
+b04_a711:   .db $04                     ; 12711:  04
+b04_a712:   .db $04                     ; 12712:  04
+b04_a713:   .db $04                     ; 12713:  04
+b04_a714:   rti                         ; 12714:  40
+b04_a715:   .db $02                     ; 12715:  02
+b04_a716:   .db $02                     ; 12716:  02
+b04_a717:   .db $02                     ; 12717:  02
+b04_a718:   .db $04                     ; 12718:  04
+b04_a719:   .db $04                     ; 12719:  04
+b04_a71a:   .db $04                     ; 1271A:  04
+b04_a71b:   .db $04                     ; 1271B:  04
+b04_a71c:   .db $04                     ; 1271C:  04
+b04_a71d:   .db $04                     ; 1271D:  04
+b04_a71e:   .db $04                     ; 1271E:  04
+b04_a71f:   rti                         ; 1271F:  40
+b04_a720:   bpl $a732                   ; 12720:  10 10
+b04_a722:   bpl $a728                   ; 12722:  10 04
+b04_a724:   .db $04                     ; 12724:  04
+b04_a725:   .db $04                     ; 12725:  04
+b04_a726:   .db $04                     ; 12726:  04
+b04_a727:   .db $04                     ; 12727:  04
+b04_a728:   .db $04                     ; 12728:  04
+b04_a729:   jsr $1040                   ; 12729:  20 40 10
+b04_a72c:   bpl $a73e                   ; 1272C:  10 10
+b04_a72e:   bpl $a734                   ; 1272E:  10 04
+b04_a730:   .db $04                     ; 12730:  04
+b04_a731:   php                         ; 12731:  08
+b04_a732:   rti                         ; 12732:  40
+b04_a733:   rti                         ; 12733:  40
+b04_a734:   rti                         ; 12734:  40
+b04_a735:   rti                         ; 12735:  40
+b04_a736:   .db $80                     ; 12736:  80
+b04_a737:   bpl $a749                   ; 12737:  10 10
+b04_a739:   bpl $a743                   ; 12739:  10 08
+b04_a73b:   bpl $a75d                   ; 1273B:  10 20
+b04_a73d:   .db $80                     ; 1273D:  80
+b04_a73e:   .db $80                     ; 1273E:  80
+b04_a73f:   bpl $a751                   ; 1273F:  10 10
+b04_a741:   bpl $a753                   ; 12741:  10 10
+b04_a743:   .db $80                     ; 12743:  80
+b04_a744:   .db $80                     ; 12744:  80
+b04_a745:   .db $80                     ; 12745:  80
+b04_a746:   .db $80                     ; 12746:  80
+b04_a747:   .db $80                     ; 12747:  80
+b04_a748:   .db $80                     ; 12748:  80
+b04_a749:   .db $80                     ; 12749:  80
+b04_a74a:   bpl $a75c                   ; 1274A:  10 10
+b04_a74c:   bpl $a6ce                   ; 1274C:  10 80
+b04_a74e:   bpl $a760                   ; 1274E:  10 10
+b04_a750:   bpl $a762                   ; 12750:  10 10
+b04_a752:   bpl $a6d4                   ; 12752:  10 80
+b04_a754:   .db $80                     ; 12754:  80
+b04_a755:   bpl $a767                   ; 12755:  10 10
+b04_a757:   bpl $a6d9                   ; 12757:  10 80
+b04_a759:   .db $80                     ; 12759:  80
+b04_a75a:   bpl $a76c                   ; 1275A:  10 10
+b04_a75c:   .db $80                     ; 1275C:  80
+b04_a75d:   bpl $a6df                   ; 1275D:  10 80
+b04_a75f:   bpl $a771                   ; 1275F:  10 10
+b04_a761:   bpl $a773                   ; 12761:  10 10
+b04_a763:   bpl $a775                   ; 12763:  10 10
+b04_a765:   bpl $a6e7                   ; 12765:  10 80
+b04_a767:   bpl $a779                   ; 12767:  10 10
+b04_a769:   bpl $a77b                   ; 12769:  10 10
+b04_a76b:   bpl $a77d                   ; 1276B:  10 10
+b04_a76d:   rti                         ; 1276D:  40
+b04_a76e:   rti                         ; 1276E:  40
+b04_a76f:   rti                         ; 1276F:  40
+b04_a770:   rti                         ; 12770:  40
+b04_a771:   rti                         ; 12771:  40
+b04_a772:   rti                         ; 12772:  40
+b04_a773:   rti                         ; 12773:  40
+b04_a774:   rti                         ; 12774:  40
+b04_a775:   rti                         ; 12775:  40
+b04_a776:   rti                         ; 12776:  40
+b04_a777:   rti                         ; 12777:  40
+b04_a778:   .db $04                     ; 12778:  04
+b04_a779:   .db $04                     ; 12779:  04
+b04_a77a:   .db $04                     ; 1277A:  04
+b04_a77b:   .db $04                     ; 1277B:  04
+b04_a77c:   rti                         ; 1277C:  40
+b04_a77d:   php                         ; 1277D:  08
+b04_a77e:   rti                         ; 1277E:  40
+b04_a77f:   .db $04                     ; 1277F:  04
+b04_a780:   .db $04                     ; 12780:  04
+b04_a781:   .db $04                     ; 12781:  04
+b04_a782:   .db $04                     ; 12782:  04
+b04_a783:   .db $04                     ; 12783:  04
+b04_a784:   .db $80                     ; 12784:  80
+b04_a785:   .db $80                     ; 12785:  80
+b04_a786:   .db $80                     ; 12786:  80
+b04_a787:   .db $04                     ; 12787:  04
+b04_a788:   jsr $8004                   ; 12788:  20 04 80
+b04_a78b:   .db $80                     ; 1278B:  80
+b04_a78c:   .db $80                     ; 1278C:  80
+b04_a78d:   .db $04                     ; 1278D:  04
+b04_a78e:   bpl $a710                   ; 1278E:  10 80
+b04_a790:   .db $80                     ; 12790:  80
+b04_a791:   .db $80                     ; 12791:  80
+b04_a792:   .db $80                     ; 12792:  80
+b04_a793:   .db $80                     ; 12793:  80
+b04_a794:   .db $80                     ; 12794:  80
+b04_a795:   .db $80                     ; 12795:  80
+b04_a796:   .db $80                     ; 12796:  80
+b04_a797:   .db $80                     ; 12797:  80
+b04_a798:   bpl $a7aa                   ; 12798:  10 10
+b04_a79a:   bpl $a7ac                   ; 1279A:  10 10
+b04_a79c:   bpl $a7ae                   ; 1279C:  10 10
+b04_a79e:   bpl $a7b0                   ; 1279E:  10 10
+b04_a7a0:   bpl $a7b2                   ; 127A0:  10 10
+b04_a7a2:   bpl $a7b4                   ; 127A2:  10 10
+b04_a7a4:   .db $04                     ; 127A4:  04
+b04_a7a5:   .db $04                     ; 127A5:  04
+b04_a7a6:   .db $04                     ; 127A6:  04
+b04_a7a7:   .db $04                     ; 127A7:  04
+b04_a7a8:   .db $04                     ; 127A8:  04
+b04_a7a9:   .db $04                     ; 127A9:  04
+b04_a7aa:   .db $04                     ; 127AA:  04
+b04_a7ab:   .db $04                     ; 127AB:  04
+b04_a7ac:   .db $04                     ; 127AC:  04
+b04_a7ad:   jsr $0440                   ; 127AD:  20 40 04
+b04_a7b0:   .db $04                     ; 127B0:  04
+b04_a7b1:   .db $04                     ; 127B1:  04
+b04_a7b2:   .db $04                     ; 127B2:  04
+b04_a7b3:   .db $04                     ; 127B3:  04
+b04_a7b4:   .db $04                     ; 127B4:  04
+b04_a7b5:   .db $04                     ; 127B5:  04
+b04_a7b6:   php                         ; 127B6:  08
+b04_a7b7:   .db $04                     ; 127B7:  04
+b04_a7b8:   rti                         ; 127B8:  40
+b04_a7b9:   rti                         ; 127B9:  40
+b04_a7ba:   .db $04                     ; 127BA:  04
+b04_a7bb:   .db $04                     ; 127BB:  04
+b04_a7bc:   .db $04                     ; 127BC:  04
+b04_a7bd:   .db $04                     ; 127BD:  04
+b04_a7be:   .db $04                     ; 127BE:  04
+b04_a7bf:   .db $04                     ; 127BF:  04
+b04_a7c0:   .db $04                     ; 127C0:  04
+b04_a7c1:   .db $04                     ; 127C1:  04
+b04_a7c2:   rti                         ; 127C2:  40
+b04_a7c3:   rti                         ; 127C3:  40
+b04_a7c4:   rti                         ; 127C4:  40
+b04_a7c5:   .db $04                     ; 127C5:  04
+b04_a7c6:   .db $04                     ; 127C6:  04
+b04_a7c7:   .db $04                     ; 127C7:  04
+b04_a7c8:   .db $04                     ; 127C8:  04
+b04_a7c9:   .db $04                     ; 127C9:  04
+b04_a7ca:   .db $04                     ; 127CA:  04
+b04_a7cb:   .db $04                     ; 127CB:  04
+b04_a7cc:   .db $04                     ; 127CC:  04
+b04_a7cd:   .db $04                     ; 127CD:  04
+b04_a7ce:   .db $04                     ; 127CE:  04
+b04_a7cf:   .db $04                     ; 127CF:  04
+b04_a7d0:   .db $04                     ; 127D0:  04
+b04_a7d1:   .db $04                     ; 127D1:  04
+b04_a7d2:   .db $04                     ; 127D2:  04
+b04_a7d3:   .db $04                     ; 127D3:  04
+b04_a7d4:   .db $04                     ; 127D4:  04
+b04_a7d5:   .db $04                     ; 127D5:  04
+b04_a7d6:   .db $04                     ; 127D6:  04
+b04_a7d7:   .db $04                     ; 127D7:  04
+b04_a7d8:   .db $04                     ; 127D8:  04
+b04_a7d9:   .db $04                     ; 127D9:  04
+b04_a7da:   .db $04                     ; 127DA:  04
+b04_a7db:   .db $04                     ; 127DB:  04
+b04_a7dc:   .db $04                     ; 127DC:  04
+b04_a7dd:   .db $04                     ; 127DD:  04
+b04_a7de:   .db $04                     ; 127DE:  04
+b04_a7df:   .db $04                     ; 127DF:  04
+b04_a7e0:   .db $04                     ; 127E0:  04
+b04_a7e1:   .db $04                     ; 127E1:  04
+b04_a7e2:   .db $04                     ; 127E2:  04
+b04_a7e3:   .db $04                     ; 127E3:  04
+b04_a7e4:   .db $04                     ; 127E4:  04
+b04_a7e5:   .db $04                     ; 127E5:  04
+b04_a7e6:   .db $04                     ; 127E6:  04
+b04_a7e7:   .db $04                     ; 127E7:  04
+b04_a7e8:   .db $04                     ; 127E8:  04
+b04_a7e9:   .db $04                     ; 127E9:  04
+b04_a7ea:   .db $04                     ; 127EA:  04
+b04_a7eb:   php                         ; 127EB:  08
+b04_a7ec:   .db $04                     ; 127EC:  04
+b04_a7ed:   .db $04                     ; 127ED:  04
+b04_a7ee:   .db $04                     ; 127EE:  04
+b04_a7ef:   .db $80                     ; 127EF:  80
+b04_a7f0:   bpl $a802                   ; 127F0:  10 10
+b04_a7f2:   .db $80                     ; 127F2:  80
+b04_a7f3:   .db $80                     ; 127F3:  80
+b04_a7f4:   .db $80                     ; 127F4:  80
+b04_a7f5:   .db $04                     ; 127F5:  04
+b04_a7f6:   bpl $a778                   ; 127F6:  10 80
+b04_a7f8:   .db $80                     ; 127F8:  80
+b04_a7f9:   .db $80                     ; 127F9:  80
+b04_a7fa:   bpl $a80c                   ; 127FA:  10 10
+b04_a7fc:   bpl $a80e                   ; 127FC:  10 10
+b04_a7fe:   .db $80                     ; 127FE:  80
+b04_a7ff:   .db $80                     ; 127FF:  80
+b04_a800:   .db $80                     ; 12800:  80
+b04_a801:   jsr $1080                   ; 12801:  20 80 10
+b04_a804:   bpl $a816                   ; 12804:  10 10
+b04_a806:   bpl $a818                   ; 12806:  10 10
+b04_a808:   bpl $a81a                   ; 12808:  10 10
+b04_a80a:   bpl $a78c                   ; 1280A:  10 80
+b04_a80c:   .db $80                     ; 1280C:  80
+b04_a80d:   .db $80                     ; 1280D:  80
+b04_a80e:   bpl $a820                   ; 1280E:  10 10
+b04_a810:   bpl $a822                   ; 12810:  10 10
+b04_a812:   rti                         ; 12812:  40
+b04_a813:   rti                         ; 12813:  40
+b04_a814:   rti                         ; 12814:  40
+b04_a815:   rti                         ; 12815:  40
+b04_a816:   rti                         ; 12816:  40
+b04_a817:   rti                         ; 12817:  40
+b04_a818:   rti                         ; 12818:  40
+b04_a819:   .db $04                     ; 12819:  04
+b04_a81a:   .db $04                     ; 1281A:  04
+b04_a81b:   .db $04                     ; 1281B:  04
+b04_a81c:   .db $04                     ; 1281C:  04
+b04_a81d:   rti                         ; 1281D:  40
+b04_a81e:   .db $04                     ; 1281E:  04
+b04_a81f:   .db $04                     ; 1281F:  04
+b04_a820:   .db $04                     ; 12820:  04
+b04_a821:   .db $04                     ; 12821:  04
+b04_a822:   .db $04                     ; 12822:  04
+b04_a823:   .db $04                     ; 12823:  04
+b04_a824:   .db $04                     ; 12824:  04
+b04_a825:   .db $04                     ; 12825:  04
+b04_a826:   php                         ; 12826:  08
+b04_a827:   .db $04                     ; 12827:  04
+b04_a828:   rti                         ; 12828:  40
+b04_a829:   .db $04                     ; 12829:  04
+b04_a82a:   .db $04                     ; 1282A:  04
+b04_a82b:   .db $04                     ; 1282B:  04
+b04_a82c:   .db $04                     ; 1282C:  04
+b04_a82d:   .db $04                     ; 1282D:  04
+b04_a82e:   .db $04                     ; 1282E:  04
+b04_a82f:   .db $04                     ; 1282F:  04
+b04_a830:   .db $04                     ; 12830:  04
+b04_a831:   .db $04                     ; 12831:  04
+b04_a832:   .db $04                     ; 12832:  04
+b04_a833:   .db $04                     ; 12833:  04
+b04_a834:   .db $04                     ; 12834:  04
+b04_a835:   .db $04                     ; 12835:  04
+b04_a836:   .db $04                     ; 12836:  04
+b04_a837:   .db $04                     ; 12837:  04
+b04_a838:   rti                         ; 12838:  40
+b04_a839:   .db $04                     ; 12839:  04
+b04_a83a:   rti                         ; 1283A:  40
+b04_a83b:   .db $04                     ; 1283B:  04
+b04_a83c:   jsr $0404                   ; 1283C:  20 04 04
+b04_a83f:   rti                         ; 1283F:  40
+b04_a840:   rti                         ; 12840:  40
+b04_a841:   rti                         ; 12841:  40
+b04_a842:   rti                         ; 12842:  40
+b04_a843:   rti                         ; 12843:  40
+b04_a844:   rti                         ; 12844:  40
+b04_a845:   rti                         ; 12845:  40
+b04_a846:   rti                         ; 12846:  40
+b04_a847:   rti                         ; 12847:  40
+b04_a848:   rti                         ; 12848:  40
+b04_a849:   bpl $a85b                   ; 12849:  10 10
+b04_a84b:   .db $80                     ; 1284B:  80
+b04_a84c:   .db $80                     ; 1284C:  80
+b04_a84d:   .db $04                     ; 1284D:  04
+b04_a84e:   .db $04                     ; 1284E:  04
+b04_a84f:   .db $04                     ; 1284F:  04
+b04_a850:   .db $04                     ; 12850:  04
+b04_a851:   .db $04                     ; 12851:  04
+b04_a852:   .db $04                     ; 12852:  04
+b04_a853:   .db $04                     ; 12853:  04
+b04_a854:   bpl $a866                   ; 12854:  10 10
+b04_a856:   bpl $a85c                   ; 12856:  10 04
+b04_a858:   .db $04                     ; 12858:  04
+b04_a859:   .db $04                     ; 12859:  04
+b04_a85a:   .db $04                     ; 1285A:  04
+b04_a85b:   rti                         ; 1285B:  40
+b04_a85c:   rti                         ; 1285C:  40
+b04_a85d:   rti                         ; 1285D:  40
+b04_a85e:   .db $04                     ; 1285E:  04
+b04_a85f:   bpl $a865                   ; 1285F:  10 04
+b04_a861:   rti                         ; 12861:  40
+b04_a862:   rti                         ; 12862:  40
+b04_a863:   .db $04                     ; 12863:  04
+b04_a864:   .db $04                     ; 12864:  04
+b04_a865:   php                         ; 12865:  08
+b04_a866:   rti                         ; 12866:  40
+b04_a867:   rti                         ; 12867:  40
+b04_a868:   rti                         ; 12868:  40
+b04_a869:   .db $04                     ; 12869:  04
+b04_a86a:   bpl $a870                   ; 1286A:  10 04
+b04_a86c:   rti                         ; 1286C:  40
+b04_a86d:   rti                         ; 1286D:  40
+b04_a86e:   rti                         ; 1286E:  40
+b04_a86f:   .db $04                     ; 1286F:  04
+b04_a870:   .db $04                     ; 12870:  04
+b04_a871:   rti                         ; 12871:  40
+b04_a872:   .db $04                     ; 12872:  04
+b04_a873:   rti                         ; 12873:  40
+b04_a874:   .db $04                     ; 12874:  04
+b04_a875:   .db $04                     ; 12875:  04
+b04_a876:   rti                         ; 12876:  40
+b04_a877:   rti                         ; 12877:  40
+b04_a878:   rti                         ; 12878:  40
+b04_a879:   rti                         ; 12879:  40
+b04_a87a:   rti                         ; 1287A:  40
+b04_a87b:   jsr $0440                   ; 1287B:  20 40 04
+b04_a87e:   .db $04                     ; 1287E:  04
+b04_a87f:   .db $04                     ; 1287F:  04
+b04_a880:   .db $04                     ; 12880:  04
+b04_a881:   .db $04                     ; 12881:  04
+b04_a882:   .db $04                     ; 12882:  04
+b04_a883:   bpl $a895                   ; 12883:  10 10
+b04_a885:   bpl $a897                   ; 12885:  10 10
+b04_a887:   .db $80                     ; 12887:  80
+b04_a888:   .db $80                     ; 12888:  80
+b04_a889:   bpl $a89b                   ; 12889:  10 10
+b04_a88b:   .db $04                     ; 1288B:  04
+b04_a88c:   bpl $a89e                   ; 1288C:  10 10
+b04_a88e:   .db $80                     ; 1288E:  80
+b04_a88f:   bpl $a811                   ; 1288F:  10 80
+b04_a891:   .db $80                     ; 12891:  80
+b04_a892:   bpl $a814                   ; 12892:  10 80
+b04_a894:   bpl $a8a6                   ; 12894:  10 10
+b04_a896:   bpl $a8a8                   ; 12896:  10 10
+b04_a898:   bpl $a81a                   ; 12898:  10 80
+b04_a89a:   bpl $a81c                   ; 1289A:  10 80
+b04_a89c:   bpl $a8ae                   ; 1289C:  10 10
+b04_a89e:   bpl $a820                   ; 1289E:  10 80
+b04_a8a0:   bpl $a8b2                   ; 128A0:  10 10
+b04_a8a2:   .db $80                     ; 128A2:  80
+b04_a8a3:   .db $80                     ; 128A3:  80
+b04_a8a4:   bpl $a826                   ; 128A4:  10 80
+b04_a8a6:   bpl $a8b0                   ; 128A6:  10 08
+b04_a8a8:   .db $80                     ; 128A8:  80
+b04_a8a9:   .db $80                     ; 128A9:  80
+b04_a8aa:   bpl $a8bc                   ; 128AA:  10 10
+b04_a8ac:   bpl $a8be                   ; 128AC:  10 10
+b04_a8ae:   bpl $a8c0                   ; 128AE:  10 10
+b04_a8b0:   jsr $8010                   ; 128B0:  20 10 80
+b04_a8b3:   .db $04                     ; 128B3:  04
+b04_a8b4:   .db $04                     ; 128B4:  04
+b04_a8b5:   .db $04                     ; 128B5:  04
+b04_a8b6:   bpl $a8f8                   ; 128B6:  10 40
+b04_a8b8:   rti                         ; 128B8:  40
+b04_a8b9:   rti                         ; 128B9:  40
+b04_a8ba:   rti                         ; 128BA:  40
+b04_a8bb:   .db $04                     ; 128BB:  04
+b04_a8bc:   .db $04                     ; 128BC:  04
+b04_a8bd:   .db $04                     ; 128BD:  04
+b04_a8be:   .db $04                     ; 128BE:  04
+b04_a8bf:   rti                         ; 128BF:  40
+b04_a8c0:   .db $04                     ; 128C0:  04
+b04_a8c1:   rti                         ; 128C1:  40
+b04_a8c2:   rti                         ; 128C2:  40
+b04_a8c3:   rti                         ; 128C3:  40
+b04_a8c4:   rti                         ; 128C4:  40
+b04_a8c5:   .db $04                     ; 128C5:  04
+b04_a8c6:   .db $04                     ; 128C6:  04
+b04_a8c7:   .db $04                     ; 128C7:  04
+b04_a8c8:   .db $04                     ; 128C8:  04
+b04_a8c9:   php                         ; 128C9:  08
+b04_a8ca:   .db $04                     ; 128CA:  04
+b04_a8cb:   jsr $4040                   ; 128CB:  20 40 40
+b04_a8ce:   .db $04                     ; 128CE:  04
+b04_a8cf:   .db $04                     ; 128CF:  04
+b04_a8d0:   .db $04                     ; 128D0:  04
+b04_a8d1:   .db $04                     ; 128D1:  04
+b04_a8d2:   .db $04                     ; 128D2:  04
+b04_a8d3:   .db $04                     ; 128D3:  04
+b04_a8d4:   .db $04                     ; 128D4:  04
+b04_a8d5:   rti                         ; 128D5:  40
+b04_a8d6:   rti                         ; 128D6:  40
+b04_a8d7:   rti                         ; 128D7:  40
+b04_a8d8:   rti                         ; 128D8:  40
+b04_a8d9:   .db $04                     ; 128D9:  04
+b04_a8da:   .db $04                     ; 128DA:  04
+b04_a8db:   .db $04                     ; 128DB:  04
+b04_a8dc:   .db $04                     ; 128DC:  04
+b04_a8dd:   .db $04                     ; 128DD:  04
+b04_a8de:   .db $04                     ; 128DE:  04
+b04_a8df:   .db $04                     ; 128DF:  04
+b04_a8e0:   .db $04                     ; 128E0:  04
+b04_a8e1:   .db $04                     ; 128E1:  04
+b04_a8e2:   .db $04                     ; 128E2:  04
+b04_a8e3:   rti                         ; 128E3:  40
+b04_a8e4:   .db $04                     ; 128E4:  04
+b04_a8e5:   .db $04                     ; 128E5:  04
+b04_a8e6:   .db $04                     ; 128E6:  04
+b04_a8e7:   .db $04                     ; 128E7:  04
+b04_a8e8:   .db $04                     ; 128E8:  04
+b04_a8e9:   .db $04                     ; 128E9:  04
+b04_a8ea:   .db $04                     ; 128EA:  04
+b04_a8eb:   .db $04                     ; 128EB:  04
+b04_a8ec:   .db $04                     ; 128EC:  04
+b04_a8ed:   .db $04                     ; 128ED:  04
+b04_a8ee:   .db $02                     ; 128EE:  02
+b04_a8ef:   .db $02                     ; 128EF:  02
+b04_a8f0:   .db $04                     ; 128F0:  04
+b04_a8f1:   .db $04                     ; 128F1:  04
+b04_a8f2:   rti                         ; 128F2:  40
+b04_a8f3:   rti                         ; 128F3:  40
+b04_a8f4:   rti                         ; 128F4:  40
+b04_a8f5:   rti                         ; 128F5:  40
+b04_a8f6:   rti                         ; 128F6:  40
+b04_a8f7:   .db $04                     ; 128F7:  04
+b04_a8f8:   .db $04                     ; 128F8:  04
+b04_a8f9:   .db $02                     ; 128F9:  02
+b04_a8fa:   .db $04                     ; 128FA:  04
+b04_a8fb:   .db $04                     ; 128FB:  04
+b04_a8fc:   rti                         ; 128FC:  40
+b04_a8fd:   rti                         ; 128FD:  40
+b04_a8fe:   rti                         ; 128FE:  40
+b04_a8ff:   rti                         ; 128FF:  40
+b04_a900:   rti                         ; 12900:  40
+b04_a901:   rti                         ; 12901:  40
+b04_a902:   .db $04                     ; 12902:  04
+b04_a903:   .db $04                     ; 12903:  04
+b04_a904:   .db $04                     ; 12904:  04
+b04_a905:   .db $04                     ; 12905:  04
+b04_a906:   .db $04                     ; 12906:  04
+b04_a907:   .db $04                     ; 12907:  04
+b04_a908:   rti                         ; 12908:  40
+b04_a909:   rti                         ; 12909:  40
+b04_a90a:   rti                         ; 1290A:  40
+b04_a90b:   .db $04                     ; 1290B:  04
+b04_a90c:   .db $04                     ; 1290C:  04
+b04_a90d:   .db $80                     ; 1290D:  80
+b04_a90e:   bpl $a914                   ; 1290E:  10 04
+b04_a910:   .db $04                     ; 12910:  04
+b04_a911:   .db $04                     ; 12911:  04
+b04_a912:   .db $04                     ; 12912:  04
+b04_a913:   rti                         ; 12913:  40
+b04_a914:   .db $04                     ; 12914:  04
+b04_a915:   .db $04                     ; 12915:  04
+b04_a916:   bpl $a898                   ; 12916:  10 80
+b04_a918:   php                         ; 12918:  08
+b04_a919:   bpl $a91f                   ; 12919:  10 04
+b04_a91b:   .db $04                     ; 1291B:  04
+b04_a91c:   .db $04                     ; 1291C:  04
+b04_a91d:   .db $04                     ; 1291D:  04
+b04_a91e:   .db $04                     ; 1291E:  04
+b04_a91f:   .db $80                     ; 1291F:  80
+b04_a920:   .db $80                     ; 12920:  80
+b04_a921:   jsr $1010                   ; 12921:  20 10 10
+b04_a924:   bpl $a92a                   ; 12924:  10 04
+b04_a926:   bpl $a938                   ; 12926:  10 10
+b04_a928:   bpl $a8aa                   ; 12928:  10 80
+b04_a92a:   .db $04                     ; 1292A:  04
+b04_a92b:   .db $04                     ; 1292B:  04
+b04_a92c:   .db $04                     ; 1292C:  04
+b04_a92d:   bpl $a93f                   ; 1292D:  10 10
+b04_a92f:   bpl $a935                   ; 1292F:  10 04
+b04_a931:   bpl $a943                   ; 12931:  10 10
+b04_a933:   .db $80                     ; 12933:  80
+b04_a934:   php                         ; 12934:  08
+b04_a935:   .db $04                     ; 12935:  04
+b04_a936:   .db $04                     ; 12936:  04
+b04_a937:   .db $80                     ; 12937:  80
+b04_a938:   .db $80                     ; 12938:  80
+b04_a939:   bpl $a94b                   ; 12939:  10 10
+b04_a93b:   .db $04                     ; 1293B:  04
+b04_a93c:   bpl $a94e                   ; 1293C:  10 10
+b04_a93e:   .db $80                     ; 1293E:  80
+b04_a93f:   .db $04                     ; 1293F:  04
+b04_a940:   .db $80                     ; 12940:  80
+b04_a941:   .db $80                     ; 12941:  80
+b04_a942:   bpl $a954                   ; 12942:  10 10
+b04_a944:   .db $04                     ; 12944:  04
+b04_a945:   .db $04                     ; 12945:  04
+b04_a946:   bpl $a8c8                   ; 12946:  10 80
+b04_a948:   .db $80                     ; 12948:  80
+b04_a949:   bpl $a96b                   ; 12949:  10 20
+b04_a94b:   bpl $a95d                   ; 1294B:  10 10
+b04_a94d:   .db $80                     ; 1294D:  80
+b04_a94e:   bpl $a954                   ; 1294E:  10 04
+b04_a950:   .db $04                     ; 12950:  04
+b04_a951:   bpl $a963                   ; 12951:  10 10
+b04_a953:   bpl $a965                   ; 12953:  10 10
+b04_a955:   .db $80                     ; 12955:  80
+b04_a956:   .db $80                     ; 12956:  80
+b04_a957:   .db $80                     ; 12957:  80
+b04_a958:   bpl $a96a                   ; 12958:  10 10
+b04_a95a:   .db $04                     ; 1295A:  04
+b04_a95b:   .db $04                     ; 1295B:  04
+b04_a95c:   .db $80                     ; 1295C:  80
+b04_a95d:   .db $80                     ; 1295D:  80
+b04_a95e:   .db $80                     ; 1295E:  80
+b04_a95f:   .db $80                     ; 1295F:  80
+b04_a960:   .db $80                     ; 12960:  80
+b04_a961:   bpl $a973                   ; 12961:  10 10
+b04_a963:   bpl $a8e5                   ; 12963:  10 80
+b04_a965:   bpl $a977                   ; 12965:  10 10
+b04_a967:   .db $80                     ; 12967:  80
+b04_a968:   .db $80                     ; 12968:  80
+b04_a969:   bpl $a97b                   ; 12969:  10 10
+b04_a96b:   bpl $a8ed                   ; 1296B:  10 80
+b04_a96d:   .db $80                     ; 1296D:  80
+b04_a96e:   php                         ; 1296E:  08
+b04_a96f:   .db $80                     ; 1296F:  80
+b04_a970:   bpl $a982                   ; 12970:  10 10
+b04_a972:   .db $80                     ; 12972:  80
+b04_a973:   bpl $a985                   ; 12973:  10 10
+b04_a975:   .db $80                     ; 12975:  80
+b04_a976:   .db $80                     ; 12976:  80
+b04_a977:   jsr $8010                   ; 12977:  20 10 80
+b04_a97a:   .db $80                     ; 1297A:  80
+b04_a97b:   bpl $a98d                   ; 1297B:  10 10
+b04_a97d:   bpl $a98f                   ; 1297D:  10 10
+b04_a97f:   bpl $a991                   ; 1297F:  10 10
+b04_a981:   .db $80                     ; 12981:  80
+b04_a982:   .db $80                     ; 12982:  80
+b04_a983:   .db $80                     ; 12983:  80
+b04_a984:   bpl $a996                   ; 12984:  10 10
+b04_a986:   bpl $a998                   ; 12986:  10 10
+b04_a988:   bpl $a99a                   ; 12988:  10 10
+b04_a98a:   bpl $a99c                   ; 1298A:  10 10
+b04_a98c:   bpl $a99e                   ; 1298C:  10 10
+b04_a98e:   bpl $a910                   ; 1298E:  10 80
+b04_a990:   .db $80                     ; 12990:  80
+b04_a991:   .db $80                     ; 12991:  80
+b04_a992:   .db $80                     ; 12992:  80
+b04_a993:   .db $02                     ; 12993:  02
+b04_a994:   .db $02                     ; 12994:  02
+b04_a995:   .db $04                     ; 12995:  04
+b04_a996:   .db $04                     ; 12996:  04
+b04_a997:   .db $04                     ; 12997:  04
+b04_a998:   bpl $a9aa                   ; 12998:  10 10
+b04_a99a:   bpl $a91c                   ; 1299A:  10 80
+b04_a99c:   bpl $a9a2                   ; 1299C:  10 04
+b04_a99e:   .db $02                     ; 1299E:  02
+b04_a99f:   .db $04                     ; 1299F:  04
+b04_a9a0:   .db $04                     ; 129A0:  04
+b04_a9a1:   .db $04                     ; 129A1:  04
+b04_a9a2:   .db $04                     ; 129A2:  04
+b04_a9a3:   bpl $a925                   ; 129A3:  10 80
+b04_a9a5:   .db $80                     ; 129A5:  80
+b04_a9a6:   bpl $a9ac                   ; 129A6:  10 04
+b04_a9a8:   .db $04                     ; 129A8:  04
+b04_a9a9:   .db $04                     ; 129A9:  04
+b04_a9aa:   .db $04                     ; 129AA:  04
+b04_a9ab:   .db $04                     ; 129AB:  04
+b04_a9ac:   php                         ; 129AC:  08
+b04_a9ad:   .db $04                     ; 129AD:  04
+b04_a9ae:   .db $80                     ; 129AE:  80
+b04_a9af:   .db $80                     ; 129AF:  80
+b04_a9b0:   .db $04                     ; 129B0:  04
+b04_a9b1:   .db $04                     ; 129B1:  04
+b04_a9b2:   .db $04                     ; 129B2:  04
+b04_a9b3:   .db $04                     ; 129B3:  04
+b04_a9b4:   .db $04                     ; 129B4:  04
+b04_a9b5:   rti                         ; 129B5:  40
+b04_a9b6:   rti                         ; 129B6:  40
+b04_a9b7:   .db $04                     ; 129B7:  04
+b04_a9b8:   .db $80                     ; 129B8:  80
+b04_a9b9:   jsr $4004                   ; 129B9:  20 04 40
+b04_a9bc:   .db $04                     ; 129BC:  04
+b04_a9bd:   .db $04                     ; 129BD:  04
+b04_a9be:   .db $04                     ; 129BE:  04
+b04_a9bf:   rti                         ; 129BF:  40
+b04_a9c0:   rti                         ; 129C0:  40
+b04_a9c1:   rti                         ; 129C1:  40
+b04_a9c2:   rti                         ; 129C2:  40
+b04_a9c3:   .db $04                     ; 129C3:  04
+b04_a9c4:   .db $04                     ; 129C4:  04
+b04_a9c5:   rti                         ; 129C5:  40
+b04_a9c6:   rti                         ; 129C6:  40
+b04_a9c7:   rti                         ; 129C7:  40
+b04_a9c8:   rti                         ; 129C8:  40
+b04_a9c9:   rti                         ; 129C9:  40
+b04_a9ca:   rti                         ; 129CA:  40
+b04_a9cb:   rti                         ; 129CB:  40
+b04_a9cc:   rti                         ; 129CC:  40
+b04_a9cd:   rti                         ; 129CD:  40
+b04_a9ce:   rti                         ; 129CE:  40
+b04_a9cf:   rti                         ; 129CF:  40
+b04_a9d0:   rti                         ; 129D0:  40
+b04_a9d1:   .db $04                     ; 129D1:  04
+b04_a9d2:   .db $04                     ; 129D2:  04
+b04_a9d3:   .db $04                     ; 129D3:  04
+b04_a9d4:   .db $04                     ; 129D4:  04
+b04_a9d5:   .db $04                     ; 129D5:  04
+b04_a9d6:   rti                         ; 129D6:  40
+b04_a9d7:   rti                         ; 129D7:  40
+b04_a9d8:   rti                         ; 129D8:  40
+b04_a9d9:   rti                         ; 129D9:  40
+b04_a9da:   .db $04                     ; 129DA:  04
+b04_a9db:   .db $04                     ; 129DB:  04
+b04_a9dc:   .db $04                     ; 129DC:  04
+b04_a9dd:   .db $04                     ; 129DD:  04
+b04_a9de:   .db $04                     ; 129DE:  04
+b04_a9df:   .db $04                     ; 129DF:  04
+b04_a9e0:   .db $04                     ; 129E0:  04
+b04_a9e1:   .db $04                     ; 129E1:  04
+b04_a9e2:   rti                         ; 129E2:  40
+b04_a9e3:   .db $04                     ; 129E3:  04
+b04_a9e4:   jsr $0404                   ; 129E4:  20 04 04
+b04_a9e7:   .db $04                     ; 129E7:  04
+b04_a9e8:   .db $04                     ; 129E8:  04
+b04_a9e9:   .db $04                     ; 129E9:  04
+b04_a9ea:   .db $04                     ; 129EA:  04
+b04_a9eb:   .db $04                     ; 129EB:  04
+b04_a9ec:   .db $04                     ; 129EC:  04
+b04_a9ed:   .db $04                     ; 129ED:  04
+b04_a9ee:   php                         ; 129EE:  08
+b04_a9ef:   .db $04                     ; 129EF:  04
+b04_a9f0:   .db $04                     ; 129F0:  04
+b04_a9f1:   .db $04                     ; 129F1:  04
+b04_a9f2:   .db $04                     ; 129F2:  04
+b04_a9f3:   .db $04                     ; 129F3:  04
+b04_a9f4:   bpl $aa06                   ; 129F4:  10 10
+b04_a9f6:   .db $04                     ; 129F6:  04
+b04_a9f7:   .db $04                     ; 129F7:  04
+b04_a9f8:   .db $04                     ; 129F8:  04
+b04_a9f9:   .db $04                     ; 129F9:  04
+b04_a9fa:   .db $04                     ; 129FA:  04
+b04_a9fb:   .db $04                     ; 129FB:  04
+b04_a9fc:   .db $04                     ; 129FC:  04
+b04_a9fd:   bpl $aa0f                   ; 129FD:  10 10
+b04_a9ff:   bpl $aa11                   ; 129FF:  10 10
+b04_aa01:   rti                         ; 12A01:  40
+b04_aa02:   rti                         ; 12A02:  40
+b04_aa03:   rti                         ; 12A03:  40
+b04_aa04:   .db $04                     ; 12A04:  04
+b04_aa05:   jsr $0404                   ; 12A05:  20 04 04
+b04_aa08:   .db $04                     ; 12A08:  04
+b04_aa09:   .db $04                     ; 12A09:  04
+b04_aa0a:   .db $04                     ; 12A0A:  04
+b04_aa0b:   .db $04                     ; 12A0B:  04
+b04_aa0c:   rti                         ; 12A0C:  40
+b04_aa0d:   .db $04                     ; 12A0D:  04
+b04_aa0e:   .db $04                     ; 12A0E:  04
+b04_aa0f:   .db $04                     ; 12A0F:  04
+b04_aa10:   .db $04                     ; 12A10:  04
+b04_aa11:   php                         ; 12A11:  08
+b04_aa12:   .db $04                     ; 12A12:  04
+b04_aa13:   .db $04                     ; 12A13:  04
+b04_aa14:   .db $04                     ; 12A14:  04
+b04_aa15:   .db $04                     ; 12A15:  04
+b04_aa16:   .db $04                     ; 12A16:  04
+b04_aa17:   rti                         ; 12A17:  40
+b04_aa18:   .db $04                     ; 12A18:  04
+b04_aa19:   .db $04                     ; 12A19:  04
+b04_aa1a:   .db $04                     ; 12A1A:  04
+b04_aa1b:   .db $04                     ; 12A1B:  04
+b04_aa1c:   .db $04                     ; 12A1C:  04
+b04_aa1d:   .db $04                     ; 12A1D:  04
+b04_aa1e:   .db $04                     ; 12A1E:  04
+b04_aa1f:   .db $04                     ; 12A1F:  04
+b04_aa20:   .db $04                     ; 12A20:  04
+b04_aa21:   .db $04                     ; 12A21:  04
+b04_aa22:   rti                         ; 12A22:  40
+b04_aa23:   .db $04                     ; 12A23:  04
+b04_aa24:   .db $04                     ; 12A24:  04
+b04_aa25:   .db $04                     ; 12A25:  04
+b04_aa26:   .db $04                     ; 12A26:  04
+b04_aa27:   .db $04                     ; 12A27:  04
+b04_aa28:   .db $04                     ; 12A28:  04
+b04_aa29:   .db $04                     ; 12A29:  04
+b04_aa2a:   .db $04                     ; 12A2A:  04
+b04_aa2b:   .db $04                     ; 12A2B:  04
+b04_aa2c:   .db $04                     ; 12A2C:  04
+b04_aa2d:   .db $04                     ; 12A2D:  04
+b04_aa2e:   bpl $aa40                   ; 12A2E:  10 10
+b04_aa30:   bpl $aa36                   ; 12A30:  10 04
+b04_aa32:   .db $04                     ; 12A32:  04
+b04_aa33:   .db $04                     ; 12A33:  04
+b04_aa34:   .db $04                     ; 12A34:  04
+b04_aa35:   .db $04                     ; 12A35:  04
+b04_aa36:   bpl $aa48                   ; 12A36:  10 10
+b04_aa38:   .db $04                     ; 12A38:  04
+b04_aa39:   .db $04                     ; 12A39:  04
+b04_aa3a:   .db $04                     ; 12A3A:  04
+b04_aa3b:   bpl $aa4d                   ; 12A3B:  10 10
+b04_aa3d:   bpl $aa4f                   ; 12A3D:  10 10
+b04_aa3f:   bpl $a9c1                   ; 12A3F:  10 80
+b04_aa41:   bpl $aa53                   ; 12A41:  10 10
+b04_aa43:   bpl $aa55                   ; 12A43:  10 10
+b04_aa45:   .db $80                     ; 12A45:  80
+b04_aa46:   .db $80                     ; 12A46:  80
+b04_aa47:   bpl $aa59                   ; 12A47:  10 10
+b04_aa49:   jsr $8080                   ; 12A49:  20 80 80
+b04_aa4c:   bpl $aa5e                   ; 12A4C:  10 10
+b04_aa4e:   bpl $aa60                   ; 12A4E:  10 10
+b04_aa50:   bpl $aa62                   ; 12A50:  10 10
+b04_aa52:   .db $80                     ; 12A52:  80
+b04_aa53:   .db $80                     ; 12A53:  80
+b04_aa54:   .db $80                     ; 12A54:  80
+b04_aa55:   .db $04                     ; 12A55:  04
+b04_aa56:   .db $80                     ; 12A56:  80
+b04_aa57:   .db $80                     ; 12A57:  80
+b04_aa58:   bpl $aa6a                   ; 12A58:  10 10
+b04_aa5a:   bpl $aa6c                   ; 12A5A:  10 10
+b04_aa5c:   .db $80                     ; 12A5C:  80
+b04_aa5d:   .db $80                     ; 12A5D:  80
+b04_aa5e:   .db $04                     ; 12A5E:  04
+b04_aa5f:   php                         ; 12A5F:  08
+b04_aa60:   .db $04                     ; 12A60:  04
+b04_aa61:   .db $04                     ; 12A61:  04
+b04_aa62:   .db $04                     ; 12A62:  04
+b04_aa63:   bpl $aa75                   ; 12A63:  10 10
+b04_aa65:   bpl $aa77                   ; 12A65:  10 10
+b04_aa67:   .db $04                     ; 12A67:  04
+b04_aa68:   .db $04                     ; 12A68:  04
+b04_aa69:   .db $04                     ; 12A69:  04
+b04_aa6a:   .db $04                     ; 12A6A:  04
+b04_aa6b:   .db $04                     ; 12A6B:  04
+b04_aa6c:   .db $04                     ; 12A6C:  04
+b04_aa6d:   .db $04                     ; 12A6D:  04
+b04_aa6e:   bpl $aa74                   ; 12A6E:  10 04
+b04_aa70:   .db $04                     ; 12A70:  04
+b04_aa71:   .db $04                     ; 12A71:  04
+b04_aa72:   .db $04                     ; 12A72:  04
+b04_aa73:   .db $04                     ; 12A73:  04
+b04_aa74:   .db $04                     ; 12A74:  04
+b04_aa75:   .db $04                     ; 12A75:  04
+b04_aa76:   .db $04                     ; 12A76:  04
+b04_aa77:   .db $80                     ; 12A77:  80
+b04_aa78:   .db $80                     ; 12A78:  80
+b04_aa79:   .db $80                     ; 12A79:  80
+b04_aa7a:   .db $04                     ; 12A7A:  04
+b04_aa7b:   .db $04                     ; 12A7B:  04
+b04_aa7c:   .db $04                     ; 12A7C:  04
+b04_aa7d:   .db $04                     ; 12A7D:  04
+b04_aa7e:   .db $04                     ; 12A7E:  04
+b04_aa7f:   .db $04                     ; 12A7F:  04
+b04_aa80:   .db $04                     ; 12A80:  04
+b04_aa81:   .db $04                     ; 12A81:  04
+b04_aa82:   .db $04                     ; 12A82:  04
+b04_aa83:   .db $04                     ; 12A83:  04
+b04_aa84:   bpl $aa8a                   ; 12A84:  10 04
+b04_aa86:   .db $04                     ; 12A86:  04
+b04_aa87:   .db $04                     ; 12A87:  04
+b04_aa88:   rti                         ; 12A88:  40
+b04_aa89:   .db $04                     ; 12A89:  04
+b04_aa8a:   .db $04                     ; 12A8A:  04
+b04_aa8b:   .db $04                     ; 12A8B:  04
+b04_aa8c:   .db $04                     ; 12A8C:  04
+b04_aa8d:   .db $04                     ; 12A8D:  04
+b04_aa8e:   .db $04                     ; 12A8E:  04
+b04_aa8f:   .db $04                     ; 12A8F:  04
+b04_aa90:   rti                         ; 12A90:  40
+b04_aa91:   rti                         ; 12A91:  40
+b04_aa92:   rti                         ; 12A92:  40
+b04_aa93:   .db $04                     ; 12A93:  04
+b04_aa94:   rti                         ; 12A94:  40
+b04_aa95:   rti                         ; 12A95:  40
+b04_aa96:   rti                         ; 12A96:  40
+b04_aa97:   rti                         ; 12A97:  40
+b04_aa98:   rti                         ; 12A98:  40
+b04_aa99:   .db $04                     ; 12A99:  04
+b04_aa9a:   rti                         ; 12A9A:  40
+b04_aa9b:   jsr $0404                   ; 12A9B:  20 04 04
+b04_aa9e:   php                         ; 12A9E:  08
+b04_aa9f:   .db $04                     ; 12A9F:  04
+b04_aaa0:   .db $04                     ; 12AA0:  04
+b04_aaa1:   .db $04                     ; 12AA1:  04
+b04_aaa2:   .db $04                     ; 12AA2:  04
+b04_aaa3:   .db $04                     ; 12AA3:  04
+b04_aaa4:   rti                         ; 12AA4:  40
+b04_aaa5:   rti                         ; 12AA5:  40
+b04_aaa6:   .db $04                     ; 12AA6:  04
+b04_aaa7:   .db $04                     ; 12AA7:  04
+b04_aaa8:   .db $04                     ; 12AA8:  04
+b04_aaa9:   .db $04                     ; 12AA9:  04
+b04_aaaa:   .db $04                     ; 12AAA:  04
+b04_aaab:   .db $04                     ; 12AAB:  04
+b04_aaac:   .db $04                     ; 12AAC:  04
+b04_aaad:   .db $04                     ; 12AAD:  04
+b04_aaae:   .db $04                     ; 12AAE:  04
+b04_aaaf:   .db $04                     ; 12AAF:  04
+b04_aab0:   .db $04                     ; 12AB0:  04
+b04_aab1:   .db $04                     ; 12AB1:  04
+b04_aab2:   .db $04                     ; 12AB2:  04
+b04_aab3:   .db $04                     ; 12AB3:  04
+b04_aab4:   rti                         ; 12AB4:  40
+b04_aab5:   rti                         ; 12AB5:  40
+b04_aab6:   rti                         ; 12AB6:  40
+b04_aab7:   .db $04                     ; 12AB7:  04
+b04_aab8:   .db $04                     ; 12AB8:  04
+b04_aab9:   .db $04                     ; 12AB9:  04
+b04_aaba:   .db $04                     ; 12ABA:  04
+b04_aabb:   .db $04                     ; 12ABB:  04
+b04_aabc:   .db $04                     ; 12ABC:  04
+b04_aabd:   .db $04                     ; 12ABD:  04
+b04_aabe:   .db $04                     ; 12ABE:  04
+b04_aabf:   rti                         ; 12ABF:  40
+b04_aac0:   rti                         ; 12AC0:  40
+b04_aac1:   rti                         ; 12AC1:  40
+b04_aac2:   rti                         ; 12AC2:  40
+b04_aac3:   .db $04                     ; 12AC3:  04
+b04_aac4:   .db $04                     ; 12AC4:  04
+b04_aac5:   .db $04                     ; 12AC5:  04
+b04_aac6:   .db $04                     ; 12AC6:  04
+b04_aac7:   .db $04                     ; 12AC7:  04
+b04_aac8:   rti                         ; 12AC8:  40
+b04_aac9:   rti                         ; 12AC9:  40
+b04_aaca:   rti                         ; 12ACA:  40
+b04_aacb:   rti                         ; 12ACB:  40
+b04_aacc:   jsr $0440                   ; 12ACC:  20 40 04
+b04_aacf:   .db $04                     ; 12ACF:  04
+b04_aad0:   .db $04                     ; 12AD0:  04
+b04_aad1:   .db $04                     ; 12AD1:  04
+b04_aad2:   rti                         ; 12AD2:  40
+b04_aad3:   rti                         ; 12AD3:  40
+b04_aad4:   rti                         ; 12AD4:  40
+b04_aad5:   rti                         ; 12AD5:  40
+b04_aad6:   rti                         ; 12AD6:  40
+b04_aad7:   .db $04                     ; 12AD7:  04
+b04_aad8:   .db $04                     ; 12AD8:  04
+b04_aad9:   php                         ; 12AD9:  08
+b04_aada:   .db $04                     ; 12ADA:  04
+b04_aadb:   .db $04                     ; 12ADB:  04
+b04_aadc:   .db $04                     ; 12ADC:  04
+b04_aadd:   .db $02                     ; 12ADD:  02
+b04_aade:   .db $02                     ; 12ADE:  02
+b04_aadf:   .db $02                     ; 12ADF:  02
+b04_aae0:   .db $02                     ; 12AE0:  02
+b04_aae1:   .db $02                     ; 12AE1:  02
+b04_aae2:   .db $80                     ; 12AE2:  80
+b04_aae3:   .db $80                     ; 12AE3:  80
+b04_aae4:   .db $04                     ; 12AE4:  04
+b04_aae5:   .db $04                     ; 12AE5:  04
+b04_aae6:   .db $04                     ; 12AE6:  04
+b04_aae7:   rti                         ; 12AE7:  40
+b04_aae8:   .db $02                     ; 12AE8:  02
+b04_aae9:   .db $02                     ; 12AE9:  02
+b04_aaea:   .db $02                     ; 12AEA:  02
+b04_aaeb:   .db $04                     ; 12AEB:  04
+b04_aaec:   .db $80                     ; 12AEC:  80
+b04_aaed:   .db $04                     ; 12AED:  04
+b04_aaee:   .db $04                     ; 12AEE:  04
+b04_aaef:   .db $04                     ; 12AEF:  04
+b04_aaf0:   .db $04                     ; 12AF0:  04
+b04_aaf1:   rti                         ; 12AF1:  40
+b04_aaf2:   rti                         ; 12AF2:  40
+b04_aaf3:   bpl $ab05                   ; 12AF3:  10 10
+b04_aaf5:   bpl $ab07                   ; 12AF5:  10 10
+b04_aaf7:   jsr $0404                   ; 12AF7:  20 04 04
+b04_aafa:   php                         ; 12AFA:  08
+b04_aafb:   rti                         ; 12AFB:  40
+b04_aafc:   rti                         ; 12AFC:  40
+b04_aafd:   rti                         ; 12AFD:  40
+b04_aafe:   bpl $ab10                   ; 12AFE:  10 10
+b04_ab00:   bpl $aa82                   ; 12B00:  10 80
+b04_ab02:   .db $80                     ; 12B02:  80
+b04_ab03:   .db $04                     ; 12B03:  04
+b04_ab04:   .db $04                     ; 12B04:  04
+b04_ab05:   .db $04                     ; 12B05:  04
+b04_ab06:   .db $04                     ; 12B06:  04
+b04_ab07:   .db $04                     ; 12B07:  04
+b04_ab08:   rti                         ; 12B08:  40
+b04_ab09:   bpl $ab1b                   ; 12B09:  10 10
+b04_ab0b:   bpl $ab11                   ; 12B0B:  10 04
+b04_ab0d:   .db $04                     ; 12B0D:  04
+b04_ab0e:   .db $04                     ; 12B0E:  04
+b04_ab0f:   .db $04                     ; 12B0F:  04
+b04_ab10:   .db $04                     ; 12B10:  04
+b04_ab11:   .db $04                     ; 12B11:  04
+b04_ab12:   .db $04                     ; 12B12:  04
+b04_ab13:   .db $04                     ; 12B13:  04
+b04_ab14:   .db $04                     ; 12B14:  04
+b04_ab15:   .db $04                     ; 12B15:  04
+b04_ab16:   .db $04                     ; 12B16:  04
+b04_ab17:   bpl $ab29                   ; 12B17:  10 10
+b04_ab19:   bpl $ab2b                   ; 12B19:  10 10
+b04_ab1b:   bpl $ab21                   ; 12B1B:  10 04
+b04_ab1d:   .db $04                     ; 12B1D:  04
+b04_ab1e:   .db $04                     ; 12B1E:  04
+b04_ab1f:   .db $04                     ; 12B1F:  04
+b04_ab20:   bpl $ab32                   ; 12B20:  10 10
+b04_ab22:   rti                         ; 12B22:  40
+b04_ab23:   rti                         ; 12B23:  40
+b04_ab24:   rti                         ; 12B24:  40
+b04_ab25:   rti                         ; 12B25:  40
+b04_ab26:   rti                         ; 12B26:  40
+b04_ab27:   bpl $ab2d                   ; 12B27:  10 04
+b04_ab29:   .db $04                     ; 12B29:  04
+b04_ab2a:   .db $04                     ; 12B2A:  04
+b04_ab2b:   bpl $ab6d                   ; 12B2B:  10 40
+b04_ab2d:   rti                         ; 12B2D:  40
+b04_ab2e:   rti                         ; 12B2E:  40
+b04_ab2f:   rti                         ; 12B2F:  40
+b04_ab30:   rti                         ; 12B30:  40
+b04_ab31:   bpl $ab43                   ; 12B31:  10 10
+b04_ab33:   .db $04                     ; 12B33:  04
+b04_ab34:   .db $04                     ; 12B34:  04
+b04_ab35:   .db $04                     ; 12B35:  04
+b04_ab36:   rti                         ; 12B36:  40
+b04_ab37:   rti                         ; 12B37:  40
+b04_ab38:   rti                         ; 12B38:  40
+b04_ab39:   rti                         ; 12B39:  40
+b04_ab3a:   bpl $ab4c                   ; 12B3A:  10 10
+b04_ab3c:   .db $80                     ; 12B3C:  80
+b04_ab3d:   .db $80                     ; 12B3D:  80
+b04_ab3e:   .db $80                     ; 12B3E:  80
+b04_ab3f:   .db $80                     ; 12B3F:  80
+b04_ab40:   .db $04                     ; 12B40:  04
+b04_ab41:   bpl $ab53                   ; 12B41:  10 10
+b04_ab43:   .db $80                     ; 12B43:  80
+b04_ab44:   jsr $0804                   ; 12B44:  20 04 08
+b04_ab47:   .db $80                     ; 12B47:  80
+b04_ab48:   .db $80                     ; 12B48:  80
+b04_ab49:   .db $80                     ; 12B49:  80
+b04_ab4a:   .db $80                     ; 12B4A:  80
+b04_ab4b:   .db $04                     ; 12B4B:  04
+b04_ab4c:   .db $04                     ; 12B4C:  04
+b04_ab4d:   .db $04                     ; 12B4D:  04
+b04_ab4e:   .db $04                     ; 12B4E:  04
+b04_ab4f:   .db $04                     ; 12B4F:  04
+b04_ab50:   .db $04                     ; 12B50:  04
+b04_ab51:   .db $04                     ; 12B51:  04
+b04_ab52:   .db $04                     ; 12B52:  04
+b04_ab53:   .db $04                     ; 12B53:  04
+b04_ab54:   .db $04                     ; 12B54:  04
+b04_ab55:   .db $04                     ; 12B55:  04
+b04_ab56:   .db $04                     ; 12B56:  04
+b04_ab57:   .db $04                     ; 12B57:  04
+b04_ab58:   .db $04                     ; 12B58:  04
+b04_ab59:   .db $04                     ; 12B59:  04
+b04_ab5a:   .db $04                     ; 12B5A:  04
+b04_ab5b:   .db $04                     ; 12B5B:  04
+b04_ab5c:   .db $04                     ; 12B5C:  04
+b04_ab5d:   .db $04                     ; 12B5D:  04
+b04_ab5e:   .db $04                     ; 12B5E:  04
+b04_ab5f:   .db $04                     ; 12B5F:  04
+b04_ab60:   .db $04                     ; 12B60:  04
+b04_ab61:   .db $04                     ; 12B61:  04
+b04_ab62:   .db $04                     ; 12B62:  04
+b04_ab63:   .db $04                     ; 12B63:  04
+b04_ab64:   .db $04                     ; 12B64:  04
+b04_ab65:   jsr $0408                   ; 12B65:  20 08 04
+b04_ab68:   .db $04                     ; 12B68:  04
+b04_ab69:   .db $04                     ; 12B69:  04
+b04_ab6a:   .db $04                     ; 12B6A:  04
+b04_ab6b:   .db $04                     ; 12B6B:  04
+b04_ab6c:   .db $04                     ; 12B6C:  04
+b04_ab6d:   .db $04                     ; 12B6D:  04
+b04_ab6e:   .db $04                     ; 12B6E:  04
+b04_ab6f:   .db $04                     ; 12B6F:  04
+b04_ab70:   .db $04                     ; 12B70:  04
+b04_ab71:   .db $04                     ; 12B71:  04
+b04_ab72:   .db $04                     ; 12B72:  04
+b04_ab73:   .db $04                     ; 12B73:  04
+b04_ab74:   .db $04                     ; 12B74:  04
+b04_ab75:   .db $04                     ; 12B75:  04
+b04_ab76:   .db $04                     ; 12B76:  04
+b04_ab77:   .db $04                     ; 12B77:  04
+b04_ab78:   .db $04                     ; 12B78:  04
+b04_ab79:   .db $04                     ; 12B79:  04
+b04_ab7a:   .db $04                     ; 12B7A:  04
+b04_ab7b:   .db $04                     ; 12B7B:  04
+b04_ab7c:   .db $04                     ; 12B7C:  04
+b04_ab7d:   .db $04                     ; 12B7D:  04
+b04_ab7e:   .db $04                     ; 12B7E:  04
+b04_ab7f:   .db $04                     ; 12B7F:  04
+b04_ab80:   .db $04                     ; 12B80:  04
+b04_ab81:   .db $04                     ; 12B81:  04
+b04_ab82:   rti                         ; 12B82:  40
+b04_ab83:   rti                         ; 12B83:  40
+b04_ab84:   rti                         ; 12B84:  40
+b04_ab85:   rti                         ; 12B85:  40
+b04_ab86:   rti                         ; 12B86:  40
+b04_ab87:   rti                         ; 12B87:  40
+b04_ab88:   rti                         ; 12B88:  40
+b04_ab89:   rti                         ; 12B89:  40
+b04_ab8a:   rti                         ; 12B8A:  40
+b04_ab8b:   rti                         ; 12B8B:  40
+b04_ab8c:   rti                         ; 12B8C:  40
+b04_ab8d:   .db $04                     ; 12B8D:  04
+b04_ab8e:   .db $04                     ; 12B8E:  04
+b04_ab8f:   .db $04                     ; 12B8F:  04
+b04_ab90:   .db $04                     ; 12B90:  04
+b04_ab91:   .db $04                     ; 12B91:  04
+b04_ab92:   .db $04                     ; 12B92:  04
+b04_ab93:   .db $04                     ; 12B93:  04
+b04_ab94:   .db $04                     ; 12B94:  04
+b04_ab95:   jsr $4040                   ; 12B95:  20 40 40
+b04_ab98:   .db $80                     ; 12B98:  80
+b04_ab99:   .db $80                     ; 12B99:  80
+b04_ab9a:   .db $80                     ; 12B9A:  80
+b04_ab9b:   .db $04                     ; 12B9B:  04
+b04_ab9c:   .db $04                     ; 12B9C:  04
+b04_ab9d:   .db $04                     ; 12B9D:  04
+b04_ab9e:   .db $04                     ; 12B9E:  04
+b04_ab9f:   .db $04                     ; 12B9F:  04
+b04_aba0:   .db $04                     ; 12BA0:  04
+b04_aba1:   .db $04                     ; 12BA1:  04
+b04_aba2:   rti                         ; 12BA2:  40
+b04_aba3:   bpl $abb5                   ; 12BA3:  10 10
+b04_aba5:   .db $80                     ; 12BA5:  80
+b04_aba6:   .db $80                     ; 12BA6:  80
+b04_aba7:   .db $80                     ; 12BA7:  80
+b04_aba8:   .db $80                     ; 12BA8:  80
+b04_aba9:   php                         ; 12BA9:  08
+b04_abaa:   .db $04                     ; 12BAA:  04
+b04_abab:   .db $04                     ; 12BAB:  04
+b04_abac:   .db $04                     ; 12BAC:  04
+b04_abad:   .db $04                     ; 12BAD:  04
+b04_abae:   bpl $abc0                   ; 12BAE:  10 10
+b04_abb0:   bpl $abc2                   ; 12BB0:  10 10
+b04_abb2:   bpl $abc4                   ; 12BB2:  10 10
+b04_abb4:   .db $04                     ; 12BB4:  04
+b04_abb5:   .db $04                     ; 12BB5:  04
+b04_abb6:   .db $04                     ; 12BB6:  04
+b04_abb7:   .db $04                     ; 12BB7:  04
+b04_abb8:   .db $04                     ; 12BB8:  04
+b04_abb9:   bpl $abcb                   ; 12BB9:  10 10
+b04_abbb:   .db $80                     ; 12BBB:  80
+b04_abbc:   bpl $ab3e                   ; 12BBC:  10 80
+b04_abbe:   .db $80                     ; 12BBE:  80
+b04_abbf:   .db $04                     ; 12BBF:  04
+b04_abc0:   .db $04                     ; 12BC0:  04
+b04_abc1:   .db $04                     ; 12BC1:  04
+b04_abc2:   .db $04                     ; 12BC2:  04
+b04_abc3:   .db $04                     ; 12BC3:  04
+b04_abc4:   bpl $ab46                   ; 12BC4:  10 80
+b04_abc6:   jsr $1080                   ; 12BC6:  20 80 10
+b04_abc9:   bpl $abcf                   ; 12BC9:  10 04
+b04_abcb:   .db $04                     ; 12BCB:  04
+b04_abcc:   .db $04                     ; 12BCC:  04
+b04_abcd:   .db $04                     ; 12BCD:  04
+b04_abce:   .db $04                     ; 12BCE:  04
+b04_abcf:   bpl $abe1                   ; 12BCF:  10 10
+b04_abd1:   bpl $abe3                   ; 12BD1:  10 10
+b04_abd3:   .db $80                     ; 12BD3:  80
+b04_abd4:   bpl $abe6                   ; 12BD4:  10 10
+b04_abd6:   .db $04                     ; 12BD6:  04
+b04_abd7:   .db $04                     ; 12BD7:  04
+b04_abd8:   .db $04                     ; 12BD8:  04
+b04_abd9:   .db $04                     ; 12BD9:  04
+b04_abda:   .db $04                     ; 12BDA:  04
+b04_abdb:   .db $04                     ; 12BDB:  04
+b04_abdc:   .db $04                     ; 12BDC:  04
+b04_abdd:   .db $04                     ; 12BDD:  04
+b04_abde:   php                         ; 12BDE:  08
+b04_abdf:   .db $04                     ; 12BDF:  04
+b04_abe0:   bpl $abe6                   ; 12BE0:  10 04
+b04_abe2:   .db $04                     ; 12BE2:  04
+b04_abe3:   .db $04                     ; 12BE3:  04
+b04_abe4:   .db $04                     ; 12BE4:  04
+b04_abe5:   .db $04                     ; 12BE5:  04
+b04_abe6:   .db $04                     ; 12BE6:  04
+b04_abe7:   .db $04                     ; 12BE7:  04
+b04_abe8:   .db $04                     ; 12BE8:  04
+b04_abe9:   .db $04                     ; 12BE9:  04
+b04_abea:   .db $04                     ; 12BEA:  04
+b04_abeb:   .db $04                     ; 12BEB:  04
+b04_abec:   .db $04                     ; 12BEC:  04
+b04_abed:   .db $04                     ; 12BED:  04
+b04_abee:   .db $04                     ; 12BEE:  04
+b04_abef:   .db $04                     ; 12BEF:  04
+b04_abf0:   .db $04                     ; 12BF0:  04
+b04_abf1:   .db $80                     ; 12BF1:  80
+b04_abf2:   .db $80                     ; 12BF2:  80
+b04_abf3:   .db $80                     ; 12BF3:  80
+b04_abf4:   .db $80                     ; 12BF4:  80
+b04_abf5:   .db $80                     ; 12BF5:  80
+b04_abf6:   .db $80                     ; 12BF6:  80
+b04_abf7:   .db $80                     ; 12BF7:  80
+b04_abf8:   .db $80                     ; 12BF8:  80
+b04_abf9:   .db $80                     ; 12BF9:  80
+b04_abfa:   .db $80                     ; 12BFA:  80
+b04_abfb:   .db $04                     ; 12BFB:  04
+b04_abfc:   bpl $ac02                   ; 12BFC:  10 04
+b04_abfe:   .db $04                     ; 12BFE:  04
+b04_abff:   .db $04                     ; 12BFF:  04
+b04_ac00:   .db $04                     ; 12C00:  04
+b04_ac01:   .db $80                     ; 12C01:  80
+b04_ac02:   .db $80                     ; 12C02:  80
+b04_ac03:   .db $80                     ; 12C03:  80
+b04_ac04:   bpl $ab86                   ; 12C04:  10 80
+b04_ac06:   .db $04                     ; 12C06:  04
+b04_ac07:   bpl $ab89                   ; 12C07:  10 80
+b04_ac09:   .db $80                     ; 12C09:  80
+b04_ac0a:   jsr $8080                   ; 12C0A:  20 80 80
+b04_ac0d:   .db $04                     ; 12C0D:  04
+b04_ac0e:   .db $04                     ; 12C0E:  04
+b04_ac0f:   .db $04                     ; 12C0F:  04
+b04_ac10:   .db $04                     ; 12C10:  04
+b04_ac11:   .db $04                     ; 12C11:  04
+b04_ac12:   .db $04                     ; 12C12:  04
+b04_ac13:   .db $04                     ; 12C13:  04
+b04_ac14:   .db $04                     ; 12C14:  04
+b04_ac15:   php                         ; 12C15:  08
+b04_ac16:   .db $04                     ; 12C16:  04
+b04_ac17:   .db $04                     ; 12C17:  04
+b04_ac18:   .db $04                     ; 12C18:  04
+b04_ac19:   .db $04                     ; 12C19:  04
+b04_ac1a:   .db $04                     ; 12C1A:  04
+b04_ac1b:   .db $04                     ; 12C1B:  04
+b04_ac1c:   .db $04                     ; 12C1C:  04
+b04_ac1d:   .db $04                     ; 12C1D:  04
+b04_ac1e:   .db $04                     ; 12C1E:  04
+b04_ac1f:   .db $04                     ; 12C1F:  04
+b04_ac20:   .db $04                     ; 12C20:  04
+b04_ac21:   .db $04                     ; 12C21:  04
+b04_ac22:   .db $04                     ; 12C22:  04
+b04_ac23:   .db $04                     ; 12C23:  04
+b04_ac24:   .db $04                     ; 12C24:  04
+b04_ac25:   .db $04                     ; 12C25:  04
+b04_ac26:   .db $04                     ; 12C26:  04
+b04_ac27:   .db $04                     ; 12C27:  04
+b04_ac28:   .db $04                     ; 12C28:  04
+b04_ac29:   .db $04                     ; 12C29:  04
+b04_ac2a:   .db $04                     ; 12C2A:  04
+b04_ac2b:   .db $04                     ; 12C2B:  04
+b04_ac2c:   .db $04                     ; 12C2C:  04
+b04_ac2d:   .db $04                     ; 12C2D:  04
+b04_ac2e:   .db $04                     ; 12C2E:  04
+b04_ac2f:   .db $04                     ; 12C2F:  04
+b04_ac30:   .db $04                     ; 12C30:  04
+b04_ac31:   .db $04                     ; 12C31:  04
+b04_ac32:   .db $04                     ; 12C32:  04
+b04_ac33:   bpl $ac39                   ; 12C33:  10 04
+b04_ac35:   .db $80                     ; 12C35:  80
+b04_ac36:   .db $04                     ; 12C36:  04
+b04_ac37:   .db $80                     ; 12C37:  80
+b04_ac38:   .db $04                     ; 12C38:  04
+b04_ac39:   .db $80                     ; 12C39:  80
+b04_ac3a:   .db $04                     ; 12C3A:  04
+b04_ac3b:   .db $80                     ; 12C3B:  80
+b04_ac3c:   .db $04                     ; 12C3C:  04
+b04_ac3d:   bpl $abbf                   ; 12C3D:  10 80
+b04_ac3f:   .db $80                     ; 12C3F:  80
+b04_ac40:   bpl $ac52                   ; 12C40:  10 10
+b04_ac42:   .db $80                     ; 12C42:  80
+b04_ac43:   .db $80                     ; 12C43:  80
+b04_ac44:   .db $80                     ; 12C44:  80
+b04_ac45:   .db $80                     ; 12C45:  80
+b04_ac46:   .db $80                     ; 12C46:  80
+b04_ac47:   bpl $ac59                   ; 12C47:  10 10
+b04_ac49:   bpl $ac6b                   ; 12C49:  10 20
+b04_ac4b:   php                         ; 12C4B:  08
+b04_ac4c:   .db $80                     ; 12C4C:  80
+b04_ac4d:   bpl $abcf                   ; 12C4D:  10 80
+b04_ac4f:   bpl $abd1                   ; 12C4F:  10 80
+b04_ac51:   bpl $ac63                   ; 12C51:  10 10
+b04_ac53:   .db $80                     ; 12C53:  80
+b04_ac54:   .db $80                     ; 12C54:  80
+b04_ac55:   .db $80                     ; 12C55:  80
+b04_ac56:   bpl $ac68                   ; 12C56:  10 10
+b04_ac58:   bpl $ac6a                   ; 12C58:  10 10
+b04_ac5a:   bpl $ac6c                   ; 12C5A:  10 10
+b04_ac5c:   bpl $ac6e                   ; 12C5C:  10 10
+b04_ac5e:   .db $04                     ; 12C5E:  04
+b04_ac5f:   .db $04                     ; 12C5F:  04
+b04_ac60:   .db $04                     ; 12C60:  04
+b04_ac61:   .db $04                     ; 12C61:  04
+b04_ac62:   .db $04                     ; 12C62:  04
+b04_ac63:   .db $04                     ; 12C63:  04
+b04_ac64:   .db $04                     ; 12C64:  04
+b04_ac65:   .db $04                     ; 12C65:  04
+b04_ac66:   .db $04                     ; 12C66:  04
+b04_ac67:   .db $04                     ; 12C67:  04
+b04_ac68:   .db $04                     ; 12C68:  04
+b04_ac69:   .db $04                     ; 12C69:  04
+b04_ac6a:   rti                         ; 12C6A:  40
+b04_ac6b:   rti                         ; 12C6B:  40
+b04_ac6c:   rti                         ; 12C6C:  40
+b04_ac6d:   rti                         ; 12C6D:  40
+b04_ac6e:   rti                         ; 12C6E:  40
+b04_ac6f:   rti                         ; 12C6F:  40
+b04_ac70:   php                         ; 12C70:  08
+b04_ac71:   .db $04                     ; 12C71:  04
+b04_ac72:   .db $04                     ; 12C72:  04
+b04_ac73:   .db $04                     ; 12C73:  04
+b04_ac74:   rti                         ; 12C74:  40
+b04_ac75:   rti                         ; 12C75:  40
+b04_ac76:   rti                         ; 12C76:  40
+b04_ac77:   rti                         ; 12C77:  40
+b04_ac78:   rti                         ; 12C78:  40
+b04_ac79:   rti                         ; 12C79:  40
+b04_ac7a:   rti                         ; 12C7A:  40
+b04_ac7b:   jsr $0404                   ; 12C7B:  20 04 04
+b04_ac7e:   .db $04                     ; 12C7E:  04
+b04_ac7f:   rti                         ; 12C7F:  40
+b04_ac80:   .db $04                     ; 12C80:  04
+b04_ac81:   rti                         ; 12C81:  40
+b04_ac82:   rti                         ; 12C82:  40
+b04_ac83:   rti                         ; 12C83:  40
+b04_ac84:   rti                         ; 12C84:  40
+b04_ac85:   rti                         ; 12C85:  40
+b04_ac86:   .db $04                     ; 12C86:  04
+b04_ac87:   .db $04                     ; 12C87:  04
+b04_ac88:   .db $04                     ; 12C88:  04
+b04_ac89:   .db $04                     ; 12C89:  04
+b04_ac8a:   .db $04                     ; 12C8A:  04
+b04_ac8b:   .db $04                     ; 12C8B:  04
+b04_ac8c:   .db $04                     ; 12C8C:  04
+b04_ac8d:   .db $04                     ; 12C8D:  04
+b04_ac8e:   .db $04                     ; 12C8E:  04
+b04_ac8f:   .db $04                     ; 12C8F:  04
+b04_ac90:   .db $04                     ; 12C90:  04
+b04_ac91:   .db $04                     ; 12C91:  04
+b04_ac92:   .db $04                     ; 12C92:  04
+b04_ac93:   .db $04                     ; 12C93:  04
+b04_ac94:   .db $04                     ; 12C94:  04
+b04_ac95:   rti                         ; 12C95:  40
+b04_ac96:   rti                         ; 12C96:  40
+b04_ac97:   rti                         ; 12C97:  40
+b04_ac98:   bpl $acaa                   ; 12C98:  10 10
+b04_ac9a:   .db $02                     ; 12C9A:  02
+b04_ac9b:   .db $02                     ; 12C9B:  02
+b04_ac9c:   .db $02                     ; 12C9C:  02
+b04_ac9d:   .db $02                     ; 12C9D:  02
+b04_ac9e:   .db $04                     ; 12C9E:  04
+b04_ac9f:   .db $04                     ; 12C9F:  04
+b04_aca0:   rti                         ; 12CA0:  40
+b04_aca1:   .db $04                     ; 12CA1:  04
+b04_aca2:   bpl $acb4                   ; 12CA2:  10 10
+b04_aca4:   .db $02                     ; 12CA4:  02
+b04_aca5:   .db $02                     ; 12CA5:  02
+b04_aca6:   .db $02                     ; 12CA6:  02
+b04_aca7:   .db $02                     ; 12CA7:  02
+b04_aca8:   .db $04                     ; 12CA8:  04
+b04_aca9:   .db $04                     ; 12CA9:  04
+b04_acaa:   .db $04                     ; 12CAA:  04
+b04_acab:   rti                         ; 12CAB:  40
+b04_acac:   .db $04                     ; 12CAC:  04
+b04_acad:   bpl $acbf                   ; 12CAD:  10 10
+b04_acaf:   .db $02                     ; 12CAF:  02
+b04_acb0:   .db $02                     ; 12CB0:  02
+b04_acb1:   .db $02                     ; 12CB1:  02
+b04_acb2:   .db $80                     ; 12CB2:  80
+b04_acb3:   .db $04                     ; 12CB3:  04
+b04_acb4:   .db $04                     ; 12CB4:  04
+b04_acb5:   .db $04                     ; 12CB5:  04
+b04_acb6:   rti                         ; 12CB6:  40
+b04_acb7:   .db $04                     ; 12CB7:  04
+b04_acb8:   bpl $acca                   ; 12CB8:  10 10
+b04_acba:   jsr $8080                   ; 12CBA:  20 80 80
+b04_acbd:   .db $04                     ; 12CBD:  04
+b04_acbe:   .db $04                     ; 12CBE:  04
+b04_acbf:   rti                         ; 12CBF:  40
+b04_acc0:   rti                         ; 12CC0:  40
+b04_acc1:   rti                         ; 12CC1:  40
+b04_acc2:   rti                         ; 12CC2:  40
+b04_acc3:   .db $04                     ; 12CC3:  04
+b04_acc4:   .db $04                     ; 12CC4:  04
+b04_acc5:   php                         ; 12CC5:  08
+b04_acc6:   .db $04                     ; 12CC6:  04
+b04_acc7:   .db $04                     ; 12CC7:  04
+b04_acc8:   rti                         ; 12CC8:  40
+b04_acc9:   rti                         ; 12CC9:  40
+b04_acca:   rti                         ; 12CCA:  40
+b04_accb:   rti                         ; 12CCB:  40
+b04_accc:   .db $02                     ; 12CCC:  02
+b04_accd:   .db $02                     ; 12CCD:  02
+b04_acce:   .db $02                     ; 12CCE:  02
+b04_accf:   .db $02                     ; 12CCF:  02
+b04_acd0:   .db $02                     ; 12CD0:  02
+b04_acd1:   .db $02                     ; 12CD1:  02
+b04_acd2:   rti                         ; 12CD2:  40
+b04_acd3:   rti                         ; 12CD3:  40
+b04_acd4:   rti                         ; 12CD4:  40
+b04_acd5:   rti                         ; 12CD5:  40
+b04_acd6:   rti                         ; 12CD6:  40
+b04_acd7:   .db $02                     ; 12CD7:  02
+b04_acd8:   bpl $acea                   ; 12CD8:  10 10
+b04_acda:   bpl $acde                   ; 12CDA:  10 02
+b04_acdc:   .db $02                     ; 12CDC:  02
+b04_acdd:   .db $04                     ; 12CDD:  04
+b04_acde:   .db $04                     ; 12CDE:  04
+b04_acdf:   .db $04                     ; 12CDF:  04
+b04_ace0:   .db $04                     ; 12CE0:  04
+b04_ace1:   .db $04                     ; 12CE1:  04
+b04_ace2:   bpl $ac64                   ; 12CE2:  10 80
+b04_ace4:   .db $80                     ; 12CE4:  80
+b04_ace5:   bpl $ace9                   ; 12CE5:  10 02
+b04_ace7:   jsr $0810                   ; 12CE7:  20 10 08
+b04_acea:   .db $04                     ; 12CEA:  04
+b04_aceb:   .db $80                     ; 12CEB:  80
+b04_acec:   .db $04                     ; 12CEC:  04
+b04_aced:   bpl $acff                   ; 12CED:  10 10
+b04_acef:   bpl $ac71                   ; 12CEF:  10 80
+b04_acf1:   bpl $ac73                   ; 12CF1:  10 80
+b04_acf3:   bpl $ac75                   ; 12CF3:  10 80
+b04_acf5:   bpl $ac77                   ; 12CF5:  10 80
+b04_acf7:   bpl $ad09                   ; 12CF7:  10 10
+b04_acf9:   bpl $ad0b                   ; 12CF9:  10 10
+b04_acfb:   bpl $ac7d                   ; 12CFB:  10 80
+b04_acfd:   .db $80                     ; 12CFD:  80
+b04_acfe:   .db $80                     ; 12CFE:  80
+b04_acff:   bpl $ad11                   ; 12CFF:  10 10
+b04_ad01:   .db $80                     ; 12D01:  80
+b04_ad02:   .db $80                     ; 12D02:  80
+b04_ad03:   bpl $ad15                   ; 12D03:  10 10
+b04_ad05:   bpl $ad17                   ; 12D05:  10 10
+b04_ad07:   .db $80                     ; 12D07:  80
+b04_ad08:   bpl $ad0e                   ; 12D08:  10 04
+b04_ad0a:   .db $04                     ; 12D0A:  04
+b04_ad0b:   .db $04                     ; 12D0B:  04
+b04_ad0c:   .db $04                     ; 12D0C:  04
+b04_ad0d:   .db $04                     ; 12D0D:  04
+b04_ad0e:   bpl $ad14                   ; 12D0E:  10 04
+b04_ad10:   .db $04                     ; 12D10:  04
+b04_ad11:   .db $04                     ; 12D11:  04
+b04_ad12:   bpl $ac94                   ; 12D12:  10 80
+b04_ad14:   php                         ; 12D14:  08
+b04_ad15:   .db $04                     ; 12D15:  04
+b04_ad16:   .db $04                     ; 12D16:  04
+b04_ad17:   .db $04                     ; 12D17:  04
+b04_ad18:   .db $04                     ; 12D18:  04
+b04_ad19:   .db $04                     ; 12D19:  04
+b04_ad1a:   .db $04                     ; 12D1A:  04
+b04_ad1b:   rti                         ; 12D1B:  40
+b04_ad1c:   rti                         ; 12D1C:  40
+b04_ad1d:   jsr $0404                   ; 12D1D:  20 04 04
+b04_ad20:   .db $04                     ; 12D20:  04
+b04_ad21:   .db $04                     ; 12D21:  04
+b04_ad22:   .db $04                     ; 12D22:  04
+b04_ad23:   .db $04                     ; 12D23:  04
+b04_ad24:   .db $04                     ; 12D24:  04
+b04_ad25:   rti                         ; 12D25:  40
+b04_ad26:   rti                         ; 12D26:  40
+b04_ad27:   rti                         ; 12D27:  40
+b04_ad28:   rti                         ; 12D28:  40
+b04_ad29:   rti                         ; 12D29:  40
+b04_ad2a:   rti                         ; 12D2A:  40
+b04_ad2b:   rti                         ; 12D2B:  40
+b04_ad2c:   .db $04                     ; 12D2C:  04
+b04_ad2d:   .db $04                     ; 12D2D:  04
+b04_ad2e:   .db $04                     ; 12D2E:  04
+b04_ad2f:   rti                         ; 12D2F:  40
+b04_ad30:   rti                         ; 12D30:  40
+b04_ad31:   rti                         ; 12D31:  40
+b04_ad32:   rti                         ; 12D32:  40
+b04_ad33:   rti                         ; 12D33:  40
+b04_ad34:   rti                         ; 12D34:  40
+b04_ad35:   rti                         ; 12D35:  40
+b04_ad36:   rti                         ; 12D36:  40
+b04_ad37:   .db $04                     ; 12D37:  04
+b04_ad38:   .db $04                     ; 12D38:  04
+b04_ad39:   .db $04                     ; 12D39:  04
+b04_ad3a:   .db $04                     ; 12D3A:  04
+b04_ad3b:   .db $04                     ; 12D3B:  04
+b04_ad3c:   .db $04                     ; 12D3C:  04
+b04_ad3d:   .db $04                     ; 12D3D:  04
+b04_ad3e:   .db $04                     ; 12D3E:  04
+b04_ad3f:   rti                         ; 12D3F:  40
+b04_ad40:   rti                         ; 12D40:  40
+b04_ad41:   rti                         ; 12D41:  40
+b04_ad42:   rti                         ; 12D42:  40
+b04_ad43:   rti                         ; 12D43:  40
+b04_ad44:   rti                         ; 12D44:  40
+b04_ad45:   .db $04                     ; 12D45:  04
+b04_ad46:   .db $04                     ; 12D46:  04
+b04_ad47:   .db $04                     ; 12D47:  04
+b04_ad48:   php                         ; 12D48:  08
+b04_ad49:   rti                         ; 12D49:  40
+b04_ad4a:   rti                         ; 12D4A:  40
+b04_ad4b:   rti                         ; 12D4B:  40
+b04_ad4c:   .db $04                     ; 12D4C:  04
+b04_ad4d:   .db $04                     ; 12D4D:  04
+b04_ad4e:   .db $04                     ; 12D4E:  04
+b04_ad4f:   .db $04                     ; 12D4F:  04
+b04_ad50:   .db $04                     ; 12D50:  04
+b04_ad51:   .db $04                     ; 12D51:  04
+b04_ad52:   .db $04                     ; 12D52:  04
+b04_ad53:   .db $80                     ; 12D53:  80
+b04_ad54:   jsr $0404                   ; 12D54:  20 04 04
+b04_ad57:   .db $04                     ; 12D57:  04
+b04_ad58:   .db $04                     ; 12D58:  04
+b04_ad59:   bpl $ad5f                   ; 12D59:  10 04
+b04_ad5b:   .db $04                     ; 12D5B:  04
+b04_ad5c:   .db $80                     ; 12D5C:  80
+b04_ad5d:   .db $80                     ; 12D5D:  80
+b04_ad5e:   .db $80                     ; 12D5E:  80
+b04_ad5f:   bpl $ad65                   ; 12D5F:  10 04
+b04_ad61:   .db $04                     ; 12D61:  04
+b04_ad62:   .db $04                     ; 12D62:  04
+b04_ad63:   .db $04                     ; 12D63:  04
+b04_ad64:   .db $80                     ; 12D64:  80
+b04_ad65:   bpl $ad77                   ; 12D65:  10 10
+b04_ad67:   bpl $ad79                   ; 12D67:  10 10
+b04_ad69:   bpl $ad6f                   ; 12D69:  10 04
+b04_ad6b:   .db $04                     ; 12D6B:  04
+b04_ad6c:   .db $04                     ; 12D6C:  04
+b04_ad6d:   .db $04                     ; 12D6D:  04
+b04_ad6e:   .db $80                     ; 12D6E:  80
+b04_ad6f:   .db $80                     ; 12D6F:  80
+b04_ad70:   bpl $ad82                   ; 12D70:  10 10
+b04_ad72:   bpl $ad84                   ; 12D72:  10 10
+b04_ad74:   .db $80                     ; 12D74:  80
+b04_ad75:   .db $80                     ; 12D75:  80
+b04_ad76:   .db $80                     ; 12D76:  80
+b04_ad77:   .db $80                     ; 12D77:  80
+b04_ad78:   .db $02                     ; 12D78:  02
+b04_ad79:   .db $02                     ; 12D79:  02
+b04_ad7a:   .db $02                     ; 12D7A:  02
+b04_ad7b:   .db $02                     ; 12D7B:  02
+b04_ad7c:   bpl $ad8e                   ; 12D7C:  10 10
+b04_ad7e:   .db $80                     ; 12D7E:  80
+b04_ad7f:   .db $80                     ; 12D7F:  80
+b04_ad80:   .db $80                     ; 12D80:  80
+b04_ad81:   .db $04                     ; 12D81:  04
+b04_ad82:   jsr $0202                   ; 12D82:  20 02 02
+b04_ad85:   bpl $ad97                   ; 12D85:  10 10
+b04_ad87:   bpl $ad09                   ; 12D87:  10 80
+b04_ad89:   .db $80                     ; 12D89:  80
+b04_ad8a:   .db $80                     ; 12D8A:  80
+b04_ad8b:   .db $04                     ; 12D8B:  04
+b04_ad8c:   .db $80                     ; 12D8C:  80
+b04_ad8d:   .db $04                     ; 12D8D:  04
+b04_ad8e:   .db $04                     ; 12D8E:  04
+b04_ad8f:   bpl $ada1                   ; 12D8F:  10 10
+b04_ad91:   bpl $ad97                   ; 12D91:  10 04
+b04_ad93:   .db $04                     ; 12D93:  04
+b04_ad94:   bpl $ad9a                   ; 12D94:  10 04
+b04_ad96:   .db $04                     ; 12D96:  04
+b04_ad97:   .db $04                     ; 12D97:  04
+b04_ad98:   php                         ; 12D98:  08
+b04_ad99:   bpl $ad9f                   ; 12D99:  10 04
+b04_ad9b:   .db $04                     ; 12D9B:  04
+b04_ad9c:   .db $04                     ; 12D9C:  04
+b04_ad9d:   rti                         ; 12D9D:  40
+b04_ad9e:   rti                         ; 12D9E:  40
+b04_ad9f:   rti                         ; 12D9F:  40
+b04_ada0:   rti                         ; 12DA0:  40
+b04_ada1:   rti                         ; 12DA1:  40
+b04_ada2:   rti                         ; 12DA2:  40
+b04_ada3:   rti                         ; 12DA3:  40
+b04_ada4:   rti                         ; 12DA4:  40
+b04_ada5:   rti                         ; 12DA5:  40
+b04_ada6:   rti                         ; 12DA6:  40
+b04_ada7:   rti                         ; 12DA7:  40
+b04_ada8:   rti                         ; 12DA8:  40
+b04_ada9:   rti                         ; 12DA9:  40
+b04_adaa:   rti                         ; 12DAA:  40
+b04_adab:   rti                         ; 12DAB:  40
+b04_adac:   rti                         ; 12DAC:  40
+b04_adad:   rti                         ; 12DAD:  40
+b04_adae:   .db $04                     ; 12DAE:  04
+b04_adaf:   .db $04                     ; 12DAF:  04
+b04_adb0:   .db $04                     ; 12DB0:  04
+b04_adb1:   .db $04                     ; 12DB1:  04
+b04_adb2:   .db $04                     ; 12DB2:  04
+b04_adb3:   .db $04                     ; 12DB3:  04
+b04_adb4:   .db $04                     ; 12DB4:  04
+b04_adb5:   .db $04                     ; 12DB5:  04
+b04_adb6:   .db $04                     ; 12DB6:  04
+b04_adb7:   jsr $0480                   ; 12DB7:  20 80 04
+b04_adba:   .db $04                     ; 12DBA:  04
+b04_adbb:   .db $04                     ; 12DBB:  04
+b04_adbc:   .db $80                     ; 12DBC:  80
+b04_adbd:   bpl $adc3                   ; 12DBD:  10 04
+b04_adbf:   .db $04                     ; 12DBF:  04
+b04_adc0:   .db $04                     ; 12DC0:  04
+b04_adc1:   .db $80                     ; 12DC1:  80
+b04_adc2:   .db $80                     ; 12DC2:  80
+b04_adc3:   .db $80                     ; 12DC3:  80
+b04_adc4:   .db $04                     ; 12DC4:  04
+b04_adc5:   rti                         ; 12DC5:  40
+b04_adc6:   bpl $add8                   ; 12DC6:  10 10
+b04_adc8:   bpl $adce                   ; 12DC8:  10 04
+b04_adca:   .db $04                     ; 12DCA:  04
+b04_adcb:   .db $04                     ; 12DCB:  04
+b04_adcc:   php                         ; 12DCC:  08
+b04_adcd:   .db $80                     ; 12DCD:  80
+b04_adce:   .db $04                     ; 12DCE:  04
+b04_adcf:   .db $04                     ; 12DCF:  04
+b04_add0:   rti                         ; 12DD0:  40
+b04_add1:   rti                         ; 12DD1:  40
+b04_add2:   .db $04                     ; 12DD2:  04
+b04_add3:   .db $04                     ; 12DD3:  04
+b04_add4:   .db $04                     ; 12DD4:  04
+b04_add5:   rti                         ; 12DD5:  40
+b04_add6:   rti                         ; 12DD6:  40
+b04_add7:   rti                         ; 12DD7:  40
+b04_add8:   .db $04                     ; 12DD8:  04
+b04_add9:   .db $04                     ; 12DD9:  04
+b04_adda:   rti                         ; 12DDA:  40
+b04_addb:   rti                         ; 12DDB:  40
+b04_addc:   rti                         ; 12DDC:  40
+b04_addd:   .db $04                     ; 12DDD:  04
+b04_adde:   .db $04                     ; 12DDE:  04
+b04_addf:   rti                         ; 12DDF:  40
+b04_ade0:   rti                         ; 12DE0:  40
+b04_ade1:   rti                         ; 12DE1:  40
+b04_ade2:   rti                         ; 12DE2:  40
+b04_ade3:   rti                         ; 12DE3:  40
+b04_ade4:   rti                         ; 12DE4:  40
+b04_ade5:   rti                         ; 12DE5:  40
+b04_ade6:   rti                         ; 12DE6:  40
+b04_ade7:   rti                         ; 12DE7:  40
+b04_ade8:   rti                         ; 12DE8:  40
+b04_ade9:   rti                         ; 12DE9:  40
+b04_adea:   .db $04                     ; 12DEA:  04
+b04_adeb:   .db $04                     ; 12DEB:  04
+b04_adec:   .db $04                     ; 12DEC:  04
+b04_aded:   .db $04                     ; 12DED:  04
+b04_adee:   .db $04                     ; 12DEE:  04
+b04_adef:   .db $04                     ; 12DEF:  04
+b04_adf0:   rti                         ; 12DF0:  40
+b04_adf1:   .db $04                     ; 12DF1:  04
+b04_adf2:   rti                         ; 12DF2:  40
+b04_adf3:   .db $04                     ; 12DF3:  04
+b04_adf4:   rti                         ; 12DF4:  40
+b04_adf5:   .db $04                     ; 12DF5:  04
+b04_adf6:   .db $04                     ; 12DF6:  04
+b04_adf7:   .db $04                     ; 12DF7:  04
+b04_adf8:   .db $04                     ; 12DF8:  04
+b04_adf9:   .db $04                     ; 12DF9:  04
+b04_adfa:   .db $04                     ; 12DFA:  04
+b04_adfb:   .db $04                     ; 12DFB:  04
+b04_adfc:   .db $04                     ; 12DFC:  04
+b04_adfd:   .db $04                     ; 12DFD:  04
+b04_adfe:   .db $04                     ; 12DFE:  04
+b04_adff:   .db $04                     ; 12DFF:  04
+b04_ae00:   .db $04                     ; 12E00:  04
+b04_ae01:   .db $04                     ; 12E01:  04
+b04_ae02:   .db $04                     ; 12E02:  04
+b04_ae03:   .db $04                     ; 12E03:  04
+b04_ae04:   .db $04                     ; 12E04:  04
+b04_ae05:   .db $04                     ; 12E05:  04
+b04_ae06:   .db $04                     ; 12E06:  04
+b04_ae07:   .db $04                     ; 12E07:  04
+b04_ae08:   .db $04                     ; 12E08:  04
+b04_ae09:   php                         ; 12E09:  08
+b04_ae0a:   .db $04                     ; 12E0A:  04
+b04_ae0b:   .db $04                     ; 12E0B:  04
+b04_ae0c:   .db $04                     ; 12E0C:  04
+b04_ae0d:   .db $04                     ; 12E0D:  04
+b04_ae0e:   .db $04                     ; 12E0E:  04
+b04_ae0f:   .db $04                     ; 12E0F:  04
+b04_ae10:   .db $04                     ; 12E10:  04
+b04_ae11:   .db $04                     ; 12E11:  04
+b04_ae12:   jsr $0404                   ; 12E12:  20 04 04
+b04_ae15:   .db $04                     ; 12E15:  04
+b04_ae16:   .db $04                     ; 12E16:  04
+b04_ae17:   .db $04                     ; 12E17:  04
+b04_ae18:   .db $04                     ; 12E18:  04
+b04_ae19:   bpl $ae2b                   ; 12E19:  10 10
+b04_ae1b:   bpl $ae2d                   ; 12E1B:  10 10
+b04_ae1d:   bpl $ae23                   ; 12E1D:  10 04
+b04_ae1f:   .db $04                     ; 12E1F:  04
+b04_ae20:   rti                         ; 12E20:  40
+b04_ae21:   .db $04                     ; 12E21:  04
+b04_ae22:   bpl $ae34                   ; 12E22:  10 10
+b04_ae24:   .db $80                     ; 12E24:  80
+b04_ae25:   .db $80                     ; 12E25:  80
+b04_ae26:   bpl $ae38                   ; 12E26:  10 10
+b04_ae28:   .db $80                     ; 12E28:  80
+b04_ae29:   .db $04                     ; 12E29:  04
+b04_ae2a:   .db $04                     ; 12E2A:  04
+b04_ae2b:   rti                         ; 12E2B:  40
+b04_ae2c:   bpl $ae3e                   ; 12E2C:  10 10
+b04_ae2e:   .db $80                     ; 12E2E:  80
+b04_ae2f:   jsr $8010                   ; 12E2F:  20 10 80
+b04_ae32:   .db $80                     ; 12E32:  80
+b04_ae33:   .db $04                     ; 12E33:  04
+b04_ae34:   .db $04                     ; 12E34:  04
+b04_ae35:   .db $04                     ; 12E35:  04
+b04_ae36:   rti                         ; 12E36:  40
+b04_ae37:   bpl $ae3b                   ; 12E37:  10 02
+b04_ae39:   .db $02                     ; 12E39:  02
+b04_ae3a:   bpl $ae44                   ; 12E3A:  10 08
+b04_ae3c:   .db $04                     ; 12E3C:  04
+b04_ae3d:   .db $04                     ; 12E3D:  04
+b04_ae3e:   .db $04                     ; 12E3E:  04
+b04_ae3f:   .db $04                     ; 12E3F:  04
+b04_ae40:   rti                         ; 12E40:  40
+b04_ae41:   rti                         ; 12E41:  40
+b04_ae42:   .db $02                     ; 12E42:  02
+b04_ae43:   .db $02                     ; 12E43:  02
+b04_ae44:   .db $02                     ; 12E44:  02
+b04_ae45:   .db $02                     ; 12E45:  02
+b04_ae46:   .db $04                     ; 12E46:  04
+b04_ae47:   .db $04                     ; 12E47:  04
+b04_ae48:   .db $04                     ; 12E48:  04
+b04_ae49:   rti                         ; 12E49:  40
+b04_ae4a:   rti                         ; 12E4A:  40
+b04_ae4b:   rti                         ; 12E4B:  40
+b04_ae4c:   rti                         ; 12E4C:  40
+b04_ae4d:   rti                         ; 12E4D:  40
+b04_ae4e:   rti                         ; 12E4E:  40
+b04_ae4f:   rti                         ; 12E4F:  40
+b04_ae50:   rti                         ; 12E50:  40
+b04_ae51:   rti                         ; 12E51:  40
+b04_ae52:   .db $04                     ; 12E52:  04
+b04_ae53:   .db $04                     ; 12E53:  04
+b04_ae54:   rti                         ; 12E54:  40
+b04_ae55:   rti                         ; 12E55:  40
+b04_ae56:   rti                         ; 12E56:  40
+b04_ae57:   rti                         ; 12E57:  40
+b04_ae58:   .db $04                     ; 12E58:  04
+b04_ae59:   .db $04                     ; 12E59:  04
+b04_ae5a:   .db $04                     ; 12E5A:  04
+b04_ae5b:   .db $04                     ; 12E5B:  04
+b04_ae5c:   .db $04                     ; 12E5C:  04
+b04_ae5d:   .db $04                     ; 12E5D:  04
+b04_ae5e:   .db $04                     ; 12E5E:  04
+b04_ae5f:   rti                         ; 12E5F:  40
+b04_ae60:   rti                         ; 12E60:  40
+b04_ae61:   rti                         ; 12E61:  40
+b04_ae62:   rti                         ; 12E62:  40
+b04_ae63:   rti                         ; 12E63:  40
+b04_ae64:   rti                         ; 12E64:  40
+b04_ae65:   rti                         ; 12E65:  40
+b04_ae66:   .db $04                     ; 12E66:  04
+b04_ae67:   .db $80                     ; 12E67:  80
+b04_ae68:   .db $80                     ; 12E68:  80
+b04_ae69:   .db $04                     ; 12E69:  04
+b04_ae6a:   .db $04                     ; 12E6A:  04
+b04_ae6b:   .db $04                     ; 12E6B:  04
+b04_ae6c:   .db $04                     ; 12E6C:  04
+b04_ae6d:   .db $04                     ; 12E6D:  04
+b04_ae6e:   rti                         ; 12E6E:  40
+b04_ae6f:   .db $04                     ; 12E6F:  04
+b04_ae70:   .db $04                     ; 12E70:  04
+b04_ae71:   .db $04                     ; 12E71:  04
+b04_ae72:   .db $80                     ; 12E72:  80
+b04_ae73:   jsr $1010                   ; 12E73:  20 10 10
+b04_ae76:   bpl $ae88                   ; 12E76:  10 10
+b04_ae78:   .db $04                     ; 12E78:  04
+b04_ae79:   rti                         ; 12E79:  40
+b04_ae7a:   .db $04                     ; 12E7A:  04
+b04_ae7b:   .db $04                     ; 12E7B:  04
+b04_ae7c:   .db $04                     ; 12E7C:  04
+b04_ae7d:   php                         ; 12E7D:  08
+b04_ae7e:   bpl $ae00                   ; 12E7E:  10 80
+b04_ae80:   .db $80                     ; 12E80:  80
+b04_ae81:   bpl $ae93                   ; 12E81:  10 10
+b04_ae83:   bpl $ae87                   ; 12E83:  10 02
+b04_ae85:   .db $02                     ; 12E85:  02
+b04_ae86:   .db $02                     ; 12E86:  02
+b04_ae87:   bpl $ae99                   ; 12E87:  10 10
+b04_ae89:   bpl $ae9b                   ; 12E89:  10 10
+b04_ae8b:   bpl $ae8f                   ; 12E8B:  10 02
+b04_ae8d:   .db $02                     ; 12E8D:  02
+b04_ae8e:   .db $02                     ; 12E8E:  02
+b04_ae8f:   .db $02                     ; 12E8F:  02
+b04_ae90:   bpl $aea2                   ; 12E90:  10 10
+b04_ae92:   .db $80                     ; 12E92:  80
+b04_ae93:   bpl $ae15                   ; 12E93:  10 80
+b04_ae95:   bpl $aea7                   ; 12E95:  10 10
+b04_ae97:   bpl $aea9                   ; 12E97:  10 10
+b04_ae99:   .db $02                     ; 12E99:  02
+b04_ae9a:   bpl $ae1c                   ; 12E9A:  10 80
+b04_ae9c:   .db $80                     ; 12E9C:  80
+b04_ae9d:   .db $80                     ; 12E9D:  80
+b04_ae9e:   jsr $8080                   ; 12E9E:  20 80 80
+b04_aea1:   .db $80                     ; 12EA1:  80
+b04_aea2:   bpl $aeb4                   ; 12EA2:  10 10
+b04_aea4:   .db $02                     ; 12EA4:  02
+b04_aea5:   bpl $aeb7                   ; 12EA5:  10 10
+b04_aea7:   .db $80                     ; 12EA7:  80
+b04_aea8:   .db $80                     ; 12EA8:  80
+b04_aea9:   bpl $ae2b                   ; 12EA9:  10 80
+b04_aeab:   .db $80                     ; 12EAB:  80
+b04_aeac:   bpl $aebe                   ; 12EAC:  10 10
+b04_aeae:   bpl $aec0                   ; 12EAE:  10 10
+b04_aeb0:   .db $04                     ; 12EB0:  04
+b04_aeb1:   .db $04                     ; 12EB1:  04
+b04_aeb2:   .db $04                     ; 12EB2:  04
+b04_aeb3:   .db $04                     ; 12EB3:  04
+b04_aeb4:   php                         ; 12EB4:  08
+b04_aeb5:   .db $04                     ; 12EB5:  04
+b04_aeb6:   .db $04                     ; 12EB6:  04
+b04_aeb7:   .db $04                     ; 12EB7:  04
+b04_aeb8:   .db $04                     ; 12EB8:  04
+b04_aeb9:   .db $04                     ; 12EB9:  04
+b04_aeba:   .db $04                     ; 12EBA:  04
+b04_aebb:   .db $02                     ; 12EBB:  02
+b04_aebc:   .db $02                     ; 12EBC:  02
+b04_aebd:   .db $04                     ; 12EBD:  04
+b04_aebe:   .db $02                     ; 12EBE:  02
+b04_aebf:   .db $02                     ; 12EBF:  02
+b04_aec0:   .db $04                     ; 12EC0:  04
+b04_aec1:   .db $04                     ; 12EC1:  04
+b04_aec2:   .db $04                     ; 12EC2:  04
+b04_aec3:   bpl $aed5                   ; 12EC3:  10 10
+b04_aec5:   bpl $aec9                   ; 12EC5:  10 02
+b04_aec7:   .db $02                     ; 12EC7:  02
+b04_aec8:   .db $04                     ; 12EC8:  04
+b04_aec9:   .db $04                     ; 12EC9:  04
+b04_aeca:   .db $02                     ; 12ECA:  02
+b04_aecb:   .db $04                     ; 12ECB:  04
+b04_aecc:   .db $04                     ; 12ECC:  04
+b04_aecd:   .db $04                     ; 12ECD:  04
+b04_aece:   .db $04                     ; 12ECE:  04
+b04_aecf:   .db $04                     ; 12ECF:  04
+b04_aed0:   bpl $af12                   ; 12ED0:  10 40
+b04_aed2:   .db $04                     ; 12ED2:  04
+b04_aed3:   .db $04                     ; 12ED3:  04
+b04_aed4:   .db $04                     ; 12ED4:  04
+b04_aed5:   jsr $0408                   ; 12ED5:  20 08 04
+b04_aed8:   .db $04                     ; 12ED8:  04
+b04_aed9:   .db $04                     ; 12ED9:  04
+b04_aeda:   .db $04                     ; 12EDA:  04
+b04_aedb:   rti                         ; 12EDB:  40
+b04_aedc:   rti                         ; 12EDC:  40
+b04_aedd:   .db $04                     ; 12EDD:  04
+b04_aede:   .db $04                     ; 12EDE:  04
+b04_aedf:   .db $04                     ; 12EDF:  04
+b04_aee0:   .db $04                     ; 12EE0:  04
+b04_aee1:   rti                         ; 12EE1:  40
+b04_aee2:   rti                         ; 12EE2:  40
+b04_aee3:   rti                         ; 12EE3:  40
+b04_aee4:   .db $04                     ; 12EE4:  04
+b04_aee5:   rti                         ; 12EE5:  40
+b04_aee6:   rti                         ; 12EE6:  40
+b04_aee7:   rti                         ; 12EE7:  40
+b04_aee8:   .db $04                     ; 12EE8:  04
+b04_aee9:   .db $04                     ; 12EE9:  04
+b04_aeea:   .db $04                     ; 12EEA:  04
+b04_aeeb:   rti                         ; 12EEB:  40
+b04_aeec:   rti                         ; 12EEC:  40
+b04_aeed:   rti                         ; 12EED:  40
+b04_aeee:   rti                         ; 12EEE:  40
+b04_aeef:   rti                         ; 12EEF:  40
+b04_aef0:   rti                         ; 12EF0:  40
+b04_aef1:   rti                         ; 12EF1:  40
+b04_aef2:   .db $02                     ; 12EF2:  02
+b04_aef3:   .db $02                     ; 12EF3:  02
+b04_aef4:   .db $02                     ; 12EF4:  02
+b04_aef5:   .db $04                     ; 12EF5:  04
+b04_aef6:   .db $04                     ; 12EF6:  04
+b04_aef7:   .db $04                     ; 12EF7:  04
+b04_aef8:   rti                         ; 12EF8:  40
+b04_aef9:   rti                         ; 12EF9:  40
+b04_aefa:   rti                         ; 12EFA:  40
+b04_aefb:   rti                         ; 12EFB:  40
+b04_aefc:   rti                         ; 12EFC:  40
+b04_aefd:   .db $02                     ; 12EFD:  02
+b04_aefe:   .db $04                     ; 12EFE:  04
+b04_aeff:   .db $04                     ; 12EFF:  04
+b04_af00:   .db $04                     ; 12F00:  04
+b04_af01:   .db $04                     ; 12F01:  04
+b04_af02:   .db $04                     ; 12F02:  04
+b04_af03:   rti                         ; 12F03:  40
+b04_af04:   rti                         ; 12F04:  40
+b04_af05:   rti                         ; 12F05:  40
+b04_af06:   rti                         ; 12F06:  40
+b04_af07:   rti                         ; 12F07:  40
+b04_af08:   .db $04                     ; 12F08:  04
+b04_af09:   .db $04                     ; 12F09:  04
+b04_af0a:   .db $04                     ; 12F0A:  04
+b04_af0b:   .db $04                     ; 12F0B:  04
+b04_af0c:   .db $04                     ; 12F0C:  04
+b04_af0d:   .db $04                     ; 12F0D:  04
+b04_af0e:   jsr $4004                   ; 12F0E:  20 04 40
+b04_af11:   .db $04                     ; 12F11:  04
+b04_af12:   .db $04                     ; 12F12:  04
+b04_af13:   .db $02                     ; 12F13:  02
+b04_af14:   .db $02                     ; 12F14:  02
+b04_af15:   .db $04                     ; 12F15:  04
+b04_af16:   .db $04                     ; 12F16:  04
+b04_af17:   .db $04                     ; 12F17:  04
+b04_af18:   php                         ; 12F18:  08
+b04_af19:   .db $04                     ; 12F19:  04
+b04_af1a:   .db $04                     ; 12F1A:  04
+b04_af1b:   .db $04                     ; 12F1B:  04
+b04_af1c:   .db $04                     ; 12F1C:  04
+b04_af1d:   .db $04                     ; 12F1D:  04
+b04_af1e:   .db $02                     ; 12F1E:  02
+b04_af1f:   .db $02                     ; 12F1F:  02
+b04_af20:   .db $02                     ; 12F20:  02
+b04_af21:   .db $02                     ; 12F21:  02
+b04_af22:   .db $04                     ; 12F22:  04
+b04_af23:   .db $04                     ; 12F23:  04
+b04_af24:   .db $04                     ; 12F24:  04
+b04_af25:   .db $04                     ; 12F25:  04
+b04_af26:   .db $04                     ; 12F26:  04
+b04_af27:   .db $04                     ; 12F27:  04
+b04_af28:   .db $04                     ; 12F28:  04
+b04_af29:   .db $04                     ; 12F29:  04
+b04_af2a:   .db $04                     ; 12F2A:  04
+b04_af2b:   .db $04                     ; 12F2B:  04
+b04_af2c:   rti                         ; 12F2C:  40
+b04_af2d:   rti                         ; 12F2D:  40
+b04_af2e:   .db $04                     ; 12F2E:  04
+b04_af2f:   .db $04                     ; 12F2F:  04
+b04_af30:   .db $04                     ; 12F30:  04
+b04_af31:   rti                         ; 12F31:  40
+b04_af32:   rti                         ; 12F32:  40
+b04_af33:   rti                         ; 12F33:  40
+b04_af34:   rti                         ; 12F34:  40
+b04_af35:   rti                         ; 12F35:  40
+b04_af36:   .db $04                     ; 12F36:  04
+b04_af37:   .db $04                     ; 12F37:  04
+b04_af38:   .db $04                     ; 12F38:  04
+b04_af39:   .db $80                     ; 12F39:  80
+b04_af3a:   .db $80                     ; 12F3A:  80
+b04_af3b:   .db $80                     ; 12F3B:  80
+b04_af3c:   .db $04                     ; 12F3C:  04
+b04_af3d:   .db $04                     ; 12F3D:  04
+b04_af3e:   .db $04                     ; 12F3E:  04
+b04_af3f:   jsr $4004                   ; 12F3F:  20 04 40
+b04_af42:   .db $04                     ; 12F42:  04
+b04_af43:   .db $04                     ; 12F43:  04
+b04_af44:   .db $04                     ; 12F44:  04
+b04_af45:   .db $04                     ; 12F45:  04
+b04_af46:   .db $04                     ; 12F46:  04
+b04_af47:   .db $80                     ; 12F47:  80
+b04_af48:   rti                         ; 12F48:  40
+b04_af49:   .db $04                     ; 12F49:  04
+b04_af4a:   .db $04                     ; 12F4A:  04
+b04_af4b:   rti                         ; 12F4B:  40
+b04_af4c:   php                         ; 12F4C:  08
+b04_af4d:   .db $04                     ; 12F4D:  04
+b04_af4e:   .db $04                     ; 12F4E:  04
+b04_af4f:   rti                         ; 12F4F:  40
+b04_af50:   rti                         ; 12F50:  40
+b04_af51:   .db $04                     ; 12F51:  04
+b04_af52:   rti                         ; 12F52:  40
+b04_af53:   rti                         ; 12F53:  40
+b04_af54:   .db $04                     ; 12F54:  04
+b04_af55:   rti                         ; 12F55:  40
+b04_af56:   .db $04                     ; 12F56:  04
+b04_af57:   .db $04                     ; 12F57:  04
+b04_af58:   .db $04                     ; 12F58:  04
+b04_af59:   rti                         ; 12F59:  40
+b04_af5a:   rti                         ; 12F5A:  40
+b04_af5b:   rti                         ; 12F5B:  40
+b04_af5c:   .db $04                     ; 12F5C:  04
+b04_af5d:   rti                         ; 12F5D:  40
+b04_af5e:   rti                         ; 12F5E:  40
+b04_af5f:   .db $04                     ; 12F5F:  04
+b04_af60:   .db $04                     ; 12F60:  04
+b04_af61:   .db $04                     ; 12F61:  04
+b04_af62:   .db $04                     ; 12F62:  04
+b04_af63:   .db $04                     ; 12F63:  04
+b04_af64:   .db $04                     ; 12F64:  04
+b04_af65:   .db $04                     ; 12F65:  04
+b04_af66:   rti                         ; 12F66:  40
+b04_af67:   rti                         ; 12F67:  40
+b04_af68:   rti                         ; 12F68:  40
+b04_af69:   rti                         ; 12F69:  40
+b04_af6a:   rti                         ; 12F6A:  40
+b04_af6b:   .db $04                     ; 12F6B:  04
+b04_af6c:   .db $04                     ; 12F6C:  04
+b04_af6d:   .db $04                     ; 12F6D:  04
+b04_af6e:   .db $80                     ; 12F6E:  80
+b04_af6f:   .db $04                     ; 12F6F:  04
+b04_af70:   .db $04                     ; 12F70:  04
+b04_af71:   .db $04                     ; 12F71:  04
+b04_af72:   .db $04                     ; 12F72:  04
+b04_af73:   rti                         ; 12F73:  40
+b04_af74:   rti                         ; 12F74:  40
+b04_af75:   rti                         ; 12F75:  40
+b04_af76:   .db $04                     ; 12F76:  04
+b04_af77:   .db $04                     ; 12F77:  04
+b04_af78:   .db $02                     ; 12F78:  02
+b04_af79:   .db $80                     ; 12F79:  80
+b04_af7a:   .db $04                     ; 12F7A:  04
+b04_af7b:   php                         ; 12F7B:  08
+b04_af7c:   .db $04                     ; 12F7C:  04
+b04_af7d:   .db $04                     ; 12F7D:  04
+b04_af7e:   .db $04                     ; 12F7E:  04
+b04_af7f:   .db $04                     ; 12F7F:  04
+b04_af80:   rti                         ; 12F80:  40
+b04_af81:   .db $04                     ; 12F81:  04
+b04_af82:   .db $02                     ; 12F82:  02
+b04_af83:   .db $02                     ; 12F83:  02
+b04_af84:   bpl $af06                   ; 12F84:  10 80
+b04_af86:   .db $80                     ; 12F86:  80
+b04_af87:   .db $04                     ; 12F87:  04
+b04_af88:   .db $04                     ; 12F88:  04
+b04_af89:   .db $04                     ; 12F89:  04
+b04_af8a:   rti                         ; 12F8A:  40
+b04_af8b:   .db $04                     ; 12F8B:  04
+b04_af8c:   .db $02                     ; 12F8C:  02
+b04_af8d:   .db $02                     ; 12F8D:  02
+b04_af8e:   .db $02                     ; 12F8E:  02
+b04_af8f:   jsr $1010                   ; 12F8F:  20 10 10
+b04_af92:   .db $04                     ; 12F92:  04
+b04_af93:   .db $04                     ; 12F93:  04
+b04_af94:   .db $04                     ; 12F94:  04
+b04_af95:   .db $04                     ; 12F95:  04
+b04_af96:   rti                         ; 12F96:  40
+b04_af97:   rti                         ; 12F97:  40
+b04_af98:   rti                         ; 12F98:  40
+b04_af99:   rti                         ; 12F99:  40
+b04_af9a:   rti                         ; 12F9A:  40
+b04_af9b:   rti                         ; 12F9B:  40
+b04_af9c:   .db $04                     ; 12F9C:  04
+b04_af9d:   .db $80                     ; 12F9D:  80
+b04_af9e:   .db $80                     ; 12F9E:  80
+b04_af9f:   bpl $afb1                   ; 12F9F:  10 10
+b04_afa1:   bpl $afe3                   ; 12FA1:  10 40
+b04_afa3:   rti                         ; 12FA3:  40
+b04_afa4:   rti                         ; 12FA4:  40
+b04_afa5:   jsr $0440                   ; 12FA5:  20 40 04
+b04_afa8:   .db $04                     ; 12FA8:  04
+b04_afa9:   .db $04                     ; 12FA9:  04
+b04_afaa:   .db $80                     ; 12FAA:  80
+b04_afab:   .db $80                     ; 12FAB:  80
+b04_afac:   bpl $afb2                   ; 12FAC:  10 04
+b04_afae:   .db $04                     ; 12FAE:  04
+b04_afaf:   rti                         ; 12FAF:  40
+b04_afb0:   php                         ; 12FB0:  08
+b04_afb1:   .db $04                     ; 12FB1:  04
+b04_afb2:   .db $04                     ; 12FB2:  04
+b04_afb3:   .db $80                     ; 12FB3:  80
+b04_afb4:   .db $80                     ; 12FB4:  80
+b04_afb5:   .db $04                     ; 12FB5:  04
+b04_afb6:   bpl $afc8                   ; 12FB6:  10 10
+b04_afb8:   .db $04                     ; 12FB8:  04
+b04_afb9:   .db $04                     ; 12FB9:  04
+b04_afba:   .db $04                     ; 12FBA:  04
+b04_afbb:   .db $04                     ; 12FBB:  04
+b04_afbc:   .db $04                     ; 12FBC:  04
+b04_afbd:   .db $80                     ; 12FBD:  80
+b04_afbe:   .db $80                     ; 12FBE:  80
+b04_afbf:   bpl $afd1                   ; 12FBF:  10 10
+b04_afc1:   bpl $afd3                   ; 12FC1:  10 10
+b04_afc3:   .db $04                     ; 12FC3:  04
+b04_afc4:   .db $04                     ; 12FC4:  04
+b04_afc5:   .db $04                     ; 12FC5:  04
+b04_afc6:   .db $04                     ; 12FC6:  04
+b04_afc7:   .db $04                     ; 12FC7:  04
+b04_afc8:   bpl $afda                   ; 12FC8:  10 10
+b04_afca:   bpl $afdc                   ; 12FCA:  10 10
+b04_afcc:   bpl $afde                   ; 12FCC:  10 10
+b04_afce:   .db $04                     ; 12FCE:  04
+b04_afcf:   .db $04                     ; 12FCF:  04
+b04_afd0:   .db $04                     ; 12FD0:  04
+b04_afd1:   bpl $afe3                   ; 12FD1:  10 10
+b04_afd3:   jsr $8080                   ; 12FD3:  20 80 80
+b04_afd6:   bpl $afe8                   ; 12FD6:  10 10
+b04_afd8:   bpl $afea                   ; 12FD8:  10 10
+b04_afda:   .db $80                     ; 12FDA:  80
+b04_afdb:   bpl $afed                   ; 12FDB:  10 10
+b04_afdd:   php                         ; 12FDD:  08
+b04_afde:   .db $80                     ; 12FDE:  80
+b04_afdf:   .db $80                     ; 12FDF:  80
+b04_afe0:   .db $80                     ; 12FE0:  80
+b04_afe1:   bpl $afe7                   ; 12FE1:  10 04
+b04_afe3:   .db $04                     ; 12FE3:  04
+b04_afe4:   bpl $af66                   ; 12FE4:  10 80
+b04_afe6:   bpl $af68                   ; 12FE6:  10 80
+b04_afe8:   .db $80                     ; 12FE8:  80
+b04_afe9:   .db $80                     ; 12FE9:  80
+b04_afea:   .db $80                     ; 12FEA:  80
+b04_afeb:   .db $04                     ; 12FEB:  04
+b04_afec:   .db $04                     ; 12FEC:  04
+b04_afed:   rti                         ; 12FED:  40
+b04_afee:   .db $04                     ; 12FEE:  04
+b04_afef:   bpl $b001                   ; 12FEF:  10 10
+b04_aff1:   .db $80                     ; 12FF1:  80
+b04_aff2:   .db $80                     ; 12FF2:  80
+b04_aff3:   .db $80                     ; 12FF3:  80
+b04_aff4:   .db $04                     ; 12FF4:  04
+b04_aff5:   .db $04                     ; 12FF5:  04
+b04_aff6:   rti                         ; 12FF6:  40
+b04_aff7:   rti                         ; 12FF7:  40
+b04_aff8:   rti                         ; 12FF8:  40
+b04_aff9:   .db $04                     ; 12FF9:  04
+b04_affa:   bpl $b00c                   ; 12FFA:  10 10
+b04_affc:   bpl $b002                   ; 12FFC:  10 04
+b04_affe:   .db $04                     ; 12FFE:  04
+b04_afff:   .db $04                     ; 12FFF:  04
+b04_b000:   rti                         ; 13000:  40
+b04_b001:   rti                         ; 13001:  40
+b04_b002:   rti                         ; 13002:  40
+b04_b003:   rti                         ; 13003:  40
+b04_b004:   rti                         ; 13004:  40
+b04_b005:   rti                         ; 13005:  40
+b04_b006:   rti                         ; 13006:  40
+b04_b007:   .db $04                     ; 13007:  04
+b04_b008:   .db $04                     ; 13008:  04
+b04_b009:   .db $04                     ; 13009:  04
+b04_b00a:   .db $04                     ; 1300A:  04
+b04_b00b:   .db $04                     ; 1300B:  04
+b04_b00c:   .db $04                     ; 1300C:  04
+b04_b00d:   bpl $b01f                   ; 1300D:  10 10
+b04_b00f:   bpl $b051                   ; 1300F:  10 40
+b04_b011:   rti                         ; 13011:  40
+b04_b012:   .db $04                     ; 13012:  04
+b04_b013:   .db $04                     ; 13013:  04
+b04_b014:   .db $04                     ; 13014:  04
+b04_b015:   .db $04                     ; 13015:  04
+b04_b016:   .db $04                     ; 13016:  04
+b04_b017:   rti                         ; 13017:  40
+b04_b018:   .db $04                     ; 13018:  04
+b04_b019:   .db $04                     ; 13019:  04
+b04_b01a:   bpl $b05c                   ; 1301A:  10 40
+b04_b01c:   .db $04                     ; 1301C:  04
+b04_b01d:   .db $04                     ; 1301D:  04
+b04_b01e:   .db $04                     ; 1301E:  04
+b04_b01f:   .db $04                     ; 1301F:  04
+b04_b020:   rti                         ; 13020:  40
+b04_b021:   rti                         ; 13021:  40
+b04_b022:   rti                         ; 13022:  40
+b04_b023:   .db $80                     ; 13023:  80
+b04_b024:   .db $80                     ; 13024:  80
+b04_b025:   .db $04                     ; 13025:  04
+b04_b026:   rti                         ; 13026:  40
+b04_b027:   .db $04                     ; 13027:  04
+b04_b028:   .db $04                     ; 13028:  04
+b04_b029:   .db $04                     ; 13029:  04
+b04_b02a:   .db $04                     ; 1302A:  04
+b04_b02b:   rti                         ; 1302B:  40
+b04_b02c:   jsr $4008                   ; 1302C:  20 08 40
+b04_b02f:   bpl $b035                   ; 1302F:  10 04
+b04_b031:   rti                         ; 13031:  40
+b04_b032:   rti                         ; 13032:  40
+b04_b033:   .db $04                     ; 13033:  04
+b04_b034:   .db $04                     ; 13034:  04
+b04_b035:   .db $04                     ; 13035:  04
+b04_b036:   rti                         ; 13036:  40
+b04_b037:   .db $04                     ; 13037:  04
+b04_b038:   .db $04                     ; 13038:  04
+b04_b039:   bpl $b07b                   ; 13039:  10 40
+b04_b03b:   rti                         ; 1303B:  40
+b04_b03c:   .db $ff                     ; 1303C:  ff
+b04_b03d:   .db $ff                     ; 1303D:  ff
+b04_b03e:   .db $ff                     ; 1303E:  ff
+b04_b03f:   .db $ff                     ; 1303F:  ff
+b04_b040:   .db $ff                     ; 13040:  ff
+b04_b041:   .db $ff                     ; 13041:  ff
+b04_b042:   .db $ff                     ; 13042:  ff
+b04_b043:   .db $ff                     ; 13043:  ff
+b04_b044:   .db $ff                     ; 13044:  ff
+b04_b045:   .db $ff                     ; 13045:  ff
+b04_b046:   .db $ff                     ; 13046:  ff
+b04_b047:   .db $ff                     ; 13047:  ff
+b04_b048:   .db $ff                     ; 13048:  ff
+b04_b049:   .db $ff                     ; 13049:  ff
+b04_b04a:   .db $ff                     ; 1304A:  ff
+b04_b04b:   .db $ff                     ; 1304B:  ff
+b04_b04c:   .db $ff                     ; 1304C:  ff
+b04_b04d:   .db $ff                     ; 1304D:  ff
+b04_b04e:   .db $ff                     ; 1304E:  ff
+b04_b04f:   .db $ff                     ; 1304F:  ff
+b04_b050:   .db $ff                     ; 13050:  ff
+b04_b051:   .db $ff                     ; 13051:  ff
+b04_b052:   .db $ff                     ; 13052:  ff
+b04_b053:   .db $ff                     ; 13053:  ff
+b04_b054:   .db $ff                     ; 13054:  ff
+b04_b055:   .db $ff                     ; 13055:  ff
+b04_b056:   .db $ff                     ; 13056:  ff
+b04_b057:   .db $ff                     ; 13057:  ff
+b04_b058:   .db $ff                     ; 13058:  ff
+b04_b059:   .db $ff                     ; 13059:  ff
+b04_b05a:   .db $ff                     ; 1305A:  ff
+b04_b05b:   .db $ff                     ; 1305B:  ff
+b04_b05c:   .db $ff                     ; 1305C:  ff
+b04_b05d:   .db $ff                     ; 1305D:  ff
+b04_b05e:   .db $ff                     ; 1305E:  ff
+b04_b05f:   .db $ff                     ; 1305F:  ff
+b04_b060:   .db $ff                     ; 13060:  ff
+b04_b061:   .db $ff                     ; 13061:  ff
+b04_b062:   .db $ff                     ; 13062:  ff
+b04_b063:   .db $ff                     ; 13063:  ff
+b04_b064:   .db $ff                     ; 13064:  ff
+b04_b065:   .db $ff                     ; 13065:  ff
+b04_b066:   .db $ff                     ; 13066:  ff
+b04_b067:   .db $ff                     ; 13067:  ff
+b04_b068:   .db $ff                     ; 13068:  ff
+b04_b069:   .db $ff                     ; 13069:  ff
+b04_b06a:   .db $ff                     ; 1306A:  ff
+b04_b06b:   .db $ff                     ; 1306B:  ff
+b04_b06c:   .db $ff                     ; 1306C:  ff
+b04_b06d:   .db $ff                     ; 1306D:  ff
+b04_b06e:   .db $ff                     ; 1306E:  ff
+b04_b06f:   .db $ff                     ; 1306F:  ff
+b04_b070:   .db $ff                     ; 13070:  ff
+b04_b071:   .db $ff                     ; 13071:  ff
+b04_b072:   .db $ff                     ; 13072:  ff
+b04_b073:   .db $ff                     ; 13073:  ff
+b04_b074:   .db $ff                     ; 13074:  ff
+b04_b075:   .db $ff                     ; 13075:  ff
+b04_b076:   .db $ff                     ; 13076:  ff
+b04_b077:   .db $ff                     ; 13077:  ff
+b04_b078:   .db $ff                     ; 13078:  ff
+b04_b079:   .db $ff                     ; 13079:  ff
+b04_b07a:   .db $ff                     ; 1307A:  ff
+b04_b07b:   .db $ff                     ; 1307B:  ff
+b04_b07c:   .db $ff                     ; 1307C:  ff
+b04_b07d:   .db $ff                     ; 1307D:  ff
+b04_b07e:   .db $ff                     ; 1307E:  ff
+b04_b07f:   .db $ff                     ; 1307F:  ff
+b04_b080:   .db $ff                     ; 13080:  ff
+b04_b081:   .db $ff                     ; 13081:  ff
+b04_b082:   .db $ff                     ; 13082:  ff
+b04_b083:   .db $ff                     ; 13083:  ff
+b04_b084:   .db $ff                     ; 13084:  ff
+b04_b085:   .db $ff                     ; 13085:  ff
+b04_b086:   .db $ff                     ; 13086:  ff
+b04_b087:   .db $ff                     ; 13087:  ff
+b04_b088:   .db $ff                     ; 13088:  ff
+b04_b089:   .db $ff                     ; 13089:  ff
+b04_b08a:   .db $ff                     ; 1308A:  ff
+b04_b08b:   .db $ff                     ; 1308B:  ff
+b04_b08c:   .db $ff                     ; 1308C:  ff
+b04_b08d:   .db $ff                     ; 1308D:  ff
+b04_b08e:   .db $ff                     ; 1308E:  ff
+b04_b08f:   .db $ff                     ; 1308F:  ff
+b04_b090:   .db $ff                     ; 13090:  ff
+b04_b091:   .db $ff                     ; 13091:  ff
+b04_b092:   .db $ff                     ; 13092:  ff
+b04_b093:   .db $ff                     ; 13093:  ff
+b04_b094:   .db $ff                     ; 13094:  ff
+b04_b095:   .db $ff                     ; 13095:  ff
+b04_b096:   .db $ff                     ; 13096:  ff
+b04_b097:   .db $ff                     ; 13097:  ff
+b04_b098:   .db $ff                     ; 13098:  ff
+b04_b099:   .db $ff                     ; 13099:  ff
+b04_b09a:   .db $ff                     ; 1309A:  ff
+b04_b09b:   .db $ff                     ; 1309B:  ff
+b04_b09c:   .db $ff                     ; 1309C:  ff
+b04_b09d:   .db $ff                     ; 1309D:  ff
+b04_b09e:   .db $ff                     ; 1309E:  ff
+b04_b09f:   .db $ff                     ; 1309F:  ff
+b04_b0a0:   .db $ff                     ; 130A0:  ff
+b04_b0a1:   .db $ff                     ; 130A1:  ff
+b04_b0a2:   .db $ff                     ; 130A2:  ff
+b04_b0a3:   .db $ff                     ; 130A3:  ff
+b04_b0a4:   .db $ff                     ; 130A4:  ff
+b04_b0a5:   .db $ff                     ; 130A5:  ff
+b04_b0a6:   .db $ff                     ; 130A6:  ff
+b04_b0a7:   .db $ff                     ; 130A7:  ff
+b04_b0a8:   .db $ff                     ; 130A8:  ff
+b04_b0a9:   .db $ff                     ; 130A9:  ff
+b04_b0aa:   .db $ff                     ; 130AA:  ff
+b04_b0ab:   .db $ff                     ; 130AB:  ff
+b04_b0ac:   .db $ff                     ; 130AC:  ff
+b04_b0ad:   .db $ff                     ; 130AD:  ff
+b04_b0ae:   .db $ff                     ; 130AE:  ff
+b04_b0af:   .db $ff                     ; 130AF:  ff
+b04_b0b0:   .db $ff                     ; 130B0:  ff
+b04_b0b1:   .db $ff                     ; 130B1:  ff
+b04_b0b2:   .db $ff                     ; 130B2:  ff
+b04_b0b3:   .db $ff                     ; 130B3:  ff
+b04_b0b4:   .db $ff                     ; 130B4:  ff
+b04_b0b5:   .db $ff                     ; 130B5:  ff
+b04_b0b6:   .db $ff                     ; 130B6:  ff
+b04_b0b7:   .db $ff                     ; 130B7:  ff
+b04_b0b8:   .db $ff                     ; 130B8:  ff
+b04_b0b9:   .db $ff                     ; 130B9:  ff
+b04_b0ba:   .db $ff                     ; 130BA:  ff
+b04_b0bb:   .db $ff                     ; 130BB:  ff
+b04_b0bc:   .db $ff                     ; 130BC:  ff
+b04_b0bd:   .db $ff                     ; 130BD:  ff
+b04_b0be:   .db $ff                     ; 130BE:  ff
+b04_b0bf:   .db $ff                     ; 130BF:  ff
+b04_b0c0:   .db $ff                     ; 130C0:  ff
+b04_b0c1:   .db $ff                     ; 130C1:  ff
+b04_b0c2:   .db $ff                     ; 130C2:  ff
+b04_b0c3:   .db $ff                     ; 130C3:  ff
+b04_b0c4:   .db $ff                     ; 130C4:  ff
+b04_b0c5:   .db $ff                     ; 130C5:  ff
+b04_b0c6:   .db $ff                     ; 130C6:  ff
+b04_b0c7:   .db $ff                     ; 130C7:  ff
+b04_b0c8:   .db $ff                     ; 130C8:  ff
+b04_b0c9:   .db $ff                     ; 130C9:  ff
+b04_b0ca:   .db $ff                     ; 130CA:  ff
+b04_b0cb:   .db $ff                     ; 130CB:  ff
+b04_b0cc:   .db $ff                     ; 130CC:  ff
+b04_b0cd:   .db $ff                     ; 130CD:  ff
+b04_b0ce:   .db $ff                     ; 130CE:  ff
+b04_b0cf:   .db $ff                     ; 130CF:  ff
+b04_b0d0:   .db $ff                     ; 130D0:  ff
+b04_b0d1:   .db $ff                     ; 130D1:  ff
+b04_b0d2:   .db $ff                     ; 130D2:  ff
+b04_b0d3:   .db $ff                     ; 130D3:  ff
+b04_b0d4:   .db $ff                     ; 130D4:  ff
+b04_b0d5:   .db $ff                     ; 130D5:  ff
+b04_b0d6:   .db $ff                     ; 130D6:  ff
+b04_b0d7:   .db $ff                     ; 130D7:  ff
+b04_b0d8:   .db $ff                     ; 130D8:  ff
+b04_b0d9:   .db $ff                     ; 130D9:  ff
+b04_b0da:   .db $ff                     ; 130DA:  ff
+b04_b0db:   .db $ff                     ; 130DB:  ff
+b04_b0dc:   .db $ff                     ; 130DC:  ff
+b04_b0dd:   .db $ff                     ; 130DD:  ff
+b04_b0de:   .db $ff                     ; 130DE:  ff
+b04_b0df:   .db $ff                     ; 130DF:  ff
+b04_b0e0:   .db $ff                     ; 130E0:  ff
+b04_b0e1:   .db $ff                     ; 130E1:  ff
+b04_b0e2:   .db $ff                     ; 130E2:  ff
+b04_b0e3:   .db $ff                     ; 130E3:  ff
+b04_b0e4:   .db $ff                     ; 130E4:  ff
+b04_b0e5:   .db $ff                     ; 130E5:  ff
+b04_b0e6:   .db $ff                     ; 130E6:  ff
+b04_b0e7:   .db $ff                     ; 130E7:  ff
+b04_b0e8:   .db $ff                     ; 130E8:  ff
+b04_b0e9:   .db $ff                     ; 130E9:  ff
+b04_b0ea:   .db $ff                     ; 130EA:  ff
+b04_b0eb:   .db $ff                     ; 130EB:  ff
+b04_b0ec:   .db $ff                     ; 130EC:  ff
+b04_b0ed:   .db $ff                     ; 130ED:  ff
+b04_b0ee:   .db $ff                     ; 130EE:  ff
+b04_b0ef:   .db $ff                     ; 130EF:  ff
+b04_b0f0:   .db $ff                     ; 130F0:  ff
+b04_b0f1:   .db $ff                     ; 130F1:  ff
+b04_b0f2:   .db $ff                     ; 130F2:  ff
+b04_b0f3:   .db $ff                     ; 130F3:  ff
+b04_b0f4:   .db $ff                     ; 130F4:  ff
+b04_b0f5:   .db $ff                     ; 130F5:  ff
+b04_b0f6:   .db $ff                     ; 130F6:  ff
+b04_b0f7:   .db $ff                     ; 130F7:  ff
+b04_b0f8:   .db $ff                     ; 130F8:  ff
+b04_b0f9:   .db $ff                     ; 130F9:  ff
+b04_b0fa:   .db $ff                     ; 130FA:  ff
+b04_b0fb:   .db $ff                     ; 130FB:  ff
+b04_b0fc:   .db $ff                     ; 130FC:  ff
+b04_b0fd:   .db $ff                     ; 130FD:  ff
+b04_b0fe:   .db $ff                     ; 130FE:  ff
+b04_b0ff:   .db $ff                     ; 130FF:  ff
+b04_b100:   .db $ff                     ; 13100:  ff
+b04_b101:   .db $ff                     ; 13101:  ff
+b04_b102:   .db $ff                     ; 13102:  ff
+b04_b103:   .db $ff                     ; 13103:  ff
+b04_b104:   .db $ff                     ; 13104:  ff
+b04_b105:   .db $ff                     ; 13105:  ff
+b04_b106:   .db $ff                     ; 13106:  ff
+b04_b107:   .db $ff                     ; 13107:  ff
+b04_b108:   .db $ff                     ; 13108:  ff
+b04_b109:   .db $ff                     ; 13109:  ff
+b04_b10a:   .db $ff                     ; 1310A:  ff
+b04_b10b:   .db $ff                     ; 1310B:  ff
+b04_b10c:   .db $ff                     ; 1310C:  ff
+b04_b10d:   .db $ff                     ; 1310D:  ff
+b04_b10e:   .db $ff                     ; 1310E:  ff
+b04_b10f:   .db $ff                     ; 1310F:  ff
+b04_b110:   .db $ff                     ; 13110:  ff
+b04_b111:   .db $ff                     ; 13111:  ff
+b04_b112:   .db $ff                     ; 13112:  ff
+b04_b113:   .db $ff                     ; 13113:  ff
+b04_b114:   .db $ff                     ; 13114:  ff
+b04_b115:   .db $ff                     ; 13115:  ff
+b04_b116:   .db $ff                     ; 13116:  ff
+b04_b117:   .db $ff                     ; 13117:  ff
+b04_b118:   .db $ff                     ; 13118:  ff
+b04_b119:   .db $ff                     ; 13119:  ff
+b04_b11a:   .db $ff                     ; 1311A:  ff
+b04_b11b:   .db $ff                     ; 1311B:  ff
+b04_b11c:   .db $ff                     ; 1311C:  ff
+b04_b11d:   .db $ff                     ; 1311D:  ff
+b04_b11e:   .db $ff                     ; 1311E:  ff
+b04_b11f:   .db $ff                     ; 1311F:  ff
+b04_b120:   .db $ff                     ; 13120:  ff
+b04_b121:   .db $ff                     ; 13121:  ff
+b04_b122:   .db $ff                     ; 13122:  ff
+b04_b123:   .db $ff                     ; 13123:  ff
+b04_b124:   .db $ff                     ; 13124:  ff
+b04_b125:   .db $ff                     ; 13125:  ff
+b04_b126:   .db $ff                     ; 13126:  ff
+b04_b127:   .db $ff                     ; 13127:  ff
+b04_b128:   .db $ff                     ; 13128:  ff
+b04_b129:   .db $ff                     ; 13129:  ff
+b04_b12a:   .db $ff                     ; 1312A:  ff
+b04_b12b:   .db $ff                     ; 1312B:  ff
+b04_b12c:   .db $ff                     ; 1312C:  ff
+b04_b12d:   .db $ff                     ; 1312D:  ff
+b04_b12e:   .db $ff                     ; 1312E:  ff
+b04_b12f:   .db $ff                     ; 1312F:  ff
+b04_b130:   .db $ff                     ; 13130:  ff
+b04_b131:   .db $ff                     ; 13131:  ff
+b04_b132:   .db $ff                     ; 13132:  ff
+b04_b133:   .db $ff                     ; 13133:  ff
+b04_b134:   .db $ff                     ; 13134:  ff
+b04_b135:   .db $ff                     ; 13135:  ff
+b04_b136:   .db $ff                     ; 13136:  ff
+b04_b137:   .db $ff                     ; 13137:  ff
+b04_b138:   .db $ff                     ; 13138:  ff
+b04_b139:   .db $ff                     ; 13139:  ff
+b04_b13a:   .db $ff                     ; 1313A:  ff
+b04_b13b:   .db $ff                     ; 1313B:  ff
+b04_b13c:   .db $ff                     ; 1313C:  ff
+b04_b13d:   .db $ff                     ; 1313D:  ff
+b04_b13e:   .db $ff                     ; 1313E:  ff
+b04_b13f:   .db $ff                     ; 1313F:  ff
+b04_b140:   .db $ff                     ; 13140:  ff
+b04_b141:   .db $ff                     ; 13141:  ff
+b04_b142:   .db $ff                     ; 13142:  ff
+b04_b143:   .db $ff                     ; 13143:  ff
+b04_b144:   .db $ff                     ; 13144:  ff
+b04_b145:   .db $ff                     ; 13145:  ff
+b04_b146:   .db $ff                     ; 13146:  ff
+b04_b147:   .db $ff                     ; 13147:  ff
+b04_b148:   .db $ff                     ; 13148:  ff
+b04_b149:   .db $ff                     ; 13149:  ff
+b04_b14a:   .db $ff                     ; 1314A:  ff
+b04_b14b:   .db $ff                     ; 1314B:  ff
+b04_b14c:   .db $ff                     ; 1314C:  ff
+b04_b14d:   .db $ff                     ; 1314D:  ff
+b04_b14e:   .db $ff                     ; 1314E:  ff
+b04_b14f:   .db $ff                     ; 1314F:  ff
+b04_b150:   .db $ff                     ; 13150:  ff
+b04_b151:   .db $ff                     ; 13151:  ff
+b04_b152:   .db $ff                     ; 13152:  ff
+b04_b153:   .db $ff                     ; 13153:  ff
+b04_b154:   .db $ff                     ; 13154:  ff
+b04_b155:   .db $ff                     ; 13155:  ff
+b04_b156:   .db $ff                     ; 13156:  ff
+b04_b157:   .db $ff                     ; 13157:  ff
+b04_b158:   .db $ff                     ; 13158:  ff
+b04_b159:   .db $ff                     ; 13159:  ff
+b04_b15a:   .db $ff                     ; 1315A:  ff
+b04_b15b:   .db $ff                     ; 1315B:  ff
+b04_b15c:   .db $ff                     ; 1315C:  ff
+b04_b15d:   .db $ff                     ; 1315D:  ff
+b04_b15e:   .db $ff                     ; 1315E:  ff
+b04_b15f:   .db $ff                     ; 1315F:  ff
+b04_b160:   .db $ff                     ; 13160:  ff
+b04_b161:   .db $ff                     ; 13161:  ff
+b04_b162:   .db $ff                     ; 13162:  ff
+b04_b163:   .db $ff                     ; 13163:  ff
+b04_b164:   .db $ff                     ; 13164:  ff
+b04_b165:   .db $ff                     ; 13165:  ff
+b04_b166:   .db $ff                     ; 13166:  ff
+b04_b167:   .db $ff                     ; 13167:  ff
+b04_b168:   .db $ff                     ; 13168:  ff
+b04_b169:   .db $ff                     ; 13169:  ff
+b04_b16a:   .db $ff                     ; 1316A:  ff
+b04_b16b:   .db $ff                     ; 1316B:  ff
+b04_b16c:   .db $ff                     ; 1316C:  ff
+b04_b16d:   .db $ff                     ; 1316D:  ff
+b04_b16e:   .db $ff                     ; 1316E:  ff
+b04_b16f:   .db $ff                     ; 1316F:  ff
+b04_b170:   .db $ff                     ; 13170:  ff
+b04_b171:   .db $ff                     ; 13171:  ff
+b04_b172:   .db $ff                     ; 13172:  ff
+b04_b173:   .db $ff                     ; 13173:  ff
+b04_b174:   .db $ff                     ; 13174:  ff
+b04_b175:   .db $ff                     ; 13175:  ff
+b04_b176:   .db $ff                     ; 13176:  ff
+b04_b177:   .db $ff                     ; 13177:  ff
+b04_b178:   .db $ff                     ; 13178:  ff
+b04_b179:   .db $ff                     ; 13179:  ff
+b04_b17a:   .db $ff                     ; 1317A:  ff
+b04_b17b:   .db $ff                     ; 1317B:  ff
+b04_b17c:   .db $ff                     ; 1317C:  ff
+b04_b17d:   .db $ff                     ; 1317D:  ff
+b04_b17e:   .db $ff                     ; 1317E:  ff
+b04_b17f:   .db $ff                     ; 1317F:  ff
+b04_b180:   .db $ff                     ; 13180:  ff
+b04_b181:   .db $ff                     ; 13181:  ff
+b04_b182:   .db $ff                     ; 13182:  ff
+b04_b183:   .db $ff                     ; 13183:  ff
+b04_b184:   .db $ff                     ; 13184:  ff
+b04_b185:   .db $ff                     ; 13185:  ff
+b04_b186:   .db $ff                     ; 13186:  ff
+b04_b187:   .db $ff                     ; 13187:  ff
+b04_b188:   .db $ff                     ; 13188:  ff
+b04_b189:   .db $ff                     ; 13189:  ff
+b04_b18a:   .db $ff                     ; 1318A:  ff
+b04_b18b:   .db $ff                     ; 1318B:  ff
+b04_b18c:   .db $ff                     ; 1318C:  ff
+b04_b18d:   .db $ff                     ; 1318D:  ff
+b04_b18e:   .db $ff                     ; 1318E:  ff
+b04_b18f:   .db $ff                     ; 1318F:  ff
+b04_b190:   .db $ff                     ; 13190:  ff
+b04_b191:   .db $ff                     ; 13191:  ff
+b04_b192:   .db $ff                     ; 13192:  ff
+b04_b193:   .db $ff                     ; 13193:  ff
+b04_b194:   .db $ff                     ; 13194:  ff
+b04_b195:   .db $ff                     ; 13195:  ff
+b04_b196:   .db $ff                     ; 13196:  ff
+b04_b197:   .db $ff                     ; 13197:  ff
+b04_b198:   .db $ff                     ; 13198:  ff
+b04_b199:   .db $ff                     ; 13199:  ff
+b04_b19a:   .db $ff                     ; 1319A:  ff
+b04_b19b:   .db $ff                     ; 1319B:  ff
+b04_b19c:   .db $ff                     ; 1319C:  ff
+b04_b19d:   .db $ff                     ; 1319D:  ff
+b04_b19e:   .db $ff                     ; 1319E:  ff
+b04_b19f:   .db $ff                     ; 1319F:  ff
+b04_b1a0:   .db $ff                     ; 131A0:  ff
+b04_b1a1:   .db $ff                     ; 131A1:  ff
+b04_b1a2:   .db $ff                     ; 131A2:  ff
+b04_b1a3:   .db $ff                     ; 131A3:  ff
+b04_b1a4:   .db $ff                     ; 131A4:  ff
+b04_b1a5:   .db $ff                     ; 131A5:  ff
+b04_b1a6:   .db $ff                     ; 131A6:  ff
+b04_b1a7:   .db $ff                     ; 131A7:  ff
+b04_b1a8:   .db $ff                     ; 131A8:  ff
+b04_b1a9:   .db $ff                     ; 131A9:  ff
+b04_b1aa:   .db $ff                     ; 131AA:  ff
+b04_b1ab:   .db $ff                     ; 131AB:  ff
+b04_b1ac:   .db $ff                     ; 131AC:  ff
+b04_b1ad:   .db $ff                     ; 131AD:  ff
+b04_b1ae:   .db $ff                     ; 131AE:  ff
+b04_b1af:   .db $ff                     ; 131AF:  ff
+b04_b1b0:   .db $ff                     ; 131B0:  ff
+b04_b1b1:   .db $ff                     ; 131B1:  ff
+b04_b1b2:   .db $ff                     ; 131B2:  ff
+b04_b1b3:   .db $ff                     ; 131B3:  ff
+b04_b1b4:   .db $ff                     ; 131B4:  ff
+b04_b1b5:   .db $ff                     ; 131B5:  ff
+b04_b1b6:   .db $ff                     ; 131B6:  ff
+b04_b1b7:   .db $ff                     ; 131B7:  ff
+b04_b1b8:   .db $ff                     ; 131B8:  ff
+b04_b1b9:   .db $ff                     ; 131B9:  ff
+b04_b1ba:   .db $ff                     ; 131BA:  ff
+b04_b1bb:   .db $ff                     ; 131BB:  ff
+b04_b1bc:   .db $ff                     ; 131BC:  ff
+b04_b1bd:   .db $ff                     ; 131BD:  ff
+b04_b1be:   .db $ff                     ; 131BE:  ff
+b04_b1bf:   .db $ff                     ; 131BF:  ff
+b04_b1c0:   .db $ff                     ; 131C0:  ff
+b04_b1c1:   .db $ff                     ; 131C1:  ff
+b04_b1c2:   .db $ff                     ; 131C2:  ff
+b04_b1c3:   .db $ff                     ; 131C3:  ff
+b04_b1c4:   .db $ff                     ; 131C4:  ff
+b04_b1c5:   .db $ff                     ; 131C5:  ff
+b04_b1c6:   .db $ff                     ; 131C6:  ff
+b04_b1c7:   .db $ff                     ; 131C7:  ff
+b04_b1c8:   .db $ff                     ; 131C8:  ff
+b04_b1c9:   .db $ff                     ; 131C9:  ff
+b04_b1ca:   .db $ff                     ; 131CA:  ff
+b04_b1cb:   .db $ff                     ; 131CB:  ff
+b04_b1cc:   .db $ff                     ; 131CC:  ff
+b04_b1cd:   .db $ff                     ; 131CD:  ff
+b04_b1ce:   .db $ff                     ; 131CE:  ff
+b04_b1cf:   .db $ff                     ; 131CF:  ff
+b04_b1d0:   .db $ff                     ; 131D0:  ff
+b04_b1d1:   .db $ff                     ; 131D1:  ff
+b04_b1d2:   .db $ff                     ; 131D2:  ff
+b04_b1d3:   .db $ff                     ; 131D3:  ff
+b04_b1d4:   .db $ff                     ; 131D4:  ff
+b04_b1d5:   .db $ff                     ; 131D5:  ff
+b04_b1d6:   .db $ff                     ; 131D6:  ff
+b04_b1d7:   .db $ff                     ; 131D7:  ff
+b04_b1d8:   .db $ff                     ; 131D8:  ff
+b04_b1d9:   .db $ff                     ; 131D9:  ff
+b04_b1da:   .db $ff                     ; 131DA:  ff
+b04_b1db:   .db $ff                     ; 131DB:  ff
+b04_b1dc:   .db $ff                     ; 131DC:  ff
+b04_b1dd:   .db $ff                     ; 131DD:  ff
+b04_b1de:   .db $ff                     ; 131DE:  ff
+b04_b1df:   .db $ff                     ; 131DF:  ff
+b04_b1e0:   .db $ff                     ; 131E0:  ff
+b04_b1e1:   .db $ff                     ; 131E1:  ff
+b04_b1e2:   .db $ff                     ; 131E2:  ff
+b04_b1e3:   .db $ff                     ; 131E3:  ff
+b04_b1e4:   .db $ff                     ; 131E4:  ff
+b04_b1e5:   .db $ff                     ; 131E5:  ff
+b04_b1e6:   .db $ff                     ; 131E6:  ff
+b04_b1e7:   .db $ff                     ; 131E7:  ff
+b04_b1e8:   .db $ff                     ; 131E8:  ff
+b04_b1e9:   .db $ff                     ; 131E9:  ff
+b04_b1ea:   .db $ff                     ; 131EA:  ff
+b04_b1eb:   .db $ff                     ; 131EB:  ff
+b04_b1ec:   .db $ff                     ; 131EC:  ff
+b04_b1ed:   .db $ff                     ; 131ED:  ff
+b04_b1ee:   .db $ff                     ; 131EE:  ff
+b04_b1ef:   .db $ff                     ; 131EF:  ff
+b04_b1f0:   .db $ff                     ; 131F0:  ff
+b04_b1f1:   .db $ff                     ; 131F1:  ff
+b04_b1f2:   .db $ff                     ; 131F2:  ff
+b04_b1f3:   .db $ff                     ; 131F3:  ff
+b04_b1f4:   .db $ff                     ; 131F4:  ff
+b04_b1f5:   .db $ff                     ; 131F5:  ff
+b04_b1f6:   .db $ff                     ; 131F6:  ff
+b04_b1f7:   .db $ff                     ; 131F7:  ff
+b04_b1f8:   .db $ff                     ; 131F8:  ff
+b04_b1f9:   .db $ff                     ; 131F9:  ff
+b04_b1fa:   .db $ff                     ; 131FA:  ff
+b04_b1fb:   .db $ff                     ; 131FB:  ff
+b04_b1fc:   .db $ff                     ; 131FC:  ff
+b04_b1fd:   .db $ff                     ; 131FD:  ff
+b04_b1fe:   .db $ff                     ; 131FE:  ff
+b04_b1ff:   .db $ff                     ; 131FF:  ff
+b04_b200:   .db $ff                     ; 13200:  ff
+b04_b201:   .db $ff                     ; 13201:  ff
+b04_b202:   .db $ff                     ; 13202:  ff
+b04_b203:   .db $ff                     ; 13203:  ff
+b04_b204:   .db $ff                     ; 13204:  ff
+b04_b205:   .db $ff                     ; 13205:  ff
+b04_b206:   .db $ff                     ; 13206:  ff
+b04_b207:   .db $ff                     ; 13207:  ff
+b04_b208:   .db $ff                     ; 13208:  ff
+b04_b209:   .db $ff                     ; 13209:  ff
+b04_b20a:   .db $ff                     ; 1320A:  ff
+b04_b20b:   .db $ff                     ; 1320B:  ff
+b04_b20c:   .db $ff                     ; 1320C:  ff
+b04_b20d:   .db $ff                     ; 1320D:  ff
+b04_b20e:   .db $ff                     ; 1320E:  ff
+b04_b20f:   .db $ff                     ; 1320F:  ff
+b04_b210:   .db $ff                     ; 13210:  ff
+b04_b211:   .db $ff                     ; 13211:  ff
+b04_b212:   .db $ff                     ; 13212:  ff
+b04_b213:   .db $ff                     ; 13213:  ff
+b04_b214:   .db $ff                     ; 13214:  ff
+b04_b215:   .db $ff                     ; 13215:  ff
+b04_b216:   .db $ff                     ; 13216:  ff
+b04_b217:   .db $ff                     ; 13217:  ff
+b04_b218:   .db $ff                     ; 13218:  ff
+b04_b219:   .db $ff                     ; 13219:  ff
+b04_b21a:   .db $ff                     ; 1321A:  ff
+b04_b21b:   .db $ff                     ; 1321B:  ff
+b04_b21c:   .db $ff                     ; 1321C:  ff
+b04_b21d:   .db $ff                     ; 1321D:  ff
+b04_b21e:   .db $ff                     ; 1321E:  ff
+b04_b21f:   .db $ff                     ; 1321F:  ff
+b04_b220:   .db $ff                     ; 13220:  ff
+b04_b221:   .db $ff                     ; 13221:  ff
+b04_b222:   .db $ff                     ; 13222:  ff
+b04_b223:   .db $ff                     ; 13223:  ff
+b04_b224:   .db $ff                     ; 13224:  ff
+b04_b225:   .db $ff                     ; 13225:  ff
+b04_b226:   .db $ff                     ; 13226:  ff
+b04_b227:   .db $ff                     ; 13227:  ff
+b04_b228:   .db $ff                     ; 13228:  ff
+b04_b229:   .db $ff                     ; 13229:  ff
+b04_b22a:   .db $ff                     ; 1322A:  ff
+b04_b22b:   .db $ff                     ; 1322B:  ff
+b04_b22c:   .db $ff                     ; 1322C:  ff
+b04_b22d:   .db $ff                     ; 1322D:  ff
+b04_b22e:   .db $ff                     ; 1322E:  ff
+b04_b22f:   .db $ff                     ; 1322F:  ff
+b04_b230:   .db $ff                     ; 13230:  ff
+b04_b231:   .db $ff                     ; 13231:  ff
+b04_b232:   .db $ff                     ; 13232:  ff
+b04_b233:   .db $ff                     ; 13233:  ff
+b04_b234:   .db $ff                     ; 13234:  ff
+b04_b235:   .db $ff                     ; 13235:  ff
+b04_b236:   .db $ff                     ; 13236:  ff
+b04_b237:   .db $ff                     ; 13237:  ff
+b04_b238:   .db $ff                     ; 13238:  ff
+b04_b239:   .db $ff                     ; 13239:  ff
+b04_b23a:   .db $ff                     ; 1323A:  ff
+b04_b23b:   .db $ff                     ; 1323B:  ff
+b04_b23c:   .db $ff                     ; 1323C:  ff
+b04_b23d:   .db $ff                     ; 1323D:  ff
+b04_b23e:   .db $ff                     ; 1323E:  ff
+b04_b23f:   .db $ff                     ; 1323F:  ff
+b04_b240:   .db $ff                     ; 13240:  ff
+b04_b241:   .db $ff                     ; 13241:  ff
+b04_b242:   .db $ff                     ; 13242:  ff
+b04_b243:   .db $ff                     ; 13243:  ff
+b04_b244:   .db $ff                     ; 13244:  ff
+b04_b245:   .db $ff                     ; 13245:  ff
+b04_b246:   .db $ff                     ; 13246:  ff
+b04_b247:   .db $ff                     ; 13247:  ff
+b04_b248:   .db $ff                     ; 13248:  ff
+b04_b249:   .db $ff                     ; 13249:  ff
+b04_b24a:   .db $ff                     ; 1324A:  ff
+b04_b24b:   .db $ff                     ; 1324B:  ff
+b04_b24c:   .db $ff                     ; 1324C:  ff
+b04_b24d:   .db $ff                     ; 1324D:  ff
+b04_b24e:   .db $ff                     ; 1324E:  ff
+b04_b24f:   .db $ff                     ; 1324F:  ff
+b04_b250:   .db $ff                     ; 13250:  ff
+b04_b251:   .db $ff                     ; 13251:  ff
+b04_b252:   .db $ff                     ; 13252:  ff
+b04_b253:   .db $ff                     ; 13253:  ff
+b04_b254:   .db $ff                     ; 13254:  ff
+b04_b255:   .db $ff                     ; 13255:  ff
+b04_b256:   .db $ff                     ; 13256:  ff
+b04_b257:   .db $ff                     ; 13257:  ff
+b04_b258:   .db $ff                     ; 13258:  ff
+b04_b259:   .db $ff                     ; 13259:  ff
+b04_b25a:   .db $ff                     ; 1325A:  ff
+b04_b25b:   .db $ff                     ; 1325B:  ff
+b04_b25c:   .db $ff                     ; 1325C:  ff
+b04_b25d:   .db $ff                     ; 1325D:  ff
+b04_b25e:   .db $ff                     ; 1325E:  ff
+b04_b25f:   .db $ff                     ; 1325F:  ff
+b04_b260:   .db $ff                     ; 13260:  ff
+b04_b261:   .db $ff                     ; 13261:  ff
+b04_b262:   .db $ff                     ; 13262:  ff
+b04_b263:   .db $ff                     ; 13263:  ff
+b04_b264:   .db $ff                     ; 13264:  ff
+b04_b265:   .db $ff                     ; 13265:  ff
+b04_b266:   .db $ff                     ; 13266:  ff
+b04_b267:   .db $ff                     ; 13267:  ff
+b04_b268:   .db $ff                     ; 13268:  ff
+b04_b269:   .db $ff                     ; 13269:  ff
+b04_b26a:   .db $ff                     ; 1326A:  ff
+b04_b26b:   .db $ff                     ; 1326B:  ff
+b04_b26c:   .db $ff                     ; 1326C:  ff
+b04_b26d:   .db $ff                     ; 1326D:  ff
+b04_b26e:   .db $ff                     ; 1326E:  ff
+b04_b26f:   .db $ff                     ; 1326F:  ff
+b04_b270:   .db $ff                     ; 13270:  ff
+b04_b271:   .db $ff                     ; 13271:  ff
+b04_b272:   .db $ff                     ; 13272:  ff
+b04_b273:   .db $ff                     ; 13273:  ff
+b04_b274:   .db $ff                     ; 13274:  ff
+b04_b275:   .db $ff                     ; 13275:  ff
+b04_b276:   .db $ff                     ; 13276:  ff
+b04_b277:   .db $ff                     ; 13277:  ff
+b04_b278:   .db $ff                     ; 13278:  ff
+b04_b279:   .db $ff                     ; 13279:  ff
+b04_b27a:   .db $ff                     ; 1327A:  ff
+b04_b27b:   .db $ff                     ; 1327B:  ff
+b04_b27c:   .db $ff                     ; 1327C:  ff
+b04_b27d:   .db $ff                     ; 1327D:  ff
+b04_b27e:   .db $ff                     ; 1327E:  ff
+b04_b27f:   .db $ff                     ; 1327F:  ff
+b04_b280:   .db $ff                     ; 13280:  ff
+b04_b281:   .db $ff                     ; 13281:  ff
+b04_b282:   .db $ff                     ; 13282:  ff
+b04_b283:   .db $ff                     ; 13283:  ff
+b04_b284:   .db $ff                     ; 13284:  ff
+b04_b285:   .db $ff                     ; 13285:  ff
+b04_b286:   .db $ff                     ; 13286:  ff
+b04_b287:   .db $ff                     ; 13287:  ff
+b04_b288:   .db $ff                     ; 13288:  ff
+b04_b289:   .db $ff                     ; 13289:  ff
+b04_b28a:   .db $ff                     ; 1328A:  ff
+b04_b28b:   .db $ff                     ; 1328B:  ff
+b04_b28c:   .db $ff                     ; 1328C:  ff
+b04_b28d:   .db $ff                     ; 1328D:  ff
+b04_b28e:   .db $ff                     ; 1328E:  ff
+b04_b28f:   .db $ff                     ; 1328F:  ff
+b04_b290:   .db $ff                     ; 13290:  ff
+b04_b291:   .db $ff                     ; 13291:  ff
+b04_b292:   .db $ff                     ; 13292:  ff
+b04_b293:   .db $ff                     ; 13293:  ff
+b04_b294:   .db $ff                     ; 13294:  ff
+b04_b295:   .db $ff                     ; 13295:  ff
+b04_b296:   .db $ff                     ; 13296:  ff
+b04_b297:   .db $ff                     ; 13297:  ff
+b04_b298:   .db $ff                     ; 13298:  ff
+b04_b299:   .db $ff                     ; 13299:  ff
+b04_b29a:   .db $ff                     ; 1329A:  ff
+b04_b29b:   .db $ff                     ; 1329B:  ff
+b04_b29c:   .db $ff                     ; 1329C:  ff
+b04_b29d:   .db $ff                     ; 1329D:  ff
+b04_b29e:   .db $ff                     ; 1329E:  ff
+b04_b29f:   .db $ff                     ; 1329F:  ff
+b04_b2a0:   .db $ff                     ; 132A0:  ff
+b04_b2a1:   .db $ff                     ; 132A1:  ff
+b04_b2a2:   .db $ff                     ; 132A2:  ff
+b04_b2a3:   .db $ff                     ; 132A3:  ff
+b04_b2a4:   .db $ff                     ; 132A4:  ff
+b04_b2a5:   .db $ff                     ; 132A5:  ff
+b04_b2a6:   .db $ff                     ; 132A6:  ff
+b04_b2a7:   .db $ff                     ; 132A7:  ff
+b04_b2a8:   .db $ff                     ; 132A8:  ff
+b04_b2a9:   .db $ff                     ; 132A9:  ff
+b04_b2aa:   .db $ff                     ; 132AA:  ff
+b04_b2ab:   .db $ff                     ; 132AB:  ff
+b04_b2ac:   .db $ff                     ; 132AC:  ff
+b04_b2ad:   .db $ff                     ; 132AD:  ff
+b04_b2ae:   .db $ff                     ; 132AE:  ff
+b04_b2af:   .db $ff                     ; 132AF:  ff
+b04_b2b0:   .db $ff                     ; 132B0:  ff
+b04_b2b1:   .db $ff                     ; 132B1:  ff
+b04_b2b2:   .db $ff                     ; 132B2:  ff
+b04_b2b3:   .db $ff                     ; 132B3:  ff
+b04_b2b4:   .db $ff                     ; 132B4:  ff
+b04_b2b5:   .db $ff                     ; 132B5:  ff
+b04_b2b6:   .db $ff                     ; 132B6:  ff
+b04_b2b7:   .db $ff                     ; 132B7:  ff
+b04_b2b8:   .db $ff                     ; 132B8:  ff
+b04_b2b9:   .db $ff                     ; 132B9:  ff
+b04_b2ba:   .db $ff                     ; 132BA:  ff
+b04_b2bb:   .db $ff                     ; 132BB:  ff
+b04_b2bc:   .db $ff                     ; 132BC:  ff
+b04_b2bd:   .db $ff                     ; 132BD:  ff
+b04_b2be:   .db $ff                     ; 132BE:  ff
+b04_b2bf:   .db $ff                     ; 132BF:  ff
+b04_b2c0:   .db $ff                     ; 132C0:  ff
+b04_b2c1:   .db $ff                     ; 132C1:  ff
+b04_b2c2:   .db $ff                     ; 132C2:  ff
+b04_b2c3:   .db $ff                     ; 132C3:  ff
+b04_b2c4:   .db $ff                     ; 132C4:  ff
+b04_b2c5:   .db $ff                     ; 132C5:  ff
+b04_b2c6:   .db $ff                     ; 132C6:  ff
+b04_b2c7:   .db $ff                     ; 132C7:  ff
+b04_b2c8:   .db $ff                     ; 132C8:  ff
+b04_b2c9:   .db $ff                     ; 132C9:  ff
+b04_b2ca:   .db $ff                     ; 132CA:  ff
+b04_b2cb:   .db $ff                     ; 132CB:  ff
+b04_b2cc:   .db $ff                     ; 132CC:  ff
+b04_b2cd:   .db $ff                     ; 132CD:  ff
+b04_b2ce:   .db $ff                     ; 132CE:  ff
+b04_b2cf:   .db $ff                     ; 132CF:  ff
+b04_b2d0:   .db $ff                     ; 132D0:  ff
+b04_b2d1:   .db $ff                     ; 132D1:  ff
+b04_b2d2:   .db $ff                     ; 132D2:  ff
+b04_b2d3:   .db $ff                     ; 132D3:  ff
+b04_b2d4:   .db $ff                     ; 132D4:  ff
+b04_b2d5:   .db $ff                     ; 132D5:  ff
+b04_b2d6:   .db $ff                     ; 132D6:  ff
+b04_b2d7:   .db $ff                     ; 132D7:  ff
+b04_b2d8:   .db $ff                     ; 132D8:  ff
+b04_b2d9:   .db $ff                     ; 132D9:  ff
+b04_b2da:   .db $ff                     ; 132DA:  ff
+b04_b2db:   .db $ff                     ; 132DB:  ff
+b04_b2dc:   .db $ff                     ; 132DC:  ff
+b04_b2dd:   .db $ff                     ; 132DD:  ff
+b04_b2de:   .db $ff                     ; 132DE:  ff
+b04_b2df:   .db $ff                     ; 132DF:  ff
+b04_b2e0:   .db $ff                     ; 132E0:  ff
+b04_b2e1:   .db $ff                     ; 132E1:  ff
+b04_b2e2:   .db $ff                     ; 132E2:  ff
+b04_b2e3:   .db $ff                     ; 132E3:  ff
+b04_b2e4:   .db $ff                     ; 132E4:  ff
+b04_b2e5:   .db $ff                     ; 132E5:  ff
+b04_b2e6:   .db $ff                     ; 132E6:  ff
+b04_b2e7:   .db $ff                     ; 132E7:  ff
+b04_b2e8:   .db $ff                     ; 132E8:  ff
+b04_b2e9:   .db $ff                     ; 132E9:  ff
+b04_b2ea:   .db $ff                     ; 132EA:  ff
+b04_b2eb:   .db $ff                     ; 132EB:  ff
+b04_b2ec:   .db $ff                     ; 132EC:  ff
+b04_b2ed:   .db $ff                     ; 132ED:  ff
+b04_b2ee:   .db $ff                     ; 132EE:  ff
+b04_b2ef:   .db $ff                     ; 132EF:  ff
+b04_b2f0:   .db $ff                     ; 132F0:  ff
+b04_b2f1:   .db $ff                     ; 132F1:  ff
+b04_b2f2:   .db $ff                     ; 132F2:  ff
+b04_b2f3:   .db $ff                     ; 132F3:  ff
+b04_b2f4:   .db $ff                     ; 132F4:  ff
+b04_b2f5:   .db $ff                     ; 132F5:  ff
+b04_b2f6:   .db $ff                     ; 132F6:  ff
+b04_b2f7:   .db $ff                     ; 132F7:  ff
+b04_b2f8:   .db $ff                     ; 132F8:  ff
+b04_b2f9:   .db $ff                     ; 132F9:  ff
+b04_b2fa:   .db $ff                     ; 132FA:  ff
+b04_b2fb:   .db $ff                     ; 132FB:  ff
+b04_b2fc:   .db $ff                     ; 132FC:  ff
+b04_b2fd:   .db $ff                     ; 132FD:  ff
+b04_b2fe:   .db $ff                     ; 132FE:  ff
+b04_b2ff:   .db $ff                     ; 132FF:  ff
+b04_b300:   .db $ff                     ; 13300:  ff
+b04_b301:   .db $ff                     ; 13301:  ff
+b04_b302:   .db $ff                     ; 13302:  ff
+b04_b303:   .db $ff                     ; 13303:  ff
+b04_b304:   .db $ff                     ; 13304:  ff
+b04_b305:   .db $ff                     ; 13305:  ff
+b04_b306:   .db $ff                     ; 13306:  ff
+b04_b307:   .db $ff                     ; 13307:  ff
+b04_b308:   .db $ff                     ; 13308:  ff
+b04_b309:   .db $ff                     ; 13309:  ff
+b04_b30a:   .db $ff                     ; 1330A:  ff
+b04_b30b:   .db $ff                     ; 1330B:  ff
+b04_b30c:   .db $ff                     ; 1330C:  ff
+b04_b30d:   .db $ff                     ; 1330D:  ff
+b04_b30e:   .db $ff                     ; 1330E:  ff
+b04_b30f:   .db $ff                     ; 1330F:  ff
+b04_b310:   .db $ff                     ; 13310:  ff
+b04_b311:   .db $ff                     ; 13311:  ff
+b04_b312:   .db $ff                     ; 13312:  ff
+b04_b313:   .db $ff                     ; 13313:  ff
+b04_b314:   .db $ff                     ; 13314:  ff
+b04_b315:   .db $ff                     ; 13315:  ff
+b04_b316:   .db $ff                     ; 13316:  ff
+b04_b317:   .db $ff                     ; 13317:  ff
+b04_b318:   .db $ff                     ; 13318:  ff
+b04_b319:   .db $ff                     ; 13319:  ff
+b04_b31a:   .db $ff                     ; 1331A:  ff
+b04_b31b:   .db $ff                     ; 1331B:  ff
+b04_b31c:   .db $ff                     ; 1331C:  ff
+b04_b31d:   .db $ff                     ; 1331D:  ff
+b04_b31e:   .db $ff                     ; 1331E:  ff
+b04_b31f:   .db $ff                     ; 1331F:  ff
+b04_b320:   .db $ff                     ; 13320:  ff
+b04_b321:   .db $ff                     ; 13321:  ff
+b04_b322:   .db $ff                     ; 13322:  ff
+b04_b323:   .db $ff                     ; 13323:  ff
+b04_b324:   .db $ff                     ; 13324:  ff
+b04_b325:   .db $ff                     ; 13325:  ff
+b04_b326:   .db $ff                     ; 13326:  ff
+b04_b327:   .db $ff                     ; 13327:  ff
+b04_b328:   .db $ff                     ; 13328:  ff
+b04_b329:   .db $ff                     ; 13329:  ff
+b04_b32a:   .db $ff                     ; 1332A:  ff
+b04_b32b:   .db $ff                     ; 1332B:  ff
+b04_b32c:   .db $ff                     ; 1332C:  ff
+b04_b32d:   .db $ff                     ; 1332D:  ff
+b04_b32e:   .db $ff                     ; 1332E:  ff
+b04_b32f:   .db $ff                     ; 1332F:  ff
+b04_b330:   .db $ff                     ; 13330:  ff
+b04_b331:   .db $ff                     ; 13331:  ff
+b04_b332:   .db $ff                     ; 13332:  ff
+b04_b333:   .db $ff                     ; 13333:  ff
+b04_b334:   .db $ff                     ; 13334:  ff
+b04_b335:   .db $ff                     ; 13335:  ff
+b04_b336:   .db $ff                     ; 13336:  ff
+b04_b337:   .db $ff                     ; 13337:  ff
+b04_b338:   .db $ff                     ; 13338:  ff
+b04_b339:   .db $ff                     ; 13339:  ff
+b04_b33a:   .db $ff                     ; 1333A:  ff
+b04_b33b:   .db $ff                     ; 1333B:  ff
+b04_b33c:   .db $ff                     ; 1333C:  ff
+b04_b33d:   .db $ff                     ; 1333D:  ff
+b04_b33e:   .db $ff                     ; 1333E:  ff
+b04_b33f:   .db $ff                     ; 1333F:  ff
+b04_b340:   .db $ff                     ; 13340:  ff
+b04_b341:   .db $ff                     ; 13341:  ff
+b04_b342:   .db $ff                     ; 13342:  ff
+b04_b343:   .db $ff                     ; 13343:  ff
+b04_b344:   .db $ff                     ; 13344:  ff
+b04_b345:   .db $ff                     ; 13345:  ff
+b04_b346:   .db $ff                     ; 13346:  ff
+b04_b347:   .db $ff                     ; 13347:  ff
+b04_b348:   .db $ff                     ; 13348:  ff
+b04_b349:   .db $ff                     ; 13349:  ff
+b04_b34a:   .db $ff                     ; 1334A:  ff
+b04_b34b:   .db $ff                     ; 1334B:  ff
+b04_b34c:   .db $ff                     ; 1334C:  ff
+b04_b34d:   .db $ff                     ; 1334D:  ff
+b04_b34e:   .db $ff                     ; 1334E:  ff
+b04_b34f:   .db $ff                     ; 1334F:  ff
+b04_b350:   .db $ff                     ; 13350:  ff
+b04_b351:   .db $ff                     ; 13351:  ff
+b04_b352:   .db $ff                     ; 13352:  ff
+b04_b353:   .db $ff                     ; 13353:  ff
+b04_b354:   .db $ff                     ; 13354:  ff
+b04_b355:   .db $ff                     ; 13355:  ff
+b04_b356:   .db $ff                     ; 13356:  ff
+b04_b357:   .db $ff                     ; 13357:  ff
+b04_b358:   .db $ff                     ; 13358:  ff
+b04_b359:   .db $ff                     ; 13359:  ff
+b04_b35a:   .db $ff                     ; 1335A:  ff
+b04_b35b:   .db $ff                     ; 1335B:  ff
+b04_b35c:   .db $ff                     ; 1335C:  ff
+b04_b35d:   .db $ff                     ; 1335D:  ff
+b04_b35e:   .db $ff                     ; 1335E:  ff
+b04_b35f:   .db $ff                     ; 1335F:  ff
+b04_b360:   .db $ff                     ; 13360:  ff
+b04_b361:   .db $ff                     ; 13361:  ff
+b04_b362:   .db $ff                     ; 13362:  ff
+b04_b363:   .db $ff                     ; 13363:  ff
+b04_b364:   .db $ff                     ; 13364:  ff
+b04_b365:   .db $ff                     ; 13365:  ff
+b04_b366:   .db $ff                     ; 13366:  ff
+b04_b367:   .db $ff                     ; 13367:  ff
+b04_b368:   .db $ff                     ; 13368:  ff
+b04_b369:   .db $ff                     ; 13369:  ff
+b04_b36a:   .db $ff                     ; 1336A:  ff
+b04_b36b:   .db $ff                     ; 1336B:  ff
+b04_b36c:   .db $ff                     ; 1336C:  ff
+b04_b36d:   .db $ff                     ; 1336D:  ff
+b04_b36e:   .db $ff                     ; 1336E:  ff
+b04_b36f:   .db $ff                     ; 1336F:  ff
+b04_b370:   .db $ff                     ; 13370:  ff
+b04_b371:   .db $ff                     ; 13371:  ff
+b04_b372:   .db $ff                     ; 13372:  ff
+b04_b373:   .db $ff                     ; 13373:  ff
+b04_b374:   .db $ff                     ; 13374:  ff
+b04_b375:   .db $ff                     ; 13375:  ff
+b04_b376:   .db $ff                     ; 13376:  ff
+b04_b377:   .db $ff                     ; 13377:  ff
+b04_b378:   .db $ff                     ; 13378:  ff
+b04_b379:   .db $ff                     ; 13379:  ff
+b04_b37a:   .db $ff                     ; 1337A:  ff
+b04_b37b:   .db $ff                     ; 1337B:  ff
+b04_b37c:   .db $ff                     ; 1337C:  ff
+b04_b37d:   .db $ff                     ; 1337D:  ff
+b04_b37e:   .db $ff                     ; 1337E:  ff
+b04_b37f:   .db $ff                     ; 1337F:  ff
+b04_b380:   .db $ff                     ; 13380:  ff
+b04_b381:   .db $ff                     ; 13381:  ff
+b04_b382:   .db $ff                     ; 13382:  ff
+b04_b383:   .db $ff                     ; 13383:  ff
+b04_b384:   .db $ff                     ; 13384:  ff
+b04_b385:   .db $ff                     ; 13385:  ff
+b04_b386:   .db $ff                     ; 13386:  ff
+b04_b387:   .db $ff                     ; 13387:  ff
+b04_b388:   .db $ff                     ; 13388:  ff
+b04_b389:   .db $ff                     ; 13389:  ff
+b04_b38a:   .db $ff                     ; 1338A:  ff
+b04_b38b:   .db $ff                     ; 1338B:  ff
+b04_b38c:   .db $ff                     ; 1338C:  ff
+b04_b38d:   .db $ff                     ; 1338D:  ff
+b04_b38e:   .db $ff                     ; 1338E:  ff
+b04_b38f:   .db $ff                     ; 1338F:  ff
+b04_b390:   .db $ff                     ; 13390:  ff
+b04_b391:   .db $ff                     ; 13391:  ff
+b04_b392:   .db $ff                     ; 13392:  ff
+b04_b393:   .db $ff                     ; 13393:  ff
+b04_b394:   .db $ff                     ; 13394:  ff
+b04_b395:   .db $ff                     ; 13395:  ff
+b04_b396:   .db $ff                     ; 13396:  ff
+b04_b397:   .db $ff                     ; 13397:  ff
+b04_b398:   .db $ff                     ; 13398:  ff
+b04_b399:   .db $ff                     ; 13399:  ff
+b04_b39a:   .db $ff                     ; 1339A:  ff
+b04_b39b:   .db $ff                     ; 1339B:  ff
+b04_b39c:   .db $ff                     ; 1339C:  ff
+b04_b39d:   .db $ff                     ; 1339D:  ff
+b04_b39e:   .db $ff                     ; 1339E:  ff
+b04_b39f:   .db $ff                     ; 1339F:  ff
+b04_b3a0:   .db $ff                     ; 133A0:  ff
+b04_b3a1:   .db $ff                     ; 133A1:  ff
+b04_b3a2:   .db $ff                     ; 133A2:  ff
+b04_b3a3:   .db $ff                     ; 133A3:  ff
+b04_b3a4:   .db $ff                     ; 133A4:  ff
+b04_b3a5:   .db $ff                     ; 133A5:  ff
+b04_b3a6:   .db $ff                     ; 133A6:  ff
+b04_b3a7:   .db $ff                     ; 133A7:  ff
+b04_b3a8:   .db $ff                     ; 133A8:  ff
+b04_b3a9:   .db $ff                     ; 133A9:  ff
+b04_b3aa:   .db $ff                     ; 133AA:  ff
+b04_b3ab:   .db $ff                     ; 133AB:  ff
+b04_b3ac:   .db $ff                     ; 133AC:  ff
+b04_b3ad:   .db $ff                     ; 133AD:  ff
+b04_b3ae:   .db $ff                     ; 133AE:  ff
+b04_b3af:   .db $ff                     ; 133AF:  ff
+b04_b3b0:   .db $ff                     ; 133B0:  ff
+b04_b3b1:   .db $ff                     ; 133B1:  ff
+b04_b3b2:   .db $ff                     ; 133B2:  ff
+b04_b3b3:   .db $ff                     ; 133B3:  ff
+b04_b3b4:   .db $ff                     ; 133B4:  ff
+b04_b3b5:   .db $ff                     ; 133B5:  ff
+b04_b3b6:   .db $ff                     ; 133B6:  ff
+b04_b3b7:   .db $ff                     ; 133B7:  ff
+b04_b3b8:   .db $ff                     ; 133B8:  ff
+b04_b3b9:   .db $ff                     ; 133B9:  ff
+b04_b3ba:   .db $ff                     ; 133BA:  ff
+b04_b3bb:   .db $ff                     ; 133BB:  ff
+b04_b3bc:   .db $ff                     ; 133BC:  ff
+b04_b3bd:   .db $ff                     ; 133BD:  ff
+b04_b3be:   .db $ff                     ; 133BE:  ff
+b04_b3bf:   .db $ff                     ; 133BF:  ff
+b04_b3c0:   .db $ff                     ; 133C0:  ff
+b04_b3c1:   .db $ff                     ; 133C1:  ff
+b04_b3c2:   .db $ff                     ; 133C2:  ff
+b04_b3c3:   .db $ff                     ; 133C3:  ff
+b04_b3c4:   .db $ff                     ; 133C4:  ff
+b04_b3c5:   .db $ff                     ; 133C5:  ff
+b04_b3c6:   .db $ff                     ; 133C6:  ff
+b04_b3c7:   .db $ff                     ; 133C7:  ff
+b04_b3c8:   .db $ff                     ; 133C8:  ff
+b04_b3c9:   .db $ff                     ; 133C9:  ff
+b04_b3ca:   .db $ff                     ; 133CA:  ff
+b04_b3cb:   .db $ff                     ; 133CB:  ff
+b04_b3cc:   .db $ff                     ; 133CC:  ff
+b04_b3cd:   .db $ff                     ; 133CD:  ff
+b04_b3ce:   .db $ff                     ; 133CE:  ff
+b04_b3cf:   .db $ff                     ; 133CF:  ff
+b04_b3d0:   .db $ff                     ; 133D0:  ff
+b04_b3d1:   .db $ff                     ; 133D1:  ff
+b04_b3d2:   .db $ff                     ; 133D2:  ff
+b04_b3d3:   .db $ff                     ; 133D3:  ff
+b04_b3d4:   .db $ff                     ; 133D4:  ff
+b04_b3d5:   .db $ff                     ; 133D5:  ff
+b04_b3d6:   .db $ff                     ; 133D6:  ff
+b04_b3d7:   .db $ff                     ; 133D7:  ff
+b04_b3d8:   .db $ff                     ; 133D8:  ff
+b04_b3d9:   .db $ff                     ; 133D9:  ff
+b04_b3da:   .db $ff                     ; 133DA:  ff
+b04_b3db:   .db $ff                     ; 133DB:  ff
+b04_b3dc:   .db $ff                     ; 133DC:  ff
+b04_b3dd:   .db $ff                     ; 133DD:  ff
+b04_b3de:   .db $ff                     ; 133DE:  ff
+b04_b3df:   .db $ff                     ; 133DF:  ff
+b04_b3e0:   .db $ff                     ; 133E0:  ff
+b04_b3e1:   .db $ff                     ; 133E1:  ff
+b04_b3e2:   .db $ff                     ; 133E2:  ff
+b04_b3e3:   .db $ff                     ; 133E3:  ff
+b04_b3e4:   .db $ff                     ; 133E4:  ff
+b04_b3e5:   .db $ff                     ; 133E5:  ff
+b04_b3e6:   .db $ff                     ; 133E6:  ff
+b04_b3e7:   .db $ff                     ; 133E7:  ff
+b04_b3e8:   .db $ff                     ; 133E8:  ff
+b04_b3e9:   .db $ff                     ; 133E9:  ff
+b04_b3ea:   .db $ff                     ; 133EA:  ff
+b04_b3eb:   .db $ff                     ; 133EB:  ff
+b04_b3ec:   .db $ff                     ; 133EC:  ff
+b04_b3ed:   .db $ff                     ; 133ED:  ff
+b04_b3ee:   .db $ff                     ; 133EE:  ff
+b04_b3ef:   .db $ff                     ; 133EF:  ff
+b04_b3f0:   .db $ff                     ; 133F0:  ff
+b04_b3f1:   .db $ff                     ; 133F1:  ff
+b04_b3f2:   .db $ff                     ; 133F2:  ff
+b04_b3f3:   .db $ff                     ; 133F3:  ff
+b04_b3f4:   .db $ff                     ; 133F4:  ff
+b04_b3f5:   .db $ff                     ; 133F5:  ff
+b04_b3f6:   .db $ff                     ; 133F6:  ff
+b04_b3f7:   .db $ff                     ; 133F7:  ff
+b04_b3f8:   .db $ff                     ; 133F8:  ff
+b04_b3f9:   .db $ff                     ; 133F9:  ff
+b04_b3fa:   .db $ff                     ; 133FA:  ff
+b04_b3fb:   .db $ff                     ; 133FB:  ff
+b04_b3fc:   .db $ff                     ; 133FC:  ff
+b04_b3fd:   .db $ff                     ; 133FD:  ff
+b04_b3fe:   .db $ff                     ; 133FE:  ff
+b04_b3ff:   .db $ff                     ; 133FF:  ff
+b04_b400:   .db $ff                     ; 13400:  ff
+b04_b401:   .db $ff                     ; 13401:  ff
+b04_b402:   .db $ff                     ; 13402:  ff
+b04_b403:   .db $ff                     ; 13403:  ff
+b04_b404:   .db $ff                     ; 13404:  ff
+b04_b405:   .db $ff                     ; 13405:  ff
+b04_b406:   .db $ff                     ; 13406:  ff
+b04_b407:   .db $ff                     ; 13407:  ff
+b04_b408:   .db $ff                     ; 13408:  ff
+b04_b409:   .db $ff                     ; 13409:  ff
+b04_b40a:   .db $ff                     ; 1340A:  ff
+b04_b40b:   .db $ff                     ; 1340B:  ff
+b04_b40c:   .db $ff                     ; 1340C:  ff
+b04_b40d:   .db $ff                     ; 1340D:  ff
+b04_b40e:   .db $ff                     ; 1340E:  ff
+b04_b40f:   .db $ff                     ; 1340F:  ff
+b04_b410:   .db $ff                     ; 13410:  ff
+b04_b411:   .db $ff                     ; 13411:  ff
+b04_b412:   .db $ff                     ; 13412:  ff
+b04_b413:   .db $ff                     ; 13413:  ff
+b04_b414:   .db $ff                     ; 13414:  ff
+b04_b415:   .db $ff                     ; 13415:  ff
+b04_b416:   .db $ff                     ; 13416:  ff
+b04_b417:   .db $ff                     ; 13417:  ff
+b04_b418:   .db $ff                     ; 13418:  ff
+b04_b419:   .db $ff                     ; 13419:  ff
+b04_b41a:   .db $ff                     ; 1341A:  ff
+b04_b41b:   .db $ff                     ; 1341B:  ff
+b04_b41c:   .db $ff                     ; 1341C:  ff
+b04_b41d:   .db $ff                     ; 1341D:  ff
+b04_b41e:   .db $ff                     ; 1341E:  ff
+b04_b41f:   .db $ff                     ; 1341F:  ff
+b04_b420:   .db $ff                     ; 13420:  ff
+b04_b421:   .db $ff                     ; 13421:  ff
+b04_b422:   .db $ff                     ; 13422:  ff
+b04_b423:   .db $ff                     ; 13423:  ff
+b04_b424:   .db $ff                     ; 13424:  ff
+b04_b425:   .db $ff                     ; 13425:  ff
+b04_b426:   .db $ff                     ; 13426:  ff
+b04_b427:   .db $ff                     ; 13427:  ff
+b04_b428:   .db $ff                     ; 13428:  ff
+b04_b429:   .db $ff                     ; 13429:  ff
+b04_b42a:   .db $ff                     ; 1342A:  ff
+b04_b42b:   .db $ff                     ; 1342B:  ff
+b04_b42c:   .db $ff                     ; 1342C:  ff
+b04_b42d:   .db $ff                     ; 1342D:  ff
+b04_b42e:   .db $ff                     ; 1342E:  ff
+b04_b42f:   .db $ff                     ; 1342F:  ff
+b04_b430:   .db $ff                     ; 13430:  ff
+b04_b431:   .db $ff                     ; 13431:  ff
+b04_b432:   .db $ff                     ; 13432:  ff
+b04_b433:   .db $ff                     ; 13433:  ff
+b04_b434:   .db $ff                     ; 13434:  ff
+b04_b435:   .db $ff                     ; 13435:  ff
+b04_b436:   .db $ff                     ; 13436:  ff
+b04_b437:   .db $ff                     ; 13437:  ff
+b04_b438:   .db $ff                     ; 13438:  ff
+b04_b439:   .db $ff                     ; 13439:  ff
+b04_b43a:   .db $ff                     ; 1343A:  ff
+b04_b43b:   .db $ff                     ; 1343B:  ff
+b04_b43c:   .db $ff                     ; 1343C:  ff
+b04_b43d:   .db $ff                     ; 1343D:  ff
+b04_b43e:   .db $ff                     ; 1343E:  ff
+b04_b43f:   .db $ff                     ; 1343F:  ff
+b04_b440:   .db $ff                     ; 13440:  ff
+b04_b441:   .db $ff                     ; 13441:  ff
+b04_b442:   .db $ff                     ; 13442:  ff
+b04_b443:   .db $ff                     ; 13443:  ff
+b04_b444:   .db $ff                     ; 13444:  ff
+b04_b445:   .db $ff                     ; 13445:  ff
+b04_b446:   .db $ff                     ; 13446:  ff
+b04_b447:   .db $ff                     ; 13447:  ff
+b04_b448:   .db $ff                     ; 13448:  ff
+b04_b449:   .db $ff                     ; 13449:  ff
+b04_b44a:   .db $ff                     ; 1344A:  ff
+b04_b44b:   .db $ff                     ; 1344B:  ff
+b04_b44c:   .db $ff                     ; 1344C:  ff
+b04_b44d:   .db $ff                     ; 1344D:  ff
+b04_b44e:   .db $ff                     ; 1344E:  ff
+b04_b44f:   .db $ff                     ; 1344F:  ff
+b04_b450:   .db $ff                     ; 13450:  ff
+b04_b451:   .db $ff                     ; 13451:  ff
+b04_b452:   .db $ff                     ; 13452:  ff
+b04_b453:   .db $ff                     ; 13453:  ff
+b04_b454:   .db $ff                     ; 13454:  ff
+b04_b455:   .db $ff                     ; 13455:  ff
+b04_b456:   .db $ff                     ; 13456:  ff
+b04_b457:   .db $ff                     ; 13457:  ff
+b04_b458:   .db $ff                     ; 13458:  ff
+b04_b459:   .db $ff                     ; 13459:  ff
+b04_b45a:   .db $ff                     ; 1345A:  ff
+b04_b45b:   .db $ff                     ; 1345B:  ff
+b04_b45c:   .db $ff                     ; 1345C:  ff
+b04_b45d:   .db $ff                     ; 1345D:  ff
+b04_b45e:   .db $ff                     ; 1345E:  ff
+b04_b45f:   .db $ff                     ; 1345F:  ff
+b04_b460:   .db $ff                     ; 13460:  ff
+b04_b461:   .db $ff                     ; 13461:  ff
+b04_b462:   .db $ff                     ; 13462:  ff
+b04_b463:   .db $ff                     ; 13463:  ff
+b04_b464:   .db $ff                     ; 13464:  ff
+b04_b465:   .db $ff                     ; 13465:  ff
+b04_b466:   .db $ff                     ; 13466:  ff
+b04_b467:   .db $ff                     ; 13467:  ff
+b04_b468:   .db $ff                     ; 13468:  ff
+b04_b469:   .db $ff                     ; 13469:  ff
+b04_b46a:   .db $ff                     ; 1346A:  ff
+b04_b46b:   .db $ff                     ; 1346B:  ff
+b04_b46c:   .db $ff                     ; 1346C:  ff
+b04_b46d:   .db $ff                     ; 1346D:  ff
+b04_b46e:   .db $ff                     ; 1346E:  ff
+b04_b46f:   .db $ff                     ; 1346F:  ff
+b04_b470:   .db $ff                     ; 13470:  ff
+b04_b471:   .db $ff                     ; 13471:  ff
+b04_b472:   .db $ff                     ; 13472:  ff
+b04_b473:   .db $ff                     ; 13473:  ff
+b04_b474:   .db $ff                     ; 13474:  ff
+b04_b475:   .db $ff                     ; 13475:  ff
+b04_b476:   .db $ff                     ; 13476:  ff
+b04_b477:   .db $ff                     ; 13477:  ff
+b04_b478:   .db $ff                     ; 13478:  ff
+b04_b479:   .db $ff                     ; 13479:  ff
+b04_b47a:   .db $ff                     ; 1347A:  ff
+b04_b47b:   .db $ff                     ; 1347B:  ff
+b04_b47c:   .db $ff                     ; 1347C:  ff
+b04_b47d:   .db $ff                     ; 1347D:  ff
+b04_b47e:   .db $ff                     ; 1347E:  ff
+b04_b47f:   .db $ff                     ; 1347F:  ff
+b04_b480:   .db $ff                     ; 13480:  ff
+b04_b481:   .db $ff                     ; 13481:  ff
+b04_b482:   .db $ff                     ; 13482:  ff
+b04_b483:   .db $ff                     ; 13483:  ff
+b04_b484:   .db $ff                     ; 13484:  ff
+b04_b485:   .db $ff                     ; 13485:  ff
+b04_b486:   .db $ff                     ; 13486:  ff
+b04_b487:   .db $ff                     ; 13487:  ff
+b04_b488:   .db $ff                     ; 13488:  ff
+b04_b489:   .db $ff                     ; 13489:  ff
+b04_b48a:   .db $ff                     ; 1348A:  ff
+b04_b48b:   .db $ff                     ; 1348B:  ff
+b04_b48c:   .db $ff                     ; 1348C:  ff
+b04_b48d:   .db $ff                     ; 1348D:  ff
+b04_b48e:   .db $ff                     ; 1348E:  ff
+b04_b48f:   .db $ff                     ; 1348F:  ff
+b04_b490:   .db $ff                     ; 13490:  ff
+b04_b491:   .db $ff                     ; 13491:  ff
+b04_b492:   .db $ff                     ; 13492:  ff
+b04_b493:   .db $ff                     ; 13493:  ff
+b04_b494:   .db $ff                     ; 13494:  ff
+b04_b495:   .db $ff                     ; 13495:  ff
+b04_b496:   .db $ff                     ; 13496:  ff
+b04_b497:   .db $ff                     ; 13497:  ff
+b04_b498:   .db $ff                     ; 13498:  ff
+b04_b499:   .db $ff                     ; 13499:  ff
+b04_b49a:   .db $ff                     ; 1349A:  ff
+b04_b49b:   .db $ff                     ; 1349B:  ff
+b04_b49c:   .db $ff                     ; 1349C:  ff
+b04_b49d:   .db $ff                     ; 1349D:  ff
+b04_b49e:   .db $ff                     ; 1349E:  ff
+b04_b49f:   .db $ff                     ; 1349F:  ff
+b04_b4a0:   .db $ff                     ; 134A0:  ff
+b04_b4a1:   .db $ff                     ; 134A1:  ff
+b04_b4a2:   .db $ff                     ; 134A2:  ff
+b04_b4a3:   .db $ff                     ; 134A3:  ff
+b04_b4a4:   .db $ff                     ; 134A4:  ff
+b04_b4a5:   .db $ff                     ; 134A5:  ff
+b04_b4a6:   .db $ff                     ; 134A6:  ff
+b04_b4a7:   .db $ff                     ; 134A7:  ff
+b04_b4a8:   .db $ff                     ; 134A8:  ff
+b04_b4a9:   .db $ff                     ; 134A9:  ff
+b04_b4aa:   .db $ff                     ; 134AA:  ff
+b04_b4ab:   .db $ff                     ; 134AB:  ff
+b04_b4ac:   .db $ff                     ; 134AC:  ff
+b04_b4ad:   .db $ff                     ; 134AD:  ff
+b04_b4ae:   .db $ff                     ; 134AE:  ff
+b04_b4af:   .db $ff                     ; 134AF:  ff
+b04_b4b0:   .db $ff                     ; 134B0:  ff
+b04_b4b1:   .db $ff                     ; 134B1:  ff
+b04_b4b2:   .db $ff                     ; 134B2:  ff
+b04_b4b3:   .db $ff                     ; 134B3:  ff
+b04_b4b4:   .db $ff                     ; 134B4:  ff
+b04_b4b5:   .db $ff                     ; 134B5:  ff
+b04_b4b6:   .db $ff                     ; 134B6:  ff
+b04_b4b7:   .db $ff                     ; 134B7:  ff
+b04_b4b8:   .db $ff                     ; 134B8:  ff
+b04_b4b9:   .db $ff                     ; 134B9:  ff
+b04_b4ba:   .db $ff                     ; 134BA:  ff
+b04_b4bb:   .db $ff                     ; 134BB:  ff
+b04_b4bc:   .db $ff                     ; 134BC:  ff
+b04_b4bd:   .db $ff                     ; 134BD:  ff
+b04_b4be:   .db $ff                     ; 134BE:  ff
+b04_b4bf:   .db $ff                     ; 134BF:  ff
+b04_b4c0:   .db $ff                     ; 134C0:  ff
+b04_b4c1:   .db $ff                     ; 134C1:  ff
+b04_b4c2:   .db $ff                     ; 134C2:  ff
+b04_b4c3:   .db $ff                     ; 134C3:  ff
+b04_b4c4:   .db $ff                     ; 134C4:  ff
+b04_b4c5:   .db $ff                     ; 134C5:  ff
+b04_b4c6:   .db $ff                     ; 134C6:  ff
+b04_b4c7:   .db $ff                     ; 134C7:  ff
+b04_b4c8:   .db $ff                     ; 134C8:  ff
+b04_b4c9:   .db $ff                     ; 134C9:  ff
+b04_b4ca:   .db $ff                     ; 134CA:  ff
+b04_b4cb:   .db $ff                     ; 134CB:  ff
+b04_b4cc:   .db $ff                     ; 134CC:  ff
+b04_b4cd:   .db $ff                     ; 134CD:  ff
+b04_b4ce:   .db $ff                     ; 134CE:  ff
+b04_b4cf:   .db $ff                     ; 134CF:  ff
+b04_b4d0:   .db $ff                     ; 134D0:  ff
+b04_b4d1:   .db $ff                     ; 134D1:  ff
+b04_b4d2:   .db $ff                     ; 134D2:  ff
+b04_b4d3:   .db $ff                     ; 134D3:  ff
+b04_b4d4:   .db $ff                     ; 134D4:  ff
+b04_b4d5:   .db $ff                     ; 134D5:  ff
+b04_b4d6:   .db $ff                     ; 134D6:  ff
+b04_b4d7:   .db $ff                     ; 134D7:  ff
+b04_b4d8:   .db $ff                     ; 134D8:  ff
+b04_b4d9:   .db $ff                     ; 134D9:  ff
+b04_b4da:   .db $ff                     ; 134DA:  ff
+b04_b4db:   .db $ff                     ; 134DB:  ff
+b04_b4dc:   .db $ff                     ; 134DC:  ff
+b04_b4dd:   .db $ff                     ; 134DD:  ff
+b04_b4de:   .db $ff                     ; 134DE:  ff
+b04_b4df:   .db $ff                     ; 134DF:  ff
+b04_b4e0:   .db $ff                     ; 134E0:  ff
+b04_b4e1:   .db $ff                     ; 134E1:  ff
+b04_b4e2:   .db $ff                     ; 134E2:  ff
+b04_b4e3:   .db $ff                     ; 134E3:  ff
+b04_b4e4:   .db $ff                     ; 134E4:  ff
+b04_b4e5:   .db $ff                     ; 134E5:  ff
+b04_b4e6:   .db $ff                     ; 134E6:  ff
+b04_b4e7:   .db $ff                     ; 134E7:  ff
+b04_b4e8:   .db $ff                     ; 134E8:  ff
+b04_b4e9:   .db $ff                     ; 134E9:  ff
+b04_b4ea:   .db $ff                     ; 134EA:  ff
+b04_b4eb:   .db $ff                     ; 134EB:  ff
+b04_b4ec:   .db $ff                     ; 134EC:  ff
+b04_b4ed:   .db $ff                     ; 134ED:  ff
+b04_b4ee:   .db $ff                     ; 134EE:  ff
+b04_b4ef:   .db $ff                     ; 134EF:  ff
+b04_b4f0:   .db $ff                     ; 134F0:  ff
+b04_b4f1:   .db $ff                     ; 134F1:  ff
+b04_b4f2:   .db $ff                     ; 134F2:  ff
+b04_b4f3:   .db $ff                     ; 134F3:  ff
+b04_b4f4:   .db $ff                     ; 134F4:  ff
+b04_b4f5:   .db $ff                     ; 134F5:  ff
+b04_b4f6:   .db $ff                     ; 134F6:  ff
+b04_b4f7:   .db $ff                     ; 134F7:  ff
+b04_b4f8:   .db $ff                     ; 134F8:  ff
+b04_b4f9:   .db $ff                     ; 134F9:  ff
+b04_b4fa:   .db $ff                     ; 134FA:  ff
+b04_b4fb:   .db $ff                     ; 134FB:  ff
+b04_b4fc:   .db $ff                     ; 134FC:  ff
+b04_b4fd:   .db $ff                     ; 134FD:  ff
+b04_b4fe:   .db $ff                     ; 134FE:  ff
+b04_b4ff:   .db $ff                     ; 134FF:  ff
+b04_b500:   .db $ff                     ; 13500:  ff
+b04_b501:   .db $ff                     ; 13501:  ff
+b04_b502:   .db $ff                     ; 13502:  ff
+b04_b503:   .db $ff                     ; 13503:  ff
+b04_b504:   .db $ff                     ; 13504:  ff
+b04_b505:   .db $ff                     ; 13505:  ff
+b04_b506:   .db $ff                     ; 13506:  ff
+b04_b507:   .db $ff                     ; 13507:  ff
+b04_b508:   .db $ff                     ; 13508:  ff
+b04_b509:   .db $ff                     ; 13509:  ff
+b04_b50a:   .db $ff                     ; 1350A:  ff
+b04_b50b:   .db $ff                     ; 1350B:  ff
+b04_b50c:   .db $ff                     ; 1350C:  ff
+b04_b50d:   .db $ff                     ; 1350D:  ff
+b04_b50e:   .db $ff                     ; 1350E:  ff
+b04_b50f:   .db $ff                     ; 1350F:  ff
+b04_b510:   .db $ff                     ; 13510:  ff
+b04_b511:   .db $ff                     ; 13511:  ff
+b04_b512:   .db $ff                     ; 13512:  ff
+b04_b513:   .db $ff                     ; 13513:  ff
+b04_b514:   .db $ff                     ; 13514:  ff
+b04_b515:   .db $ff                     ; 13515:  ff
+b04_b516:   .db $ff                     ; 13516:  ff
+b04_b517:   .db $ff                     ; 13517:  ff
+b04_b518:   .db $ff                     ; 13518:  ff
+b04_b519:   .db $ff                     ; 13519:  ff
+b04_b51a:   .db $ff                     ; 1351A:  ff
+b04_b51b:   .db $ff                     ; 1351B:  ff
+b04_b51c:   .db $ff                     ; 1351C:  ff
+b04_b51d:   .db $ff                     ; 1351D:  ff
+b04_b51e:   .db $ff                     ; 1351E:  ff
+b04_b51f:   .db $ff                     ; 1351F:  ff
+b04_b520:   .db $ff                     ; 13520:  ff
+b04_b521:   .db $ff                     ; 13521:  ff
+b04_b522:   .db $ff                     ; 13522:  ff
+b04_b523:   .db $ff                     ; 13523:  ff
+b04_b524:   .db $ff                     ; 13524:  ff
+b04_b525:   .db $ff                     ; 13525:  ff
+b04_b526:   .db $ff                     ; 13526:  ff
+b04_b527:   .db $ff                     ; 13527:  ff
+b04_b528:   .db $ff                     ; 13528:  ff
+b04_b529:   .db $ff                     ; 13529:  ff
+b04_b52a:   .db $ff                     ; 1352A:  ff
+b04_b52b:   .db $ff                     ; 1352B:  ff
+b04_b52c:   .db $ff                     ; 1352C:  ff
+b04_b52d:   .db $ff                     ; 1352D:  ff
+b04_b52e:   .db $ff                     ; 1352E:  ff
+b04_b52f:   .db $ff                     ; 1352F:  ff
+b04_b530:   .db $ff                     ; 13530:  ff
+b04_b531:   .db $ff                     ; 13531:  ff
+b04_b532:   .db $ff                     ; 13532:  ff
+b04_b533:   .db $ff                     ; 13533:  ff
+b04_b534:   .db $ff                     ; 13534:  ff
+b04_b535:   .db $ff                     ; 13535:  ff
+b04_b536:   .db $ff                     ; 13536:  ff
+b04_b537:   .db $ff                     ; 13537:  ff
+b04_b538:   .db $ff                     ; 13538:  ff
+b04_b539:   .db $ff                     ; 13539:  ff
+b04_b53a:   .db $ff                     ; 1353A:  ff
+b04_b53b:   .db $ff                     ; 1353B:  ff
+b04_b53c:   .db $ff                     ; 1353C:  ff
+b04_b53d:   .db $ff                     ; 1353D:  ff
+b04_b53e:   .db $ff                     ; 1353E:  ff
+b04_b53f:   .db $ff                     ; 1353F:  ff
+b04_b540:   .db $ff                     ; 13540:  ff
+b04_b541:   .db $ff                     ; 13541:  ff
+b04_b542:   .db $ff                     ; 13542:  ff
+b04_b543:   .db $ff                     ; 13543:  ff
+b04_b544:   .db $ff                     ; 13544:  ff
+b04_b545:   .db $ff                     ; 13545:  ff
+b04_b546:   .db $ff                     ; 13546:  ff
+b04_b547:   .db $ff                     ; 13547:  ff
+b04_b548:   .db $ff                     ; 13548:  ff
+b04_b549:   .db $ff                     ; 13549:  ff
+b04_b54a:   .db $ff                     ; 1354A:  ff
+b04_b54b:   .db $ff                     ; 1354B:  ff
+b04_b54c:   .db $ff                     ; 1354C:  ff
+b04_b54d:   .db $ff                     ; 1354D:  ff
+b04_b54e:   .db $ff                     ; 1354E:  ff
+b04_b54f:   .db $ff                     ; 1354F:  ff
+b04_b550:   .db $ff                     ; 13550:  ff
+b04_b551:   .db $ff                     ; 13551:  ff
+b04_b552:   .db $ff                     ; 13552:  ff
+b04_b553:   .db $ff                     ; 13553:  ff
+b04_b554:   .db $ff                     ; 13554:  ff
+b04_b555:   .db $ff                     ; 13555:  ff
+b04_b556:   .db $ff                     ; 13556:  ff
+b04_b557:   .db $ff                     ; 13557:  ff
+b04_b558:   .db $ff                     ; 13558:  ff
+b04_b559:   .db $ff                     ; 13559:  ff
+b04_b55a:   .db $ff                     ; 1355A:  ff
+b04_b55b:   .db $ff                     ; 1355B:  ff
+b04_b55c:   .db $ff                     ; 1355C:  ff
+b04_b55d:   .db $ff                     ; 1355D:  ff
+b04_b55e:   .db $ff                     ; 1355E:  ff
+b04_b55f:   .db $ff                     ; 1355F:  ff
+b04_b560:   .db $ff                     ; 13560:  ff
+b04_b561:   .db $ff                     ; 13561:  ff
+b04_b562:   .db $ff                     ; 13562:  ff
+b04_b563:   .db $ff                     ; 13563:  ff
+b04_b564:   .db $ff                     ; 13564:  ff
+b04_b565:   .db $ff                     ; 13565:  ff
+b04_b566:   .db $ff                     ; 13566:  ff
+b04_b567:   .db $ff                     ; 13567:  ff
+b04_b568:   .db $ff                     ; 13568:  ff
+b04_b569:   .db $ff                     ; 13569:  ff
+b04_b56a:   .db $ff                     ; 1356A:  ff
+b04_b56b:   .db $ff                     ; 1356B:  ff
+b04_b56c:   .db $ff                     ; 1356C:  ff
+b04_b56d:   .db $ff                     ; 1356D:  ff
+b04_b56e:   .db $ff                     ; 1356E:  ff
+b04_b56f:   .db $ff                     ; 1356F:  ff
+b04_b570:   .db $ff                     ; 13570:  ff
+b04_b571:   .db $ff                     ; 13571:  ff
+b04_b572:   .db $ff                     ; 13572:  ff
+b04_b573:   .db $ff                     ; 13573:  ff
+b04_b574:   .db $ff                     ; 13574:  ff
+b04_b575:   .db $ff                     ; 13575:  ff
+b04_b576:   .db $ff                     ; 13576:  ff
+b04_b577:   .db $ff                     ; 13577:  ff
+b04_b578:   .db $ff                     ; 13578:  ff
+b04_b579:   .db $ff                     ; 13579:  ff
+b04_b57a:   .db $ff                     ; 1357A:  ff
+b04_b57b:   .db $ff                     ; 1357B:  ff
+b04_b57c:   .db $ff                     ; 1357C:  ff
+b04_b57d:   .db $ff                     ; 1357D:  ff
+b04_b57e:   .db $ff                     ; 1357E:  ff
+b04_b57f:   .db $ff                     ; 1357F:  ff
+b04_b580:   .db $ff                     ; 13580:  ff
+b04_b581:   .db $ff                     ; 13581:  ff
+b04_b582:   .db $ff                     ; 13582:  ff
+b04_b583:   .db $ff                     ; 13583:  ff
+b04_b584:   .db $ff                     ; 13584:  ff
+b04_b585:   .db $ff                     ; 13585:  ff
+b04_b586:   .db $ff                     ; 13586:  ff
+b04_b587:   .db $ff                     ; 13587:  ff
+b04_b588:   .db $ff                     ; 13588:  ff
+b04_b589:   .db $ff                     ; 13589:  ff
+b04_b58a:   .db $ff                     ; 1358A:  ff
+b04_b58b:   .db $ff                     ; 1358B:  ff
+b04_b58c:   .db $ff                     ; 1358C:  ff
+b04_b58d:   .db $ff                     ; 1358D:  ff
+b04_b58e:   .db $ff                     ; 1358E:  ff
+b04_b58f:   .db $ff                     ; 1358F:  ff
+b04_b590:   .db $ff                     ; 13590:  ff
+b04_b591:   .db $ff                     ; 13591:  ff
+b04_b592:   .db $ff                     ; 13592:  ff
+b04_b593:   .db $ff                     ; 13593:  ff
+b04_b594:   .db $ff                     ; 13594:  ff
+b04_b595:   .db $ff                     ; 13595:  ff
+b04_b596:   .db $ff                     ; 13596:  ff
+b04_b597:   .db $ff                     ; 13597:  ff
+b04_b598:   .db $ff                     ; 13598:  ff
+b04_b599:   .db $ff                     ; 13599:  ff
+b04_b59a:   .db $ff                     ; 1359A:  ff
+b04_b59b:   .db $ff                     ; 1359B:  ff
+b04_b59c:   .db $ff                     ; 1359C:  ff
+b04_b59d:   .db $ff                     ; 1359D:  ff
+b04_b59e:   .db $ff                     ; 1359E:  ff
+b04_b59f:   .db $ff                     ; 1359F:  ff
+b04_b5a0:   .db $ff                     ; 135A0:  ff
+b04_b5a1:   .db $ff                     ; 135A1:  ff
+b04_b5a2:   .db $ff                     ; 135A2:  ff
+b04_b5a3:   .db $ff                     ; 135A3:  ff
+b04_b5a4:   .db $ff                     ; 135A4:  ff
+b04_b5a5:   .db $ff                     ; 135A5:  ff
+b04_b5a6:   .db $ff                     ; 135A6:  ff
+b04_b5a7:   .db $ff                     ; 135A7:  ff
+b04_b5a8:   .db $ff                     ; 135A8:  ff
+b04_b5a9:   .db $ff                     ; 135A9:  ff
+b04_b5aa:   .db $ff                     ; 135AA:  ff
+b04_b5ab:   .db $ff                     ; 135AB:  ff
+b04_b5ac:   .db $ff                     ; 135AC:  ff
+b04_b5ad:   .db $ff                     ; 135AD:  ff
+b04_b5ae:   .db $ff                     ; 135AE:  ff
+b04_b5af:   .db $ff                     ; 135AF:  ff
+b04_b5b0:   .db $ff                     ; 135B0:  ff
+b04_b5b1:   .db $ff                     ; 135B1:  ff
+b04_b5b2:   .db $ff                     ; 135B2:  ff
+b04_b5b3:   .db $ff                     ; 135B3:  ff
+b04_b5b4:   .db $ff                     ; 135B4:  ff
+b04_b5b5:   .db $ff                     ; 135B5:  ff
+b04_b5b6:   .db $ff                     ; 135B6:  ff
+b04_b5b7:   .db $ff                     ; 135B7:  ff
+b04_b5b8:   .db $ff                     ; 135B8:  ff
+b04_b5b9:   .db $ff                     ; 135B9:  ff
+b04_b5ba:   .db $ff                     ; 135BA:  ff
+b04_b5bb:   .db $ff                     ; 135BB:  ff
+b04_b5bc:   .db $ff                     ; 135BC:  ff
+b04_b5bd:   .db $ff                     ; 135BD:  ff
+b04_b5be:   .db $ff                     ; 135BE:  ff
+b04_b5bf:   .db $ff                     ; 135BF:  ff
+b04_b5c0:   .db $ff                     ; 135C0:  ff
+b04_b5c1:   .db $ff                     ; 135C1:  ff
+b04_b5c2:   .db $ff                     ; 135C2:  ff
+b04_b5c3:   .db $ff                     ; 135C3:  ff
+b04_b5c4:   .db $ff                     ; 135C4:  ff
+b04_b5c5:   .db $ff                     ; 135C5:  ff
+b04_b5c6:   .db $ff                     ; 135C6:  ff
+b04_b5c7:   .db $ff                     ; 135C7:  ff
+b04_b5c8:   .db $ff                     ; 135C8:  ff
+b04_b5c9:   .db $ff                     ; 135C9:  ff
+b04_b5ca:   .db $ff                     ; 135CA:  ff
+b04_b5cb:   .db $ff                     ; 135CB:  ff
+b04_b5cc:   .db $ff                     ; 135CC:  ff
+b04_b5cd:   .db $ff                     ; 135CD:  ff
+b04_b5ce:   .db $ff                     ; 135CE:  ff
+b04_b5cf:   .db $ff                     ; 135CF:  ff
+b04_b5d0:   .db $ff                     ; 135D0:  ff
+b04_b5d1:   .db $ff                     ; 135D1:  ff
+b04_b5d2:   .db $ff                     ; 135D2:  ff
+b04_b5d3:   .db $ff                     ; 135D3:  ff
+b04_b5d4:   .db $ff                     ; 135D4:  ff
+b04_b5d5:   .db $ff                     ; 135D5:  ff
+b04_b5d6:   .db $ff                     ; 135D6:  ff
+b04_b5d7:   .db $ff                     ; 135D7:  ff
+b04_b5d8:   .db $ff                     ; 135D8:  ff
+b04_b5d9:   .db $ff                     ; 135D9:  ff
+b04_b5da:   .db $ff                     ; 135DA:  ff
+b04_b5db:   .db $ff                     ; 135DB:  ff
+b04_b5dc:   .db $ff                     ; 135DC:  ff
+b04_b5dd:   .db $ff                     ; 135DD:  ff
+b04_b5de:   .db $ff                     ; 135DE:  ff
+b04_b5df:   .db $ff                     ; 135DF:  ff
+b04_b5e0:   .db $ff                     ; 135E0:  ff
+b04_b5e1:   .db $ff                     ; 135E1:  ff
+b04_b5e2:   .db $ff                     ; 135E2:  ff
+b04_b5e3:   .db $ff                     ; 135E3:  ff
+b04_b5e4:   .db $ff                     ; 135E4:  ff
+b04_b5e5:   .db $ff                     ; 135E5:  ff
+b04_b5e6:   .db $ff                     ; 135E6:  ff
+b04_b5e7:   .db $ff                     ; 135E7:  ff
+b04_b5e8:   .db $ff                     ; 135E8:  ff
+b04_b5e9:   .db $ff                     ; 135E9:  ff
+b04_b5ea:   .db $ff                     ; 135EA:  ff
+b04_b5eb:   .db $ff                     ; 135EB:  ff
+b04_b5ec:   .db $ff                     ; 135EC:  ff
+b04_b5ed:   .db $ff                     ; 135ED:  ff
+b04_b5ee:   .db $ff                     ; 135EE:  ff
+b04_b5ef:   .db $ff                     ; 135EF:  ff
+b04_b5f0:   .db $ff                     ; 135F0:  ff
+b04_b5f1:   .db $ff                     ; 135F1:  ff
+b04_b5f2:   .db $ff                     ; 135F2:  ff
+b04_b5f3:   .db $ff                     ; 135F3:  ff
+b04_b5f4:   .db $ff                     ; 135F4:  ff
+b04_b5f5:   .db $ff                     ; 135F5:  ff
+b04_b5f6:   .db $ff                     ; 135F6:  ff
+b04_b5f7:   .db $ff                     ; 135F7:  ff
+b04_b5f8:   .db $ff                     ; 135F8:  ff
+b04_b5f9:   .db $ff                     ; 135F9:  ff
+b04_b5fa:   .db $ff                     ; 135FA:  ff
+b04_b5fb:   .db $ff                     ; 135FB:  ff
+b04_b5fc:   .db $ff                     ; 135FC:  ff
+b04_b5fd:   .db $ff                     ; 135FD:  ff
+b04_b5fe:   .db $ff                     ; 135FE:  ff
+b04_b5ff:   .db $ff                     ; 135FF:  ff
+b04_b600:   .db $ff                     ; 13600:  ff
+b04_b601:   .db $ff                     ; 13601:  ff
+b04_b602:   .db $ff                     ; 13602:  ff
+b04_b603:   .db $ff                     ; 13603:  ff
+b04_b604:   .db $ff                     ; 13604:  ff
+b04_b605:   .db $ff                     ; 13605:  ff
+b04_b606:   .db $ff                     ; 13606:  ff
+b04_b607:   .db $ff                     ; 13607:  ff
+b04_b608:   .db $ff                     ; 13608:  ff
+b04_b609:   .db $ff                     ; 13609:  ff
+b04_b60a:   .db $ff                     ; 1360A:  ff
+b04_b60b:   .db $ff                     ; 1360B:  ff
+b04_b60c:   .db $ff                     ; 1360C:  ff
+b04_b60d:   .db $ff                     ; 1360D:  ff
+b04_b60e:   .db $ff                     ; 1360E:  ff
+b04_b60f:   .db $ff                     ; 1360F:  ff
+b04_b610:   .db $ff                     ; 13610:  ff
+b04_b611:   .db $ff                     ; 13611:  ff
+b04_b612:   .db $ff                     ; 13612:  ff
+b04_b613:   .db $ff                     ; 13613:  ff
+b04_b614:   .db $ff                     ; 13614:  ff
+b04_b615:   .db $ff                     ; 13615:  ff
+b04_b616:   .db $ff                     ; 13616:  ff
+b04_b617:   .db $ff                     ; 13617:  ff
+b04_b618:   .db $ff                     ; 13618:  ff
+b04_b619:   .db $ff                     ; 13619:  ff
+b04_b61a:   .db $ff                     ; 1361A:  ff
+b04_b61b:   .db $ff                     ; 1361B:  ff
+b04_b61c:   .db $ff                     ; 1361C:  ff
+b04_b61d:   .db $ff                     ; 1361D:  ff
+b04_b61e:   .db $ff                     ; 1361E:  ff
+b04_b61f:   .db $ff                     ; 1361F:  ff
+b04_b620:   .db $ff                     ; 13620:  ff
+b04_b621:   .db $ff                     ; 13621:  ff
+b04_b622:   .db $ff                     ; 13622:  ff
+b04_b623:   .db $ff                     ; 13623:  ff
+b04_b624:   .db $ff                     ; 13624:  ff
+b04_b625:   .db $ff                     ; 13625:  ff
+b04_b626:   .db $ff                     ; 13626:  ff
+b04_b627:   .db $ff                     ; 13627:  ff
+b04_b628:   .db $ff                     ; 13628:  ff
+b04_b629:   .db $ff                     ; 13629:  ff
+b04_b62a:   .db $ff                     ; 1362A:  ff
+b04_b62b:   .db $ff                     ; 1362B:  ff
+b04_b62c:   .db $ff                     ; 1362C:  ff
+b04_b62d:   .db $ff                     ; 1362D:  ff
+b04_b62e:   .db $ff                     ; 1362E:  ff
+b04_b62f:   .db $ff                     ; 1362F:  ff
+b04_b630:   .db $ff                     ; 13630:  ff
+b04_b631:   .db $ff                     ; 13631:  ff
+b04_b632:   .db $ff                     ; 13632:  ff
+b04_b633:   .db $ff                     ; 13633:  ff
+b04_b634:   .db $ff                     ; 13634:  ff
+b04_b635:   .db $ff                     ; 13635:  ff
+b04_b636:   .db $ff                     ; 13636:  ff
+b04_b637:   .db $ff                     ; 13637:  ff
+b04_b638:   .db $ff                     ; 13638:  ff
+b04_b639:   .db $ff                     ; 13639:  ff
+b04_b63a:   .db $ff                     ; 1363A:  ff
+b04_b63b:   .db $ff                     ; 1363B:  ff
+b04_b63c:   .db $ff                     ; 1363C:  ff
+b04_b63d:   .db $ff                     ; 1363D:  ff
+b04_b63e:   .db $ff                     ; 1363E:  ff
+b04_b63f:   .db $ff                     ; 1363F:  ff
+b04_b640:   .db $ff                     ; 13640:  ff
+b04_b641:   .db $ff                     ; 13641:  ff
+b04_b642:   .db $ff                     ; 13642:  ff
+b04_b643:   .db $ff                     ; 13643:  ff
+b04_b644:   .db $ff                     ; 13644:  ff
+b04_b645:   .db $ff                     ; 13645:  ff
+b04_b646:   .db $ff                     ; 13646:  ff
+b04_b647:   .db $ff                     ; 13647:  ff
+b04_b648:   .db $ff                     ; 13648:  ff
+b04_b649:   .db $ff                     ; 13649:  ff
+b04_b64a:   .db $ff                     ; 1364A:  ff
+b04_b64b:   .db $ff                     ; 1364B:  ff
+b04_b64c:   .db $ff                     ; 1364C:  ff
+b04_b64d:   .db $ff                     ; 1364D:  ff
+b04_b64e:   .db $ff                     ; 1364E:  ff
+b04_b64f:   .db $ff                     ; 1364F:  ff
+b04_b650:   .db $ff                     ; 13650:  ff
+b04_b651:   .db $ff                     ; 13651:  ff
+b04_b652:   .db $ff                     ; 13652:  ff
+b04_b653:   .db $ff                     ; 13653:  ff
+b04_b654:   .db $ff                     ; 13654:  ff
+b04_b655:   .db $ff                     ; 13655:  ff
+b04_b656:   .db $ff                     ; 13656:  ff
+b04_b657:   .db $ff                     ; 13657:  ff
+b04_b658:   .db $ff                     ; 13658:  ff
+b04_b659:   .db $ff                     ; 13659:  ff
+b04_b65a:   .db $ff                     ; 1365A:  ff
+b04_b65b:   .db $ff                     ; 1365B:  ff
+b04_b65c:   .db $ff                     ; 1365C:  ff
+b04_b65d:   .db $ff                     ; 1365D:  ff
+b04_b65e:   .db $ff                     ; 1365E:  ff
+b04_b65f:   .db $ff                     ; 1365F:  ff
+b04_b660:   .db $ff                     ; 13660:  ff
+b04_b661:   .db $ff                     ; 13661:  ff
+b04_b662:   .db $ff                     ; 13662:  ff
+b04_b663:   .db $ff                     ; 13663:  ff
+b04_b664:   .db $ff                     ; 13664:  ff
+b04_b665:   .db $ff                     ; 13665:  ff
+b04_b666:   .db $ff                     ; 13666:  ff
+b04_b667:   .db $ff                     ; 13667:  ff
+b04_b668:   .db $ff                     ; 13668:  ff
+b04_b669:   .db $ff                     ; 13669:  ff
+b04_b66a:   .db $ff                     ; 1366A:  ff
+b04_b66b:   .db $ff                     ; 1366B:  ff
+b04_b66c:   .db $ff                     ; 1366C:  ff
+b04_b66d:   .db $ff                     ; 1366D:  ff
+b04_b66e:   .db $ff                     ; 1366E:  ff
+b04_b66f:   .db $ff                     ; 1366F:  ff
+b04_b670:   .db $ff                     ; 13670:  ff
+b04_b671:   .db $ff                     ; 13671:  ff
+b04_b672:   .db $ff                     ; 13672:  ff
+b04_b673:   .db $ff                     ; 13673:  ff
+b04_b674:   .db $ff                     ; 13674:  ff
+b04_b675:   .db $ff                     ; 13675:  ff
+b04_b676:   .db $ff                     ; 13676:  ff
+b04_b677:   .db $ff                     ; 13677:  ff
+b04_b678:   .db $ff                     ; 13678:  ff
+b04_b679:   .db $ff                     ; 13679:  ff
+b04_b67a:   .db $ff                     ; 1367A:  ff
+b04_b67b:   .db $ff                     ; 1367B:  ff
+b04_b67c:   .db $ff                     ; 1367C:  ff
+b04_b67d:   .db $ff                     ; 1367D:  ff
+b04_b67e:   .db $ff                     ; 1367E:  ff
+b04_b67f:   .db $ff                     ; 1367F:  ff
+b04_b680:   .db $ff                     ; 13680:  ff
+b04_b681:   .db $ff                     ; 13681:  ff
+b04_b682:   .db $ff                     ; 13682:  ff
+b04_b683:   .db $ff                     ; 13683:  ff
+b04_b684:   .db $ff                     ; 13684:  ff
+b04_b685:   .db $ff                     ; 13685:  ff
+b04_b686:   .db $ff                     ; 13686:  ff
+b04_b687:   .db $ff                     ; 13687:  ff
+b04_b688:   .db $ff                     ; 13688:  ff
+b04_b689:   .db $ff                     ; 13689:  ff
+b04_b68a:   .db $ff                     ; 1368A:  ff
+b04_b68b:   .db $ff                     ; 1368B:  ff
+b04_b68c:   .db $ff                     ; 1368C:  ff
+b04_b68d:   .db $ff                     ; 1368D:  ff
+b04_b68e:   .db $ff                     ; 1368E:  ff
+b04_b68f:   .db $ff                     ; 1368F:  ff
+b04_b690:   .db $ff                     ; 13690:  ff
+b04_b691:   .db $ff                     ; 13691:  ff
+b04_b692:   .db $ff                     ; 13692:  ff
+b04_b693:   .db $ff                     ; 13693:  ff
+b04_b694:   .db $ff                     ; 13694:  ff
+b04_b695:   .db $ff                     ; 13695:  ff
+b04_b696:   .db $ff                     ; 13696:  ff
+b04_b697:   .db $ff                     ; 13697:  ff
+b04_b698:   .db $ff                     ; 13698:  ff
+b04_b699:   .db $ff                     ; 13699:  ff
+b04_b69a:   .db $ff                     ; 1369A:  ff
+b04_b69b:   .db $ff                     ; 1369B:  ff
+b04_b69c:   .db $ff                     ; 1369C:  ff
+b04_b69d:   .db $ff                     ; 1369D:  ff
+b04_b69e:   .db $ff                     ; 1369E:  ff
+b04_b69f:   .db $ff                     ; 1369F:  ff
+b04_b6a0:   .db $ff                     ; 136A0:  ff
+b04_b6a1:   .db $ff                     ; 136A1:  ff
+b04_b6a2:   .db $ff                     ; 136A2:  ff
+b04_b6a3:   .db $ff                     ; 136A3:  ff
+b04_b6a4:   .db $ff                     ; 136A4:  ff
+b04_b6a5:   .db $ff                     ; 136A5:  ff
+b04_b6a6:   .db $ff                     ; 136A6:  ff
+b04_b6a7:   .db $ff                     ; 136A7:  ff
+b04_b6a8:   .db $ff                     ; 136A8:  ff
+b04_b6a9:   .db $ff                     ; 136A9:  ff
+b04_b6aa:   .db $ff                     ; 136AA:  ff
+b04_b6ab:   .db $ff                     ; 136AB:  ff
+b04_b6ac:   .db $ff                     ; 136AC:  ff
+b04_b6ad:   .db $ff                     ; 136AD:  ff
+b04_b6ae:   .db $ff                     ; 136AE:  ff
+b04_b6af:   .db $ff                     ; 136AF:  ff
+b04_b6b0:   .db $ff                     ; 136B0:  ff
+b04_b6b1:   .db $ff                     ; 136B1:  ff
+b04_b6b2:   .db $ff                     ; 136B2:  ff
+b04_b6b3:   .db $ff                     ; 136B3:  ff
+b04_b6b4:   .db $ff                     ; 136B4:  ff
+b04_b6b5:   .db $ff                     ; 136B5:  ff
+b04_b6b6:   .db $ff                     ; 136B6:  ff
+b04_b6b7:   .db $ff                     ; 136B7:  ff
+b04_b6b8:   .db $ff                     ; 136B8:  ff
+b04_b6b9:   .db $ff                     ; 136B9:  ff
+b04_b6ba:   .db $ff                     ; 136BA:  ff
+b04_b6bb:   .db $ff                     ; 136BB:  ff
+b04_b6bc:   .db $ff                     ; 136BC:  ff
+b04_b6bd:   .db $ff                     ; 136BD:  ff
+b04_b6be:   .db $ff                     ; 136BE:  ff
+b04_b6bf:   .db $ff                     ; 136BF:  ff
+b04_b6c0:   .db $ff                     ; 136C0:  ff
+b04_b6c1:   .db $ff                     ; 136C1:  ff
+b04_b6c2:   .db $ff                     ; 136C2:  ff
+b04_b6c3:   .db $ff                     ; 136C3:  ff
+b04_b6c4:   .db $ff                     ; 136C4:  ff
+b04_b6c5:   .db $ff                     ; 136C5:  ff
+b04_b6c6:   .db $ff                     ; 136C6:  ff
+b04_b6c7:   .db $ff                     ; 136C7:  ff
+b04_b6c8:   .db $ff                     ; 136C8:  ff
+b04_b6c9:   .db $ff                     ; 136C9:  ff
+b04_b6ca:   .db $ff                     ; 136CA:  ff
+b04_b6cb:   .db $ff                     ; 136CB:  ff
+b04_b6cc:   .db $ff                     ; 136CC:  ff
+b04_b6cd:   .db $ff                     ; 136CD:  ff
+b04_b6ce:   .db $ff                     ; 136CE:  ff
+b04_b6cf:   .db $ff                     ; 136CF:  ff
+b04_b6d0:   .db $ff                     ; 136D0:  ff
+b04_b6d1:   .db $ff                     ; 136D1:  ff
+b04_b6d2:   .db $ff                     ; 136D2:  ff
+b04_b6d3:   .db $ff                     ; 136D3:  ff
+b04_b6d4:   .db $ff                     ; 136D4:  ff
+b04_b6d5:   .db $ff                     ; 136D5:  ff
+b04_b6d6:   .db $ff                     ; 136D6:  ff
+b04_b6d7:   .db $ff                     ; 136D7:  ff
+b04_b6d8:   .db $ff                     ; 136D8:  ff
+b04_b6d9:   .db $ff                     ; 136D9:  ff
+b04_b6da:   .db $ff                     ; 136DA:  ff
+b04_b6db:   .db $ff                     ; 136DB:  ff
+b04_b6dc:   .db $ff                     ; 136DC:  ff
+b04_b6dd:   .db $ff                     ; 136DD:  ff
+b04_b6de:   .db $ff                     ; 136DE:  ff
+b04_b6df:   .db $ff                     ; 136DF:  ff
+b04_b6e0:   .db $ff                     ; 136E0:  ff
+b04_b6e1:   .db $ff                     ; 136E1:  ff
+b04_b6e2:   .db $ff                     ; 136E2:  ff
+b04_b6e3:   .db $ff                     ; 136E3:  ff
+b04_b6e4:   .db $ff                     ; 136E4:  ff
+b04_b6e5:   .db $ff                     ; 136E5:  ff
+b04_b6e6:   .db $ff                     ; 136E6:  ff
+b04_b6e7:   .db $ff                     ; 136E7:  ff
+b04_b6e8:   .db $ff                     ; 136E8:  ff
+b04_b6e9:   .db $ff                     ; 136E9:  ff
+b04_b6ea:   .db $ff                     ; 136EA:  ff
+b04_b6eb:   .db $ff                     ; 136EB:  ff
+b04_b6ec:   .db $ff                     ; 136EC:  ff
+b04_b6ed:   .db $ff                     ; 136ED:  ff
+b04_b6ee:   .db $ff                     ; 136EE:  ff
+b04_b6ef:   .db $ff                     ; 136EF:  ff
+b04_b6f0:   .db $ff                     ; 136F0:  ff
+b04_b6f1:   .db $ff                     ; 136F1:  ff
+b04_b6f2:   .db $ff                     ; 136F2:  ff
+b04_b6f3:   .db $ff                     ; 136F3:  ff
+b04_b6f4:   .db $ff                     ; 136F4:  ff
+b04_b6f5:   .db $ff                     ; 136F5:  ff
+b04_b6f6:   .db $ff                     ; 136F6:  ff
+b04_b6f7:   .db $ff                     ; 136F7:  ff
+b04_b6f8:   .db $ff                     ; 136F8:  ff
+b04_b6f9:   .db $ff                     ; 136F9:  ff
+b04_b6fa:   .db $ff                     ; 136FA:  ff
+b04_b6fb:   .db $ff                     ; 136FB:  ff
+b04_b6fc:   .db $ff                     ; 136FC:  ff
+b04_b6fd:   .db $ff                     ; 136FD:  ff
+b04_b6fe:   .db $ff                     ; 136FE:  ff
+b04_b6ff:   .db $ff                     ; 136FF:  ff
+b04_b700:   .db $ff                     ; 13700:  ff
+b04_b701:   .db $ff                     ; 13701:  ff
+b04_b702:   .db $ff                     ; 13702:  ff
+b04_b703:   .db $ff                     ; 13703:  ff
+b04_b704:   .db $ff                     ; 13704:  ff
+b04_b705:   .db $ff                     ; 13705:  ff
+b04_b706:   .db $ff                     ; 13706:  ff
+b04_b707:   .db $ff                     ; 13707:  ff
+b04_b708:   .db $ff                     ; 13708:  ff
+b04_b709:   .db $ff                     ; 13709:  ff
+b04_b70a:   .db $ff                     ; 1370A:  ff
+b04_b70b:   .db $ff                     ; 1370B:  ff
+b04_b70c:   .db $ff                     ; 1370C:  ff
+b04_b70d:   .db $ff                     ; 1370D:  ff
+b04_b70e:   .db $ff                     ; 1370E:  ff
+b04_b70f:   .db $ff                     ; 1370F:  ff
+b04_b710:   .db $ff                     ; 13710:  ff
+b04_b711:   .db $ff                     ; 13711:  ff
+b04_b712:   .db $ff                     ; 13712:  ff
+b04_b713:   .db $ff                     ; 13713:  ff
+b04_b714:   .db $ff                     ; 13714:  ff
+b04_b715:   .db $ff                     ; 13715:  ff
+b04_b716:   .db $ff                     ; 13716:  ff
+b04_b717:   .db $ff                     ; 13717:  ff
+b04_b718:   .db $ff                     ; 13718:  ff
+b04_b719:   .db $ff                     ; 13719:  ff
+b04_b71a:   .db $ff                     ; 1371A:  ff
+b04_b71b:   .db $ff                     ; 1371B:  ff
+b04_b71c:   .db $ff                     ; 1371C:  ff
+b04_b71d:   .db $ff                     ; 1371D:  ff
+b04_b71e:   .db $ff                     ; 1371E:  ff
+b04_b71f:   .db $ff                     ; 1371F:  ff
+b04_b720:   .db $ff                     ; 13720:  ff
+b04_b721:   .db $ff                     ; 13721:  ff
+b04_b722:   .db $ff                     ; 13722:  ff
+b04_b723:   .db $ff                     ; 13723:  ff
+b04_b724:   .db $ff                     ; 13724:  ff
+b04_b725:   .db $ff                     ; 13725:  ff
+b04_b726:   .db $ff                     ; 13726:  ff
+b04_b727:   .db $ff                     ; 13727:  ff
+b04_b728:   .db $ff                     ; 13728:  ff
+b04_b729:   .db $ff                     ; 13729:  ff
+b04_b72a:   .db $ff                     ; 1372A:  ff
+b04_b72b:   .db $ff                     ; 1372B:  ff
+b04_b72c:   .db $ff                     ; 1372C:  ff
+b04_b72d:   .db $ff                     ; 1372D:  ff
+b04_b72e:   .db $ff                     ; 1372E:  ff
+b04_b72f:   .db $ff                     ; 1372F:  ff
+b04_b730:   .db $ff                     ; 13730:  ff
+b04_b731:   .db $ff                     ; 13731:  ff
+b04_b732:   .db $ff                     ; 13732:  ff
+b04_b733:   .db $ff                     ; 13733:  ff
+b04_b734:   .db $ff                     ; 13734:  ff
+b04_b735:   .db $ff                     ; 13735:  ff
+b04_b736:   .db $ff                     ; 13736:  ff
+b04_b737:   .db $ff                     ; 13737:  ff
+b04_b738:   .db $ff                     ; 13738:  ff
+b04_b739:   .db $ff                     ; 13739:  ff
+b04_b73a:   .db $ff                     ; 1373A:  ff
+b04_b73b:   .db $ff                     ; 1373B:  ff
+b04_b73c:   .db $ff                     ; 1373C:  ff
+b04_b73d:   .db $ff                     ; 1373D:  ff
+b04_b73e:   .db $ff                     ; 1373E:  ff
+b04_b73f:   .db $ff                     ; 1373F:  ff
+b04_b740:   .db $ff                     ; 13740:  ff
+b04_b741:   .db $ff                     ; 13741:  ff
+b04_b742:   .db $ff                     ; 13742:  ff
+b04_b743:   .db $ff                     ; 13743:  ff
+b04_b744:   .db $ff                     ; 13744:  ff
+b04_b745:   .db $ff                     ; 13745:  ff
+b04_b746:   .db $ff                     ; 13746:  ff
+b04_b747:   .db $ff                     ; 13747:  ff
+b04_b748:   .db $ff                     ; 13748:  ff
+b04_b749:   .db $ff                     ; 13749:  ff
+b04_b74a:   .db $ff                     ; 1374A:  ff
+b04_b74b:   .db $ff                     ; 1374B:  ff
+b04_b74c:   .db $ff                     ; 1374C:  ff
+b04_b74d:   .db $ff                     ; 1374D:  ff
+b04_b74e:   .db $ff                     ; 1374E:  ff
+b04_b74f:   .db $ff                     ; 1374F:  ff
+b04_b750:   .db $ff                     ; 13750:  ff
+b04_b751:   .db $ff                     ; 13751:  ff
+b04_b752:   .db $ff                     ; 13752:  ff
+b04_b753:   .db $ff                     ; 13753:  ff
+b04_b754:   .db $ff                     ; 13754:  ff
+b04_b755:   .db $ff                     ; 13755:  ff
+b04_b756:   .db $ff                     ; 13756:  ff
+b04_b757:   .db $ff                     ; 13757:  ff
+b04_b758:   .db $ff                     ; 13758:  ff
+b04_b759:   .db $ff                     ; 13759:  ff
+b04_b75a:   .db $ff                     ; 1375A:  ff
+b04_b75b:   .db $ff                     ; 1375B:  ff
+b04_b75c:   .db $ff                     ; 1375C:  ff
+b04_b75d:   .db $ff                     ; 1375D:  ff
+b04_b75e:   .db $ff                     ; 1375E:  ff
+b04_b75f:   .db $ff                     ; 1375F:  ff
+b04_b760:   .db $ff                     ; 13760:  ff
+b04_b761:   .db $ff                     ; 13761:  ff
+b04_b762:   .db $ff                     ; 13762:  ff
+b04_b763:   .db $ff                     ; 13763:  ff
+b04_b764:   .db $ff                     ; 13764:  ff
+b04_b765:   .db $ff                     ; 13765:  ff
+b04_b766:   .db $ff                     ; 13766:  ff
+b04_b767:   .db $ff                     ; 13767:  ff
+b04_b768:   .db $ff                     ; 13768:  ff
+b04_b769:   .db $ff                     ; 13769:  ff
+b04_b76a:   .db $ff                     ; 1376A:  ff
+b04_b76b:   .db $ff                     ; 1376B:  ff
+b04_b76c:   .db $ff                     ; 1376C:  ff
+b04_b76d:   .db $ff                     ; 1376D:  ff
+b04_b76e:   .db $ff                     ; 1376E:  ff
+b04_b76f:   .db $ff                     ; 1376F:  ff
+b04_b770:   .db $ff                     ; 13770:  ff
+b04_b771:   .db $ff                     ; 13771:  ff
+b04_b772:   .db $ff                     ; 13772:  ff
+b04_b773:   .db $ff                     ; 13773:  ff
+b04_b774:   .db $ff                     ; 13774:  ff
+b04_b775:   .db $ff                     ; 13775:  ff
+b04_b776:   .db $ff                     ; 13776:  ff
+b04_b777:   .db $ff                     ; 13777:  ff
+b04_b778:   .db $ff                     ; 13778:  ff
+b04_b779:   .db $ff                     ; 13779:  ff
+b04_b77a:   .db $ff                     ; 1377A:  ff
+b04_b77b:   .db $ff                     ; 1377B:  ff
+b04_b77c:   .db $ff                     ; 1377C:  ff
+b04_b77d:   .db $ff                     ; 1377D:  ff
+b04_b77e:   .db $ff                     ; 1377E:  ff
+b04_b77f:   .db $ff                     ; 1377F:  ff
+b04_b780:   .db $ff                     ; 13780:  ff
+b04_b781:   .db $ff                     ; 13781:  ff
+b04_b782:   .db $ff                     ; 13782:  ff
+b04_b783:   .db $ff                     ; 13783:  ff
+b04_b784:   .db $ff                     ; 13784:  ff
+b04_b785:   .db $ff                     ; 13785:  ff
+b04_b786:   .db $ff                     ; 13786:  ff
+b04_b787:   .db $ff                     ; 13787:  ff
+b04_b788:   .db $ff                     ; 13788:  ff
+b04_b789:   .db $ff                     ; 13789:  ff
+b04_b78a:   .db $ff                     ; 1378A:  ff
+b04_b78b:   .db $ff                     ; 1378B:  ff
+b04_b78c:   .db $ff                     ; 1378C:  ff
+b04_b78d:   .db $ff                     ; 1378D:  ff
+b04_b78e:   .db $ff                     ; 1378E:  ff
+b04_b78f:   .db $ff                     ; 1378F:  ff
+b04_b790:   .db $ff                     ; 13790:  ff
+b04_b791:   .db $ff                     ; 13791:  ff
+b04_b792:   .db $ff                     ; 13792:  ff
+b04_b793:   .db $ff                     ; 13793:  ff
+b04_b794:   .db $ff                     ; 13794:  ff
+b04_b795:   .db $ff                     ; 13795:  ff
+b04_b796:   .db $ff                     ; 13796:  ff
+b04_b797:   .db $ff                     ; 13797:  ff
+b04_b798:   .db $ff                     ; 13798:  ff
+b04_b799:   .db $ff                     ; 13799:  ff
+b04_b79a:   .db $ff                     ; 1379A:  ff
+b04_b79b:   .db $ff                     ; 1379B:  ff
+b04_b79c:   .db $ff                     ; 1379C:  ff
+b04_b79d:   .db $ff                     ; 1379D:  ff
+b04_b79e:   .db $ff                     ; 1379E:  ff
+b04_b79f:   .db $ff                     ; 1379F:  ff
+b04_b7a0:   .db $ff                     ; 137A0:  ff
+b04_b7a1:   .db $ff                     ; 137A1:  ff
+b04_b7a2:   .db $ff                     ; 137A2:  ff
+b04_b7a3:   .db $ff                     ; 137A3:  ff
+b04_b7a4:   .db $ff                     ; 137A4:  ff
+b04_b7a5:   .db $ff                     ; 137A5:  ff
+b04_b7a6:   .db $ff                     ; 137A6:  ff
+b04_b7a7:   .db $ff                     ; 137A7:  ff
+b04_b7a8:   .db $ff                     ; 137A8:  ff
+b04_b7a9:   .db $ff                     ; 137A9:  ff
+b04_b7aa:   .db $ff                     ; 137AA:  ff
+b04_b7ab:   .db $ff                     ; 137AB:  ff
+b04_b7ac:   .db $ff                     ; 137AC:  ff
+b04_b7ad:   .db $ff                     ; 137AD:  ff
+b04_b7ae:   .db $ff                     ; 137AE:  ff
+b04_b7af:   .db $ff                     ; 137AF:  ff
+b04_b7b0:   .db $ff                     ; 137B0:  ff
+b04_b7b1:   .db $ff                     ; 137B1:  ff
+b04_b7b2:   .db $ff                     ; 137B2:  ff
+b04_b7b3:   .db $ff                     ; 137B3:  ff
+b04_b7b4:   .db $ff                     ; 137B4:  ff
+b04_b7b5:   .db $ff                     ; 137B5:  ff
+b04_b7b6:   .db $ff                     ; 137B6:  ff
+b04_b7b7:   .db $ff                     ; 137B7:  ff
+b04_b7b8:   .db $ff                     ; 137B8:  ff
+b04_b7b9:   .db $ff                     ; 137B9:  ff
+b04_b7ba:   .db $ff                     ; 137BA:  ff
+b04_b7bb:   .db $ff                     ; 137BB:  ff
+b04_b7bc:   .db $ff                     ; 137BC:  ff
+b04_b7bd:   .db $ff                     ; 137BD:  ff
+b04_b7be:   .db $ff                     ; 137BE:  ff
+b04_b7bf:   .db $ff                     ; 137BF:  ff
+b04_b7c0:   .db $ff                     ; 137C0:  ff
+b04_b7c1:   .db $ff                     ; 137C1:  ff
+b04_b7c2:   .db $ff                     ; 137C2:  ff
+b04_b7c3:   .db $ff                     ; 137C3:  ff
+b04_b7c4:   .db $ff                     ; 137C4:  ff
+b04_b7c5:   .db $ff                     ; 137C5:  ff
+b04_b7c6:   .db $ff                     ; 137C6:  ff
+b04_b7c7:   .db $ff                     ; 137C7:  ff
+b04_b7c8:   .db $ff                     ; 137C8:  ff
+b04_b7c9:   .db $ff                     ; 137C9:  ff
+b04_b7ca:   .db $ff                     ; 137CA:  ff
+b04_b7cb:   .db $ff                     ; 137CB:  ff
+b04_b7cc:   .db $ff                     ; 137CC:  ff
+b04_b7cd:   .db $ff                     ; 137CD:  ff
+b04_b7ce:   .db $ff                     ; 137CE:  ff
+b04_b7cf:   .db $ff                     ; 137CF:  ff
+b04_b7d0:   .db $ff                     ; 137D0:  ff
+b04_b7d1:   .db $ff                     ; 137D1:  ff
+b04_b7d2:   .db $ff                     ; 137D2:  ff
+b04_b7d3:   .db $ff                     ; 137D3:  ff
+b04_b7d4:   .db $ff                     ; 137D4:  ff
+b04_b7d5:   .db $ff                     ; 137D5:  ff
+b04_b7d6:   .db $ff                     ; 137D6:  ff
+b04_b7d7:   .db $ff                     ; 137D7:  ff
+b04_b7d8:   .db $ff                     ; 137D8:  ff
+b04_b7d9:   .db $ff                     ; 137D9:  ff
+b04_b7da:   .db $ff                     ; 137DA:  ff
+b04_b7db:   .db $ff                     ; 137DB:  ff
+b04_b7dc:   .db $ff                     ; 137DC:  ff
+b04_b7dd:   .db $ff                     ; 137DD:  ff
+b04_b7de:   .db $ff                     ; 137DE:  ff
+b04_b7df:   .db $ff                     ; 137DF:  ff
+b04_b7e0:   .db $ff                     ; 137E0:  ff
+b04_b7e1:   .db $ff                     ; 137E1:  ff
+b04_b7e2:   .db $ff                     ; 137E2:  ff
+b04_b7e3:   .db $ff                     ; 137E3:  ff
+b04_b7e4:   .db $ff                     ; 137E4:  ff
+b04_b7e5:   .db $ff                     ; 137E5:  ff
+b04_b7e6:   .db $ff                     ; 137E6:  ff
+b04_b7e7:   .db $ff                     ; 137E7:  ff
+b04_b7e8:   .db $ff                     ; 137E8:  ff
+b04_b7e9:   .db $ff                     ; 137E9:  ff
+b04_b7ea:   .db $ff                     ; 137EA:  ff
+b04_b7eb:   .db $ff                     ; 137EB:  ff
+b04_b7ec:   .db $ff                     ; 137EC:  ff
+b04_b7ed:   .db $ff                     ; 137ED:  ff
+b04_b7ee:   .db $ff                     ; 137EE:  ff
+b04_b7ef:   .db $ff                     ; 137EF:  ff
+b04_b7f0:   .db $ff                     ; 137F0:  ff
+b04_b7f1:   .db $ff                     ; 137F1:  ff
+b04_b7f2:   .db $ff                     ; 137F2:  ff
+b04_b7f3:   .db $ff                     ; 137F3:  ff
+b04_b7f4:   .db $ff                     ; 137F4:  ff
+b04_b7f5:   .db $ff                     ; 137F5:  ff
+b04_b7f6:   .db $ff                     ; 137F6:  ff
+b04_b7f7:   .db $ff                     ; 137F7:  ff
+b04_b7f8:   .db $ff                     ; 137F8:  ff
+b04_b7f9:   .db $ff                     ; 137F9:  ff
+b04_b7fa:   .db $ff                     ; 137FA:  ff
+b04_b7fb:   .db $ff                     ; 137FB:  ff
+b04_b7fc:   .db $ff                     ; 137FC:  ff
+b04_b7fd:   .db $ff                     ; 137FD:  ff
+b04_b7fe:   .db $ff                     ; 137FE:  ff
+b04_b7ff:   .db $ff                     ; 137FF:  ff
+b04_b800:   .db $ff                     ; 13800:  ff
+b04_b801:   .db $ff                     ; 13801:  ff
+b04_b802:   .db $ff                     ; 13802:  ff
+b04_b803:   .db $ff                     ; 13803:  ff
+b04_b804:   .db $ff                     ; 13804:  ff
+b04_b805:   .db $ff                     ; 13805:  ff
+b04_b806:   .db $ff                     ; 13806:  ff
+b04_b807:   .db $ff                     ; 13807:  ff
+b04_b808:   .db $ff                     ; 13808:  ff
+b04_b809:   .db $ff                     ; 13809:  ff
+b04_b80a:   .db $ff                     ; 1380A:  ff
+b04_b80b:   .db $ff                     ; 1380B:  ff
+b04_b80c:   .db $ff                     ; 1380C:  ff
+b04_b80d:   .db $ff                     ; 1380D:  ff
+b04_b80e:   .db $ff                     ; 1380E:  ff
+b04_b80f:   .db $ff                     ; 1380F:  ff
+b04_b810:   .db $ff                     ; 13810:  ff
+b04_b811:   .db $ff                     ; 13811:  ff
+b04_b812:   .db $ff                     ; 13812:  ff
+b04_b813:   .db $ff                     ; 13813:  ff
+b04_b814:   .db $ff                     ; 13814:  ff
+b04_b815:   .db $ff                     ; 13815:  ff
+b04_b816:   .db $ff                     ; 13816:  ff
+b04_b817:   .db $ff                     ; 13817:  ff
+b04_b818:   .db $ff                     ; 13818:  ff
+b04_b819:   .db $ff                     ; 13819:  ff
+b04_b81a:   .db $ff                     ; 1381A:  ff
+b04_b81b:   .db $ff                     ; 1381B:  ff
+b04_b81c:   .db $ff                     ; 1381C:  ff
+b04_b81d:   .db $ff                     ; 1381D:  ff
+b04_b81e:   .db $ff                     ; 1381E:  ff
+b04_b81f:   .db $ff                     ; 1381F:  ff
+b04_b820:   .db $ff                     ; 13820:  ff
+b04_b821:   .db $ff                     ; 13821:  ff
+b04_b822:   .db $ff                     ; 13822:  ff
+b04_b823:   .db $ff                     ; 13823:  ff
+b04_b824:   .db $ff                     ; 13824:  ff
+b04_b825:   .db $ff                     ; 13825:  ff
+b04_b826:   .db $ff                     ; 13826:  ff
+b04_b827:   .db $ff                     ; 13827:  ff
+b04_b828:   .db $ff                     ; 13828:  ff
+b04_b829:   .db $ff                     ; 13829:  ff
+b04_b82a:   .db $ff                     ; 1382A:  ff
+b04_b82b:   .db $ff                     ; 1382B:  ff
+b04_b82c:   .db $ff                     ; 1382C:  ff
+b04_b82d:   .db $ff                     ; 1382D:  ff
+b04_b82e:   .db $ff                     ; 1382E:  ff
+b04_b82f:   .db $ff                     ; 1382F:  ff
+b04_b830:   .db $ff                     ; 13830:  ff
+b04_b831:   .db $ff                     ; 13831:  ff
+b04_b832:   .db $ff                     ; 13832:  ff
+b04_b833:   .db $ff                     ; 13833:  ff
+b04_b834:   .db $ff                     ; 13834:  ff
+b04_b835:   .db $ff                     ; 13835:  ff
+b04_b836:   .db $ff                     ; 13836:  ff
+b04_b837:   .db $ff                     ; 13837:  ff
+b04_b838:   .db $ff                     ; 13838:  ff
+b04_b839:   .db $ff                     ; 13839:  ff
+b04_b83a:   .db $ff                     ; 1383A:  ff
+b04_b83b:   .db $ff                     ; 1383B:  ff
+b04_b83c:   .db $ff                     ; 1383C:  ff
+b04_b83d:   .db $ff                     ; 1383D:  ff
+b04_b83e:   .db $ff                     ; 1383E:  ff
+b04_b83f:   .db $ff                     ; 1383F:  ff
+b04_b840:   .db $ff                     ; 13840:  ff
+b04_b841:   .db $ff                     ; 13841:  ff
+b04_b842:   .db $ff                     ; 13842:  ff
+b04_b843:   .db $ff                     ; 13843:  ff
+b04_b844:   .db $ff                     ; 13844:  ff
+b04_b845:   .db $ff                     ; 13845:  ff
+b04_b846:   .db $ff                     ; 13846:  ff
+b04_b847:   .db $ff                     ; 13847:  ff
+b04_b848:   .db $ff                     ; 13848:  ff
+b04_b849:   .db $ff                     ; 13849:  ff
+b04_b84a:   .db $ff                     ; 1384A:  ff
+b04_b84b:   .db $ff                     ; 1384B:  ff
+b04_b84c:   .db $ff                     ; 1384C:  ff
+b04_b84d:   .db $ff                     ; 1384D:  ff
+b04_b84e:   .db $ff                     ; 1384E:  ff
+b04_b84f:   .db $ff                     ; 1384F:  ff
+b04_b850:   .db $ff                     ; 13850:  ff
+b04_b851:   .db $ff                     ; 13851:  ff
+b04_b852:   .db $ff                     ; 13852:  ff
+b04_b853:   .db $ff                     ; 13853:  ff
+b04_b854:   .db $ff                     ; 13854:  ff
+b04_b855:   .db $ff                     ; 13855:  ff
+b04_b856:   .db $ff                     ; 13856:  ff
+b04_b857:   .db $ff                     ; 13857:  ff
+b04_b858:   .db $ff                     ; 13858:  ff
+b04_b859:   .db $ff                     ; 13859:  ff
+b04_b85a:   .db $ff                     ; 1385A:  ff
+b04_b85b:   .db $ff                     ; 1385B:  ff
+b04_b85c:   .db $ff                     ; 1385C:  ff
+b04_b85d:   .db $ff                     ; 1385D:  ff
+b04_b85e:   .db $ff                     ; 1385E:  ff
+b04_b85f:   .db $ff                     ; 1385F:  ff
+b04_b860:   .db $ff                     ; 13860:  ff
+b04_b861:   .db $ff                     ; 13861:  ff
+b04_b862:   .db $ff                     ; 13862:  ff
+b04_b863:   .db $ff                     ; 13863:  ff
+b04_b864:   .db $ff                     ; 13864:  ff
+b04_b865:   .db $ff                     ; 13865:  ff
+b04_b866:   .db $ff                     ; 13866:  ff
+b04_b867:   .db $ff                     ; 13867:  ff
+b04_b868:   .db $ff                     ; 13868:  ff
+b04_b869:   .db $ff                     ; 13869:  ff
+b04_b86a:   .db $ff                     ; 1386A:  ff
+b04_b86b:   .db $ff                     ; 1386B:  ff
+b04_b86c:   .db $ff                     ; 1386C:  ff
+b04_b86d:   .db $ff                     ; 1386D:  ff
+b04_b86e:   .db $ff                     ; 1386E:  ff
+b04_b86f:   .db $ff                     ; 1386F:  ff
+b04_b870:   .db $ff                     ; 13870:  ff
+b04_b871:   .db $ff                     ; 13871:  ff
+b04_b872:   .db $ff                     ; 13872:  ff
+b04_b873:   .db $ff                     ; 13873:  ff
+b04_b874:   .db $ff                     ; 13874:  ff
+b04_b875:   .db $ff                     ; 13875:  ff
+b04_b876:   .db $ff                     ; 13876:  ff
+b04_b877:   .db $ff                     ; 13877:  ff
+b04_b878:   .db $ff                     ; 13878:  ff
+b04_b879:   .db $ff                     ; 13879:  ff
+b04_b87a:   .db $ff                     ; 1387A:  ff
+b04_b87b:   .db $ff                     ; 1387B:  ff
+b04_b87c:   .db $ff                     ; 1387C:  ff
+b04_b87d:   .db $ff                     ; 1387D:  ff
+b04_b87e:   .db $ff                     ; 1387E:  ff
+b04_b87f:   .db $ff                     ; 1387F:  ff
+b04_b880:   .db $ff                     ; 13880:  ff
+b04_b881:   .db $ff                     ; 13881:  ff
+b04_b882:   .db $ff                     ; 13882:  ff
+b04_b883:   .db $ff                     ; 13883:  ff
+b04_b884:   .db $ff                     ; 13884:  ff
+b04_b885:   .db $ff                     ; 13885:  ff
+b04_b886:   .db $ff                     ; 13886:  ff
+b04_b887:   .db $ff                     ; 13887:  ff
+b04_b888:   .db $ff                     ; 13888:  ff
+b04_b889:   .db $ff                     ; 13889:  ff
+b04_b88a:   .db $ff                     ; 1388A:  ff
+b04_b88b:   .db $ff                     ; 1388B:  ff
+b04_b88c:   .db $ff                     ; 1388C:  ff
+b04_b88d:   .db $ff                     ; 1388D:  ff
+b04_b88e:   .db $ff                     ; 1388E:  ff
+b04_b88f:   .db $ff                     ; 1388F:  ff
+b04_b890:   .db $ff                     ; 13890:  ff
+b04_b891:   .db $ff                     ; 13891:  ff
+b04_b892:   .db $ff                     ; 13892:  ff
+b04_b893:   .db $ff                     ; 13893:  ff
+b04_b894:   .db $ff                     ; 13894:  ff
+b04_b895:   .db $ff                     ; 13895:  ff
+b04_b896:   .db $ff                     ; 13896:  ff
+b04_b897:   .db $ff                     ; 13897:  ff
+b04_b898:   .db $ff                     ; 13898:  ff
+b04_b899:   .db $ff                     ; 13899:  ff
+b04_b89a:   .db $ff                     ; 1389A:  ff
+b04_b89b:   .db $ff                     ; 1389B:  ff
+b04_b89c:   .db $ff                     ; 1389C:  ff
+b04_b89d:   .db $ff                     ; 1389D:  ff
+b04_b89e:   .db $ff                     ; 1389E:  ff
+b04_b89f:   .db $ff                     ; 1389F:  ff
+b04_b8a0:   .db $ff                     ; 138A0:  ff
+b04_b8a1:   .db $ff                     ; 138A1:  ff
+b04_b8a2:   .db $ff                     ; 138A2:  ff
+b04_b8a3:   .db $ff                     ; 138A3:  ff
+b04_b8a4:   .db $ff                     ; 138A4:  ff
+b04_b8a5:   .db $ff                     ; 138A5:  ff
+b04_b8a6:   .db $ff                     ; 138A6:  ff
+b04_b8a7:   .db $ff                     ; 138A7:  ff
+b04_b8a8:   .db $ff                     ; 138A8:  ff
+b04_b8a9:   .db $ff                     ; 138A9:  ff
+b04_b8aa:   .db $ff                     ; 138AA:  ff
+b04_b8ab:   .db $ff                     ; 138AB:  ff
+b04_b8ac:   .db $ff                     ; 138AC:  ff
+b04_b8ad:   .db $ff                     ; 138AD:  ff
+b04_b8ae:   .db $ff                     ; 138AE:  ff
+b04_b8af:   .db $ff                     ; 138AF:  ff
+b04_b8b0:   .db $ff                     ; 138B0:  ff
+b04_b8b1:   .db $ff                     ; 138B1:  ff
+b04_b8b2:   .db $ff                     ; 138B2:  ff
+b04_b8b3:   .db $ff                     ; 138B3:  ff
+b04_b8b4:   .db $ff                     ; 138B4:  ff
+b04_b8b5:   .db $ff                     ; 138B5:  ff
+b04_b8b6:   .db $ff                     ; 138B6:  ff
+b04_b8b7:   .db $ff                     ; 138B7:  ff
+b04_b8b8:   .db $ff                     ; 138B8:  ff
+b04_b8b9:   .db $ff                     ; 138B9:  ff
+b04_b8ba:   .db $ff                     ; 138BA:  ff
+b04_b8bb:   .db $ff                     ; 138BB:  ff
+b04_b8bc:   .db $ff                     ; 138BC:  ff
+b04_b8bd:   .db $ff                     ; 138BD:  ff
+b04_b8be:   .db $ff                     ; 138BE:  ff
+b04_b8bf:   .db $ff                     ; 138BF:  ff
+b04_b8c0:   .db $ff                     ; 138C0:  ff
+b04_b8c1:   .db $ff                     ; 138C1:  ff
+b04_b8c2:   .db $ff                     ; 138C2:  ff
+b04_b8c3:   .db $ff                     ; 138C3:  ff
+b04_b8c4:   .db $ff                     ; 138C4:  ff
+b04_b8c5:   .db $ff                     ; 138C5:  ff
+b04_b8c6:   .db $ff                     ; 138C6:  ff
+b04_b8c7:   .db $ff                     ; 138C7:  ff
+b04_b8c8:   .db $ff                     ; 138C8:  ff
+b04_b8c9:   .db $ff                     ; 138C9:  ff
+b04_b8ca:   .db $ff                     ; 138CA:  ff
+b04_b8cb:   .db $ff                     ; 138CB:  ff
+b04_b8cc:   .db $ff                     ; 138CC:  ff
+b04_b8cd:   .db $ff                     ; 138CD:  ff
+b04_b8ce:   .db $ff                     ; 138CE:  ff
+b04_b8cf:   .db $ff                     ; 138CF:  ff
+b04_b8d0:   .db $ff                     ; 138D0:  ff
+b04_b8d1:   .db $ff                     ; 138D1:  ff
+b04_b8d2:   .db $ff                     ; 138D2:  ff
+b04_b8d3:   .db $ff                     ; 138D3:  ff
+b04_b8d4:   .db $ff                     ; 138D4:  ff
+b04_b8d5:   .db $ff                     ; 138D5:  ff
+b04_b8d6:   .db $ff                     ; 138D6:  ff
+b04_b8d7:   .db $ff                     ; 138D7:  ff
+b04_b8d8:   .db $ff                     ; 138D8:  ff
+b04_b8d9:   .db $ff                     ; 138D9:  ff
+b04_b8da:   .db $ff                     ; 138DA:  ff
+b04_b8db:   .db $ff                     ; 138DB:  ff
+b04_b8dc:   .db $ff                     ; 138DC:  ff
+b04_b8dd:   .db $ff                     ; 138DD:  ff
+b04_b8de:   .db $ff                     ; 138DE:  ff
+b04_b8df:   .db $ff                     ; 138DF:  ff
+b04_b8e0:   .db $ff                     ; 138E0:  ff
+b04_b8e1:   .db $ff                     ; 138E1:  ff
+b04_b8e2:   .db $ff                     ; 138E2:  ff
+b04_b8e3:   .db $ff                     ; 138E3:  ff
+b04_b8e4:   .db $ff                     ; 138E4:  ff
+b04_b8e5:   .db $ff                     ; 138E5:  ff
+b04_b8e6:   .db $ff                     ; 138E6:  ff
+b04_b8e7:   .db $ff                     ; 138E7:  ff
+b04_b8e8:   .db $ff                     ; 138E8:  ff
+b04_b8e9:   .db $ff                     ; 138E9:  ff
+b04_b8ea:   .db $ff                     ; 138EA:  ff
+b04_b8eb:   .db $ff                     ; 138EB:  ff
+b04_b8ec:   .db $ff                     ; 138EC:  ff
+b04_b8ed:   .db $ff                     ; 138ED:  ff
+b04_b8ee:   .db $ff                     ; 138EE:  ff
+b04_b8ef:   .db $ff                     ; 138EF:  ff
+b04_b8f0:   .db $ff                     ; 138F0:  ff
+b04_b8f1:   .db $ff                     ; 138F1:  ff
+b04_b8f2:   .db $ff                     ; 138F2:  ff
+b04_b8f3:   .db $ff                     ; 138F3:  ff
+b04_b8f4:   .db $ff                     ; 138F4:  ff
+b04_b8f5:   .db $ff                     ; 138F5:  ff
+b04_b8f6:   .db $ff                     ; 138F6:  ff
+b04_b8f7:   .db $ff                     ; 138F7:  ff
+b04_b8f8:   .db $ff                     ; 138F8:  ff
+b04_b8f9:   .db $ff                     ; 138F9:  ff
+b04_b8fa:   .db $ff                     ; 138FA:  ff
+b04_b8fb:   .db $ff                     ; 138FB:  ff
+b04_b8fc:   .db $ff                     ; 138FC:  ff
+b04_b8fd:   .db $ff                     ; 138FD:  ff
+b04_b8fe:   .db $ff                     ; 138FE:  ff
+b04_b8ff:   .db $ff                     ; 138FF:  ff
+b04_b900:   .db $ff                     ; 13900:  ff
+b04_b901:   .db $ff                     ; 13901:  ff
+b04_b902:   .db $ff                     ; 13902:  ff
+b04_b903:   .db $ff                     ; 13903:  ff
+b04_b904:   .db $ff                     ; 13904:  ff
+b04_b905:   .db $ff                     ; 13905:  ff
+b04_b906:   .db $ff                     ; 13906:  ff
+b04_b907:   .db $ff                     ; 13907:  ff
+b04_b908:   .db $ff                     ; 13908:  ff
+b04_b909:   .db $ff                     ; 13909:  ff
+b04_b90a:   .db $ff                     ; 1390A:  ff
+b04_b90b:   .db $ff                     ; 1390B:  ff
+b04_b90c:   .db $ff                     ; 1390C:  ff
+b04_b90d:   .db $ff                     ; 1390D:  ff
+b04_b90e:   .db $ff                     ; 1390E:  ff
+b04_b90f:   .db $ff                     ; 1390F:  ff
+b04_b910:   .db $ff                     ; 13910:  ff
+b04_b911:   .db $ff                     ; 13911:  ff
+b04_b912:   .db $ff                     ; 13912:  ff
+b04_b913:   .db $ff                     ; 13913:  ff
+b04_b914:   .db $ff                     ; 13914:  ff
+b04_b915:   .db $ff                     ; 13915:  ff
+b04_b916:   .db $ff                     ; 13916:  ff
+b04_b917:   .db $ff                     ; 13917:  ff
+b04_b918:   .db $ff                     ; 13918:  ff
+b04_b919:   .db $ff                     ; 13919:  ff
+b04_b91a:   .db $ff                     ; 1391A:  ff
+b04_b91b:   .db $ff                     ; 1391B:  ff
+b04_b91c:   .db $ff                     ; 1391C:  ff
+b04_b91d:   .db $ff                     ; 1391D:  ff
+b04_b91e:   .db $ff                     ; 1391E:  ff
+b04_b91f:   .db $ff                     ; 1391F:  ff
+b04_b920:   .db $ff                     ; 13920:  ff
+b04_b921:   .db $ff                     ; 13921:  ff
+b04_b922:   .db $ff                     ; 13922:  ff
+b04_b923:   .db $ff                     ; 13923:  ff
+b04_b924:   .db $ff                     ; 13924:  ff
+b04_b925:   .db $ff                     ; 13925:  ff
+b04_b926:   .db $ff                     ; 13926:  ff
+b04_b927:   .db $ff                     ; 13927:  ff
+b04_b928:   .db $ff                     ; 13928:  ff
+b04_b929:   .db $ff                     ; 13929:  ff
+b04_b92a:   .db $ff                     ; 1392A:  ff
+b04_b92b:   .db $ff                     ; 1392B:  ff
+b04_b92c:   .db $ff                     ; 1392C:  ff
+b04_b92d:   .db $ff                     ; 1392D:  ff
+b04_b92e:   .db $ff                     ; 1392E:  ff
+b04_b92f:   .db $ff                     ; 1392F:  ff
+b04_b930:   .db $ff                     ; 13930:  ff
+b04_b931:   .db $ff                     ; 13931:  ff
+b04_b932:   .db $ff                     ; 13932:  ff
+b04_b933:   .db $ff                     ; 13933:  ff
+b04_b934:   .db $ff                     ; 13934:  ff
+b04_b935:   .db $ff                     ; 13935:  ff
+b04_b936:   .db $ff                     ; 13936:  ff
+b04_b937:   .db $ff                     ; 13937:  ff
+b04_b938:   .db $ff                     ; 13938:  ff
+b04_b939:   .db $ff                     ; 13939:  ff
+b04_b93a:   .db $ff                     ; 1393A:  ff
+b04_b93b:   .db $ff                     ; 1393B:  ff
+b04_b93c:   .db $ff                     ; 1393C:  ff
+b04_b93d:   .db $ff                     ; 1393D:  ff
+b04_b93e:   .db $ff                     ; 1393E:  ff
+b04_b93f:   .db $ff                     ; 1393F:  ff
+b04_b940:   .db $ff                     ; 13940:  ff
+b04_b941:   .db $ff                     ; 13941:  ff
+b04_b942:   .db $ff                     ; 13942:  ff
+b04_b943:   .db $ff                     ; 13943:  ff
+b04_b944:   .db $ff                     ; 13944:  ff
+b04_b945:   .db $ff                     ; 13945:  ff
+b04_b946:   .db $ff                     ; 13946:  ff
+b04_b947:   .db $ff                     ; 13947:  ff
+b04_b948:   .db $ff                     ; 13948:  ff
+b04_b949:   .db $ff                     ; 13949:  ff
+b04_b94a:   .db $ff                     ; 1394A:  ff
+b04_b94b:   .db $ff                     ; 1394B:  ff
+b04_b94c:   .db $ff                     ; 1394C:  ff
+b04_b94d:   .db $ff                     ; 1394D:  ff
+b04_b94e:   .db $ff                     ; 1394E:  ff
+b04_b94f:   .db $ff                     ; 1394F:  ff
+b04_b950:   .db $ff                     ; 13950:  ff
+b04_b951:   .db $ff                     ; 13951:  ff
+b04_b952:   .db $ff                     ; 13952:  ff
+b04_b953:   .db $ff                     ; 13953:  ff
+b04_b954:   .db $ff                     ; 13954:  ff
+b04_b955:   .db $ff                     ; 13955:  ff
+b04_b956:   .db $ff                     ; 13956:  ff
+b04_b957:   .db $ff                     ; 13957:  ff
+b04_b958:   .db $ff                     ; 13958:  ff
+b04_b959:   .db $ff                     ; 13959:  ff
+b04_b95a:   .db $ff                     ; 1395A:  ff
+b04_b95b:   .db $ff                     ; 1395B:  ff
+b04_b95c:   .db $ff                     ; 1395C:  ff
+b04_b95d:   .db $ff                     ; 1395D:  ff
+b04_b95e:   .db $ff                     ; 1395E:  ff
+b04_b95f:   .db $ff                     ; 1395F:  ff
+b04_b960:   .db $ff                     ; 13960:  ff
+b04_b961:   .db $ff                     ; 13961:  ff
+b04_b962:   .db $ff                     ; 13962:  ff
+b04_b963:   .db $ff                     ; 13963:  ff
+b04_b964:   .db $ff                     ; 13964:  ff
+b04_b965:   .db $ff                     ; 13965:  ff
+b04_b966:   .db $ff                     ; 13966:  ff
+b04_b967:   .db $ff                     ; 13967:  ff
+b04_b968:   .db $ff                     ; 13968:  ff
+b04_b969:   .db $ff                     ; 13969:  ff
+b04_b96a:   .db $ff                     ; 1396A:  ff
+b04_b96b:   .db $ff                     ; 1396B:  ff
+b04_b96c:   .db $ff                     ; 1396C:  ff
+b04_b96d:   .db $ff                     ; 1396D:  ff
+b04_b96e:   .db $ff                     ; 1396E:  ff
+b04_b96f:   .db $ff                     ; 1396F:  ff
+b04_b970:   .db $ff                     ; 13970:  ff
+b04_b971:   .db $ff                     ; 13971:  ff
+b04_b972:   .db $ff                     ; 13972:  ff
+b04_b973:   .db $ff                     ; 13973:  ff
+b04_b974:   .db $ff                     ; 13974:  ff
+b04_b975:   .db $ff                     ; 13975:  ff
+b04_b976:   .db $ff                     ; 13976:  ff
+b04_b977:   .db $ff                     ; 13977:  ff
+b04_b978:   .db $ff                     ; 13978:  ff
+b04_b979:   .db $ff                     ; 13979:  ff
+b04_b97a:   .db $ff                     ; 1397A:  ff
+b04_b97b:   .db $ff                     ; 1397B:  ff
+b04_b97c:   .db $ff                     ; 1397C:  ff
+b04_b97d:   .db $ff                     ; 1397D:  ff
+b04_b97e:   .db $ff                     ; 1397E:  ff
+b04_b97f:   .db $ff                     ; 1397F:  ff
+b04_b980:   .db $ff                     ; 13980:  ff
+b04_b981:   .db $ff                     ; 13981:  ff
+b04_b982:   .db $ff                     ; 13982:  ff
+b04_b983:   .db $ff                     ; 13983:  ff
+b04_b984:   .db $ff                     ; 13984:  ff
+b04_b985:   .db $ff                     ; 13985:  ff
+b04_b986:   .db $ff                     ; 13986:  ff
+b04_b987:   .db $ff                     ; 13987:  ff
+b04_b988:   .db $ff                     ; 13988:  ff
+b04_b989:   .db $ff                     ; 13989:  ff
+b04_b98a:   .db $ff                     ; 1398A:  ff
+b04_b98b:   .db $ff                     ; 1398B:  ff
+b04_b98c:   .db $ff                     ; 1398C:  ff
+b04_b98d:   .db $ff                     ; 1398D:  ff
+b04_b98e:   .db $ff                     ; 1398E:  ff
+b04_b98f:   .db $ff                     ; 1398F:  ff
+b04_b990:   .db $ff                     ; 13990:  ff
+b04_b991:   .db $ff                     ; 13991:  ff
+b04_b992:   .db $ff                     ; 13992:  ff
+b04_b993:   .db $ff                     ; 13993:  ff
+b04_b994:   .db $ff                     ; 13994:  ff
+b04_b995:   .db $ff                     ; 13995:  ff
+b04_b996:   .db $ff                     ; 13996:  ff
+b04_b997:   .db $ff                     ; 13997:  ff
+b04_b998:   .db $ff                     ; 13998:  ff
+b04_b999:   .db $ff                     ; 13999:  ff
+b04_b99a:   .db $ff                     ; 1399A:  ff
+b04_b99b:   .db $ff                     ; 1399B:  ff
+b04_b99c:   .db $ff                     ; 1399C:  ff
+b04_b99d:   .db $ff                     ; 1399D:  ff
+b04_b99e:   .db $ff                     ; 1399E:  ff
+b04_b99f:   .db $ff                     ; 1399F:  ff
+b04_b9a0:   .db $ff                     ; 139A0:  ff
+b04_b9a1:   .db $ff                     ; 139A1:  ff
+b04_b9a2:   .db $ff                     ; 139A2:  ff
+b04_b9a3:   .db $ff                     ; 139A3:  ff
+b04_b9a4:   .db $ff                     ; 139A4:  ff
+b04_b9a5:   .db $ff                     ; 139A5:  ff
+b04_b9a6:   .db $ff                     ; 139A6:  ff
+b04_b9a7:   .db $ff                     ; 139A7:  ff
+b04_b9a8:   .db $ff                     ; 139A8:  ff
+b04_b9a9:   .db $ff                     ; 139A9:  ff
+b04_b9aa:   .db $ff                     ; 139AA:  ff
+b04_b9ab:   .db $ff                     ; 139AB:  ff
+b04_b9ac:   .db $ff                     ; 139AC:  ff
+b04_b9ad:   .db $ff                     ; 139AD:  ff
+b04_b9ae:   .db $ff                     ; 139AE:  ff
+b04_b9af:   .db $ff                     ; 139AF:  ff
+b04_b9b0:   .db $ff                     ; 139B0:  ff
+b04_b9b1:   .db $ff                     ; 139B1:  ff
+b04_b9b2:   .db $ff                     ; 139B2:  ff
+b04_b9b3:   .db $ff                     ; 139B3:  ff
+b04_b9b4:   .db $ff                     ; 139B4:  ff
+b04_b9b5:   .db $ff                     ; 139B5:  ff
+b04_b9b6:   .db $ff                     ; 139B6:  ff
+b04_b9b7:   .db $ff                     ; 139B7:  ff
+b04_b9b8:   .db $ff                     ; 139B8:  ff
+b04_b9b9:   .db $ff                     ; 139B9:  ff
+b04_b9ba:   .db $ff                     ; 139BA:  ff
+b04_b9bb:   .db $ff                     ; 139BB:  ff
+b04_b9bc:   .db $ff                     ; 139BC:  ff
+b04_b9bd:   .db $ff                     ; 139BD:  ff
+b04_b9be:   .db $ff                     ; 139BE:  ff
+b04_b9bf:   .db $ff                     ; 139BF:  ff
+b04_b9c0:   .db $ff                     ; 139C0:  ff
+b04_b9c1:   .db $ff                     ; 139C1:  ff
+b04_b9c2:   .db $ff                     ; 139C2:  ff
+b04_b9c3:   .db $ff                     ; 139C3:  ff
+b04_b9c4:   .db $ff                     ; 139C4:  ff
+b04_b9c5:   .db $ff                     ; 139C5:  ff
+b04_b9c6:   .db $ff                     ; 139C6:  ff
+b04_b9c7:   .db $ff                     ; 139C7:  ff
+b04_b9c8:   .db $ff                     ; 139C8:  ff
+b04_b9c9:   .db $ff                     ; 139C9:  ff
+b04_b9ca:   .db $ff                     ; 139CA:  ff
+b04_b9cb:   .db $ff                     ; 139CB:  ff
+b04_b9cc:   .db $ff                     ; 139CC:  ff
+b04_b9cd:   .db $ff                     ; 139CD:  ff
+b04_b9ce:   .db $ff                     ; 139CE:  ff
+b04_b9cf:   .db $ff                     ; 139CF:  ff
+b04_b9d0:   .db $ff                     ; 139D0:  ff
+b04_b9d1:   .db $ff                     ; 139D1:  ff
+b04_b9d2:   .db $ff                     ; 139D2:  ff
+b04_b9d3:   .db $ff                     ; 139D3:  ff
+b04_b9d4:   .db $ff                     ; 139D4:  ff
+b04_b9d5:   .db $ff                     ; 139D5:  ff
+b04_b9d6:   .db $ff                     ; 139D6:  ff
+b04_b9d7:   .db $ff                     ; 139D7:  ff
+b04_b9d8:   .db $ff                     ; 139D8:  ff
+b04_b9d9:   .db $ff                     ; 139D9:  ff
+b04_b9da:   .db $ff                     ; 139DA:  ff
+b04_b9db:   .db $ff                     ; 139DB:  ff
+b04_b9dc:   .db $ff                     ; 139DC:  ff
+b04_b9dd:   .db $ff                     ; 139DD:  ff
+b04_b9de:   .db $ff                     ; 139DE:  ff
+b04_b9df:   .db $ff                     ; 139DF:  ff
+b04_b9e0:   .db $ff                     ; 139E0:  ff
+b04_b9e1:   .db $ff                     ; 139E1:  ff
+b04_b9e2:   .db $ff                     ; 139E2:  ff
+b04_b9e3:   .db $ff                     ; 139E3:  ff
+b04_b9e4:   .db $ff                     ; 139E4:  ff
+b04_b9e5:   .db $ff                     ; 139E5:  ff
+b04_b9e6:   .db $ff                     ; 139E6:  ff
+b04_b9e7:   .db $ff                     ; 139E7:  ff
+b04_b9e8:   .db $ff                     ; 139E8:  ff
+b04_b9e9:   .db $ff                     ; 139E9:  ff
+b04_b9ea:   .db $ff                     ; 139EA:  ff
+b04_b9eb:   .db $ff                     ; 139EB:  ff
+b04_b9ec:   .db $ff                     ; 139EC:  ff
+b04_b9ed:   .db $ff                     ; 139ED:  ff
+b04_b9ee:   .db $ff                     ; 139EE:  ff
+b04_b9ef:   .db $ff                     ; 139EF:  ff
+b04_b9f0:   .db $ff                     ; 139F0:  ff
+b04_b9f1:   .db $ff                     ; 139F1:  ff
+b04_b9f2:   .db $ff                     ; 139F2:  ff
+b04_b9f3:   .db $ff                     ; 139F3:  ff
+b04_b9f4:   .db $ff                     ; 139F4:  ff
+b04_b9f5:   .db $ff                     ; 139F5:  ff
+b04_b9f6:   .db $ff                     ; 139F6:  ff
+b04_b9f7:   .db $ff                     ; 139F7:  ff
+b04_b9f8:   .db $ff                     ; 139F8:  ff
+b04_b9f9:   .db $ff                     ; 139F9:  ff
+b04_b9fa:   .db $ff                     ; 139FA:  ff
+b04_b9fb:   .db $ff                     ; 139FB:  ff
+b04_b9fc:   .db $ff                     ; 139FC:  ff
+b04_b9fd:   .db $ff                     ; 139FD:  ff
+b04_b9fe:   .db $ff                     ; 139FE:  ff
+b04_b9ff:   .db $ff                     ; 139FF:  ff
+b04_ba00:   .db $ff                     ; 13A00:  ff
+b04_ba01:   .db $ff                     ; 13A01:  ff
+b04_ba02:   .db $ff                     ; 13A02:  ff
+b04_ba03:   .db $ff                     ; 13A03:  ff
+b04_ba04:   .db $ff                     ; 13A04:  ff
+b04_ba05:   .db $ff                     ; 13A05:  ff
+b04_ba06:   .db $ff                     ; 13A06:  ff
+b04_ba07:   .db $ff                     ; 13A07:  ff
+b04_ba08:   .db $ff                     ; 13A08:  ff
+b04_ba09:   .db $ff                     ; 13A09:  ff
+b04_ba0a:   .db $ff                     ; 13A0A:  ff
+b04_ba0b:   .db $ff                     ; 13A0B:  ff
+b04_ba0c:   .db $ff                     ; 13A0C:  ff
+b04_ba0d:   .db $ff                     ; 13A0D:  ff
+b04_ba0e:   .db $ff                     ; 13A0E:  ff
+b04_ba0f:   .db $ff                     ; 13A0F:  ff
+b04_ba10:   .db $ff                     ; 13A10:  ff
+b04_ba11:   .db $ff                     ; 13A11:  ff
+b04_ba12:   .db $ff                     ; 13A12:  ff
+b04_ba13:   .db $ff                     ; 13A13:  ff
+b04_ba14:   .db $ff                     ; 13A14:  ff
+b04_ba15:   .db $ff                     ; 13A15:  ff
+b04_ba16:   .db $ff                     ; 13A16:  ff
+b04_ba17:   .db $ff                     ; 13A17:  ff
+b04_ba18:   .db $ff                     ; 13A18:  ff
+b04_ba19:   .db $ff                     ; 13A19:  ff
+b04_ba1a:   .db $ff                     ; 13A1A:  ff
+b04_ba1b:   .db $ff                     ; 13A1B:  ff
+b04_ba1c:   .db $ff                     ; 13A1C:  ff
+b04_ba1d:   .db $ff                     ; 13A1D:  ff
+b04_ba1e:   .db $ff                     ; 13A1E:  ff
+b04_ba1f:   .db $ff                     ; 13A1F:  ff
+b04_ba20:   .db $ff                     ; 13A20:  ff
+b04_ba21:   .db $ff                     ; 13A21:  ff
+b04_ba22:   .db $ff                     ; 13A22:  ff
+b04_ba23:   .db $ff                     ; 13A23:  ff
+b04_ba24:   .db $ff                     ; 13A24:  ff
+b04_ba25:   .db $ff                     ; 13A25:  ff
+b04_ba26:   .db $ff                     ; 13A26:  ff
+b04_ba27:   .db $ff                     ; 13A27:  ff
+b04_ba28:   .db $ff                     ; 13A28:  ff
+b04_ba29:   .db $ff                     ; 13A29:  ff
+b04_ba2a:   .db $ff                     ; 13A2A:  ff
+b04_ba2b:   .db $ff                     ; 13A2B:  ff
+b04_ba2c:   .db $ff                     ; 13A2C:  ff
+b04_ba2d:   .db $ff                     ; 13A2D:  ff
+b04_ba2e:   .db $ff                     ; 13A2E:  ff
+b04_ba2f:   .db $ff                     ; 13A2F:  ff
+b04_ba30:   .db $ff                     ; 13A30:  ff
+b04_ba31:   .db $ff                     ; 13A31:  ff
+b04_ba32:   .db $ff                     ; 13A32:  ff
+b04_ba33:   .db $ff                     ; 13A33:  ff
+b04_ba34:   .db $ff                     ; 13A34:  ff
+b04_ba35:   .db $ff                     ; 13A35:  ff
+b04_ba36:   .db $ff                     ; 13A36:  ff
+b04_ba37:   .db $ff                     ; 13A37:  ff
+b04_ba38:   .db $ff                     ; 13A38:  ff
+b04_ba39:   .db $ff                     ; 13A39:  ff
+b04_ba3a:   .db $ff                     ; 13A3A:  ff
+b04_ba3b:   .db $ff                     ; 13A3B:  ff
+b04_ba3c:   .db $ff                     ; 13A3C:  ff
+b04_ba3d:   .db $ff                     ; 13A3D:  ff
+b04_ba3e:   .db $ff                     ; 13A3E:  ff
+b04_ba3f:   .db $ff                     ; 13A3F:  ff
+b04_ba40:   .db $ff                     ; 13A40:  ff
+b04_ba41:   .db $ff                     ; 13A41:  ff
+b04_ba42:   .db $ff                     ; 13A42:  ff
+b04_ba43:   .db $ff                     ; 13A43:  ff
+b04_ba44:   .db $ff                     ; 13A44:  ff
+b04_ba45:   .db $ff                     ; 13A45:  ff
+b04_ba46:   .db $ff                     ; 13A46:  ff
+b04_ba47:   .db $ff                     ; 13A47:  ff
+b04_ba48:   .db $ff                     ; 13A48:  ff
+b04_ba49:   .db $ff                     ; 13A49:  ff
+b04_ba4a:   .db $ff                     ; 13A4A:  ff
+b04_ba4b:   .db $ff                     ; 13A4B:  ff
+b04_ba4c:   .db $ff                     ; 13A4C:  ff
+b04_ba4d:   .db $ff                     ; 13A4D:  ff
+b04_ba4e:   .db $ff                     ; 13A4E:  ff
+b04_ba4f:   .db $ff                     ; 13A4F:  ff
+b04_ba50:   .db $ff                     ; 13A50:  ff
+b04_ba51:   .db $ff                     ; 13A51:  ff
+b04_ba52:   .db $ff                     ; 13A52:  ff
+b04_ba53:   .db $ff                     ; 13A53:  ff
+b04_ba54:   .db $ff                     ; 13A54:  ff
+b04_ba55:   .db $ff                     ; 13A55:  ff
+b04_ba56:   .db $ff                     ; 13A56:  ff
+b04_ba57:   .db $ff                     ; 13A57:  ff
+b04_ba58:   .db $ff                     ; 13A58:  ff
+b04_ba59:   .db $ff                     ; 13A59:  ff
+b04_ba5a:   .db $ff                     ; 13A5A:  ff
+b04_ba5b:   .db $ff                     ; 13A5B:  ff
+b04_ba5c:   .db $ff                     ; 13A5C:  ff
+b04_ba5d:   .db $ff                     ; 13A5D:  ff
+b04_ba5e:   .db $ff                     ; 13A5E:  ff
+b04_ba5f:   .db $ff                     ; 13A5F:  ff
+b04_ba60:   .db $ff                     ; 13A60:  ff
+b04_ba61:   .db $ff                     ; 13A61:  ff
+b04_ba62:   .db $ff                     ; 13A62:  ff
+b04_ba63:   .db $ff                     ; 13A63:  ff
+b04_ba64:   .db $ff                     ; 13A64:  ff
+b04_ba65:   .db $ff                     ; 13A65:  ff
+b04_ba66:   .db $ff                     ; 13A66:  ff
+b04_ba67:   .db $ff                     ; 13A67:  ff
+b04_ba68:   .db $ff                     ; 13A68:  ff
+b04_ba69:   .db $ff                     ; 13A69:  ff
+b04_ba6a:   .db $ff                     ; 13A6A:  ff
+b04_ba6b:   .db $ff                     ; 13A6B:  ff
+b04_ba6c:   .db $ff                     ; 13A6C:  ff
+b04_ba6d:   .db $ff                     ; 13A6D:  ff
+b04_ba6e:   .db $ff                     ; 13A6E:  ff
+b04_ba6f:   .db $ff                     ; 13A6F:  ff
+b04_ba70:   .db $ff                     ; 13A70:  ff
+b04_ba71:   .db $ff                     ; 13A71:  ff
+b04_ba72:   .db $ff                     ; 13A72:  ff
+b04_ba73:   .db $ff                     ; 13A73:  ff
+b04_ba74:   .db $ff                     ; 13A74:  ff
+b04_ba75:   .db $ff                     ; 13A75:  ff
+b04_ba76:   .db $ff                     ; 13A76:  ff
+b04_ba77:   .db $ff                     ; 13A77:  ff
+b04_ba78:   .db $ff                     ; 13A78:  ff
+b04_ba79:   .db $ff                     ; 13A79:  ff
+b04_ba7a:   .db $ff                     ; 13A7A:  ff
+b04_ba7b:   .db $ff                     ; 13A7B:  ff
+b04_ba7c:   .db $ff                     ; 13A7C:  ff
+b04_ba7d:   .db $ff                     ; 13A7D:  ff
+b04_ba7e:   .db $ff                     ; 13A7E:  ff
+b04_ba7f:   .db $ff                     ; 13A7F:  ff
+b04_ba80:   .db $ff                     ; 13A80:  ff
+b04_ba81:   .db $ff                     ; 13A81:  ff
+b04_ba82:   .db $ff                     ; 13A82:  ff
+b04_ba83:   .db $ff                     ; 13A83:  ff
+b04_ba84:   .db $ff                     ; 13A84:  ff
+b04_ba85:   .db $ff                     ; 13A85:  ff
+b04_ba86:   .db $ff                     ; 13A86:  ff
+b04_ba87:   .db $ff                     ; 13A87:  ff
+b04_ba88:   .db $ff                     ; 13A88:  ff
+b04_ba89:   .db $ff                     ; 13A89:  ff
+b04_ba8a:   .db $ff                     ; 13A8A:  ff
+b04_ba8b:   .db $ff                     ; 13A8B:  ff
+b04_ba8c:   .db $ff                     ; 13A8C:  ff
+b04_ba8d:   .db $ff                     ; 13A8D:  ff
+b04_ba8e:   .db $ff                     ; 13A8E:  ff
+b04_ba8f:   .db $ff                     ; 13A8F:  ff
+b04_ba90:   .db $ff                     ; 13A90:  ff
+b04_ba91:   .db $ff                     ; 13A91:  ff
+b04_ba92:   .db $ff                     ; 13A92:  ff
+b04_ba93:   .db $ff                     ; 13A93:  ff
+b04_ba94:   .db $ff                     ; 13A94:  ff
+b04_ba95:   .db $ff                     ; 13A95:  ff
+b04_ba96:   .db $ff                     ; 13A96:  ff
+b04_ba97:   .db $ff                     ; 13A97:  ff
+b04_ba98:   .db $ff                     ; 13A98:  ff
+b04_ba99:   .db $ff                     ; 13A99:  ff
+b04_ba9a:   .db $ff                     ; 13A9A:  ff
+b04_ba9b:   .db $ff                     ; 13A9B:  ff
+b04_ba9c:   .db $ff                     ; 13A9C:  ff
+b04_ba9d:   .db $ff                     ; 13A9D:  ff
+b04_ba9e:   .db $ff                     ; 13A9E:  ff
+b04_ba9f:   .db $ff                     ; 13A9F:  ff
+b04_baa0:   .db $ff                     ; 13AA0:  ff
+b04_baa1:   .db $ff                     ; 13AA1:  ff
+b04_baa2:   .db $ff                     ; 13AA2:  ff
+b04_baa3:   .db $ff                     ; 13AA3:  ff
+b04_baa4:   .db $ff                     ; 13AA4:  ff
+b04_baa5:   .db $ff                     ; 13AA5:  ff
+b04_baa6:   .db $ff                     ; 13AA6:  ff
+b04_baa7:   .db $ff                     ; 13AA7:  ff
+b04_baa8:   .db $ff                     ; 13AA8:  ff
+b04_baa9:   .db $ff                     ; 13AA9:  ff
+b04_baaa:   .db $ff                     ; 13AAA:  ff
+b04_baab:   .db $ff                     ; 13AAB:  ff
+b04_baac:   .db $ff                     ; 13AAC:  ff
+b04_baad:   .db $ff                     ; 13AAD:  ff
+b04_baae:   .db $ff                     ; 13AAE:  ff
+b04_baaf:   .db $ff                     ; 13AAF:  ff
+b04_bab0:   .db $ff                     ; 13AB0:  ff
+b04_bab1:   .db $ff                     ; 13AB1:  ff
+b04_bab2:   .db $ff                     ; 13AB2:  ff
+b04_bab3:   .db $ff                     ; 13AB3:  ff
+b04_bab4:   .db $ff                     ; 13AB4:  ff
+b04_bab5:   .db $ff                     ; 13AB5:  ff
+b04_bab6:   .db $ff                     ; 13AB6:  ff
+b04_bab7:   .db $ff                     ; 13AB7:  ff
+b04_bab8:   .db $ff                     ; 13AB8:  ff
+b04_bab9:   .db $ff                     ; 13AB9:  ff
+b04_baba:   .db $ff                     ; 13ABA:  ff
+b04_babb:   .db $ff                     ; 13ABB:  ff
+b04_babc:   .db $ff                     ; 13ABC:  ff
+b04_babd:   .db $ff                     ; 13ABD:  ff
+b04_babe:   .db $ff                     ; 13ABE:  ff
+b04_babf:   .db $ff                     ; 13ABF:  ff
+b04_bac0:   .db $ff                     ; 13AC0:  ff
+b04_bac1:   .db $ff                     ; 13AC1:  ff
+b04_bac2:   .db $ff                     ; 13AC2:  ff
+b04_bac3:   .db $ff                     ; 13AC3:  ff
+b04_bac4:   .db $ff                     ; 13AC4:  ff
+b04_bac5:   .db $ff                     ; 13AC5:  ff
+b04_bac6:   .db $ff                     ; 13AC6:  ff
+b04_bac7:   .db $ff                     ; 13AC7:  ff
+b04_bac8:   .db $ff                     ; 13AC8:  ff
+b04_bac9:   .db $ff                     ; 13AC9:  ff
+b04_baca:   .db $ff                     ; 13ACA:  ff
+b04_bacb:   .db $ff                     ; 13ACB:  ff
+b04_bacc:   .db $ff                     ; 13ACC:  ff
+b04_bacd:   .db $ff                     ; 13ACD:  ff
+b04_bace:   .db $ff                     ; 13ACE:  ff
+b04_bacf:   .db $ff                     ; 13ACF:  ff
+b04_bad0:   .db $ff                     ; 13AD0:  ff
+b04_bad1:   .db $ff                     ; 13AD1:  ff
+b04_bad2:   .db $ff                     ; 13AD2:  ff
+b04_bad3:   .db $ff                     ; 13AD3:  ff
+b04_bad4:   .db $ff                     ; 13AD4:  ff
+b04_bad5:   .db $ff                     ; 13AD5:  ff
+b04_bad6:   .db $ff                     ; 13AD6:  ff
+b04_bad7:   .db $ff                     ; 13AD7:  ff
+b04_bad8:   .db $ff                     ; 13AD8:  ff
+b04_bad9:   .db $ff                     ; 13AD9:  ff
+b04_bada:   .db $ff                     ; 13ADA:  ff
+b04_badb:   .db $ff                     ; 13ADB:  ff
+b04_badc:   .db $ff                     ; 13ADC:  ff
+b04_badd:   .db $ff                     ; 13ADD:  ff
+b04_bade:   .db $ff                     ; 13ADE:  ff
+b04_badf:   .db $ff                     ; 13ADF:  ff
+b04_bae0:   .db $ff                     ; 13AE0:  ff
+b04_bae1:   .db $ff                     ; 13AE1:  ff
+b04_bae2:   .db $ff                     ; 13AE2:  ff
+b04_bae3:   .db $ff                     ; 13AE3:  ff
+b04_bae4:   .db $ff                     ; 13AE4:  ff
+b04_bae5:   .db $ff                     ; 13AE5:  ff
+b04_bae6:   .db $ff                     ; 13AE6:  ff
+b04_bae7:   .db $ff                     ; 13AE7:  ff
+b04_bae8:   .db $ff                     ; 13AE8:  ff
+b04_bae9:   .db $ff                     ; 13AE9:  ff
+b04_baea:   .db $ff                     ; 13AEA:  ff
+b04_baeb:   .db $ff                     ; 13AEB:  ff
+b04_baec:   .db $ff                     ; 13AEC:  ff
+b04_baed:   .db $ff                     ; 13AED:  ff
+b04_baee:   .db $ff                     ; 13AEE:  ff
+b04_baef:   .db $ff                     ; 13AEF:  ff
+b04_baf0:   .db $ff                     ; 13AF0:  ff
+b04_baf1:   .db $ff                     ; 13AF1:  ff
+b04_baf2:   .db $ff                     ; 13AF2:  ff
+b04_baf3:   .db $ff                     ; 13AF3:  ff
+b04_baf4:   .db $ff                     ; 13AF4:  ff
+b04_baf5:   .db $ff                     ; 13AF5:  ff
+b04_baf6:   .db $ff                     ; 13AF6:  ff
+b04_baf7:   .db $ff                     ; 13AF7:  ff
+b04_baf8:   .db $ff                     ; 13AF8:  ff
+b04_baf9:   .db $ff                     ; 13AF9:  ff
+b04_bafa:   .db $ff                     ; 13AFA:  ff
+b04_bafb:   .db $ff                     ; 13AFB:  ff
+b04_bafc:   .db $ff                     ; 13AFC:  ff
+b04_bafd:   .db $ff                     ; 13AFD:  ff
+b04_bafe:   .db $ff                     ; 13AFE:  ff
+b04_baff:   .db $ff                     ; 13AFF:  ff
+b04_bb00:   .db $ff                     ; 13B00:  ff
+b04_bb01:   .db $ff                     ; 13B01:  ff
+b04_bb02:   .db $ff                     ; 13B02:  ff
+b04_bb03:   .db $ff                     ; 13B03:  ff
+b04_bb04:   .db $ff                     ; 13B04:  ff
+b04_bb05:   .db $ff                     ; 13B05:  ff
+b04_bb06:   .db $ff                     ; 13B06:  ff
+b04_bb07:   .db $ff                     ; 13B07:  ff
+b04_bb08:   .db $ff                     ; 13B08:  ff
+b04_bb09:   .db $ff                     ; 13B09:  ff
+b04_bb0a:   .db $ff                     ; 13B0A:  ff
+b04_bb0b:   .db $ff                     ; 13B0B:  ff
+b04_bb0c:   .db $ff                     ; 13B0C:  ff
+b04_bb0d:   .db $ff                     ; 13B0D:  ff
+b04_bb0e:   .db $ff                     ; 13B0E:  ff
+b04_bb0f:   .db $ff                     ; 13B0F:  ff
+b04_bb10:   .db $ff                     ; 13B10:  ff
+b04_bb11:   .db $ff                     ; 13B11:  ff
+b04_bb12:   .db $ff                     ; 13B12:  ff
+b04_bb13:   .db $ff                     ; 13B13:  ff
+b04_bb14:   .db $ff                     ; 13B14:  ff
+b04_bb15:   .db $ff                     ; 13B15:  ff
+b04_bb16:   .db $ff                     ; 13B16:  ff
+b04_bb17:   .db $ff                     ; 13B17:  ff
+b04_bb18:   .db $ff                     ; 13B18:  ff
+b04_bb19:   .db $ff                     ; 13B19:  ff
+b04_bb1a:   .db $ff                     ; 13B1A:  ff
+b04_bb1b:   .db $ff                     ; 13B1B:  ff
+b04_bb1c:   .db $ff                     ; 13B1C:  ff
+b04_bb1d:   .db $ff                     ; 13B1D:  ff
+b04_bb1e:   .db $ff                     ; 13B1E:  ff
+b04_bb1f:   .db $ff                     ; 13B1F:  ff
+b04_bb20:   .db $ff                     ; 13B20:  ff
+b04_bb21:   .db $ff                     ; 13B21:  ff
+b04_bb22:   .db $ff                     ; 13B22:  ff
+b04_bb23:   .db $ff                     ; 13B23:  ff
+b04_bb24:   .db $ff                     ; 13B24:  ff
+b04_bb25:   .db $ff                     ; 13B25:  ff
+b04_bb26:   .db $ff                     ; 13B26:  ff
+b04_bb27:   .db $ff                     ; 13B27:  ff
+b04_bb28:   .db $ff                     ; 13B28:  ff
+b04_bb29:   .db $ff                     ; 13B29:  ff
+b04_bb2a:   .db $ff                     ; 13B2A:  ff
+b04_bb2b:   .db $ff                     ; 13B2B:  ff
+b04_bb2c:   .db $ff                     ; 13B2C:  ff
+b04_bb2d:   .db $ff                     ; 13B2D:  ff
+b04_bb2e:   .db $ff                     ; 13B2E:  ff
+b04_bb2f:   .db $ff                     ; 13B2F:  ff
+b04_bb30:   .db $ff                     ; 13B30:  ff
+b04_bb31:   .db $ff                     ; 13B31:  ff
+b04_bb32:   .db $ff                     ; 13B32:  ff
+b04_bb33:   .db $ff                     ; 13B33:  ff
+b04_bb34:   .db $ff                     ; 13B34:  ff
+b04_bb35:   .db $ff                     ; 13B35:  ff
+b04_bb36:   .db $ff                     ; 13B36:  ff
+b04_bb37:   .db $ff                     ; 13B37:  ff
+b04_bb38:   .db $ff                     ; 13B38:  ff
+b04_bb39:   .db $ff                     ; 13B39:  ff
+b04_bb3a:   .db $ff                     ; 13B3A:  ff
+b04_bb3b:   .db $ff                     ; 13B3B:  ff
+b04_bb3c:   .db $ff                     ; 13B3C:  ff
+b04_bb3d:   .db $ff                     ; 13B3D:  ff
+b04_bb3e:   .db $ff                     ; 13B3E:  ff
+b04_bb3f:   .db $ff                     ; 13B3F:  ff
+b04_bb40:   .db $ff                     ; 13B40:  ff
+b04_bb41:   .db $ff                     ; 13B41:  ff
+b04_bb42:   .db $ff                     ; 13B42:  ff
+b04_bb43:   .db $ff                     ; 13B43:  ff
+b04_bb44:   .db $ff                     ; 13B44:  ff
+b04_bb45:   .db $ff                     ; 13B45:  ff
+b04_bb46:   .db $ff                     ; 13B46:  ff
+b04_bb47:   .db $ff                     ; 13B47:  ff
+b04_bb48:   .db $ff                     ; 13B48:  ff
+b04_bb49:   .db $ff                     ; 13B49:  ff
+b04_bb4a:   .db $ff                     ; 13B4A:  ff
+b04_bb4b:   .db $ff                     ; 13B4B:  ff
+b04_bb4c:   .db $ff                     ; 13B4C:  ff
+b04_bb4d:   .db $ff                     ; 13B4D:  ff
+b04_bb4e:   .db $ff                     ; 13B4E:  ff
+b04_bb4f:   .db $ff                     ; 13B4F:  ff
+b04_bb50:   .db $ff                     ; 13B50:  ff
+b04_bb51:   .db $ff                     ; 13B51:  ff
+b04_bb52:   .db $ff                     ; 13B52:  ff
+b04_bb53:   .db $ff                     ; 13B53:  ff
+b04_bb54:   .db $ff                     ; 13B54:  ff
+b04_bb55:   .db $ff                     ; 13B55:  ff
+b04_bb56:   .db $ff                     ; 13B56:  ff
+b04_bb57:   .db $ff                     ; 13B57:  ff
+b04_bb58:   .db $ff                     ; 13B58:  ff
+b04_bb59:   .db $ff                     ; 13B59:  ff
+b04_bb5a:   .db $ff                     ; 13B5A:  ff
+b04_bb5b:   .db $ff                     ; 13B5B:  ff
+b04_bb5c:   .db $ff                     ; 13B5C:  ff
+b04_bb5d:   .db $ff                     ; 13B5D:  ff
+b04_bb5e:   .db $ff                     ; 13B5E:  ff
+b04_bb5f:   .db $ff                     ; 13B5F:  ff
+b04_bb60:   .db $ff                     ; 13B60:  ff
+b04_bb61:   .db $ff                     ; 13B61:  ff
+b04_bb62:   .db $ff                     ; 13B62:  ff
+b04_bb63:   .db $ff                     ; 13B63:  ff
+b04_bb64:   .db $ff                     ; 13B64:  ff
+b04_bb65:   .db $ff                     ; 13B65:  ff
+b04_bb66:   .db $ff                     ; 13B66:  ff
+b04_bb67:   .db $ff                     ; 13B67:  ff
+b04_bb68:   .db $ff                     ; 13B68:  ff
+b04_bb69:   .db $ff                     ; 13B69:  ff
+b04_bb6a:   .db $ff                     ; 13B6A:  ff
+b04_bb6b:   .db $ff                     ; 13B6B:  ff
+b04_bb6c:   .db $ff                     ; 13B6C:  ff
+b04_bb6d:   .db $ff                     ; 13B6D:  ff
+b04_bb6e:   .db $ff                     ; 13B6E:  ff
+b04_bb6f:   .db $ff                     ; 13B6F:  ff
+b04_bb70:   .db $ff                     ; 13B70:  ff
+b04_bb71:   .db $ff                     ; 13B71:  ff
+b04_bb72:   .db $ff                     ; 13B72:  ff
+b04_bb73:   .db $ff                     ; 13B73:  ff
+b04_bb74:   .db $ff                     ; 13B74:  ff
+b04_bb75:   .db $ff                     ; 13B75:  ff
+b04_bb76:   .db $ff                     ; 13B76:  ff
+b04_bb77:   .db $ff                     ; 13B77:  ff
+b04_bb78:   .db $ff                     ; 13B78:  ff
+b04_bb79:   .db $ff                     ; 13B79:  ff
+b04_bb7a:   .db $ff                     ; 13B7A:  ff
+b04_bb7b:   .db $ff                     ; 13B7B:  ff
+b04_bb7c:   .db $ff                     ; 13B7C:  ff
+b04_bb7d:   .db $ff                     ; 13B7D:  ff
+b04_bb7e:   .db $ff                     ; 13B7E:  ff
+b04_bb7f:   .db $ff                     ; 13B7F:  ff
+b04_bb80:   .db $ff                     ; 13B80:  ff
+b04_bb81:   .db $ff                     ; 13B81:  ff
+b04_bb82:   .db $ff                     ; 13B82:  ff
+b04_bb83:   .db $ff                     ; 13B83:  ff
+b04_bb84:   .db $ff                     ; 13B84:  ff
+b04_bb85:   .db $ff                     ; 13B85:  ff
+b04_bb86:   .db $ff                     ; 13B86:  ff
+b04_bb87:   .db $ff                     ; 13B87:  ff
+b04_bb88:   .db $ff                     ; 13B88:  ff
+b04_bb89:   .db $ff                     ; 13B89:  ff
+b04_bb8a:   .db $ff                     ; 13B8A:  ff
+b04_bb8b:   .db $ff                     ; 13B8B:  ff
+b04_bb8c:   .db $ff                     ; 13B8C:  ff
+b04_bb8d:   .db $ff                     ; 13B8D:  ff
+b04_bb8e:   .db $ff                     ; 13B8E:  ff
+b04_bb8f:   .db $ff                     ; 13B8F:  ff
+b04_bb90:   .db $ff                     ; 13B90:  ff
+b04_bb91:   .db $ff                     ; 13B91:  ff
+b04_bb92:   .db $ff                     ; 13B92:  ff
+b04_bb93:   .db $ff                     ; 13B93:  ff
+b04_bb94:   .db $ff                     ; 13B94:  ff
+b04_bb95:   .db $ff                     ; 13B95:  ff
+b04_bb96:   .db $ff                     ; 13B96:  ff
+b04_bb97:   .db $ff                     ; 13B97:  ff
+b04_bb98:   .db $ff                     ; 13B98:  ff
+b04_bb99:   .db $ff                     ; 13B99:  ff
+b04_bb9a:   .db $ff                     ; 13B9A:  ff
+b04_bb9b:   .db $ff                     ; 13B9B:  ff
+b04_bb9c:   .db $ff                     ; 13B9C:  ff
+b04_bb9d:   .db $ff                     ; 13B9D:  ff
+b04_bb9e:   .db $ff                     ; 13B9E:  ff
+b04_bb9f:   .db $ff                     ; 13B9F:  ff
+b04_bba0:   .db $ff                     ; 13BA0:  ff
+b04_bba1:   .db $ff                     ; 13BA1:  ff
+b04_bba2:   .db $ff                     ; 13BA2:  ff
+b04_bba3:   .db $ff                     ; 13BA3:  ff
+b04_bba4:   .db $ff                     ; 13BA4:  ff
+b04_bba5:   .db $ff                     ; 13BA5:  ff
+b04_bba6:   .db $ff                     ; 13BA6:  ff
+b04_bba7:   .db $ff                     ; 13BA7:  ff
+b04_bba8:   .db $ff                     ; 13BA8:  ff
+b04_bba9:   .db $ff                     ; 13BA9:  ff
+b04_bbaa:   .db $ff                     ; 13BAA:  ff
+b04_bbab:   .db $ff                     ; 13BAB:  ff
+b04_bbac:   .db $ff                     ; 13BAC:  ff
+b04_bbad:   .db $ff                     ; 13BAD:  ff
+b04_bbae:   .db $ff                     ; 13BAE:  ff
+b04_bbaf:   .db $ff                     ; 13BAF:  ff
+b04_bbb0:   .db $ff                     ; 13BB0:  ff
+b04_bbb1:   .db $ff                     ; 13BB1:  ff
+b04_bbb2:   .db $ff                     ; 13BB2:  ff
+b04_bbb3:   .db $ff                     ; 13BB3:  ff
+b04_bbb4:   .db $ff                     ; 13BB4:  ff
+b04_bbb5:   .db $ff                     ; 13BB5:  ff
+b04_bbb6:   .db $ff                     ; 13BB6:  ff
+b04_bbb7:   .db $ff                     ; 13BB7:  ff
+b04_bbb8:   .db $ff                     ; 13BB8:  ff
+b04_bbb9:   .db $ff                     ; 13BB9:  ff
+b04_bbba:   .db $ff                     ; 13BBA:  ff
+b04_bbbb:   .db $ff                     ; 13BBB:  ff
+b04_bbbc:   .db $ff                     ; 13BBC:  ff
+b04_bbbd:   .db $ff                     ; 13BBD:  ff
+b04_bbbe:   .db $ff                     ; 13BBE:  ff
+b04_bbbf:   .db $ff                     ; 13BBF:  ff
+b04_bbc0:   .db $ff                     ; 13BC0:  ff
+b04_bbc1:   .db $ff                     ; 13BC1:  ff
+b04_bbc2:   .db $ff                     ; 13BC2:  ff
+b04_bbc3:   .db $ff                     ; 13BC3:  ff
+b04_bbc4:   .db $ff                     ; 13BC4:  ff
+b04_bbc5:   .db $ff                     ; 13BC5:  ff
+b04_bbc6:   .db $ff                     ; 13BC6:  ff
+b04_bbc7:   .db $ff                     ; 13BC7:  ff
+b04_bbc8:   .db $ff                     ; 13BC8:  ff
+b04_bbc9:   .db $ff                     ; 13BC9:  ff
+b04_bbca:   .db $ff                     ; 13BCA:  ff
+b04_bbcb:   .db $ff                     ; 13BCB:  ff
+b04_bbcc:   .db $ff                     ; 13BCC:  ff
+b04_bbcd:   .db $ff                     ; 13BCD:  ff
+b04_bbce:   .db $ff                     ; 13BCE:  ff
+b04_bbcf:   .db $ff                     ; 13BCF:  ff
+b04_bbd0:   .db $ff                     ; 13BD0:  ff
+b04_bbd1:   .db $ff                     ; 13BD1:  ff
+b04_bbd2:   .db $ff                     ; 13BD2:  ff
+b04_bbd3:   .db $ff                     ; 13BD3:  ff
+b04_bbd4:   .db $ff                     ; 13BD4:  ff
+b04_bbd5:   .db $ff                     ; 13BD5:  ff
+b04_bbd6:   .db $ff                     ; 13BD6:  ff
+b04_bbd7:   .db $ff                     ; 13BD7:  ff
+b04_bbd8:   .db $ff                     ; 13BD8:  ff
+b04_bbd9:   .db $ff                     ; 13BD9:  ff
+b04_bbda:   .db $ff                     ; 13BDA:  ff
+b04_bbdb:   .db $ff                     ; 13BDB:  ff
+b04_bbdc:   .db $ff                     ; 13BDC:  ff
+b04_bbdd:   .db $ff                     ; 13BDD:  ff
+b04_bbde:   .db $ff                     ; 13BDE:  ff
+b04_bbdf:   .db $ff                     ; 13BDF:  ff
+b04_bbe0:   .db $ff                     ; 13BE0:  ff
+b04_bbe1:   .db $ff                     ; 13BE1:  ff
+b04_bbe2:   .db $ff                     ; 13BE2:  ff
+b04_bbe3:   .db $ff                     ; 13BE3:  ff
+b04_bbe4:   .db $ff                     ; 13BE4:  ff
+b04_bbe5:   .db $ff                     ; 13BE5:  ff
+b04_bbe6:   .db $ff                     ; 13BE6:  ff
+b04_bbe7:   .db $ff                     ; 13BE7:  ff
+b04_bbe8:   .db $ff                     ; 13BE8:  ff
+b04_bbe9:   .db $ff                     ; 13BE9:  ff
+b04_bbea:   .db $ff                     ; 13BEA:  ff
+b04_bbeb:   .db $ff                     ; 13BEB:  ff
+b04_bbec:   .db $ff                     ; 13BEC:  ff
+b04_bbed:   .db $ff                     ; 13BED:  ff
+b04_bbee:   .db $ff                     ; 13BEE:  ff
+b04_bbef:   .db $ff                     ; 13BEF:  ff
+b04_bbf0:   .db $ff                     ; 13BF0:  ff
+b04_bbf1:   .db $ff                     ; 13BF1:  ff
+b04_bbf2:   .db $ff                     ; 13BF2:  ff
+b04_bbf3:   .db $ff                     ; 13BF3:  ff
+b04_bbf4:   .db $ff                     ; 13BF4:  ff
+b04_bbf5:   .db $ff                     ; 13BF5:  ff
+b04_bbf6:   .db $ff                     ; 13BF6:  ff
+b04_bbf7:   .db $ff                     ; 13BF7:  ff
+b04_bbf8:   .db $ff                     ; 13BF8:  ff
+b04_bbf9:   .db $ff                     ; 13BF9:  ff
+b04_bbfa:   .db $ff                     ; 13BFA:  ff
+b04_bbfb:   .db $ff                     ; 13BFB:  ff
+b04_bbfc:   .db $ff                     ; 13BFC:  ff
+b04_bbfd:   .db $ff                     ; 13BFD:  ff
+b04_bbfe:   .db $ff                     ; 13BFE:  ff
+b04_bbff:   .db $ff                     ; 13BFF:  ff
+b04_bc00:   .db $ff                     ; 13C00:  ff
+b04_bc01:   .db $ff                     ; 13C01:  ff
+b04_bc02:   .db $ff                     ; 13C02:  ff
+b04_bc03:   .db $ff                     ; 13C03:  ff
+b04_bc04:   .db $ff                     ; 13C04:  ff
+b04_bc05:   .db $ff                     ; 13C05:  ff
+b04_bc06:   .db $ff                     ; 13C06:  ff
+b04_bc07:   .db $ff                     ; 13C07:  ff
+b04_bc08:   .db $ff                     ; 13C08:  ff
+b04_bc09:   .db $ff                     ; 13C09:  ff
+b04_bc0a:   .db $ff                     ; 13C0A:  ff
+b04_bc0b:   .db $ff                     ; 13C0B:  ff
+b04_bc0c:   .db $ff                     ; 13C0C:  ff
+b04_bc0d:   .db $ff                     ; 13C0D:  ff
+b04_bc0e:   .db $ff                     ; 13C0E:  ff
+b04_bc0f:   .db $ff                     ; 13C0F:  ff
+b04_bc10:   .db $ff                     ; 13C10:  ff
+b04_bc11:   .db $ff                     ; 13C11:  ff
+b04_bc12:   .db $ff                     ; 13C12:  ff
+b04_bc13:   .db $ff                     ; 13C13:  ff
+b04_bc14:   .db $ff                     ; 13C14:  ff
+b04_bc15:   .db $ff                     ; 13C15:  ff
+b04_bc16:   .db $ff                     ; 13C16:  ff
+b04_bc17:   .db $ff                     ; 13C17:  ff
+b04_bc18:   .db $ff                     ; 13C18:  ff
+b04_bc19:   .db $ff                     ; 13C19:  ff
+b04_bc1a:   .db $ff                     ; 13C1A:  ff
+b04_bc1b:   .db $ff                     ; 13C1B:  ff
+b04_bc1c:   .db $ff                     ; 13C1C:  ff
+b04_bc1d:   .db $ff                     ; 13C1D:  ff
+b04_bc1e:   .db $ff                     ; 13C1E:  ff
+b04_bc1f:   .db $ff                     ; 13C1F:  ff
+b04_bc20:   .db $ff                     ; 13C20:  ff
+b04_bc21:   .db $ff                     ; 13C21:  ff
+b04_bc22:   .db $ff                     ; 13C22:  ff
+b04_bc23:   .db $ff                     ; 13C23:  ff
+b04_bc24:   .db $ff                     ; 13C24:  ff
+b04_bc25:   .db $ff                     ; 13C25:  ff
+b04_bc26:   .db $ff                     ; 13C26:  ff
+b04_bc27:   .db $ff                     ; 13C27:  ff
+b04_bc28:   .db $ff                     ; 13C28:  ff
+b04_bc29:   .db $ff                     ; 13C29:  ff
+b04_bc2a:   .db $ff                     ; 13C2A:  ff
+b04_bc2b:   .db $ff                     ; 13C2B:  ff
+b04_bc2c:   .db $ff                     ; 13C2C:  ff
+b04_bc2d:   .db $ff                     ; 13C2D:  ff
+b04_bc2e:   .db $ff                     ; 13C2E:  ff
+b04_bc2f:   .db $ff                     ; 13C2F:  ff
+b04_bc30:   .db $ff                     ; 13C30:  ff
+b04_bc31:   .db $ff                     ; 13C31:  ff
+b04_bc32:   .db $ff                     ; 13C32:  ff
+b04_bc33:   .db $ff                     ; 13C33:  ff
+b04_bc34:   .db $ff                     ; 13C34:  ff
+b04_bc35:   .db $ff                     ; 13C35:  ff
+b04_bc36:   .db $ff                     ; 13C36:  ff
+b04_bc37:   .db $ff                     ; 13C37:  ff
+b04_bc38:   .db $ff                     ; 13C38:  ff
+b04_bc39:   .db $ff                     ; 13C39:  ff
+b04_bc3a:   .db $ff                     ; 13C3A:  ff
+b04_bc3b:   .db $ff                     ; 13C3B:  ff
+b04_bc3c:   .db $ff                     ; 13C3C:  ff
+b04_bc3d:   .db $ff                     ; 13C3D:  ff
+b04_bc3e:   .db $ff                     ; 13C3E:  ff
+b04_bc3f:   .db $ff                     ; 13C3F:  ff
+b04_bc40:   .db $ff                     ; 13C40:  ff
+b04_bc41:   .db $ff                     ; 13C41:  ff
+b04_bc42:   .db $ff                     ; 13C42:  ff
+b04_bc43:   .db $ff                     ; 13C43:  ff
+b04_bc44:   .db $ff                     ; 13C44:  ff
+b04_bc45:   .db $ff                     ; 13C45:  ff
+b04_bc46:   .db $ff                     ; 13C46:  ff
+b04_bc47:   .db $ff                     ; 13C47:  ff
+b04_bc48:   .db $ff                     ; 13C48:  ff
+b04_bc49:   .db $ff                     ; 13C49:  ff
+b04_bc4a:   .db $ff                     ; 13C4A:  ff
+b04_bc4b:   .db $ff                     ; 13C4B:  ff
+b04_bc4c:   .db $ff                     ; 13C4C:  ff
+b04_bc4d:   .db $ff                     ; 13C4D:  ff
+b04_bc4e:   .db $ff                     ; 13C4E:  ff
+b04_bc4f:   .db $ff                     ; 13C4F:  ff
+b04_bc50:   .db $ff                     ; 13C50:  ff
+b04_bc51:   .db $ff                     ; 13C51:  ff
+b04_bc52:   .db $ff                     ; 13C52:  ff
+b04_bc53:   .db $ff                     ; 13C53:  ff
+b04_bc54:   .db $ff                     ; 13C54:  ff
+b04_bc55:   .db $ff                     ; 13C55:  ff
+b04_bc56:   .db $ff                     ; 13C56:  ff
+b04_bc57:   .db $ff                     ; 13C57:  ff
+b04_bc58:   .db $ff                     ; 13C58:  ff
+b04_bc59:   .db $ff                     ; 13C59:  ff
+b04_bc5a:   .db $ff                     ; 13C5A:  ff
+b04_bc5b:   .db $ff                     ; 13C5B:  ff
+b04_bc5c:   .db $ff                     ; 13C5C:  ff
+b04_bc5d:   .db $ff                     ; 13C5D:  ff
+b04_bc5e:   .db $ff                     ; 13C5E:  ff
+b04_bc5f:   .db $ff                     ; 13C5F:  ff
+b04_bc60:   .db $ff                     ; 13C60:  ff
+b04_bc61:   .db $ff                     ; 13C61:  ff
+b04_bc62:   .db $ff                     ; 13C62:  ff
+b04_bc63:   .db $ff                     ; 13C63:  ff
+b04_bc64:   .db $ff                     ; 13C64:  ff
+b04_bc65:   .db $ff                     ; 13C65:  ff
+b04_bc66:   .db $ff                     ; 13C66:  ff
+b04_bc67:   .db $ff                     ; 13C67:  ff
+b04_bc68:   .db $ff                     ; 13C68:  ff
+b04_bc69:   .db $ff                     ; 13C69:  ff
+b04_bc6a:   .db $ff                     ; 13C6A:  ff
+b04_bc6b:   .db $ff                     ; 13C6B:  ff
+b04_bc6c:   .db $ff                     ; 13C6C:  ff
+b04_bc6d:   .db $ff                     ; 13C6D:  ff
+b04_bc6e:   .db $ff                     ; 13C6E:  ff
+b04_bc6f:   .db $ff                     ; 13C6F:  ff
+b04_bc70:   .db $ff                     ; 13C70:  ff
+b04_bc71:   .db $ff                     ; 13C71:  ff
+b04_bc72:   .db $ff                     ; 13C72:  ff
+b04_bc73:   .db $ff                     ; 13C73:  ff
+b04_bc74:   .db $ff                     ; 13C74:  ff
+b04_bc75:   .db $ff                     ; 13C75:  ff
+b04_bc76:   .db $ff                     ; 13C76:  ff
+b04_bc77:   .db $ff                     ; 13C77:  ff
+b04_bc78:   .db $ff                     ; 13C78:  ff
+b04_bc79:   .db $ff                     ; 13C79:  ff
+b04_bc7a:   .db $ff                     ; 13C7A:  ff
+b04_bc7b:   .db $ff                     ; 13C7B:  ff
+b04_bc7c:   .db $ff                     ; 13C7C:  ff
+b04_bc7d:   .db $ff                     ; 13C7D:  ff
+b04_bc7e:   .db $ff                     ; 13C7E:  ff
+b04_bc7f:   .db $ff                     ; 13C7F:  ff
+b04_bc80:   .db $ff                     ; 13C80:  ff
+b04_bc81:   .db $ff                     ; 13C81:  ff
+b04_bc82:   .db $ff                     ; 13C82:  ff
+b04_bc83:   .db $ff                     ; 13C83:  ff
+b04_bc84:   .db $ff                     ; 13C84:  ff
+b04_bc85:   .db $ff                     ; 13C85:  ff
+b04_bc86:   .db $ff                     ; 13C86:  ff
+b04_bc87:   .db $ff                     ; 13C87:  ff
+b04_bc88:   .db $ff                     ; 13C88:  ff
+b04_bc89:   .db $ff                     ; 13C89:  ff
+b04_bc8a:   .db $ff                     ; 13C8A:  ff
+b04_bc8b:   .db $ff                     ; 13C8B:  ff
+b04_bc8c:   .db $ff                     ; 13C8C:  ff
+b04_bc8d:   .db $ff                     ; 13C8D:  ff
+b04_bc8e:   .db $ff                     ; 13C8E:  ff
+b04_bc8f:   .db $ff                     ; 13C8F:  ff
+b04_bc90:   .db $ff                     ; 13C90:  ff
+b04_bc91:   .db $ff                     ; 13C91:  ff
+b04_bc92:   .db $ff                     ; 13C92:  ff
+b04_bc93:   .db $ff                     ; 13C93:  ff
+b04_bc94:   .db $ff                     ; 13C94:  ff
+b04_bc95:   .db $ff                     ; 13C95:  ff
+b04_bc96:   .db $ff                     ; 13C96:  ff
+b04_bc97:   .db $ff                     ; 13C97:  ff
+b04_bc98:   .db $ff                     ; 13C98:  ff
+b04_bc99:   .db $ff                     ; 13C99:  ff
+b04_bc9a:   .db $ff                     ; 13C9A:  ff
+b04_bc9b:   .db $ff                     ; 13C9B:  ff
+b04_bc9c:   .db $ff                     ; 13C9C:  ff
+b04_bc9d:   .db $ff                     ; 13C9D:  ff
+b04_bc9e:   .db $ff                     ; 13C9E:  ff
+b04_bc9f:   .db $ff                     ; 13C9F:  ff
+b04_bca0:   .db $ff                     ; 13CA0:  ff
+b04_bca1:   .db $ff                     ; 13CA1:  ff
+b04_bca2:   .db $ff                     ; 13CA2:  ff
+b04_bca3:   .db $ff                     ; 13CA3:  ff
+b04_bca4:   .db $ff                     ; 13CA4:  ff
+b04_bca5:   .db $ff                     ; 13CA5:  ff
+b04_bca6:   .db $ff                     ; 13CA6:  ff
+b04_bca7:   .db $ff                     ; 13CA7:  ff
+b04_bca8:   .db $ff                     ; 13CA8:  ff
+b04_bca9:   .db $ff                     ; 13CA9:  ff
+b04_bcaa:   .db $ff                     ; 13CAA:  ff
+b04_bcab:   .db $ff                     ; 13CAB:  ff
+b04_bcac:   .db $ff                     ; 13CAC:  ff
+b04_bcad:   .db $ff                     ; 13CAD:  ff
+b04_bcae:   .db $ff                     ; 13CAE:  ff
+b04_bcaf:   .db $ff                     ; 13CAF:  ff
+b04_bcb0:   .db $ff                     ; 13CB0:  ff
+b04_bcb1:   .db $ff                     ; 13CB1:  ff
+b04_bcb2:   .db $ff                     ; 13CB2:  ff
+b04_bcb3:   .db $ff                     ; 13CB3:  ff
+b04_bcb4:   .db $ff                     ; 13CB4:  ff
+b04_bcb5:   .db $ff                     ; 13CB5:  ff
+b04_bcb6:   .db $ff                     ; 13CB6:  ff
+b04_bcb7:   .db $ff                     ; 13CB7:  ff
+b04_bcb8:   .db $ff                     ; 13CB8:  ff
+b04_bcb9:   .db $ff                     ; 13CB9:  ff
+b04_bcba:   .db $ff                     ; 13CBA:  ff
+b04_bcbb:   .db $ff                     ; 13CBB:  ff
+b04_bcbc:   .db $ff                     ; 13CBC:  ff
+b04_bcbd:   .db $ff                     ; 13CBD:  ff
+b04_bcbe:   .db $ff                     ; 13CBE:  ff
+b04_bcbf:   .db $ff                     ; 13CBF:  ff
+b04_bcc0:   .db $ff                     ; 13CC0:  ff
+b04_bcc1:   .db $ff                     ; 13CC1:  ff
+b04_bcc2:   .db $ff                     ; 13CC2:  ff
+b04_bcc3:   .db $ff                     ; 13CC3:  ff
+b04_bcc4:   .db $ff                     ; 13CC4:  ff
+b04_bcc5:   .db $ff                     ; 13CC5:  ff
+b04_bcc6:   .db $ff                     ; 13CC6:  ff
+b04_bcc7:   .db $ff                     ; 13CC7:  ff
+b04_bcc8:   .db $ff                     ; 13CC8:  ff
+b04_bcc9:   .db $ff                     ; 13CC9:  ff
+b04_bcca:   .db $ff                     ; 13CCA:  ff
+b04_bccb:   .db $ff                     ; 13CCB:  ff
+b04_bccc:   .db $ff                     ; 13CCC:  ff
+b04_bccd:   .db $ff                     ; 13CCD:  ff
+b04_bcce:   .db $ff                     ; 13CCE:  ff
+b04_bccf:   .db $ff                     ; 13CCF:  ff
+b04_bcd0:   .db $ff                     ; 13CD0:  ff
+b04_bcd1:   .db $ff                     ; 13CD1:  ff
+b04_bcd2:   .db $ff                     ; 13CD2:  ff
+b04_bcd3:   .db $ff                     ; 13CD3:  ff
+b04_bcd4:   .db $ff                     ; 13CD4:  ff
+b04_bcd5:   .db $ff                     ; 13CD5:  ff
+b04_bcd6:   .db $ff                     ; 13CD6:  ff
+b04_bcd7:   .db $ff                     ; 13CD7:  ff
+b04_bcd8:   .db $ff                     ; 13CD8:  ff
+b04_bcd9:   .db $ff                     ; 13CD9:  ff
+b04_bcda:   .db $ff                     ; 13CDA:  ff
+b04_bcdb:   .db $ff                     ; 13CDB:  ff
+b04_bcdc:   .db $ff                     ; 13CDC:  ff
+b04_bcdd:   .db $ff                     ; 13CDD:  ff
+b04_bcde:   .db $ff                     ; 13CDE:  ff
+b04_bcdf:   .db $ff                     ; 13CDF:  ff
+b04_bce0:   .db $ff                     ; 13CE0:  ff
+b04_bce1:   .db $ff                     ; 13CE1:  ff
+b04_bce2:   .db $ff                     ; 13CE2:  ff
+b04_bce3:   .db $ff                     ; 13CE3:  ff
+b04_bce4:   .db $ff                     ; 13CE4:  ff
+b04_bce5:   .db $ff                     ; 13CE5:  ff
+b04_bce6:   .db $ff                     ; 13CE6:  ff
+b04_bce7:   .db $ff                     ; 13CE7:  ff
+b04_bce8:   .db $ff                     ; 13CE8:  ff
+b04_bce9:   .db $ff                     ; 13CE9:  ff
+b04_bcea:   .db $ff                     ; 13CEA:  ff
+b04_bceb:   .db $ff                     ; 13CEB:  ff
+b04_bcec:   .db $ff                     ; 13CEC:  ff
+b04_bced:   .db $ff                     ; 13CED:  ff
+b04_bcee:   .db $ff                     ; 13CEE:  ff
+b04_bcef:   .db $ff                     ; 13CEF:  ff
+b04_bcf0:   .db $ff                     ; 13CF0:  ff
+b04_bcf1:   .db $ff                     ; 13CF1:  ff
+b04_bcf2:   .db $ff                     ; 13CF2:  ff
+b04_bcf3:   .db $ff                     ; 13CF3:  ff
+b04_bcf4:   .db $ff                     ; 13CF4:  ff
+b04_bcf5:   .db $ff                     ; 13CF5:  ff
+b04_bcf6:   .db $ff                     ; 13CF6:  ff
+b04_bcf7:   .db $ff                     ; 13CF7:  ff
+b04_bcf8:   .db $ff                     ; 13CF8:  ff
+b04_bcf9:   .db $ff                     ; 13CF9:  ff
+b04_bcfa:   .db $ff                     ; 13CFA:  ff
+b04_bcfb:   .db $ff                     ; 13CFB:  ff
+b04_bcfc:   .db $ff                     ; 13CFC:  ff
+b04_bcfd:   .db $ff                     ; 13CFD:  ff
+b04_bcfe:   .db $ff                     ; 13CFE:  ff
+b04_bcff:   .db $ff                     ; 13CFF:  ff
+b04_bd00:   .db $ff                     ; 13D00:  ff
+b04_bd01:   .db $ff                     ; 13D01:  ff
+b04_bd02:   .db $ff                     ; 13D02:  ff
+b04_bd03:   .db $ff                     ; 13D03:  ff
+b04_bd04:   .db $ff                     ; 13D04:  ff
+b04_bd05:   .db $ff                     ; 13D05:  ff
+b04_bd06:   .db $ff                     ; 13D06:  ff
+b04_bd07:   .db $ff                     ; 13D07:  ff
+b04_bd08:   .db $ff                     ; 13D08:  ff
+b04_bd09:   .db $ff                     ; 13D09:  ff
+b04_bd0a:   .db $ff                     ; 13D0A:  ff
+b04_bd0b:   .db $ff                     ; 13D0B:  ff
+b04_bd0c:   .db $ff                     ; 13D0C:  ff
+b04_bd0d:   .db $ff                     ; 13D0D:  ff
+b04_bd0e:   .db $ff                     ; 13D0E:  ff
+b04_bd0f:   .db $ff                     ; 13D0F:  ff
+b04_bd10:   .db $ff                     ; 13D10:  ff
+b04_bd11:   .db $ff                     ; 13D11:  ff
+b04_bd12:   .db $ff                     ; 13D12:  ff
+b04_bd13:   .db $ff                     ; 13D13:  ff
+b04_bd14:   .db $ff                     ; 13D14:  ff
+b04_bd15:   .db $ff                     ; 13D15:  ff
+b04_bd16:   .db $ff                     ; 13D16:  ff
+b04_bd17:   .db $ff                     ; 13D17:  ff
+b04_bd18:   .db $ff                     ; 13D18:  ff
+b04_bd19:   .db $ff                     ; 13D19:  ff
+b04_bd1a:   .db $ff                     ; 13D1A:  ff
+b04_bd1b:   .db $ff                     ; 13D1B:  ff
+b04_bd1c:   .db $ff                     ; 13D1C:  ff
+b04_bd1d:   .db $ff                     ; 13D1D:  ff
+b04_bd1e:   .db $ff                     ; 13D1E:  ff
+b04_bd1f:   .db $ff                     ; 13D1F:  ff
+b04_bd20:   .db $ff                     ; 13D20:  ff
+b04_bd21:   .db $ff                     ; 13D21:  ff
+b04_bd22:   .db $ff                     ; 13D22:  ff
+b04_bd23:   .db $ff                     ; 13D23:  ff
+b04_bd24:   .db $ff                     ; 13D24:  ff
+b04_bd25:   .db $ff                     ; 13D25:  ff
+b04_bd26:   .db $ff                     ; 13D26:  ff
+b04_bd27:   .db $ff                     ; 13D27:  ff
+b04_bd28:   .db $ff                     ; 13D28:  ff
+b04_bd29:   .db $ff                     ; 13D29:  ff
+b04_bd2a:   .db $ff                     ; 13D2A:  ff
+b04_bd2b:   .db $ff                     ; 13D2B:  ff
+b04_bd2c:   .db $ff                     ; 13D2C:  ff
+b04_bd2d:   .db $ff                     ; 13D2D:  ff
+b04_bd2e:   .db $ff                     ; 13D2E:  ff
+b04_bd2f:   .db $ff                     ; 13D2F:  ff
+b04_bd30:   .db $ff                     ; 13D30:  ff
+b04_bd31:   .db $ff                     ; 13D31:  ff
+b04_bd32:   .db $ff                     ; 13D32:  ff
+b04_bd33:   .db $ff                     ; 13D33:  ff
+b04_bd34:   .db $ff                     ; 13D34:  ff
+b04_bd35:   .db $ff                     ; 13D35:  ff
+b04_bd36:   .db $ff                     ; 13D36:  ff
+b04_bd37:   .db $ff                     ; 13D37:  ff
+b04_bd38:   .db $ff                     ; 13D38:  ff
+b04_bd39:   .db $ff                     ; 13D39:  ff
+b04_bd3a:   .db $ff                     ; 13D3A:  ff
+b04_bd3b:   .db $ff                     ; 13D3B:  ff
+b04_bd3c:   .db $ff                     ; 13D3C:  ff
+b04_bd3d:   .db $ff                     ; 13D3D:  ff
+b04_bd3e:   .db $ff                     ; 13D3E:  ff
+b04_bd3f:   .db $ff                     ; 13D3F:  ff
+b04_bd40:   .db $ff                     ; 13D40:  ff
+b04_bd41:   .db $ff                     ; 13D41:  ff
+b04_bd42:   .db $ff                     ; 13D42:  ff
+b04_bd43:   .db $ff                     ; 13D43:  ff
+b04_bd44:   .db $ff                     ; 13D44:  ff
+b04_bd45:   .db $ff                     ; 13D45:  ff
+b04_bd46:   .db $ff                     ; 13D46:  ff
+b04_bd47:   .db $ff                     ; 13D47:  ff
+b04_bd48:   .db $ff                     ; 13D48:  ff
+b04_bd49:   .db $ff                     ; 13D49:  ff
+b04_bd4a:   .db $ff                     ; 13D4A:  ff
+b04_bd4b:   .db $ff                     ; 13D4B:  ff
+b04_bd4c:   .db $ff                     ; 13D4C:  ff
+b04_bd4d:   .db $ff                     ; 13D4D:  ff
+b04_bd4e:   .db $ff                     ; 13D4E:  ff
+b04_bd4f:   .db $ff                     ; 13D4F:  ff
+b04_bd50:   .db $ff                     ; 13D50:  ff
+b04_bd51:   .db $ff                     ; 13D51:  ff
+b04_bd52:   .db $ff                     ; 13D52:  ff
+b04_bd53:   .db $ff                     ; 13D53:  ff
+b04_bd54:   .db $ff                     ; 13D54:  ff
+b04_bd55:   .db $ff                     ; 13D55:  ff
+b04_bd56:   .db $ff                     ; 13D56:  ff
+b04_bd57:   .db $ff                     ; 13D57:  ff
+b04_bd58:   .db $ff                     ; 13D58:  ff
+b04_bd59:   .db $ff                     ; 13D59:  ff
+b04_bd5a:   .db $ff                     ; 13D5A:  ff
+b04_bd5b:   .db $ff                     ; 13D5B:  ff
+b04_bd5c:   .db $ff                     ; 13D5C:  ff
+b04_bd5d:   .db $ff                     ; 13D5D:  ff
+b04_bd5e:   .db $ff                     ; 13D5E:  ff
+b04_bd5f:   .db $ff                     ; 13D5F:  ff
+b04_bd60:   .db $ff                     ; 13D60:  ff
+b04_bd61:   .db $ff                     ; 13D61:  ff
+b04_bd62:   .db $ff                     ; 13D62:  ff
+b04_bd63:   .db $ff                     ; 13D63:  ff
+b04_bd64:   .db $ff                     ; 13D64:  ff
+b04_bd65:   .db $ff                     ; 13D65:  ff
+b04_bd66:   .db $ff                     ; 13D66:  ff
+b04_bd67:   .db $ff                     ; 13D67:  ff
+b04_bd68:   .db $ff                     ; 13D68:  ff
+b04_bd69:   .db $ff                     ; 13D69:  ff
+b04_bd6a:   .db $ff                     ; 13D6A:  ff
+b04_bd6b:   .db $ff                     ; 13D6B:  ff
+b04_bd6c:   .db $ff                     ; 13D6C:  ff
+b04_bd6d:   .db $ff                     ; 13D6D:  ff
+b04_bd6e:   .db $ff                     ; 13D6E:  ff
+b04_bd6f:   .db $ff                     ; 13D6F:  ff
+b04_bd70:   .db $ff                     ; 13D70:  ff
+b04_bd71:   .db $ff                     ; 13D71:  ff
+b04_bd72:   .db $ff                     ; 13D72:  ff
+b04_bd73:   .db $ff                     ; 13D73:  ff
+b04_bd74:   .db $ff                     ; 13D74:  ff
+b04_bd75:   .db $ff                     ; 13D75:  ff
+b04_bd76:   .db $ff                     ; 13D76:  ff
+b04_bd77:   .db $ff                     ; 13D77:  ff
+b04_bd78:   .db $ff                     ; 13D78:  ff
+b04_bd79:   .db $ff                     ; 13D79:  ff
+b04_bd7a:   .db $ff                     ; 13D7A:  ff
+b04_bd7b:   .db $ff                     ; 13D7B:  ff
+b04_bd7c:   .db $ff                     ; 13D7C:  ff
+b04_bd7d:   .db $ff                     ; 13D7D:  ff
+b04_bd7e:   .db $ff                     ; 13D7E:  ff
+b04_bd7f:   .db $ff                     ; 13D7F:  ff
+b04_bd80:   .db $ff                     ; 13D80:  ff
+b04_bd81:   .db $ff                     ; 13D81:  ff
+b04_bd82:   .db $ff                     ; 13D82:  ff
+b04_bd83:   .db $ff                     ; 13D83:  ff
+b04_bd84:   .db $ff                     ; 13D84:  ff
+b04_bd85:   .db $ff                     ; 13D85:  ff
+b04_bd86:   .db $ff                     ; 13D86:  ff
+b04_bd87:   .db $ff                     ; 13D87:  ff
+b04_bd88:   .db $ff                     ; 13D88:  ff
+b04_bd89:   .db $ff                     ; 13D89:  ff
+b04_bd8a:   .db $ff                     ; 13D8A:  ff
+b04_bd8b:   .db $ff                     ; 13D8B:  ff
+b04_bd8c:   .db $ff                     ; 13D8C:  ff
+b04_bd8d:   .db $ff                     ; 13D8D:  ff
+b04_bd8e:   .db $ff                     ; 13D8E:  ff
+b04_bd8f:   .db $ff                     ; 13D8F:  ff
+b04_bd90:   .db $ff                     ; 13D90:  ff
+b04_bd91:   .db $ff                     ; 13D91:  ff
+b04_bd92:   .db $ff                     ; 13D92:  ff
+b04_bd93:   .db $ff                     ; 13D93:  ff
+b04_bd94:   .db $ff                     ; 13D94:  ff
+b04_bd95:   .db $ff                     ; 13D95:  ff
+b04_bd96:   .db $ff                     ; 13D96:  ff
+b04_bd97:   .db $ff                     ; 13D97:  ff
+b04_bd98:   .db $ff                     ; 13D98:  ff
+b04_bd99:   .db $ff                     ; 13D99:  ff
+b04_bd9a:   .db $ff                     ; 13D9A:  ff
+b04_bd9b:   .db $ff                     ; 13D9B:  ff
+b04_bd9c:   .db $ff                     ; 13D9C:  ff
+b04_bd9d:   .db $ff                     ; 13D9D:  ff
+b04_bd9e:   .db $ff                     ; 13D9E:  ff
+b04_bd9f:   .db $ff                     ; 13D9F:  ff
+b04_bda0:   .db $ff                     ; 13DA0:  ff
+b04_bda1:   .db $ff                     ; 13DA1:  ff
+b04_bda2:   .db $ff                     ; 13DA2:  ff
+b04_bda3:   .db $ff                     ; 13DA3:  ff
+b04_bda4:   .db $ff                     ; 13DA4:  ff
+b04_bda5:   .db $ff                     ; 13DA5:  ff
+b04_bda6:   .db $ff                     ; 13DA6:  ff
+b04_bda7:   .db $ff                     ; 13DA7:  ff
+b04_bda8:   .db $ff                     ; 13DA8:  ff
+b04_bda9:   .db $ff                     ; 13DA9:  ff
+b04_bdaa:   .db $ff                     ; 13DAA:  ff
+b04_bdab:   .db $ff                     ; 13DAB:  ff
+b04_bdac:   .db $ff                     ; 13DAC:  ff
+b04_bdad:   .db $ff                     ; 13DAD:  ff
+b04_bdae:   .db $ff                     ; 13DAE:  ff
+b04_bdaf:   .db $ff                     ; 13DAF:  ff
+b04_bdb0:   .db $ff                     ; 13DB0:  ff
+b04_bdb1:   .db $ff                     ; 13DB1:  ff
+b04_bdb2:   .db $ff                     ; 13DB2:  ff
+b04_bdb3:   .db $ff                     ; 13DB3:  ff
+b04_bdb4:   .db $ff                     ; 13DB4:  ff
+b04_bdb5:   .db $ff                     ; 13DB5:  ff
+b04_bdb6:   .db $ff                     ; 13DB6:  ff
+b04_bdb7:   .db $ff                     ; 13DB7:  ff
+b04_bdb8:   .db $ff                     ; 13DB8:  ff
+b04_bdb9:   .db $ff                     ; 13DB9:  ff
+b04_bdba:   .db $ff                     ; 13DBA:  ff
+b04_bdbb:   .db $ff                     ; 13DBB:  ff
+b04_bdbc:   .db $ff                     ; 13DBC:  ff
+b04_bdbd:   .db $ff                     ; 13DBD:  ff
+b04_bdbe:   .db $ff                     ; 13DBE:  ff
+b04_bdbf:   .db $ff                     ; 13DBF:  ff
+b04_bdc0:   .db $ff                     ; 13DC0:  ff
+b04_bdc1:   .db $ff                     ; 13DC1:  ff
+b04_bdc2:   .db $ff                     ; 13DC2:  ff
+b04_bdc3:   .db $ff                     ; 13DC3:  ff
+b04_bdc4:   .db $ff                     ; 13DC4:  ff
+b04_bdc5:   .db $ff                     ; 13DC5:  ff
+b04_bdc6:   .db $ff                     ; 13DC6:  ff
+b04_bdc7:   .db $ff                     ; 13DC7:  ff
+b04_bdc8:   .db $ff                     ; 13DC8:  ff
+b04_bdc9:   .db $ff                     ; 13DC9:  ff
+b04_bdca:   .db $ff                     ; 13DCA:  ff
+b04_bdcb:   .db $ff                     ; 13DCB:  ff
+b04_bdcc:   .db $ff                     ; 13DCC:  ff
+b04_bdcd:   .db $ff                     ; 13DCD:  ff
+b04_bdce:   .db $ff                     ; 13DCE:  ff
+b04_bdcf:   .db $ff                     ; 13DCF:  ff
+b04_bdd0:   .db $ff                     ; 13DD0:  ff
+b04_bdd1:   .db $ff                     ; 13DD1:  ff
+b04_bdd2:   .db $ff                     ; 13DD2:  ff
+b04_bdd3:   .db $ff                     ; 13DD3:  ff
+b04_bdd4:   .db $ff                     ; 13DD4:  ff
+b04_bdd5:   .db $ff                     ; 13DD5:  ff
+b04_bdd6:   .db $ff                     ; 13DD6:  ff
+b04_bdd7:   .db $ff                     ; 13DD7:  ff
+b04_bdd8:   .db $ff                     ; 13DD8:  ff
+b04_bdd9:   .db $ff                     ; 13DD9:  ff
+b04_bdda:   .db $ff                     ; 13DDA:  ff
+b04_bddb:   .db $ff                     ; 13DDB:  ff
+b04_bddc:   .db $ff                     ; 13DDC:  ff
+b04_bddd:   .db $ff                     ; 13DDD:  ff
+b04_bdde:   .db $ff                     ; 13DDE:  ff
+b04_bddf:   .db $ff                     ; 13DDF:  ff
+b04_bde0:   .db $ff                     ; 13DE0:  ff
+b04_bde1:   .db $ff                     ; 13DE1:  ff
+b04_bde2:   .db $ff                     ; 13DE2:  ff
+b04_bde3:   .db $ff                     ; 13DE3:  ff
+b04_bde4:   .db $ff                     ; 13DE4:  ff
+b04_bde5:   .db $ff                     ; 13DE5:  ff
+b04_bde6:   .db $ff                     ; 13DE6:  ff
+b04_bde7:   .db $ff                     ; 13DE7:  ff
+b04_bde8:   .db $ff                     ; 13DE8:  ff
+b04_bde9:   .db $ff                     ; 13DE9:  ff
+b04_bdea:   .db $ff                     ; 13DEA:  ff
+b04_bdeb:   .db $ff                     ; 13DEB:  ff
+b04_bdec:   .db $ff                     ; 13DEC:  ff
+b04_bded:   .db $ff                     ; 13DED:  ff
+b04_bdee:   .db $ff                     ; 13DEE:  ff
+b04_bdef:   .db $ff                     ; 13DEF:  ff
+b04_bdf0:   .db $ff                     ; 13DF0:  ff
+b04_bdf1:   .db $ff                     ; 13DF1:  ff
+b04_bdf2:   .db $ff                     ; 13DF2:  ff
+b04_bdf3:   .db $ff                     ; 13DF3:  ff
+b04_bdf4:   .db $ff                     ; 13DF4:  ff
+b04_bdf5:   .db $ff                     ; 13DF5:  ff
+b04_bdf6:   .db $ff                     ; 13DF6:  ff
+b04_bdf7:   .db $ff                     ; 13DF7:  ff
+b04_bdf8:   .db $ff                     ; 13DF8:  ff
+b04_bdf9:   .db $ff                     ; 13DF9:  ff
+b04_bdfa:   .db $ff                     ; 13DFA:  ff
+b04_bdfb:   .db $ff                     ; 13DFB:  ff
+b04_bdfc:   .db $ff                     ; 13DFC:  ff
+b04_bdfd:   .db $ff                     ; 13DFD:  ff
+b04_bdfe:   .db $ff                     ; 13DFE:  ff
+b04_bdff:   .db $ff                     ; 13DFF:  ff
+b04_be00:   .db $ff                     ; 13E00:  ff
+b04_be01:   .db $ff                     ; 13E01:  ff
+b04_be02:   .db $ff                     ; 13E02:  ff
+b04_be03:   .db $ff                     ; 13E03:  ff
+b04_be04:   .db $ff                     ; 13E04:  ff
+b04_be05:   .db $ff                     ; 13E05:  ff
+b04_be06:   .db $ff                     ; 13E06:  ff
+b04_be07:   .db $ff                     ; 13E07:  ff
+b04_be08:   .db $ff                     ; 13E08:  ff
+b04_be09:   .db $ff                     ; 13E09:  ff
+b04_be0a:   .db $ff                     ; 13E0A:  ff
+b04_be0b:   .db $ff                     ; 13E0B:  ff
+b04_be0c:   .db $ff                     ; 13E0C:  ff
+b04_be0d:   .db $ff                     ; 13E0D:  ff
+b04_be0e:   .db $ff                     ; 13E0E:  ff
+b04_be0f:   .db $ff                     ; 13E0F:  ff
+b04_be10:   .db $ff                     ; 13E10:  ff
+b04_be11:   .db $ff                     ; 13E11:  ff
+b04_be12:   .db $ff                     ; 13E12:  ff
+b04_be13:   .db $ff                     ; 13E13:  ff
+b04_be14:   .db $ff                     ; 13E14:  ff
+b04_be15:   .db $ff                     ; 13E15:  ff
+b04_be16:   .db $ff                     ; 13E16:  ff
+b04_be17:   .db $ff                     ; 13E17:  ff
+b04_be18:   .db $ff                     ; 13E18:  ff
+b04_be19:   .db $ff                     ; 13E19:  ff
+b04_be1a:   .db $ff                     ; 13E1A:  ff
+b04_be1b:   .db $ff                     ; 13E1B:  ff
+b04_be1c:   .db $ff                     ; 13E1C:  ff
+b04_be1d:   .db $ff                     ; 13E1D:  ff
+b04_be1e:   .db $ff                     ; 13E1E:  ff
+b04_be1f:   .db $ff                     ; 13E1F:  ff
+b04_be20:   .db $ff                     ; 13E20:  ff
+b04_be21:   .db $ff                     ; 13E21:  ff
+b04_be22:   .db $ff                     ; 13E22:  ff
+b04_be23:   .db $ff                     ; 13E23:  ff
+b04_be24:   .db $ff                     ; 13E24:  ff
+b04_be25:   .db $ff                     ; 13E25:  ff
+b04_be26:   .db $ff                     ; 13E26:  ff
+b04_be27:   .db $ff                     ; 13E27:  ff
+b04_be28:   .db $ff                     ; 13E28:  ff
+b04_be29:   .db $ff                     ; 13E29:  ff
+b04_be2a:   .db $ff                     ; 13E2A:  ff
+b04_be2b:   .db $ff                     ; 13E2B:  ff
+b04_be2c:   .db $ff                     ; 13E2C:  ff
+b04_be2d:   .db $ff                     ; 13E2D:  ff
+b04_be2e:   .db $ff                     ; 13E2E:  ff
+b04_be2f:   .db $ff                     ; 13E2F:  ff
+b04_be30:   .db $ff                     ; 13E30:  ff
+b04_be31:   .db $ff                     ; 13E31:  ff
+b04_be32:   .db $ff                     ; 13E32:  ff
+b04_be33:   .db $ff                     ; 13E33:  ff
+b04_be34:   .db $ff                     ; 13E34:  ff
+b04_be35:   .db $ff                     ; 13E35:  ff
+b04_be36:   .db $ff                     ; 13E36:  ff
+b04_be37:   .db $ff                     ; 13E37:  ff
+b04_be38:   .db $ff                     ; 13E38:  ff
+b04_be39:   .db $ff                     ; 13E39:  ff
+b04_be3a:   .db $ff                     ; 13E3A:  ff
+b04_be3b:   .db $ff                     ; 13E3B:  ff
+b04_be3c:   .db $ff                     ; 13E3C:  ff
+b04_be3d:   .db $ff                     ; 13E3D:  ff
+b04_be3e:   .db $ff                     ; 13E3E:  ff
+b04_be3f:   .db $ff                     ; 13E3F:  ff
+b04_be40:   .db $ff                     ; 13E40:  ff
+b04_be41:   .db $ff                     ; 13E41:  ff
+b04_be42:   .db $ff                     ; 13E42:  ff
+b04_be43:   .db $ff                     ; 13E43:  ff
+b04_be44:   .db $ff                     ; 13E44:  ff
+b04_be45:   .db $ff                     ; 13E45:  ff
+b04_be46:   .db $ff                     ; 13E46:  ff
+b04_be47:   .db $ff                     ; 13E47:  ff
+b04_be48:   .db $ff                     ; 13E48:  ff
+b04_be49:   .db $ff                     ; 13E49:  ff
+b04_be4a:   .db $ff                     ; 13E4A:  ff
+b04_be4b:   .db $ff                     ; 13E4B:  ff
+b04_be4c:   .db $ff                     ; 13E4C:  ff
+b04_be4d:   .db $ff                     ; 13E4D:  ff
+b04_be4e:   .db $ff                     ; 13E4E:  ff
+b04_be4f:   .db $ff                     ; 13E4F:  ff
+b04_be50:   .db $ff                     ; 13E50:  ff
+b04_be51:   .db $ff                     ; 13E51:  ff
+b04_be52:   .db $ff                     ; 13E52:  ff
+b04_be53:   .db $ff                     ; 13E53:  ff
+b04_be54:   .db $ff                     ; 13E54:  ff
+b04_be55:   .db $ff                     ; 13E55:  ff
+b04_be56:   .db $ff                     ; 13E56:  ff
+b04_be57:   .db $ff                     ; 13E57:  ff
+b04_be58:   .db $ff                     ; 13E58:  ff
+b04_be59:   .db $ff                     ; 13E59:  ff
+b04_be5a:   .db $ff                     ; 13E5A:  ff
+b04_be5b:   .db $ff                     ; 13E5B:  ff
+b04_be5c:   .db $ff                     ; 13E5C:  ff
+b04_be5d:   .db $ff                     ; 13E5D:  ff
+b04_be5e:   .db $ff                     ; 13E5E:  ff
+b04_be5f:   .db $ff                     ; 13E5F:  ff
+b04_be60:   .db $ff                     ; 13E60:  ff
+b04_be61:   .db $ff                     ; 13E61:  ff
+b04_be62:   .db $ff                     ; 13E62:  ff
+b04_be63:   .db $ff                     ; 13E63:  ff
+b04_be64:   .db $ff                     ; 13E64:  ff
+b04_be65:   .db $ff                     ; 13E65:  ff
+b04_be66:   .db $ff                     ; 13E66:  ff
+b04_be67:   .db $ff                     ; 13E67:  ff
+b04_be68:   .db $ff                     ; 13E68:  ff
+b04_be69:   .db $ff                     ; 13E69:  ff
+b04_be6a:   .db $ff                     ; 13E6A:  ff
+b04_be6b:   .db $ff                     ; 13E6B:  ff
+b04_be6c:   .db $ff                     ; 13E6C:  ff
+b04_be6d:   .db $ff                     ; 13E6D:  ff
+b04_be6e:   .db $ff                     ; 13E6E:  ff
+b04_be6f:   .db $ff                     ; 13E6F:  ff
+b04_be70:   .db $ff                     ; 13E70:  ff
+b04_be71:   .db $ff                     ; 13E71:  ff
+b04_be72:   .db $ff                     ; 13E72:  ff
+b04_be73:   .db $ff                     ; 13E73:  ff
+b04_be74:   .db $ff                     ; 13E74:  ff
+b04_be75:   .db $ff                     ; 13E75:  ff
+b04_be76:   .db $ff                     ; 13E76:  ff
+b04_be77:   .db $ff                     ; 13E77:  ff
+b04_be78:   .db $ff                     ; 13E78:  ff
+b04_be79:   .db $ff                     ; 13E79:  ff
+b04_be7a:   .db $ff                     ; 13E7A:  ff
+b04_be7b:   .db $ff                     ; 13E7B:  ff
+b04_be7c:   .db $ff                     ; 13E7C:  ff
+b04_be7d:   .db $ff                     ; 13E7D:  ff
+b04_be7e:   .db $ff                     ; 13E7E:  ff
+b04_be7f:   .db $ff                     ; 13E7F:  ff
+b04_be80:   .db $ff                     ; 13E80:  ff
+b04_be81:   .db $ff                     ; 13E81:  ff
+b04_be82:   .db $ff                     ; 13E82:  ff
+b04_be83:   .db $ff                     ; 13E83:  ff
+b04_be84:   .db $ff                     ; 13E84:  ff
+b04_be85:   .db $ff                     ; 13E85:  ff
+b04_be86:   .db $ff                     ; 13E86:  ff
+b04_be87:   .db $ff                     ; 13E87:  ff
+b04_be88:   .db $ff                     ; 13E88:  ff
+b04_be89:   .db $ff                     ; 13E89:  ff
+b04_be8a:   .db $ff                     ; 13E8A:  ff
+b04_be8b:   .db $ff                     ; 13E8B:  ff
+b04_be8c:   .db $ff                     ; 13E8C:  ff
+b04_be8d:   .db $ff                     ; 13E8D:  ff
+b04_be8e:   .db $ff                     ; 13E8E:  ff
+b04_be8f:   .db $ff                     ; 13E8F:  ff
+b04_be90:   .db $ff                     ; 13E90:  ff
+b04_be91:   .db $ff                     ; 13E91:  ff
+b04_be92:   .db $ff                     ; 13E92:  ff
+b04_be93:   .db $ff                     ; 13E93:  ff
+b04_be94:   .db $ff                     ; 13E94:  ff
+b04_be95:   .db $ff                     ; 13E95:  ff
+b04_be96:   .db $ff                     ; 13E96:  ff
+b04_be97:   .db $ff                     ; 13E97:  ff
+b04_be98:   .db $ff                     ; 13E98:  ff
+b04_be99:   .db $ff                     ; 13E99:  ff
+b04_be9a:   .db $ff                     ; 13E9A:  ff
+b04_be9b:   .db $ff                     ; 13E9B:  ff
+b04_be9c:   .db $ff                     ; 13E9C:  ff
+b04_be9d:   .db $ff                     ; 13E9D:  ff
+b04_be9e:   .db $ff                     ; 13E9E:  ff
+b04_be9f:   .db $ff                     ; 13E9F:  ff
+b04_bea0:   .db $ff                     ; 13EA0:  ff
+b04_bea1:   .db $ff                     ; 13EA1:  ff
+b04_bea2:   .db $ff                     ; 13EA2:  ff
+b04_bea3:   .db $ff                     ; 13EA3:  ff
+b04_bea4:   .db $ff                     ; 13EA4:  ff
+b04_bea5:   .db $ff                     ; 13EA5:  ff
+b04_bea6:   .db $ff                     ; 13EA6:  ff
+b04_bea7:   .db $ff                     ; 13EA7:  ff
+b04_bea8:   .db $ff                     ; 13EA8:  ff
+b04_bea9:   .db $ff                     ; 13EA9:  ff
+b04_beaa:   .db $ff                     ; 13EAA:  ff
+b04_beab:   .db $ff                     ; 13EAB:  ff
+b04_beac:   .db $ff                     ; 13EAC:  ff
+b04_bead:   .db $ff                     ; 13EAD:  ff
+b04_beae:   .db $ff                     ; 13EAE:  ff
+b04_beaf:   .db $ff                     ; 13EAF:  ff
+b04_beb0:   .db $ff                     ; 13EB0:  ff
+b04_beb1:   .db $ff                     ; 13EB1:  ff
+b04_beb2:   .db $ff                     ; 13EB2:  ff
+b04_beb3:   .db $ff                     ; 13EB3:  ff
+b04_beb4:   .db $ff                     ; 13EB4:  ff
+b04_beb5:   .db $ff                     ; 13EB5:  ff
+b04_beb6:   .db $ff                     ; 13EB6:  ff
+b04_beb7:   .db $ff                     ; 13EB7:  ff
+b04_beb8:   .db $ff                     ; 13EB8:  ff
+b04_beb9:   .db $ff                     ; 13EB9:  ff
+b04_beba:   .db $ff                     ; 13EBA:  ff
+b04_bebb:   .db $ff                     ; 13EBB:  ff
+b04_bebc:   .db $ff                     ; 13EBC:  ff
+b04_bebd:   .db $ff                     ; 13EBD:  ff
+b04_bebe:   .db $ff                     ; 13EBE:  ff
+b04_bebf:   .db $ff                     ; 13EBF:  ff
+b04_bec0:   .db $ff                     ; 13EC0:  ff
+b04_bec1:   .db $ff                     ; 13EC1:  ff
+b04_bec2:   .db $ff                     ; 13EC2:  ff
+b04_bec3:   .db $ff                     ; 13EC3:  ff
+b04_bec4:   .db $ff                     ; 13EC4:  ff
+b04_bec5:   .db $ff                     ; 13EC5:  ff
+b04_bec6:   .db $ff                     ; 13EC6:  ff
+b04_bec7:   .db $ff                     ; 13EC7:  ff
+b04_bec8:   .db $ff                     ; 13EC8:  ff
+b04_bec9:   .db $ff                     ; 13EC9:  ff
+b04_beca:   .db $ff                     ; 13ECA:  ff
+b04_becb:   .db $ff                     ; 13ECB:  ff
+b04_becc:   .db $ff                     ; 13ECC:  ff
+b04_becd:   .db $ff                     ; 13ECD:  ff
+b04_bece:   .db $ff                     ; 13ECE:  ff
+b04_becf:   .db $ff                     ; 13ECF:  ff
+b04_bed0:   .db $ff                     ; 13ED0:  ff
+b04_bed1:   .db $ff                     ; 13ED1:  ff
+b04_bed2:   .db $ff                     ; 13ED2:  ff
+b04_bed3:   .db $ff                     ; 13ED3:  ff
+b04_bed4:   .db $ff                     ; 13ED4:  ff
+b04_bed5:   .db $ff                     ; 13ED5:  ff
+b04_bed6:   .db $ff                     ; 13ED6:  ff
+b04_bed7:   .db $ff                     ; 13ED7:  ff
+b04_bed8:   .db $ff                     ; 13ED8:  ff
+b04_bed9:   .db $ff                     ; 13ED9:  ff
+b04_beda:   .db $ff                     ; 13EDA:  ff
+b04_bedb:   .db $ff                     ; 13EDB:  ff
+b04_bedc:   .db $ff                     ; 13EDC:  ff
+b04_bedd:   .db $ff                     ; 13EDD:  ff
+b04_bede:   .db $ff                     ; 13EDE:  ff
+b04_bedf:   .db $ff                     ; 13EDF:  ff
+b04_bee0:   .db $ff                     ; 13EE0:  ff
+b04_bee1:   .db $ff                     ; 13EE1:  ff
+b04_bee2:   .db $ff                     ; 13EE2:  ff
+b04_bee3:   .db $ff                     ; 13EE3:  ff
+b04_bee4:   .db $ff                     ; 13EE4:  ff
+b04_bee5:   .db $ff                     ; 13EE5:  ff
+b04_bee6:   .db $ff                     ; 13EE6:  ff
+b04_bee7:   .db $ff                     ; 13EE7:  ff
+b04_bee8:   .db $ff                     ; 13EE8:  ff
+b04_bee9:   .db $ff                     ; 13EE9:  ff
+b04_beea:   .db $ff                     ; 13EEA:  ff
+b04_beeb:   .db $ff                     ; 13EEB:  ff
+b04_beec:   .db $ff                     ; 13EEC:  ff
+b04_beed:   .db $ff                     ; 13EED:  ff
+b04_beee:   .db $ff                     ; 13EEE:  ff
+b04_beef:   .db $ff                     ; 13EEF:  ff
+b04_bef0:   .db $ff                     ; 13EF0:  ff
+b04_bef1:   .db $ff                     ; 13EF1:  ff
+b04_bef2:   .db $ff                     ; 13EF2:  ff
+b04_bef3:   .db $ff                     ; 13EF3:  ff
+b04_bef4:   .db $ff                     ; 13EF4:  ff
+b04_bef5:   .db $ff                     ; 13EF5:  ff
+b04_bef6:   .db $ff                     ; 13EF6:  ff
+b04_bef7:   .db $ff                     ; 13EF7:  ff
+b04_bef8:   .db $ff                     ; 13EF8:  ff
+b04_bef9:   .db $ff                     ; 13EF9:  ff
+b04_befa:   .db $ff                     ; 13EFA:  ff
+b04_befb:   .db $ff                     ; 13EFB:  ff
+b04_befc:   .db $ff                     ; 13EFC:  ff
+b04_befd:   .db $ff                     ; 13EFD:  ff
+b04_befe:   .db $ff                     ; 13EFE:  ff
+b04_beff:   .db $ff                     ; 13EFF:  ff
+b04_bf00:   .db $ff                     ; 13F00:  ff
+b04_bf01:   .db $ff                     ; 13F01:  ff
+b04_bf02:   .db $ff                     ; 13F02:  ff
+b04_bf03:   .db $ff                     ; 13F03:  ff
+b04_bf04:   .db $ff                     ; 13F04:  ff
+b04_bf05:   .db $ff                     ; 13F05:  ff
+b04_bf06:   .db $ff                     ; 13F06:  ff
+b04_bf07:   .db $ff                     ; 13F07:  ff
+b04_bf08:   .db $ff                     ; 13F08:  ff
+b04_bf09:   .db $ff                     ; 13F09:  ff
+b04_bf0a:   .db $ff                     ; 13F0A:  ff
+b04_bf0b:   .db $ff                     ; 13F0B:  ff
+b04_bf0c:   .db $ff                     ; 13F0C:  ff
+b04_bf0d:   .db $ff                     ; 13F0D:  ff
+b04_bf0e:   .db $ff                     ; 13F0E:  ff
+b04_bf0f:   .db $ff                     ; 13F0F:  ff
+b04_bf10:   .db $ff                     ; 13F10:  ff
+b04_bf11:   .db $ff                     ; 13F11:  ff
+b04_bf12:   .db $ff                     ; 13F12:  ff
+b04_bf13:   .db $ff                     ; 13F13:  ff
+b04_bf14:   .db $ff                     ; 13F14:  ff
+b04_bf15:   .db $ff                     ; 13F15:  ff
+b04_bf16:   .db $ff                     ; 13F16:  ff
+b04_bf17:   .db $ff                     ; 13F17:  ff
+b04_bf18:   .db $ff                     ; 13F18:  ff
+b04_bf19:   .db $ff                     ; 13F19:  ff
+b04_bf1a:   .db $ff                     ; 13F1A:  ff
+b04_bf1b:   .db $ff                     ; 13F1B:  ff
+b04_bf1c:   .db $ff                     ; 13F1C:  ff
+b04_bf1d:   .db $ff                     ; 13F1D:  ff
+b04_bf1e:   .db $ff                     ; 13F1E:  ff
+b04_bf1f:   .db $ff                     ; 13F1F:  ff
+b04_bf20:   .db $ff                     ; 13F20:  ff
+b04_bf21:   .db $ff                     ; 13F21:  ff
+b04_bf22:   .db $ff                     ; 13F22:  ff
+b04_bf23:   .db $ff                     ; 13F23:  ff
+b04_bf24:   .db $ff                     ; 13F24:  ff
+b04_bf25:   .db $ff                     ; 13F25:  ff
+b04_bf26:   .db $ff                     ; 13F26:  ff
+b04_bf27:   .db $ff                     ; 13F27:  ff
+b04_bf28:   .db $ff                     ; 13F28:  ff
+b04_bf29:   .db $ff                     ; 13F29:  ff
+b04_bf2a:   .db $ff                     ; 13F2A:  ff
+b04_bf2b:   .db $ff                     ; 13F2B:  ff
+b04_bf2c:   .db $ff                     ; 13F2C:  ff
+b04_bf2d:   .db $ff                     ; 13F2D:  ff
+b04_bf2e:   .db $ff                     ; 13F2E:  ff
+b04_bf2f:   .db $ff                     ; 13F2F:  ff
+b04_bf30:   .db $ff                     ; 13F30:  ff
+b04_bf31:   .db $ff                     ; 13F31:  ff
+b04_bf32:   .db $ff                     ; 13F32:  ff
+b04_bf33:   .db $ff                     ; 13F33:  ff
+b04_bf34:   .db $ff                     ; 13F34:  ff
+b04_bf35:   .db $ff                     ; 13F35:  ff
+b04_bf36:   .db $ff                     ; 13F36:  ff
+b04_bf37:   .db $ff                     ; 13F37:  ff
+b04_bf38:   .db $ff                     ; 13F38:  ff
+b04_bf39:   .db $ff                     ; 13F39:  ff
+b04_bf3a:   .db $ff                     ; 13F3A:  ff
+b04_bf3b:   .db $ff                     ; 13F3B:  ff
+b04_bf3c:   .db $ff                     ; 13F3C:  ff
+b04_bf3d:   .db $ff                     ; 13F3D:  ff
+b04_bf3e:   .db $ff                     ; 13F3E:  ff
+b04_bf3f:   .db $ff                     ; 13F3F:  ff
+b04_bf40:   .db $ff                     ; 13F40:  ff
+b04_bf41:   .db $ff                     ; 13F41:  ff
+b04_bf42:   .db $ff                     ; 13F42:  ff
+b04_bf43:   .db $ff                     ; 13F43:  ff
+b04_bf44:   .db $ff                     ; 13F44:  ff
+b04_bf45:   .db $ff                     ; 13F45:  ff
+b04_bf46:   .db $ff                     ; 13F46:  ff
+b04_bf47:   .db $ff                     ; 13F47:  ff
+b04_bf48:   .db $ff                     ; 13F48:  ff
+b04_bf49:   .db $ff                     ; 13F49:  ff
+b04_bf4a:   .db $ff                     ; 13F4A:  ff
+b04_bf4b:   .db $ff                     ; 13F4B:  ff
+b04_bf4c:   .db $ff                     ; 13F4C:  ff
+b04_bf4d:   .db $ff                     ; 13F4D:  ff
+b04_bf4e:   .db $ff                     ; 13F4E:  ff
+b04_bf4f:   .db $ff                     ; 13F4F:  ff
+b04_bf50:   .db $ff                     ; 13F50:  ff
+b04_bf51:   .db $ff                     ; 13F51:  ff
+b04_bf52:   .db $ff                     ; 13F52:  ff
+b04_bf53:   .db $ff                     ; 13F53:  ff
+b04_bf54:   .db $ff                     ; 13F54:  ff
+b04_bf55:   .db $ff                     ; 13F55:  ff
+b04_bf56:   .db $ff                     ; 13F56:  ff
+b04_bf57:   .db $ff                     ; 13F57:  ff
+b04_bf58:   .db $ff                     ; 13F58:  ff
+b04_bf59:   .db $ff                     ; 13F59:  ff
+b04_bf5a:   .db $ff                     ; 13F5A:  ff
+b04_bf5b:   .db $ff                     ; 13F5B:  ff
+b04_bf5c:   .db $ff                     ; 13F5C:  ff
+b04_bf5d:   .db $ff                     ; 13F5D:  ff
+b04_bf5e:   .db $ff                     ; 13F5E:  ff
+b04_bf5f:   .db $ff                     ; 13F5F:  ff
+b04_bf60:   .db $ff                     ; 13F60:  ff
+b04_bf61:   .db $ff                     ; 13F61:  ff
+b04_bf62:   .db $ff                     ; 13F62:  ff
+b04_bf63:   .db $ff                     ; 13F63:  ff
+b04_bf64:   .db $ff                     ; 13F64:  ff
+b04_bf65:   .db $ff                     ; 13F65:  ff
+b04_bf66:   .db $ff                     ; 13F66:  ff
+b04_bf67:   .db $ff                     ; 13F67:  ff
+b04_bf68:   .db $ff                     ; 13F68:  ff
+b04_bf69:   .db $ff                     ; 13F69:  ff
+b04_bf6a:   .db $ff                     ; 13F6A:  ff
+b04_bf6b:   .db $ff                     ; 13F6B:  ff
+b04_bf6c:   .db $ff                     ; 13F6C:  ff
+b04_bf6d:   .db $ff                     ; 13F6D:  ff
+b04_bf6e:   .db $ff                     ; 13F6E:  ff
+b04_bf6f:   .db $ff                     ; 13F6F:  ff
+b04_bf70:   .db $ff                     ; 13F70:  ff
+b04_bf71:   .db $ff                     ; 13F71:  ff
+b04_bf72:   .db $ff                     ; 13F72:  ff
+b04_bf73:   .db $ff                     ; 13F73:  ff
+b04_bf74:   .db $ff                     ; 13F74:  ff
+b04_bf75:   .db $ff                     ; 13F75:  ff
+b04_bf76:   .db $ff                     ; 13F76:  ff
+b04_bf77:   .db $ff                     ; 13F77:  ff
+b04_bf78:   .db $ff                     ; 13F78:  ff
+b04_bf79:   .db $ff                     ; 13F79:  ff
+b04_bf7a:   .db $ff                     ; 13F7A:  ff
+b04_bf7b:   .db $ff                     ; 13F7B:  ff
+b04_bf7c:   .db $ff                     ; 13F7C:  ff
+b04_bf7d:   .db $ff                     ; 13F7D:  ff
+b04_bf7e:   .db $ff                     ; 13F7E:  ff
+b04_bf7f:   .db $ff                     ; 13F7F:  ff
+b04_bf80:   .db $ff                     ; 13F80:  ff
+b04_bf81:   .db $ff                     ; 13F81:  ff
+b04_bf82:   .db $ff                     ; 13F82:  ff
+b04_bf83:   .db $ff                     ; 13F83:  ff
+b04_bf84:   .db $ff                     ; 13F84:  ff
+b04_bf85:   .db $ff                     ; 13F85:  ff
+b04_bf86:   .db $ff                     ; 13F86:  ff
+b04_bf87:   .db $ff                     ; 13F87:  ff
+b04_bf88:   .db $ff                     ; 13F88:  ff
+b04_bf89:   .db $ff                     ; 13F89:  ff
+b04_bf8a:   .db $ff                     ; 13F8A:  ff
+b04_bf8b:   .db $ff                     ; 13F8B:  ff
+b04_bf8c:   .db $ff                     ; 13F8C:  ff
+b04_bf8d:   .db $ff                     ; 13F8D:  ff
+b04_bf8e:   .db $ff                     ; 13F8E:  ff
+b04_bf8f:   .db $ff                     ; 13F8F:  ff
+b04_bf90:   .db $ff                     ; 13F90:  ff
+b04_bf91:   .db $ff                     ; 13F91:  ff
+b04_bf92:   .db $ff                     ; 13F92:  ff
+b04_bf93:   .db $ff                     ; 13F93:  ff
+b04_bf94:   .db $ff                     ; 13F94:  ff
+b04_bf95:   .db $ff                     ; 13F95:  ff
+b04_bf96:   .db $ff                     ; 13F96:  ff
+b04_bf97:   .db $ff                     ; 13F97:  ff
+b04_bf98:   .db $ff                     ; 13F98:  ff
+b04_bf99:   .db $ff                     ; 13F99:  ff
+b04_bf9a:   .db $ff                     ; 13F9A:  ff
+b04_bf9b:   .db $ff                     ; 13F9B:  ff
+b04_bf9c:   .db $ff                     ; 13F9C:  ff
+b04_bf9d:   .db $ff                     ; 13F9D:  ff
+b04_bf9e:   .db $ff                     ; 13F9E:  ff
+b04_bf9f:   .db $ff                     ; 13F9F:  ff
+b04_bfa0:   .db $ff                     ; 13FA0:  ff
+b04_bfa1:   .db $ff                     ; 13FA1:  ff
+b04_bfa2:   .db $ff                     ; 13FA2:  ff
+b04_bfa3:   .db $ff                     ; 13FA3:  ff
+b04_bfa4:   .db $ff                     ; 13FA4:  ff
+b04_bfa5:   .db $ff                     ; 13FA5:  ff
+b04_bfa6:   .db $ff                     ; 13FA6:  ff
+b04_bfa7:   .db $ff                     ; 13FA7:  ff
+b04_bfa8:   .db $ff                     ; 13FA8:  ff
+b04_bfa9:   .db $ff                     ; 13FA9:  ff
+b04_bfaa:   .db $ff                     ; 13FAA:  ff
+b04_bfab:   .db $ff                     ; 13FAB:  ff
+b04_bfac:   .db $ff                     ; 13FAC:  ff
+b04_bfad:   .db $ff                     ; 13FAD:  ff
+b04_bfae:   .db $ff                     ; 13FAE:  ff
+b04_bfaf:   .db $ff                     ; 13FAF:  ff
+b04_bfb0:   .db $ff                     ; 13FB0:  ff
+b04_bfb1:   .db $ff                     ; 13FB1:  ff
+b04_bfb2:   .db $ff                     ; 13FB2:  ff
+b04_bfb3:   .db $ff                     ; 13FB3:  ff
+b04_bfb4:   .db $ff                     ; 13FB4:  ff
+b04_bfb5:   .db $ff                     ; 13FB5:  ff
+b04_bfb6:   .db $ff                     ; 13FB6:  ff
+b04_bfb7:   .db $ff                     ; 13FB7:  ff
+b04_bfb8:   .db $ff                     ; 13FB8:  ff
+b04_bfb9:   .db $ff                     ; 13FB9:  ff
+b04_bfba:   .db $ff                     ; 13FBA:  ff
+b04_bfbb:   .db $ff                     ; 13FBB:  ff
+b04_bfbc:   .db $ff                     ; 13FBC:  ff
+b04_bfbd:   .db $ff                     ; 13FBD:  ff
+b04_bfbe:   .db $ff                     ; 13FBE:  ff
+b04_bfbf:   .db $ff                     ; 13FBF:  ff
+b04_bfc0:   .db $ff                     ; 13FC0:  ff
+b04_bfc1:   .db $ff                     ; 13FC1:  ff
+b04_bfc2:   .db $ff                     ; 13FC2:  ff
+b04_bfc3:   .db $ff                     ; 13FC3:  ff
+b04_bfc4:   .db $ff                     ; 13FC4:  ff
+b04_bfc5:   .db $ff                     ; 13FC5:  ff
+b04_bfc6:   .db $ff                     ; 13FC6:  ff
+b04_bfc7:   .db $ff                     ; 13FC7:  ff
+b04_bfc8:   .db $ff                     ; 13FC8:  ff
+b04_bfc9:   .db $ff                     ; 13FC9:  ff
+b04_bfca:   .db $ff                     ; 13FCA:  ff
+b04_bfcb:   .db $ff                     ; 13FCB:  ff
+b04_bfcc:   .db $ff                     ; 13FCC:  ff
+b04_bfcd:   .db $ff                     ; 13FCD:  ff
+b04_bfce:   .db $ff                     ; 13FCE:  ff
+b04_bfcf:   .db $ff                     ; 13FCF:  ff
+b04_bfd0:   .db $ff                     ; 13FD0:  ff
+b04_bfd1:   .db $ff                     ; 13FD1:  ff
+b04_bfd2:   .db $ff                     ; 13FD2:  ff
+b04_bfd3:   .db $ff                     ; 13FD3:  ff
+b04_bfd4:   .db $ff                     ; 13FD4:  ff
+b04_bfd5:   .db $ff                     ; 13FD5:  ff
+b04_bfd6:   .db $ff                     ; 13FD6:  ff
+b04_bfd7:   .db $ff                     ; 13FD7:  ff
+b04_bfd8:   .db $ff                     ; 13FD8:  ff
+b04_bfd9:   .db $ff                     ; 13FD9:  ff
+b04_bfda:   .db $ff                     ; 13FDA:  ff
+b04_bfdb:   .db $ff                     ; 13FDB:  ff
+b04_bfdc:   .db $ff                     ; 13FDC:  ff
+b04_bfdd:   .db $ff                     ; 13FDD:  ff
+b04_bfde:   .db $ff                     ; 13FDE:  ff
+b04_bfdf:   .db $ff                     ; 13FDF:  ff
+b04_bfe0:   .db $ff                     ; 13FE0:  ff
+b04_bfe1:   .db $ff                     ; 13FE1:  ff
+b04_bfe2:   .db $ff                     ; 13FE2:  ff
+b04_bfe3:   .db $ff                     ; 13FE3:  ff
+b04_bfe4:   .db $ff                     ; 13FE4:  ff
+b04_bfe5:   .db $ff                     ; 13FE5:  ff
+b04_bfe6:   .db $ff                     ; 13FE6:  ff
+b04_bfe7:   .db $ff                     ; 13FE7:  ff
+b04_bfe8:   .db $ff                     ; 13FE8:  ff
+b04_bfe9:   .db $ff                     ; 13FE9:  ff
+b04_bfea:   .db $ff                     ; 13FEA:  ff
+b04_bfeb:   .db $ff                     ; 13FEB:  ff
+b04_bfec:   .db $ff                     ; 13FEC:  ff
+b04_bfed:   .db $ff                     ; 13FED:  ff
+b04_bfee:   .db $ff                     ; 13FEE:  ff
+b04_bfef:   .db $ff                     ; 13FEF:  ff
+b04_bff0:   .db $ff                     ; 13FF0:  ff
+b04_bff1:   .db $ff                     ; 13FF1:  ff
+b04_bff2:   .db $ff                     ; 13FF2:  ff
+b04_bff3:   .db $ff                     ; 13FF3:  ff
+b04_bff4:   .db $ff                     ; 13FF4:  ff
+b04_bff5:   .db $ff                     ; 13FF5:  ff
+b04_bff6:   .db $ff                     ; 13FF6:  ff
+b04_bff7:   .db $ff                     ; 13FF7:  ff
+b04_bff8:   .db $ff                     ; 13FF8:  ff
+b04_bff9:   .db $ff                     ; 13FF9:  ff
+b04_bffa:   .db $ff                     ; 13FFA:  ff
+b04_bffb:   .db $ff                     ; 13FFB:  ff
+b04_bffc:   .db $ff                     ; 13FFC:  ff
+b04_bffd:   .db $ff                     ; 13FFD:  ff
+b04_bffe:   .db $ff                     ; 13FFE:  ff
+b04_bfff:   .db $ff                     ; 13FFF:  ff

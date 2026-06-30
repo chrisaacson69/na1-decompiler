@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 0
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1336 CPU addresses named
+  labels:       0 CPU addresses named
 
   bank 0: found 98 bytecode-subroutine stubs
 
@@ -1151,7 +1151,7 @@ VM bytecode disassembly
   $8837  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $883B  09                         LOADL_quick   ; inline operand = 9
   $883C  D2                         LSHIFT1
-  $883D  8C AE F8                   LOADR_imm2             $F8AE (fief_stat_name_ptrs)
+  $883D  8C AE F8                   LOADR_imm2             $F8AE (fief_stat_name_ptrs_alias)
   $8840  BB                         ADD
   $8841  B0                         DEREF
   $8842  B3                         PUSHL
@@ -2540,7 +2540,7 @@ VM bytecode disassembly
   $921B  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
   $921F  B3                         PUSHL
   $9220  A4 9F 6D                   LOADL_abs              $6D9F (current_game_year)
-  $9223  90 E8 F9                   ADD_imm2               $F9E8 (msg_will_you_lead_them_personally)
+  $9223  90 E8 F9                   ADD_imm2               $F9E8
   $9226  52                         LOADR_qimm   ; inline operand = 2
   $9227  B6                         SDIV
   $9228  72                         ADD_qimm   ; inline operand = 2
@@ -2597,7 +2597,7 @@ VM bytecode disassembly
   $928A  E9 0D D7 04                CALL_abs_imm1          $D70D (pct_op) {bytecode}, $04
   $928E  A8 11 6E                   STORE_abs              $6E11 (gold_men_hire_rate)
   $9291  A4 9F 6D                   LOADL_abs              $6D9F (current_game_year)
-  $9294  90 E8 F9                   ADD_imm2               $F9E8 (msg_will_you_lead_them_personally)
+  $9294  90 E8 F9                   ADD_imm2               $F9E8
   $9297  5A                         LOADR_qimm   ; inline operand = 10
   $9298  B5                         MULT
   $9299  B3                         PUSHL
@@ -5012,7 +5012,7 @@ VM bytecode disassembly
   $A2C9  3B                         PUSH_quick   ; inline operand = 11
   $A2CA  E9 5B A1 02                CALL_abs_imm1          $A15B (consume_province_army_upkeep) {bytecode}, $02
   $A2CE  3A                         PUSH_quick   ; inline operand = 10
-  $A2CF  E9 36 D8 02                CALL_abs_imm1          $D836 (cap_fief_stats) {bytecode}, $02
+  $A2CF  E9 36 D8 02                CALL_abs_imm1          $D836 {bytecode}, $02
   $A2D3  0A                         LOADL_quick   ; inline operand = 10
   $A2D4  D0                         INC
  >$A2D5  2A                         STORE_quick   ; inline operand = 10
@@ -5254,7 +5254,7 @@ VM bytecode disassembly
   $A49B  40                         LOADL_qimm   ; inline operand = 0
   $A49C  D6 AE A4                   JUMP_abs               $A4AE
  >$A49F  39                         PUSH_quick   ; inline operand = 9
-  $A4A0  E9 36 D8 02                CALL_abs_imm1          $D836 (cap_fief_stats) {bytecode}, $02
+  $A4A0  E9 36 D8 02                CALL_abs_imm1          $D836 {bytecode}, $02
   $A4A4  09                         LOADL_quick   ; inline operand = 9
   $A4A5  8C D4 6D                   LOADR_imm2             $6DD4 (daimyo_weakness_flag)
   $A4A8  BB                         ADD
@@ -5667,7 +5667,7 @@ VM bytecode disassembly
   $A747  40                         LOADL_qimm   ; inline operand = 0
   $A748  D6 6E A7                   JUMP_abs               $A76E
  >$A74B  3B                         PUSH_quick   ; inline operand = 11
-  $A74C  E9 36 D8 02                CALL_abs_imm1          $D836 (cap_fief_stats) {bytecode}, $02
+  $A74C  E9 36 D8 02                CALL_abs_imm1          $D836 {bytecode}, $02
   $A750  AA 9D 6D                   PUSH_abs               $6D9D (scenario_fief_count)
   $A753  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
   $A757  8C 1B 6F                   LOADR_imm2             $6F1B (daimyo_turn_order)

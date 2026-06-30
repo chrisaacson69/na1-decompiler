@@ -1,3144 +1,11664 @@
 .base $8000
 
-tab_b6_8000: ; 77 bytes
-            hex 4c 00 00 00 4d 4d 4d 4d ; 18000:  4c 00 00 00 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18008:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18010:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18018:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4e 4f ; 18020:  4d 4d 4d 4d 4d 4d 4e 4f
-            hex 4d 52 4d 4d 4d 4d 4d 4d ; 18028:  4d 52 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 5c 4d 4d 5f 4d 4d ; 18030:  4d 4d 5c 4d 4d 5f 4d 4d
-            hex 4d 4d 66 67 6a 6b 6e 6f ; 18038:  4d 4d 66 67 6a 6b 6e 6f
-            hex 72 4d 4d 4d 4d 4d 50 51 ; 18040:  72 4d 4d 4d 4d 4d 50 51
-            hex 53 54 55 56 57          ; 18048:  53 54 55 56 57
-
-            cli                         ; 1804D:  58
-            eor $5b5a,y                 ; 1804E:  59 5a 5b
-            eor $5e5d                   ; 18051:  4d 5d 5e
-            rts                         ; 18054:  60
-
-tab_b6_8055: ; 639 bytes
-            hex 61 62 63 64 65 68 69 6c ; 18055:  61 62 63 64 65 68 69 6c
-            hex 6d 70 71 73 4d 4d 4d 4d ; 1805D:  6d 70 71 73 4d 4d 4d 4d
-            hex 4d 74 75 76 77 78 79 7a ; 18065:  4d 74 75 76 77 78 79 7a
-            hex 7b 7d 7e 80 81 82 83 84 ; 1806D:  7b 7d 7e 80 81 82 83 84
-            hex 85 86 87 88 89 8a 4d 8b ; 18075:  85 86 87 88 89 8a 4d 8b
-            hex 4d 8d 8e 4d 4d 4d 4d 4d ; 1807D:  4d 8d 8e 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18085:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 7c 7f 4d 4d 4d 4d 4d 4d ; 1808D:  7c 7f 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 8c ; 18095:  4d 4d 4d 4d 4d 4d 4d 8c
-            hex 4d 8f 4d 4d 4d 4d 4d 4d ; 1809D:  4d 8f 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 180A5:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 180AD:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 90 ; 180B5:  4d 4d 4d 4d 4d 4d 4d 90
-            hex 4d 92 4d 4d 4d 4d 4d 4d ; 180BD:  4d 92 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 180C5:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 180CD:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 91 ; 180D5:  4d 4d 4d 4d 4d 4d 4d 91
-            hex 4d 93 4d 4d 4d 4d 4d 4d ; 180DD:  4d 93 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 180E5:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 180ED:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 95 97 98 9b ; 180F5:  4d 4d 4d 4d 95 97 98 9b
-            hex 4d 9d 4d 4d 4d 4d 4d 4d ; 180FD:  4d 9d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18105:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 1810D:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 94 4d 4d 96 99 9a 9c ; 18115:  4d 94 4d 4d 96 99 9a 9c
-            hex 4d 9e 4d 4d 4d 4d 4d 4d ; 1811D:  4d 9e 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18125:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 1812D:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 9f a1 a2 a3 a4 4d a7 a8 ; 18135:  9f a1 a2 a3 a4 4d a7 a8
-            hex 4d aa 4d 4d 4d 4d 4d 4d ; 1813D:  4d aa 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18145:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 1814D:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex a0 4d 4d a5 a6 4d 4d a9 ; 18155:  a0 4d 4d a5 a6 4d 4d a9
-            hex 4d 93 4d 4d 4d 4d 4d 4d ; 1815D:  4d 93 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18165:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 1816D:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex ab ad ae 4d b1 4d 4d b2 ; 18175:  ab ad ae 4d b1 4d 4d b2
-            hex b3 b5 b6 4d 4d 4d 4d 4d ; 1817D:  b3 b5 b6 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18185:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 1818D:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex ac af b0 4d 4d 4d 4d 4d ; 18195:  ac af b0 4d 4d 4d 4d 4d
-            hex b4 b7 b8 4d 4d 4d 4d 4d ; 1819D:  b4 b7 b8 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 181A5:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 181AD:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d b9 ba bd 4d 4d 4d 4d ; 181B5:  4d b9 ba bd 4d 4d 4d 4d
-            hex 4d c1 c2 c5 4d 4d 4d 4d ; 181BD:  4d c1 c2 c5 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 181C5:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 181CD:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d bb bc be 4d bf 4d c0 ; 181D5:  4d bb bc be 4d bf 4d c0
-            hex 4d c3 c4 4d 4d 4d 4d 4d ; 181DD:  4d c3 c4 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 181E5:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 181ED:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d c6 c7 ca cb ce cf d2 ; 181F5:  4d c6 c7 ca cb ce cf d2
-            hex d3 d6 4d 4d 4d 4d 4d 4d ; 181FD:  d3 d6 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 18205:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d 4d 4d 4d 4d 4d 4d 4d ; 1820D:  4d 4d 4d 4d 4d 4d 4d 4d
-            hex 4d c8 c9 cc cd d0 d1 d4 ; 18215:  4d c8 c9 cc cd d0 d1 d4
-            hex d5 d7 d8 4d 4d 4d 4d d9 ; 1821D:  d5 d7 d8 4d 4d 4d 4d d9
-            hex d9 d9 d9 d9 d9 d9 d9 d9 ; 18225:  d9 d9 d9 d9 d9 d9 d9 d9
-            hex d9 db dc df e0 e0 e2 e4 ; 1822D:  d9 db dc df e0 e0 e2 e4
-            hex e5 e8 e9 eb ec ef f0 f3 ; 18235:  e5 e8 e9 eb ec ef f0 f3
-            hex f4 f6 f7 fa fb fd e0 da ; 1823D:  f4 f6 f7 fa fb fd e0 da
-            hex da da da da da da da da ; 18245:  da da da da da da da da
-            hex da dd de de e1 e3 e3 e6 ; 1824D:  da dd de de e1 e3 e3 e6
-            hex e7 e7 ea ed ee f1 f2 f5 ; 18255:  e7 e7 ea ed ee f1 f2 f5
-            hex ea f8 f9 fc e3 e3 e3 00 ; 1825D:  ea f8 f9 fc e3 e3 e3 00
-            hex 00 00 00 00 00 00 00 00 ; 18265:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1826D:  00 00 00 00 00 00 00 00
-            hex 00 00 00 18 3c 3e 7e 00 ; 18275:  00 00 00 18 3c 3e 7e 00
-            hex 00 00 00 18 3c 3e 7e 00 ; 1827D:  00 00 00 18 3c 3e 7e 00
-            hex 00 00 00 0c 0e 0e 0c 00 ; 18285:  00 00 00 0c 0e 0e 0c 00
-            hex 00 00 00 0c 0e 0e 0c 7f ; 1828D:  00 00 00 0c 0e 0e 0c 7f
-            hex 7f 7f 7f 7f 7f 7f f7 7f ; 18295:  7f 7f 7f 7f 7f 7f f7 7f
-            hex 7f 7f 7f 7f 7f 7f f7 1c ; 1829D:  7f 7f 7f 7f 7f 7f f7 1c
-            hex 1c 1c 1c 19 bb bb bb 1c ; 182A5:  1c 1c 1c 19 bb bb bb 1c
-            hex 1c 1c 1c 19 bb bb bb 00 ; 182AD:  1c 1c 1c 19 bb bb bb 00
-            hex 00 00 00 30 78 f8 f8 00 ; 182B5:  00 00 00 30 78 f8 f8 00
-            hex 00 00 00 30 78 f8 f8 00 ; 182BD:  00 00 00 30 78 f8 f8 00
-            hex 01 01 f1 f9 fb fb 3b 00 ; 182C5:  01 01 f1 f9 fb fb 3b 00
-            hex 01 01 f1 f9 fb fb 3b    ; 182CD:  01 01 f1 f9 fb fb 3b
-
-            beq tab_b6_8055+625         ; 182D4:  f0 f0
-            beq tab_b6_8055+611         ; 182D6:  f0 e0
-            sbc ($c1,x)                 ; 182D8:  e1 c1
-            cmp ($b3,x)                 ; 182DA:  c1 b3
-            beq tab_b6_8055+633         ; 182DC:  f0 f0
-            beq tab_b6_8055+619         ; 182DE:  f0 e0
-            sbc ($c1,x)                 ; 182E0:  e1 c1
-            cmp ($b3,x)                 ; 182E2:  c1 b3
-            brk                         ; 182E4:  00
-            hex 00                      ; 182E5:  00
-            brk                         ; 182E6:  00
-            hex 00                      ; 182E7:  00
-            cpy #$cc                    ; 182E8:  c0 cc
-            hex 8e 9c 00 ; stx $009c    ; 182EA:  8e 9c 00
-            brk                         ; 182ED:  00
-            hex 00                      ; 182EE:  00
-            brk                         ; 182EF:  00
-            hex c0                      ; 182F0:  c0
-            cpy tab_b6_9bef+159         ; 182F1:  cc 8e 9c
-            brk                         ; 182F4:  00
-            hex 00                      ; 182F5:  00
-            brk                         ; 182F6:  00
-            hex 00                      ; 182F7:  00
-            rts                         ; 182F8:  60
-
-            ror $ff7f                   ; 182F9:  6e 7f ff
-            brk                         ; 182FC:  00
-            hex 00                      ; 182FD:  00
-            brk                         ; 182FE:  00
-            hex 00                      ; 182FF:  00
-            rts                         ; 18300:  60
-
-            hex 6e 7f ff 00 00 03 0f 0f ; 18301:  6e 7f ff 00 00 03 0f 0f
-            hex 1b 11 11 00 00 03 0f 0f ; 18309:  1b 11 11 00 00 03 0f 0f
-            hex 1b 11 11 00 00 00 81 c3 ; 18311:  1b 11 11 00 00 00 81 c3
-            hex c7 c7 cf 00 00 00 81 c3 ; 18319:  c7 c7 cf 00 00 00 81 c3
-            hex c7 c7 cf                ; 18321:  c7 c7 cf
-
-            brk                         ; 18324:  00
-            hex 00                      ; 18325:  00
-            rts                         ; 18326:  60
-
-            hex f0 f8 ef                ; 18327:  f0 f8 ef
-
-            sta $0d                     ; 1832A:  85 0d
-            brk                         ; 1832C:  00
-            hex 00                      ; 1832D:  00
-            rts                         ; 1832E:  60
-
-            hex f0 f8 ef 85 0d 00 00 18 ; 1832F:  f0 f8 ef 85 0d 00 00 18
-            hex 7c fe fe 9e 1c 00 00 18 ; 18337:  7c fe fe 9e 1c 00 00 18
-            hex 7c fe fe 9e 1c 60 e0 c0 ; 1833F:  7c fe fe 9e 1c 60 e0 c0
-            hex 83 8e 1c 3c 3f 60 e0 c0 ; 18347:  83 8e 1c 3c 3f 60 e0 c0
-            hex 83 8e 1c 3c 3f 00 00 00 ; 1834F:  83 8e 1c 3c 3f 00 00 00
-            hex 00 00 0f 1f 1f 00 00 00 ; 18357:  00 00 0f 1f 1f 00 00 00
-            hex 00 00 0f 1f 1f 3f 3f 33 ; 1835F:  00 00 0f 1f 1f 3f 3f 33
-            hex 73 73 63 e3 ef 3f 3f 33 ; 18367:  73 73 63 e3 ef 3f 3f 33
-            hex 73 73 63 e3 ef 00 00 00 ; 1836F:  73 73 63 e3 ef 00 00 00
-            hex 00 87 87 87 ff 00 00 00 ; 18377:  00 87 87 87 ff 00 00 00
-            hex 00 87 87 87 ff 00 00 00 ; 1837F:  00 87 87 87 ff 00 00 00
-            hex 00 00 03 07 07 00 00 00 ; 18387:  00 00 03 07 07 00 00 00
-            hex 00 00 03 07 07 00 00 00 ; 1838F:  00 00 03 07 07 00 00 00
-            hex 00 00 36 7f ff 00 00 00 ; 18397:  00 00 36 7f ff 00 00 00
-            hex 00 00 36 7f ff 0f 0f 0f ; 1839F:  00 00 36 7f ff 0f 0f 0f
-            hex 1f 1f 1e 1e 3c 0f 0f 0f ; 183A7:  1f 1f 1e 1e 3c 0f 0f 0f
-            hex 1f 1f 1e 1e 3c 83 87 07 ; 183AF:  1f 1f 1e 1e 3c 83 87 07
-            hex 0e 1c 00 06 0f 83 87 07 ; 183B7:  0e 1c 00 06 0f 83 87 07
-            hex 0e 1c 00 06 0f 0e 8c 1c ; 183BF:  0e 1c 00 06 0f 0e 8c 1c
-            hex 1f 7f 7f 7f 38 0e 8c 1c ; 183C7:  1f 7f 7f 7f 38 0e 8c 1c
-            hex 1f 7f 7f 7f 38 06 0e 1c ; 183CF:  1f 7f 7f 7f 38 06 0e 1c
-            hex 98 00 04 0e 1c 06 0e 1c ; 183D7:  98 00 04 0e 1c 06 0e 1c
-            hex 98 00 04 0e 1c 00 00 00 ; 183DF:  98 00 04 0e 1c 00 00 00
-            hex 00 38 7c 7e fe 00 00 00 ; 183E7:  00 38 7c 7e fe 00 00 00
-            hex 00 38 7c 7e fe 00 00 00 ; 183EF:  00 38 7c 7e fe 00 00 00
-            hex 00 00 00 01 02 00 00 00 ; 183F7:  00 00 00 01 02 00 00 00
-            hex 00 00 00 01 02 00 00 00 ; 183FF:  00 00 00 01 02 00 00 00
-            hex 00 00 fc 02 f9 00 00 00 ; 18407:  00 00 fc 02 f9 00 00 00
-            hex 00 00 fc 02 f9 02 02 02 ; 1840F:  00 00 fc 02 f9 02 02 02
-            hex 02 e2 f1 f0 fe 02 02 02 ; 18417:  02 e2 f1 f0 fe 02 02 02
-            hex 02 e2 f1 f0 fe cd cd f9 ; 1841F:  02 e2 f1 f0 fe cd cd f9
-            hex cd cd 02 fc 00 cd cd f9 ; 18427:  cd cd 02 fc 00 cd cd f9
-            hex cd cd 02 fc 00 00 00 0f ; 1842F:  cd cd 02 fc 00 00 00 0f
-            hex 18 13 14 14 14 00 00 00 ; 18437:  18 13 14 14 14 00 00 00
-            hex 07 0f 0c 0c 0c 00 00 ff ; 1843F:  07 0f 0c 0c 0c 00 00 ff
-            hex 40 9e e1 00 80 00 00 00 ; 18447:  40 9e e1 00 80 00 00 00
-            hex bf ff e1 00 80 14 34 24 ; 1844F:  bf ff e1 00 80 14 34 24
-            hex 28 28 28 28 29 0c 0c 1c ; 18457:  28 28 28 28 29 0c 0c 1c
-            hex 18 18 18 18 19 c0 a0 9f ; 1845F:  18 18 18 18 19 c0 a0 9f
-            hex f0 0e 01 00 00 c0 e0 ff ; 18467:  f0 0e 01 00 00 c0 e0 ff
-            hex ff 0f 01 00 00 00 00 83 ; 1846F:  ff 0f 01 00 00 00 00 83
-            hex ee 38 83 7c 00 00 00 00 ; 18477:  ee 38 83 7c 00 00 00 00
-            hex 01 c7 ff 7c 00 00 ff 80 ; 1847F:  01 c7 ff 7c 00 00 ff 80
-            hex 3e c1 1e 43 2c 00 00 7f ; 18487:  3e c1 1e 43 2c 00 00 7f
-            hex ff c1 1e 43 2c 01 00 e0 ; 1848F:  ff c1 1e 43 2c 01 00 e0
-            hex 18 07 e0 1e 01 01 00 e0 ; 18497:  18 07 e0 1e 01 01 00 e0
-            hex f8 ff ff 1f 01 df 01 0e ; 1849F:  f8 ff ff 1f 01 df 01 0e
-            hex 71 86 3f 19 c8 df 01 0e ; 184A7:  71 86 3f 19 c8 df 01 0e
-            hex 7f f9 c0 e0 f0 00 80    ; 184AF:  7f f9 c0 e0 f0 00 80
-
-            beq tab_b6_84c7+9           ; 184B6:  f0 18
-            cpy $d424                   ; 184B8:  cc 24 d4
-            ldy $00                     ; 184BB:  a4 00
-            brk                         ; 184BD:  00
-            hex 00                      ; 184BE:  00
-            cpx #$f0                    ; 184BF:  e0 f0
-            sec                         ; 184C1:  38
-            cld                         ; 184C2:  d8
-            sed                         ; 184C3:  f8
-            jmp $48a8                   ; 184C4:  4c a8 48
-
-tab_b6_84c7: ; 16 bytes
-            hex a8 48 18 f0 00 70 b0 70 ; 184C7:  a8 48 18 f0 00 70 b0 70
-            hex b0 f0 e0 00 00 f3 e3 e3 ; 184CF:  b0 f0 e0 00 00 f3 e3 e3
-
-            sbc ($e1,x)                 ; 184D7:  e1 e1
-            rts                         ; 184D9:  60
-
-            hex 60 00 f3 e3 e3          ; 184DA:  60 00 f3 e3 e3
-
-            sbc ($e1,x)                 ; 184DF:  e1 e1
-            rts                         ; 184E1:  60
-
-            hex 60 00 b7 f7 f7 f7 f7 e3 ; 184E2:  60 00 b7 f7 f7 f7 f7 e3
-            hex e0 00 b7 f7 f7 f7 f7 e3 ; 184EA:  e0 00 b7 f7 f7 f7 f7 e3
-            hex e0 00 3b 77 f7 eb c1 81 ; 184F2:  e0 00 3b 77 f7 eb c1 81
-            hex 00 00 3b 77 f7 eb c1 81 ; 184FA:  00 00 3b 77 f7 eb c1 81
-            hex 00 00 fb 9f 93 db fb    ; 18502:  00 00 fb 9f 93 db fb
-
-            sbc ($f0),y                 ; 18509:  f1 f0
-            rts                         ; 1850B:  60
-
-            hex fb 9f 93 db fb          ; 1850C:  fb 9f 93 db fb
-
-            sbc ($f0),y                 ; 18511:  f1 f0
-            rts                         ; 18513:  60
-
-            hex 9c bc fc fc dc 0c 0c 00 ; 18514:  9c bc fc fc dc 0c 0c 00
-            hex 9c bc fc fc dc 0c 0c 00 ; 1851C:  9c bc fc fc dc 0c 0c 00
-            hex ff f7 e7 c7 c7 03 03 00 ; 18524:  ff f7 e7 c7 c7 03 03 00
-            hex ff f7 e7 c7 c7 03 03 00 ; 1852C:  ff f7 e7 c7 c7 03 03 00
-            hex 33 37 3f 3d 3d 80 00 00 ; 18534:  33 37 3f 3d 3d 80 00 00
-            hex 33 37 3f 3d 3d 80 00 00 ; 1853C:  33 37 3f 3d 3d 80 00 00
-            hex cf cf cf cf c7 c1 07 0e ; 18544:  cf cf cf cf c7 c1 07 0e
-            hex cf cf cf cf c7 c1 07 0e ; 1854C:  cf cf cf cf c7 c1 07 0e
-            hex 1c 1d 1f 0f 00 00 00 00 ; 18554:  1c 1d 1f 0f 00 00 00 00
-            hex 1c 1d 1f 0f 00 00 00 00 ; 1855C:  1c 1d 1f 0f 00 00 00 00
-            hex 1b 3f fb f3 b3          ; 18564:  1b 3f fb f3 b3
-
-            beq tab_b6_8574+87          ; 18569:  f0 60
-            rts                         ; 1856B:  60
-
-            hex 1b 3f fb f3 b3          ; 1856C:  1b 3f fb f3 b3
-
-            beq tab_b6_8574+95          ; 18571:  f0 60
-            rts                         ; 18573:  60
-
-tab_b6_8574: ; 439 bytes
-            hex 3c 7c fc ec cc 06 00 00 ; 18574:  3c 7c fc ec cc 06 00 00
-            hex 3c 7c fc ec cc 06 00 00 ; 1857C:  3c 7c fc ec cc 06 00 00
-            hex c0 c0 80 00 00 00 00 00 ; 18584:  c0 c0 80 00 00 00 00 00
-            hex c0 c0 80 00 00 00 00 00 ; 1858C:  c0 c0 80 00 00 00 00 00
-            hex 3f 3f 1f 07 07 0f 3e 00 ; 18594:  3f 3f 1f 07 07 0f 3e 00
-            hex 3f 3f 1f 07 07 0f 3e 00 ; 1859C:  3f 3f 1f 07 07 0f 3e 00
-            hex 80 83 81 81 81 03 03 03 ; 185A4:  80 83 81 81 81 03 03 03
-            hex 80 83 81 81 81 03 03 03 ; 185AC:  80 83 81 81 81 03 03 03
-            hex ff ff ff e3 83 83 83 03 ; 185B4:  ff ff ff e3 83 83 83 03
-            hex ff ff ff e3 83 83 83 03 ; 185BC:  ff ff ff e3 83 83 83 03
-            hex ef cf 8f 9e 9e 1c 1c 18 ; 185C4:  ef cf 8f 9e 9e 1c 1c 18
-            hex ef cf 8f 9e 9e 1c 1c 18 ; 185CC:  ef cf 8f 9e 9e 1c 1c 18
-            hex ff ff f7 e6 c6 c6 02 00 ; 185D4:  ff ff f7 e6 c6 c6 02 00
-            hex ff ff f7 e6 c6 c6 02 00 ; 185DC:  ff ff f7 e6 c6 c6 02 00
-            hex 3d 3b 39 79 5d 9f 0f 07 ; 185E4:  3d 3b 39 79 5d 9f 0f 07
-            hex 3d 3b 39 79 5d 9f 0f 07 ; 185EC:  3d 3b 39 79 5d 9f 0f 07
-            hex 0e 9e fe 9e 9c 8c 8c 00 ; 185F4:  0e 9e fe 9e 9c 8c 8c 00
-            hex 0e 9e fe 9e 9c 8c 8c 00 ; 185FC:  0e 9e fe 9e 9c 8c 8c 00
-            hex 38 38 30 30 32 3b 1e 0e ; 18604:  38 38 30 30 32 3b 1e 0e
-            hex 38 38 30 30 32 3b 1e 0e ; 1860C:  38 38 30 30 32 3b 1e 0e
-            hex 3c 7d 7d 79 39 19 18 00 ; 18614:  3c 7d 7d 79 39 19 18 00
-            hex 3c 7d 7d 79 39 19 18 00 ; 1861C:  3c 7d 7d 79 39 19 18 00
-            hex ce ce cc fc f8 f8 f0 00 ; 18624:  ce ce cc fc f8 f8 f0 00
-            hex ce ce cc fc f8 f8 f0 00 ; 1862C:  ce ce cc fc f8 f8 f0 00
-            hex ff ff ff e7 e7 c6 c6 02 ; 18634:  ff ff ff e7 e7 c6 c6 02
-            hex ff ff ff e7 e7 c6 c6 02 ; 1863C:  ff ff ff e7 e7 c6 c6 02
-            hex 29 29 29 29 29 68 48 50 ; 18644:  29 29 29 29 29 68 48 50
-            hex 19 19 19 19 19 18 38 30 ; 1864C:  19 19 19 19 19 18 38 30
-            hex 52 52 52 52 52 52 52 52 ; 18654:  52 52 52 52 52 52 52 52
-            hex 32 32 32 32 32 32 32 32 ; 1865C:  32 32 32 32 32 32 32 32
-            hex 00 07 04 05 05 05 05 05 ; 18664:  00 07 04 05 05 05 05 05
-            hex 00 07 07 06 06 06 06 06 ; 1866C:  00 07 07 06 06 06 06 06
-            hex 28 c8 18 f0 00 00 00 00 ; 18674:  28 c8 18 f0 00 00 00 00
-            hex 30 f0 e0 00 00 00 00 00 ; 1867C:  30 f0 e0 00 00 00 00 00
-            hex 05 05 05 05 05 05 09 0b ; 18684:  05 05 05 05 05 05 09 0b
-            hex 06 06 06 06 06 06 0e 0c ; 1868C:  06 06 06 06 06 06 0e 0c
-            hex 52 50 50 50 52 52 d2 92 ; 18694:  52 50 50 50 52 52 d2 92
-            hex 32 30 30 30 32 32 32 72 ; 1869C:  32 30 30 30 32 32 32 72
-            hex a4 a4 a4 a4 a4 a4 a4 a0 ; 186A4:  a4 a4 a4 a4 a4 a4 a4 a0
-            hex 64 64 64 64 64 64 64 60 ; 186AC:  64 64 64 64 64 64 64 60
-            hex 0a 0a 0a 0a 0a 0a 0a 16 ; 186B4:  0a 0a 0a 0a 0a 0a 0a 16
-            hex 0c 0c 0c 0c 0c 0c 0c 18 ; 186BC:  0c 0c 0c 0c 0c 0c 0c 18
-            hex 14 14 14 14 14 14 14 14 ; 186C4:  14 14 14 14 14 14 14 14
-            hex 18 18 18 18 18 18 18 18 ; 186CC:  18 18 18 18 18 18 18 18
-            hex 00 00 00 7c c6 92 ab 69 ; 186D4:  00 00 00 7c c6 92 ab 69
-            hex 00 00 00 00 38 7c 6c ee ; 186DC:  00 00 00 00 38 7c 6c ee
-            hex 00 00 00 00 00 07 0c 09 ; 186E4:  00 00 00 00 00 07 0c 09
-            hex 00 00 00 00 00 00 03 07 ; 186EC:  00 00 00 00 00 00 03 07
-            hex 0a 09 0c 06 0c 09 1a 32 ; 186F4:  0a 09 0c 06 0c 09 1a 32
-            hex 06 07 03 01 03 07 06 0e ; 186FC:  06 07 03 01 03 07 06 0e
-            hex 00 00 00 00 07 fc 01 ae ; 18704:  00 00 00 00 07 fc 01 ae
-            hex 00 00 00 00 00 03 ff fe ; 1870C:  00 00 00 00 00 03 ff fe
-            hex 00 00 00 00 fc 06 73 8b ; 18714:  00 00 00 00 fc 06 73 8b
-            hex 00 00 00 00 00 f8 fc 8c ; 1871C:  00 00 00 00 00 f8 fc 8c
-            hex 52 00 80 40 c0 40 1b    ; 18724:  52 00 80 40 c0 40 1b
-
-            brk                         ; 1872B:  00
-            hex 52                      ; 1872C:  52
-            brk                         ; 1872D:  00
-            hex 80                      ; 1872E:  80
-            cpy #$c0                    ; 1872F:  c0 c0
-            rti                         ; 18731:  40
-
-            hex 1b 00 33 47 8d 67 53 09 ; 18732:  1b 00 33 47 8d 67 53 09
-            hex 04 02 3c 78 f0 78 5c    ; 1873A:  04 02 3c 78 f0 78 5c
-
-            asl $0307                   ; 18741:  0e 07 03
-            ldy #$a0                    ; 18744:  a0 a0
-            ldy $a4                     ; 18746:  a4 a4
-            ldy $a4                     ; 18748:  a4 a4
-            ldy $24                     ; 1874A:  a4 24
-            rts                         ; 1874C:  60
-
-            hex 60 64 64 64 64 64       ; 1874D:  60 64 64 64 64 64
-
-            cpx $48                     ; 18753:  e4 48
-            pha                         ; 18755:  48
-            pha                         ; 18756:  48
-            pha                         ; 18757:  48
-            pha                         ; 18758:  48
-            pha                         ; 18759:  48
-            pha                         ; 1875A:  48
-            rti                         ; 1875B:  40
-
-tab_b6_875c: ; 149 bytes
-            hex c8 c8 c8 c8 c8 c8 c8 c0 ; 1875C:  c8 c8 c8 c8 c8 c8 c8 c0
-            hex 14 24 2c 28 28 28 28 28 ; 18764:  14 24 2c 28 28 28 28 28
-            hex 18 38 30 30 30 30 30 30 ; 1876C:  18 38 30 30 30 30 30 30
-            hex 28 28 28 28 28 28 28 28 ; 18774:  28 28 28 28 28 28 28 28
-            hex 30 30 30 30 30 30 30 30 ; 1877C:  30 30 30 30 30 30 30 30
-            hex 06 05 05 05 04 0c 09 0a ; 18784:  06 05 05 05 04 0c 09 0a
-            hex 01 03 03 03 03 03 07 06 ; 1878C:  01 03 03 03 03 03 07 06
-            hex 0a 1a 12 34 24 68 c8 90 ; 18794:  0a 1a 12 34 24 68 c8 90
-            hex 06 06 0e 0c 1c 18 38 70 ; 1879C:  06 06 0e 0c 1c 18 38 70
-            hex e4 62 23 10 80 80 00 00 ; 187A4:  e4 62 23 10 80 80 00 00
-            hex e7 63 23 10 80 80 00 00 ; 187AC:  e7 63 23 10 80 80 00 00
-            hex 07 a8 55 0a 25 00 05 00 ; 187B4:  07 a8 55 0a 25 00 05 00
-            hex f8 ff 57 0a 25 00 05 00 ; 187BC:  f8 ff 57 0a 25 00 05 00
-            hex c0 60 20 b8 8e 63 59 34 ; 187C4:  c0 60 20 b8 8e 63 59 34
-            hex 00 80 c0 c0 f0 7c 5e 37 ; 187CC:  00 80 c0 c0 f0 7c 5e 37
-            hex 64 4e 53 d0 90 a0 a2 20 ; 187D4:  64 4e 53 d0 90 a0 a2 20
-            hex 1c 3e 33 30 70 60 62 e0 ; 187DC:  1c 3e 33 30 70 60 62 e0
-            hex 8d 22 09 02 04 01 00 00 ; 187E4:  8d 22 09 02 04 01 00 00
-            hex 8f 22 09 02 04          ; 187EC:  8f 22 09 02 04
-
-            ora ($00,x)                 ; 187F1:  01 00
-            brk                         ; 187F3:  00
-            hex 48                      ; 187F4:  48
-            bne tab_b6_875c+91          ; 187F5:  d0 c0
-            brk                         ; 187F7:  00
-            hex 80                      ; 187F8:  80
-            brk                         ; 187F9:  00
-            hex 00                      ; 187FA:  00
-            ora ($c8,x)                 ; 187FB:  01 c8
-            bne tab_b6_875c+99          ; 187FD:  d0 c0
-            brk                         ; 187FF:  00
-            hex 80                      ; 18800:  80
-            brk                         ; 18801:  00
-            hex 00                      ; 18802:  00
-            ora ($05,x)                 ; 18803:  01 05
-            ora #$90                    ; 18805:  09 90
-            brk                         ; 18807:  00
-            hex 00                      ; 18808:  00
-            brk                         ; 18809:  00
-            hex 00                      ; 1880A:  00
-            brk                         ; 1880B:  00
-            hex 05                      ; 1880C:  05
-            ora #$90                    ; 1880D:  09 90
-            brk                         ; 1880F:  00
-            hex 00                      ; 18810:  00
-            brk                         ; 18811:  00
-            hex 00                      ; 18812:  00
-            brk                         ; 18813:  00
-            hex 40                      ; 18814:  40
-            rti                         ; 18815:  40
-
-            hex c8 c8 48 48 08 08 c0 c0 ; 18816:  c8 c8 48 48 08 08 c0 c0
-            hex c8 c8 48 48 08 08 08 08 ; 1881E:  c8 c8 48 48 08 08 08 08
-            hex 08 10 10 10 00 80 08 08 ; 18826:  08 10 10 10 00 80 08 08
-            hex 08 10 10 10 00 80 28 28 ; 1882E:  08 10 10 10 00 80 28 28
-            hex 2c 24 14 14 14 14       ; 18836:  2c 24 14 14 14 14
-
-            bmi tab_b6_8848+38          ; 1883C:  30 30
-            bmi tab_b6_8848+48          ; 1883E:  30 38
-            clc                         ; 18840:  18
-            clc                         ; 18841:  18
-            clc                         ; 18842:  18
-            clc                         ; 18843:  18
-            jsr $4040                   ; 18844:  20 40 40
-            rti                         ; 18847:  40
-
-tab_b6_8848: ; 131 bytes
-            hex 40 20 a1 9e e0 c0 c0 c0 ; 18848:  40 20 a1 9e e0 c0 c0 c0
-            hex c0 e0 61 7f c1 7d 04 06 ; 18850:  c0 e0 61 7f c1 7d 04 06
-            hex 03 01 00 00 3f 03 03 01 ; 18858:  03 01 00 00 3f 03 03 01
-            hex 00 00 00 00 02 06 19 61 ; 18860:  00 00 00 00 02 06 19 61
-            hex 8c 46 b1 ec 02 06 1f 7f ; 18868:  8c 46 b1 ec 02 06 1f 7f
-            hex f3 79 be ef 00 02 00 02 ; 18870:  f3 79 be ef 00 02 00 02
-            hex 80 41 20 21 00 02 00 02 ; 18878:  80 41 20 21 00 02 00 02
-            hex 80 c1 e0 e1 5b 56 a5 51 ; 18880:  80 c1 e0 e1 5b 56 a5 51
-            hex 2c 9b c6 71 7b 6e bb de ; 18888:  2c 9b c6 71 7b 6e bb de
-            hex ef 7b 3e 0f 70 80 70 48 ; 18890:  ef 7b 3e 0f 70 80 70 48
-            hex 08 b0 58 a8 f0 80 f0 b8 ; 18898:  08 b0 58 a8 f0 80 f0 b8
-            hex f8 f0 58 f8 01 0e 10 02 ; 188A0:  f8 f0 58 f8 01 0e 10 02
-            hex 00 01 00 00 01 0e 10 02 ; 188A8:  00 01 00 00 01 0e 10 02
-            hex 00 01 00 00 9d 95 95 95 ; 188B0:  00 01 00 00 9d 95 95 95
-            hex 1b 1a 10 10 9d 9d 9d 9d ; 188B8:  1b 1a 10 10 9d 9d 9d 9d
-            hex 1b 1a 10 10 00 40 5f 50 ; 188C0:  1b 1a 10 10 00 40 5f 50
-            hex 57 d4 a7                ; 188C8:  57 d4 a7
-
-            bit $00                     ; 188CB:  24 00
-            rti                         ; 188CD:  40
-
-            hex 5f 5f 58 d8 b8 3b 11 16 ; 188CE:  5f 5f 58 d8 b8 3b 11 16
-            hex 39 00 02 01 00 00 1f 1e ; 188D6:  39 00 02 01 00 00 1f 1e
-            hex 39 00 02 01 00 00 12 0a ; 188DE:  39 00 02 01 00 00 12 0a
-            hex fa 02 fc ff 81 3c 1c 0c ; 188E6:  fa 02 fc ff 81 3c 1c 0c
-            hex fc fc 00 00 7e ff 00 00 ; 188EE:  fc fc 00 00 7e ff 00 00
-            hex 00 00 00 00 e0 38 00 00 ; 188F6:  00 00 00 00 e0 38 00 00
-            hex 00 00 00 00 00 c0 c3 20 ; 188FE:  00 00 00 00 00 c0 c3 20
-            hex 00 00 00 70 8a 45 c3 20 ; 18906:  00 00 00 70 8a 45 c3 20
-            hex 00 00 00 70 fa 7d 8c 66 ; 1890E:  00 00 00 70 fa 7d 8c 66
-            hex 93 29 05 0c 02 06 f0 78 ; 18916:  93 29 05 0c 02 06 f0 78
-            hex 9c 2e 06 0f 03 07 1c 07 ; 1891E:  9c 2e 06 0f 03 07 1c 07
-            hex 00 00 00 00 00 00 03 00 ; 18926:  00 00 00 00 00 00 03 00
-            hex 00 00 00 00 00 00 10 d0 ; 1892E:  00 00 00 00 00 00 10 d0
-            hex 50 50 50 48 68 28 f0 30 ; 18936:  50 50 50 48 68 28 f0 30
-            hex 30 30 30 38 18 18 00 01 ; 1893E:  30 30 30 38 18 18 00 01
-            hex 07 1c 31 26 28 28 00 00 ; 18946:  07 1c 31 26 28 28 00 00
-            hex 00 03 0f 1e 18 18 68 c8 ; 1894E:  00 03 0f 1e 18 18 68 c8
-            hex 10 60 80 00 00 01 18 38 ; 18956:  10 60 80 00 00 01 18 38
-            hex f0 e0 80                ; 1895E:  f0 e0 80
-
-            brk                         ; 18961:  00
-            hex 00                      ; 18962:  00
-            ora ($20,x)                 ; 18963:  01 20
-            rti                         ; 18965:  40
-
-            brk                         ; 18966:  00
-            hex 40                      ; 18967:  40
-b6_8968:    brk                         ; 18968:  00
-            hex 00                      ; 18969:  00
-            brk                         ; 1896A:  00
-            hex 04                      ; 1896B:  04
-            jsr $0040                   ; 1896C:  20 40 00
-            rti                         ; 1896F:  40
-
-            hex 00 00 00 04 00 04 00 40 ; 18970:  00 00 00 04 00 04 00 40
-            hex 20 1c 20 c4 00 04 00 40 ; 18978:  20 1c 20 c4 00 04 00 40
-            hex 20 1c 38 fc 00 00 00 00 ; 18980:  20 1c 38 fc 00 00 00 00
-            hex 00 00 01 ff 00 00 00 00 ; 18988:  00 00 01 ff 00 00 00 00
-            hex 00 00 01 ff 00 04 10 a8 ; 18990:  00 00 01 ff 00 04 10 a8
-            hex 18 24 24 24 00 04 10 a8 ; 18998:  18 24 24 24 00 04 10 a8
-            hex 18 3c 3c 3c 22 2b 2a 12 ; 189A0:  18 3c 3c 3c 22 2b 2a 12
-            hex 15 14 18 11 3e 37 36 1e ; 189A8:  15 14 18 11 3e 37 36 1e
-            hex 1d 1c 18 11 41 05 81 45 ; 189B0:  1d 1c 18 11 41 05 81 45
-            hex 01 02 8a 54 41 05 81 45 ; 189B8:  01 02 8a 54 41 05 81 45
-            hex 01 03 8b 57 0a 15 1a 11 ; 189C0:  01 03 8b 57 0a 15 1a 11
-            hex 14 27 2c 28 0a 17       ; 189C8:  14 27 2c 28 0a 17
-
-            asl $1b1f,x                 ; 189CE:  1e 1f 1b
-            sec                         ; 189D1:  38
-            bmi tab_b6_89e6+30          ; 189D2:  30 30
-            lda #$53                    ; 189D4:  a9 53
-            stx $3c                     ; 189D6:  86 3c
-            rts                         ; 189D8:  60
-
-            hex c0 00 00 ae 7c          ; 189D9:  c0 00 00 ae 7c
-
-            sed                         ; 189DE:  f8
-            cpy #$80                    ; 189DF:  c0 80
-            brk                         ; 189E1:  00
-            hex 00                      ; 189E2:  00
-            brk                         ; 189E3:  00
-            hex 40                      ; 189E4:  40
-            rti                         ; 189E5:  40
-
-tab_b6_89e6: ; 134 bytes
-            hex 40 40 40 40 c0 80 80 80 ; 189E6:  40 40 40 40 c0 80 80 80
-            hex 80 80 80 80 00 00 28 28 ; 189EE:  80 80 80 80 00 00 28 28
-            hex 28 68 48 50 51 51 18 18 ; 189F6:  28 68 48 50 51 51 18 18
-            hex 18 18 38 30 31 31 0e 30 ; 189FE:  18 18 38 30 31 31 0e 30
-            hex c7 9c b0 a0 20 60 0f 3f ; 18A06:  c7 9c b0 a0 20 60 0f 3f
-            hex f8 e0 c0 c0 c0 80 51 51 ; 18A0E:  f8 e0 c0 c0 c0 80 51 51
-            hex 50 50 50 4c 64 f2 31 31 ; 18A16:  50 50 50 4c 64 f2 31 31
-            hex 30 30 30 3c 1c 0e 60 30 ; 18A1E:  30 30 30 3c 1c 0e 60 30
-            hex 98 cf 2f 2f 27 17 80 c0 ; 18A26:  98 cf 2f 2f 27 17 80 c0
-            hex e0 f0 30 30 38 18 14 f4 ; 18A2E:  e0 f0 30 30 38 18 14 f4
-            hex 94 14 12 1a 12 14 ec 0c ; 18A36:  94 14 12 1a 12 14 ec 0c
-            hex 0c 0c 0e 06 0e 0c 04 05 ; 18A3E:  0c 0c 0e 06 0e 0c 04 05
-            hex 09 13 16 14 24 2c 07 06 ; 18A46:  09 13 16 14 24 2c 07 06
-            hex 0e 1c 18 18 38 30 14 34 ; 18A4E:  0e 1c 18 18 38 30 14 34
-            hex 74 e4 e8 e8 e8 e8 0c 0c ; 18A56:  74 e4 e8 e8 e8 e8 0c 0c
-            hex 0c 1c 18 18 18 18 2e 2f ; 18A5E:  0c 1c 18 18 18 18 2e 2f
-            hex 2f 4f 5f 5f 5f 9f       ; 18A66:  2f 4f 5f 5f 5f 9f
-
-            bmi tab_b6_8a89+21          ; 18A6C:  30 30
-            bmi tab_b6_8a89+87          ; 18A6E:  30 70
-            rts                         ; 18A70:  60
-
-            hex 60 60 e0 01 fd 05 04 06 ; 18A71:  60 60 e0 01 fd 05 04 06
-            hex 03 01 01 ff 03 03 03    ; 18A79:  03 01 01 ff 03 03 03
-
-            ora ($00,x)                 ; 18A80:  01 00
-            brk                         ; 18A82:  00
-            hex 00                      ; 18A83:  00
-            brk                         ; 18A84:  00
-            hex 00                      ; 18A85:  00
-            brk                         ; 18A86:  00
-            hex 80                      ; 18A87:  80
-            rti                         ; 18A88:  40
-
-tab_b6_8a89: ; 101 bytes
-            hex 20 98 c4 00 00 00 80 c0 ; 18A89:  20 98 c4 00 00 00 80 c0
-            hex e0 78 3c 03 ff ff ff ff ; 18A91:  e0 78 3c 03 ff ff ff ff
-            hex ff ff ff 00 00 00 00 00 ; 18A99:  ff ff ff 00 00 00 00 00
-            hex 00 00 00 f4 f4 f2 fa fa ; 18AA1:  00 00 00 f4 f4 f2 fa fa
-            hex fa fa fa 0c 0c 0e 06 06 ; 18AA9:  fa fa fa 0c 0c 0e 06 06
-            hex 06 06 06 22 4a 49 24 12 ; 18AB1:  06 06 06 22 4a 49 24 12
-            hex 0b 0a 0a 3e 76 77 3b 1d ; 18AB9:  0b 0a 0a 3e 76 77 3b 1d
-            hex 0c 0c 0c 00 00 00 c0 30 ; 18AC1:  0c 0c 0c 00 00 00 c0 30
-            hex 88 e6 31 00 00 00 c0 f0 ; 18AC9:  88 e6 31 00 00 00 c0 f0
-            hex 78 1e 0f 12 16 17 17 17 ; 18AD1:  78 1e 0f 12 16 17 17 17
-            hex 17 27 2f 1c 18 18 18 18 ; 18AD9:  17 27 2f 1c 18 18 18 18
-            hex 18 38 30 1d 04 0e fe ff ; 18AE1:  18 38 30 1d 04 0e fe ff
-            hex ff ff ff 03 03          ; 18AE9:  ff ff ff 03 03
-
-            ora ($01,x)                 ; 18AEE:  01 01
-            brk                         ; 18AF0:  00
-            hex 00                      ; 18AF1:  00
-            brk                         ; 18AF2:  00
-            hex 00                      ; 18AF3:  00
-            pha                         ; 18AF4:  48
-            cli                         ; 18AF5:  58
-            jmp $1266                   ; 18AF6:  4c 66 12
-
-            hex 0a 0b                   ; 18AF9:  0a 0b
-
-            ora #$70                    ; 18AFB:  09 70
-            rts                         ; 18AFD:  60
-
-tab_b6_8afe: ; 534 bytes
-            hex 70 78 1c 0c 0c 0e 05 85 ; 18AFE:  70 78 1c 0c 0c 0e 05 85
-            hex 85 44 42 42 22 a1 06 86 ; 18B06:  85 44 42 42 22 a1 06 86
-            hex 86 c7 c3 c3 e3 61 00 00 ; 18B0E:  86 c7 c3 c3 e3 61 00 00
-            hex 80 80 80 c0 60 7c 00 00 ; 18B16:  80 80 80 c0 60 7c 00 00
-            hex 00 00 00 00 80 80 00 00 ; 18B1E:  00 00 00 00 80 80 00 00
-            hex 00 00 00 ff 00 ff 00 00 ; 18B26:  00 00 00 ff 00 ff 00 00
-            hex 00 00 00 00 ff ff 00 ff ; 18B2E:  00 00 00 00 ff ff 00 ff
-            hex 00 ff 00 00 00 00 00 ff ; 18B36:  00 ff 00 00 00 00 00 ff
-            hex ff 00 00 00 00 00 00 00 ; 18B3E:  ff 00 00 00 00 00 00 00
-            hex 00 00 03 ff 00 ff 00 00 ; 18B46:  00 00 03 ff 00 ff 00 00
-            hex 00 00 00 00 ff ff 00 00 ; 18B4E:  00 00 00 00 ff ff 00 00
-            hex 00 00 ff ff 00 ff 00 00 ; 18B56:  00 00 ff ff 00 ff 00 00
-            hex 00 00 00 00 ff ff 00 ff ; 18B5E:  00 00 00 00 ff ff 00 ff
-            hex 00 ff 03 00 00 00 00 ff ; 18B66:  00 ff 03 00 00 00 00 ff
-            hex ff 00 00 00 00 00 00 ff ; 18B6E:  ff 00 00 00 00 00 00 ff
-            hex 00 ff ff 00 00 00 00 ff ; 18B76:  00 ff ff 00 00 00 00 ff
-            hex ff 00 00 00 00 00 00 00 ; 18B7E:  ff 00 00 00 00 00 00 00
-            hex 00 03 ff fc 00 ff 00 00 ; 18B86:  00 03 ff fc 00 ff 00 00
-            hex 00 00 00 03 ff ff 00 00 ; 18B8E:  00 00 00 03 ff ff 00 00
-            hex 00 ff ff 00 00 ff 00 00 ; 18B96:  00 ff ff 00 00 ff 00 00
-            hex 00 00 00 ff ff ff 00 ff ; 18B9E:  00 00 00 ff ff ff 00 ff
-            hex 00 fc ff 03 00 00 00 ff ; 18BA6:  00 fc ff 03 00 00 00 ff
-            hex ff 03 00 00 00 00 00 00 ; 18BAE:  ff 03 00 00 00 00 00 00
-            hex 03 ff ff 00 00 ff 00 00 ; 18BB6:  03 ff ff 00 00 ff 00 00
-            hex 00 00 00 ff ff ff 00 ff ; 18BBE:  00 00 00 ff ff ff 00 ff
-            hex 00 00 ff ff 00 00 00 ff ; 18BC6:  00 00 ff ff 00 00 00 ff
-            hex ff ff 00 00 00 00 00 03 ; 18BCE:  ff ff 00 00 00 00 00 03
-            hex ff ff fc 00 00 ff 00 00 ; 18BD6:  ff ff fc 00 00 ff 00 00
-            hex 00 00 03 ff ff ff 03 ff ; 18BDE:  00 00 03 ff ff ff 03 ff
-            hex ff ff 00 00 03 ff 00 00 ; 18BE6:  ff ff 00 00 03 ff 00 00
-            hex 00 00 ff ff ff ff 00 ff ; 18BEE:  00 00 ff ff ff ff 00 ff
-            hex 03 00 fc ff 03 00 00 ff ; 18BF6:  03 00 fc ff 03 00 00 ff
-            hex ff ff 03 00 00 00 00 ff ; 18BFE:  ff ff 03 00 00 00 00 ff
-            hex ff 00 00 ff ff 00 00 ff ; 18C06:  ff 00 00 ff ff 00 00 ff
-            hex ff ff ff 00 00 00 fd fc ; 18C0E:  ff ff ff 00 00 00 fd fc
-            hex ff fc 00 00 ff ff 03 03 ; 18C16:  ff fc 00 00 ff ff 03 03
-            hex 00 03 ff ff ff ff 97 67 ; 18C1E:  00 03 ff ff ff ff 97 67
-            hex 0c 00 00 01 ff ff 98 f8 ; 18C26:  0c 00 00 01 ff ff 98 f8
-            hex f3 ff ff ff ff ff 00 ff ; 18C2E:  f3 ff ff ff ff ff 00 ff
-            hex ff 01 00 fc ff 03 00 ff ; 18C36:  ff 01 00 fc ff 03 00 ff
-            hex ff ff ff 03 00 00 e8 c8 ; 18C3E:  ff ff ff 03 00 00 e8 c8
-            hex 19 31 71 c1 83 03 18 38 ; 18C46:  19 31 71 c1 83 03 18 38
-            hex f9 f1 f1 c1 83 03 9f 9f ; 18C4E:  f9 f1 f1 c1 83 03 9f 9f
-            hex 8f 83 c0 fc ff ff e0 e0 ; 18C56:  8f 83 c0 fc ff ff e0 e0
-            hex f0 fc ff ff ff ff 00 03 ; 18C5E:  f0 fc ff ff ff ff 00 03
-            hex 83 c1 71 31 19 c8 00 03 ; 18C66:  83 c1 71 31 19 c8 00 03
-            hex 83 c1 f1 f1 f9 38 00 ff ; 18C6E:  83 c1 f1 f1 f9 38 00 ff
-            hex ff fc c0 83 8f 9c 00 ff ; 18C76:  ff fc c0 83 8f 9c 00 ff
-            hex ff ff ff fc f0 e0 ff ff ; 18C7E:  ff ff ff fc f0 e0 ff ff
-            hex ff fc 00 03 ff ff 00 00 ; 18C86:  ff fc 00 03 ff ff 00 00
-            hex 00 03 ff ff ff ff f2 e2 ; 18C8E:  00 03 ff ff ff ff f2 e2
-            hex 82 06 1c f8 f0 e0 0e 1e ; 18C96:  82 06 1c f8 f0 e0 0e 1e
-            hex 7e fe fc f8 f0 e0 00 ff ; 18C9E:  7e fe fc f8 f0 e0 00 ff
-            hex ff 03 00 fc ff 03 00 ff ; 18CA6:  ff 03 00 fc ff 03 00 ff
-            hex ff ff ff 03 00 00 00 e0 ; 18CAE:  ff ff ff 03 00 00 00 e0
-            hex f0 f8 1c 06 c2 e2 00 e0 ; 18CB6:  f0 f8 1c 06 c2 e2 00 e0
-            hex f0 f8 fc fe 3e 1e 2f 27 ; 18CBE:  f0 f8 fc fe 3e 1e 2f 27
-            hex 17 13 18 3c 7f 7f 30 38 ; 18CC6:  17 13 18 3c 7f 7f 30 38
-            hex 18 1c 1f 3f 7f 7f ff ff ; 18CCE:  18 1c 1f 3f 7f 7f ff ff
-            hex ff fc 00 01 ff ff 00 00 ; 18CD6:  ff fc 00 01 ff ff 00 00
-            hex 00 03 ff ff ff ff 00 7f ; 18CDE:  00 03 ff ff ff ff 00 7f
-            hex 7f 3c 18 13 17 2c 00 7f ; 18CE6:  7f 3c 18 13 17 2c 00 7f
-            hex 7f 3f 1f 1c 18 30 a1 a1 ; 18CEE:  7f 3f 1f 1c 18 30 a1 a1
-            hex 30 30 60 c1 c1 81 61 61 ; 18CF6:  30 30 60 c1 c1 81 61 61
-            hex f0 f0 e0 c1 c1 81 7f 3f ; 18CFE:  f0 f0 e0 c1 c1 81 7f 3f
-            hex bf 9f 80 80 ff ff 80 c0 ; 18D06:  bf 9f 80 80 ff ff 80 c0
-            hex c0 e0 ff ff ff ff       ; 18D0E:  c0 e0 ff ff ff ff
-
-            brk                         ; 18D14:  00
-            hex 81                      ; 18D15:  81
-            cmp ($c1,x)                 ; 18D16:  c1 c1
-            rts                         ; 18D18:  60
-
-            bmi tab_b6_8d24+39          ; 18D19:  30 30
-            ldy #$00                    ; 18D1B:  a0 00
-            sta ($c1,x)                 ; 18D1D:  81 c1
-            cmp ($e0,x)                 ; 18D1F:  c1 e0
-            beq tab_b6_8afe+533         ; 18D21:  f0 f0
-            rts                         ; 18D23:  60
-
-tab_b6_8d24: ; 104 bytes
-            hex 00 ff ff c0 c0 8f 9f b8 ; 18D24:  00 ff ff c0 c0 8f 9f b8
-            hex 00 ff ff ff ff f0 e0 c0 ; 18D2C:  00 ff ff ff ff f0 e0 c0
-            hex fc ff ff ff 00 00 fc ff ; 18D34:  fc ff ff ff 00 00 fc ff
-            hex 00 00 00 00 ff ff ff ff ; 18D3C:  00 00 00 00 ff ff ff ff
-            hex 00 fc ff ff 03 00 00 ff ; 18D44:  00 fc ff ff 03 00 00 ff
-            hex 00 00 00 00 fc ff ff ff ; 18D4C:  00 00 00 00 fc ff ff ff
-            hex 00 ff fc 00 03 ff fc 00 ; 18D54:  00 ff fc 00 03 ff fc 00
-            hex 00 ff ff ff fc 00 00 00 ; 18D5C:  00 ff ff ff fc 00 00 00
-            hex 00 00 fc ff ff 00 00 ff ; 18D64:  00 00 fc ff ff 00 00 ff
-            hex 00 00 00 00 00 ff ff ff ; 18D6C:  00 00 00 00 00 ff ff ff
-            hex 51 51 51 51 51 51 51 51 ; 18D74:  51 51 51 51 51 51 51 51
-            hex 51 51 51 51 51 52 53 54 ; 18D7C:  51 51 51 51 51 52 53 54
-            hex 55 56 57 58 59 5a 5b 5c ; 18D84:  55 56 57 58 59 5a 5b 5c
-
-            eor $5f5e,x                 ; 18D8C:  5d 5e 5f
-            rts                         ; 18D8F:  60
-
-            hex 61 61 62 61 51 51 51 51 ; 18D90:  61 61 62 61 51 51 51 51
-            hex 51 51 51 51 51 51 51 51 ; 18D98:  51 51 51 51 51 51 51 51
-            hex 51 52 53 54 55 56 57 58 ; 18DA0:  51 52 53 54 55 56 57 58
-            hex 59 5a 5b 5c             ; 18DA8:  59 5a 5b 5c
-
-            eor $5f5e,x                 ; 18DAC:  5d 5e 5f
-            rts                         ; 18DAF:  60
-
-            hex 61 61 62 61 51 51 51 51 ; 18DB0:  61 61 62 61 51 51 51 51
-            hex 51 51 51 51 51 51 51 51 ; 18DB8:  51 51 51 51 51 51 51 51
-            hex 51 52 53 54 55 56 57 58 ; 18DC0:  51 52 53 54 55 56 57 58
-            hex 59 5a 5b 5c             ; 18DC8:  59 5a 5b 5c
-
-            eor $5f5e,x                 ; 18DCC:  5d 5e 5f
-            rts                         ; 18DCF:  60
-
-            hex 61 61 62 61 51 51 51 51 ; 18DD0:  61 61 62 61 51 51 51 51
-            hex 51 51 51 51 51 51 51 51 ; 18DD8:  51 51 51 51 51 51 51 51
-            hex 51 52 53 54 55 56 57 58 ; 18DE0:  51 52 53 54 55 56 57 58
-            hex 59 5a 5b 5c             ; 18DE8:  59 5a 5b 5c
-
-            eor $5f5e,x                 ; 18DEC:  5d 5e 5f
-            rts                         ; 18DEF:  60
-
-            hex 61 61 62 61 51 51 51 51 ; 18DF0:  61 61 62 61 51 51 51 51
-            hex 51 51 51 51 51 51 51 51 ; 18DF8:  51 51 51 51 51 51 51 51
-            hex 51 52 53 54 55 56 57 58 ; 18E00:  51 52 53 54 55 56 57 58
-            hex 59 5a 5b 5c             ; 18E08:  59 5a 5b 5c
-
-            eor $5f5e,x                 ; 18E0C:  5d 5e 5f
-            rts                         ; 18E0F:  60
-
-            hex 61 61 62 61 51 51 51 51 ; 18E10:  61 61 62 61 51 51 51 51
-            hex 51 51 51 51 51 51 51 52 ; 18E18:  51 51 51 51 51 51 51 52
-            hex 53 54 55 56 57 58 59 5a ; 18E20:  53 54 55 56 57 58 59 5a
-            hex 5b 5c                   ; 18E28:  5b 5c
-
-            eor $5f5e,x                 ; 18E2A:  5d 5e 5f
-            rts                         ; 18E2D:  60
-
-            hex 61 61 61 61 61 61 51 51 ; 18E2E:  61 61 61 61 61 61 51 51
-            hex 51 51 51 51 51 51 51 51 ; 18E36:  51 51 51 51 51 51 51 51
-            hex 51 52 53 54 55 56 57 58 ; 18E3E:  51 52 53 54 55 56 57 58
-            hex 59 5a 5b 5c             ; 18E46:  59 5a 5b 5c
-
-            eor $5f5e,x                 ; 18E4A:  5d 5e 5f
-            rts                         ; 18E4D:  60
-
-            hex 61 61 61 61 61 61 51 51 ; 18E4E:  61 61 61 61 61 61 51 51
-            hex 51 51 51 51 51 51 51 51 ; 18E56:  51 51 51 51 51 51 51 51
-            hex 63 64 65 66 67 68 69 6a ; 18E5E:  63 64 65 66 67 68 69 6a
-            hex 6b 6c 6d 6e 6f 70 71 72 ; 18E66:  6b 6c 6d 6e 6f 70 71 72
-            hex 73 61 61 61 61 61 51 51 ; 18E6E:  73 61 61 61 61 61 51 51
-            hex 51 51 51 51 51 74 74 74 ; 18E76:  51 51 51 51 51 74 74 74
-            hex 76 77 7a 7b 7e 7f 82 83 ; 18E7E:  76 77 7a 7b 7e 7f 82 83
-            hex 86 87 8a 8b 8e 8f 92 93 ; 18E86:  86 87 8a 8b 8e 8f 92 93
-            hex 96 97 97 97 97 61 51 51 ; 18E8E:  96 97 97 97 97 61 51 51
-            hex 51 51 51 74 74 75 75 75 ; 18E96:  51 51 51 74 74 75 75 75
-            hex 78 79 7c 7d 80 81 84 85 ; 18E9E:  78 79 7c 7d 80 81 84 85
-            hex 88 89 8c 8d 90 91 94 95 ; 18EA6:  88 89 8c 8d 90 91 94 95
-            hex 98 99 99 99 99 97 51 51 ; 18EAE:  98 99 99 99 99 97 51 51
-            hex 51 51 74 75 75 9a 9a 9a ; 18EB6:  51 51 74 75 75 9a 9a 9a
-            hex 9c 9d a0 a1 a4 a5 a7 a8 ; 18EBE:  9c 9d a0 a1 a4 a5 a7 a8
-            hex ab ac ad ae b1 b2 b5 b6 ; 18EC6:  ab ac ad ae b1 b2 b5 b6
-            hex b9 ba ba ba ba 99 51 51 ; 18ECE:  b9 ba ba ba ba 99 51 51
-            hex 51 74 75 9a 9a 9b 9b 9b ; 18ED6:  51 74 75 9a 9a 9b 9b 9b
-            hex 9e 9f a2 a3 a6 a6 a9 aa ; 18EDE:  9e 9f a2 a3 a6 a6 a9 aa
-            hex a6 a6 af b0 b3 b4 b7 b8 ; 18EE6:  a6 a6 af b0 b3 b4 b7 b8
-            hex bb bc bc bc bc ba 51 51 ; 18EEE:  bb bc bc bc bc ba 51 51
-            hex 74 75 9a 9b 9b bd bd bd ; 18EF6:  74 75 9a 9b 9b bd bd bd
-            hex bf c0 c3 c4 a6 a6 a6 a6 ; 18EFE:  bf c0 c3 c4 a6 a6 a6 a6
-            hex a6 a6 cc cd d0 d1 d4 d5 ; 18F06:  a6 a6 cc cd d0 d1 d4 d5
-            hex d8 d9 d9 d9 d9 bc 74 74 ; 18F0E:  d8 d9 d9 d9 d9 bc 74 74
-            hex 75 9a 9b bd bd be be be ; 18F16:  75 9a 9b bd bd be be be
-            hex c1 c2 c5 c6 c7 c8 c9 ca ; 18F1E:  c1 c2 c5 c6 c7 c8 c9 ca
-            hex cb a6 ce cf d2 d3 d6 d7 ; 18F26:  cb a6 ce cf d2 d3 d6 d7
-            hex da db db db db d9 75 75 ; 18F2E:  da db db db db d9 75 75
-            hex 9a 9b bd be be dc dc dc ; 18F36:  9a 9b bd be be dc dc dc
-            hex de df e2 e3 a6 a6 a6 a6 ; 18F3E:  de df e2 e3 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 e9 eb ec ; 18F46:  a6 a6 a6 a6 a6 e9 eb ec
-            hex ef f0 f0 f0 f0 db 9a 9a ; 18F4E:  ef f0 f0 f0 f0 db 9a 9a
-            hex 9b bd be dc dc dd dd dd ; 18F56:  9b bd be dc dc dd dd dd
-            hex e0 e1 e4 e5 a6 e6 e7 e8 ; 18F5E:  e0 e1 e4 e5 a6 e6 e7 e8
-            hex a6 a6 a6 a6 a6 ea ed ee ; 18F66:  a6 a6 a6 a6 a6 ea ed ee
-            hex a6 f1 f1 f1 f1 f0 9b 9b ; 18F6E:  a6 f1 f1 f1 f1 f0 9b 9b
-            hex bd be dc dd dd f2 f2 f2 ; 18F76:  bd be dc dd dd f2 f2 f2
-            hex f4 f5 f8 a6 a6 a6 a6 a6 ; 18F7E:  f4 f5 f8 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 fb fc a6 ; 18F86:  a6 a6 a6 a6 a6 fb fc a6
-            hex a6 a6 a6 a6 a6 f1 bd bd ; 18F8E:  a6 a6 a6 a6 a6 f1 bd bd
-            hex be dc dd f2 f2 f3 f3 f3 ; 18F96:  be dc dd f2 f2 f3 f3 f3
-            hex f6 f7 f9 fa a6 a6 a6 a6 ; 18F9E:  f6 f7 f9 fa a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 18FA6:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 be be ; 18FAE:  a6 a6 a6 a6 a6 a6 be be
-            hex dc dd f2 f3 f3 a6 a6 a6 ; 18FB6:  dc dd f2 f3 f3 a6 a6 a6
-            hex a6 a6 fd a6 a6 a6 a6 a6 ; 18FBE:  a6 a6 fd a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 18FC6:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 dc dc ; 18FCE:  a6 a6 a6 a6 a6 a6 dc dc
-            hex dd f2 f3 a6 a6 a6 a6 a6 ; 18FD6:  dd f2 f3 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 18FDE:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 18FE6:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 dd dd ; 18FEE:  a6 a6 a6 a6 a6 a6 dd dd
-            hex f2 f3 a6 a6 a6 a6 a6 a6 ; 18FF6:  f2 f3 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 18FFE:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 19006:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 f2 f2 ; 1900E:  a6 a6 a6 a6 a6 a6 f2 f2
-            hex f3 a6 a6 a6 a6 a6 a6 a6 ; 19016:  f3 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 1901E:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 19026:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 f3 f3 ; 1902E:  a6 a6 a6 a6 a6 a6 f3 f3
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 19036:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 1903E:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 a6 a6 ; 19046:  a6 a6 a6 a6 a6 a6 a6 a6
-            hex a6 a6 a6 a6 a6 a6 35 ce ; 1904E:  a6 a6 a6 a6 a6 a6 35 ce
-            hex 3b ec 9b e7 3c db 48 24 ; 19056:  3b ec 9b e7 3c db 48 24
-            hex 02 48 11 24 88 13 cd b6 ; 1905E:  02 48 11 24 88 13 cd b6
-            hex 7b 4d fb b6 ce bb 45 90 ; 19066:  7b 4d fb b6 ce bb 45 90
-            hex 25 48 89 12 64 12 76 ed ; 1906E:  25 48 89 12 64 12 76 ed
-            hex 9b 76 ef dc bb 6f 01 28 ; 19076:  9b 76 ef dc bb 6f 01 28
-            hex 54 82 13 a8 44 2b f2 cf ; 1907E:  54 82 13 a8 44 2b f2 cf
-            hex bd 76 db dd b6 77 05 a2 ; 19086:  bd 76 db dd b6 77 05 a2
-            hex 54 48 13 aa 44 19 ed 5b ; 1908E:  54 48 13 aa 44 19 ed 5b
-            hex be e5 de bb ed b7 02 ac ; 19096:  be e5 de bb ed b7 02 ac
-            hex 51 8a 64 13 c8 2c cc 7b ; 1909E:  51 8a 64 13 c8 2c cc 7b
-            hex ef db b6 ed 7b 97 44 ab ; 190A6:  ef db b6 ed 7b 97 44 ab
-            hex 10 6a a5 88 5d a2 ee d9 ; 190AE:  10 6a a5 88 5d a2 ee d9
-            hex 3f ea df b5 6e db d1 2a ; 190B6:  3f ea df b5 6e db d1 2a
-            hex 45 a8 15 a2 59 22 fb ad ; 190BE:  45 a8 15 a2 59 22 fb ad
-            hex b6 dd 77 ba ef 75 51 2a ; 190C6:  b6 dd 77 ba ef 75 51 2a
-            hex 44 a9 15 a2 4c 29 35 fb ; 190CE:  44 a9 15 a2 4c 29 35 fb
-            hex ce b6 bb f6 6e dd 10 a5 ; 190D6:  ce b6 bb f6 6e dd 10 a5
-            hex 46 58 02 b5 4a 91 f3 4d ; 190DE:  46 58 02 b5 4a 91 f3 4d
-            hex fe d3 bd ee db bd 62 11 ; 190E6:  fe d3 bd ee db bd 62 11
-            hex 4a 95 a0 4d 2a 51 3a e7 ; 190EE:  4a 95 a0 4d 2a 51 3a e7
-            hex dd ba b7 ed 6b be 84 33 ; 190F6:  dd ba b7 ed 6b be 84 33
-            hex 48 14 a3 44 29 4c e7 9e ; 190FE:  48 14 a3 44 29 4c e7 9e
-            hex 79 e7 be b9 67 de 82 24 ; 19106:  79 e7 be b9 67 de 82 24
-            hex 49 92 24 48 13 a8 9c 67 ; 1910E:  49 92 24 48 13 a8 9c 67
-            hex fd 9b e6 5d bb f6 41 aa ; 19116:  fd 9b e6 5d bb f6 41 aa
-            hex 04 11 c4 28 05 98 b7 6a ; 1911E:  04 11 c4 28 05 98 b7 6a
-            hex dd 33 de eb 3d d6 14 82 ; 19126:  dd 33 de eb 3d d6 14 82
-            hex 10 22 45 a0 14 00 6e d9 ; 1912E:  10 22 45 a0 14 00 6e d9
-            hex 57 ad d9 37 e6 6e 10 84 ; 19136:  57 ad d9 37 e6 6e 10 84
-            hex 11 42 08 a2 10 41 ae 51 ; 1913E:  11 42 08 a2 10 41 ae 51
-            hex 6e bb 24 dd 73 ae 80 21 ; 19146:  6e bb 24 dd 73 ae 80 21
-            hex 04 48 02 90 20 0a 31 8d ; 1914E:  04 48 02 90 20 0a 31 8d
-            hex 72 8a 73 4c 59 d3 04 88 ; 19156:  72 8a 73 4c 59 d3 04 88
-            hex 00 22 00 88 44 20 11 dd ; 1915E:  00 22 00 88 44 20 11 dd
-            hex 22 aa 33 cc 99 33 44 88 ; 19166:  22 aa 33 cc 99 33 44 88
-            hex 00 22 00 88 44 00 b6 6f ; 1916E:  00 22 00 88 44 00 b6 6f
-            hex d9 b7 6e db b6 dd 2a 54 ; 19176:  d9 b7 6e db b6 dd 2a 54
-            hex 80                      ; 1917E:  80
-
-            sta $2b,x                   ; 1917F:  95 2b
-            rti                         ; 19181:  40
-
-            hex aa 15 eb 5d f7 36 db ed ; 19182:  aa 15 eb 5d f7 36 db ed
-            hex be db a5 48 93 4a 24 5a ; 1918A:  be db a5 48 93 4a 24 5a
-            hex c5 14 ed 57 bb ee 76 ad ; 19192:  c5 14 ed 57 bb ee 76 ad
-            hex fd 5b 50 8a 35 89 ca 32 ; 1919A:  fd 5b 50 8a 35 89 ca 32
-            hex a8 47 db 6d 76 dd ef da ; 191A2:  a8 47 db 6d 76 dd ef da
-            hex bb 77 c9 26 58 45 aa 95 ; 191AA:  bb 77 c9 26 58 45 aa 95
-            hex aa 45 7a d7 be ed 5b fb ; 191B2:  aa 45 7a d7 be ed 5b fb
-
-            lda tab_b6_9357+32          ; 191BA:  ad 77 93
-            jmp $46b2                   ; 191BD:  4c b2 46
-
-            hex 3d 51 a6 5c fe 6d db d7 ; 191C0:  3d 51 a6 5c fe 6d db d7
-            hex bc 6b df 76 15 ea 95 14 ; 191C8:  bc 6b df 76 15 ea 95 14
-            hex f5 02 bd e2 7d d7 bb 6e ; 191D0:  f5 02 bd e2 7d d7 bb 6e
-            hex ef bf 76 ed 55 aa 54 a3 ; 191D8:  ef bf 76 ed 55 aa 54 a3
-            hex 5f 67 9e 65 de 5b ef ba ; 191E0:  5f 67 9e 65 de 5b ef ba
-            hex d7 fd eb de 56 c8 36 e5 ; 191E8:  d7 fd eb de 56 c8 36 e5
-            hex 0a f4 cb 94 d7 bb 6d f6 ; 191F0:  0a f4 cb 94 d7 bb 6d f6
-            hex db 6d b7 fe 66 94 aa 51 ; 191F8:  db 6d b7 fe 66 94 aa 51
-            hex 66 95 aa 55 b6 6b de ed ; 19200:  66 95 aa 55 b6 6b de ed
-            hex bb b6 6f ed aa 44 aa 55 ; 19208:  bb b6 6f ed aa 44 aa 55
-            hex 2a 52 ad 24 db b6 ef 99 ; 19210:  2a 52 ad 24 db b6 ef 99
-            hex 76 fb ae 76 62 94 99 22 ; 19218:  76 fb ae 76 62 94 99 22
-            hex cc 73 86 b9 bb e5 3f e9 ; 19220:  cc 73 86 b9 bb e5 3f e9
-            hex df b5 ee db 45 92 a9 22 ; 19228:  df b5 ee db 45 92 a9 22
-            hex d4 19 65 8a 2d f7 5b ec ; 19230:  d4 19 65 8a 2d f7 5b ec
-            hex 37 db f6 ad 43 28 44 a2 ; 19238:  37 db f6 ad 43 28 44 a2
-            hex 55 28 25 98 db 6d b6 db ; 19240:  55 28 25 98 db 6d b6 db
-            hex 75 6f da b7 4d a0 12 a4 ; 19248:  75 6f da b7 4d a0 12 a4
-            hex 08 62 8c 11 d9 b7 da 6b ; 19250:  08 62 8c 11 d9 b7 da 6b
-            hex b6 6d db b6 0c a0 12 c4 ; 19258:  b6 6d db b6 0c a0 12 c4
-            hex 09 b2 00 55 ea 5d 6b b6 ; 19260:  09 b2 00 55 ea 5d 6b b6
-            hex da 6d b6 db 41 88 24 21 ; 19268:  da 6d b6 db 41 88 24 21
-            hex 44 12 90 4a d6 5c b3 6a ; 19270:  44 12 90 4a d6 5c b3 6a
-            hex ce b5 b6 6d 05 88 10 22 ; 19278:  ce b5 b6 6d 05 88 10 22
-            hex 45 10 44 88 dc bb e3 ae ; 19280:  45 10 44 88 dc bb e3 ae
-            hex 7d db 96 7b 28 c5 0a 51 ; 19288:  7d db 96 7b 28 c5 0a 51
-            hex 66 89 a6 58 ed b7 db 76 ; 19290:  66 89 a6 58 ed b7 db 76
-            hex be ed db b7 26 53 cd 10 ; 19298:  be ed db b7 26 53 cd 10
-            hex b7 a4 4b ac b7 ee 39 f7 ; 192A0:  b7 a4 4b ac b7 ee 39 f7
-            hex ce bb f7 6e a2 54 49 12 ; 192A8:  ce bb f7 6e a2 54 49 12
-            hex 66 10 cf 90 77 ed bb b6 ; 192B0:  66 10 cf 90 77 ed bb b6
-            hex de 6b bd f7 b3 8c 63 5c ; 192B8:  de 6b bd f7 b3 8c 63 5c
-            hex 91 a7 5a a4 db bb 76 dd ; 192C0:  91 a7 5a a4 db bb 76 dd
-            hex f7 dd b7 6e 35 6b 44 9a ; 192C8:  f7 dd b7 6e 35 6b 44 9a
-            hex 75 8a 55 aa 6f ba db f7 ; 192D0:  75 8a 55 aa 6f ba db f7
-            hex bd 6b de f7 5b 69 96 aa ; 192D8:  bd 6b de f7 5b 69 96 aa
-            hex 59 a6 7b 8c f7 ae 7d db ; 192E0:  59 a6 7b 8c f7 ae 7d db
-            hex f7 ae bd 73 38 c5 2a d5 ; 192E8:  f7 ae bd 73 38 c5 2a d5
-            hex 2a 55 aa b3 dd 6d fb 9e ; 192F0:  2a 55 aa b3 dd 6d fb 9e
-            hex 77 ed bb ee aa 55 aa 93 ; 192F8:  77 ed bb ee aa 55 aa 93
-            hex 6c 55 aa 57 de dd 77 bb ; 19300:  6c 55 aa 57 de dd 77 bb
-            hex ed 77 de bb             ; 19308:  ed 77 de bb
-
-            ldy $6a55                   ; 1930C:  ac 55 6a
-            cmp $96,x                   ; 1930F:  d5 96
-            adc $ab,x                   ; 19311:  75 ab
-            jmp ($ddbb)                 ; 19313:  6c bb dd
-
-            hex 76 bb df 76 ef bb b4 4d ; 19316:  76 bb df 76 ef bb b4 4d
-            hex b3 d4 2d eb 1a e5 de bd ; 1931E:  b3 d4 2d eb 1a e5 de bd
-            hex 73 ee dd 77 bb ee a3 4d ; 19326:  73 ee dd 77 bb ee a3 4d
-            hex ba 24 ed 57 98 6f ed df ; 1932E:  ba 24 ed 57 98 6f ed df
-            hex ba e7 bd bb 77 ef 16 6c ; 19336:  ba e7 bd bb 77 ef 16 6c
-            hex b3 cc bb 26 f9 8f dd bb ; 1933E:  b3 cc bb 26 f9 8f dd bb
-            hex ef de 75 db bf ff b2 97 ; 19346:  ef de 75 db bf ff b2 97
-            hex 6d aa b3 7c 86 fb df    ; 1934E:  6d aa b3 7c 86 fb df
-
-            sed                         ; 19355:  f8
-            rti                         ; 19356:  40
-
-tab_b6_9357: ; 630 bytes
-            hex e0 e9 fe 7f bd 7f 78 c0 ; 19357:  e0 e9 fe 7f bd 7f 78 c0
-            hex e0 a9 fe b3 dd 44 30 c4 ; 1935F:  e0 a9 fe b3 dd 44 30 c4
-            hex 20 48 00 21 88 9e cd 34 ; 19367:  20 48 00 21 88 9e cd 34
-            hex dc b8 70 e0 c0 c1 18 d4 ; 1936F:  dc b8 70 e0 c0 c1 18 d4
-            hex 22 54 28 04 0a b6 e5 aa ; 19377:  22 54 28 04 0a b6 e5 aa
-            hex dd 69 37 1a 0f 02 88 21 ; 1937F:  dd 69 37 1a 0f 02 88 21
-            hex 15 8b 17 4a 10 00 00 06 ; 19387:  15 8b 17 4a 10 00 00 06
-            hex 4f 3f bf 2f 06 40 80 50 ; 1938F:  4f 3f bf 2f 06 40 80 50
-            hex 08 90 40 90 01 03 00 80 ; 19397:  08 90 40 90 01 03 00 80
-            hex e0 e4 fb e7 86 6d db b7 ; 1939F:  e0 e4 fb e7 86 6d db b7
-            hex ee 5d fb b7 dd cd 51 ae ; 193A7:  ee 5d fb b7 dd cd 51 ae
-            hex 55 92 37 e9 56 de bb 6d ; 193AF:  55 92 37 e9 56 de bb 6d
-            hex f6 bb af 76 dd 6b 48 b7 ; 193B7:  f6 bb af 76 dd 6b 48 b7
-            hex 49 b4 4b bd 62 fb 77 1e ; 193BF:  49 b4 4b bd 62 fb 77 1e
-            hex 3b bd f6 ef db fa 75 1d ; 193C7:  3b bd f6 ef db fa 75 1d
-            hex 3b b3 fe 69 d6 bb 77 ec ; 193CF:  3b b3 fe 69 d6 bb 77 ec
-            hex df bb ee db b7 df a4 5d ; 193D7:  df bb ee db b7 df a4 5d
-            hex 73 4c fb 26 eb db de b5 ; 193DF:  73 4c fb 26 eb db de b5
-            hex ef ba 67 fd db 44 b2 4d ; 193E7:  ef ba 67 fd db 44 b2 4d
-            hex b2 94 67 18 eb bd 67 fe ; 193EF:  b2 94 67 18 eb bd 67 fe
-            hex 99 ef 76 dd bb 31 cd b2 ; 193F7:  99 ef 76 dd bb 31 cd b2
-            hex 09 f6 89 69 9e 77 ae fd ; 193FF:  09 f6 89 69 9e 77 ae fd
-            hex db 6f f6 bb 6d 36 c9 b6 ; 19407:  db 6f f6 bb 6d 36 c9 b6
-            hex 59 67 bc 93 6e 6e ed bb ; 1940F:  59 67 bc 93 6e 6e ed bb
-            hex 77 de ed 3b f7 60 9b dd ; 19417:  77 de ed 3b f7 60 9b dd
-            hex 22 6e d9 24 ff 7d d7 bb ; 1941F:  22 6e d9 24 ff 7d d7 bb
-            hex ee 76 dd bb ee 42 36 44 ; 19427:  ee 76 dd bb ee 42 36 44
-            hex a9 56 49 b2 26 ed 5d 73 ; 1942F:  a9 56 49 b2 26 ed 5d 73
-            hex ee dd b7 76 ed a2 54 82 ; 19437:  ee dd b7 76 ed a2 54 82
-            hex 35 c8 14 aa 49 b5 df 75 ; 1943F:  35 c8 14 aa 49 b5 df 75
-            hex ae fb de 73 7e d9 14 e6 ; 19447:  ae fb de 73 7e d9 14 e6
-            hex 19 e6 99 e2 5d db 6e bd ; 1944F:  19 e6 99 e2 5d db 6e bd
-            hex eb df b6 ed bb a6 51 9a ; 19457:  eb df b6 ed bb a6 51 9a
-            hex 55 a2 35 ca 59 db 6d b6 ; 1945F:  55 a2 35 ca 59 db 6d b6
-            hex ed 5b 5d eb de aa 00 aa ; 19467:  ed 5b 5d eb de aa 00 aa
-            hex 55 88 51 26 50 6d d7 ba ; 1946F:  55 88 51 26 50 6d d7 ba
-            hex d5 37 ee 69 df 21 98 42 ; 19477:  d5 37 ee 69 df 21 98 42
-            hex 24 88 11 a6 48 75 d7 bb ; 1947F:  24 88 11 a6 48 75 d7 bb
-            hex 6e ed b7 dc 77 8b 54 22 ; 19487:  6e ed b7 dc 77 8b 54 22
-            hex 55 88 33 a6 44 b6 75 5b ; 1948F:  55 88 33 a6 44 b6 75 5b
-            hex ee bb ad f6 ad 49 92 64 ; 19497:  ee bb ad f6 ad 49 92 64
-            hex 49 90 35 24 ca ab 5c f3 ; 1949F:  49 90 35 24 ca ab 5c f3
-            hex 9d 6b ee 99 76 11 22 c4 ; 194A7:  9d 6b ee 99 76 11 22 c4
-            hex 08 91 22 44 98 26 ed 59 ; 194AF:  08 91 22 44 98 26 ed 59
-            hex d6 35 ce b3 dd 44 22 10 ; 194B7:  d6 35 ce b3 dd 44 22 10
-            hex 80 46 10 88 21 ed 9b 76 ; 194BF:  80 46 10 88 21 ed 9b 76
-            hex ed 5b b6 ed 9b 02 22 d8 ; 194C7:  ed 5b b6 ed 9b 02 22 d8
-            hex 04 62 99 02 54 66 9d 79 ; 194CF:  04 62 99 02 54 66 9d 79
-            hex e7 9d 76 eb 9c 88 44 22 ; 194D7:  e7 9d 76 eb 9c 88 44 22
-            hex 91 08 44 22 51 ee 7d b7 ; 194DF:  91 08 44 22 51 ee 7d b7
-            hex db 6e f7 bd 6e 33 ca 35 ; 194E7:  db 6e f7 bd 6e 33 ca 35
-            hex a2 4d ba 44 bb db 77 ee ; 194EF:  a2 4d ba 44 bb db 77 ee
-            hex dd bb 77 ee dd 45 ba 95 ; 194F7:  dd bb 77 ee dd 45 ba 95
-            hex 66 9c d3 35 a6 db fb 2e ; 194FF:  66 9c d3 35 a6 db fb 2e
-            hex fd db 76 df ed 55 aa 54 ; 19507:  fd db 76 df ed 55 aa 54
-            hex ab aa 6a d5 9b 6d bb df ; 1950F:  ab aa 6a d5 9b 6d bb df
-            hex f6 7d d7 bd ee 73 ae d3 ; 19517:  f6 7d d7 bd ee 73 ae d3
-            hex 9c 6b ad d5 3a bb 77 ee ; 1951F:  9c 6b ad d5 3a bb 77 ee
-            hex bd db 7f ea bf 34 e7 59 ; 19527:  bd db 7f ea bf 34 e7 59
-            hex db d7 28 77 cd 7b b7 dd ; 1952F:  db d7 28 77 cd 7b b7 dd
-            hex ef bd 77 dd ee e7 3c cb ; 19537:  ef bd 77 dd ee e7 3c cb
-            hex 3b 66 de b5 4d ed 77 be ; 1953F:  3b 66 de b5 4d ed 77 be
-            hex ed ef 7b dd f6 9b 66 b9 ; 19547:  ed ef 7b dd f6 9b 66 b9
-            hex d7 2c eb 9d 66 d7 7e ef ; 1954F:  d7 2c eb 9d 66 d7 7e ef
-            hex bb ee 76 bf db bf 4a b7 ; 19557:  bb ee 76 bf db bf 4a b7
-            hex af 6a da 37 ef df 75 6e ; 1955F:  af 6a da 37 ef df 75 6e
-            hex ff d9 77 bf f6 fb ad 57 ; 19567:  ff d9 77 bf f6 fb ad 57
-            hex 7a ad f3 de 2b f6 be ee ; 1956F:  7a ad f3 de 2b f6 be ee
-            hex 76 de ba 76 ee 5e aa 76 ; 19577:  76 de ba 76 ee 5e aa 76
-            hex ce 7a ee 96 7a ed 7f 35 ; 1957F:  ce 7a ee 96 7a ed 7f 35
-            hex 6e 5f 1b 0f 00 d6 6f 35 ; 19587:  6e 5f 1b 0f 00 d6 6f 35
-            hex 7e 57 1f 0f 00 fe f8 e0 ; 1958F:  7e 57 1f 0f 00 fe f8 e0
-            hex 00 00 60 fd 00 6e b8 e0 ; 19597:  00 00 60 fd 00 6e b8 e0
-            hex 00 00 60 fc 00 00 00 00 ; 1959F:  00 00 60 fc 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 195A7:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 45 02 28 ; 195AF:  00 00 00 00 00 45 02 28
-            hex 04 00 aa 65 26 10 00 00 ; 195B7:  04 00 aa 65 26 10 00 00
-            hex 01 a4 62 46 60 48 a0 00 ; 195BF:  01 a4 62 46 60 48 a0 00
-            hex 80 00 20 10 10 03       ; 195C7:  80 00 20 10 10 03
-
-            brk                         ; 195CD:  00
-            hex 00                      ; 195CE:  00
-            brk                         ; 195CF:  00
-            hex 08                      ; 195D0:  08
-            rts                         ; 195D1:  60
-
-            hex 31 20 88 20 00 00 00 00 ; 195D2:  31 20 88 20 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 195DA:  00 00 00 00 00 00 00 00
-            hex 00 00 00 90 00 00 00 00 ; 195E2:  00 00 00 90 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 195EA:  00 00 00 00 00 00 00 00
-            hex 00 00 ee ff 1d 03 07 35 ; 195F2:  00 00 ee ff 1d 03 07 35
-            hex ff 00 bd f7 1d 03 07 37 ; 195FA:  ff 00 bd f7 1d 03 07 37
-            hex ff 00 fd 6f bb f7 6f de ; 19602:  ff 00 fd 6f bb f7 6f de
-            hex f0 00 dd 33 6d eb 9b 7e ; 1960A:  f0 00 dd 33 6d eb 9b 7e
-            hex f0 00 ff 36 3d b7 3b 3e ; 19612:  f0 00 ff 36 3d b7 3b 3e
-            hex 3e 0d fa 35 36 bb 2d 36 ; 1961A:  3e 0d fa 35 36 bb 2d 36
-            hex 39 0e dd bb ef 76 db bd ; 19622:  39 0e dd bb ef 76 db bd
-            hex f7 ee 48 d7 b2 6d 4d f3 ; 1962A:  f7 ee 48 d7 b2 6d 4d f3
-            hex 8c 77 0f 0b 0f 0e 0d 0f ; 19632:  8c 77 0f 0b 0f 0e 0d 0f
-            hex 0b 0e 0f 09 0e 0b 0e 0d ; 1963A:  0b 0e 0f 09 0e 0b 0e 0d
-            hex 0b 0e 5b f7 5d ee fb 37 ; 19642:  0b 0e 5b f7 5d ee fb 37
-
-            cmp $59ee,x                 ; 1964A:  dd ee 59
-            ror $dd                     ; 1964D:  66 dd
-            lsr $d9,x                   ; 1964F:  56 d9
-            ldx $76,y                   ; 19651:  b6 76
-            eor $dfb5                   ; 19653:  4d b5 df
-            adc tab_b6_be5f+152         ; 19656:  6d f7 be
-            sbc $fe5b                   ; 19659:  ed 5b fe
-            ldx #$5e                    ; 1965C:  a2 5e
-            cmp ($36),y                 ; 1965E:  d1 36
-            tax                         ; 19660:  aa
-            eor $b6,x                   ; 19661:  55 b6
-            jmp $6ef6                   ; 19663:  4c f6 6e
-
-            hex db 7f e6 bb fe a7 a6 59 ; 19666:  db 7f e6 bb fe a7 a6 59
-            hex aa 94 eb 0c f3 4c b5 6f ; 1966E:  aa 94 eb 0c f3 4c b5 6f
-            hex db fd b7 6e dd fb b3 59 ; 19676:  db fd b7 6e dd fb b3 59
-            hex ce b2 bd c6 7b cc fa 6f ; 1967E:  ce b2 bd c6 7b cc fa 6f
-            hex dd 7b b7 dd f7 6d b3 cd ; 19686:  dd 7b b7 dd f7 6d b3 cd
-            hex 54 bb cc 33 d9 a6 dd ee ; 1968E:  54 bb cc 33 d9 a6 dd ee
-            hex bb 77 dd bd eb ae b9 46 ; 19696:  bb 77 dd bd eb ae b9 46
-            hex 99 e5 2c 4a d1 2e 7b e6 ; 1969E:  99 e5 2c 4a d1 2e 7b e6
-            hex be bb 65 de bb          ; 196A6:  be bb 65 de bb
-
-            sbc $2299                   ; 196AB:  ed 99 22
-            jmp b6_8968+1               ; 196AE:  4c 69 89
-
-            hex b2 4c 23 fe 69 df bb 6e ; 196B1:  b2 4c 23 fe 69 df bb 6e
-            hex dd 77 da 69 92 6d 8a d4 ; 196B9:  dd 77 da 69 92 6d 8a d4
-            hex 2b d4 a9 b6 db 6d bb de ; 196C1:  2b d4 a9 b6 db 6d bb de
-            hex f3 9d 6f dc 21 4d b2 c9 ; 196C9:  f3 9d 6f dc 21 4d b2 c9
-            hex 36 64 89 76 ed d7       ; 196D1:  36 64 89 76 ed d7
-
-            lda $efb6,y                 ; 196D7:  b9 b6 ef
-            jmp ($a2bb)                 ; 196DA:  6c bb a2
-
-            hex 44 98 21 4a 54 a0 19 73 ; 196DD:  44 98 21 4a 54 a0 19 73
-            hex ee 9b f5 6e 99 f7 6e 8a ; 196E5:  ee 9b f5 6e 99 f7 6e 8a
-            hex 40 a4 11 8a 50 82 54 d7 ; 196ED:  40 a4 11 8a 50 82 54 d7
-            hex 7c b7 cd 7b b6 ef 69 a6 ; 196F5:  7c b7 cd 7b b6 ef 69 a6
-            hex 48 32 45 98 66 91 96 d9 ; 196FD:  48 32 45 98 66 91 96 d9
-            hex b6 6f d9 5e f3 9c 77 88 ; 19705:  b6 6f d9 5e f3 9c 77 88
-            hex 21 ca 10 26 c8 11 6a bb ; 1970D:  21 ca 10 26 c8 11 6a bb
-            hex 76 df eb be d5 7f eb d9 ; 19715:  76 df eb be d5 7f eb d9
-            hex 66 bd 93 7d a6 da 5d dd ; 1971D:  66 bd 93 7d a6 da 5d dd
-            hex 77 ef ba df fb 6e b7 b3 ; 19725:  77 ef ba df fb 6e b7 b3
-            hex a6 7e 45 fa 2d d7 b9 b5 ; 1972D:  a6 7e 45 fa 2d d7 b9 b5
-            hex ef 7b ee db bd 77 ee b2 ; 19735:  ef 7b ee db bd 77 ee b2
-            hex 6d db 35 ae d3 be d5 bb ; 1973D:  6d db 35 ae d3 be d5 bb
-            hex 77 de fd b7 db 7d ef db ; 19745:  77 de fd b7 db 7d ef db
-            hex b2 6d 57 f9 af b6 5d db ; 1974D:  b2 6d 57 f9 af b6 5d db
-            hex 3d f7 de 7b ee db be 2f ; 19755:  3d f7 de 7b ee db be 2f
-            hex d5 ea 9b ff 51 ae 7b bb ; 1975D:  d5 ea 9b ff 51 ae 7b bb
-            hex f7 3d f6 df ed bf f6 6d ; 19765:  f7 3d f6 df ed bf f6 6d
-            hex db b6 6d 7d 9b f6 dd 5d ; 1976D:  db b6 6d 7d 9b f6 dd 5d
-            hex f7 db ff 6e b7 dd 7d f7 ; 19775:  f7 db ff 6e b7 dd 7d f7
-            hex da bd 6f c6 7b dd d7 be ; 1977D:  da bd 6f c6 7b dd d7 be
-            hex ec 60 e0 f0 70 00 80 fe ; 19785:  ec 60 e0 f0 70 00 80 fe
-            hex ac e0 a0 f0 70 00 80 f6 ; 1978D:  ac e0 a0 f0 70 00 80 f6
-            hex 5b ef fd d7 7e ed bf 7b ; 19795:  5b ef fd d7 7e ed bf 7b
-            hex b6 ed df ba b7 fd ce c0 ; 1979D:  b6 ed df ba b7 fd ce c0
-            hex e0 bc 77 dd f7 bb 6f c0 ; 197A5:  e0 bc 77 dd f7 bb 6f c0
-            hex e0 fc b7 ef             ; 197AD:  e0 fc b7 ef
-
-            adc tab_b6_bab1+294,x       ; 197B1:  7d d7 bb
-            brk                         ; 197B4:  00
-            hex 00                      ; 197B5:  00
-            brk                         ; 197B6:  00
-            hex 00                      ; 197B7:  00
-            brk                         ; 197B8:  00
-            hex 02                      ; 197B9:  02
-            brk                         ; 197BA:  00
-            hex 00                      ; 197BB:  00
-            brk                         ; 197BC:  00
-            hex 00                      ; 197BD:  00
-            brk                         ; 197BE:  00
-            hex 00                      ; 197BF:  00
-            brk                         ; 197C0:  00
-            hex 04                      ; 197C1:  04
-            brk                         ; 197C2:  00
-            hex 00                      ; 197C3:  00
-            brk                         ; 197C4:  00
-            hex 00                      ; 197C5:  00
-            brk                         ; 197C6:  00
-            hex 00                      ; 197C7:  00
-            rts                         ; 197C8:  60
-
-            hex 60                      ; 197C9:  60
-
-            brk                         ; 197CA:  00
-            hex 00                      ; 197CB:  00
-            brk                         ; 197CC:  00
-            hex 00                      ; 197CD:  00
-            brk                         ; 197CE:  00
-            hex 00                      ; 197CF:  00
-            rts                         ; 197D0:  60
-
-tab_b6_97d1: ; 479 bytes
-            hex 40 00 00 00 00 00 00 00 ; 197D1:  40 00 00 00 00 00 00 00
-            hex 03 00 00 00 00 00 00 03 ; 197D9:  03 00 00 00 00 00 00 03
-            hex 00 00 00 00 00 00 00 00 ; 197E1:  00 00 00 00 00 00 00 00
-            hex 09 00 00 00 00 00 00 0d ; 197E9:  09 00 00 00 00 00 00 0d
-            hex 04 00 00 00 00 00 00 82 ; 197F1:  04 00 00 00 00 00 00 82
-            hex 80 00 00 00 00 00 00 80 ; 197F9:  80 00 00 00 00 00 00 80
-            hex 00 00 00 0b 0d 0f 0f 07 ; 19801:  00 00 00 0b 0d 0f 0f 07
-            hex 01 00 00 0b 0d 0f 0f 07 ; 19809:  01 00 00 0b 0d 0f 0f 07
-            hex 01 00 00 bb dd 77 ee fb ; 19811:  01 00 00 bb dd 77 ee fb
-            hex 97 3e 75 fd 93 7e 66 fd ; 19819:  97 3e 75 fd 93 7e 66 fd
-            hex 9d 36 7b 00 03 0f 0f 00 ; 19821:  9d 36 7b 00 03 0f 0f 00
-            hex 00 00 00 00 03 0f 0f 00 ; 19829:  00 00 00 00 03 0f 0f 00
-            hex 00 00 00 df fa ef ff 00 ; 19831:  00 00 00 df fa ef ff 00
-            hex 00 00 00 ed b7 7e ff 00 ; 19839:  00 00 00 ed b7 7e ff 00
-            hex 00 00 00 ae 77 dd eb be ; 19841:  00 00 00 ae 77 dd eb be
-            hex 7b d6 dd b3 3e f1 ce b6 ; 19849:  7b d6 dd b3 3e f1 ce b6
-            hex dd 72 ef db be eb 5d f7 ; 19851:  dd 72 ef db be eb 5d f7
-            hex bb ee b7 5c eb 95 ba e6 ; 19859:  bb ee b7 5c eb 95 ba e6
-            hex 59 f7 9a bb f7 df fe 00 ; 19861:  59 f7 9a bb f7 df fe 00
-            hex 00 00 00 9d 76 db fe 00 ; 19869:  00 00 00 9d 76 db fe 00
-            hex 00 00 00 dd fb b6 2d 7f ; 19871:  00 00 00 dd fb b6 2d 7f
-            hex 7b 6d 76 65 ee b9 37 7a ; 19879:  7b 6d 76 65 ee b9 37 7a
-            hex 65 5d 76 b7 ee bd 6b df ; 19881:  65 5d 76 b7 ee bd 6b df
-            hex 75 ee db 57 b2 4c eb 55 ; 19889:  75 ee db 57 b2 4c eb 55
-            hex ac 73 4c f9 ce b7 dd 7a ; 19891:  ac 73 4c f9 ce b7 dd 7a
-            hex b7 ed dd 7a 46 c9 bb 24 ; 19899:  b7 ed dd 7a 46 c9 bb 24
-            hex ed 33 cc 7b b6 ef dd bb ; 198A1:  ed 33 cc 7b b6 ef dd bb
-            hex 76 dd f7 b3 da 2d b1 6e ; 198A9:  76 dd f7 b3 da 2d b1 6e
-            hex c9 37 d4 37 fb ce 7e b3 ; 198B1:  c9 37 d4 37 fb ce 7e b3
-            hex dd f7 9d 33 cc 36 c9 66 ; 198B9:  dd f7 9d 33 cc 36 c9 66
-            hex 9c 63 5c 9e fb 66 dd bb ; 198C1:  9c 63 5c 9e fb 66 dd bb
-            hex b7 ea 5f 68 93 54 23 cc ; 198C9:  b7 ea 5f 68 93 54 23 cc
-            hex 3a 41 d6 e5 be d9 b7 6e ; 198D1:  3a 41 d6 e5 be d9 b7 6e
-            hex b9 cf 7a 84 29 d4 0a 61 ; 198D9:  b9 cf 7a 84 29 d4 0a 61
-            hex 9a 44 aa b4 6f db dc bb ; 198E1:  9a 44 aa b4 6f db dc bb
-            hex e5 3c d9 19 66 d2 8d 32 ; 198E9:  e5 3c d9 19 66 d2 8d 32
-            hex e8 49 90 db b5 6d d8 b8 ; 198F1:  e8 49 90 db b5 6d d8 b8
-            hex 68 c0 b0 11 4c 71 88 54 ; 198F9:  68 c0 b0 11 4c 71 88 54
-            hex 30 c0 28 dd 7b f7 ae 7d ; 19901:  30 c0 28 dd 7b f7 ae 7d
-            hex db ef b6 56 6d db 4d 76 ; 19909:  db ef b6 56 6d db 4d 76
-            hex db 4d 7b fb 6f dd b6 f7 ; 19911:  db 4d 7b fb 6f dd b6 f7
-            hex 7d ae f6 db 26 fd 4b b6 ; 19919:  7d ae f6 db 26 fd 4b b6
-            hex 7d c3 5e ee 77 dd eb bf ; 19921:  7d c3 5e ee 77 dd eb bf
-            hex 76 dd b7 cd b7 76 5b ed ; 19929:  76 dd b7 cd b7 76 5b ed
-            hex 56 db 7f ed bf db 77 bc ; 19931:  56 db 7f ed bf db 77 bc
-            hex f7 db 6e 37 ed db 6e bb ; 19939:  f7 db 6e 37 ed db 6e bb
-            hex f6 af 7a fb 6e bf aa 9f ; 19941:  f6 af 7a fb 6e bf aa 9f
-            hex bd 2b 9f 64 df db 36 9d ; 19949:  bd 2b 9f 64 df db 36 9d
-            hex af 39 8f ff da bb ef 7d ; 19951:  af 39 8f ff da bb ef 7d
-            hex eb be 77 d7 dd 6f f9 bf ; 19959:  eb be 77 d7 dd 6f f9 bf
-            hex 66 df 79 db ef 39 fc e8 ; 19961:  66 df 79 db ef 39 fc e8
-            hex dc 7e ef bb 7f d9 ec b8 ; 19969:  dc 7e ef bb 7f d9 ec b8
-            hex dc 76 ef dd ff f0 00 00 ; 19971:  dc 76 ef dd ff f0 00 00
-            hex 00 00 80 ef 7f f0 00 00 ; 19979:  00 00 80 ef 7f f0 00 00
-            hex 00 00 80 bd ec f8 2e fa ; 19981:  00 00 80 bd ec f8 2e fa
-            hex de b6 fe dd bc 78 ee be ; 19989:  de b6 fe dd bc 78 ee be
-            hex da 76 f6 e0 78 00 00 00 ; 19991:  da 76 f6 e0 78 00 00 00
-            hex 00 00 00 e0 78 00 00 00 ; 19999:  00 00 00 e0 78 00 00 00
-            hex 00 00 00 00 24 18 1c 00 ; 199A1:  00 00 00 00 24 18 1c 00
-            hex 00 00 00 00 0c 08 0c    ; 199A9:  00 00 00 00 0c 08 0c
-
-            brk                         ; 199B0:  00
-            hex 00                      ; 199B1:  00
-            brk                         ; 199B2:  00
-            hex 00                      ; 199B3:  00
-            brk                         ; 199B4:  00
-            hex 60                      ; 199B5:  60
-            rts                         ; 199B6:  60
-
-            hex 40                      ; 199B7:  40
-
-            brk                         ; 199B8:  00
-            hex 00                      ; 199B9:  00
-            brk                         ; 199BA:  00
-            hex 00                      ; 199BB:  00
-            brk                         ; 199BC:  00
-            hex 40                      ; 199BD:  40
-            rts                         ; 199BE:  60
-
-tab_b6_99bf: ; 55 bytes
-            hex 60 00 00 00 00 00 22 33 ; 199BF:  60 00 00 00 00 00 22 33
-            hex 33 00 00 00 00 00 32 32 ; 199C7:  33 00 00 00 00 00 32 32
-            hex 10 00 00 00 00 5f 6d 3b ; 199CF:  10 00 00 00 00 5f 6d 3b
-            hex 06 0f 1a bb f7 4a 5d 36 ; 199D7:  06 0f 1a bb f7 4a 5d 36
-            hex 05 0d 3a eb d6 de 3b 0f ; 199DF:  05 0d 3a eb d6 de 3b 0f
-            hex 00 00 00 00 03 fd 3d 0e ; 199E7:  00 00 00 00 03 fd 3d 0e
-            hex 00 00 00 00 01 9d fb    ; 199EF:  00 00 00 00 01 9d fb
-
-            ror $f6db                   ; 199F6:  6e db f6
-            sta $79ef,x                 ; 199F9:  9d ef 79
-            lda #$df                    ; 199FC:  a9 df
-            sta ($76),y                 ; 199FE:  91 76
-            tax                         ; 19A00:  aa
-            cmp $3b,x                   ; 19A01:  d5 3b
-            dec $76                     ; 19A03:  c6 76
-            inc $bad8                   ; 19A05:  ee d8 ba
-b6_9a08:    cpx $a8                     ; 19A08:  e4 a8
-            bvs tab_b6_99bf+33          ; 19A0A:  70 d4
-            ldx #$5c                    ; 19A0C:  a2 5c
-            ldy #$5c                    ; 19A0E:  a0 5c
-            ldx #$58                    ; 19A10:  a2 58
-            tay                         ; 19A12:  a8
-            bvc tab_b6_99bf+52          ; 19A13:  50 de
-            ldx $78,y                   ; 19A15:  b6 78
-            dec $381c                   ; 19A17:  ce 1c 38
-            bvs b6_9a08                 ; 19A1A:  70 ec
-            clv                         ; 19A1C:  b8
-            lsr $f0,x                   ; 19A1D:  56 f0
-            sty $1412                   ; 19A1F:  8c 12 14
-            inx                         ; 19A22:  e8
-            txa                         ; 19A23:  8a
-            dey                         ; 19A24:  88
-            bcc b6_9a27                 ; 19A25:  90 00
-b6_9a27:    brk                         ; 19A27:  00
-            hex 80                      ; 19A28:  80
-            brk                         ; 19A29:  00
-            hex 00                      ; 19A2A:  00
-b6_9a2b:    brk                         ; 19A2B:  00
-            hex a8                      ; 19A2C:  a8
-            bpl tab_b6_97d1+478         ; 19A2D:  10 80
-            brk                         ; 19A2F:  00
-            hex 00                      ; 19A30:  00
-            brk                         ; 19A31:  00
-            hex 00                      ; 19A32:  00
-            brk                         ; 19A33:  00
-            hex e0                      ; 19A34:  e0
-            ldy $50,x                   ; 19A35:  b4 50
-            bvs tab_b6_9a55+4           ; 19A37:  70 20
-            pla                         ; 19A39:  68
-            bvc b6_9a3c                 ; 19A3A:  50 00
-b6_9a3c:    bcs tab_b6_9a55+49          ; 19A3C:  b0 48
-            jsr $00d9                   ; 19A3E:  20 d9 00
-            sec                         ; 19A41:  38
-            rti                         ; 19A42:  40
-
-            brk                         ; 19A43:  00
-            hex 68                      ; 19A44:  68
-            bne b6_9a47                 ; 19A45:  d0 00
-b6_9a47:    cld                         ; 19A47:  d8
-            bvc tab_b6_9a55+85          ; 19A48:  50 60
-            bpl b6_9a2b+1               ; 19A4A:  10 e0
-            bne b6_9a4e                 ; 19A4C:  d0 00
-b6_9a4e:    brk                         ; 19A4E:  00
-            hex 50                      ; 19A4F:  50
-            rti                         ; 19A50:  40
-
-            jsr DMC_FREQ                ; 19A51:  20 10 40
-            rti                         ; 19A54:  40
-
-tab_b6_9a55: ; 178 bytes
-            hex 10 50 00 00 00 00 00 40 ; 19A55:  10 50 00 00 00 00 00 40
-            hex 10 40 00 00 00 00 00 9d ; 19A5D:  10 40 00 00 00 00 00 9d
-            hex 39 ee b7 5a 28 7d 17 b9 ; 19A65:  39 ee b7 5a 28 7d 17 b9
-            hex 15 ee 39 48 30 6d 16 0c ; 19A6D:  15 ee 39 48 30 6d 16 0c
-            hex 21 10 0e 02 00 00 08 00 ; 19A75:  21 10 0e 02 00 00 08 00
-            hex 11 00 06 00 00 00 00 06 ; 19A7D:  11 00 06 00 00 00 00 06
-            hex 1f 0d 23 0e 07 01 0b 06 ; 19A85:  1f 0d 23 0e 07 01 0b 06
-            hex 1b 0f 21 17 0a 01 07 dd ; 19A8D:  1b 0f 21 17 0a 01 07 dd
-            hex fb ae ef c8 4f a5 ab d6 ; 19A95:  fb ae ef c8 4f a5 ab d6
-            hex bf 6e c9 45 cd a3 2e 05 ; 19A9D:  bf 6e c9 45 cd a3 2e 05
-            hex 00 03 0e 03 00 00 01 0d ; 19AA5:  00 03 0e 03 00 00 01 0d
-            hex 01 06 0a 01 00 01 01 43 ; 19AAD:  01 06 0a 01 00 01 01 43
-            hex 8e 85 81 a0 00 00 80 c1 ; 19AB5:  8e 85 81 a0 00 00 80 c1
-            hex 83 c7 80 00 00 00 00 9c ; 19ABD:  83 c7 80 00 00 00 00 9c
-            hex c0 80 c0 e0 30 bc 87 9c ; 19AC5:  c0 80 c0 e0 30 bc 87 9c
-            hex c0 80 c0 60 b0 ac 97 2d ; 19ACD:  c0 80 c0 60 b0 ac 97 2d
-            hex 9f 1d 15 07 17 0d 07 2b ; 19AD5:  9f 1d 15 07 17 0d 07 2b
-            hex 0f 16 1d 05 1f 0b 07 80 ; 19ADD:  0f 16 1d 05 1f 0b 07 80
-            hex 80 80 80 80 00 00 00 80 ; 19AE5:  80 80 80 80 00 00 00 80
-            hex 80 80 80 00 00 00 00 03 ; 19AED:  80 80 80 00 00 00 00 03
-            hex 00 00 00 03 02 03 21 03 ; 19AF5:  00 00 00 03 02 03 21 03
-            hex 00 00 00 01 02 01 01 50 ; 19AFD:  00 00 00 01 02 01 01 50
-            hex f0 3c                   ; 19B05:  f0 3c
-
-            bvs tab_b6_9a55+124         ; 19B07:  70 c8
-            rts                         ; 19B09:  60
-
-            hex b8 d0 20 f0 28 72 e0 10 ; 19B0A:  b8 d0 20 f0 28 72 e0 10
-            hex e8 00 1e 04 04 00 00 00 ; 19B12:  e8 00 1e 04 04 00 00 00
-            hex 00 00 1e 04 04 00 00 00 ; 19B1A:  00 00 1e 04 04 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19B22:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 01 02 03 00 ; 19B2A:  00 00 00 00 01 02 03 00
-            hex 00 00 04 05 06 00 00 00 ; 19B32:  00 00 04 05 06 00 00 00
-            hex 00 00 00 07 08 00 00 00 ; 19B3A:  00 00 00 07 08 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19B42:  00 00 00 00 00 00 00 00
-            hex 00 00 00 0c 0f 10 13 14 ; 19B4A:  00 00 00 0c 0f 10 13 14
-            hex 14 14 19 1a 1d 14 20 00 ; 19B52:  14 14 19 1a 1d 14 20 00
-            hex 23 24 27 28 00 00 00 00 ; 19B5A:  23 24 27 28 00 00 00 00
-            hex 00 00 00 00 00 00 00 09 ; 19B62:  00 00 00 00 00 00 00 09
-            hex 0a 0b 0d 0e 11 12 15 16 ; 19B6A:  0a 0b 0d 0e 11 12 15 16
-            hex 17 18 1b 1c 1e 1f 21 22 ; 19B72:  17 18 1b 1c 1e 1f 21 22
-            hex 25 26 29 2a 2b          ; 19B7A:  25 26 29 2a 2b
-
-            bit $00                     ; 19B7F:  24 00
-            brk                         ; 19B81:  00
-            hex 00                      ; 19B82:  00
-            brk                         ; 19B83:  00
-            hex 00                      ; 19B84:  00
-            brk                         ; 19B85:  00
-            hex 00                      ; 19B86:  00
-            brk                         ; 19B87:  00
-            hex 00                      ; 19B88:  00
-            hex 2c 2e 00 ; bit $002e    ; 19B89:  2c 2e 00
-            and ($32),y                 ; 19B8C:  31 32
-            and $36,x                   ; 19B8E:  35 36
-            and $3d3a,y                 ; 19B90:  39 3a 3d
-            rol $4241,x                 ; 19B93:  3e 41 42
-            eor $46                     ; 19B96:  45 46
-            eor #$14                    ; 19B98:  49 14
-            jmp $4f00                   ; 19B9A:  4c 00 4f
-
-            hex 50 53 00 00 00 00 00 00 ; 19B9D:  50 53 00 00 00 00 00 00
-            hex 00 00 00 00 2d 2f 30 33 ; 19BA5:  00 00 00 00 2d 2f 30 33
-            hex 34 37 38 3b 3c 3f 40 43 ; 19BAD:  34 37 38 3b 3c 3f 40 43
-            hex 44 47 48 4a 4b 4d 4e 51 ; 19BB5:  44 47 48 4a 4b 4d 4e 51
-            hex 52 54 00 00 00 00 00 00 ; 19BBD:  52 54 00 00 00 00 00 00
-            hex 00 00 00 00 00 56 57 5a ; 19BC5:  00 00 00 00 00 56 57 5a
-            hex 5b 5e 5f 62 63 66 67 6a ; 19BCD:  5b 5e 5f 62 63 66 67 6a
-            hex 6b 6e 6f 72 73 76 77 7a ; 19BD5:  6b 6e 6f 72 73 76 77 7a
-            hex 7b                      ; 19BDD:  7b
-
-            brk                         ; 19BDE:  00
-            hex 00                      ; 19BDF:  00
-            brk                         ; 19BE0:  00
-            hex 00                      ; 19BE1:  00
-            brk                         ; 19BE2:  00
-            hex 00                      ; 19BE3:  00
-            brk                         ; 19BE4:  00
-            hex 00                      ; 19BE5:  00
-            brk                         ; 19BE6:  00
-            hex 00                      ; 19BE7:  00
-            brk                         ; 19BE8:  00
-            hex 55                      ; 19BE9:  55
-            cli                         ; 19BEA:  58
-            eor $5d5c,y                 ; 19BEB:  59 5c 5d
-            rts                         ; 19BEE:  60
-
-tab_b6_9bef: ; 468 bytes
-            hex 61 64 65 68 69 6c 6d 70 ; 19BEF:  61 64 65 68 69 6c 6d 70
-            hex 71 74 75 78 79 7c 7d 7e ; 19BF7:  71 74 75 78 79 7c 7d 7e
-            hex 00 00 00 00 00 00 00 00 ; 19BFF:  00 00 00 00 00 00 00 00
-            hex 00 00 7f 81 82 85 86 89 ; 19C07:  00 00 7f 81 82 85 86 89
-            hex 8a 8d 8e 91 92 94 95 97 ; 19C0F:  8a 8d 8e 91 92 94 95 97
-            hex 98 9b 9c 9f a0 a3 a4 a7 ; 19C17:  98 9b 9c 9f a0 a3 a4 a7
-            hex 00 00 00 00 00 00 00 00 ; 19C1F:  00 00 00 00 00 00 00 00
-            hex 00 00 80 83 84 87 88 8b ; 19C27:  00 00 80 83 84 87 88 8b
-            hex 8c 8f 90 93 00 00 96 99 ; 19C2F:  8c 8f 90 93 00 00 96 99
-            hex 9a 9d 9e a1 a2 a5 a6 00 ; 19C37:  9a 9d 9e a1 a2 a5 a6 00
-            hex 00 00 00 00 00 00 00 00 ; 19C3F:  00 00 00 00 00 00 00 00
-            hex 00 00 a8 aa ab ae af b2 ; 19C47:  00 00 a8 aa ab ae af b2
-            hex b3 b6 b7 ba bb be bf c2 ; 19C4F:  b3 b6 b7 ba bb be bf c2
-            hex c3 c5 c6 c9 ca cd ce 00 ; 19C57:  c3 c5 c6 c9 ca cd ce 00
-            hex 00 00 00 00 00 00 00 00 ; 19C5F:  00 00 00 00 00 00 00 00
-            hex 00 00 a9 ac ad b0 b1 b4 ; 19C67:  00 00 a9 ac ad b0 b1 b4
-            hex b5 b8 b9 bc bd c0 c1 c4 ; 19C6F:  b5 b8 b9 bc bd c0 c1 c4
-            hex 00 c7 c8 cb cc 00 cf 0b ; 19C77:  00 c7 c8 cb cc 00 cf 0b
-            hex 00 00 00 00 00 00 00 d0 ; 19C7F:  00 00 00 00 00 00 00 d0
-            hex d1 d4 d5 d7 d8 db dc df ; 19C87:  d1 d4 d5 d7 d8 db dc df
-            hex e0 e3 e4 e7 e8 00 00 00 ; 19C8F:  e0 e3 e4 e7 e8 00 00 00
-            hex ea ec ed f0 f1 00 f2 00 ; 19C97:  ea ec ed f0 f1 00 f2 00
-            hex 00 00 00 00 00 00 00 d2 ; 19C9F:  00 00 00 00 00 00 00 d2
-            hex d3 d6 00 d9 da dd de e1 ; 19CA7:  d3 d6 00 d9 da dd de e1
-            hex e2 e5 e6 e9 00 00 00 00 ; 19CAF:  e2 e5 e6 e9 00 00 00 00
-            hex eb ee ef 00 00 00 f3 00 ; 19CB7:  eb ee ef 00 00 00 f3 00
-            hex 00 00 00 00 00 00 00 00 ; 19CBF:  00 00 00 00 00 00 00 00
-            hex 00 00 f4 f5 f6 00 f7 00 ; 19CC7:  00 00 f4 f5 f6 00 f7 00
-            hex f8 fa fb fd 00 00 00 00 ; 19CCF:  f8 fa fb fd 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19CD7:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19CDF:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19CE7:  00 00 00 00 00 00 00 00
-            hex f9 fc 00 00 00 00 00 00 ; 19CEF:  f9 fc 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19CF7:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19CFF:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19D07:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 19D0F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 01 00 00 00 00 ; 19D17:  00 00 00 01 00 00 00 00
-            hex 00 00 00 01 00 00 00 00 ; 19D1F:  00 00 00 01 00 00 00 00
-            hex 00 1f 3f ff 3c 00 00 00 ; 19D27:  00 1f 3f ff 3c 00 00 00
-            hex 00 1f 3f ff 3c 00 00 00 ; 19D2F:  00 1f 3f ff 3c 00 00 00
-            hex c0 e0 f0 c0 00 00 00 00 ; 19D37:  c0 e0 f0 c0 00 00 00 00
-            hex c0 e0 f0 c0 00 00 00 00 ; 19D3F:  c0 e0 f0 c0 00 00 00 00
-            hex 00 00 0e 07 03 00 00 00 ; 19D47:  00 00 0e 07 03 00 00 00
-            hex 00 00 0e 07 03 00 30 18 ; 19D4F:  00 00 0e 07 03 00 30 18
-            hex 1c 1c 1c 1f 9f 00 30 18 ; 19D57:  1c 1c 1c 1f 9f 00 30 18
-            hex 1c 1c 1c 1f 9f 00 00 00 ; 19D5F:  1c 1c 1c 1f 9f 00 00 00
-            hex 00 00 00 c0 c0 00 00 00 ; 19D67:  00 00 00 c0 c0 00 00 00
-            hex 00 00 00 c0 c0 00 00 00 ; 19D6F:  00 00 00 c0 c0 00 00 00
-            hex 02 03 0f 07 0f 00 00 00 ; 19D77:  02 03 0f 07 0f 00 00 00
-            hex 02 03 0f 07 0f 00 00 00 ; 19D7F:  02 03 0f 07 0f 00 00 00
-            hex 00 00 80 80 80 00 00 00 ; 19D87:  00 00 80 80 80 00 00 00
-            hex 00 00 80 80 80 00 00 00 ; 19D8F:  00 00 80 80 80 00 00 00
-            hex 00 00 00 00 01 00 00 00 ; 19D97:  00 00 00 00 01 00 00 00
-            hex 00 00 00 00 01 00 00 00 ; 19D9F:  00 00 00 00 01 00 00 00
-            hex c0 ef ff ff fe 00 00 00 ; 19DA7:  c0 ef ff ff fe 00 00 00
-            hex c0 ef ff ff fe 00 00 00 ; 19DAF:  c0 ef ff ff fe 00 00 00
-            hex 00 00 80 80 00 00 00 00 ; 19DB7:  00 00 80 80 00 00 00 00
-            hex 00 00 80 80             ; 19DBF:  00 00 80 80
-
-            brk                         ; 19DC3:  00
-            hex 00                      ; 19DC4:  00
-            brk                         ; 19DC5:  00
-            hex 00                      ; 19DC6:  00
-            brk                         ; 19DC7:  00
-            hex 40                      ; 19DC8:  40
-            rti                         ; 19DC9:  40
-
-            hex 42 63                   ; 19DCA:  42 63
-
-            brk                         ; 19DCC:  00
-            hex 00                      ; 19DCD:  00
-            brk                         ; 19DCE:  00
-            hex 00                      ; 19DCF:  00
-            rti                         ; 19DD0:  40
-
-tab_b6_9dd1: ; 295 bytes
-            hex 40 42 63 0c 0c 06 03 00 ; 19DD1:  40 42 63 0c 0c 06 03 00
-            hex 7c 3e 02 0c 0c 06 03 00 ; 19DD9:  7c 3e 02 0c 0c 06 03 00
-            hex 7c 3e 02 31 7b f2 30 71 ; 19DE1:  7c 3e 02 31 7b f2 30 71
-            hex f0 93 fb 31 79 f2 30 70 ; 19DE9:  f0 93 fb 31 79 f2 30 70
-            hex f0 93 fb 11 02 00 2a 55 ; 19DF1:  f0 93 fb 11 02 00 2a 55
-            hex 22 11 db 00 00 00 00 00 ; 19DF9:  22 11 db 00 00 00 00 00
-            hex 00 00 c0 80 60 81 8a 45 ; 19E01:  00 00 c0 80 60 81 8a 45
-            hex 4c 8e 0e 00 00 00 00 00 ; 19E09:  4c 8e 0e 00 00 00 00 00
-            hex 0c 0e 0e c8 80 00 11 2b ; 19E11:  0c 0e 0e c8 80 00 11 2b
-            hex 14 d4 04 c0 80 00 01 02 ; 19E19:  14 d4 04 c0 80 00 01 02
-            hex 00 02 20 1f 3f f0 c3 1f ; 19E21:  00 02 20 1f 3f f0 c3 1f
-            hex 3b 23 2f 1f 3f f0 c3 1f ; 19E29:  3b 23 2f 1f 3f f0 c3 1f
-            hex 3b 23 2f 02 6c 81 9a 55 ; 19E31:  3b 23 2f 02 6c 81 9a 55
-            hex 2a 15 fa 00 00 00 00 00 ; 19E39:  2a 15 fa 00 00 00 00 00
-            hex 00 00 f0 92 6c 81 9a 55 ; 19E41:  00 00 f0 92 6c 81 9a 55
-            hex 6a 95 aa 00 00 00 00 00 ; 19E49:  6a 95 aa 00 00 00 00 00
-            hex 00 00 00 f0 01 00 c0 00 ; 19E51:  00 00 00 f0 01 00 c0 00
-            hex 00 1c a2 f2 00 01 f6 1d ; 19E59:  00 1c a2 f2 00 01 f6 1d
-            hex 0f 3f bd 66 15 4a 51 06 ; 19E61:  0f 3f bd 66 15 4a 51 06
-            hex 08 42 10 00 80 80 a0 91 ; 19E69:  08 42 10 00 80 80 a0 91
-            hex e4 e0 e9 67 30 a1 30 1c ; 19E71:  e4 e0 e9 67 30 a1 30 1c
-            hex 1e 38 c0 00 09 26 b8 1e ; 19E79:  1e 38 c0 00 09 26 b8 1e
-            hex 1d 79 e0 22 ac 11 0e 21 ; 19E81:  1d 79 e0 22 ac 11 0e 21
-            hex b5 20 c0 00 01 c4 20 0a ; 19E89:  b5 20 c0 00 01 c4 20 0a
-            hex bb ac 40 81 43 8f 9f 55 ; 19E91:  bb ac 40 81 43 8f 9f 55
-            hex 41 81 8f 01 03 0f 0f 05 ; 19E99:  41 81 8f 01 03 0f 0f 05
-            hex 01 01 0f fa f8 f1 f0 ff ; 19EA1:  01 01 0f fa f8 f1 f0 ff
-            hex e7 b6 be fa f8 f0 f0 ff ; 19EA9:  e7 b6 be fa f8 f0 f0 ff
-            hex e7 b6 be 0c 2e af 02 04 ; 19EB1:  e7 b6 be 0c 2e af 02 04
-            hex 0f 18 30 0c 4e 4f 82 84 ; 19EB9:  0f 18 30 0c 4e 4f 82 84
-            hex 0f 18 30 fc f8 e7 10 80 ; 19EC1:  0f 18 30 fc f8 e7 10 80
-            hex 33 3f 7b fc f8 e7 10 80 ; 19EC9:  33 3f 7b fc f8 e7 10 80
-            hex 33 3f 7b 02 0c 01 9a 55 ; 19ED1:  33 3f 7b 02 0c 01 9a 55
-            hex 6a 15 2a 00 00 00 00 00 ; 19ED9:  6a 15 2a 00 00 00 00 00
-            hex 00 00 00 1c 33 f4 72 e3 ; 19EE1:  00 00 00 1c 33 f4 72 e3
-            hex c0 82 c8 00 30 f0 71 e0 ; 19EE9:  c0 82 c8 00 30 f0 71 e0
-            hex c2 87 c7 ab 14 ab 44    ; 19EF1:  c2 87 c7 ab 14 ab 44
-
-            plp                         ; 19EF8:  28
-            pha                         ; 19EF9:  48
-            bpl tab_b6_9dd1+171         ; 19EFA:  10 80
-            brk                         ; 19EFC:  00
-            hex 00                      ; 19EFD:  00
-            rti                         ; 19EFE:  40
-
-            hex 10 44 90 a0 e8 a0 48 00 ; 19EFF:  10 44 90 a0 e8 a0 48 00
-            hex 12 a1 00 a8 41 00 00 00 ; 19F07:  12 a1 00 a8 41 00 00 00
-            hex 00 00 00 00 00 54 48 a8 ; 19F0F:  00 00 00 00 00 54 48 a8
-            hex 1b 02 3c 72             ; 19F17:  1b 02 3c 72
-
-            sbc ($00,x)                 ; 19F1B:  e1 00
-            brk                         ; 19F1D:  00
-            hex 00                      ; 19F1E:  00
-            brk                         ; 19F1F:  00
-            hex 00                      ; 19F20:  00
-            bmi tab_b6_9f28+107         ; 19F21:  30 70
-            cpx #$a0                    ; 19F23:  e0 a0
-            jmp $1203                   ; 19F25:  4c 03 12
-
-tab_b6_9f28: ; 110 bytes
-            hex a1 00 a8 41 00 04 03 00 ; 19F28:  a1 00 a8 41 00 04 03 00
-            hex 00 00 00 00 00 00 00 00 ; 19F30:  00 00 00 00 00 00 00 00
-            hex 00 00 07 1f 00 00 00 00 ; 19F38:  00 00 07 1f 00 00 00 00
-            hex 00 00 07 1f 00 00 00 00 ; 19F40:  00 00 07 1f 00 00 00 00
-            hex 00 00 00 80 00 00 00 00 ; 19F48:  00 00 00 80 00 00 00 00
-            hex 00 00 00 80 7f ff ff 07 ; 19F50:  00 00 00 80 7f ff ff 07
-            hex 07 07 07 07 7f ff ff 07 ; 19F58:  07 07 07 07 7f ff ff 07
-            hex 07 07 07 07 80 00 00 00 ; 19F60:  07 07 07 07 80 00 00 00
-            hex 70 38 00 00 80 00 00 00 ; 19F68:  70 38 00 00 80 00 00 00
-            hex 70 38 00 00 00 00 00 00 ; 19F70:  70 38 00 00 00 00 00 00
-            hex 00 00 01 03 00 00 00 00 ; 19F78:  00 00 01 03 00 00 00 00
-            hex 00 00 01 03 0e 1c 3c 78 ; 19F80:  00 00 01 03 0e 1c 3c 78
-            hex 78 fc de cf 0e 1c 3c 78 ; 19F88:  78 fc de cf 0e 1c 3c 78
-            hex 78 fc de cf 07 07       ; 19F90:  78 fc de cf 07 07
-
-            asl $701c,x                 ; 19F96:  1e 1c 70
-            rts                         ; 19F99:  60
-
-            hex 00 01 07 07             ; 19F9A:  00 01 07 07
-
-            asl $701c,x                 ; 19F9E:  1e 1c 70
-            rts                         ; 19FA1:  60
-
-            hex 00 01 87 01 00 00 00 00 ; 19FA2:  00 01 87 01 00 00 00 00
-            hex 41 e4 87 01 00 00 00 00 ; 19FAA:  41 e4 87 01 00 00 00 00
-            hex 41 e4 c0 e0 f0 3c 0c 06 ; 19FB2:  41 e4 c0 e0 f0 3c 0c 06
-            hex e3 30 c0 e0 f0 3c 0c 06 ; 19FBA:  e3 30 c0 e0 f0 3c 0c 06
-            hex e3 30 0f 07 01 01 03 03 ; 19FC2:  e3 30 0f 07 01 01 03 03
-            hex 03 06 0f 07 01 01 03 03 ; 19FCA:  03 06 0f 07 01 01 03 03
-            hex 03 06 06 0c 1d 19 39 30 ; 19FD2:  03 06 06 0c 1d 19 39 30
-            hex 60 c0 06 0c 1d 19 39 30 ; 19FDA:  60 c0 06 0c 1d 19 39 30
-            hex 60 c0 f0 ee c6 c6 c6 e6 ; 19FE2:  60 c0 f0 ee c6 c6 c6 e6
-            hex f6 d6 f0 ee c6 c6 c6 e6 ; 19FEA:  f6 d6 f0 ee c6 c6 c6 e6
-            hex f6 d6 b6 b6 b7 97 9f 1e ; 19FF2:  f6 d6 b6 b6 b7 97 9f 1e
-            hex 1e 0e b6 b6 b7 97 9f 1e ; 19FFA:  1e 0e b6 b6 b7 97 9f 1e
-            hex 1e 0e 05 22 4f 04 1a 25 ; 1A002:  1e 0e 05 22 4f 04 1a 25
-            hex 2a 35 00 00 00 00 00 00 ; 1A00A:  2a 35 00 00 00 00 00 00
-            hex 00 00 0b 1b 36 76 6d 3f ; 1A012:  00 00 0b 1b 36 76 6d 3f
-            hex 3a 70 0b 1b 36 76 6d 3f ; 1A01A:  3a 70 0b 1b 36 76 6d 3f
-            hex 3a 70 ff ee ce 9e c2 03 ; 1A022:  3a 70 ff ee ce 9e c2 03
-            hex 01 2d ff ee ce 9e c2 0b ; 1A02A:  01 2d ff ee ce 9e c2 0b
-            hex 07 1b 80 40 ac 4a d4 a0 ; 1A032:  07 1b 80 40 ac 4a d4 a0
-            hex 10 62 01 00 02 14       ; 1A03A:  10 62 01 00 02 14
-
-            brk                         ; 1A040:  00
-            hex 04                      ; 1A041:  04
-            brk                         ; 1A042:  00
-            hex 02                      ; 1A043:  02
-            plp                         ; 1A044:  28
-            ora ($40,x)                 ; 1A045:  01 40
-            rti                         ; 1A047:  40
-
-            hex 47 4f 78 e0 57 bf 23 41 ; 1A048:  47 4f 78 e0 57 bf 23 41
-            hex 47 4f                   ; 1A050:  47 4f
-
-            sei                         ; 1A052:  78
-            cpx #$20                    ; 1A053:  e0 20
-            clc                         ; 1A055:  18
-            rts                         ; 1A056:  60
-
-            hex 41 61 61 f3 fb 1c 00 58 ; 1A057:  41 61 61 f3 fb 1c 00 58
-            hex 49 61 61 f3 fb 51 ce 98 ; 1A05F:  49 61 61 f3 fb 51 ce 98
-            hex 8d 87 07 0f bc 51 ce 98 ; 1A067:  8d 87 07 0f bc 51 ce 98
-            hex 8d 87 07 0f bc 3e 0c 9c ; 1A06F:  8d 87 07 0f bc 3e 0c 9c
-
-            pla                         ; 1A077:  68
-            bit $42                     ; 1A078:  24 42
-            asl a                       ; 1A07A:  0a
-            jsr $ccbe                   ; 1A07B:  20 be cc
-            jmp ($d8b8)                 ; 1A07E:  6c b8 d8
-
-            hex 7f 39 19 00 00 27 c2 87 ; 1A081:  7f 39 19 00 00 27 c2 87
-            hex 27 46 c6 20 10 41 a1 66 ; 1A089:  27 46 c6 20 10 41 a1 66
-            hex c7 a6 26 90 94 80 85 1a ; 1A091:  c7 a6 26 90 94 80 85 1a
-            hex 80 d5 e4 bf 8f 9f 9b 0d ; 1A099:  80 d5 e4 bf 8f 9f 9b 0d
-            hex 9f fa e7 a9 45 3a 49 21 ; 1A0A1:  9f fa e7 a9 45 3a 49 21
-            hex 88 20 e4 41 b9 80 b6 cd ; 1A0A9:  88 20 e4 41 b9 80 b6 cd
-            hex 77 de 3f 30 1e 6f 08 08 ; 1A0B1:  77 de 3f 30 1e 6f 08 08
-            hex 04 3e 78 31 de bf f0 0c ; 1A0B9:  04 3e 78 31 de bf f0 0c
-            hex 03 3f 79 13 90 a6 2c 04 ; 1A0C1:  03 3f 79 13 90 a6 2c 04
-            hex 8b d2 41 ec ff d8 36 1a ; 1A0C9:  8b d2 41 ec ff d8 36 1a
-            hex 74 fd be 11 88 e7 fd 3e ; 1A0D1:  74 fd be 11 88 e7 fd 3e
-            hex 06 b0 44 11 87 e7       ; 1A0D9:  06 b0 44 11 87 e7
-
-            inc $c6bf,x                 ; 1A0DF:  fe bf c6
-            rti                         ; 1A0E2:  40
-
-            hex ba 80 2d 21 48 86 80 2b ; 1A0E3:  ba 80 2d 21 48 86 80 2b
-            hex 32 f0 fd d1 f0 fc 7f 5c ; 1A0EB:  32 f0 fd d1 f0 fc 7f 5c
-            hex 4f 15 63 c0 44 41 40 4e ; 1A0F3:  4f 15 63 c0 44 41 40 4e
-            hex 3c ef be 3f 7f 46 43 4e ; 1A0FB:  3c ef be 3f 7f 46 43 4e
-            hex 3c 94 2a ba 81 1d b0 96 ; 1A103:  3c 94 2a ba 81 1d b0 96
-            hex e0 ff d5 ed 7e f7 df 7a ; 1A10B:  e0 ff d5 ed 7e f7 df 7a
-            hex f0 e0 c1 84 03 00 48 08 ; 1A113:  f0 e0 c1 84 03 00 48 08
-            hex 20 e1 c0 80 0f 9c bc f0 ; 1A11B:  20 e1 c0 80 0f 9c bc f0
-            hex f8 e7 4e 1c b8 b0 60 e1 ; 1A123:  f8 e7 4e 1c b8 b0 60 e1
-            hex c2 e7 4e 1c b8 b0 61 e2 ; 1A12B:  c2 e7 4e 1c b8 b0 61 e2
-            hex c7 81 21 03 47 0e 0c 1c ; 1A133:  c7 81 21 03 47 0e 0c 1c
-            hex 38 71 e1 c3 87 8e 0c 1c ; 1A13B:  38 71 e1 c3 87 8e 0c 1c
-            hex 38 82 81 00 14          ; 1A143:  38 82 81 00 14
-
-            brk                         ; 1A148:  00
-            hex 10                      ; 1A149:  10
-            jsr tab_b6_8055+171         ; 1A14A:  20 00 81
-            sta $1e18                   ; 1A14D:  8d 18 1e
-            bpl tab_b6_a153+49          ; 1A150:  10 32
-            rts                         ; 1A152:  60
-
-tab_b6_a153: ; 76 bytes
-            hex 40 14 03 0c 19 04 a2 b8 ; 1A153:  40 14 03 0c 19 04 a2 b8
-            hex 20 1b 0e 1b 07 df dd 77 ; 1A15B:  20 1b 0e 1b 07 df dd 77
-            hex 5f 41 81 31 9d 45 18 b5 ; 1A163:  5f 41 81 31 9d 45 18 b5
-            hex 42 a9 f9 ed 53 fe ef 7b ; 1A16B:  42 a9 f9 ed 53 fe ef 7b
-            hex b7 4a 29 10 26 09 1c 14 ; 1A173:  b7 4a 29 10 26 09 1c 14
-            hex 05 3d 5e 3e 5d 37 9c 1f ; 1A17B:  05 3d 5e 3e 5d 37 9c 1f
-            hex 05 49 02 11 c9 a1 11 c9 ; 1A183:  05 49 02 11 c9 a1 11 c9
-            hex f1 f9 1a 39 31 f9 69 79 ; 1A18B:  f1 f9 1a 39 31 f9 69 79
-            hex f9 c2 82 85 cc eb 66 31 ; 1A193:  f9 c2 82 85 cc eb 66 31
-            hex b4 c0 80 80             ; 1A19B:  b4 c0 80 80
-
-            cpy #$f0                    ; 1A19F:  c0 f0
-b6_a1a1:    rts                         ; 1A1A1:  60
-
-            hex 34 b3 a3 20 80 a1 81 00 ; 1A1A2:  34 b3 a3 20 80 a1 81 00
-            hex 01 70 e0 63 f6 9e 9e 1f ; 1A1AA:  01 70 e0 63 f6 9e 9e 1f
-            hex 08 77 65 99 76 25 2c 19 ; 1A1B2:  08 77 65 99 76 25 2c 19
-            hex 4a 01 00 00 00 80 10 e4 ; 1A1BA:  4a 01 00 00 00 80 10 e4
-            hex 11 f6 47 07 a7 47 80 74 ; 1A1C2:  11 f6 47 07 a7 47 80 74
-            hex 41 00 07 07 07 07 00 00 ; 1A1CA:  41 00 07 07 07 07 00 00
-            hex 00 00 83 7f ff 8c 0f 0f ; 1A1D2:  00 00 83 7f ff 8c 0f 0f
-            hex be 1e 83 7f 3f 0c 0f 0f ; 1A1DA:  be 1e 83 7f 3f 0c 0f 0f
-            hex 3e 1e c0 c0 88 05 d0 c1 ; 1A1E2:  3e 1e c0 c0 88 05 d0 c1
-            hex 04 02 80 c0 80 00 c0 c0 ; 1A1EA:  04 02 80 c0 80 00 c0 c0
-            hex 00 00 00 01 02 02 03 03 ; 1A1F2:  00 00 00 01 02 02 03 03
-            hex 02 02 00 01 02 02 03 03 ; 1A1FA:  02 02 00 01 02 02 03 03
-            hex 02 02 66 e7 66 67 e3 07 ; 1A202:  02 02 66 e7 66 67 e3 07
-            hex 3c 26 66 e7 66 67 e3 07 ; 1A20A:  3c 26 66 e7 66 67 e3 07
-            hex 3c 26 02 06 06 02 00 00 ; 1A212:  3c 26 02 06 06 02 00 00
-            hex 00 00 02 06 06 02 00 00 ; 1A21A:  00 00 02 06 06 02 00 00
-            hex 00 00 42 7a 32 1e 0f 00 ; 1A222:  00 00 42 7a 32 1e 0f 00
-            hex 00 00 42 7a 32 1e 0f 00 ; 1A22A:  00 00 42 7a 32 1e 0f 00
-            hex 00 00 30 b0 30 b0 b0 30 ; 1A232:  00 00 30 b0 30 b0 b0 30
-            hex 30 30 30 b0 30 b0 b0 30 ; 1A23A:  30 30 30 b0 30 b0 b0 30
-            hex 30 30 30 30 30 30 f0 f0 ; 1A242:  30 30 30 30 30 30 f0 f0
-            hex 30 00 30 30 30 30 f0 f0 ; 1A24A:  30 00 30 30 30 30 f0 f0
-            hex 30 00 00 00 00 00 01 01 ; 1A252:  30 00 00 00 00 00 01 01
-            hex 03 07 00 00 00 00 01 01 ; 1A25A:  03 07 00 00 00 00 01 01
-            hex 03 07                   ; 1A262:  03 07
-
-            brk                         ; 1A264:  00
-            hex 40                      ; 1A265:  40
-            ora $12                     ; 1A266:  05 12
-            ldy #$12                    ; 1A268:  a0 12
-            ora $2b                     ; 1A26A:  05 2b
-            brk                         ; 1A26C:  00
-            hex 00                      ; 1A26D:  00
-            brk                         ; 1A26E:  00
-            hex 00                      ; 1A26F:  00
-            brk                         ; 1A270:  00
-            hex 00                      ; 1A271:  00
-            brk                         ; 1A272:  00
-            hex 00                      ; 1A273:  00
-            lsr a                       ; 1A274:  4a
-            and $1a,x                   ; 1A275:  35 1a
-            jmp ($94d0)                 ; 1A277:  6c d0 94
-
-            hex 2d 40 00 00 00 00 00 08 ; 1A27A:  2d 40 00 00 00 00 00 08
-            hex 01 16 54 4b c4 82 ff    ; 1A282:  01 16 54 4b c4 82 ff
-
-            dec $0c86                   ; 1A289:  ce 86 0c
-            rti                         ; 1A28C:  40
-
-            hex 40 c0 80 fe ce 86 0c 81 ; 1A28D:  40 c0 80 fe ce 86 0c 81
-            hex 20 b3 48 25 91 34 56 12 ; 1A295:  20 b3 48 25 91 34 56 12
-            hex 5f 0e b7 1e 6e 0b 3d 83 ; 1A29D:  5f 0e b7 1e 6e 0b 3d 83
-            hex 07 0e 1f 71 e0 80 02 03 ; 1A2A5:  07 0e 1f 71 e0 80 02 03
-            hex 07 0e 1f 71 e0 81 02 c1 ; 1A2AD:  07 0e 1f 71 e0 81 02 c1
-            hex c2 05 05 f2 14 23 e0 c0 ; 1A2B5:  c2 05 05 f2 14 23 e0 c0
-            hex c5 0f 0a ff 17 21 eb 00 ; 1A2BD:  c5 0f 0a ff 17 21 eb 00
-            hex 13 52 22 43 16 47 4b 90 ; 1A2C5:  13 52 22 43 16 47 4b 90
-            hex f3 f2 c2 e3 d6 87 8b 80 ; 1A2CD:  f3 f2 c2 e3 d6 87 8b 80
-            hex 4f 44 ff c2 82 86 76 d7 ; 1A2D5:  4f 44 ff c2 82 86 76 d7
-            hex 4f 43 ff c3 82 86 76 a1 ; 1A2DD:  4f 43 ff c3 82 86 76 a1
-            hex 61 91 03 3b c7 25 e8 f9 ; 1A2E5:  61 91 03 3b c7 25 e8 f9
-            hex 91 f1 fb ff 79 fe b4 26 ; 1A2ED:  91 f1 fb ff 79 fe b4 26
-            hex 07 07 1f fe fe 84 07 c6 ; 1A2F5:  07 07 1f fe fe 84 07 c6
-            hex 07 07 1f fe fe 84 07 4c ; 1A2FD:  07 07 1f fe fe 84 07 4c
-            hex a0 a6 fc a0 7d 15 7d fc ; 1A305:  a0 a6 fc a0 7d 15 7d fc
-            hex de fb ff ff ff 6e 7f 3f ; 1A30D:  de fb ff ff ff 6e 7f 3f
-            hex f7 fe 1c 8c 4f 6f 98 3f ; 1A315:  f7 fe 1c 8c 4f 6f 98 3f
-            hex f7 fe 9c 4c ef 9f 70 f0 ; 1A31D:  f7 fe 9c 4c ef 9f 70 f0
-            hex e0 c0 03 01 1f 09 df f0 ; 1A325:  e0 c0 03 01 1f 09 df f0
-            hex e1 c3 07 0f 3f 77 ff fd ; 1A32D:  e1 c3 07 0f 3f 77 ff fd
-            hex d0 bf d4 5f e0 97 fa ff ; 1A335:  d0 bf d4 5f e0 97 fa ff
-            hex 6f f7 ff fb ff 6d ff af ; 1A33D:  6f f7 ff fb ff 6d ff af
-            hex 03 0c 32 f4 e1 81 02 bd ; 1A345:  03 0c 32 f4 e1 81 02 bd
-            hex 1f 13 3c f3 e2 83 05 00 ; 1A34D:  1f 13 3c f3 e2 83 05 00
-            hex fa e1 14 49 3b 46 9a ff ; 1A355:  fa e1 14 49 3b 46 9a ff
-            hex fc de ff f7 cc b9 65 38 ; 1A35D:  fc de ff f7 cc b9 65 38
-            hex 30 30 73 1e 10 c8 a8 38 ; 1A365:  30 30 73 1e 10 c8 a8 38
-            hex 30 b1 b3 ff e0 f8 d7 10 ; 1A36D:  30 b1 b3 ff e0 f8 d7 10
-            hex f3 d3 7f 46 9f 5f 10 60 ; 1A375:  f3 d3 7f 46 9f 5f 10 60
-            hex 73 fb ff de ff 77 fe 6b ; 1A37D:  73 fb ff de ff 77 fe 6b
-            hex 04 04 07 8e 1c 18 30 ae ; 1A385:  04 04 07 8e 1c 18 30 ae
-            hex e2 c7 86 0e 1c 18 30 70 ; 1A38D:  e2 c7 86 0e 1c 18 30 70
-            hex 02 38 08 56 01 00 00 df ; 1A395:  02 38 08 56 01 00 00 df
-            hex 7e 2c 74 1a 06 40 00 70 ; 1A39D:  7e 2c 74 1a 06 40 00 70
-            hex e0 c0 01 03 07 8e 0c 70 ; 1A3A5:  e0 c0 01 03 07 8e 0c 70
-            hex e0 c0 01 03 07 8e 0c 10 ; 1A3AD:  e0 c0 01 03 07 8e 0c 10
-            hex 21 e8 e8 f6 86 00 00 10 ; 1A3B5:  21 e8 e8 f6 86 00 00 10
-            hex 20 e8 e0 f4 86 00 00 1c ; 1A3BD:  20 e8 e0 f4 86 00 00 1c
-            hex 38 38 77 ff f7 6e 0d 1c ; 1A3C5:  38 38 77 ff f7 6e 0d 1c
-            hex 38 38 77 ff f7 6e 0d 07 ; 1A3CD:  38 38 77 ff f7 6e 0d 07
-            hex be 38 00 a0 68 c0 80 07 ; 1A3D5:  be 38 00 a0 68 c0 80 07
-            hex 3e 38 00 a0 68 c0 80 03 ; 1A3DD:  3e 38 00 a0 68 c0 80 03
-            hex 00 00 00 00 80 07 02 03 ; 1A3E5:  00 00 00 00 80 07 02 03
-            hex 00 00 01 04 83 0f 07 65 ; 1A3ED:  00 00 01 04 83 0f 07 65
-            hex 75 1a 3d a7 d4 d4 5a dd ; 1A3F5:  75 1a 3d a7 d4 d4 5a dd
-            hex 7b 1f 2f 1f f4 ad f2 e5 ; 1A3FD:  7b 1f 2f 1f f4 ad f2 e5
-            hex f2 76 f1 f1 f2 f1 e0 e0 ; 1A405:  f2 76 f1 f1 f2 f1 e0 e0
-            hex f0 70 f2 f0 f0 f1 e0 e1 ; 1A40D:  f0 70 f2 f0 f0 f1 e0 e1
-            hex 23 50 90 e7 25 38 08 e5 ; 1A415:  23 50 90 e7 25 38 08 e5
-            hex 55 10 00 07 b5 fc 30 ff ; 1A41D:  55 10 00 07 b5 fc 30 ff
-            hex 9c 1c 1c 18 38 30 60 fc ; 1A425:  9c 1c 1c 18 38 30 60 fc
-            hex 9d 1c 1c 18 38 31 61 42 ; 1A42D:  9d 1c 1c 18 38 31 61 42
-            hex 93 00 60 32 08 ff       ; 1A435:  93 00 60 32 08 ff
-
-            cpx $b9                     ; 1A43B:  e4 b9
-            jmp ($9c7e)                 ; 1A43D:  6c 7e 9c
-
-            hex c0 b1 47 0a 82 a5 44 24 ; 1A440:  c0 b1 47 0a 82 a5 44 24
-            hex d4 e4 ec 80             ; 1A448:  d4 e4 ec 80
-
-            sta ($a7,x)                 ; 1A44C:  81 a7
-            jmp $d624                   ; 1A44E:  4c 24 d6
-
-            hex fc e4 80 29 1a 02 19 e4 ; 1A451:  fc e4 80 29 1a 02 19 e4
-            hex c1 00 02 d2 05 3f 2e db ; 1A459:  c1 00 02 d2 05 3f 2e db
-            hex de 0f 0c 1b             ; 1A461:  de 0f 0c 1b
-
-            ora $3119,y                 ; 1A465:  19 19 31
-            rts                         ; 1A468:  60
-
-            hex c0 06 08 9b 19 19 30 61 ; 1A469:  c0 06 08 9b 19 19 30 61
-            hex c0 83 46 4c 33 c9 e4 72 ; 1A471:  c0 83 46 4c 33 c9 e4 72
-            hex bd 3e 17 00 00 c0 e0 70 ; 1A479:  bd 3e 17 00 00 c0 e0 70
-            hex 3c 9e 47 22 40          ; 1A481:  3c 9e 47 22 40
-
-            cpy $27                     ; 1A486:  c4 27
-            jmp $2c14                   ; 1A488:  4c 14 2c
-
-            hex 78 05 a1 04 87 4c 14 ac ; 1A48B:  78 05 a1 04 87 4c 14 ac
-
-            clv                         ; 1A493:  b8
-            rti                         ; 1A494:  40
-
-            hex d0 0d a2 c5 ca c9 c2 b0 ; 1A495:  d0 0d a2 c5 ca c9 c2 b0
-            hex 00 d0 90 f0 d4 c0 c4 80 ; 1A49D:  00 d0 90 f0 d4 c0 c4 80
-
-            pha                         ; 1A4A5:  48
-            brk                         ; 1A4A6:  00
-            hex 20                      ; 1A4A7:  20
-            bcc b6_a4aa                 ; 1A4A8:  90 00
-b6_a4aa:    rti                         ; 1A4AA:  40
-
-            hex 80 00 00 00 00 00 00 00 ; 1A4AB:  80 00 00 00 00 00 00 00
-            hex 00 20 20 30 18 1e 7e 36 ; 1A4B3:  00 20 20 30 18 1e 7e 36
-            hex 24 20 20 30 18 1e 7e 36 ; 1A4BB:  24 20 20 30 18 1e 7e 36
-            hex 24 50 00 60 97 40 b4 40 ; 1A4C3:  24 50 00 60 97 40 b4 40
-            hex 88 00 00 00 07 00 00 00 ; 1A4CB:  88 00 00 00 07 00 00 00
-            hex 00 64 ff 7f e0 00 00 00 ; 1A4D3:  00 64 ff 7f e0 00 00 00
-            hex 00 64 ff 7f             ; 1A4DB:  00 64 ff 7f
-
-            cpx #$00                    ; 1A4DF:  e0 00
-            brk                         ; 1A4E1:  00
-            hex 00                      ; 1A4E2:  00
-            brk                         ; 1A4E3:  00
-            hex 00                      ; 1A4E4:  00
-            cpy #$e0                    ; 1A4E5:  c0 e0
-            rts                         ; 1A4E7:  60
-
-            hex 00 00 00 00 00 c0 e0 60 ; 1A4E8:  00 00 00 00 00 c0 e0 60
-            hex 00 00 00 00 08 00 10 48 ; 1A4F0:  00 00 00 00 08 00 10 48
-            hex 05 02 04 09 00 00 00 00 ; 1A4F8:  05 02 04 09 00 00 00 00
-            hex 00 00 00 00 20 84 01 22 ; 1A500:  00 00 00 00 20 84 01 22
-            hex 46 2b 04 28 00 00 01 02 ; 1A508:  46 2b 04 28 00 00 01 02
-            hex 06 03 00 00 7c          ; 1A510:  06 03 00 00 7c
-
-            clv                         ; 1A515:  b8
-            sed                         ; 1A516:  f8
-            beq tab_b6_a526+3           ; 1A517:  f0 10
-            bcc tab_b6_a535+73          ; 1A519:  90 63
-            cpy #$7c                    ; 1A51B:  c0 7c
-            clv                         ; 1A51D:  b8
-            sed                         ; 1A51E:  f8
-            sbc ($10),y                 ; 1A51F:  f1 10
-            ora ($20),y                 ; 1A521:  11 20
-            pha                         ; 1A523:  48
-            php                         ; 1A524:  08
-            rti                         ; 1A525:  40
-
-tab_b6_a526: ; 8 bytes
-            hex a2 40 92 14 98 5b 77 bf ; 1A526:  a2 40 92 14 98 5b 77 bf
-
-            eor $6d3f,x                 ; 1A52E:  5d 3f 6d
-            lsr a                       ; 1A531:  4a
-            asl $24                     ; 1A532:  06 24
-            rti                         ; 1A534:  40
-
-tab_b6_a535: ; 1188 bytes
-            hex c0 2f 79 f8 3d 18 0c 01 ; 1A535:  c0 2f 79 f8 3d 18 0c 01
-            hex 80 17 61 f4 3a 19 0c 6e ; 1A53D:  80 17 61 f4 3a 19 0c 6e
-            hex be d8 8d 15 8b 48 90 91 ; 1A545:  be d8 8d 15 8b 48 90 91
-            hex 01 a3 82 0a 0c 36 68 ab ; 1A54D:  01 a3 82 0a 0c 36 68 ab
-            hex 9e 34 c8 c0 30 83 ab 4b ; 1A555:  9e 34 c8 c0 30 83 ab 4b
-            hex 3e cc 34 32 d0 73 5b 4c ; 1A55D:  3e cc 34 32 d0 73 5b 4c
-            hex 7e 32 60 52 58 02 da 4c ; 1A565:  7e 32 60 52 58 02 da 4c
-            hex 7e 32 20 f3 ef 7d ff f3 ; 1A56D:  7e 32 20 f3 ef 7d ff f3
-            hex 41 c1 37 07 21 03 07 2b ; 1A575:  41 c1 37 07 21 03 07 2b
-            hex 21 21 e7 f7 c1 03 07 c2 ; 1A57D:  21 21 e7 f7 c1 03 07 c2
-            hex f0 f6 ef d9 ff fc e0 c7 ; 1A585:  f0 f6 ef d9 ff fc e0 c7
-            hex f0 f6 ef d9 ff fc e0 69 ; 1A58D:  f0 f6 ef d9 ff fc e0 69
-            hex 10 22 15 69 8a cd 72 76 ; 1A595:  10 22 15 69 8a cd 72 76
-            hex 7f df 6a 5f f5 f6 ed 40 ; 1A59D:  7f df 6a 5f f5 f6 ed 40
-            hex b3 24 00 06 3f 9f 0c bc ; 1A5A5:  b3 24 00 06 3f 9f 0c bc
-            hex ef c3 03 87 ff df 8c 53 ; 1A5AD:  ef c3 03 87 ff df 8c 53
-            hex a8 12 d8 c8 e6 00 00 bd ; 1A5B5:  a8 12 d8 c8 e6 00 00 bd
-            hex ff 6f ff d7 eb 0f 07 08 ; 1A5BD:  ff 6f ff d7 eb 0f 07 08
-            hex 1b 9f 9e 6c 0c 97 c7 88 ; 1A5C5:  1b 9f 9e 6c 0c 97 c7 88
-            hex 9b 5f de 8c ec 67 4f 14 ; 1A5CD:  9b 5f de 8c ec 67 4f 14
-            hex c8 04 d1 28 64 04 02 1f ; 1A5D5:  c8 04 d1 28 64 04 02 1f
-            hex f7 ff 2e d7 9b 7b 2d be ; 1A5DD:  f7 ff 2e d7 9b 7b 2d be
-            hex 05 59 2a a2 e8 08 e2 d1 ; 1A5E5:  05 59 2a a2 e8 08 e2 d1
-            hex fb ae d7 7d 9f f7 3d 03 ; 1A5ED:  fb ae d7 7d 9f f7 3d 03
-            hex 31 c0 04 1b 09 f6 2c 3a ; 1A5F5:  31 c0 04 1b 09 f6 2c 3a
-            hex de ff 3b 0d 76 c9 13 3a ; 1A5FD:  de ff 3b 0d 76 c9 13 3a
-            hex 89 43 24 8d 61 09 52 c7 ; 1A605:  89 43 24 8d 61 09 52 c7
-            hex fe bd fa 7a de f7 bc a0 ; 1A60D:  fe bd fa 7a de f7 bc a0
-            hex 22 7a 2c 04 a6 ae 40 21 ; 1A615:  22 7a 2c 04 a6 ae 40 21
-            hex e2 bd cf e5 d6 7e bc 00 ; 1A61D:  e2 bd cf e5 d6 7e bc 00
-            hex 12 00 00 08 20 80 00 00 ; 1A625:  12 00 00 08 20 80 00 00
-            hex c2 80 00 40 02 00 40 56 ; 1A62D:  c2 80 00 40 02 00 40 56
-            hex 89 04 00 00 7c 1c 30 ae ; 1A635:  89 04 00 00 7c 1c 30 ae
-            hex 64 e0 00 00 7c 1c 30 3f ; 1A63D:  64 e0 00 00 7c 1c 30 3f
-            hex 3f 3e 0c 00 00 00 00 3f ; 1A645:  3f 3e 0c 00 00 00 00 3f
-            hex 3f 3e 0c 00 00 00 00 41 ; 1A64D:  3f 3e 0c 00 00 00 00 41
-            hex 33 1f 1f 1f 0f 00 00 41 ; 1A655:  33 1f 1f 1f 0f 00 00 41
-            hex 33 1f 1f 1f 0f 00 00 00 ; 1A65D:  33 1f 1f 1f 0f 00 00 00
-            hex 80 10 80 08 00 40 00 00 ; 1A665:  80 10 80 08 00 40 00 00
-            hex 00 00 00 00 00 00 08 e0 ; 1A66D:  00 00 00 00 00 00 08 e0
-            hex c1 c0 c4 81 80 14 00 e0 ; 1A675:  c1 c0 c4 81 80 14 00 e0
-            hex c0 c0 c0 80 82 00 00 04 ; 1A67D:  c0 c0 c0 80 82 00 00 04
-            hex 68 70 41 21 72 c0 f9 00 ; 1A685:  68 70 41 21 72 c0 f9 00
-            hex 60 78 01 01 00 21 01 03 ; 1A68D:  60 78 01 01 00 21 01 03
-            hex 11 00 02 00 10 42 04 08 ; 1A695:  11 00 02 00 10 42 04 08
-            hex 00 00 00 00 00 00 00 11 ; 1A69D:  00 00 00 00 00 00 00 11
-            hex 49 69 41 01 0b 4a ca e1 ; 1A6A5:  49 69 41 01 0b 4a ca e1
-            hex b1 81 01 01 0b 0a 0a cc ; 1A6AD:  b1 81 01 01 0b 0a 0a cc
-            hex ef e7 e0 c0 00 00 00 cc ; 1A6B5:  ef e7 e0 c0 00 00 00 cc
-            hex ef e7 e0 c0 00 00 00 04 ; 1A6BD:  ef e7 e0 c0 00 00 00 04
-            hex 09 82 0b 05 02 08 05 1b ; 1A6C5:  09 82 0b 05 02 08 05 1b
-            hex 07 99 06 1e 0d 1f 0b 00 ; 1A6CD:  07 99 06 1e 0d 1f 0b 00
-            hex 00 00 1c 2c 4c 18 18 00 ; 1A6D5:  00 00 1c 2c 4c 18 18 00
-            hex 00 00 1c 2c 4c 18 18 0c ; 1A6DD:  00 00 1c 2c 4c 18 18 0c
-            hex 09 0d 0c 02 01 00 00 1e ; 1A6E5:  09 0d 0c 02 01 00 00 1e
-            hex 0e 1f 07 05 00 00 00 80 ; 1A6ED:  0e 1f 07 05 00 00 00 80
-            hex 01 41 2e 82 20 8e 03 60 ; 1A6F5:  01 41 2e 82 20 8e 03 60
-            hex f1 3d d3 45 c0 6e 83 c0 ; 1A6FD:  f1 3d d3 45 c0 6e 83 c0
-            hex 81 82 08 04 04 11 f0 cd ; 1A705:  81 82 08 04 04 11 f0 cd
-            hex 88 8d 11 1a 29 04 fb 07 ; 1A70D:  88 8d 11 1a 29 04 fb 07
-            hex 3f 67 26 27 21 33 17 47 ; 1A715:  3f 67 26 27 21 33 17 47
-            hex 1f 67 26 27 a1 33 57 fc ; 1A71D:  1f 67 26 27 a1 33 57 fc
-            hex 38 39 30 31 bb ba 38 f8 ; 1A725:  38 39 30 31 bb ba 38 f8
-            hex 3b 38 30 30 b8 b8 39 61 ; 1A72D:  3b 38 30 30 b8 b8 39 61
-            hex 88 20 40 af c7 24 48 00 ; 1A735:  88 20 40 af c7 24 48 00
-            hex 00 00 00 07 03 00 00 18 ; 1A73D:  00 00 00 07 03 00 00 18
-            hex 08 0f 1f fc cc 0c 0c 18 ; 1A745:  08 0f 1f fc cc 0c 0c 18
-            hex 08 0f 1f fc cc 0c 0c a2 ; 1A74D:  08 0f 1f fc cc 0c 0c a2
-            hex a5 28 d1 14 28 c0 28 00 ; 1A755:  a5 28 d1 14 28 c0 28 00
-            hex 00 00 00 00 40 00 00 0c ; 1A75D:  00 00 00 00 40 00 00 0c
-            hex 08 08 08 08 08 08 08 0c ; 1A765:  08 08 08 08 08 08 08 0c
-            hex 08 08 08 08 08 08 08 00 ; 1A76D:  08 08 08 08 08 08 08 00
-            hex e0 e0 e0 00 00 00 00 00 ; 1A775:  e0 e0 e0 00 00 00 00 00
-            hex e0 e0 e0 00 00 00 00 53 ; 1A77D:  e0 e0 e0 00 00 00 00 53
-            hex 8d 22 1d 20 54 0a 14 00 ; 1A785:  8d 22 1d 20 54 0a 14 00
-            hex 00 00 00 00 00 00 00 4a ; 1A78D:  00 00 00 00 00 00 00 4a
-            hex 10 09 24 91 48 00 28 00 ; 1A795:  10 09 24 91 48 00 28 00
-            hex 00 02 00 00 00 00 00 a7 ; 1A79D:  00 02 00 00 00 00 00 a7
-            hex 13 43 11 01 00 df 77 16 ; 1A7A5:  13 43 11 01 00 df 77 16
-            hex 4b 3b ad 0b 07 de 77 e0 ; 1A7AD:  4b 3b ad 0b 07 de 77 e0
-            hex 81 55 83 e8 ca 04 48 18 ; 1A7B5:  81 55 83 e8 ca 04 48 18
-            hex 79 29 bf d7 dc 88 80 32 ; 1A7BD:  79 29 bf d7 dc 88 80 32
-            hex 76 5c f8 08 0e 0e fe 32 ; 1A7C5:  76 5c f8 08 0e 0e fe 32
-            hex 76 5c 78 c8 0f 0e fe 10 ; 1A7CD:  76 5c 78 c8 0f 0e fe 10
-            hex 01 43 07 c6 2c b8 48 f0 ; 1A7D5:  01 43 07 c6 2c b8 48 f0
-            hex 61 23 47 06 cc 08 00 3e ; 1A7DD:  61 23 47 06 cc 08 00 3e
-            hex f1 e3 87 0f 1b 33 63 3e ; 1A7E5:  f1 e3 87 0f 1b 33 63 3e
-            hex f1 e3 87 0f 1b 33 63 c0 ; 1A7ED:  f1 e3 87 0f 1b 33 63 c0
-            hex 86 31 f8 b9 98 f9 79 c0 ; 1A7F5:  86 31 f8 b9 98 f9 79 c0
-            hex 81 3f ff bb 99 f9 78 c3 ; 1A7FD:  81 3f ff bb 99 f9 78 c3
-            hex 83 85 02 10 17 2e 15 c3 ; 1A805:  83 85 02 10 17 2e 15 c3
-            hex 87 89 1c 0f 20 10 40 18 ; 1A80D:  87 89 1c 0f 20 10 40 18
-            hex 99 dc fd fc 78 f8 a0 19 ; 1A815:  99 dc fd fc 78 f8 a0 19
-            hex 99 dd fd fc f8 38 41 d7 ; 1A81D:  99 dd fd fc f8 38 41 d7
-            hex 05 52 83 58 00 4a 06 6c ; 1A825:  05 52 83 58 00 4a 06 6c
-            hex fa ed 7c ee fc b4 89 42 ; 1A82D:  fa ed 7c ee fc b4 89 42
-            hex 8c c8 5e 2f 0c 45 ec 86 ; 1A835:  8c c8 5e 2f 0c 45 ec 86
-            hex 0e 08 1e cf 4c 65 fc 31 ; 1A83D:  0e 08 1e cf 4c 65 fc 31
-            hex 88 98 f0 41 13 53 92 d4 ; 1A845:  88 98 f0 41 13 53 92 d4
-            hex f0 e0 e0 f1 e3 ab 7e 40 ; 1A84D:  f0 e0 e0 f1 e3 ab 7e 40
-            hex 08 31 60 c7 9e 18 31 48 ; 1A855:  08 31 60 c7 9e 18 31 48
-            hex 08 30 60 c7 9e 18 31 1d ; 1A85D:  08 30 60 c7 9e 18 31 1d
-            hex 20 12 68 c0 f1 c9 7a 06 ; 1A865:  20 12 68 c0 f1 c9 7a 06
-            hex 1f 6d 1f ff ef c6 7d a8 ; 1A86D:  1f 6d 1f ff ef c6 7d a8
-            hex b8 00 61 21 0b 90 25 dc ; 1A875:  b8 00 61 21 0b 90 25 dc
-            hex 60 f8 91 f9 f7 6e da 98 ; 1A87D:  60 f8 91 f9 f7 6e da 98
-            hex 39 60 00 85 92 81 84 9b ; 1A885:  39 60 00 85 92 81 84 9b
-            hex 38 e0 c1 e2 ad 9e 8b c0 ; 1A88D:  38 e0 c1 e2 ad 9e 8b c0
-            hex 54 c4 b2 d0 4c 02 25 3f ; 1A895:  54 c4 b2 d0 4c 02 25 3f
-            hex ef 39 5c 68 b1 fc da 30 ; 1A89D:  ef 39 5c 68 b1 fc da 30
-            hex 67 c3 82 0c 04 04 04 30 ; 1A8A5:  67 c3 82 0c 04 04 04 30
-            hex 67 c3 84 0f 05 24 04 00 ; 1A8AD:  67 c3 84 0f 05 24 04 00
-            hex c0 c0 00 00 00 50 a2 00 ; 1A8B5:  c0 c0 00 00 00 50 a2 00
-            hex c0 c0 00 08 31 c0 b0 04 ; 1A8BD:  c0 c0 00 08 31 c0 b0 04
-            hex 8c 7e a2 02 06 04 0c 04 ; 1A8C5:  8c 7e a2 02 06 04 0c 04
-            hex 0c be 02 42 06 04 8c c4 ; 1A8CD:  0c be 02 42 06 04 8c c4
-            hex 51 80 00 00 00 00 00 84 ; 1A8D5:  51 80 00 00 00 00 00 84
-            hex f0 80 00 00 00 00 00 08 ; 1A8DD:  f0 80 00 00 00 00 00 08
-            hex 80 00 01 12 22 03 a3 00 ; 1A8E5:  80 00 01 12 22 03 a3 00
-            hex 00 00 21 02 02 0b 1f c0 ; 1A8ED:  00 00 21 02 02 0b 1f c0
-            hex 60 f0 4c cc 84 84 0c c0 ; 1A8F5:  60 f0 4c cc 84 84 0c c0
-            hex 60 f0 4c cc 84 84 0c 09 ; 1A8FD:  60 f0 4c cc 84 84 0c 09
-            hex 21 10 02 00 00 00 00 0d ; 1A905:  21 10 02 00 00 00 00 0d
-            hex 00 04 00 00 00 00 00 0c ; 1A90D:  00 04 00 00 00 00 00 0c
-            hex 1c 38 30 00 00 00 00 0c ; 1A915:  1c 38 30 00 00 00 00 0c
-            hex 1c 38 30 00 00 00 00 09 ; 1A91D:  1c 38 30 00 00 00 00 09
-            hex 1f 5e 1d ba 7c 24 01 80 ; 1A925:  1f 5e 1d ba 7c 24 01 80
-            hex 00 00 02 04 00 98 30 4a ; 1A92D:  00 00 02 04 00 98 30 4a
-            hex ca ce 86 06 26 06 02 8a ; 1A935:  ca ce 86 06 26 06 02 8a
-            hex 0a 0e 06 06 86 06 02 40 ; 1A93D:  0a 0e 06 06 86 06 02 40
-            hex 10 44 00 00 00 00 00 04 ; 1A945:  10 44 00 00 00 00 00 04
-            hex 00 10 00 00 00 00 00 10 ; 1A94D:  00 10 00 00 00 00 00 10
-            hex 10 18 1c 0c 07 01 00 10 ; 1A955:  10 18 1c 0c 07 01 00 10
-            hex 10 18 1c 0c 07 01 00 00 ; 1A95D:  10 18 1c 0c 07 01 00 00
-            hex 00 09 02 00 00 80 00 00 ; 1A965:  00 09 02 00 00 80 00 00
-            hex 03 1e 2d 00 10 80 00 00 ; 1A96D:  03 1e 2d 00 10 80 00 00
-            hex 00 00 00 00 00 04 1e 00 ; 1A975:  00 00 00 00 00 04 1e 00
-            hex 00 00 00 00 00 04 1e 00 ; 1A97D:  00 00 00 00 00 04 1e 00
-            hex 00 00 00 00 00 20 90 00 ; 1A985:  00 00 00 00 00 20 90 00
-            hex 00 00 00 00 00 20 90 de ; 1A98D:  00 00 00 00 00 20 90 de
-            hex 6b 81 10 00 00 00 00 3e ; 1A995:  6b 81 10 00 00 00 00 3e
-            hex db 79 e8 00 00 00 00 30 ; 1A99D:  db 79 e8 00 00 00 00 30
-            hex b0 f3 f0 60 00 00 00 30 ; 1A9A5:  b0 f3 f0 60 00 00 00 30
-            hex b1 f0 f2 60 00 00 00 00 ; 1A9AD:  b1 f0 f2 60 00 00 00 00
-            hex 00 09 0f 03 03 06 07 00 ; 1A9B5:  00 09 0f 03 03 06 07 00
-            hex 00 09 0f 03 03 06 07 00 ; 1A9BD:  00 09 0f 03 03 06 07 00
-            hex 00 00 80 80 00 00 80 00 ; 1A9C5:  00 00 80 80 00 00 80 00
-            hex 00 00 80 80 00 00 80 40 ; 1A9CD:  00 00 80 80 00 00 80 40
-            hex c1 23 03 63             ; 1A9D5:  c1 23 03 63
-
-            ora $51                     ; 1A9D9:  05 51
-            rts                         ; 1A9DB:  60
-
-            hex 00 01 03 03 03 01 01 00 ; 1A9DC:  00 01 03 03 03 01 01 00
-            hex 70 90 00 08 0e fe fc 18 ; 1A9E4:  70 90 00 08 0e fe fc 18
-            hex 70 90 00 08 0e fe fc 18 ; 1A9EC:  70 90 00 08 0e fe fc 18
-            hex 28 7c 7a 39 69 79 39 6f ; 1A9F4:  28 7c 7a 39 69 79 39 6f
-            hex 28 7c 7a 39 69 79 39 6f ; 1A9FC:  28 7c 7a 39 69 79 39 6f
-            hex 00 00 01 03 02 03 03 02 ; 1AA04:  00 00 01 03 02 03 03 02
-            hex 00 00 00 00 00 00 00 00 ; 1AA0C:  00 00 00 00 00 00 00 00
-            hex 00 00 ff ed 2d fb ab eb ; 1AA14:  00 00 ff ed 2d fb ab eb
-            hex 00 00 00 00 00 00 00 00 ; 1AA1C:  00 00 00 00 00 00 00 00
-            hex 03 03 02 02 03 03 01 00 ; 1AA24:  03 03 02 02 03 03 01 00
-            hex 00 00 00 00 00 00 00 00 ; 1AA2C:  00 00 00 00 00 00 00 00
-            hex af fb da db             ; 1AA34:  af fb da db
-
-            dec $ff0b,x                 ; 1AA38:  de 0b ff
-            brk                         ; 1AA3B:  00
-            hex 00                      ; 1AA3C:  00
-            brk                         ; 1AA3D:  00
-            hex 00                      ; 1AA3E:  00
-            brk                         ; 1AA3F:  00
-            hex 00                      ; 1AA40:  00
-            brk                         ; 1AA41:  00
-            hex 00                      ; 1AA42:  00
-            brk                         ; 1AA43:  00
-            hex 00                      ; 1AA44:  00
-            brk                         ; 1AA45:  00
-            hex c0                      ; 1AA46:  c0
-            rts                         ; 1AA47:  60
-
-            hex e0 20 e0 20 00 00 00 00 ; 1AA48:  e0 20 e0 20 00 00 00 00
-            hex 00 00 00 00 11 45 15 00 ; 1AA50:  00 00 00 00 11 45 15 00
-            hex 25 09 01 03 01 01 01 00 ; 1AA58:  25 09 01 03 01 01 01 00
-            hex 00 00 00 00 20 a0 a0 a0 ; 1AA60:  00 00 00 00 20 a0 a0 a0
-            hex e0 e0 40 00 00 00 00 00 ; 1AA68:  e0 e0 40 00 00 00 00 00
-            hex 00 00 00 00 f8 80 c0 f4 ; 1AA70:  00 00 00 00 f8 80 c0 f4
-            hex 18 5e a7 10 f8 80 c0 f2 ; 1AA78:  18 5e a7 10 f8 80 c0 f2
-            hex 18 1e 07 00 2d 62 5c 28 ; 1AA80:  18 1e 07 00 2d 62 5c 28
-            hex 72 a4 52 45 10 0c 02 14 ; 1AA88:  72 a4 52 45 10 0c 02 14
-            hex 00 01 00 00 ea 44 5c 42 ; 1AA90:  00 01 00 00 ea 44 5c 42
-            hex c2 8d dd f8 04 13 03 09 ; 1AA98:  c2 8d dd f8 04 13 03 09
-            hex c5 8e dc f8 02          ; 1AAA0:  c5 8e dc f8 02
-
-            bit $22                     ; 1AAA5:  24 22
-            ora ($21,x)                 ; 1AAA7:  01 21
-            php                         ; 1AAA9:  08
-            jsr $0120                   ; 1AAAA:  20 20 01
-            sta ($41,x)                 ; 1AAAD:  81 41
-            inc $c2                     ; 1AAAF:  e6 c2
-            rti                         ; 1AAB1:  40
-
-            hex 00 20 13 23 b3 60 84 41 ; 1AAB2:  00 20 13 23 b3 60 84 41
-            hex 80                      ; 1AABA:  80
-
-            brk                         ; 1AABB:  00
-            hex 00                      ; 1AABC:  00
-            rti                         ; 1AABD:  40
-
-            hex 00 01 00 01 00 00 b0 4b ; 1AABE:  00 01 00 01 00 00 b0 4b
-            hex 0c a1 08 85 f8 dd 51 b4 ; 1AAC6:  0c a1 08 85 f8 dd 51 b4
-            hex 30 18 10 80 f8 dc 03 05 ; 1AACE:  30 18 10 80 f8 dc 03 05
-            hex 09 0b 0e 0e 0c 00 03 05 ; 1AAD6:  09 0b 0e 0e 0c 00 03 05
-            hex 09 0b                   ; 1AADE:  09 0b
-
-            asl $0c0e                   ; 1AAE0:  0e 0e 0c
-            brk                         ; 1AAE3:  00
-            hex 8e                      ; 1AAE4:  8e
-            stx $06                     ; 1AAE5:  86 06
-            asl $0e                     ; 1AAE7:  06 0e
-            asl $0e                     ; 1AAE9:  06 0e
-            asl tab_b6_8574+282         ; 1AAEB:  0e 8e 86
-            asl $06                     ; 1AAEE:  06 06
-            asl $0e06                   ; 1AAF0:  0e 06 0e
-            asl $c8a0                   ; 1AAF3:  0e a0 c8
-            sbc #$ab                    ; 1AAF6:  e9 ab
-            cmp ($1b),y                 ; 1AAF8:  d1 1b
-            lda $0a,x                   ; 1AAFA:  b5 0a
-            dec $143e,x                 ; 1AAFC:  de 3e 14
-            bpl tab_b6_ab02+3           ; 1AAFF:  10 04
-            rti                         ; 1AB01:  40
-
-tab_b6_ab02: ; 359 bytes
-            hex 00 a0 3f 27 07 47 bc 38 ; 1AB02:  00 a0 3f 27 07 47 bc 38
-            hex 20 81 3f 47 07 47 3c 38 ; 1AB0A:  20 81 3f 47 07 47 3c 38
-            hex 00 10 19 05 5a 4e 38 08 ; 1AB12:  00 10 19 05 5a 4e 38 08
-            hex 39 0c c0 10 00 11 42 20 ; 1AB1A:  39 0c c0 10 00 11 42 20
-            hex 05 02 05 1a 2c 00 00 20 ; 1AB22:  05 02 05 1a 2c 00 00 20
-            hex 27 3c 00 00 00 00 00 20 ; 1AB2A:  27 3c 00 00 00 00 00 20
-            hex 27 3c 9a 0d df fe 7c 7c ; 1AB32:  27 3c 9a 0d df fe 7c 7c
-            hex 5e a6 85 1b c0 f5 7b 7d ; 1AB3A:  5e a6 85 1b c0 f5 7b 7d
-            hex 9f 46 55 04 20 48 6e 54 ; 1AB42:  9f 46 55 04 20 48 6e 54
-            hex e4 b8 e8 f8 d8 b6 0f ae ; 1AB4A:  e4 b8 e8 f8 d8 b6 0f ae
-            hex 1a 67 c8 92 42 64 c3 f4 ; 1AB52:  1a 67 c8 92 42 64 c3 f4
-            hex e4 c2 b8 2c 6d 4b cc f3 ; 1AB5A:  e4 c2 b8 2c 6d 4b cc f3
-            hex e2 c1 00 00 00 80 20 00 ; 1AB62:  e2 c1 00 00 00 80 20 00
-            hex 90 02 1c 40 80 40 e0 b0 ; 1AB6A:  90 02 1c 40 80 40 e0 b0
-            hex ac 9d 1c 18 10 30 a8 2c ; 1AB72:  ac 9d 1c 18 10 30 a8 2c
-            hex 0c 0c 9c 18 10 31 28 2c ; 1AB7A:  0c 0c 9c 18 10 31 28 2c
-            hex 0c 0c 00 00 00 02 80 00 ; 1AB82:  0c 0c 00 00 00 02 80 00
-            hex 10 00 00 04 00 40 10 00 ; 1AB8A:  10 00 00 04 00 40 10 00
-            hex 01 00 08 08 08 08 08 08 ; 1AB92:  01 00 08 08 08 08 08 08
-            hex 18 18 08 08 08 08 08 08 ; 1AB9A:  18 18 08 08 08 08 08 08
-            hex 18 18 04 04 07 04 04 04 ; 1ABA2:  18 18 04 04 07 04 04 04
-            hex 0c 0c 04 04 07 04 04 04 ; 1ABAA:  0c 0c 04 04 07 04 04 04
-            hex 0c 0c 0c 0c 0c 04 00 00 ; 1ABB2:  0c 0c 0c 0c 0c 04 00 00
-            hex 00 00 0c 0c 0c 04 00 00 ; 1ABBA:  00 00 0c 0c 0c 04 00 00
-            hex 00 00 fe 8c 0c 0c 0c 0c ; 1ABC2:  00 00 fe 8c 0c 0c 0c 0c
-            hex 7c 7c fe 8c 0c 0c 0c 0c ; 1ABCA:  7c 7c fe 8c 0c 0c 0c 0c
-            hex 7c 7c 40 00 00 00 00 00 ; 1ABD2:  7c 7c 40 00 00 00 00 00
-            hex 00 00 40 00 00 00 00 00 ; 1ABDA:  00 00 40 00 00 00 00 00
-            hex 00 00 6e 3f 00 00 00 00 ; 1ABE2:  00 00 6e 3f 00 00 00 00
-            hex 00 00 6e 3f 00 00 00 00 ; 1ABEA:  00 00 6e 3f 00 00 00 00
-            hex 00 00 00 80 c0 40 00 00 ; 1ABF2:  00 00 00 80 c0 40 00 00
-            hex 00 00 00 80 c0 40 00 00 ; 1ABFA:  00 00 00 80 c0 40 00 00
-            hex 00 00 07 03 02 02 02 03 ; 1AC02:  00 00 07 03 02 02 02 03
-            hex 01 00 07 03 02 02 02 03 ; 1AC0A:  01 00 07 03 02 02 02 03
-            hex 01 00 c0 00 00 00 30 e0 ; 1AC12:  01 00 c0 00 00 00 30 e0
-            hex c0 00 c0 00 00 00 30 e0 ; 1AC1A:  c0 00 c0 00 00 00 30 e0
-            hex c0 00 ce f8 f8 08 08 08 ; 1AC22:  c0 00 ce f8 f8 08 08 08
-            hex 08 08 ce f8 f8 08 08 08 ; 1AC2A:  08 08 ce f8 f8 08 08 08
-            hex 08 08 08 08 00 00 00 00 ; 1AC32:  08 08 08 08 00 00 00 00
-            hex 00 00 08 08 00 00 00 00 ; 1AC3A:  00 00 08 08 00 00 00 00
-            hex 00 00 00 00 00 00 01 07 ; 1AC42:  00 00 00 00 00 00 01 07
-            hex 0c 00 00 00 00 00 01 07 ; 1AC4A:  0c 00 00 00 00 00 01 07
-            hex 0c 00 38 78 58 d8 f8 78 ; 1AC52:  0c 00 38 78 58 d8 f8 78
-            hex 10 00 38 78 58 d8 f8 78 ; 1AC5A:  10 00 38 78 58 d8 f8 78
-            hex 10 00 20 38 38 38 3c    ; 1AC62:  10 00 20 38 38 38 3c
-
-            sec                         ; 1AC69:  38
-            sei                         ; 1AC6A:  78
-            rts                         ; 1AC6B:  60
-
-            hex 20 38 38 38 3c          ; 1AC6C:  20 38 38 38 3c
-
-            sec                         ; 1AC71:  38
-            sei                         ; 1AC72:  78
-            rts                         ; 1AC73:  60
-
-            hex 1c                      ; 1AC74:  1c
-
-            clc                         ; 1AC75:  18
-            bmi b6_acd7+1               ; 1AC76:  30 60
-            rti                         ; 1AC78:  40
-
-            brk                         ; 1AC79:  00
-            hex 00                      ; 1AC7A:  00
-            brk                         ; 1AC7B:  00
-            hex 1c                      ; 1AC7C:  1c
-            clc                         ; 1AC7D:  18
-            bmi b6_acdf+1               ; 1AC7E:  30 60
-            rti                         ; 1AC80:  40
-
-            brk                         ; 1AC81:  00
-            hex 00                      ; 1AC82:  00
-            brk                         ; 1AC83:  00
-            hex 30                      ; 1AC84:  30
-            rts                         ; 1AC85:  60
-
-            hex 60 60 60                ; 1AC86:  60 60 60
-
-            brk                         ; 1AC89:  00
-            hex 00                      ; 1AC8A:  00
-            ora ($30,x)                 ; 1AC8B:  01 30
-            rts                         ; 1AC8D:  60
-
-            hex 60 60 60 00 00 01 03 03 ; 1AC8E:  60 60 60 00 00 01 03 03
-            hex 02 00 00 00 00 00 03 03 ; 1AC96:  02 00 00 00 00 00 03 03
-            hex 02 00 00 00 00 00 c1 c2 ; 1AC9E:  02 00 00 00 00 00 c1 c2
-            hex c4 c0 c4 c0 c0 80 c2 cd ; 1ACA6:  c4 c0 c4 c0 c0 80 c2 cd
-            hex c3 c1 c0 c0 c0 80 08 0c ; 1ACAE:  c3 c1 c0 c0 c0 80 08 0c
-            hex 06 7a 84 0c 00 00 37 92 ; 1ACB6:  06 7a 84 0c 00 00 37 92
-
-            hex 1d 04 00 ; ora $0004,x  ; 1ACBE:  1d 04 00
-            clc                         ; 1ACC1:  18
-            asl tab_b6_8000+7           ; 1ACC2:  0e 07 80
-            brk                         ; 1ACC5:  00
-            hex 00                      ; 1ACC6:  00
-            brk                         ; 1ACC7:  00
-            hex 00                      ; 1ACC8:  00
-            brk                         ; 1ACC9:  00
-            hex 00                      ; 1ACCA:  00
-            brk                         ; 1ACCB:  00
-            hex 80                      ; 1ACCC:  80
-            brk                         ; 1ACCD:  00
-            hex 00                      ; 1ACCE:  00
-            brk                         ; 1ACCF:  00
-            hex 00                      ; 1ACD0:  00
-            brk                         ; 1ACD1:  00
-            hex 00                      ; 1ACD2:  00
-            brk                         ; 1ACD3:  00
-            hex 18                      ; 1ACD4:  18
-            bpl tab_b6_ace2+37          ; 1ACD5:  10 30
-b6_acd7:    bmi tab_b6_ace2+39          ; 1ACD7:  30 30
-            rts                         ; 1ACD9:  60
-
-            cpx #$e0                    ; 1ACDA:  e0 e0
-            clc                         ; 1ACDC:  18
-            bpl tab_b6_ace2+45          ; 1ACDD:  10 30
-b6_acdf:    bmi tab_b6_ace2+47          ; 1ACDF:  30 30
-            rts                         ; 1ACE1:  60
-
-tab_b6_ace2: ; 122 bytes
-            hex e0 e0 00 00 00 00 00 00 ; 1ACE2:  e0 e0 00 00 00 00 00 00
-            hex 00 00 00 00 00 01 02 00 ; 1ACEA:  00 00 00 00 00 01 02 00
-            hex 00 00 00 03 04 00 00 00 ; 1ACF2:  00 00 00 03 04 00 00 00
-            hex 00 00 00 00 05 00 00 00 ; 1ACFA:  00 00 00 00 05 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AD02:  00 00 00 00 00 00 00 00
-            hex 00 00 00 08 0b 00 0e 00 ; 1AD0A:  00 00 00 08 0b 00 0e 00
-            hex 00 00 00 12 15 00 00 00 ; 1AD12:  00 00 00 12 15 00 00 00
-            hex 18 19 00 1c 1f 00 00 00 ; 1AD1A:  18 19 00 1c 1f 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AD22:  00 00 00 00 00 00 00 00
-            hex 06 07 09 0a 0c 0d 0f 00 ; 1AD2A:  06 07 09 0a 0c 0d 0f 00
-            hex 10 11 13 14 16 00 17 00 ; 1AD32:  10 11 13 14 16 00 17 00
-            hex 1a 1b 1d 1e 20 21 00 00 ; 1AD3A:  1a 1b 1d 1e 20 21 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AD42:  00 00 00 00 00 00 00 00
-            hex 23 24 27 28 2a 2b 2e 00 ; 1AD4A:  23 24 27 28 2a 2b 2e 00
-            hex 31 32 35 36 38 00 39 00 ; 1AD52:  31 32 35 36 38 00 39 00
-            hex 00 3b                   ; 1AD5A:  00 3b
-
-            brk                         ; 1AD5C:  00
-            hex 3e                      ; 1AD5D:  3e
-            rti                         ; 1AD5E:  40
-
-            hex 00 00 00 00 00 00 00 00 ; 1AD5F:  00 00 00 00 00 00 00 00
-            hex 00 00 22 25 26 00 29 2c ; 1AD67:  00 00 22 25 26 00 29 2c
-            hex 2d 2f 30 33 34 13 37 00 ; 1AD6F:  2d 2f 30 33 34 13 37 00
-            hex 00 3a 00 3c 3d 00 3f 41 ; 1AD77:  00 3a 00 3c 3d 00 3f 41
-            hex 00 00 00 00 00 00 00 00 ; 1AD7F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 44 45 00 ; 1AD87:  00 00 00 00 00 44 45 00
-            hex 47 4a 00 4c 4d 50 51 00 ; 1AD8F:  47 4a 00 4c 4d 50 51 00
-            hex 00 55 56 59 5a 5d 5e 60 ; 1AD97:  00 55 56 59 5a 5d 5e 60
-            hex 00 00 00 00 00 00 00 00 ; 1AD9F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 42 43 00 46 48 ; 1ADA7:  00 00 00 42 43 00 46 48
-            hex 49 4b 00 4e 4f 52 53 54 ; 1ADAF:  49 4b 00 4e 4f 52 53 54
-            hex 00 57 58 5b 5c 00 5f 61 ; 1ADB7:  00 57 58 5b 5c 00 5f 61
-            hex 00 00 00 00 00 00 00 00 ; 1ADBF:  00 00 00 00 00 00 00 00
-            hex 00 00 00 62 63 00 66 68 ; 1ADC7:  00 00 00 62 63 00 66 68
-            hex 69 6c 00 6e 6f 72 73 74 ; 1ADCF:  69 6c 00 6e 6f 72 73 74
-            hex 75 76 77 00 7a 00 7d 7f ; 1ADD7:  75 76 77 00 7a 00 7d 7f
-            hex 00 00 00 00 00 00 00 00 ; 1ADDF:  00 00 00 00 00 00 00 00
-            hex 00 00 00 64 65 00 67 6a ; 1ADE7:  00 00 00 64 65 00 67 6a
-            hex 6b 6d 00 70 71 00 00 00 ; 1ADEF:  6b 6d 00 70 71 00 00 00
-            hex 00 78 79 7b 7c 7e 00 80 ; 1ADF7:  00 78 79 7b 7c 7e 00 80
-            hex 00 00 00 00 00 00 00 00 ; 1ADFF:  00 00 00 00 00 00 00 00
-            hex 00 00 00 81 82 85 86 89 ; 1AE07:  00 00 00 81 82 85 86 89
-            hex 8a 8d 8e 91 92 00 95 97 ; 1AE0F:  8a 8d 8e 91 92 00 95 97
-            hex 00 99 9a 9c 9d 00 9f a1 ; 1AE17:  00 99 9a 9c 9d 00 9f a1
-            hex 00 00 00 00 00 00 00 00 ; 1AE1F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 83 84 87 88 8b ; 1AE27:  00 00 00 83 84 87 88 8b
-            hex 8c 8f 90 93 94 00 96 98 ; 1AE2F:  8c 8f 90 93 94 00 96 98
-            hex 00 18 9b 00 9e 00 a0 a2 ; 1AE37:  00 18 9b 00 9e 00 a0 a2
-            hex 00 00 00 00 00 00 00 00 ; 1AE3F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 a3 a4 00 a7 a9 ; 1AE47:  00 00 00 a3 a4 00 a7 a9
-            hex aa ad ae b0 b1 00 00 00 ; 1AE4F:  aa ad ae b0 b1 00 00 00
-            hex 00 b4 b5 00 b8 00 b9 ba ; 1AE57:  00 b4 b5 00 b8 00 b9 ba
-            hex 00 00 00 00 00 00 00 00 ; 1AE5F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 a5 a6 00 a8 ab ; 1AE67:  00 00 00 a5 a6 00 a8 ab
-            hex ac af 00 b2 b3 00 00 00 ; 1AE6F:  ac af 00 b2 b3 00 00 00
-            hex 00 b6 b7 00 00 00 00 90 ; 1AE77:  00 b6 b7 00 00 00 00 90
-            hex 00 00 00 00 00 00 00 00 ; 1AE7F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 bb bc bd be bf ; 1AE87:  00 00 00 bb bc bd be bf
-            hex c0 c1 00 c3 c4 00 00 00 ; 1AE8F:  c0 c1 00 c3 c4 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AE97:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AE9F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AEA7:  00 00 00 00 00 00 00 00
-            hex 00 c2 00 00 00 00 00 00 ; 1AEAF:  00 c2 00 00 00 00 00 00
-            hex 00 00 00 00 c5 c6 00 00 ; 1AEB7:  00 00 00 00 c5 c6 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AEBF:  00 00 00 00 00 00 00 00
-            hex c7 c9 00 00 00 00 00 00 ; 1AEC7:  c7 c9 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 cc ; 1AECF:  00 00 00 00 00 00 00 cc
-            hex cd d0 d1 d4 d5 d8 d9 00 ; 1AED7:  cd d0 d1 d4 d5 d8 d9 00
-            hex 00 00 00 00 00 00 00 00 ; 1AEDF:  00 00 00 00 00 00 00 00
-            hex c8 ca 00 00 00 00 00 00 ; 1AEE7:  c8 ca 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 cb ce ; 1AEEF:  00 00 00 00 00 00 cb ce
-            hex cf d2 d3 d6 d7 da db dc ; 1AEF7:  cf d2 d3 d6 d7 da db dc
-            hex 00 00 00 00 00 00 00 00 ; 1AEFF:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AF07:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 dd df ; 1AF0F:  00 00 00 00 00 00 dd df
-            hex e0 e3 e4 e7 e8 eb ec ef ; 1AF17:  e0 e3 e4 e7 e8 eb ec ef
-            hex f0 00 00 00 00 00 00 00 ; 1AF1F:  f0 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AF27:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 de e1 ; 1AF2F:  00 00 00 00 00 00 de e1
-            hex e2 e5 e6 e9 ea ed ee f1 ; 1AF37:  e2 e5 e6 e9 ea ed ee f1
-            hex 00 00 00 00 00 00 00 00 ; 1AF3F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AF47:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AF4F:  00 00 00 00 00 00 00 00
-            hex f2 f3 f4 f5 f6 f7 00 00 ; 1AF57:  f2 f3 f4 f5 f6 f7 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AF5F:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AF67:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1AF6F:  00 00 00 00 00 00 00 00
-            hex 00 01 03 1f 03 00 00 00 ; 1AF77:  00 01 03 1f 03 00 00 00
-            hex 00 01 03 1f 03 00 00 00 ; 1AF7F:  00 01 03 1f 03 00 00 00
-            hex 0c fe ff fc c0 00 00 00 ; 1AF87:  0c fe ff fc c0 00 00 00
-            hex 0c fe ff fc c0 00 03 01 ; 1AF8F:  0c fe ff fc c0 00 03 01
-            hex 01 01 e1 71 39 00 03 01 ; 1AF97:  01 01 e1 71 39 00 03 01
-            hex 01 01 e1 71 39 00 00 80 ; 1AF9F:  01 01 e1 71 39 00 00 80
-            hex c0 c0 c0 fc fc 00 00 80 ; 1AFA7:  c0 c0 c0 fc fc 00 00 80
-            hex c0 c0 c0 fc fc 00 00 00 ; 1AFAF:  c0 c0 c0 fc fc 00 00 00
-            hex 20 30 f8 78 f8 00 00 00 ; 1AFB7:  20 30 f8 78 f8 00 00 00
-            hex 20 30 f8 78 f8 00 00 00 ; 1AFBF:  20 30 f8 78 f8 00 00 00
-            hex 0c 0e 0f 0f 1f 00 00 00 ; 1AFC7:  0c 0e 0f 0f 1f 00 00 00
-            hex 0c 0e 0f 0f 1f 00 00 00 ; 1AFCF:  0c 0e 0f 0f 1f 00 00 00
-            hex 00 f0 f8 f8 e0 00 00 00 ; 1AFD7:  00 f0 f8 f8 e0 00 00 00
-            hex 00 f0 f8 f8 e0 00 00 00 ; 1AFDF:  00 f0 f8 f8 e0 00 00 00
-            hex 00 04 04 04 06 00 00 00 ; 1AFE7:  00 04 04 04 06 00 00 00
-            hex 00 04 04 04 06 00 00 00 ; 1AFEF:  00 04 04 04 06 00 00 00
-            hex 00 00 07 03 00 00 00 00 ; 1AFF7:  00 00 07 03 00 00 00 00
-            hex 00 00 07 03 00 c3 c7 6f ; 1AFFF:  00 00 07 03 00 c3 c7 6f
-            hex 33 07 cf e9 2f c3 c7 6f ; 1B007:  33 07 cf e9 2f c3 c7 6f
-            hex 33 07 cf e9 2f 00 00 00 ; 1B00F:  33 07 cf e9 2f 00 00 00
-            hex 00 00 00 20 3c 00 00 00 ; 1B017:  00 00 00 20 3c 00 00 00
-            hex 00 00 00 20 3c 1c 98 20 ; 1B01F:  00 00 00 20 3c 1c 98 20
-            hex 00 00 00 30 b0 1c 98 20 ; 1B027:  00 00 00 30 b0 1c 98 20
-            hex 00 00 00 30 b0 01 03 0f ; 1B02F:  00 00 00 30 b0 01 03 0f
-            hex 1c 21 03 02 02 01 03 0f ; 1B037:  1c 21 03 02 02 01 03 0f
-            hex 1c 21 03 02 02 00 00 00 ; 1B03F:  1c 21 03 02 02 00 00 00
-            hex 00 00 c0 e0 ef 00 00 00 ; 1B047:  00 00 c0 e0 ef 00 00 00
-            hex 00 00 c0 e0 ef ff f0 00 ; 1B04F:  00 00 c0 e0 ef ff f0 00
-            hex 3c f0 b0 30 f8 ff f0 00 ; 1B057:  3c f0 b0 30 f8 ff f0 00
-            hex 3c f0 b0 30 f8 00 00 02 ; 1B05F:  3c f0 b0 30 f8 00 00 02
-            hex 03 01 01 03 0c 00 00 02 ; 1B067:  03 01 01 03 0c 00 00 02
-            hex 03 01 01 03 0c 00 00 00 ; 1B06F:  03 01 01 03 0c 00 00 00
-            hex 00 80 ca 82 00 00 00 00 ; 1B077:  00 80 ca 82 00 00 00 00
-            hex 00 80 ca 82 00 1f 3f ff ; 1B07F:  00 80 ca 82 00 1f 3f ff
-            hex ff 5f 1e 1b fb 1f 3f ff ; 1B087:  ff 5f 1e 1b fb 1f 3f ff
-            hex ff 5f 1e 1b fb 00 00 00 ; 1B08F:  ff 5f 1e 1b fb 00 00 00
-            hex 00 00 00 01 03 00 00 00 ; 1B097:  00 00 00 01 03 00 00 00
-            hex 00 00 00 01 03 cf ef fe ; 1B09F:  00 00 00 01 03 cf ef fe
-            hex 21 48 f3 83 07 cf ef fe ; 1B0A7:  21 48 f3 83 07 cf ef fe
-            hex 21 48 f3 83 07          ; 1B0AF:  21 48 f3 83 07
-
-            ldy #$80                    ; 1B0B4:  a0 80
-            brk                         ; 1B0B6:  00
-            hex 00                      ; 1B0B7:  00
-            beq tab_b6_b0c3+103         ; 1B0B8:  f0 70
-            rts                         ; 1B0BA:  60
-
-            hex e0 a0 80                ; 1B0BB:  e0 a0 80
-
-            brk                         ; 1B0BE:  00
-            hex 00                      ; 1B0BF:  00
-            beq tab_b6_b0c3+111         ; 1B0C0:  f0 70
-            rts                         ; 1B0C2:  60
-
-tab_b6_b0c3: ; 158 bytes
-            hex e0 c0 83 7f 07 0e 3c f8 ; 1B0C3:  e0 c0 83 7f 07 0e 3c f8
-            hex bc c0 83 7f 07 0e 3c f8 ; 1B0CB:  bc c0 83 7f 07 0e 3c f8
-            hex bc 00 00 00 00 00 03 07 ; 1B0D3:  bc 00 00 00 00 00 03 07
-            hex 0e 00 00 00 00 00 03 07 ; 1B0DB:  0e 00 00 00 00 00 03 07
-            hex 0e 00 00 00 00 00 00 00 ; 1B0E3:  0e 00 00 00 00 00 00 00
-            hex 01 00 00 00 00 00 00 00 ; 1B0EB:  01 00 00 00 00 00 00 00
-            hex 01 00 00 00 00 00 00 70 ; 1B0F3:  01 00 00 00 00 00 00 70
-            hex f8 00 00 00 00 00 00 70 ; 1B0FB:  f8 00 00 00 00 00 00 70
-            hex f8 07 4f 3f 00 00 00 00 ; 1B103:  f8 07 4f 3f 00 00 00 00
-            hex 00 07 4f 3f 00 00 00 00 ; 1B10B:  00 07 4f 3f 00 00 00 00
-            hex 00 f8 f0 f0 70 77 73 70 ; 1B113:  00 f8 f0 f0 70 77 73 70
-            hex 70 f8 f0 f0 70 77 73 70 ; 1B11B:  70 f8 f0 f0 70 77 73 70
-            hex 70 00 01 03 07 07 0f 1d ; 1B123:  70 00 01 03 07 07 0f 1d
-            hex 3c 00 01 03 07 07 0f 1d ; 1B12B:  3c 00 01 03 07 07 0f 1d
-            hex 3c 00 00 01 01 07 86 00 ; 1B133:  3c 00 00 01 01 07 86 00
-            hex 00 00 00 01 01 07 86 00 ; 1B13B:  00 00 00 01 01 07 86 00
-            hex 00 78 70 e0 c0 00 00 04 ; 1B143:  00 78 70 e0 c0 00 00 04
-            hex 1e 78 70 e0 c0 00 00 04 ; 1B14B:  1e 78 70 e0 c0 00 00 04
-            hex 1e e0 c0 c0 80 80 c0 e0 ; 1B153:  1e e0 c0 c0 80 80 c0 e0
-            hex f0 e0 c0 c0 80 80       ; 1B15B:  f0 e0 c0 c0 80 80
-
-            cpy #$e0                    ; 1B161:  c0 e0
-            beq tab_b6_b1cd+20          ; 1B163:  f0 7c
-            asl $030f,x                 ; 1B165:  1e 0f 03
-            brk                         ; 1B168:  00
-            hex 00                      ; 1B169:  00
-            asl $7c43,x                 ; 1B16A:  1e 43 7c
-            asl $030f,x                 ; 1B16D:  1e 0f 03
-            brk                         ; 1B170:  00
-            hex 00                      ; 1B171:  00
-            hex 1e 43 00 ; asl $0043,x  ; 1B172:  1e 43 00
-            brk                         ; 1B175:  00
-            hex 00                      ; 1B176:  00
-            cpy #$c0                    ; 1B177:  c0 c0
-            rts                         ; 1B179:  60
-
-            hex 30 08 00 00 00 c0 c0 60 ; 1B17A:  30 08 00 00 00 c0 c0 60
-            hex 30 08 00 00 01 01 03 03 ; 1B182:  30 08 00 00 01 01 03 03
-            hex 06 0c 00 00 01 01 03 03 ; 1B18A:  06 0c 00 00 01 01 03 03
-            hex 06 0c ff 7e 1c 1c 3c 3e ; 1B192:  06 0c ff 7e 1c 1c 3c 3e
-            hex 3f 6d ff 7e 1c 1c 3c    ; 1B19A:  3f 6d ff 7e 1c 1c 3c
-
-            rol $6d3f,x                 ; 1B1A1:  3e 3f 6d
-            brk                         ; 1B1A4:  00
-            hex e0                      ; 1B1A5:  e0
-            rts                         ; 1B1A6:  60
-
-tab_b6_b1a7: ; 5 bytes
-            hex 60 60 60 60 60          ; 1B1A7:  60 60 60 60 60
-
-            brk                         ; 1B1AC:  00
-            hex e0                      ; 1B1AD:  e0
-            rts                         ; 1B1AE:  60
-
-            hex 60 60 60 60 60 6b cb db ; 1B1AF:  60 60 60 60 60 6b cb db
-            hex 99 99 01 01 00 6b cb db ; 1B1B7:  99 99 01 01 00 6b cb db
-
-            sta $0199,y                 ; 1B1BF:  99 99 01
-            ora ($00,x)                 ; 1B1C2:  01 00
-            rts                         ; 1B1C4:  60
-
-            hex 60                      ; 1B1C5:  60
-
-            bvs tab_b6_b1cd+107         ; 1B1C6:  70 70
-            beq tab_b6_b1a7+3           ; 1B1C8:  f0 e0
-            cpx #$e0                    ; 1B1CA:  e0 e0
-            rts                         ; 1B1CC:  60
-
-tab_b6_b1cd: ; 134 bytes
-            hex 60 70 70 f0 e0 e0 e0 00 ; 1B1CD:  60 70 70 f0 e0 e0 e0 00
-            hex 01 03 07 06 03 03 07 00 ; 1B1D5:  01 03 07 06 03 03 07 00
-            hex 01 03 07 06 03 03 07 bf ; 1B1DD:  01 03 07 06 03 03 07 bf
-            hex be 6c 69 dc f0 a0 00 bf ; 1B1E5:  be 6c 69 dc f0 a0 00 bf
-            hex be 6c 69 dc f0 a0 00 00 ; 1B1ED:  be 6c 69 dc f0 a0 00 00
-            hex 00 00 04 04 04 07 2e 00 ; 1B1F5:  00 00 04 04 04 07 2e 00
-            hex 00 00 04 04 04 07 2e f0 ; 1B1FD:  00 00 04 04 04 07 2e f0
-            hex e0 e4 e4 26 36 1f 0f f0 ; 1B205:  e0 e4 e4 26 36 1f 0f f0
-            hex e0 e4 e4 26 36 1f 0f 05 ; 1B20D:  e0 e4 e4 26 36 1f 0f 05
-            hex 0c 09 18 18 10 30 bb 05 ; 1B215:  0c 09 18 18 10 30 bb 05
-            hex 0c 09 18 18 10 30 bb 03 ; 1B21D:  0c 09 18 18 10 30 bb 03
-            hex 00 00 00 70 f0 80 00 03 ; 1B225:  00 00 00 70 f0 80 00 03
-            hex 00 00 00 70 f0 80 00 e0 ; 1B22D:  00 00 00 70 f0 80 00 e0
-            hex c0 c0 00 00 00 00 00 e0 ; 1B235:  c0 c0 00 00 00 00 00 e0
-            hex c0 c0 00 00 00 00 00 18 ; 1B23D:  c0 c0 00 00 00 00 00 18
-            hex e8 88 d8 70 78 fc ce 18 ; 1B245:  e8 88 d8 70 78 fc ce 18
-            hex e8 88 d8 70 78 fc       ; 1B24D:  e8 88 d8 70 78 fc
-
-            dec $0103                   ; 1B253:  ce 03 01
-            brk                         ; 1B256:  00
-            hex 00                      ; 1B257:  00
-            rts                         ; 1B258:  60
-
-            hex 70 63 67 03 01 00 00 60 ; 1B259:  70 63 67 03 01 00 00 60
-            hex 70 63 67 00 e0 f8 00 00 ; 1B261:  70 63 67 00 e0 f8 00 00
-            hex 00 c0 80 00 e0 f8 00 00 ; 1B269:  00 c0 80 00 e0 f8 00 00
-            hex 00 c0 80                ; 1B271:  00 c0 80
-
-            bpl tab_b6_b28a+4           ; 1B274:  10 18
-            asl $030f                   ; 1B276:  0e 0f 03
-            brk                         ; 1B279:  00
-            hex 00                      ; 1B27A:  00
-            brk                         ; 1B27B:  00
-            hex 10                      ; 1B27C:  10
-            clc                         ; 1B27D:  18
-            asl $030f                   ; 1B27E:  0e 0f 03
-            brk                         ; 1B281:  00
-            hex 00                      ; 1B282:  00
-            brk                         ; 1B283:  00
-            hex 00                      ; 1B284:  00
-            brk                         ; 1B285:  00
-            hex 00                      ; 1B286:  00
-            cpy #$e0                    ; 1B287:  c0 e0
-            rts                         ; 1B289:  60
-
-tab_b6_b28a: ; 344 bytes
-            hex 00 00 00 00 00 c0 e0 60 ; 1B28A:  00 00 00 00 00 c0 e0 60
-            hex 00 00 00 00 00 00 04 04 ; 1B292:  00 00 00 00 00 00 04 04
-            hex 04 03 00 00 00 00 04 04 ; 1B29A:  04 03 00 00 00 00 04 04
-            hex 04 03 00 00 00 00 00 00 ; 1B2A2:  04 03 00 00 00 00 00 00
-            hex e0 c0 00 00 00 00 00 00 ; 1B2AA:  e0 c0 00 00 00 00 00 00
-            hex e0 c0 0e 1c 18 00 00 00 ; 1B2B2:  e0 c0 0e 1c 18 00 00 00
-            hex 00 00 0e 1c 18 00 00 00 ; 1B2BA:  00 00 0e 1c 18 00 00 00
-            hex 00 00 0e 04 01 1b 0b 06 ; 1B2C2:  00 00 0e 04 01 1b 0b 06
-            hex 0e 0c 0e 04 01 1b 0b 06 ; 1B2CA:  0e 0c 0e 04 01 1b 0b 06
-            hex 0e 0c 18 18 30 70 e0 c0 ; 1B2D2:  0e 0c 18 18 30 70 e0 c0
-            hex c0 80 18 18 30 70 e0 c0 ; 1B2DA:  c0 80 18 18 30 70 e0 c0
-            hex c0 80 70 e0 c0 80 00 00 ; 1B2E2:  c0 80 70 e0 c0 80 00 00
-            hex 00 00 70 e0 c0 80 00 00 ; 1B2EA:  00 00 70 e0 c0 80 00 00
-            hex 00 00 1c 18 18 1c 0e 06 ; 1B2F2:  00 00 1c 18 18 1c 0e 06
-            hex 03 03 1c 18 18 1c 0e 06 ; 1B2FA:  03 03 1c 18 18 1c 0e 06
-            hex 03 03 02 20 18 18 18 10 ; 1B302:  03 03 02 20 18 18 18 10
-            hex 10 17 02 20 18 18 18 10 ; 1B30A:  10 17 02 20 18 18 18 10
-            hex 10 17 70 70 70 70 00 00 ; 1B312:  10 17 70 70 70 70 00 00
-            hex 00 00 70 70 70 70 00 00 ; 1B31A:  00 00 70 70 70 70 00 00
-            hex 00 00 08 07 03 00 00 00 ; 1B322:  00 00 08 07 03 00 00 00
-            hex 03 01 08 07 03 00 00 00 ; 1B32A:  03 01 08 07 03 00 00 00
-            hex 03 01 38 fc f8 c0 fc fc ; 1B332:  03 01 38 fc f8 c0 fc fc
-            hex e0 e0 38 fc f8 c0 fc fc ; 1B33A:  e0 e0 38 fc f8 c0 fc fc
-            hex e0 e0 06 1e 26 26 3e 30 ; 1B342:  e0 e0 06 1e 26 26 3e 30
-            hex 23 22 06 1e 26 26 3e 30 ; 1B34A:  23 22 06 1e 26 26 3e 30
-            hex 23 22 24 67 63 21 00 00 ; 1B352:  23 22 24 67 63 21 00 00
-            hex 00 00 24 67 63 21 00 00 ; 1B35A:  00 00 24 67 63 21 00 00
-            hex 00 00 63 7b 63 7b 3b 73 ; 1B362:  00 00 63 7b 63 7b 3b 73
-            hex c3 63 63 7b 63 7b 3b 73 ; 1B36A:  c3 63 63 7b 63 7b 3b 73
-            hex c3 63 23 a3 23 e3 ff 0f ; 1B372:  c3 63 23 a3 23 e3 ff 0f
-            hex 03 00 23 a3 23 e3 ff 0f ; 1B37A:  03 00 23 a3 23 e3 ff 0f
-            hex 03 00 04 04 0c 08 1f 1c ; 1B382:  03 00 04 04 0c 08 1f 1c
-            hex 38 70 04 04 0c 08 1f 1c ; 1B38A:  38 70 04 04 0c 08 1f 1c
-            hex 38 70 00 00 00 00 e0 e0 ; 1B392:  38 70 00 00 00 00 e0 e0
-            hex 60 c0 00 00 00 00 e0 e0 ; 1B39A:  60 c0 00 00 00 00 e0 e0
-            hex 60 c0 00 00 00 01 07 0e ; 1B3A2:  60 c0 00 00 00 01 07 0e
-            hex 18 00 00 00 00 01 07 0e ; 1B3AA:  18 00 00 00 00 01 07 0e
-            hex 18 00 3c 7c e0 f0 1f 01 ; 1B3B2:  18 00 3c 7c e0 f0 1f 01
-            hex 02 04 3c 7c e0 f0 1f 01 ; 1B3BA:  02 04 3c 7c e0 f0 1f 01
-            hex 02 04 08 34 24 2f 3c 68 ; 1B3C2:  02 04 08 34 24 2f 3c 68
-            hex 78 b7 08 34 24 2f 3c 68 ; 1B3CA:  78 b7 08 34 24 2f 3c 68
-            hex 78 b7 10 10 10 31 3f 1f ; 1B3D2:  78 b7 10 10 10 31 3f 1f
-            hex 08 00 10 10 10 31 3f 1f ; 1B3DA:  08 00 10 10 10 31 3f 1f
-
-            php                         ; 1B3E2:  08
-            brk                         ; 1B3E3:  00
-            hex 00                      ; 1B3E4:  00
-            brk                         ; 1B3E5:  00
-            hex 00                      ; 1B3E6:  00
-            cpy #$20                    ; 1B3E7:  c0 20
-            jsr $6060                   ; 1B3E9:  20 60 60
-            brk                         ; 1B3EC:  00
-            hex 00                      ; 1B3ED:  00
-            brk                         ; 1B3EE:  00
-            hex c0                      ; 1B3EF:  c0
-            jsr $6020                   ; 1B3F0:  20 20 60
-            rts                         ; 1B3F3:  60
-
-            hex 03 0f 0f 01 00 00 00 00 ; 1B3F4:  03 0f 0f 01 00 00 00 00
-            hex 03 0f 0f                ; 1B3FC:  03 0f 0f
-
-            ora ($00,x)                 ; 1B3FF:  01 00
-            brk                         ; 1B401:  00
-            hex 00                      ; 1B402:  00
-            brk                         ; 1B403:  00
-            hex 6f                      ; 1B404:  6f
-            ror $f07c,x                 ; 1B405:  7e 7c f0
-            cpx #$e0                    ; 1B408:  e0 e0
-            rti                         ; 1B40A:  40
-
-            hex 78 6f                   ; 1B40B:  78 6f
-
-            ror $f07c,x                 ; 1B40D:  7e 7c f0
-            cpx #$e0                    ; 1B410:  e0 e0
-            rti                         ; 1B412:  40
-
-            hex 78 f8 70 e0 c3 cf fe f8 ; 1B413:  78 f8 70 e0 c3 cf fe f8
-            hex 00 f8 70 e0 c3 cf fe f8 ; 1B41B:  00 f8 70 e0 c3 cf fe f8
-            hex 00 03 03 03 03 01 00 00 ; 1B423:  00 03 03 03 03 01 00 00
-            hex 00 03 03 03 03 01 00 00 ; 1B42B:  00 03 03 03 03 01 00 00
-            hex 00 80 00 00 00 e0 00 00 ; 1B433:  00 80 00 00 00 e0 00 00
-            hex 00 80 00 00 00 e0 00 00 ; 1B43B:  00 80 00 00 00 e0 00 00
-            hex 00 00 00 00 00 00 01 01 ; 1B443:  00 00 00 00 00 00 01 01
-            hex 03                      ; 1B44B:  03
-
-            brk                         ; 1B44C:  00
-            hex 00                      ; 1B44D:  00
-            brk                         ; 1B44E:  00
-            hex 00                      ; 1B44F:  00
-            brk                         ; 1B450:  00
-            hex 01                      ; 1B451:  01
-            ora ($03,x)                 ; 1B452:  01 03
-            brk                         ; 1B454:  00
-            hex 00                      ; 1B455:  00
-            rti                         ; 1B456:  40
-
-            hex 60 e0 c0 80             ; 1B457:  60 e0 c0 80
-
-            brk                         ; 1B45B:  00
-            hex 00                      ; 1B45C:  00
-            brk                         ; 1B45D:  00
-            hex 40                      ; 1B45E:  40
-            rts                         ; 1B45F:  60
-
-            hex e0 c0 80 00 07 3e 3c 30 ; 1B460:  e0 c0 80 00 07 3e 3c 30
-            hex 00 00 00 00 07 3e 3c 30 ; 1B468:  00 00 00 00 07 3e 3c 30
-            hex 00 00 00 00 00 00 0e 1e ; 1B470:  00 00 00 00 00 00 0e 1e
-            hex 3f 78 e0 c0 00 00 0e 1e ; 1B478:  3f 78 e0 c0 00 00 0e 1e
-            hex 3f 78 e0 c0 01 03 03 07 ; 1B480:  3f 78 e0 c0 01 03 03 07
-            hex 0f 0f 06 00 01 03 03 07 ; 1B488:  0f 0f 06 00 01 03 03 07
-            hex 0f 0f 06 00 c0 83 83 70 ; 1B490:  0f 0f 06 00 c0 83 83 70
-            hex fa 76 ec d8 c0 83 83 70 ; 1B498:  fa 76 ec d8 c0 83 83 70
-            hex fa 76 ec d8 7e ef 87 0f ; 1B4A0:  fa 76 ec d8 7e ef 87 0f
-            hex 0f 0f 0f 0e 7e ef 87 0f ; 1B4A8:  0f 0f 0f 0e 7e ef 87 0f
-            hex 0f 0f 0f 0e 1f 19 01 01 ; 1B4B0:  0f 0f 0f 0e 1f 19 01 01
-            hex 01 03 03 06 1f 19 01 01 ; 1B4B8:  01 03 03 06 1f 19 01 01
-            hex 01 03 03 06 c0 c0 c0 c0 ; 1B4C0:  01 03 03 06 c0 c0 c0 c0
-            hex 80 80 00 00 c0 c0 c0 c0 ; 1B4C8:  80 80 00 00 c0 c0 c0 c0
-            hex 80 80                   ; 1B4D0:  80 80
-
-            brk                         ; 1B4D2:  00
-            hex 00                      ; 1B4D3:  00
-            php                         ; 1B4D4:  08
-            bpl b6_b4d7                 ; 1B4D5:  10 00
-b6_b4d7:    brk                         ; 1B4D7:  00
-            hex 3c                      ; 1B4D8:  3c
-            asl $080e,x                 ; 1B4D9:  1e 0e 08
-            php                         ; 1B4DC:  08
-            bpl b6_b4df                 ; 1B4DD:  10 00
-b6_b4df:    brk                         ; 1B4DF:  00
-            hex 3c                      ; 1B4E0:  3c
-            asl $080e,x                 ; 1B4E1:  1e 0e 08
-            brk                         ; 1B4E4:  00
-            hex 00                      ; 1B4E5:  00
-            brk                         ; 1B4E6:  00
-            hex 00                      ; 1B4E7:  00
-            jmp $004c                   ; 1B4E8:  4c 4c 00
-
-            brk                         ; 1B4EB:  00
-            hex 00                      ; 1B4EC:  00
-            brk                         ; 1B4ED:  00
-            hex 00                      ; 1B4EE:  00
-            brk                         ; 1B4EF:  00
-            hex 4c                      ; 1B4F0:  4c
-            jmp $0000                   ; 1B4F1:  4c 00 00
-
-            hex 01 01 01 03 06 0c 30 00 ; 1B4F4:  01 01 01 03 06 0c 30 00
-            hex 01 01 01 03 06 0c 30 00 ; 1B4FC:  01 01 01 03 06 0c 30 00
-            hex b0 90 9c 0e 07 03 01 00 ; 1B504:  b0 90 9c 0e 07 03 01 00
-            hex b0 90 9c 0e 07 03 01 00 ; 1B50C:  b0 90 9c 0e 07 03 01 00
-            hex 00 00 00 00 00 01 02 03 ; 1B514:  00 00 00 00 00 01 02 03
-            hex 00 00 00 00 00 01 02 03 ; 1B51C:  00 00 00 00 00 01 02 03
-
-            brk                         ; 1B524:  00
-            hex 00                      ; 1B525:  00
-            rti                         ; 1B526:  40
-
-            sei                         ; 1B527:  78
-            cpy $cc4c                   ; 1B528:  cc 4c cc
-            hex 8c 00 00 ; sty $0000    ; 1B52B:  8c 00 00
-            rti                         ; 1B52E:  40
-
-            hex 78 cc 4c cc 8c 00 00 00 ; 1B52F:  78 cc 4c cc 8c 00 00 00
-            hex 00 00 c0 e0 70 00 00 00 ; 1B537:  00 00 c0 e0 70 00 00 00
-            hex 00 00 c0 e0 70 02 02 03 ; 1B53F:  00 00 c0 e0 70 02 02 03
-            hex 01 01 07 03 02 02 02 03 ; 1B547:  01 01 07 03 02 02 02 03
-            hex 01 01 07 03 02 06 0f 07 ; 1B54F:  01 01 07 03 02 06 0f 07
-            hex 7e 00 00 00 00 06 0f 07 ; 1B557:  7e 00 00 00 00 06 0f 07
-
-            hex 7e 00 00 ; ror $0000,x  ; 1B55F:  7e 00 00
-            brk                         ; 1B562:  00
-            hex 00                      ; 1B563:  00
-            brk                         ; 1B564:  00
-            hex 00                      ; 1B565:  00
-            brk                         ; 1B566:  00
-            hex 80                      ; 1B567:  80
-            cpx #$e0                    ; 1B568:  e0 e0
-            rts                         ; 1B56A:  60
-
-            hex 40                      ; 1B56B:  40
-
-            brk                         ; 1B56C:  00
-            hex 00                      ; 1B56D:  00
-            brk                         ; 1B56E:  00
-            hex 80                      ; 1B56F:  80
-            cpx #$e0                    ; 1B570:  e0 e0
-            rts                         ; 1B572:  60
-
-            hex 40 40 fc fe 06 00 00 00 ; 1B573:  40 40 fc fe 06 00 00 00
-            hex 00 40 fc fe 06 00 00 00 ; 1B57B:  00 40 fc fe 06 00 00 00
-            hex 00 07 0b 0f 0f 01 01 02 ; 1B583:  00 07 0b 0f 0f 01 01 02
-            hex 04 07 0b 0f 0f 01 01 02 ; 1B58B:  04 07 0b 0f 0f 01 01 02
-            hex 04 c0 80 80 00 00 00 00 ; 1B593:  04 c0 80 80 00 00 00 00
-            hex 00 c0 80 80 00 00 00 00 ; 1B59B:  00 c0 80 80 00 00 00 00
-            hex 00 00 08 10 26 6f 33 01 ; 1B5A3:  00 00 08 10 26 6f 33 01
-            hex 00 00 08 10 26 6f 33 01 ; 1B5AB:  00 00 08 10 26 6f 33 01
-            hex 00 00 00 78 18 00 80 80 ; 1B5B3:  00 00 00 78 18 00 80 80
-            hex c0 00 00 78 18 00 80 80 ; 1B5BB:  c0 00 00 78 18 00 80 80
-            hex c0 b4 e7 43 00 00 00 30 ; 1B5C3:  c0 b4 e7 43 00 00 00 30
-            hex 3c b4 e7 43 00 00 00 30 ; 1B5CB:  3c b4 e7 43 00 00 00 30
-            hex 3c 3c 1f 1f 7e 7d 1f 3f ; 1B5D3:  3c 3c 1f 1f 7e 7d 1f 3f
-            hex 7e 3c 1f 1f 7e 7d 1f 3f ; 1B5DB:  7e 3c 1f 1f 7e 7d 1f 3f
-            hex 7e c0 e0 20 00 00 00 00 ; 1B5E3:  7e c0 e0 20 00 00 00 00
-            hex 00 c0 e0 20 00 00 00 00 ; 1B5EB:  00 c0 e0 20 00 00 00 00
-            hex 00 00 00 00 00 00 03    ; 1B5F3:  00 00 00 00 00 00 03
-
-            ora ($00,x)                 ; 1B5FA:  01 00
-            brk                         ; 1B5FC:  00
-            hex 00                      ; 1B5FD:  00
-            brk                         ; 1B5FE:  00
-            hex 00                      ; 1B5FF:  00
-            brk                         ; 1B600:  00
-            hex 03                      ; 1B601:  03
-            ora ($00,x)                 ; 1B602:  01 00
-            brk                         ; 1B604:  00
-            hex 00                      ; 1B605:  00
-            rts                         ; 1B606:  60
-
-            hex fc 9c                   ; 1B607:  fc 9c
-
-            hex fe c0 00 ; inc $00c0,x  ; 1B609:  fe c0 00
-            brk                         ; 1B60C:  00
-            hex 00                      ; 1B60D:  00
-            rts                         ; 1B60E:  60
-
-            hex fc 9c                   ; 1B60F:  fc 9c
-
-            hex fe c0 00 ; inc $00c0,x  ; 1B611:  fe c0 00
-            brk                         ; 1B614:  00
-            hex 01                      ; 1B615:  01
-            ora ($01,x)                 ; 1B616:  01 01
-            brk                         ; 1B618:  00
-            hex 00                      ; 1B619:  00
-            brk                         ; 1B61A:  00
-            hex 00                      ; 1B61B:  00
-            brk                         ; 1B61C:  00
-            hex 01                      ; 1B61D:  01
-            ora ($01,x)                 ; 1B61E:  01 01
-            brk                         ; 1B620:  00
-            hex 00                      ; 1B621:  00
-            brk                         ; 1B622:  00
-            hex 00                      ; 1B623:  00
-            brk                         ; 1B624:  00
-            hex 00                      ; 1B625:  00
-            brk                         ; 1B626:  00
-            hex 00                      ; 1B627:  00
-            rts                         ; 1B628:  60
-
-            hex f0 f0 c0 00 00 00 00 60 ; 1B629:  f0 f0 c0 00 00 00 00 60
-            hex f0 f0 c0 80 b0 f8 e0 c0 ; 1B631:  f0 f0 c0 80 b0 f8 e0 c0
-            hex c0 78 70 80 b0 f8 e0 c0 ; 1B639:  c0 78 70 80 b0 f8 e0 c0
-            hex c0 78 70 02 02 01 00 00 ; 1B641:  c0 78 70 02 02 01 00 00
-            hex 00 00 00 02 02 01 00 00 ; 1B649:  00 00 00 02 02 01 00 00
-            hex 00 00 00 00 00 80       ; 1B651:  00 00 00 00 00 80
-
-            cpy #$40                    ; 1B657:  c0 40
-            rts                         ; 1B659:  60
-
-            hex 60                      ; 1B65A:  60
-
-            brk                         ; 1B65B:  00
-            hex 00                      ; 1B65C:  00
-            brk                         ; 1B65D:  00
-            hex 80                      ; 1B65E:  80
-            cpy #$40                    ; 1B65F:  c0 40
-            rts                         ; 1B661:  60
-
-            hex 60 00 00 00 00 00 00 07 ; 1B662:  60 00 00 00 00 00 00 07
-            hex 01 03 00 00 00 00 00 07 ; 1B66A:  01 03 00 00 00 00 00 07
-            hex 01 03 00 00 00 00 00 c0 ; 1B672:  01 03 00 00 00 00 00 c0
-            hex c0 00 00 00 00 00 00 c0 ; 1B67A:  c0 00 00 00 00 00 00 c0
-            hex c0 00 03 03 03 00 00 00 ; 1B682:  c0 00 03 03 03 00 00 00
-            hex 00 00 03 03 03 00 00 00 ; 1B68A:  00 00 03 03 03 00 00 00
-            hex 00 00 f4 f3 e1 c1 01 00 ; 1B692:  00 00 f4 f3 e1 c1 01 00
-            hex 00 00 f4 f3 e1 c1 01 00 ; 1B69A:  00 00 f4 f3 e1 c1 01 00
-            hex 00 00 1e 3c fc fc f8 f8 ; 1B6A2:  00 00 1e 3c fc fc f8 f8
-            hex 00 00 1e 3c fc fc f8 f8 ; 1B6AA:  00 00 1e 3c fc fc f8 f8
-            hex 00 00 00 06 07 00 00 00 ; 1B6B2:  00 00 00 06 07 00 00 00
-            hex 00 00 00 06 07 00 00 00 ; 1B6BA:  00 00 00 06 07 00 00 00
-            hex 00 00 0c 0e 0e 1e 1c 00 ; 1B6C2:  00 00 0c 0e 0e 1e 1c 00
-            hex 00 10 0c 0e 0e 1e 1c 00 ; 1B6CA:  00 10 0c 0e 0e 1e 1c 00
-            hex 00 10 c0 f0 78 00 00 00 ; 1B6D2:  00 10 c0 f0 78 00 00 00
-            hex 00 00 c0 f0 78 00 00 00 ; 1B6DA:  00 00 c0 f0 78 00 00 00
-            hex 00 00 10 10 10 11 12 b4 ; 1B6E2:  00 00 10 10 10 11 12 b4
-            hex a1 a1 10 10 10 11 12 b4 ; 1B6EA:  a1 a1 10 10 10 11 12 b4
-            hex a1 a1 00 00 00 c0 c0 c0 ; 1B6F2:  a1 a1 00 00 00 c0 c0 c0
-            hex 80 80 00 00 00 c0 c0 c0 ; 1B6FA:  80 80 00 00 00 c0 c0 c0
-            hex 80 80 0c 18 18 00 00 00 ; 1B702:  80 80 0c 18 18 00 00 00
-            hex e0 3f 0c 18 18 00 00 00 ; 1B70A:  e0 3f 0c 18 18 00 00 00
-            hex e0 3f 00 01 06 02 02 02 ; 1B712:  e0 3f 00 01 06 02 02 02
-            hex 03 01 00 01 06 02 02 02 ; 1B71A:  03 01 00 01 06 02 02 02
-            hex 03 01 7f f3 73 63 73 1b ; 1B722:  03 01 7f f3 73 63 73 1b
-            hex 3b 73 7f f3 73 63 73 1b ; 1B72A:  3b 73 7f f3 73 63 73 1b
-            hex 3b 73 01 00 00 01 7f 3c ; 1B732:  3b 73 01 00 00 01 7f 3c
-            hex 00 00 01 00 00 01 7f 3c ; 1B73A:  00 00 01 00 00 01 7f 3c
-            hex 00 00 80 80 80 00 00 80 ; 1B742:  00 00 80 80 80 00 00 80
-            hex 80 80 80 80 80 00 00 80 ; 1B74A:  80 80 80 80 80 00 00 80
-            hex 80 80 80 8e fe fe c0 c0 ; 1B752:  80 80 80 8e fe fe c0 c0
-            hex c0 c0 80 8e fe fe c0 c0 ; 1B75A:  c0 c0 80 8e fe fe c0 c0
-            hex c0 c0 c0 80 80 80 80 80 ; 1B762:  c0 c0 c0 80 80 80 80 80
-            hex 80 80 c0 80 80 80 80 80 ; 1B76A:  80 80 c0 80 80 80 80 80
-            hex 80 80 00 00 00 00 00 00 ; 1B772:  80 80 00 00 00 00 00 00
-            hex 0d 07 00 00 00 00 00 00 ; 1B77A:  0d 07 00 00 00 00 00 00
-            hex 0d 07 60 30 30 18 1c 0c ; 1B782:  0d 07 60 30 30 18 1c 0c
-
-            cpy #$60                    ; 1B78A:  c0 60
-            rts                         ; 1B78C:  60
-
-            hex 30 30 18 1c 0c c0 60 03 ; 1B78D:  30 30 18 1c 0c c0 60 03
-            hex 07 05 07 00 00 00 0f 03 ; 1B795:  07 05 07 00 00 00 0f 03
-            hex 07 05 07 00 00 00 0f 20 ; 1B79D:  07 05 07 00 00 00 0f 20
-            hex 60 c0 80 80             ; 1B7A5:  60 c0 80 80
-
-            cpx #$e0                    ; 1B7A9:  e0 e0
-            cpx #$20                    ; 1B7AB:  e0 20
-            rts                         ; 1B7AD:  60
-
-            hex c0 80 80 e0 e0 e0 03 1f ; 1B7AE:  c0 80 80 e0 e0 e0 03 1f
-            hex 1e 18 00 01 03 06 03 1f ; 1B7B6:  1e 18 00 01 03 06 03 1f
-            hex 1e 18 00 01 03 06 ec 18 ; 1B7BE:  1e 18 00 01 03 06 ec 18
-            hex 33 7f fb b9 3f 37 ec 18 ; 1B7C6:  33 7f fb b9 3f 37 ec 18
-            hex 33 7f fb b9 3f 37 0c 18 ; 1B7CE:  33 7f fb b9 3f 37 0c 18
-            hex 38 70 60 c0 80 00 0c 18 ; 1B7D6:  38 70 60 c0 80 00 0c 18
-            hex 38 70 60 c0 80 00 31 39 ; 1B7DE:  38 70 60 c0 80 00 31 39
-            hex 1d 0f 0f 07 03 00 31 39 ; 1B7E6:  1d 0f 0f 07 03 00 31 39
-            hex 1d 0f 0f 07 03 00 00 00 ; 1B7EE:  1d 0f 0f 07 03 00 00 00
-            hex 00 80 80 80 80 80 00 00 ; 1B7F6:  00 80 80 80 80 80 00 00
-            hex 00 80 80 80 80 80 00 00 ; 1B7FE:  00 80 80 80 80 80 00 00
-            hex 00 01 00 00 04 0e 00 00 ; 1B806:  00 01 00 00 04 0e 00 00
-            hex 00 01 00 00 04 0e 80 80 ; 1B80E:  00 01 00 00 04 0e 80 80
-            hex c0 c0 c0 80 80 00 80 80 ; 1B816:  c0 c0 c0 80 80 00 80 80
-            hex c0 c0 c0 80 80 00 04 00 ; 1B81E:  c0 c0 c0 80 80 00 04 00
-            hex 03 06 1c 39 31 23 04 00 ; 1B826:  03 06 1c 39 31 23 04 00
-            hex 03 06 1c 39 31 23 20 c0 ; 1B82E:  03 06 1c 39 31 23 20 c0
-            hex 80 e0 fc ce 5c c7 20 c0 ; 1B836:  80 e0 fc ce 5c c7 20 c0
-            hex 80 e0 fc ce 5c c7 00 00 ; 1B83E:  80 e0 fc ce 5c c7 00 00
-            hex 00 00 00 00 00 80 00 00 ; 1B846:  00 00 00 00 00 80 00 00
-            hex 00 00 00 00 00 80 09 83 ; 1B84E:  00 00 00 00 00 80 09 83
-            hex 06 00 78 e8 88 18 09 83 ; 1B856:  06 00 78 e8 88 18 09 83
-            hex 06 00 78 e8 88 18 80 80 ; 1B85E:  06 00 78 e8 88 18 80 80
-            hex 00 00 00 00 00 00 80 80 ; 1B866:  00 00 00 00 00 00 80 80
-            hex 00 00 00 00 00 00 03 06 ; 1B86E:  00 00 00 00 00 00 03 06
-            hex 0c 18 10 30 00 00 03 06 ; 1B876:  0c 18 10 30 00 00 03 06
-            hex 0c 18 10 30 00 00 00 7c ; 1B87E:  0c 18 10 30 00 00 00 7c
-            hex 3c                      ; 1B886:  3c
-
-            brk                         ; 1B887:  00
-            hex c0                      ; 1B888:  c0
-            rti                         ; 1B889:  40
-
-            hex 40 40 00 7c 3c          ; 1B88A:  40 40 00 7c 3c
-
-            brk                         ; 1B88F:  00
-            hex c0                      ; 1B890:  c0
-            rti                         ; 1B891:  40
-
-            hex 40 40 00 00 03          ; 1B892:  40 40 00 00 03
-
-            brk                         ; 1B897:  00
-            hex 00                      ; 1B898:  00
-            brk                         ; 1B899:  00
-            hex 00                      ; 1B89A:  00
-            brk                         ; 1B89B:  00
-            hex 00                      ; 1B89C:  00
-            brk                         ; 1B89D:  00
-            hex 03                      ; 1B89E:  03
-            brk                         ; 1B89F:  00
-            hex 00                      ; 1B8A0:  00
-            brk                         ; 1B8A1:  00
-            hex 00                      ; 1B8A2:  00
-            brk                         ; 1B8A3:  00
-            hex 40                      ; 1B8A4:  40
-            cpy #$e0                    ; 1B8A5:  c0 e0
-            jsr $6020                   ; 1B8A7:  20 20 60
-            rti                         ; 1B8AA:  40
-
-            cpy #$40                    ; 1B8AB:  c0 40
-            cpy #$e0                    ; 1B8AD:  c0 e0
-            jsr $6020                   ; 1B8AF:  20 20 60
-            rti                         ; 1B8B2:  40
-
-            hex c0 0c 06 0f 14 2c 28 38 ; 1B8B3:  c0 0c 06 0f 14 2c 28 38
-            hex 30 0c 06 0f 14 2c 28 38 ; 1B8BB:  30 0c 06 0f 14 2c 28 38
-            hex 30 10 01 03 03 00 00 00 ; 1B8C3:  30 10 01 03 03 00 00 00
-            hex 00 10 01 03 03          ; 1B8CB:  00 10 01 03 03
-
-            brk                         ; 1B8D0:  00
-            hex 00                      ; 1B8D1:  00
-            brk                         ; 1B8D2:  00
-            hex 00                      ; 1B8D3:  00
-            brk                         ; 1B8D4:  00
-            hex 00                      ; 1B8D5:  00
-            brk                         ; 1B8D6:  00
-            hex c0                      ; 1B8D7:  c0
-            cpy #$40                    ; 1B8D8:  c0 40
-            rti                         ; 1B8DA:  40
-
-            cpy #$00                    ; 1B8DB:  c0 00
-            brk                         ; 1B8DD:  00
-            hex 00                      ; 1B8DE:  00
-            cpy #$c0                    ; 1B8DF:  c0 c0
-            rti                         ; 1B8E1:  40
-
-            hex 40                      ; 1B8E2:  40
-
-            cpy #$c0                    ; 1B8E3:  c0 c0
-            cpy #$80                    ; 1B8E5:  c0 80
-            brk                         ; 1B8E7:  00
-            hex 00                      ; 1B8E8:  00
-            brk                         ; 1B8E9:  00
-            hex 00                      ; 1B8EA:  00
-            brk                         ; 1B8EB:  00
-            hex c0                      ; 1B8EC:  c0
-            cpy #$80                    ; 1B8ED:  c0 80
-            brk                         ; 1B8EF:  00
-            hex 00                      ; 1B8F0:  00
-            brk                         ; 1B8F1:  00
-            hex 00                      ; 1B8F2:  00
-            brk                         ; 1B8F3:  00
-            hex a1                      ; 1B8F4:  a1
-            lda ($e1,x)                 ; 1B8F5:  a1 e1
-            adc ($60,x)                 ; 1B8F7:  61 60
-            rts                         ; 1B8F9:  60
-
-            hex 60                      ; 1B8FA:  60
-
-            jsr b6_a1a1                 ; 1B8FB:  20 a1 a1
-            sbc ($61,x)                 ; 1B8FE:  e1 61
-            rts                         ; 1B900:  60
-
-            hex 60 60 20 00 00 80 c0 c0 ; 1B901:  60 60 20 00 00 80 c0 c0
-            hex 70 18 00 00 00 80 c0 c0 ; 1B909:  70 18 00 00 00 80 c0 c0
-            hex 70 18 00 00 00 00 00 00 ; 1B911:  70 18 00 00 00 00 00 00
-            hex 00 42 e9 00 00 00 00 00 ; 1B919:  00 42 e9 00 00 00 00 00
-            hex 00 42 e9 01 00 00 00 00 ; 1B921:  00 42 e9 01 00 00 00 00
-            hex 00 00 00 01 00 00 00 00 ; 1B929:  00 00 00 01 00 00 00 00
-            hex 00 00 00 e3 bb 1f 0f 06 ; 1B931:  00 00 00 e3 bb 1f 0f 06
-            hex 00 00 00 e3 bb 1f 0f 06 ; 1B939:  00 00 00 e3 bb 1f 0f 06
-            hex 00 00 00 00 00 90 f8 38 ; 1B941:  00 00 00 00 00 90 f8 38
-            hex 30 60 78 00 00 90 f8 38 ; 1B949:  30 60 78 00 00 90 f8 38
-            hex 30 60 78 07 19 30 30 30 ; 1B951:  30 60 78 07 19 30 30 30
-            hex 1f 1f 01 07 19 30 30 30 ; 1B959:  1f 1f 01 07 19 30 30 30
-            hex 1f 1f 01 02 07 07 03 06 ; 1B961:  1f 1f 01 02 07 07 03 06
-            hex 07 03 06 02 07 07 03 06 ; 1B969:  07 03 06 02 07 07 03 06
-            hex 07 03 06 00 00 00 80 e0 ; 1B971:  07 03 06 00 00 00 80 e0
-            hex e0 c0 80 00 00 00 80 e0 ; 1B979:  e0 c0 80 00 00 00 80 e0
-            hex e0 c0 80 80 c0 a0 90 90 ; 1B981:  e0 c0 80 80 c0 a0 90 90
-            hex 98 98 f0 80 c0 a0 90 90 ; 1B989:  98 98 f0 80 c0 a0 90 90
-            hex 98 98 f0 1f 18 1c 0f 01 ; 1B991:  98 98 f0 1f 18 1c 0f 01
-            hex 01 00 00 1f 18 1c 0f 01 ; 1B999:  01 00 00 1f 18 1c 0f 01
-            hex 01 00 00 80 00 00 00 80 ; 1B9A1:  01 00 00 80 00 00 00 80
-            hex e0 70 00 80 00 00 00 80 ; 1B9A9:  e0 70 00 80 00 00 00 80
-            hex e0 70 00 00 00 00 00 0c ; 1B9B1:  e0 70 00 00 00 00 00 0c
-            hex 08 0d 0f 00 00 00 00 0c ; 1B9B9:  08 0d 0f 00 00 00 00 0c
-            hex 08 0d 0f 00 00 00 00 00 ; 1B9C1:  08 0d 0f 00 00 00 00 00
-            hex c0 c0 82 00 00 00 00 00 ; 1B9C9:  c0 c0 82 00 00 00 00 00
-            hex c0 c0 82 00 00 00 00 00 ; 1B9D1:  c0 c0 82 00 00 00 00 00
-            hex 18 0f 0d 00 00 00 00 00 ; 1B9D9:  18 0f 0d 00 00 00 00 00
-            hex 18 0f 0d 38 58 90 b0 e0 ; 1B9E1:  18 0f 0d 38 58 90 b0 e0
-            hex e0 c0 00 38 58 90 b0 e0 ; 1B9E9:  e0 c0 00 38 58 90 b0 e0
-            hex e0 c0 00 00 00 00 00 00 ; 1B9F1:  e0 c0 00 00 00 00 00 00
-            hex 00 80 c0 00 00 00 00 00 ; 1B9F9:  00 80 c0 00 00 00 00 00
-            hex 00 80 c0 03 00 00 04 03 ; 1BA01:  00 80 c0 03 00 00 04 03
-            hex 03 00 00 03 00 00 04 03 ; 1BA09:  03 00 00 03 00 00 04 03
-            hex 03                      ; 1BA11:  03
-
-            brk                         ; 1BA12:  00
-            hex 00                      ; 1BA13:  00
-            cpx #$60                    ; 1BA14:  e0 60
-            rts                         ; 1BA16:  60
-
-            hex 60                      ; 1BA17:  60
-
-            cpx #$60                    ; 1BA18:  e0 60
-            cpx #$e0                    ; 1BA1A:  e0 e0
-            cpx #$60                    ; 1BA1C:  e0 60
-            rts                         ; 1BA1E:  60
-
-            hex 60 e0 60 e0 e0 00 00 00 ; 1BA1F:  60 e0 60 e0 e0 00 00 00
-            hex 00 00 02 02 03 00 00 00 ; 1BA27:  00 00 02 02 03 00 00 00
-            hex 00 00 02 02 03 f8 70 7c ; 1BA2F:  00 00 02 02 03 f8 70 7c
-            hex 7f c7 87 01 00 f8 70 7c ; 1BA37:  7f c7 87 01 00 f8 70 7c
-            hex 7f c7 87 01 00 00 00 00 ; 1BA3F:  7f c7 87 01 00 00 00 00
-            hex 00 80                   ; 1BA47:  00 80
-
-            cpy #$e0                    ; 1BA49:  c0 e0
-            rts                         ; 1BA4B:  60
-
-            hex 00 00 00 00 80          ; 1BA4C:  00 00 00 00 80
-
-            cpy #$e0                    ; 1BA51:  c0 e0
-            rts                         ; 1BA53:  60
-
-            hex 00 00 00 04 0c 0f 7e cc ; 1BA54:  00 00 00 04 0c 0f 7e cc
-            hex 00 00 00 04 0c 0f 7e cc ; 1BA5C:  00 00 00 04 0c 0f 7e cc
-            hex 01 01 01 03 02 02 00 00 ; 1BA64:  01 01 01 03 02 02 00 00
-            hex 01 01 01 03 02 02 00 00 ; 1BA6C:  01 01 01 03 02 02 00 00
-            hex c0 80 00 00 80 c0 c0 c0 ; 1BA74:  c0 80 00 00 80 c0 c0 c0
-            hex c0 80 00 00 80 c0 c0 c0 ; 1BA7C:  c0 80 00 00 80 c0 c0 c0
-            hex 00 00 00 00 00 00 01 01 ; 1BA84:  00 00 00 00 00 00 01 01
-            hex 00 00 00 00 00 00 01 01 ; 1BA8C:  00 00 00 00 00 00 01 01
-            hex 80 80 80 80 80 80 80 80 ; 1BA94:  80 80 80 80 80 80 80 80
-            hex 80 80 80 80 80 80 80 80 ; 1BA9C:  80 80 80 80 80 80 80 80
-            hex 4f                      ; 1BAA4:  4f
-
-            pha                         ; 1BAA5:  48
-            bvs tab_b6_bab1+55          ; 1BAA6:  70 40
-            rti                         ; 1BAA8:  40
-
-            hex 40 c7 c7 4f             ; 1BAA9:  40 c7 c7 4f
-
-            pha                         ; 1BAAD:  48
-            bvs tab_b6_bab1+63          ; 1BAAE:  70 40
-            rti                         ; 1BAB0:  40
-
-tab_b6_bab1: ; 556 bytes
-            hex 40 c7 c7 e4 c0 c0 c0 c0 ; 1BAB1:  40 c7 c7 e4 c0 c0 c0 c0
-            hex c0 c0 c0 e4 c0 c0 c0 c0 ; 1BAB9:  c0 c0 c0 e4 c0 c0 c0 c0
-            hex c0 c0 c0 c6 c3 c0 40 00 ; 1BAC1:  c0 c0 c0 c6 c3 c0 40 00
-            hex 00 00 00 c6 c3 c0 40 00 ; 1BAC9:  00 00 00 c6 c3 c0 40 00
-            hex 00 00 00 e0 f8 0c 04 00 ; 1BAD1:  00 00 00 e0 f8 0c 04 00
-            hex 00 00 00 e0 f8 0c 04 00 ; 1BAD9:  00 00 00 e0 f8 0c 04 00
-            hex 00 00 00 7c 30 20 20 23 ; 1BAE1:  00 00 00 7c 30 20 20 23
-            hex 3e 1c 00 7c 30 20 20 23 ; 1BAE9:  3e 1c 00 7c 30 20 20 23
-            hex 3e 1c 00 0c 0f 0f 00 00 ; 1BAF1:  3e 1c 00 0c 0f 0f 00 00
-            hex 00 00 00 0c 0f 0f 00 00 ; 1BAF9:  00 00 00 0c 0f 0f 00 00
-            hex 00 00 00 e0 80 80 80 80 ; 1BB01:  00 00 00 e0 80 80 80 80
-            hex 80 80 80 e0 80 80 80 80 ; 1BB09:  80 80 80 e0 80 80 80 80
-            hex 80 80 80 03 07 05 0d 1f ; 1BB11:  80 80 80 03 07 05 0d 1f
-            hex 77 c1 00 03 07 05 0d 1f ; 1BB19:  77 c1 00 03 07 05 0d 1f
-            hex 77 c1 00 82 83 83 83 83 ; 1BB21:  77 c1 00 82 83 83 83 83
-            hex 83 07 06 82 83 83 83 83 ; 1BB29:  83 07 06 82 83 83 83 83
-            hex 83 07 06 00 80 80 80 c0 ; 1BB31:  83 07 06 00 80 80 80 c0
-            hex 80 80 00 00 80 80 80 c0 ; 1BB39:  80 80 00 00 80 80 80 c0
-            hex 80 80 00 01 01 03 06 04 ; 1BB41:  80 80 00 01 01 03 06 04
-            hex 00 00 00 01 01 03 06 04 ; 1BB49:  00 00 00 01 01 03 06 04
-            hex 00 00 00 c0 80 00 00 00 ; 1BB51:  00 00 00 c0 80 00 00 00
-            hex 00 00 00 c0 80 00 00 00 ; 1BB59:  00 00 00 c0 80 00 00 00
-            hex 00 00 00 03 06 06 06 06 ; 1BB61:  00 00 00 03 06 06 06 06
-            hex 00 00 00 03 06 06 06 06 ; 1BB69:  00 00 00 03 06 06 06 06
-            hex 00 00 00 0c 0c 0c 0c 0c ; 1BB71:  00 00 00 0c 0c 0c 0c 0c
-            hex 0c 0c 18 0c 0c 0c 0c 0c ; 1BB79:  0c 0c 18 0c 0c 0c 0c 0c
-            hex 0c 0c 18 38 30 20 00 00 ; 1BB81:  0c 0c 18 38 30 20 00 00
-            hex 00 00 00 38 30 20 00 00 ; 1BB89:  00 00 00 38 30 20 00 00
-            hex 00 00 00 01 01 03 03 03 ; 1BB91:  00 00 00 01 01 03 03 03
-            hex 06 0e 0e 01 01 03 03 03 ; 1BB99:  06 0e 0e 01 01 03 03 03
-            hex 06 0e 0e 80 00 00 00 00 ; 1BBA1:  06 0e 0e 80 00 00 00 00
-            hex 00 00 00 80 00 00 00 00 ; 1BBA9:  00 00 00 80 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1BBB1:  00 00 00 00 00 00 00 00
-            hex 00 1f 00 00 00 00 00 00 ; 1BBB9:  00 1f 00 00 00 00 00 00
-            hex 00 00 1f 00 00 00 00 00 ; 1BBC1:  00 00 1f 00 00 00 00 00
-            hex 00 c0 20 00 00 00 00 00 ; 1BBC9:  00 c0 20 00 00 00 00 00
-            hex 00 00 80 00 33 7d 45 7f ; 1BBD1:  00 00 80 00 33 7d 45 7f
-            hex 35 5d 6d 00 00 00 00 00 ; 1BBD9:  35 5d 6d 00 00 00 00 00
-            hex 00 00 00 3f 5b 5f 3f 61 ; 1BBE1:  00 00 00 3f 5b 5f 3f 61
-            hex 3f 00 00 00 00 00 00 00 ; 1BBE9:  3f 00 00 00 00 00 00 00
-            hex 00 00 00 00 f8 ac bc 64 ; 1BBF1:  00 00 00 00 f8 ac bc 64
-            hex 7c 64 e4 00 00 00 00 00 ; 1BBF9:  7c 64 e4 00 00 00 00 00
-            hex 00 00 00 74 54 74 dc 7c ; 1BC01:  00 00 00 74 54 74 dc 7c
-            hex e8 00 00 00 00 00 00 00 ; 1BC09:  e8 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1BC11:  00 00 00 00 00 00 00 00
-            hex 02 06 00 00 00 00 00 00 ; 1BC19:  02 06 00 00 00 00 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1BC21:  00 00 00 00 00 00 00 00
-            hex 00 00 03 00 00 00 00 00 ; 1BC29:  00 00 03 00 00 00 00 00
-            hex 00 00 01 00 00 00 00 01 ; 1BC31:  00 00 01 00 00 00 00 01
-            hex 1e c3 c0 00 00 00 00 00 ; 1BC39:  1e c3 c0 00 00 00 00 00
-            hex 00 00 be 0d 20 71 c0 8a ; 1BC41:  00 00 be 0d 20 71 c0 8a
-            hex 80 85 40 01 0e 11 2f 2f ; 1BC49:  80 85 40 01 0e 11 2f 2f
-            hex 2f 37 1b 03 00 0a 00 85 ; 1BC51:  2f 37 1b 03 00 0a 00 85
-            hex 00 62 00 61 3e 3f 9f 9f ; 1BC59:  00 62 00 61 3e 3f 9f 9f
-            hex cf e7 e7 00 00 00 3e c3 ; 1BC61:  cf e7 e7 00 00 00 3e c3
-            hex dc 6d 36 00 00 00 00 00 ; 1BC69:  dc 6d 36 00 00 00 00 00
-            hex 00 00 00 00 00 22 da 6c ; 1BC71:  00 00 00 00 00 22 da 6c
-            hex 36 c3 dc 00 00 07 03 01 ; 1BC79:  36 c3 dc 00 00 07 03 01
-            hex 00 00 00 83 74 2e 1d 7b ; 1BC81:  00 00 00 83 74 2e 1d 7b
-            hex 03 ac 17 00 80 40 40 c0 ; 1BC89:  03 ac 17 00 80 40 40 c0
-            hex c0 a0 a0 6f 35 c2 d6 ac ; 1BC91:  c0 a0 a0 6f 35 c2 d6 ac
-            hex 51 27 3f 00 00 02 06 0f ; 1BC99:  51 27 3f 00 00 02 06 0f
-            hex 1f 3f 1e 00 20 aa a8 a8 ; 1BCA1:  1f 3f 1e 00 20 aa a8 a8
-            hex a8 28 2a 00 70 f8 fc fe ; 1BCA9:  a8 28 2a 00 70 f8 fc fe
-            hex fc 78 7a 40 80 80 a0 80 ; 1BCB1:  fc 78 7a 40 80 80 a0 80
-            hex 80 00 2b 29 5f 59 46 5b ; 1BCB9:  80 00 2b 29 5f 59 46 5b
-            hex 4a 3f 14 28 29 a9 a8 a8 ; 1BCC1:  4a 3f 14 28 29 a9 a8 a8
-            hex 08 88 08 78 79 b9 b8 bc ; 1BCC9:  08 88 08 78 79 b9 b8 bc
-            hex 1d 1e 0f 80 09 08 59 10 ; 1BCD1:  1d 1e 0f 80 09 08 59 10
-            hex 10 10 01 80             ; 1BCD9:  10 10 01 80
-
-            ora $5918,y                 ; 1BCDD:  19 18 59
-            bmi tab_b6_bab1+488         ; 1BCE0:  30 b7
-            ldy $02,x                   ; 1BCE2:  b4 02
-            bpl tab_b6_bced+1           ; 1BCE4:  10 08
-            ora #$95                    ; 1BCE6:  09 95
-            ora $15,x                   ; 1BCE8:  15 15
-            and #$09                    ; 1BCEA:  29 09
-            rts                         ; 1BCEC:  60
-
-tab_b6_bced: ; 7 bytes
-            hex b0 b1 67 6f 67 8b 8b    ; 1BCED:  b0 b1 67 6f 67 8b 8b
-
-            brk                         ; 1BCF4:  00
-            hex 00                      ; 1BCF5:  00
-            rti                         ; 1BCF6:  40
-
-tab_b6_bcf7: ; 62 bytes
-            hex 50 55 50 50 44 00 00 c0 ; 1BCF7:  50 55 50 50 44 00 00 c0
-            hex f8 ff f8 f0 e4 41 25 25 ; 1BCFF:  f8 ff f8 f0 e4 41 25 25
-            hex 05 15 14 14 10 43 27 2f ; 1BD07:  05 15 14 14 10 43 27 2f
-            hex 0f 1f be 3c d1 52 1a 08 ; 1BD0F:  0f 1f be 3c d1 52 1a 08
-            hex 35 72 fb 7b 7c d2 9a 88 ; 1BD17:  35 72 fb 7b 7c d2 9a 88
-            hex 04 60 e3 f3 f0 a0 58 2c ; 1BD1F:  04 60 e3 f3 f0 a0 58 2c
-            hex 96 c0 28 72 d4 00 00 28 ; 1BD27:  96 c0 28 72 d4 00 00 28
-            hex 94 c0 20 70 d0 0b       ; 1BD2F:  94 c0 20 70 d0 0b
-
-            ora $0b06                   ; 1BD35:  0d 06 0b
-            ora $0200                   ; 1BD38:  0d 00 02
-            ora ($00,x)                 ; 1BD3B:  01 00
-            brk                         ; 1BD3D:  00
-            hex 00                      ; 1BD3E:  00
-            brk                         ; 1BD3F:  00
-            hex 00                      ; 1BD40:  00
-            brk                         ; 1BD41:  00
-            hex 00                      ; 1BD42:  00
-            brk                         ; 1BD43:  00
-            hex 01                      ; 1BD44:  01
-            brk                         ; 1BD45:  00
-            hex 00                      ; 1BD46:  00
-            brk                         ; 1BD47:  00
-            hex 00                      ; 1BD48:  00
-            brk                         ; 1BD49:  00
-            hex 00                      ; 1BD4A:  00
-            brk                         ; 1BD4B:  00
-            hex 00                      ; 1BD4C:  00
-            brk                         ; 1BD4D:  00
-            hex 00                      ; 1BD4E:  00
-            brk                         ; 1BD4F:  00
-            hex 00                      ; 1BD50:  00
-            brk                         ; 1BD51:  00
-            hex 00                      ; 1BD52:  00
-            brk                         ; 1BD53:  00
-            hex 80                      ; 1BD54:  80
-            bcs tab_b6_bcf7+57          ; 1BD55:  b0 d9
-            jmp ($5bb6)                 ; 1BD57:  6c b6 5b
-
-            sta $68                     ; 1BD5A:  85 68
-            ora $0306                   ; 1BD5C:  0d 06 03
-            brk                         ; 1BD5F:  00
-            hex 00                      ; 1BD60:  00
-b6_bd61:    brk                         ; 1BD61:  00
-            hex 00                      ; 1BD62:  00
-            brk                         ; 1BD63:  00
-            hex b1                      ; 1BD64:  b1
-            brk                         ; 1BD65:  00
-            hex 58                      ; 1BD66:  58
-            brk                         ; 1BD67:  00
-            hex 18                      ; 1BD68:  18
-            brk                         ; 1BD69:  00
-            hex 94                      ; 1BD6A:  94
-            rti                         ; 1BD6B:  40
-
-            hex f3 f9 79 bc 5e 2e 1f 00 ; 1BD6C:  f3 f9 79 bc 5e 2e 1f 00
-            hex b7 db 6d 36 0b 03 00 00 ; 1BD74:  b7 db 6d 36 0b 03 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1BD7C:  00 00 00 00 00 00 00 00
-            hex 84 b8 db ec 04 80 80 00 ; 1BD84:  84 b8 db ec 04 80 80 00
-            hex 00 00 00 01 73 0c 77 00 ; 1BD8C:  00 00 00 01 73 0c 77 00
-            hex 76 14 84 0c 50 08 98 ac ; 1BD94:  76 14 84 0c 50 08 98 ac
-            hex e0 e1 d1 d1 74 60 81 80 ; 1BD9C:  e0 e1 d1 d1 74 60 81 80
-            hex 5e 2e 14 08 00 00 00 00 ; 1BDA4:  5e 2e 14 08 00 00 00 00
-            hex 0c 80 40 60             ; 1BDAC:  0c 80 40 60
-
-            bne b6_bd61+1               ; 1BDB0:  d0 b0
-            rts                         ; 1BDB2:  60
-
-            hex 00 56 4b                ; 1BDB3:  00 56 4b
-
-            lda $00                     ; 1BDB6:  a5 00
-            ora $0f33                   ; 1BDB8:  0d 33 0f
-            sei                         ; 1BDBB:  78
-            rti                         ; 1BDBC:  40
-
-            hex 40                      ; 1BDBD:  40
-
-            jsr $20c0                   ; 1BDBE:  20 c0 20
-            rti                         ; 1BDC1:  40
-
-tab_b6_bdc2: ; 151 bytes
-            hex 80 00 02 0d b6 5b 85 88 ; 1BDC2:  80 00 02 0d b6 5b 85 88
-            hex 0f 00 40 00 00 00 00 00 ; 1BDCA:  0f 00 40 00 00 00 00 00
-            hex 70 8f 00 60 30 1c 07 01 ; 1BDD2:  70 8f 00 60 30 1c 07 01
-            hex 00 20 23 1c 0d 01 00 00 ; 1BDDA:  00 20 23 1c 0d 01 00 00
-            hex 00 80 00 00 00 00 8f fc ; 1BDE2:  00 80 00 00 00 00 8f fc
-            hex 00 00 b7 fc 02 de 50 00 ; 1BDEA:  00 00 b7 fc 02 de 50 00
-            hex 00 50 20 0c 83 43 b1 54 ; 1BDF2:  00 50 20 0c 83 43 b1 54
-            hex 00 00 80 40 30 0e 01 0e ; 1BDFA:  00 00 80 40 30 0e 01 0e
-            hex 71 87 18 18 f1 c0 80 00 ; 1BE02:  71 87 18 18 f1 c0 80 00
-            hex 00 08 08 0c 18 74 c6 19 ; 1BE0A:  00 08 08 0c 18 74 c6 19
-            hex f1 02 09 04 0c f8 c0 00 ; 1BE12:  f1 02 09 04 0c f8 c0 00
-            hex 00 00 c1 28 f0 00 00 00 ; 1BE1A:  00 00 c1 28 f0 00 00 00
-            hex 00 00 bd 9e 9e db 6d 6c ; 1BE22:  00 00 bd 9e 9e db 6d 6c
-            hex 30 20 f9 f8 fc e0 40 00 ; 1BE2A:  30 20 f9 f8 fc e0 40 00
-            hex 01 06 01 16 db 2c c4 68 ; 1BE32:  01 06 01 16 db 2c c4 68
-            hex 23 03 00 00 00 01 02 04 ; 1BE3A:  23 03 00 00 00 01 02 04
-            hex 18 e0 80 80 30 30 d8 6e ; 1BE42:  18 e0 80 80 30 30 d8 6e
-            hex 80 c0 4b 4c 81 04 00 00 ; 1BE4A:  80 c0 4b 4c 81 04 00 00
-            hex 00 00 92 b3 67 2a 14    ; 1BE52:  00 00 92 b3 67 2a 14
-
-            bit $0299                   ; 1BE59:  2c 99 02
-            bcc tab_b6_bdc2+76          ; 1BE5C:  90 b0
-            rts                         ; 1BE5E:  60
-
-tab_b6_be5f: ; 417 bytes
-            hex 28 10 a0 c0 c0 00 00 00 ; 1BE5F:  28 10 a0 c0 c0 00 00 00
-            hex 00 80 00 00 00 00 00 00 ; 1BE67:  00 80 00 00 00 00 00 00
-            hex 00 00 00 00 00 08 00 00 ; 1BE6F:  00 00 00 00 00 08 00 00
-            hex 20 80 00 00 00 28 20 80 ; 1BE77:  20 80 00 00 00 28 20 80
-            hex 00 00 00 00 00 03 00 00 ; 1BE7F:  00 00 00 00 00 03 00 00
-            hex 00 00 00 00 00 00 00 00 ; 1BE87:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 c4 3c 00 ; 1BE8F:  00 00 00 00 00 c4 3c 00
-            hex 00 00 00 00 00 01 01 00 ; 1BE97:  00 00 00 00 00 01 01 00
-            hex 00 00 00 00 00 50 6d 36 ; 1BE9F:  00 00 00 00 00 50 6d 36
-            hex 00 00 00 00 00 00 00 80 ; 1BEA7:  00 00 00 00 00 00 00 80
-            hex 00 00 00 00 00 00 00 f8 ; 1BEAF:  00 00 00 00 00 00 00 f8
-            hex 00 00 00 00 00 b8 07 00 ; 1BEB7:  00 00 00 00 00 b8 07 00
-            hex 00 00 00 00 00 f0 01 00 ; 1BEBF:  00 00 00 00 00 f0 01 00
-            hex 00 00 00 00 00 02 0c f0 ; 1BEC7:  00 00 00 00 00 02 0c f0
-            hex 00 00 00 00 00 1c e0 00 ; 1BECF:  00 00 00 00 00 1c e0 00
-            hex 00 00 00 00 00 00 00 00 ; 1BED7:  00 00 00 00 00 00 00 00
-            hex 00 00 00 00 00 ff ff ff ; 1BEDF:  00 00 00 00 00 ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BEE7:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BEEF:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BEF7:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BEFF:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF07:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF0F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF17:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF1F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF27:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF2F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF37:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF3F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF47:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF4F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF57:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF5F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF67:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF6F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF77:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF7F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF87:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF8F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF97:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BF9F:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFA7:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFAF:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFB7:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFBF:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFC7:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFCF:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFD7:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFDF:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFE7:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFEF:  ff ff ff ff ff ff ff ff
-            hex ff ff ff ff ff ff ff ff ; 1BFF7:  ff ff ff ff ff ff ff ff
-            hex ff                      ; 1BFFF:  ff
-
+b06_8000:   jmp $0000                   ; 18000:  4c 00 00
+b06_8003:   brk                         ; 18003:  00
+b06_8004:   eor $4d4d                   ; 18004:  4d 4d 4d
+b06_8007:   eor $4d4d                   ; 18007:  4d 4d 4d
+b06_800a:   eor $4d4d                   ; 1800A:  4d 4d 4d
+b06_800d:   eor $4d4d                   ; 1800D:  4d 4d 4d
+b06_8010:   eor $4d4d                   ; 18010:  4d 4d 4d
+b06_8013:   eor $4d4d                   ; 18013:  4d 4d 4d
+b06_8016:   eor $4d4d                   ; 18016:  4d 4d 4d
+b06_8019:   eor $4d4d                   ; 18019:  4d 4d 4d
+b06_801c:   eor $4d4d                   ; 1801C:  4d 4d 4d
+b06_801f:   eor $4d4d                   ; 1801F:  4d 4d 4d
+b06_8022:   eor $4d4d                   ; 18022:  4d 4d 4d
+b06_8025:   eor $4f4e                   ; 18025:  4d 4e 4f
+b06_8028:   eor $4d52                   ; 18028:  4d 52 4d
+b06_802b:   eor $4d4d                   ; 1802B:  4d 4d 4d
+b06_802e:   eor $4d4d                   ; 1802E:  4d 4d 4d
+b06_8031:   eor $4d5c                   ; 18031:  4d 5c 4d
+b06_8034:   eor $4d5f                   ; 18034:  4d 5f 4d
+b06_8037:   eor $4d4d                   ; 18037:  4d 4d 4d
+b06_803a:   ror $67                     ; 1803A:  66 67
+b06_803c:   ror a                       ; 1803C:  6a
+b06_803d:   .db $6b                     ; 1803D:  6b
+b06_803e:   ror $726f                   ; 1803E:  6e 6f 72
+b06_8041:   eor $4d4d                   ; 18041:  4d 4d 4d
+b06_8044:   eor $504d                   ; 18044:  4d 4d 50
+b06_8047:   eor ($53),y                 ; 18047:  51 53
+b06_8049:   .db $54                     ; 18049:  54
+b06_804a:   eor $56,x                   ; 1804A:  55 56
+b06_804c:   .db $57                     ; 1804C:  57
+b06_804d:   cli                         ; 1804D:  58
+b06_804e:   eor $5b5a,y                 ; 1804E:  59 5a 5b
+b06_8051:   eor $5e5d                   ; 18051:  4d 5d 5e
+b06_8054:   rts                         ; 18054:  60
+b06_8055:   adc ($62,x)                 ; 18055:  61 62
+b06_8057:   .db $63                     ; 18057:  63
+b06_8058:   .db $64                     ; 18058:  64
+b06_8059:   adc $68                     ; 18059:  65 68
+b06_805b:   adc #$6c                    ; 1805B:  69 6c
+b06_805d:   adc $7170                   ; 1805D:  6d 70 71
+b06_8060:   .db $73                     ; 18060:  73
+b06_8061:   eor $4d4d                   ; 18061:  4d 4d 4d
+b06_8064:   eor $744d                   ; 18064:  4d 4d 74
+b06_8067:   adc $76,x                   ; 18067:  75 76
+b06_8069:   .db $77                     ; 18069:  77
+b06_806a:   sei                         ; 1806A:  78
+b06_806b:   adc $7b7a,y                 ; 1806B:  79 7a 7b
+b06_806e:   adc $807e,x                 ; 1806E:  7d 7e 80
+b06_8071:   sta ($82,x)                 ; 18071:  81 82
+b06_8073:   .db $83                     ; 18073:  83
+b06_8074:   sty $85                     ; 18074:  84 85
+b06_8076:   stx $87                     ; 18076:  86 87
+b06_8078:   dey                         ; 18078:  88
+b06_8079:   .db $89                     ; 18079:  89
+b06_807a:   txa                         ; 1807A:  8a
+b06_807b:   eor $4d8b                   ; 1807B:  4d 8b 4d
+b06_807e:   sta $4d8e                   ; 1807E:  8d 8e 4d
+b06_8081:   eor $4d4d                   ; 18081:  4d 4d 4d
+b06_8084:   eor $4d4d                   ; 18084:  4d 4d 4d
+b06_8087:   eor $4d4d                   ; 18087:  4d 4d 4d
+b06_808a:   eor $4d4d                   ; 1808A:  4d 4d 4d
+b06_808d:   .db $7c                     ; 1808D:  7c
+b06_808e:   .db $7f                     ; 1808E:  7f
+b06_808f:   eor $4d4d                   ; 1808F:  4d 4d 4d
+b06_8092:   eor $4d4d                   ; 18092:  4d 4d 4d
+b06_8095:   eor $4d4d                   ; 18095:  4d 4d 4d
+b06_8098:   eor $4d4d                   ; 18098:  4d 4d 4d
+b06_809b:   eor $4d8c                   ; 1809B:  4d 8c 4d
+b06_809e:   .db $8f                     ; 1809E:  8f
+b06_809f:   eor $4d4d                   ; 1809F:  4d 4d 4d
+b06_80a2:   eor $4d4d                   ; 180A2:  4d 4d 4d
+b06_80a5:   eor $4d4d                   ; 180A5:  4d 4d 4d
+b06_80a8:   eor $4d4d                   ; 180A8:  4d 4d 4d
+b06_80ab:   eor $4d4d                   ; 180AB:  4d 4d 4d
+b06_80ae:   eor $4d4d                   ; 180AE:  4d 4d 4d
+b06_80b1:   eor $4d4d                   ; 180B1:  4d 4d 4d
+b06_80b4:   eor $4d4d                   ; 180B4:  4d 4d 4d
+b06_80b7:   eor $4d4d                   ; 180B7:  4d 4d 4d
+b06_80ba:   eor $904d                   ; 180BA:  4d 4d 90
+b06_80bd:   eor $4d92                   ; 180BD:  4d 92 4d
+b06_80c0:   eor $4d4d                   ; 180C0:  4d 4d 4d
+b06_80c3:   eor $4d4d                   ; 180C3:  4d 4d 4d
+b06_80c6:   eor $4d4d                   ; 180C6:  4d 4d 4d
+b06_80c9:   eor $4d4d                   ; 180C9:  4d 4d 4d
+b06_80cc:   eor $4d4d                   ; 180CC:  4d 4d 4d
+b06_80cf:   eor $4d4d                   ; 180CF:  4d 4d 4d
+b06_80d2:   eor $4d4d                   ; 180D2:  4d 4d 4d
+b06_80d5:   eor $4d4d                   ; 180D5:  4d 4d 4d
+b06_80d8:   eor $4d4d                   ; 180D8:  4d 4d 4d
+b06_80db:   eor $4d91                   ; 180DB:  4d 91 4d
+b06_80de:   .db $93                     ; 180DE:  93
+b06_80df:   eor $4d4d                   ; 180DF:  4d 4d 4d
+b06_80e2:   eor $4d4d                   ; 180E2:  4d 4d 4d
+b06_80e5:   eor $4d4d                   ; 180E5:  4d 4d 4d
+b06_80e8:   eor $4d4d                   ; 180E8:  4d 4d 4d
+b06_80eb:   eor $4d4d                   ; 180EB:  4d 4d 4d
+b06_80ee:   eor $4d4d                   ; 180EE:  4d 4d 4d
+b06_80f1:   eor $4d4d                   ; 180F1:  4d 4d 4d
+b06_80f4:   eor $4d4d                   ; 180F4:  4d 4d 4d
+b06_80f7:   eor $954d                   ; 180F7:  4d 4d 95
+b06_80fa:   .db $97                     ; 180FA:  97
+b06_80fb:   tya                         ; 180FB:  98
+b06_80fc:   .db $9b                     ; 180FC:  9b
+b06_80fd:   eor $4d9d                   ; 180FD:  4d 9d 4d
+b06_8100:   eor $4d4d                   ; 18100:  4d 4d 4d
+b06_8103:   eor $4d4d                   ; 18103:  4d 4d 4d
+b06_8106:   eor $4d4d                   ; 18106:  4d 4d 4d
+b06_8109:   eor $4d4d                   ; 18109:  4d 4d 4d
+b06_810c:   eor $4d4d                   ; 1810C:  4d 4d 4d
+b06_810f:   eor $4d4d                   ; 1810F:  4d 4d 4d
+b06_8112:   eor $4d4d                   ; 18112:  4d 4d 4d
+b06_8115:   eor $4d94                   ; 18115:  4d 94 4d
+b06_8118:   eor $9996                   ; 18118:  4d 96 99
+b06_811b:   txs                         ; 1811B:  9a
+b06_811c:   .db $9c                     ; 1811C:  9c
+b06_811d:   eor $4d9e                   ; 1811D:  4d 9e 4d
+b06_8120:   eor $4d4d                   ; 18120:  4d 4d 4d
+b06_8123:   eor $4d4d                   ; 18123:  4d 4d 4d
+b06_8126:   eor $4d4d                   ; 18126:  4d 4d 4d
+b06_8129:   eor $4d4d                   ; 18129:  4d 4d 4d
+b06_812c:   eor $4d4d                   ; 1812C:  4d 4d 4d
+b06_812f:   eor $4d4d                   ; 1812F:  4d 4d 4d
+b06_8132:   eor $4d4d                   ; 18132:  4d 4d 4d
+b06_8135:   .db $9f                     ; 18135:  9f
+b06_8136:   lda ($a2,x)                 ; 18136:  a1 a2
+b06_8138:   .db $a3                     ; 18138:  a3
+b06_8139:   ldy $4d                     ; 18139:  a4 4d
+b06_813b:   .db $a7                     ; 1813B:  a7
+b06_813c:   tay                         ; 1813C:  a8
+b06_813d:   eor $4daa                   ; 1813D:  4d aa 4d
+b06_8140:   eor $4d4d                   ; 18140:  4d 4d 4d
+b06_8143:   eor $4d4d                   ; 18143:  4d 4d 4d
+b06_8146:   eor $4d4d                   ; 18146:  4d 4d 4d
+b06_8149:   eor $4d4d                   ; 18149:  4d 4d 4d
+b06_814c:   eor $4d4d                   ; 1814C:  4d 4d 4d
+b06_814f:   eor $4d4d                   ; 1814F:  4d 4d 4d
+b06_8152:   eor $4d4d                   ; 18152:  4d 4d 4d
+b06_8155:   ldy #$4d                    ; 18155:  a0 4d
+b06_8157:   eor $a6a5                   ; 18157:  4d a5 a6
+b06_815a:   eor $a94d                   ; 1815A:  4d 4d a9
+b06_815d:   eor $4d93                   ; 1815D:  4d 93 4d
+b06_8160:   eor $4d4d                   ; 18160:  4d 4d 4d
+b06_8163:   eor $4d4d                   ; 18163:  4d 4d 4d
+b06_8166:   eor $4d4d                   ; 18166:  4d 4d 4d
+b06_8169:   eor $4d4d                   ; 18169:  4d 4d 4d
+b06_816c:   eor $4d4d                   ; 1816C:  4d 4d 4d
+b06_816f:   eor $4d4d                   ; 1816F:  4d 4d 4d
+b06_8172:   eor $4d4d                   ; 18172:  4d 4d 4d
+b06_8175:   .db $ab                     ; 18175:  ab
+b06_8176:   lda $4dae                   ; 18176:  ad ae 4d
+b06_8179:   lda ($4d),y                 ; 18179:  b1 4d
+b06_817b:   eor $b3b2                   ; 1817B:  4d b2 b3
+b06_817e:   lda $b6,x                   ; 1817E:  b5 b6
+b06_8180:   eor $4d4d                   ; 18180:  4d 4d 4d
+b06_8183:   eor $4d4d                   ; 18183:  4d 4d 4d
+b06_8186:   eor $4d4d                   ; 18186:  4d 4d 4d
+b06_8189:   eor $4d4d                   ; 18189:  4d 4d 4d
+b06_818c:   eor $4d4d                   ; 1818C:  4d 4d 4d
+b06_818f:   eor $4d4d                   ; 1818F:  4d 4d 4d
+b06_8192:   eor $4d4d                   ; 18192:  4d 4d 4d
+b06_8195:   ldy $b0af                   ; 18195:  ac af b0
+b06_8198:   eor $4d4d                   ; 18198:  4d 4d 4d
+b06_819b:   eor $b44d                   ; 1819B:  4d 4d b4
+b06_819e:   .db $b7                     ; 1819E:  b7
+b06_819f:   clv                         ; 1819F:  b8
+b06_81a0:   eor $4d4d                   ; 181A0:  4d 4d 4d
+b06_81a3:   eor $4d4d                   ; 181A3:  4d 4d 4d
+b06_81a6:   eor $4d4d                   ; 181A6:  4d 4d 4d
+b06_81a9:   eor $4d4d                   ; 181A9:  4d 4d 4d
+b06_81ac:   eor $4d4d                   ; 181AC:  4d 4d 4d
+b06_81af:   eor $4d4d                   ; 181AF:  4d 4d 4d
+b06_81b2:   eor $4d4d                   ; 181B2:  4d 4d 4d
+b06_81b5:   eor $bab9                   ; 181B5:  4d b9 ba
+b06_81b8:   lda $4d4d,x                 ; 181B8:  bd 4d 4d
+b06_81bb:   eor $4d4d                   ; 181BB:  4d 4d 4d
+b06_81be:   cmp ($c2,x)                 ; 181BE:  c1 c2
+b06_81c0:   cmp $4d                     ; 181C0:  c5 4d
+b06_81c2:   eor $4d4d                   ; 181C2:  4d 4d 4d
+b06_81c5:   eor $4d4d                   ; 181C5:  4d 4d 4d
+b06_81c8:   eor $4d4d                   ; 181C8:  4d 4d 4d
+b06_81cb:   eor $4d4d                   ; 181CB:  4d 4d 4d
+b06_81ce:   eor $4d4d                   ; 181CE:  4d 4d 4d
+b06_81d1:   eor $4d4d                   ; 181D1:  4d 4d 4d
+b06_81d4:   eor $bb4d                   ; 181D4:  4d 4d bb
+b06_81d7:   ldy $4dbe,x                 ; 181D7:  bc be 4d
+b06_81da:   .db $bf                     ; 181DA:  bf
+b06_81db:   eor $4dc0                   ; 181DB:  4d c0 4d
+b06_81de:   .db $c3                     ; 181DE:  c3
+b06_81df:   cpy $4d                     ; 181DF:  c4 4d
+b06_81e1:   eor $4d4d                   ; 181E1:  4d 4d 4d
+b06_81e4:   eor $4d4d                   ; 181E4:  4d 4d 4d
+b06_81e7:   eor $4d4d                   ; 181E7:  4d 4d 4d
+b06_81ea:   eor $4d4d                   ; 181EA:  4d 4d 4d
+b06_81ed:   eor $4d4d                   ; 181ED:  4d 4d 4d
+b06_81f0:   eor $4d4d                   ; 181F0:  4d 4d 4d
+b06_81f3:   eor $4d4d                   ; 181F3:  4d 4d 4d
+b06_81f6:   dec $c7                     ; 181F6:  c6 c7
+b06_81f8:   dex                         ; 181F8:  ca
+b06_81f9:   .db $cb                     ; 181F9:  cb
+b06_81fa:   dec $d2cf                   ; 181FA:  ce cf d2
+b06_81fd:   .db $d3                     ; 181FD:  d3
+b06_81fe:   dec $4d,x                   ; 181FE:  d6 4d
+b06_8200:   eor $4d4d                   ; 18200:  4d 4d 4d
+b06_8203:   eor $4d4d                   ; 18203:  4d 4d 4d
+b06_8206:   eor $4d4d                   ; 18206:  4d 4d 4d
+b06_8209:   eor $4d4d                   ; 18209:  4d 4d 4d
+b06_820c:   eor $4d4d                   ; 1820C:  4d 4d 4d
+b06_820f:   eor $4d4d                   ; 1820F:  4d 4d 4d
+b06_8212:   eor $4d4d                   ; 18212:  4d 4d 4d
+b06_8215:   eor $c9c8                   ; 18215:  4d c8 c9
+b06_8218:   cpy $d0cd                   ; 18218:  cc cd d0
+b06_821b:   cmp ($d4),y                 ; 1821B:  d1 d4
+b06_821d:   cmp $d7,x                   ; 1821D:  d5 d7
+b06_821f:   cld                         ; 1821F:  d8
+b06_8220:   eor $4d4d                   ; 18220:  4d 4d 4d
+b06_8223:   eor $d9d9                   ; 18223:  4d d9 d9
+b06_8226:   cmp $d9d9,y                 ; 18226:  d9 d9 d9
+b06_8229:   cmp $d9d9,y                 ; 18229:  d9 d9 d9
+b06_822c:   cmp $dbd9,y                 ; 1822C:  d9 d9 db
+b06_822f:   .db $dc                     ; 1822F:  dc
+b06_8230:   .db $df                     ; 18230:  df
+b06_8231:   cpx #$e0                    ; 18231:  e0 e0
+b06_8233:   .db $e2                     ; 18233:  e2
+b06_8234:   cpx $e5                     ; 18234:  e4 e5
+b06_8236:   inx                         ; 18236:  e8
+b06_8237:   sbc #$eb                    ; 18237:  e9 eb
+b06_8239:   cpx $f0ef                   ; 18239:  ec ef f0
+b06_823c:   .db $f3                     ; 1823C:  f3
+b06_823d:   .db $f4                     ; 1823D:  f4
+b06_823e:   inc $f7,x                   ; 1823E:  f6 f7
+b06_8240:   .db $fa                     ; 18240:  fa
+b06_8241:   .db $fb                     ; 18241:  fb
+b06_8242:   sbc $dae0,x                 ; 18242:  fd e0 da
+b06_8245:   .db $da                     ; 18245:  da
+b06_8246:   .db $da                     ; 18246:  da
+b06_8247:   .db $da                     ; 18247:  da
+b06_8248:   .db $da                     ; 18248:  da
+b06_8249:   .db $da                     ; 18249:  da
+b06_824a:   .db $da                     ; 1824A:  da
+b06_824b:   .db $da                     ; 1824B:  da
+b06_824c:   .db $da                     ; 1824C:  da
+b06_824d:   .db $da                     ; 1824D:  da
+b06_824e:   cmp $dede,x                 ; 1824E:  dd de de
+b06_8251:   sbc ($e3,x)                 ; 18251:  e1 e3
+b06_8253:   .db $e3                     ; 18253:  e3
+b06_8254:   inc $e7                     ; 18254:  e6 e7
+b06_8256:   .db $e7                     ; 18256:  e7
+b06_8257:   nop                         ; 18257:  ea
+b06_8258:   sbc $f1ee                   ; 18258:  ed ee f1
+b06_825b:   .db $f2                     ; 1825B:  f2
+b06_825c:   sbc $ea,x                   ; 1825C:  f5 ea
+b06_825e:   sed                         ; 1825E:  f8
+b06_825f:   sbc $e3fc,y                 ; 1825F:  f9 fc e3
+b06_8262:   .db $e3                     ; 18262:  e3
+b06_8263:   .db $e3                     ; 18263:  e3
+b06_8264:   brk                         ; 18264:  00
+b06_8265:   brk                         ; 18265:  00
+b06_8266:   brk                         ; 18266:  00
+b06_8267:   brk                         ; 18267:  00
+b06_8268:   brk                         ; 18268:  00
+b06_8269:   brk                         ; 18269:  00
+b06_826a:   brk                         ; 1826A:  00
+b06_826b:   brk                         ; 1826B:  00
+b06_826c:   brk                         ; 1826C:  00
+b06_826d:   brk                         ; 1826D:  00
+b06_826e:   brk                         ; 1826E:  00
+b06_826f:   brk                         ; 1826F:  00
+b06_8270:   brk                         ; 18270:  00
+b06_8271:   brk                         ; 18271:  00
+b06_8272:   brk                         ; 18272:  00
+b06_8273:   brk                         ; 18273:  00
+b06_8274:   brk                         ; 18274:  00
+b06_8275:   brk                         ; 18275:  00
+b06_8276:   brk                         ; 18276:  00
+b06_8277:   brk                         ; 18277:  00
+b06_8278:   clc                         ; 18278:  18
+b06_8279:   .db $3c                     ; 18279:  3c
+b06_827a:   rol $007e,x                 ; 1827A:  3e 7e 00
+b06_827d:   brk                         ; 1827D:  00
+b06_827e:   brk                         ; 1827E:  00
+b06_827f:   brk                         ; 1827F:  00
+b06_8280:   clc                         ; 18280:  18
+b06_8281:   .db $3c                     ; 18281:  3c
+b06_8282:   rol $007e,x                 ; 18282:  3e 7e 00
+b06_8285:   brk                         ; 18285:  00
+b06_8286:   brk                         ; 18286:  00
+b06_8287:   brk                         ; 18287:  00
+b06_8288:   .db $0c                     ; 18288:  0c
+b06_8289:   asl $0c0e                   ; 18289:  0e 0e 0c
+b06_828c:   brk                         ; 1828C:  00
+b06_828d:   brk                         ; 1828D:  00
+b06_828e:   brk                         ; 1828E:  00
+b06_828f:   brk                         ; 1828F:  00
+b06_8290:   .db $0c                     ; 18290:  0c
+b06_8291:   asl $0c0e                   ; 18291:  0e 0e 0c
+b06_8294:   .db $7f                     ; 18294:  7f
+b06_8295:   .db $7f                     ; 18295:  7f
+b06_8296:   .db $7f                     ; 18296:  7f
+b06_8297:   .db $7f                     ; 18297:  7f
+b06_8298:   .db $7f                     ; 18298:  7f
+b06_8299:   .db $7f                     ; 18299:  7f
+b06_829a:   .db $7f                     ; 1829A:  7f
+b06_829b:   .db $f7                     ; 1829B:  f7
+b06_829c:   .db $7f                     ; 1829C:  7f
+b06_829d:   .db $7f                     ; 1829D:  7f
+b06_829e:   .db $7f                     ; 1829E:  7f
+b06_829f:   .db $7f                     ; 1829F:  7f
+b06_82a0:   .db $7f                     ; 182A0:  7f
+b06_82a1:   .db $7f                     ; 182A1:  7f
+b06_82a2:   .db $7f                     ; 182A2:  7f
+b06_82a3:   .db $f7                     ; 182A3:  f7
+b06_82a4:   .db $1c                     ; 182A4:  1c
+b06_82a5:   .db $1c                     ; 182A5:  1c
+b06_82a6:   .db $1c                     ; 182A6:  1c
+b06_82a7:   .db $1c                     ; 182A7:  1c
+b06_82a8:   ora $bbbb,y                 ; 182A8:  19 bb bb
+b06_82ab:   .db $bb                     ; 182AB:  bb
+b06_82ac:   .db $1c                     ; 182AC:  1c
+b06_82ad:   .db $1c                     ; 182AD:  1c
+b06_82ae:   .db $1c                     ; 182AE:  1c
+b06_82af:   .db $1c                     ; 182AF:  1c
+b06_82b0:   ora $bbbb,y                 ; 182B0:  19 bb bb
+b06_82b3:   .db $bb                     ; 182B3:  bb
+b06_82b4:   brk                         ; 182B4:  00
+b06_82b5:   brk                         ; 182B5:  00
+b06_82b6:   brk                         ; 182B6:  00
+b06_82b7:   brk                         ; 182B7:  00
+b06_82b8:   bmi $8332                   ; 182B8:  30 78
+b06_82ba:   sed                         ; 182BA:  f8
+b06_82bb:   sed                         ; 182BB:  f8
+b06_82bc:   brk                         ; 182BC:  00
+b06_82bd:   brk                         ; 182BD:  00
+b06_82be:   brk                         ; 182BE:  00
+b06_82bf:   brk                         ; 182BF:  00
+b06_82c0:   bmi $833a                   ; 182C0:  30 78
+b06_82c2:   sed                         ; 182C2:  f8
+b06_82c3:   sed                         ; 182C3:  f8
+b06_82c4:   brk                         ; 182C4:  00
+b06_82c5:   ora ($01,x)                 ; 182C5:  01 01
+b06_82c7:   sbc ($f9),y                 ; 182C7:  f1 f9
+b06_82c9:   .db $fb                     ; 182C9:  fb
+b06_82ca:   .db $fb                     ; 182CA:  fb
+b06_82cb:   .db $3b                     ; 182CB:  3b
+b06_82cc:   brk                         ; 182CC:  00
+b06_82cd:   ora ($01,x)                 ; 182CD:  01 01
+b06_82cf:   sbc ($f9),y                 ; 182CF:  f1 f9
+b06_82d1:   .db $fb                     ; 182D1:  fb
+b06_82d2:   .db $fb                     ; 182D2:  fb
+b06_82d3:   .db $3b                     ; 182D3:  3b
+b06_82d4:   beq $82c6                   ; 182D4:  f0 f0
+b06_82d6:   beq $82b8                   ; 182D6:  f0 e0
+b06_82d8:   sbc ($c1,x)                 ; 182D8:  e1 c1
+b06_82da:   cmp ($b3,x)                 ; 182DA:  c1 b3
+b06_82dc:   beq $82ce                   ; 182DC:  f0 f0
+b06_82de:   beq $82c0                   ; 182DE:  f0 e0
+b06_82e0:   sbc ($c1,x)                 ; 182E0:  e1 c1
+b06_82e2:   cmp ($b3,x)                 ; 182E2:  c1 b3
+b06_82e4:   brk                         ; 182E4:  00
+b06_82e5:   brk                         ; 182E5:  00
+b06_82e6:   brk                         ; 182E6:  00
+b06_82e7:   brk                         ; 182E7:  00
+b06_82e8:   cpy #$cc                    ; 182E8:  c0 cc
+b06_82ea:   stx $009c                   ; 182EA:  8e 9c 00
+b06_82ed:   brk                         ; 182ED:  00
+b06_82ee:   brk                         ; 182EE:  00
+b06_82ef:   brk                         ; 182EF:  00
+b06_82f0:   cpy #$cc                    ; 182F0:  c0 cc
+b06_82f2:   stx $009c                   ; 182F2:  8e 9c 00
+b06_82f5:   brk                         ; 182F5:  00
+b06_82f6:   brk                         ; 182F6:  00
+b06_82f7:   brk                         ; 182F7:  00
+b06_82f8:   rts                         ; 182F8:  60
+b06_82f9:   ror $ff7f                   ; 182F9:  6e 7f ff
+b06_82fc:   brk                         ; 182FC:  00
+b06_82fd:   brk                         ; 182FD:  00
+b06_82fe:   brk                         ; 182FE:  00
+b06_82ff:   brk                         ; 182FF:  00
+b06_8300:   rts                         ; 18300:  60
+b06_8301:   ror $ff7f                   ; 18301:  6e 7f ff
+b06_8304:   brk                         ; 18304:  00
+b06_8305:   brk                         ; 18305:  00
+b06_8306:   .db $03                     ; 18306:  03
+b06_8307:   .db $0f                     ; 18307:  0f
+b06_8308:   .db $0f                     ; 18308:  0f
+b06_8309:   .db $1b                     ; 18309:  1b
+b06_830a:   ora ($11),y                 ; 1830A:  11 11
+b06_830c:   brk                         ; 1830C:  00
+b06_830d:   brk                         ; 1830D:  00
+b06_830e:   .db $03                     ; 1830E:  03
+b06_830f:   .db $0f                     ; 1830F:  0f
+b06_8310:   .db $0f                     ; 18310:  0f
+b06_8311:   .db $1b                     ; 18311:  1b
+b06_8312:   ora ($11),y                 ; 18312:  11 11
+b06_8314:   brk                         ; 18314:  00
+b06_8315:   brk                         ; 18315:  00
+b06_8316:   brk                         ; 18316:  00
+b06_8317:   sta ($c3,x)                 ; 18317:  81 c3
+b06_8319:   .db $c7                     ; 18319:  c7
+b06_831a:   .db $c7                     ; 1831A:  c7
+b06_831b:   .db $cf                     ; 1831B:  cf
+b06_831c:   brk                         ; 1831C:  00
+b06_831d:   brk                         ; 1831D:  00
+b06_831e:   brk                         ; 1831E:  00
+b06_831f:   sta ($c3,x)                 ; 1831F:  81 c3
+b06_8321:   .db $c7                     ; 18321:  c7
+b06_8322:   .db $c7                     ; 18322:  c7
+b06_8323:   .db $cf                     ; 18323:  cf
+b06_8324:   brk                         ; 18324:  00
+b06_8325:   brk                         ; 18325:  00
+b06_8326:   rts                         ; 18326:  60
+b06_8327:   beq $8321                   ; 18327:  f0 f8
+b06_8329:   .db $ef                     ; 18329:  ef
+b06_832a:   sta $0d                     ; 1832A:  85 0d
+b06_832c:   brk                         ; 1832C:  00
+b06_832d:   brk                         ; 1832D:  00
+b06_832e:   rts                         ; 1832E:  60
+b06_832f:   beq $8329                   ; 1832F:  f0 f8
+b06_8331:   .db $ef                     ; 18331:  ef
+b06_8332:   sta $0d                     ; 18332:  85 0d
+b06_8334:   brk                         ; 18334:  00
+b06_8335:   brk                         ; 18335:  00
+b06_8336:   clc                         ; 18336:  18
+b06_8337:   .db $7c                     ; 18337:  7c
+b06_8338:   inc $9efe,x                 ; 18338:  fe fe 9e
+b06_833b:   .db $1c                     ; 1833B:  1c
+b06_833c:   brk                         ; 1833C:  00
+b06_833d:   brk                         ; 1833D:  00
+b06_833e:   clc                         ; 1833E:  18
+b06_833f:   .db $7c                     ; 1833F:  7c
+b06_8340:   inc $9efe,x                 ; 18340:  fe fe 9e
+b06_8343:   .db $1c                     ; 18343:  1c
+b06_8344:   rts                         ; 18344:  60
+b06_8345:   cpx #$c0                    ; 18345:  e0 c0
+b06_8347:   .db $83                     ; 18347:  83
+b06_8348:   stx $3c1c                   ; 18348:  8e 1c 3c
+b06_834b:   .db $3f                     ; 1834B:  3f
+b06_834c:   rts                         ; 1834C:  60
+b06_834d:   cpx #$c0                    ; 1834D:  e0 c0
+b06_834f:   .db $83                     ; 1834F:  83
+b06_8350:   stx $3c1c                   ; 18350:  8e 1c 3c
+b06_8353:   .db $3f                     ; 18353:  3f
+b06_8354:   brk                         ; 18354:  00
+b06_8355:   brk                         ; 18355:  00
+b06_8356:   brk                         ; 18356:  00
+b06_8357:   brk                         ; 18357:  00
+b06_8358:   brk                         ; 18358:  00
+b06_8359:   .db $0f                     ; 18359:  0f
+b06_835a:   .db $1f                     ; 1835A:  1f
+b06_835b:   .db $1f                     ; 1835B:  1f
+b06_835c:   brk                         ; 1835C:  00
+b06_835d:   brk                         ; 1835D:  00
+b06_835e:   brk                         ; 1835E:  00
+b06_835f:   brk                         ; 1835F:  00
+b06_8360:   brk                         ; 18360:  00
+b06_8361:   .db $0f                     ; 18361:  0f
+b06_8362:   .db $1f                     ; 18362:  1f
+b06_8363:   .db $1f                     ; 18363:  1f
+b06_8364:   .db $3f                     ; 18364:  3f
+b06_8365:   .db $3f                     ; 18365:  3f
+b06_8366:   .db $33                     ; 18366:  33
+b06_8367:   .db $73                     ; 18367:  73
+b06_8368:   .db $73                     ; 18368:  73
+b06_8369:   .db $63                     ; 18369:  63
+b06_836a:   .db $e3                     ; 1836A:  e3
+b06_836b:   .db $ef                     ; 1836B:  ef
+b06_836c:   .db $3f                     ; 1836C:  3f
+b06_836d:   .db $3f                     ; 1836D:  3f
+b06_836e:   .db $33                     ; 1836E:  33
+b06_836f:   .db $73                     ; 1836F:  73
+b06_8370:   .db $73                     ; 18370:  73
+b06_8371:   .db $63                     ; 18371:  63
+b06_8372:   .db $e3                     ; 18372:  e3
+b06_8373:   .db $ef                     ; 18373:  ef
+b06_8374:   brk                         ; 18374:  00
+b06_8375:   brk                         ; 18375:  00
+b06_8376:   brk                         ; 18376:  00
+b06_8377:   brk                         ; 18377:  00
+b06_8378:   .db $87                     ; 18378:  87
+b06_8379:   .db $87                     ; 18379:  87
+b06_837a:   .db $87                     ; 1837A:  87
+b06_837b:   .db $ff                     ; 1837B:  ff
+b06_837c:   brk                         ; 1837C:  00
+b06_837d:   brk                         ; 1837D:  00
+b06_837e:   brk                         ; 1837E:  00
+b06_837f:   brk                         ; 1837F:  00
+b06_8380:   .db $87                     ; 18380:  87
+b06_8381:   .db $87                     ; 18381:  87
+b06_8382:   .db $87                     ; 18382:  87
+b06_8383:   .db $ff                     ; 18383:  ff
+b06_8384:   brk                         ; 18384:  00
+b06_8385:   brk                         ; 18385:  00
+b06_8386:   brk                         ; 18386:  00
+b06_8387:   brk                         ; 18387:  00
+b06_8388:   brk                         ; 18388:  00
+b06_8389:   .db $03                     ; 18389:  03
+b06_838a:   .db $07                     ; 1838A:  07
+b06_838b:   .db $07                     ; 1838B:  07
+b06_838c:   brk                         ; 1838C:  00
+b06_838d:   brk                         ; 1838D:  00
+b06_838e:   brk                         ; 1838E:  00
+b06_838f:   brk                         ; 1838F:  00
+b06_8390:   brk                         ; 18390:  00
+b06_8391:   .db $03                     ; 18391:  03
+b06_8392:   .db $07                     ; 18392:  07
+b06_8393:   .db $07                     ; 18393:  07
+b06_8394:   brk                         ; 18394:  00
+b06_8395:   brk                         ; 18395:  00
+b06_8396:   brk                         ; 18396:  00
+b06_8397:   brk                         ; 18397:  00
+b06_8398:   brk                         ; 18398:  00
+b06_8399:   rol $7f,x                   ; 18399:  36 7f
+b06_839b:   .db $ff                     ; 1839B:  ff
+b06_839c:   brk                         ; 1839C:  00
+b06_839d:   brk                         ; 1839D:  00
+b06_839e:   brk                         ; 1839E:  00
+b06_839f:   brk                         ; 1839F:  00
+b06_83a0:   brk                         ; 183A0:  00
+b06_83a1:   rol $7f,x                   ; 183A1:  36 7f
+b06_83a3:   .db $ff                     ; 183A3:  ff
+b06_83a4:   .db $0f                     ; 183A4:  0f
+b06_83a5:   .db $0f                     ; 183A5:  0f
+b06_83a6:   .db $0f                     ; 183A6:  0f
+b06_83a7:   .db $1f                     ; 183A7:  1f
+b06_83a8:   .db $1f                     ; 183A8:  1f
+b06_83a9:   asl $3c1e,x                 ; 183A9:  1e 1e 3c
+b06_83ac:   .db $0f                     ; 183AC:  0f
+b06_83ad:   .db $0f                     ; 183AD:  0f
+b06_83ae:   .db $0f                     ; 183AE:  0f
+b06_83af:   .db $1f                     ; 183AF:  1f
+b06_83b0:   .db $1f                     ; 183B0:  1f
+b06_83b1:   asl $3c1e,x                 ; 183B1:  1e 1e 3c
+b06_83b4:   .db $83                     ; 183B4:  83
+b06_83b5:   .db $87                     ; 183B5:  87
+b06_83b6:   .db $07                     ; 183B6:  07
+b06_83b7:   asl $001c                   ; 183B7:  0e 1c 00
+b06_83ba:   asl $0f                     ; 183BA:  06 0f
+b06_83bc:   .db $83                     ; 183BC:  83
+b06_83bd:   .db $87                     ; 183BD:  87
+b06_83be:   .db $07                     ; 183BE:  07
+b06_83bf:   asl $001c                   ; 183BF:  0e 1c 00
+b06_83c2:   asl $0f                     ; 183C2:  06 0f
+b06_83c4:   asl $1c8c                   ; 183C4:  0e 8c 1c
+b06_83c7:   .db $1f                     ; 183C7:  1f
+b06_83c8:   .db $7f                     ; 183C8:  7f
+b06_83c9:   .db $7f                     ; 183C9:  7f
+b06_83ca:   .db $7f                     ; 183CA:  7f
+b06_83cb:   sec                         ; 183CB:  38
+b06_83cc:   asl $1c8c                   ; 183CC:  0e 8c 1c
+b06_83cf:   .db $1f                     ; 183CF:  1f
+b06_83d0:   .db $7f                     ; 183D0:  7f
+b06_83d1:   .db $7f                     ; 183D1:  7f
+b06_83d2:   .db $7f                     ; 183D2:  7f
+b06_83d3:   sec                         ; 183D3:  38
+b06_83d4:   asl $0e                     ; 183D4:  06 0e
+b06_83d6:   .db $1c                     ; 183D6:  1c
+b06_83d7:   tya                         ; 183D7:  98
+b06_83d8:   brk                         ; 183D8:  00
+b06_83d9:   .db $04                     ; 183D9:  04
+b06_83da:   asl $061c                   ; 183DA:  0e 1c 06
+b06_83dd:   asl $981c                   ; 183DD:  0e 1c 98
+b06_83e0:   brk                         ; 183E0:  00
+b06_83e1:   .db $04                     ; 183E1:  04
+b06_83e2:   asl $001c                   ; 183E2:  0e 1c 00
+b06_83e5:   brk                         ; 183E5:  00
+b06_83e6:   brk                         ; 183E6:  00
+b06_83e7:   brk                         ; 183E7:  00
+b06_83e8:   sec                         ; 183E8:  38
+b06_83e9:   .db $7c                     ; 183E9:  7c
+b06_83ea:   ror $00fe,x                 ; 183EA:  7e fe 00
+b06_83ed:   brk                         ; 183ED:  00
+b06_83ee:   brk                         ; 183EE:  00
+b06_83ef:   brk                         ; 183EF:  00
+b06_83f0:   sec                         ; 183F0:  38
+b06_83f1:   .db $7c                     ; 183F1:  7c
+b06_83f2:   ror $00fe,x                 ; 183F2:  7e fe 00
+b06_83f5:   brk                         ; 183F5:  00
+b06_83f6:   brk                         ; 183F6:  00
+b06_83f7:   brk                         ; 183F7:  00
+b06_83f8:   brk                         ; 183F8:  00
+b06_83f9:   brk                         ; 183F9:  00
+b06_83fa:   ora ($02,x)                 ; 183FA:  01 02
+b06_83fc:   brk                         ; 183FC:  00
+b06_83fd:   brk                         ; 183FD:  00
+b06_83fe:   brk                         ; 183FE:  00
+b06_83ff:   brk                         ; 183FF:  00
+b06_8400:   brk                         ; 18400:  00
+b06_8401:   brk                         ; 18401:  00
+b06_8402:   ora ($02,x)                 ; 18402:  01 02
+b06_8404:   brk                         ; 18404:  00
+b06_8405:   brk                         ; 18405:  00
+b06_8406:   brk                         ; 18406:  00
+b06_8407:   brk                         ; 18407:  00
+b06_8408:   brk                         ; 18408:  00
+b06_8409:   .db $fc                     ; 18409:  fc
+b06_840a:   .db $02                     ; 1840A:  02
+b06_840b:   sbc $0000,y                 ; 1840B:  f9 00 00
+b06_840e:   brk                         ; 1840E:  00
+b06_840f:   brk                         ; 1840F:  00
+b06_8410:   brk                         ; 18410:  00
+b06_8411:   .db $fc                     ; 18411:  fc
+b06_8412:   .db $02                     ; 18412:  02
+b06_8413:   sbc $0202,y                 ; 18413:  f9 02 02
+b06_8416:   .db $02                     ; 18416:  02
+b06_8417:   .db $02                     ; 18417:  02
+b06_8418:   .db $e2                     ; 18418:  e2
+b06_8419:   sbc ($f0),y                 ; 18419:  f1 f0
+b06_841b:   inc $0202,x                 ; 1841B:  fe 02 02
+b06_841e:   .db $02                     ; 1841E:  02
+b06_841f:   .db $02                     ; 1841F:  02
+b06_8420:   .db $e2                     ; 18420:  e2
+b06_8421:   sbc ($f0),y                 ; 18421:  f1 f0
+b06_8423:   inc $cdcd,x                 ; 18423:  fe cd cd
+b06_8426:   sbc $cdcd,y                 ; 18426:  f9 cd cd
+b06_8429:   .db $02                     ; 18429:  02
+b06_842a:   .db $fc                     ; 1842A:  fc
+b06_842b:   brk                         ; 1842B:  00
+b06_842c:   cmp $f9cd                   ; 1842C:  cd cd f9
+b06_842f:   cmp $02cd                   ; 1842F:  cd cd 02
+b06_8432:   .db $fc                     ; 18432:  fc
+b06_8433:   brk                         ; 18433:  00
+b06_8434:   brk                         ; 18434:  00
+b06_8435:   brk                         ; 18435:  00
+b06_8436:   .db $0f                     ; 18436:  0f
+b06_8437:   clc                         ; 18437:  18
+b06_8438:   .db $13                     ; 18438:  13
+b06_8439:   .db $14                     ; 18439:  14
+b06_843a:   .db $14                     ; 1843A:  14
+b06_843b:   .db $14                     ; 1843B:  14
+b06_843c:   brk                         ; 1843C:  00
+b06_843d:   brk                         ; 1843D:  00
+b06_843e:   brk                         ; 1843E:  00
+b06_843f:   .db $07                     ; 1843F:  07
+b06_8440:   .db $0f                     ; 18440:  0f
+b06_8441:   .db $0c                     ; 18441:  0c
+b06_8442:   .db $0c                     ; 18442:  0c
+b06_8443:   .db $0c                     ; 18443:  0c
+b06_8444:   brk                         ; 18444:  00
+b06_8445:   brk                         ; 18445:  00
+b06_8446:   .db $ff                     ; 18446:  ff
+b06_8447:   rti                         ; 18447:  40
+b06_8448:   .db $9e                     ; 18448:  9e
+b06_8449:   sbc ($00,x)                 ; 18449:  e1 00
+b06_844b:   .db $80                     ; 1844B:  80
+b06_844c:   brk                         ; 1844C:  00
+b06_844d:   brk                         ; 1844D:  00
+b06_844e:   brk                         ; 1844E:  00
+b06_844f:   .db $bf                     ; 1844F:  bf
+b06_8450:   .db $ff                     ; 18450:  ff
+b06_8451:   sbc ($00,x)                 ; 18451:  e1 00
+b06_8453:   .db $80                     ; 18453:  80
+b06_8454:   .db $14                     ; 18454:  14
+b06_8455:   .db $34                     ; 18455:  34
+b06_8456:   bit $28                     ; 18456:  24 28
+b06_8458:   plp                         ; 18458:  28
+b06_8459:   plp                         ; 18459:  28
+b06_845a:   plp                         ; 1845A:  28
+b06_845b:   and #$0c                    ; 1845B:  29 0c
+b06_845d:   .db $0c                     ; 1845D:  0c
+b06_845e:   .db $1c                     ; 1845E:  1c
+b06_845f:   clc                         ; 1845F:  18
+b06_8460:   clc                         ; 18460:  18
+b06_8461:   clc                         ; 18461:  18
+b06_8462:   clc                         ; 18462:  18
+b06_8463:   ora $a0c0,y                 ; 18463:  19 c0 a0
+b06_8466:   .db $9f                     ; 18466:  9f
+b06_8467:   beq $8477                   ; 18467:  f0 0e
+b06_8469:   ora ($00,x)                 ; 18469:  01 00
+b06_846b:   brk                         ; 1846B:  00
+b06_846c:   cpy #$e0                    ; 1846C:  c0 e0
+b06_846e:   .db $ff                     ; 1846E:  ff
+b06_846f:   .db $ff                     ; 1846F:  ff
+b06_8470:   .db $0f                     ; 18470:  0f
+b06_8471:   ora ($00,x)                 ; 18471:  01 00
+b06_8473:   brk                         ; 18473:  00
+b06_8474:   brk                         ; 18474:  00
+b06_8475:   brk                         ; 18475:  00
+b06_8476:   .db $83                     ; 18476:  83
+b06_8477:   inc $8338                   ; 18477:  ee 38 83
+b06_847a:   .db $7c                     ; 1847A:  7c
+b06_847b:   brk                         ; 1847B:  00
+b06_847c:   brk                         ; 1847C:  00
+b06_847d:   brk                         ; 1847D:  00
+b06_847e:   brk                         ; 1847E:  00
+b06_847f:   ora ($c7,x)                 ; 1847F:  01 c7
+b06_8481:   .db $ff                     ; 18481:  ff
+b06_8482:   .db $7c                     ; 18482:  7c
+b06_8483:   brk                         ; 18483:  00
+b06_8484:   brk                         ; 18484:  00
+b06_8485:   .db $ff                     ; 18485:  ff
+b06_8486:   .db $80                     ; 18486:  80
+b06_8487:   rol $1ec1,x                 ; 18487:  3e c1 1e
+b06_848a:   .db $43                     ; 1848A:  43
+b06_848b:   bit $0000                   ; 1848B:  2c 00 00
+b06_848e:   .db $7f                     ; 1848E:  7f
+b06_848f:   .db $ff                     ; 1848F:  ff
+b06_8490:   cmp ($1e,x)                 ; 18490:  c1 1e
+b06_8492:   .db $43                     ; 18492:  43
+b06_8493:   bit $0001                   ; 18493:  2c 01 00
+b06_8496:   cpx #$18                    ; 18496:  e0 18
+b06_8498:   .db $07                     ; 18498:  07
+b06_8499:   cpx #$1e                    ; 18499:  e0 1e
+b06_849b:   ora ($01,x)                 ; 1849B:  01 01
+b06_849d:   brk                         ; 1849D:  00
+b06_849e:   cpx #$f8                    ; 1849E:  e0 f8
+b06_84a0:   .db $ff                     ; 184A0:  ff
+b06_84a1:   .db $ff                     ; 184A1:  ff
+b06_84a2:   .db $1f                     ; 184A2:  1f
+b06_84a3:   ora ($df,x)                 ; 184A3:  01 df
+b06_84a5:   ora ($0e,x)                 ; 184A5:  01 0e
+b06_84a7:   adc ($86),y                 ; 184A7:  71 86
+b06_84a9:   .db $3f                     ; 184A9:  3f
+b06_84aa:   ora $dfc8,y                 ; 184AA:  19 c8 df
+b06_84ad:   ora ($0e,x)                 ; 184AD:  01 0e
+b06_84af:   .db $7f                     ; 184AF:  7f
+b06_84b0:   sbc $e0c0,y                 ; 184B0:  f9 c0 e0
+b06_84b3:   beq $84b5                   ; 184B3:  f0 00
+b06_84b5:   .db $80                     ; 184B5:  80
+b06_84b6:   beq $84d0                   ; 184B6:  f0 18
+b06_84b8:   cpy $d424                   ; 184B8:  cc 24 d4
+b06_84bb:   ldy $00                     ; 184BB:  a4 00
+b06_84bd:   brk                         ; 184BD:  00
+b06_84be:   brk                         ; 184BE:  00
+b06_84bf:   cpx #$f0                    ; 184BF:  e0 f0
+b06_84c1:   sec                         ; 184C1:  38
+b06_84c2:   cld                         ; 184C2:  d8
+b06_84c3:   sed                         ; 184C3:  f8
+b06_84c4:   jmp $48a8                   ; 184C4:  4c a8 48
+b06_84c7:   tay                         ; 184C7:  a8
+b06_84c8:   pha                         ; 184C8:  48
+b06_84c9:   clc                         ; 184C9:  18
+b06_84ca:   beq $84cc                   ; 184CA:  f0 00
+b06_84cc:   bvs $847e                   ; 184CC:  70 b0
+b06_84ce:   bvs $8480                   ; 184CE:  70 b0
+b06_84d0:   beq $84b2                   ; 184D0:  f0 e0
+b06_84d2:   brk                         ; 184D2:  00
+b06_84d3:   brk                         ; 184D3:  00
+b06_84d4:   .db $f3                     ; 184D4:  f3
+b06_84d5:   .db $e3                     ; 184D5:  e3
+b06_84d6:   .db $e3                     ; 184D6:  e3
+b06_84d7:   sbc ($e1,x)                 ; 184D7:  e1 e1
+b06_84d9:   rts                         ; 184D9:  60
+b06_84da:   rts                         ; 184DA:  60
+b06_84db:   brk                         ; 184DB:  00
+b06_84dc:   .db $f3                     ; 184DC:  f3
+b06_84dd:   .db $e3                     ; 184DD:  e3
+b06_84de:   .db $e3                     ; 184DE:  e3
+b06_84df:   sbc ($e1,x)                 ; 184DF:  e1 e1
+b06_84e1:   rts                         ; 184E1:  60
+b06_84e2:   rts                         ; 184E2:  60
+b06_84e3:   brk                         ; 184E3:  00
+b06_84e4:   .db $b7                     ; 184E4:  b7
+b06_84e5:   .db $f7                     ; 184E5:  f7
+b06_84e6:   .db $f7                     ; 184E6:  f7
+b06_84e7:   .db $f7                     ; 184E7:  f7
+b06_84e8:   .db $f7                     ; 184E8:  f7
+b06_84e9:   .db $e3                     ; 184E9:  e3
+b06_84ea:   cpx #$00                    ; 184EA:  e0 00
+b06_84ec:   .db $b7                     ; 184EC:  b7
+b06_84ed:   .db $f7                     ; 184ED:  f7
+b06_84ee:   .db $f7                     ; 184EE:  f7
+b06_84ef:   .db $f7                     ; 184EF:  f7
+b06_84f0:   .db $f7                     ; 184F0:  f7
+b06_84f1:   .db $e3                     ; 184F1:  e3
+b06_84f2:   cpx #$00                    ; 184F2:  e0 00
+b06_84f4:   .db $3b                     ; 184F4:  3b
+b06_84f5:   .db $77                     ; 184F5:  77
+b06_84f6:   .db $f7                     ; 184F6:  f7
+b06_84f7:   .db $eb                     ; 184F7:  eb
+b06_84f8:   cmp ($81,x)                 ; 184F8:  c1 81
+b06_84fa:   brk                         ; 184FA:  00
+b06_84fb:   brk                         ; 184FB:  00
+b06_84fc:   .db $3b                     ; 184FC:  3b
+b06_84fd:   .db $77                     ; 184FD:  77
+b06_84fe:   .db $f7                     ; 184FE:  f7
+b06_84ff:   .db $eb                     ; 184FF:  eb
+b06_8500:   cmp ($81,x)                 ; 18500:  c1 81
+b06_8502:   brk                         ; 18502:  00
+b06_8503:   brk                         ; 18503:  00
+b06_8504:   .db $fb                     ; 18504:  fb
+b06_8505:   .db $9f                     ; 18505:  9f
+b06_8506:   .db $93                     ; 18506:  93
+b06_8507:   .db $db                     ; 18507:  db
+b06_8508:   .db $fb                     ; 18508:  fb
+b06_8509:   sbc ($f0),y                 ; 18509:  f1 f0
+b06_850b:   rts                         ; 1850B:  60
+b06_850c:   .db $fb                     ; 1850C:  fb
+b06_850d:   .db $9f                     ; 1850D:  9f
+b06_850e:   .db $93                     ; 1850E:  93
+b06_850f:   .db $db                     ; 1850F:  db
+b06_8510:   .db $fb                     ; 18510:  fb
+b06_8511:   sbc ($f0),y                 ; 18511:  f1 f0
+b06_8513:   rts                         ; 18513:  60
+b06_8514:   .db $9c                     ; 18514:  9c
+b06_8515:   ldy $fcfc,x                 ; 18515:  bc fc fc
+b06_8518:   .db $dc                     ; 18518:  dc
+b06_8519:   .db $0c                     ; 18519:  0c
+b06_851a:   .db $0c                     ; 1851A:  0c
+b06_851b:   brk                         ; 1851B:  00
+b06_851c:   .db $9c                     ; 1851C:  9c
+b06_851d:   ldy $fcfc,x                 ; 1851D:  bc fc fc
+b06_8520:   .db $dc                     ; 18520:  dc
+b06_8521:   .db $0c                     ; 18521:  0c
+b06_8522:   .db $0c                     ; 18522:  0c
+b06_8523:   brk                         ; 18523:  00
+b06_8524:   .db $ff                     ; 18524:  ff
+b06_8525:   .db $f7                     ; 18525:  f7
+b06_8526:   .db $e7                     ; 18526:  e7
+b06_8527:   .db $c7                     ; 18527:  c7
+b06_8528:   .db $c7                     ; 18528:  c7
+b06_8529:   .db $03                     ; 18529:  03
+b06_852a:   .db $03                     ; 1852A:  03
+b06_852b:   brk                         ; 1852B:  00
+b06_852c:   .db $ff                     ; 1852C:  ff
+b06_852d:   .db $f7                     ; 1852D:  f7
+b06_852e:   .db $e7                     ; 1852E:  e7
+b06_852f:   .db $c7                     ; 1852F:  c7
+b06_8530:   .db $c7                     ; 18530:  c7
+b06_8531:   .db $03                     ; 18531:  03
+b06_8532:   .db $03                     ; 18532:  03
+b06_8533:   brk                         ; 18533:  00
+b06_8534:   .db $33                     ; 18534:  33
+b06_8535:   .db $37                     ; 18535:  37
+b06_8536:   .db $3f                     ; 18536:  3f
+b06_8537:   and $803d,x                 ; 18537:  3d 3d 80
+b06_853a:   brk                         ; 1853A:  00
+b06_853b:   brk                         ; 1853B:  00
+b06_853c:   .db $33                     ; 1853C:  33
+b06_853d:   .db $37                     ; 1853D:  37
+b06_853e:   .db $3f                     ; 1853E:  3f
+b06_853f:   and $803d,x                 ; 1853F:  3d 3d 80
+b06_8542:   brk                         ; 18542:  00
+b06_8543:   brk                         ; 18543:  00
+b06_8544:   .db $cf                     ; 18544:  cf
+b06_8545:   .db $cf                     ; 18545:  cf
+b06_8546:   .db $cf                     ; 18546:  cf
+b06_8547:   .db $cf                     ; 18547:  cf
+b06_8548:   .db $c7                     ; 18548:  c7
+b06_8549:   cmp ($07,x)                 ; 18549:  c1 07
+b06_854b:   asl $cfcf                   ; 1854B:  0e cf cf
+b06_854e:   .db $cf                     ; 1854E:  cf
+b06_854f:   .db $cf                     ; 1854F:  cf
+b06_8550:   .db $c7                     ; 18550:  c7
+b06_8551:   cmp ($07,x)                 ; 18551:  c1 07
+b06_8553:   asl $1d1c                   ; 18553:  0e 1c 1d
+b06_8556:   .db $1f                     ; 18556:  1f
+b06_8557:   .db $0f                     ; 18557:  0f
+b06_8558:   brk                         ; 18558:  00
+b06_8559:   brk                         ; 18559:  00
+b06_855a:   brk                         ; 1855A:  00
+b06_855b:   brk                         ; 1855B:  00
+b06_855c:   .db $1c                     ; 1855C:  1c
+b06_855d:   ora $0f1f,x                 ; 1855D:  1d 1f 0f
+b06_8560:   brk                         ; 18560:  00
+b06_8561:   brk                         ; 18561:  00
+b06_8562:   brk                         ; 18562:  00
+b06_8563:   brk                         ; 18563:  00
+b06_8564:   .db $1b                     ; 18564:  1b
+b06_8565:   .db $3f                     ; 18565:  3f
+b06_8566:   .db $fb                     ; 18566:  fb
+b06_8567:   .db $f3                     ; 18567:  f3
+b06_8568:   .db $b3                     ; 18568:  b3
+b06_8569:   beq $85cb                   ; 18569:  f0 60
+b06_856b:   rts                         ; 1856B:  60
+b06_856c:   .db $1b                     ; 1856C:  1b
+b06_856d:   .db $3f                     ; 1856D:  3f
+b06_856e:   .db $fb                     ; 1856E:  fb
+b06_856f:   .db $f3                     ; 1856F:  f3
+b06_8570:   .db $b3                     ; 18570:  b3
+b06_8571:   beq $85d3                   ; 18571:  f0 60
+b06_8573:   rts                         ; 18573:  60
+b06_8574:   .db $3c                     ; 18574:  3c
+b06_8575:   .db $7c                     ; 18575:  7c
+b06_8576:   .db $fc                     ; 18576:  fc
+b06_8577:   cpx $06cc                   ; 18577:  ec cc 06
+b06_857a:   brk                         ; 1857A:  00
+b06_857b:   brk                         ; 1857B:  00
+b06_857c:   .db $3c                     ; 1857C:  3c
+b06_857d:   .db $7c                     ; 1857D:  7c
+b06_857e:   .db $fc                     ; 1857E:  fc
+b06_857f:   cpx $06cc                   ; 1857F:  ec cc 06
+b06_8582:   brk                         ; 18582:  00
+b06_8583:   brk                         ; 18583:  00
+b06_8584:   cpy #$c0                    ; 18584:  c0 c0
+b06_8586:   .db $80                     ; 18586:  80
+b06_8587:   brk                         ; 18587:  00
+b06_8588:   brk                         ; 18588:  00
+b06_8589:   brk                         ; 18589:  00
+b06_858a:   brk                         ; 1858A:  00
+b06_858b:   brk                         ; 1858B:  00
+b06_858c:   cpy #$c0                    ; 1858C:  c0 c0
+b06_858e:   .db $80                     ; 1858E:  80
+b06_858f:   brk                         ; 1858F:  00
+b06_8590:   brk                         ; 18590:  00
+b06_8591:   brk                         ; 18591:  00
+b06_8592:   brk                         ; 18592:  00
+b06_8593:   brk                         ; 18593:  00
+b06_8594:   .db $3f                     ; 18594:  3f
+b06_8595:   .db $3f                     ; 18595:  3f
+b06_8596:   .db $1f                     ; 18596:  1f
+b06_8597:   .db $07                     ; 18597:  07
+b06_8598:   .db $07                     ; 18598:  07
+b06_8599:   .db $0f                     ; 18599:  0f
+b06_859a:   rol $3f00,x                 ; 1859A:  3e 00 3f
+b06_859d:   .db $3f                     ; 1859D:  3f
+b06_859e:   .db $1f                     ; 1859E:  1f
+b06_859f:   .db $07                     ; 1859F:  07
+b06_85a0:   .db $07                     ; 185A0:  07
+b06_85a1:   .db $0f                     ; 185A1:  0f
+b06_85a2:   rol $8000,x                 ; 185A2:  3e 00 80
+b06_85a5:   .db $83                     ; 185A5:  83
+b06_85a6:   sta ($81,x)                 ; 185A6:  81 81
+b06_85a8:   sta ($03,x)                 ; 185A8:  81 03
+b06_85aa:   .db $03                     ; 185AA:  03
+b06_85ab:   .db $03                     ; 185AB:  03
+b06_85ac:   .db $80                     ; 185AC:  80
+b06_85ad:   .db $83                     ; 185AD:  83
+b06_85ae:   sta ($81,x)                 ; 185AE:  81 81
+b06_85b0:   sta ($03,x)                 ; 185B0:  81 03
+b06_85b2:   .db $03                     ; 185B2:  03
+b06_85b3:   .db $03                     ; 185B3:  03
+b06_85b4:   .db $ff                     ; 185B4:  ff
+b06_85b5:   .db $ff                     ; 185B5:  ff
+b06_85b6:   .db $ff                     ; 185B6:  ff
+b06_85b7:   .db $e3                     ; 185B7:  e3
+b06_85b8:   .db $83                     ; 185B8:  83
+b06_85b9:   .db $83                     ; 185B9:  83
+b06_85ba:   .db $83                     ; 185BA:  83
+b06_85bb:   .db $03                     ; 185BB:  03
+b06_85bc:   .db $ff                     ; 185BC:  ff
+b06_85bd:   .db $ff                     ; 185BD:  ff
+b06_85be:   .db $ff                     ; 185BE:  ff
+b06_85bf:   .db $e3                     ; 185BF:  e3
+b06_85c0:   .db $83                     ; 185C0:  83
+b06_85c1:   .db $83                     ; 185C1:  83
+b06_85c2:   .db $83                     ; 185C2:  83
+b06_85c3:   .db $03                     ; 185C3:  03
+b06_85c4:   .db $ef                     ; 185C4:  ef
+b06_85c5:   .db $cf                     ; 185C5:  cf
+b06_85c6:   .db $8f                     ; 185C6:  8f
+b06_85c7:   .db $9e                     ; 185C7:  9e
+b06_85c8:   .db $9e                     ; 185C8:  9e
+b06_85c9:   .db $1c                     ; 185C9:  1c
+b06_85ca:   .db $1c                     ; 185CA:  1c
+b06_85cb:   clc                         ; 185CB:  18
+b06_85cc:   .db $ef                     ; 185CC:  ef
+b06_85cd:   .db $cf                     ; 185CD:  cf
+b06_85ce:   .db $8f                     ; 185CE:  8f
+b06_85cf:   .db $9e                     ; 185CF:  9e
+b06_85d0:   .db $9e                     ; 185D0:  9e
+b06_85d1:   .db $1c                     ; 185D1:  1c
+b06_85d2:   .db $1c                     ; 185D2:  1c
+b06_85d3:   clc                         ; 185D3:  18
+b06_85d4:   .db $ff                     ; 185D4:  ff
+b06_85d5:   .db $ff                     ; 185D5:  ff
+b06_85d6:   .db $f7                     ; 185D6:  f7
+b06_85d7:   inc $c6                     ; 185D7:  e6 c6
+b06_85d9:   dec $02                     ; 185D9:  c6 02
+b06_85db:   brk                         ; 185DB:  00
+b06_85dc:   .db $ff                     ; 185DC:  ff
+b06_85dd:   .db $ff                     ; 185DD:  ff
+b06_85de:   .db $f7                     ; 185DE:  f7
+b06_85df:   inc $c6                     ; 185DF:  e6 c6
+b06_85e1:   dec $02                     ; 185E1:  c6 02
+b06_85e3:   brk                         ; 185E3:  00
+b06_85e4:   and $393b,x                 ; 185E4:  3d 3b 39
+b06_85e7:   adc $9f5d,y                 ; 185E7:  79 5d 9f
+b06_85ea:   .db $0f                     ; 185EA:  0f
+b06_85eb:   .db $07                     ; 185EB:  07
+b06_85ec:   and $393b,x                 ; 185EC:  3d 3b 39
+b06_85ef:   adc $9f5d,y                 ; 185EF:  79 5d 9f
+b06_85f2:   .db $0f                     ; 185F2:  0f
+b06_85f3:   .db $07                     ; 185F3:  07
+b06_85f4:   asl $fe9e                   ; 185F4:  0e 9e fe
+b06_85f7:   .db $9e                     ; 185F7:  9e
+b06_85f8:   .db $9c                     ; 185F8:  9c
+b06_85f9:   sty $008c                   ; 185F9:  8c 8c 00
+b06_85fc:   asl $fe9e                   ; 185FC:  0e 9e fe
+b06_85ff:   .db $9e                     ; 185FF:  9e
+b06_8600:   .db $9c                     ; 18600:  9c
+b06_8601:   sty $008c                   ; 18601:  8c 8c 00
+b06_8604:   sec                         ; 18604:  38
+b06_8605:   sec                         ; 18605:  38
+b06_8606:   bmi $8638                   ; 18606:  30 30
+b06_8608:   .db $32                     ; 18608:  32
+b06_8609:   .db $3b                     ; 18609:  3b
+b06_860a:   asl $380e,x                 ; 1860A:  1e 0e 38
+b06_860d:   sec                         ; 1860D:  38
+b06_860e:   bmi $8640                   ; 1860E:  30 30
+b06_8610:   .db $32                     ; 18610:  32
+b06_8611:   .db $3b                     ; 18611:  3b
+b06_8612:   asl $3c0e,x                 ; 18612:  1e 0e 3c
+b06_8615:   adc $797d,x                 ; 18615:  7d 7d 79
+b06_8618:   and $1819,y                 ; 18618:  39 19 18
+b06_861b:   brk                         ; 1861B:  00
+b06_861c:   .db $3c                     ; 1861C:  3c
+b06_861d:   adc $797d,x                 ; 1861D:  7d 7d 79
+b06_8620:   and $1819,y                 ; 18620:  39 19 18
+b06_8623:   brk                         ; 18623:  00
+b06_8624:   dec $ccce                   ; 18624:  ce ce cc
+b06_8627:   .db $fc                     ; 18627:  fc
+b06_8628:   sed                         ; 18628:  f8
+b06_8629:   sed                         ; 18629:  f8
+b06_862a:   beq $862c                   ; 1862A:  f0 00
+b06_862c:   dec $ccce                   ; 1862C:  ce ce cc
+b06_862f:   .db $fc                     ; 1862F:  fc
+b06_8630:   sed                         ; 18630:  f8
+b06_8631:   sed                         ; 18631:  f8
+b06_8632:   beq $8634                   ; 18632:  f0 00
+b06_8634:   .db $ff                     ; 18634:  ff
+b06_8635:   .db $ff                     ; 18635:  ff
+b06_8636:   .db $ff                     ; 18636:  ff
+b06_8637:   .db $e7                     ; 18637:  e7
+b06_8638:   .db $e7                     ; 18638:  e7
+b06_8639:   dec $c6                     ; 18639:  c6 c6
+b06_863b:   .db $02                     ; 1863B:  02
+b06_863c:   .db $ff                     ; 1863C:  ff
+b06_863d:   .db $ff                     ; 1863D:  ff
+b06_863e:   .db $ff                     ; 1863E:  ff
+b06_863f:   .db $e7                     ; 1863F:  e7
+b06_8640:   .db $e7                     ; 18640:  e7
+b06_8641:   dec $c6                     ; 18641:  c6 c6
+b06_8643:   .db $02                     ; 18643:  02
+b06_8644:   and #$29                    ; 18644:  29 29
+b06_8646:   and #$29                    ; 18646:  29 29
+b06_8648:   and #$68                    ; 18648:  29 68
+b06_864a:   pha                         ; 1864A:  48
+b06_864b:   bvc $8666                   ; 1864B:  50 19
+b06_864d:   ora $1919,y                 ; 1864D:  19 19 19
+b06_8650:   ora $3818,y                 ; 18650:  19 18 38
+b06_8653:   bmi $86a7                   ; 18653:  30 52
+b06_8655:   .db $52                     ; 18655:  52
+b06_8656:   .db $52                     ; 18656:  52
+b06_8657:   .db $52                     ; 18657:  52
+b06_8658:   .db $52                     ; 18658:  52
+b06_8659:   .db $52                     ; 18659:  52
+b06_865a:   .db $52                     ; 1865A:  52
+b06_865b:   .db $52                     ; 1865B:  52
+b06_865c:   .db $32                     ; 1865C:  32
+b06_865d:   .db $32                     ; 1865D:  32
+b06_865e:   .db $32                     ; 1865E:  32
+b06_865f:   .db $32                     ; 1865F:  32
+b06_8660:   .db $32                     ; 18660:  32
+b06_8661:   .db $32                     ; 18661:  32
+b06_8662:   .db $32                     ; 18662:  32
+b06_8663:   .db $32                     ; 18663:  32
+b06_8664:   brk                         ; 18664:  00
+b06_8665:   .db $07                     ; 18665:  07
+b06_8666:   .db $04                     ; 18666:  04
+b06_8667:   ora $05                     ; 18667:  05 05
+b06_8669:   ora $05                     ; 18669:  05 05
+b06_866b:   ora $00                     ; 1866B:  05 00
+b06_866d:   .db $07                     ; 1866D:  07
+b06_866e:   .db $07                     ; 1866E:  07
+b06_866f:   asl $06                     ; 1866F:  06 06
+b06_8671:   asl $06                     ; 18671:  06 06
+b06_8673:   asl $28                     ; 18673:  06 28
+b06_8675:   iny                         ; 18675:  c8
+b06_8676:   clc                         ; 18676:  18
+b06_8677:   beq $8679                   ; 18677:  f0 00
+b06_8679:   brk                         ; 18679:  00
+b06_867a:   brk                         ; 1867A:  00
+b06_867b:   brk                         ; 1867B:  00
+b06_867c:   bmi $866e                   ; 1867C:  30 f0
+b06_867e:   cpx #$00                    ; 1867E:  e0 00
+b06_8680:   brk                         ; 18680:  00
+b06_8681:   brk                         ; 18681:  00
+b06_8682:   brk                         ; 18682:  00
+b06_8683:   brk                         ; 18683:  00
+b06_8684:   ora $05                     ; 18684:  05 05
+b06_8686:   ora $05                     ; 18686:  05 05
+b06_8688:   ora $05                     ; 18688:  05 05
+b06_868a:   ora #$0b                    ; 1868A:  09 0b
+b06_868c:   asl $06                     ; 1868C:  06 06
+b06_868e:   asl $06                     ; 1868E:  06 06
+b06_8690:   asl $06                     ; 18690:  06 06
+b06_8692:   asl $520c                   ; 18692:  0e 0c 52
+b06_8695:   bvc $86e7                   ; 18695:  50 50
+b06_8697:   bvc $86eb                   ; 18697:  50 52
+b06_8699:   .db $52                     ; 18699:  52
+b06_869a:   .db $d2                     ; 1869A:  d2
+b06_869b:   .db $92                     ; 1869B:  92
+b06_869c:   .db $32                     ; 1869C:  32
+b06_869d:   bmi $86cf                   ; 1869D:  30 30
+b06_869f:   bmi $86d3                   ; 1869F:  30 32
+b06_86a1:   .db $32                     ; 186A1:  32
+b06_86a2:   .db $32                     ; 186A2:  32
+b06_86a3:   .db $72                     ; 186A3:  72
+b06_86a4:   ldy $a4                     ; 186A4:  a4 a4
+b06_86a6:   ldy $a4                     ; 186A6:  a4 a4
+b06_86a8:   ldy $a4                     ; 186A8:  a4 a4
+b06_86aa:   ldy $a0                     ; 186AA:  a4 a0
+b06_86ac:   .db $64                     ; 186AC:  64
+b06_86ad:   .db $64                     ; 186AD:  64
+b06_86ae:   .db $64                     ; 186AE:  64
+b06_86af:   .db $64                     ; 186AF:  64
+b06_86b0:   .db $64                     ; 186B0:  64
+b06_86b1:   .db $64                     ; 186B1:  64
+b06_86b2:   .db $64                     ; 186B2:  64
+b06_86b3:   rts                         ; 186B3:  60
+b06_86b4:   asl a                       ; 186B4:  0a
+b06_86b5:   asl a                       ; 186B5:  0a
+b06_86b6:   asl a                       ; 186B6:  0a
+b06_86b7:   asl a                       ; 186B7:  0a
+b06_86b8:   asl a                       ; 186B8:  0a
+b06_86b9:   asl a                       ; 186B9:  0a
+b06_86ba:   asl a                       ; 186BA:  0a
+b06_86bb:   asl $0c,x                   ; 186BB:  16 0c
+b06_86bd:   .db $0c                     ; 186BD:  0c
+b06_86be:   .db $0c                     ; 186BE:  0c
+b06_86bf:   .db $0c                     ; 186BF:  0c
+b06_86c0:   .db $0c                     ; 186C0:  0c
+b06_86c1:   .db $0c                     ; 186C1:  0c
+b06_86c2:   .db $0c                     ; 186C2:  0c
+b06_86c3:   clc                         ; 186C3:  18
+b06_86c4:   .db $14                     ; 186C4:  14
+b06_86c5:   .db $14                     ; 186C5:  14
+b06_86c6:   .db $14                     ; 186C6:  14
+b06_86c7:   .db $14                     ; 186C7:  14
+b06_86c8:   .db $14                     ; 186C8:  14
+b06_86c9:   .db $14                     ; 186C9:  14
+b06_86ca:   .db $14                     ; 186CA:  14
+b06_86cb:   .db $14                     ; 186CB:  14
+b06_86cc:   clc                         ; 186CC:  18
+b06_86cd:   clc                         ; 186CD:  18
+b06_86ce:   clc                         ; 186CE:  18
+b06_86cf:   clc                         ; 186CF:  18
+b06_86d0:   clc                         ; 186D0:  18
+b06_86d1:   clc                         ; 186D1:  18
+b06_86d2:   clc                         ; 186D2:  18
+b06_86d3:   clc                         ; 186D3:  18
+b06_86d4:   brk                         ; 186D4:  00
+b06_86d5:   brk                         ; 186D5:  00
+b06_86d6:   brk                         ; 186D6:  00
+b06_86d7:   .db $7c                     ; 186D7:  7c
+b06_86d8:   dec $92                     ; 186D8:  c6 92
+b06_86da:   .db $ab                     ; 186DA:  ab
+b06_86db:   adc #$00                    ; 186DB:  69 00
+b06_86dd:   brk                         ; 186DD:  00
+b06_86de:   brk                         ; 186DE:  00
+b06_86df:   brk                         ; 186DF:  00
+b06_86e0:   sec                         ; 186E0:  38
+b06_86e1:   .db $7c                     ; 186E1:  7c
+b06_86e2:   jmp ($00ee)                 ; 186E2:  6c ee 00
+b06_86e5:   brk                         ; 186E5:  00
+b06_86e6:   brk                         ; 186E6:  00
+b06_86e7:   brk                         ; 186E7:  00
+b06_86e8:   brk                         ; 186E8:  00
+b06_86e9:   .db $07                     ; 186E9:  07
+b06_86ea:   .db $0c                     ; 186EA:  0c
+b06_86eb:   ora #$00                    ; 186EB:  09 00
+b06_86ed:   brk                         ; 186ED:  00
+b06_86ee:   brk                         ; 186EE:  00
+b06_86ef:   brk                         ; 186EF:  00
+b06_86f0:   brk                         ; 186F0:  00
+b06_86f1:   brk                         ; 186F1:  00
+b06_86f2:   .db $03                     ; 186F2:  03
+b06_86f3:   .db $07                     ; 186F3:  07
+b06_86f4:   asl a                       ; 186F4:  0a
+b06_86f5:   ora #$0c                    ; 186F5:  09 0c
+b06_86f7:   asl $0c                     ; 186F7:  06 0c
+b06_86f9:   ora #$1a                    ; 186F9:  09 1a
+b06_86fb:   .db $32                     ; 186FB:  32
+b06_86fc:   asl $07                     ; 186FC:  06 07
+b06_86fe:   .db $03                     ; 186FE:  03
+b06_86ff:   ora ($03,x)                 ; 186FF:  01 03
+b06_8701:   .db $07                     ; 18701:  07
+b06_8702:   asl $0e                     ; 18702:  06 0e
+b06_8704:   brk                         ; 18704:  00
+b06_8705:   brk                         ; 18705:  00
+b06_8706:   brk                         ; 18706:  00
+b06_8707:   brk                         ; 18707:  00
+b06_8708:   .db $07                     ; 18708:  07
+b06_8709:   .db $fc                     ; 18709:  fc
+b06_870a:   ora ($ae,x)                 ; 1870A:  01 ae
+b06_870c:   brk                         ; 1870C:  00
+b06_870d:   brk                         ; 1870D:  00
+b06_870e:   brk                         ; 1870E:  00
+b06_870f:   brk                         ; 1870F:  00
+b06_8710:   brk                         ; 18710:  00
+b06_8711:   .db $03                     ; 18711:  03
+b06_8712:   .db $ff                     ; 18712:  ff
+b06_8713:   inc $0000,x                 ; 18713:  fe 00 00
+b06_8716:   brk                         ; 18716:  00
+b06_8717:   brk                         ; 18717:  00
+b06_8718:   .db $fc                     ; 18718:  fc
+b06_8719:   asl $73                     ; 18719:  06 73
+b06_871b:   .db $8b                     ; 1871B:  8b
+b06_871c:   brk                         ; 1871C:  00
+b06_871d:   brk                         ; 1871D:  00
+b06_871e:   brk                         ; 1871E:  00
+b06_871f:   brk                         ; 1871F:  00
+b06_8720:   brk                         ; 18720:  00
+b06_8721:   sed                         ; 18721:  f8
+b06_8722:   .db $fc                     ; 18722:  fc
+b06_8723:   sty $0052                   ; 18723:  8c 52 00
+b06_8726:   .db $80                     ; 18726:  80
+b06_8727:   rti                         ; 18727:  40
+b06_8728:   cpy #$40                    ; 18728:  c0 40
+b06_872a:   .db $1b                     ; 1872A:  1b
+b06_872b:   brk                         ; 1872B:  00
+b06_872c:   .db $52                     ; 1872C:  52
+b06_872d:   brk                         ; 1872D:  00
+b06_872e:   .db $80                     ; 1872E:  80
+b06_872f:   cpy #$c0                    ; 1872F:  c0 c0
+b06_8731:   rti                         ; 18731:  40
+b06_8732:   .db $1b                     ; 18732:  1b
+b06_8733:   brk                         ; 18733:  00
+b06_8734:   .db $33                     ; 18734:  33
+b06_8735:   .db $47                     ; 18735:  47
+b06_8736:   sta $5367                   ; 18736:  8d 67 53
+b06_8739:   ora #$04                    ; 18739:  09 04
+b06_873b:   .db $02                     ; 1873B:  02
+b06_873c:   .db $3c                     ; 1873C:  3c
+b06_873d:   sei                         ; 1873D:  78
+b06_873e:   beq $87b8                   ; 1873E:  f0 78
+b06_8740:   .db $5c                     ; 18740:  5c
+b06_8741:   asl $0307                   ; 18741:  0e 07 03
+b06_8744:   ldy #$a0                    ; 18744:  a0 a0
+b06_8746:   ldy $a4                     ; 18746:  a4 a4
+b06_8748:   ldy $a4                     ; 18748:  a4 a4
+b06_874a:   ldy $24                     ; 1874A:  a4 24
+b06_874c:   rts                         ; 1874C:  60
+b06_874d:   rts                         ; 1874D:  60
+b06_874e:   .db $64                     ; 1874E:  64
+b06_874f:   .db $64                     ; 1874F:  64
+b06_8750:   .db $64                     ; 18750:  64
+b06_8751:   .db $64                     ; 18751:  64
+b06_8752:   .db $64                     ; 18752:  64
+b06_8753:   cpx $48                     ; 18753:  e4 48
+b06_8755:   pha                         ; 18755:  48
+b06_8756:   pha                         ; 18756:  48
+b06_8757:   pha                         ; 18757:  48
+b06_8758:   pha                         ; 18758:  48
+b06_8759:   pha                         ; 18759:  48
+b06_875a:   pha                         ; 1875A:  48
+b06_875b:   rti                         ; 1875B:  40
+b06_875c:   iny                         ; 1875C:  c8
+b06_875d:   iny                         ; 1875D:  c8
+b06_875e:   iny                         ; 1875E:  c8
+b06_875f:   iny                         ; 1875F:  c8
+b06_8760:   iny                         ; 18760:  c8
+b06_8761:   iny                         ; 18761:  c8
+b06_8762:   iny                         ; 18762:  c8
+b06_8763:   cpy #$14                    ; 18763:  c0 14
+b06_8765:   bit $2c                     ; 18765:  24 2c
+b06_8767:   plp                         ; 18767:  28
+b06_8768:   plp                         ; 18768:  28
+b06_8769:   plp                         ; 18769:  28
+b06_876a:   plp                         ; 1876A:  28
+b06_876b:   plp                         ; 1876B:  28
+b06_876c:   clc                         ; 1876C:  18
+b06_876d:   sec                         ; 1876D:  38
+b06_876e:   bmi $87a0                   ; 1876E:  30 30
+b06_8770:   bmi $87a2                   ; 18770:  30 30
+b06_8772:   bmi $87a4                   ; 18772:  30 30
+b06_8774:   plp                         ; 18774:  28
+b06_8775:   plp                         ; 18775:  28
+b06_8776:   plp                         ; 18776:  28
+b06_8777:   plp                         ; 18777:  28
+b06_8778:   plp                         ; 18778:  28
+b06_8779:   plp                         ; 18779:  28
+b06_877a:   plp                         ; 1877A:  28
+b06_877b:   plp                         ; 1877B:  28
+b06_877c:   bmi $87ae                   ; 1877C:  30 30
+b06_877e:   bmi $87b0                   ; 1877E:  30 30
+b06_8780:   bmi $87b2                   ; 18780:  30 30
+b06_8782:   bmi $87b4                   ; 18782:  30 30
+b06_8784:   asl $05                     ; 18784:  06 05
+b06_8786:   ora $05                     ; 18786:  05 05
+b06_8788:   .db $04                     ; 18788:  04
+b06_8789:   .db $0c                     ; 18789:  0c
+b06_878a:   ora #$0a                    ; 1878A:  09 0a
+b06_878c:   ora ($03,x)                 ; 1878C:  01 03
+b06_878e:   .db $03                     ; 1878E:  03
+b06_878f:   .db $03                     ; 1878F:  03
+b06_8790:   .db $03                     ; 18790:  03
+b06_8791:   .db $03                     ; 18791:  03
+b06_8792:   .db $07                     ; 18792:  07
+b06_8793:   asl $0a                     ; 18793:  06 0a
+b06_8795:   .db $1a                     ; 18795:  1a
+b06_8796:   .db $12                     ; 18796:  12
+b06_8797:   .db $34                     ; 18797:  34
+b06_8798:   bit $68                     ; 18798:  24 68
+b06_879a:   iny                         ; 1879A:  c8
+b06_879b:   bcc $87a3                   ; 1879B:  90 06
+b06_879d:   asl $0e                     ; 1879D:  06 0e
+b06_879f:   .db $0c                     ; 1879F:  0c
+b06_87a0:   .db $1c                     ; 187A0:  1c
+b06_87a1:   clc                         ; 187A1:  18
+b06_87a2:   sec                         ; 187A2:  38
+b06_87a3:   bvs $8789                   ; 187A3:  70 e4
+b06_87a5:   .db $62                     ; 187A5:  62
+b06_87a6:   .db $23                     ; 187A6:  23
+b06_87a7:   bpl $8729                   ; 187A7:  10 80
+b06_87a9:   .db $80                     ; 187A9:  80
+b06_87aa:   brk                         ; 187AA:  00
+b06_87ab:   brk                         ; 187AB:  00
+b06_87ac:   .db $e7                     ; 187AC:  e7
+b06_87ad:   .db $63                     ; 187AD:  63
+b06_87ae:   .db $23                     ; 187AE:  23
+b06_87af:   bpl $8731                   ; 187AF:  10 80
+b06_87b1:   .db $80                     ; 187B1:  80
+b06_87b2:   brk                         ; 187B2:  00
+b06_87b3:   brk                         ; 187B3:  00
+b06_87b4:   .db $07                     ; 187B4:  07
+b06_87b5:   tay                         ; 187B5:  a8
+b06_87b6:   eor $0a,x                   ; 187B6:  55 0a
+b06_87b8:   and $00                     ; 187B8:  25 00
+b06_87ba:   ora $00                     ; 187BA:  05 00
+b06_87bc:   sed                         ; 187BC:  f8
+b06_87bd:   .db $ff                     ; 187BD:  ff
+b06_87be:   .db $57                     ; 187BE:  57
+b06_87bf:   asl a                       ; 187BF:  0a
+b06_87c0:   and $00                     ; 187C0:  25 00
+b06_87c2:   ora $00                     ; 187C2:  05 00
+b06_87c4:   cpy #$60                    ; 187C4:  c0 60
+b06_87c6:   jsr $8eb8                   ; 187C6:  20 b8 8e
+b06_87c9:   .db $63                     ; 187C9:  63
+b06_87ca:   eor $0034,y                 ; 187CA:  59 34 00
+b06_87cd:   .db $80                     ; 187CD:  80
+b06_87ce:   cpy #$c0                    ; 187CE:  c0 c0
+b06_87d0:   beq $884e                   ; 187D0:  f0 7c
+b06_87d2:   lsr $6437,x                 ; 187D2:  5e 37 64
+b06_87d5:   lsr $d053                   ; 187D5:  4e 53 d0
+b06_87d8:   bcc $877a                   ; 187D8:  90 a0
+b06_87da:   ldx #$20                    ; 187DA:  a2 20
+b06_87dc:   .db $1c                     ; 187DC:  1c
+b06_87dd:   rol $3033,x                 ; 187DD:  3e 33 30
+b06_87e0:   bvs $8842                   ; 187E0:  70 60
+b06_87e2:   .db $62                     ; 187E2:  62
+b06_87e3:   cpx #$8d                    ; 187E3:  e0 8d
+b06_87e5:   .db $22                     ; 187E5:  22
+b06_87e6:   ora #$02                    ; 187E6:  09 02
+b06_87e8:   .db $04                     ; 187E8:  04
+b06_87e9:   ora ($00,x)                 ; 187E9:  01 00
+b06_87eb:   brk                         ; 187EB:  00
+b06_87ec:   .db $8f                     ; 187EC:  8f
+b06_87ed:   .db $22                     ; 187ED:  22
+b06_87ee:   ora #$02                    ; 187EE:  09 02
+b06_87f0:   .db $04                     ; 187F0:  04
+b06_87f1:   ora ($00,x)                 ; 187F1:  01 00
+b06_87f3:   brk                         ; 187F3:  00
+b06_87f4:   pha                         ; 187F4:  48
+b06_87f5:   bne $87b7                   ; 187F5:  d0 c0
+b06_87f7:   brk                         ; 187F7:  00
+b06_87f8:   .db $80                     ; 187F8:  80
+b06_87f9:   brk                         ; 187F9:  00
+b06_87fa:   brk                         ; 187FA:  00
+b06_87fb:   ora ($c8,x)                 ; 187FB:  01 c8
+b06_87fd:   bne $87bf                   ; 187FD:  d0 c0
+b06_87ff:   brk                         ; 187FF:  00
+b06_8800:   .db $80                     ; 18800:  80
+b06_8801:   brk                         ; 18801:  00
+b06_8802:   brk                         ; 18802:  00
+b06_8803:   ora ($05,x)                 ; 18803:  01 05
+b06_8805:   ora #$90                    ; 18805:  09 90
+b06_8807:   brk                         ; 18807:  00
+b06_8808:   brk                         ; 18808:  00
+b06_8809:   brk                         ; 18809:  00
+b06_880a:   brk                         ; 1880A:  00
+b06_880b:   brk                         ; 1880B:  00
+b06_880c:   ora $09                     ; 1880C:  05 09
+b06_880e:   bcc $8810                   ; 1880E:  90 00
+b06_8810:   brk                         ; 18810:  00
+b06_8811:   brk                         ; 18811:  00
+b06_8812:   brk                         ; 18812:  00
+b06_8813:   brk                         ; 18813:  00
+b06_8814:   rti                         ; 18814:  40
+b06_8815:   rti                         ; 18815:  40
+b06_8816:   iny                         ; 18816:  c8
+b06_8817:   iny                         ; 18817:  c8
+b06_8818:   pha                         ; 18818:  48
+b06_8819:   pha                         ; 18819:  48
+b06_881a:   php                         ; 1881A:  08
+b06_881b:   php                         ; 1881B:  08
+b06_881c:   cpy #$c0                    ; 1881C:  c0 c0
+b06_881e:   iny                         ; 1881E:  c8
+b06_881f:   iny                         ; 1881F:  c8
+b06_8820:   pha                         ; 18820:  48
+b06_8821:   pha                         ; 18821:  48
+b06_8822:   php                         ; 18822:  08
+b06_8823:   php                         ; 18823:  08
+b06_8824:   php                         ; 18824:  08
+b06_8825:   php                         ; 18825:  08
+b06_8826:   php                         ; 18826:  08
+b06_8827:   bpl $8839                   ; 18827:  10 10
+b06_8829:   bpl $882b                   ; 18829:  10 00
+b06_882b:   .db $80                     ; 1882B:  80
+b06_882c:   php                         ; 1882C:  08
+b06_882d:   php                         ; 1882D:  08
+b06_882e:   php                         ; 1882E:  08
+b06_882f:   bpl $8841                   ; 1882F:  10 10
+b06_8831:   bpl $8833                   ; 18831:  10 00
+b06_8833:   .db $80                     ; 18833:  80
+b06_8834:   plp                         ; 18834:  28
+b06_8835:   plp                         ; 18835:  28
+b06_8836:   bit $1424                   ; 18836:  2c 24 14
+b06_8839:   .db $14                     ; 18839:  14
+b06_883a:   .db $14                     ; 1883A:  14
+b06_883b:   .db $14                     ; 1883B:  14
+b06_883c:   bmi $886e                   ; 1883C:  30 30
+b06_883e:   bmi $8878                   ; 1883E:  30 38
+b06_8840:   clc                         ; 18840:  18
+b06_8841:   clc                         ; 18841:  18
+b06_8842:   clc                         ; 18842:  18
+b06_8843:   clc                         ; 18843:  18
+b06_8844:   jsr $4040                   ; 18844:  20 40 40
+b06_8847:   rti                         ; 18847:  40
+b06_8848:   rti                         ; 18848:  40
+b06_8849:   jsr $9ea1                   ; 18849:  20 a1 9e
+b06_884c:   cpx #$c0                    ; 1884C:  e0 c0
+b06_884e:   cpy #$c0                    ; 1884E:  c0 c0
+b06_8850:   cpy #$e0                    ; 18850:  c0 e0
+b06_8852:   adc ($7f,x)                 ; 18852:  61 7f
+b06_8854:   cmp ($7d,x)                 ; 18854:  c1 7d
+b06_8856:   .db $04                     ; 18856:  04
+b06_8857:   asl $03                     ; 18857:  06 03
+b06_8859:   ora ($00,x)                 ; 18859:  01 00
+b06_885b:   brk                         ; 1885B:  00
+b06_885c:   .db $3f                     ; 1885C:  3f
+b06_885d:   .db $03                     ; 1885D:  03
+b06_885e:   .db $03                     ; 1885E:  03
+b06_885f:   ora ($00,x)                 ; 1885F:  01 00
+b06_8861:   brk                         ; 18861:  00
+b06_8862:   brk                         ; 18862:  00
+b06_8863:   brk                         ; 18863:  00
+b06_8864:   .db $02                     ; 18864:  02
+b06_8865:   asl $19                     ; 18865:  06 19
+b06_8867:   adc ($8c,x)                 ; 18867:  61 8c
+b06_8869:   lsr $b1                     ; 18869:  46 b1
+b06_886b:   cpx $0602                   ; 1886B:  ec 02 06
+b06_886e:   .db $1f                     ; 1886E:  1f
+b06_886f:   .db $7f                     ; 1886F:  7f
+b06_8870:   .db $f3                     ; 18870:  f3
+b06_8871:   adc $efbe,y                 ; 18871:  79 be ef
+b06_8874:   brk                         ; 18874:  00
+b06_8875:   .db $02                     ; 18875:  02
+b06_8876:   brk                         ; 18876:  00
+b06_8877:   .db $02                     ; 18877:  02
+b06_8878:   .db $80                     ; 18878:  80
+b06_8879:   eor ($20,x)                 ; 18879:  41 20
+b06_887b:   and ($00,x)                 ; 1887B:  21 00
+b06_887d:   .db $02                     ; 1887D:  02
+b06_887e:   brk                         ; 1887E:  00
+b06_887f:   .db $02                     ; 1887F:  02
+b06_8880:   .db $80                     ; 18880:  80
+b06_8881:   cmp ($e0,x)                 ; 18881:  c1 e0
+b06_8883:   sbc ($5b,x)                 ; 18883:  e1 5b
+b06_8885:   lsr $a5,x                   ; 18885:  56 a5
+b06_8887:   eor ($2c),y                 ; 18887:  51 2c
+b06_8889:   .db $9b                     ; 18889:  9b
+b06_888a:   dec $71                     ; 1888A:  c6 71
+b06_888c:   .db $7b                     ; 1888C:  7b
+b06_888d:   ror $debb                   ; 1888D:  6e bb de
+b06_8890:   .db $ef                     ; 18890:  ef
+b06_8891:   .db $7b                     ; 18891:  7b
+b06_8892:   rol $700f,x                 ; 18892:  3e 0f 70
+b06_8895:   .db $80                     ; 18895:  80
+b06_8896:   bvs $88e0                   ; 18896:  70 48
+b06_8898:   php                         ; 18898:  08
+b06_8899:   bcs $88f3                   ; 18899:  b0 58
+b06_889b:   tay                         ; 1889B:  a8
+b06_889c:   beq $881e                   ; 1889C:  f0 80
+b06_889e:   beq $8858                   ; 1889E:  f0 b8
+b06_88a0:   sed                         ; 188A0:  f8
+b06_88a1:   beq $88fb                   ; 188A1:  f0 58
+b06_88a3:   sed                         ; 188A3:  f8
+b06_88a4:   ora ($0e,x)                 ; 188A4:  01 0e
+b06_88a6:   bpl $88aa                   ; 188A6:  10 02
+b06_88a8:   brk                         ; 188A8:  00
+b06_88a9:   ora ($00,x)                 ; 188A9:  01 00
+b06_88ab:   brk                         ; 188AB:  00
+b06_88ac:   ora ($0e,x)                 ; 188AC:  01 0e
+b06_88ae:   bpl $88b2                   ; 188AE:  10 02
+b06_88b0:   brk                         ; 188B0:  00
+b06_88b1:   ora ($00,x)                 ; 188B1:  01 00
+b06_88b3:   brk                         ; 188B3:  00
+b06_88b4:   sta $9595,x                 ; 188B4:  9d 95 95
+b06_88b7:   sta $1b,x                   ; 188B7:  95 1b
+b06_88b9:   .db $1a                     ; 188B9:  1a
+b06_88ba:   bpl $88cc                   ; 188BA:  10 10
+b06_88bc:   sta $9d9d,x                 ; 188BC:  9d 9d 9d
+b06_88bf:   sta $1a1b,x                 ; 188BF:  9d 1b 1a
+b06_88c2:   bpl $88d4                   ; 188C2:  10 10
+b06_88c4:   brk                         ; 188C4:  00
+b06_88c5:   rti                         ; 188C5:  40
+b06_88c6:   .db $5f                     ; 188C6:  5f
+b06_88c7:   bvc $8920                   ; 188C7:  50 57
+b06_88c9:   .db $d4                     ; 188C9:  d4
+b06_88ca:   .db $a7                     ; 188CA:  a7
+b06_88cb:   bit $00                     ; 188CB:  24 00
+b06_88cd:   rti                         ; 188CD:  40
+b06_88ce:   .db $5f                     ; 188CE:  5f
+b06_88cf:   .db $5f                     ; 188CF:  5f
+b06_88d0:   cli                         ; 188D0:  58
+b06_88d1:   cld                         ; 188D1:  d8
+b06_88d2:   clv                         ; 188D2:  b8
+b06_88d3:   .db $3b                     ; 188D3:  3b
+b06_88d4:   ora ($16),y                 ; 188D4:  11 16
+b06_88d6:   and $0200,y                 ; 188D6:  39 00 02
+b06_88d9:   ora ($00,x)                 ; 188D9:  01 00
+b06_88db:   brk                         ; 188DB:  00
+b06_88dc:   .db $1f                     ; 188DC:  1f
+b06_88dd:   asl $0039,x                 ; 188DD:  1e 39 00
+b06_88e0:   .db $02                     ; 188E0:  02
+b06_88e1:   ora ($00,x)                 ; 188E1:  01 00
+b06_88e3:   brk                         ; 188E3:  00
+b06_88e4:   .db $12                     ; 188E4:  12
+b06_88e5:   asl a                       ; 188E5:  0a
+b06_88e6:   .db $fa                     ; 188E6:  fa
+b06_88e7:   .db $02                     ; 188E7:  02
+b06_88e8:   .db $fc                     ; 188E8:  fc
+b06_88e9:   .db $ff                     ; 188E9:  ff
+b06_88ea:   sta ($3c,x)                 ; 188EA:  81 3c
+b06_88ec:   .db $1c                     ; 188EC:  1c
+b06_88ed:   .db $0c                     ; 188ED:  0c
+b06_88ee:   .db $fc                     ; 188EE:  fc
+b06_88ef:   .db $fc                     ; 188EF:  fc
+b06_88f0:   brk                         ; 188F0:  00
+b06_88f1:   brk                         ; 188F1:  00
+b06_88f2:   ror $00ff,x                 ; 188F2:  7e ff 00
+b06_88f5:   brk                         ; 188F5:  00
+b06_88f6:   brk                         ; 188F6:  00
+b06_88f7:   brk                         ; 188F7:  00
+b06_88f8:   brk                         ; 188F8:  00
+b06_88f9:   brk                         ; 188F9:  00
+b06_88fa:   cpx #$38                    ; 188FA:  e0 38
+b06_88fc:   brk                         ; 188FC:  00
+b06_88fd:   brk                         ; 188FD:  00
+b06_88fe:   brk                         ; 188FE:  00
+b06_88ff:   brk                         ; 188FF:  00
+b06_8900:   brk                         ; 18900:  00
+b06_8901:   brk                         ; 18901:  00
+b06_8902:   brk                         ; 18902:  00
+b06_8903:   cpy #$c3                    ; 18903:  c0 c3
+b06_8905:   jsr $0000                   ; 18905:  20 00 00
+b06_8908:   brk                         ; 18908:  00
+b06_8909:   bvs $8895                   ; 18909:  70 8a
+b06_890b:   eor $c3                     ; 1890B:  45 c3
+b06_890d:   jsr $0000                   ; 1890D:  20 00 00
+b06_8910:   brk                         ; 18910:  00
+b06_8911:   bvs $890d                   ; 18911:  70 fa
+b06_8913:   adc $668c,x                 ; 18913:  7d 8c 66
+b06_8916:   .db $93                     ; 18916:  93
+b06_8917:   and #$05                    ; 18917:  29 05
+b06_8919:   .db $0c                     ; 18919:  0c
+b06_891a:   .db $02                     ; 1891A:  02
+b06_891b:   asl $f0                     ; 1891B:  06 f0
+b06_891d:   sei                         ; 1891D:  78
+b06_891e:   .db $9c                     ; 1891E:  9c
+b06_891f:   rol $0f06                   ; 1891F:  2e 06 0f
+b06_8922:   .db $03                     ; 18922:  03
+b06_8923:   .db $07                     ; 18923:  07
+b06_8924:   .db $1c                     ; 18924:  1c
+b06_8925:   .db $07                     ; 18925:  07
+b06_8926:   brk                         ; 18926:  00
+b06_8927:   brk                         ; 18927:  00
+b06_8928:   brk                         ; 18928:  00
+b06_8929:   brk                         ; 18929:  00
+b06_892a:   brk                         ; 1892A:  00
+b06_892b:   brk                         ; 1892B:  00
+b06_892c:   .db $03                     ; 1892C:  03
+b06_892d:   brk                         ; 1892D:  00
+b06_892e:   brk                         ; 1892E:  00
+b06_892f:   brk                         ; 1892F:  00
+b06_8930:   brk                         ; 18930:  00
+b06_8931:   brk                         ; 18931:  00
+b06_8932:   brk                         ; 18932:  00
+b06_8933:   brk                         ; 18933:  00
+b06_8934:   bpl $8906                   ; 18934:  10 d0
+b06_8936:   bvc $8988                   ; 18936:  50 50
+b06_8938:   bvc $8982                   ; 18938:  50 48
+b06_893a:   pla                         ; 1893A:  68
+b06_893b:   plp                         ; 1893B:  28
+b06_893c:   beq $896e                   ; 1893C:  f0 30
+b06_893e:   bmi $8970                   ; 1893E:  30 30
+b06_8940:   bmi $897a                   ; 18940:  30 38
+b06_8942:   clc                         ; 18942:  18
+b06_8943:   clc                         ; 18943:  18
+b06_8944:   brk                         ; 18944:  00
+b06_8945:   ora ($07,x)                 ; 18945:  01 07
+b06_8947:   .db $1c                     ; 18947:  1c
+b06_8948:   and ($26),y                 ; 18948:  31 26
+b06_894a:   plp                         ; 1894A:  28
+b06_894b:   plp                         ; 1894B:  28
+b06_894c:   brk                         ; 1894C:  00
+b06_894d:   brk                         ; 1894D:  00
+b06_894e:   brk                         ; 1894E:  00
+b06_894f:   .db $03                     ; 1894F:  03
+b06_8950:   .db $0f                     ; 18950:  0f
+b06_8951:   asl $1818,x                 ; 18951:  1e 18 18
+b06_8954:   pla                         ; 18954:  68
+b06_8955:   iny                         ; 18955:  c8
+b06_8956:   bpl $89b8                   ; 18956:  10 60
+b06_8958:   .db $80                     ; 18958:  80
+b06_8959:   brk                         ; 18959:  00
+b06_895a:   brk                         ; 1895A:  00
+b06_895b:   ora ($18,x)                 ; 1895B:  01 18
+b06_895d:   sec                         ; 1895D:  38
+b06_895e:   beq $8940                   ; 1895E:  f0 e0
+b06_8960:   .db $80                     ; 18960:  80
+b06_8961:   brk                         ; 18961:  00
+b06_8962:   brk                         ; 18962:  00
+b06_8963:   ora ($20,x)                 ; 18963:  01 20
+b06_8965:   rti                         ; 18965:  40
+b06_8966:   brk                         ; 18966:  00
+b06_8967:   rti                         ; 18967:  40
+b06_8968:   brk                         ; 18968:  00
+b06_8969:   brk                         ; 18969:  00
+b06_896a:   brk                         ; 1896A:  00
+b06_896b:   .db $04                     ; 1896B:  04
+b06_896c:   jsr $0040                   ; 1896C:  20 40 00
+b06_896f:   rti                         ; 1896F:  40
+b06_8970:   brk                         ; 18970:  00
+b06_8971:   brk                         ; 18971:  00
+b06_8972:   brk                         ; 18972:  00
+b06_8973:   .db $04                     ; 18973:  04
+b06_8974:   brk                         ; 18974:  00
+b06_8975:   .db $04                     ; 18975:  04
+b06_8976:   brk                         ; 18976:  00
+b06_8977:   rti                         ; 18977:  40
+b06_8978:   jsr $201c                   ; 18978:  20 1c 20
+b06_897b:   cpy $00                     ; 1897B:  c4 00
+b06_897d:   .db $04                     ; 1897D:  04
+b06_897e:   brk                         ; 1897E:  00
+b06_897f:   rti                         ; 1897F:  40
+b06_8980:   jsr $381c                   ; 18980:  20 1c 38
+b06_8983:   .db $fc                     ; 18983:  fc
+b06_8984:   brk                         ; 18984:  00
+b06_8985:   brk                         ; 18985:  00
+b06_8986:   brk                         ; 18986:  00
+b06_8987:   brk                         ; 18987:  00
+b06_8988:   brk                         ; 18988:  00
+b06_8989:   brk                         ; 18989:  00
+b06_898a:   ora ($ff,x)                 ; 1898A:  01 ff
+b06_898c:   brk                         ; 1898C:  00
+b06_898d:   brk                         ; 1898D:  00
+b06_898e:   brk                         ; 1898E:  00
+b06_898f:   brk                         ; 1898F:  00
+b06_8990:   brk                         ; 18990:  00
+b06_8991:   brk                         ; 18991:  00
+b06_8992:   ora ($ff,x)                 ; 18992:  01 ff
+b06_8994:   brk                         ; 18994:  00
+b06_8995:   .db $04                     ; 18995:  04
+b06_8996:   bpl $8940                   ; 18996:  10 a8
+b06_8998:   clc                         ; 18998:  18
+b06_8999:   bit $24                     ; 18999:  24 24
+b06_899b:   bit $00                     ; 1899B:  24 00
+b06_899d:   .db $04                     ; 1899D:  04
+b06_899e:   bpl $8948                   ; 1899E:  10 a8
+b06_89a0:   clc                         ; 189A0:  18
+b06_89a1:   .db $3c                     ; 189A1:  3c
+b06_89a2:   .db $3c                     ; 189A2:  3c
+b06_89a3:   .db $3c                     ; 189A3:  3c
+b06_89a4:   .db $22                     ; 189A4:  22
+b06_89a5:   .db $2b                     ; 189A5:  2b
+b06_89a6:   rol a                       ; 189A6:  2a
+b06_89a7:   .db $12                     ; 189A7:  12
+b06_89a8:   ora $14,x                   ; 189A8:  15 14
+b06_89aa:   clc                         ; 189AA:  18
+b06_89ab:   ora ($3e),y                 ; 189AB:  11 3e
+b06_89ad:   .db $37                     ; 189AD:  37
+b06_89ae:   rol $1e,x                   ; 189AE:  36 1e
+b06_89b0:   ora $181c,x                 ; 189B0:  1d 1c 18
+b06_89b3:   ora ($41),y                 ; 189B3:  11 41
+b06_89b5:   ora $81                     ; 189B5:  05 81
+b06_89b7:   eor $01                     ; 189B7:  45 01
+b06_89b9:   .db $02                     ; 189B9:  02
+b06_89ba:   txa                         ; 189BA:  8a
+b06_89bb:   .db $54                     ; 189BB:  54
+b06_89bc:   eor ($05,x)                 ; 189BC:  41 05
+b06_89be:   sta ($45,x)                 ; 189BE:  81 45
+b06_89c0:   ora ($03,x)                 ; 189C0:  01 03
+b06_89c2:   .db $8b                     ; 189C2:  8b
+b06_89c3:   .db $57                     ; 189C3:  57
+b06_89c4:   asl a                       ; 189C4:  0a
+b06_89c5:   ora $1a,x                   ; 189C5:  15 1a
+b06_89c7:   ora ($14),y                 ; 189C7:  11 14
+b06_89c9:   .db $27                     ; 189C9:  27
+b06_89ca:   bit $0a28                   ; 189CA:  2c 28 0a
+b06_89cd:   .db $17                     ; 189CD:  17
+b06_89ce:   asl $1b1f,x                 ; 189CE:  1e 1f 1b
+b06_89d1:   sec                         ; 189D1:  38
+b06_89d2:   bmi $8a04                   ; 189D2:  30 30
+b06_89d4:   lda #$53                    ; 189D4:  a9 53
+b06_89d6:   stx $3c                     ; 189D6:  86 3c
+b06_89d8:   rts                         ; 189D8:  60
+b06_89d9:   cpy #$00                    ; 189D9:  c0 00
+b06_89db:   brk                         ; 189DB:  00
+b06_89dc:   ldx $f87c                   ; 189DC:  ae 7c f8
+b06_89df:   cpy #$80                    ; 189DF:  c0 80
+b06_89e1:   brk                         ; 189E1:  00
+b06_89e2:   brk                         ; 189E2:  00
+b06_89e3:   brk                         ; 189E3:  00
+b06_89e4:   rti                         ; 189E4:  40
+b06_89e5:   rti                         ; 189E5:  40
+b06_89e6:   rti                         ; 189E6:  40
+b06_89e7:   rti                         ; 189E7:  40
+b06_89e8:   rti                         ; 189E8:  40
+b06_89e9:   rti                         ; 189E9:  40
+b06_89ea:   cpy #$80                    ; 189EA:  c0 80
+b06_89ec:   .db $80                     ; 189EC:  80
+b06_89ed:   .db $80                     ; 189ED:  80
+b06_89ee:   .db $80                     ; 189EE:  80
+b06_89ef:   .db $80                     ; 189EF:  80
+b06_89f0:   .db $80                     ; 189F0:  80
+b06_89f1:   .db $80                     ; 189F1:  80
+b06_89f2:   brk                         ; 189F2:  00
+b06_89f3:   brk                         ; 189F3:  00
+b06_89f4:   plp                         ; 189F4:  28
+b06_89f5:   plp                         ; 189F5:  28
+b06_89f6:   plp                         ; 189F6:  28
+b06_89f7:   pla                         ; 189F7:  68
+b06_89f8:   pha                         ; 189F8:  48
+b06_89f9:   bvc $8a4c                   ; 189F9:  50 51
+b06_89fb:   eor ($18),y                 ; 189FB:  51 18
+b06_89fd:   clc                         ; 189FD:  18
+b06_89fe:   clc                         ; 189FE:  18
+b06_89ff:   clc                         ; 189FF:  18
+b06_8a00:   sec                         ; 18A00:  38
+b06_8a01:   bmi $8a34                   ; 18A01:  30 31
+b06_8a03:   and ($0e),y                 ; 18A03:  31 0e
+b06_8a05:   bmi $89ce                   ; 18A05:  30 c7
+b06_8a07:   .db $9c                     ; 18A07:  9c
+b06_8a08:   bcs $89aa                   ; 18A08:  b0 a0
+b06_8a0a:   jsr $0f60                   ; 18A0A:  20 60 0f
+b06_8a0d:   .db $3f                     ; 18A0D:  3f
+b06_8a0e:   sed                         ; 18A0E:  f8
+b06_8a0f:   cpx #$c0                    ; 18A0F:  e0 c0
+b06_8a11:   cpy #$c0                    ; 18A11:  c0 c0
+b06_8a13:   .db $80                     ; 18A13:  80
+b06_8a14:   eor ($51),y                 ; 18A14:  51 51
+b06_8a16:   bvc $8a68                   ; 18A16:  50 50
+b06_8a18:   bvc $8a66                   ; 18A18:  50 4c
+b06_8a1a:   .db $64                     ; 18A1A:  64
+b06_8a1b:   .db $f2                     ; 18A1B:  f2
+b06_8a1c:   and ($31),y                 ; 18A1C:  31 31
+b06_8a1e:   bmi $8a50                   ; 18A1E:  30 30
+b06_8a20:   bmi $8a5e                   ; 18A20:  30 3c
+b06_8a22:   .db $1c                     ; 18A22:  1c
+b06_8a23:   asl $3060                   ; 18A23:  0e 60 30
+b06_8a26:   tya                         ; 18A26:  98
+b06_8a27:   .db $cf                     ; 18A27:  cf
+b06_8a28:   .db $2f                     ; 18A28:  2f
+b06_8a29:   .db $2f                     ; 18A29:  2f
+b06_8a2a:   .db $27                     ; 18A2A:  27
+b06_8a2b:   .db $17                     ; 18A2B:  17
+b06_8a2c:   .db $80                     ; 18A2C:  80
+b06_8a2d:   cpy #$e0                    ; 18A2D:  c0 e0
+b06_8a2f:   beq $8a61                   ; 18A2F:  f0 30
+b06_8a31:   bmi $8a6b                   ; 18A31:  30 38
+b06_8a33:   clc                         ; 18A33:  18
+b06_8a34:   .db $14                     ; 18A34:  14
+b06_8a35:   .db $f4                     ; 18A35:  f4
+b06_8a36:   sty $14,x                   ; 18A36:  94 14
+b06_8a38:   .db $12                     ; 18A38:  12
+b06_8a39:   .db $1a                     ; 18A39:  1a
+b06_8a3a:   .db $12                     ; 18A3A:  12
+b06_8a3b:   .db $14                     ; 18A3B:  14
+b06_8a3c:   cpx $0c0c                   ; 18A3C:  ec 0c 0c
+b06_8a3f:   .db $0c                     ; 18A3F:  0c
+b06_8a40:   asl $0e06                   ; 18A40:  0e 06 0e
+b06_8a43:   .db $0c                     ; 18A43:  0c
+b06_8a44:   .db $04                     ; 18A44:  04
+b06_8a45:   ora $09                     ; 18A45:  05 09
+b06_8a47:   .db $13                     ; 18A47:  13
+b06_8a48:   asl $14,x                   ; 18A48:  16 14
+b06_8a4a:   bit $2c                     ; 18A4A:  24 2c
+b06_8a4c:   .db $07                     ; 18A4C:  07
+b06_8a4d:   asl $0e                     ; 18A4D:  06 0e
+b06_8a4f:   .db $1c                     ; 18A4F:  1c
+b06_8a50:   clc                         ; 18A50:  18
+b06_8a51:   clc                         ; 18A51:  18
+b06_8a52:   sec                         ; 18A52:  38
+b06_8a53:   bmi $8a69                   ; 18A53:  30 14
+b06_8a55:   .db $34                     ; 18A55:  34
+b06_8a56:   .db $74                     ; 18A56:  74
+b06_8a57:   cpx $e8                     ; 18A57:  e4 e8
+b06_8a59:   inx                         ; 18A59:  e8
+b06_8a5a:   inx                         ; 18A5A:  e8
+b06_8a5b:   inx                         ; 18A5B:  e8
+b06_8a5c:   .db $0c                     ; 18A5C:  0c
+b06_8a5d:   .db $0c                     ; 18A5D:  0c
+b06_8a5e:   .db $0c                     ; 18A5E:  0c
+b06_8a5f:   .db $1c                     ; 18A5F:  1c
+b06_8a60:   clc                         ; 18A60:  18
+b06_8a61:   clc                         ; 18A61:  18
+b06_8a62:   clc                         ; 18A62:  18
+b06_8a63:   clc                         ; 18A63:  18
+b06_8a64:   rol $2f2f                   ; 18A64:  2e 2f 2f
+b06_8a67:   .db $4f                     ; 18A67:  4f
+b06_8a68:   .db $5f                     ; 18A68:  5f
+b06_8a69:   .db $5f                     ; 18A69:  5f
+b06_8a6a:   .db $5f                     ; 18A6A:  5f
+b06_8a6b:   .db $9f                     ; 18A6B:  9f
+b06_8a6c:   bmi $8a9e                   ; 18A6C:  30 30
+b06_8a6e:   bmi $8ae0                   ; 18A6E:  30 70
+b06_8a70:   rts                         ; 18A70:  60
+b06_8a71:   rts                         ; 18A71:  60
+b06_8a72:   rts                         ; 18A72:  60
+b06_8a73:   cpx #$01                    ; 18A73:  e0 01
+b06_8a75:   sbc $0405,x                 ; 18A75:  fd 05 04
+b06_8a78:   asl $03                     ; 18A78:  06 03
+b06_8a7a:   ora ($01,x)                 ; 18A7A:  01 01
+b06_8a7c:   .db $ff                     ; 18A7C:  ff
+b06_8a7d:   .db $03                     ; 18A7D:  03
+b06_8a7e:   .db $03                     ; 18A7E:  03
+b06_8a7f:   .db $03                     ; 18A7F:  03
+b06_8a80:   ora ($00,x)                 ; 18A80:  01 00
+b06_8a82:   brk                         ; 18A82:  00
+b06_8a83:   brk                         ; 18A83:  00
+b06_8a84:   brk                         ; 18A84:  00
+b06_8a85:   brk                         ; 18A85:  00
+b06_8a86:   brk                         ; 18A86:  00
+b06_8a87:   .db $80                     ; 18A87:  80
+b06_8a88:   rti                         ; 18A88:  40
+b06_8a89:   jsr $c498                   ; 18A89:  20 98 c4
+b06_8a8c:   brk                         ; 18A8C:  00
+b06_8a8d:   brk                         ; 18A8D:  00
+b06_8a8e:   brk                         ; 18A8E:  00
+b06_8a8f:   .db $80                     ; 18A8F:  80
+b06_8a90:   cpy #$e0                    ; 18A90:  c0 e0
+b06_8a92:   sei                         ; 18A92:  78
+b06_8a93:   .db $3c                     ; 18A93:  3c
+b06_8a94:   .db $03                     ; 18A94:  03
+b06_8a95:   .db $ff                     ; 18A95:  ff
+b06_8a96:   .db $ff                     ; 18A96:  ff
+b06_8a97:   .db $ff                     ; 18A97:  ff
+b06_8a98:   .db $ff                     ; 18A98:  ff
+b06_8a99:   .db $ff                     ; 18A99:  ff
+b06_8a9a:   .db $ff                     ; 18A9A:  ff
+b06_8a9b:   .db $ff                     ; 18A9B:  ff
+b06_8a9c:   brk                         ; 18A9C:  00
+b06_8a9d:   brk                         ; 18A9D:  00
+b06_8a9e:   brk                         ; 18A9E:  00
+b06_8a9f:   brk                         ; 18A9F:  00
+b06_8aa0:   brk                         ; 18AA0:  00
+b06_8aa1:   brk                         ; 18AA1:  00
+b06_8aa2:   brk                         ; 18AA2:  00
+b06_8aa3:   brk                         ; 18AA3:  00
+b06_8aa4:   .db $f4                     ; 18AA4:  f4
+b06_8aa5:   .db $f4                     ; 18AA5:  f4
+b06_8aa6:   .db $f2                     ; 18AA6:  f2
+b06_8aa7:   .db $fa                     ; 18AA7:  fa
+b06_8aa8:   .db $fa                     ; 18AA8:  fa
+b06_8aa9:   .db $fa                     ; 18AA9:  fa
+b06_8aaa:   .db $fa                     ; 18AAA:  fa
+b06_8aab:   .db $fa                     ; 18AAB:  fa
+b06_8aac:   .db $0c                     ; 18AAC:  0c
+b06_8aad:   .db $0c                     ; 18AAD:  0c
+b06_8aae:   asl $0606                   ; 18AAE:  0e 06 06
+b06_8ab1:   asl $06                     ; 18AB1:  06 06
+b06_8ab3:   asl $22                     ; 18AB3:  06 22
+b06_8ab5:   lsr a                       ; 18AB5:  4a
+b06_8ab6:   eor #$24                    ; 18AB6:  49 24
+b06_8ab8:   .db $12                     ; 18AB8:  12
+b06_8ab9:   .db $0b                     ; 18AB9:  0b
+b06_8aba:   asl a                       ; 18ABA:  0a
+b06_8abb:   asl a                       ; 18ABB:  0a
+b06_8abc:   rol $7776,x                 ; 18ABC:  3e 76 77
+b06_8abf:   .db $3b                     ; 18ABF:  3b
+b06_8ac0:   ora $0c0c,x                 ; 18AC0:  1d 0c 0c
+b06_8ac3:   .db $0c                     ; 18AC3:  0c
+b06_8ac4:   brk                         ; 18AC4:  00
+b06_8ac5:   brk                         ; 18AC5:  00
+b06_8ac6:   brk                         ; 18AC6:  00
+b06_8ac7:   cpy #$30                    ; 18AC7:  c0 30
+b06_8ac9:   dey                         ; 18AC9:  88
+b06_8aca:   inc $31                     ; 18ACA:  e6 31
+b06_8acc:   brk                         ; 18ACC:  00
+b06_8acd:   brk                         ; 18ACD:  00
+b06_8ace:   brk                         ; 18ACE:  00
+b06_8acf:   cpy #$f0                    ; 18ACF:  c0 f0
+b06_8ad1:   sei                         ; 18AD1:  78
+b06_8ad2:   asl $120f,x                 ; 18AD2:  1e 0f 12
+b06_8ad5:   asl $17,x                   ; 18AD5:  16 17
+b06_8ad7:   .db $17                     ; 18AD7:  17
+b06_8ad8:   .db $17                     ; 18AD8:  17
+b06_8ad9:   .db $17                     ; 18AD9:  17
+b06_8ada:   .db $27                     ; 18ADA:  27
+b06_8adb:   .db $2f                     ; 18ADB:  2f
+b06_8adc:   .db $1c                     ; 18ADC:  1c
+b06_8add:   clc                         ; 18ADD:  18
+b06_8ade:   clc                         ; 18ADE:  18
+b06_8adf:   clc                         ; 18ADF:  18
+b06_8ae0:   clc                         ; 18AE0:  18
+b06_8ae1:   clc                         ; 18AE1:  18
+b06_8ae2:   sec                         ; 18AE2:  38
+b06_8ae3:   bmi $8b02                   ; 18AE3:  30 1d
+b06_8ae5:   .db $04                     ; 18AE5:  04
+b06_8ae6:   asl $fffe                   ; 18AE6:  0e fe ff
+b06_8ae9:   .db $ff                     ; 18AE9:  ff
+b06_8aea:   .db $ff                     ; 18AEA:  ff
+b06_8aeb:   .db $ff                     ; 18AEB:  ff
+b06_8aec:   .db $03                     ; 18AEC:  03
+b06_8aed:   .db $03                     ; 18AED:  03
+b06_8aee:   ora ($01,x)                 ; 18AEE:  01 01
+b06_8af0:   brk                         ; 18AF0:  00
+b06_8af1:   brk                         ; 18AF1:  00
+b06_8af2:   brk                         ; 18AF2:  00
+b06_8af3:   brk                         ; 18AF3:  00
+b06_8af4:   pha                         ; 18AF4:  48
+b06_8af5:   cli                         ; 18AF5:  58
+b06_8af6:   jmp $1266                   ; 18AF6:  4c 66 12
+b06_8af9:   asl a                       ; 18AF9:  0a
+b06_8afa:   .db $0b                     ; 18AFA:  0b
+b06_8afb:   ora #$70                    ; 18AFB:  09 70
+b06_8afd:   rts                         ; 18AFD:  60
+b06_8afe:   bvs $8b78                   ; 18AFE:  70 78
+b06_8b00:   .db $1c                     ; 18B00:  1c
+b06_8b01:   .db $0c                     ; 18B01:  0c
+b06_8b02:   .db $0c                     ; 18B02:  0c
+b06_8b03:   asl $8505                   ; 18B03:  0e 05 85
+b06_8b06:   sta $44                     ; 18B06:  85 44
+b06_8b08:   .db $42                     ; 18B08:  42
+b06_8b09:   .db $42                     ; 18B09:  42
+b06_8b0a:   .db $22                     ; 18B0A:  22
+b06_8b0b:   lda ($06,x)                 ; 18B0B:  a1 06
+b06_8b0d:   stx $86                     ; 18B0D:  86 86
+b06_8b0f:   .db $c7                     ; 18B0F:  c7
+b06_8b10:   .db $c3                     ; 18B10:  c3
+b06_8b11:   .db $c3                     ; 18B11:  c3
+b06_8b12:   .db $e3                     ; 18B12:  e3
+b06_8b13:   adc ($00,x)                 ; 18B13:  61 00
+b06_8b15:   brk                         ; 18B15:  00
+b06_8b16:   .db $80                     ; 18B16:  80
+b06_8b17:   .db $80                     ; 18B17:  80
+b06_8b18:   .db $80                     ; 18B18:  80
+b06_8b19:   cpy #$60                    ; 18B19:  c0 60
+b06_8b1b:   .db $7c                     ; 18B1B:  7c
+b06_8b1c:   brk                         ; 18B1C:  00
+b06_8b1d:   brk                         ; 18B1D:  00
+b06_8b1e:   brk                         ; 18B1E:  00
+b06_8b1f:   brk                         ; 18B1F:  00
+b06_8b20:   brk                         ; 18B20:  00
+b06_8b21:   brk                         ; 18B21:  00
+b06_8b22:   .db $80                     ; 18B22:  80
+b06_8b23:   .db $80                     ; 18B23:  80
+b06_8b24:   brk                         ; 18B24:  00
+b06_8b25:   brk                         ; 18B25:  00
+b06_8b26:   brk                         ; 18B26:  00
+b06_8b27:   brk                         ; 18B27:  00
+b06_8b28:   brk                         ; 18B28:  00
+b06_8b29:   .db $ff                     ; 18B29:  ff
+b06_8b2a:   brk                         ; 18B2A:  00
+b06_8b2b:   .db $ff                     ; 18B2B:  ff
+b06_8b2c:   brk                         ; 18B2C:  00
+b06_8b2d:   brk                         ; 18B2D:  00
+b06_8b2e:   brk                         ; 18B2E:  00
+b06_8b2f:   brk                         ; 18B2F:  00
+b06_8b30:   brk                         ; 18B30:  00
+b06_8b31:   brk                         ; 18B31:  00
+b06_8b32:   .db $ff                     ; 18B32:  ff
+b06_8b33:   .db $ff                     ; 18B33:  ff
+b06_8b34:   brk                         ; 18B34:  00
+b06_8b35:   .db $ff                     ; 18B35:  ff
+b06_8b36:   brk                         ; 18B36:  00
+b06_8b37:   .db $ff                     ; 18B37:  ff
+b06_8b38:   brk                         ; 18B38:  00
+b06_8b39:   brk                         ; 18B39:  00
+b06_8b3a:   brk                         ; 18B3A:  00
+b06_8b3b:   brk                         ; 18B3B:  00
+b06_8b3c:   brk                         ; 18B3C:  00
+b06_8b3d:   .db $ff                     ; 18B3D:  ff
+b06_8b3e:   .db $ff                     ; 18B3E:  ff
+b06_8b3f:   brk                         ; 18B3F:  00
+b06_8b40:   brk                         ; 18B40:  00
+b06_8b41:   brk                         ; 18B41:  00
+b06_8b42:   brk                         ; 18B42:  00
+b06_8b43:   brk                         ; 18B43:  00
+b06_8b44:   brk                         ; 18B44:  00
+b06_8b45:   brk                         ; 18B45:  00
+b06_8b46:   brk                         ; 18B46:  00
+b06_8b47:   brk                         ; 18B47:  00
+b06_8b48:   .db $03                     ; 18B48:  03
+b06_8b49:   .db $ff                     ; 18B49:  ff
+b06_8b4a:   brk                         ; 18B4A:  00
+b06_8b4b:   .db $ff                     ; 18B4B:  ff
+b06_8b4c:   brk                         ; 18B4C:  00
+b06_8b4d:   brk                         ; 18B4D:  00
+b06_8b4e:   brk                         ; 18B4E:  00
+b06_8b4f:   brk                         ; 18B4F:  00
+b06_8b50:   brk                         ; 18B50:  00
+b06_8b51:   brk                         ; 18B51:  00
+b06_8b52:   .db $ff                     ; 18B52:  ff
+b06_8b53:   .db $ff                     ; 18B53:  ff
+b06_8b54:   brk                         ; 18B54:  00
+b06_8b55:   brk                         ; 18B55:  00
+b06_8b56:   brk                         ; 18B56:  00
+b06_8b57:   brk                         ; 18B57:  00
+b06_8b58:   .db $ff                     ; 18B58:  ff
+b06_8b59:   .db $ff                     ; 18B59:  ff
+b06_8b5a:   brk                         ; 18B5A:  00
+b06_8b5b:   .db $ff                     ; 18B5B:  ff
+b06_8b5c:   brk                         ; 18B5C:  00
+b06_8b5d:   brk                         ; 18B5D:  00
+b06_8b5e:   brk                         ; 18B5E:  00
+b06_8b5f:   brk                         ; 18B5F:  00
+b06_8b60:   brk                         ; 18B60:  00
+b06_8b61:   brk                         ; 18B61:  00
+b06_8b62:   .db $ff                     ; 18B62:  ff
+b06_8b63:   .db $ff                     ; 18B63:  ff
+b06_8b64:   brk                         ; 18B64:  00
+b06_8b65:   .db $ff                     ; 18B65:  ff
+b06_8b66:   brk                         ; 18B66:  00
+b06_8b67:   .db $ff                     ; 18B67:  ff
+b06_8b68:   .db $03                     ; 18B68:  03
+b06_8b69:   brk                         ; 18B69:  00
+b06_8b6a:   brk                         ; 18B6A:  00
+b06_8b6b:   brk                         ; 18B6B:  00
+b06_8b6c:   brk                         ; 18B6C:  00
+b06_8b6d:   .db $ff                     ; 18B6D:  ff
+b06_8b6e:   .db $ff                     ; 18B6E:  ff
+b06_8b6f:   brk                         ; 18B6F:  00
+b06_8b70:   brk                         ; 18B70:  00
+b06_8b71:   brk                         ; 18B71:  00
+b06_8b72:   brk                         ; 18B72:  00
+b06_8b73:   brk                         ; 18B73:  00
+b06_8b74:   brk                         ; 18B74:  00
+b06_8b75:   .db $ff                     ; 18B75:  ff
+b06_8b76:   brk                         ; 18B76:  00
+b06_8b77:   .db $ff                     ; 18B77:  ff
+b06_8b78:   .db $ff                     ; 18B78:  ff
+b06_8b79:   brk                         ; 18B79:  00
+b06_8b7a:   brk                         ; 18B7A:  00
+b06_8b7b:   brk                         ; 18B7B:  00
+b06_8b7c:   brk                         ; 18B7C:  00
+b06_8b7d:   .db $ff                     ; 18B7D:  ff
+b06_8b7e:   .db $ff                     ; 18B7E:  ff
+b06_8b7f:   brk                         ; 18B7F:  00
+b06_8b80:   brk                         ; 18B80:  00
+b06_8b81:   brk                         ; 18B81:  00
+b06_8b82:   brk                         ; 18B82:  00
+b06_8b83:   brk                         ; 18B83:  00
+b06_8b84:   brk                         ; 18B84:  00
+b06_8b85:   brk                         ; 18B85:  00
+b06_8b86:   brk                         ; 18B86:  00
+b06_8b87:   .db $03                     ; 18B87:  03
+b06_8b88:   .db $ff                     ; 18B88:  ff
+b06_8b89:   .db $fc                     ; 18B89:  fc
+b06_8b8a:   brk                         ; 18B8A:  00
+b06_8b8b:   .db $ff                     ; 18B8B:  ff
+b06_8b8c:   brk                         ; 18B8C:  00
+b06_8b8d:   brk                         ; 18B8D:  00
+b06_8b8e:   brk                         ; 18B8E:  00
+b06_8b8f:   brk                         ; 18B8F:  00
+b06_8b90:   brk                         ; 18B90:  00
+b06_8b91:   .db $03                     ; 18B91:  03
+b06_8b92:   .db $ff                     ; 18B92:  ff
+b06_8b93:   .db $ff                     ; 18B93:  ff
+b06_8b94:   brk                         ; 18B94:  00
+b06_8b95:   brk                         ; 18B95:  00
+b06_8b96:   brk                         ; 18B96:  00
+b06_8b97:   .db $ff                     ; 18B97:  ff
+b06_8b98:   .db $ff                     ; 18B98:  ff
+b06_8b99:   brk                         ; 18B99:  00
+b06_8b9a:   brk                         ; 18B9A:  00
+b06_8b9b:   .db $ff                     ; 18B9B:  ff
+b06_8b9c:   brk                         ; 18B9C:  00
+b06_8b9d:   brk                         ; 18B9D:  00
+b06_8b9e:   brk                         ; 18B9E:  00
+b06_8b9f:   brk                         ; 18B9F:  00
+b06_8ba0:   brk                         ; 18BA0:  00
+b06_8ba1:   .db $ff                     ; 18BA1:  ff
+b06_8ba2:   .db $ff                     ; 18BA2:  ff
+b06_8ba3:   .db $ff                     ; 18BA3:  ff
+b06_8ba4:   brk                         ; 18BA4:  00
+b06_8ba5:   .db $ff                     ; 18BA5:  ff
+b06_8ba6:   brk                         ; 18BA6:  00
+b06_8ba7:   .db $fc                     ; 18BA7:  fc
+b06_8ba8:   .db $ff                     ; 18BA8:  ff
+b06_8ba9:   .db $03                     ; 18BA9:  03
+b06_8baa:   brk                         ; 18BAA:  00
+b06_8bab:   brk                         ; 18BAB:  00
+b06_8bac:   brk                         ; 18BAC:  00
+b06_8bad:   .db $ff                     ; 18BAD:  ff
+b06_8bae:   .db $ff                     ; 18BAE:  ff
+b06_8baf:   .db $03                     ; 18BAF:  03
+b06_8bb0:   brk                         ; 18BB0:  00
+b06_8bb1:   brk                         ; 18BB1:  00
+b06_8bb2:   brk                         ; 18BB2:  00
+b06_8bb3:   brk                         ; 18BB3:  00
+b06_8bb4:   brk                         ; 18BB4:  00
+b06_8bb5:   brk                         ; 18BB5:  00
+b06_8bb6:   .db $03                     ; 18BB6:  03
+b06_8bb7:   .db $ff                     ; 18BB7:  ff
+b06_8bb8:   .db $ff                     ; 18BB8:  ff
+b06_8bb9:   brk                         ; 18BB9:  00
+b06_8bba:   brk                         ; 18BBA:  00
+b06_8bbb:   .db $ff                     ; 18BBB:  ff
+b06_8bbc:   brk                         ; 18BBC:  00
+b06_8bbd:   brk                         ; 18BBD:  00
+b06_8bbe:   brk                         ; 18BBE:  00
+b06_8bbf:   brk                         ; 18BBF:  00
+b06_8bc0:   brk                         ; 18BC0:  00
+b06_8bc1:   .db $ff                     ; 18BC1:  ff
+b06_8bc2:   .db $ff                     ; 18BC2:  ff
+b06_8bc3:   .db $ff                     ; 18BC3:  ff
+b06_8bc4:   brk                         ; 18BC4:  00
+b06_8bc5:   .db $ff                     ; 18BC5:  ff
+b06_8bc6:   brk                         ; 18BC6:  00
+b06_8bc7:   brk                         ; 18BC7:  00
+b06_8bc8:   .db $ff                     ; 18BC8:  ff
+b06_8bc9:   .db $ff                     ; 18BC9:  ff
+b06_8bca:   brk                         ; 18BCA:  00
+b06_8bcb:   brk                         ; 18BCB:  00
+b06_8bcc:   brk                         ; 18BCC:  00
+b06_8bcd:   .db $ff                     ; 18BCD:  ff
+b06_8bce:   .db $ff                     ; 18BCE:  ff
+b06_8bcf:   .db $ff                     ; 18BCF:  ff
+b06_8bd0:   brk                         ; 18BD0:  00
+b06_8bd1:   brk                         ; 18BD1:  00
+b06_8bd2:   brk                         ; 18BD2:  00
+b06_8bd3:   brk                         ; 18BD3:  00
+b06_8bd4:   brk                         ; 18BD4:  00
+b06_8bd5:   .db $03                     ; 18BD5:  03
+b06_8bd6:   .db $ff                     ; 18BD6:  ff
+b06_8bd7:   .db $ff                     ; 18BD7:  ff
+b06_8bd8:   .db $fc                     ; 18BD8:  fc
+b06_8bd9:   brk                         ; 18BD9:  00
+b06_8bda:   brk                         ; 18BDA:  00
+b06_8bdb:   .db $ff                     ; 18BDB:  ff
+b06_8bdc:   brk                         ; 18BDC:  00
+b06_8bdd:   brk                         ; 18BDD:  00
+b06_8bde:   brk                         ; 18BDE:  00
+b06_8bdf:   brk                         ; 18BDF:  00
+b06_8be0:   .db $03                     ; 18BE0:  03
+b06_8be1:   .db $ff                     ; 18BE1:  ff
+b06_8be2:   .db $ff                     ; 18BE2:  ff
+b06_8be3:   .db $ff                     ; 18BE3:  ff
+b06_8be4:   .db $03                     ; 18BE4:  03
+b06_8be5:   .db $ff                     ; 18BE5:  ff
+b06_8be6:   .db $ff                     ; 18BE6:  ff
+b06_8be7:   .db $ff                     ; 18BE7:  ff
+b06_8be8:   brk                         ; 18BE8:  00
+b06_8be9:   brk                         ; 18BE9:  00
+b06_8bea:   .db $03                     ; 18BEA:  03
+b06_8beb:   .db $ff                     ; 18BEB:  ff
+b06_8bec:   brk                         ; 18BEC:  00
+b06_8bed:   brk                         ; 18BED:  00
+b06_8bee:   brk                         ; 18BEE:  00
+b06_8bef:   brk                         ; 18BEF:  00
+b06_8bf0:   .db $ff                     ; 18BF0:  ff
+b06_8bf1:   .db $ff                     ; 18BF1:  ff
+b06_8bf2:   .db $ff                     ; 18BF2:  ff
+b06_8bf3:   .db $ff                     ; 18BF3:  ff
+b06_8bf4:   brk                         ; 18BF4:  00
+b06_8bf5:   .db $ff                     ; 18BF5:  ff
+b06_8bf6:   .db $03                     ; 18BF6:  03
+b06_8bf7:   brk                         ; 18BF7:  00
+b06_8bf8:   .db $fc                     ; 18BF8:  fc
+b06_8bf9:   .db $ff                     ; 18BF9:  ff
+b06_8bfa:   .db $03                     ; 18BFA:  03
+b06_8bfb:   brk                         ; 18BFB:  00
+b06_8bfc:   brk                         ; 18BFC:  00
+b06_8bfd:   .db $ff                     ; 18BFD:  ff
+b06_8bfe:   .db $ff                     ; 18BFE:  ff
+b06_8bff:   .db $ff                     ; 18BFF:  ff
+b06_8c00:   .db $03                     ; 18C00:  03
+b06_8c01:   brk                         ; 18C01:  00
+b06_8c02:   brk                         ; 18C02:  00
+b06_8c03:   brk                         ; 18C03:  00
+b06_8c04:   brk                         ; 18C04:  00
+b06_8c05:   .db $ff                     ; 18C05:  ff
+b06_8c06:   .db $ff                     ; 18C06:  ff
+b06_8c07:   brk                         ; 18C07:  00
+b06_8c08:   brk                         ; 18C08:  00
+b06_8c09:   .db $ff                     ; 18C09:  ff
+b06_8c0a:   .db $ff                     ; 18C0A:  ff
+b06_8c0b:   brk                         ; 18C0B:  00
+b06_8c0c:   brk                         ; 18C0C:  00
+b06_8c0d:   .db $ff                     ; 18C0D:  ff
+b06_8c0e:   .db $ff                     ; 18C0E:  ff
+b06_8c0f:   .db $ff                     ; 18C0F:  ff
+b06_8c10:   .db $ff                     ; 18C10:  ff
+b06_8c11:   brk                         ; 18C11:  00
+b06_8c12:   brk                         ; 18C12:  00
+b06_8c13:   brk                         ; 18C13:  00
+b06_8c14:   sbc $fffc,x                 ; 18C14:  fd fc ff
+b06_8c17:   .db $fc                     ; 18C17:  fc
+b06_8c18:   brk                         ; 18C18:  00
+b06_8c19:   brk                         ; 18C19:  00
+b06_8c1a:   .db $ff                     ; 18C1A:  ff
+b06_8c1b:   .db $ff                     ; 18C1B:  ff
+b06_8c1c:   .db $03                     ; 18C1C:  03
+b06_8c1d:   .db $03                     ; 18C1D:  03
+b06_8c1e:   brk                         ; 18C1E:  00
+b06_8c1f:   .db $03                     ; 18C1F:  03
+b06_8c20:   .db $ff                     ; 18C20:  ff
+b06_8c21:   .db $ff                     ; 18C21:  ff
+b06_8c22:   .db $ff                     ; 18C22:  ff
+b06_8c23:   .db $ff                     ; 18C23:  ff
+b06_8c24:   .db $97                     ; 18C24:  97
+b06_8c25:   .db $67                     ; 18C25:  67
+b06_8c26:   .db $0c                     ; 18C26:  0c
+b06_8c27:   brk                         ; 18C27:  00
+b06_8c28:   brk                         ; 18C28:  00
+b06_8c29:   ora ($ff,x)                 ; 18C29:  01 ff
+b06_8c2b:   .db $ff                     ; 18C2B:  ff
+b06_8c2c:   tya                         ; 18C2C:  98
+b06_8c2d:   sed                         ; 18C2D:  f8
+b06_8c2e:   .db $f3                     ; 18C2E:  f3
+b06_8c2f:   .db $ff                     ; 18C2F:  ff
+b06_8c30:   .db $ff                     ; 18C30:  ff
+b06_8c31:   .db $ff                     ; 18C31:  ff
+b06_8c32:   .db $ff                     ; 18C32:  ff
+b06_8c33:   .db $ff                     ; 18C33:  ff
+b06_8c34:   brk                         ; 18C34:  00
+b06_8c35:   .db $ff                     ; 18C35:  ff
+b06_8c36:   .db $ff                     ; 18C36:  ff
+b06_8c37:   ora ($00,x)                 ; 18C37:  01 00
+b06_8c39:   .db $fc                     ; 18C39:  fc
+b06_8c3a:   .db $ff                     ; 18C3A:  ff
+b06_8c3b:   .db $03                     ; 18C3B:  03
+b06_8c3c:   brk                         ; 18C3C:  00
+b06_8c3d:   .db $ff                     ; 18C3D:  ff
+b06_8c3e:   .db $ff                     ; 18C3E:  ff
+b06_8c3f:   .db $ff                     ; 18C3F:  ff
+b06_8c40:   .db $ff                     ; 18C40:  ff
+b06_8c41:   .db $03                     ; 18C41:  03
+b06_8c42:   brk                         ; 18C42:  00
+b06_8c43:   brk                         ; 18C43:  00
+b06_8c44:   inx                         ; 18C44:  e8
+b06_8c45:   iny                         ; 18C45:  c8
+b06_8c46:   ora $7131,y                 ; 18C46:  19 31 71
+b06_8c49:   cmp ($83,x)                 ; 18C49:  c1 83
+b06_8c4b:   .db $03                     ; 18C4B:  03
+b06_8c4c:   clc                         ; 18C4C:  18
+b06_8c4d:   sec                         ; 18C4D:  38
+b06_8c4e:   sbc $f1f1,y                 ; 18C4E:  f9 f1 f1
+b06_8c51:   cmp ($83,x)                 ; 18C51:  c1 83
+b06_8c53:   .db $03                     ; 18C53:  03
+b06_8c54:   .db $9f                     ; 18C54:  9f
+b06_8c55:   .db $9f                     ; 18C55:  9f
+b06_8c56:   .db $8f                     ; 18C56:  8f
+b06_8c57:   .db $83                     ; 18C57:  83
+b06_8c58:   cpy #$fc                    ; 18C58:  c0 fc
+b06_8c5a:   .db $ff                     ; 18C5A:  ff
+b06_8c5b:   .db $ff                     ; 18C5B:  ff
+b06_8c5c:   cpx #$e0                    ; 18C5C:  e0 e0
+b06_8c5e:   beq $8c5c                   ; 18C5E:  f0 fc
+b06_8c60:   .db $ff                     ; 18C60:  ff
+b06_8c61:   .db $ff                     ; 18C61:  ff
+b06_8c62:   .db $ff                     ; 18C62:  ff
+b06_8c63:   .db $ff                     ; 18C63:  ff
+b06_8c64:   brk                         ; 18C64:  00
+b06_8c65:   .db $03                     ; 18C65:  03
+b06_8c66:   .db $83                     ; 18C66:  83
+b06_8c67:   cmp ($71,x)                 ; 18C67:  c1 71
+b06_8c69:   and ($19),y                 ; 18C69:  31 19
+b06_8c6b:   iny                         ; 18C6B:  c8
+b06_8c6c:   brk                         ; 18C6C:  00
+b06_8c6d:   .db $03                     ; 18C6D:  03
+b06_8c6e:   .db $83                     ; 18C6E:  83
+b06_8c6f:   cmp ($f1,x)                 ; 18C6F:  c1 f1
+b06_8c71:   sbc ($f9),y                 ; 18C71:  f1 f9
+b06_8c73:   sec                         ; 18C73:  38
+b06_8c74:   brk                         ; 18C74:  00
+b06_8c75:   .db $ff                     ; 18C75:  ff
+b06_8c76:   .db $ff                     ; 18C76:  ff
+b06_8c77:   .db $fc                     ; 18C77:  fc
+b06_8c78:   cpy #$83                    ; 18C78:  c0 83
+b06_8c7a:   .db $8f                     ; 18C7A:  8f
+b06_8c7b:   .db $9c                     ; 18C7B:  9c
+b06_8c7c:   brk                         ; 18C7C:  00
+b06_8c7d:   .db $ff                     ; 18C7D:  ff
+b06_8c7e:   .db $ff                     ; 18C7E:  ff
+b06_8c7f:   .db $ff                     ; 18C7F:  ff
+b06_8c80:   .db $ff                     ; 18C80:  ff
+b06_8c81:   .db $fc                     ; 18C81:  fc
+b06_8c82:   beq $8c64                   ; 18C82:  f0 e0
+b06_8c84:   .db $ff                     ; 18C84:  ff
+b06_8c85:   .db $ff                     ; 18C85:  ff
+b06_8c86:   .db $ff                     ; 18C86:  ff
+b06_8c87:   .db $fc                     ; 18C87:  fc
+b06_8c88:   brk                         ; 18C88:  00
+b06_8c89:   .db $03                     ; 18C89:  03
+b06_8c8a:   .db $ff                     ; 18C8A:  ff
+b06_8c8b:   .db $ff                     ; 18C8B:  ff
+b06_8c8c:   brk                         ; 18C8C:  00
+b06_8c8d:   brk                         ; 18C8D:  00
+b06_8c8e:   brk                         ; 18C8E:  00
+b06_8c8f:   .db $03                     ; 18C8F:  03
+b06_8c90:   .db $ff                     ; 18C90:  ff
+b06_8c91:   .db $ff                     ; 18C91:  ff
+b06_8c92:   .db $ff                     ; 18C92:  ff
+b06_8c93:   .db $ff                     ; 18C93:  ff
+b06_8c94:   .db $f2                     ; 18C94:  f2
+b06_8c95:   .db $e2                     ; 18C95:  e2
+b06_8c96:   .db $82                     ; 18C96:  82
+b06_8c97:   asl $1c                     ; 18C97:  06 1c
+b06_8c99:   sed                         ; 18C99:  f8
+b06_8c9a:   beq $8c7c                   ; 18C9A:  f0 e0
+b06_8c9c:   asl $7e1e                   ; 18C9C:  0e 1e 7e
+b06_8c9f:   inc $f8fc,x                 ; 18C9F:  fe fc f8
+b06_8ca2:   beq $8c84                   ; 18CA2:  f0 e0
+b06_8ca4:   brk                         ; 18CA4:  00
+b06_8ca5:   .db $ff                     ; 18CA5:  ff
+b06_8ca6:   .db $ff                     ; 18CA6:  ff
+b06_8ca7:   .db $03                     ; 18CA7:  03
+b06_8ca8:   brk                         ; 18CA8:  00
+b06_8ca9:   .db $fc                     ; 18CA9:  fc
+b06_8caa:   .db $ff                     ; 18CAA:  ff
+b06_8cab:   .db $03                     ; 18CAB:  03
+b06_8cac:   brk                         ; 18CAC:  00
+b06_8cad:   .db $ff                     ; 18CAD:  ff
+b06_8cae:   .db $ff                     ; 18CAE:  ff
+b06_8caf:   .db $ff                     ; 18CAF:  ff
+b06_8cb0:   .db $ff                     ; 18CB0:  ff
+b06_8cb1:   .db $03                     ; 18CB1:  03
+b06_8cb2:   brk                         ; 18CB2:  00
+b06_8cb3:   brk                         ; 18CB3:  00
+b06_8cb4:   brk                         ; 18CB4:  00
+b06_8cb5:   cpx #$f0                    ; 18CB5:  e0 f0
+b06_8cb7:   sed                         ; 18CB7:  f8
+b06_8cb8:   .db $1c                     ; 18CB8:  1c
+b06_8cb9:   asl $c2                     ; 18CB9:  06 c2
+b06_8cbb:   .db $e2                     ; 18CBB:  e2
+b06_8cbc:   brk                         ; 18CBC:  00
+b06_8cbd:   cpx #$f0                    ; 18CBD:  e0 f0
+b06_8cbf:   sed                         ; 18CBF:  f8
+b06_8cc0:   .db $fc                     ; 18CC0:  fc
+b06_8cc1:   inc $1e3e,x                 ; 18CC1:  fe 3e 1e
+b06_8cc4:   .db $2f                     ; 18CC4:  2f
+b06_8cc5:   .db $27                     ; 18CC5:  27
+b06_8cc6:   .db $17                     ; 18CC6:  17
+b06_8cc7:   .db $13                     ; 18CC7:  13
+b06_8cc8:   clc                         ; 18CC8:  18
+b06_8cc9:   .db $3c                     ; 18CC9:  3c
+b06_8cca:   .db $7f                     ; 18CCA:  7f
+b06_8ccb:   .db $7f                     ; 18CCB:  7f
+b06_8ccc:   bmi $8d06                   ; 18CCC:  30 38
+b06_8cce:   clc                         ; 18CCE:  18
+b06_8ccf:   .db $1c                     ; 18CCF:  1c
+b06_8cd0:   .db $1f                     ; 18CD0:  1f
+b06_8cd1:   .db $3f                     ; 18CD1:  3f
+b06_8cd2:   .db $7f                     ; 18CD2:  7f
+b06_8cd3:   .db $7f                     ; 18CD3:  7f
+b06_8cd4:   .db $ff                     ; 18CD4:  ff
+b06_8cd5:   .db $ff                     ; 18CD5:  ff
+b06_8cd6:   .db $ff                     ; 18CD6:  ff
+b06_8cd7:   .db $fc                     ; 18CD7:  fc
+b06_8cd8:   brk                         ; 18CD8:  00
+b06_8cd9:   ora ($ff,x)                 ; 18CD9:  01 ff
+b06_8cdb:   .db $ff                     ; 18CDB:  ff
+b06_8cdc:   brk                         ; 18CDC:  00
+b06_8cdd:   brk                         ; 18CDD:  00
+b06_8cde:   brk                         ; 18CDE:  00
+b06_8cdf:   .db $03                     ; 18CDF:  03
+b06_8ce0:   .db $ff                     ; 18CE0:  ff
+b06_8ce1:   .db $ff                     ; 18CE1:  ff
+b06_8ce2:   .db $ff                     ; 18CE2:  ff
+b06_8ce3:   .db $ff                     ; 18CE3:  ff
+b06_8ce4:   brk                         ; 18CE4:  00
+b06_8ce5:   .db $7f                     ; 18CE5:  7f
+b06_8ce6:   .db $7f                     ; 18CE6:  7f
+b06_8ce7:   .db $3c                     ; 18CE7:  3c
+b06_8ce8:   clc                         ; 18CE8:  18
+b06_8ce9:   .db $13                     ; 18CE9:  13
+b06_8cea:   .db $17                     ; 18CEA:  17
+b06_8ceb:   bit $7f00                   ; 18CEB:  2c 00 7f
+b06_8cee:   .db $7f                     ; 18CEE:  7f
+b06_8cef:   .db $3f                     ; 18CEF:  3f
+b06_8cf0:   .db $1f                     ; 18CF0:  1f
+b06_8cf1:   .db $1c                     ; 18CF1:  1c
+b06_8cf2:   clc                         ; 18CF2:  18
+b06_8cf3:   bmi $8c96                   ; 18CF3:  30 a1
+b06_8cf5:   lda ($30,x)                 ; 18CF5:  a1 30
+b06_8cf7:   bmi $8d59                   ; 18CF7:  30 60
+b06_8cf9:   cmp ($c1,x)                 ; 18CF9:  c1 c1
+b06_8cfb:   sta ($61,x)                 ; 18CFB:  81 61
+b06_8cfd:   adc ($f0,x)                 ; 18CFD:  61 f0
+b06_8cff:   beq $8ce1                   ; 18CFF:  f0 e0
+b06_8d01:   cmp ($c1,x)                 ; 18D01:  c1 c1
+b06_8d03:   sta ($7f,x)                 ; 18D03:  81 7f
+b06_8d05:   .db $3f                     ; 18D05:  3f
+b06_8d06:   .db $bf                     ; 18D06:  bf
+b06_8d07:   .db $9f                     ; 18D07:  9f
+b06_8d08:   .db $80                     ; 18D08:  80
+b06_8d09:   .db $80                     ; 18D09:  80
+b06_8d0a:   .db $ff                     ; 18D0A:  ff
+b06_8d0b:   .db $ff                     ; 18D0B:  ff
+b06_8d0c:   .db $80                     ; 18D0C:  80
+b06_8d0d:   cpy #$c0                    ; 18D0D:  c0 c0
+b06_8d0f:   cpx #$ff                    ; 18D0F:  e0 ff
+b06_8d11:   .db $ff                     ; 18D11:  ff
+b06_8d12:   .db $ff                     ; 18D12:  ff
+b06_8d13:   .db $ff                     ; 18D13:  ff
+b06_8d14:   brk                         ; 18D14:  00
+b06_8d15:   sta ($c1,x)                 ; 18D15:  81 c1
+b06_8d17:   cmp ($60,x)                 ; 18D17:  c1 60
+b06_8d19:   bmi $8d4b                   ; 18D19:  30 30
+b06_8d1b:   ldy #$00                    ; 18D1B:  a0 00
+b06_8d1d:   sta ($c1,x)                 ; 18D1D:  81 c1
+b06_8d1f:   cmp ($e0,x)                 ; 18D1F:  c1 e0
+b06_8d21:   beq $8d13                   ; 18D21:  f0 f0
+b06_8d23:   rts                         ; 18D23:  60
+b06_8d24:   brk                         ; 18D24:  00
+b06_8d25:   .db $ff                     ; 18D25:  ff
+b06_8d26:   .db $ff                     ; 18D26:  ff
+b06_8d27:   cpy #$c0                    ; 18D27:  c0 c0
+b06_8d29:   .db $8f                     ; 18D29:  8f
+b06_8d2a:   .db $9f                     ; 18D2A:  9f
+b06_8d2b:   clv                         ; 18D2B:  b8
+b06_8d2c:   brk                         ; 18D2C:  00
+b06_8d2d:   .db $ff                     ; 18D2D:  ff
+b06_8d2e:   .db $ff                     ; 18D2E:  ff
+b06_8d2f:   .db $ff                     ; 18D2F:  ff
+b06_8d30:   .db $ff                     ; 18D30:  ff
+b06_8d31:   beq $8d13                   ; 18D31:  f0 e0
+b06_8d33:   cpy #$fc                    ; 18D33:  c0 fc
+b06_8d35:   .db $ff                     ; 18D35:  ff
+b06_8d36:   .db $ff                     ; 18D36:  ff
+b06_8d37:   .db $ff                     ; 18D37:  ff
+b06_8d38:   brk                         ; 18D38:  00
+b06_8d39:   brk                         ; 18D39:  00
+b06_8d3a:   .db $fc                     ; 18D3A:  fc
+b06_8d3b:   .db $ff                     ; 18D3B:  ff
+b06_8d3c:   brk                         ; 18D3C:  00
+b06_8d3d:   brk                         ; 18D3D:  00
+b06_8d3e:   brk                         ; 18D3E:  00
+b06_8d3f:   brk                         ; 18D3F:  00
+b06_8d40:   .db $ff                     ; 18D40:  ff
+b06_8d41:   .db $ff                     ; 18D41:  ff
+b06_8d42:   .db $ff                     ; 18D42:  ff
+b06_8d43:   .db $ff                     ; 18D43:  ff
+b06_8d44:   brk                         ; 18D44:  00
+b06_8d45:   .db $fc                     ; 18D45:  fc
+b06_8d46:   .db $ff                     ; 18D46:  ff
+b06_8d47:   .db $ff                     ; 18D47:  ff
+b06_8d48:   .db $03                     ; 18D48:  03
+b06_8d49:   brk                         ; 18D49:  00
+b06_8d4a:   brk                         ; 18D4A:  00
+b06_8d4b:   .db $ff                     ; 18D4B:  ff
+b06_8d4c:   brk                         ; 18D4C:  00
+b06_8d4d:   brk                         ; 18D4D:  00
+b06_8d4e:   brk                         ; 18D4E:  00
+b06_8d4f:   brk                         ; 18D4F:  00
+b06_8d50:   .db $fc                     ; 18D50:  fc
+b06_8d51:   .db $ff                     ; 18D51:  ff
+b06_8d52:   .db $ff                     ; 18D52:  ff
+b06_8d53:   .db $ff                     ; 18D53:  ff
+b06_8d54:   brk                         ; 18D54:  00
+b06_8d55:   .db $ff                     ; 18D55:  ff
+b06_8d56:   .db $fc                     ; 18D56:  fc
+b06_8d57:   brk                         ; 18D57:  00
+b06_8d58:   .db $03                     ; 18D58:  03
+b06_8d59:   .db $ff                     ; 18D59:  ff
+b06_8d5a:   .db $fc                     ; 18D5A:  fc
+b06_8d5b:   brk                         ; 18D5B:  00
+b06_8d5c:   brk                         ; 18D5C:  00
+b06_8d5d:   .db $ff                     ; 18D5D:  ff
+b06_8d5e:   .db $ff                     ; 18D5E:  ff
+b06_8d5f:   .db $ff                     ; 18D5F:  ff
+b06_8d60:   .db $fc                     ; 18D60:  fc
+b06_8d61:   brk                         ; 18D61:  00
+b06_8d62:   brk                         ; 18D62:  00
+b06_8d63:   brk                         ; 18D63:  00
+b06_8d64:   brk                         ; 18D64:  00
+b06_8d65:   brk                         ; 18D65:  00
+b06_8d66:   .db $fc                     ; 18D66:  fc
+b06_8d67:   .db $ff                     ; 18D67:  ff
+b06_8d68:   .db $ff                     ; 18D68:  ff
+b06_8d69:   brk                         ; 18D69:  00
+b06_8d6a:   brk                         ; 18D6A:  00
+b06_8d6b:   .db $ff                     ; 18D6B:  ff
+b06_8d6c:   brk                         ; 18D6C:  00
+b06_8d6d:   brk                         ; 18D6D:  00
+b06_8d6e:   brk                         ; 18D6E:  00
+b06_8d6f:   brk                         ; 18D6F:  00
+b06_8d70:   brk                         ; 18D70:  00
+b06_8d71:   .db $ff                     ; 18D71:  ff
+b06_8d72:   .db $ff                     ; 18D72:  ff
+b06_8d73:   .db $ff                     ; 18D73:  ff
+b06_8d74:   eor ($51),y                 ; 18D74:  51 51
+b06_8d76:   eor ($51),y                 ; 18D76:  51 51
+b06_8d78:   eor ($51),y                 ; 18D78:  51 51
+b06_8d7a:   eor ($51),y                 ; 18D7A:  51 51
+b06_8d7c:   eor ($51),y                 ; 18D7C:  51 51
+b06_8d7e:   eor ($51),y                 ; 18D7E:  51 51
+b06_8d80:   eor ($52),y                 ; 18D80:  51 52
+b06_8d82:   .db $53                     ; 18D82:  53
+b06_8d83:   .db $54                     ; 18D83:  54
+b06_8d84:   eor $56,x                   ; 18D84:  55 56
+b06_8d86:   .db $57                     ; 18D86:  57
+b06_8d87:   cli                         ; 18D87:  58
+b06_8d88:   eor $5b5a,y                 ; 18D88:  59 5a 5b
+b06_8d8b:   .db $5c                     ; 18D8B:  5c
+b06_8d8c:   eor $5f5e,x                 ; 18D8C:  5d 5e 5f
+b06_8d8f:   rts                         ; 18D8F:  60
+b06_8d90:   adc ($61,x)                 ; 18D90:  61 61
+b06_8d92:   .db $62                     ; 18D92:  62
+b06_8d93:   adc ($51,x)                 ; 18D93:  61 51
+b06_8d95:   eor ($51),y                 ; 18D95:  51 51
+b06_8d97:   eor ($51),y                 ; 18D97:  51 51
+b06_8d99:   eor ($51),y                 ; 18D99:  51 51
+b06_8d9b:   eor ($51),y                 ; 18D9B:  51 51
+b06_8d9d:   eor ($51),y                 ; 18D9D:  51 51
+b06_8d9f:   eor ($51),y                 ; 18D9F:  51 51
+b06_8da1:   .db $52                     ; 18DA1:  52
+b06_8da2:   .db $53                     ; 18DA2:  53
+b06_8da3:   .db $54                     ; 18DA3:  54
+b06_8da4:   eor $56,x                   ; 18DA4:  55 56
+b06_8da6:   .db $57                     ; 18DA6:  57
+b06_8da7:   cli                         ; 18DA7:  58
+b06_8da8:   eor $5b5a,y                 ; 18DA8:  59 5a 5b
+b06_8dab:   .db $5c                     ; 18DAB:  5c
+b06_8dac:   eor $5f5e,x                 ; 18DAC:  5d 5e 5f
+b06_8daf:   rts                         ; 18DAF:  60
+b06_8db0:   adc ($61,x)                 ; 18DB0:  61 61
+b06_8db2:   .db $62                     ; 18DB2:  62
+b06_8db3:   adc ($51,x)                 ; 18DB3:  61 51
+b06_8db5:   eor ($51),y                 ; 18DB5:  51 51
+b06_8db7:   eor ($51),y                 ; 18DB7:  51 51
+b06_8db9:   eor ($51),y                 ; 18DB9:  51 51
+b06_8dbb:   eor ($51),y                 ; 18DBB:  51 51
+b06_8dbd:   eor ($51),y                 ; 18DBD:  51 51
+b06_8dbf:   eor ($51),y                 ; 18DBF:  51 51
+b06_8dc1:   .db $52                     ; 18DC1:  52
+b06_8dc2:   .db $53                     ; 18DC2:  53
+b06_8dc3:   .db $54                     ; 18DC3:  54
+b06_8dc4:   eor $56,x                   ; 18DC4:  55 56
+b06_8dc6:   .db $57                     ; 18DC6:  57
+b06_8dc7:   cli                         ; 18DC7:  58
+b06_8dc8:   eor $5b5a,y                 ; 18DC8:  59 5a 5b
+b06_8dcb:   .db $5c                     ; 18DCB:  5c
+b06_8dcc:   eor $5f5e,x                 ; 18DCC:  5d 5e 5f
+b06_8dcf:   rts                         ; 18DCF:  60
+b06_8dd0:   adc ($61,x)                 ; 18DD0:  61 61
+b06_8dd2:   .db $62                     ; 18DD2:  62
+b06_8dd3:   adc ($51,x)                 ; 18DD3:  61 51
+b06_8dd5:   eor ($51),y                 ; 18DD5:  51 51
+b06_8dd7:   eor ($51),y                 ; 18DD7:  51 51
+b06_8dd9:   eor ($51),y                 ; 18DD9:  51 51
+b06_8ddb:   eor ($51),y                 ; 18DDB:  51 51
+b06_8ddd:   eor ($51),y                 ; 18DDD:  51 51
+b06_8ddf:   eor ($51),y                 ; 18DDF:  51 51
+b06_8de1:   .db $52                     ; 18DE1:  52
+b06_8de2:   .db $53                     ; 18DE2:  53
+b06_8de3:   .db $54                     ; 18DE3:  54
+b06_8de4:   eor $56,x                   ; 18DE4:  55 56
+b06_8de6:   .db $57                     ; 18DE6:  57
+b06_8de7:   cli                         ; 18DE7:  58
+b06_8de8:   eor $5b5a,y                 ; 18DE8:  59 5a 5b
+b06_8deb:   .db $5c                     ; 18DEB:  5c
+b06_8dec:   eor $5f5e,x                 ; 18DEC:  5d 5e 5f
+b06_8def:   rts                         ; 18DEF:  60
+b06_8df0:   adc ($61,x)                 ; 18DF0:  61 61
+b06_8df2:   .db $62                     ; 18DF2:  62
+b06_8df3:   adc ($51,x)                 ; 18DF3:  61 51
+b06_8df5:   eor ($51),y                 ; 18DF5:  51 51
+b06_8df7:   eor ($51),y                 ; 18DF7:  51 51
+b06_8df9:   eor ($51),y                 ; 18DF9:  51 51
+b06_8dfb:   eor ($51),y                 ; 18DFB:  51 51
+b06_8dfd:   eor ($51),y                 ; 18DFD:  51 51
+b06_8dff:   eor ($51),y                 ; 18DFF:  51 51
+b06_8e01:   .db $52                     ; 18E01:  52
+b06_8e02:   .db $53                     ; 18E02:  53
+b06_8e03:   .db $54                     ; 18E03:  54
+b06_8e04:   eor $56,x                   ; 18E04:  55 56
+b06_8e06:   .db $57                     ; 18E06:  57
+b06_8e07:   cli                         ; 18E07:  58
+b06_8e08:   eor $5b5a,y                 ; 18E08:  59 5a 5b
+b06_8e0b:   .db $5c                     ; 18E0B:  5c
+b06_8e0c:   eor $5f5e,x                 ; 18E0C:  5d 5e 5f
+b06_8e0f:   rts                         ; 18E0F:  60
+b06_8e10:   adc ($61,x)                 ; 18E10:  61 61
+b06_8e12:   .db $62                     ; 18E12:  62
+b06_8e13:   adc ($51,x)                 ; 18E13:  61 51
+b06_8e15:   eor ($51),y                 ; 18E15:  51 51
+b06_8e17:   eor ($51),y                 ; 18E17:  51 51
+b06_8e19:   eor ($51),y                 ; 18E19:  51 51
+b06_8e1b:   eor ($51),y                 ; 18E1B:  51 51
+b06_8e1d:   eor ($51),y                 ; 18E1D:  51 51
+b06_8e1f:   .db $52                     ; 18E1F:  52
+b06_8e20:   .db $53                     ; 18E20:  53
+b06_8e21:   .db $54                     ; 18E21:  54
+b06_8e22:   eor $56,x                   ; 18E22:  55 56
+b06_8e24:   .db $57                     ; 18E24:  57
+b06_8e25:   cli                         ; 18E25:  58
+b06_8e26:   eor $5b5a,y                 ; 18E26:  59 5a 5b
+b06_8e29:   .db $5c                     ; 18E29:  5c
+b06_8e2a:   eor $5f5e,x                 ; 18E2A:  5d 5e 5f
+b06_8e2d:   rts                         ; 18E2D:  60
+b06_8e2e:   adc ($61,x)                 ; 18E2E:  61 61
+b06_8e30:   adc ($61,x)                 ; 18E30:  61 61
+b06_8e32:   adc ($61,x)                 ; 18E32:  61 61
+b06_8e34:   eor ($51),y                 ; 18E34:  51 51
+b06_8e36:   eor ($51),y                 ; 18E36:  51 51
+b06_8e38:   eor ($51),y                 ; 18E38:  51 51
+b06_8e3a:   eor ($51),y                 ; 18E3A:  51 51
+b06_8e3c:   eor ($51),y                 ; 18E3C:  51 51
+b06_8e3e:   eor ($52),y                 ; 18E3E:  51 52
+b06_8e40:   .db $53                     ; 18E40:  53
+b06_8e41:   .db $54                     ; 18E41:  54
+b06_8e42:   eor $56,x                   ; 18E42:  55 56
+b06_8e44:   .db $57                     ; 18E44:  57
+b06_8e45:   cli                         ; 18E45:  58
+b06_8e46:   eor $5b5a,y                 ; 18E46:  59 5a 5b
+b06_8e49:   .db $5c                     ; 18E49:  5c
+b06_8e4a:   eor $5f5e,x                 ; 18E4A:  5d 5e 5f
+b06_8e4d:   rts                         ; 18E4D:  60
+b06_8e4e:   adc ($61,x)                 ; 18E4E:  61 61
+b06_8e50:   adc ($61,x)                 ; 18E50:  61 61
+b06_8e52:   adc ($61,x)                 ; 18E52:  61 61
+b06_8e54:   eor ($51),y                 ; 18E54:  51 51
+b06_8e56:   eor ($51),y                 ; 18E56:  51 51
+b06_8e58:   eor ($51),y                 ; 18E58:  51 51
+b06_8e5a:   eor ($51),y                 ; 18E5A:  51 51
+b06_8e5c:   eor ($51),y                 ; 18E5C:  51 51
+b06_8e5e:   .db $63                     ; 18E5E:  63
+b06_8e5f:   .db $64                     ; 18E5F:  64
+b06_8e60:   adc $66                     ; 18E60:  65 66
+b06_8e62:   .db $67                     ; 18E62:  67
+b06_8e63:   pla                         ; 18E63:  68
+b06_8e64:   adc #$6a                    ; 18E64:  69 6a
+b06_8e66:   .db $6b                     ; 18E66:  6b
+b06_8e67:   jmp ($6e6d)                 ; 18E67:  6c 6d 6e
+b06_8e6a:   .db $6f                     ; 18E6A:  6f
+b06_8e6b:   bvs $8ede                   ; 18E6B:  70 71
+b06_8e6d:   .db $72                     ; 18E6D:  72
+b06_8e6e:   .db $73                     ; 18E6E:  73
+b06_8e6f:   adc ($61,x)                 ; 18E6F:  61 61
+b06_8e71:   adc ($61,x)                 ; 18E71:  61 61
+b06_8e73:   adc ($51,x)                 ; 18E73:  61 51
+b06_8e75:   eor ($51),y                 ; 18E75:  51 51
+b06_8e77:   eor ($51),y                 ; 18E77:  51 51
+b06_8e79:   eor ($51),y                 ; 18E79:  51 51
+b06_8e7b:   .db $74                     ; 18E7B:  74
+b06_8e7c:   .db $74                     ; 18E7C:  74
+b06_8e7d:   .db $74                     ; 18E7D:  74
+b06_8e7e:   ror $77,x                   ; 18E7E:  76 77
+b06_8e80:   .db $7a                     ; 18E80:  7a
+b06_8e81:   .db $7b                     ; 18E81:  7b
+b06_8e82:   ror $827f,x                 ; 18E82:  7e 7f 82
+b06_8e85:   .db $83                     ; 18E85:  83
+b06_8e86:   stx $87                     ; 18E86:  86 87
+b06_8e88:   txa                         ; 18E88:  8a
+b06_8e89:   .db $8b                     ; 18E89:  8b
+b06_8e8a:   stx $928f                   ; 18E8A:  8e 8f 92
+b06_8e8d:   .db $93                     ; 18E8D:  93
+b06_8e8e:   stx $97,y                   ; 18E8E:  96 97
+b06_8e90:   .db $97                     ; 18E90:  97
+b06_8e91:   .db $97                     ; 18E91:  97
+b06_8e92:   .db $97                     ; 18E92:  97
+b06_8e93:   adc ($51,x)                 ; 18E93:  61 51
+b06_8e95:   eor ($51),y                 ; 18E95:  51 51
+b06_8e97:   eor ($51),y                 ; 18E97:  51 51
+b06_8e99:   .db $74                     ; 18E99:  74
+b06_8e9a:   .db $74                     ; 18E9A:  74
+b06_8e9b:   adc $75,x                   ; 18E9B:  75 75
+b06_8e9d:   adc $78,x                   ; 18E9D:  75 78
+b06_8e9f:   adc $7d7c,y                 ; 18E9F:  79 7c 7d
+b06_8ea2:   .db $80                     ; 18EA2:  80
+b06_8ea3:   sta ($84,x)                 ; 18EA3:  81 84
+b06_8ea5:   sta $88                     ; 18EA5:  85 88
+b06_8ea7:   .db $89                     ; 18EA7:  89
+b06_8ea8:   sty $908d                   ; 18EA8:  8c 8d 90
+b06_8eab:   sta ($94),y                 ; 18EAB:  91 94
+b06_8ead:   sta $98,x                   ; 18EAD:  95 98
+b06_8eaf:   sta $9999,y                 ; 18EAF:  99 99 99
+b06_8eb2:   sta $5197,y                 ; 18EB2:  99 97 51
+b06_8eb5:   eor ($51),y                 ; 18EB5:  51 51
+b06_8eb7:   eor ($74),y                 ; 18EB7:  51 74
+b06_8eb9:   adc $75,x                   ; 18EB9:  75 75
+b06_8ebb:   txs                         ; 18EBB:  9a
+b06_8ebc:   txs                         ; 18EBC:  9a
+b06_8ebd:   txs                         ; 18EBD:  9a
+b06_8ebe:   .db $9c                     ; 18EBE:  9c
+b06_8ebf:   sta $a1a0,x                 ; 18EBF:  9d a0 a1
+b06_8ec2:   ldy $a5                     ; 18EC2:  a4 a5
+b06_8ec4:   .db $a7                     ; 18EC4:  a7
+b06_8ec5:   tay                         ; 18EC5:  a8
+b06_8ec6:   .db $ab                     ; 18EC6:  ab
+b06_8ec7:   ldy $aead                   ; 18EC7:  ac ad ae
+b06_8eca:   lda ($b2),y                 ; 18ECA:  b1 b2
+b06_8ecc:   lda $b6,x                   ; 18ECC:  b5 b6
+b06_8ece:   lda $baba,y                 ; 18ECE:  b9 ba ba
+b06_8ed1:   tsx                         ; 18ED1:  ba
+b06_8ed2:   tsx                         ; 18ED2:  ba
+b06_8ed3:   sta $5151,y                 ; 18ED3:  99 51 51
+b06_8ed6:   eor ($74),y                 ; 18ED6:  51 74
+b06_8ed8:   adc $9a,x                   ; 18ED8:  75 9a
+b06_8eda:   txs                         ; 18EDA:  9a
+b06_8edb:   .db $9b                     ; 18EDB:  9b
+b06_8edc:   .db $9b                     ; 18EDC:  9b
+b06_8edd:   .db $9b                     ; 18EDD:  9b
+b06_8ede:   .db $9e                     ; 18EDE:  9e
+b06_8edf:   .db $9f                     ; 18EDF:  9f
+b06_8ee0:   ldx #$a3                    ; 18EE0:  a2 a3
+b06_8ee2:   ldx $a6                     ; 18EE2:  a6 a6
+b06_8ee4:   lda #$aa                    ; 18EE4:  a9 aa
+b06_8ee6:   ldx $a6                     ; 18EE6:  a6 a6
+b06_8ee8:   .db $af                     ; 18EE8:  af
+b06_8ee9:   bcs $8e9e                   ; 18EE9:  b0 b3
+b06_8eeb:   ldy $b7,x                   ; 18EEB:  b4 b7
+b06_8eed:   clv                         ; 18EED:  b8
+b06_8eee:   .db $bb                     ; 18EEE:  bb
+b06_8eef:   ldy $bcbc,x                 ; 18EEF:  bc bc bc
+b06_8ef2:   ldy $51ba,x                 ; 18EF2:  bc ba 51
+b06_8ef5:   eor ($74),y                 ; 18EF5:  51 74
+b06_8ef7:   adc $9a,x                   ; 18EF7:  75 9a
+b06_8ef9:   .db $9b                     ; 18EF9:  9b
+b06_8efa:   .db $9b                     ; 18EFA:  9b
+b06_8efb:   lda $bdbd,x                 ; 18EFB:  bd bd bd
+b06_8efe:   .db $bf                     ; 18EFE:  bf
+b06_8eff:   cpy #$c3                    ; 18EFF:  c0 c3
+b06_8f01:   cpy $a6                     ; 18F01:  c4 a6
+b06_8f03:   ldx $a6                     ; 18F03:  a6 a6
+b06_8f05:   ldx $a6                     ; 18F05:  a6 a6
+b06_8f07:   ldx $cc                     ; 18F07:  a6 cc
+b06_8f09:   cmp $d1d0                   ; 18F09:  cd d0 d1
+b06_8f0c:   .db $d4                     ; 18F0C:  d4
+b06_8f0d:   cmp $d8,x                   ; 18F0D:  d5 d8
+b06_8f0f:   cmp $d9d9,y                 ; 18F0F:  d9 d9 d9
+b06_8f12:   cmp $74bc,y                 ; 18F12:  d9 bc 74
+b06_8f15:   .db $74                     ; 18F15:  74
+b06_8f16:   adc $9a,x                   ; 18F16:  75 9a
+b06_8f18:   .db $9b                     ; 18F18:  9b
+b06_8f19:   lda $bebd,x                 ; 18F19:  bd bd be
+b06_8f1c:   ldx $c1be,y                 ; 18F1C:  be be c1
+b06_8f1f:   .db $c2                     ; 18F1F:  c2
+b06_8f20:   cmp $c6                     ; 18F20:  c5 c6
+b06_8f22:   .db $c7                     ; 18F22:  c7
+b06_8f23:   iny                         ; 18F23:  c8
+b06_8f24:   cmp #$ca                    ; 18F24:  c9 ca
+b06_8f26:   .db $cb                     ; 18F26:  cb
+b06_8f27:   ldx $ce                     ; 18F27:  a6 ce
+b06_8f29:   .db $cf                     ; 18F29:  cf
+b06_8f2a:   .db $d2                     ; 18F2A:  d2
+b06_8f2b:   .db $d3                     ; 18F2B:  d3
+b06_8f2c:   dec $d7,x                   ; 18F2C:  d6 d7
+b06_8f2e:   .db $da                     ; 18F2E:  da
+b06_8f2f:   .db $db                     ; 18F2F:  db
+b06_8f30:   .db $db                     ; 18F30:  db
+b06_8f31:   .db $db                     ; 18F31:  db
+b06_8f32:   .db $db                     ; 18F32:  db
+b06_8f33:   cmp $7575,y                 ; 18F33:  d9 75 75
+b06_8f36:   txs                         ; 18F36:  9a
+b06_8f37:   .db $9b                     ; 18F37:  9b
+b06_8f38:   lda $bebe,x                 ; 18F38:  bd be be
+b06_8f3b:   .db $dc                     ; 18F3B:  dc
+b06_8f3c:   .db $dc                     ; 18F3C:  dc
+b06_8f3d:   .db $dc                     ; 18F3D:  dc
+b06_8f3e:   dec $e2df,x                 ; 18F3E:  de df e2
+b06_8f41:   .db $e3                     ; 18F41:  e3
+b06_8f42:   ldx $a6                     ; 18F42:  a6 a6
+b06_8f44:   ldx $a6                     ; 18F44:  a6 a6
+b06_8f46:   ldx $a6                     ; 18F46:  a6 a6
+b06_8f48:   ldx $a6                     ; 18F48:  a6 a6
+b06_8f4a:   ldx $e9                     ; 18F4A:  a6 e9
+b06_8f4c:   .db $eb                     ; 18F4C:  eb
+b06_8f4d:   cpx $f0ef                   ; 18F4D:  ec ef f0
+b06_8f50:   beq $8f42                   ; 18F50:  f0 f0
+b06_8f52:   beq $8f2f                   ; 18F52:  f0 db
+b06_8f54:   txs                         ; 18F54:  9a
+b06_8f55:   txs                         ; 18F55:  9a
+b06_8f56:   .db $9b                     ; 18F56:  9b
+b06_8f57:   lda $dcbe,x                 ; 18F57:  bd be dc
+b06_8f5a:   .db $dc                     ; 18F5A:  dc
+b06_8f5b:   cmp $dddd,x                 ; 18F5B:  dd dd dd
+b06_8f5e:   cpx #$e1                    ; 18F5E:  e0 e1
+b06_8f60:   cpx $e5                     ; 18F60:  e4 e5
+b06_8f62:   ldx $e6                     ; 18F62:  a6 e6
+b06_8f64:   .db $e7                     ; 18F64:  e7
+b06_8f65:   inx                         ; 18F65:  e8
+b06_8f66:   ldx $a6                     ; 18F66:  a6 a6
+b06_8f68:   ldx $a6                     ; 18F68:  a6 a6
+b06_8f6a:   ldx $ea                     ; 18F6A:  a6 ea
+b06_8f6c:   sbc $a6ee                   ; 18F6C:  ed ee a6
+b06_8f6f:   sbc ($f1),y                 ; 18F6F:  f1 f1
+b06_8f71:   sbc ($f1),y                 ; 18F71:  f1 f1
+b06_8f73:   beq $8f10                   ; 18F73:  f0 9b
+b06_8f75:   .db $9b                     ; 18F75:  9b
+b06_8f76:   lda $dcbe,x                 ; 18F76:  bd be dc
+b06_8f79:   cmp $f2dd,x                 ; 18F79:  dd dd f2
+b06_8f7c:   .db $f2                     ; 18F7C:  f2
+b06_8f7d:   .db $f2                     ; 18F7D:  f2
+b06_8f7e:   .db $f4                     ; 18F7E:  f4
+b06_8f7f:   sbc $f8,x                   ; 18F7F:  f5 f8
+b06_8f81:   ldx $a6                     ; 18F81:  a6 a6
+b06_8f83:   ldx $a6                     ; 18F83:  a6 a6
+b06_8f85:   ldx $a6                     ; 18F85:  a6 a6
+b06_8f87:   ldx $a6                     ; 18F87:  a6 a6
+b06_8f89:   ldx $a6                     ; 18F89:  a6 a6
+b06_8f8b:   .db $fb                     ; 18F8B:  fb
+b06_8f8c:   .db $fc                     ; 18F8C:  fc
+b06_8f8d:   ldx $a6                     ; 18F8D:  a6 a6
+b06_8f8f:   ldx $a6                     ; 18F8F:  a6 a6
+b06_8f91:   ldx $a6                     ; 18F91:  a6 a6
+b06_8f93:   sbc ($bd),y                 ; 18F93:  f1 bd
+b06_8f95:   lda $dcbe,x                 ; 18F95:  bd be dc
+b06_8f98:   cmp $f2f2,x                 ; 18F98:  dd f2 f2
+b06_8f9b:   .db $f3                     ; 18F9B:  f3
+b06_8f9c:   .db $f3                     ; 18F9C:  f3
+b06_8f9d:   .db $f3                     ; 18F9D:  f3
+b06_8f9e:   inc $f7,x                   ; 18F9E:  f6 f7
+b06_8fa0:   sbc $a6fa,y                 ; 18FA0:  f9 fa a6
+b06_8fa3:   ldx $a6                     ; 18FA3:  a6 a6
+b06_8fa5:   ldx $a6                     ; 18FA5:  a6 a6
+b06_8fa7:   ldx $a6                     ; 18FA7:  a6 a6
+b06_8fa9:   ldx $a6                     ; 18FA9:  a6 a6
+b06_8fab:   ldx $a6                     ; 18FAB:  a6 a6
+b06_8fad:   ldx $a6                     ; 18FAD:  a6 a6
+b06_8faf:   ldx $a6                     ; 18FAF:  a6 a6
+b06_8fb1:   ldx $a6                     ; 18FB1:  a6 a6
+b06_8fb3:   ldx $be                     ; 18FB3:  a6 be
+b06_8fb5:   ldx $dddc,y                 ; 18FB5:  be dc dd
+b06_8fb8:   .db $f2                     ; 18FB8:  f2
+b06_8fb9:   .db $f3                     ; 18FB9:  f3
+b06_8fba:   .db $f3                     ; 18FBA:  f3
+b06_8fbb:   ldx $a6                     ; 18FBB:  a6 a6
+b06_8fbd:   ldx $a6                     ; 18FBD:  a6 a6
+b06_8fbf:   ldx $fd                     ; 18FBF:  a6 fd
+b06_8fc1:   ldx $a6                     ; 18FC1:  a6 a6
+b06_8fc3:   ldx $a6                     ; 18FC3:  a6 a6
+b06_8fc5:   ldx $a6                     ; 18FC5:  a6 a6
+b06_8fc7:   ldx $a6                     ; 18FC7:  a6 a6
+b06_8fc9:   ldx $a6                     ; 18FC9:  a6 a6
+b06_8fcb:   ldx $a6                     ; 18FCB:  a6 a6
+b06_8fcd:   ldx $a6                     ; 18FCD:  a6 a6
+b06_8fcf:   ldx $a6                     ; 18FCF:  a6 a6
+b06_8fd1:   ldx $a6                     ; 18FD1:  a6 a6
+b06_8fd3:   ldx $dc                     ; 18FD3:  a6 dc
+b06_8fd5:   .db $dc                     ; 18FD5:  dc
+b06_8fd6:   cmp $f3f2,x                 ; 18FD6:  dd f2 f3
+b06_8fd9:   ldx $a6                     ; 18FD9:  a6 a6
+b06_8fdb:   ldx $a6                     ; 18FDB:  a6 a6
+b06_8fdd:   ldx $a6                     ; 18FDD:  a6 a6
+b06_8fdf:   ldx $a6                     ; 18FDF:  a6 a6
+b06_8fe1:   ldx $a6                     ; 18FE1:  a6 a6
+b06_8fe3:   ldx $a6                     ; 18FE3:  a6 a6
+b06_8fe5:   ldx $a6                     ; 18FE5:  a6 a6
+b06_8fe7:   ldx $a6                     ; 18FE7:  a6 a6
+b06_8fe9:   ldx $a6                     ; 18FE9:  a6 a6
+b06_8feb:   ldx $a6                     ; 18FEB:  a6 a6
+b06_8fed:   ldx $a6                     ; 18FED:  a6 a6
+b06_8fef:   ldx $a6                     ; 18FEF:  a6 a6
+b06_8ff1:   ldx $a6                     ; 18FF1:  a6 a6
+b06_8ff3:   ldx $dd                     ; 18FF3:  a6 dd
+b06_8ff5:   cmp $f3f2,x                 ; 18FF5:  dd f2 f3
+b06_8ff8:   ldx $a6                     ; 18FF8:  a6 a6
+b06_8ffa:   ldx $a6                     ; 18FFA:  a6 a6
+b06_8ffc:   ldx $a6                     ; 18FFC:  a6 a6
+b06_8ffe:   ldx $a6                     ; 18FFE:  a6 a6
+b06_9000:   ldx $a6                     ; 19000:  a6 a6
+b06_9002:   ldx $a6                     ; 19002:  a6 a6
+b06_9004:   ldx $a6                     ; 19004:  a6 a6
+b06_9006:   ldx $a6                     ; 19006:  a6 a6
+b06_9008:   ldx $a6                     ; 19008:  a6 a6
+b06_900a:   ldx $a6                     ; 1900A:  a6 a6
+b06_900c:   ldx $a6                     ; 1900C:  a6 a6
+b06_900e:   ldx $a6                     ; 1900E:  a6 a6
+b06_9010:   ldx $a6                     ; 19010:  a6 a6
+b06_9012:   ldx $a6                     ; 19012:  a6 a6
+b06_9014:   .db $f2                     ; 19014:  f2
+b06_9015:   .db $f2                     ; 19015:  f2
+b06_9016:   .db $f3                     ; 19016:  f3
+b06_9017:   ldx $a6                     ; 19017:  a6 a6
+b06_9019:   ldx $a6                     ; 19019:  a6 a6
+b06_901b:   ldx $a6                     ; 1901B:  a6 a6
+b06_901d:   ldx $a6                     ; 1901D:  a6 a6
+b06_901f:   ldx $a6                     ; 1901F:  a6 a6
+b06_9021:   ldx $a6                     ; 19021:  a6 a6
+b06_9023:   ldx $a6                     ; 19023:  a6 a6
+b06_9025:   ldx $a6                     ; 19025:  a6 a6
+b06_9027:   ldx $a6                     ; 19027:  a6 a6
+b06_9029:   ldx $a6                     ; 19029:  a6 a6
+b06_902b:   ldx $a6                     ; 1902B:  a6 a6
+b06_902d:   ldx $a6                     ; 1902D:  a6 a6
+b06_902f:   ldx $a6                     ; 1902F:  a6 a6
+b06_9031:   ldx $a6                     ; 19031:  a6 a6
+b06_9033:   ldx $f3                     ; 19033:  a6 f3
+b06_9035:   .db $f3                     ; 19035:  f3
+b06_9036:   ldx $a6                     ; 19036:  a6 a6
+b06_9038:   ldx $a6                     ; 19038:  a6 a6
+b06_903a:   ldx $a6                     ; 1903A:  a6 a6
+b06_903c:   ldx $a6                     ; 1903C:  a6 a6
+b06_903e:   ldx $a6                     ; 1903E:  a6 a6
+b06_9040:   ldx $a6                     ; 19040:  a6 a6
+b06_9042:   ldx $a6                     ; 19042:  a6 a6
+b06_9044:   ldx $a6                     ; 19044:  a6 a6
+b06_9046:   ldx $a6                     ; 19046:  a6 a6
+b06_9048:   ldx $a6                     ; 19048:  a6 a6
+b06_904a:   ldx $a6                     ; 1904A:  a6 a6
+b06_904c:   ldx $a6                     ; 1904C:  a6 a6
+b06_904e:   ldx $a6                     ; 1904E:  a6 a6
+b06_9050:   ldx $a6                     ; 19050:  a6 a6
+b06_9052:   ldx $a6                     ; 19052:  a6 a6
+b06_9054:   and $ce,x                   ; 19054:  35 ce
+b06_9056:   .db $3b                     ; 19056:  3b
+b06_9057:   cpx $e79b                   ; 19057:  ec 9b e7
+b06_905a:   .db $3c                     ; 1905A:  3c
+b06_905b:   .db $db                     ; 1905B:  db
+b06_905c:   pha                         ; 1905C:  48
+b06_905d:   bit $02                     ; 1905D:  24 02
+b06_905f:   pha                         ; 1905F:  48
+b06_9060:   ora ($24),y                 ; 19060:  11 24
+b06_9062:   dey                         ; 19062:  88
+b06_9063:   .db $13                     ; 19063:  13
+b06_9064:   cmp $7bb6                   ; 19064:  cd b6 7b
+b06_9067:   eor $b6fb                   ; 19067:  4d fb b6
+b06_906a:   dec $45bb                   ; 1906A:  ce bb 45
+b06_906d:   bcc $9094                   ; 1906D:  90 25
+b06_906f:   pha                         ; 1906F:  48
+b06_9070:   .db $89                     ; 19070:  89
+b06_9071:   .db $12                     ; 19071:  12
+b06_9072:   .db $64                     ; 19072:  64
+b06_9073:   .db $12                     ; 19073:  12
+b06_9074:   ror $ed,x                   ; 19074:  76 ed
+b06_9076:   .db $9b                     ; 19076:  9b
+b06_9077:   ror $ef,x                   ; 19077:  76 ef
+b06_9079:   .db $dc                     ; 19079:  dc
+b06_907a:   .db $bb                     ; 1907A:  bb
+b06_907b:   .db $6f                     ; 1907B:  6f
+b06_907c:   ora ($28,x)                 ; 1907C:  01 28
+b06_907e:   .db $54                     ; 1907E:  54
+b06_907f:   .db $82                     ; 1907F:  82
+b06_9080:   .db $13                     ; 19080:  13
+b06_9081:   tay                         ; 19081:  a8
+b06_9082:   .db $44                     ; 19082:  44
+b06_9083:   .db $2b                     ; 19083:  2b
+b06_9084:   .db $f2                     ; 19084:  f2
+b06_9085:   .db $cf                     ; 19085:  cf
+b06_9086:   lda $db76,x                 ; 19086:  bd 76 db
+b06_9089:   cmp $77b6,x                 ; 19089:  dd b6 77
+b06_908c:   ora $a2                     ; 1908C:  05 a2
+b06_908e:   .db $54                     ; 1908E:  54
+b06_908f:   pha                         ; 1908F:  48
+b06_9090:   .db $13                     ; 19090:  13
+b06_9091:   tax                         ; 19091:  aa
+b06_9092:   .db $44                     ; 19092:  44
+b06_9093:   ora $5bed,y                 ; 19093:  19 ed 5b
+b06_9096:   ldx $dee5,y                 ; 19096:  be e5 de
+b06_9099:   .db $bb                     ; 19099:  bb
+b06_909a:   sbc $02b7                   ; 1909A:  ed b7 02
+b06_909d:   ldy $8a51                   ; 1909D:  ac 51 8a
+b06_90a0:   .db $64                     ; 190A0:  64
+b06_90a1:   .db $13                     ; 190A1:  13
+b06_90a2:   iny                         ; 190A2:  c8
+b06_90a3:   bit $7bcc                   ; 190A3:  2c cc 7b
+b06_90a6:   .db $ef                     ; 190A6:  ef
+b06_90a7:   .db $db                     ; 190A7:  db
+b06_90a8:   ldx $ed,y                   ; 190A8:  b6 ed
+b06_90aa:   .db $7b                     ; 190AA:  7b
+b06_90ab:   .db $97                     ; 190AB:  97
+b06_90ac:   .db $44                     ; 190AC:  44
+b06_90ad:   .db $ab                     ; 190AD:  ab
+b06_90ae:   bpl $911a                   ; 190AE:  10 6a
+b06_90b0:   lda $88                     ; 190B0:  a5 88
+b06_90b2:   eor $eea2,x                 ; 190B2:  5d a2 ee
+b06_90b5:   cmp $ea3f,y                 ; 190B5:  d9 3f ea
+b06_90b8:   .db $df                     ; 190B8:  df
+b06_90b9:   lda $6e,x                   ; 190B9:  b5 6e
+b06_90bb:   .db $db                     ; 190BB:  db
+b06_90bc:   cmp ($2a),y                 ; 190BC:  d1 2a
+b06_90be:   eor $a8                     ; 190BE:  45 a8
+b06_90c0:   ora $a2,x                   ; 190C0:  15 a2
+b06_90c2:   eor $fb22,y                 ; 190C2:  59 22 fb
+b06_90c5:   lda $ddb6                   ; 190C5:  ad b6 dd
+b06_90c8:   .db $77                     ; 190C8:  77
+b06_90c9:   tsx                         ; 190C9:  ba
+b06_90ca:   .db $ef                     ; 190CA:  ef
+b06_90cb:   adc $51,x                   ; 190CB:  75 51
+b06_90cd:   rol a                       ; 190CD:  2a
+b06_90ce:   .db $44                     ; 190CE:  44
+b06_90cf:   lda #$15                    ; 190CF:  a9 15
+b06_90d1:   ldx #$4c                    ; 190D1:  a2 4c
+b06_90d3:   and #$35                    ; 190D3:  29 35
+b06_90d5:   .db $fb                     ; 190D5:  fb
+b06_90d6:   dec $bbb6                   ; 190D6:  ce b6 bb
+b06_90d9:   inc $6e,x                   ; 190D9:  f6 6e
+b06_90db:   cmp $a510,x                 ; 190DB:  dd 10 a5
+b06_90de:   lsr $58                     ; 190DE:  46 58
+b06_90e0:   .db $02                     ; 190E0:  02
+b06_90e1:   lda $4a,x                   ; 190E1:  b5 4a
+b06_90e3:   sta ($f3),y                 ; 190E3:  91 f3
+b06_90e5:   eor $d3fe                   ; 190E5:  4d fe d3
+b06_90e8:   lda $dbee,x                 ; 190E8:  bd ee db
+b06_90eb:   lda $1162,x                 ; 190EB:  bd 62 11
+b06_90ee:   lsr a                       ; 190EE:  4a
+b06_90ef:   sta $a0,x                   ; 190EF:  95 a0
+b06_90f1:   eor $512a                   ; 190F1:  4d 2a 51
+b06_90f4:   .db $3a                     ; 190F4:  3a
+b06_90f5:   .db $e7                     ; 190F5:  e7
+b06_90f6:   cmp $b7ba,x                 ; 190F6:  dd ba b7
+b06_90f9:   sbc $be6b                   ; 190F9:  ed 6b be
+b06_90fc:   sty $33                     ; 190FC:  84 33
+b06_90fe:   pha                         ; 190FE:  48
+b06_90ff:   .db $14                     ; 190FF:  14
+b06_9100:   .db $a3                     ; 19100:  a3
+b06_9101:   .db $44                     ; 19101:  44
+b06_9102:   and #$4c                    ; 19102:  29 4c
+b06_9104:   .db $e7                     ; 19104:  e7
+b06_9105:   .db $9e                     ; 19105:  9e
+b06_9106:   adc $bee7,y                 ; 19106:  79 e7 be
+b06_9109:   lda $de67,y                 ; 19109:  b9 67 de
+b06_910c:   .db $82                     ; 1910C:  82
+b06_910d:   bit $49                     ; 1910D:  24 49
+b06_910f:   .db $92                     ; 1910F:  92
+b06_9110:   bit $48                     ; 19110:  24 48
+b06_9112:   .db $13                     ; 19112:  13
+b06_9113:   tay                         ; 19113:  a8
+b06_9114:   .db $9c                     ; 19114:  9c
+b06_9115:   .db $67                     ; 19115:  67
+b06_9116:   sbc $e69b,x                 ; 19116:  fd 9b e6
+b06_9119:   eor $f6bb,x                 ; 19119:  5d bb f6
+b06_911c:   eor ($aa,x)                 ; 1911C:  41 aa
+b06_911e:   .db $04                     ; 1911E:  04
+b06_911f:   ora ($c4),y                 ; 1911F:  11 c4
+b06_9121:   plp                         ; 19121:  28
+b06_9122:   ora $98                     ; 19122:  05 98
+b06_9124:   .db $b7                     ; 19124:  b7
+b06_9125:   ror a                       ; 19125:  6a
+b06_9126:   cmp $de33,x                 ; 19126:  dd 33 de
+b06_9129:   .db $eb                     ; 19129:  eb
+b06_912a:   and $14d6,x                 ; 1912A:  3d d6 14
+b06_912d:   .db $82                     ; 1912D:  82
+b06_912e:   bpl $9152                   ; 1912E:  10 22
+b06_9130:   eor $a0                     ; 19130:  45 a0
+b06_9132:   .db $14                     ; 19132:  14
+b06_9133:   brk                         ; 19133:  00
+b06_9134:   ror $57d9                   ; 19134:  6e d9 57
+b06_9137:   lda $37d9                   ; 19137:  ad d9 37
+b06_913a:   inc $6e                     ; 1913A:  e6 6e
+b06_913c:   bpl $90c2                   ; 1913C:  10 84
+b06_913e:   ora ($42),y                 ; 1913E:  11 42
+b06_9140:   php                         ; 19140:  08
+b06_9141:   ldx #$10                    ; 19141:  a2 10
+b06_9143:   eor ($ae,x)                 ; 19143:  41 ae
+b06_9145:   eor ($6e),y                 ; 19145:  51 6e
+b06_9147:   .db $bb                     ; 19147:  bb
+b06_9148:   bit $dd                     ; 19148:  24 dd
+b06_914a:   .db $73                     ; 1914A:  73
+b06_914b:   ldx $2180                   ; 1914B:  ae 80 21
+b06_914e:   .db $04                     ; 1914E:  04
+b06_914f:   pha                         ; 1914F:  48
+b06_9150:   .db $02                     ; 19150:  02
+b06_9151:   bcc $9173                   ; 19151:  90 20
+b06_9153:   asl a                       ; 19153:  0a
+b06_9154:   and ($8d),y                 ; 19154:  31 8d
+b06_9156:   .db $72                     ; 19156:  72
+b06_9157:   txa                         ; 19157:  8a
+b06_9158:   .db $73                     ; 19158:  73
+b06_9159:   jmp $d359                   ; 19159:  4c 59 d3
+b06_915c:   .db $04                     ; 1915C:  04
+b06_915d:   dey                         ; 1915D:  88
+b06_915e:   brk                         ; 1915E:  00
+b06_915f:   .db $22                     ; 1915F:  22
+b06_9160:   brk                         ; 19160:  00
+b06_9161:   dey                         ; 19161:  88
+b06_9162:   .db $44                     ; 19162:  44
+b06_9163:   jsr $dd11                   ; 19163:  20 11 dd
+b06_9166:   .db $22                     ; 19166:  22
+b06_9167:   tax                         ; 19167:  aa
+b06_9168:   .db $33                     ; 19168:  33
+b06_9169:   cpy $3399                   ; 19169:  cc 99 33
+b06_916c:   .db $44                     ; 1916C:  44
+b06_916d:   dey                         ; 1916D:  88
+b06_916e:   brk                         ; 1916E:  00
+b06_916f:   .db $22                     ; 1916F:  22
+b06_9170:   brk                         ; 19170:  00
+b06_9171:   dey                         ; 19171:  88
+b06_9172:   .db $44                     ; 19172:  44
+b06_9173:   brk                         ; 19173:  00
+b06_9174:   ldx $6f,y                   ; 19174:  b6 6f
+b06_9176:   cmp $6eb7,y                 ; 19176:  d9 b7 6e
+b06_9179:   .db $db                     ; 19179:  db
+b06_917a:   ldx $dd,y                   ; 1917A:  b6 dd
+b06_917c:   rol a                       ; 1917C:  2a
+b06_917d:   .db $54                     ; 1917D:  54
+b06_917e:   .db $80                     ; 1917E:  80
+b06_917f:   sta $2b,x                   ; 1917F:  95 2b
+b06_9181:   rti                         ; 19181:  40
+b06_9182:   tax                         ; 19182:  aa
+b06_9183:   ora $eb,x                   ; 19183:  15 eb
+b06_9185:   eor $36f7,x                 ; 19185:  5d f7 36
+b06_9188:   .db $db                     ; 19188:  db
+b06_9189:   sbc $dbbe                   ; 19189:  ed be db
+b06_918c:   lda $48                     ; 1918C:  a5 48
+b06_918e:   .db $93                     ; 1918E:  93
+b06_918f:   lsr a                       ; 1918F:  4a
+b06_9190:   bit $5a                     ; 19190:  24 5a
+b06_9192:   cmp $14                     ; 19192:  c5 14
+b06_9194:   sbc $bb57                   ; 19194:  ed 57 bb
+b06_9197:   inc $ad76                   ; 19197:  ee 76 ad
+b06_919a:   sbc $505b,x                 ; 1919A:  fd 5b 50
+b06_919d:   txa                         ; 1919D:  8a
+b06_919e:   and $89,x                   ; 1919E:  35 89
+b06_91a0:   dex                         ; 191A0:  ca
+b06_91a1:   .db $32                     ; 191A1:  32
+b06_91a2:   tay                         ; 191A2:  a8
+b06_91a3:   .db $47                     ; 191A3:  47
+b06_91a4:   .db $db                     ; 191A4:  db
+b06_91a5:   adc $dd76                   ; 191A5:  6d 76 dd
+b06_91a8:   .db $ef                     ; 191A8:  ef
+b06_91a9:   .db $da                     ; 191A9:  da
+b06_91aa:   .db $bb                     ; 191AA:  bb
+b06_91ab:   .db $77                     ; 191AB:  77
+b06_91ac:   cmp #$26                    ; 191AC:  c9 26
+b06_91ae:   cli                         ; 191AE:  58
+b06_91af:   eor $aa                     ; 191AF:  45 aa
+b06_91b1:   sta $aa,x                   ; 191B1:  95 aa
+b06_91b3:   eor $7a                     ; 191B3:  45 7a
+b06_91b5:   .db $d7                     ; 191B5:  d7
+b06_91b6:   ldx $5bed,y                 ; 191B6:  be ed 5b
+b06_91b9:   .db $fb                     ; 191B9:  fb
+b06_91ba:   lda $9377                   ; 191BA:  ad 77 93
+b06_91bd:   jmp $46b2                   ; 191BD:  4c b2 46
+b06_91c0:   and $a651,x                 ; 191C0:  3d 51 a6
+b06_91c3:   .db $5c                     ; 191C3:  5c
+b06_91c4:   inc $db6d,x                 ; 191C4:  fe 6d db
+b06_91c7:   .db $d7                     ; 191C7:  d7
+b06_91c8:   ldy $df6b,x                 ; 191C8:  bc 6b df
+b06_91cb:   ror $15,x                   ; 191CB:  76 15
+b06_91cd:   nop                         ; 191CD:  ea
+b06_91ce:   sta $14,x                   ; 191CE:  95 14
+b06_91d0:   sbc $02,x                   ; 191D0:  f5 02
+b06_91d2:   lda $7de2,x                 ; 191D2:  bd e2 7d
+b06_91d5:   .db $d7                     ; 191D5:  d7
+b06_91d6:   .db $bb                     ; 191D6:  bb
+b06_91d7:   ror $bfef                   ; 191D7:  6e ef bf
+b06_91da:   ror $ed,x                   ; 191DA:  76 ed
+b06_91dc:   eor $aa,x                   ; 191DC:  55 aa
+b06_91de:   .db $54                     ; 191DE:  54
+b06_91df:   .db $a3                     ; 191DF:  a3
+b06_91e0:   .db $5f                     ; 191E0:  5f
+b06_91e1:   .db $67                     ; 191E1:  67
+b06_91e2:   .db $9e                     ; 191E2:  9e
+b06_91e3:   adc $de                     ; 191E3:  65 de
+b06_91e5:   .db $5b                     ; 191E5:  5b
+b06_91e6:   .db $ef                     ; 191E6:  ef
+b06_91e7:   tsx                         ; 191E7:  ba
+b06_91e8:   .db $d7                     ; 191E8:  d7
+b06_91e9:   sbc $deeb,x                 ; 191E9:  fd eb de
+b06_91ec:   lsr $c8,x                   ; 191EC:  56 c8
+b06_91ee:   rol $e5,x                   ; 191EE:  36 e5
+b06_91f0:   asl a                       ; 191F0:  0a
+b06_91f1:   .db $f4                     ; 191F1:  f4
+b06_91f2:   .db $cb                     ; 191F2:  cb
+b06_91f3:   sty $d7,x                   ; 191F3:  94 d7
+b06_91f5:   .db $bb                     ; 191F5:  bb
+b06_91f6:   adc $dbf6                   ; 191F6:  6d f6 db
+b06_91f9:   adc $feb7                   ; 191F9:  6d b7 fe
+b06_91fc:   ror $94                     ; 191FC:  66 94
+b06_91fe:   tax                         ; 191FE:  aa
+b06_91ff:   eor ($66),y                 ; 191FF:  51 66
+b06_9201:   sta $aa,x                   ; 19201:  95 aa
+b06_9203:   eor $b6,x                   ; 19203:  55 b6
+b06_9205:   .db $6b                     ; 19205:  6b
+b06_9206:   dec $bbed,x                 ; 19206:  de ed bb
+b06_9209:   ldx $6f,y                   ; 19209:  b6 6f
+b06_920b:   sbc $44aa                   ; 1920B:  ed aa 44
+b06_920e:   tax                         ; 1920E:  aa
+b06_920f:   eor $2a,x                   ; 1920F:  55 2a
+b06_9211:   .db $52                     ; 19211:  52
+b06_9212:   lda $db24                   ; 19212:  ad 24 db
+b06_9215:   ldx $ef,y                   ; 19215:  b6 ef
+b06_9217:   sta $fb76,y                 ; 19217:  99 76 fb
+b06_921a:   ldx $6276                   ; 1921A:  ae 76 62
+b06_921d:   sty $99,x                   ; 1921D:  94 99
+b06_921f:   .db $22                     ; 1921F:  22
+b06_9220:   cpy $8673                   ; 19220:  cc 73 86
+b06_9223:   lda $e5bb,y                 ; 19223:  b9 bb e5
+b06_9226:   .db $3f                     ; 19226:  3f
+b06_9227:   sbc #$df                    ; 19227:  e9 df
+b06_9229:   lda $ee,x                   ; 19229:  b5 ee
+b06_922b:   .db $db                     ; 1922B:  db
+b06_922c:   eor $92                     ; 1922C:  45 92
+b06_922e:   lda #$22                    ; 1922E:  a9 22
+b06_9230:   .db $d4                     ; 19230:  d4
+b06_9231:   ora $8a65,y                 ; 19231:  19 65 8a
+b06_9234:   and $5bf7                   ; 19234:  2d f7 5b
+b06_9237:   cpx $db37                   ; 19237:  ec 37 db
+b06_923a:   inc $ad,x                   ; 1923A:  f6 ad
+b06_923c:   .db $43                     ; 1923C:  43
+b06_923d:   plp                         ; 1923D:  28
+b06_923e:   .db $44                     ; 1923E:  44
+b06_923f:   ldx #$55                    ; 1923F:  a2 55
+b06_9241:   plp                         ; 19241:  28
+b06_9242:   and $98                     ; 19242:  25 98
+b06_9244:   .db $db                     ; 19244:  db
+b06_9245:   adc $dbb6                   ; 19245:  6d b6 db
+b06_9248:   adc $6f,x                   ; 19248:  75 6f
+b06_924a:   .db $da                     ; 1924A:  da
+b06_924b:   .db $b7                     ; 1924B:  b7
+b06_924c:   eor $12a0                   ; 1924C:  4d a0 12
+b06_924f:   ldy $08                     ; 1924F:  a4 08
+b06_9251:   .db $62                     ; 19251:  62
+b06_9252:   sty $d911                   ; 19252:  8c 11 d9
+b06_9255:   .db $b7                     ; 19255:  b7
+b06_9256:   .db $da                     ; 19256:  da
+b06_9257:   .db $6b                     ; 19257:  6b
+b06_9258:   ldx $6d,y                   ; 19258:  b6 6d
+b06_925a:   .db $db                     ; 1925A:  db
+b06_925b:   ldx $0c,y                   ; 1925B:  b6 0c
+b06_925d:   ldy #$12                    ; 1925D:  a0 12
+b06_925f:   cpy $09                     ; 1925F:  c4 09
+b06_9261:   .db $b2                     ; 19261:  b2
+b06_9262:   brk                         ; 19262:  00
+b06_9263:   eor $ea,x                   ; 19263:  55 ea
+b06_9265:   eor $b66b,x                 ; 19265:  5d 6b b6
+b06_9268:   .db $da                     ; 19268:  da
+b06_9269:   adc $dbb6                   ; 19269:  6d b6 db
+b06_926c:   eor ($88,x)                 ; 1926C:  41 88
+b06_926e:   bit $21                     ; 1926E:  24 21
+b06_9270:   .db $44                     ; 19270:  44
+b06_9271:   .db $12                     ; 19271:  12
+b06_9272:   bcc $92be                   ; 19272:  90 4a
+b06_9274:   dec $5c,x                   ; 19274:  d6 5c
+b06_9276:   .db $b3                     ; 19276:  b3
+b06_9277:   ror a                       ; 19277:  6a
+b06_9278:   dec $b6b5                   ; 19278:  ce b5 b6
+b06_927b:   adc $8805                   ; 1927B:  6d 05 88
+b06_927e:   bpl $92a2                   ; 1927E:  10 22
+b06_9280:   eor $10                     ; 19280:  45 10
+b06_9282:   .db $44                     ; 19282:  44
+b06_9283:   dey                         ; 19283:  88
+b06_9284:   .db $dc                     ; 19284:  dc
+b06_9285:   .db $bb                     ; 19285:  bb
+b06_9286:   .db $e3                     ; 19286:  e3
+b06_9287:   ldx $db7d                   ; 19287:  ae 7d db
+b06_928a:   stx $7b,y                   ; 1928A:  96 7b
+b06_928c:   plp                         ; 1928C:  28
+b06_928d:   cmp $0a                     ; 1928D:  c5 0a
+b06_928f:   eor ($66),y                 ; 1928F:  51 66
+b06_9291:   .db $89                     ; 19291:  89
+b06_9292:   ldx $58                     ; 19292:  a6 58
+b06_9294:   sbc $dbb7                   ; 19294:  ed b7 db
+b06_9297:   ror $be,x                   ; 19297:  76 be
+b06_9299:   sbc $b7db                   ; 19299:  ed db b7
+b06_929c:   rol $53                     ; 1929C:  26 53
+b06_929e:   cmp $b710                   ; 1929E:  cd 10 b7
+b06_92a1:   ldy $4b                     ; 192A1:  a4 4b
+b06_92a3:   ldy $eeb7                   ; 192A3:  ac b7 ee
+b06_92a6:   and $cef7,y                 ; 192A6:  39 f7 ce
+b06_92a9:   .db $bb                     ; 192A9:  bb
+b06_92aa:   .db $f7                     ; 192AA:  f7
+b06_92ab:   ror $54a2                   ; 192AB:  6e a2 54
+b06_92ae:   eor #$12                    ; 192AE:  49 12
+b06_92b0:   ror $10                     ; 192B0:  66 10
+b06_92b2:   .db $cf                     ; 192B2:  cf
+b06_92b3:   bcc $932c                   ; 192B3:  90 77
+b06_92b5:   sbc $b6bb                   ; 192B5:  ed bb b6
+b06_92b8:   dec $bd6b,x                 ; 192B8:  de 6b bd
+b06_92bb:   .db $f7                     ; 192BB:  f7
+b06_92bc:   .db $b3                     ; 192BC:  b3
+b06_92bd:   sty $5c63                   ; 192BD:  8c 63 5c
+b06_92c0:   sta ($a7),y                 ; 192C0:  91 a7
+b06_92c2:   .db $5a                     ; 192C2:  5a
+b06_92c3:   ldy $db                     ; 192C3:  a4 db
+b06_92c5:   .db $bb                     ; 192C5:  bb
+b06_92c6:   ror $dd,x                   ; 192C6:  76 dd
+b06_92c8:   .db $f7                     ; 192C8:  f7
+b06_92c9:   cmp $6eb7,x                 ; 192C9:  dd b7 6e
+b06_92cc:   and $6b,x                   ; 192CC:  35 6b
+b06_92ce:   .db $44                     ; 192CE:  44
+b06_92cf:   txs                         ; 192CF:  9a
+b06_92d0:   adc $8a,x                   ; 192D0:  75 8a
+b06_92d2:   eor $aa,x                   ; 192D2:  55 aa
+b06_92d4:   .db $6f                     ; 192D4:  6f
+b06_92d5:   tsx                         ; 192D5:  ba
+b06_92d6:   .db $db                     ; 192D6:  db
+b06_92d7:   .db $f7                     ; 192D7:  f7
+b06_92d8:   lda $de6b,x                 ; 192D8:  bd 6b de
+b06_92db:   .db $f7                     ; 192DB:  f7
+b06_92dc:   .db $5b                     ; 192DC:  5b
+b06_92dd:   adc #$96                    ; 192DD:  69 96
+b06_92df:   tax                         ; 192DF:  aa
+b06_92e0:   eor $7ba6,y                 ; 192E0:  59 a6 7b
+b06_92e3:   sty $aef7                   ; 192E3:  8c f7 ae
+b06_92e6:   adc $f7db,x                 ; 192E6:  7d db f7
+b06_92e9:   ldx $73bd                   ; 192E9:  ae bd 73
+b06_92ec:   sec                         ; 192EC:  38
+b06_92ed:   cmp $2a                     ; 192ED:  c5 2a
+b06_92ef:   cmp $2a,x                   ; 192EF:  d5 2a
+b06_92f1:   eor $aa,x                   ; 192F1:  55 aa
+b06_92f3:   .db $b3                     ; 192F3:  b3
+b06_92f4:   cmp $fb6d,x                 ; 192F4:  dd 6d fb
+b06_92f7:   .db $9e                     ; 192F7:  9e
+b06_92f8:   .db $77                     ; 192F8:  77
+b06_92f9:   sbc $eebb                   ; 192F9:  ed bb ee
+b06_92fc:   tax                         ; 192FC:  aa
+b06_92fd:   eor $aa,x                   ; 192FD:  55 aa
+b06_92ff:   .db $93                     ; 192FF:  93
+b06_9300:   jmp ($aa55)                 ; 19300:  6c 55 aa
+b06_9303:   .db $57                     ; 19303:  57
+b06_9304:   dec $77dd,x                 ; 19304:  de dd 77
+b06_9307:   .db $bb                     ; 19307:  bb
+b06_9308:   sbc $de77                   ; 19308:  ed 77 de
+b06_930b:   .db $bb                     ; 1930B:  bb
+b06_930c:   ldy $6a55                   ; 1930C:  ac 55 6a
+b06_930f:   cmp $96,x                   ; 1930F:  d5 96
+b06_9311:   adc $ab,x                   ; 19311:  75 ab
+b06_9313:   jmp ($ddbb)                 ; 19313:  6c bb dd
+b06_9316:   ror $bb,x                   ; 19316:  76 bb
+b06_9318:   .db $df                     ; 19318:  df
+b06_9319:   ror $ef,x                   ; 19319:  76 ef
+b06_931b:   .db $bb                     ; 1931B:  bb
+b06_931c:   ldy $4d,x                   ; 1931C:  b4 4d
+b06_931e:   .db $b3                     ; 1931E:  b3
+b06_931f:   .db $d4                     ; 1931F:  d4
+b06_9320:   and $1aeb                   ; 19320:  2d eb 1a
+b06_9323:   sbc $de                     ; 19323:  e5 de
+b06_9325:   lda $ee73,x                 ; 19325:  bd 73 ee
+b06_9328:   cmp $bb77,x                 ; 19328:  dd 77 bb
+b06_932b:   inc $4da3                   ; 1932B:  ee a3 4d
+b06_932e:   tsx                         ; 1932E:  ba
+b06_932f:   bit $ed                     ; 1932F:  24 ed
+b06_9331:   .db $57                     ; 19331:  57
+b06_9332:   tya                         ; 19332:  98
+b06_9333:   .db $6f                     ; 19333:  6f
+b06_9334:   sbc $badf                   ; 19334:  ed df ba
+b06_9337:   .db $e7                     ; 19337:  e7
+b06_9338:   lda $77bb,x                 ; 19338:  bd bb 77
+b06_933b:   .db $ef                     ; 1933B:  ef
+b06_933c:   asl $6c,x                   ; 1933C:  16 6c
+b06_933e:   .db $b3                     ; 1933E:  b3
+b06_933f:   cpy $26bb                   ; 1933F:  cc bb 26
+b06_9342:   sbc $dd8f,y                 ; 19342:  f9 8f dd
+b06_9345:   .db $bb                     ; 19345:  bb
+b06_9346:   .db $ef                     ; 19346:  ef
+b06_9347:   dec $db75,x                 ; 19347:  de 75 db
+b06_934a:   .db $bf                     ; 1934A:  bf
+b06_934b:   .db $ff                     ; 1934B:  ff
+b06_934c:   .db $b2                     ; 1934C:  b2
+b06_934d:   .db $97                     ; 1934D:  97
+b06_934e:   adc $b3aa                   ; 1934E:  6d aa b3
+b06_9351:   .db $7c                     ; 19351:  7c
+b06_9352:   stx $fb                     ; 19352:  86 fb
+b06_9354:   .db $df                     ; 19354:  df
+b06_9355:   sed                         ; 19355:  f8
+b06_9356:   rti                         ; 19356:  40
+b06_9357:   cpx #$e9                    ; 19357:  e0 e9
+b06_9359:   inc $bd7f,x                 ; 19359:  fe 7f bd
+b06_935c:   .db $7f                     ; 1935C:  7f
+b06_935d:   sei                         ; 1935D:  78
+b06_935e:   cpy #$e0                    ; 1935E:  c0 e0
+b06_9360:   lda #$fe                    ; 19360:  a9 fe
+b06_9362:   .db $b3                     ; 19362:  b3
+b06_9363:   cmp $3044,x                 ; 19363:  dd 44 30
+b06_9366:   cpy $20                     ; 19366:  c4 20
+b06_9368:   pha                         ; 19368:  48
+b06_9369:   brk                         ; 19369:  00
+b06_936a:   and ($88,x)                 ; 1936A:  21 88
+b06_936c:   .db $9e                     ; 1936C:  9e
+b06_936d:   cmp $dc34                   ; 1936D:  cd 34 dc
+b06_9370:   clv                         ; 19370:  b8
+b06_9371:   bvs $9353                   ; 19371:  70 e0
+b06_9373:   cpy #$c1                    ; 19373:  c0 c1
+b06_9375:   clc                         ; 19375:  18
+b06_9376:   .db $d4                     ; 19376:  d4
+b06_9377:   .db $22                     ; 19377:  22
+b06_9378:   .db $54                     ; 19378:  54
+b06_9379:   plp                         ; 19379:  28
+b06_937a:   .db $04                     ; 1937A:  04
+b06_937b:   asl a                       ; 1937B:  0a
+b06_937c:   ldx $e5,y                   ; 1937C:  b6 e5
+b06_937e:   tax                         ; 1937E:  aa
+b06_937f:   cmp $3769,x                 ; 1937F:  dd 69 37
+b06_9382:   .db $1a                     ; 19382:  1a
+b06_9383:   .db $0f                     ; 19383:  0f
+b06_9384:   .db $02                     ; 19384:  02
+b06_9385:   dey                         ; 19385:  88
+b06_9386:   and ($15,x)                 ; 19386:  21 15
+b06_9388:   .db $8b                     ; 19388:  8b
+b06_9389:   .db $17                     ; 19389:  17
+b06_938a:   lsr a                       ; 1938A:  4a
+b06_938b:   bpl $938d                   ; 1938B:  10 00
+b06_938d:   brk                         ; 1938D:  00
+b06_938e:   asl $4f                     ; 1938E:  06 4f
+b06_9390:   .db $3f                     ; 19390:  3f
+b06_9391:   .db $bf                     ; 19391:  bf
+b06_9392:   .db $2f                     ; 19392:  2f
+b06_9393:   asl $40                     ; 19393:  06 40
+b06_9395:   .db $80                     ; 19395:  80
+b06_9396:   bvc $93a0                   ; 19396:  50 08
+b06_9398:   bcc $93da                   ; 19398:  90 40
+b06_939a:   bcc $939d                   ; 1939A:  90 01
+b06_939c:   .db $03                     ; 1939C:  03
+b06_939d:   brk                         ; 1939D:  00
+b06_939e:   .db $80                     ; 1939E:  80
+b06_939f:   cpx #$e4                    ; 1939F:  e0 e4
+b06_93a1:   .db $fb                     ; 193A1:  fb
+b06_93a2:   .db $e7                     ; 193A2:  e7
+b06_93a3:   stx $6d                     ; 193A3:  86 6d
+b06_93a5:   .db $db                     ; 193A5:  db
+b06_93a6:   .db $b7                     ; 193A6:  b7
+b06_93a7:   inc $fb5d                   ; 193A7:  ee 5d fb
+b06_93aa:   .db $b7                     ; 193AA:  b7
+b06_93ab:   cmp $51cd,x                 ; 193AB:  dd cd 51
+b06_93ae:   ldx $9255                   ; 193AE:  ae 55 92
+b06_93b1:   .db $37                     ; 193B1:  37
+b06_93b2:   sbc #$56                    ; 193B2:  e9 56
+b06_93b4:   dec $6dbb,x                 ; 193B4:  de bb 6d
+b06_93b7:   inc $bb,x                   ; 193B7:  f6 bb
+b06_93b9:   .db $af                     ; 193B9:  af
+b06_93ba:   ror $dd,x                   ; 193BA:  76 dd
+b06_93bc:   .db $6b                     ; 193BC:  6b
+b06_93bd:   pha                         ; 193BD:  48
+b06_93be:   .db $b7                     ; 193BE:  b7
+b06_93bf:   eor #$b4                    ; 193BF:  49 b4
+b06_93c1:   .db $4b                     ; 193C1:  4b
+b06_93c2:   lda $fb62,x                 ; 193C2:  bd 62 fb
+b06_93c5:   .db $77                     ; 193C5:  77
+b06_93c6:   asl $bd3b,x                 ; 193C6:  1e 3b bd
+b06_93c9:   inc $ef,x                   ; 193C9:  f6 ef
+b06_93cb:   .db $db                     ; 193CB:  db
+b06_93cc:   .db $fa                     ; 193CC:  fa
+b06_93cd:   adc $1d,x                   ; 193CD:  75 1d
+b06_93cf:   .db $3b                     ; 193CF:  3b
+b06_93d0:   .db $b3                     ; 193D0:  b3
+b06_93d1:   inc $d669,x                 ; 193D1:  fe 69 d6
+b06_93d4:   .db $bb                     ; 193D4:  bb
+b06_93d5:   .db $77                     ; 193D5:  77
+b06_93d6:   cpx $bbdf                   ; 193D6:  ec df bb
+b06_93d9:   inc $b7db                   ; 193D9:  ee db b7
+b06_93dc:   .db $df                     ; 193DC:  df
+b06_93dd:   ldy $5d                     ; 193DD:  a4 5d
+b06_93df:   .db $73                     ; 193DF:  73
+b06_93e0:   jmp $26fb                   ; 193E0:  4c fb 26
+b06_93e3:   .db $eb                     ; 193E3:  eb
+b06_93e4:   .db $db                     ; 193E4:  db
+b06_93e5:   dec $efb5,x                 ; 193E5:  de b5 ef
+b06_93e8:   tsx                         ; 193E8:  ba
+b06_93e9:   .db $67                     ; 193E9:  67
+b06_93ea:   sbc $44db,x                 ; 193EA:  fd db 44
+b06_93ed:   .db $b2                     ; 193ED:  b2
+b06_93ee:   eor $94b2                   ; 193EE:  4d b2 94
+b06_93f1:   .db $67                     ; 193F1:  67
+b06_93f2:   clc                         ; 193F2:  18
+b06_93f3:   .db $eb                     ; 193F3:  eb
+b06_93f4:   lda $fe67,x                 ; 193F4:  bd 67 fe
+b06_93f7:   sta $76ef,y                 ; 193F7:  99 ef 76
+b06_93fa:   cmp $31bb,x                 ; 193FA:  dd bb 31
+b06_93fd:   cmp $09b2                   ; 193FD:  cd b2 09
+b06_9400:   inc $89,x                   ; 19400:  f6 89
+b06_9402:   adc #$9e                    ; 19402:  69 9e
+b06_9404:   .db $77                     ; 19404:  77
+b06_9405:   ldx $dbfd                   ; 19405:  ae fd db
+b06_9408:   .db $6f                     ; 19408:  6f
+b06_9409:   inc $bb,x                   ; 19409:  f6 bb
+b06_940b:   adc $c936                   ; 1940B:  6d 36 c9
+b06_940e:   ldx $59,y                   ; 1940E:  b6 59
+b06_9410:   .db $67                     ; 19410:  67
+b06_9411:   ldy $6e93,x                 ; 19411:  bc 93 6e
+b06_9414:   ror $bbed                   ; 19414:  6e ed bb
+b06_9417:   .db $77                     ; 19417:  77
+b06_9418:   dec $3bed,x                 ; 19418:  de ed 3b
+b06_941b:   .db $f7                     ; 1941B:  f7
+b06_941c:   rts                         ; 1941C:  60
+b06_941d:   .db $9b                     ; 1941D:  9b
+b06_941e:   cmp $6e22,x                 ; 1941E:  dd 22 6e
+b06_9421:   cmp $ff24,y                 ; 19421:  d9 24 ff
+b06_9424:   adc $bbd7,x                 ; 19424:  7d d7 bb
+b06_9427:   inc $dd76                   ; 19427:  ee 76 dd
+b06_942a:   .db $bb                     ; 1942A:  bb
+b06_942b:   inc $3642                   ; 1942B:  ee 42 36
+b06_942e:   .db $44                     ; 1942E:  44
+b06_942f:   lda #$56                    ; 1942F:  a9 56
+b06_9431:   eor #$b2                    ; 19431:  49 b2
+b06_9433:   rol $ed                     ; 19433:  26 ed
+b06_9435:   eor $ee73,x                 ; 19435:  5d 73 ee
+b06_9438:   cmp $76b7,x                 ; 19438:  dd b7 76
+b06_943b:   sbc $54a2                   ; 1943B:  ed a2 54
+b06_943e:   .db $82                     ; 1943E:  82
+b06_943f:   and $c8,x                   ; 1943F:  35 c8
+b06_9441:   .db $14                     ; 19441:  14
+b06_9442:   tax                         ; 19442:  aa
+b06_9443:   eor #$b5                    ; 19443:  49 b5
+b06_9445:   .db $df                     ; 19445:  df
+b06_9446:   adc $ae,x                   ; 19446:  75 ae
+b06_9448:   .db $fb                     ; 19448:  fb
+b06_9449:   dec $7e73,x                 ; 19449:  de 73 7e
+b06_944c:   cmp $e614,y                 ; 1944C:  d9 14 e6
+b06_944f:   ora $99e6,y                 ; 1944F:  19 e6 99
+b06_9452:   .db $e2                     ; 19452:  e2
+b06_9453:   eor $6edb,x                 ; 19453:  5d db 6e
+b06_9456:   lda $dfeb,x                 ; 19456:  bd eb df
+b06_9459:   ldx $ed,y                   ; 19459:  b6 ed
+b06_945b:   .db $bb                     ; 1945B:  bb
+b06_945c:   ldx $51                     ; 1945C:  a6 51
+b06_945e:   txs                         ; 1945E:  9a
+b06_945f:   eor $a2,x                   ; 1945F:  55 a2
+b06_9461:   and $ca,x                   ; 19461:  35 ca
+b06_9463:   eor $6ddb,y                 ; 19463:  59 db 6d
+b06_9466:   ldx $ed,y                   ; 19466:  b6 ed
+b06_9468:   .db $5b                     ; 19468:  5b
+b06_9469:   eor $deeb,x                 ; 19469:  5d eb de
+b06_946c:   tax                         ; 1946C:  aa
+b06_946d:   brk                         ; 1946D:  00
+b06_946e:   tax                         ; 1946E:  aa
+b06_946f:   eor $88,x                   ; 1946F:  55 88
+b06_9471:   eor ($26),y                 ; 19471:  51 26
+b06_9473:   bvc $94e2                   ; 19473:  50 6d
+b06_9475:   .db $d7                     ; 19475:  d7
+b06_9476:   tsx                         ; 19476:  ba
+b06_9477:   cmp $37,x                   ; 19477:  d5 37
+b06_9479:   inc $df69                   ; 19479:  ee 69 df
+b06_947c:   and ($98,x)                 ; 1947C:  21 98
+b06_947e:   .db $42                     ; 1947E:  42
+b06_947f:   bit $88                     ; 1947F:  24 88
+b06_9481:   ora ($a6),y                 ; 19481:  11 a6
+b06_9483:   pha                         ; 19483:  48
+b06_9484:   adc $d7,x                   ; 19484:  75 d7
+b06_9486:   .db $bb                     ; 19486:  bb
+b06_9487:   ror $b7ed                   ; 19487:  6e ed b7
+b06_948a:   .db $dc                     ; 1948A:  dc
+b06_948b:   .db $77                     ; 1948B:  77
+b06_948c:   .db $8b                     ; 1948C:  8b
+b06_948d:   .db $54                     ; 1948D:  54
+b06_948e:   .db $22                     ; 1948E:  22
+b06_948f:   eor $88,x                   ; 1948F:  55 88
+b06_9491:   .db $33                     ; 19491:  33
+b06_9492:   ldx $44                     ; 19492:  a6 44
+b06_9494:   ldx $75,y                   ; 19494:  b6 75
+b06_9496:   .db $5b                     ; 19496:  5b
+b06_9497:   inc $adbb                   ; 19497:  ee bb ad
+b06_949a:   inc $ad,x                   ; 1949A:  f6 ad
+b06_949c:   eor #$92                    ; 1949C:  49 92
+b06_949e:   .db $64                     ; 1949E:  64
+b06_949f:   eor #$90                    ; 1949F:  49 90
+b06_94a1:   and $24,x                   ; 194A1:  35 24
+b06_94a3:   dex                         ; 194A3:  ca
+b06_94a4:   .db $ab                     ; 194A4:  ab
+b06_94a5:   .db $5c                     ; 194A5:  5c
+b06_94a6:   .db $f3                     ; 194A6:  f3
+b06_94a7:   sta $ee6b,x                 ; 194A7:  9d 6b ee
+b06_94aa:   sta $1176,y                 ; 194AA:  99 76 11
+b06_94ad:   .db $22                     ; 194AD:  22
+b06_94ae:   cpy $08                     ; 194AE:  c4 08
+b06_94b0:   sta ($22),y                 ; 194B0:  91 22
+b06_94b2:   .db $44                     ; 194B2:  44
+b06_94b3:   tya                         ; 194B3:  98
+b06_94b4:   rol $ed                     ; 194B4:  26 ed
+b06_94b6:   eor $35d6,y                 ; 194B6:  59 d6 35
+b06_94b9:   dec $ddb3                   ; 194B9:  ce b3 dd
+b06_94bc:   .db $44                     ; 194BC:  44
+b06_94bd:   .db $22                     ; 194BD:  22
+b06_94be:   bpl $9440                   ; 194BE:  10 80
+b06_94c0:   lsr $10                     ; 194C0:  46 10
+b06_94c2:   dey                         ; 194C2:  88
+b06_94c3:   and ($ed,x)                 ; 194C3:  21 ed
+b06_94c5:   .db $9b                     ; 194C5:  9b
+b06_94c6:   ror $ed,x                   ; 194C6:  76 ed
+b06_94c8:   .db $5b                     ; 194C8:  5b
+b06_94c9:   ldx $ed,y                   ; 194C9:  b6 ed
+b06_94cb:   .db $9b                     ; 194CB:  9b
+b06_94cc:   .db $02                     ; 194CC:  02
+b06_94cd:   .db $22                     ; 194CD:  22
+b06_94ce:   cld                         ; 194CE:  d8
+b06_94cf:   .db $04                     ; 194CF:  04
+b06_94d0:   .db $62                     ; 194D0:  62
+b06_94d1:   sta $5402,y                 ; 194D1:  99 02 54
+b06_94d4:   ror $9d                     ; 194D4:  66 9d
+b06_94d6:   adc $9de7,y                 ; 194D6:  79 e7 9d
+b06_94d9:   ror $eb,x                   ; 194D9:  76 eb
+b06_94db:   .db $9c                     ; 194DB:  9c
+b06_94dc:   dey                         ; 194DC:  88
+b06_94dd:   .db $44                     ; 194DD:  44
+b06_94de:   .db $22                     ; 194DE:  22
+b06_94df:   sta ($08),y                 ; 194DF:  91 08
+b06_94e1:   .db $44                     ; 194E1:  44
+b06_94e2:   .db $22                     ; 194E2:  22
+b06_94e3:   eor ($ee),y                 ; 194E3:  51 ee
+b06_94e5:   adc $dbb7,x                 ; 194E5:  7d b7 db
+b06_94e8:   ror $bdf7                   ; 194E8:  6e f7 bd
+b06_94eb:   ror $ca33                   ; 194EB:  6e 33 ca
+b06_94ee:   and $a2,x                   ; 194EE:  35 a2
+b06_94f0:   eor $44ba                   ; 194F0:  4d ba 44
+b06_94f3:   .db $bb                     ; 194F3:  bb
+b06_94f4:   .db $db                     ; 194F4:  db
+b06_94f5:   .db $77                     ; 194F5:  77
+b06_94f6:   inc $bbdd                   ; 194F6:  ee dd bb
+b06_94f9:   .db $77                     ; 194F9:  77
+b06_94fa:   inc $45dd                   ; 194FA:  ee dd 45
+b06_94fd:   tsx                         ; 194FD:  ba
+b06_94fe:   sta $66,x                   ; 194FE:  95 66
+b06_9500:   .db $9c                     ; 19500:  9c
+b06_9501:   .db $d3                     ; 19501:  d3
+b06_9502:   and $a6,x                   ; 19502:  35 a6
+b06_9504:   .db $db                     ; 19504:  db
+b06_9505:   .db $fb                     ; 19505:  fb
+b06_9506:   rol $dbfd                   ; 19506:  2e fd db
+b06_9509:   ror $df,x                   ; 19509:  76 df
+b06_950b:   sbc $aa55                   ; 1950B:  ed 55 aa
+b06_950e:   .db $54                     ; 1950E:  54
+b06_950f:   .db $ab                     ; 1950F:  ab
+b06_9510:   tax                         ; 19510:  aa
+b06_9511:   ror a                       ; 19511:  6a
+b06_9512:   cmp $9b,x                   ; 19512:  d5 9b
+b06_9514:   adc $dfbb                   ; 19514:  6d bb df
+b06_9517:   inc $7d,x                   ; 19517:  f6 7d
+b06_9519:   .db $d7                     ; 19519:  d7
+b06_951a:   lda $73ee,x                 ; 1951A:  bd ee 73
+b06_951d:   ldx $9cd3                   ; 1951D:  ae d3 9c
+b06_9520:   .db $6b                     ; 19520:  6b
+b06_9521:   lda $3ad5                   ; 19521:  ad d5 3a
+b06_9524:   .db $bb                     ; 19524:  bb
+b06_9525:   .db $77                     ; 19525:  77
+b06_9526:   inc $dbbd                   ; 19526:  ee bd db
+b06_9529:   .db $7f                     ; 19529:  7f
+b06_952a:   nop                         ; 1952A:  ea
+b06_952b:   .db $bf                     ; 1952B:  bf
+b06_952c:   .db $34                     ; 1952C:  34
+b06_952d:   .db $e7                     ; 1952D:  e7
+b06_952e:   eor $d7db,y                 ; 1952E:  59 db d7
+b06_9531:   plp                         ; 19531:  28
+b06_9532:   .db $77                     ; 19532:  77
+b06_9533:   cmp $b77b                   ; 19533:  cd 7b b7
+b06_9536:   cmp $bdef,x                 ; 19536:  dd ef bd
+b06_9539:   .db $77                     ; 19539:  77
+b06_953a:   cmp $e7ee,x                 ; 1953A:  dd ee e7
+b06_953d:   .db $3c                     ; 1953D:  3c
+b06_953e:   .db $cb                     ; 1953E:  cb
+b06_953f:   .db $3b                     ; 1953F:  3b
+b06_9540:   ror $de                     ; 19540:  66 de
+b06_9542:   lda $4d,x                   ; 19542:  b5 4d
+b06_9544:   sbc $be77                   ; 19544:  ed 77 be
+b06_9547:   sbc $7bef                   ; 19547:  ed ef 7b
+b06_954a:   cmp $9bf6,x                 ; 1954A:  dd f6 9b
+b06_954d:   ror $b9                     ; 1954D:  66 b9
+b06_954f:   .db $d7                     ; 1954F:  d7
+b06_9550:   bit $9deb                   ; 19550:  2c eb 9d
+b06_9553:   ror $d7                     ; 19553:  66 d7
+b06_9555:   ror $bbef,x                 ; 19555:  7e ef bb
+b06_9558:   inc $bf76                   ; 19558:  ee 76 bf
+b06_955b:   .db $db                     ; 1955B:  db
+b06_955c:   .db $bf                     ; 1955C:  bf
+b06_955d:   lsr a                       ; 1955D:  4a
+b06_955e:   .db $b7                     ; 1955E:  b7
+b06_955f:   .db $af                     ; 1955F:  af
+b06_9560:   ror a                       ; 19560:  6a
+b06_9561:   .db $da                     ; 19561:  da
+b06_9562:   .db $37                     ; 19562:  37
+b06_9563:   .db $ef                     ; 19563:  ef
+b06_9564:   .db $df                     ; 19564:  df
+b06_9565:   adc $6e,x                   ; 19565:  75 6e
+b06_9567:   .db $ff                     ; 19567:  ff
+b06_9568:   cmp $bf77,y                 ; 19568:  d9 77 bf
+b06_956b:   inc $fb,x                   ; 1956B:  f6 fb
+b06_956d:   lda $7a57                   ; 1956D:  ad 57 7a
+b06_9570:   lda $def3                   ; 19570:  ad f3 de
+b06_9573:   .db $2b                     ; 19573:  2b
+b06_9574:   inc $be,x                   ; 19574:  f6 be
+b06_9576:   inc $de76                   ; 19576:  ee 76 de
+b06_9579:   tsx                         ; 19579:  ba
+b06_957a:   ror $ee,x                   ; 1957A:  76 ee
+b06_957c:   lsr $76aa,x                 ; 1957C:  5e aa 76
+b06_957f:   dec $ee7a                   ; 1957F:  ce 7a ee
+b06_9582:   stx $7a,y                   ; 19582:  96 7a
+b06_9584:   sbc $357f                   ; 19584:  ed 7f 35
+b06_9587:   ror $1b5f                   ; 19587:  6e 5f 1b
+b06_958a:   .db $0f                     ; 1958A:  0f
+b06_958b:   brk                         ; 1958B:  00
+b06_958c:   dec $6f,x                   ; 1958C:  d6 6f
+b06_958e:   and $7e,x                   ; 1958E:  35 7e
+b06_9590:   .db $57                     ; 19590:  57
+b06_9591:   .db $1f                     ; 19591:  1f
+b06_9592:   .db $0f                     ; 19592:  0f
+b06_9593:   brk                         ; 19593:  00
+b06_9594:   inc $e0f8,x                 ; 19594:  fe f8 e0
+b06_9597:   brk                         ; 19597:  00
+b06_9598:   brk                         ; 19598:  00
+b06_9599:   rts                         ; 19599:  60
+b06_959a:   sbc $6e00,x                 ; 1959A:  fd 00 6e
+b06_959d:   clv                         ; 1959D:  b8
+b06_959e:   cpx #$00                    ; 1959E:  e0 00
+b06_95a0:   brk                         ; 195A0:  00
+b06_95a1:   rts                         ; 195A1:  60
+b06_95a2:   .db $fc                     ; 195A2:  fc
+b06_95a3:   brk                         ; 195A3:  00
+b06_95a4:   brk                         ; 195A4:  00
+b06_95a5:   brk                         ; 195A5:  00
+b06_95a6:   brk                         ; 195A6:  00
+b06_95a7:   brk                         ; 195A7:  00
+b06_95a8:   brk                         ; 195A8:  00
+b06_95a9:   brk                         ; 195A9:  00
+b06_95aa:   brk                         ; 195AA:  00
+b06_95ab:   brk                         ; 195AB:  00
+b06_95ac:   brk                         ; 195AC:  00
+b06_95ad:   brk                         ; 195AD:  00
+b06_95ae:   brk                         ; 195AE:  00
+b06_95af:   brk                         ; 195AF:  00
+b06_95b0:   brk                         ; 195B0:  00
+b06_95b1:   brk                         ; 195B1:  00
+b06_95b2:   brk                         ; 195B2:  00
+b06_95b3:   brk                         ; 195B3:  00
+b06_95b4:   eor $02                     ; 195B4:  45 02
+b06_95b6:   plp                         ; 195B6:  28
+b06_95b7:   .db $04                     ; 195B7:  04
+b06_95b8:   brk                         ; 195B8:  00
+b06_95b9:   tax                         ; 195B9:  aa
+b06_95ba:   adc $26                     ; 195BA:  65 26
+b06_95bc:   bpl $95be                   ; 195BC:  10 00
+b06_95be:   brk                         ; 195BE:  00
+b06_95bf:   ora ($a4,x)                 ; 195BF:  01 a4
+b06_95c1:   .db $62                     ; 195C1:  62
+b06_95c2:   lsr $60                     ; 195C2:  46 60
+b06_95c4:   pha                         ; 195C4:  48
+b06_95c5:   ldy #$00                    ; 195C5:  a0 00
+b06_95c7:   .db $80                     ; 195C7:  80
+b06_95c8:   brk                         ; 195C8:  00
+b06_95c9:   jsr $1010                   ; 195C9:  20 10 10
+b06_95cc:   .db $03                     ; 195CC:  03
+b06_95cd:   brk                         ; 195CD:  00
+b06_95ce:   brk                         ; 195CE:  00
+b06_95cf:   brk                         ; 195CF:  00
+b06_95d0:   php                         ; 195D0:  08
+b06_95d1:   rts                         ; 195D1:  60
+b06_95d2:   and ($20),y                 ; 195D2:  31 20
+b06_95d4:   dey                         ; 195D4:  88
+b06_95d5:   jsr $0000                   ; 195D5:  20 00 00
+b06_95d8:   brk                         ; 195D8:  00
+b06_95d9:   brk                         ; 195D9:  00
+b06_95da:   brk                         ; 195DA:  00
+b06_95db:   brk                         ; 195DB:  00
+b06_95dc:   brk                         ; 195DC:  00
+b06_95dd:   brk                         ; 195DD:  00
+b06_95de:   brk                         ; 195DE:  00
+b06_95df:   brk                         ; 195DF:  00
+b06_95e0:   brk                         ; 195E0:  00
+b06_95e1:   brk                         ; 195E1:  00
+b06_95e2:   brk                         ; 195E2:  00
+b06_95e3:   brk                         ; 195E3:  00
+b06_95e4:   brk                         ; 195E4:  00
+b06_95e5:   bcc $95e7                   ; 195E5:  90 00
+b06_95e7:   brk                         ; 195E7:  00
+b06_95e8:   brk                         ; 195E8:  00
+b06_95e9:   brk                         ; 195E9:  00
+b06_95ea:   brk                         ; 195EA:  00
+b06_95eb:   brk                         ; 195EB:  00
+b06_95ec:   brk                         ; 195EC:  00
+b06_95ed:   brk                         ; 195ED:  00
+b06_95ee:   brk                         ; 195EE:  00
+b06_95ef:   brk                         ; 195EF:  00
+b06_95f0:   brk                         ; 195F0:  00
+b06_95f1:   brk                         ; 195F1:  00
+b06_95f2:   brk                         ; 195F2:  00
+b06_95f3:   brk                         ; 195F3:  00
+b06_95f4:   inc $1dff                   ; 195F4:  ee ff 1d
+b06_95f7:   .db $03                     ; 195F7:  03
+b06_95f8:   .db $07                     ; 195F8:  07
+b06_95f9:   and $ff,x                   ; 195F9:  35 ff
+b06_95fb:   brk                         ; 195FB:  00
+b06_95fc:   lda $1df7,x                 ; 195FC:  bd f7 1d
+b06_95ff:   .db $03                     ; 195FF:  03
+b06_9600:   .db $07                     ; 19600:  07
+b06_9601:   .db $37                     ; 19601:  37
+b06_9602:   .db $ff                     ; 19602:  ff
+b06_9603:   brk                         ; 19603:  00
+b06_9604:   sbc $bb6f,x                 ; 19604:  fd 6f bb
+b06_9607:   .db $f7                     ; 19607:  f7
+b06_9608:   .db $6f                     ; 19608:  6f
+b06_9609:   dec $00f0,x                 ; 19609:  de f0 00
+b06_960c:   cmp $6d33,x                 ; 1960C:  dd 33 6d
+b06_960f:   .db $eb                     ; 1960F:  eb
+b06_9610:   .db $9b                     ; 19610:  9b
+b06_9611:   ror $00f0,x                 ; 19611:  7e f0 00
+b06_9614:   .db $ff                     ; 19614:  ff
+b06_9615:   rol $3d,x                   ; 19615:  36 3d
+b06_9617:   .db $b7                     ; 19617:  b7
+b06_9618:   .db $3b                     ; 19618:  3b
+b06_9619:   rol $0d3e,x                 ; 19619:  3e 3e 0d
+b06_961c:   .db $fa                     ; 1961C:  fa
+b06_961d:   and $36,x                   ; 1961D:  35 36
+b06_961f:   .db $bb                     ; 1961F:  bb
+b06_9620:   and $3936                   ; 19620:  2d 36 39
+b06_9623:   asl $bbdd                   ; 19623:  0e dd bb
+b06_9626:   .db $ef                     ; 19626:  ef
+b06_9627:   ror $db,x                   ; 19627:  76 db
+b06_9629:   lda $eef7,x                 ; 19629:  bd f7 ee
+b06_962c:   pha                         ; 1962C:  48
+b06_962d:   .db $d7                     ; 1962D:  d7
+b06_962e:   .db $b2                     ; 1962E:  b2
+b06_962f:   adc $f34d                   ; 1962F:  6d 4d f3
+b06_9632:   sty $0f77                   ; 19632:  8c 77 0f
+b06_9635:   .db $0b                     ; 19635:  0b
+b06_9636:   .db $0f                     ; 19636:  0f
+b06_9637:   asl $0f0d                   ; 19637:  0e 0d 0f
+b06_963a:   .db $0b                     ; 1963A:  0b
+b06_963b:   asl $090f                   ; 1963B:  0e 0f 09
+b06_963e:   asl $0e0b                   ; 1963E:  0e 0b 0e
+b06_9641:   ora $0e0b                   ; 19641:  0d 0b 0e
+b06_9644:   .db $5b                     ; 19644:  5b
+b06_9645:   .db $f7                     ; 19645:  f7
+b06_9646:   eor $fbee,x                 ; 19646:  5d ee fb
+b06_9649:   .db $37                     ; 19649:  37
+b06_964a:   cmp $59ee,x                 ; 1964A:  dd ee 59
+b06_964d:   ror $dd                     ; 1964D:  66 dd
+b06_964f:   lsr $d9,x                   ; 1964F:  56 d9
+b06_9651:   ldx $76,y                   ; 19651:  b6 76
+b06_9653:   eor $dfb5                   ; 19653:  4d b5 df
+b06_9656:   adc $bef7                   ; 19656:  6d f7 be
+b06_9659:   sbc $fe5b                   ; 19659:  ed 5b fe
+b06_965c:   ldx #$5e                    ; 1965C:  a2 5e
+b06_965e:   cmp ($36),y                 ; 1965E:  d1 36
+b06_9660:   tax                         ; 19660:  aa
+b06_9661:   eor $b6,x                   ; 19661:  55 b6
+b06_9663:   jmp $6ef6                   ; 19663:  4c f6 6e
+b06_9666:   .db $db                     ; 19666:  db
+b06_9667:   .db $7f                     ; 19667:  7f
+b06_9668:   inc $bb                     ; 19668:  e6 bb
+b06_966a:   inc $a6a7,x                 ; 1966A:  fe a7 a6
+b06_966d:   eor $94aa,y                 ; 1966D:  59 aa 94
+b06_9670:   .db $eb                     ; 19670:  eb
+b06_9671:   .db $0c                     ; 19671:  0c
+b06_9672:   .db $f3                     ; 19672:  f3
+b06_9673:   jmp $6fb5                   ; 19673:  4c b5 6f
+b06_9676:   .db $db                     ; 19676:  db
+b06_9677:   sbc $6eb7,x                 ; 19677:  fd b7 6e
+b06_967a:   cmp $b3fb,x                 ; 1967A:  dd fb b3
+b06_967d:   eor $b2ce,y                 ; 1967D:  59 ce b2
+b06_9680:   lda $7bc6,x                 ; 19680:  bd c6 7b
+b06_9683:   cpy $6ffa                   ; 19683:  cc fa 6f
+b06_9686:   cmp $b77b,x                 ; 19686:  dd 7b b7
+b06_9689:   cmp $6df7,x                 ; 19689:  dd f7 6d
+b06_968c:   .db $b3                     ; 1968C:  b3
+b06_968d:   cmp $bb54                   ; 1968D:  cd 54 bb
+b06_9690:   cpy $d933                   ; 19690:  cc 33 d9
+b06_9693:   ldx $dd                     ; 19693:  a6 dd
+b06_9695:   inc $77bb                   ; 19695:  ee bb 77
+b06_9698:   cmp $ebbd,x                 ; 19698:  dd bd eb
+b06_969b:   ldx $46b9                   ; 1969B:  ae b9 46
+b06_969e:   sta $2ce5,y                 ; 1969E:  99 e5 2c
+b06_96a1:   lsr a                       ; 196A1:  4a
+b06_96a2:   cmp ($2e),y                 ; 196A2:  d1 2e
+b06_96a4:   .db $7b                     ; 196A4:  7b
+b06_96a5:   inc $be                     ; 196A5:  e6 be
+b06_96a7:   .db $bb                     ; 196A7:  bb
+b06_96a8:   adc $de                     ; 196A8:  65 de
+b06_96aa:   .db $bb                     ; 196AA:  bb
+b06_96ab:   sbc $2299                   ; 196AB:  ed 99 22
+b06_96ae:   jmp $8969                   ; 196AE:  4c 69 89
+b06_96b1:   .db $b2                     ; 196B1:  b2
+b06_96b2:   jmp $fe23                   ; 196B2:  4c 23 fe
+b06_96b5:   adc #$df                    ; 196B5:  69 df
+b06_96b7:   .db $bb                     ; 196B7:  bb
+b06_96b8:   ror $77dd                   ; 196B8:  6e dd 77
+b06_96bb:   .db $da                     ; 196BB:  da
+b06_96bc:   adc #$92                    ; 196BC:  69 92
+b06_96be:   adc $d48a                   ; 196BE:  6d 8a d4
+b06_96c1:   .db $2b                     ; 196C1:  2b
+b06_96c2:   .db $d4                     ; 196C2:  d4
+b06_96c3:   lda #$b6                    ; 196C3:  a9 b6
+b06_96c5:   .db $db                     ; 196C5:  db
+b06_96c6:   adc $debb                   ; 196C6:  6d bb de
+b06_96c9:   .db $f3                     ; 196C9:  f3
+b06_96ca:   sta $dc6f,x                 ; 196CA:  9d 6f dc
+b06_96cd:   and ($4d,x)                 ; 196CD:  21 4d
+b06_96cf:   .db $b2                     ; 196CF:  b2
+b06_96d0:   cmp #$36                    ; 196D0:  c9 36
+b06_96d2:   .db $64                     ; 196D2:  64
+b06_96d3:   .db $89                     ; 196D3:  89
+b06_96d4:   ror $ed,x                   ; 196D4:  76 ed
+b06_96d6:   .db $d7                     ; 196D6:  d7
+b06_96d7:   lda $efb6,y                 ; 196D7:  b9 b6 ef
+b06_96da:   jmp ($a2bb)                 ; 196DA:  6c bb a2
+b06_96dd:   .db $44                     ; 196DD:  44
+b06_96de:   tya                         ; 196DE:  98
+b06_96df:   and ($4a,x)                 ; 196DF:  21 4a
+b06_96e1:   .db $54                     ; 196E1:  54
+b06_96e2:   ldy #$19                    ; 196E2:  a0 19
+b06_96e4:   .db $73                     ; 196E4:  73
+b06_96e5:   inc $f59b                   ; 196E5:  ee 9b f5
+b06_96e8:   ror $f799                   ; 196E8:  6e 99 f7
+b06_96eb:   ror $408a                   ; 196EB:  6e 8a 40
+b06_96ee:   ldy $11                     ; 196EE:  a4 11
+b06_96f0:   txa                         ; 196F0:  8a
+b06_96f1:   bvc $9675                   ; 196F1:  50 82
+b06_96f3:   .db $54                     ; 196F3:  54
+b06_96f4:   .db $d7                     ; 196F4:  d7
+b06_96f5:   .db $7c                     ; 196F5:  7c
+b06_96f6:   .db $b7                     ; 196F6:  b7
+b06_96f7:   cmp $b67b                   ; 196F7:  cd 7b b6
+b06_96fa:   .db $ef                     ; 196FA:  ef
+b06_96fb:   adc #$a6                    ; 196FB:  69 a6
+b06_96fd:   pha                         ; 196FD:  48
+b06_96fe:   .db $32                     ; 196FE:  32
+b06_96ff:   eor $98                     ; 196FF:  45 98
+b06_9701:   ror $91                     ; 19701:  66 91
+b06_9703:   stx $d9,y                   ; 19703:  96 d9
+b06_9705:   ldx $6f,y                   ; 19705:  b6 6f
+b06_9707:   cmp $f35e,y                 ; 19707:  d9 5e f3
+b06_970a:   .db $9c                     ; 1970A:  9c
+b06_970b:   .db $77                     ; 1970B:  77
+b06_970c:   dey                         ; 1970C:  88
+b06_970d:   and ($ca,x)                 ; 1970D:  21 ca
+b06_970f:   bpl $9737                   ; 1970F:  10 26
+b06_9711:   iny                         ; 19711:  c8
+b06_9712:   ora ($6a),y                 ; 19712:  11 6a
+b06_9714:   .db $bb                     ; 19714:  bb
+b06_9715:   ror $df,x                   ; 19715:  76 df
+b06_9717:   .db $eb                     ; 19717:  eb
+b06_9718:   ldx $7fd5,y                 ; 19718:  be d5 7f
+b06_971b:   .db $eb                     ; 1971B:  eb
+b06_971c:   cmp $bd66,y                 ; 1971C:  d9 66 bd
+b06_971f:   .db $93                     ; 1971F:  93
+b06_9720:   adc $daa6,x                 ; 19720:  7d a6 da
+b06_9723:   eor $77dd,x                 ; 19723:  5d dd 77
+b06_9726:   .db $ef                     ; 19726:  ef
+b06_9727:   tsx                         ; 19727:  ba
+b06_9728:   .db $df                     ; 19728:  df
+b06_9729:   .db $fb                     ; 19729:  fb
+b06_972a:   ror $b3b7                   ; 1972A:  6e b7 b3
+b06_972d:   ldx $7e                     ; 1972D:  a6 7e
+b06_972f:   eor $fa                     ; 1972F:  45 fa
+b06_9731:   and $b9d7                   ; 19731:  2d d7 b9
+b06_9734:   lda $ef,x                   ; 19734:  b5 ef
+b06_9736:   .db $7b                     ; 19736:  7b
+b06_9737:   inc $bddb                   ; 19737:  ee db bd
+b06_973a:   .db $77                     ; 1973A:  77
+b06_973b:   inc $6db2                   ; 1973B:  ee b2 6d
+b06_973e:   .db $db                     ; 1973E:  db
+b06_973f:   and $ae,x                   ; 1973F:  35 ae
+b06_9741:   .db $d3                     ; 19741:  d3
+b06_9742:   ldx $bbd5,y                 ; 19742:  be d5 bb
+b06_9745:   .db $77                     ; 19745:  77
+b06_9746:   dec $b7fd,x                 ; 19746:  de fd b7
+b06_9749:   .db $db                     ; 19749:  db
+b06_974a:   adc $dbef,x                 ; 1974A:  7d ef db
+b06_974d:   .db $b2                     ; 1974D:  b2
+b06_974e:   adc $f957                   ; 1974E:  6d 57 f9
+b06_9751:   .db $af                     ; 19751:  af
+b06_9752:   ldx $5d,y                   ; 19752:  b6 5d
+b06_9754:   .db $db                     ; 19754:  db
+b06_9755:   and $def7,x                 ; 19755:  3d f7 de
+b06_9758:   .db $7b                     ; 19758:  7b
+b06_9759:   inc $bedb                   ; 19759:  ee db be
+b06_975c:   .db $2f                     ; 1975C:  2f
+b06_975d:   cmp $ea,x                   ; 1975D:  d5 ea
+b06_975f:   .db $9b                     ; 1975F:  9b
+b06_9760:   .db $ff                     ; 19760:  ff
+b06_9761:   eor ($ae),y                 ; 19761:  51 ae
+b06_9763:   .db $7b                     ; 19763:  7b
+b06_9764:   .db $bb                     ; 19764:  bb
+b06_9765:   .db $f7                     ; 19765:  f7
+b06_9766:   and $dff6,x                 ; 19766:  3d f6 df
+b06_9769:   sbc $f6bf                   ; 19769:  ed bf f6
+b06_976c:   adc $b6db                   ; 1976C:  6d db b6
+b06_976f:   adc $9b7d                   ; 1976F:  6d 7d 9b
+b06_9772:   inc $dd,x                   ; 19772:  f6 dd
+b06_9774:   eor $dbf7,x                 ; 19774:  5d f7 db
+b06_9777:   .db $ff                     ; 19777:  ff
+b06_9778:   ror $ddb7                   ; 19778:  6e b7 dd
+b06_977b:   adc $daf7,x                 ; 1977B:  7d f7 da
+b06_977e:   lda $c66f,x                 ; 1977E:  bd 6f c6
+b06_9781:   .db $7b                     ; 19781:  7b
+b06_9782:   cmp $bed7,x                 ; 19782:  dd d7 be
+b06_9785:   cpx $e060                   ; 19785:  ec 60 e0
+b06_9788:   beq $97fa                   ; 19788:  f0 70
+b06_978a:   brk                         ; 1978A:  00
+b06_978b:   .db $80                     ; 1978B:  80
+b06_978c:   inc $e0ac,x                 ; 1978C:  fe ac e0
+b06_978f:   ldy #$f0                    ; 1978F:  a0 f0
+b06_9791:   bvs $9793                   ; 19791:  70 00
+b06_9793:   .db $80                     ; 19793:  80
+b06_9794:   inc $5b,x                   ; 19794:  f6 5b
+b06_9796:   .db $ef                     ; 19796:  ef
+b06_9797:   sbc $7ed7,x                 ; 19797:  fd d7 7e
+b06_979a:   sbc $7bbf                   ; 1979A:  ed bf 7b
+b06_979d:   ldx $ed,y                   ; 1979D:  b6 ed
+b06_979f:   .db $df                     ; 1979F:  df
+b06_97a0:   tsx                         ; 197A0:  ba
+b06_97a1:   .db $b7                     ; 197A1:  b7
+b06_97a2:   sbc $c0ce,x                 ; 197A2:  fd ce c0
+b06_97a5:   cpx #$bc                    ; 197A5:  e0 bc
+b06_97a7:   .db $77                     ; 197A7:  77
+b06_97a8:   cmp $bbf7,x                 ; 197A8:  dd f7 bb
+b06_97ab:   .db $6f                     ; 197AB:  6f
+b06_97ac:   cpy #$e0                    ; 197AC:  c0 e0
+b06_97ae:   .db $fc                     ; 197AE:  fc
+b06_97af:   .db $b7                     ; 197AF:  b7
+b06_97b0:   .db $ef                     ; 197B0:  ef
+b06_97b1:   adc $bbd7,x                 ; 197B1:  7d d7 bb
+b06_97b4:   brk                         ; 197B4:  00
+b06_97b5:   brk                         ; 197B5:  00
+b06_97b6:   brk                         ; 197B6:  00
+b06_97b7:   brk                         ; 197B7:  00
+b06_97b8:   brk                         ; 197B8:  00
+b06_97b9:   .db $02                     ; 197B9:  02
+b06_97ba:   brk                         ; 197BA:  00
+b06_97bb:   brk                         ; 197BB:  00
+b06_97bc:   brk                         ; 197BC:  00
+b06_97bd:   brk                         ; 197BD:  00
+b06_97be:   brk                         ; 197BE:  00
+b06_97bf:   brk                         ; 197BF:  00
+b06_97c0:   brk                         ; 197C0:  00
+b06_97c1:   .db $04                     ; 197C1:  04
+b06_97c2:   brk                         ; 197C2:  00
+b06_97c3:   brk                         ; 197C3:  00
+b06_97c4:   brk                         ; 197C4:  00
+b06_97c5:   brk                         ; 197C5:  00
+b06_97c6:   brk                         ; 197C6:  00
+b06_97c7:   brk                         ; 197C7:  00
+b06_97c8:   rts                         ; 197C8:  60
+b06_97c9:   rts                         ; 197C9:  60
+b06_97ca:   brk                         ; 197CA:  00
+b06_97cb:   brk                         ; 197CB:  00
+b06_97cc:   brk                         ; 197CC:  00
+b06_97cd:   brk                         ; 197CD:  00
+b06_97ce:   brk                         ; 197CE:  00
+b06_97cf:   brk                         ; 197CF:  00
+b06_97d0:   rts                         ; 197D0:  60
+b06_97d1:   rti                         ; 197D1:  40
+b06_97d2:   brk                         ; 197D2:  00
+b06_97d3:   brk                         ; 197D3:  00
+b06_97d4:   brk                         ; 197D4:  00
+b06_97d5:   brk                         ; 197D5:  00
+b06_97d6:   brk                         ; 197D6:  00
+b06_97d7:   brk                         ; 197D7:  00
+b06_97d8:   brk                         ; 197D8:  00
+b06_97d9:   .db $03                     ; 197D9:  03
+b06_97da:   brk                         ; 197DA:  00
+b06_97db:   brk                         ; 197DB:  00
+b06_97dc:   brk                         ; 197DC:  00
+b06_97dd:   brk                         ; 197DD:  00
+b06_97de:   brk                         ; 197DE:  00
+b06_97df:   brk                         ; 197DF:  00
+b06_97e0:   .db $03                     ; 197E0:  03
+b06_97e1:   brk                         ; 197E1:  00
+b06_97e2:   brk                         ; 197E2:  00
+b06_97e3:   brk                         ; 197E3:  00
+b06_97e4:   brk                         ; 197E4:  00
+b06_97e5:   brk                         ; 197E5:  00
+b06_97e6:   brk                         ; 197E6:  00
+b06_97e7:   brk                         ; 197E7:  00
+b06_97e8:   brk                         ; 197E8:  00
+b06_97e9:   ora #$00                    ; 197E9:  09 00
+b06_97eb:   brk                         ; 197EB:  00
+b06_97ec:   brk                         ; 197EC:  00
+b06_97ed:   brk                         ; 197ED:  00
+b06_97ee:   brk                         ; 197EE:  00
+b06_97ef:   brk                         ; 197EF:  00
+b06_97f0:   ora $0004                   ; 197F0:  0d 04 00
+b06_97f3:   brk                         ; 197F3:  00
+b06_97f4:   brk                         ; 197F4:  00
+b06_97f5:   brk                         ; 197F5:  00
+b06_97f6:   brk                         ; 197F6:  00
+b06_97f7:   brk                         ; 197F7:  00
+b06_97f8:   .db $82                     ; 197F8:  82
+b06_97f9:   .db $80                     ; 197F9:  80
+b06_97fa:   brk                         ; 197FA:  00
+b06_97fb:   brk                         ; 197FB:  00
+b06_97fc:   brk                         ; 197FC:  00
+b06_97fd:   brk                         ; 197FD:  00
+b06_97fe:   brk                         ; 197FE:  00
+b06_97ff:   brk                         ; 197FF:  00
+b06_9800:   .db $80                     ; 19800:  80
+b06_9801:   brk                         ; 19801:  00
+b06_9802:   brk                         ; 19802:  00
+b06_9803:   brk                         ; 19803:  00
+b06_9804:   .db $0b                     ; 19804:  0b
+b06_9805:   ora $0f0f                   ; 19805:  0d 0f 0f
+b06_9808:   .db $07                     ; 19808:  07
+b06_9809:   ora ($00,x)                 ; 19809:  01 00
+b06_980b:   brk                         ; 1980B:  00
+b06_980c:   .db $0b                     ; 1980C:  0b
+b06_980d:   ora $0f0f                   ; 1980D:  0d 0f 0f
+b06_9810:   .db $07                     ; 19810:  07
+b06_9811:   ora ($00,x)                 ; 19811:  01 00
+b06_9813:   brk                         ; 19813:  00
+b06_9814:   .db $bb                     ; 19814:  bb
+b06_9815:   cmp $ee77,x                 ; 19815:  dd 77 ee
+b06_9818:   .db $fb                     ; 19818:  fb
+b06_9819:   .db $97                     ; 19819:  97
+b06_981a:   rol $fd75,x                 ; 1981A:  3e 75 fd
+b06_981d:   .db $93                     ; 1981D:  93
+b06_981e:   ror $fd66,x                 ; 1981E:  7e 66 fd
+b06_9821:   sta $7b36,x                 ; 19821:  9d 36 7b
+b06_9824:   brk                         ; 19824:  00
+b06_9825:   .db $03                     ; 19825:  03
+b06_9826:   .db $0f                     ; 19826:  0f
+b06_9827:   .db $0f                     ; 19827:  0f
+b06_9828:   brk                         ; 19828:  00
+b06_9829:   brk                         ; 19829:  00
+b06_982a:   brk                         ; 1982A:  00
+b06_982b:   brk                         ; 1982B:  00
+b06_982c:   brk                         ; 1982C:  00
+b06_982d:   .db $03                     ; 1982D:  03
+b06_982e:   .db $0f                     ; 1982E:  0f
+b06_982f:   .db $0f                     ; 1982F:  0f
+b06_9830:   brk                         ; 19830:  00
+b06_9831:   brk                         ; 19831:  00
+b06_9832:   brk                         ; 19832:  00
+b06_9833:   brk                         ; 19833:  00
+b06_9834:   .db $df                     ; 19834:  df
+b06_9835:   .db $fa                     ; 19835:  fa
+b06_9836:   .db $ef                     ; 19836:  ef
+b06_9837:   .db $ff                     ; 19837:  ff
+b06_9838:   brk                         ; 19838:  00
+b06_9839:   brk                         ; 19839:  00
+b06_983a:   brk                         ; 1983A:  00
+b06_983b:   brk                         ; 1983B:  00
+b06_983c:   sbc $7eb7                   ; 1983C:  ed b7 7e
+b06_983f:   .db $ff                     ; 1983F:  ff
+b06_9840:   brk                         ; 19840:  00
+b06_9841:   brk                         ; 19841:  00
+b06_9842:   brk                         ; 19842:  00
+b06_9843:   brk                         ; 19843:  00
+b06_9844:   ldx $dd77                   ; 19844:  ae 77 dd
+b06_9847:   .db $eb                     ; 19847:  eb
+b06_9848:   ldx $d67b,y                 ; 19848:  be 7b d6
+b06_984b:   cmp $3eb3,x                 ; 1984B:  dd b3 3e
+b06_984e:   sbc ($ce),y                 ; 1984E:  f1 ce
+b06_9850:   ldx $dd,y                   ; 19850:  b6 dd
+b06_9852:   .db $72                     ; 19852:  72
+b06_9853:   .db $ef                     ; 19853:  ef
+b06_9854:   .db $db                     ; 19854:  db
+b06_9855:   ldx $5deb,y                 ; 19855:  be eb 5d
+b06_9858:   .db $f7                     ; 19858:  f7
+b06_9859:   .db $bb                     ; 19859:  bb
+b06_985a:   inc $5cb7                   ; 1985A:  ee b7 5c
+b06_985d:   .db $eb                     ; 1985D:  eb
+b06_985e:   sta $ba,x                   ; 1985E:  95 ba
+b06_9860:   inc $59                     ; 19860:  e6 59
+b06_9862:   .db $f7                     ; 19862:  f7
+b06_9863:   txs                         ; 19863:  9a
+b06_9864:   .db $bb                     ; 19864:  bb
+b06_9865:   .db $f7                     ; 19865:  f7
+b06_9866:   .db $df                     ; 19866:  df
+b06_9867:   inc $0000,x                 ; 19867:  fe 00 00
+b06_986a:   brk                         ; 1986A:  00
+b06_986b:   brk                         ; 1986B:  00
+b06_986c:   sta $db76,x                 ; 1986C:  9d 76 db
+b06_986f:   inc $0000,x                 ; 1986F:  fe 00 00
+b06_9872:   brk                         ; 19872:  00
+b06_9873:   brk                         ; 19873:  00
+b06_9874:   cmp $b6fb,x                 ; 19874:  dd fb b6
+b06_9877:   and $7b7f                   ; 19877:  2d 7f 7b
+b06_987a:   adc $6576                   ; 1987A:  6d 76 65
+b06_987d:   inc $37b9                   ; 1987D:  ee b9 37
+b06_9880:   .db $7a                     ; 19880:  7a
+b06_9881:   adc $5d                     ; 19881:  65 5d
+b06_9883:   ror $b7,x                   ; 19883:  76 b7
+b06_9885:   inc $6bbd                   ; 19885:  ee bd 6b
+b06_9888:   .db $df                     ; 19888:  df
+b06_9889:   adc $ee,x                   ; 19889:  75 ee
+b06_988b:   .db $db                     ; 1988B:  db
+b06_988c:   .db $57                     ; 1988C:  57
+b06_988d:   .db $b2                     ; 1988D:  b2
+b06_988e:   jmp $55eb                   ; 1988E:  4c eb 55
+b06_9891:   ldy $4c73                   ; 19891:  ac 73 4c
+b06_9894:   sbc $b7ce,y                 ; 19894:  f9 ce b7
+b06_9897:   cmp $b77a,x                 ; 19897:  dd 7a b7
+b06_989a:   sbc $7add                   ; 1989A:  ed dd 7a
+b06_989d:   lsr $c9                     ; 1989D:  46 c9
+b06_989f:   .db $bb                     ; 1989F:  bb
+b06_98a0:   bit $ed                     ; 198A0:  24 ed
+b06_98a2:   .db $33                     ; 198A2:  33
+b06_98a3:   cpy $b67b                   ; 198A3:  cc 7b b6
+b06_98a6:   .db $ef                     ; 198A6:  ef
+b06_98a7:   cmp $76bb,x                 ; 198A7:  dd bb 76
+b06_98aa:   cmp $b3f7,x                 ; 198AA:  dd f7 b3
+b06_98ad:   .db $da                     ; 198AD:  da
+b06_98ae:   and $6eb1                   ; 198AE:  2d b1 6e
+b06_98b1:   cmp #$37                    ; 198B1:  c9 37
+b06_98b3:   .db $d4                     ; 198B3:  d4
+b06_98b4:   .db $37                     ; 198B4:  37
+b06_98b5:   .db $fb                     ; 198B5:  fb
+b06_98b6:   dec $b37e                   ; 198B6:  ce 7e b3
+b06_98b9:   cmp $9df7,x                 ; 198B9:  dd f7 9d
+b06_98bc:   .db $33                     ; 198BC:  33
+b06_98bd:   cpy $c936                   ; 198BD:  cc 36 c9
+b06_98c0:   ror $9c                     ; 198C0:  66 9c
+b06_98c2:   .db $63                     ; 198C2:  63
+b06_98c3:   .db $5c                     ; 198C3:  5c
+b06_98c4:   .db $9e                     ; 198C4:  9e
+b06_98c5:   .db $fb                     ; 198C5:  fb
+b06_98c6:   ror $dd                     ; 198C6:  66 dd
+b06_98c8:   .db $bb                     ; 198C8:  bb
+b06_98c9:   .db $b7                     ; 198C9:  b7
+b06_98ca:   nop                         ; 198CA:  ea
+b06_98cb:   .db $5f                     ; 198CB:  5f
+b06_98cc:   pla                         ; 198CC:  68
+b06_98cd:   .db $93                     ; 198CD:  93
+b06_98ce:   .db $54                     ; 198CE:  54
+b06_98cf:   .db $23                     ; 198CF:  23
+b06_98d0:   cpy $413a                   ; 198D0:  cc 3a 41
+b06_98d3:   dec $e5,x                   ; 198D3:  d6 e5
+b06_98d5:   ldx $b7d9,y                 ; 198D5:  be d9 b7
+b06_98d8:   ror $cfb9                   ; 198D8:  6e b9 cf
+b06_98db:   .db $7a                     ; 198DB:  7a
+b06_98dc:   sty $29                     ; 198DC:  84 29
+b06_98de:   .db $d4                     ; 198DE:  d4
+b06_98df:   asl a                       ; 198DF:  0a
+b06_98e0:   adc ($9a,x)                 ; 198E0:  61 9a
+b06_98e2:   .db $44                     ; 198E2:  44
+b06_98e3:   tax                         ; 198E3:  aa
+b06_98e4:   ldy $6f,x                   ; 198E4:  b4 6f
+b06_98e6:   .db $db                     ; 198E6:  db
+b06_98e7:   .db $dc                     ; 198E7:  dc
+b06_98e8:   .db $bb                     ; 198E8:  bb
+b06_98e9:   sbc $3c                     ; 198E9:  e5 3c
+b06_98eb:   cmp $6619,y                 ; 198EB:  d9 19 66
+b06_98ee:   .db $d2                     ; 198EE:  d2
+b06_98ef:   sta $e832                   ; 198EF:  8d 32 e8
+b06_98f2:   eor #$90                    ; 198F2:  49 90
+b06_98f4:   .db $db                     ; 198F4:  db
+b06_98f5:   lda $6d,x                   ; 198F5:  b5 6d
+b06_98f7:   cld                         ; 198F7:  d8
+b06_98f8:   clv                         ; 198F8:  b8
+b06_98f9:   pla                         ; 198F9:  68
+b06_98fa:   cpy #$b0                    ; 198FA:  c0 b0
+b06_98fc:   ora ($4c),y                 ; 198FC:  11 4c
+b06_98fe:   adc ($88),y                 ; 198FE:  71 88
+b06_9900:   .db $54                     ; 19900:  54
+b06_9901:   bmi $98c3                   ; 19901:  30 c0
+b06_9903:   plp                         ; 19903:  28
+b06_9904:   cmp $f77b,x                 ; 19904:  dd 7b f7
+b06_9907:   ldx $db7d                   ; 19907:  ae 7d db
+b06_990a:   .db $ef                     ; 1990A:  ef
+b06_990b:   ldx $56,y                   ; 1990B:  b6 56
+b06_990d:   adc $4ddb                   ; 1990D:  6d db 4d
+b06_9910:   ror $db,x                   ; 19910:  76 db
+b06_9912:   eor $fb7b                   ; 19912:  4d 7b fb
+b06_9915:   .db $6f                     ; 19915:  6f
+b06_9916:   cmp $f7b6,x                 ; 19916:  dd b6 f7
+b06_9919:   adc $f6ae,x                 ; 19919:  7d ae f6
+b06_991c:   .db $db                     ; 1991C:  db
+b06_991d:   rol $fd                     ; 1991D:  26 fd
+b06_991f:   .db $4b                     ; 1991F:  4b
+b06_9920:   ldx $7d,y                   ; 19920:  b6 7d
+b06_9922:   .db $c3                     ; 19922:  c3
+b06_9923:   lsr $77ee,x                 ; 19923:  5e ee 77
+b06_9926:   cmp $bfeb,x                 ; 19926:  dd eb bf
+b06_9929:   ror $dd,x                   ; 19929:  76 dd
+b06_992b:   .db $b7                     ; 1992B:  b7
+b06_992c:   cmp $76b7                   ; 1992C:  cd b7 76
+b06_992f:   .db $5b                     ; 1992F:  5b
+b06_9930:   sbc $db56                   ; 19930:  ed 56 db
+b06_9933:   .db $7f                     ; 19933:  7f
+b06_9934:   sbc $dbbf                   ; 19934:  ed bf db
+b06_9937:   .db $77                     ; 19937:  77
+b06_9938:   ldy $dbf7,x                 ; 19938:  bc f7 db
+b06_993b:   ror $ed37                   ; 1993B:  6e 37 ed
+b06_993e:   .db $db                     ; 1993E:  db
+b06_993f:   ror $f6bb                   ; 1993F:  6e bb f6
+b06_9942:   .db $af                     ; 19942:  af
+b06_9943:   .db $7a                     ; 19943:  7a
+b06_9944:   .db $fb                     ; 19944:  fb
+b06_9945:   ror $aabf                   ; 19945:  6e bf aa
+b06_9948:   .db $9f                     ; 19948:  9f
+b06_9949:   lda $9f2b,x                 ; 19949:  bd 2b 9f
+b06_994c:   .db $64                     ; 1994C:  64
+b06_994d:   .db $df                     ; 1994D:  df
+b06_994e:   .db $db                     ; 1994E:  db
+b06_994f:   rol $9d,x                   ; 1994F:  36 9d
+b06_9951:   .db $af                     ; 19951:  af
+b06_9952:   and $ff8f,y                 ; 19952:  39 8f ff
+b06_9955:   .db $da                     ; 19955:  da
+b06_9956:   .db $bb                     ; 19956:  bb
+b06_9957:   .db $ef                     ; 19957:  ef
+b06_9958:   adc $beeb,x                 ; 19958:  7d eb be
+b06_995b:   .db $77                     ; 1995B:  77
+b06_995c:   .db $d7                     ; 1995C:  d7
+b06_995d:   cmp $f96f,x                 ; 1995D:  dd 6f f9
+b06_9960:   .db $bf                     ; 19960:  bf
+b06_9961:   ror $df                     ; 19961:  66 df
+b06_9963:   adc $efdb,y                 ; 19963:  79 db ef
+b06_9966:   and $e8fc,y                 ; 19966:  39 fc e8
+b06_9969:   .db $dc                     ; 19969:  dc
+b06_996a:   ror $bbef,x                 ; 1996A:  7e ef bb
+b06_996d:   .db $7f                     ; 1996D:  7f
+b06_996e:   cmp $b8ec,y                 ; 1996E:  d9 ec b8
+b06_9971:   .db $dc                     ; 19971:  dc
+b06_9972:   ror $ef,x                   ; 19972:  76 ef
+b06_9974:   cmp $f0ff,x                 ; 19974:  dd ff f0
+b06_9977:   brk                         ; 19977:  00
+b06_9978:   brk                         ; 19978:  00
+b06_9979:   brk                         ; 19979:  00
+b06_997a:   brk                         ; 1997A:  00
+b06_997b:   .db $80                     ; 1997B:  80
+b06_997c:   .db $ef                     ; 1997C:  ef
+b06_997d:   .db $7f                     ; 1997D:  7f
+b06_997e:   beq $9980                   ; 1997E:  f0 00
+b06_9980:   brk                         ; 19980:  00
+b06_9981:   brk                         ; 19981:  00
+b06_9982:   brk                         ; 19982:  00
+b06_9983:   .db $80                     ; 19983:  80
+b06_9984:   lda $f8ec,x                 ; 19984:  bd ec f8
+b06_9987:   rol $defa                   ; 19987:  2e fa de
+b06_998a:   ldx $fe,y                   ; 1998A:  b6 fe
+b06_998c:   cmp $78bc,x                 ; 1998C:  dd bc 78
+b06_998f:   inc $dabe                   ; 1998F:  ee be da
+b06_9992:   ror $f6,x                   ; 19992:  76 f6
+b06_9994:   cpx #$78                    ; 19994:  e0 78
+b06_9996:   brk                         ; 19996:  00
+b06_9997:   brk                         ; 19997:  00
+b06_9998:   brk                         ; 19998:  00
+b06_9999:   brk                         ; 19999:  00
+b06_999a:   brk                         ; 1999A:  00
+b06_999b:   brk                         ; 1999B:  00
+b06_999c:   cpx #$78                    ; 1999C:  e0 78
+b06_999e:   brk                         ; 1999E:  00
+b06_999f:   brk                         ; 1999F:  00
+b06_99a0:   brk                         ; 199A0:  00
+b06_99a1:   brk                         ; 199A1:  00
+b06_99a2:   brk                         ; 199A2:  00
+b06_99a3:   brk                         ; 199A3:  00
+b06_99a4:   brk                         ; 199A4:  00
+b06_99a5:   bit $18                     ; 199A5:  24 18
+b06_99a7:   .db $1c                     ; 199A7:  1c
+b06_99a8:   brk                         ; 199A8:  00
+b06_99a9:   brk                         ; 199A9:  00
+b06_99aa:   brk                         ; 199AA:  00
+b06_99ab:   brk                         ; 199AB:  00
+b06_99ac:   brk                         ; 199AC:  00
+b06_99ad:   .db $0c                     ; 199AD:  0c
+b06_99ae:   php                         ; 199AE:  08
+b06_99af:   .db $0c                     ; 199AF:  0c
+b06_99b0:   brk                         ; 199B0:  00
+b06_99b1:   brk                         ; 199B1:  00
+b06_99b2:   brk                         ; 199B2:  00
+b06_99b3:   brk                         ; 199B3:  00
+b06_99b4:   brk                         ; 199B4:  00
+b06_99b5:   rts                         ; 199B5:  60
+b06_99b6:   rts                         ; 199B6:  60
+b06_99b7:   rti                         ; 199B7:  40
+b06_99b8:   brk                         ; 199B8:  00
+b06_99b9:   brk                         ; 199B9:  00
+b06_99ba:   brk                         ; 199BA:  00
+b06_99bb:   brk                         ; 199BB:  00
+b06_99bc:   brk                         ; 199BC:  00
+b06_99bd:   rti                         ; 199BD:  40
+b06_99be:   rts                         ; 199BE:  60
+b06_99bf:   rts                         ; 199BF:  60
+b06_99c0:   brk                         ; 199C0:  00
+b06_99c1:   brk                         ; 199C1:  00
+b06_99c2:   brk                         ; 199C2:  00
+b06_99c3:   brk                         ; 199C3:  00
+b06_99c4:   brk                         ; 199C4:  00
+b06_99c5:   .db $22                     ; 199C5:  22
+b06_99c6:   .db $33                     ; 199C6:  33
+b06_99c7:   .db $33                     ; 199C7:  33
+b06_99c8:   brk                         ; 199C8:  00
+b06_99c9:   brk                         ; 199C9:  00
+b06_99ca:   brk                         ; 199CA:  00
+b06_99cb:   brk                         ; 199CB:  00
+b06_99cc:   brk                         ; 199CC:  00
+b06_99cd:   .db $32                     ; 199CD:  32
+b06_99ce:   .db $32                     ; 199CE:  32
+b06_99cf:   bpl $99d1                   ; 199CF:  10 00
+b06_99d1:   brk                         ; 199D1:  00
+b06_99d2:   brk                         ; 199D2:  00
+b06_99d3:   brk                         ; 199D3:  00
+b06_99d4:   .db $5f                     ; 199D4:  5f
+b06_99d5:   adc $063b                   ; 199D5:  6d 3b 06
+b06_99d8:   .db $0f                     ; 199D8:  0f
+b06_99d9:   .db $1a                     ; 199D9:  1a
+b06_99da:   .db $bb                     ; 199DA:  bb
+b06_99db:   .db $f7                     ; 199DB:  f7
+b06_99dc:   lsr a                       ; 199DC:  4a
+b06_99dd:   eor $0536,x                 ; 199DD:  5d 36 05
+b06_99e0:   ora $eb3a                   ; 199E0:  0d 3a eb
+b06_99e3:   dec $de,x                   ; 199E3:  d6 de
+b06_99e5:   .db $3b                     ; 199E5:  3b
+b06_99e6:   .db $0f                     ; 199E6:  0f
+b06_99e7:   brk                         ; 199E7:  00
+b06_99e8:   brk                         ; 199E8:  00
+b06_99e9:   brk                         ; 199E9:  00
+b06_99ea:   brk                         ; 199EA:  00
+b06_99eb:   .db $03                     ; 199EB:  03
+b06_99ec:   sbc $0e3d,x                 ; 199EC:  fd 3d 0e
+b06_99ef:   brk                         ; 199EF:  00
+b06_99f0:   brk                         ; 199F0:  00
+b06_99f1:   brk                         ; 199F1:  00
+b06_99f2:   brk                         ; 199F2:  00
+b06_99f3:   ora ($9d,x)                 ; 199F3:  01 9d
+b06_99f5:   .db $fb                     ; 199F5:  fb
+b06_99f6:   ror $f6db                   ; 199F6:  6e db f6
+b06_99f9:   sta $79ef,x                 ; 199F9:  9d ef 79
+b06_99fc:   lda #$df                    ; 199FC:  a9 df
+b06_99fe:   sta ($76),y                 ; 199FE:  91 76
+b06_9a00:   tax                         ; 19A00:  aa
+b06_9a01:   cmp $3b,x                   ; 19A01:  d5 3b
+b06_9a03:   dec $76                     ; 19A03:  c6 76
+b06_9a05:   inc $bad8                   ; 19A05:  ee d8 ba
+b06_9a08:   cpx $a8                     ; 19A08:  e4 a8
+b06_9a0a:   bvs $99e0                   ; 19A0A:  70 d4
+b06_9a0c:   ldx #$5c                    ; 19A0C:  a2 5c
+b06_9a0e:   ldy #$5c                    ; 19A0E:  a0 5c
+b06_9a10:   ldx #$58                    ; 19A10:  a2 58
+b06_9a12:   tay                         ; 19A12:  a8
+b06_9a13:   bvc $99f3                   ; 19A13:  50 de
+b06_9a15:   ldx $78,y                   ; 19A15:  b6 78
+b06_9a17:   dec $381c                   ; 19A17:  ce 1c 38
+b06_9a1a:   bvs $9a08                   ; 19A1A:  70 ec
+b06_9a1c:   clv                         ; 19A1C:  b8
+b06_9a1d:   lsr $f0,x                   ; 19A1D:  56 f0
+b06_9a1f:   sty $1412                   ; 19A1F:  8c 12 14
+b06_9a22:   inx                         ; 19A22:  e8
+b06_9a23:   txa                         ; 19A23:  8a
+b06_9a24:   dey                         ; 19A24:  88
+b06_9a25:   bcc $9a27                   ; 19A25:  90 00
+b06_9a27:   brk                         ; 19A27:  00
+b06_9a28:   .db $80                     ; 19A28:  80
+b06_9a29:   brk                         ; 19A29:  00
+b06_9a2a:   brk                         ; 19A2A:  00
+b06_9a2b:   brk                         ; 19A2B:  00
+b06_9a2c:   tay                         ; 19A2C:  a8
+b06_9a2d:   bpl $99af                   ; 19A2D:  10 80
+b06_9a2f:   brk                         ; 19A2F:  00
+b06_9a30:   brk                         ; 19A30:  00
+b06_9a31:   brk                         ; 19A31:  00
+b06_9a32:   brk                         ; 19A32:  00
+b06_9a33:   brk                         ; 19A33:  00
+b06_9a34:   cpx #$b4                    ; 19A34:  e0 b4
+b06_9a36:   bvc $9aa8                   ; 19A36:  50 70
+b06_9a38:   jsr $5068                   ; 19A38:  20 68 50
+b06_9a3b:   brk                         ; 19A3B:  00
+b06_9a3c:   bcs $9a86                   ; 19A3C:  b0 48
+b06_9a3e:   jsr $00d9                   ; 19A3E:  20 d9 00
+b06_9a41:   sec                         ; 19A41:  38
+b06_9a42:   rti                         ; 19A42:  40
+b06_9a43:   brk                         ; 19A43:  00
+b06_9a44:   pla                         ; 19A44:  68
+b06_9a45:   bne $9a47                   ; 19A45:  d0 00
+b06_9a47:   cld                         ; 19A47:  d8
+b06_9a48:   bvc $9aaa                   ; 19A48:  50 60
+b06_9a4a:   bpl $9a2c                   ; 19A4A:  10 e0
+b06_9a4c:   bne $9a4e                   ; 19A4C:  d0 00
+b06_9a4e:   brk                         ; 19A4E:  00
+b06_9a4f:   bvc $9a91                   ; 19A4F:  50 40
+b06_9a51:   jsr $4010                   ; 19A51:  20 10 40
+b06_9a54:   rti                         ; 19A54:  40
+b06_9a55:   bpl $9aa7                   ; 19A55:  10 50
+b06_9a57:   brk                         ; 19A57:  00
+b06_9a58:   brk                         ; 19A58:  00
+b06_9a59:   brk                         ; 19A59:  00
+b06_9a5a:   brk                         ; 19A5A:  00
+b06_9a5b:   brk                         ; 19A5B:  00
+b06_9a5c:   rti                         ; 19A5C:  40
+b06_9a5d:   bpl $9a9f                   ; 19A5D:  10 40
+b06_9a5f:   brk                         ; 19A5F:  00
+b06_9a60:   brk                         ; 19A60:  00
+b06_9a61:   brk                         ; 19A61:  00
+b06_9a62:   brk                         ; 19A62:  00
+b06_9a63:   brk                         ; 19A63:  00
+b06_9a64:   sta $ee39,x                 ; 19A64:  9d 39 ee
+b06_9a67:   .db $b7                     ; 19A67:  b7
+b06_9a68:   .db $5a                     ; 19A68:  5a
+b06_9a69:   plp                         ; 19A69:  28
+b06_9a6a:   adc $b917,x                 ; 19A6A:  7d 17 b9
+b06_9a6d:   ora $ee,x                   ; 19A6D:  15 ee
+b06_9a6f:   and $3048,y                 ; 19A6F:  39 48 30
+b06_9a72:   adc $0c16                   ; 19A72:  6d 16 0c
+b06_9a75:   and ($10,x)                 ; 19A75:  21 10
+b06_9a77:   asl $0002                   ; 19A77:  0e 02 00
+b06_9a7a:   brk                         ; 19A7A:  00
+b06_9a7b:   php                         ; 19A7B:  08
+b06_9a7c:   brk                         ; 19A7C:  00
+b06_9a7d:   ora ($00),y                 ; 19A7D:  11 00
+b06_9a7f:   asl $00                     ; 19A7F:  06 00
+b06_9a81:   brk                         ; 19A81:  00
+b06_9a82:   brk                         ; 19A82:  00
+b06_9a83:   brk                         ; 19A83:  00
+b06_9a84:   asl $1f                     ; 19A84:  06 1f
+b06_9a86:   ora $0e23                   ; 19A86:  0d 23 0e
+b06_9a89:   .db $07                     ; 19A89:  07
+b06_9a8a:   ora ($0b,x)                 ; 19A8A:  01 0b
+b06_9a8c:   asl $1b                     ; 19A8C:  06 1b
+b06_9a8e:   .db $0f                     ; 19A8E:  0f
+b06_9a8f:   and ($17,x)                 ; 19A8F:  21 17
+b06_9a91:   asl a                       ; 19A91:  0a
+b06_9a92:   ora ($07,x)                 ; 19A92:  01 07
+b06_9a94:   cmp $aefb,x                 ; 19A94:  dd fb ae
+b06_9a97:   .db $ef                     ; 19A97:  ef
+b06_9a98:   iny                         ; 19A98:  c8
+b06_9a99:   .db $4f                     ; 19A99:  4f
+b06_9a9a:   lda $ab                     ; 19A9A:  a5 ab
+b06_9a9c:   dec $bf,x                   ; 19A9C:  d6 bf
+b06_9a9e:   ror $45c9                   ; 19A9E:  6e c9 45
+b06_9aa1:   cmp $2ea3                   ; 19AA1:  cd a3 2e
+b06_9aa4:   ora $00                     ; 19AA4:  05 00
+b06_9aa6:   .db $03                     ; 19AA6:  03
+b06_9aa7:   asl $0003                   ; 19AA7:  0e 03 00
+b06_9aaa:   brk                         ; 19AAA:  00
+b06_9aab:   ora ($0d,x)                 ; 19AAB:  01 0d
+b06_9aad:   ora ($06,x)                 ; 19AAD:  01 06
+b06_9aaf:   asl a                       ; 19AAF:  0a
+b06_9ab0:   ora ($00,x)                 ; 19AB0:  01 00
+b06_9ab2:   ora ($01,x)                 ; 19AB2:  01 01
+b06_9ab4:   .db $43                     ; 19AB4:  43
+b06_9ab5:   stx $8185                   ; 19AB5:  8e 85 81
+b06_9ab8:   ldy #$00                    ; 19AB8:  a0 00
+b06_9aba:   brk                         ; 19ABA:  00
+b06_9abb:   .db $80                     ; 19ABB:  80
+b06_9abc:   cmp ($83,x)                 ; 19ABC:  c1 83
+b06_9abe:   .db $c7                     ; 19ABE:  c7
+b06_9abf:   .db $80                     ; 19ABF:  80
+b06_9ac0:   brk                         ; 19AC0:  00
+b06_9ac1:   brk                         ; 19AC1:  00
+b06_9ac2:   brk                         ; 19AC2:  00
+b06_9ac3:   brk                         ; 19AC3:  00
+b06_9ac4:   .db $9c                     ; 19AC4:  9c
+b06_9ac5:   cpy #$80                    ; 19AC5:  c0 80
+b06_9ac7:   cpy #$e0                    ; 19AC7:  c0 e0
+b06_9ac9:   bmi $9a87                   ; 19AC9:  30 bc
+b06_9acb:   .db $87                     ; 19ACB:  87
+b06_9acc:   .db $9c                     ; 19ACC:  9c
+b06_9acd:   cpy #$80                    ; 19ACD:  c0 80
+b06_9acf:   cpy #$60                    ; 19ACF:  c0 60
+b06_9ad1:   bcs $9a7f                   ; 19AD1:  b0 ac
+b06_9ad3:   .db $97                     ; 19AD3:  97
+b06_9ad4:   and $1d9f                   ; 19AD4:  2d 9f 1d
+b06_9ad7:   ora $07,x                   ; 19AD7:  15 07
+b06_9ad9:   .db $17                     ; 19AD9:  17
+b06_9ada:   ora $2b07                   ; 19ADA:  0d 07 2b
+b06_9add:   .db $0f                     ; 19ADD:  0f
+b06_9ade:   asl $1d,x                   ; 19ADE:  16 1d
+b06_9ae0:   ora $1f                     ; 19AE0:  05 1f
+b06_9ae2:   .db $0b                     ; 19AE2:  0b
+b06_9ae3:   .db $07                     ; 19AE3:  07
+b06_9ae4:   .db $80                     ; 19AE4:  80
+b06_9ae5:   .db $80                     ; 19AE5:  80
+b06_9ae6:   .db $80                     ; 19AE6:  80
+b06_9ae7:   .db $80                     ; 19AE7:  80
+b06_9ae8:   .db $80                     ; 19AE8:  80
+b06_9ae9:   brk                         ; 19AE9:  00
+b06_9aea:   brk                         ; 19AEA:  00
+b06_9aeb:   brk                         ; 19AEB:  00
+b06_9aec:   .db $80                     ; 19AEC:  80
+b06_9aed:   .db $80                     ; 19AED:  80
+b06_9aee:   .db $80                     ; 19AEE:  80
+b06_9aef:   .db $80                     ; 19AEF:  80
+b06_9af0:   brk                         ; 19AF0:  00
+b06_9af1:   brk                         ; 19AF1:  00
+b06_9af2:   brk                         ; 19AF2:  00
+b06_9af3:   brk                         ; 19AF3:  00
+b06_9af4:   .db $03                     ; 19AF4:  03
+b06_9af5:   brk                         ; 19AF5:  00
+b06_9af6:   brk                         ; 19AF6:  00
+b06_9af7:   brk                         ; 19AF7:  00
+b06_9af8:   .db $03                     ; 19AF8:  03
+b06_9af9:   .db $02                     ; 19AF9:  02
+b06_9afa:   .db $03                     ; 19AFA:  03
+b06_9afb:   and ($03,x)                 ; 19AFB:  21 03
+b06_9afd:   brk                         ; 19AFD:  00
+b06_9afe:   brk                         ; 19AFE:  00
+b06_9aff:   brk                         ; 19AFF:  00
+b06_9b00:   ora ($02,x)                 ; 19B00:  01 02
+b06_9b02:   ora ($01,x)                 ; 19B02:  01 01
+b06_9b04:   bvc $9af6                   ; 19B04:  50 f0
+b06_9b06:   .db $3c                     ; 19B06:  3c
+b06_9b07:   bvs $9ad1                   ; 19B07:  70 c8
+b06_9b09:   rts                         ; 19B09:  60
+b06_9b0a:   clv                         ; 19B0A:  b8
+b06_9b0b:   bne $9b2d                   ; 19B0B:  d0 20
+b06_9b0d:   beq $9b37                   ; 19B0D:  f0 28
+b06_9b0f:   .db $72                     ; 19B0F:  72
+b06_9b10:   cpx #$10                    ; 19B10:  e0 10
+b06_9b12:   inx                         ; 19B12:  e8
+b06_9b13:   brk                         ; 19B13:  00
+b06_9b14:   asl $0404,x                 ; 19B14:  1e 04 04
+b06_9b17:   brk                         ; 19B17:  00
+b06_9b18:   brk                         ; 19B18:  00
+b06_9b19:   brk                         ; 19B19:  00
+b06_9b1a:   brk                         ; 19B1A:  00
+b06_9b1b:   brk                         ; 19B1B:  00
+b06_9b1c:   asl $0404,x                 ; 19B1C:  1e 04 04
+b06_9b1f:   brk                         ; 19B1F:  00
+b06_9b20:   brk                         ; 19B20:  00
+b06_9b21:   brk                         ; 19B21:  00
+b06_9b22:   brk                         ; 19B22:  00
+b06_9b23:   brk                         ; 19B23:  00
+b06_9b24:   brk                         ; 19B24:  00
+b06_9b25:   brk                         ; 19B25:  00
+b06_9b26:   brk                         ; 19B26:  00
+b06_9b27:   brk                         ; 19B27:  00
+b06_9b28:   brk                         ; 19B28:  00
+b06_9b29:   brk                         ; 19B29:  00
+b06_9b2a:   brk                         ; 19B2A:  00
+b06_9b2b:   brk                         ; 19B2B:  00
+b06_9b2c:   brk                         ; 19B2C:  00
+b06_9b2d:   brk                         ; 19B2D:  00
+b06_9b2e:   ora ($02,x)                 ; 19B2E:  01 02
+b06_9b30:   .db $03                     ; 19B30:  03
+b06_9b31:   brk                         ; 19B31:  00
+b06_9b32:   brk                         ; 19B32:  00
+b06_9b33:   brk                         ; 19B33:  00
+b06_9b34:   .db $04                     ; 19B34:  04
+b06_9b35:   ora $06                     ; 19B35:  05 06
+b06_9b37:   brk                         ; 19B37:  00
+b06_9b38:   brk                         ; 19B38:  00
+b06_9b39:   brk                         ; 19B39:  00
+b06_9b3a:   brk                         ; 19B3A:  00
+b06_9b3b:   brk                         ; 19B3B:  00
+b06_9b3c:   brk                         ; 19B3C:  00
+b06_9b3d:   .db $07                     ; 19B3D:  07
+b06_9b3e:   php                         ; 19B3E:  08
+b06_9b3f:   brk                         ; 19B3F:  00
+b06_9b40:   brk                         ; 19B40:  00
+b06_9b41:   brk                         ; 19B41:  00
+b06_9b42:   brk                         ; 19B42:  00
+b06_9b43:   brk                         ; 19B43:  00
+b06_9b44:   brk                         ; 19B44:  00
+b06_9b45:   brk                         ; 19B45:  00
+b06_9b46:   brk                         ; 19B46:  00
+b06_9b47:   brk                         ; 19B47:  00
+b06_9b48:   brk                         ; 19B48:  00
+b06_9b49:   brk                         ; 19B49:  00
+b06_9b4a:   brk                         ; 19B4A:  00
+b06_9b4b:   brk                         ; 19B4B:  00
+b06_9b4c:   brk                         ; 19B4C:  00
+b06_9b4d:   .db $0c                     ; 19B4D:  0c
+b06_9b4e:   .db $0f                     ; 19B4E:  0f
+b06_9b4f:   bpl $9b64                   ; 19B4F:  10 13
+b06_9b51:   .db $14                     ; 19B51:  14
+b06_9b52:   .db $14                     ; 19B52:  14
+b06_9b53:   .db $14                     ; 19B53:  14
+b06_9b54:   ora $1d1a,y                 ; 19B54:  19 1a 1d
+b06_9b57:   .db $14                     ; 19B57:  14
+b06_9b58:   jsr $2300                   ; 19B58:  20 00 23
+b06_9b5b:   bit $27                     ; 19B5B:  24 27
+b06_9b5d:   plp                         ; 19B5D:  28
+b06_9b5e:   brk                         ; 19B5E:  00
+b06_9b5f:   brk                         ; 19B5F:  00
+b06_9b60:   brk                         ; 19B60:  00
+b06_9b61:   brk                         ; 19B61:  00
+b06_9b62:   brk                         ; 19B62:  00
+b06_9b63:   brk                         ; 19B63:  00
+b06_9b64:   brk                         ; 19B64:  00
+b06_9b65:   brk                         ; 19B65:  00
+b06_9b66:   brk                         ; 19B66:  00
+b06_9b67:   brk                         ; 19B67:  00
+b06_9b68:   brk                         ; 19B68:  00
+b06_9b69:   ora #$0a                    ; 19B69:  09 0a
+b06_9b6b:   .db $0b                     ; 19B6B:  0b
+b06_9b6c:   ora $110e                   ; 19B6C:  0d 0e 11
+b06_9b6f:   .db $12                     ; 19B6F:  12
+b06_9b70:   ora $16,x                   ; 19B70:  15 16
+b06_9b72:   .db $17                     ; 19B72:  17
+b06_9b73:   clc                         ; 19B73:  18
+b06_9b74:   .db $1b                     ; 19B74:  1b
+b06_9b75:   .db $1c                     ; 19B75:  1c
+b06_9b76:   asl $211f,x                 ; 19B76:  1e 1f 21
+b06_9b79:   .db $22                     ; 19B79:  22
+b06_9b7a:   and $26                     ; 19B7A:  25 26
+b06_9b7c:   and #$2a                    ; 19B7C:  29 2a
+b06_9b7e:   .db $2b                     ; 19B7E:  2b
+b06_9b7f:   bit $00                     ; 19B7F:  24 00
+b06_9b81:   brk                         ; 19B81:  00
+b06_9b82:   brk                         ; 19B82:  00
+b06_9b83:   brk                         ; 19B83:  00
+b06_9b84:   brk                         ; 19B84:  00
+b06_9b85:   brk                         ; 19B85:  00
+b06_9b86:   brk                         ; 19B86:  00
+b06_9b87:   brk                         ; 19B87:  00
+b06_9b88:   brk                         ; 19B88:  00
+b06_9b89:   bit $002e                   ; 19B89:  2c 2e 00
+b06_9b8c:   and ($32),y                 ; 19B8C:  31 32
+b06_9b8e:   and $36,x                   ; 19B8E:  35 36
+b06_9b90:   and $3d3a,y                 ; 19B90:  39 3a 3d
+b06_9b93:   rol $4241,x                 ; 19B93:  3e 41 42
+b06_9b96:   eor $46                     ; 19B96:  45 46
+b06_9b98:   eor #$14                    ; 19B98:  49 14
+b06_9b9a:   jmp $4f00                   ; 19B9A:  4c 00 4f
+b06_9b9d:   bvc $9bf2                   ; 19B9D:  50 53
+b06_9b9f:   brk                         ; 19B9F:  00
+b06_9ba0:   brk                         ; 19BA0:  00
+b06_9ba1:   brk                         ; 19BA1:  00
+b06_9ba2:   brk                         ; 19BA2:  00
+b06_9ba3:   brk                         ; 19BA3:  00
+b06_9ba4:   brk                         ; 19BA4:  00
+b06_9ba5:   brk                         ; 19BA5:  00
+b06_9ba6:   brk                         ; 19BA6:  00
+b06_9ba7:   brk                         ; 19BA7:  00
+b06_9ba8:   brk                         ; 19BA8:  00
+b06_9ba9:   and $302f                   ; 19BA9:  2d 2f 30
+b06_9bac:   .db $33                     ; 19BAC:  33
+b06_9bad:   .db $34                     ; 19BAD:  34
+b06_9bae:   .db $37                     ; 19BAE:  37
+b06_9baf:   sec                         ; 19BAF:  38
+b06_9bb0:   .db $3b                     ; 19BB0:  3b
+b06_9bb1:   .db $3c                     ; 19BB1:  3c
+b06_9bb2:   .db $3f                     ; 19BB2:  3f
+b06_9bb3:   rti                         ; 19BB3:  40
+b06_9bb4:   .db $43                     ; 19BB4:  43
+b06_9bb5:   .db $44                     ; 19BB5:  44
+b06_9bb6:   .db $47                     ; 19BB6:  47
+b06_9bb7:   pha                         ; 19BB7:  48
+b06_9bb8:   lsr a                       ; 19BB8:  4a
+b06_9bb9:   .db $4b                     ; 19BB9:  4b
+b06_9bba:   eor $514e                   ; 19BBA:  4d 4e 51
+b06_9bbd:   .db $52                     ; 19BBD:  52
+b06_9bbe:   .db $54                     ; 19BBE:  54
+b06_9bbf:   brk                         ; 19BBF:  00
+b06_9bc0:   brk                         ; 19BC0:  00
+b06_9bc1:   brk                         ; 19BC1:  00
+b06_9bc2:   brk                         ; 19BC2:  00
+b06_9bc3:   brk                         ; 19BC3:  00
+b06_9bc4:   brk                         ; 19BC4:  00
+b06_9bc5:   brk                         ; 19BC5:  00
+b06_9bc6:   brk                         ; 19BC6:  00
+b06_9bc7:   brk                         ; 19BC7:  00
+b06_9bc8:   brk                         ; 19BC8:  00
+b06_9bc9:   brk                         ; 19BC9:  00
+b06_9bca:   lsr $57,x                   ; 19BCA:  56 57
+b06_9bcc:   .db $5a                     ; 19BCC:  5a
+b06_9bcd:   .db $5b                     ; 19BCD:  5b
+b06_9bce:   lsr $625f,x                 ; 19BCE:  5e 5f 62
+b06_9bd1:   .db $63                     ; 19BD1:  63
+b06_9bd2:   ror $67                     ; 19BD2:  66 67
+b06_9bd4:   ror a                       ; 19BD4:  6a
+b06_9bd5:   .db $6b                     ; 19BD5:  6b
+b06_9bd6:   ror $726f                   ; 19BD6:  6e 6f 72
+b06_9bd9:   .db $73                     ; 19BD9:  73
+b06_9bda:   ror $77,x                   ; 19BDA:  76 77
+b06_9bdc:   .db $7a                     ; 19BDC:  7a
+b06_9bdd:   .db $7b                     ; 19BDD:  7b
+b06_9bde:   brk                         ; 19BDE:  00
+b06_9bdf:   brk                         ; 19BDF:  00
+b06_9be0:   brk                         ; 19BE0:  00
+b06_9be1:   brk                         ; 19BE1:  00
+b06_9be2:   brk                         ; 19BE2:  00
+b06_9be3:   brk                         ; 19BE3:  00
+b06_9be4:   brk                         ; 19BE4:  00
+b06_9be5:   brk                         ; 19BE5:  00
+b06_9be6:   brk                         ; 19BE6:  00
+b06_9be7:   brk                         ; 19BE7:  00
+b06_9be8:   brk                         ; 19BE8:  00
+b06_9be9:   eor $58,x                   ; 19BE9:  55 58
+b06_9beb:   eor $5d5c,y                 ; 19BEB:  59 5c 5d
+b06_9bee:   rts                         ; 19BEE:  60
+b06_9bef:   adc ($64,x)                 ; 19BEF:  61 64
+b06_9bf1:   adc $68                     ; 19BF1:  65 68
+b06_9bf3:   adc #$6c                    ; 19BF3:  69 6c
+b06_9bf5:   adc $7170                   ; 19BF5:  6d 70 71
+b06_9bf8:   .db $74                     ; 19BF8:  74
+b06_9bf9:   adc $78,x                   ; 19BF9:  75 78
+b06_9bfb:   adc $7d7c,y                 ; 19BFB:  79 7c 7d
+b06_9bfe:   ror $0000,x                 ; 19BFE:  7e 00 00
+b06_9c01:   brk                         ; 19C01:  00
+b06_9c02:   brk                         ; 19C02:  00
+b06_9c03:   brk                         ; 19C03:  00
+b06_9c04:   brk                         ; 19C04:  00
+b06_9c05:   brk                         ; 19C05:  00
+b06_9c06:   brk                         ; 19C06:  00
+b06_9c07:   brk                         ; 19C07:  00
+b06_9c08:   brk                         ; 19C08:  00
+b06_9c09:   .db $7f                     ; 19C09:  7f
+b06_9c0a:   sta ($82,x)                 ; 19C0A:  81 82
+b06_9c0c:   sta $86                     ; 19C0C:  85 86
+b06_9c0e:   .db $89                     ; 19C0E:  89
+b06_9c0f:   txa                         ; 19C0F:  8a
+b06_9c10:   sta $918e                   ; 19C10:  8d 8e 91
+b06_9c13:   .db $92                     ; 19C13:  92
+b06_9c14:   sty $95,x                   ; 19C14:  94 95
+b06_9c16:   .db $97                     ; 19C16:  97
+b06_9c17:   tya                         ; 19C17:  98
+b06_9c18:   .db $9b                     ; 19C18:  9b
+b06_9c19:   .db $9c                     ; 19C19:  9c
+b06_9c1a:   .db $9f                     ; 19C1A:  9f
+b06_9c1b:   ldy #$a3                    ; 19C1B:  a0 a3
+b06_9c1d:   ldy $a7                     ; 19C1D:  a4 a7
+b06_9c1f:   brk                         ; 19C1F:  00
+b06_9c20:   brk                         ; 19C20:  00
+b06_9c21:   brk                         ; 19C21:  00
+b06_9c22:   brk                         ; 19C22:  00
+b06_9c23:   brk                         ; 19C23:  00
+b06_9c24:   brk                         ; 19C24:  00
+b06_9c25:   brk                         ; 19C25:  00
+b06_9c26:   brk                         ; 19C26:  00
+b06_9c27:   brk                         ; 19C27:  00
+b06_9c28:   brk                         ; 19C28:  00
+b06_9c29:   .db $80                     ; 19C29:  80
+b06_9c2a:   .db $83                     ; 19C2A:  83
+b06_9c2b:   sty $87                     ; 19C2B:  84 87
+b06_9c2d:   dey                         ; 19C2D:  88
+b06_9c2e:   .db $8b                     ; 19C2E:  8b
+b06_9c2f:   sty $908f                   ; 19C2F:  8c 8f 90
+b06_9c32:   .db $93                     ; 19C32:  93
+b06_9c33:   brk                         ; 19C33:  00
+b06_9c34:   brk                         ; 19C34:  00
+b06_9c35:   stx $99,y                   ; 19C35:  96 99
+b06_9c37:   txs                         ; 19C37:  9a
+b06_9c38:   sta $a19e,x                 ; 19C38:  9d 9e a1
+b06_9c3b:   ldx #$a5                    ; 19C3B:  a2 a5
+b06_9c3d:   ldx $00                     ; 19C3D:  a6 00
+b06_9c3f:   brk                         ; 19C3F:  00
+b06_9c40:   brk                         ; 19C40:  00
+b06_9c41:   brk                         ; 19C41:  00
+b06_9c42:   brk                         ; 19C42:  00
+b06_9c43:   brk                         ; 19C43:  00
+b06_9c44:   brk                         ; 19C44:  00
+b06_9c45:   brk                         ; 19C45:  00
+b06_9c46:   brk                         ; 19C46:  00
+b06_9c47:   brk                         ; 19C47:  00
+b06_9c48:   brk                         ; 19C48:  00
+b06_9c49:   tay                         ; 19C49:  a8
+b06_9c4a:   tax                         ; 19C4A:  aa
+b06_9c4b:   .db $ab                     ; 19C4B:  ab
+b06_9c4c:   ldx $b2af                   ; 19C4C:  ae af b2
+b06_9c4f:   .db $b3                     ; 19C4F:  b3
+b06_9c50:   ldx $b7,y                   ; 19C50:  b6 b7
+b06_9c52:   tsx                         ; 19C52:  ba
+b06_9c53:   .db $bb                     ; 19C53:  bb
+b06_9c54:   ldx $c2bf,y                 ; 19C54:  be bf c2
+b06_9c57:   .db $c3                     ; 19C57:  c3
+b06_9c58:   cmp $c6                     ; 19C58:  c5 c6
+b06_9c5a:   cmp #$ca                    ; 19C5A:  c9 ca
+b06_9c5c:   cmp $00ce                   ; 19C5C:  cd ce 00
+b06_9c5f:   brk                         ; 19C5F:  00
+b06_9c60:   brk                         ; 19C60:  00
+b06_9c61:   brk                         ; 19C61:  00
+b06_9c62:   brk                         ; 19C62:  00
+b06_9c63:   brk                         ; 19C63:  00
+b06_9c64:   brk                         ; 19C64:  00
+b06_9c65:   brk                         ; 19C65:  00
+b06_9c66:   brk                         ; 19C66:  00
+b06_9c67:   brk                         ; 19C67:  00
+b06_9c68:   brk                         ; 19C68:  00
+b06_9c69:   lda #$ac                    ; 19C69:  a9 ac
+b06_9c6b:   lda $b1b0                   ; 19C6B:  ad b0 b1
+b06_9c6e:   ldy $b5,x                   ; 19C6E:  b4 b5
+b06_9c70:   clv                         ; 19C70:  b8
+b06_9c71:   lda $bdbc,y                 ; 19C71:  b9 bc bd
+b06_9c74:   cpy #$c1                    ; 19C74:  c0 c1
+b06_9c76:   cpy $00                     ; 19C76:  c4 00
+b06_9c78:   .db $c7                     ; 19C78:  c7
+b06_9c79:   iny                         ; 19C79:  c8
+b06_9c7a:   .db $cb                     ; 19C7A:  cb
+b06_9c7b:   cpy $cf00                   ; 19C7B:  cc 00 cf
+b06_9c7e:   .db $0b                     ; 19C7E:  0b
+b06_9c7f:   brk                         ; 19C7F:  00
+b06_9c80:   brk                         ; 19C80:  00
+b06_9c81:   brk                         ; 19C81:  00
+b06_9c82:   brk                         ; 19C82:  00
+b06_9c83:   brk                         ; 19C83:  00
+b06_9c84:   brk                         ; 19C84:  00
+b06_9c85:   brk                         ; 19C85:  00
+b06_9c86:   bne $9c59                   ; 19C86:  d0 d1
+b06_9c88:   .db $d4                     ; 19C88:  d4
+b06_9c89:   cmp $d7,x                   ; 19C89:  d5 d7
+b06_9c8b:   cld                         ; 19C8B:  d8
+b06_9c8c:   .db $db                     ; 19C8C:  db
+b06_9c8d:   .db $dc                     ; 19C8D:  dc
+b06_9c8e:   .db $df                     ; 19C8E:  df
+b06_9c8f:   cpx #$e3                    ; 19C8F:  e0 e3
+b06_9c91:   cpx $e7                     ; 19C91:  e4 e7
+b06_9c93:   inx                         ; 19C93:  e8
+b06_9c94:   brk                         ; 19C94:  00
+b06_9c95:   brk                         ; 19C95:  00
+b06_9c96:   brk                         ; 19C96:  00
+b06_9c97:   nop                         ; 19C97:  ea
+b06_9c98:   cpx $f0ed                   ; 19C98:  ec ed f0
+b06_9c9b:   sbc ($00),y                 ; 19C9B:  f1 00
+b06_9c9d:   .db $f2                     ; 19C9D:  f2
+b06_9c9e:   brk                         ; 19C9E:  00
+b06_9c9f:   brk                         ; 19C9F:  00
+b06_9ca0:   brk                         ; 19CA0:  00
+b06_9ca1:   brk                         ; 19CA1:  00
+b06_9ca2:   brk                         ; 19CA2:  00
+b06_9ca3:   brk                         ; 19CA3:  00
+b06_9ca4:   brk                         ; 19CA4:  00
+b06_9ca5:   brk                         ; 19CA5:  00
+b06_9ca6:   .db $d2                     ; 19CA6:  d2
+b06_9ca7:   .db $d3                     ; 19CA7:  d3
+b06_9ca8:   dec $00,x                   ; 19CA8:  d6 00
+b06_9caa:   cmp $ddda,y                 ; 19CAA:  d9 da dd
+b06_9cad:   dec $e2e1,x                 ; 19CAD:  de e1 e2
+b06_9cb0:   sbc $e6                     ; 19CB0:  e5 e6
+b06_9cb2:   sbc #$00                    ; 19CB2:  e9 00
+b06_9cb4:   brk                         ; 19CB4:  00
+b06_9cb5:   brk                         ; 19CB5:  00
+b06_9cb6:   brk                         ; 19CB6:  00
+b06_9cb7:   .db $eb                     ; 19CB7:  eb
+b06_9cb8:   inc $00ef                   ; 19CB8:  ee ef 00
+b06_9cbb:   brk                         ; 19CBB:  00
+b06_9cbc:   brk                         ; 19CBC:  00
+b06_9cbd:   .db $f3                     ; 19CBD:  f3
+b06_9cbe:   brk                         ; 19CBE:  00
+b06_9cbf:   brk                         ; 19CBF:  00
+b06_9cc0:   brk                         ; 19CC0:  00
+b06_9cc1:   brk                         ; 19CC1:  00
+b06_9cc2:   brk                         ; 19CC2:  00
+b06_9cc3:   brk                         ; 19CC3:  00
+b06_9cc4:   brk                         ; 19CC4:  00
+b06_9cc5:   brk                         ; 19CC5:  00
+b06_9cc6:   brk                         ; 19CC6:  00
+b06_9cc7:   brk                         ; 19CC7:  00
+b06_9cc8:   brk                         ; 19CC8:  00
+b06_9cc9:   .db $f4                     ; 19CC9:  f4
+b06_9cca:   sbc $f6,x                   ; 19CCA:  f5 f6
+b06_9ccc:   brk                         ; 19CCC:  00
+b06_9ccd:   .db $f7                     ; 19CCD:  f7
+b06_9cce:   brk                         ; 19CCE:  00
+b06_9ccf:   sed                         ; 19CCF:  f8
+b06_9cd0:   .db $fa                     ; 19CD0:  fa
+b06_9cd1:   .db $fb                     ; 19CD1:  fb
+b06_9cd2:   sbc $0000,x                 ; 19CD2:  fd 00 00
+b06_9cd5:   brk                         ; 19CD5:  00
+b06_9cd6:   brk                         ; 19CD6:  00
+b06_9cd7:   brk                         ; 19CD7:  00
+b06_9cd8:   brk                         ; 19CD8:  00
+b06_9cd9:   brk                         ; 19CD9:  00
+b06_9cda:   brk                         ; 19CDA:  00
+b06_9cdb:   brk                         ; 19CDB:  00
+b06_9cdc:   brk                         ; 19CDC:  00
+b06_9cdd:   brk                         ; 19CDD:  00
+b06_9cde:   brk                         ; 19CDE:  00
+b06_9cdf:   brk                         ; 19CDF:  00
+b06_9ce0:   brk                         ; 19CE0:  00
+b06_9ce1:   brk                         ; 19CE1:  00
+b06_9ce2:   brk                         ; 19CE2:  00
+b06_9ce3:   brk                         ; 19CE3:  00
+b06_9ce4:   brk                         ; 19CE4:  00
+b06_9ce5:   brk                         ; 19CE5:  00
+b06_9ce6:   brk                         ; 19CE6:  00
+b06_9ce7:   brk                         ; 19CE7:  00
+b06_9ce8:   brk                         ; 19CE8:  00
+b06_9ce9:   brk                         ; 19CE9:  00
+b06_9cea:   brk                         ; 19CEA:  00
+b06_9ceb:   brk                         ; 19CEB:  00
+b06_9cec:   brk                         ; 19CEC:  00
+b06_9ced:   brk                         ; 19CED:  00
+b06_9cee:   brk                         ; 19CEE:  00
+b06_9cef:   sbc $00fc,y                 ; 19CEF:  f9 fc 00
+b06_9cf2:   brk                         ; 19CF2:  00
+b06_9cf3:   brk                         ; 19CF3:  00
+b06_9cf4:   brk                         ; 19CF4:  00
+b06_9cf5:   brk                         ; 19CF5:  00
+b06_9cf6:   brk                         ; 19CF6:  00
+b06_9cf7:   brk                         ; 19CF7:  00
+b06_9cf8:   brk                         ; 19CF8:  00
+b06_9cf9:   brk                         ; 19CF9:  00
+b06_9cfa:   brk                         ; 19CFA:  00
+b06_9cfb:   brk                         ; 19CFB:  00
+b06_9cfc:   brk                         ; 19CFC:  00
+b06_9cfd:   brk                         ; 19CFD:  00
+b06_9cfe:   brk                         ; 19CFE:  00
+b06_9cff:   brk                         ; 19CFF:  00
+b06_9d00:   brk                         ; 19D00:  00
+b06_9d01:   brk                         ; 19D01:  00
+b06_9d02:   brk                         ; 19D02:  00
+b06_9d03:   brk                         ; 19D03:  00
+b06_9d04:   brk                         ; 19D04:  00
+b06_9d05:   brk                         ; 19D05:  00
+b06_9d06:   brk                         ; 19D06:  00
+b06_9d07:   brk                         ; 19D07:  00
+b06_9d08:   brk                         ; 19D08:  00
+b06_9d09:   brk                         ; 19D09:  00
+b06_9d0a:   brk                         ; 19D0A:  00
+b06_9d0b:   brk                         ; 19D0B:  00
+b06_9d0c:   brk                         ; 19D0C:  00
+b06_9d0d:   brk                         ; 19D0D:  00
+b06_9d0e:   brk                         ; 19D0E:  00
+b06_9d0f:   brk                         ; 19D0F:  00
+b06_9d10:   brk                         ; 19D10:  00
+b06_9d11:   brk                         ; 19D11:  00
+b06_9d12:   brk                         ; 19D12:  00
+b06_9d13:   brk                         ; 19D13:  00
+b06_9d14:   brk                         ; 19D14:  00
+b06_9d15:   brk                         ; 19D15:  00
+b06_9d16:   brk                         ; 19D16:  00
+b06_9d17:   brk                         ; 19D17:  00
+b06_9d18:   brk                         ; 19D18:  00
+b06_9d19:   brk                         ; 19D19:  00
+b06_9d1a:   ora ($00,x)                 ; 19D1A:  01 00
+b06_9d1c:   brk                         ; 19D1C:  00
+b06_9d1d:   brk                         ; 19D1D:  00
+b06_9d1e:   brk                         ; 19D1E:  00
+b06_9d1f:   brk                         ; 19D1F:  00
+b06_9d20:   brk                         ; 19D20:  00
+b06_9d21:   brk                         ; 19D21:  00
+b06_9d22:   ora ($00,x)                 ; 19D22:  01 00
+b06_9d24:   brk                         ; 19D24:  00
+b06_9d25:   brk                         ; 19D25:  00
+b06_9d26:   brk                         ; 19D26:  00
+b06_9d27:   brk                         ; 19D27:  00
+b06_9d28:   .db $1f                     ; 19D28:  1f
+b06_9d29:   .db $3f                     ; 19D29:  3f
+b06_9d2a:   .db $ff                     ; 19D2A:  ff
+b06_9d2b:   .db $3c                     ; 19D2B:  3c
+b06_9d2c:   brk                         ; 19D2C:  00
+b06_9d2d:   brk                         ; 19D2D:  00
+b06_9d2e:   brk                         ; 19D2E:  00
+b06_9d2f:   brk                         ; 19D2F:  00
+b06_9d30:   .db $1f                     ; 19D30:  1f
+b06_9d31:   .db $3f                     ; 19D31:  3f
+b06_9d32:   .db $ff                     ; 19D32:  ff
+b06_9d33:   .db $3c                     ; 19D33:  3c
+b06_9d34:   brk                         ; 19D34:  00
+b06_9d35:   brk                         ; 19D35:  00
+b06_9d36:   brk                         ; 19D36:  00
+b06_9d37:   cpy #$e0                    ; 19D37:  c0 e0
+b06_9d39:   beq $9cfb                   ; 19D39:  f0 c0
+b06_9d3b:   brk                         ; 19D3B:  00
+b06_9d3c:   brk                         ; 19D3C:  00
+b06_9d3d:   brk                         ; 19D3D:  00
+b06_9d3e:   brk                         ; 19D3E:  00
+b06_9d3f:   cpy #$e0                    ; 19D3F:  c0 e0
+b06_9d41:   beq $9d03                   ; 19D41:  f0 c0
+b06_9d43:   brk                         ; 19D43:  00
+b06_9d44:   brk                         ; 19D44:  00
+b06_9d45:   brk                         ; 19D45:  00
+b06_9d46:   brk                         ; 19D46:  00
+b06_9d47:   brk                         ; 19D47:  00
+b06_9d48:   brk                         ; 19D48:  00
+b06_9d49:   asl $0307                   ; 19D49:  0e 07 03
+b06_9d4c:   brk                         ; 19D4C:  00
+b06_9d4d:   brk                         ; 19D4D:  00
+b06_9d4e:   brk                         ; 19D4E:  00
+b06_9d4f:   brk                         ; 19D4F:  00
+b06_9d50:   brk                         ; 19D50:  00
+b06_9d51:   asl $0307                   ; 19D51:  0e 07 03
+b06_9d54:   brk                         ; 19D54:  00
+b06_9d55:   bmi $9d6f                   ; 19D55:  30 18
+b06_9d57:   .db $1c                     ; 19D57:  1c
+b06_9d58:   .db $1c                     ; 19D58:  1c
+b06_9d59:   .db $1c                     ; 19D59:  1c
+b06_9d5a:   .db $1f                     ; 19D5A:  1f
+b06_9d5b:   .db $9f                     ; 19D5B:  9f
+b06_9d5c:   brk                         ; 19D5C:  00
+b06_9d5d:   bmi $9d77                   ; 19D5D:  30 18
+b06_9d5f:   .db $1c                     ; 19D5F:  1c
+b06_9d60:   .db $1c                     ; 19D60:  1c
+b06_9d61:   .db $1c                     ; 19D61:  1c
+b06_9d62:   .db $1f                     ; 19D62:  1f
+b06_9d63:   .db $9f                     ; 19D63:  9f
+b06_9d64:   brk                         ; 19D64:  00
+b06_9d65:   brk                         ; 19D65:  00
+b06_9d66:   brk                         ; 19D66:  00
+b06_9d67:   brk                         ; 19D67:  00
+b06_9d68:   brk                         ; 19D68:  00
+b06_9d69:   brk                         ; 19D69:  00
+b06_9d6a:   cpy #$c0                    ; 19D6A:  c0 c0
+b06_9d6c:   brk                         ; 19D6C:  00
+b06_9d6d:   brk                         ; 19D6D:  00
+b06_9d6e:   brk                         ; 19D6E:  00
+b06_9d6f:   brk                         ; 19D6F:  00
+b06_9d70:   brk                         ; 19D70:  00
+b06_9d71:   brk                         ; 19D71:  00
+b06_9d72:   cpy #$c0                    ; 19D72:  c0 c0
+b06_9d74:   brk                         ; 19D74:  00
+b06_9d75:   brk                         ; 19D75:  00
+b06_9d76:   brk                         ; 19D76:  00
+b06_9d77:   .db $02                     ; 19D77:  02
+b06_9d78:   .db $03                     ; 19D78:  03
+b06_9d79:   .db $0f                     ; 19D79:  0f
+b06_9d7a:   .db $07                     ; 19D7A:  07
+b06_9d7b:   .db $0f                     ; 19D7B:  0f
+b06_9d7c:   brk                         ; 19D7C:  00
+b06_9d7d:   brk                         ; 19D7D:  00
+b06_9d7e:   brk                         ; 19D7E:  00
+b06_9d7f:   .db $02                     ; 19D7F:  02
+b06_9d80:   .db $03                     ; 19D80:  03
+b06_9d81:   .db $0f                     ; 19D81:  0f
+b06_9d82:   .db $07                     ; 19D82:  07
+b06_9d83:   .db $0f                     ; 19D83:  0f
+b06_9d84:   brk                         ; 19D84:  00
+b06_9d85:   brk                         ; 19D85:  00
+b06_9d86:   brk                         ; 19D86:  00
+b06_9d87:   brk                         ; 19D87:  00
+b06_9d88:   brk                         ; 19D88:  00
+b06_9d89:   .db $80                     ; 19D89:  80
+b06_9d8a:   .db $80                     ; 19D8A:  80
+b06_9d8b:   .db $80                     ; 19D8B:  80
+b06_9d8c:   brk                         ; 19D8C:  00
+b06_9d8d:   brk                         ; 19D8D:  00
+b06_9d8e:   brk                         ; 19D8E:  00
+b06_9d8f:   brk                         ; 19D8F:  00
+b06_9d90:   brk                         ; 19D90:  00
+b06_9d91:   .db $80                     ; 19D91:  80
+b06_9d92:   .db $80                     ; 19D92:  80
+b06_9d93:   .db $80                     ; 19D93:  80
+b06_9d94:   brk                         ; 19D94:  00
+b06_9d95:   brk                         ; 19D95:  00
+b06_9d96:   brk                         ; 19D96:  00
+b06_9d97:   brk                         ; 19D97:  00
+b06_9d98:   brk                         ; 19D98:  00
+b06_9d99:   brk                         ; 19D99:  00
+b06_9d9a:   brk                         ; 19D9A:  00
+b06_9d9b:   ora ($00,x)                 ; 19D9B:  01 00
+b06_9d9d:   brk                         ; 19D9D:  00
+b06_9d9e:   brk                         ; 19D9E:  00
+b06_9d9f:   brk                         ; 19D9F:  00
+b06_9da0:   brk                         ; 19DA0:  00
+b06_9da1:   brk                         ; 19DA1:  00
+b06_9da2:   brk                         ; 19DA2:  00
+b06_9da3:   ora ($00,x)                 ; 19DA3:  01 00
+b06_9da5:   brk                         ; 19DA5:  00
+b06_9da6:   brk                         ; 19DA6:  00
+b06_9da7:   cpy #$ef                    ; 19DA7:  c0 ef
+b06_9da9:   .db $ff                     ; 19DA9:  ff
+b06_9daa:   .db $ff                     ; 19DAA:  ff
+b06_9dab:   inc $0000,x                 ; 19DAB:  fe 00 00
+b06_9dae:   brk                         ; 19DAE:  00
+b06_9daf:   cpy #$ef                    ; 19DAF:  c0 ef
+b06_9db1:   .db $ff                     ; 19DB1:  ff
+b06_9db2:   .db $ff                     ; 19DB2:  ff
+b06_9db3:   inc $0000,x                 ; 19DB3:  fe 00 00
+b06_9db6:   brk                         ; 19DB6:  00
+b06_9db7:   brk                         ; 19DB7:  00
+b06_9db8:   brk                         ; 19DB8:  00
+b06_9db9:   .db $80                     ; 19DB9:  80
+b06_9dba:   .db $80                     ; 19DBA:  80
+b06_9dbb:   brk                         ; 19DBB:  00
+b06_9dbc:   brk                         ; 19DBC:  00
+b06_9dbd:   brk                         ; 19DBD:  00
+b06_9dbe:   brk                         ; 19DBE:  00
+b06_9dbf:   brk                         ; 19DBF:  00
+b06_9dc0:   brk                         ; 19DC0:  00
+b06_9dc1:   .db $80                     ; 19DC1:  80
+b06_9dc2:   .db $80                     ; 19DC2:  80
+b06_9dc3:   brk                         ; 19DC3:  00
+b06_9dc4:   brk                         ; 19DC4:  00
+b06_9dc5:   brk                         ; 19DC5:  00
+b06_9dc6:   brk                         ; 19DC6:  00
+b06_9dc7:   brk                         ; 19DC7:  00
+b06_9dc8:   rti                         ; 19DC8:  40
+b06_9dc9:   rti                         ; 19DC9:  40
+b06_9dca:   .db $42                     ; 19DCA:  42
+b06_9dcb:   .db $63                     ; 19DCB:  63
+b06_9dcc:   brk                         ; 19DCC:  00
+b06_9dcd:   brk                         ; 19DCD:  00
+b06_9dce:   brk                         ; 19DCE:  00
+b06_9dcf:   brk                         ; 19DCF:  00
+b06_9dd0:   rti                         ; 19DD0:  40
+b06_9dd1:   rti                         ; 19DD1:  40
+b06_9dd2:   .db $42                     ; 19DD2:  42
+b06_9dd3:   .db $63                     ; 19DD3:  63
+b06_9dd4:   .db $0c                     ; 19DD4:  0c
+b06_9dd5:   .db $0c                     ; 19DD5:  0c
+b06_9dd6:   asl $03                     ; 19DD6:  06 03
+b06_9dd8:   brk                         ; 19DD8:  00
+b06_9dd9:   .db $7c                     ; 19DD9:  7c
+b06_9dda:   rol $0c02,x                 ; 19DDA:  3e 02 0c
+b06_9ddd:   .db $0c                     ; 19DDD:  0c
+b06_9dde:   asl $03                     ; 19DDE:  06 03
+b06_9de0:   brk                         ; 19DE0:  00
+b06_9de1:   .db $7c                     ; 19DE1:  7c
+b06_9de2:   rol $3102,x                 ; 19DE2:  3e 02 31
+b06_9de5:   .db $7b                     ; 19DE5:  7b
+b06_9de6:   .db $f2                     ; 19DE6:  f2
+b06_9de7:   bmi $9e5a                   ; 19DE7:  30 71
+b06_9de9:   beq $9d7e                   ; 19DE9:  f0 93
+b06_9deb:   .db $fb                     ; 19DEB:  fb
+b06_9dec:   and ($79),y                 ; 19DEC:  31 79
+b06_9dee:   .db $f2                     ; 19DEE:  f2
+b06_9def:   bmi $9e61                   ; 19DEF:  30 70
+b06_9df1:   beq $9d86                   ; 19DF1:  f0 93
+b06_9df3:   .db $fb                     ; 19DF3:  fb
+b06_9df4:   ora ($02),y                 ; 19DF4:  11 02
+b06_9df6:   brk                         ; 19DF6:  00
+b06_9df7:   rol a                       ; 19DF7:  2a
+b06_9df8:   eor $22,x                   ; 19DF8:  55 22
+b06_9dfa:   ora ($db),y                 ; 19DFA:  11 db
+b06_9dfc:   brk                         ; 19DFC:  00
+b06_9dfd:   brk                         ; 19DFD:  00
+b06_9dfe:   brk                         ; 19DFE:  00
+b06_9dff:   brk                         ; 19DFF:  00
+b06_9e00:   brk                         ; 19E00:  00
+b06_9e01:   brk                         ; 19E01:  00
+b06_9e02:   brk                         ; 19E02:  00
+b06_9e03:   cpy #$80                    ; 19E03:  c0 80
+b06_9e05:   rts                         ; 19E05:  60
+b06_9e06:   sta ($8a,x)                 ; 19E06:  81 8a
+b06_9e08:   eor $4c                     ; 19E08:  45 4c
+b06_9e0a:   stx $000e                   ; 19E0A:  8e 0e 00
+b06_9e0d:   brk                         ; 19E0D:  00
+b06_9e0e:   brk                         ; 19E0E:  00
+b06_9e0f:   brk                         ; 19E0F:  00
+b06_9e10:   brk                         ; 19E10:  00
+b06_9e11:   .db $0c                     ; 19E11:  0c
+b06_9e12:   asl $c80e                   ; 19E12:  0e 0e c8
+b06_9e15:   .db $80                     ; 19E15:  80
+b06_9e16:   brk                         ; 19E16:  00
+b06_9e17:   ora ($2b),y                 ; 19E17:  11 2b
+b06_9e19:   .db $14                     ; 19E19:  14
+b06_9e1a:   .db $d4                     ; 19E1A:  d4
+b06_9e1b:   .db $04                     ; 19E1B:  04
+b06_9e1c:   cpy #$80                    ; 19E1C:  c0 80
+b06_9e1e:   brk                         ; 19E1E:  00
+b06_9e1f:   ora ($02,x)                 ; 19E1F:  01 02
+b06_9e21:   brk                         ; 19E21:  00
+b06_9e22:   .db $02                     ; 19E22:  02
+b06_9e23:   jsr $3f1f                   ; 19E23:  20 1f 3f
+b06_9e26:   beq $9deb                   ; 19E26:  f0 c3
+b06_9e28:   .db $1f                     ; 19E28:  1f
+b06_9e29:   .db $3b                     ; 19E29:  3b
+b06_9e2a:   .db $23                     ; 19E2A:  23
+b06_9e2b:   .db $2f                     ; 19E2B:  2f
+b06_9e2c:   .db $1f                     ; 19E2C:  1f
+b06_9e2d:   .db $3f                     ; 19E2D:  3f
+b06_9e2e:   beq $9df3                   ; 19E2E:  f0 c3
+b06_9e30:   .db $1f                     ; 19E30:  1f
+b06_9e31:   .db $3b                     ; 19E31:  3b
+b06_9e32:   .db $23                     ; 19E32:  23
+b06_9e33:   .db $2f                     ; 19E33:  2f
+b06_9e34:   .db $02                     ; 19E34:  02
+b06_9e35:   jmp ($9a81)                 ; 19E35:  6c 81 9a
+b06_9e38:   eor $2a,x                   ; 19E38:  55 2a
+b06_9e3a:   ora $fa,x                   ; 19E3A:  15 fa
+b06_9e3c:   brk                         ; 19E3C:  00
+b06_9e3d:   brk                         ; 19E3D:  00
+b06_9e3e:   brk                         ; 19E3E:  00
+b06_9e3f:   brk                         ; 19E3F:  00
+b06_9e40:   brk                         ; 19E40:  00
+b06_9e41:   brk                         ; 19E41:  00
+b06_9e42:   brk                         ; 19E42:  00
+b06_9e43:   beq $9dd7                   ; 19E43:  f0 92
+b06_9e45:   jmp ($9a81)                 ; 19E45:  6c 81 9a
+b06_9e48:   eor $6a,x                   ; 19E48:  55 6a
+b06_9e4a:   sta $aa,x                   ; 19E4A:  95 aa
+b06_9e4c:   brk                         ; 19E4C:  00
+b06_9e4d:   brk                         ; 19E4D:  00
+b06_9e4e:   brk                         ; 19E4E:  00
+b06_9e4f:   brk                         ; 19E4F:  00
+b06_9e50:   brk                         ; 19E50:  00
+b06_9e51:   brk                         ; 19E51:  00
+b06_9e52:   brk                         ; 19E52:  00
+b06_9e53:   brk                         ; 19E53:  00
+b06_9e54:   beq $9e57                   ; 19E54:  f0 01
+b06_9e56:   brk                         ; 19E56:  00
+b06_9e57:   cpy #$00                    ; 19E57:  c0 00
+b06_9e59:   brk                         ; 19E59:  00
+b06_9e5a:   .db $1c                     ; 19E5A:  1c
+b06_9e5b:   ldx #$f2                    ; 19E5B:  a2 f2
+b06_9e5d:   brk                         ; 19E5D:  00
+b06_9e5e:   ora ($f6,x)                 ; 19E5E:  01 f6
+b06_9e60:   ora $3f0f,x                 ; 19E60:  1d 0f 3f
+b06_9e63:   lda $1566,x                 ; 19E63:  bd 66 15
+b06_9e66:   lsr a                       ; 19E66:  4a
+b06_9e67:   eor ($06),y                 ; 19E67:  51 06
+b06_9e69:   php                         ; 19E69:  08
+b06_9e6a:   .db $42                     ; 19E6A:  42
+b06_9e6b:   bpl $9e6d                   ; 19E6B:  10 00
+b06_9e6d:   .db $80                     ; 19E6D:  80
+b06_9e6e:   .db $80                     ; 19E6E:  80
+b06_9e6f:   ldy #$91                    ; 19E6F:  a0 91
+b06_9e71:   cpx $e0                     ; 19E71:  e4 e0
+b06_9e73:   sbc #$67                    ; 19E73:  e9 67
+b06_9e75:   bmi $9e18                   ; 19E75:  30 a1
+b06_9e77:   bmi $9e95                   ; 19E77:  30 1c
+b06_9e79:   asl $c038,x                 ; 19E79:  1e 38 c0
+b06_9e7c:   brk                         ; 19E7C:  00
+b06_9e7d:   ora #$26                    ; 19E7D:  09 26
+b06_9e7f:   clv                         ; 19E7F:  b8
+b06_9e80:   asl $791d,x                 ; 19E80:  1e 1d 79
+b06_9e83:   cpx #$22                    ; 19E83:  e0 22
+b06_9e85:   ldy $0e11                   ; 19E85:  ac 11 0e
+b06_9e88:   and ($b5,x)                 ; 19E88:  21 b5
+b06_9e8a:   jsr $00c0                   ; 19E8A:  20 c0 00
+b06_9e8d:   ora ($c4,x)                 ; 19E8D:  01 c4
+b06_9e8f:   jsr $bb0a                   ; 19E8F:  20 0a bb
+b06_9e92:   ldy $8140                   ; 19E92:  ac 40 81
+b06_9e95:   .db $43                     ; 19E95:  43
+b06_9e96:   .db $8f                     ; 19E96:  8f
+b06_9e97:   .db $9f                     ; 19E97:  9f
+b06_9e98:   eor $41,x                   ; 19E98:  55 41
+b06_9e9a:   sta ($8f,x)                 ; 19E9A:  81 8f
+b06_9e9c:   ora ($03,x)                 ; 19E9C:  01 03
+b06_9e9e:   .db $0f                     ; 19E9E:  0f
+b06_9e9f:   .db $0f                     ; 19E9F:  0f
+b06_9ea0:   ora $01                     ; 19EA0:  05 01
+b06_9ea2:   ora ($0f,x)                 ; 19EA2:  01 0f
+b06_9ea4:   .db $fa                     ; 19EA4:  fa
+b06_9ea5:   sed                         ; 19EA5:  f8
+b06_9ea6:   sbc ($f0),y                 ; 19EA6:  f1 f0
+b06_9ea8:   .db $ff                     ; 19EA8:  ff
+b06_9ea9:   .db $e7                     ; 19EA9:  e7
+b06_9eaa:   ldx $be,y                   ; 19EAA:  b6 be
+b06_9eac:   .db $fa                     ; 19EAC:  fa
+b06_9ead:   sed                         ; 19EAD:  f8
+b06_9eae:   beq $9ea0                   ; 19EAE:  f0 f0
+b06_9eb0:   .db $ff                     ; 19EB0:  ff
+b06_9eb1:   .db $e7                     ; 19EB1:  e7
+b06_9eb2:   ldx $be,y                   ; 19EB2:  b6 be
+b06_9eb4:   .db $0c                     ; 19EB4:  0c
+b06_9eb5:   rol $02af                   ; 19EB5:  2e af 02
+b06_9eb8:   .db $04                     ; 19EB8:  04
+b06_9eb9:   .db $0f                     ; 19EB9:  0f
+b06_9eba:   clc                         ; 19EBA:  18
+b06_9ebb:   bmi $9ec9                   ; 19EBB:  30 0c
+b06_9ebd:   lsr $824f                   ; 19EBD:  4e 4f 82
+b06_9ec0:   sty $0f                     ; 19EC0:  84 0f
+b06_9ec2:   clc                         ; 19EC2:  18
+b06_9ec3:   bmi $9ec1                   ; 19EC3:  30 fc
+b06_9ec5:   sed                         ; 19EC5:  f8
+b06_9ec6:   .db $e7                     ; 19EC6:  e7
+b06_9ec7:   bpl $9e49                   ; 19EC7:  10 80
+b06_9ec9:   .db $33                     ; 19EC9:  33
+b06_9eca:   .db $3f                     ; 19ECA:  3f
+b06_9ecb:   .db $7b                     ; 19ECB:  7b
+b06_9ecc:   .db $fc                     ; 19ECC:  fc
+b06_9ecd:   sed                         ; 19ECD:  f8
+b06_9ece:   .db $e7                     ; 19ECE:  e7
+b06_9ecf:   bpl $9e51                   ; 19ECF:  10 80
+b06_9ed1:   .db $33                     ; 19ED1:  33
+b06_9ed2:   .db $3f                     ; 19ED2:  3f
+b06_9ed3:   .db $7b                     ; 19ED3:  7b
+b06_9ed4:   .db $02                     ; 19ED4:  02
+b06_9ed5:   .db $0c                     ; 19ED5:  0c
+b06_9ed6:   ora ($9a,x)                 ; 19ED6:  01 9a
+b06_9ed8:   eor $6a,x                   ; 19ED8:  55 6a
+b06_9eda:   ora $2a,x                   ; 19EDA:  15 2a
+b06_9edc:   brk                         ; 19EDC:  00
+b06_9edd:   brk                         ; 19EDD:  00
+b06_9ede:   brk                         ; 19EDE:  00
+b06_9edf:   brk                         ; 19EDF:  00
+b06_9ee0:   brk                         ; 19EE0:  00
+b06_9ee1:   brk                         ; 19EE1:  00
+b06_9ee2:   brk                         ; 19EE2:  00
+b06_9ee3:   brk                         ; 19EE3:  00
+b06_9ee4:   .db $1c                     ; 19EE4:  1c
+b06_9ee5:   .db $33                     ; 19EE5:  33
+b06_9ee6:   .db $f4                     ; 19EE6:  f4
+b06_9ee7:   .db $72                     ; 19EE7:  72
+b06_9ee8:   .db $e3                     ; 19EE8:  e3
+b06_9ee9:   cpy #$82                    ; 19EE9:  c0 82
+b06_9eeb:   iny                         ; 19EEB:  c8
+b06_9eec:   brk                         ; 19EEC:  00
+b06_9eed:   bmi $9edf                   ; 19EED:  30 f0
+b06_9eef:   adc ($e0),y                 ; 19EEF:  71 e0
+b06_9ef1:   .db $c2                     ; 19EF1:  c2
+b06_9ef2:   .db $87                     ; 19EF2:  87
+b06_9ef3:   .db $c7                     ; 19EF3:  c7
+b06_9ef4:   .db $ab                     ; 19EF4:  ab
+b06_9ef5:   .db $14                     ; 19EF5:  14
+b06_9ef6:   .db $ab                     ; 19EF6:  ab
+b06_9ef7:   .db $44                     ; 19EF7:  44
+b06_9ef8:   plp                         ; 19EF8:  28
+b06_9ef9:   pha                         ; 19EF9:  48
+b06_9efa:   bpl $9e7c                   ; 19EFA:  10 80
+b06_9efc:   brk                         ; 19EFC:  00
+b06_9efd:   brk                         ; 19EFD:  00
+b06_9efe:   rti                         ; 19EFE:  40
+b06_9eff:   bpl $9f45                   ; 19EFF:  10 44
+b06_9f01:   bcc $9ea3                   ; 19F01:  90 a0
+b06_9f03:   inx                         ; 19F03:  e8
+b06_9f04:   ldy #$48                    ; 19F04:  a0 48
+b06_9f06:   brk                         ; 19F06:  00
+b06_9f07:   .db $12                     ; 19F07:  12
+b06_9f08:   lda ($00,x)                 ; 19F08:  a1 00
+b06_9f0a:   tay                         ; 19F0A:  a8
+b06_9f0b:   eor ($00,x)                 ; 19F0B:  41 00
+b06_9f0d:   brk                         ; 19F0D:  00
+b06_9f0e:   brk                         ; 19F0E:  00
+b06_9f0f:   brk                         ; 19F0F:  00
+b06_9f10:   brk                         ; 19F10:  00
+b06_9f11:   brk                         ; 19F11:  00
+b06_9f12:   brk                         ; 19F12:  00
+b06_9f13:   brk                         ; 19F13:  00
+b06_9f14:   .db $54                     ; 19F14:  54
+b06_9f15:   pha                         ; 19F15:  48
+b06_9f16:   tay                         ; 19F16:  a8
+b06_9f17:   .db $1b                     ; 19F17:  1b
+b06_9f18:   .db $02                     ; 19F18:  02
+b06_9f19:   .db $3c                     ; 19F19:  3c
+b06_9f1a:   .db $72                     ; 19F1A:  72
+b06_9f1b:   sbc ($00,x)                 ; 19F1B:  e1 00
+b06_9f1d:   brk                         ; 19F1D:  00
+b06_9f1e:   brk                         ; 19F1E:  00
+b06_9f1f:   brk                         ; 19F1F:  00
+b06_9f20:   brk                         ; 19F20:  00
+b06_9f21:   bmi $9f93                   ; 19F21:  30 70
+b06_9f23:   cpx #$a0                    ; 19F23:  e0 a0
+b06_9f25:   jmp $1203                   ; 19F25:  4c 03 12
+b06_9f28:   lda ($00,x)                 ; 19F28:  a1 00
+b06_9f2a:   tay                         ; 19F2A:  a8
+b06_9f2b:   eor ($00,x)                 ; 19F2B:  41 00
+b06_9f2d:   .db $04                     ; 19F2D:  04
+b06_9f2e:   .db $03                     ; 19F2E:  03
+b06_9f2f:   brk                         ; 19F2F:  00
+b06_9f30:   brk                         ; 19F30:  00
+b06_9f31:   brk                         ; 19F31:  00
+b06_9f32:   brk                         ; 19F32:  00
+b06_9f33:   brk                         ; 19F33:  00
+b06_9f34:   brk                         ; 19F34:  00
+b06_9f35:   brk                         ; 19F35:  00
+b06_9f36:   brk                         ; 19F36:  00
+b06_9f37:   brk                         ; 19F37:  00
+b06_9f38:   brk                         ; 19F38:  00
+b06_9f39:   brk                         ; 19F39:  00
+b06_9f3a:   .db $07                     ; 19F3A:  07
+b06_9f3b:   .db $1f                     ; 19F3B:  1f
+b06_9f3c:   brk                         ; 19F3C:  00
+b06_9f3d:   brk                         ; 19F3D:  00
+b06_9f3e:   brk                         ; 19F3E:  00
+b06_9f3f:   brk                         ; 19F3F:  00
+b06_9f40:   brk                         ; 19F40:  00
+b06_9f41:   brk                         ; 19F41:  00
+b06_9f42:   .db $07                     ; 19F42:  07
+b06_9f43:   .db $1f                     ; 19F43:  1f
+b06_9f44:   brk                         ; 19F44:  00
+b06_9f45:   brk                         ; 19F45:  00
+b06_9f46:   brk                         ; 19F46:  00
+b06_9f47:   brk                         ; 19F47:  00
+b06_9f48:   brk                         ; 19F48:  00
+b06_9f49:   brk                         ; 19F49:  00
+b06_9f4a:   brk                         ; 19F4A:  00
+b06_9f4b:   .db $80                     ; 19F4B:  80
+b06_9f4c:   brk                         ; 19F4C:  00
+b06_9f4d:   brk                         ; 19F4D:  00
+b06_9f4e:   brk                         ; 19F4E:  00
+b06_9f4f:   brk                         ; 19F4F:  00
+b06_9f50:   brk                         ; 19F50:  00
+b06_9f51:   brk                         ; 19F51:  00
+b06_9f52:   brk                         ; 19F52:  00
+b06_9f53:   .db $80                     ; 19F53:  80
+b06_9f54:   .db $7f                     ; 19F54:  7f
+b06_9f55:   .db $ff                     ; 19F55:  ff
+b06_9f56:   .db $ff                     ; 19F56:  ff
+b06_9f57:   .db $07                     ; 19F57:  07
+b06_9f58:   .db $07                     ; 19F58:  07
+b06_9f59:   .db $07                     ; 19F59:  07
+b06_9f5a:   .db $07                     ; 19F5A:  07
+b06_9f5b:   .db $07                     ; 19F5B:  07
+b06_9f5c:   .db $7f                     ; 19F5C:  7f
+b06_9f5d:   .db $ff                     ; 19F5D:  ff
+b06_9f5e:   .db $ff                     ; 19F5E:  ff
+b06_9f5f:   .db $07                     ; 19F5F:  07
+b06_9f60:   .db $07                     ; 19F60:  07
+b06_9f61:   .db $07                     ; 19F61:  07
+b06_9f62:   .db $07                     ; 19F62:  07
+b06_9f63:   .db $07                     ; 19F63:  07
+b06_9f64:   .db $80                     ; 19F64:  80
+b06_9f65:   brk                         ; 19F65:  00
+b06_9f66:   brk                         ; 19F66:  00
+b06_9f67:   brk                         ; 19F67:  00
+b06_9f68:   bvs $9fa2                   ; 19F68:  70 38
+b06_9f6a:   brk                         ; 19F6A:  00
+b06_9f6b:   brk                         ; 19F6B:  00
+b06_9f6c:   .db $80                     ; 19F6C:  80
+b06_9f6d:   brk                         ; 19F6D:  00
+b06_9f6e:   brk                         ; 19F6E:  00
+b06_9f6f:   brk                         ; 19F6F:  00
+b06_9f70:   bvs $9faa                   ; 19F70:  70 38
+b06_9f72:   brk                         ; 19F72:  00
+b06_9f73:   brk                         ; 19F73:  00
+b06_9f74:   brk                         ; 19F74:  00
+b06_9f75:   brk                         ; 19F75:  00
+b06_9f76:   brk                         ; 19F76:  00
+b06_9f77:   brk                         ; 19F77:  00
+b06_9f78:   brk                         ; 19F78:  00
+b06_9f79:   brk                         ; 19F79:  00
+b06_9f7a:   ora ($03,x)                 ; 19F7A:  01 03
+b06_9f7c:   brk                         ; 19F7C:  00
+b06_9f7d:   brk                         ; 19F7D:  00
+b06_9f7e:   brk                         ; 19F7E:  00
+b06_9f7f:   brk                         ; 19F7F:  00
+b06_9f80:   brk                         ; 19F80:  00
+b06_9f81:   brk                         ; 19F81:  00
+b06_9f82:   ora ($03,x)                 ; 19F82:  01 03
+b06_9f84:   asl $3c1c                   ; 19F84:  0e 1c 3c
+b06_9f87:   sei                         ; 19F87:  78
+b06_9f88:   sei                         ; 19F88:  78
+b06_9f89:   .db $fc                     ; 19F89:  fc
+b06_9f8a:   dec $0ecf,x                 ; 19F8A:  de cf 0e
+b06_9f8d:   .db $1c                     ; 19F8D:  1c
+b06_9f8e:   .db $3c                     ; 19F8E:  3c
+b06_9f8f:   sei                         ; 19F8F:  78
+b06_9f90:   sei                         ; 19F90:  78
+b06_9f91:   .db $fc                     ; 19F91:  fc
+b06_9f92:   dec $07cf,x                 ; 19F92:  de cf 07
+b06_9f95:   .db $07                     ; 19F95:  07
+b06_9f96:   asl $701c,x                 ; 19F96:  1e 1c 70
+b06_9f99:   rts                         ; 19F99:  60
+b06_9f9a:   brk                         ; 19F9A:  00
+b06_9f9b:   ora ($07,x)                 ; 19F9B:  01 07
+b06_9f9d:   .db $07                     ; 19F9D:  07
+b06_9f9e:   asl $701c,x                 ; 19F9E:  1e 1c 70
+b06_9fa1:   rts                         ; 19FA1:  60
+b06_9fa2:   brk                         ; 19FA2:  00
+b06_9fa3:   ora ($87,x)                 ; 19FA3:  01 87
+b06_9fa5:   ora ($00,x)                 ; 19FA5:  01 00
+b06_9fa7:   brk                         ; 19FA7:  00
+b06_9fa8:   brk                         ; 19FA8:  00
+b06_9fa9:   brk                         ; 19FA9:  00
+b06_9faa:   eor ($e4,x)                 ; 19FAA:  41 e4
+b06_9fac:   .db $87                     ; 19FAC:  87
+b06_9fad:   ora ($00,x)                 ; 19FAD:  01 00
+b06_9faf:   brk                         ; 19FAF:  00
+b06_9fb0:   brk                         ; 19FB0:  00
+b06_9fb1:   brk                         ; 19FB1:  00
+b06_9fb2:   eor ($e4,x)                 ; 19FB2:  41 e4
+b06_9fb4:   cpy #$e0                    ; 19FB4:  c0 e0
+b06_9fb6:   beq $9ff4                   ; 19FB6:  f0 3c
+b06_9fb8:   .db $0c                     ; 19FB8:  0c
+b06_9fb9:   asl $e3                     ; 19FB9:  06 e3
+b06_9fbb:   bmi $9f7d                   ; 19FBB:  30 c0
+b06_9fbd:   cpx #$f0                    ; 19FBD:  e0 f0
+b06_9fbf:   .db $3c                     ; 19FBF:  3c
+b06_9fc0:   .db $0c                     ; 19FC0:  0c
+b06_9fc1:   asl $e3                     ; 19FC1:  06 e3
+b06_9fc3:   bmi $9fd4                   ; 19FC3:  30 0f
+b06_9fc5:   .db $07                     ; 19FC5:  07
+b06_9fc6:   ora ($01,x)                 ; 19FC6:  01 01
+b06_9fc8:   .db $03                     ; 19FC8:  03
+b06_9fc9:   .db $03                     ; 19FC9:  03
+b06_9fca:   .db $03                     ; 19FCA:  03
+b06_9fcb:   asl $0f                     ; 19FCB:  06 0f
+b06_9fcd:   .db $07                     ; 19FCD:  07
+b06_9fce:   ora ($01,x)                 ; 19FCE:  01 01
+b06_9fd0:   .db $03                     ; 19FD0:  03
+b06_9fd1:   .db $03                     ; 19FD1:  03
+b06_9fd2:   .db $03                     ; 19FD2:  03
+b06_9fd3:   asl $06                     ; 19FD3:  06 06
+b06_9fd5:   .db $0c                     ; 19FD5:  0c
+b06_9fd6:   ora $3919,x                 ; 19FD6:  1d 19 39
+b06_9fd9:   bmi $a03b                   ; 19FD9:  30 60
+b06_9fdb:   cpy #$06                    ; 19FDB:  c0 06
+b06_9fdd:   .db $0c                     ; 19FDD:  0c
+b06_9fde:   ora $3919,x                 ; 19FDE:  1d 19 39
+b06_9fe1:   bmi $a043                   ; 19FE1:  30 60
+b06_9fe3:   cpy #$f0                    ; 19FE3:  c0 f0
+b06_9fe5:   inc $c6c6                   ; 19FE5:  ee c6 c6
+b06_9fe8:   dec $e6                     ; 19FE8:  c6 e6
+b06_9fea:   inc $d6,x                   ; 19FEA:  f6 d6
+b06_9fec:   beq $9fdc                   ; 19FEC:  f0 ee
+b06_9fee:   dec $c6                     ; 19FEE:  c6 c6
+b06_9ff0:   dec $e6                     ; 19FF0:  c6 e6
+b06_9ff2:   inc $d6,x                   ; 19FF2:  f6 d6
+b06_9ff4:   ldx $b6,y                   ; 19FF4:  b6 b6
+b06_9ff6:   .db $b7                     ; 19FF6:  b7
+b06_9ff7:   .db $97                     ; 19FF7:  97
+b06_9ff8:   .db $9f                     ; 19FF8:  9f
+b06_9ff9:   asl $0e1e,x                 ; 19FF9:  1e 1e 0e
+b06_9ffc:   ldx $b6,y                   ; 19FFC:  b6 b6
+b06_9ffe:   .db $b7                     ; 19FFE:  b7
+b06_9fff:   .db $97                     ; 19FFF:  97
+b06_a000:   .db $9f                     ; 1A000:  9f
+b06_a001:   asl $0e1e,x                 ; 1A001:  1e 1e 0e
+b06_a004:   ora $22                     ; 1A004:  05 22
+b06_a006:   .db $4f                     ; 1A006:  4f
+b06_a007:   .db $04                     ; 1A007:  04
+b06_a008:   .db $1a                     ; 1A008:  1a
+b06_a009:   and $2a                     ; 1A009:  25 2a
+b06_a00b:   and $00,x                   ; 1A00B:  35 00
+b06_a00d:   brk                         ; 1A00D:  00
+b06_a00e:   brk                         ; 1A00E:  00
+b06_a00f:   brk                         ; 1A00F:  00
+b06_a010:   brk                         ; 1A010:  00
+b06_a011:   brk                         ; 1A011:  00
+b06_a012:   brk                         ; 1A012:  00
+b06_a013:   brk                         ; 1A013:  00
+b06_a014:   .db $0b                     ; 1A014:  0b
+b06_a015:   .db $1b                     ; 1A015:  1b
+b06_a016:   rol $76,x                   ; 1A016:  36 76
+b06_a018:   adc $3a3f                   ; 1A018:  6d 3f 3a
+b06_a01b:   bvs $a028                   ; 1A01B:  70 0b
+b06_a01d:   .db $1b                     ; 1A01D:  1b
+b06_a01e:   rol $76,x                   ; 1A01E:  36 76
+b06_a020:   adc $3a3f                   ; 1A020:  6d 3f 3a
+b06_a023:   bvs $a024                   ; 1A023:  70 ff
+b06_a025:   inc $9ece                   ; 1A025:  ee ce 9e
+b06_a028:   .db $c2                     ; 1A028:  c2
+b06_a029:   .db $03                     ; 1A029:  03
+b06_a02a:   ora ($2d,x)                 ; 1A02A:  01 2d
+b06_a02c:   .db $ff                     ; 1A02C:  ff
+b06_a02d:   inc $9ece                   ; 1A02D:  ee ce 9e
+b06_a030:   .db $c2                     ; 1A030:  c2
+b06_a031:   .db $0b                     ; 1A031:  0b
+b06_a032:   .db $07                     ; 1A032:  07
+b06_a033:   .db $1b                     ; 1A033:  1b
+b06_a034:   .db $80                     ; 1A034:  80
+b06_a035:   rti                         ; 1A035:  40
+b06_a036:   ldy $d44a                   ; 1A036:  ac 4a d4
+b06_a039:   ldy #$10                    ; 1A039:  a0 10
+b06_a03b:   .db $62                     ; 1A03B:  62
+b06_a03c:   ora ($00,x)                 ; 1A03C:  01 00
+b06_a03e:   .db $02                     ; 1A03E:  02
+b06_a03f:   .db $14                     ; 1A03F:  14
+b06_a040:   brk                         ; 1A040:  00
+b06_a041:   .db $04                     ; 1A041:  04
+b06_a042:   brk                         ; 1A042:  00
+b06_a043:   .db $02                     ; 1A043:  02
+b06_a044:   plp                         ; 1A044:  28
+b06_a045:   ora ($40,x)                 ; 1A045:  01 40
+b06_a047:   rti                         ; 1A047:  40
+b06_a048:   .db $47                     ; 1A048:  47
+b06_a049:   .db $4f                     ; 1A049:  4f
+b06_a04a:   sei                         ; 1A04A:  78
+b06_a04b:   cpx #$57                    ; 1A04B:  e0 57
+b06_a04d:   .db $bf                     ; 1A04D:  bf
+b06_a04e:   .db $23                     ; 1A04E:  23
+b06_a04f:   eor ($47,x)                 ; 1A04F:  41 47
+b06_a051:   .db $4f                     ; 1A051:  4f
+b06_a052:   sei                         ; 1A052:  78
+b06_a053:   cpx #$20                    ; 1A053:  e0 20
+b06_a055:   clc                         ; 1A055:  18
+b06_a056:   rts                         ; 1A056:  60
+b06_a057:   eor ($61,x)                 ; 1A057:  41 61
+b06_a059:   adc ($f3,x)                 ; 1A059:  61 f3
+b06_a05b:   .db $fb                     ; 1A05B:  fb
+b06_a05c:   .db $1c                     ; 1A05C:  1c
+b06_a05d:   brk                         ; 1A05D:  00
+b06_a05e:   cli                         ; 1A05E:  58
+b06_a05f:   eor #$61                    ; 1A05F:  49 61
+b06_a061:   adc ($f3,x)                 ; 1A061:  61 f3
+b06_a063:   .db $fb                     ; 1A063:  fb
+b06_a064:   eor ($ce),y                 ; 1A064:  51 ce
+b06_a066:   tya                         ; 1A066:  98
+b06_a067:   sta $0787                   ; 1A067:  8d 87 07
+b06_a06a:   .db $0f                     ; 1A06A:  0f
+b06_a06b:   ldy $ce51,x                 ; 1A06B:  bc 51 ce
+b06_a06e:   tya                         ; 1A06E:  98
+b06_a06f:   sta $0787                   ; 1A06F:  8d 87 07
+b06_a072:   .db $0f                     ; 1A072:  0f
+b06_a073:   ldy $0c3e,x                 ; 1A073:  bc 3e 0c
+b06_a076:   .db $9c                     ; 1A076:  9c
+b06_a077:   pla                         ; 1A077:  68
+b06_a078:   bit $42                     ; 1A078:  24 42
+b06_a07a:   asl a                       ; 1A07A:  0a
+b06_a07b:   jsr $ccbe                   ; 1A07B:  20 be cc
+b06_a07e:   jmp ($d8b8)                 ; 1A07E:  6c b8 d8
+b06_a081:   .db $7f                     ; 1A081:  7f
+b06_a082:   and $0019,y                 ; 1A082:  39 19 00
+b06_a085:   brk                         ; 1A085:  00
+b06_a086:   .db $27                     ; 1A086:  27
+b06_a087:   .db $c2                     ; 1A087:  c2
+b06_a088:   .db $87                     ; 1A088:  87
+b06_a089:   .db $27                     ; 1A089:  27
+b06_a08a:   lsr $c6                     ; 1A08A:  46 c6
+b06_a08c:   jsr $4110                   ; 1A08C:  20 10 41
+b06_a08f:   lda ($66,x)                 ; 1A08F:  a1 66
+b06_a091:   .db $c7                     ; 1A091:  c7
+b06_a092:   ldx $26                     ; 1A092:  a6 26
+b06_a094:   bcc $a02a                   ; 1A094:  90 94
+b06_a096:   .db $80                     ; 1A096:  80
+b06_a097:   sta $1a                     ; 1A097:  85 1a
+b06_a099:   .db $80                     ; 1A099:  80
+b06_a09a:   cmp $e4,x                   ; 1A09A:  d5 e4
+b06_a09c:   .db $bf                     ; 1A09C:  bf
+b06_a09d:   .db $8f                     ; 1A09D:  8f
+b06_a09e:   .db $9f                     ; 1A09E:  9f
+b06_a09f:   .db $9b                     ; 1A09F:  9b
+b06_a0a0:   ora $fa9f                   ; 1A0A0:  0d 9f fa
+b06_a0a3:   .db $e7                     ; 1A0A3:  e7
+b06_a0a4:   lda #$45                    ; 1A0A4:  a9 45
+b06_a0a6:   .db $3a                     ; 1A0A6:  3a
+b06_a0a7:   eor #$21                    ; 1A0A7:  49 21
+b06_a0a9:   dey                         ; 1A0A9:  88
+b06_a0aa:   jsr $41e4                   ; 1A0AA:  20 e4 41
+b06_a0ad:   lda $b680,y                 ; 1A0AD:  b9 80 b6
+b06_a0b0:   cmp $de77                   ; 1A0B0:  cd 77 de
+b06_a0b3:   .db $3f                     ; 1A0B3:  3f
+b06_a0b4:   bmi $a0d4                   ; 1A0B4:  30 1e
+b06_a0b6:   .db $6f                     ; 1A0B6:  6f
+b06_a0b7:   php                         ; 1A0B7:  08
+b06_a0b8:   php                         ; 1A0B8:  08
+b06_a0b9:   .db $04                     ; 1A0B9:  04
+b06_a0ba:   rol $3178,x                 ; 1A0BA:  3e 78 31
+b06_a0bd:   dec $f0bf,x                 ; 1A0BD:  de bf f0
+b06_a0c0:   .db $0c                     ; 1A0C0:  0c
+b06_a0c1:   .db $03                     ; 1A0C1:  03
+b06_a0c2:   .db $3f                     ; 1A0C2:  3f
+b06_a0c3:   adc $9013,y                 ; 1A0C3:  79 13 90
+b06_a0c6:   ldx $2c                     ; 1A0C6:  a6 2c
+b06_a0c8:   .db $04                     ; 1A0C8:  04
+b06_a0c9:   .db $8b                     ; 1A0C9:  8b
+b06_a0ca:   .db $d2                     ; 1A0CA:  d2
+b06_a0cb:   eor ($ec,x)                 ; 1A0CB:  41 ec
+b06_a0cd:   .db $ff                     ; 1A0CD:  ff
+b06_a0ce:   cld                         ; 1A0CE:  d8
+b06_a0cf:   rol $1a,x                   ; 1A0CF:  36 1a
+b06_a0d1:   .db $74                     ; 1A0D1:  74
+b06_a0d2:   sbc $11be,x                 ; 1A0D2:  fd be 11
+b06_a0d5:   dey                         ; 1A0D5:  88
+b06_a0d6:   .db $e7                     ; 1A0D6:  e7
+b06_a0d7:   sbc $063e,x                 ; 1A0D7:  fd 3e 06
+b06_a0da:   bcs $a120                   ; 1A0DA:  b0 44
+b06_a0dc:   ora ($87),y                 ; 1A0DC:  11 87
+b06_a0de:   .db $e7                     ; 1A0DE:  e7
+b06_a0df:   inc $c6bf,x                 ; 1A0DF:  fe bf c6
+b06_a0e2:   rti                         ; 1A0E2:  40
+b06_a0e3:   tsx                         ; 1A0E3:  ba
+b06_a0e4:   .db $80                     ; 1A0E4:  80
+b06_a0e5:   and $4821                   ; 1A0E5:  2d 21 48
+b06_a0e8:   stx $80                     ; 1A0E8:  86 80
+b06_a0ea:   .db $2b                     ; 1A0EA:  2b
+b06_a0eb:   .db $32                     ; 1A0EB:  32
+b06_a0ec:   beq $a0eb                   ; 1A0EC:  f0 fd
+b06_a0ee:   cmp ($f0),y                 ; 1A0EE:  d1 f0
+b06_a0f0:   .db $fc                     ; 1A0F0:  fc
+b06_a0f1:   .db $7f                     ; 1A0F1:  7f
+b06_a0f2:   .db $5c                     ; 1A0F2:  5c
+b06_a0f3:   .db $4f                     ; 1A0F3:  4f
+b06_a0f4:   ora $63,x                   ; 1A0F4:  15 63
+b06_a0f6:   cpy #$44                    ; 1A0F6:  c0 44
+b06_a0f8:   eor ($40,x)                 ; 1A0F8:  41 40
+b06_a0fa:   lsr $ef3c                   ; 1A0FA:  4e 3c ef
+b06_a0fd:   ldx $7f3f,y                 ; 1A0FD:  be 3f 7f
+b06_a100:   lsr $43                     ; 1A100:  46 43
+b06_a102:   lsr $943c                   ; 1A102:  4e 3c 94
+b06_a105:   rol a                       ; 1A105:  2a
+b06_a106:   tsx                         ; 1A106:  ba
+b06_a107:   sta ($1d,x)                 ; 1A107:  81 1d
+b06_a109:   bcs $a0a1                   ; 1A109:  b0 96
+b06_a10b:   cpx #$ff                    ; 1A10B:  e0 ff
+b06_a10d:   cmp $ed,x                   ; 1A10D:  d5 ed
+b06_a10f:   ror $dff7,x                 ; 1A10F:  7e f7 df
+b06_a112:   .db $7a                     ; 1A112:  7a
+b06_a113:   beq $a0f5                   ; 1A113:  f0 e0
+b06_a115:   cmp ($84,x)                 ; 1A115:  c1 84
+b06_a117:   .db $03                     ; 1A117:  03
+b06_a118:   brk                         ; 1A118:  00
+b06_a119:   pha                         ; 1A119:  48
+b06_a11a:   php                         ; 1A11A:  08
+b06_a11b:   jsr $c0e1                   ; 1A11B:  20 e1 c0
+b06_a11e:   .db $80                     ; 1A11E:  80
+b06_a11f:   .db $0f                     ; 1A11F:  0f
+b06_a120:   .db $9c                     ; 1A120:  9c
+b06_a121:   ldy $f8f0,x                 ; 1A121:  bc f0 f8
+b06_a124:   .db $e7                     ; 1A124:  e7
+b06_a125:   lsr $b81c                   ; 1A125:  4e 1c b8
+b06_a128:   bcs $a18a                   ; 1A128:  b0 60
+b06_a12a:   sbc ($c2,x)                 ; 1A12A:  e1 c2
+b06_a12c:   .db $e7                     ; 1A12C:  e7
+b06_a12d:   lsr $b81c                   ; 1A12D:  4e 1c b8
+b06_a130:   bcs $a193                   ; 1A130:  b0 61
+b06_a132:   .db $e2                     ; 1A132:  e2
+b06_a133:   .db $c7                     ; 1A133:  c7
+b06_a134:   sta ($21,x)                 ; 1A134:  81 21
+b06_a136:   .db $03                     ; 1A136:  03
+b06_a137:   .db $47                     ; 1A137:  47
+b06_a138:   asl $1c0c                   ; 1A138:  0e 0c 1c
+b06_a13b:   sec                         ; 1A13B:  38
+b06_a13c:   adc ($e1),y                 ; 1A13C:  71 e1
+b06_a13e:   .db $c3                     ; 1A13E:  c3
+b06_a13f:   .db $87                     ; 1A13F:  87
+b06_a140:   stx $1c0c                   ; 1A140:  8e 0c 1c
+b06_a143:   sec                         ; 1A143:  38
+b06_a144:   .db $82                     ; 1A144:  82
+b06_a145:   sta ($00,x)                 ; 1A145:  81 00
+b06_a147:   .db $14                     ; 1A147:  14
+b06_a148:   brk                         ; 1A148:  00
+b06_a149:   bpl $a16b                   ; 1A149:  10 20
+b06_a14b:   brk                         ; 1A14B:  00
+b06_a14c:   sta ($8d,x)                 ; 1A14C:  81 8d
+b06_a14e:   clc                         ; 1A14E:  18
+b06_a14f:   asl $3210,x                 ; 1A14F:  1e 10 32
+b06_a152:   rts                         ; 1A152:  60
+b06_a153:   rti                         ; 1A153:  40
+b06_a154:   .db $14                     ; 1A154:  14
+b06_a155:   .db $03                     ; 1A155:  03
+b06_a156:   .db $0c                     ; 1A156:  0c
+b06_a157:   ora $a204,y                 ; 1A157:  19 04 a2
+b06_a15a:   clv                         ; 1A15A:  b8
+b06_a15b:   jsr $0e1b                   ; 1A15B:  20 1b 0e
+b06_a15e:   .db $1b                     ; 1A15E:  1b
+b06_a15f:   .db $07                     ; 1A15F:  07
+b06_a160:   .db $df                     ; 1A160:  df
+b06_a161:   cmp $5f77,x                 ; 1A161:  dd 77 5f
+b06_a164:   eor ($81,x)                 ; 1A164:  41 81
+b06_a166:   and ($9d),y                 ; 1A166:  31 9d
+b06_a168:   eor $18                     ; 1A168:  45 18
+b06_a16a:   lda $42,x                   ; 1A16A:  b5 42
+b06_a16c:   lda #$f9                    ; 1A16C:  a9 f9
+b06_a16e:   sbc $fe53                   ; 1A16E:  ed 53 fe
+b06_a171:   .db $ef                     ; 1A171:  ef
+b06_a172:   .db $7b                     ; 1A172:  7b
+b06_a173:   .db $b7                     ; 1A173:  b7
+b06_a174:   lsr a                       ; 1A174:  4a
+b06_a175:   and #$10                    ; 1A175:  29 10
+b06_a177:   rol $09                     ; 1A177:  26 09
+b06_a179:   .db $1c                     ; 1A179:  1c
+b06_a17a:   .db $14                     ; 1A17A:  14
+b06_a17b:   ora $3d                     ; 1A17B:  05 3d
+b06_a17d:   lsr $5d3e,x                 ; 1A17D:  5e 3e 5d
+b06_a180:   .db $37                     ; 1A180:  37
+b06_a181:   .db $9c                     ; 1A181:  9c
+b06_a182:   .db $1f                     ; 1A182:  1f
+b06_a183:   ora $49                     ; 1A183:  05 49
+b06_a185:   .db $02                     ; 1A185:  02
+b06_a186:   ora ($c9),y                 ; 1A186:  11 c9
+b06_a188:   lda ($11,x)                 ; 1A188:  a1 11
+b06_a18a:   cmp #$f1                    ; 1A18A:  c9 f1
+b06_a18c:   sbc $391a,y                 ; 1A18C:  f9 1a 39
+b06_a18f:   and ($f9),y                 ; 1A18F:  31 f9
+b06_a191:   adc #$79                    ; 1A191:  69 79
+b06_a193:   sbc $82c2,y                 ; 1A193:  f9 c2 82
+b06_a196:   sta $cc                     ; 1A196:  85 cc
+b06_a198:   .db $eb                     ; 1A198:  eb
+b06_a199:   ror $31                     ; 1A199:  66 31
+b06_a19b:   ldy $c0,x                   ; 1A19B:  b4 c0
+b06_a19d:   .db $80                     ; 1A19D:  80
+b06_a19e:   .db $80                     ; 1A19E:  80
+b06_a19f:   cpy #$f0                    ; 1A19F:  c0 f0
+b06_a1a1:   rts                         ; 1A1A1:  60
+b06_a1a2:   .db $34                     ; 1A1A2:  34
+b06_a1a3:   .db $b3                     ; 1A1A3:  b3
+b06_a1a4:   .db $a3                     ; 1A1A4:  a3
+b06_a1a5:   jsr $a180                   ; 1A1A5:  20 80 a1
+b06_a1a8:   sta ($00,x)                 ; 1A1A8:  81 00
+b06_a1aa:   ora ($70,x)                 ; 1A1AA:  01 70
+b06_a1ac:   cpx #$63                    ; 1A1AC:  e0 63
+b06_a1ae:   inc $9e,x                   ; 1A1AE:  f6 9e
+b06_a1b0:   .db $9e                     ; 1A1B0:  9e
+b06_a1b1:   .db $1f                     ; 1A1B1:  1f
+b06_a1b2:   php                         ; 1A1B2:  08
+b06_a1b3:   .db $77                     ; 1A1B3:  77
+b06_a1b4:   adc $99                     ; 1A1B4:  65 99
+b06_a1b6:   ror $25,x                   ; 1A1B6:  76 25
+b06_a1b8:   bit $4a19                   ; 1A1B8:  2c 19 4a
+b06_a1bb:   ora ($00,x)                 ; 1A1BB:  01 00
+b06_a1bd:   brk                         ; 1A1BD:  00
+b06_a1be:   brk                         ; 1A1BE:  00
+b06_a1bf:   .db $80                     ; 1A1BF:  80
+b06_a1c0:   bpl $a1a6                   ; 1A1C0:  10 e4
+b06_a1c2:   ora ($f6),y                 ; 1A1C2:  11 f6
+b06_a1c4:   .db $47                     ; 1A1C4:  47
+b06_a1c5:   .db $07                     ; 1A1C5:  07
+b06_a1c6:   .db $a7                     ; 1A1C6:  a7
+b06_a1c7:   .db $47                     ; 1A1C7:  47
+b06_a1c8:   .db $80                     ; 1A1C8:  80
+b06_a1c9:   .db $74                     ; 1A1C9:  74
+b06_a1ca:   eor ($00,x)                 ; 1A1CA:  41 00
+b06_a1cc:   .db $07                     ; 1A1CC:  07
+b06_a1cd:   .db $07                     ; 1A1CD:  07
+b06_a1ce:   .db $07                     ; 1A1CE:  07
+b06_a1cf:   .db $07                     ; 1A1CF:  07
+b06_a1d0:   brk                         ; 1A1D0:  00
+b06_a1d1:   brk                         ; 1A1D1:  00
+b06_a1d2:   brk                         ; 1A1D2:  00
+b06_a1d3:   brk                         ; 1A1D3:  00
+b06_a1d4:   .db $83                     ; 1A1D4:  83
+b06_a1d5:   .db $7f                     ; 1A1D5:  7f
+b06_a1d6:   .db $ff                     ; 1A1D6:  ff
+b06_a1d7:   sty $0f0f                   ; 1A1D7:  8c 0f 0f
+b06_a1da:   ldx $831e,y                 ; 1A1DA:  be 1e 83
+b06_a1dd:   .db $7f                     ; 1A1DD:  7f
+b06_a1de:   .db $3f                     ; 1A1DE:  3f
+b06_a1df:   .db $0c                     ; 1A1DF:  0c
+b06_a1e0:   .db $0f                     ; 1A1E0:  0f
+b06_a1e1:   .db $0f                     ; 1A1E1:  0f
+b06_a1e2:   rol $c01e,x                 ; 1A1E2:  3e 1e c0
+b06_a1e5:   cpy #$88                    ; 1A1E5:  c0 88
+b06_a1e7:   ora $d0                     ; 1A1E7:  05 d0
+b06_a1e9:   cmp ($04,x)                 ; 1A1E9:  c1 04
+b06_a1eb:   .db $02                     ; 1A1EB:  02
+b06_a1ec:   .db $80                     ; 1A1EC:  80
+b06_a1ed:   cpy #$80                    ; 1A1ED:  c0 80
+b06_a1ef:   brk                         ; 1A1EF:  00
+b06_a1f0:   cpy #$c0                    ; 1A1F0:  c0 c0
+b06_a1f2:   brk                         ; 1A1F2:  00
+b06_a1f3:   brk                         ; 1A1F3:  00
+b06_a1f4:   brk                         ; 1A1F4:  00
+b06_a1f5:   ora ($02,x)                 ; 1A1F5:  01 02
+b06_a1f7:   .db $02                     ; 1A1F7:  02
+b06_a1f8:   .db $03                     ; 1A1F8:  03
+b06_a1f9:   .db $03                     ; 1A1F9:  03
+b06_a1fa:   .db $02                     ; 1A1FA:  02
+b06_a1fb:   .db $02                     ; 1A1FB:  02
+b06_a1fc:   brk                         ; 1A1FC:  00
+b06_a1fd:   ora ($02,x)                 ; 1A1FD:  01 02
+b06_a1ff:   .db $02                     ; 1A1FF:  02
+b06_a200:   .db $03                     ; 1A200:  03
+b06_a201:   .db $03                     ; 1A201:  03
+b06_a202:   .db $02                     ; 1A202:  02
+b06_a203:   .db $02                     ; 1A203:  02
+b06_a204:   ror $e7                     ; 1A204:  66 e7
+b06_a206:   ror $67                     ; 1A206:  66 67
+b06_a208:   .db $e3                     ; 1A208:  e3
+b06_a209:   .db $07                     ; 1A209:  07
+b06_a20a:   .db $3c                     ; 1A20A:  3c
+b06_a20b:   rol $66                     ; 1A20B:  26 66
+b06_a20d:   .db $e7                     ; 1A20D:  e7
+b06_a20e:   ror $67                     ; 1A20E:  66 67
+b06_a210:   .db $e3                     ; 1A210:  e3
+b06_a211:   .db $07                     ; 1A211:  07
+b06_a212:   .db $3c                     ; 1A212:  3c
+b06_a213:   rol $02                     ; 1A213:  26 02
+b06_a215:   asl $06                     ; 1A215:  06 06
+b06_a217:   .db $02                     ; 1A217:  02
+b06_a218:   brk                         ; 1A218:  00
+b06_a219:   brk                         ; 1A219:  00
+b06_a21a:   brk                         ; 1A21A:  00
+b06_a21b:   brk                         ; 1A21B:  00
+b06_a21c:   .db $02                     ; 1A21C:  02
+b06_a21d:   asl $06                     ; 1A21D:  06 06
+b06_a21f:   .db $02                     ; 1A21F:  02
+b06_a220:   brk                         ; 1A220:  00
+b06_a221:   brk                         ; 1A221:  00
+b06_a222:   brk                         ; 1A222:  00
+b06_a223:   brk                         ; 1A223:  00
+b06_a224:   .db $42                     ; 1A224:  42
+b06_a225:   .db $7a                     ; 1A225:  7a
+b06_a226:   .db $32                     ; 1A226:  32
+b06_a227:   asl $000f,x                 ; 1A227:  1e 0f 00
+b06_a22a:   brk                         ; 1A22A:  00
+b06_a22b:   brk                         ; 1A22B:  00
+b06_a22c:   .db $42                     ; 1A22C:  42
+b06_a22d:   .db $7a                     ; 1A22D:  7a
+b06_a22e:   .db $32                     ; 1A22E:  32
+b06_a22f:   asl $000f,x                 ; 1A22F:  1e 0f 00
+b06_a232:   brk                         ; 1A232:  00
+b06_a233:   brk                         ; 1A233:  00
+b06_a234:   bmi $a1e6                   ; 1A234:  30 b0
+b06_a236:   bmi $a1e8                   ; 1A236:  30 b0
+b06_a238:   bcs $a26a                   ; 1A238:  b0 30
+b06_a23a:   bmi $a26c                   ; 1A23A:  30 30
+b06_a23c:   bmi $a1ee                   ; 1A23C:  30 b0
+b06_a23e:   bmi $a1f0                   ; 1A23E:  30 b0
+b06_a240:   bcs $a272                   ; 1A240:  b0 30
+b06_a242:   bmi $a274                   ; 1A242:  30 30
+b06_a244:   bmi $a276                   ; 1A244:  30 30
+b06_a246:   bmi $a278                   ; 1A246:  30 30
+b06_a248:   beq $a23a                   ; 1A248:  f0 f0
+b06_a24a:   bmi $a24c                   ; 1A24A:  30 00
+b06_a24c:   bmi $a27e                   ; 1A24C:  30 30
+b06_a24e:   bmi $a280                   ; 1A24E:  30 30
+b06_a250:   beq $a242                   ; 1A250:  f0 f0
+b06_a252:   bmi $a254                   ; 1A252:  30 00
+b06_a254:   brk                         ; 1A254:  00
+b06_a255:   brk                         ; 1A255:  00
+b06_a256:   brk                         ; 1A256:  00
+b06_a257:   brk                         ; 1A257:  00
+b06_a258:   ora ($01,x)                 ; 1A258:  01 01
+b06_a25a:   .db $03                     ; 1A25A:  03
+b06_a25b:   .db $07                     ; 1A25B:  07
+b06_a25c:   brk                         ; 1A25C:  00
+b06_a25d:   brk                         ; 1A25D:  00
+b06_a25e:   brk                         ; 1A25E:  00
+b06_a25f:   brk                         ; 1A25F:  00
+b06_a260:   ora ($01,x)                 ; 1A260:  01 01
+b06_a262:   .db $03                     ; 1A262:  03
+b06_a263:   .db $07                     ; 1A263:  07
+b06_a264:   brk                         ; 1A264:  00
+b06_a265:   rti                         ; 1A265:  40
+b06_a266:   ora $12                     ; 1A266:  05 12
+b06_a268:   ldy #$12                    ; 1A268:  a0 12
+b06_a26a:   ora $2b                     ; 1A26A:  05 2b
+b06_a26c:   brk                         ; 1A26C:  00
+b06_a26d:   brk                         ; 1A26D:  00
+b06_a26e:   brk                         ; 1A26E:  00
+b06_a26f:   brk                         ; 1A26F:  00
+b06_a270:   brk                         ; 1A270:  00
+b06_a271:   brk                         ; 1A271:  00
+b06_a272:   brk                         ; 1A272:  00
+b06_a273:   brk                         ; 1A273:  00
+b06_a274:   lsr a                       ; 1A274:  4a
+b06_a275:   and $1a,x                   ; 1A275:  35 1a
+b06_a277:   jmp ($94d0)                 ; 1A277:  6c d0 94
+b06_a27a:   and $0040                   ; 1A27A:  2d 40 00
+b06_a27d:   brk                         ; 1A27D:  00
+b06_a27e:   brk                         ; 1A27E:  00
+b06_a27f:   brk                         ; 1A27F:  00
+b06_a280:   brk                         ; 1A280:  00
+b06_a281:   php                         ; 1A281:  08
+b06_a282:   ora ($16,x)                 ; 1A282:  01 16
+b06_a284:   .db $54                     ; 1A284:  54
+b06_a285:   .db $4b                     ; 1A285:  4b
+b06_a286:   cpy $82                     ; 1A286:  c4 82
+b06_a288:   .db $ff                     ; 1A288:  ff
+b06_a289:   dec $0c86                   ; 1A289:  ce 86 0c
+b06_a28c:   rti                         ; 1A28C:  40
+b06_a28d:   rti                         ; 1A28D:  40
+b06_a28e:   cpy #$80                    ; 1A28E:  c0 80
+b06_a290:   inc $86ce,x                 ; 1A290:  fe ce 86
+b06_a293:   .db $0c                     ; 1A293:  0c
+b06_a294:   sta ($20,x)                 ; 1A294:  81 20
+b06_a296:   .db $b3                     ; 1A296:  b3
+b06_a297:   pha                         ; 1A297:  48
+b06_a298:   and $91                     ; 1A298:  25 91
+b06_a29a:   .db $34                     ; 1A29A:  34
+b06_a29b:   lsr $12,x                   ; 1A29B:  56 12
+b06_a29d:   .db $5f                     ; 1A29D:  5f
+b06_a29e:   asl $1eb7                   ; 1A29E:  0e b7 1e
+b06_a2a1:   ror $3d0b                   ; 1A2A1:  6e 0b 3d
+b06_a2a4:   .db $83                     ; 1A2A4:  83
+b06_a2a5:   .db $07                     ; 1A2A5:  07
+b06_a2a6:   asl $711f                   ; 1A2A6:  0e 1f 71
+b06_a2a9:   cpx #$80                    ; 1A2A9:  e0 80
+b06_a2ab:   .db $02                     ; 1A2AB:  02
+b06_a2ac:   .db $03                     ; 1A2AC:  03
+b06_a2ad:   .db $07                     ; 1A2AD:  07
+b06_a2ae:   asl $711f                   ; 1A2AE:  0e 1f 71
+b06_a2b1:   cpx #$81                    ; 1A2B1:  e0 81
+b06_a2b3:   .db $02                     ; 1A2B3:  02
+b06_a2b4:   cmp ($c2,x)                 ; 1A2B4:  c1 c2
+b06_a2b6:   ora $05                     ; 1A2B6:  05 05
+b06_a2b8:   .db $f2                     ; 1A2B8:  f2
+b06_a2b9:   .db $14                     ; 1A2B9:  14
+b06_a2ba:   .db $23                     ; 1A2BA:  23
+b06_a2bb:   cpx #$c0                    ; 1A2BB:  e0 c0
+b06_a2bd:   cmp $0f                     ; 1A2BD:  c5 0f
+b06_a2bf:   asl a                       ; 1A2BF:  0a
+b06_a2c0:   .db $ff                     ; 1A2C0:  ff
+b06_a2c1:   .db $17                     ; 1A2C1:  17
+b06_a2c2:   and ($eb,x)                 ; 1A2C2:  21 eb
+b06_a2c4:   brk                         ; 1A2C4:  00
+b06_a2c5:   .db $13                     ; 1A2C5:  13
+b06_a2c6:   .db $52                     ; 1A2C6:  52
+b06_a2c7:   .db $22                     ; 1A2C7:  22
+b06_a2c8:   .db $43                     ; 1A2C8:  43
+b06_a2c9:   asl $47,x                   ; 1A2C9:  16 47
+b06_a2cb:   .db $4b                     ; 1A2CB:  4b
+b06_a2cc:   bcc $a2c1                   ; 1A2CC:  90 f3
+b06_a2ce:   .db $f2                     ; 1A2CE:  f2
+b06_a2cf:   .db $c2                     ; 1A2CF:  c2
+b06_a2d0:   .db $e3                     ; 1A2D0:  e3
+b06_a2d1:   dec $87,x                   ; 1A2D1:  d6 87
+b06_a2d3:   .db $8b                     ; 1A2D3:  8b
+b06_a2d4:   .db $80                     ; 1A2D4:  80
+b06_a2d5:   .db $4f                     ; 1A2D5:  4f
+b06_a2d6:   .db $44                     ; 1A2D6:  44
+b06_a2d7:   .db $ff                     ; 1A2D7:  ff
+b06_a2d8:   .db $c2                     ; 1A2D8:  c2
+b06_a2d9:   .db $82                     ; 1A2D9:  82
+b06_a2da:   stx $76                     ; 1A2DA:  86 76
+b06_a2dc:   .db $d7                     ; 1A2DC:  d7
+b06_a2dd:   .db $4f                     ; 1A2DD:  4f
+b06_a2de:   .db $43                     ; 1A2DE:  43
+b06_a2df:   .db $ff                     ; 1A2DF:  ff
+b06_a2e0:   .db $c3                     ; 1A2E0:  c3
+b06_a2e1:   .db $82                     ; 1A2E1:  82
+b06_a2e2:   stx $76                     ; 1A2E2:  86 76
+b06_a2e4:   lda ($61,x)                 ; 1A2E4:  a1 61
+b06_a2e6:   sta ($03),y                 ; 1A2E6:  91 03
+b06_a2e8:   .db $3b                     ; 1A2E8:  3b
+b06_a2e9:   .db $c7                     ; 1A2E9:  c7
+b06_a2ea:   and $e8                     ; 1A2EA:  25 e8
+b06_a2ec:   sbc $f191,y                 ; 1A2EC:  f9 91 f1
+b06_a2ef:   .db $fb                     ; 1A2EF:  fb
+b06_a2f0:   .db $ff                     ; 1A2F0:  ff
+b06_a2f1:   adc $b4fe,y                 ; 1A2F1:  79 fe b4
+b06_a2f4:   rol $07                     ; 1A2F4:  26 07
+b06_a2f6:   .db $07                     ; 1A2F6:  07
+b06_a2f7:   .db $1f                     ; 1A2F7:  1f
+b06_a2f8:   inc $84fe,x                 ; 1A2F8:  fe fe 84
+b06_a2fb:   .db $07                     ; 1A2FB:  07
+b06_a2fc:   dec $07                     ; 1A2FC:  c6 07
+b06_a2fe:   .db $07                     ; 1A2FE:  07
+b06_a2ff:   .db $1f                     ; 1A2FF:  1f
+b06_a300:   inc $84fe,x                 ; 1A300:  fe fe 84
+b06_a303:   .db $07                     ; 1A303:  07
+b06_a304:   jmp $a6a0                   ; 1A304:  4c a0 a6
+b06_a307:   .db $fc                     ; 1A307:  fc
+b06_a308:   ldy #$7d                    ; 1A308:  a0 7d
+b06_a30a:   ora $7d,x                   ; 1A30A:  15 7d
+b06_a30c:   .db $fc                     ; 1A30C:  fc
+b06_a30d:   dec $fffb,x                 ; 1A30D:  de fb ff
+b06_a310:   .db $ff                     ; 1A310:  ff
+b06_a311:   .db $ff                     ; 1A311:  ff
+b06_a312:   ror $3f7f                   ; 1A312:  6e 7f 3f
+b06_a315:   .db $f7                     ; 1A315:  f7
+b06_a316:   inc $8c1c,x                 ; 1A316:  fe 1c 8c
+b06_a319:   .db $4f                     ; 1A319:  4f
+b06_a31a:   .db $6f                     ; 1A31A:  6f
+b06_a31b:   tya                         ; 1A31B:  98
+b06_a31c:   .db $3f                     ; 1A31C:  3f
+b06_a31d:   .db $f7                     ; 1A31D:  f7
+b06_a31e:   inc $4c9c,x                 ; 1A31E:  fe 9c 4c
+b06_a321:   .db $ef                     ; 1A321:  ef
+b06_a322:   .db $9f                     ; 1A322:  9f
+b06_a323:   bvs $a315                   ; 1A323:  70 f0
+b06_a325:   cpx #$c0                    ; 1A325:  e0 c0
+b06_a327:   .db $03                     ; 1A327:  03
+b06_a328:   ora ($1f,x)                 ; 1A328:  01 1f
+b06_a32a:   ora #$df                    ; 1A32A:  09 df
+b06_a32c:   beq $a30f                   ; 1A32C:  f0 e1
+b06_a32e:   .db $c3                     ; 1A32E:  c3
+b06_a32f:   .db $07                     ; 1A32F:  07
+b06_a330:   .db $0f                     ; 1A330:  0f
+b06_a331:   .db $3f                     ; 1A331:  3f
+b06_a332:   .db $77                     ; 1A332:  77
+b06_a333:   .db $ff                     ; 1A333:  ff
+b06_a334:   sbc $bfd0,x                 ; 1A334:  fd d0 bf
+b06_a337:   .db $d4                     ; 1A337:  d4
+b06_a338:   .db $5f                     ; 1A338:  5f
+b06_a339:   cpx #$97                    ; 1A339:  e0 97
+b06_a33b:   .db $fa                     ; 1A33B:  fa
+b06_a33c:   .db $ff                     ; 1A33C:  ff
+b06_a33d:   .db $6f                     ; 1A33D:  6f
+b06_a33e:   .db $f7                     ; 1A33E:  f7
+b06_a33f:   .db $ff                     ; 1A33F:  ff
+b06_a340:   .db $fb                     ; 1A340:  fb
+b06_a341:   .db $ff                     ; 1A341:  ff
+b06_a342:   adc $afff                   ; 1A342:  6d ff af
+b06_a345:   .db $03                     ; 1A345:  03
+b06_a346:   .db $0c                     ; 1A346:  0c
+b06_a347:   .db $32                     ; 1A347:  32
+b06_a348:   .db $f4                     ; 1A348:  f4
+b06_a349:   sbc ($81,x)                 ; 1A349:  e1 81
+b06_a34b:   .db $02                     ; 1A34B:  02
+b06_a34c:   lda $131f,x                 ; 1A34C:  bd 1f 13
+b06_a34f:   .db $3c                     ; 1A34F:  3c
+b06_a350:   .db $f3                     ; 1A350:  f3
+b06_a351:   .db $e2                     ; 1A351:  e2
+b06_a352:   .db $83                     ; 1A352:  83
+b06_a353:   ora $00                     ; 1A353:  05 00
+b06_a355:   .db $fa                     ; 1A355:  fa
+b06_a356:   sbc ($14,x)                 ; 1A356:  e1 14
+b06_a358:   eor #$3b                    ; 1A358:  49 3b
+b06_a35a:   lsr $9a                     ; 1A35A:  46 9a
+b06_a35c:   .db $ff                     ; 1A35C:  ff
+b06_a35d:   .db $fc                     ; 1A35D:  fc
+b06_a35e:   dec $f7ff,x                 ; 1A35E:  de ff f7
+b06_a361:   cpy $65b9                   ; 1A361:  cc b9 65
+b06_a364:   sec                         ; 1A364:  38
+b06_a365:   bmi $a397                   ; 1A365:  30 30
+b06_a367:   .db $73                     ; 1A367:  73
+b06_a368:   asl $c810,x                 ; 1A368:  1e 10 c8
+b06_a36b:   tay                         ; 1A36B:  a8
+b06_a36c:   sec                         ; 1A36C:  38
+b06_a36d:   bmi $a320                   ; 1A36D:  30 b1
+b06_a36f:   .db $b3                     ; 1A36F:  b3
+b06_a370:   .db $ff                     ; 1A370:  ff
+b06_a371:   cpx #$f8                    ; 1A371:  e0 f8
+b06_a373:   .db $d7                     ; 1A373:  d7
+b06_a374:   bpl $a369                   ; 1A374:  10 f3
+b06_a376:   .db $d3                     ; 1A376:  d3
+b06_a377:   .db $7f                     ; 1A377:  7f
+b06_a378:   lsr $9f                     ; 1A378:  46 9f
+b06_a37a:   .db $5f                     ; 1A37A:  5f
+b06_a37b:   bpl $a3dd                   ; 1A37B:  10 60
+b06_a37d:   .db $73                     ; 1A37D:  73
+b06_a37e:   .db $fb                     ; 1A37E:  fb
+b06_a37f:   .db $ff                     ; 1A37F:  ff
+b06_a380:   dec $77ff,x                 ; 1A380:  de ff 77
+b06_a383:   inc $046b,x                 ; 1A383:  fe 6b 04
+b06_a386:   .db $04                     ; 1A386:  04
+b06_a387:   .db $07                     ; 1A387:  07
+b06_a388:   stx $181c                   ; 1A388:  8e 1c 18
+b06_a38b:   bmi $a33b                   ; 1A38B:  30 ae
+b06_a38d:   .db $e2                     ; 1A38D:  e2
+b06_a38e:   .db $c7                     ; 1A38E:  c7
+b06_a38f:   stx $0e                     ; 1A38F:  86 0e
+b06_a391:   .db $1c                     ; 1A391:  1c
+b06_a392:   clc                         ; 1A392:  18
+b06_a393:   bmi $a405                   ; 1A393:  30 70
+b06_a395:   .db $02                     ; 1A395:  02
+b06_a396:   sec                         ; 1A396:  38
+b06_a397:   php                         ; 1A397:  08
+b06_a398:   lsr $01,x                   ; 1A398:  56 01
+b06_a39a:   brk                         ; 1A39A:  00
+b06_a39b:   brk                         ; 1A39B:  00
+b06_a39c:   .db $df                     ; 1A39C:  df
+b06_a39d:   ror $742c,x                 ; 1A39D:  7e 2c 74
+b06_a3a0:   .db $1a                     ; 1A3A0:  1a
+b06_a3a1:   asl $40                     ; 1A3A1:  06 40
+b06_a3a3:   brk                         ; 1A3A3:  00
+b06_a3a4:   bvs $a386                   ; 1A3A4:  70 e0
+b06_a3a6:   cpy #$01                    ; 1A3A6:  c0 01
+b06_a3a8:   .db $03                     ; 1A3A8:  03
+b06_a3a9:   .db $07                     ; 1A3A9:  07
+b06_a3aa:   stx $700c                   ; 1A3AA:  8e 0c 70
+b06_a3ad:   cpx #$c0                    ; 1A3AD:  e0 c0
+b06_a3af:   ora ($03,x)                 ; 1A3AF:  01 03
+b06_a3b1:   .db $07                     ; 1A3B1:  07
+b06_a3b2:   stx $100c                   ; 1A3B2:  8e 0c 10
+b06_a3b5:   and ($e8,x)                 ; 1A3B5:  21 e8
+b06_a3b7:   inx                         ; 1A3B7:  e8
+b06_a3b8:   inc $86,x                   ; 1A3B8:  f6 86
+b06_a3ba:   brk                         ; 1A3BA:  00
+b06_a3bb:   brk                         ; 1A3BB:  00
+b06_a3bc:   bpl $a3de                   ; 1A3BC:  10 20
+b06_a3be:   inx                         ; 1A3BE:  e8
+b06_a3bf:   cpx #$f4                    ; 1A3BF:  e0 f4
+b06_a3c1:   stx $00                     ; 1A3C1:  86 00
+b06_a3c3:   brk                         ; 1A3C3:  00
+b06_a3c4:   .db $1c                     ; 1A3C4:  1c
+b06_a3c5:   sec                         ; 1A3C5:  38
+b06_a3c6:   sec                         ; 1A3C6:  38
+b06_a3c7:   .db $77                     ; 1A3C7:  77
+b06_a3c8:   .db $ff                     ; 1A3C8:  ff
+b06_a3c9:   .db $f7                     ; 1A3C9:  f7
+b06_a3ca:   ror $1c0d                   ; 1A3CA:  6e 0d 1c
+b06_a3cd:   sec                         ; 1A3CD:  38
+b06_a3ce:   sec                         ; 1A3CE:  38
+b06_a3cf:   .db $77                     ; 1A3CF:  77
+b06_a3d0:   .db $ff                     ; 1A3D0:  ff
+b06_a3d1:   .db $f7                     ; 1A3D1:  f7
+b06_a3d2:   ror $070d                   ; 1A3D2:  6e 0d 07
+b06_a3d5:   ldx $0038,y                 ; 1A3D5:  be 38 00
+b06_a3d8:   ldy #$68                    ; 1A3D8:  a0 68
+b06_a3da:   cpy #$80                    ; 1A3DA:  c0 80
+b06_a3dc:   .db $07                     ; 1A3DC:  07
+b06_a3dd:   rol $0038,x                 ; 1A3DD:  3e 38 00
+b06_a3e0:   ldy #$68                    ; 1A3E0:  a0 68
+b06_a3e2:   cpy #$80                    ; 1A3E2:  c0 80
+b06_a3e4:   .db $03                     ; 1A3E4:  03
+b06_a3e5:   brk                         ; 1A3E5:  00
+b06_a3e6:   brk                         ; 1A3E6:  00
+b06_a3e7:   brk                         ; 1A3E7:  00
+b06_a3e8:   brk                         ; 1A3E8:  00
+b06_a3e9:   .db $80                     ; 1A3E9:  80
+b06_a3ea:   .db $07                     ; 1A3EA:  07
+b06_a3eb:   .db $02                     ; 1A3EB:  02
+b06_a3ec:   .db $03                     ; 1A3EC:  03
+b06_a3ed:   brk                         ; 1A3ED:  00
+b06_a3ee:   brk                         ; 1A3EE:  00
+b06_a3ef:   ora ($04,x)                 ; 1A3EF:  01 04
+b06_a3f1:   .db $83                     ; 1A3F1:  83
+b06_a3f2:   .db $0f                     ; 1A3F2:  0f
+b06_a3f3:   .db $07                     ; 1A3F3:  07
+b06_a3f4:   adc $75                     ; 1A3F4:  65 75
+b06_a3f6:   .db $1a                     ; 1A3F6:  1a
+b06_a3f7:   and $d4a7,x                 ; 1A3F7:  3d a7 d4
+b06_a3fa:   .db $d4                     ; 1A3FA:  d4
+b06_a3fb:   .db $5a                     ; 1A3FB:  5a
+b06_a3fc:   cmp $1f7b,x                 ; 1A3FC:  dd 7b 1f
+b06_a3ff:   .db $2f                     ; 1A3FF:  2f
+b06_a400:   .db $1f                     ; 1A400:  1f
+b06_a401:   .db $f4                     ; 1A401:  f4
+b06_a402:   lda $e5f2                   ; 1A402:  ad f2 e5
+b06_a405:   .db $f2                     ; 1A405:  f2
+b06_a406:   ror $f1,x                   ; 1A406:  76 f1
+b06_a408:   sbc ($f2),y                 ; 1A408:  f1 f2
+b06_a40a:   sbc ($e0),y                 ; 1A40A:  f1 e0
+b06_a40c:   cpx #$f0                    ; 1A40C:  e0 f0
+b06_a40e:   bvs $a402                   ; 1A40E:  70 f2
+b06_a410:   beq $a402                   ; 1A410:  f0 f0
+b06_a412:   sbc ($e0),y                 ; 1A412:  f1 e0
+b06_a414:   sbc ($23,x)                 ; 1A414:  e1 23
+b06_a416:   bvc $a3a8                   ; 1A416:  50 90
+b06_a418:   .db $e7                     ; 1A418:  e7
+b06_a419:   and $38                     ; 1A419:  25 38
+b06_a41b:   php                         ; 1A41B:  08
+b06_a41c:   sbc $55                     ; 1A41C:  e5 55
+b06_a41e:   bpl $a420                   ; 1A41E:  10 00
+b06_a420:   .db $07                     ; 1A420:  07
+b06_a421:   lda $fc,x                   ; 1A421:  b5 fc
+b06_a423:   bmi $a424                   ; 1A423:  30 ff
+b06_a425:   .db $9c                     ; 1A425:  9c
+b06_a426:   .db $1c                     ; 1A426:  1c
+b06_a427:   .db $1c                     ; 1A427:  1c
+b06_a428:   clc                         ; 1A428:  18
+b06_a429:   sec                         ; 1A429:  38
+b06_a42a:   bmi $a48c                   ; 1A42A:  30 60
+b06_a42c:   .db $fc                     ; 1A42C:  fc
+b06_a42d:   sta $1c1c,x                 ; 1A42D:  9d 1c 1c
+b06_a430:   clc                         ; 1A430:  18
+b06_a431:   sec                         ; 1A431:  38
+b06_a432:   and ($61),y                 ; 1A432:  31 61
+b06_a434:   .db $42                     ; 1A434:  42
+b06_a435:   .db $93                     ; 1A435:  93
+b06_a436:   brk                         ; 1A436:  00
+b06_a437:   rts                         ; 1A437:  60
+b06_a438:   .db $32                     ; 1A438:  32
+b06_a439:   php                         ; 1A439:  08
+b06_a43a:   .db $ff                     ; 1A43A:  ff
+b06_a43b:   cpx $b9                     ; 1A43B:  e4 b9
+b06_a43d:   jmp ($9c7e)                 ; 1A43D:  6c 7e 9c
+b06_a440:   cpy #$b1                    ; 1A440:  c0 b1
+b06_a442:   .db $47                     ; 1A442:  47
+b06_a443:   asl a                       ; 1A443:  0a
+b06_a444:   .db $82                     ; 1A444:  82
+b06_a445:   lda $44                     ; 1A445:  a5 44
+b06_a447:   bit $d4                     ; 1A447:  24 d4
+b06_a449:   cpx $ec                     ; 1A449:  e4 ec
+b06_a44b:   .db $80                     ; 1A44B:  80
+b06_a44c:   sta ($a7,x)                 ; 1A44C:  81 a7
+b06_a44e:   jmp $d624                   ; 1A44E:  4c 24 d6
+b06_a451:   .db $fc                     ; 1A451:  fc
+b06_a452:   cpx $80                     ; 1A452:  e4 80
+b06_a454:   and #$1a                    ; 1A454:  29 1a
+b06_a456:   .db $02                     ; 1A456:  02
+b06_a457:   ora $c1e4,y                 ; 1A457:  19 e4 c1
+b06_a45a:   brk                         ; 1A45A:  00
+b06_a45b:   .db $02                     ; 1A45B:  02
+b06_a45c:   .db $d2                     ; 1A45C:  d2
+b06_a45d:   ora $3f                     ; 1A45D:  05 3f
+b06_a45f:   rol $dedb                   ; 1A45F:  2e db de
+b06_a462:   .db $0f                     ; 1A462:  0f
+b06_a463:   .db $0c                     ; 1A463:  0c
+b06_a464:   .db $1b                     ; 1A464:  1b
+b06_a465:   ora $3119,y                 ; 1A465:  19 19 31
+b06_a468:   rts                         ; 1A468:  60
+b06_a469:   cpy #$06                    ; 1A469:  c0 06
+b06_a46b:   php                         ; 1A46B:  08
+b06_a46c:   .db $9b                     ; 1A46C:  9b
+b06_a46d:   ora $3019,y                 ; 1A46D:  19 19 30
+b06_a470:   adc ($c0,x)                 ; 1A470:  61 c0
+b06_a472:   .db $83                     ; 1A472:  83
+b06_a473:   lsr $4c                     ; 1A473:  46 4c
+b06_a475:   .db $33                     ; 1A475:  33
+b06_a476:   cmp #$e4                    ; 1A476:  c9 e4
+b06_a478:   .db $72                     ; 1A478:  72
+b06_a479:   lda $173e,x                 ; 1A479:  bd 3e 17
+b06_a47c:   brk                         ; 1A47C:  00
+b06_a47d:   brk                         ; 1A47D:  00
+b06_a47e:   cpy #$e0                    ; 1A47E:  c0 e0
+b06_a480:   bvs $a4be                   ; 1A480:  70 3c
+b06_a482:   .db $9e                     ; 1A482:  9e
+b06_a483:   .db $47                     ; 1A483:  47
+b06_a484:   .db $22                     ; 1A484:  22
+b06_a485:   rti                         ; 1A485:  40
+b06_a486:   cpy $27                     ; 1A486:  c4 27
+b06_a488:   jmp $2c14                   ; 1A488:  4c 14 2c
+b06_a48b:   sei                         ; 1A48B:  78
+b06_a48c:   ora $a1                     ; 1A48C:  05 a1
+b06_a48e:   .db $04                     ; 1A48E:  04
+b06_a48f:   .db $87                     ; 1A48F:  87
+b06_a490:   jmp $ac14                   ; 1A490:  4c 14 ac
+b06_a493:   clv                         ; 1A493:  b8
+b06_a494:   rti                         ; 1A494:  40
+b06_a495:   bne $a4a4                   ; 1A495:  d0 0d
+b06_a497:   ldx #$c5                    ; 1A497:  a2 c5
+b06_a499:   dex                         ; 1A499:  ca
+b06_a49a:   cmp #$c2                    ; 1A49A:  c9 c2
+b06_a49c:   bcs $a49e                   ; 1A49C:  b0 00
+b06_a49e:   bne $a430                   ; 1A49E:  d0 90
+b06_a4a0:   beq $a476                   ; 1A4A0:  f0 d4
+b06_a4a2:   cpy #$c4                    ; 1A4A2:  c0 c4
+b06_a4a4:   .db $80                     ; 1A4A4:  80
+b06_a4a5:   pha                         ; 1A4A5:  48
+b06_a4a6:   brk                         ; 1A4A6:  00
+b06_a4a7:   jsr $0090                   ; 1A4A7:  20 90 00
+b06_a4aa:   rti                         ; 1A4AA:  40
+b06_a4ab:   .db $80                     ; 1A4AB:  80
+b06_a4ac:   brk                         ; 1A4AC:  00
+b06_a4ad:   brk                         ; 1A4AD:  00
+b06_a4ae:   brk                         ; 1A4AE:  00
+b06_a4af:   brk                         ; 1A4AF:  00
+b06_a4b0:   brk                         ; 1A4B0:  00
+b06_a4b1:   brk                         ; 1A4B1:  00
+b06_a4b2:   brk                         ; 1A4B2:  00
+b06_a4b3:   brk                         ; 1A4B3:  00
+b06_a4b4:   jsr $3020                   ; 1A4B4:  20 20 30
+b06_a4b7:   clc                         ; 1A4B7:  18
+b06_a4b8:   asl $367e,x                 ; 1A4B8:  1e 7e 36
+b06_a4bb:   bit $20                     ; 1A4BB:  24 20
+b06_a4bd:   jsr $1830                   ; 1A4BD:  20 30 18
+b06_a4c0:   asl $367e,x                 ; 1A4C0:  1e 7e 36
+b06_a4c3:   bit $50                     ; 1A4C3:  24 50
+b06_a4c5:   brk                         ; 1A4C5:  00
+b06_a4c6:   rts                         ; 1A4C6:  60
+b06_a4c7:   .db $97                     ; 1A4C7:  97
+b06_a4c8:   rti                         ; 1A4C8:  40
+b06_a4c9:   ldy $40,x                   ; 1A4C9:  b4 40
+b06_a4cb:   dey                         ; 1A4CB:  88
+b06_a4cc:   brk                         ; 1A4CC:  00
+b06_a4cd:   brk                         ; 1A4CD:  00
+b06_a4ce:   brk                         ; 1A4CE:  00
+b06_a4cf:   .db $07                     ; 1A4CF:  07
+b06_a4d0:   brk                         ; 1A4D0:  00
+b06_a4d1:   brk                         ; 1A4D1:  00
+b06_a4d2:   brk                         ; 1A4D2:  00
+b06_a4d3:   brk                         ; 1A4D3:  00
+b06_a4d4:   .db $64                     ; 1A4D4:  64
+b06_a4d5:   .db $ff                     ; 1A4D5:  ff
+b06_a4d6:   .db $7f                     ; 1A4D6:  7f
+b06_a4d7:   cpx #$00                    ; 1A4D7:  e0 00
+b06_a4d9:   brk                         ; 1A4D9:  00
+b06_a4da:   brk                         ; 1A4DA:  00
+b06_a4db:   brk                         ; 1A4DB:  00
+b06_a4dc:   .db $64                     ; 1A4DC:  64
+b06_a4dd:   .db $ff                     ; 1A4DD:  ff
+b06_a4de:   .db $7f                     ; 1A4DE:  7f
+b06_a4df:   cpx #$00                    ; 1A4DF:  e0 00
+b06_a4e1:   brk                         ; 1A4E1:  00
+b06_a4e2:   brk                         ; 1A4E2:  00
+b06_a4e3:   brk                         ; 1A4E3:  00
+b06_a4e4:   brk                         ; 1A4E4:  00
+b06_a4e5:   cpy #$e0                    ; 1A4E5:  c0 e0
+b06_a4e7:   rts                         ; 1A4E7:  60
+b06_a4e8:   brk                         ; 1A4E8:  00
+b06_a4e9:   brk                         ; 1A4E9:  00
+b06_a4ea:   brk                         ; 1A4EA:  00
+b06_a4eb:   brk                         ; 1A4EB:  00
+b06_a4ec:   brk                         ; 1A4EC:  00
+b06_a4ed:   cpy #$e0                    ; 1A4ED:  c0 e0
+b06_a4ef:   rts                         ; 1A4EF:  60
+b06_a4f0:   brk                         ; 1A4F0:  00
+b06_a4f1:   brk                         ; 1A4F1:  00
+b06_a4f2:   brk                         ; 1A4F2:  00
+b06_a4f3:   brk                         ; 1A4F3:  00
+b06_a4f4:   php                         ; 1A4F4:  08
+b06_a4f5:   brk                         ; 1A4F5:  00
+b06_a4f6:   bpl $a540                   ; 1A4F6:  10 48
+b06_a4f8:   ora $02                     ; 1A4F8:  05 02
+b06_a4fa:   .db $04                     ; 1A4FA:  04
+b06_a4fb:   ora #$00                    ; 1A4FB:  09 00
+b06_a4fd:   brk                         ; 1A4FD:  00
+b06_a4fe:   brk                         ; 1A4FE:  00
+b06_a4ff:   brk                         ; 1A4FF:  00
+b06_a500:   brk                         ; 1A500:  00
+b06_a501:   brk                         ; 1A501:  00
+b06_a502:   brk                         ; 1A502:  00
+b06_a503:   brk                         ; 1A503:  00
+b06_a504:   jsr $0184                   ; 1A504:  20 84 01
+b06_a507:   .db $22                     ; 1A507:  22
+b06_a508:   lsr $2b                     ; 1A508:  46 2b
+b06_a50a:   .db $04                     ; 1A50A:  04
+b06_a50b:   plp                         ; 1A50B:  28
+b06_a50c:   brk                         ; 1A50C:  00
+b06_a50d:   brk                         ; 1A50D:  00
+b06_a50e:   ora ($02,x)                 ; 1A50E:  01 02
+b06_a510:   asl $03                     ; 1A510:  06 03
+b06_a512:   brk                         ; 1A512:  00
+b06_a513:   brk                         ; 1A513:  00
+b06_a514:   .db $7c                     ; 1A514:  7c
+b06_a515:   clv                         ; 1A515:  b8
+b06_a516:   sed                         ; 1A516:  f8
+b06_a517:   beq $a529                   ; 1A517:  f0 10
+b06_a519:   bcc $a57e                   ; 1A519:  90 63
+b06_a51b:   cpy #$7c                    ; 1A51B:  c0 7c
+b06_a51d:   clv                         ; 1A51D:  b8
+b06_a51e:   sed                         ; 1A51E:  f8
+b06_a51f:   sbc ($10),y                 ; 1A51F:  f1 10
+b06_a521:   ora ($20),y                 ; 1A521:  11 20
+b06_a523:   pha                         ; 1A523:  48
+b06_a524:   php                         ; 1A524:  08
+b06_a525:   rti                         ; 1A525:  40
+b06_a526:   ldx #$40                    ; 1A526:  a2 40
+b06_a528:   .db $92                     ; 1A528:  92
+b06_a529:   .db $14                     ; 1A529:  14
+b06_a52a:   tya                         ; 1A52A:  98
+b06_a52b:   .db $5b                     ; 1A52B:  5b
+b06_a52c:   .db $77                     ; 1A52C:  77
+b06_a52d:   .db $bf                     ; 1A52D:  bf
+b06_a52e:   eor $6d3f,x                 ; 1A52E:  5d 3f 6d
+b06_a531:   lsr a                       ; 1A531:  4a
+b06_a532:   asl $24                     ; 1A532:  06 24
+b06_a534:   rti                         ; 1A534:  40
+b06_a535:   cpy #$2f                    ; 1A535:  c0 2f
+b06_a537:   adc $3df8,y                 ; 1A537:  79 f8 3d
+b06_a53a:   clc                         ; 1A53A:  18
+b06_a53b:   .db $0c                     ; 1A53B:  0c
+b06_a53c:   ora ($80,x)                 ; 1A53C:  01 80
+b06_a53e:   .db $17                     ; 1A53E:  17
+b06_a53f:   adc ($f4,x)                 ; 1A53F:  61 f4
+b06_a541:   .db $3a                     ; 1A541:  3a
+b06_a542:   ora $6e0c,y                 ; 1A542:  19 0c 6e
+b06_a545:   ldx $8dd8,y                 ; 1A545:  be d8 8d
+b06_a548:   ora $8b,x                   ; 1A548:  15 8b
+b06_a54a:   pha                         ; 1A54A:  48
+b06_a54b:   bcc $a4de                   ; 1A54B:  90 91
+b06_a54d:   ora ($a3,x)                 ; 1A54D:  01 a3
+b06_a54f:   .db $82                     ; 1A54F:  82
+b06_a550:   asl a                       ; 1A550:  0a
+b06_a551:   .db $0c                     ; 1A551:  0c
+b06_a552:   rol $68,x                   ; 1A552:  36 68
+b06_a554:   .db $ab                     ; 1A554:  ab
+b06_a555:   .db $9e                     ; 1A555:  9e
+b06_a556:   .db $34                     ; 1A556:  34
+b06_a557:   iny                         ; 1A557:  c8
+b06_a558:   cpy #$30                    ; 1A558:  c0 30
+b06_a55a:   .db $83                     ; 1A55A:  83
+b06_a55b:   .db $ab                     ; 1A55B:  ab
+b06_a55c:   .db $4b                     ; 1A55C:  4b
+b06_a55d:   rol $34cc,x                 ; 1A55D:  3e cc 34
+b06_a560:   .db $32                     ; 1A560:  32
+b06_a561:   bne $a5d6                   ; 1A561:  d0 73
+b06_a563:   .db $5b                     ; 1A563:  5b
+b06_a564:   jmp $327e                   ; 1A564:  4c 7e 32
+b06_a567:   rts                         ; 1A567:  60
+b06_a568:   .db $52                     ; 1A568:  52
+b06_a569:   cli                         ; 1A569:  58
+b06_a56a:   .db $02                     ; 1A56A:  02
+b06_a56b:   .db $da                     ; 1A56B:  da
+b06_a56c:   jmp $327e                   ; 1A56C:  4c 7e 32
+b06_a56f:   jsr $eff3                   ; 1A56F:  20 f3 ef
+b06_a572:   adc $f3ff,x                 ; 1A572:  7d ff f3
+b06_a575:   eor ($c1,x)                 ; 1A575:  41 c1
+b06_a577:   .db $37                     ; 1A577:  37
+b06_a578:   .db $07                     ; 1A578:  07
+b06_a579:   and ($03,x)                 ; 1A579:  21 03
+b06_a57b:   .db $07                     ; 1A57B:  07
+b06_a57c:   .db $2b                     ; 1A57C:  2b
+b06_a57d:   and ($21,x)                 ; 1A57D:  21 21
+b06_a57f:   .db $e7                     ; 1A57F:  e7
+b06_a580:   .db $f7                     ; 1A580:  f7
+b06_a581:   cmp ($03,x)                 ; 1A581:  c1 03
+b06_a583:   .db $07                     ; 1A583:  07
+b06_a584:   .db $c2                     ; 1A584:  c2
+b06_a585:   beq $a57d                   ; 1A585:  f0 f6
+b06_a587:   .db $ef                     ; 1A587:  ef
+b06_a588:   cmp $fcff,y                 ; 1A588:  d9 ff fc
+b06_a58b:   cpx #$c7                    ; 1A58B:  e0 c7
+b06_a58d:   beq $a585                   ; 1A58D:  f0 f6
+b06_a58f:   .db $ef                     ; 1A58F:  ef
+b06_a590:   cmp $fcff,y                 ; 1A590:  d9 ff fc
+b06_a593:   cpx #$69                    ; 1A593:  e0 69
+b06_a595:   bpl $a5b9                   ; 1A595:  10 22
+b06_a597:   ora $69,x                   ; 1A597:  15 69
+b06_a599:   txa                         ; 1A599:  8a
+b06_a59a:   cmp $7672                   ; 1A59A:  cd 72 76
+b06_a59d:   .db $7f                     ; 1A59D:  7f
+b06_a59e:   .db $df                     ; 1A59E:  df
+b06_a59f:   ror a                       ; 1A59F:  6a
+b06_a5a0:   .db $5f                     ; 1A5A0:  5f
+b06_a5a1:   sbc $f6,x                   ; 1A5A1:  f5 f6
+b06_a5a3:   sbc $b340                   ; 1A5A3:  ed 40 b3
+b06_a5a6:   bit $00                     ; 1A5A6:  24 00
+b06_a5a8:   asl $3f                     ; 1A5A8:  06 3f
+b06_a5aa:   .db $9f                     ; 1A5AA:  9f
+b06_a5ab:   .db $0c                     ; 1A5AB:  0c
+b06_a5ac:   ldy $c3ef,x                 ; 1A5AC:  bc ef c3
+b06_a5af:   .db $03                     ; 1A5AF:  03
+b06_a5b0:   .db $87                     ; 1A5B0:  87
+b06_a5b1:   .db $ff                     ; 1A5B1:  ff
+b06_a5b2:   .db $df                     ; 1A5B2:  df
+b06_a5b3:   sty $a853                   ; 1A5B3:  8c 53 a8
+b06_a5b6:   .db $12                     ; 1A5B6:  12
+b06_a5b7:   cld                         ; 1A5B7:  d8
+b06_a5b8:   iny                         ; 1A5B8:  c8
+b06_a5b9:   inc $00                     ; 1A5B9:  e6 00
+b06_a5bb:   brk                         ; 1A5BB:  00
+b06_a5bc:   lda $6fff,x                 ; 1A5BC:  bd ff 6f
+b06_a5bf:   .db $ff                     ; 1A5BF:  ff
+b06_a5c0:   .db $d7                     ; 1A5C0:  d7
+b06_a5c1:   .db $eb                     ; 1A5C1:  eb
+b06_a5c2:   .db $0f                     ; 1A5C2:  0f
+b06_a5c3:   .db $07                     ; 1A5C3:  07
+b06_a5c4:   php                         ; 1A5C4:  08
+b06_a5c5:   .db $1b                     ; 1A5C5:  1b
+b06_a5c6:   .db $9f                     ; 1A5C6:  9f
+b06_a5c7:   .db $9e                     ; 1A5C7:  9e
+b06_a5c8:   jmp ($970c)                 ; 1A5C8:  6c 0c 97
+b06_a5cb:   .db $c7                     ; 1A5CB:  c7
+b06_a5cc:   dey                         ; 1A5CC:  88
+b06_a5cd:   .db $9b                     ; 1A5CD:  9b
+b06_a5ce:   .db $5f                     ; 1A5CE:  5f
+b06_a5cf:   dec $ec8c,x                 ; 1A5CF:  de 8c ec
+b06_a5d2:   .db $67                     ; 1A5D2:  67
+b06_a5d3:   .db $4f                     ; 1A5D3:  4f
+b06_a5d4:   .db $14                     ; 1A5D4:  14
+b06_a5d5:   iny                         ; 1A5D5:  c8
+b06_a5d6:   .db $04                     ; 1A5D6:  04
+b06_a5d7:   cmp ($28),y                 ; 1A5D7:  d1 28
+b06_a5d9:   .db $64                     ; 1A5D9:  64
+b06_a5da:   .db $04                     ; 1A5DA:  04
+b06_a5db:   .db $02                     ; 1A5DB:  02
+b06_a5dc:   .db $1f                     ; 1A5DC:  1f
+b06_a5dd:   .db $f7                     ; 1A5DD:  f7
+b06_a5de:   .db $ff                     ; 1A5DE:  ff
+b06_a5df:   rol $9bd7                   ; 1A5DF:  2e d7 9b
+b06_a5e2:   .db $7b                     ; 1A5E2:  7b
+b06_a5e3:   and $05be                   ; 1A5E3:  2d be 05
+b06_a5e6:   eor $a22a,y                 ; 1A5E6:  59 2a a2
+b06_a5e9:   inx                         ; 1A5E9:  e8
+b06_a5ea:   php                         ; 1A5EA:  08
+b06_a5eb:   .db $e2                     ; 1A5EB:  e2
+b06_a5ec:   cmp ($fb),y                 ; 1A5EC:  d1 fb
+b06_a5ee:   ldx $7dd7                   ; 1A5EE:  ae d7 7d
+b06_a5f1:   .db $9f                     ; 1A5F1:  9f
+b06_a5f2:   .db $f7                     ; 1A5F2:  f7
+b06_a5f3:   and $3103,x                 ; 1A5F3:  3d 03 31
+b06_a5f6:   cpy #$04                    ; 1A5F6:  c0 04
+b06_a5f8:   .db $1b                     ; 1A5F8:  1b
+b06_a5f9:   ora #$f6                    ; 1A5F9:  09 f6
+b06_a5fb:   bit $de3a                   ; 1A5FB:  2c 3a de
+b06_a5fe:   .db $ff                     ; 1A5FE:  ff
+b06_a5ff:   .db $3b                     ; 1A5FF:  3b
+b06_a600:   ora $c976                   ; 1A600:  0d 76 c9
+b06_a603:   .db $13                     ; 1A603:  13
+b06_a604:   .db $3a                     ; 1A604:  3a
+b06_a605:   .db $89                     ; 1A605:  89
+b06_a606:   .db $43                     ; 1A606:  43
+b06_a607:   bit $8d                     ; 1A607:  24 8d
+b06_a609:   adc ($09,x)                 ; 1A609:  61 09
+b06_a60b:   .db $52                     ; 1A60B:  52
+b06_a60c:   .db $c7                     ; 1A60C:  c7
+b06_a60d:   inc $fabd,x                 ; 1A60D:  fe bd fa
+b06_a610:   .db $7a                     ; 1A610:  7a
+b06_a611:   dec $bcf7,x                 ; 1A611:  de f7 bc
+b06_a614:   ldy #$22                    ; 1A614:  a0 22
+b06_a616:   .db $7a                     ; 1A616:  7a
+b06_a617:   bit $a604                   ; 1A617:  2c 04 a6
+b06_a61a:   ldx $2140                   ; 1A61A:  ae 40 21
+b06_a61d:   .db $e2                     ; 1A61D:  e2
+b06_a61e:   lda $e5cf,x                 ; 1A61E:  bd cf e5
+b06_a621:   dec $7e,x                   ; 1A621:  d6 7e
+b06_a623:   ldy $1200,x                 ; 1A623:  bc 00 12
+b06_a626:   brk                         ; 1A626:  00
+b06_a627:   brk                         ; 1A627:  00
+b06_a628:   php                         ; 1A628:  08
+b06_a629:   jsr $0080                   ; 1A629:  20 80 00
+b06_a62c:   brk                         ; 1A62C:  00
+b06_a62d:   .db $c2                     ; 1A62D:  c2
+b06_a62e:   .db $80                     ; 1A62E:  80
+b06_a62f:   brk                         ; 1A62F:  00
+b06_a630:   rti                         ; 1A630:  40
+b06_a631:   .db $02                     ; 1A631:  02
+b06_a632:   brk                         ; 1A632:  00
+b06_a633:   rti                         ; 1A633:  40
+b06_a634:   lsr $89,x                   ; 1A634:  56 89
+b06_a636:   .db $04                     ; 1A636:  04
+b06_a637:   brk                         ; 1A637:  00
+b06_a638:   brk                         ; 1A638:  00
+b06_a639:   .db $7c                     ; 1A639:  7c
+b06_a63a:   .db $1c                     ; 1A63A:  1c
+b06_a63b:   bmi $a5eb                   ; 1A63B:  30 ae
+b06_a63d:   .db $64                     ; 1A63D:  64
+b06_a63e:   cpx #$00                    ; 1A63E:  e0 00
+b06_a640:   brk                         ; 1A640:  00
+b06_a641:   .db $7c                     ; 1A641:  7c
+b06_a642:   .db $1c                     ; 1A642:  1c
+b06_a643:   bmi $a684                   ; 1A643:  30 3f
+b06_a645:   .db $3f                     ; 1A645:  3f
+b06_a646:   rol $000c,x                 ; 1A646:  3e 0c 00
+b06_a649:   brk                         ; 1A649:  00
+b06_a64a:   brk                         ; 1A64A:  00
+b06_a64b:   brk                         ; 1A64B:  00
+b06_a64c:   .db $3f                     ; 1A64C:  3f
+b06_a64d:   .db $3f                     ; 1A64D:  3f
+b06_a64e:   rol $000c,x                 ; 1A64E:  3e 0c 00
+b06_a651:   brk                         ; 1A651:  00
+b06_a652:   brk                         ; 1A652:  00
+b06_a653:   brk                         ; 1A653:  00
+b06_a654:   eor ($33,x)                 ; 1A654:  41 33
+b06_a656:   .db $1f                     ; 1A656:  1f
+b06_a657:   .db $1f                     ; 1A657:  1f
+b06_a658:   .db $1f                     ; 1A658:  1f
+b06_a659:   .db $0f                     ; 1A659:  0f
+b06_a65a:   brk                         ; 1A65A:  00
+b06_a65b:   brk                         ; 1A65B:  00
+b06_a65c:   eor ($33,x)                 ; 1A65C:  41 33
+b06_a65e:   .db $1f                     ; 1A65E:  1f
+b06_a65f:   .db $1f                     ; 1A65F:  1f
+b06_a660:   .db $1f                     ; 1A660:  1f
+b06_a661:   .db $0f                     ; 1A661:  0f
+b06_a662:   brk                         ; 1A662:  00
+b06_a663:   brk                         ; 1A663:  00
+b06_a664:   brk                         ; 1A664:  00
+b06_a665:   .db $80                     ; 1A665:  80
+b06_a666:   bpl $a5e8                   ; 1A666:  10 80
+b06_a668:   php                         ; 1A668:  08
+b06_a669:   brk                         ; 1A669:  00
+b06_a66a:   rti                         ; 1A66A:  40
+b06_a66b:   brk                         ; 1A66B:  00
+b06_a66c:   brk                         ; 1A66C:  00
+b06_a66d:   brk                         ; 1A66D:  00
+b06_a66e:   brk                         ; 1A66E:  00
+b06_a66f:   brk                         ; 1A66F:  00
+b06_a670:   brk                         ; 1A670:  00
+b06_a671:   brk                         ; 1A671:  00
+b06_a672:   brk                         ; 1A672:  00
+b06_a673:   php                         ; 1A673:  08
+b06_a674:   cpx #$c1                    ; 1A674:  e0 c1
+b06_a676:   cpy #$c4                    ; 1A676:  c0 c4
+b06_a678:   sta ($80,x)                 ; 1A678:  81 80
+b06_a67a:   .db $14                     ; 1A67A:  14
+b06_a67b:   brk                         ; 1A67B:  00
+b06_a67c:   cpx #$c0                    ; 1A67C:  e0 c0
+b06_a67e:   cpy #$c0                    ; 1A67E:  c0 c0
+b06_a680:   .db $80                     ; 1A680:  80
+b06_a681:   .db $82                     ; 1A681:  82
+b06_a682:   brk                         ; 1A682:  00
+b06_a683:   brk                         ; 1A683:  00
+b06_a684:   .db $04                     ; 1A684:  04
+b06_a685:   pla                         ; 1A685:  68
+b06_a686:   bvs $a6c9                   ; 1A686:  70 41
+b06_a688:   and ($72,x)                 ; 1A688:  21 72
+b06_a68a:   cpy #$f9                    ; 1A68A:  c0 f9
+b06_a68c:   brk                         ; 1A68C:  00
+b06_a68d:   rts                         ; 1A68D:  60
+b06_a68e:   sei                         ; 1A68E:  78
+b06_a68f:   ora ($01,x)                 ; 1A68F:  01 01
+b06_a691:   brk                         ; 1A691:  00
+b06_a692:   and ($01,x)                 ; 1A692:  21 01
+b06_a694:   .db $03                     ; 1A694:  03
+b06_a695:   ora ($00),y                 ; 1A695:  11 00
+b06_a697:   .db $02                     ; 1A697:  02
+b06_a698:   brk                         ; 1A698:  00
+b06_a699:   bpl $a6dd                   ; 1A699:  10 42
+b06_a69b:   .db $04                     ; 1A69B:  04
+b06_a69c:   php                         ; 1A69C:  08
+b06_a69d:   brk                         ; 1A69D:  00
+b06_a69e:   brk                         ; 1A69E:  00
+b06_a69f:   brk                         ; 1A69F:  00
+b06_a6a0:   brk                         ; 1A6A0:  00
+b06_a6a1:   brk                         ; 1A6A1:  00
+b06_a6a2:   brk                         ; 1A6A2:  00
+b06_a6a3:   brk                         ; 1A6A3:  00
+b06_a6a4:   ora ($49),y                 ; 1A6A4:  11 49
+b06_a6a6:   adc #$41                    ; 1A6A6:  69 41
+b06_a6a8:   ora ($0b,x)                 ; 1A6A8:  01 0b
+b06_a6aa:   lsr a                       ; 1A6AA:  4a
+b06_a6ab:   dex                         ; 1A6AB:  ca
+b06_a6ac:   sbc ($b1,x)                 ; 1A6AC:  e1 b1
+b06_a6ae:   sta ($01,x)                 ; 1A6AE:  81 01
+b06_a6b0:   ora ($0b,x)                 ; 1A6B0:  01 0b
+b06_a6b2:   asl a                       ; 1A6B2:  0a
+b06_a6b3:   asl a                       ; 1A6B3:  0a
+b06_a6b4:   cpy $e7ef                   ; 1A6B4:  cc ef e7
+b06_a6b7:   cpx #$c0                    ; 1A6B7:  e0 c0
+b06_a6b9:   brk                         ; 1A6B9:  00
+b06_a6ba:   brk                         ; 1A6BA:  00
+b06_a6bb:   brk                         ; 1A6BB:  00
+b06_a6bc:   cpy $e7ef                   ; 1A6BC:  cc ef e7
+b06_a6bf:   cpx #$c0                    ; 1A6BF:  e0 c0
+b06_a6c1:   brk                         ; 1A6C1:  00
+b06_a6c2:   brk                         ; 1A6C2:  00
+b06_a6c3:   brk                         ; 1A6C3:  00
+b06_a6c4:   .db $04                     ; 1A6C4:  04
+b06_a6c5:   ora #$82                    ; 1A6C5:  09 82
+b06_a6c7:   .db $0b                     ; 1A6C7:  0b
+b06_a6c8:   ora $02                     ; 1A6C8:  05 02
+b06_a6ca:   php                         ; 1A6CA:  08
+b06_a6cb:   ora $1b                     ; 1A6CB:  05 1b
+b06_a6cd:   .db $07                     ; 1A6CD:  07
+b06_a6ce:   sta $1e06,y                 ; 1A6CE:  99 06 1e
+b06_a6d1:   ora $0b1f                   ; 1A6D1:  0d 1f 0b
+b06_a6d4:   brk                         ; 1A6D4:  00
+b06_a6d5:   brk                         ; 1A6D5:  00
+b06_a6d6:   brk                         ; 1A6D6:  00
+b06_a6d7:   .db $1c                     ; 1A6D7:  1c
+b06_a6d8:   bit $184c                   ; 1A6D8:  2c 4c 18
+b06_a6db:   clc                         ; 1A6DB:  18
+b06_a6dc:   brk                         ; 1A6DC:  00
+b06_a6dd:   brk                         ; 1A6DD:  00
+b06_a6de:   brk                         ; 1A6DE:  00
+b06_a6df:   .db $1c                     ; 1A6DF:  1c
+b06_a6e0:   bit $184c                   ; 1A6E0:  2c 4c 18
+b06_a6e3:   clc                         ; 1A6E3:  18
+b06_a6e4:   .db $0c                     ; 1A6E4:  0c
+b06_a6e5:   ora #$0d                    ; 1A6E5:  09 0d
+b06_a6e7:   .db $0c                     ; 1A6E7:  0c
+b06_a6e8:   .db $02                     ; 1A6E8:  02
+b06_a6e9:   ora ($00,x)                 ; 1A6E9:  01 00
+b06_a6eb:   brk                         ; 1A6EB:  00
+b06_a6ec:   asl $1f0e,x                 ; 1A6EC:  1e 0e 1f
+b06_a6ef:   .db $07                     ; 1A6EF:  07
+b06_a6f0:   ora $00                     ; 1A6F0:  05 00
+b06_a6f2:   brk                         ; 1A6F2:  00
+b06_a6f3:   brk                         ; 1A6F3:  00
+b06_a6f4:   .db $80                     ; 1A6F4:  80
+b06_a6f5:   ora ($41,x)                 ; 1A6F5:  01 41
+b06_a6f7:   rol $2082                   ; 1A6F7:  2e 82 20
+b06_a6fa:   stx $6003                   ; 1A6FA:  8e 03 60
+b06_a6fd:   sbc ($3d),y                 ; 1A6FD:  f1 3d
+b06_a6ff:   .db $d3                     ; 1A6FF:  d3
+b06_a700:   eor $c0                     ; 1A700:  45 c0
+b06_a702:   ror $c083                   ; 1A702:  6e 83 c0
+b06_a705:   sta ($82,x)                 ; 1A705:  81 82
+b06_a707:   php                         ; 1A707:  08
+b06_a708:   .db $04                     ; 1A708:  04
+b06_a709:   .db $04                     ; 1A709:  04
+b06_a70a:   ora ($f0),y                 ; 1A70A:  11 f0
+b06_a70c:   cmp $8d88                   ; 1A70C:  cd 88 8d
+b06_a70f:   ora ($1a),y                 ; 1A70F:  11 1a
+b06_a711:   and #$04                    ; 1A711:  29 04
+b06_a713:   .db $fb                     ; 1A713:  fb
+b06_a714:   .db $07                     ; 1A714:  07
+b06_a715:   .db $3f                     ; 1A715:  3f
+b06_a716:   .db $67                     ; 1A716:  67
+b06_a717:   rol $27                     ; 1A717:  26 27
+b06_a719:   and ($33,x)                 ; 1A719:  21 33
+b06_a71b:   .db $17                     ; 1A71B:  17
+b06_a71c:   .db $47                     ; 1A71C:  47
+b06_a71d:   .db $1f                     ; 1A71D:  1f
+b06_a71e:   .db $67                     ; 1A71E:  67
+b06_a71f:   rol $27                     ; 1A71F:  26 27
+b06_a721:   lda ($33,x)                 ; 1A721:  a1 33
+b06_a723:   .db $57                     ; 1A723:  57
+b06_a724:   .db $fc                     ; 1A724:  fc
+b06_a725:   sec                         ; 1A725:  38
+b06_a726:   and $3130,y                 ; 1A726:  39 30 31
+b06_a729:   .db $bb                     ; 1A729:  bb
+b06_a72a:   tsx                         ; 1A72A:  ba
+b06_a72b:   sec                         ; 1A72B:  38
+b06_a72c:   sed                         ; 1A72C:  f8
+b06_a72d:   .db $3b                     ; 1A72D:  3b
+b06_a72e:   sec                         ; 1A72E:  38
+b06_a72f:   bmi $a761                   ; 1A72F:  30 30
+b06_a731:   clv                         ; 1A731:  b8
+b06_a732:   clv                         ; 1A732:  b8
+b06_a733:   and $8861,y                 ; 1A733:  39 61 88
+b06_a736:   jsr $af40                   ; 1A736:  20 40 af
+b06_a739:   .db $c7                     ; 1A739:  c7
+b06_a73a:   bit $48                     ; 1A73A:  24 48
+b06_a73c:   brk                         ; 1A73C:  00
+b06_a73d:   brk                         ; 1A73D:  00
+b06_a73e:   brk                         ; 1A73E:  00
+b06_a73f:   brk                         ; 1A73F:  00
+b06_a740:   .db $07                     ; 1A740:  07
+b06_a741:   .db $03                     ; 1A741:  03
+b06_a742:   brk                         ; 1A742:  00
+b06_a743:   brk                         ; 1A743:  00
+b06_a744:   clc                         ; 1A744:  18
+b06_a745:   php                         ; 1A745:  08
+b06_a746:   .db $0f                     ; 1A746:  0f
+b06_a747:   .db $1f                     ; 1A747:  1f
+b06_a748:   .db $fc                     ; 1A748:  fc
+b06_a749:   cpy $0c0c                   ; 1A749:  cc 0c 0c
+b06_a74c:   clc                         ; 1A74C:  18
+b06_a74d:   php                         ; 1A74D:  08
+b06_a74e:   .db $0f                     ; 1A74E:  0f
+b06_a74f:   .db $1f                     ; 1A74F:  1f
+b06_a750:   .db $fc                     ; 1A750:  fc
+b06_a751:   cpy $0c0c                   ; 1A751:  cc 0c 0c
+b06_a754:   ldx #$a5                    ; 1A754:  a2 a5
+b06_a756:   plp                         ; 1A756:  28
+b06_a757:   cmp ($14),y                 ; 1A757:  d1 14
+b06_a759:   plp                         ; 1A759:  28
+b06_a75a:   cpy #$28                    ; 1A75A:  c0 28
+b06_a75c:   brk                         ; 1A75C:  00
+b06_a75d:   brk                         ; 1A75D:  00
+b06_a75e:   brk                         ; 1A75E:  00
+b06_a75f:   brk                         ; 1A75F:  00
+b06_a760:   brk                         ; 1A760:  00
+b06_a761:   rti                         ; 1A761:  40
+b06_a762:   brk                         ; 1A762:  00
+b06_a763:   brk                         ; 1A763:  00
+b06_a764:   .db $0c                     ; 1A764:  0c
+b06_a765:   php                         ; 1A765:  08
+b06_a766:   php                         ; 1A766:  08
+b06_a767:   php                         ; 1A767:  08
+b06_a768:   php                         ; 1A768:  08
+b06_a769:   php                         ; 1A769:  08
+b06_a76a:   php                         ; 1A76A:  08
+b06_a76b:   php                         ; 1A76B:  08
+b06_a76c:   .db $0c                     ; 1A76C:  0c
+b06_a76d:   php                         ; 1A76D:  08
+b06_a76e:   php                         ; 1A76E:  08
+b06_a76f:   php                         ; 1A76F:  08
+b06_a770:   php                         ; 1A770:  08
+b06_a771:   php                         ; 1A771:  08
+b06_a772:   php                         ; 1A772:  08
+b06_a773:   php                         ; 1A773:  08
+b06_a774:   brk                         ; 1A774:  00
+b06_a775:   cpx #$e0                    ; 1A775:  e0 e0
+b06_a777:   cpx #$00                    ; 1A777:  e0 00
+b06_a779:   brk                         ; 1A779:  00
+b06_a77a:   brk                         ; 1A77A:  00
+b06_a77b:   brk                         ; 1A77B:  00
+b06_a77c:   brk                         ; 1A77C:  00
+b06_a77d:   cpx #$e0                    ; 1A77D:  e0 e0
+b06_a77f:   cpx #$00                    ; 1A77F:  e0 00
+b06_a781:   brk                         ; 1A781:  00
+b06_a782:   brk                         ; 1A782:  00
+b06_a783:   brk                         ; 1A783:  00
+b06_a784:   .db $53                     ; 1A784:  53
+b06_a785:   sta $1d22                   ; 1A785:  8d 22 1d
+b06_a788:   jsr $0a54                   ; 1A788:  20 54 0a
+b06_a78b:   .db $14                     ; 1A78B:  14
+b06_a78c:   brk                         ; 1A78C:  00
+b06_a78d:   brk                         ; 1A78D:  00
+b06_a78e:   brk                         ; 1A78E:  00
+b06_a78f:   brk                         ; 1A78F:  00
+b06_a790:   brk                         ; 1A790:  00
+b06_a791:   brk                         ; 1A791:  00
+b06_a792:   brk                         ; 1A792:  00
+b06_a793:   brk                         ; 1A793:  00
+b06_a794:   lsr a                       ; 1A794:  4a
+b06_a795:   bpl $a7a0                   ; 1A795:  10 09
+b06_a797:   bit $91                     ; 1A797:  24 91
+b06_a799:   pha                         ; 1A799:  48
+b06_a79a:   brk                         ; 1A79A:  00
+b06_a79b:   plp                         ; 1A79B:  28
+b06_a79c:   brk                         ; 1A79C:  00
+b06_a79d:   brk                         ; 1A79D:  00
+b06_a79e:   .db $02                     ; 1A79E:  02
+b06_a79f:   brk                         ; 1A79F:  00
+b06_a7a0:   brk                         ; 1A7A0:  00
+b06_a7a1:   brk                         ; 1A7A1:  00
+b06_a7a2:   brk                         ; 1A7A2:  00
+b06_a7a3:   brk                         ; 1A7A3:  00
+b06_a7a4:   .db $a7                     ; 1A7A4:  a7
+b06_a7a5:   .db $13                     ; 1A7A5:  13
+b06_a7a6:   .db $43                     ; 1A7A6:  43
+b06_a7a7:   ora ($01),y                 ; 1A7A7:  11 01
+b06_a7a9:   brk                         ; 1A7A9:  00
+b06_a7aa:   .db $df                     ; 1A7AA:  df
+b06_a7ab:   .db $77                     ; 1A7AB:  77
+b06_a7ac:   asl $4b,x                   ; 1A7AC:  16 4b
+b06_a7ae:   .db $3b                     ; 1A7AE:  3b
+b06_a7af:   lda $070b                   ; 1A7AF:  ad 0b 07
+b06_a7b2:   dec $e077,x                 ; 1A7B2:  de 77 e0
+b06_a7b5:   sta ($55,x)                 ; 1A7B5:  81 55
+b06_a7b7:   .db $83                     ; 1A7B7:  83
+b06_a7b8:   inx                         ; 1A7B8:  e8
+b06_a7b9:   dex                         ; 1A7B9:  ca
+b06_a7ba:   .db $04                     ; 1A7BA:  04
+b06_a7bb:   pha                         ; 1A7BB:  48
+b06_a7bc:   clc                         ; 1A7BC:  18
+b06_a7bd:   adc $bf29,y                 ; 1A7BD:  79 29 bf
+b06_a7c0:   .db $d7                     ; 1A7C0:  d7
+b06_a7c1:   .db $dc                     ; 1A7C1:  dc
+b06_a7c2:   dey                         ; 1A7C2:  88
+b06_a7c3:   .db $80                     ; 1A7C3:  80
+b06_a7c4:   .db $32                     ; 1A7C4:  32
+b06_a7c5:   ror $5c,x                   ; 1A7C5:  76 5c
+b06_a7c7:   sed                         ; 1A7C7:  f8
+b06_a7c8:   php                         ; 1A7C8:  08
+b06_a7c9:   asl $fe0e                   ; 1A7C9:  0e 0e fe
+b06_a7cc:   .db $32                     ; 1A7CC:  32
+b06_a7cd:   ror $5c,x                   ; 1A7CD:  76 5c
+b06_a7cf:   sei                         ; 1A7CF:  78
+b06_a7d0:   iny                         ; 1A7D0:  c8
+b06_a7d1:   .db $0f                     ; 1A7D1:  0f
+b06_a7d2:   asl $10fe                   ; 1A7D2:  0e fe 10
+b06_a7d5:   ora ($43,x)                 ; 1A7D5:  01 43
+b06_a7d7:   .db $07                     ; 1A7D7:  07
+b06_a7d8:   dec $2c                     ; 1A7D8:  c6 2c
+b06_a7da:   clv                         ; 1A7DA:  b8
+b06_a7db:   pha                         ; 1A7DB:  48
+b06_a7dc:   beq $a83f                   ; 1A7DC:  f0 61
+b06_a7de:   .db $23                     ; 1A7DE:  23
+b06_a7df:   .db $47                     ; 1A7DF:  47
+b06_a7e0:   asl $cc                     ; 1A7E0:  06 cc
+b06_a7e2:   php                         ; 1A7E2:  08
+b06_a7e3:   brk                         ; 1A7E3:  00
+b06_a7e4:   rol $e3f1,x                 ; 1A7E4:  3e f1 e3
+b06_a7e7:   .db $87                     ; 1A7E7:  87
+b06_a7e8:   .db $0f                     ; 1A7E8:  0f
+b06_a7e9:   .db $1b                     ; 1A7E9:  1b
+b06_a7ea:   .db $33                     ; 1A7EA:  33
+b06_a7eb:   .db $63                     ; 1A7EB:  63
+b06_a7ec:   rol $e3f1,x                 ; 1A7EC:  3e f1 e3
+b06_a7ef:   .db $87                     ; 1A7EF:  87
+b06_a7f0:   .db $0f                     ; 1A7F0:  0f
+b06_a7f1:   .db $1b                     ; 1A7F1:  1b
+b06_a7f2:   .db $33                     ; 1A7F2:  33
+b06_a7f3:   .db $63                     ; 1A7F3:  63
+b06_a7f4:   cpy #$86                    ; 1A7F4:  c0 86
+b06_a7f6:   and ($f8),y                 ; 1A7F6:  31 f8
+b06_a7f8:   lda $f998,y                 ; 1A7F8:  b9 98 f9
+b06_a7fb:   adc $81c0,y                 ; 1A7FB:  79 c0 81
+b06_a7fe:   .db $3f                     ; 1A7FE:  3f
+b06_a7ff:   .db $ff                     ; 1A7FF:  ff
+b06_a800:   .db $bb                     ; 1A800:  bb
+b06_a801:   sta $78f9,y                 ; 1A801:  99 f9 78
+b06_a804:   .db $c3                     ; 1A804:  c3
+b06_a805:   .db $83                     ; 1A805:  83
+b06_a806:   sta $02                     ; 1A806:  85 02
+b06_a808:   bpl $a821                   ; 1A808:  10 17
+b06_a80a:   rol $c315                   ; 1A80A:  2e 15 c3
+b06_a80d:   .db $87                     ; 1A80D:  87
+b06_a80e:   .db $89                     ; 1A80E:  89
+b06_a80f:   .db $1c                     ; 1A80F:  1c
+b06_a810:   .db $0f                     ; 1A810:  0f
+b06_a811:   jsr $4010                   ; 1A811:  20 10 40
+b06_a814:   clc                         ; 1A814:  18
+b06_a815:   sta $fddc,y                 ; 1A815:  99 dc fd
+b06_a818:   .db $fc                     ; 1A818:  fc
+b06_a819:   sei                         ; 1A819:  78
+b06_a81a:   sed                         ; 1A81A:  f8
+b06_a81b:   ldy #$19                    ; 1A81B:  a0 19
+b06_a81d:   sta $fddd,y                 ; 1A81D:  99 dd fd
+b06_a820:   .db $fc                     ; 1A820:  fc
+b06_a821:   sed                         ; 1A821:  f8
+b06_a822:   sec                         ; 1A822:  38
+b06_a823:   eor ($d7,x)                 ; 1A823:  41 d7
+b06_a825:   ora $52                     ; 1A825:  05 52
+b06_a827:   .db $83                     ; 1A827:  83
+b06_a828:   cli                         ; 1A828:  58
+b06_a829:   brk                         ; 1A829:  00
+b06_a82a:   lsr a                       ; 1A82A:  4a
+b06_a82b:   asl $6c                     ; 1A82B:  06 6c
+b06_a82d:   .db $fa                     ; 1A82D:  fa
+b06_a82e:   sbc $ee7c                   ; 1A82E:  ed 7c ee
+b06_a831:   .db $fc                     ; 1A831:  fc
+b06_a832:   ldy $89,x                   ; 1A832:  b4 89
+b06_a834:   .db $42                     ; 1A834:  42
+b06_a835:   sty $5ec8                   ; 1A835:  8c c8 5e
+b06_a838:   .db $2f                     ; 1A838:  2f
+b06_a839:   .db $0c                     ; 1A839:  0c
+b06_a83a:   eor $ec                     ; 1A83A:  45 ec
+b06_a83c:   stx $0e                     ; 1A83C:  86 0e
+b06_a83e:   php                         ; 1A83E:  08
+b06_a83f:   asl $4ccf,x                 ; 1A83F:  1e cf 4c
+b06_a842:   adc $fc                     ; 1A842:  65 fc
+b06_a844:   and ($88),y                 ; 1A844:  31 88
+b06_a846:   tya                         ; 1A846:  98
+b06_a847:   beq $a88a                   ; 1A847:  f0 41
+b06_a849:   .db $13                     ; 1A849:  13
+b06_a84a:   .db $53                     ; 1A84A:  53
+b06_a84b:   .db $92                     ; 1A84B:  92
+b06_a84c:   .db $d4                     ; 1A84C:  d4
+b06_a84d:   beq $a82f                   ; 1A84D:  f0 e0
+b06_a84f:   cpx #$f1                    ; 1A84F:  e0 f1
+b06_a851:   .db $e3                     ; 1A851:  e3
+b06_a852:   .db $ab                     ; 1A852:  ab
+b06_a853:   ror $0840,x                 ; 1A853:  7e 40 08
+b06_a856:   and ($60),y                 ; 1A856:  31 60
+b06_a858:   .db $c7                     ; 1A858:  c7
+b06_a859:   .db $9e                     ; 1A859:  9e
+b06_a85a:   clc                         ; 1A85A:  18
+b06_a85b:   and ($48),y                 ; 1A85B:  31 48
+b06_a85d:   php                         ; 1A85D:  08
+b06_a85e:   bmi $a8c0                   ; 1A85E:  30 60
+b06_a860:   .db $c7                     ; 1A860:  c7
+b06_a861:   .db $9e                     ; 1A861:  9e
+b06_a862:   clc                         ; 1A862:  18
+b06_a863:   and ($1d),y                 ; 1A863:  31 1d
+b06_a865:   jsr $6812                   ; 1A865:  20 12 68
+b06_a868:   cpy #$f1                    ; 1A868:  c0 f1
+b06_a86a:   cmp #$7a                    ; 1A86A:  c9 7a
+b06_a86c:   asl $1f                     ; 1A86C:  06 1f
+b06_a86e:   adc $ff1f                   ; 1A86E:  6d 1f ff
+b06_a871:   .db $ef                     ; 1A871:  ef
+b06_a872:   dec $7d                     ; 1A872:  c6 7d
+b06_a874:   tay                         ; 1A874:  a8
+b06_a875:   clv                         ; 1A875:  b8
+b06_a876:   brk                         ; 1A876:  00
+b06_a877:   adc ($21,x)                 ; 1A877:  61 21
+b06_a879:   .db $0b                     ; 1A879:  0b
+b06_a87a:   bcc $a8a1                   ; 1A87A:  90 25
+b06_a87c:   .db $dc                     ; 1A87C:  dc
+b06_a87d:   rts                         ; 1A87D:  60
+b06_a87e:   sed                         ; 1A87E:  f8
+b06_a87f:   sta ($f9),y                 ; 1A87F:  91 f9
+b06_a881:   .db $f7                     ; 1A881:  f7
+b06_a882:   ror $98da                   ; 1A882:  6e da 98
+b06_a885:   and $0060,y                 ; 1A885:  39 60 00
+b06_a888:   sta $92                     ; 1A888:  85 92
+b06_a88a:   sta ($84,x)                 ; 1A88A:  81 84
+b06_a88c:   .db $9b                     ; 1A88C:  9b
+b06_a88d:   sec                         ; 1A88D:  38
+b06_a88e:   cpx #$c1                    ; 1A88E:  e0 c1
+b06_a890:   .db $e2                     ; 1A890:  e2
+b06_a891:   lda $8b9e                   ; 1A891:  ad 9e 8b
+b06_a894:   cpy #$54                    ; 1A894:  c0 54
+b06_a896:   cpy $b2                     ; 1A896:  c4 b2
+b06_a898:   bne $a8e6                   ; 1A898:  d0 4c
+b06_a89a:   .db $02                     ; 1A89A:  02
+b06_a89b:   and $3f                     ; 1A89B:  25 3f
+b06_a89d:   .db $ef                     ; 1A89D:  ef
+b06_a89e:   and $685c,y                 ; 1A89E:  39 5c 68
+b06_a8a1:   lda ($fc),y                 ; 1A8A1:  b1 fc
+b06_a8a3:   .db $da                     ; 1A8A3:  da
+b06_a8a4:   bmi $a90d                   ; 1A8A4:  30 67
+b06_a8a6:   .db $c3                     ; 1A8A6:  c3
+b06_a8a7:   .db $82                     ; 1A8A7:  82
+b06_a8a8:   .db $0c                     ; 1A8A8:  0c
+b06_a8a9:   .db $04                     ; 1A8A9:  04
+b06_a8aa:   .db $04                     ; 1A8AA:  04
+b06_a8ab:   .db $04                     ; 1A8AB:  04
+b06_a8ac:   bmi $a915                   ; 1A8AC:  30 67
+b06_a8ae:   .db $c3                     ; 1A8AE:  c3
+b06_a8af:   sty $0f                     ; 1A8AF:  84 0f
+b06_a8b1:   ora $24                     ; 1A8B1:  05 24
+b06_a8b3:   .db $04                     ; 1A8B3:  04
+b06_a8b4:   brk                         ; 1A8B4:  00
+b06_a8b5:   cpy #$c0                    ; 1A8B5:  c0 c0
+b06_a8b7:   brk                         ; 1A8B7:  00
+b06_a8b8:   brk                         ; 1A8B8:  00
+b06_a8b9:   brk                         ; 1A8B9:  00
+b06_a8ba:   bvc $a85e                   ; 1A8BA:  50 a2
+b06_a8bc:   brk                         ; 1A8BC:  00
+b06_a8bd:   cpy #$c0                    ; 1A8BD:  c0 c0
+b06_a8bf:   brk                         ; 1A8BF:  00
+b06_a8c0:   php                         ; 1A8C0:  08
+b06_a8c1:   and ($c0),y                 ; 1A8C1:  31 c0
+b06_a8c3:   bcs $a8c9                   ; 1A8C3:  b0 04
+b06_a8c5:   sty $a27e                   ; 1A8C5:  8c 7e a2
+b06_a8c8:   .db $02                     ; 1A8C8:  02
+b06_a8c9:   asl $04                     ; 1A8C9:  06 04
+b06_a8cb:   .db $0c                     ; 1A8CB:  0c
+b06_a8cc:   .db $04                     ; 1A8CC:  04
+b06_a8cd:   .db $0c                     ; 1A8CD:  0c
+b06_a8ce:   ldx $4202,y                 ; 1A8CE:  be 02 42
+b06_a8d1:   asl $04                     ; 1A8D1:  06 04
+b06_a8d3:   sty $51c4                   ; 1A8D3:  8c c4 51
+b06_a8d6:   .db $80                     ; 1A8D6:  80
+b06_a8d7:   brk                         ; 1A8D7:  00
+b06_a8d8:   brk                         ; 1A8D8:  00
+b06_a8d9:   brk                         ; 1A8D9:  00
+b06_a8da:   brk                         ; 1A8DA:  00
+b06_a8db:   brk                         ; 1A8DB:  00
+b06_a8dc:   sty $f0                     ; 1A8DC:  84 f0
+b06_a8de:   .db $80                     ; 1A8DE:  80
+b06_a8df:   brk                         ; 1A8DF:  00
+b06_a8e0:   brk                         ; 1A8E0:  00
+b06_a8e1:   brk                         ; 1A8E1:  00
+b06_a8e2:   brk                         ; 1A8E2:  00
+b06_a8e3:   brk                         ; 1A8E3:  00
+b06_a8e4:   php                         ; 1A8E4:  08
+b06_a8e5:   .db $80                     ; 1A8E5:  80
+b06_a8e6:   brk                         ; 1A8E6:  00
+b06_a8e7:   ora ($12,x)                 ; 1A8E7:  01 12
+b06_a8e9:   .db $22                     ; 1A8E9:  22
+b06_a8ea:   .db $03                     ; 1A8EA:  03
+b06_a8eb:   .db $a3                     ; 1A8EB:  a3
+b06_a8ec:   brk                         ; 1A8EC:  00
+b06_a8ed:   brk                         ; 1A8ED:  00
+b06_a8ee:   brk                         ; 1A8EE:  00
+b06_a8ef:   and ($02,x)                 ; 1A8EF:  21 02
+b06_a8f1:   .db $02                     ; 1A8F1:  02
+b06_a8f2:   .db $0b                     ; 1A8F2:  0b
+b06_a8f3:   .db $1f                     ; 1A8F3:  1f
+b06_a8f4:   cpy #$60                    ; 1A8F4:  c0 60
+b06_a8f6:   beq $a944                   ; 1A8F6:  f0 4c
+b06_a8f8:   cpy $8484                   ; 1A8F8:  cc 84 84
+b06_a8fb:   .db $0c                     ; 1A8FB:  0c
+b06_a8fc:   cpy #$60                    ; 1A8FC:  c0 60
+b06_a8fe:   beq $a94c                   ; 1A8FE:  f0 4c
+b06_a900:   cpy $8484                   ; 1A900:  cc 84 84
+b06_a903:   .db $0c                     ; 1A903:  0c
+b06_a904:   ora #$21                    ; 1A904:  09 21
+b06_a906:   bpl $a90a                   ; 1A906:  10 02
+b06_a908:   brk                         ; 1A908:  00
+b06_a909:   brk                         ; 1A909:  00
+b06_a90a:   brk                         ; 1A90A:  00
+b06_a90b:   brk                         ; 1A90B:  00
+b06_a90c:   ora $0400                   ; 1A90C:  0d 00 04
+b06_a90f:   brk                         ; 1A90F:  00
+b06_a910:   brk                         ; 1A910:  00
+b06_a911:   brk                         ; 1A911:  00
+b06_a912:   brk                         ; 1A912:  00
+b06_a913:   brk                         ; 1A913:  00
+b06_a914:   .db $0c                     ; 1A914:  0c
+b06_a915:   .db $1c                     ; 1A915:  1c
+b06_a916:   sec                         ; 1A916:  38
+b06_a917:   bmi $a919                   ; 1A917:  30 00
+b06_a919:   brk                         ; 1A919:  00
+b06_a91a:   brk                         ; 1A91A:  00
+b06_a91b:   brk                         ; 1A91B:  00
+b06_a91c:   .db $0c                     ; 1A91C:  0c
+b06_a91d:   .db $1c                     ; 1A91D:  1c
+b06_a91e:   sec                         ; 1A91E:  38
+b06_a91f:   bmi $a921                   ; 1A91F:  30 00
+b06_a921:   brk                         ; 1A921:  00
+b06_a922:   brk                         ; 1A922:  00
+b06_a923:   brk                         ; 1A923:  00
+b06_a924:   ora #$1f                    ; 1A924:  09 1f
+b06_a926:   lsr $ba1d,x                 ; 1A926:  5e 1d ba
+b06_a929:   .db $7c                     ; 1A929:  7c
+b06_a92a:   bit $01                     ; 1A92A:  24 01
+b06_a92c:   .db $80                     ; 1A92C:  80
+b06_a92d:   brk                         ; 1A92D:  00
+b06_a92e:   brk                         ; 1A92E:  00
+b06_a92f:   .db $02                     ; 1A92F:  02
+b06_a930:   .db $04                     ; 1A930:  04
+b06_a931:   brk                         ; 1A931:  00
+b06_a932:   tya                         ; 1A932:  98
+b06_a933:   bmi $a97f                   ; 1A933:  30 4a
+b06_a935:   dex                         ; 1A935:  ca
+b06_a936:   dec $0686                   ; 1A936:  ce 86 06
+b06_a939:   rol $06                     ; 1A939:  26 06
+b06_a93b:   .db $02                     ; 1A93B:  02
+b06_a93c:   txa                         ; 1A93C:  8a
+b06_a93d:   asl a                       ; 1A93D:  0a
+b06_a93e:   asl $0606                   ; 1A93E:  0e 06 06
+b06_a941:   stx $06                     ; 1A941:  86 06
+b06_a943:   .db $02                     ; 1A943:  02
+b06_a944:   rti                         ; 1A944:  40
+b06_a945:   bpl $a98b                   ; 1A945:  10 44
+b06_a947:   brk                         ; 1A947:  00
+b06_a948:   brk                         ; 1A948:  00
+b06_a949:   brk                         ; 1A949:  00
+b06_a94a:   brk                         ; 1A94A:  00
+b06_a94b:   brk                         ; 1A94B:  00
+b06_a94c:   .db $04                     ; 1A94C:  04
+b06_a94d:   brk                         ; 1A94D:  00
+b06_a94e:   bpl $a950                   ; 1A94E:  10 00
+b06_a950:   brk                         ; 1A950:  00
+b06_a951:   brk                         ; 1A951:  00
+b06_a952:   brk                         ; 1A952:  00
+b06_a953:   brk                         ; 1A953:  00
+b06_a954:   bpl $a966                   ; 1A954:  10 10
+b06_a956:   clc                         ; 1A956:  18
+b06_a957:   .db $1c                     ; 1A957:  1c
+b06_a958:   .db $0c                     ; 1A958:  0c
+b06_a959:   .db $07                     ; 1A959:  07
+b06_a95a:   ora ($00,x)                 ; 1A95A:  01 00
+b06_a95c:   bpl $a96e                   ; 1A95C:  10 10
+b06_a95e:   clc                         ; 1A95E:  18
+b06_a95f:   .db $1c                     ; 1A95F:  1c
+b06_a960:   .db $0c                     ; 1A960:  0c
+b06_a961:   .db $07                     ; 1A961:  07
+b06_a962:   ora ($00,x)                 ; 1A962:  01 00
+b06_a964:   brk                         ; 1A964:  00
+b06_a965:   brk                         ; 1A965:  00
+b06_a966:   ora #$02                    ; 1A966:  09 02
+b06_a968:   brk                         ; 1A968:  00
+b06_a969:   brk                         ; 1A969:  00
+b06_a96a:   .db $80                     ; 1A96A:  80
+b06_a96b:   brk                         ; 1A96B:  00
+b06_a96c:   brk                         ; 1A96C:  00
+b06_a96d:   .db $03                     ; 1A96D:  03
+b06_a96e:   asl $002d,x                 ; 1A96E:  1e 2d 00
+b06_a971:   bpl $a8f3                   ; 1A971:  10 80
+b06_a973:   brk                         ; 1A973:  00
+b06_a974:   brk                         ; 1A974:  00
+b06_a975:   brk                         ; 1A975:  00
+b06_a976:   brk                         ; 1A976:  00
+b06_a977:   brk                         ; 1A977:  00
+b06_a978:   brk                         ; 1A978:  00
+b06_a979:   brk                         ; 1A979:  00
+b06_a97a:   .db $04                     ; 1A97A:  04
+b06_a97b:   asl $0000,x                 ; 1A97B:  1e 00 00
+b06_a97e:   brk                         ; 1A97E:  00
+b06_a97f:   brk                         ; 1A97F:  00
+b06_a980:   brk                         ; 1A980:  00
+b06_a981:   brk                         ; 1A981:  00
+b06_a982:   .db $04                     ; 1A982:  04
+b06_a983:   asl $0000,x                 ; 1A983:  1e 00 00
+b06_a986:   brk                         ; 1A986:  00
+b06_a987:   brk                         ; 1A987:  00
+b06_a988:   brk                         ; 1A988:  00
+b06_a989:   brk                         ; 1A989:  00
+b06_a98a:   jsr $0090                   ; 1A98A:  20 90 00
+b06_a98d:   brk                         ; 1A98D:  00
+b06_a98e:   brk                         ; 1A98E:  00
+b06_a98f:   brk                         ; 1A98F:  00
+b06_a990:   brk                         ; 1A990:  00
+b06_a991:   brk                         ; 1A991:  00
+b06_a992:   jsr $de90                   ; 1A992:  20 90 de
+b06_a995:   .db $6b                     ; 1A995:  6b
+b06_a996:   sta ($10,x)                 ; 1A996:  81 10
+b06_a998:   brk                         ; 1A998:  00
+b06_a999:   brk                         ; 1A999:  00
+b06_a99a:   brk                         ; 1A99A:  00
+b06_a99b:   brk                         ; 1A99B:  00
+b06_a99c:   rol $79db,x                 ; 1A99C:  3e db 79
+b06_a99f:   inx                         ; 1A99F:  e8
+b06_a9a0:   brk                         ; 1A9A0:  00
+b06_a9a1:   brk                         ; 1A9A1:  00
+b06_a9a2:   brk                         ; 1A9A2:  00
+b06_a9a3:   brk                         ; 1A9A3:  00
+b06_a9a4:   bmi $a956                   ; 1A9A4:  30 b0
+b06_a9a6:   .db $f3                     ; 1A9A6:  f3
+b06_a9a7:   beq $aa09                   ; 1A9A7:  f0 60
+b06_a9a9:   brk                         ; 1A9A9:  00
+b06_a9aa:   brk                         ; 1A9AA:  00
+b06_a9ab:   brk                         ; 1A9AB:  00
+b06_a9ac:   bmi $a95f                   ; 1A9AC:  30 b1
+b06_a9ae:   beq $a9a2                   ; 1A9AE:  f0 f2
+b06_a9b0:   rts                         ; 1A9B0:  60
+b06_a9b1:   brk                         ; 1A9B1:  00
+b06_a9b2:   brk                         ; 1A9B2:  00
+b06_a9b3:   brk                         ; 1A9B3:  00
+b06_a9b4:   brk                         ; 1A9B4:  00
+b06_a9b5:   brk                         ; 1A9B5:  00
+b06_a9b6:   ora #$0f                    ; 1A9B6:  09 0f
+b06_a9b8:   .db $03                     ; 1A9B8:  03
+b06_a9b9:   .db $03                     ; 1A9B9:  03
+b06_a9ba:   asl $07                     ; 1A9BA:  06 07
+b06_a9bc:   brk                         ; 1A9BC:  00
+b06_a9bd:   brk                         ; 1A9BD:  00
+b06_a9be:   ora #$0f                    ; 1A9BE:  09 0f
+b06_a9c0:   .db $03                     ; 1A9C0:  03
+b06_a9c1:   .db $03                     ; 1A9C1:  03
+b06_a9c2:   asl $07                     ; 1A9C2:  06 07
+b06_a9c4:   brk                         ; 1A9C4:  00
+b06_a9c5:   brk                         ; 1A9C5:  00
+b06_a9c6:   brk                         ; 1A9C6:  00
+b06_a9c7:   .db $80                     ; 1A9C7:  80
+b06_a9c8:   .db $80                     ; 1A9C8:  80
+b06_a9c9:   brk                         ; 1A9C9:  00
+b06_a9ca:   brk                         ; 1A9CA:  00
+b06_a9cb:   .db $80                     ; 1A9CB:  80
+b06_a9cc:   brk                         ; 1A9CC:  00
+b06_a9cd:   brk                         ; 1A9CD:  00
+b06_a9ce:   brk                         ; 1A9CE:  00
+b06_a9cf:   .db $80                     ; 1A9CF:  80
+b06_a9d0:   .db $80                     ; 1A9D0:  80
+b06_a9d1:   brk                         ; 1A9D1:  00
+b06_a9d2:   brk                         ; 1A9D2:  00
+b06_a9d3:   .db $80                     ; 1A9D3:  80
+b06_a9d4:   rti                         ; 1A9D4:  40
+b06_a9d5:   cmp ($23,x)                 ; 1A9D5:  c1 23
+b06_a9d7:   .db $03                     ; 1A9D7:  03
+b06_a9d8:   .db $63                     ; 1A9D8:  63
+b06_a9d9:   ora $51                     ; 1A9D9:  05 51
+b06_a9db:   rts                         ; 1A9DB:  60
+b06_a9dc:   brk                         ; 1A9DC:  00
+b06_a9dd:   ora ($03,x)                 ; 1A9DD:  01 03
+b06_a9df:   .db $03                     ; 1A9DF:  03
+b06_a9e0:   .db $03                     ; 1A9E0:  03
+b06_a9e1:   ora ($01,x)                 ; 1A9E1:  01 01
+b06_a9e3:   brk                         ; 1A9E3:  00
+b06_a9e4:   bvs $a976                   ; 1A9E4:  70 90
+b06_a9e6:   brk                         ; 1A9E6:  00
+b06_a9e7:   php                         ; 1A9E7:  08
+b06_a9e8:   asl $fcfe                   ; 1A9E8:  0e fe fc
+b06_a9eb:   clc                         ; 1A9EB:  18
+b06_a9ec:   bvs $a97e                   ; 1A9EC:  70 90
+b06_a9ee:   brk                         ; 1A9EE:  00
+b06_a9ef:   php                         ; 1A9EF:  08
+b06_a9f0:   asl $fcfe                   ; 1A9F0:  0e fe fc
+b06_a9f3:   clc                         ; 1A9F3:  18
+b06_a9f4:   plp                         ; 1A9F4:  28
+b06_a9f5:   .db $7c                     ; 1A9F5:  7c
+b06_a9f6:   .db $7a                     ; 1A9F6:  7a
+b06_a9f7:   and $7969,y                 ; 1A9F7:  39 69 79
+b06_a9fa:   and $286f,y                 ; 1A9FA:  39 6f 28
+b06_a9fd:   .db $7c                     ; 1A9FD:  7c
+b06_a9fe:   .db $7a                     ; 1A9FE:  7a
+b06_a9ff:   and $7969,y                 ; 1A9FF:  39 69 79
+b06_aa02:   and $006f,y                 ; 1AA02:  39 6f 00
+b06_aa05:   brk                         ; 1AA05:  00
+b06_aa06:   ora ($03,x)                 ; 1AA06:  01 03
+b06_aa08:   .db $02                     ; 1AA08:  02
+b06_aa09:   .db $03                     ; 1AA09:  03
+b06_aa0a:   .db $03                     ; 1AA0A:  03
+b06_aa0b:   .db $02                     ; 1AA0B:  02
+b06_aa0c:   brk                         ; 1AA0C:  00
+b06_aa0d:   brk                         ; 1AA0D:  00
+b06_aa0e:   brk                         ; 1AA0E:  00
+b06_aa0f:   brk                         ; 1AA0F:  00
+b06_aa10:   brk                         ; 1AA10:  00
+b06_aa11:   brk                         ; 1AA11:  00
+b06_aa12:   brk                         ; 1AA12:  00
+b06_aa13:   brk                         ; 1AA13:  00
+b06_aa14:   brk                         ; 1AA14:  00
+b06_aa15:   brk                         ; 1AA15:  00
+b06_aa16:   .db $ff                     ; 1AA16:  ff
+b06_aa17:   sbc $fb2d                   ; 1AA17:  ed 2d fb
+b06_aa1a:   .db $ab                     ; 1AA1A:  ab
+b06_aa1b:   .db $eb                     ; 1AA1B:  eb
+b06_aa1c:   brk                         ; 1AA1C:  00
+b06_aa1d:   brk                         ; 1AA1D:  00
+b06_aa1e:   brk                         ; 1AA1E:  00
+b06_aa1f:   brk                         ; 1AA1F:  00
+b06_aa20:   brk                         ; 1AA20:  00
+b06_aa21:   brk                         ; 1AA21:  00
+b06_aa22:   brk                         ; 1AA22:  00
+b06_aa23:   brk                         ; 1AA23:  00
+b06_aa24:   .db $03                     ; 1AA24:  03
+b06_aa25:   .db $03                     ; 1AA25:  03
+b06_aa26:   .db $02                     ; 1AA26:  02
+b06_aa27:   .db $02                     ; 1AA27:  02
+b06_aa28:   .db $03                     ; 1AA28:  03
+b06_aa29:   .db $03                     ; 1AA29:  03
+b06_aa2a:   ora ($00,x)                 ; 1AA2A:  01 00
+b06_aa2c:   brk                         ; 1AA2C:  00
+b06_aa2d:   brk                         ; 1AA2D:  00
+b06_aa2e:   brk                         ; 1AA2E:  00
+b06_aa2f:   brk                         ; 1AA2F:  00
+b06_aa30:   brk                         ; 1AA30:  00
+b06_aa31:   brk                         ; 1AA31:  00
+b06_aa32:   brk                         ; 1AA32:  00
+b06_aa33:   brk                         ; 1AA33:  00
+b06_aa34:   .db $af                     ; 1AA34:  af
+b06_aa35:   .db $fb                     ; 1AA35:  fb
+b06_aa36:   .db $da                     ; 1AA36:  da
+b06_aa37:   .db $db                     ; 1AA37:  db
+b06_aa38:   dec $ff0b,x                 ; 1AA38:  de 0b ff
+b06_aa3b:   brk                         ; 1AA3B:  00
+b06_aa3c:   brk                         ; 1AA3C:  00
+b06_aa3d:   brk                         ; 1AA3D:  00
+b06_aa3e:   brk                         ; 1AA3E:  00
+b06_aa3f:   brk                         ; 1AA3F:  00
+b06_aa40:   brk                         ; 1AA40:  00
+b06_aa41:   brk                         ; 1AA41:  00
+b06_aa42:   brk                         ; 1AA42:  00
+b06_aa43:   brk                         ; 1AA43:  00
+b06_aa44:   brk                         ; 1AA44:  00
+b06_aa45:   brk                         ; 1AA45:  00
+b06_aa46:   cpy #$60                    ; 1AA46:  c0 60
+b06_aa48:   cpx #$20                    ; 1AA48:  e0 20
+b06_aa4a:   cpx #$20                    ; 1AA4A:  e0 20
+b06_aa4c:   brk                         ; 1AA4C:  00
+b06_aa4d:   brk                         ; 1AA4D:  00
+b06_aa4e:   brk                         ; 1AA4E:  00
+b06_aa4f:   brk                         ; 1AA4F:  00
+b06_aa50:   brk                         ; 1AA50:  00
+b06_aa51:   brk                         ; 1AA51:  00
+b06_aa52:   brk                         ; 1AA52:  00
+b06_aa53:   brk                         ; 1AA53:  00
+b06_aa54:   ora ($45),y                 ; 1AA54:  11 45
+b06_aa56:   ora $00,x                   ; 1AA56:  15 00
+b06_aa58:   and $09                     ; 1AA58:  25 09
+b06_aa5a:   ora ($03,x)                 ; 1AA5A:  01 03
+b06_aa5c:   ora ($01,x)                 ; 1AA5C:  01 01
+b06_aa5e:   ora ($00,x)                 ; 1AA5E:  01 00
+b06_aa60:   brk                         ; 1AA60:  00
+b06_aa61:   brk                         ; 1AA61:  00
+b06_aa62:   brk                         ; 1AA62:  00
+b06_aa63:   brk                         ; 1AA63:  00
+b06_aa64:   jsr $a0a0                   ; 1AA64:  20 a0 a0
+b06_aa67:   ldy #$e0                    ; 1AA67:  a0 e0
+b06_aa69:   cpx #$40                    ; 1AA69:  e0 40
+b06_aa6b:   brk                         ; 1AA6B:  00
+b06_aa6c:   brk                         ; 1AA6C:  00
+b06_aa6d:   brk                         ; 1AA6D:  00
+b06_aa6e:   brk                         ; 1AA6E:  00
+b06_aa6f:   brk                         ; 1AA6F:  00
+b06_aa70:   brk                         ; 1AA70:  00
+b06_aa71:   brk                         ; 1AA71:  00
+b06_aa72:   brk                         ; 1AA72:  00
+b06_aa73:   brk                         ; 1AA73:  00
+b06_aa74:   sed                         ; 1AA74:  f8
+b06_aa75:   .db $80                     ; 1AA75:  80
+b06_aa76:   cpy #$f4                    ; 1AA76:  c0 f4
+b06_aa78:   clc                         ; 1AA78:  18
+b06_aa79:   lsr $10a7,x                 ; 1AA79:  5e a7 10
+b06_aa7c:   sed                         ; 1AA7C:  f8
+b06_aa7d:   .db $80                     ; 1AA7D:  80
+b06_aa7e:   cpy #$f2                    ; 1AA7E:  c0 f2
+b06_aa80:   clc                         ; 1AA80:  18
+b06_aa81:   asl $0007,x                 ; 1AA81:  1e 07 00
+b06_aa84:   and $5c62                   ; 1AA84:  2d 62 5c
+b06_aa87:   plp                         ; 1AA87:  28
+b06_aa88:   .db $72                     ; 1AA88:  72
+b06_aa89:   ldy $52                     ; 1AA89:  a4 52
+b06_aa8b:   eor $10                     ; 1AA8B:  45 10
+b06_aa8d:   .db $0c                     ; 1AA8D:  0c
+b06_aa8e:   .db $02                     ; 1AA8E:  02
+b06_aa8f:   .db $14                     ; 1AA8F:  14
+b06_aa90:   brk                         ; 1AA90:  00
+b06_aa91:   ora ($00,x)                 ; 1AA91:  01 00
+b06_aa93:   brk                         ; 1AA93:  00
+b06_aa94:   nop                         ; 1AA94:  ea
+b06_aa95:   .db $44                     ; 1AA95:  44
+b06_aa96:   .db $5c                     ; 1AA96:  5c
+b06_aa97:   .db $42                     ; 1AA97:  42
+b06_aa98:   .db $c2                     ; 1AA98:  c2
+b06_aa99:   sta $f8dd                   ; 1AA99:  8d dd f8
+b06_aa9c:   .db $04                     ; 1AA9C:  04
+b06_aa9d:   .db $13                     ; 1AA9D:  13
+b06_aa9e:   .db $03                     ; 1AA9E:  03
+b06_aa9f:   ora #$c5                    ; 1AA9F:  09 c5
+b06_aaa1:   stx $f8dc                   ; 1AAA1:  8e dc f8
+b06_aaa4:   .db $02                     ; 1AAA4:  02
+b06_aaa5:   bit $22                     ; 1AAA5:  24 22
+b06_aaa7:   ora ($21,x)                 ; 1AAA7:  01 21
+b06_aaa9:   php                         ; 1AAA9:  08
+b06_aaaa:   jsr $0120                   ; 1AAAA:  20 20 01
+b06_aaad:   sta ($41,x)                 ; 1AAAD:  81 41
+b06_aaaf:   inc $c2                     ; 1AAAF:  e6 c2
+b06_aab1:   rti                         ; 1AAB1:  40
+b06_aab2:   brk                         ; 1AAB2:  00
+b06_aab3:   jsr $2313                   ; 1AAB3:  20 13 23
+b06_aab6:   .db $b3                     ; 1AAB6:  b3
+b06_aab7:   rts                         ; 1AAB7:  60
+b06_aab8:   sty $41                     ; 1AAB8:  84 41
+b06_aaba:   .db $80                     ; 1AABA:  80
+b06_aabb:   brk                         ; 1AABB:  00
+b06_aabc:   brk                         ; 1AABC:  00
+b06_aabd:   rti                         ; 1AABD:  40
+b06_aabe:   brk                         ; 1AABE:  00
+b06_aabf:   ora ($00,x)                 ; 1AABF:  01 00
+b06_aac1:   ora ($00,x)                 ; 1AAC1:  01 00
+b06_aac3:   brk                         ; 1AAC3:  00
+b06_aac4:   bcs $ab11                   ; 1AAC4:  b0 4b
+b06_aac6:   .db $0c                     ; 1AAC6:  0c
+b06_aac7:   lda ($08,x)                 ; 1AAC7:  a1 08
+b06_aac9:   sta $f8                     ; 1AAC9:  85 f8
+b06_aacb:   cmp $b451,x                 ; 1AACB:  dd 51 b4
+b06_aace:   bmi $aae8                   ; 1AACE:  30 18
+b06_aad0:   bpl $aa52                   ; 1AAD0:  10 80
+b06_aad2:   sed                         ; 1AAD2:  f8
+b06_aad3:   .db $dc                     ; 1AAD3:  dc
+b06_aad4:   .db $03                     ; 1AAD4:  03
+b06_aad5:   ora $09                     ; 1AAD5:  05 09
+b06_aad7:   .db $0b                     ; 1AAD7:  0b
+b06_aad8:   asl $0c0e                   ; 1AAD8:  0e 0e 0c
+b06_aadb:   brk                         ; 1AADB:  00
+b06_aadc:   .db $03                     ; 1AADC:  03
+b06_aadd:   ora $09                     ; 1AADD:  05 09
+b06_aadf:   .db $0b                     ; 1AADF:  0b
+b06_aae0:   asl $0c0e                   ; 1AAE0:  0e 0e 0c
+b06_aae3:   brk                         ; 1AAE3:  00
+b06_aae4:   stx $0686                   ; 1AAE4:  8e 86 06
+b06_aae7:   asl $0e                     ; 1AAE7:  06 0e
+b06_aae9:   asl $0e                     ; 1AAE9:  06 0e
+b06_aaeb:   asl $868e                   ; 1AAEB:  0e 8e 86
+b06_aaee:   asl $06                     ; 1AAEE:  06 06
+b06_aaf0:   asl $0e06                   ; 1AAF0:  0e 06 0e
+b06_aaf3:   asl $c8a0                   ; 1AAF3:  0e a0 c8
+b06_aaf6:   sbc #$ab                    ; 1AAF6:  e9 ab
+b06_aaf8:   cmp ($1b),y                 ; 1AAF8:  d1 1b
+b06_aafa:   lda $0a,x                   ; 1AAFA:  b5 0a
+b06_aafc:   dec $143e,x                 ; 1AAFC:  de 3e 14
+b06_aaff:   bpl $ab05                   ; 1AAFF:  10 04
+b06_ab01:   rti                         ; 1AB01:  40
+b06_ab02:   brk                         ; 1AB02:  00
+b06_ab03:   ldy #$3f                    ; 1AB03:  a0 3f
+b06_ab05:   .db $27                     ; 1AB05:  27
+b06_ab06:   .db $07                     ; 1AB06:  07
+b06_ab07:   .db $47                     ; 1AB07:  47
+b06_ab08:   ldy $2038,x                 ; 1AB08:  bc 38 20
+b06_ab0b:   sta ($3f,x)                 ; 1AB0B:  81 3f
+b06_ab0d:   .db $47                     ; 1AB0D:  47
+b06_ab0e:   .db $07                     ; 1AB0E:  07
+b06_ab0f:   .db $47                     ; 1AB0F:  47
+b06_ab10:   .db $3c                     ; 1AB10:  3c
+b06_ab11:   sec                         ; 1AB11:  38
+b06_ab12:   brk                         ; 1AB12:  00
+b06_ab13:   bpl $ab2e                   ; 1AB13:  10 19
+b06_ab15:   ora $5a                     ; 1AB15:  05 5a
+b06_ab17:   lsr $0838                   ; 1AB17:  4e 38 08
+b06_ab1a:   and $c00c,y                 ; 1AB1A:  39 0c c0
+b06_ab1d:   bpl $ab1f                   ; 1AB1D:  10 00
+b06_ab1f:   ora ($42),y                 ; 1AB1F:  11 42
+b06_ab21:   jsr $0205                   ; 1AB21:  20 05 02
+b06_ab24:   ora $1a                     ; 1AB24:  05 1a
+b06_ab26:   bit $0000                   ; 1AB26:  2c 00 00
+b06_ab29:   jsr $3c27                   ; 1AB29:  20 27 3c
+b06_ab2c:   brk                         ; 1AB2C:  00
+b06_ab2d:   brk                         ; 1AB2D:  00
+b06_ab2e:   brk                         ; 1AB2E:  00
+b06_ab2f:   brk                         ; 1AB2F:  00
+b06_ab30:   brk                         ; 1AB30:  00
+b06_ab31:   jsr $3c27                   ; 1AB31:  20 27 3c
+b06_ab34:   txs                         ; 1AB34:  9a
+b06_ab35:   ora $fedf                   ; 1AB35:  0d df fe
+b06_ab38:   .db $7c                     ; 1AB38:  7c
+b06_ab39:   .db $7c                     ; 1AB39:  7c
+b06_ab3a:   lsr $85a6,x                 ; 1AB3A:  5e a6 85
+b06_ab3d:   .db $1b                     ; 1AB3D:  1b
+b06_ab3e:   cpy #$f5                    ; 1AB3E:  c0 f5
+b06_ab40:   .db $7b                     ; 1AB40:  7b
+b06_ab41:   adc $469f,x                 ; 1AB41:  7d 9f 46
+b06_ab44:   eor $04,x                   ; 1AB44:  55 04
+b06_ab46:   jsr $6e48                   ; 1AB46:  20 48 6e
+b06_ab49:   .db $54                     ; 1AB49:  54
+b06_ab4a:   cpx $b8                     ; 1AB4A:  e4 b8
+b06_ab4c:   inx                         ; 1AB4C:  e8
+b06_ab4d:   sed                         ; 1AB4D:  f8
+b06_ab4e:   cld                         ; 1AB4E:  d8
+b06_ab4f:   ldx $0f,y                   ; 1AB4F:  b6 0f
+b06_ab51:   ldx $671a                   ; 1AB51:  ae 1a 67
+b06_ab54:   iny                         ; 1AB54:  c8
+b06_ab55:   .db $92                     ; 1AB55:  92
+b06_ab56:   .db $42                     ; 1AB56:  42
+b06_ab57:   .db $64                     ; 1AB57:  64
+b06_ab58:   .db $c3                     ; 1AB58:  c3
+b06_ab59:   .db $f4                     ; 1AB59:  f4
+b06_ab5a:   cpx $c2                     ; 1AB5A:  e4 c2
+b06_ab5c:   clv                         ; 1AB5C:  b8
+b06_ab5d:   bit $4b6d                   ; 1AB5D:  2c 6d 4b
+b06_ab60:   cpy $e2f3                   ; 1AB60:  cc f3 e2
+b06_ab63:   cmp ($00,x)                 ; 1AB63:  c1 00
+b06_ab65:   brk                         ; 1AB65:  00
+b06_ab66:   brk                         ; 1AB66:  00
+b06_ab67:   .db $80                     ; 1AB67:  80
+b06_ab68:   jsr $9000                   ; 1AB68:  20 00 90
+b06_ab6b:   .db $02                     ; 1AB6B:  02
+b06_ab6c:   .db $1c                     ; 1AB6C:  1c
+b06_ab6d:   rti                         ; 1AB6D:  40
+b06_ab6e:   .db $80                     ; 1AB6E:  80
+b06_ab6f:   rti                         ; 1AB6F:  40
+b06_ab70:   cpx #$b0                    ; 1AB70:  e0 b0
+b06_ab72:   ldy $1c9d                   ; 1AB72:  ac 9d 1c
+b06_ab75:   clc                         ; 1AB75:  18
+b06_ab76:   bpl $aba8                   ; 1AB76:  10 30
+b06_ab78:   tay                         ; 1AB78:  a8
+b06_ab79:   bit $0c0c                   ; 1AB79:  2c 0c 0c
+b06_ab7c:   .db $9c                     ; 1AB7C:  9c
+b06_ab7d:   clc                         ; 1AB7D:  18
+b06_ab7e:   bpl $abb1                   ; 1AB7E:  10 31
+b06_ab80:   plp                         ; 1AB80:  28
+b06_ab81:   bit $0c0c                   ; 1AB81:  2c 0c 0c
+b06_ab84:   brk                         ; 1AB84:  00
+b06_ab85:   brk                         ; 1AB85:  00
+b06_ab86:   brk                         ; 1AB86:  00
+b06_ab87:   .db $02                     ; 1AB87:  02
+b06_ab88:   .db $80                     ; 1AB88:  80
+b06_ab89:   brk                         ; 1AB89:  00
+b06_ab8a:   bpl $ab8c                   ; 1AB8A:  10 00
+b06_ab8c:   brk                         ; 1AB8C:  00
+b06_ab8d:   .db $04                     ; 1AB8D:  04
+b06_ab8e:   brk                         ; 1AB8E:  00
+b06_ab8f:   rti                         ; 1AB8F:  40
+b06_ab90:   bpl $ab92                   ; 1AB90:  10 00
+b06_ab92:   ora ($00,x)                 ; 1AB92:  01 00
+b06_ab94:   php                         ; 1AB94:  08
+b06_ab95:   php                         ; 1AB95:  08
+b06_ab96:   php                         ; 1AB96:  08
+b06_ab97:   php                         ; 1AB97:  08
+b06_ab98:   php                         ; 1AB98:  08
+b06_ab99:   php                         ; 1AB99:  08
+b06_ab9a:   clc                         ; 1AB9A:  18
+b06_ab9b:   clc                         ; 1AB9B:  18
+b06_ab9c:   php                         ; 1AB9C:  08
+b06_ab9d:   php                         ; 1AB9D:  08
+b06_ab9e:   php                         ; 1AB9E:  08
+b06_ab9f:   php                         ; 1AB9F:  08
+b06_aba0:   php                         ; 1ABA0:  08
+b06_aba1:   php                         ; 1ABA1:  08
+b06_aba2:   clc                         ; 1ABA2:  18
+b06_aba3:   clc                         ; 1ABA3:  18
+b06_aba4:   .db $04                     ; 1ABA4:  04
+b06_aba5:   .db $04                     ; 1ABA5:  04
+b06_aba6:   .db $07                     ; 1ABA6:  07
+b06_aba7:   .db $04                     ; 1ABA7:  04
+b06_aba8:   .db $04                     ; 1ABA8:  04
+b06_aba9:   .db $04                     ; 1ABA9:  04
+b06_abaa:   .db $0c                     ; 1ABAA:  0c
+b06_abab:   .db $0c                     ; 1ABAB:  0c
+b06_abac:   .db $04                     ; 1ABAC:  04
+b06_abad:   .db $04                     ; 1ABAD:  04
+b06_abae:   .db $07                     ; 1ABAE:  07
+b06_abaf:   .db $04                     ; 1ABAF:  04
+b06_abb0:   .db $04                     ; 1ABB0:  04
+b06_abb1:   .db $04                     ; 1ABB1:  04
+b06_abb2:   .db $0c                     ; 1ABB2:  0c
+b06_abb3:   .db $0c                     ; 1ABB3:  0c
+b06_abb4:   .db $0c                     ; 1ABB4:  0c
+b06_abb5:   .db $0c                     ; 1ABB5:  0c
+b06_abb6:   .db $0c                     ; 1ABB6:  0c
+b06_abb7:   .db $04                     ; 1ABB7:  04
+b06_abb8:   brk                         ; 1ABB8:  00
+b06_abb9:   brk                         ; 1ABB9:  00
+b06_abba:   brk                         ; 1ABBA:  00
+b06_abbb:   brk                         ; 1ABBB:  00
+b06_abbc:   .db $0c                     ; 1ABBC:  0c
+b06_abbd:   .db $0c                     ; 1ABBD:  0c
+b06_abbe:   .db $0c                     ; 1ABBE:  0c
+b06_abbf:   .db $04                     ; 1ABBF:  04
+b06_abc0:   brk                         ; 1ABC0:  00
+b06_abc1:   brk                         ; 1ABC1:  00
+b06_abc2:   brk                         ; 1ABC2:  00
+b06_abc3:   brk                         ; 1ABC3:  00
+b06_abc4:   inc $0c8c,x                 ; 1ABC4:  fe 8c 0c
+b06_abc7:   .db $0c                     ; 1ABC7:  0c
+b06_abc8:   .db $0c                     ; 1ABC8:  0c
+b06_abc9:   .db $0c                     ; 1ABC9:  0c
+b06_abca:   .db $7c                     ; 1ABCA:  7c
+b06_abcb:   .db $7c                     ; 1ABCB:  7c
+b06_abcc:   inc $0c8c,x                 ; 1ABCC:  fe 8c 0c
+b06_abcf:   .db $0c                     ; 1ABCF:  0c
+b06_abd0:   .db $0c                     ; 1ABD0:  0c
+b06_abd1:   .db $0c                     ; 1ABD1:  0c
+b06_abd2:   .db $7c                     ; 1ABD2:  7c
+b06_abd3:   .db $7c                     ; 1ABD3:  7c
+b06_abd4:   rti                         ; 1ABD4:  40
+b06_abd5:   brk                         ; 1ABD5:  00
+b06_abd6:   brk                         ; 1ABD6:  00
+b06_abd7:   brk                         ; 1ABD7:  00
+b06_abd8:   brk                         ; 1ABD8:  00
+b06_abd9:   brk                         ; 1ABD9:  00
+b06_abda:   brk                         ; 1ABDA:  00
+b06_abdb:   brk                         ; 1ABDB:  00
+b06_abdc:   rti                         ; 1ABDC:  40
+b06_abdd:   brk                         ; 1ABDD:  00
+b06_abde:   brk                         ; 1ABDE:  00
+b06_abdf:   brk                         ; 1ABDF:  00
+b06_abe0:   brk                         ; 1ABE0:  00
+b06_abe1:   brk                         ; 1ABE1:  00
+b06_abe2:   brk                         ; 1ABE2:  00
+b06_abe3:   brk                         ; 1ABE3:  00
+b06_abe4:   ror $003f                   ; 1ABE4:  6e 3f 00
+b06_abe7:   brk                         ; 1ABE7:  00
+b06_abe8:   brk                         ; 1ABE8:  00
+b06_abe9:   brk                         ; 1ABE9:  00
+b06_abea:   brk                         ; 1ABEA:  00
+b06_abeb:   brk                         ; 1ABEB:  00
+b06_abec:   ror $003f                   ; 1ABEC:  6e 3f 00
+b06_abef:   brk                         ; 1ABEF:  00
+b06_abf0:   brk                         ; 1ABF0:  00
+b06_abf1:   brk                         ; 1ABF1:  00
+b06_abf2:   brk                         ; 1ABF2:  00
+b06_abf3:   brk                         ; 1ABF3:  00
+b06_abf4:   brk                         ; 1ABF4:  00
+b06_abf5:   .db $80                     ; 1ABF5:  80
+b06_abf6:   cpy #$40                    ; 1ABF6:  c0 40
+b06_abf8:   brk                         ; 1ABF8:  00
+b06_abf9:   brk                         ; 1ABF9:  00
+b06_abfa:   brk                         ; 1ABFA:  00
+b06_abfb:   brk                         ; 1ABFB:  00
+b06_abfc:   brk                         ; 1ABFC:  00
+b06_abfd:   .db $80                     ; 1ABFD:  80
+b06_abfe:   cpy #$40                    ; 1ABFE:  c0 40
+b06_ac00:   brk                         ; 1AC00:  00
+b06_ac01:   brk                         ; 1AC01:  00
+b06_ac02:   brk                         ; 1AC02:  00
+b06_ac03:   brk                         ; 1AC03:  00
+b06_ac04:   .db $07                     ; 1AC04:  07
+b06_ac05:   .db $03                     ; 1AC05:  03
+b06_ac06:   .db $02                     ; 1AC06:  02
+b06_ac07:   .db $02                     ; 1AC07:  02
+b06_ac08:   .db $02                     ; 1AC08:  02
+b06_ac09:   .db $03                     ; 1AC09:  03
+b06_ac0a:   ora ($00,x)                 ; 1AC0A:  01 00
+b06_ac0c:   .db $07                     ; 1AC0C:  07
+b06_ac0d:   .db $03                     ; 1AC0D:  03
+b06_ac0e:   .db $02                     ; 1AC0E:  02
+b06_ac0f:   .db $02                     ; 1AC0F:  02
+b06_ac10:   .db $02                     ; 1AC10:  02
+b06_ac11:   .db $03                     ; 1AC11:  03
+b06_ac12:   ora ($00,x)                 ; 1AC12:  01 00
+b06_ac14:   cpy #$00                    ; 1AC14:  c0 00
+b06_ac16:   brk                         ; 1AC16:  00
+b06_ac17:   brk                         ; 1AC17:  00
+b06_ac18:   bmi $abfa                   ; 1AC18:  30 e0
+b06_ac1a:   cpy #$00                    ; 1AC1A:  c0 00
+b06_ac1c:   cpy #$00                    ; 1AC1C:  c0 00
+b06_ac1e:   brk                         ; 1AC1E:  00
+b06_ac1f:   brk                         ; 1AC1F:  00
+b06_ac20:   bmi $ac02                   ; 1AC20:  30 e0
+b06_ac22:   cpy #$00                    ; 1AC22:  c0 00
+b06_ac24:   dec $f8f8                   ; 1AC24:  ce f8 f8
+b06_ac27:   php                         ; 1AC27:  08
+b06_ac28:   php                         ; 1AC28:  08
+b06_ac29:   php                         ; 1AC29:  08
+b06_ac2a:   php                         ; 1AC2A:  08
+b06_ac2b:   php                         ; 1AC2B:  08
+b06_ac2c:   dec $f8f8                   ; 1AC2C:  ce f8 f8
+b06_ac2f:   php                         ; 1AC2F:  08
+b06_ac30:   php                         ; 1AC30:  08
+b06_ac31:   php                         ; 1AC31:  08
+b06_ac32:   php                         ; 1AC32:  08
+b06_ac33:   php                         ; 1AC33:  08
+b06_ac34:   php                         ; 1AC34:  08
+b06_ac35:   php                         ; 1AC35:  08
+b06_ac36:   brk                         ; 1AC36:  00
+b06_ac37:   brk                         ; 1AC37:  00
+b06_ac38:   brk                         ; 1AC38:  00
+b06_ac39:   brk                         ; 1AC39:  00
+b06_ac3a:   brk                         ; 1AC3A:  00
+b06_ac3b:   brk                         ; 1AC3B:  00
+b06_ac3c:   php                         ; 1AC3C:  08
+b06_ac3d:   php                         ; 1AC3D:  08
+b06_ac3e:   brk                         ; 1AC3E:  00
+b06_ac3f:   brk                         ; 1AC3F:  00
+b06_ac40:   brk                         ; 1AC40:  00
+b06_ac41:   brk                         ; 1AC41:  00
+b06_ac42:   brk                         ; 1AC42:  00
+b06_ac43:   brk                         ; 1AC43:  00
+b06_ac44:   brk                         ; 1AC44:  00
+b06_ac45:   brk                         ; 1AC45:  00
+b06_ac46:   brk                         ; 1AC46:  00
+b06_ac47:   brk                         ; 1AC47:  00
+b06_ac48:   ora ($07,x)                 ; 1AC48:  01 07
+b06_ac4a:   .db $0c                     ; 1AC4A:  0c
+b06_ac4b:   brk                         ; 1AC4B:  00
+b06_ac4c:   brk                         ; 1AC4C:  00
+b06_ac4d:   brk                         ; 1AC4D:  00
+b06_ac4e:   brk                         ; 1AC4E:  00
+b06_ac4f:   brk                         ; 1AC4F:  00
+b06_ac50:   ora ($07,x)                 ; 1AC50:  01 07
+b06_ac52:   .db $0c                     ; 1AC52:  0c
+b06_ac53:   brk                         ; 1AC53:  00
+b06_ac54:   sec                         ; 1AC54:  38
+b06_ac55:   sei                         ; 1AC55:  78
+b06_ac56:   cli                         ; 1AC56:  58
+b06_ac57:   cld                         ; 1AC57:  d8
+b06_ac58:   sed                         ; 1AC58:  f8
+b06_ac59:   sei                         ; 1AC59:  78
+b06_ac5a:   bpl $ac5c                   ; 1AC5A:  10 00
+b06_ac5c:   sec                         ; 1AC5C:  38
+b06_ac5d:   sei                         ; 1AC5D:  78
+b06_ac5e:   cli                         ; 1AC5E:  58
+b06_ac5f:   cld                         ; 1AC5F:  d8
+b06_ac60:   sed                         ; 1AC60:  f8
+b06_ac61:   sei                         ; 1AC61:  78
+b06_ac62:   bpl $ac64                   ; 1AC62:  10 00
+b06_ac64:   jsr $3838                   ; 1AC64:  20 38 38
+b06_ac67:   sec                         ; 1AC67:  38
+b06_ac68:   .db $3c                     ; 1AC68:  3c
+b06_ac69:   sec                         ; 1AC69:  38
+b06_ac6a:   sei                         ; 1AC6A:  78
+b06_ac6b:   rts                         ; 1AC6B:  60
+b06_ac6c:   jsr $3838                   ; 1AC6C:  20 38 38
+b06_ac6f:   sec                         ; 1AC6F:  38
+b06_ac70:   .db $3c                     ; 1AC70:  3c
+b06_ac71:   sec                         ; 1AC71:  38
+b06_ac72:   sei                         ; 1AC72:  78
+b06_ac73:   rts                         ; 1AC73:  60
+b06_ac74:   .db $1c                     ; 1AC74:  1c
+b06_ac75:   clc                         ; 1AC75:  18
+b06_ac76:   bmi $acd8                   ; 1AC76:  30 60
+b06_ac78:   rti                         ; 1AC78:  40
+b06_ac79:   brk                         ; 1AC79:  00
+b06_ac7a:   brk                         ; 1AC7A:  00
+b06_ac7b:   brk                         ; 1AC7B:  00
+b06_ac7c:   .db $1c                     ; 1AC7C:  1c
+b06_ac7d:   clc                         ; 1AC7D:  18
+b06_ac7e:   bmi $ace0                   ; 1AC7E:  30 60
+b06_ac80:   rti                         ; 1AC80:  40
+b06_ac81:   brk                         ; 1AC81:  00
+b06_ac82:   brk                         ; 1AC82:  00
+b06_ac83:   brk                         ; 1AC83:  00
+b06_ac84:   bmi $ace6                   ; 1AC84:  30 60
+b06_ac86:   rts                         ; 1AC86:  60
+b06_ac87:   rts                         ; 1AC87:  60
+b06_ac88:   rts                         ; 1AC88:  60
+b06_ac89:   brk                         ; 1AC89:  00
+b06_ac8a:   brk                         ; 1AC8A:  00
+b06_ac8b:   ora ($30,x)                 ; 1AC8B:  01 30
+b06_ac8d:   rts                         ; 1AC8D:  60
+b06_ac8e:   rts                         ; 1AC8E:  60
+b06_ac8f:   rts                         ; 1AC8F:  60
+b06_ac90:   rts                         ; 1AC90:  60
+b06_ac91:   brk                         ; 1AC91:  00
+b06_ac92:   brk                         ; 1AC92:  00
+b06_ac93:   ora ($03,x)                 ; 1AC93:  01 03
+b06_ac95:   .db $03                     ; 1AC95:  03
+b06_ac96:   .db $02                     ; 1AC96:  02
+b06_ac97:   brk                         ; 1AC97:  00
+b06_ac98:   brk                         ; 1AC98:  00
+b06_ac99:   brk                         ; 1AC99:  00
+b06_ac9a:   brk                         ; 1AC9A:  00
+b06_ac9b:   brk                         ; 1AC9B:  00
+b06_ac9c:   .db $03                     ; 1AC9C:  03
+b06_ac9d:   .db $03                     ; 1AC9D:  03
+b06_ac9e:   .db $02                     ; 1AC9E:  02
+b06_ac9f:   brk                         ; 1AC9F:  00
+b06_aca0:   brk                         ; 1ACA0:  00
+b06_aca1:   brk                         ; 1ACA1:  00
+b06_aca2:   brk                         ; 1ACA2:  00
+b06_aca3:   brk                         ; 1ACA3:  00
+b06_aca4:   cmp ($c2,x)                 ; 1ACA4:  c1 c2
+b06_aca6:   cpy $c0                     ; 1ACA6:  c4 c0
+b06_aca8:   cpy $c0                     ; 1ACA8:  c4 c0
+b06_acaa:   cpy #$80                    ; 1ACAA:  c0 80
+b06_acac:   .db $c2                     ; 1ACAC:  c2
+b06_acad:   cmp $c1c3                   ; 1ACAD:  cd c3 c1
+b06_acb0:   cpy #$c0                    ; 1ACB0:  c0 c0
+b06_acb2:   cpy #$80                    ; 1ACB2:  c0 80
+b06_acb4:   php                         ; 1ACB4:  08
+b06_acb5:   .db $0c                     ; 1ACB5:  0c
+b06_acb6:   asl $7a                     ; 1ACB6:  06 7a
+b06_acb8:   sty $0c                     ; 1ACB8:  84 0c
+b06_acba:   brk                         ; 1ACBA:  00
+b06_acbb:   brk                         ; 1ACBB:  00
+b06_acbc:   .db $37                     ; 1ACBC:  37
+b06_acbd:   .db $92                     ; 1ACBD:  92
+b06_acbe:   ora $0004,x                 ; 1ACBE:  1d 04 00
+b06_acc1:   clc                         ; 1ACC1:  18
+b06_acc2:   asl $8007                   ; 1ACC2:  0e 07 80
+b06_acc5:   brk                         ; 1ACC5:  00
+b06_acc6:   brk                         ; 1ACC6:  00
+b06_acc7:   brk                         ; 1ACC7:  00
+b06_acc8:   brk                         ; 1ACC8:  00
+b06_acc9:   brk                         ; 1ACC9:  00
+b06_acca:   brk                         ; 1ACCA:  00
+b06_accb:   brk                         ; 1ACCB:  00
+b06_accc:   .db $80                     ; 1ACCC:  80
+b06_accd:   brk                         ; 1ACCD:  00
+b06_acce:   brk                         ; 1ACCE:  00
+b06_accf:   brk                         ; 1ACCF:  00
+b06_acd0:   brk                         ; 1ACD0:  00
+b06_acd1:   brk                         ; 1ACD1:  00
+b06_acd2:   brk                         ; 1ACD2:  00
+b06_acd3:   brk                         ; 1ACD3:  00
+b06_acd4:   clc                         ; 1ACD4:  18
+b06_acd5:   bpl $ad07                   ; 1ACD5:  10 30
+b06_acd7:   bmi $ad09                   ; 1ACD7:  30 30
+b06_acd9:   rts                         ; 1ACD9:  60
+b06_acda:   cpx #$e0                    ; 1ACDA:  e0 e0
+b06_acdc:   clc                         ; 1ACDC:  18
+b06_acdd:   bpl $ad0f                   ; 1ACDD:  10 30
+b06_acdf:   bmi $ad11                   ; 1ACDF:  30 30
+b06_ace1:   rts                         ; 1ACE1:  60
+b06_ace2:   cpx #$e0                    ; 1ACE2:  e0 e0
+b06_ace4:   brk                         ; 1ACE4:  00
+b06_ace5:   brk                         ; 1ACE5:  00
+b06_ace6:   brk                         ; 1ACE6:  00
+b06_ace7:   brk                         ; 1ACE7:  00
+b06_ace8:   brk                         ; 1ACE8:  00
+b06_ace9:   brk                         ; 1ACE9:  00
+b06_acea:   brk                         ; 1ACEA:  00
+b06_aceb:   brk                         ; 1ACEB:  00
+b06_acec:   brk                         ; 1ACEC:  00
+b06_aced:   brk                         ; 1ACED:  00
+b06_acee:   brk                         ; 1ACEE:  00
+b06_acef:   ora ($02,x)                 ; 1ACEF:  01 02
+b06_acf1:   brk                         ; 1ACF1:  00
+b06_acf2:   brk                         ; 1ACF2:  00
+b06_acf3:   brk                         ; 1ACF3:  00
+b06_acf4:   brk                         ; 1ACF4:  00
+b06_acf5:   .db $03                     ; 1ACF5:  03
+b06_acf6:   .db $04                     ; 1ACF6:  04
+b06_acf7:   brk                         ; 1ACF7:  00
+b06_acf8:   brk                         ; 1ACF8:  00
+b06_acf9:   brk                         ; 1ACF9:  00
+b06_acfa:   brk                         ; 1ACFA:  00
+b06_acfb:   brk                         ; 1ACFB:  00
+b06_acfc:   brk                         ; 1ACFC:  00
+b06_acfd:   brk                         ; 1ACFD:  00
+b06_acfe:   ora $00                     ; 1ACFE:  05 00
+b06_ad00:   brk                         ; 1AD00:  00
+b06_ad01:   brk                         ; 1AD01:  00
+b06_ad02:   brk                         ; 1AD02:  00
+b06_ad03:   brk                         ; 1AD03:  00
+b06_ad04:   brk                         ; 1AD04:  00
+b06_ad05:   brk                         ; 1AD05:  00
+b06_ad06:   brk                         ; 1AD06:  00
+b06_ad07:   brk                         ; 1AD07:  00
+b06_ad08:   brk                         ; 1AD08:  00
+b06_ad09:   brk                         ; 1AD09:  00
+b06_ad0a:   brk                         ; 1AD0A:  00
+b06_ad0b:   brk                         ; 1AD0B:  00
+b06_ad0c:   brk                         ; 1AD0C:  00
+b06_ad0d:   php                         ; 1AD0D:  08
+b06_ad0e:   .db $0b                     ; 1AD0E:  0b
+b06_ad0f:   brk                         ; 1AD0F:  00
+b06_ad10:   asl $0000                   ; 1AD10:  0e 00 00
+b06_ad13:   brk                         ; 1AD13:  00
+b06_ad14:   brk                         ; 1AD14:  00
+b06_ad15:   .db $12                     ; 1AD15:  12
+b06_ad16:   ora $00,x                   ; 1AD16:  15 00
+b06_ad18:   brk                         ; 1AD18:  00
+b06_ad19:   brk                         ; 1AD19:  00
+b06_ad1a:   clc                         ; 1AD1A:  18
+b06_ad1b:   ora $1c00,y                 ; 1AD1B:  19 00 1c
+b06_ad1e:   .db $1f                     ; 1AD1E:  1f
+b06_ad1f:   brk                         ; 1AD1F:  00
+b06_ad20:   brk                         ; 1AD20:  00
+b06_ad21:   brk                         ; 1AD21:  00
+b06_ad22:   brk                         ; 1AD22:  00
+b06_ad23:   brk                         ; 1AD23:  00
+b06_ad24:   brk                         ; 1AD24:  00
+b06_ad25:   brk                         ; 1AD25:  00
+b06_ad26:   brk                         ; 1AD26:  00
+b06_ad27:   brk                         ; 1AD27:  00
+b06_ad28:   brk                         ; 1AD28:  00
+b06_ad29:   brk                         ; 1AD29:  00
+b06_ad2a:   asl $07                     ; 1AD2A:  06 07
+b06_ad2c:   ora #$0a                    ; 1AD2C:  09 0a
+b06_ad2e:   .db $0c                     ; 1AD2E:  0c
+b06_ad2f:   ora $000f                   ; 1AD2F:  0d 0f 00
+b06_ad32:   bpl $ad45                   ; 1AD32:  10 11
+b06_ad34:   .db $13                     ; 1AD34:  13
+b06_ad35:   .db $14                     ; 1AD35:  14
+b06_ad36:   asl $00,x                   ; 1AD36:  16 00
+b06_ad38:   .db $17                     ; 1AD38:  17
+b06_ad39:   brk                         ; 1AD39:  00
+b06_ad3a:   .db $1a                     ; 1AD3A:  1a
+b06_ad3b:   .db $1b                     ; 1AD3B:  1b
+b06_ad3c:   ora $201e,x                 ; 1AD3C:  1d 1e 20
+b06_ad3f:   and ($00,x)                 ; 1AD3F:  21 00
+b06_ad41:   brk                         ; 1AD41:  00
+b06_ad42:   brk                         ; 1AD42:  00
+b06_ad43:   brk                         ; 1AD43:  00
+b06_ad44:   brk                         ; 1AD44:  00
+b06_ad45:   brk                         ; 1AD45:  00
+b06_ad46:   brk                         ; 1AD46:  00
+b06_ad47:   brk                         ; 1AD47:  00
+b06_ad48:   brk                         ; 1AD48:  00
+b06_ad49:   brk                         ; 1AD49:  00
+b06_ad4a:   .db $23                     ; 1AD4A:  23
+b06_ad4b:   bit $27                     ; 1AD4B:  24 27
+b06_ad4d:   plp                         ; 1AD4D:  28
+b06_ad4e:   rol a                       ; 1AD4E:  2a
+b06_ad4f:   .db $2b                     ; 1AD4F:  2b
+b06_ad50:   rol $3100                   ; 1AD50:  2e 00 31
+b06_ad53:   .db $32                     ; 1AD53:  32
+b06_ad54:   and $36,x                   ; 1AD54:  35 36
+b06_ad56:   sec                         ; 1AD56:  38
+b06_ad57:   brk                         ; 1AD57:  00
+b06_ad58:   and $0000,y                 ; 1AD58:  39 00 00
+b06_ad5b:   .db $3b                     ; 1AD5B:  3b
+b06_ad5c:   brk                         ; 1AD5C:  00
+b06_ad5d:   rol $0040,x                 ; 1AD5D:  3e 40 00
+b06_ad60:   brk                         ; 1AD60:  00
+b06_ad61:   brk                         ; 1AD61:  00
+b06_ad62:   brk                         ; 1AD62:  00
+b06_ad63:   brk                         ; 1AD63:  00
+b06_ad64:   brk                         ; 1AD64:  00
+b06_ad65:   brk                         ; 1AD65:  00
+b06_ad66:   brk                         ; 1AD66:  00
+b06_ad67:   brk                         ; 1AD67:  00
+b06_ad68:   brk                         ; 1AD68:  00
+b06_ad69:   .db $22                     ; 1AD69:  22
+b06_ad6a:   and $26                     ; 1AD6A:  25 26
+b06_ad6c:   brk                         ; 1AD6C:  00
+b06_ad6d:   and #$2c                    ; 1AD6D:  29 2c
+b06_ad6f:   and $302f                   ; 1AD6F:  2d 2f 30
+b06_ad72:   .db $33                     ; 1AD72:  33
+b06_ad73:   .db $34                     ; 1AD73:  34
+b06_ad74:   .db $13                     ; 1AD74:  13
+b06_ad75:   .db $37                     ; 1AD75:  37
+b06_ad76:   brk                         ; 1AD76:  00
+b06_ad77:   brk                         ; 1AD77:  00
+b06_ad78:   .db $3a                     ; 1AD78:  3a
+b06_ad79:   brk                         ; 1AD79:  00
+b06_ad7a:   .db $3c                     ; 1AD7A:  3c
+b06_ad7b:   and $3f00,x                 ; 1AD7B:  3d 00 3f
+b06_ad7e:   eor ($00,x)                 ; 1AD7E:  41 00
+b06_ad80:   brk                         ; 1AD80:  00
+b06_ad81:   brk                         ; 1AD81:  00
+b06_ad82:   brk                         ; 1AD82:  00
+b06_ad83:   brk                         ; 1AD83:  00
+b06_ad84:   brk                         ; 1AD84:  00
+b06_ad85:   brk                         ; 1AD85:  00
+b06_ad86:   brk                         ; 1AD86:  00
+b06_ad87:   brk                         ; 1AD87:  00
+b06_ad88:   brk                         ; 1AD88:  00
+b06_ad89:   brk                         ; 1AD89:  00
+b06_ad8a:   brk                         ; 1AD8A:  00
+b06_ad8b:   brk                         ; 1AD8B:  00
+b06_ad8c:   .db $44                     ; 1AD8C:  44
+b06_ad8d:   eor $00                     ; 1AD8D:  45 00
+b06_ad8f:   .db $47                     ; 1AD8F:  47
+b06_ad90:   lsr a                       ; 1AD90:  4a
+b06_ad91:   brk                         ; 1AD91:  00
+b06_ad92:   jmp $504d                   ; 1AD92:  4c 4d 50
+b06_ad95:   eor ($00),y                 ; 1AD95:  51 00
+b06_ad97:   brk                         ; 1AD97:  00
+b06_ad98:   eor $56,x                   ; 1AD98:  55 56
+b06_ad9a:   eor $5d5a,y                 ; 1AD9A:  59 5a 5d
+b06_ad9d:   lsr $0060,x                 ; 1AD9D:  5e 60 00
+b06_ada0:   brk                         ; 1ADA0:  00
+b06_ada1:   brk                         ; 1ADA1:  00
+b06_ada2:   brk                         ; 1ADA2:  00
+b06_ada3:   brk                         ; 1ADA3:  00
+b06_ada4:   brk                         ; 1ADA4:  00
+b06_ada5:   brk                         ; 1ADA5:  00
+b06_ada6:   brk                         ; 1ADA6:  00
+b06_ada7:   brk                         ; 1ADA7:  00
+b06_ada8:   brk                         ; 1ADA8:  00
+b06_ada9:   brk                         ; 1ADA9:  00
+b06_adaa:   .db $42                     ; 1ADAA:  42
+b06_adab:   .db $43                     ; 1ADAB:  43
+b06_adac:   brk                         ; 1ADAC:  00
+b06_adad:   lsr $48                     ; 1ADAD:  46 48
+b06_adaf:   eor #$4b                    ; 1ADAF:  49 4b
+b06_adb1:   brk                         ; 1ADB1:  00
+b06_adb2:   lsr $524f                   ; 1ADB2:  4e 4f 52
+b06_adb5:   .db $53                     ; 1ADB5:  53
+b06_adb6:   .db $54                     ; 1ADB6:  54
+b06_adb7:   brk                         ; 1ADB7:  00
+b06_adb8:   .db $57                     ; 1ADB8:  57
+b06_adb9:   cli                         ; 1ADB9:  58
+b06_adba:   .db $5b                     ; 1ADBA:  5b
+b06_adbb:   .db $5c                     ; 1ADBB:  5c
+b06_adbc:   brk                         ; 1ADBC:  00
+b06_adbd:   .db $5f                     ; 1ADBD:  5f
+b06_adbe:   adc ($00,x)                 ; 1ADBE:  61 00
+b06_adc0:   brk                         ; 1ADC0:  00
+b06_adc1:   brk                         ; 1ADC1:  00
+b06_adc2:   brk                         ; 1ADC2:  00
+b06_adc3:   brk                         ; 1ADC3:  00
+b06_adc4:   brk                         ; 1ADC4:  00
+b06_adc5:   brk                         ; 1ADC5:  00
+b06_adc6:   brk                         ; 1ADC6:  00
+b06_adc7:   brk                         ; 1ADC7:  00
+b06_adc8:   brk                         ; 1ADC8:  00
+b06_adc9:   brk                         ; 1ADC9:  00
+b06_adca:   .db $62                     ; 1ADCA:  62
+b06_adcb:   .db $63                     ; 1ADCB:  63
+b06_adcc:   brk                         ; 1ADCC:  00
+b06_adcd:   ror $68                     ; 1ADCD:  66 68
+b06_adcf:   adc #$6c                    ; 1ADCF:  69 6c
+b06_add1:   brk                         ; 1ADD1:  00
+b06_add2:   ror $726f                   ; 1ADD2:  6e 6f 72
+b06_add5:   .db $73                     ; 1ADD5:  73
+b06_add6:   .db $74                     ; 1ADD6:  74
+b06_add7:   adc $76,x                   ; 1ADD7:  75 76
+b06_add9:   .db $77                     ; 1ADD9:  77
+b06_adda:   brk                         ; 1ADDA:  00
+b06_addb:   .db $7a                     ; 1ADDB:  7a
+b06_addc:   brk                         ; 1ADDC:  00
+b06_addd:   adc $007f,x                 ; 1ADDD:  7d 7f 00
+b06_ade0:   brk                         ; 1ADE0:  00
+b06_ade1:   brk                         ; 1ADE1:  00
+b06_ade2:   brk                         ; 1ADE2:  00
+b06_ade3:   brk                         ; 1ADE3:  00
+b06_ade4:   brk                         ; 1ADE4:  00
+b06_ade5:   brk                         ; 1ADE5:  00
+b06_ade6:   brk                         ; 1ADE6:  00
+b06_ade7:   brk                         ; 1ADE7:  00
+b06_ade8:   brk                         ; 1ADE8:  00
+b06_ade9:   brk                         ; 1ADE9:  00
+b06_adea:   .db $64                     ; 1ADEA:  64
+b06_adeb:   adc $00                     ; 1ADEB:  65 00
+b06_aded:   .db $67                     ; 1ADED:  67
+b06_adee:   ror a                       ; 1ADEE:  6a
+b06_adef:   .db $6b                     ; 1ADEF:  6b
+b06_adf0:   adc $7000                   ; 1ADF0:  6d 00 70
+b06_adf3:   adc ($00),y                 ; 1ADF3:  71 00
+b06_adf5:   brk                         ; 1ADF5:  00
+b06_adf6:   brk                         ; 1ADF6:  00
+b06_adf7:   brk                         ; 1ADF7:  00
+b06_adf8:   sei                         ; 1ADF8:  78
+b06_adf9:   adc $7c7b,y                 ; 1ADF9:  79 7b 7c
+b06_adfc:   ror $8000,x                 ; 1ADFC:  7e 00 80
+b06_adff:   brk                         ; 1ADFF:  00
+b06_ae00:   brk                         ; 1AE00:  00
+b06_ae01:   brk                         ; 1AE01:  00
+b06_ae02:   brk                         ; 1AE02:  00
+b06_ae03:   brk                         ; 1AE03:  00
+b06_ae04:   brk                         ; 1AE04:  00
+b06_ae05:   brk                         ; 1AE05:  00
+b06_ae06:   brk                         ; 1AE06:  00
+b06_ae07:   brk                         ; 1AE07:  00
+b06_ae08:   brk                         ; 1AE08:  00
+b06_ae09:   brk                         ; 1AE09:  00
+b06_ae0a:   sta ($82,x)                 ; 1AE0A:  81 82
+b06_ae0c:   sta $86                     ; 1AE0C:  85 86
+b06_ae0e:   .db $89                     ; 1AE0E:  89
+b06_ae0f:   txa                         ; 1AE0F:  8a
+b06_ae10:   sta $918e                   ; 1AE10:  8d 8e 91
+b06_ae13:   .db $92                     ; 1AE13:  92
+b06_ae14:   brk                         ; 1AE14:  00
+b06_ae15:   sta $97,x                   ; 1AE15:  95 97
+b06_ae17:   brk                         ; 1AE17:  00
+b06_ae18:   sta $9c9a,y                 ; 1AE18:  99 9a 9c
+b06_ae1b:   sta $9f00,x                 ; 1AE1B:  9d 00 9f
+b06_ae1e:   lda ($00,x)                 ; 1AE1E:  a1 00
+b06_ae20:   brk                         ; 1AE20:  00
+b06_ae21:   brk                         ; 1AE21:  00
+b06_ae22:   brk                         ; 1AE22:  00
+b06_ae23:   brk                         ; 1AE23:  00
+b06_ae24:   brk                         ; 1AE24:  00
+b06_ae25:   brk                         ; 1AE25:  00
+b06_ae26:   brk                         ; 1AE26:  00
+b06_ae27:   brk                         ; 1AE27:  00
+b06_ae28:   brk                         ; 1AE28:  00
+b06_ae29:   brk                         ; 1AE29:  00
+b06_ae2a:   .db $83                     ; 1AE2A:  83
+b06_ae2b:   sty $87                     ; 1AE2B:  84 87
+b06_ae2d:   dey                         ; 1AE2D:  88
+b06_ae2e:   .db $8b                     ; 1AE2E:  8b
+b06_ae2f:   sty $908f                   ; 1AE2F:  8c 8f 90
+b06_ae32:   .db $93                     ; 1AE32:  93
+b06_ae33:   sty $00,x                   ; 1AE33:  94 00
+b06_ae35:   stx $98,y                   ; 1AE35:  96 98
+b06_ae37:   brk                         ; 1AE37:  00
+b06_ae38:   clc                         ; 1AE38:  18
+b06_ae39:   .db $9b                     ; 1AE39:  9b
+b06_ae3a:   brk                         ; 1AE3A:  00
+b06_ae3b:   .db $9e                     ; 1AE3B:  9e
+b06_ae3c:   brk                         ; 1AE3C:  00
+b06_ae3d:   ldy #$a2                    ; 1AE3D:  a0 a2
+b06_ae3f:   brk                         ; 1AE3F:  00
+b06_ae40:   brk                         ; 1AE40:  00
+b06_ae41:   brk                         ; 1AE41:  00
+b06_ae42:   brk                         ; 1AE42:  00
+b06_ae43:   brk                         ; 1AE43:  00
+b06_ae44:   brk                         ; 1AE44:  00
+b06_ae45:   brk                         ; 1AE45:  00
+b06_ae46:   brk                         ; 1AE46:  00
+b06_ae47:   brk                         ; 1AE47:  00
+b06_ae48:   brk                         ; 1AE48:  00
+b06_ae49:   brk                         ; 1AE49:  00
+b06_ae4a:   .db $a3                     ; 1AE4A:  a3
+b06_ae4b:   ldy $00                     ; 1AE4B:  a4 00
+b06_ae4d:   .db $a7                     ; 1AE4D:  a7
+b06_ae4e:   lda #$aa                    ; 1AE4E:  a9 aa
+b06_ae50:   lda $b0ae                   ; 1AE50:  ad ae b0
+b06_ae53:   lda ($00),y                 ; 1AE53:  b1 00
+b06_ae55:   brk                         ; 1AE55:  00
+b06_ae56:   brk                         ; 1AE56:  00
+b06_ae57:   brk                         ; 1AE57:  00
+b06_ae58:   ldy $b5,x                   ; 1AE58:  b4 b5
+b06_ae5a:   brk                         ; 1AE5A:  00
+b06_ae5b:   clv                         ; 1AE5B:  b8
+b06_ae5c:   brk                         ; 1AE5C:  00
+b06_ae5d:   lda $00ba,y                 ; 1AE5D:  b9 ba 00
+b06_ae60:   brk                         ; 1AE60:  00
+b06_ae61:   brk                         ; 1AE61:  00
+b06_ae62:   brk                         ; 1AE62:  00
+b06_ae63:   brk                         ; 1AE63:  00
+b06_ae64:   brk                         ; 1AE64:  00
+b06_ae65:   brk                         ; 1AE65:  00
+b06_ae66:   brk                         ; 1AE66:  00
+b06_ae67:   brk                         ; 1AE67:  00
+b06_ae68:   brk                         ; 1AE68:  00
+b06_ae69:   brk                         ; 1AE69:  00
+b06_ae6a:   lda $a6                     ; 1AE6A:  a5 a6
+b06_ae6c:   brk                         ; 1AE6C:  00
+b06_ae6d:   tay                         ; 1AE6D:  a8
+b06_ae6e:   .db $ab                     ; 1AE6E:  ab
+b06_ae6f:   ldy $00af                   ; 1AE6F:  ac af 00
+b06_ae72:   .db $b2                     ; 1AE72:  b2
+b06_ae73:   .db $b3                     ; 1AE73:  b3
+b06_ae74:   brk                         ; 1AE74:  00
+b06_ae75:   brk                         ; 1AE75:  00
+b06_ae76:   brk                         ; 1AE76:  00
+b06_ae77:   brk                         ; 1AE77:  00
+b06_ae78:   ldx $b7,y                   ; 1AE78:  b6 b7
+b06_ae7a:   brk                         ; 1AE7A:  00
+b06_ae7b:   brk                         ; 1AE7B:  00
+b06_ae7c:   brk                         ; 1AE7C:  00
+b06_ae7d:   brk                         ; 1AE7D:  00
+b06_ae7e:   bcc $ae80                   ; 1AE7E:  90 00
+b06_ae80:   brk                         ; 1AE80:  00
+b06_ae81:   brk                         ; 1AE81:  00
+b06_ae82:   brk                         ; 1AE82:  00
+b06_ae83:   brk                         ; 1AE83:  00
+b06_ae84:   brk                         ; 1AE84:  00
+b06_ae85:   brk                         ; 1AE85:  00
+b06_ae86:   brk                         ; 1AE86:  00
+b06_ae87:   brk                         ; 1AE87:  00
+b06_ae88:   brk                         ; 1AE88:  00
+b06_ae89:   brk                         ; 1AE89:  00
+b06_ae8a:   .db $bb                     ; 1AE8A:  bb
+b06_ae8b:   ldy $bebd,x                 ; 1AE8B:  bc bd be
+b06_ae8e:   .db $bf                     ; 1AE8E:  bf
+b06_ae8f:   cpy #$c1                    ; 1AE8F:  c0 c1
+b06_ae91:   brk                         ; 1AE91:  00
+b06_ae92:   .db $c3                     ; 1AE92:  c3
+b06_ae93:   cpy $00                     ; 1AE93:  c4 00
+b06_ae95:   brk                         ; 1AE95:  00
+b06_ae96:   brk                         ; 1AE96:  00
+b06_ae97:   brk                         ; 1AE97:  00
+b06_ae98:   brk                         ; 1AE98:  00
+b06_ae99:   brk                         ; 1AE99:  00
+b06_ae9a:   brk                         ; 1AE9A:  00
+b06_ae9b:   brk                         ; 1AE9B:  00
+b06_ae9c:   brk                         ; 1AE9C:  00
+b06_ae9d:   brk                         ; 1AE9D:  00
+b06_ae9e:   brk                         ; 1AE9E:  00
+b06_ae9f:   brk                         ; 1AE9F:  00
+b06_aea0:   brk                         ; 1AEA0:  00
+b06_aea1:   brk                         ; 1AEA1:  00
+b06_aea2:   brk                         ; 1AEA2:  00
+b06_aea3:   brk                         ; 1AEA3:  00
+b06_aea4:   brk                         ; 1AEA4:  00
+b06_aea5:   brk                         ; 1AEA5:  00
+b06_aea6:   brk                         ; 1AEA6:  00
+b06_aea7:   brk                         ; 1AEA7:  00
+b06_aea8:   brk                         ; 1AEA8:  00
+b06_aea9:   brk                         ; 1AEA9:  00
+b06_aeaa:   brk                         ; 1AEAA:  00
+b06_aeab:   brk                         ; 1AEAB:  00
+b06_aeac:   brk                         ; 1AEAC:  00
+b06_aead:   brk                         ; 1AEAD:  00
+b06_aeae:   brk                         ; 1AEAE:  00
+b06_aeaf:   brk                         ; 1AEAF:  00
+b06_aeb0:   .db $c2                     ; 1AEB0:  c2
+b06_aeb1:   brk                         ; 1AEB1:  00
+b06_aeb2:   brk                         ; 1AEB2:  00
+b06_aeb3:   brk                         ; 1AEB3:  00
+b06_aeb4:   brk                         ; 1AEB4:  00
+b06_aeb5:   brk                         ; 1AEB5:  00
+b06_aeb6:   brk                         ; 1AEB6:  00
+b06_aeb7:   brk                         ; 1AEB7:  00
+b06_aeb8:   brk                         ; 1AEB8:  00
+b06_aeb9:   brk                         ; 1AEB9:  00
+b06_aeba:   brk                         ; 1AEBA:  00
+b06_aebb:   cmp $c6                     ; 1AEBB:  c5 c6
+b06_aebd:   brk                         ; 1AEBD:  00
+b06_aebe:   brk                         ; 1AEBE:  00
+b06_aebf:   brk                         ; 1AEBF:  00
+b06_aec0:   brk                         ; 1AEC0:  00
+b06_aec1:   brk                         ; 1AEC1:  00
+b06_aec2:   brk                         ; 1AEC2:  00
+b06_aec3:   brk                         ; 1AEC3:  00
+b06_aec4:   brk                         ; 1AEC4:  00
+b06_aec5:   brk                         ; 1AEC5:  00
+b06_aec6:   brk                         ; 1AEC6:  00
+b06_aec7:   .db $c7                     ; 1AEC7:  c7
+b06_aec8:   cmp #$00                    ; 1AEC8:  c9 00
+b06_aeca:   brk                         ; 1AECA:  00
+b06_aecb:   brk                         ; 1AECB:  00
+b06_aecc:   brk                         ; 1AECC:  00
+b06_aecd:   brk                         ; 1AECD:  00
+b06_aece:   brk                         ; 1AECE:  00
+b06_aecf:   brk                         ; 1AECF:  00
+b06_aed0:   brk                         ; 1AED0:  00
+b06_aed1:   brk                         ; 1AED1:  00
+b06_aed2:   brk                         ; 1AED2:  00
+b06_aed3:   brk                         ; 1AED3:  00
+b06_aed4:   brk                         ; 1AED4:  00
+b06_aed5:   brk                         ; 1AED5:  00
+b06_aed6:   cpy $d0cd                   ; 1AED6:  cc cd d0
+b06_aed9:   cmp ($d4),y                 ; 1AED9:  d1 d4
+b06_aedb:   cmp $d8,x                   ; 1AEDB:  d5 d8
+b06_aedd:   cmp $0000,y                 ; 1AEDD:  d9 00 00
+b06_aee0:   brk                         ; 1AEE0:  00
+b06_aee1:   brk                         ; 1AEE1:  00
+b06_aee2:   brk                         ; 1AEE2:  00
+b06_aee3:   brk                         ; 1AEE3:  00
+b06_aee4:   brk                         ; 1AEE4:  00
+b06_aee5:   brk                         ; 1AEE5:  00
+b06_aee6:   brk                         ; 1AEE6:  00
+b06_aee7:   iny                         ; 1AEE7:  c8
+b06_aee8:   dex                         ; 1AEE8:  ca
+b06_aee9:   brk                         ; 1AEE9:  00
+b06_aeea:   brk                         ; 1AEEA:  00
+b06_aeeb:   brk                         ; 1AEEB:  00
+b06_aeec:   brk                         ; 1AEEC:  00
+b06_aeed:   brk                         ; 1AEED:  00
+b06_aeee:   brk                         ; 1AEEE:  00
+b06_aeef:   brk                         ; 1AEEF:  00
+b06_aef0:   brk                         ; 1AEF0:  00
+b06_aef1:   brk                         ; 1AEF1:  00
+b06_aef2:   brk                         ; 1AEF2:  00
+b06_aef3:   brk                         ; 1AEF3:  00
+b06_aef4:   brk                         ; 1AEF4:  00
+b06_aef5:   .db $cb                     ; 1AEF5:  cb
+b06_aef6:   dec $d2cf                   ; 1AEF6:  ce cf d2
+b06_aef9:   .db $d3                     ; 1AEF9:  d3
+b06_aefa:   dec $d7,x                   ; 1AEFA:  d6 d7
+b06_aefc:   .db $da                     ; 1AEFC:  da
+b06_aefd:   .db $db                     ; 1AEFD:  db
+b06_aefe:   .db $dc                     ; 1AEFE:  dc
+b06_aeff:   brk                         ; 1AEFF:  00
+b06_af00:   brk                         ; 1AF00:  00
+b06_af01:   brk                         ; 1AF01:  00
+b06_af02:   brk                         ; 1AF02:  00
+b06_af03:   brk                         ; 1AF03:  00
+b06_af04:   brk                         ; 1AF04:  00
+b06_af05:   brk                         ; 1AF05:  00
+b06_af06:   brk                         ; 1AF06:  00
+b06_af07:   brk                         ; 1AF07:  00
+b06_af08:   brk                         ; 1AF08:  00
+b06_af09:   brk                         ; 1AF09:  00
+b06_af0a:   brk                         ; 1AF0A:  00
+b06_af0b:   brk                         ; 1AF0B:  00
+b06_af0c:   brk                         ; 1AF0C:  00
+b06_af0d:   brk                         ; 1AF0D:  00
+b06_af0e:   brk                         ; 1AF0E:  00
+b06_af0f:   brk                         ; 1AF0F:  00
+b06_af10:   brk                         ; 1AF10:  00
+b06_af11:   brk                         ; 1AF11:  00
+b06_af12:   brk                         ; 1AF12:  00
+b06_af13:   brk                         ; 1AF13:  00
+b06_af14:   brk                         ; 1AF14:  00
+b06_af15:   cmp $e0df,x                 ; 1AF15:  dd df e0
+b06_af18:   .db $e3                     ; 1AF18:  e3
+b06_af19:   cpx $e7                     ; 1AF19:  e4 e7
+b06_af1b:   inx                         ; 1AF1B:  e8
+b06_af1c:   .db $eb                     ; 1AF1C:  eb
+b06_af1d:   cpx $f0ef                   ; 1AF1D:  ec ef f0
+b06_af20:   brk                         ; 1AF20:  00
+b06_af21:   brk                         ; 1AF21:  00
+b06_af22:   brk                         ; 1AF22:  00
+b06_af23:   brk                         ; 1AF23:  00
+b06_af24:   brk                         ; 1AF24:  00
+b06_af25:   brk                         ; 1AF25:  00
+b06_af26:   brk                         ; 1AF26:  00
+b06_af27:   brk                         ; 1AF27:  00
+b06_af28:   brk                         ; 1AF28:  00
+b06_af29:   brk                         ; 1AF29:  00
+b06_af2a:   brk                         ; 1AF2A:  00
+b06_af2b:   brk                         ; 1AF2B:  00
+b06_af2c:   brk                         ; 1AF2C:  00
+b06_af2d:   brk                         ; 1AF2D:  00
+b06_af2e:   brk                         ; 1AF2E:  00
+b06_af2f:   brk                         ; 1AF2F:  00
+b06_af30:   brk                         ; 1AF30:  00
+b06_af31:   brk                         ; 1AF31:  00
+b06_af32:   brk                         ; 1AF32:  00
+b06_af33:   brk                         ; 1AF33:  00
+b06_af34:   brk                         ; 1AF34:  00
+b06_af35:   dec $e2e1,x                 ; 1AF35:  de e1 e2
+b06_af38:   sbc $e6                     ; 1AF38:  e5 e6
+b06_af3a:   sbc #$ea                    ; 1AF3A:  e9 ea
+b06_af3c:   sbc $f1ee                   ; 1AF3C:  ed ee f1
+b06_af3f:   brk                         ; 1AF3F:  00
+b06_af40:   brk                         ; 1AF40:  00
+b06_af41:   brk                         ; 1AF41:  00
+b06_af42:   brk                         ; 1AF42:  00
+b06_af43:   brk                         ; 1AF43:  00
+b06_af44:   brk                         ; 1AF44:  00
+b06_af45:   brk                         ; 1AF45:  00
+b06_af46:   brk                         ; 1AF46:  00
+b06_af47:   brk                         ; 1AF47:  00
+b06_af48:   brk                         ; 1AF48:  00
+b06_af49:   brk                         ; 1AF49:  00
+b06_af4a:   brk                         ; 1AF4A:  00
+b06_af4b:   brk                         ; 1AF4B:  00
+b06_af4c:   brk                         ; 1AF4C:  00
+b06_af4d:   brk                         ; 1AF4D:  00
+b06_af4e:   brk                         ; 1AF4E:  00
+b06_af4f:   brk                         ; 1AF4F:  00
+b06_af50:   brk                         ; 1AF50:  00
+b06_af51:   brk                         ; 1AF51:  00
+b06_af52:   brk                         ; 1AF52:  00
+b06_af53:   brk                         ; 1AF53:  00
+b06_af54:   brk                         ; 1AF54:  00
+b06_af55:   brk                         ; 1AF55:  00
+b06_af56:   brk                         ; 1AF56:  00
+b06_af57:   .db $f2                     ; 1AF57:  f2
+b06_af58:   .db $f3                     ; 1AF58:  f3
+b06_af59:   .db $f4                     ; 1AF59:  f4
+b06_af5a:   sbc $f6,x                   ; 1AF5A:  f5 f6
+b06_af5c:   .db $f7                     ; 1AF5C:  f7
+b06_af5d:   brk                         ; 1AF5D:  00
+b06_af5e:   brk                         ; 1AF5E:  00
+b06_af5f:   brk                         ; 1AF5F:  00
+b06_af60:   brk                         ; 1AF60:  00
+b06_af61:   brk                         ; 1AF61:  00
+b06_af62:   brk                         ; 1AF62:  00
+b06_af63:   brk                         ; 1AF63:  00
+b06_af64:   brk                         ; 1AF64:  00
+b06_af65:   brk                         ; 1AF65:  00
+b06_af66:   brk                         ; 1AF66:  00
+b06_af67:   brk                         ; 1AF67:  00
+b06_af68:   brk                         ; 1AF68:  00
+b06_af69:   brk                         ; 1AF69:  00
+b06_af6a:   brk                         ; 1AF6A:  00
+b06_af6b:   brk                         ; 1AF6B:  00
+b06_af6c:   brk                         ; 1AF6C:  00
+b06_af6d:   brk                         ; 1AF6D:  00
+b06_af6e:   brk                         ; 1AF6E:  00
+b06_af6f:   brk                         ; 1AF6F:  00
+b06_af70:   brk                         ; 1AF70:  00
+b06_af71:   brk                         ; 1AF71:  00
+b06_af72:   brk                         ; 1AF72:  00
+b06_af73:   brk                         ; 1AF73:  00
+b06_af74:   brk                         ; 1AF74:  00
+b06_af75:   brk                         ; 1AF75:  00
+b06_af76:   brk                         ; 1AF76:  00
+b06_af77:   brk                         ; 1AF77:  00
+b06_af78:   ora ($03,x)                 ; 1AF78:  01 03
+b06_af7a:   .db $1f                     ; 1AF7A:  1f
+b06_af7b:   .db $03                     ; 1AF7B:  03
+b06_af7c:   brk                         ; 1AF7C:  00
+b06_af7d:   brk                         ; 1AF7D:  00
+b06_af7e:   brk                         ; 1AF7E:  00
+b06_af7f:   brk                         ; 1AF7F:  00
+b06_af80:   ora ($03,x)                 ; 1AF80:  01 03
+b06_af82:   .db $1f                     ; 1AF82:  1f
+b06_af83:   .db $03                     ; 1AF83:  03
+b06_af84:   brk                         ; 1AF84:  00
+b06_af85:   brk                         ; 1AF85:  00
+b06_af86:   brk                         ; 1AF86:  00
+b06_af87:   .db $0c                     ; 1AF87:  0c
+b06_af88:   inc $fcff,x                 ; 1AF88:  fe ff fc
+b06_af8b:   cpy #$00                    ; 1AF8B:  c0 00
+b06_af8d:   brk                         ; 1AF8D:  00
+b06_af8e:   brk                         ; 1AF8E:  00
+b06_af8f:   .db $0c                     ; 1AF8F:  0c
+b06_af90:   inc $fcff,x                 ; 1AF90:  fe ff fc
+b06_af93:   cpy #$00                    ; 1AF93:  c0 00
+b06_af95:   .db $03                     ; 1AF95:  03
+b06_af96:   ora ($01,x)                 ; 1AF96:  01 01
+b06_af98:   ora ($e1,x)                 ; 1AF98:  01 e1
+b06_af9a:   adc ($39),y                 ; 1AF9A:  71 39
+b06_af9c:   brk                         ; 1AF9C:  00
+b06_af9d:   .db $03                     ; 1AF9D:  03
+b06_af9e:   ora ($01,x)                 ; 1AF9E:  01 01
+b06_afa0:   ora ($e1,x)                 ; 1AFA0:  01 e1
+b06_afa2:   adc ($39),y                 ; 1AFA2:  71 39
+b06_afa4:   brk                         ; 1AFA4:  00
+b06_afa5:   brk                         ; 1AFA5:  00
+b06_afa6:   .db $80                     ; 1AFA6:  80
+b06_afa7:   cpy #$c0                    ; 1AFA7:  c0 c0
+b06_afa9:   cpy #$fc                    ; 1AFA9:  c0 fc
+b06_afab:   .db $fc                     ; 1AFAB:  fc
+b06_afac:   brk                         ; 1AFAC:  00
+b06_afad:   brk                         ; 1AFAD:  00
+b06_afae:   .db $80                     ; 1AFAE:  80
+b06_afaf:   cpy #$c0                    ; 1AFAF:  c0 c0
+b06_afb1:   cpy #$fc                    ; 1AFB1:  c0 fc
+b06_afb3:   .db $fc                     ; 1AFB3:  fc
+b06_afb4:   brk                         ; 1AFB4:  00
+b06_afb5:   brk                         ; 1AFB5:  00
+b06_afb6:   brk                         ; 1AFB6:  00
+b06_afb7:   jsr $f830                   ; 1AFB7:  20 30 f8
+b06_afba:   sei                         ; 1AFBA:  78
+b06_afbb:   sed                         ; 1AFBB:  f8
+b06_afbc:   brk                         ; 1AFBC:  00
+b06_afbd:   brk                         ; 1AFBD:  00
+b06_afbe:   brk                         ; 1AFBE:  00
+b06_afbf:   jsr $f830                   ; 1AFBF:  20 30 f8
+b06_afc2:   sei                         ; 1AFC2:  78
+b06_afc3:   sed                         ; 1AFC3:  f8
+b06_afc4:   brk                         ; 1AFC4:  00
+b06_afc5:   brk                         ; 1AFC5:  00
+b06_afc6:   brk                         ; 1AFC6:  00
+b06_afc7:   .db $0c                     ; 1AFC7:  0c
+b06_afc8:   asl $0f0f                   ; 1AFC8:  0e 0f 0f
+b06_afcb:   .db $1f                     ; 1AFCB:  1f
+b06_afcc:   brk                         ; 1AFCC:  00
+b06_afcd:   brk                         ; 1AFCD:  00
+b06_afce:   brk                         ; 1AFCE:  00
+b06_afcf:   .db $0c                     ; 1AFCF:  0c
+b06_afd0:   asl $0f0f                   ; 1AFD0:  0e 0f 0f
+b06_afd3:   .db $1f                     ; 1AFD3:  1f
+b06_afd4:   brk                         ; 1AFD4:  00
+b06_afd5:   brk                         ; 1AFD5:  00
+b06_afd6:   brk                         ; 1AFD6:  00
+b06_afd7:   brk                         ; 1AFD7:  00
+b06_afd8:   beq $afd2                   ; 1AFD8:  f0 f8
+b06_afda:   sed                         ; 1AFDA:  f8
+b06_afdb:   cpx #$00                    ; 1AFDB:  e0 00
+b06_afdd:   brk                         ; 1AFDD:  00
+b06_afde:   brk                         ; 1AFDE:  00
+b06_afdf:   brk                         ; 1AFDF:  00
+b06_afe0:   beq $afda                   ; 1AFE0:  f0 f8
+b06_afe2:   sed                         ; 1AFE2:  f8
+b06_afe3:   cpx #$00                    ; 1AFE3:  e0 00
+b06_afe5:   brk                         ; 1AFE5:  00
+b06_afe6:   brk                         ; 1AFE6:  00
+b06_afe7:   brk                         ; 1AFE7:  00
+b06_afe8:   .db $04                     ; 1AFE8:  04
+b06_afe9:   .db $04                     ; 1AFE9:  04
+b06_afea:   .db $04                     ; 1AFEA:  04
+b06_afeb:   asl $00                     ; 1AFEB:  06 00
+b06_afed:   brk                         ; 1AFED:  00
+b06_afee:   brk                         ; 1AFEE:  00
+b06_afef:   brk                         ; 1AFEF:  00
+b06_aff0:   .db $04                     ; 1AFF0:  04
+b06_aff1:   .db $04                     ; 1AFF1:  04
+b06_aff2:   .db $04                     ; 1AFF2:  04
+b06_aff3:   asl $00                     ; 1AFF3:  06 00
+b06_aff5:   brk                         ; 1AFF5:  00
+b06_aff6:   brk                         ; 1AFF6:  00
+b06_aff7:   brk                         ; 1AFF7:  00
+b06_aff8:   brk                         ; 1AFF8:  00
+b06_aff9:   .db $07                     ; 1AFF9:  07
+b06_affa:   .db $03                     ; 1AFFA:  03
+b06_affb:   brk                         ; 1AFFB:  00
+b06_affc:   brk                         ; 1AFFC:  00
+b06_affd:   brk                         ; 1AFFD:  00
+b06_affe:   brk                         ; 1AFFE:  00
+b06_afff:   brk                         ; 1AFFF:  00
+b06_b000:   brk                         ; 1B000:  00
+b06_b001:   .db $07                     ; 1B001:  07
+b06_b002:   .db $03                     ; 1B002:  03
+b06_b003:   brk                         ; 1B003:  00
+b06_b004:   .db $c3                     ; 1B004:  c3
+b06_b005:   .db $c7                     ; 1B005:  c7
+b06_b006:   .db $6f                     ; 1B006:  6f
+b06_b007:   .db $33                     ; 1B007:  33
+b06_b008:   .db $07                     ; 1B008:  07
+b06_b009:   .db $cf                     ; 1B009:  cf
+b06_b00a:   sbc #$2f                    ; 1B00A:  e9 2f
+b06_b00c:   .db $c3                     ; 1B00C:  c3
+b06_b00d:   .db $c7                     ; 1B00D:  c7
+b06_b00e:   .db $6f                     ; 1B00E:  6f
+b06_b00f:   .db $33                     ; 1B00F:  33
+b06_b010:   .db $07                     ; 1B010:  07
+b06_b011:   .db $cf                     ; 1B011:  cf
+b06_b012:   sbc #$2f                    ; 1B012:  e9 2f
+b06_b014:   brk                         ; 1B014:  00
+b06_b015:   brk                         ; 1B015:  00
+b06_b016:   brk                         ; 1B016:  00
+b06_b017:   brk                         ; 1B017:  00
+b06_b018:   brk                         ; 1B018:  00
+b06_b019:   brk                         ; 1B019:  00
+b06_b01a:   jsr $003c                   ; 1B01A:  20 3c 00
+b06_b01d:   brk                         ; 1B01D:  00
+b06_b01e:   brk                         ; 1B01E:  00
+b06_b01f:   brk                         ; 1B01F:  00
+b06_b020:   brk                         ; 1B020:  00
+b06_b021:   brk                         ; 1B021:  00
+b06_b022:   jsr $1c3c                   ; 1B022:  20 3c 1c
+b06_b025:   tya                         ; 1B025:  98
+b06_b026:   jsr $0000                   ; 1B026:  20 00 00
+b06_b029:   brk                         ; 1B029:  00
+b06_b02a:   bmi $afdc                   ; 1B02A:  30 b0
+b06_b02c:   .db $1c                     ; 1B02C:  1c
+b06_b02d:   tya                         ; 1B02D:  98
+b06_b02e:   jsr $0000                   ; 1B02E:  20 00 00
+b06_b031:   brk                         ; 1B031:  00
+b06_b032:   bmi $afe4                   ; 1B032:  30 b0
+b06_b034:   ora ($03,x)                 ; 1B034:  01 03
+b06_b036:   .db $0f                     ; 1B036:  0f
+b06_b037:   .db $1c                     ; 1B037:  1c
+b06_b038:   and ($03,x)                 ; 1B038:  21 03
+b06_b03a:   .db $02                     ; 1B03A:  02
+b06_b03b:   .db $02                     ; 1B03B:  02
+b06_b03c:   ora ($03,x)                 ; 1B03C:  01 03
+b06_b03e:   .db $0f                     ; 1B03E:  0f
+b06_b03f:   .db $1c                     ; 1B03F:  1c
+b06_b040:   and ($03,x)                 ; 1B040:  21 03
+b06_b042:   .db $02                     ; 1B042:  02
+b06_b043:   .db $02                     ; 1B043:  02
+b06_b044:   brk                         ; 1B044:  00
+b06_b045:   brk                         ; 1B045:  00
+b06_b046:   brk                         ; 1B046:  00
+b06_b047:   brk                         ; 1B047:  00
+b06_b048:   brk                         ; 1B048:  00
+b06_b049:   cpy #$e0                    ; 1B049:  c0 e0
+b06_b04b:   .db $ef                     ; 1B04B:  ef
+b06_b04c:   brk                         ; 1B04C:  00
+b06_b04d:   brk                         ; 1B04D:  00
+b06_b04e:   brk                         ; 1B04E:  00
+b06_b04f:   brk                         ; 1B04F:  00
+b06_b050:   brk                         ; 1B050:  00
+b06_b051:   cpy #$e0                    ; 1B051:  c0 e0
+b06_b053:   .db $ef                     ; 1B053:  ef
+b06_b054:   .db $ff                     ; 1B054:  ff
+b06_b055:   beq $b057                   ; 1B055:  f0 00
+b06_b057:   .db $3c                     ; 1B057:  3c
+b06_b058:   beq $b00a                   ; 1B058:  f0 b0
+b06_b05a:   bmi $b054                   ; 1B05A:  30 f8
+b06_b05c:   .db $ff                     ; 1B05C:  ff
+b06_b05d:   beq $b05f                   ; 1B05D:  f0 00
+b06_b05f:   .db $3c                     ; 1B05F:  3c
+b06_b060:   beq $b012                   ; 1B060:  f0 b0
+b06_b062:   bmi $b05c                   ; 1B062:  30 f8
+b06_b064:   brk                         ; 1B064:  00
+b06_b065:   brk                         ; 1B065:  00
+b06_b066:   .db $02                     ; 1B066:  02
+b06_b067:   .db $03                     ; 1B067:  03
+b06_b068:   ora ($01,x)                 ; 1B068:  01 01
+b06_b06a:   .db $03                     ; 1B06A:  03
+b06_b06b:   .db $0c                     ; 1B06B:  0c
+b06_b06c:   brk                         ; 1B06C:  00
+b06_b06d:   brk                         ; 1B06D:  00
+b06_b06e:   .db $02                     ; 1B06E:  02
+b06_b06f:   .db $03                     ; 1B06F:  03
+b06_b070:   ora ($01,x)                 ; 1B070:  01 01
+b06_b072:   .db $03                     ; 1B072:  03
+b06_b073:   .db $0c                     ; 1B073:  0c
+b06_b074:   brk                         ; 1B074:  00
+b06_b075:   brk                         ; 1B075:  00
+b06_b076:   brk                         ; 1B076:  00
+b06_b077:   brk                         ; 1B077:  00
+b06_b078:   .db $80                     ; 1B078:  80
+b06_b079:   dex                         ; 1B079:  ca
+b06_b07a:   .db $82                     ; 1B07A:  82
+b06_b07b:   brk                         ; 1B07B:  00
+b06_b07c:   brk                         ; 1B07C:  00
+b06_b07d:   brk                         ; 1B07D:  00
+b06_b07e:   brk                         ; 1B07E:  00
+b06_b07f:   brk                         ; 1B07F:  00
+b06_b080:   .db $80                     ; 1B080:  80
+b06_b081:   dex                         ; 1B081:  ca
+b06_b082:   .db $82                     ; 1B082:  82
+b06_b083:   brk                         ; 1B083:  00
+b06_b084:   .db $1f                     ; 1B084:  1f
+b06_b085:   .db $3f                     ; 1B085:  3f
+b06_b086:   .db $ff                     ; 1B086:  ff
+b06_b087:   .db $ff                     ; 1B087:  ff
+b06_b088:   .db $5f                     ; 1B088:  5f
+b06_b089:   asl $fb1b,x                 ; 1B089:  1e 1b fb
+b06_b08c:   .db $1f                     ; 1B08C:  1f
+b06_b08d:   .db $3f                     ; 1B08D:  3f
+b06_b08e:   .db $ff                     ; 1B08E:  ff
+b06_b08f:   .db $ff                     ; 1B08F:  ff
+b06_b090:   .db $5f                     ; 1B090:  5f
+b06_b091:   asl $fb1b,x                 ; 1B091:  1e 1b fb
+b06_b094:   brk                         ; 1B094:  00
+b06_b095:   brk                         ; 1B095:  00
+b06_b096:   brk                         ; 1B096:  00
+b06_b097:   brk                         ; 1B097:  00
+b06_b098:   brk                         ; 1B098:  00
+b06_b099:   brk                         ; 1B099:  00
+b06_b09a:   ora ($03,x)                 ; 1B09A:  01 03
+b06_b09c:   brk                         ; 1B09C:  00
+b06_b09d:   brk                         ; 1B09D:  00
+b06_b09e:   brk                         ; 1B09E:  00
+b06_b09f:   brk                         ; 1B09F:  00
+b06_b0a0:   brk                         ; 1B0A0:  00
+b06_b0a1:   brk                         ; 1B0A1:  00
+b06_b0a2:   ora ($03,x)                 ; 1B0A2:  01 03
+b06_b0a4:   .db $cf                     ; 1B0A4:  cf
+b06_b0a5:   .db $ef                     ; 1B0A5:  ef
+b06_b0a6:   inc $4821,x                 ; 1B0A6:  fe 21 48
+b06_b0a9:   .db $f3                     ; 1B0A9:  f3
+b06_b0aa:   .db $83                     ; 1B0AA:  83
+b06_b0ab:   .db $07                     ; 1B0AB:  07
+b06_b0ac:   .db $cf                     ; 1B0AC:  cf
+b06_b0ad:   .db $ef                     ; 1B0AD:  ef
+b06_b0ae:   inc $4821,x                 ; 1B0AE:  fe 21 48
+b06_b0b1:   .db $f3                     ; 1B0B1:  f3
+b06_b0b2:   .db $83                     ; 1B0B2:  83
+b06_b0b3:   .db $07                     ; 1B0B3:  07
+b06_b0b4:   ldy #$80                    ; 1B0B4:  a0 80
+b06_b0b6:   brk                         ; 1B0B6:  00
+b06_b0b7:   brk                         ; 1B0B7:  00
+b06_b0b8:   beq $b12a                   ; 1B0B8:  f0 70
+b06_b0ba:   rts                         ; 1B0BA:  60
+b06_b0bb:   cpx #$a0                    ; 1B0BB:  e0 a0
+b06_b0bd:   .db $80                     ; 1B0BD:  80
+b06_b0be:   brk                         ; 1B0BE:  00
+b06_b0bf:   brk                         ; 1B0BF:  00
+b06_b0c0:   beq $b132                   ; 1B0C0:  f0 70
+b06_b0c2:   rts                         ; 1B0C2:  60
+b06_b0c3:   cpx #$c0                    ; 1B0C3:  e0 c0
+b06_b0c5:   .db $83                     ; 1B0C5:  83
+b06_b0c6:   .db $7f                     ; 1B0C6:  7f
+b06_b0c7:   .db $07                     ; 1B0C7:  07
+b06_b0c8:   asl $f83c                   ; 1B0C8:  0e 3c f8
+b06_b0cb:   ldy $83c0,x                 ; 1B0CB:  bc c0 83
+b06_b0ce:   .db $7f                     ; 1B0CE:  7f
+b06_b0cf:   .db $07                     ; 1B0CF:  07
+b06_b0d0:   asl $f83c                   ; 1B0D0:  0e 3c f8
+b06_b0d3:   ldy $0000,x                 ; 1B0D3:  bc 00 00
+b06_b0d6:   brk                         ; 1B0D6:  00
+b06_b0d7:   brk                         ; 1B0D7:  00
+b06_b0d8:   brk                         ; 1B0D8:  00
+b06_b0d9:   .db $03                     ; 1B0D9:  03
+b06_b0da:   .db $07                     ; 1B0DA:  07
+b06_b0db:   asl $0000                   ; 1B0DB:  0e 00 00
+b06_b0de:   brk                         ; 1B0DE:  00
+b06_b0df:   brk                         ; 1B0DF:  00
+b06_b0e0:   brk                         ; 1B0E0:  00
+b06_b0e1:   .db $03                     ; 1B0E1:  03
+b06_b0e2:   .db $07                     ; 1B0E2:  07
+b06_b0e3:   asl $0000                   ; 1B0E3:  0e 00 00
+b06_b0e6:   brk                         ; 1B0E6:  00
+b06_b0e7:   brk                         ; 1B0E7:  00
+b06_b0e8:   brk                         ; 1B0E8:  00
+b06_b0e9:   brk                         ; 1B0E9:  00
+b06_b0ea:   brk                         ; 1B0EA:  00
+b06_b0eb:   ora ($00,x)                 ; 1B0EB:  01 00
+b06_b0ed:   brk                         ; 1B0ED:  00
+b06_b0ee:   brk                         ; 1B0EE:  00
+b06_b0ef:   brk                         ; 1B0EF:  00
+b06_b0f0:   brk                         ; 1B0F0:  00
+b06_b0f1:   brk                         ; 1B0F1:  00
+b06_b0f2:   brk                         ; 1B0F2:  00
+b06_b0f3:   ora ($00,x)                 ; 1B0F3:  01 00
+b06_b0f5:   brk                         ; 1B0F5:  00
+b06_b0f6:   brk                         ; 1B0F6:  00
+b06_b0f7:   brk                         ; 1B0F7:  00
+b06_b0f8:   brk                         ; 1B0F8:  00
+b06_b0f9:   brk                         ; 1B0F9:  00
+b06_b0fa:   bvs $b0f4                   ; 1B0FA:  70 f8
+b06_b0fc:   brk                         ; 1B0FC:  00
+b06_b0fd:   brk                         ; 1B0FD:  00
+b06_b0fe:   brk                         ; 1B0FE:  00
+b06_b0ff:   brk                         ; 1B0FF:  00
+b06_b100:   brk                         ; 1B100:  00
+b06_b101:   brk                         ; 1B101:  00
+b06_b102:   bvs $b0fc                   ; 1B102:  70 f8
+b06_b104:   .db $07                     ; 1B104:  07
+b06_b105:   .db $4f                     ; 1B105:  4f
+b06_b106:   .db $3f                     ; 1B106:  3f
+b06_b107:   brk                         ; 1B107:  00
+b06_b108:   brk                         ; 1B108:  00
+b06_b109:   brk                         ; 1B109:  00
+b06_b10a:   brk                         ; 1B10A:  00
+b06_b10b:   brk                         ; 1B10B:  00
+b06_b10c:   .db $07                     ; 1B10C:  07
+b06_b10d:   .db $4f                     ; 1B10D:  4f
+b06_b10e:   .db $3f                     ; 1B10E:  3f
+b06_b10f:   brk                         ; 1B10F:  00
+b06_b110:   brk                         ; 1B110:  00
+b06_b111:   brk                         ; 1B111:  00
+b06_b112:   brk                         ; 1B112:  00
+b06_b113:   brk                         ; 1B113:  00
+b06_b114:   sed                         ; 1B114:  f8
+b06_b115:   beq $b107                   ; 1B115:  f0 f0
+b06_b117:   bvs $b190                   ; 1B117:  70 77
+b06_b119:   .db $73                     ; 1B119:  73
+b06_b11a:   bvs $b18c                   ; 1B11A:  70 70
+b06_b11c:   sed                         ; 1B11C:  f8
+b06_b11d:   beq $b10f                   ; 1B11D:  f0 f0
+b06_b11f:   bvs $b198                   ; 1B11F:  70 77
+b06_b121:   .db $73                     ; 1B121:  73
+b06_b122:   bvs $b194                   ; 1B122:  70 70
+b06_b124:   brk                         ; 1B124:  00
+b06_b125:   ora ($03,x)                 ; 1B125:  01 03
+b06_b127:   .db $07                     ; 1B127:  07
+b06_b128:   .db $07                     ; 1B128:  07
+b06_b129:   .db $0f                     ; 1B129:  0f
+b06_b12a:   ora $003c,x                 ; 1B12A:  1d 3c 00
+b06_b12d:   ora ($03,x)                 ; 1B12D:  01 03
+b06_b12f:   .db $07                     ; 1B12F:  07
+b06_b130:   .db $07                     ; 1B130:  07
+b06_b131:   .db $0f                     ; 1B131:  0f
+b06_b132:   ora $003c,x                 ; 1B132:  1d 3c 00
+b06_b135:   brk                         ; 1B135:  00
+b06_b136:   ora ($01,x)                 ; 1B136:  01 01
+b06_b138:   .db $07                     ; 1B138:  07
+b06_b139:   stx $00                     ; 1B139:  86 00
+b06_b13b:   brk                         ; 1B13B:  00
+b06_b13c:   brk                         ; 1B13C:  00
+b06_b13d:   brk                         ; 1B13D:  00
+b06_b13e:   ora ($01,x)                 ; 1B13E:  01 01
+b06_b140:   .db $07                     ; 1B140:  07
+b06_b141:   stx $00                     ; 1B141:  86 00
+b06_b143:   brk                         ; 1B143:  00
+b06_b144:   sei                         ; 1B144:  78
+b06_b145:   bvs $b127                   ; 1B145:  70 e0
+b06_b147:   cpy #$00                    ; 1B147:  c0 00
+b06_b149:   brk                         ; 1B149:  00
+b06_b14a:   .db $04                     ; 1B14A:  04
+b06_b14b:   asl $7078,x                 ; 1B14B:  1e 78 70
+b06_b14e:   cpx #$c0                    ; 1B14E:  e0 c0
+b06_b150:   brk                         ; 1B150:  00
+b06_b151:   brk                         ; 1B151:  00
+b06_b152:   .db $04                     ; 1B152:  04
+b06_b153:   asl $c0e0,x                 ; 1B153:  1e e0 c0
+b06_b156:   cpy #$80                    ; 1B156:  c0 80
+b06_b158:   .db $80                     ; 1B158:  80
+b06_b159:   cpy #$e0                    ; 1B159:  c0 e0
+b06_b15b:   beq $b13d                   ; 1B15B:  f0 e0
+b06_b15d:   cpy #$c0                    ; 1B15D:  c0 c0
+b06_b15f:   .db $80                     ; 1B15F:  80
+b06_b160:   .db $80                     ; 1B160:  80
+b06_b161:   cpy #$e0                    ; 1B161:  c0 e0
+b06_b163:   beq $b1e1                   ; 1B163:  f0 7c
+b06_b165:   asl $030f,x                 ; 1B165:  1e 0f 03
+b06_b168:   brk                         ; 1B168:  00
+b06_b169:   brk                         ; 1B169:  00
+b06_b16a:   asl $7c43,x                 ; 1B16A:  1e 43 7c
+b06_b16d:   asl $030f,x                 ; 1B16D:  1e 0f 03
+b06_b170:   brk                         ; 1B170:  00
+b06_b171:   brk                         ; 1B171:  00
+b06_b172:   asl $0043,x                 ; 1B172:  1e 43 00
+b06_b175:   brk                         ; 1B175:  00
+b06_b176:   brk                         ; 1B176:  00
+b06_b177:   cpy #$c0                    ; 1B177:  c0 c0
+b06_b179:   rts                         ; 1B179:  60
+b06_b17a:   bmi $b184                   ; 1B17A:  30 08
+b06_b17c:   brk                         ; 1B17C:  00
+b06_b17d:   brk                         ; 1B17D:  00
+b06_b17e:   brk                         ; 1B17E:  00
+b06_b17f:   cpy #$c0                    ; 1B17F:  c0 c0
+b06_b181:   rts                         ; 1B181:  60
+b06_b182:   bmi $b18c                   ; 1B182:  30 08
+b06_b184:   brk                         ; 1B184:  00
+b06_b185:   brk                         ; 1B185:  00
+b06_b186:   ora ($01,x)                 ; 1B186:  01 01
+b06_b188:   .db $03                     ; 1B188:  03
+b06_b189:   .db $03                     ; 1B189:  03
+b06_b18a:   asl $0c                     ; 1B18A:  06 0c
+b06_b18c:   brk                         ; 1B18C:  00
+b06_b18d:   brk                         ; 1B18D:  00
+b06_b18e:   ora ($01,x)                 ; 1B18E:  01 01
+b06_b190:   .db $03                     ; 1B190:  03
+b06_b191:   .db $03                     ; 1B191:  03
+b06_b192:   asl $0c                     ; 1B192:  06 0c
+b06_b194:   .db $ff                     ; 1B194:  ff
+b06_b195:   ror $1c1c,x                 ; 1B195:  7e 1c 1c
+b06_b198:   .db $3c                     ; 1B198:  3c
+b06_b199:   rol $6d3f,x                 ; 1B199:  3e 3f 6d
+b06_b19c:   .db $ff                     ; 1B19C:  ff
+b06_b19d:   ror $1c1c,x                 ; 1B19D:  7e 1c 1c
+b06_b1a0:   .db $3c                     ; 1B1A0:  3c
+b06_b1a1:   rol $6d3f,x                 ; 1B1A1:  3e 3f 6d
+b06_b1a4:   brk                         ; 1B1A4:  00
+b06_b1a5:   cpx #$60                    ; 1B1A5:  e0 60
+b06_b1a7:   rts                         ; 1B1A7:  60
+b06_b1a8:   rts                         ; 1B1A8:  60
+b06_b1a9:   rts                         ; 1B1A9:  60
+b06_b1aa:   rts                         ; 1B1AA:  60
+b06_b1ab:   rts                         ; 1B1AB:  60
+b06_b1ac:   brk                         ; 1B1AC:  00
+b06_b1ad:   cpx #$60                    ; 1B1AD:  e0 60
+b06_b1af:   rts                         ; 1B1AF:  60
+b06_b1b0:   rts                         ; 1B1B0:  60
+b06_b1b1:   rts                         ; 1B1B1:  60
+b06_b1b2:   rts                         ; 1B1B2:  60
+b06_b1b3:   rts                         ; 1B1B3:  60
+b06_b1b4:   .db $6b                     ; 1B1B4:  6b
+b06_b1b5:   .db $cb                     ; 1B1B5:  cb
+b06_b1b6:   .db $db                     ; 1B1B6:  db
+b06_b1b7:   sta $0199,y                 ; 1B1B7:  99 99 01
+b06_b1ba:   ora ($00,x)                 ; 1B1BA:  01 00
+b06_b1bc:   .db $6b                     ; 1B1BC:  6b
+b06_b1bd:   .db $cb                     ; 1B1BD:  cb
+b06_b1be:   .db $db                     ; 1B1BE:  db
+b06_b1bf:   sta $0199,y                 ; 1B1BF:  99 99 01
+b06_b1c2:   ora ($00,x)                 ; 1B1C2:  01 00
+b06_b1c4:   rts                         ; 1B1C4:  60
+b06_b1c5:   rts                         ; 1B1C5:  60
+b06_b1c6:   bvs $b238                   ; 1B1C6:  70 70
+b06_b1c8:   beq $b1aa                   ; 1B1C8:  f0 e0
+b06_b1ca:   cpx #$e0                    ; 1B1CA:  e0 e0
+b06_b1cc:   rts                         ; 1B1CC:  60
+b06_b1cd:   rts                         ; 1B1CD:  60
+b06_b1ce:   bvs $b240                   ; 1B1CE:  70 70
+b06_b1d0:   beq $b1b2                   ; 1B1D0:  f0 e0
+b06_b1d2:   cpx #$e0                    ; 1B1D2:  e0 e0
+b06_b1d4:   brk                         ; 1B1D4:  00
+b06_b1d5:   ora ($03,x)                 ; 1B1D5:  01 03
+b06_b1d7:   .db $07                     ; 1B1D7:  07
+b06_b1d8:   asl $03                     ; 1B1D8:  06 03
+b06_b1da:   .db $03                     ; 1B1DA:  03
+b06_b1db:   .db $07                     ; 1B1DB:  07
+b06_b1dc:   brk                         ; 1B1DC:  00
+b06_b1dd:   ora ($03,x)                 ; 1B1DD:  01 03
+b06_b1df:   .db $07                     ; 1B1DF:  07
+b06_b1e0:   asl $03                     ; 1B1E0:  06 03
+b06_b1e2:   .db $03                     ; 1B1E2:  03
+b06_b1e3:   .db $07                     ; 1B1E3:  07
+b06_b1e4:   .db $bf                     ; 1B1E4:  bf
+b06_b1e5:   ldx $696c,y                 ; 1B1E5:  be 6c 69
+b06_b1e8:   .db $dc                     ; 1B1E8:  dc
+b06_b1e9:   beq $b18b                   ; 1B1E9:  f0 a0
+b06_b1eb:   brk                         ; 1B1EB:  00
+b06_b1ec:   .db $bf                     ; 1B1EC:  bf
+b06_b1ed:   ldx $696c,y                 ; 1B1ED:  be 6c 69
+b06_b1f0:   .db $dc                     ; 1B1F0:  dc
+b06_b1f1:   beq $b193                   ; 1B1F1:  f0 a0
+b06_b1f3:   brk                         ; 1B1F3:  00
+b06_b1f4:   brk                         ; 1B1F4:  00
+b06_b1f5:   brk                         ; 1B1F5:  00
+b06_b1f6:   brk                         ; 1B1F6:  00
+b06_b1f7:   .db $04                     ; 1B1F7:  04
+b06_b1f8:   .db $04                     ; 1B1F8:  04
+b06_b1f9:   .db $04                     ; 1B1F9:  04
+b06_b1fa:   .db $07                     ; 1B1FA:  07
+b06_b1fb:   rol $0000                   ; 1B1FB:  2e 00 00
+b06_b1fe:   brk                         ; 1B1FE:  00
+b06_b1ff:   .db $04                     ; 1B1FF:  04
+b06_b200:   .db $04                     ; 1B200:  04
+b06_b201:   .db $04                     ; 1B201:  04
+b06_b202:   .db $07                     ; 1B202:  07
+b06_b203:   rol $e0f0                   ; 1B203:  2e f0 e0
+b06_b206:   cpx $e4                     ; 1B206:  e4 e4
+b06_b208:   rol $36                     ; 1B208:  26 36
+b06_b20a:   .db $1f                     ; 1B20A:  1f
+b06_b20b:   .db $0f                     ; 1B20B:  0f
+b06_b20c:   beq $b1ee                   ; 1B20C:  f0 e0
+b06_b20e:   cpx $e4                     ; 1B20E:  e4 e4
+b06_b210:   rol $36                     ; 1B210:  26 36
+b06_b212:   .db $1f                     ; 1B212:  1f
+b06_b213:   .db $0f                     ; 1B213:  0f
+b06_b214:   ora $0c                     ; 1B214:  05 0c
+b06_b216:   ora #$18                    ; 1B216:  09 18
+b06_b218:   clc                         ; 1B218:  18
+b06_b219:   bpl $b24b                   ; 1B219:  10 30
+b06_b21b:   .db $bb                     ; 1B21B:  bb
+b06_b21c:   ora $0c                     ; 1B21C:  05 0c
+b06_b21e:   ora #$18                    ; 1B21E:  09 18
+b06_b220:   clc                         ; 1B220:  18
+b06_b221:   bpl $b253                   ; 1B221:  10 30
+b06_b223:   .db $bb                     ; 1B223:  bb
+b06_b224:   .db $03                     ; 1B224:  03
+b06_b225:   brk                         ; 1B225:  00
+b06_b226:   brk                         ; 1B226:  00
+b06_b227:   brk                         ; 1B227:  00
+b06_b228:   bvs $b21a                   ; 1B228:  70 f0
+b06_b22a:   .db $80                     ; 1B22A:  80
+b06_b22b:   brk                         ; 1B22B:  00
+b06_b22c:   .db $03                     ; 1B22C:  03
+b06_b22d:   brk                         ; 1B22D:  00
+b06_b22e:   brk                         ; 1B22E:  00
+b06_b22f:   brk                         ; 1B22F:  00
+b06_b230:   bvs $b222                   ; 1B230:  70 f0
+b06_b232:   .db $80                     ; 1B232:  80
+b06_b233:   brk                         ; 1B233:  00
+b06_b234:   cpx #$c0                    ; 1B234:  e0 c0
+b06_b236:   cpy #$00                    ; 1B236:  c0 00
+b06_b238:   brk                         ; 1B238:  00
+b06_b239:   brk                         ; 1B239:  00
+b06_b23a:   brk                         ; 1B23A:  00
+b06_b23b:   brk                         ; 1B23B:  00
+b06_b23c:   cpx #$c0                    ; 1B23C:  e0 c0
+b06_b23e:   cpy #$00                    ; 1B23E:  c0 00
+b06_b240:   brk                         ; 1B240:  00
+b06_b241:   brk                         ; 1B241:  00
+b06_b242:   brk                         ; 1B242:  00
+b06_b243:   brk                         ; 1B243:  00
+b06_b244:   clc                         ; 1B244:  18
+b06_b245:   inx                         ; 1B245:  e8
+b06_b246:   dey                         ; 1B246:  88
+b06_b247:   cld                         ; 1B247:  d8
+b06_b248:   bvs $b2c2                   ; 1B248:  70 78
+b06_b24a:   .db $fc                     ; 1B24A:  fc
+b06_b24b:   dec $e818                   ; 1B24B:  ce 18 e8
+b06_b24e:   dey                         ; 1B24E:  88
+b06_b24f:   cld                         ; 1B24F:  d8
+b06_b250:   bvs $b2ca                   ; 1B250:  70 78
+b06_b252:   .db $fc                     ; 1B252:  fc
+b06_b253:   dec $0103                   ; 1B253:  ce 03 01
+b06_b256:   brk                         ; 1B256:  00
+b06_b257:   brk                         ; 1B257:  00
+b06_b258:   rts                         ; 1B258:  60
+b06_b259:   bvs $b2be                   ; 1B259:  70 63
+b06_b25b:   .db $67                     ; 1B25B:  67
+b06_b25c:   .db $03                     ; 1B25C:  03
+b06_b25d:   ora ($00,x)                 ; 1B25D:  01 00
+b06_b25f:   brk                         ; 1B25F:  00
+b06_b260:   rts                         ; 1B260:  60
+b06_b261:   bvs $b2c6                   ; 1B261:  70 63
+b06_b263:   .db $67                     ; 1B263:  67
+b06_b264:   brk                         ; 1B264:  00
+b06_b265:   cpx #$f8                    ; 1B265:  e0 f8
+b06_b267:   brk                         ; 1B267:  00
+b06_b268:   brk                         ; 1B268:  00
+b06_b269:   brk                         ; 1B269:  00
+b06_b26a:   cpy #$80                    ; 1B26A:  c0 80
+b06_b26c:   brk                         ; 1B26C:  00
+b06_b26d:   cpx #$f8                    ; 1B26D:  e0 f8
+b06_b26f:   brk                         ; 1B26F:  00
+b06_b270:   brk                         ; 1B270:  00
+b06_b271:   brk                         ; 1B271:  00
+b06_b272:   cpy #$80                    ; 1B272:  c0 80
+b06_b274:   bpl $b28e                   ; 1B274:  10 18
+b06_b276:   asl $030f                   ; 1B276:  0e 0f 03
+b06_b279:   brk                         ; 1B279:  00
+b06_b27a:   brk                         ; 1B27A:  00
+b06_b27b:   brk                         ; 1B27B:  00
+b06_b27c:   bpl $b296                   ; 1B27C:  10 18
+b06_b27e:   asl $030f                   ; 1B27E:  0e 0f 03
+b06_b281:   brk                         ; 1B281:  00
+b06_b282:   brk                         ; 1B282:  00
+b06_b283:   brk                         ; 1B283:  00
+b06_b284:   brk                         ; 1B284:  00
+b06_b285:   brk                         ; 1B285:  00
+b06_b286:   brk                         ; 1B286:  00
+b06_b287:   cpy #$e0                    ; 1B287:  c0 e0
+b06_b289:   rts                         ; 1B289:  60
+b06_b28a:   brk                         ; 1B28A:  00
+b06_b28b:   brk                         ; 1B28B:  00
+b06_b28c:   brk                         ; 1B28C:  00
+b06_b28d:   brk                         ; 1B28D:  00
+b06_b28e:   brk                         ; 1B28E:  00
+b06_b28f:   cpy #$e0                    ; 1B28F:  c0 e0
+b06_b291:   rts                         ; 1B291:  60
+b06_b292:   brk                         ; 1B292:  00
+b06_b293:   brk                         ; 1B293:  00
+b06_b294:   brk                         ; 1B294:  00
+b06_b295:   brk                         ; 1B295:  00
+b06_b296:   brk                         ; 1B296:  00
+b06_b297:   brk                         ; 1B297:  00
+b06_b298:   .db $04                     ; 1B298:  04
+b06_b299:   .db $04                     ; 1B299:  04
+b06_b29a:   .db $04                     ; 1B29A:  04
+b06_b29b:   .db $03                     ; 1B29B:  03
+b06_b29c:   brk                         ; 1B29C:  00
+b06_b29d:   brk                         ; 1B29D:  00
+b06_b29e:   brk                         ; 1B29E:  00
+b06_b29f:   brk                         ; 1B29F:  00
+b06_b2a0:   .db $04                     ; 1B2A0:  04
+b06_b2a1:   .db $04                     ; 1B2A1:  04
+b06_b2a2:   .db $04                     ; 1B2A2:  04
+b06_b2a3:   .db $03                     ; 1B2A3:  03
+b06_b2a4:   brk                         ; 1B2A4:  00
+b06_b2a5:   brk                         ; 1B2A5:  00
+b06_b2a6:   brk                         ; 1B2A6:  00
+b06_b2a7:   brk                         ; 1B2A7:  00
+b06_b2a8:   brk                         ; 1B2A8:  00
+b06_b2a9:   brk                         ; 1B2A9:  00
+b06_b2aa:   cpx #$c0                    ; 1B2AA:  e0 c0
+b06_b2ac:   brk                         ; 1B2AC:  00
+b06_b2ad:   brk                         ; 1B2AD:  00
+b06_b2ae:   brk                         ; 1B2AE:  00
+b06_b2af:   brk                         ; 1B2AF:  00
+b06_b2b0:   brk                         ; 1B2B0:  00
+b06_b2b1:   brk                         ; 1B2B1:  00
+b06_b2b2:   cpx #$c0                    ; 1B2B2:  e0 c0
+b06_b2b4:   asl $181c                   ; 1B2B4:  0e 1c 18
+b06_b2b7:   brk                         ; 1B2B7:  00
+b06_b2b8:   brk                         ; 1B2B8:  00
+b06_b2b9:   brk                         ; 1B2B9:  00
+b06_b2ba:   brk                         ; 1B2BA:  00
+b06_b2bb:   brk                         ; 1B2BB:  00
+b06_b2bc:   asl $181c                   ; 1B2BC:  0e 1c 18
+b06_b2bf:   brk                         ; 1B2BF:  00
+b06_b2c0:   brk                         ; 1B2C0:  00
+b06_b2c1:   brk                         ; 1B2C1:  00
+b06_b2c2:   brk                         ; 1B2C2:  00
+b06_b2c3:   brk                         ; 1B2C3:  00
+b06_b2c4:   asl $0104                   ; 1B2C4:  0e 04 01
+b06_b2c7:   .db $1b                     ; 1B2C7:  1b
+b06_b2c8:   .db $0b                     ; 1B2C8:  0b
+b06_b2c9:   asl $0e                     ; 1B2C9:  06 0e
+b06_b2cb:   .db $0c                     ; 1B2CB:  0c
+b06_b2cc:   asl $0104                   ; 1B2CC:  0e 04 01
+b06_b2cf:   .db $1b                     ; 1B2CF:  1b
+b06_b2d0:   .db $0b                     ; 1B2D0:  0b
+b06_b2d1:   asl $0e                     ; 1B2D1:  06 0e
+b06_b2d3:   .db $0c                     ; 1B2D3:  0c
+b06_b2d4:   clc                         ; 1B2D4:  18
+b06_b2d5:   clc                         ; 1B2D5:  18
+b06_b2d6:   bmi $b348                   ; 1B2D6:  30 70
+b06_b2d8:   cpx #$c0                    ; 1B2D8:  e0 c0
+b06_b2da:   cpy #$80                    ; 1B2DA:  c0 80
+b06_b2dc:   clc                         ; 1B2DC:  18
+b06_b2dd:   clc                         ; 1B2DD:  18
+b06_b2de:   bmi $b350                   ; 1B2DE:  30 70
+b06_b2e0:   cpx #$c0                    ; 1B2E0:  e0 c0
+b06_b2e2:   cpy #$80                    ; 1B2E2:  c0 80
+b06_b2e4:   bvs $b2c6                   ; 1B2E4:  70 e0
+b06_b2e6:   cpy #$80                    ; 1B2E6:  c0 80
+b06_b2e8:   brk                         ; 1B2E8:  00
+b06_b2e9:   brk                         ; 1B2E9:  00
+b06_b2ea:   brk                         ; 1B2EA:  00
+b06_b2eb:   brk                         ; 1B2EB:  00
+b06_b2ec:   bvs $b2ce                   ; 1B2EC:  70 e0
+b06_b2ee:   cpy #$80                    ; 1B2EE:  c0 80
+b06_b2f0:   brk                         ; 1B2F0:  00
+b06_b2f1:   brk                         ; 1B2F1:  00
+b06_b2f2:   brk                         ; 1B2F2:  00
+b06_b2f3:   brk                         ; 1B2F3:  00
+b06_b2f4:   .db $1c                     ; 1B2F4:  1c
+b06_b2f5:   clc                         ; 1B2F5:  18
+b06_b2f6:   clc                         ; 1B2F6:  18
+b06_b2f7:   .db $1c                     ; 1B2F7:  1c
+b06_b2f8:   asl $0306                   ; 1B2F8:  0e 06 03
+b06_b2fb:   .db $03                     ; 1B2FB:  03
+b06_b2fc:   .db $1c                     ; 1B2FC:  1c
+b06_b2fd:   clc                         ; 1B2FD:  18
+b06_b2fe:   clc                         ; 1B2FE:  18
+b06_b2ff:   .db $1c                     ; 1B2FF:  1c
+b06_b300:   asl $0306                   ; 1B300:  0e 06 03
+b06_b303:   .db $03                     ; 1B303:  03
+b06_b304:   .db $02                     ; 1B304:  02
+b06_b305:   jsr $1818                   ; 1B305:  20 18 18
+b06_b308:   clc                         ; 1B308:  18
+b06_b309:   bpl $b31b                   ; 1B309:  10 10
+b06_b30b:   .db $17                     ; 1B30B:  17
+b06_b30c:   .db $02                     ; 1B30C:  02
+b06_b30d:   jsr $1818                   ; 1B30D:  20 18 18
+b06_b310:   clc                         ; 1B310:  18
+b06_b311:   bpl $b323                   ; 1B311:  10 10
+b06_b313:   .db $17                     ; 1B313:  17
+b06_b314:   bvs $b386                   ; 1B314:  70 70
+b06_b316:   bvs $b388                   ; 1B316:  70 70
+b06_b318:   brk                         ; 1B318:  00
+b06_b319:   brk                         ; 1B319:  00
+b06_b31a:   brk                         ; 1B31A:  00
+b06_b31b:   brk                         ; 1B31B:  00
+b06_b31c:   bvs $b38e                   ; 1B31C:  70 70
+b06_b31e:   bvs $b390                   ; 1B31E:  70 70
+b06_b320:   brk                         ; 1B320:  00
+b06_b321:   brk                         ; 1B321:  00
+b06_b322:   brk                         ; 1B322:  00
+b06_b323:   brk                         ; 1B323:  00
+b06_b324:   php                         ; 1B324:  08
+b06_b325:   .db $07                     ; 1B325:  07
+b06_b326:   .db $03                     ; 1B326:  03
+b06_b327:   brk                         ; 1B327:  00
+b06_b328:   brk                         ; 1B328:  00
+b06_b329:   brk                         ; 1B329:  00
+b06_b32a:   .db $03                     ; 1B32A:  03
+b06_b32b:   ora ($08,x)                 ; 1B32B:  01 08
+b06_b32d:   .db $07                     ; 1B32D:  07
+b06_b32e:   .db $03                     ; 1B32E:  03
+b06_b32f:   brk                         ; 1B32F:  00
+b06_b330:   brk                         ; 1B330:  00
+b06_b331:   brk                         ; 1B331:  00
+b06_b332:   .db $03                     ; 1B332:  03
+b06_b333:   ora ($38,x)                 ; 1B333:  01 38
+b06_b335:   .db $fc                     ; 1B335:  fc
+b06_b336:   sed                         ; 1B336:  f8
+b06_b337:   cpy #$fc                    ; 1B337:  c0 fc
+b06_b339:   .db $fc                     ; 1B339:  fc
+b06_b33a:   cpx #$e0                    ; 1B33A:  e0 e0
+b06_b33c:   sec                         ; 1B33C:  38
+b06_b33d:   .db $fc                     ; 1B33D:  fc
+b06_b33e:   sed                         ; 1B33E:  f8
+b06_b33f:   cpy #$fc                    ; 1B33F:  c0 fc
+b06_b341:   .db $fc                     ; 1B341:  fc
+b06_b342:   cpx #$e0                    ; 1B342:  e0 e0
+b06_b344:   asl $1e                     ; 1B344:  06 1e
+b06_b346:   rol $26                     ; 1B346:  26 26
+b06_b348:   rol $2330,x                 ; 1B348:  3e 30 23
+b06_b34b:   .db $22                     ; 1B34B:  22
+b06_b34c:   asl $1e                     ; 1B34C:  06 1e
+b06_b34e:   rol $26                     ; 1B34E:  26 26
+b06_b350:   rol $2330,x                 ; 1B350:  3e 30 23
+b06_b353:   .db $22                     ; 1B353:  22
+b06_b354:   bit $67                     ; 1B354:  24 67
+b06_b356:   .db $63                     ; 1B356:  63
+b06_b357:   and ($00,x)                 ; 1B357:  21 00
+b06_b359:   brk                         ; 1B359:  00
+b06_b35a:   brk                         ; 1B35A:  00
+b06_b35b:   brk                         ; 1B35B:  00
+b06_b35c:   bit $67                     ; 1B35C:  24 67
+b06_b35e:   .db $63                     ; 1B35E:  63
+b06_b35f:   and ($00,x)                 ; 1B35F:  21 00
+b06_b361:   brk                         ; 1B361:  00
+b06_b362:   brk                         ; 1B362:  00
+b06_b363:   brk                         ; 1B363:  00
+b06_b364:   .db $63                     ; 1B364:  63
+b06_b365:   .db $7b                     ; 1B365:  7b
+b06_b366:   .db $63                     ; 1B366:  63
+b06_b367:   .db $7b                     ; 1B367:  7b
+b06_b368:   .db $3b                     ; 1B368:  3b
+b06_b369:   .db $73                     ; 1B369:  73
+b06_b36a:   .db $c3                     ; 1B36A:  c3
+b06_b36b:   .db $63                     ; 1B36B:  63
+b06_b36c:   .db $63                     ; 1B36C:  63
+b06_b36d:   .db $7b                     ; 1B36D:  7b
+b06_b36e:   .db $63                     ; 1B36E:  63
+b06_b36f:   .db $7b                     ; 1B36F:  7b
+b06_b370:   .db $3b                     ; 1B370:  3b
+b06_b371:   .db $73                     ; 1B371:  73
+b06_b372:   .db $c3                     ; 1B372:  c3
+b06_b373:   .db $63                     ; 1B373:  63
+b06_b374:   .db $23                     ; 1B374:  23
+b06_b375:   .db $a3                     ; 1B375:  a3
+b06_b376:   .db $23                     ; 1B376:  23
+b06_b377:   .db $e3                     ; 1B377:  e3
+b06_b378:   .db $ff                     ; 1B378:  ff
+b06_b379:   .db $0f                     ; 1B379:  0f
+b06_b37a:   .db $03                     ; 1B37A:  03
+b06_b37b:   brk                         ; 1B37B:  00
+b06_b37c:   .db $23                     ; 1B37C:  23
+b06_b37d:   .db $a3                     ; 1B37D:  a3
+b06_b37e:   .db $23                     ; 1B37E:  23
+b06_b37f:   .db $e3                     ; 1B37F:  e3
+b06_b380:   .db $ff                     ; 1B380:  ff
+b06_b381:   .db $0f                     ; 1B381:  0f
+b06_b382:   .db $03                     ; 1B382:  03
+b06_b383:   brk                         ; 1B383:  00
+b06_b384:   .db $04                     ; 1B384:  04
+b06_b385:   .db $04                     ; 1B385:  04
+b06_b386:   .db $0c                     ; 1B386:  0c
+b06_b387:   php                         ; 1B387:  08
+b06_b388:   .db $1f                     ; 1B388:  1f
+b06_b389:   .db $1c                     ; 1B389:  1c
+b06_b38a:   sec                         ; 1B38A:  38
+b06_b38b:   bvs $b391                   ; 1B38B:  70 04
+b06_b38d:   .db $04                     ; 1B38D:  04
+b06_b38e:   .db $0c                     ; 1B38E:  0c
+b06_b38f:   php                         ; 1B38F:  08
+b06_b390:   .db $1f                     ; 1B390:  1f
+b06_b391:   .db $1c                     ; 1B391:  1c
+b06_b392:   sec                         ; 1B392:  38
+b06_b393:   bvs $b395                   ; 1B393:  70 00
+b06_b395:   brk                         ; 1B395:  00
+b06_b396:   brk                         ; 1B396:  00
+b06_b397:   brk                         ; 1B397:  00
+b06_b398:   cpx #$e0                    ; 1B398:  e0 e0
+b06_b39a:   rts                         ; 1B39A:  60
+b06_b39b:   cpy #$00                    ; 1B39B:  c0 00
+b06_b39d:   brk                         ; 1B39D:  00
+b06_b39e:   brk                         ; 1B39E:  00
+b06_b39f:   brk                         ; 1B39F:  00
+b06_b3a0:   cpx #$e0                    ; 1B3A0:  e0 e0
+b06_b3a2:   rts                         ; 1B3A2:  60
+b06_b3a3:   cpy #$00                    ; 1B3A3:  c0 00
+b06_b3a5:   brk                         ; 1B3A5:  00
+b06_b3a6:   brk                         ; 1B3A6:  00
+b06_b3a7:   ora ($07,x)                 ; 1B3A7:  01 07
+b06_b3a9:   asl $0018                   ; 1B3A9:  0e 18 00
+b06_b3ac:   brk                         ; 1B3AC:  00
+b06_b3ad:   brk                         ; 1B3AD:  00
+b06_b3ae:   brk                         ; 1B3AE:  00
+b06_b3af:   ora ($07,x)                 ; 1B3AF:  01 07
+b06_b3b1:   asl $0018                   ; 1B3B1:  0e 18 00
+b06_b3b4:   .db $3c                     ; 1B3B4:  3c
+b06_b3b5:   .db $7c                     ; 1B3B5:  7c
+b06_b3b6:   cpx #$f0                    ; 1B3B6:  e0 f0
+b06_b3b8:   .db $1f                     ; 1B3B8:  1f
+b06_b3b9:   ora ($02,x)                 ; 1B3B9:  01 02
+b06_b3bb:   .db $04                     ; 1B3BB:  04
+b06_b3bc:   .db $3c                     ; 1B3BC:  3c
+b06_b3bd:   .db $7c                     ; 1B3BD:  7c
+b06_b3be:   cpx #$f0                    ; 1B3BE:  e0 f0
+b06_b3c0:   .db $1f                     ; 1B3C0:  1f
+b06_b3c1:   ora ($02,x)                 ; 1B3C1:  01 02
+b06_b3c3:   .db $04                     ; 1B3C3:  04
+b06_b3c4:   php                         ; 1B3C4:  08
+b06_b3c5:   .db $34                     ; 1B3C5:  34
+b06_b3c6:   bit $2f                     ; 1B3C6:  24 2f
+b06_b3c8:   .db $3c                     ; 1B3C8:  3c
+b06_b3c9:   pla                         ; 1B3C9:  68
+b06_b3ca:   sei                         ; 1B3CA:  78
+b06_b3cb:   .db $b7                     ; 1B3CB:  b7
+b06_b3cc:   php                         ; 1B3CC:  08
+b06_b3cd:   .db $34                     ; 1B3CD:  34
+b06_b3ce:   bit $2f                     ; 1B3CE:  24 2f
+b06_b3d0:   .db $3c                     ; 1B3D0:  3c
+b06_b3d1:   pla                         ; 1B3D1:  68
+b06_b3d2:   sei                         ; 1B3D2:  78
+b06_b3d3:   .db $b7                     ; 1B3D3:  b7
+b06_b3d4:   bpl $b3e6                   ; 1B3D4:  10 10
+b06_b3d6:   bpl $b409                   ; 1B3D6:  10 31
+b06_b3d8:   .db $3f                     ; 1B3D8:  3f
+b06_b3d9:   .db $1f                     ; 1B3D9:  1f
+b06_b3da:   php                         ; 1B3DA:  08
+b06_b3db:   brk                         ; 1B3DB:  00
+b06_b3dc:   bpl $b3ee                   ; 1B3DC:  10 10
+b06_b3de:   bpl $b411                   ; 1B3DE:  10 31
+b06_b3e0:   .db $3f                     ; 1B3E0:  3f
+b06_b3e1:   .db $1f                     ; 1B3E1:  1f
+b06_b3e2:   php                         ; 1B3E2:  08
+b06_b3e3:   brk                         ; 1B3E3:  00
+b06_b3e4:   brk                         ; 1B3E4:  00
+b06_b3e5:   brk                         ; 1B3E5:  00
+b06_b3e6:   brk                         ; 1B3E6:  00
+b06_b3e7:   cpy #$20                    ; 1B3E7:  c0 20
+b06_b3e9:   jsr $6060                   ; 1B3E9:  20 60 60
+b06_b3ec:   brk                         ; 1B3EC:  00
+b06_b3ed:   brk                         ; 1B3ED:  00
+b06_b3ee:   brk                         ; 1B3EE:  00
+b06_b3ef:   cpy #$20                    ; 1B3EF:  c0 20
+b06_b3f1:   jsr $6060                   ; 1B3F1:  20 60 60
+b06_b3f4:   .db $03                     ; 1B3F4:  03
+b06_b3f5:   .db $0f                     ; 1B3F5:  0f
+b06_b3f6:   .db $0f                     ; 1B3F6:  0f
+b06_b3f7:   ora ($00,x)                 ; 1B3F7:  01 00
+b06_b3f9:   brk                         ; 1B3F9:  00
+b06_b3fa:   brk                         ; 1B3FA:  00
+b06_b3fb:   brk                         ; 1B3FB:  00
+b06_b3fc:   .db $03                     ; 1B3FC:  03
+b06_b3fd:   .db $0f                     ; 1B3FD:  0f
+b06_b3fe:   .db $0f                     ; 1B3FE:  0f
+b06_b3ff:   ora ($00,x)                 ; 1B3FF:  01 00
+b06_b401:   brk                         ; 1B401:  00
+b06_b402:   brk                         ; 1B402:  00
+b06_b403:   brk                         ; 1B403:  00
+b06_b404:   .db $6f                     ; 1B404:  6f
+b06_b405:   ror $f07c,x                 ; 1B405:  7e 7c f0
+b06_b408:   cpx #$e0                    ; 1B408:  e0 e0
+b06_b40a:   rti                         ; 1B40A:  40
+b06_b40b:   sei                         ; 1B40B:  78
+b06_b40c:   .db $6f                     ; 1B40C:  6f
+b06_b40d:   ror $f07c,x                 ; 1B40D:  7e 7c f0
+b06_b410:   cpx #$e0                    ; 1B410:  e0 e0
+b06_b412:   rti                         ; 1B412:  40
+b06_b413:   sei                         ; 1B413:  78
+b06_b414:   sed                         ; 1B414:  f8
+b06_b415:   bvs $b3f7                   ; 1B415:  70 e0
+b06_b417:   .db $c3                     ; 1B417:  c3
+b06_b418:   .db $cf                     ; 1B418:  cf
+b06_b419:   inc $00f8,x                 ; 1B419:  fe f8 00
+b06_b41c:   sed                         ; 1B41C:  f8
+b06_b41d:   bvs $b3ff                   ; 1B41D:  70 e0
+b06_b41f:   .db $c3                     ; 1B41F:  c3
+b06_b420:   .db $cf                     ; 1B420:  cf
+b06_b421:   inc $00f8,x                 ; 1B421:  fe f8 00
+b06_b424:   .db $03                     ; 1B424:  03
+b06_b425:   .db $03                     ; 1B425:  03
+b06_b426:   .db $03                     ; 1B426:  03
+b06_b427:   .db $03                     ; 1B427:  03
+b06_b428:   ora ($00,x)                 ; 1B428:  01 00
+b06_b42a:   brk                         ; 1B42A:  00
+b06_b42b:   brk                         ; 1B42B:  00
+b06_b42c:   .db $03                     ; 1B42C:  03
+b06_b42d:   .db $03                     ; 1B42D:  03
+b06_b42e:   .db $03                     ; 1B42E:  03
+b06_b42f:   .db $03                     ; 1B42F:  03
+b06_b430:   ora ($00,x)                 ; 1B430:  01 00
+b06_b432:   brk                         ; 1B432:  00
+b06_b433:   brk                         ; 1B433:  00
+b06_b434:   .db $80                     ; 1B434:  80
+b06_b435:   brk                         ; 1B435:  00
+b06_b436:   brk                         ; 1B436:  00
+b06_b437:   brk                         ; 1B437:  00
+b06_b438:   cpx #$00                    ; 1B438:  e0 00
+b06_b43a:   brk                         ; 1B43A:  00
+b06_b43b:   brk                         ; 1B43B:  00
+b06_b43c:   .db $80                     ; 1B43C:  80
+b06_b43d:   brk                         ; 1B43D:  00
+b06_b43e:   brk                         ; 1B43E:  00
+b06_b43f:   brk                         ; 1B43F:  00
+b06_b440:   cpx #$00                    ; 1B440:  e0 00
+b06_b442:   brk                         ; 1B442:  00
+b06_b443:   brk                         ; 1B443:  00
+b06_b444:   brk                         ; 1B444:  00
+b06_b445:   brk                         ; 1B445:  00
+b06_b446:   brk                         ; 1B446:  00
+b06_b447:   brk                         ; 1B447:  00
+b06_b448:   brk                         ; 1B448:  00
+b06_b449:   ora ($01,x)                 ; 1B449:  01 01
+b06_b44b:   .db $03                     ; 1B44B:  03
+b06_b44c:   brk                         ; 1B44C:  00
+b06_b44d:   brk                         ; 1B44D:  00
+b06_b44e:   brk                         ; 1B44E:  00
+b06_b44f:   brk                         ; 1B44F:  00
+b06_b450:   brk                         ; 1B450:  00
+b06_b451:   ora ($01,x)                 ; 1B451:  01 01
+b06_b453:   .db $03                     ; 1B453:  03
+b06_b454:   brk                         ; 1B454:  00
+b06_b455:   brk                         ; 1B455:  00
+b06_b456:   rti                         ; 1B456:  40
+b06_b457:   rts                         ; 1B457:  60
+b06_b458:   cpx #$c0                    ; 1B458:  e0 c0
+b06_b45a:   .db $80                     ; 1B45A:  80
+b06_b45b:   brk                         ; 1B45B:  00
+b06_b45c:   brk                         ; 1B45C:  00
+b06_b45d:   brk                         ; 1B45D:  00
+b06_b45e:   rti                         ; 1B45E:  40
+b06_b45f:   rts                         ; 1B45F:  60
+b06_b460:   cpx #$c0                    ; 1B460:  e0 c0
+b06_b462:   .db $80                     ; 1B462:  80
+b06_b463:   brk                         ; 1B463:  00
+b06_b464:   .db $07                     ; 1B464:  07
+b06_b465:   rol $303c,x                 ; 1B465:  3e 3c 30
+b06_b468:   brk                         ; 1B468:  00
+b06_b469:   brk                         ; 1B469:  00
+b06_b46a:   brk                         ; 1B46A:  00
+b06_b46b:   brk                         ; 1B46B:  00
+b06_b46c:   .db $07                     ; 1B46C:  07
+b06_b46d:   rol $303c,x                 ; 1B46D:  3e 3c 30
+b06_b470:   brk                         ; 1B470:  00
+b06_b471:   brk                         ; 1B471:  00
+b06_b472:   brk                         ; 1B472:  00
+b06_b473:   brk                         ; 1B473:  00
+b06_b474:   brk                         ; 1B474:  00
+b06_b475:   brk                         ; 1B475:  00
+b06_b476:   asl $3f1e                   ; 1B476:  0e 1e 3f
+b06_b479:   sei                         ; 1B479:  78
+b06_b47a:   cpx #$c0                    ; 1B47A:  e0 c0
+b06_b47c:   brk                         ; 1B47C:  00
+b06_b47d:   brk                         ; 1B47D:  00
+b06_b47e:   asl $3f1e                   ; 1B47E:  0e 1e 3f
+b06_b481:   sei                         ; 1B481:  78
+b06_b482:   cpx #$c0                    ; 1B482:  e0 c0
+b06_b484:   ora ($03,x)                 ; 1B484:  01 03
+b06_b486:   .db $03                     ; 1B486:  03
+b06_b487:   .db $07                     ; 1B487:  07
+b06_b488:   .db $0f                     ; 1B488:  0f
+b06_b489:   .db $0f                     ; 1B489:  0f
+b06_b48a:   asl $00                     ; 1B48A:  06 00
+b06_b48c:   ora ($03,x)                 ; 1B48C:  01 03
+b06_b48e:   .db $03                     ; 1B48E:  03
+b06_b48f:   .db $07                     ; 1B48F:  07
+b06_b490:   .db $0f                     ; 1B490:  0f
+b06_b491:   .db $0f                     ; 1B491:  0f
+b06_b492:   asl $00                     ; 1B492:  06 00
+b06_b494:   cpy #$83                    ; 1B494:  c0 83
+b06_b496:   .db $83                     ; 1B496:  83
+b06_b497:   bvs $b493                   ; 1B497:  70 fa
+b06_b499:   ror $ec,x                   ; 1B499:  76 ec
+b06_b49b:   cld                         ; 1B49B:  d8
+b06_b49c:   cpy #$83                    ; 1B49C:  c0 83
+b06_b49e:   .db $83                     ; 1B49E:  83
+b06_b49f:   bvs $b49b                   ; 1B49F:  70 fa
+b06_b4a1:   ror $ec,x                   ; 1B4A1:  76 ec
+b06_b4a3:   cld                         ; 1B4A3:  d8
+b06_b4a4:   ror $87ef,x                 ; 1B4A4:  7e ef 87
+b06_b4a7:   .db $0f                     ; 1B4A7:  0f
+b06_b4a8:   .db $0f                     ; 1B4A8:  0f
+b06_b4a9:   .db $0f                     ; 1B4A9:  0f
+b06_b4aa:   .db $0f                     ; 1B4AA:  0f
+b06_b4ab:   asl $ef7e                   ; 1B4AB:  0e 7e ef
+b06_b4ae:   .db $87                     ; 1B4AE:  87
+b06_b4af:   .db $0f                     ; 1B4AF:  0f
+b06_b4b0:   .db $0f                     ; 1B4B0:  0f
+b06_b4b1:   .db $0f                     ; 1B4B1:  0f
+b06_b4b2:   .db $0f                     ; 1B4B2:  0f
+b06_b4b3:   asl $191f                   ; 1B4B3:  0e 1f 19
+b06_b4b6:   ora ($01,x)                 ; 1B4B6:  01 01
+b06_b4b8:   ora ($03,x)                 ; 1B4B8:  01 03
+b06_b4ba:   .db $03                     ; 1B4BA:  03
+b06_b4bb:   asl $1f                     ; 1B4BB:  06 1f
+b06_b4bd:   ora $0101,y                 ; 1B4BD:  19 01 01
+b06_b4c0:   ora ($03,x)                 ; 1B4C0:  01 03
+b06_b4c2:   .db $03                     ; 1B4C2:  03
+b06_b4c3:   asl $c0                     ; 1B4C3:  06 c0
+b06_b4c5:   cpy #$c0                    ; 1B4C5:  c0 c0
+b06_b4c7:   cpy #$80                    ; 1B4C7:  c0 80
+b06_b4c9:   .db $80                     ; 1B4C9:  80
+b06_b4ca:   brk                         ; 1B4CA:  00
+b06_b4cb:   brk                         ; 1B4CB:  00
+b06_b4cc:   cpy #$c0                    ; 1B4CC:  c0 c0
+b06_b4ce:   cpy #$c0                    ; 1B4CE:  c0 c0
+b06_b4d0:   .db $80                     ; 1B4D0:  80
+b06_b4d1:   .db $80                     ; 1B4D1:  80
+b06_b4d2:   brk                         ; 1B4D2:  00
+b06_b4d3:   brk                         ; 1B4D3:  00
+b06_b4d4:   php                         ; 1B4D4:  08
+b06_b4d5:   bpl $b4d7                   ; 1B4D5:  10 00
+b06_b4d7:   brk                         ; 1B4D7:  00
+b06_b4d8:   .db $3c                     ; 1B4D8:  3c
+b06_b4d9:   asl $080e,x                 ; 1B4D9:  1e 0e 08
+b06_b4dc:   php                         ; 1B4DC:  08
+b06_b4dd:   bpl $b4df                   ; 1B4DD:  10 00
+b06_b4df:   brk                         ; 1B4DF:  00
+b06_b4e0:   .db $3c                     ; 1B4E0:  3c
+b06_b4e1:   asl $080e,x                 ; 1B4E1:  1e 0e 08
+b06_b4e4:   brk                         ; 1B4E4:  00
+b06_b4e5:   brk                         ; 1B4E5:  00
+b06_b4e6:   brk                         ; 1B4E6:  00
+b06_b4e7:   brk                         ; 1B4E7:  00
+b06_b4e8:   jmp $004c                   ; 1B4E8:  4c 4c 00
+b06_b4eb:   brk                         ; 1B4EB:  00
+b06_b4ec:   brk                         ; 1B4EC:  00
+b06_b4ed:   brk                         ; 1B4ED:  00
+b06_b4ee:   brk                         ; 1B4EE:  00
+b06_b4ef:   brk                         ; 1B4EF:  00
+b06_b4f0:   jmp $004c                   ; 1B4F0:  4c 4c 00
+b06_b4f3:   brk                         ; 1B4F3:  00
+b06_b4f4:   ora ($01,x)                 ; 1B4F4:  01 01
+b06_b4f6:   ora ($03,x)                 ; 1B4F6:  01 03
+b06_b4f8:   asl $0c                     ; 1B4F8:  06 0c
+b06_b4fa:   bmi $b4fc                   ; 1B4FA:  30 00
+b06_b4fc:   ora ($01,x)                 ; 1B4FC:  01 01
+b06_b4fe:   ora ($03,x)                 ; 1B4FE:  01 03
+b06_b500:   asl $0c                     ; 1B500:  06 0c
+b06_b502:   bmi $b504                   ; 1B502:  30 00
+b06_b504:   bcs $b496                   ; 1B504:  b0 90
+b06_b506:   .db $9c                     ; 1B506:  9c
+b06_b507:   asl $0307                   ; 1B507:  0e 07 03
+b06_b50a:   ora ($00,x)                 ; 1B50A:  01 00
+b06_b50c:   bcs $b49e                   ; 1B50C:  b0 90
+b06_b50e:   .db $9c                     ; 1B50E:  9c
+b06_b50f:   asl $0307                   ; 1B50F:  0e 07 03
+b06_b512:   ora ($00,x)                 ; 1B512:  01 00
+b06_b514:   brk                         ; 1B514:  00
+b06_b515:   brk                         ; 1B515:  00
+b06_b516:   brk                         ; 1B516:  00
+b06_b517:   brk                         ; 1B517:  00
+b06_b518:   brk                         ; 1B518:  00
+b06_b519:   ora ($02,x)                 ; 1B519:  01 02
+b06_b51b:   .db $03                     ; 1B51B:  03
+b06_b51c:   brk                         ; 1B51C:  00
+b06_b51d:   brk                         ; 1B51D:  00
+b06_b51e:   brk                         ; 1B51E:  00
+b06_b51f:   brk                         ; 1B51F:  00
+b06_b520:   brk                         ; 1B520:  00
+b06_b521:   ora ($02,x)                 ; 1B521:  01 02
+b06_b523:   .db $03                     ; 1B523:  03
+b06_b524:   brk                         ; 1B524:  00
+b06_b525:   brk                         ; 1B525:  00
+b06_b526:   rti                         ; 1B526:  40
+b06_b527:   sei                         ; 1B527:  78
+b06_b528:   cpy $cc4c                   ; 1B528:  cc 4c cc
+b06_b52b:   sty $0000                   ; 1B52B:  8c 00 00
+b06_b52e:   rti                         ; 1B52E:  40
+b06_b52f:   sei                         ; 1B52F:  78
+b06_b530:   cpy $cc4c                   ; 1B530:  cc 4c cc
+b06_b533:   sty $0000                   ; 1B533:  8c 00 00
+b06_b536:   brk                         ; 1B536:  00
+b06_b537:   brk                         ; 1B537:  00
+b06_b538:   brk                         ; 1B538:  00
+b06_b539:   cpy #$e0                    ; 1B539:  c0 e0
+b06_b53b:   bvs $b53d                   ; 1B53B:  70 00
+b06_b53d:   brk                         ; 1B53D:  00
+b06_b53e:   brk                         ; 1B53E:  00
+b06_b53f:   brk                         ; 1B53F:  00
+b06_b540:   brk                         ; 1B540:  00
+b06_b541:   cpy #$e0                    ; 1B541:  c0 e0
+b06_b543:   bvs $b547                   ; 1B543:  70 02
+b06_b545:   .db $02                     ; 1B545:  02
+b06_b546:   .db $03                     ; 1B546:  03
+b06_b547:   ora ($01,x)                 ; 1B547:  01 01
+b06_b549:   .db $07                     ; 1B549:  07
+b06_b54a:   .db $03                     ; 1B54A:  03
+b06_b54b:   .db $02                     ; 1B54B:  02
+b06_b54c:   .db $02                     ; 1B54C:  02
+b06_b54d:   .db $02                     ; 1B54D:  02
+b06_b54e:   .db $03                     ; 1B54E:  03
+b06_b54f:   ora ($01,x)                 ; 1B54F:  01 01
+b06_b551:   .db $07                     ; 1B551:  07
+b06_b552:   .db $03                     ; 1B552:  03
+b06_b553:   .db $02                     ; 1B553:  02
+b06_b554:   asl $0f                     ; 1B554:  06 0f
+b06_b556:   .db $07                     ; 1B556:  07
+b06_b557:   ror $0000,x                 ; 1B557:  7e 00 00
+b06_b55a:   brk                         ; 1B55A:  00
+b06_b55b:   brk                         ; 1B55B:  00
+b06_b55c:   asl $0f                     ; 1B55C:  06 0f
+b06_b55e:   .db $07                     ; 1B55E:  07
+b06_b55f:   ror $0000,x                 ; 1B55F:  7e 00 00
+b06_b562:   brk                         ; 1B562:  00
+b06_b563:   brk                         ; 1B563:  00
+b06_b564:   brk                         ; 1B564:  00
+b06_b565:   brk                         ; 1B565:  00
+b06_b566:   brk                         ; 1B566:  00
+b06_b567:   .db $80                     ; 1B567:  80
+b06_b568:   cpx #$e0                    ; 1B568:  e0 e0
+b06_b56a:   rts                         ; 1B56A:  60
+b06_b56b:   rti                         ; 1B56B:  40
+b06_b56c:   brk                         ; 1B56C:  00
+b06_b56d:   brk                         ; 1B56D:  00
+b06_b56e:   brk                         ; 1B56E:  00
+b06_b56f:   .db $80                     ; 1B56F:  80
+b06_b570:   cpx #$e0                    ; 1B570:  e0 e0
+b06_b572:   rts                         ; 1B572:  60
+b06_b573:   rti                         ; 1B573:  40
+b06_b574:   rti                         ; 1B574:  40
+b06_b575:   .db $fc                     ; 1B575:  fc
+b06_b576:   inc $0006,x                 ; 1B576:  fe 06 00
+b06_b579:   brk                         ; 1B579:  00
+b06_b57a:   brk                         ; 1B57A:  00
+b06_b57b:   brk                         ; 1B57B:  00
+b06_b57c:   rti                         ; 1B57C:  40
+b06_b57d:   .db $fc                     ; 1B57D:  fc
+b06_b57e:   inc $0006,x                 ; 1B57E:  fe 06 00
+b06_b581:   brk                         ; 1B581:  00
+b06_b582:   brk                         ; 1B582:  00
+b06_b583:   brk                         ; 1B583:  00
+b06_b584:   .db $07                     ; 1B584:  07
+b06_b585:   .db $0b                     ; 1B585:  0b
+b06_b586:   .db $0f                     ; 1B586:  0f
+b06_b587:   .db $0f                     ; 1B587:  0f
+b06_b588:   ora ($01,x)                 ; 1B588:  01 01
+b06_b58a:   .db $02                     ; 1B58A:  02
+b06_b58b:   .db $04                     ; 1B58B:  04
+b06_b58c:   .db $07                     ; 1B58C:  07
+b06_b58d:   .db $0b                     ; 1B58D:  0b
+b06_b58e:   .db $0f                     ; 1B58E:  0f
+b06_b58f:   .db $0f                     ; 1B58F:  0f
+b06_b590:   ora ($01,x)                 ; 1B590:  01 01
+b06_b592:   .db $02                     ; 1B592:  02
+b06_b593:   .db $04                     ; 1B593:  04
+b06_b594:   cpy #$80                    ; 1B594:  c0 80
+b06_b596:   .db $80                     ; 1B596:  80
+b06_b597:   brk                         ; 1B597:  00
+b06_b598:   brk                         ; 1B598:  00
+b06_b599:   brk                         ; 1B599:  00
+b06_b59a:   brk                         ; 1B59A:  00
+b06_b59b:   brk                         ; 1B59B:  00
+b06_b59c:   cpy #$80                    ; 1B59C:  c0 80
+b06_b59e:   .db $80                     ; 1B59E:  80
+b06_b59f:   brk                         ; 1B59F:  00
+b06_b5a0:   brk                         ; 1B5A0:  00
+b06_b5a1:   brk                         ; 1B5A1:  00
+b06_b5a2:   brk                         ; 1B5A2:  00
+b06_b5a3:   brk                         ; 1B5A3:  00
+b06_b5a4:   brk                         ; 1B5A4:  00
+b06_b5a5:   php                         ; 1B5A5:  08
+b06_b5a6:   bpl $b5ce                   ; 1B5A6:  10 26
+b06_b5a8:   .db $6f                     ; 1B5A8:  6f
+b06_b5a9:   .db $33                     ; 1B5A9:  33
+b06_b5aa:   ora ($00,x)                 ; 1B5AA:  01 00
+b06_b5ac:   brk                         ; 1B5AC:  00
+b06_b5ad:   php                         ; 1B5AD:  08
+b06_b5ae:   bpl $b5d6                   ; 1B5AE:  10 26
+b06_b5b0:   .db $6f                     ; 1B5B0:  6f
+b06_b5b1:   .db $33                     ; 1B5B1:  33
+b06_b5b2:   ora ($00,x)                 ; 1B5B2:  01 00
+b06_b5b4:   brk                         ; 1B5B4:  00
+b06_b5b5:   brk                         ; 1B5B5:  00
+b06_b5b6:   sei                         ; 1B5B6:  78
+b06_b5b7:   clc                         ; 1B5B7:  18
+b06_b5b8:   brk                         ; 1B5B8:  00
+b06_b5b9:   .db $80                     ; 1B5B9:  80
+b06_b5ba:   .db $80                     ; 1B5BA:  80
+b06_b5bb:   cpy #$00                    ; 1B5BB:  c0 00
+b06_b5bd:   brk                         ; 1B5BD:  00
+b06_b5be:   sei                         ; 1B5BE:  78
+b06_b5bf:   clc                         ; 1B5BF:  18
+b06_b5c0:   brk                         ; 1B5C0:  00
+b06_b5c1:   .db $80                     ; 1B5C1:  80
+b06_b5c2:   .db $80                     ; 1B5C2:  80
+b06_b5c3:   cpy #$b4                    ; 1B5C3:  c0 b4
+b06_b5c5:   .db $e7                     ; 1B5C5:  e7
+b06_b5c6:   .db $43                     ; 1B5C6:  43
+b06_b5c7:   brk                         ; 1B5C7:  00
+b06_b5c8:   brk                         ; 1B5C8:  00
+b06_b5c9:   brk                         ; 1B5C9:  00
+b06_b5ca:   bmi $b608                   ; 1B5CA:  30 3c
+b06_b5cc:   ldy $e7,x                   ; 1B5CC:  b4 e7
+b06_b5ce:   .db $43                     ; 1B5CE:  43
+b06_b5cf:   brk                         ; 1B5CF:  00
+b06_b5d0:   brk                         ; 1B5D0:  00
+b06_b5d1:   brk                         ; 1B5D1:  00
+b06_b5d2:   bmi $b610                   ; 1B5D2:  30 3c
+b06_b5d4:   .db $3c                     ; 1B5D4:  3c
+b06_b5d5:   .db $1f                     ; 1B5D5:  1f
+b06_b5d6:   .db $1f                     ; 1B5D6:  1f
+b06_b5d7:   ror $1f7d,x                 ; 1B5D7:  7e 7d 1f
+b06_b5da:   .db $3f                     ; 1B5DA:  3f
+b06_b5db:   ror $1f3c,x                 ; 1B5DB:  7e 3c 1f
+b06_b5de:   .db $1f                     ; 1B5DE:  1f
+b06_b5df:   ror $1f7d,x                 ; 1B5DF:  7e 7d 1f
+b06_b5e2:   .db $3f                     ; 1B5E2:  3f
+b06_b5e3:   ror $e0c0,x                 ; 1B5E3:  7e c0 e0
+b06_b5e6:   jsr $0000                   ; 1B5E6:  20 00 00
+b06_b5e9:   brk                         ; 1B5E9:  00
+b06_b5ea:   brk                         ; 1B5EA:  00
+b06_b5eb:   brk                         ; 1B5EB:  00
+b06_b5ec:   cpy #$e0                    ; 1B5EC:  c0 e0
+b06_b5ee:   jsr $0000                   ; 1B5EE:  20 00 00
+b06_b5f1:   brk                         ; 1B5F1:  00
+b06_b5f2:   brk                         ; 1B5F2:  00
+b06_b5f3:   brk                         ; 1B5F3:  00
+b06_b5f4:   brk                         ; 1B5F4:  00
+b06_b5f5:   brk                         ; 1B5F5:  00
+b06_b5f6:   brk                         ; 1B5F6:  00
+b06_b5f7:   brk                         ; 1B5F7:  00
+b06_b5f8:   brk                         ; 1B5F8:  00
+b06_b5f9:   .db $03                     ; 1B5F9:  03
+b06_b5fa:   ora ($00,x)                 ; 1B5FA:  01 00
+b06_b5fc:   brk                         ; 1B5FC:  00
+b06_b5fd:   brk                         ; 1B5FD:  00
+b06_b5fe:   brk                         ; 1B5FE:  00
+b06_b5ff:   brk                         ; 1B5FF:  00
+b06_b600:   brk                         ; 1B600:  00
+b06_b601:   .db $03                     ; 1B601:  03
+b06_b602:   ora ($00,x)                 ; 1B602:  01 00
+b06_b604:   brk                         ; 1B604:  00
+b06_b605:   brk                         ; 1B605:  00
+b06_b606:   rts                         ; 1B606:  60
+b06_b607:   .db $fc                     ; 1B607:  fc
+b06_b608:   .db $9c                     ; 1B608:  9c
+b06_b609:   inc $00c0,x                 ; 1B609:  fe c0 00
+b06_b60c:   brk                         ; 1B60C:  00
+b06_b60d:   brk                         ; 1B60D:  00
+b06_b60e:   rts                         ; 1B60E:  60
+b06_b60f:   .db $fc                     ; 1B60F:  fc
+b06_b610:   .db $9c                     ; 1B610:  9c
+b06_b611:   inc $00c0,x                 ; 1B611:  fe c0 00
+b06_b614:   brk                         ; 1B614:  00
+b06_b615:   ora ($01,x)                 ; 1B615:  01 01
+b06_b617:   ora ($00,x)                 ; 1B617:  01 00
+b06_b619:   brk                         ; 1B619:  00
+b06_b61a:   brk                         ; 1B61A:  00
+b06_b61b:   brk                         ; 1B61B:  00
+b06_b61c:   brk                         ; 1B61C:  00
+b06_b61d:   ora ($01,x)                 ; 1B61D:  01 01
+b06_b61f:   ora ($00,x)                 ; 1B61F:  01 00
+b06_b621:   brk                         ; 1B621:  00
+b06_b622:   brk                         ; 1B622:  00
+b06_b623:   brk                         ; 1B623:  00
+b06_b624:   brk                         ; 1B624:  00
+b06_b625:   brk                         ; 1B625:  00
+b06_b626:   brk                         ; 1B626:  00
+b06_b627:   brk                         ; 1B627:  00
+b06_b628:   rts                         ; 1B628:  60
+b06_b629:   beq $b61b                   ; 1B629:  f0 f0
+b06_b62b:   cpy #$00                    ; 1B62B:  c0 00
+b06_b62d:   brk                         ; 1B62D:  00
+b06_b62e:   brk                         ; 1B62E:  00
+b06_b62f:   brk                         ; 1B62F:  00
+b06_b630:   rts                         ; 1B630:  60
+b06_b631:   beq $b623                   ; 1B631:  f0 f0
+b06_b633:   cpy #$80                    ; 1B633:  c0 80
+b06_b635:   bcs $b62f                   ; 1B635:  b0 f8
+b06_b637:   cpx #$c0                    ; 1B637:  e0 c0
+b06_b639:   cpy #$78                    ; 1B639:  c0 78
+b06_b63b:   bvs $b5bd                   ; 1B63B:  70 80
+b06_b63d:   bcs $b637                   ; 1B63D:  b0 f8
+b06_b63f:   cpx #$c0                    ; 1B63F:  e0 c0
+b06_b641:   cpy #$78                    ; 1B641:  c0 78
+b06_b643:   bvs $b647                   ; 1B643:  70 02
+b06_b645:   .db $02                     ; 1B645:  02
+b06_b646:   ora ($00,x)                 ; 1B646:  01 00
+b06_b648:   brk                         ; 1B648:  00
+b06_b649:   brk                         ; 1B649:  00
+b06_b64a:   brk                         ; 1B64A:  00
+b06_b64b:   brk                         ; 1B64B:  00
+b06_b64c:   .db $02                     ; 1B64C:  02
+b06_b64d:   .db $02                     ; 1B64D:  02
+b06_b64e:   ora ($00,x)                 ; 1B64E:  01 00
+b06_b650:   brk                         ; 1B650:  00
+b06_b651:   brk                         ; 1B651:  00
+b06_b652:   brk                         ; 1B652:  00
+b06_b653:   brk                         ; 1B653:  00
+b06_b654:   brk                         ; 1B654:  00
+b06_b655:   brk                         ; 1B655:  00
+b06_b656:   .db $80                     ; 1B656:  80
+b06_b657:   cpy #$40                    ; 1B657:  c0 40
+b06_b659:   rts                         ; 1B659:  60
+b06_b65a:   rts                         ; 1B65A:  60
+b06_b65b:   brk                         ; 1B65B:  00
+b06_b65c:   brk                         ; 1B65C:  00
+b06_b65d:   brk                         ; 1B65D:  00
+b06_b65e:   .db $80                     ; 1B65E:  80
+b06_b65f:   cpy #$40                    ; 1B65F:  c0 40
+b06_b661:   rts                         ; 1B661:  60
+b06_b662:   rts                         ; 1B662:  60
+b06_b663:   brk                         ; 1B663:  00
+b06_b664:   brk                         ; 1B664:  00
+b06_b665:   brk                         ; 1B665:  00
+b06_b666:   brk                         ; 1B666:  00
+b06_b667:   brk                         ; 1B667:  00
+b06_b668:   brk                         ; 1B668:  00
+b06_b669:   .db $07                     ; 1B669:  07
+b06_b66a:   ora ($03,x)                 ; 1B66A:  01 03
+b06_b66c:   brk                         ; 1B66C:  00
+b06_b66d:   brk                         ; 1B66D:  00
+b06_b66e:   brk                         ; 1B66E:  00
+b06_b66f:   brk                         ; 1B66F:  00
+b06_b670:   brk                         ; 1B670:  00
+b06_b671:   .db $07                     ; 1B671:  07
+b06_b672:   ora ($03,x)                 ; 1B672:  01 03
+b06_b674:   brk                         ; 1B674:  00
+b06_b675:   brk                         ; 1B675:  00
+b06_b676:   brk                         ; 1B676:  00
+b06_b677:   brk                         ; 1B677:  00
+b06_b678:   brk                         ; 1B678:  00
+b06_b679:   cpy #$c0                    ; 1B679:  c0 c0
+b06_b67b:   brk                         ; 1B67B:  00
+b06_b67c:   brk                         ; 1B67C:  00
+b06_b67d:   brk                         ; 1B67D:  00
+b06_b67e:   brk                         ; 1B67E:  00
+b06_b67f:   brk                         ; 1B67F:  00
+b06_b680:   brk                         ; 1B680:  00
+b06_b681:   cpy #$c0                    ; 1B681:  c0 c0
+b06_b683:   brk                         ; 1B683:  00
+b06_b684:   .db $03                     ; 1B684:  03
+b06_b685:   .db $03                     ; 1B685:  03
+b06_b686:   .db $03                     ; 1B686:  03
+b06_b687:   brk                         ; 1B687:  00
+b06_b688:   brk                         ; 1B688:  00
+b06_b689:   brk                         ; 1B689:  00
+b06_b68a:   brk                         ; 1B68A:  00
+b06_b68b:   brk                         ; 1B68B:  00
+b06_b68c:   .db $03                     ; 1B68C:  03
+b06_b68d:   .db $03                     ; 1B68D:  03
+b06_b68e:   .db $03                     ; 1B68E:  03
+b06_b68f:   brk                         ; 1B68F:  00
+b06_b690:   brk                         ; 1B690:  00
+b06_b691:   brk                         ; 1B691:  00
+b06_b692:   brk                         ; 1B692:  00
+b06_b693:   brk                         ; 1B693:  00
+b06_b694:   .db $f4                     ; 1B694:  f4
+b06_b695:   .db $f3                     ; 1B695:  f3
+b06_b696:   sbc ($c1,x)                 ; 1B696:  e1 c1
+b06_b698:   ora ($00,x)                 ; 1B698:  01 00
+b06_b69a:   brk                         ; 1B69A:  00
+b06_b69b:   brk                         ; 1B69B:  00
+b06_b69c:   .db $f4                     ; 1B69C:  f4
+b06_b69d:   .db $f3                     ; 1B69D:  f3
+b06_b69e:   sbc ($c1,x)                 ; 1B69E:  e1 c1
+b06_b6a0:   ora ($00,x)                 ; 1B6A0:  01 00
+b06_b6a2:   brk                         ; 1B6A2:  00
+b06_b6a3:   brk                         ; 1B6A3:  00
+b06_b6a4:   asl $fc3c,x                 ; 1B6A4:  1e 3c fc
+b06_b6a7:   .db $fc                     ; 1B6A7:  fc
+b06_b6a8:   sed                         ; 1B6A8:  f8
+b06_b6a9:   sed                         ; 1B6A9:  f8
+b06_b6aa:   brk                         ; 1B6AA:  00
+b06_b6ab:   brk                         ; 1B6AB:  00
+b06_b6ac:   asl $fc3c,x                 ; 1B6AC:  1e 3c fc
+b06_b6af:   .db $fc                     ; 1B6AF:  fc
+b06_b6b0:   sed                         ; 1B6B0:  f8
+b06_b6b1:   sed                         ; 1B6B1:  f8
+b06_b6b2:   brk                         ; 1B6B2:  00
+b06_b6b3:   brk                         ; 1B6B3:  00
+b06_b6b4:   brk                         ; 1B6B4:  00
+b06_b6b5:   asl $07                     ; 1B6B5:  06 07
+b06_b6b7:   brk                         ; 1B6B7:  00
+b06_b6b8:   brk                         ; 1B6B8:  00
+b06_b6b9:   brk                         ; 1B6B9:  00
+b06_b6ba:   brk                         ; 1B6BA:  00
+b06_b6bb:   brk                         ; 1B6BB:  00
+b06_b6bc:   brk                         ; 1B6BC:  00
+b06_b6bd:   asl $07                     ; 1B6BD:  06 07
+b06_b6bf:   brk                         ; 1B6BF:  00
+b06_b6c0:   brk                         ; 1B6C0:  00
+b06_b6c1:   brk                         ; 1B6C1:  00
+b06_b6c2:   brk                         ; 1B6C2:  00
+b06_b6c3:   brk                         ; 1B6C3:  00
+b06_b6c4:   .db $0c                     ; 1B6C4:  0c
+b06_b6c5:   asl $1e0e                   ; 1B6C5:  0e 0e 1e
+b06_b6c8:   .db $1c                     ; 1B6C8:  1c
+b06_b6c9:   brk                         ; 1B6C9:  00
+b06_b6ca:   brk                         ; 1B6CA:  00
+b06_b6cb:   bpl $b6d9                   ; 1B6CB:  10 0c
+b06_b6cd:   asl $1e0e                   ; 1B6CD:  0e 0e 1e
+b06_b6d0:   .db $1c                     ; 1B6D0:  1c
+b06_b6d1:   brk                         ; 1B6D1:  00
+b06_b6d2:   brk                         ; 1B6D2:  00
+b06_b6d3:   bpl $b695                   ; 1B6D3:  10 c0
+b06_b6d5:   beq $b74f                   ; 1B6D5:  f0 78
+b06_b6d7:   brk                         ; 1B6D7:  00
+b06_b6d8:   brk                         ; 1B6D8:  00
+b06_b6d9:   brk                         ; 1B6D9:  00
+b06_b6da:   brk                         ; 1B6DA:  00
+b06_b6db:   brk                         ; 1B6DB:  00
+b06_b6dc:   cpy #$f0                    ; 1B6DC:  c0 f0
+b06_b6de:   sei                         ; 1B6DE:  78
+b06_b6df:   brk                         ; 1B6DF:  00
+b06_b6e0:   brk                         ; 1B6E0:  00
+b06_b6e1:   brk                         ; 1B6E1:  00
+b06_b6e2:   brk                         ; 1B6E2:  00
+b06_b6e3:   brk                         ; 1B6E3:  00
+b06_b6e4:   bpl $b6f6                   ; 1B6E4:  10 10
+b06_b6e6:   bpl $b6f9                   ; 1B6E6:  10 11
+b06_b6e8:   .db $12                     ; 1B6E8:  12
+b06_b6e9:   ldy $a1,x                   ; 1B6E9:  b4 a1
+b06_b6eb:   lda ($10,x)                 ; 1B6EB:  a1 10
+b06_b6ed:   bpl $b6ff                   ; 1B6ED:  10 10
+b06_b6ef:   ora ($12),y                 ; 1B6EF:  11 12
+b06_b6f1:   ldy $a1,x                   ; 1B6F1:  b4 a1
+b06_b6f3:   lda ($00,x)                 ; 1B6F3:  a1 00
+b06_b6f5:   brk                         ; 1B6F5:  00
+b06_b6f6:   brk                         ; 1B6F6:  00
+b06_b6f7:   cpy #$c0                    ; 1B6F7:  c0 c0
+b06_b6f9:   cpy #$80                    ; 1B6F9:  c0 80
+b06_b6fb:   .db $80                     ; 1B6FB:  80
+b06_b6fc:   brk                         ; 1B6FC:  00
+b06_b6fd:   brk                         ; 1B6FD:  00
+b06_b6fe:   brk                         ; 1B6FE:  00
+b06_b6ff:   cpy #$c0                    ; 1B6FF:  c0 c0
+b06_b701:   cpy #$80                    ; 1B701:  c0 80
+b06_b703:   .db $80                     ; 1B703:  80
+b06_b704:   .db $0c                     ; 1B704:  0c
+b06_b705:   clc                         ; 1B705:  18
+b06_b706:   clc                         ; 1B706:  18
+b06_b707:   brk                         ; 1B707:  00
+b06_b708:   brk                         ; 1B708:  00
+b06_b709:   brk                         ; 1B709:  00
+b06_b70a:   cpx #$3f                    ; 1B70A:  e0 3f
+b06_b70c:   .db $0c                     ; 1B70C:  0c
+b06_b70d:   clc                         ; 1B70D:  18
+b06_b70e:   clc                         ; 1B70E:  18
+b06_b70f:   brk                         ; 1B70F:  00
+b06_b710:   brk                         ; 1B710:  00
+b06_b711:   brk                         ; 1B711:  00
+b06_b712:   cpx #$3f                    ; 1B712:  e0 3f
+b06_b714:   brk                         ; 1B714:  00
+b06_b715:   ora ($06,x)                 ; 1B715:  01 06
+b06_b717:   .db $02                     ; 1B717:  02
+b06_b718:   .db $02                     ; 1B718:  02
+b06_b719:   .db $02                     ; 1B719:  02
+b06_b71a:   .db $03                     ; 1B71A:  03
+b06_b71b:   ora ($00,x)                 ; 1B71B:  01 00
+b06_b71d:   ora ($06,x)                 ; 1B71D:  01 06
+b06_b71f:   .db $02                     ; 1B71F:  02
+b06_b720:   .db $02                     ; 1B720:  02
+b06_b721:   .db $02                     ; 1B721:  02
+b06_b722:   .db $03                     ; 1B722:  03
+b06_b723:   ora ($7f,x)                 ; 1B723:  01 7f
+b06_b725:   .db $f3                     ; 1B725:  f3
+b06_b726:   .db $73                     ; 1B726:  73
+b06_b727:   .db $63                     ; 1B727:  63
+b06_b728:   .db $73                     ; 1B728:  73
+b06_b729:   .db $1b                     ; 1B729:  1b
+b06_b72a:   .db $3b                     ; 1B72A:  3b
+b06_b72b:   .db $73                     ; 1B72B:  73
+b06_b72c:   .db $7f                     ; 1B72C:  7f
+b06_b72d:   .db $f3                     ; 1B72D:  f3
+b06_b72e:   .db $73                     ; 1B72E:  73
+b06_b72f:   .db $63                     ; 1B72F:  63
+b06_b730:   .db $73                     ; 1B730:  73
+b06_b731:   .db $1b                     ; 1B731:  1b
+b06_b732:   .db $3b                     ; 1B732:  3b
+b06_b733:   .db $73                     ; 1B733:  73
+b06_b734:   ora ($00,x)                 ; 1B734:  01 00
+b06_b736:   brk                         ; 1B736:  00
+b06_b737:   ora ($7f,x)                 ; 1B737:  01 7f
+b06_b739:   .db $3c                     ; 1B739:  3c
+b06_b73a:   brk                         ; 1B73A:  00
+b06_b73b:   brk                         ; 1B73B:  00
+b06_b73c:   ora ($00,x)                 ; 1B73C:  01 00
+b06_b73e:   brk                         ; 1B73E:  00
+b06_b73f:   ora ($7f,x)                 ; 1B73F:  01 7f
+b06_b741:   .db $3c                     ; 1B741:  3c
+b06_b742:   brk                         ; 1B742:  00
+b06_b743:   brk                         ; 1B743:  00
+b06_b744:   .db $80                     ; 1B744:  80
+b06_b745:   .db $80                     ; 1B745:  80
+b06_b746:   .db $80                     ; 1B746:  80
+b06_b747:   brk                         ; 1B747:  00
+b06_b748:   brk                         ; 1B748:  00
+b06_b749:   .db $80                     ; 1B749:  80
+b06_b74a:   .db $80                     ; 1B74A:  80
+b06_b74b:   .db $80                     ; 1B74B:  80
+b06_b74c:   .db $80                     ; 1B74C:  80
+b06_b74d:   .db $80                     ; 1B74D:  80
+b06_b74e:   .db $80                     ; 1B74E:  80
+b06_b74f:   brk                         ; 1B74F:  00
+b06_b750:   brk                         ; 1B750:  00
+b06_b751:   .db $80                     ; 1B751:  80
+b06_b752:   .db $80                     ; 1B752:  80
+b06_b753:   .db $80                     ; 1B753:  80
+b06_b754:   .db $80                     ; 1B754:  80
+b06_b755:   stx $fefe                   ; 1B755:  8e fe fe
+b06_b758:   cpy #$c0                    ; 1B758:  c0 c0
+b06_b75a:   cpy #$c0                    ; 1B75A:  c0 c0
+b06_b75c:   .db $80                     ; 1B75C:  80
+b06_b75d:   stx $fefe                   ; 1B75D:  8e fe fe
+b06_b760:   cpy #$c0                    ; 1B760:  c0 c0
+b06_b762:   cpy #$c0                    ; 1B762:  c0 c0
+b06_b764:   cpy #$80                    ; 1B764:  c0 80
+b06_b766:   .db $80                     ; 1B766:  80
+b06_b767:   .db $80                     ; 1B767:  80
+b06_b768:   .db $80                     ; 1B768:  80
+b06_b769:   .db $80                     ; 1B769:  80
+b06_b76a:   .db $80                     ; 1B76A:  80
+b06_b76b:   .db $80                     ; 1B76B:  80
+b06_b76c:   cpy #$80                    ; 1B76C:  c0 80
+b06_b76e:   .db $80                     ; 1B76E:  80
+b06_b76f:   .db $80                     ; 1B76F:  80
+b06_b770:   .db $80                     ; 1B770:  80
+b06_b771:   .db $80                     ; 1B771:  80
+b06_b772:   .db $80                     ; 1B772:  80
+b06_b773:   .db $80                     ; 1B773:  80
+b06_b774:   brk                         ; 1B774:  00
+b06_b775:   brk                         ; 1B775:  00
+b06_b776:   brk                         ; 1B776:  00
+b06_b777:   brk                         ; 1B777:  00
+b06_b778:   brk                         ; 1B778:  00
+b06_b779:   brk                         ; 1B779:  00
+b06_b77a:   ora $0007                   ; 1B77A:  0d 07 00
+b06_b77d:   brk                         ; 1B77D:  00
+b06_b77e:   brk                         ; 1B77E:  00
+b06_b77f:   brk                         ; 1B77F:  00
+b06_b780:   brk                         ; 1B780:  00
+b06_b781:   brk                         ; 1B781:  00
+b06_b782:   ora $6007                   ; 1B782:  0d 07 60
+b06_b785:   bmi $b7b7                   ; 1B785:  30 30
+b06_b787:   clc                         ; 1B787:  18
+b06_b788:   .db $1c                     ; 1B788:  1c
+b06_b789:   .db $0c                     ; 1B789:  0c
+b06_b78a:   cpy #$60                    ; 1B78A:  c0 60
+b06_b78c:   rts                         ; 1B78C:  60
+b06_b78d:   bmi $b7bf                   ; 1B78D:  30 30
+b06_b78f:   clc                         ; 1B78F:  18
+b06_b790:   .db $1c                     ; 1B790:  1c
+b06_b791:   .db $0c                     ; 1B791:  0c
+b06_b792:   cpy #$60                    ; 1B792:  c0 60
+b06_b794:   .db $03                     ; 1B794:  03
+b06_b795:   .db $07                     ; 1B795:  07
+b06_b796:   ora $07                     ; 1B796:  05 07
+b06_b798:   brk                         ; 1B798:  00
+b06_b799:   brk                         ; 1B799:  00
+b06_b79a:   brk                         ; 1B79A:  00
+b06_b79b:   .db $0f                     ; 1B79B:  0f
+b06_b79c:   .db $03                     ; 1B79C:  03
+b06_b79d:   .db $07                     ; 1B79D:  07
+b06_b79e:   ora $07                     ; 1B79E:  05 07
+b06_b7a0:   brk                         ; 1B7A0:  00
+b06_b7a1:   brk                         ; 1B7A1:  00
+b06_b7a2:   brk                         ; 1B7A2:  00
+b06_b7a3:   .db $0f                     ; 1B7A3:  0f
+b06_b7a4:   jsr $c060                   ; 1B7A4:  20 60 c0
+b06_b7a7:   .db $80                     ; 1B7A7:  80
+b06_b7a8:   .db $80                     ; 1B7A8:  80
+b06_b7a9:   cpx #$e0                    ; 1B7A9:  e0 e0
+b06_b7ab:   cpx #$20                    ; 1B7AB:  e0 20
+b06_b7ad:   rts                         ; 1B7AD:  60
+b06_b7ae:   cpy #$80                    ; 1B7AE:  c0 80
+b06_b7b0:   .db $80                     ; 1B7B0:  80
+b06_b7b1:   cpx #$e0                    ; 1B7B1:  e0 e0
+b06_b7b3:   cpx #$03                    ; 1B7B3:  e0 03
+b06_b7b5:   .db $1f                     ; 1B7B5:  1f
+b06_b7b6:   asl $0018,x                 ; 1B7B6:  1e 18 00
+b06_b7b9:   ora ($03,x)                 ; 1B7B9:  01 03
+b06_b7bb:   asl $03                     ; 1B7BB:  06 03
+b06_b7bd:   .db $1f                     ; 1B7BD:  1f
+b06_b7be:   asl $0018,x                 ; 1B7BE:  1e 18 00
+b06_b7c1:   ora ($03,x)                 ; 1B7C1:  01 03
+b06_b7c3:   asl $ec                     ; 1B7C3:  06 ec
+b06_b7c5:   clc                         ; 1B7C5:  18
+b06_b7c6:   .db $33                     ; 1B7C6:  33
+b06_b7c7:   .db $7f                     ; 1B7C7:  7f
+b06_b7c8:   .db $fb                     ; 1B7C8:  fb
+b06_b7c9:   lda $373f,y                 ; 1B7C9:  b9 3f 37
+b06_b7cc:   cpx $3318                   ; 1B7CC:  ec 18 33
+b06_b7cf:   .db $7f                     ; 1B7CF:  7f
+b06_b7d0:   .db $fb                     ; 1B7D0:  fb
+b06_b7d1:   lda $373f,y                 ; 1B7D1:  b9 3f 37
+b06_b7d4:   .db $0c                     ; 1B7D4:  0c
+b06_b7d5:   clc                         ; 1B7D5:  18
+b06_b7d6:   sec                         ; 1B7D6:  38
+b06_b7d7:   bvs $b839                   ; 1B7D7:  70 60
+b06_b7d9:   cpy #$80                    ; 1B7D9:  c0 80
+b06_b7db:   brk                         ; 1B7DB:  00
+b06_b7dc:   .db $0c                     ; 1B7DC:  0c
+b06_b7dd:   clc                         ; 1B7DD:  18
+b06_b7de:   sec                         ; 1B7DE:  38
+b06_b7df:   bvs $b841                   ; 1B7DF:  70 60
+b06_b7e1:   cpy #$80                    ; 1B7E1:  c0 80
+b06_b7e3:   brk                         ; 1B7E3:  00
+b06_b7e4:   and ($39),y                 ; 1B7E4:  31 39
+b06_b7e6:   ora $0f0f,x                 ; 1B7E6:  1d 0f 0f
+b06_b7e9:   .db $07                     ; 1B7E9:  07
+b06_b7ea:   .db $03                     ; 1B7EA:  03
+b06_b7eb:   brk                         ; 1B7EB:  00
+b06_b7ec:   and ($39),y                 ; 1B7EC:  31 39
+b06_b7ee:   ora $0f0f,x                 ; 1B7EE:  1d 0f 0f
+b06_b7f1:   .db $07                     ; 1B7F1:  07
+b06_b7f2:   .db $03                     ; 1B7F2:  03
+b06_b7f3:   brk                         ; 1B7F3:  00
+b06_b7f4:   brk                         ; 1B7F4:  00
+b06_b7f5:   brk                         ; 1B7F5:  00
+b06_b7f6:   brk                         ; 1B7F6:  00
+b06_b7f7:   .db $80                     ; 1B7F7:  80
+b06_b7f8:   .db $80                     ; 1B7F8:  80
+b06_b7f9:   .db $80                     ; 1B7F9:  80
+b06_b7fa:   .db $80                     ; 1B7FA:  80
+b06_b7fb:   .db $80                     ; 1B7FB:  80
+b06_b7fc:   brk                         ; 1B7FC:  00
+b06_b7fd:   brk                         ; 1B7FD:  00
+b06_b7fe:   brk                         ; 1B7FE:  00
+b06_b7ff:   .db $80                     ; 1B7FF:  80
+b06_b800:   .db $80                     ; 1B800:  80
+b06_b801:   .db $80                     ; 1B801:  80
+b06_b802:   .db $80                     ; 1B802:  80
+b06_b803:   .db $80                     ; 1B803:  80
+b06_b804:   brk                         ; 1B804:  00
+b06_b805:   brk                         ; 1B805:  00
+b06_b806:   brk                         ; 1B806:  00
+b06_b807:   ora ($00,x)                 ; 1B807:  01 00
+b06_b809:   brk                         ; 1B809:  00
+b06_b80a:   .db $04                     ; 1B80A:  04
+b06_b80b:   asl $0000                   ; 1B80B:  0e 00 00
+b06_b80e:   brk                         ; 1B80E:  00
+b06_b80f:   ora ($00,x)                 ; 1B80F:  01 00
+b06_b811:   brk                         ; 1B811:  00
+b06_b812:   .db $04                     ; 1B812:  04
+b06_b813:   asl $8080                   ; 1B813:  0e 80 80
+b06_b816:   cpy #$c0                    ; 1B816:  c0 c0
+b06_b818:   cpy #$80                    ; 1B818:  c0 80
+b06_b81a:   .db $80                     ; 1B81A:  80
+b06_b81b:   brk                         ; 1B81B:  00
+b06_b81c:   .db $80                     ; 1B81C:  80
+b06_b81d:   .db $80                     ; 1B81D:  80
+b06_b81e:   cpy #$c0                    ; 1B81E:  c0 c0
+b06_b820:   cpy #$80                    ; 1B820:  c0 80
+b06_b822:   .db $80                     ; 1B822:  80
+b06_b823:   brk                         ; 1B823:  00
+b06_b824:   .db $04                     ; 1B824:  04
+b06_b825:   brk                         ; 1B825:  00
+b06_b826:   .db $03                     ; 1B826:  03
+b06_b827:   asl $1c                     ; 1B827:  06 1c
+b06_b829:   and $2331,y                 ; 1B829:  39 31 23
+b06_b82c:   .db $04                     ; 1B82C:  04
+b06_b82d:   brk                         ; 1B82D:  00
+b06_b82e:   .db $03                     ; 1B82E:  03
+b06_b82f:   asl $1c                     ; 1B82F:  06 1c
+b06_b831:   and $2331,y                 ; 1B831:  39 31 23
+b06_b834:   jsr $80c0                   ; 1B834:  20 c0 80
+b06_b837:   cpx #$fc                    ; 1B837:  e0 fc
+b06_b839:   dec $c75c                   ; 1B839:  ce 5c c7
+b06_b83c:   jsr $80c0                   ; 1B83C:  20 c0 80
+b06_b83f:   cpx #$fc                    ; 1B83F:  e0 fc
+b06_b841:   dec $c75c                   ; 1B841:  ce 5c c7
+b06_b844:   brk                         ; 1B844:  00
+b06_b845:   brk                         ; 1B845:  00
+b06_b846:   brk                         ; 1B846:  00
+b06_b847:   brk                         ; 1B847:  00
+b06_b848:   brk                         ; 1B848:  00
+b06_b849:   brk                         ; 1B849:  00
+b06_b84a:   brk                         ; 1B84A:  00
+b06_b84b:   .db $80                     ; 1B84B:  80
+b06_b84c:   brk                         ; 1B84C:  00
+b06_b84d:   brk                         ; 1B84D:  00
+b06_b84e:   brk                         ; 1B84E:  00
+b06_b84f:   brk                         ; 1B84F:  00
+b06_b850:   brk                         ; 1B850:  00
+b06_b851:   brk                         ; 1B851:  00
+b06_b852:   brk                         ; 1B852:  00
+b06_b853:   .db $80                     ; 1B853:  80
+b06_b854:   ora #$83                    ; 1B854:  09 83
+b06_b856:   asl $00                     ; 1B856:  06 00
+b06_b858:   sei                         ; 1B858:  78
+b06_b859:   inx                         ; 1B859:  e8
+b06_b85a:   dey                         ; 1B85A:  88
+b06_b85b:   clc                         ; 1B85B:  18
+b06_b85c:   ora #$83                    ; 1B85C:  09 83
+b06_b85e:   asl $00                     ; 1B85E:  06 00
+b06_b860:   sei                         ; 1B860:  78
+b06_b861:   inx                         ; 1B861:  e8
+b06_b862:   dey                         ; 1B862:  88
+b06_b863:   clc                         ; 1B863:  18
+b06_b864:   .db $80                     ; 1B864:  80
+b06_b865:   .db $80                     ; 1B865:  80
+b06_b866:   brk                         ; 1B866:  00
+b06_b867:   brk                         ; 1B867:  00
+b06_b868:   brk                         ; 1B868:  00
+b06_b869:   brk                         ; 1B869:  00
+b06_b86a:   brk                         ; 1B86A:  00
+b06_b86b:   brk                         ; 1B86B:  00
+b06_b86c:   .db $80                     ; 1B86C:  80
+b06_b86d:   .db $80                     ; 1B86D:  80
+b06_b86e:   brk                         ; 1B86E:  00
+b06_b86f:   brk                         ; 1B86F:  00
+b06_b870:   brk                         ; 1B870:  00
+b06_b871:   brk                         ; 1B871:  00
+b06_b872:   brk                         ; 1B872:  00
+b06_b873:   brk                         ; 1B873:  00
+b06_b874:   .db $03                     ; 1B874:  03
+b06_b875:   asl $0c                     ; 1B875:  06 0c
+b06_b877:   clc                         ; 1B877:  18
+b06_b878:   bpl $b8aa                   ; 1B878:  10 30
+b06_b87a:   brk                         ; 1B87A:  00
+b06_b87b:   brk                         ; 1B87B:  00
+b06_b87c:   .db $03                     ; 1B87C:  03
+b06_b87d:   asl $0c                     ; 1B87D:  06 0c
+b06_b87f:   clc                         ; 1B87F:  18
+b06_b880:   bpl $b8b2                   ; 1B880:  10 30
+b06_b882:   brk                         ; 1B882:  00
+b06_b883:   brk                         ; 1B883:  00
+b06_b884:   brk                         ; 1B884:  00
+b06_b885:   .db $7c                     ; 1B885:  7c
+b06_b886:   .db $3c                     ; 1B886:  3c
+b06_b887:   brk                         ; 1B887:  00
+b06_b888:   cpy #$40                    ; 1B888:  c0 40
+b06_b88a:   rti                         ; 1B88A:  40
+b06_b88b:   rti                         ; 1B88B:  40
+b06_b88c:   brk                         ; 1B88C:  00
+b06_b88d:   .db $7c                     ; 1B88D:  7c
+b06_b88e:   .db $3c                     ; 1B88E:  3c
+b06_b88f:   brk                         ; 1B88F:  00
+b06_b890:   cpy #$40                    ; 1B890:  c0 40
+b06_b892:   rti                         ; 1B892:  40
+b06_b893:   rti                         ; 1B893:  40
+b06_b894:   brk                         ; 1B894:  00
+b06_b895:   brk                         ; 1B895:  00
+b06_b896:   .db $03                     ; 1B896:  03
+b06_b897:   brk                         ; 1B897:  00
+b06_b898:   brk                         ; 1B898:  00
+b06_b899:   brk                         ; 1B899:  00
+b06_b89a:   brk                         ; 1B89A:  00
+b06_b89b:   brk                         ; 1B89B:  00
+b06_b89c:   brk                         ; 1B89C:  00
+b06_b89d:   brk                         ; 1B89D:  00
+b06_b89e:   .db $03                     ; 1B89E:  03
+b06_b89f:   brk                         ; 1B89F:  00
+b06_b8a0:   brk                         ; 1B8A0:  00
+b06_b8a1:   brk                         ; 1B8A1:  00
+b06_b8a2:   brk                         ; 1B8A2:  00
+b06_b8a3:   brk                         ; 1B8A3:  00
+b06_b8a4:   rti                         ; 1B8A4:  40
+b06_b8a5:   cpy #$e0                    ; 1B8A5:  c0 e0
+b06_b8a7:   jsr $6020                   ; 1B8A7:  20 20 60
+b06_b8aa:   rti                         ; 1B8AA:  40
+b06_b8ab:   cpy #$40                    ; 1B8AB:  c0 40
+b06_b8ad:   cpy #$e0                    ; 1B8AD:  c0 e0
+b06_b8af:   jsr $6020                   ; 1B8AF:  20 20 60
+b06_b8b2:   rti                         ; 1B8B2:  40
+b06_b8b3:   cpy #$0c                    ; 1B8B3:  c0 0c
+b06_b8b5:   asl $0f                     ; 1B8B5:  06 0f
+b06_b8b7:   .db $14                     ; 1B8B7:  14
+b06_b8b8:   bit $3828                   ; 1B8B8:  2c 28 38
+b06_b8bb:   bmi $b8c9                   ; 1B8BB:  30 0c
+b06_b8bd:   asl $0f                     ; 1B8BD:  06 0f
+b06_b8bf:   .db $14                     ; 1B8BF:  14
+b06_b8c0:   bit $3828                   ; 1B8C0:  2c 28 38
+b06_b8c3:   bmi $b8d5                   ; 1B8C3:  30 10
+b06_b8c5:   ora ($03,x)                 ; 1B8C5:  01 03
+b06_b8c7:   .db $03                     ; 1B8C7:  03
+b06_b8c8:   brk                         ; 1B8C8:  00
+b06_b8c9:   brk                         ; 1B8C9:  00
+b06_b8ca:   brk                         ; 1B8CA:  00
+b06_b8cb:   brk                         ; 1B8CB:  00
+b06_b8cc:   bpl $b8cf                   ; 1B8CC:  10 01
+b06_b8ce:   .db $03                     ; 1B8CE:  03
+b06_b8cf:   .db $03                     ; 1B8CF:  03
+b06_b8d0:   brk                         ; 1B8D0:  00
+b06_b8d1:   brk                         ; 1B8D1:  00
+b06_b8d2:   brk                         ; 1B8D2:  00
+b06_b8d3:   brk                         ; 1B8D3:  00
+b06_b8d4:   brk                         ; 1B8D4:  00
+b06_b8d5:   brk                         ; 1B8D5:  00
+b06_b8d6:   brk                         ; 1B8D6:  00
+b06_b8d7:   cpy #$c0                    ; 1B8D7:  c0 c0
+b06_b8d9:   rti                         ; 1B8D9:  40
+b06_b8da:   rti                         ; 1B8DA:  40
+b06_b8db:   cpy #$00                    ; 1B8DB:  c0 00
+b06_b8dd:   brk                         ; 1B8DD:  00
+b06_b8de:   brk                         ; 1B8DE:  00
+b06_b8df:   cpy #$c0                    ; 1B8DF:  c0 c0
+b06_b8e1:   rti                         ; 1B8E1:  40
+b06_b8e2:   rti                         ; 1B8E2:  40
+b06_b8e3:   cpy #$c0                    ; 1B8E3:  c0 c0
+b06_b8e5:   cpy #$80                    ; 1B8E5:  c0 80
+b06_b8e7:   brk                         ; 1B8E7:  00
+b06_b8e8:   brk                         ; 1B8E8:  00
+b06_b8e9:   brk                         ; 1B8E9:  00
+b06_b8ea:   brk                         ; 1B8EA:  00
+b06_b8eb:   brk                         ; 1B8EB:  00
+b06_b8ec:   cpy #$c0                    ; 1B8EC:  c0 c0
+b06_b8ee:   .db $80                     ; 1B8EE:  80
+b06_b8ef:   brk                         ; 1B8EF:  00
+b06_b8f0:   brk                         ; 1B8F0:  00
+b06_b8f1:   brk                         ; 1B8F1:  00
+b06_b8f2:   brk                         ; 1B8F2:  00
+b06_b8f3:   brk                         ; 1B8F3:  00
+b06_b8f4:   lda ($a1,x)                 ; 1B8F4:  a1 a1
+b06_b8f6:   sbc ($61,x)                 ; 1B8F6:  e1 61
+b06_b8f8:   rts                         ; 1B8F8:  60
+b06_b8f9:   rts                         ; 1B8F9:  60
+b06_b8fa:   rts                         ; 1B8FA:  60
+b06_b8fb:   jsr $a1a1                   ; 1B8FB:  20 a1 a1
+b06_b8fe:   sbc ($61,x)                 ; 1B8FE:  e1 61
+b06_b900:   rts                         ; 1B900:  60
+b06_b901:   rts                         ; 1B901:  60
+b06_b902:   rts                         ; 1B902:  60
+b06_b903:   jsr $0000                   ; 1B903:  20 00 00
+b06_b906:   .db $80                     ; 1B906:  80
+b06_b907:   cpy #$c0                    ; 1B907:  c0 c0
+b06_b909:   bvs $b923                   ; 1B909:  70 18
+b06_b90b:   brk                         ; 1B90B:  00
+b06_b90c:   brk                         ; 1B90C:  00
+b06_b90d:   brk                         ; 1B90D:  00
+b06_b90e:   .db $80                     ; 1B90E:  80
+b06_b90f:   cpy #$c0                    ; 1B90F:  c0 c0
+b06_b911:   bvs $b92b                   ; 1B911:  70 18
+b06_b913:   brk                         ; 1B913:  00
+b06_b914:   brk                         ; 1B914:  00
+b06_b915:   brk                         ; 1B915:  00
+b06_b916:   brk                         ; 1B916:  00
+b06_b917:   brk                         ; 1B917:  00
+b06_b918:   brk                         ; 1B918:  00
+b06_b919:   brk                         ; 1B919:  00
+b06_b91a:   .db $42                     ; 1B91A:  42
+b06_b91b:   sbc #$00                    ; 1B91B:  e9 00
+b06_b91d:   brk                         ; 1B91D:  00
+b06_b91e:   brk                         ; 1B91E:  00
+b06_b91f:   brk                         ; 1B91F:  00
+b06_b920:   brk                         ; 1B920:  00
+b06_b921:   brk                         ; 1B921:  00
+b06_b922:   .db $42                     ; 1B922:  42
+b06_b923:   sbc #$01                    ; 1B923:  e9 01
+b06_b925:   brk                         ; 1B925:  00
+b06_b926:   brk                         ; 1B926:  00
+b06_b927:   brk                         ; 1B927:  00
+b06_b928:   brk                         ; 1B928:  00
+b06_b929:   brk                         ; 1B929:  00
+b06_b92a:   brk                         ; 1B92A:  00
+b06_b92b:   brk                         ; 1B92B:  00
+b06_b92c:   ora ($00,x)                 ; 1B92C:  01 00
+b06_b92e:   brk                         ; 1B92E:  00
+b06_b92f:   brk                         ; 1B92F:  00
+b06_b930:   brk                         ; 1B930:  00
+b06_b931:   brk                         ; 1B931:  00
+b06_b932:   brk                         ; 1B932:  00
+b06_b933:   brk                         ; 1B933:  00
+b06_b934:   .db $e3                     ; 1B934:  e3
+b06_b935:   .db $bb                     ; 1B935:  bb
+b06_b936:   .db $1f                     ; 1B936:  1f
+b06_b937:   .db $0f                     ; 1B937:  0f
+b06_b938:   asl $00                     ; 1B938:  06 00
+b06_b93a:   brk                         ; 1B93A:  00
+b06_b93b:   brk                         ; 1B93B:  00
+b06_b93c:   .db $e3                     ; 1B93C:  e3
+b06_b93d:   .db $bb                     ; 1B93D:  bb
+b06_b93e:   .db $1f                     ; 1B93E:  1f
+b06_b93f:   .db $0f                     ; 1B93F:  0f
+b06_b940:   asl $00                     ; 1B940:  06 00
+b06_b942:   brk                         ; 1B942:  00
+b06_b943:   brk                         ; 1B943:  00
+b06_b944:   brk                         ; 1B944:  00
+b06_b945:   brk                         ; 1B945:  00
+b06_b946:   bcc $b940                   ; 1B946:  90 f8
+b06_b948:   sec                         ; 1B948:  38
+b06_b949:   bmi $b9ab                   ; 1B949:  30 60
+b06_b94b:   sei                         ; 1B94B:  78
+b06_b94c:   brk                         ; 1B94C:  00
+b06_b94d:   brk                         ; 1B94D:  00
+b06_b94e:   bcc $b948                   ; 1B94E:  90 f8
+b06_b950:   sec                         ; 1B950:  38
+b06_b951:   bmi $b9b3                   ; 1B951:  30 60
+b06_b953:   sei                         ; 1B953:  78
+b06_b954:   .db $07                     ; 1B954:  07
+b06_b955:   ora $3030,y                 ; 1B955:  19 30 30
+b06_b958:   bmi $b979                   ; 1B958:  30 1f
+b06_b95a:   .db $1f                     ; 1B95A:  1f
+b06_b95b:   ora ($07,x)                 ; 1B95B:  01 07
+b06_b95d:   ora $3030,y                 ; 1B95D:  19 30 30
+b06_b960:   bmi $b981                   ; 1B960:  30 1f
+b06_b962:   .db $1f                     ; 1B962:  1f
+b06_b963:   ora ($02,x)                 ; 1B963:  01 02
+b06_b965:   .db $07                     ; 1B965:  07
+b06_b966:   .db $07                     ; 1B966:  07
+b06_b967:   .db $03                     ; 1B967:  03
+b06_b968:   asl $07                     ; 1B968:  06 07
+b06_b96a:   .db $03                     ; 1B96A:  03
+b06_b96b:   asl $02                     ; 1B96B:  06 02
+b06_b96d:   .db $07                     ; 1B96D:  07
+b06_b96e:   .db $07                     ; 1B96E:  07
+b06_b96f:   .db $03                     ; 1B96F:  03
+b06_b970:   asl $07                     ; 1B970:  06 07
+b06_b972:   .db $03                     ; 1B972:  03
+b06_b973:   asl $00                     ; 1B973:  06 00
+b06_b975:   brk                         ; 1B975:  00
+b06_b976:   brk                         ; 1B976:  00
+b06_b977:   .db $80                     ; 1B977:  80
+b06_b978:   cpx #$e0                    ; 1B978:  e0 e0
+b06_b97a:   cpy #$80                    ; 1B97A:  c0 80
+b06_b97c:   brk                         ; 1B97C:  00
+b06_b97d:   brk                         ; 1B97D:  00
+b06_b97e:   brk                         ; 1B97E:  00
+b06_b97f:   .db $80                     ; 1B97F:  80
+b06_b980:   cpx #$e0                    ; 1B980:  e0 e0
+b06_b982:   cpy #$80                    ; 1B982:  c0 80
+b06_b984:   .db $80                     ; 1B984:  80
+b06_b985:   cpy #$a0                    ; 1B985:  c0 a0
+b06_b987:   bcc $b919                   ; 1B987:  90 90
+b06_b989:   tya                         ; 1B989:  98
+b06_b98a:   tya                         ; 1B98A:  98
+b06_b98b:   beq $b90d                   ; 1B98B:  f0 80
+b06_b98d:   cpy #$a0                    ; 1B98D:  c0 a0
+b06_b98f:   bcc $b921                   ; 1B98F:  90 90
+b06_b991:   tya                         ; 1B991:  98
+b06_b992:   tya                         ; 1B992:  98
+b06_b993:   beq $b9b4                   ; 1B993:  f0 1f
+b06_b995:   clc                         ; 1B995:  18
+b06_b996:   .db $1c                     ; 1B996:  1c
+b06_b997:   .db $0f                     ; 1B997:  0f
+b06_b998:   ora ($01,x)                 ; 1B998:  01 01
+b06_b99a:   brk                         ; 1B99A:  00
+b06_b99b:   brk                         ; 1B99B:  00
+b06_b99c:   .db $1f                     ; 1B99C:  1f
+b06_b99d:   clc                         ; 1B99D:  18
+b06_b99e:   .db $1c                     ; 1B99E:  1c
+b06_b99f:   .db $0f                     ; 1B99F:  0f
+b06_b9a0:   ora ($01,x)                 ; 1B9A0:  01 01
+b06_b9a2:   brk                         ; 1B9A2:  00
+b06_b9a3:   brk                         ; 1B9A3:  00
+b06_b9a4:   .db $80                     ; 1B9A4:  80
+b06_b9a5:   brk                         ; 1B9A5:  00
+b06_b9a6:   brk                         ; 1B9A6:  00
+b06_b9a7:   brk                         ; 1B9A7:  00
+b06_b9a8:   .db $80                     ; 1B9A8:  80
+b06_b9a9:   cpx #$70                    ; 1B9A9:  e0 70
+b06_b9ab:   brk                         ; 1B9AB:  00
+b06_b9ac:   .db $80                     ; 1B9AC:  80
+b06_b9ad:   brk                         ; 1B9AD:  00
+b06_b9ae:   brk                         ; 1B9AE:  00
+b06_b9af:   brk                         ; 1B9AF:  00
+b06_b9b0:   .db $80                     ; 1B9B0:  80
+b06_b9b1:   cpx #$70                    ; 1B9B1:  e0 70
+b06_b9b3:   brk                         ; 1B9B3:  00
+b06_b9b4:   brk                         ; 1B9B4:  00
+b06_b9b5:   brk                         ; 1B9B5:  00
+b06_b9b6:   brk                         ; 1B9B6:  00
+b06_b9b7:   brk                         ; 1B9B7:  00
+b06_b9b8:   .db $0c                     ; 1B9B8:  0c
+b06_b9b9:   php                         ; 1B9B9:  08
+b06_b9ba:   ora $000f                   ; 1B9BA:  0d 0f 00
+b06_b9bd:   brk                         ; 1B9BD:  00
+b06_b9be:   brk                         ; 1B9BE:  00
+b06_b9bf:   brk                         ; 1B9BF:  00
+b06_b9c0:   .db $0c                     ; 1B9C0:  0c
+b06_b9c1:   php                         ; 1B9C1:  08
+b06_b9c2:   ora $000f                   ; 1B9C2:  0d 0f 00
+b06_b9c5:   brk                         ; 1B9C5:  00
+b06_b9c6:   brk                         ; 1B9C6:  00
+b06_b9c7:   brk                         ; 1B9C7:  00
+b06_b9c8:   brk                         ; 1B9C8:  00
+b06_b9c9:   cpy #$c0                    ; 1B9C9:  c0 c0
+b06_b9cb:   .db $82                     ; 1B9CB:  82
+b06_b9cc:   brk                         ; 1B9CC:  00
+b06_b9cd:   brk                         ; 1B9CD:  00
+b06_b9ce:   brk                         ; 1B9CE:  00
+b06_b9cf:   brk                         ; 1B9CF:  00
+b06_b9d0:   brk                         ; 1B9D0:  00
+b06_b9d1:   cpy #$c0                    ; 1B9D1:  c0 c0
+b06_b9d3:   .db $82                     ; 1B9D3:  82
+b06_b9d4:   brk                         ; 1B9D4:  00
+b06_b9d5:   brk                         ; 1B9D5:  00
+b06_b9d6:   brk                         ; 1B9D6:  00
+b06_b9d7:   brk                         ; 1B9D7:  00
+b06_b9d8:   brk                         ; 1B9D8:  00
+b06_b9d9:   clc                         ; 1B9D9:  18
+b06_b9da:   .db $0f                     ; 1B9DA:  0f
+b06_b9db:   ora $0000                   ; 1B9DB:  0d 00 00
+b06_b9de:   brk                         ; 1B9DE:  00
+b06_b9df:   brk                         ; 1B9DF:  00
+b06_b9e0:   brk                         ; 1B9E0:  00
+b06_b9e1:   clc                         ; 1B9E1:  18
+b06_b9e2:   .db $0f                     ; 1B9E2:  0f
+b06_b9e3:   ora $5838                   ; 1B9E3:  0d 38 58
+b06_b9e6:   bcc $b998                   ; 1B9E6:  90 b0
+b06_b9e8:   cpx #$e0                    ; 1B9E8:  e0 e0
+b06_b9ea:   cpy #$00                    ; 1B9EA:  c0 00
+b06_b9ec:   sec                         ; 1B9EC:  38
+b06_b9ed:   cli                         ; 1B9ED:  58
+b06_b9ee:   bcc $b9a0                   ; 1B9EE:  90 b0
+b06_b9f0:   cpx #$e0                    ; 1B9F0:  e0 e0
+b06_b9f2:   cpy #$00                    ; 1B9F2:  c0 00
+b06_b9f4:   brk                         ; 1B9F4:  00
+b06_b9f5:   brk                         ; 1B9F5:  00
+b06_b9f6:   brk                         ; 1B9F6:  00
+b06_b9f7:   brk                         ; 1B9F7:  00
+b06_b9f8:   brk                         ; 1B9F8:  00
+b06_b9f9:   brk                         ; 1B9F9:  00
+b06_b9fa:   .db $80                     ; 1B9FA:  80
+b06_b9fb:   cpy #$00                    ; 1B9FB:  c0 00
+b06_b9fd:   brk                         ; 1B9FD:  00
+b06_b9fe:   brk                         ; 1B9FE:  00
+b06_b9ff:   brk                         ; 1B9FF:  00
+b06_ba00:   brk                         ; 1BA00:  00
+b06_ba01:   brk                         ; 1BA01:  00
+b06_ba02:   .db $80                     ; 1BA02:  80
+b06_ba03:   cpy #$03                    ; 1BA03:  c0 03
+b06_ba05:   brk                         ; 1BA05:  00
+b06_ba06:   brk                         ; 1BA06:  00
+b06_ba07:   .db $04                     ; 1BA07:  04
+b06_ba08:   .db $03                     ; 1BA08:  03
+b06_ba09:   .db $03                     ; 1BA09:  03
+b06_ba0a:   brk                         ; 1BA0A:  00
+b06_ba0b:   brk                         ; 1BA0B:  00
+b06_ba0c:   .db $03                     ; 1BA0C:  03
+b06_ba0d:   brk                         ; 1BA0D:  00
+b06_ba0e:   brk                         ; 1BA0E:  00
+b06_ba0f:   .db $04                     ; 1BA0F:  04
+b06_ba10:   .db $03                     ; 1BA10:  03
+b06_ba11:   .db $03                     ; 1BA11:  03
+b06_ba12:   brk                         ; 1BA12:  00
+b06_ba13:   brk                         ; 1BA13:  00
+b06_ba14:   cpx #$60                    ; 1BA14:  e0 60
+b06_ba16:   rts                         ; 1BA16:  60
+b06_ba17:   rts                         ; 1BA17:  60
+b06_ba18:   cpx #$60                    ; 1BA18:  e0 60
+b06_ba1a:   cpx #$e0                    ; 1BA1A:  e0 e0
+b06_ba1c:   cpx #$60                    ; 1BA1C:  e0 60
+b06_ba1e:   rts                         ; 1BA1E:  60
+b06_ba1f:   rts                         ; 1BA1F:  60
+b06_ba20:   cpx #$60                    ; 1BA20:  e0 60
+b06_ba22:   cpx #$e0                    ; 1BA22:  e0 e0
+b06_ba24:   brk                         ; 1BA24:  00
+b06_ba25:   brk                         ; 1BA25:  00
+b06_ba26:   brk                         ; 1BA26:  00
+b06_ba27:   brk                         ; 1BA27:  00
+b06_ba28:   brk                         ; 1BA28:  00
+b06_ba29:   .db $02                     ; 1BA29:  02
+b06_ba2a:   .db $02                     ; 1BA2A:  02
+b06_ba2b:   .db $03                     ; 1BA2B:  03
+b06_ba2c:   brk                         ; 1BA2C:  00
+b06_ba2d:   brk                         ; 1BA2D:  00
+b06_ba2e:   brk                         ; 1BA2E:  00
+b06_ba2f:   brk                         ; 1BA2F:  00
+b06_ba30:   brk                         ; 1BA30:  00
+b06_ba31:   .db $02                     ; 1BA31:  02
+b06_ba32:   .db $02                     ; 1BA32:  02
+b06_ba33:   .db $03                     ; 1BA33:  03
+b06_ba34:   sed                         ; 1BA34:  f8
+b06_ba35:   bvs $bab3                   ; 1BA35:  70 7c
+b06_ba37:   .db $7f                     ; 1BA37:  7f
+b06_ba38:   .db $c7                     ; 1BA38:  c7
+b06_ba39:   .db $87                     ; 1BA39:  87
+b06_ba3a:   ora ($00,x)                 ; 1BA3A:  01 00
+b06_ba3c:   sed                         ; 1BA3C:  f8
+b06_ba3d:   bvs $babb                   ; 1BA3D:  70 7c
+b06_ba3f:   .db $7f                     ; 1BA3F:  7f
+b06_ba40:   .db $c7                     ; 1BA40:  c7
+b06_ba41:   .db $87                     ; 1BA41:  87
+b06_ba42:   ora ($00,x)                 ; 1BA42:  01 00
+b06_ba44:   brk                         ; 1BA44:  00
+b06_ba45:   brk                         ; 1BA45:  00
+b06_ba46:   brk                         ; 1BA46:  00
+b06_ba47:   brk                         ; 1BA47:  00
+b06_ba48:   .db $80                     ; 1BA48:  80
+b06_ba49:   cpy #$e0                    ; 1BA49:  c0 e0
+b06_ba4b:   rts                         ; 1BA4B:  60
+b06_ba4c:   brk                         ; 1BA4C:  00
+b06_ba4d:   brk                         ; 1BA4D:  00
+b06_ba4e:   brk                         ; 1BA4E:  00
+b06_ba4f:   brk                         ; 1BA4F:  00
+b06_ba50:   .db $80                     ; 1BA50:  80
+b06_ba51:   cpy #$e0                    ; 1BA51:  c0 e0
+b06_ba53:   rts                         ; 1BA53:  60
+b06_ba54:   brk                         ; 1BA54:  00
+b06_ba55:   brk                         ; 1BA55:  00
+b06_ba56:   brk                         ; 1BA56:  00
+b06_ba57:   .db $04                     ; 1BA57:  04
+b06_ba58:   .db $0c                     ; 1BA58:  0c
+b06_ba59:   .db $0f                     ; 1BA59:  0f
+b06_ba5a:   ror $00cc,x                 ; 1BA5A:  7e cc 00
+b06_ba5d:   brk                         ; 1BA5D:  00
+b06_ba5e:   brk                         ; 1BA5E:  00
+b06_ba5f:   .db $04                     ; 1BA5F:  04
+b06_ba60:   .db $0c                     ; 1BA60:  0c
+b06_ba61:   .db $0f                     ; 1BA61:  0f
+b06_ba62:   ror $01cc,x                 ; 1BA62:  7e cc 01
+b06_ba65:   ora ($01,x)                 ; 1BA65:  01 01
+b06_ba67:   .db $03                     ; 1BA67:  03
+b06_ba68:   .db $02                     ; 1BA68:  02
+b06_ba69:   .db $02                     ; 1BA69:  02
+b06_ba6a:   brk                         ; 1BA6A:  00
+b06_ba6b:   brk                         ; 1BA6B:  00
+b06_ba6c:   ora ($01,x)                 ; 1BA6C:  01 01
+b06_ba6e:   ora ($03,x)                 ; 1BA6E:  01 03
+b06_ba70:   .db $02                     ; 1BA70:  02
+b06_ba71:   .db $02                     ; 1BA71:  02
+b06_ba72:   brk                         ; 1BA72:  00
+b06_ba73:   brk                         ; 1BA73:  00
+b06_ba74:   cpy #$80                    ; 1BA74:  c0 80
+b06_ba76:   brk                         ; 1BA76:  00
+b06_ba77:   brk                         ; 1BA77:  00
+b06_ba78:   .db $80                     ; 1BA78:  80
+b06_ba79:   cpy #$c0                    ; 1BA79:  c0 c0
+b06_ba7b:   cpy #$c0                    ; 1BA7B:  c0 c0
+b06_ba7d:   .db $80                     ; 1BA7D:  80
+b06_ba7e:   brk                         ; 1BA7E:  00
+b06_ba7f:   brk                         ; 1BA7F:  00
+b06_ba80:   .db $80                     ; 1BA80:  80
+b06_ba81:   cpy #$c0                    ; 1BA81:  c0 c0
+b06_ba83:   cpy #$00                    ; 1BA83:  c0 00
+b06_ba85:   brk                         ; 1BA85:  00
+b06_ba86:   brk                         ; 1BA86:  00
+b06_ba87:   brk                         ; 1BA87:  00
+b06_ba88:   brk                         ; 1BA88:  00
+b06_ba89:   brk                         ; 1BA89:  00
+b06_ba8a:   ora ($01,x)                 ; 1BA8A:  01 01
+b06_ba8c:   brk                         ; 1BA8C:  00
+b06_ba8d:   brk                         ; 1BA8D:  00
+b06_ba8e:   brk                         ; 1BA8E:  00
+b06_ba8f:   brk                         ; 1BA8F:  00
+b06_ba90:   brk                         ; 1BA90:  00
+b06_ba91:   brk                         ; 1BA91:  00
+b06_ba92:   ora ($01,x)                 ; 1BA92:  01 01
+b06_ba94:   .db $80                     ; 1BA94:  80
+b06_ba95:   .db $80                     ; 1BA95:  80
+b06_ba96:   .db $80                     ; 1BA96:  80
+b06_ba97:   .db $80                     ; 1BA97:  80
+b06_ba98:   .db $80                     ; 1BA98:  80
+b06_ba99:   .db $80                     ; 1BA99:  80
+b06_ba9a:   .db $80                     ; 1BA9A:  80
+b06_ba9b:   .db $80                     ; 1BA9B:  80
+b06_ba9c:   .db $80                     ; 1BA9C:  80
+b06_ba9d:   .db $80                     ; 1BA9D:  80
+b06_ba9e:   .db $80                     ; 1BA9E:  80
+b06_ba9f:   .db $80                     ; 1BA9F:  80
+b06_baa0:   .db $80                     ; 1BAA0:  80
+b06_baa1:   .db $80                     ; 1BAA1:  80
+b06_baa2:   .db $80                     ; 1BAA2:  80
+b06_baa3:   .db $80                     ; 1BAA3:  80
+b06_baa4:   .db $4f                     ; 1BAA4:  4f
+b06_baa5:   pha                         ; 1BAA5:  48
+b06_baa6:   bvs $bae8                   ; 1BAA6:  70 40
+b06_baa8:   rti                         ; 1BAA8:  40
+b06_baa9:   rti                         ; 1BAA9:  40
+b06_baaa:   .db $c7                     ; 1BAAA:  c7
+b06_baab:   .db $c7                     ; 1BAAB:  c7
+b06_baac:   .db $4f                     ; 1BAAC:  4f
+b06_baad:   pha                         ; 1BAAD:  48
+b06_baae:   bvs $baf0                   ; 1BAAE:  70 40
+b06_bab0:   rti                         ; 1BAB0:  40
+b06_bab1:   rti                         ; 1BAB1:  40
+b06_bab2:   .db $c7                     ; 1BAB2:  c7
+b06_bab3:   .db $c7                     ; 1BAB3:  c7
+b06_bab4:   cpx $c0                     ; 1BAB4:  e4 c0
+b06_bab6:   cpy #$c0                    ; 1BAB6:  c0 c0
+b06_bab8:   cpy #$c0                    ; 1BAB8:  c0 c0
+b06_baba:   cpy #$c0                    ; 1BABA:  c0 c0
+b06_babc:   cpx $c0                     ; 1BABC:  e4 c0
+b06_babe:   cpy #$c0                    ; 1BABE:  c0 c0
+b06_bac0:   cpy #$c0                    ; 1BAC0:  c0 c0
+b06_bac2:   cpy #$c0                    ; 1BAC2:  c0 c0
+b06_bac4:   dec $c3                     ; 1BAC4:  c6 c3
+b06_bac6:   cpy #$40                    ; 1BAC6:  c0 40
+b06_bac8:   brk                         ; 1BAC8:  00
+b06_bac9:   brk                         ; 1BAC9:  00
+b06_baca:   brk                         ; 1BACA:  00
+b06_bacb:   brk                         ; 1BACB:  00
+b06_bacc:   dec $c3                     ; 1BACC:  c6 c3
+b06_bace:   cpy #$40                    ; 1BACE:  c0 40
+b06_bad0:   brk                         ; 1BAD0:  00
+b06_bad1:   brk                         ; 1BAD1:  00
+b06_bad2:   brk                         ; 1BAD2:  00
+b06_bad3:   brk                         ; 1BAD3:  00
+b06_bad4:   cpx #$f8                    ; 1BAD4:  e0 f8
+b06_bad6:   .db $0c                     ; 1BAD6:  0c
+b06_bad7:   .db $04                     ; 1BAD7:  04
+b06_bad8:   brk                         ; 1BAD8:  00
+b06_bad9:   brk                         ; 1BAD9:  00
+b06_bada:   brk                         ; 1BADA:  00
+b06_badb:   brk                         ; 1BADB:  00
+b06_badc:   cpx #$f8                    ; 1BADC:  e0 f8
+b06_bade:   .db $0c                     ; 1BADE:  0c
+b06_badf:   .db $04                     ; 1BADF:  04
+b06_bae0:   brk                         ; 1BAE0:  00
+b06_bae1:   brk                         ; 1BAE1:  00
+b06_bae2:   brk                         ; 1BAE2:  00
+b06_bae3:   brk                         ; 1BAE3:  00
+b06_bae4:   .db $7c                     ; 1BAE4:  7c
+b06_bae5:   bmi $bb07                   ; 1BAE5:  30 20
+b06_bae7:   jsr $3e23                   ; 1BAE7:  20 23 3e
+b06_baea:   .db $1c                     ; 1BAEA:  1c
+b06_baeb:   brk                         ; 1BAEB:  00
+b06_baec:   .db $7c                     ; 1BAEC:  7c
+b06_baed:   bmi $bb0f                   ; 1BAED:  30 20
+b06_baef:   jsr $3e23                   ; 1BAEF:  20 23 3e
+b06_baf2:   .db $1c                     ; 1BAF2:  1c
+b06_baf3:   brk                         ; 1BAF3:  00
+b06_baf4:   .db $0c                     ; 1BAF4:  0c
+b06_baf5:   .db $0f                     ; 1BAF5:  0f
+b06_baf6:   .db $0f                     ; 1BAF6:  0f
+b06_baf7:   brk                         ; 1BAF7:  00
+b06_baf8:   brk                         ; 1BAF8:  00
+b06_baf9:   brk                         ; 1BAF9:  00
+b06_bafa:   brk                         ; 1BAFA:  00
+b06_bafb:   brk                         ; 1BAFB:  00
+b06_bafc:   .db $0c                     ; 1BAFC:  0c
+b06_bafd:   .db $0f                     ; 1BAFD:  0f
+b06_bafe:   .db $0f                     ; 1BAFE:  0f
+b06_baff:   brk                         ; 1BAFF:  00
+b06_bb00:   brk                         ; 1BB00:  00
+b06_bb01:   brk                         ; 1BB01:  00
+b06_bb02:   brk                         ; 1BB02:  00
+b06_bb03:   brk                         ; 1BB03:  00
+b06_bb04:   cpx #$80                    ; 1BB04:  e0 80
+b06_bb06:   .db $80                     ; 1BB06:  80
+b06_bb07:   .db $80                     ; 1BB07:  80
+b06_bb08:   .db $80                     ; 1BB08:  80
+b06_bb09:   .db $80                     ; 1BB09:  80
+b06_bb0a:   .db $80                     ; 1BB0A:  80
+b06_bb0b:   .db $80                     ; 1BB0B:  80
+b06_bb0c:   cpx #$80                    ; 1BB0C:  e0 80
+b06_bb0e:   .db $80                     ; 1BB0E:  80
+b06_bb0f:   .db $80                     ; 1BB0F:  80
+b06_bb10:   .db $80                     ; 1BB10:  80
+b06_bb11:   .db $80                     ; 1BB11:  80
+b06_bb12:   .db $80                     ; 1BB12:  80
+b06_bb13:   .db $80                     ; 1BB13:  80
+b06_bb14:   .db $03                     ; 1BB14:  03
+b06_bb15:   .db $07                     ; 1BB15:  07
+b06_bb16:   ora $0d                     ; 1BB16:  05 0d
+b06_bb18:   .db $1f                     ; 1BB18:  1f
+b06_bb19:   .db $77                     ; 1BB19:  77
+b06_bb1a:   cmp ($00,x)                 ; 1BB1A:  c1 00
+b06_bb1c:   .db $03                     ; 1BB1C:  03
+b06_bb1d:   .db $07                     ; 1BB1D:  07
+b06_bb1e:   ora $0d                     ; 1BB1E:  05 0d
+b06_bb20:   .db $1f                     ; 1BB20:  1f
+b06_bb21:   .db $77                     ; 1BB21:  77
+b06_bb22:   cmp ($00,x)                 ; 1BB22:  c1 00
+b06_bb24:   .db $82                     ; 1BB24:  82
+b06_bb25:   .db $83                     ; 1BB25:  83
+b06_bb26:   .db $83                     ; 1BB26:  83
+b06_bb27:   .db $83                     ; 1BB27:  83
+b06_bb28:   .db $83                     ; 1BB28:  83
+b06_bb29:   .db $83                     ; 1BB29:  83
+b06_bb2a:   .db $07                     ; 1BB2A:  07
+b06_bb2b:   asl $82                     ; 1BB2B:  06 82
+b06_bb2d:   .db $83                     ; 1BB2D:  83
+b06_bb2e:   .db $83                     ; 1BB2E:  83
+b06_bb2f:   .db $83                     ; 1BB2F:  83
+b06_bb30:   .db $83                     ; 1BB30:  83
+b06_bb31:   .db $83                     ; 1BB31:  83
+b06_bb32:   .db $07                     ; 1BB32:  07
+b06_bb33:   asl $00                     ; 1BB33:  06 00
+b06_bb35:   .db $80                     ; 1BB35:  80
+b06_bb36:   .db $80                     ; 1BB36:  80
+b06_bb37:   .db $80                     ; 1BB37:  80
+b06_bb38:   cpy #$80                    ; 1BB38:  c0 80
+b06_bb3a:   .db $80                     ; 1BB3A:  80
+b06_bb3b:   brk                         ; 1BB3B:  00
+b06_bb3c:   brk                         ; 1BB3C:  00
+b06_bb3d:   .db $80                     ; 1BB3D:  80
+b06_bb3e:   .db $80                     ; 1BB3E:  80
+b06_bb3f:   .db $80                     ; 1BB3F:  80
+b06_bb40:   cpy #$80                    ; 1BB40:  c0 80
+b06_bb42:   .db $80                     ; 1BB42:  80
+b06_bb43:   brk                         ; 1BB43:  00
+b06_bb44:   ora ($01,x)                 ; 1BB44:  01 01
+b06_bb46:   .db $03                     ; 1BB46:  03
+b06_bb47:   asl $04                     ; 1BB47:  06 04
+b06_bb49:   brk                         ; 1BB49:  00
+b06_bb4a:   brk                         ; 1BB4A:  00
+b06_bb4b:   brk                         ; 1BB4B:  00
+b06_bb4c:   ora ($01,x)                 ; 1BB4C:  01 01
+b06_bb4e:   .db $03                     ; 1BB4E:  03
+b06_bb4f:   asl $04                     ; 1BB4F:  06 04
+b06_bb51:   brk                         ; 1BB51:  00
+b06_bb52:   brk                         ; 1BB52:  00
+b06_bb53:   brk                         ; 1BB53:  00
+b06_bb54:   cpy #$80                    ; 1BB54:  c0 80
+b06_bb56:   brk                         ; 1BB56:  00
+b06_bb57:   brk                         ; 1BB57:  00
+b06_bb58:   brk                         ; 1BB58:  00
+b06_bb59:   brk                         ; 1BB59:  00
+b06_bb5a:   brk                         ; 1BB5A:  00
+b06_bb5b:   brk                         ; 1BB5B:  00
+b06_bb5c:   cpy #$80                    ; 1BB5C:  c0 80
+b06_bb5e:   brk                         ; 1BB5E:  00
+b06_bb5f:   brk                         ; 1BB5F:  00
+b06_bb60:   brk                         ; 1BB60:  00
+b06_bb61:   brk                         ; 1BB61:  00
+b06_bb62:   brk                         ; 1BB62:  00
+b06_bb63:   brk                         ; 1BB63:  00
+b06_bb64:   .db $03                     ; 1BB64:  03
+b06_bb65:   asl $06                     ; 1BB65:  06 06
+b06_bb67:   asl $06                     ; 1BB67:  06 06
+b06_bb69:   brk                         ; 1BB69:  00
+b06_bb6a:   brk                         ; 1BB6A:  00
+b06_bb6b:   brk                         ; 1BB6B:  00
+b06_bb6c:   .db $03                     ; 1BB6C:  03
+b06_bb6d:   asl $06                     ; 1BB6D:  06 06
+b06_bb6f:   asl $06                     ; 1BB6F:  06 06
+b06_bb71:   brk                         ; 1BB71:  00
+b06_bb72:   brk                         ; 1BB72:  00
+b06_bb73:   brk                         ; 1BB73:  00
+b06_bb74:   .db $0c                     ; 1BB74:  0c
+b06_bb75:   .db $0c                     ; 1BB75:  0c
+b06_bb76:   .db $0c                     ; 1BB76:  0c
+b06_bb77:   .db $0c                     ; 1BB77:  0c
+b06_bb78:   .db $0c                     ; 1BB78:  0c
+b06_bb79:   .db $0c                     ; 1BB79:  0c
+b06_bb7a:   .db $0c                     ; 1BB7A:  0c
+b06_bb7b:   clc                         ; 1BB7B:  18
+b06_bb7c:   .db $0c                     ; 1BB7C:  0c
+b06_bb7d:   .db $0c                     ; 1BB7D:  0c
+b06_bb7e:   .db $0c                     ; 1BB7E:  0c
+b06_bb7f:   .db $0c                     ; 1BB7F:  0c
+b06_bb80:   .db $0c                     ; 1BB80:  0c
+b06_bb81:   .db $0c                     ; 1BB81:  0c
+b06_bb82:   .db $0c                     ; 1BB82:  0c
+b06_bb83:   clc                         ; 1BB83:  18
+b06_bb84:   sec                         ; 1BB84:  38
+b06_bb85:   bmi $bba7                   ; 1BB85:  30 20
+b06_bb87:   brk                         ; 1BB87:  00
+b06_bb88:   brk                         ; 1BB88:  00
+b06_bb89:   brk                         ; 1BB89:  00
+b06_bb8a:   brk                         ; 1BB8A:  00
+b06_bb8b:   brk                         ; 1BB8B:  00
+b06_bb8c:   sec                         ; 1BB8C:  38
+b06_bb8d:   bmi $bbaf                   ; 1BB8D:  30 20
+b06_bb8f:   brk                         ; 1BB8F:  00
+b06_bb90:   brk                         ; 1BB90:  00
+b06_bb91:   brk                         ; 1BB91:  00
+b06_bb92:   brk                         ; 1BB92:  00
+b06_bb93:   brk                         ; 1BB93:  00
+b06_bb94:   ora ($01,x)                 ; 1BB94:  01 01
+b06_bb96:   .db $03                     ; 1BB96:  03
+b06_bb97:   .db $03                     ; 1BB97:  03
+b06_bb98:   .db $03                     ; 1BB98:  03
+b06_bb99:   asl $0e                     ; 1BB99:  06 0e
+b06_bb9b:   asl $0101                   ; 1BB9B:  0e 01 01
+b06_bb9e:   .db $03                     ; 1BB9E:  03
+b06_bb9f:   .db $03                     ; 1BB9F:  03
+b06_bba0:   .db $03                     ; 1BBA0:  03
+b06_bba1:   asl $0e                     ; 1BBA1:  06 0e
+b06_bba3:   asl $0080                   ; 1BBA3:  0e 80 00
+b06_bba6:   brk                         ; 1BBA6:  00
+b06_bba7:   brk                         ; 1BBA7:  00
+b06_bba8:   brk                         ; 1BBA8:  00
+b06_bba9:   brk                         ; 1BBA9:  00
+b06_bbaa:   brk                         ; 1BBAA:  00
+b06_bbab:   brk                         ; 1BBAB:  00
+b06_bbac:   .db $80                     ; 1BBAC:  80
+b06_bbad:   brk                         ; 1BBAD:  00
+b06_bbae:   brk                         ; 1BBAE:  00
+b06_bbaf:   brk                         ; 1BBAF:  00
+b06_bbb0:   brk                         ; 1BBB0:  00
+b06_bbb1:   brk                         ; 1BBB1:  00
+b06_bbb2:   brk                         ; 1BBB2:  00
+b06_bbb3:   brk                         ; 1BBB3:  00
+b06_bbb4:   brk                         ; 1BBB4:  00
+b06_bbb5:   brk                         ; 1BBB5:  00
+b06_bbb6:   brk                         ; 1BBB6:  00
+b06_bbb7:   brk                         ; 1BBB7:  00
+b06_bbb8:   brk                         ; 1BBB8:  00
+b06_bbb9:   brk                         ; 1BBB9:  00
+b06_bbba:   .db $1f                     ; 1BBBA:  1f
+b06_bbbb:   brk                         ; 1BBBB:  00
+b06_bbbc:   brk                         ; 1BBBC:  00
+b06_bbbd:   brk                         ; 1BBBD:  00
+b06_bbbe:   brk                         ; 1BBBE:  00
+b06_bbbf:   brk                         ; 1BBBF:  00
+b06_bbc0:   brk                         ; 1BBC0:  00
+b06_bbc1:   brk                         ; 1BBC1:  00
+b06_bbc2:   brk                         ; 1BBC2:  00
+b06_bbc3:   .db $1f                     ; 1BBC3:  1f
+b06_bbc4:   brk                         ; 1BBC4:  00
+b06_bbc5:   brk                         ; 1BBC5:  00
+b06_bbc6:   brk                         ; 1BBC6:  00
+b06_bbc7:   brk                         ; 1BBC7:  00
+b06_bbc8:   brk                         ; 1BBC8:  00
+b06_bbc9:   brk                         ; 1BBC9:  00
+b06_bbca:   cpy #$20                    ; 1BBCA:  c0 20
+b06_bbcc:   brk                         ; 1BBCC:  00
+b06_bbcd:   brk                         ; 1BBCD:  00
+b06_bbce:   brk                         ; 1BBCE:  00
+b06_bbcf:   brk                         ; 1BBCF:  00
+b06_bbd0:   brk                         ; 1BBD0:  00
+b06_bbd1:   brk                         ; 1BBD1:  00
+b06_bbd2:   brk                         ; 1BBD2:  00
+b06_bbd3:   .db $80                     ; 1BBD3:  80
+b06_bbd4:   brk                         ; 1BBD4:  00
+b06_bbd5:   .db $33                     ; 1BBD5:  33
+b06_bbd6:   adc $7f45,x                 ; 1BBD6:  7d 45 7f
+b06_bbd9:   and $5d,x                   ; 1BBD9:  35 5d
+b06_bbdb:   adc $0000                   ; 1BBDB:  6d 00 00
+b06_bbde:   brk                         ; 1BBDE:  00
+b06_bbdf:   brk                         ; 1BBDF:  00
+b06_bbe0:   brk                         ; 1BBE0:  00
+b06_bbe1:   brk                         ; 1BBE1:  00
+b06_bbe2:   brk                         ; 1BBE2:  00
+b06_bbe3:   brk                         ; 1BBE3:  00
+b06_bbe4:   .db $3f                     ; 1BBE4:  3f
+b06_bbe5:   .db $5b                     ; 1BBE5:  5b
+b06_bbe6:   .db $5f                     ; 1BBE6:  5f
+b06_bbe7:   .db $3f                     ; 1BBE7:  3f
+b06_bbe8:   adc ($3f,x)                 ; 1BBE8:  61 3f
+b06_bbea:   brk                         ; 1BBEA:  00
+b06_bbeb:   brk                         ; 1BBEB:  00
+b06_bbec:   brk                         ; 1BBEC:  00
+b06_bbed:   brk                         ; 1BBED:  00
+b06_bbee:   brk                         ; 1BBEE:  00
+b06_bbef:   brk                         ; 1BBEF:  00
+b06_bbf0:   brk                         ; 1BBF0:  00
+b06_bbf1:   brk                         ; 1BBF1:  00
+b06_bbf2:   brk                         ; 1BBF2:  00
+b06_bbf3:   brk                         ; 1BBF3:  00
+b06_bbf4:   brk                         ; 1BBF4:  00
+b06_bbf5:   sed                         ; 1BBF5:  f8
+b06_bbf6:   ldy $64bc                   ; 1BBF6:  ac bc 64
+b06_bbf9:   .db $7c                     ; 1BBF9:  7c
+b06_bbfa:   .db $64                     ; 1BBFA:  64
+b06_bbfb:   cpx $00                     ; 1BBFB:  e4 00
+b06_bbfd:   brk                         ; 1BBFD:  00
+b06_bbfe:   brk                         ; 1BBFE:  00
+b06_bbff:   brk                         ; 1BBFF:  00
+b06_bc00:   brk                         ; 1BC00:  00
+b06_bc01:   brk                         ; 1BC01:  00
+b06_bc02:   brk                         ; 1BC02:  00
+b06_bc03:   brk                         ; 1BC03:  00
+b06_bc04:   .db $74                     ; 1BC04:  74
+b06_bc05:   .db $54                     ; 1BC05:  54
+b06_bc06:   .db $74                     ; 1BC06:  74
+b06_bc07:   .db $dc                     ; 1BC07:  dc
+b06_bc08:   .db $7c                     ; 1BC08:  7c
+b06_bc09:   inx                         ; 1BC09:  e8
+b06_bc0a:   brk                         ; 1BC0A:  00
+b06_bc0b:   brk                         ; 1BC0B:  00
+b06_bc0c:   brk                         ; 1BC0C:  00
+b06_bc0d:   brk                         ; 1BC0D:  00
+b06_bc0e:   brk                         ; 1BC0E:  00
+b06_bc0f:   brk                         ; 1BC0F:  00
+b06_bc10:   brk                         ; 1BC10:  00
+b06_bc11:   brk                         ; 1BC11:  00
+b06_bc12:   brk                         ; 1BC12:  00
+b06_bc13:   brk                         ; 1BC13:  00
+b06_bc14:   brk                         ; 1BC14:  00
+b06_bc15:   brk                         ; 1BC15:  00
+b06_bc16:   brk                         ; 1BC16:  00
+b06_bc17:   brk                         ; 1BC17:  00
+b06_bc18:   brk                         ; 1BC18:  00
+b06_bc19:   .db $02                     ; 1BC19:  02
+b06_bc1a:   asl $00                     ; 1BC1A:  06 00
+b06_bc1c:   brk                         ; 1BC1C:  00
+b06_bc1d:   brk                         ; 1BC1D:  00
+b06_bc1e:   brk                         ; 1BC1E:  00
+b06_bc1f:   brk                         ; 1BC1F:  00
+b06_bc20:   brk                         ; 1BC20:  00
+b06_bc21:   brk                         ; 1BC21:  00
+b06_bc22:   brk                         ; 1BC22:  00
+b06_bc23:   brk                         ; 1BC23:  00
+b06_bc24:   brk                         ; 1BC24:  00
+b06_bc25:   brk                         ; 1BC25:  00
+b06_bc26:   brk                         ; 1BC26:  00
+b06_bc27:   brk                         ; 1BC27:  00
+b06_bc28:   brk                         ; 1BC28:  00
+b06_bc29:   brk                         ; 1BC29:  00
+b06_bc2a:   brk                         ; 1BC2A:  00
+b06_bc2b:   .db $03                     ; 1BC2B:  03
+b06_bc2c:   brk                         ; 1BC2C:  00
+b06_bc2d:   brk                         ; 1BC2D:  00
+b06_bc2e:   brk                         ; 1BC2E:  00
+b06_bc2f:   brk                         ; 1BC2F:  00
+b06_bc30:   brk                         ; 1BC30:  00
+b06_bc31:   brk                         ; 1BC31:  00
+b06_bc32:   brk                         ; 1BC32:  00
+b06_bc33:   ora ($00,x)                 ; 1BC33:  01 00
+b06_bc35:   brk                         ; 1BC35:  00
+b06_bc36:   brk                         ; 1BC36:  00
+b06_bc37:   brk                         ; 1BC37:  00
+b06_bc38:   ora ($1e,x)                 ; 1BC38:  01 1e
+b06_bc3a:   .db $c3                     ; 1BC3A:  c3
+b06_bc3b:   cpy #$00                    ; 1BC3B:  c0 00
+b06_bc3d:   brk                         ; 1BC3D:  00
+b06_bc3e:   brk                         ; 1BC3E:  00
+b06_bc3f:   brk                         ; 1BC3F:  00
+b06_bc40:   brk                         ; 1BC40:  00
+b06_bc41:   brk                         ; 1BC41:  00
+b06_bc42:   brk                         ; 1BC42:  00
+b06_bc43:   ldx $200d,y                 ; 1BC43:  be 0d 20
+b06_bc46:   adc ($c0),y                 ; 1BC46:  71 c0
+b06_bc48:   txa                         ; 1BC48:  8a
+b06_bc49:   .db $80                     ; 1BC49:  80
+b06_bc4a:   sta $40                     ; 1BC4A:  85 40
+b06_bc4c:   ora ($0e,x)                 ; 1BC4C:  01 0e
+b06_bc4e:   ora ($2f),y                 ; 1BC4E:  11 2f
+b06_bc50:   .db $2f                     ; 1BC50:  2f
+b06_bc51:   .db $2f                     ; 1BC51:  2f
+b06_bc52:   .db $37                     ; 1BC52:  37
+b06_bc53:   .db $1b                     ; 1BC53:  1b
+b06_bc54:   .db $03                     ; 1BC54:  03
+b06_bc55:   brk                         ; 1BC55:  00
+b06_bc56:   asl a                       ; 1BC56:  0a
+b06_bc57:   brk                         ; 1BC57:  00
+b06_bc58:   sta $00                     ; 1BC58:  85 00
+b06_bc5a:   .db $62                     ; 1BC5A:  62
+b06_bc5b:   brk                         ; 1BC5B:  00
+b06_bc5c:   adc ($3e,x)                 ; 1BC5C:  61 3e
+b06_bc5e:   .db $3f                     ; 1BC5E:  3f
+b06_bc5f:   .db $9f                     ; 1BC5F:  9f
+b06_bc60:   .db $9f                     ; 1BC60:  9f
+b06_bc61:   .db $cf                     ; 1BC61:  cf
+b06_bc62:   .db $e7                     ; 1BC62:  e7
+b06_bc63:   .db $e7                     ; 1BC63:  e7
+b06_bc64:   brk                         ; 1BC64:  00
+b06_bc65:   brk                         ; 1BC65:  00
+b06_bc66:   brk                         ; 1BC66:  00
+b06_bc67:   rol $dcc3,x                 ; 1BC67:  3e c3 dc
+b06_bc6a:   adc $0036                   ; 1BC6A:  6d 36 00
+b06_bc6d:   brk                         ; 1BC6D:  00
+b06_bc6e:   brk                         ; 1BC6E:  00
+b06_bc6f:   brk                         ; 1BC6F:  00
+b06_bc70:   brk                         ; 1BC70:  00
+b06_bc71:   brk                         ; 1BC71:  00
+b06_bc72:   brk                         ; 1BC72:  00
+b06_bc73:   brk                         ; 1BC73:  00
+b06_bc74:   brk                         ; 1BC74:  00
+b06_bc75:   brk                         ; 1BC75:  00
+b06_bc76:   .db $22                     ; 1BC76:  22
+b06_bc77:   .db $da                     ; 1BC77:  da
+b06_bc78:   jmp ($c336)                 ; 1BC78:  6c 36 c3
+b06_bc7b:   .db $dc                     ; 1BC7B:  dc
+b06_bc7c:   brk                         ; 1BC7C:  00
+b06_bc7d:   brk                         ; 1BC7D:  00
+b06_bc7e:   .db $07                     ; 1BC7E:  07
+b06_bc7f:   .db $03                     ; 1BC7F:  03
+b06_bc80:   ora ($00,x)                 ; 1BC80:  01 00
+b06_bc82:   brk                         ; 1BC82:  00
+b06_bc83:   brk                         ; 1BC83:  00
+b06_bc84:   .db $83                     ; 1BC84:  83
+b06_bc85:   .db $74                     ; 1BC85:  74
+b06_bc86:   rol $7b1d                   ; 1BC86:  2e 1d 7b
+b06_bc89:   .db $03                     ; 1BC89:  03
+b06_bc8a:   ldy $0017                   ; 1BC8A:  ac 17 00
+b06_bc8d:   .db $80                     ; 1BC8D:  80
+b06_bc8e:   rti                         ; 1BC8E:  40
+b06_bc8f:   rti                         ; 1BC8F:  40
+b06_bc90:   cpy #$c0                    ; 1BC90:  c0 c0
+b06_bc92:   ldy #$a0                    ; 1BC92:  a0 a0
+b06_bc94:   .db $6f                     ; 1BC94:  6f
+b06_bc95:   and $c2,x                   ; 1BC95:  35 c2
+b06_bc97:   dec $ac,x                   ; 1BC97:  d6 ac
+b06_bc99:   eor ($27),y                 ; 1BC99:  51 27
+b06_bc9b:   .db $3f                     ; 1BC9B:  3f
+b06_bc9c:   brk                         ; 1BC9C:  00
+b06_bc9d:   brk                         ; 1BC9D:  00
+b06_bc9e:   .db $02                     ; 1BC9E:  02
+b06_bc9f:   asl $0f                     ; 1BC9F:  06 0f
+b06_bca1:   .db $1f                     ; 1BCA1:  1f
+b06_bca2:   .db $3f                     ; 1BCA2:  3f
+b06_bca3:   asl $2000,x                 ; 1BCA3:  1e 00 20
+b06_bca6:   tax                         ; 1BCA6:  aa
+b06_bca7:   tay                         ; 1BCA7:  a8
+b06_bca8:   tay                         ; 1BCA8:  a8
+b06_bca9:   tay                         ; 1BCA9:  a8
+b06_bcaa:   plp                         ; 1BCAA:  28
+b06_bcab:   rol a                       ; 1BCAB:  2a
+b06_bcac:   brk                         ; 1BCAC:  00
+b06_bcad:   bvs $bca7                   ; 1BCAD:  70 f8
+b06_bcaf:   .db $fc                     ; 1BCAF:  fc
+b06_bcb0:   inc $78fc,x                 ; 1BCB0:  fe fc 78
+b06_bcb3:   .db $7a                     ; 1BCB3:  7a
+b06_bcb4:   rti                         ; 1BCB4:  40
+b06_bcb5:   .db $80                     ; 1BCB5:  80
+b06_bcb6:   .db $80                     ; 1BCB6:  80
+b06_bcb7:   ldy #$80                    ; 1BCB7:  a0 80
+b06_bcb9:   .db $80                     ; 1BCB9:  80
+b06_bcba:   brk                         ; 1BCBA:  00
+b06_bcbb:   .db $2b                     ; 1BCBB:  2b
+b06_bcbc:   and #$5f                    ; 1BCBC:  29 5f
+b06_bcbe:   eor $5b46,y                 ; 1BCBE:  59 46 5b
+b06_bcc1:   lsr a                       ; 1BCC1:  4a
+b06_bcc2:   .db $3f                     ; 1BCC2:  3f
+b06_bcc3:   .db $14                     ; 1BCC3:  14
+b06_bcc4:   plp                         ; 1BCC4:  28
+b06_bcc5:   and #$a9                    ; 1BCC5:  29 a9
+b06_bcc7:   tay                         ; 1BCC7:  a8
+b06_bcc8:   tay                         ; 1BCC8:  a8
+b06_bcc9:   php                         ; 1BCC9:  08
+b06_bcca:   dey                         ; 1BCCA:  88
+b06_bccb:   php                         ; 1BCCB:  08
+b06_bccc:   sei                         ; 1BCCC:  78
+b06_bccd:   adc $b8b9,y                 ; 1BCCD:  79 b9 b8
+b06_bcd0:   ldy $1e1d,x                 ; 1BCD0:  bc 1d 1e
+b06_bcd3:   .db $0f                     ; 1BCD3:  0f
+b06_bcd4:   .db $80                     ; 1BCD4:  80
+b06_bcd5:   ora #$08                    ; 1BCD5:  09 08
+b06_bcd7:   eor $1010,y                 ; 1BCD7:  59 10 10
+b06_bcda:   bpl $bcdd                   ; 1BCDA:  10 01
+b06_bcdc:   .db $80                     ; 1BCDC:  80
+b06_bcdd:   ora $5918,y                 ; 1BCDD:  19 18 59
+b06_bce0:   bmi $bc99                   ; 1BCE0:  30 b7
+b06_bce2:   ldy $02,x                   ; 1BCE2:  b4 02
+b06_bce4:   bpl $bcee                   ; 1BCE4:  10 08
+b06_bce6:   ora #$95                    ; 1BCE6:  09 95
+b06_bce8:   ora $15,x                   ; 1BCE8:  15 15
+b06_bcea:   and #$09                    ; 1BCEA:  29 09
+b06_bcec:   rts                         ; 1BCEC:  60
+b06_bced:   bcs $bca0                   ; 1BCED:  b0 b1
+b06_bcef:   .db $67                     ; 1BCEF:  67
+b06_bcf0:   .db $6f                     ; 1BCF0:  6f
+b06_bcf1:   .db $67                     ; 1BCF1:  67
+b06_bcf2:   .db $8b                     ; 1BCF2:  8b
+b06_bcf3:   .db $8b                     ; 1BCF3:  8b
+b06_bcf4:   brk                         ; 1BCF4:  00
+b06_bcf5:   brk                         ; 1BCF5:  00
+b06_bcf6:   rti                         ; 1BCF6:  40
+b06_bcf7:   bvc $bd4e                   ; 1BCF7:  50 55
+b06_bcf9:   bvc $bd4b                   ; 1BCF9:  50 50
+b06_bcfb:   .db $44                     ; 1BCFB:  44
+b06_bcfc:   brk                         ; 1BCFC:  00
+b06_bcfd:   brk                         ; 1BCFD:  00
+b06_bcfe:   cpy #$f8                    ; 1BCFE:  c0 f8
+b06_bd00:   .db $ff                     ; 1BD00:  ff
+b06_bd01:   sed                         ; 1BD01:  f8
+b06_bd02:   beq $bce8                   ; 1BD02:  f0 e4
+b06_bd04:   eor ($25,x)                 ; 1BD04:  41 25
+b06_bd06:   and $05                     ; 1BD06:  25 05
+b06_bd08:   ora $14,x                   ; 1BD08:  15 14
+b06_bd0a:   .db $14                     ; 1BD0A:  14
+b06_bd0b:   bpl $bd50                   ; 1BD0B:  10 43
+b06_bd0d:   .db $27                     ; 1BD0D:  27
+b06_bd0e:   .db $2f                     ; 1BD0E:  2f
+b06_bd0f:   .db $0f                     ; 1BD0F:  0f
+b06_bd10:   .db $1f                     ; 1BD10:  1f
+b06_bd11:   ldx $d13c,y                 ; 1BD11:  be 3c d1
+b06_bd14:   .db $52                     ; 1BD14:  52
+b06_bd15:   .db $1a                     ; 1BD15:  1a
+b06_bd16:   php                         ; 1BD16:  08
+b06_bd17:   and $72,x                   ; 1BD17:  35 72
+b06_bd19:   .db $fb                     ; 1BD19:  fb
+b06_bd1a:   .db $7b                     ; 1BD1A:  7b
+b06_bd1b:   .db $7c                     ; 1BD1B:  7c
+b06_bd1c:   .db $d2                     ; 1BD1C:  d2
+b06_bd1d:   txs                         ; 1BD1D:  9a
+b06_bd1e:   dey                         ; 1BD1E:  88
+b06_bd1f:   .db $04                     ; 1BD1F:  04
+b06_bd20:   rts                         ; 1BD20:  60
+b06_bd21:   .db $e3                     ; 1BD21:  e3
+b06_bd22:   .db $f3                     ; 1BD22:  f3
+b06_bd23:   beq $bcc5                   ; 1BD23:  f0 a0
+b06_bd25:   cli                         ; 1BD25:  58
+b06_bd26:   bit $c096                   ; 1BD26:  2c 96 c0
+b06_bd29:   plp                         ; 1BD29:  28
+b06_bd2a:   .db $72                     ; 1BD2A:  72
+b06_bd2b:   .db $d4                     ; 1BD2B:  d4
+b06_bd2c:   brk                         ; 1BD2C:  00
+b06_bd2d:   brk                         ; 1BD2D:  00
+b06_bd2e:   plp                         ; 1BD2E:  28
+b06_bd2f:   sty $c0,x                   ; 1BD2F:  94 c0
+b06_bd31:   jsr $d070                   ; 1BD31:  20 70 d0
+b06_bd34:   .db $0b                     ; 1BD34:  0b
+b06_bd35:   ora $0b06                   ; 1BD35:  0d 06 0b
+b06_bd38:   ora $0200                   ; 1BD38:  0d 00 02
+b06_bd3b:   ora ($00,x)                 ; 1BD3B:  01 00
+b06_bd3d:   brk                         ; 1BD3D:  00
+b06_bd3e:   brk                         ; 1BD3E:  00
+b06_bd3f:   brk                         ; 1BD3F:  00
+b06_bd40:   brk                         ; 1BD40:  00
+b06_bd41:   brk                         ; 1BD41:  00
+b06_bd42:   brk                         ; 1BD42:  00
+b06_bd43:   brk                         ; 1BD43:  00
+b06_bd44:   ora ($00,x)                 ; 1BD44:  01 00
+b06_bd46:   brk                         ; 1BD46:  00
+b06_bd47:   brk                         ; 1BD47:  00
+b06_bd48:   brk                         ; 1BD48:  00
+b06_bd49:   brk                         ; 1BD49:  00
+b06_bd4a:   brk                         ; 1BD4A:  00
+b06_bd4b:   brk                         ; 1BD4B:  00
+b06_bd4c:   brk                         ; 1BD4C:  00
+b06_bd4d:   brk                         ; 1BD4D:  00
+b06_bd4e:   brk                         ; 1BD4E:  00
+b06_bd4f:   brk                         ; 1BD4F:  00
+b06_bd50:   brk                         ; 1BD50:  00
+b06_bd51:   brk                         ; 1BD51:  00
+b06_bd52:   brk                         ; 1BD52:  00
+b06_bd53:   brk                         ; 1BD53:  00
+b06_bd54:   .db $80                     ; 1BD54:  80
+b06_bd55:   bcs $bd30                   ; 1BD55:  b0 d9
+b06_bd57:   jmp ($5bb6)                 ; 1BD57:  6c b6 5b
+b06_bd5a:   sta $68                     ; 1BD5A:  85 68
+b06_bd5c:   ora $0306                   ; 1BD5C:  0d 06 03
+b06_bd5f:   brk                         ; 1BD5F:  00
+b06_bd60:   brk                         ; 1BD60:  00
+b06_bd61:   brk                         ; 1BD61:  00
+b06_bd62:   brk                         ; 1BD62:  00
+b06_bd63:   brk                         ; 1BD63:  00
+b06_bd64:   lda ($00),y                 ; 1BD64:  b1 00
+b06_bd66:   cli                         ; 1BD66:  58
+b06_bd67:   brk                         ; 1BD67:  00
+b06_bd68:   clc                         ; 1BD68:  18
+b06_bd69:   brk                         ; 1BD69:  00
+b06_bd6a:   sty $40,x                   ; 1BD6A:  94 40
+b06_bd6c:   .db $f3                     ; 1BD6C:  f3
+b06_bd6d:   sbc $bc79,y                 ; 1BD6D:  f9 79 bc
+b06_bd70:   lsr $1f2e,x                 ; 1BD70:  5e 2e 1f
+b06_bd73:   brk                         ; 1BD73:  00
+b06_bd74:   .db $b7                     ; 1BD74:  b7
+b06_bd75:   .db $db                     ; 1BD75:  db
+b06_bd76:   adc $0b36                   ; 1BD76:  6d 36 0b
+b06_bd79:   .db $03                     ; 1BD79:  03
+b06_bd7a:   brk                         ; 1BD7A:  00
+b06_bd7b:   brk                         ; 1BD7B:  00
+b06_bd7c:   brk                         ; 1BD7C:  00
+b06_bd7d:   brk                         ; 1BD7D:  00
+b06_bd7e:   brk                         ; 1BD7E:  00
+b06_bd7f:   brk                         ; 1BD7F:  00
+b06_bd80:   brk                         ; 1BD80:  00
+b06_bd81:   brk                         ; 1BD81:  00
+b06_bd82:   brk                         ; 1BD82:  00
+b06_bd83:   brk                         ; 1BD83:  00
+b06_bd84:   sty $b8                     ; 1BD84:  84 b8
+b06_bd86:   .db $db                     ; 1BD86:  db
+b06_bd87:   cpx $8004                   ; 1BD87:  ec 04 80
+b06_bd8a:   .db $80                     ; 1BD8A:  80
+b06_bd8b:   brk                         ; 1BD8B:  00
+b06_bd8c:   brk                         ; 1BD8C:  00
+b06_bd8d:   brk                         ; 1BD8D:  00
+b06_bd8e:   brk                         ; 1BD8E:  00
+b06_bd8f:   ora ($73,x)                 ; 1BD8F:  01 73
+b06_bd91:   .db $0c                     ; 1BD91:  0c
+b06_bd92:   .db $77                     ; 1BD92:  77
+b06_bd93:   brk                         ; 1BD93:  00
+b06_bd94:   ror $14,x                   ; 1BD94:  76 14
+b06_bd96:   sty $0c                     ; 1BD96:  84 0c
+b06_bd98:   bvc $bda2                   ; 1BD98:  50 08
+b06_bd9a:   tya                         ; 1BD9A:  98
+b06_bd9b:   ldy $e1e0                   ; 1BD9B:  ac e0 e1
+b06_bd9e:   cmp ($d1),y                 ; 1BD9E:  d1 d1
+b06_bda0:   .db $74                     ; 1BDA0:  74
+b06_bda1:   rts                         ; 1BDA1:  60
+b06_bda2:   sta ($80,x)                 ; 1BDA2:  81 80
+b06_bda4:   lsr $142e,x                 ; 1BDA4:  5e 2e 14
+b06_bda7:   php                         ; 1BDA7:  08
+b06_bda8:   brk                         ; 1BDA8:  00
+b06_bda9:   brk                         ; 1BDA9:  00
+b06_bdaa:   brk                         ; 1BDAA:  00
+b06_bdab:   brk                         ; 1BDAB:  00
+b06_bdac:   .db $0c                     ; 1BDAC:  0c
+b06_bdad:   .db $80                     ; 1BDAD:  80
+b06_bdae:   rti                         ; 1BDAE:  40
+b06_bdaf:   rts                         ; 1BDAF:  60
+b06_bdb0:   bne $bd62                   ; 1BDB0:  d0 b0
+b06_bdb2:   rts                         ; 1BDB2:  60
+b06_bdb3:   brk                         ; 1BDB3:  00
+b06_bdb4:   lsr $4b,x                   ; 1BDB4:  56 4b
+b06_bdb6:   lda $00                     ; 1BDB6:  a5 00
+b06_bdb8:   ora $0f33                   ; 1BDB8:  0d 33 0f
+b06_bdbb:   sei                         ; 1BDBB:  78
+b06_bdbc:   rti                         ; 1BDBC:  40
+b06_bdbd:   rti                         ; 1BDBD:  40
+b06_bdbe:   jsr $20c0                   ; 1BDBE:  20 c0 20
+b06_bdc1:   rti                         ; 1BDC1:  40
+b06_bdc2:   .db $80                     ; 1BDC2:  80
+b06_bdc3:   brk                         ; 1BDC3:  00
+b06_bdc4:   .db $02                     ; 1BDC4:  02
+b06_bdc5:   ora $5bb6                   ; 1BDC5:  0d b6 5b
+b06_bdc8:   sta $88                     ; 1BDC8:  85 88
+b06_bdca:   .db $0f                     ; 1BDCA:  0f
+b06_bdcb:   brk                         ; 1BDCB:  00
+b06_bdcc:   rti                         ; 1BDCC:  40
+b06_bdcd:   brk                         ; 1BDCD:  00
+b06_bdce:   brk                         ; 1BDCE:  00
+b06_bdcf:   brk                         ; 1BDCF:  00
+b06_bdd0:   brk                         ; 1BDD0:  00
+b06_bdd1:   brk                         ; 1BDD1:  00
+b06_bdd2:   bvs $bd63                   ; 1BDD2:  70 8f
+b06_bdd4:   brk                         ; 1BDD4:  00
+b06_bdd5:   rts                         ; 1BDD5:  60
+b06_bdd6:   bmi $bdf4                   ; 1BDD6:  30 1c
+b06_bdd8:   .db $07                     ; 1BDD8:  07
+b06_bdd9:   ora ($00,x)                 ; 1BDD9:  01 00
+b06_bddb:   jsr $1c23                   ; 1BDDB:  20 23 1c
+b06_bdde:   ora $0001                   ; 1BDDE:  0d 01 00
+b06_bde1:   brk                         ; 1BDE1:  00
+b06_bde2:   brk                         ; 1BDE2:  00
+b06_bde3:   .db $80                     ; 1BDE3:  80
+b06_bde4:   brk                         ; 1BDE4:  00
+b06_bde5:   brk                         ; 1BDE5:  00
+b06_bde6:   brk                         ; 1BDE6:  00
+b06_bde7:   brk                         ; 1BDE7:  00
+b06_bde8:   .db $8f                     ; 1BDE8:  8f
+b06_bde9:   .db $fc                     ; 1BDE9:  fc
+b06_bdea:   brk                         ; 1BDEA:  00
+b06_bdeb:   brk                         ; 1BDEB:  00
+b06_bdec:   .db $b7                     ; 1BDEC:  b7
+b06_bded:   .db $fc                     ; 1BDED:  fc
+b06_bdee:   .db $02                     ; 1BDEE:  02
+b06_bdef:   dec $0050,x                 ; 1BDEF:  de 50 00
+b06_bdf2:   brk                         ; 1BDF2:  00
+b06_bdf3:   bvc $be15                   ; 1BDF3:  50 20
+b06_bdf5:   .db $0c                     ; 1BDF5:  0c
+b06_bdf6:   .db $83                     ; 1BDF6:  83
+b06_bdf7:   .db $43                     ; 1BDF7:  43
+b06_bdf8:   lda ($54),y                 ; 1BDF8:  b1 54
+b06_bdfa:   brk                         ; 1BDFA:  00
+b06_bdfb:   brk                         ; 1BDFB:  00
+b06_bdfc:   .db $80                     ; 1BDFC:  80
+b06_bdfd:   rti                         ; 1BDFD:  40
+b06_bdfe:   bmi $be0e                   ; 1BDFE:  30 0e
+b06_be00:   ora ($0e,x)                 ; 1BE00:  01 0e
+b06_be02:   adc ($87),y                 ; 1BE02:  71 87
+b06_be04:   clc                         ; 1BE04:  18
+b06_be05:   clc                         ; 1BE05:  18
+b06_be06:   sbc ($c0),y                 ; 1BE06:  f1 c0
+b06_be08:   .db $80                     ; 1BE08:  80
+b06_be09:   brk                         ; 1BE09:  00
+b06_be0a:   brk                         ; 1BE0A:  00
+b06_be0b:   php                         ; 1BE0B:  08
+b06_be0c:   php                         ; 1BE0C:  08
+b06_be0d:   .db $0c                     ; 1BE0D:  0c
+b06_be0e:   clc                         ; 1BE0E:  18
+b06_be0f:   .db $74                     ; 1BE0F:  74
+b06_be10:   dec $19                     ; 1BE10:  c6 19
+b06_be12:   sbc ($02),y                 ; 1BE12:  f1 02
+b06_be14:   ora #$04                    ; 1BE14:  09 04
+b06_be16:   .db $0c                     ; 1BE16:  0c
+b06_be17:   sed                         ; 1BE17:  f8
+b06_be18:   cpy #$00                    ; 1BE18:  c0 00
+b06_be1a:   brk                         ; 1BE1A:  00
+b06_be1b:   brk                         ; 1BE1B:  00
+b06_be1c:   cmp ($28,x)                 ; 1BE1C:  c1 28
+b06_be1e:   beq $be20                   ; 1BE1E:  f0 00
+b06_be20:   brk                         ; 1BE20:  00
+b06_be21:   brk                         ; 1BE21:  00
+b06_be22:   brk                         ; 1BE22:  00
+b06_be23:   brk                         ; 1BE23:  00
+b06_be24:   lda $9e9e,x                 ; 1BE24:  bd 9e 9e
+b06_be27:   .db $db                     ; 1BE27:  db
+b06_be28:   adc $306c                   ; 1BE28:  6d 6c 30
+b06_be2b:   jsr $f8f9                   ; 1BE2B:  20 f9 f8
+b06_be2e:   .db $fc                     ; 1BE2E:  fc
+b06_be2f:   cpx #$40                    ; 1BE2F:  e0 40
+b06_be31:   brk                         ; 1BE31:  00
+b06_be32:   ora ($06,x)                 ; 1BE32:  01 06
+b06_be34:   ora ($16,x)                 ; 1BE34:  01 16
+b06_be36:   .db $db                     ; 1BE36:  db
+b06_be37:   bit $68c4                   ; 1BE37:  2c c4 68
+b06_be3a:   .db $23                     ; 1BE3A:  23
+b06_be3b:   .db $03                     ; 1BE3B:  03
+b06_be3c:   brk                         ; 1BE3C:  00
+b06_be3d:   brk                         ; 1BE3D:  00
+b06_be3e:   brk                         ; 1BE3E:  00
+b06_be3f:   ora ($02,x)                 ; 1BE3F:  01 02
+b06_be41:   .db $04                     ; 1BE41:  04
+b06_be42:   clc                         ; 1BE42:  18
+b06_be43:   cpx #$80                    ; 1BE43:  e0 80
+b06_be45:   .db $80                     ; 1BE45:  80
+b06_be46:   bmi $be78                   ; 1BE46:  30 30
+b06_be48:   cld                         ; 1BE48:  d8
+b06_be49:   ror $c080                   ; 1BE49:  6e 80 c0
+b06_be4c:   .db $4b                     ; 1BE4C:  4b
+b06_be4d:   jmp $0481                   ; 1BE4D:  4c 81 04
+b06_be50:   brk                         ; 1BE50:  00
+b06_be51:   brk                         ; 1BE51:  00
+b06_be52:   brk                         ; 1BE52:  00
+b06_be53:   brk                         ; 1BE53:  00
+b06_be54:   .db $92                     ; 1BE54:  92
+b06_be55:   .db $b3                     ; 1BE55:  b3
+b06_be56:   .db $67                     ; 1BE56:  67
+b06_be57:   rol a                       ; 1BE57:  2a
+b06_be58:   .db $14                     ; 1BE58:  14
+b06_be59:   bit $0299                   ; 1BE59:  2c 99 02
+b06_be5c:   bcc $be0e                   ; 1BE5C:  90 b0
+b06_be5e:   rts                         ; 1BE5E:  60
+b06_be5f:   plp                         ; 1BE5F:  28
+b06_be60:   bpl $be02                   ; 1BE60:  10 a0
+b06_be62:   cpy #$c0                    ; 1BE62:  c0 c0
+b06_be64:   brk                         ; 1BE64:  00
+b06_be65:   brk                         ; 1BE65:  00
+b06_be66:   brk                         ; 1BE66:  00
+b06_be67:   brk                         ; 1BE67:  00
+b06_be68:   .db $80                     ; 1BE68:  80
+b06_be69:   brk                         ; 1BE69:  00
+b06_be6a:   brk                         ; 1BE6A:  00
+b06_be6b:   brk                         ; 1BE6B:  00
+b06_be6c:   brk                         ; 1BE6C:  00
+b06_be6d:   brk                         ; 1BE6D:  00
+b06_be6e:   brk                         ; 1BE6E:  00
+b06_be6f:   brk                         ; 1BE6F:  00
+b06_be70:   brk                         ; 1BE70:  00
+b06_be71:   brk                         ; 1BE71:  00
+b06_be72:   brk                         ; 1BE72:  00
+b06_be73:   brk                         ; 1BE73:  00
+b06_be74:   php                         ; 1BE74:  08
+b06_be75:   brk                         ; 1BE75:  00
+b06_be76:   brk                         ; 1BE76:  00
+b06_be77:   jsr $0080                   ; 1BE77:  20 80 00
+b06_be7a:   brk                         ; 1BE7A:  00
+b06_be7b:   brk                         ; 1BE7B:  00
+b06_be7c:   plp                         ; 1BE7C:  28
+b06_be7d:   jsr $0080                   ; 1BE7D:  20 80 00
+b06_be80:   brk                         ; 1BE80:  00
+b06_be81:   brk                         ; 1BE81:  00
+b06_be82:   brk                         ; 1BE82:  00
+b06_be83:   brk                         ; 1BE83:  00
+b06_be84:   .db $03                     ; 1BE84:  03
+b06_be85:   brk                         ; 1BE85:  00
+b06_be86:   brk                         ; 1BE86:  00
+b06_be87:   brk                         ; 1BE87:  00
+b06_be88:   brk                         ; 1BE88:  00
+b06_be89:   brk                         ; 1BE89:  00
+b06_be8a:   brk                         ; 1BE8A:  00
+b06_be8b:   brk                         ; 1BE8B:  00
+b06_be8c:   brk                         ; 1BE8C:  00
+b06_be8d:   brk                         ; 1BE8D:  00
+b06_be8e:   brk                         ; 1BE8E:  00
+b06_be8f:   brk                         ; 1BE8F:  00
+b06_be90:   brk                         ; 1BE90:  00
+b06_be91:   brk                         ; 1BE91:  00
+b06_be92:   brk                         ; 1BE92:  00
+b06_be93:   brk                         ; 1BE93:  00
+b06_be94:   cpy $3c                     ; 1BE94:  c4 3c
+b06_be96:   brk                         ; 1BE96:  00
+b06_be97:   brk                         ; 1BE97:  00
+b06_be98:   brk                         ; 1BE98:  00
+b06_be99:   brk                         ; 1BE99:  00
+b06_be9a:   brk                         ; 1BE9A:  00
+b06_be9b:   brk                         ; 1BE9B:  00
+b06_be9c:   ora ($01,x)                 ; 1BE9C:  01 01
+b06_be9e:   brk                         ; 1BE9E:  00
+b06_be9f:   brk                         ; 1BE9F:  00
+b06_bea0:   brk                         ; 1BEA0:  00
+b06_bea1:   brk                         ; 1BEA1:  00
+b06_bea2:   brk                         ; 1BEA2:  00
+b06_bea3:   brk                         ; 1BEA3:  00
+b06_bea4:   bvc $bf13                   ; 1BEA4:  50 6d
+b06_bea6:   rol $00,x                   ; 1BEA6:  36 00
+b06_bea8:   brk                         ; 1BEA8:  00
+b06_bea9:   brk                         ; 1BEA9:  00
+b06_beaa:   brk                         ; 1BEAA:  00
+b06_beab:   brk                         ; 1BEAB:  00
+b06_beac:   brk                         ; 1BEAC:  00
+b06_bead:   brk                         ; 1BEAD:  00
+b06_beae:   .db $80                     ; 1BEAE:  80
+b06_beaf:   brk                         ; 1BEAF:  00
+b06_beb0:   brk                         ; 1BEB0:  00
+b06_beb1:   brk                         ; 1BEB1:  00
+b06_beb2:   brk                         ; 1BEB2:  00
+b06_beb3:   brk                         ; 1BEB3:  00
+b06_beb4:   brk                         ; 1BEB4:  00
+b06_beb5:   brk                         ; 1BEB5:  00
+b06_beb6:   sed                         ; 1BEB6:  f8
+b06_beb7:   brk                         ; 1BEB7:  00
+b06_beb8:   brk                         ; 1BEB8:  00
+b06_beb9:   brk                         ; 1BEB9:  00
+b06_beba:   brk                         ; 1BEBA:  00
+b06_bebb:   brk                         ; 1BEBB:  00
+b06_bebc:   clv                         ; 1BEBC:  b8
+b06_bebd:   .db $07                     ; 1BEBD:  07
+b06_bebe:   brk                         ; 1BEBE:  00
+b06_bebf:   brk                         ; 1BEBF:  00
+b06_bec0:   brk                         ; 1BEC0:  00
+b06_bec1:   brk                         ; 1BEC1:  00
+b06_bec2:   brk                         ; 1BEC2:  00
+b06_bec3:   brk                         ; 1BEC3:  00
+b06_bec4:   beq $bec7                   ; 1BEC4:  f0 01
+b06_bec6:   brk                         ; 1BEC6:  00
+b06_bec7:   brk                         ; 1BEC7:  00
+b06_bec8:   brk                         ; 1BEC8:  00
+b06_bec9:   brk                         ; 1BEC9:  00
+b06_beca:   brk                         ; 1BECA:  00
+b06_becb:   brk                         ; 1BECB:  00
+b06_becc:   .db $02                     ; 1BECC:  02
+b06_becd:   .db $0c                     ; 1BECD:  0c
+b06_bece:   beq $bed0                   ; 1BECE:  f0 00
+b06_bed0:   brk                         ; 1BED0:  00
+b06_bed1:   brk                         ; 1BED1:  00
+b06_bed2:   brk                         ; 1BED2:  00
+b06_bed3:   brk                         ; 1BED3:  00
+b06_bed4:   .db $1c                     ; 1BED4:  1c
+b06_bed5:   cpx #$00                    ; 1BED5:  e0 00
+b06_bed7:   brk                         ; 1BED7:  00
+b06_bed8:   brk                         ; 1BED8:  00
+b06_bed9:   brk                         ; 1BED9:  00
+b06_beda:   brk                         ; 1BEDA:  00
+b06_bedb:   brk                         ; 1BEDB:  00
+b06_bedc:   brk                         ; 1BEDC:  00
+b06_bedd:   brk                         ; 1BEDD:  00
+b06_bede:   brk                         ; 1BEDE:  00
+b06_bedf:   brk                         ; 1BEDF:  00
+b06_bee0:   brk                         ; 1BEE0:  00
+b06_bee1:   brk                         ; 1BEE1:  00
+b06_bee2:   brk                         ; 1BEE2:  00
+b06_bee3:   brk                         ; 1BEE3:  00
+b06_bee4:   .db $ff                     ; 1BEE4:  ff
+b06_bee5:   .db $ff                     ; 1BEE5:  ff
+b06_bee6:   .db $ff                     ; 1BEE6:  ff
+b06_bee7:   .db $ff                     ; 1BEE7:  ff
+b06_bee8:   .db $ff                     ; 1BEE8:  ff
+b06_bee9:   .db $ff                     ; 1BEE9:  ff
+b06_beea:   .db $ff                     ; 1BEEA:  ff
+b06_beeb:   .db $ff                     ; 1BEEB:  ff
+b06_beec:   .db $ff                     ; 1BEEC:  ff
+b06_beed:   .db $ff                     ; 1BEED:  ff
+b06_beee:   .db $ff                     ; 1BEEE:  ff
+b06_beef:   .db $ff                     ; 1BEEF:  ff
+b06_bef0:   .db $ff                     ; 1BEF0:  ff
+b06_bef1:   .db $ff                     ; 1BEF1:  ff
+b06_bef2:   .db $ff                     ; 1BEF2:  ff
+b06_bef3:   .db $ff                     ; 1BEF3:  ff
+b06_bef4:   .db $ff                     ; 1BEF4:  ff
+b06_bef5:   .db $ff                     ; 1BEF5:  ff
+b06_bef6:   .db $ff                     ; 1BEF6:  ff
+b06_bef7:   .db $ff                     ; 1BEF7:  ff
+b06_bef8:   .db $ff                     ; 1BEF8:  ff
+b06_bef9:   .db $ff                     ; 1BEF9:  ff
+b06_befa:   .db $ff                     ; 1BEFA:  ff
+b06_befb:   .db $ff                     ; 1BEFB:  ff
+b06_befc:   .db $ff                     ; 1BEFC:  ff
+b06_befd:   .db $ff                     ; 1BEFD:  ff
+b06_befe:   .db $ff                     ; 1BEFE:  ff
+b06_beff:   .db $ff                     ; 1BEFF:  ff
+b06_bf00:   .db $ff                     ; 1BF00:  ff
+b06_bf01:   .db $ff                     ; 1BF01:  ff
+b06_bf02:   .db $ff                     ; 1BF02:  ff
+b06_bf03:   .db $ff                     ; 1BF03:  ff
+b06_bf04:   .db $ff                     ; 1BF04:  ff
+b06_bf05:   .db $ff                     ; 1BF05:  ff
+b06_bf06:   .db $ff                     ; 1BF06:  ff
+b06_bf07:   .db $ff                     ; 1BF07:  ff
+b06_bf08:   .db $ff                     ; 1BF08:  ff
+b06_bf09:   .db $ff                     ; 1BF09:  ff
+b06_bf0a:   .db $ff                     ; 1BF0A:  ff
+b06_bf0b:   .db $ff                     ; 1BF0B:  ff
+b06_bf0c:   .db $ff                     ; 1BF0C:  ff
+b06_bf0d:   .db $ff                     ; 1BF0D:  ff
+b06_bf0e:   .db $ff                     ; 1BF0E:  ff
+b06_bf0f:   .db $ff                     ; 1BF0F:  ff
+b06_bf10:   .db $ff                     ; 1BF10:  ff
+b06_bf11:   .db $ff                     ; 1BF11:  ff
+b06_bf12:   .db $ff                     ; 1BF12:  ff
+b06_bf13:   .db $ff                     ; 1BF13:  ff
+b06_bf14:   .db $ff                     ; 1BF14:  ff
+b06_bf15:   .db $ff                     ; 1BF15:  ff
+b06_bf16:   .db $ff                     ; 1BF16:  ff
+b06_bf17:   .db $ff                     ; 1BF17:  ff
+b06_bf18:   .db $ff                     ; 1BF18:  ff
+b06_bf19:   .db $ff                     ; 1BF19:  ff
+b06_bf1a:   .db $ff                     ; 1BF1A:  ff
+b06_bf1b:   .db $ff                     ; 1BF1B:  ff
+b06_bf1c:   .db $ff                     ; 1BF1C:  ff
+b06_bf1d:   .db $ff                     ; 1BF1D:  ff
+b06_bf1e:   .db $ff                     ; 1BF1E:  ff
+b06_bf1f:   .db $ff                     ; 1BF1F:  ff
+b06_bf20:   .db $ff                     ; 1BF20:  ff
+b06_bf21:   .db $ff                     ; 1BF21:  ff
+b06_bf22:   .db $ff                     ; 1BF22:  ff
+b06_bf23:   .db $ff                     ; 1BF23:  ff
+b06_bf24:   .db $ff                     ; 1BF24:  ff
+b06_bf25:   .db $ff                     ; 1BF25:  ff
+b06_bf26:   .db $ff                     ; 1BF26:  ff
+b06_bf27:   .db $ff                     ; 1BF27:  ff
+b06_bf28:   .db $ff                     ; 1BF28:  ff
+b06_bf29:   .db $ff                     ; 1BF29:  ff
+b06_bf2a:   .db $ff                     ; 1BF2A:  ff
+b06_bf2b:   .db $ff                     ; 1BF2B:  ff
+b06_bf2c:   .db $ff                     ; 1BF2C:  ff
+b06_bf2d:   .db $ff                     ; 1BF2D:  ff
+b06_bf2e:   .db $ff                     ; 1BF2E:  ff
+b06_bf2f:   .db $ff                     ; 1BF2F:  ff
+b06_bf30:   .db $ff                     ; 1BF30:  ff
+b06_bf31:   .db $ff                     ; 1BF31:  ff
+b06_bf32:   .db $ff                     ; 1BF32:  ff
+b06_bf33:   .db $ff                     ; 1BF33:  ff
+b06_bf34:   .db $ff                     ; 1BF34:  ff
+b06_bf35:   .db $ff                     ; 1BF35:  ff
+b06_bf36:   .db $ff                     ; 1BF36:  ff
+b06_bf37:   .db $ff                     ; 1BF37:  ff
+b06_bf38:   .db $ff                     ; 1BF38:  ff
+b06_bf39:   .db $ff                     ; 1BF39:  ff
+b06_bf3a:   .db $ff                     ; 1BF3A:  ff
+b06_bf3b:   .db $ff                     ; 1BF3B:  ff
+b06_bf3c:   .db $ff                     ; 1BF3C:  ff
+b06_bf3d:   .db $ff                     ; 1BF3D:  ff
+b06_bf3e:   .db $ff                     ; 1BF3E:  ff
+b06_bf3f:   .db $ff                     ; 1BF3F:  ff
+b06_bf40:   .db $ff                     ; 1BF40:  ff
+b06_bf41:   .db $ff                     ; 1BF41:  ff
+b06_bf42:   .db $ff                     ; 1BF42:  ff
+b06_bf43:   .db $ff                     ; 1BF43:  ff
+b06_bf44:   .db $ff                     ; 1BF44:  ff
+b06_bf45:   .db $ff                     ; 1BF45:  ff
+b06_bf46:   .db $ff                     ; 1BF46:  ff
+b06_bf47:   .db $ff                     ; 1BF47:  ff
+b06_bf48:   .db $ff                     ; 1BF48:  ff
+b06_bf49:   .db $ff                     ; 1BF49:  ff
+b06_bf4a:   .db $ff                     ; 1BF4A:  ff
+b06_bf4b:   .db $ff                     ; 1BF4B:  ff
+b06_bf4c:   .db $ff                     ; 1BF4C:  ff
+b06_bf4d:   .db $ff                     ; 1BF4D:  ff
+b06_bf4e:   .db $ff                     ; 1BF4E:  ff
+b06_bf4f:   .db $ff                     ; 1BF4F:  ff
+b06_bf50:   .db $ff                     ; 1BF50:  ff
+b06_bf51:   .db $ff                     ; 1BF51:  ff
+b06_bf52:   .db $ff                     ; 1BF52:  ff
+b06_bf53:   .db $ff                     ; 1BF53:  ff
+b06_bf54:   .db $ff                     ; 1BF54:  ff
+b06_bf55:   .db $ff                     ; 1BF55:  ff
+b06_bf56:   .db $ff                     ; 1BF56:  ff
+b06_bf57:   .db $ff                     ; 1BF57:  ff
+b06_bf58:   .db $ff                     ; 1BF58:  ff
+b06_bf59:   .db $ff                     ; 1BF59:  ff
+b06_bf5a:   .db $ff                     ; 1BF5A:  ff
+b06_bf5b:   .db $ff                     ; 1BF5B:  ff
+b06_bf5c:   .db $ff                     ; 1BF5C:  ff
+b06_bf5d:   .db $ff                     ; 1BF5D:  ff
+b06_bf5e:   .db $ff                     ; 1BF5E:  ff
+b06_bf5f:   .db $ff                     ; 1BF5F:  ff
+b06_bf60:   .db $ff                     ; 1BF60:  ff
+b06_bf61:   .db $ff                     ; 1BF61:  ff
+b06_bf62:   .db $ff                     ; 1BF62:  ff
+b06_bf63:   .db $ff                     ; 1BF63:  ff
+b06_bf64:   .db $ff                     ; 1BF64:  ff
+b06_bf65:   .db $ff                     ; 1BF65:  ff
+b06_bf66:   .db $ff                     ; 1BF66:  ff
+b06_bf67:   .db $ff                     ; 1BF67:  ff
+b06_bf68:   .db $ff                     ; 1BF68:  ff
+b06_bf69:   .db $ff                     ; 1BF69:  ff
+b06_bf6a:   .db $ff                     ; 1BF6A:  ff
+b06_bf6b:   .db $ff                     ; 1BF6B:  ff
+b06_bf6c:   .db $ff                     ; 1BF6C:  ff
+b06_bf6d:   .db $ff                     ; 1BF6D:  ff
+b06_bf6e:   .db $ff                     ; 1BF6E:  ff
+b06_bf6f:   .db $ff                     ; 1BF6F:  ff
+b06_bf70:   .db $ff                     ; 1BF70:  ff
+b06_bf71:   .db $ff                     ; 1BF71:  ff
+b06_bf72:   .db $ff                     ; 1BF72:  ff
+b06_bf73:   .db $ff                     ; 1BF73:  ff
+b06_bf74:   .db $ff                     ; 1BF74:  ff
+b06_bf75:   .db $ff                     ; 1BF75:  ff
+b06_bf76:   .db $ff                     ; 1BF76:  ff
+b06_bf77:   .db $ff                     ; 1BF77:  ff
+b06_bf78:   .db $ff                     ; 1BF78:  ff
+b06_bf79:   .db $ff                     ; 1BF79:  ff
+b06_bf7a:   .db $ff                     ; 1BF7A:  ff
+b06_bf7b:   .db $ff                     ; 1BF7B:  ff
+b06_bf7c:   .db $ff                     ; 1BF7C:  ff
+b06_bf7d:   .db $ff                     ; 1BF7D:  ff
+b06_bf7e:   .db $ff                     ; 1BF7E:  ff
+b06_bf7f:   .db $ff                     ; 1BF7F:  ff
+b06_bf80:   .db $ff                     ; 1BF80:  ff
+b06_bf81:   .db $ff                     ; 1BF81:  ff
+b06_bf82:   .db $ff                     ; 1BF82:  ff
+b06_bf83:   .db $ff                     ; 1BF83:  ff
+b06_bf84:   .db $ff                     ; 1BF84:  ff
+b06_bf85:   .db $ff                     ; 1BF85:  ff
+b06_bf86:   .db $ff                     ; 1BF86:  ff
+b06_bf87:   .db $ff                     ; 1BF87:  ff
+b06_bf88:   .db $ff                     ; 1BF88:  ff
+b06_bf89:   .db $ff                     ; 1BF89:  ff
+b06_bf8a:   .db $ff                     ; 1BF8A:  ff
+b06_bf8b:   .db $ff                     ; 1BF8B:  ff
+b06_bf8c:   .db $ff                     ; 1BF8C:  ff
+b06_bf8d:   .db $ff                     ; 1BF8D:  ff
+b06_bf8e:   .db $ff                     ; 1BF8E:  ff
+b06_bf8f:   .db $ff                     ; 1BF8F:  ff
+b06_bf90:   .db $ff                     ; 1BF90:  ff
+b06_bf91:   .db $ff                     ; 1BF91:  ff
+b06_bf92:   .db $ff                     ; 1BF92:  ff
+b06_bf93:   .db $ff                     ; 1BF93:  ff
+b06_bf94:   .db $ff                     ; 1BF94:  ff
+b06_bf95:   .db $ff                     ; 1BF95:  ff
+b06_bf96:   .db $ff                     ; 1BF96:  ff
+b06_bf97:   .db $ff                     ; 1BF97:  ff
+b06_bf98:   .db $ff                     ; 1BF98:  ff
+b06_bf99:   .db $ff                     ; 1BF99:  ff
+b06_bf9a:   .db $ff                     ; 1BF9A:  ff
+b06_bf9b:   .db $ff                     ; 1BF9B:  ff
+b06_bf9c:   .db $ff                     ; 1BF9C:  ff
+b06_bf9d:   .db $ff                     ; 1BF9D:  ff
+b06_bf9e:   .db $ff                     ; 1BF9E:  ff
+b06_bf9f:   .db $ff                     ; 1BF9F:  ff
+b06_bfa0:   .db $ff                     ; 1BFA0:  ff
+b06_bfa1:   .db $ff                     ; 1BFA1:  ff
+b06_bfa2:   .db $ff                     ; 1BFA2:  ff
+b06_bfa3:   .db $ff                     ; 1BFA3:  ff
+b06_bfa4:   .db $ff                     ; 1BFA4:  ff
+b06_bfa5:   .db $ff                     ; 1BFA5:  ff
+b06_bfa6:   .db $ff                     ; 1BFA6:  ff
+b06_bfa7:   .db $ff                     ; 1BFA7:  ff
+b06_bfa8:   .db $ff                     ; 1BFA8:  ff
+b06_bfa9:   .db $ff                     ; 1BFA9:  ff
+b06_bfaa:   .db $ff                     ; 1BFAA:  ff
+b06_bfab:   .db $ff                     ; 1BFAB:  ff
+b06_bfac:   .db $ff                     ; 1BFAC:  ff
+b06_bfad:   .db $ff                     ; 1BFAD:  ff
+b06_bfae:   .db $ff                     ; 1BFAE:  ff
+b06_bfaf:   .db $ff                     ; 1BFAF:  ff
+b06_bfb0:   .db $ff                     ; 1BFB0:  ff
+b06_bfb1:   .db $ff                     ; 1BFB1:  ff
+b06_bfb2:   .db $ff                     ; 1BFB2:  ff
+b06_bfb3:   .db $ff                     ; 1BFB3:  ff
+b06_bfb4:   .db $ff                     ; 1BFB4:  ff
+b06_bfb5:   .db $ff                     ; 1BFB5:  ff
+b06_bfb6:   .db $ff                     ; 1BFB6:  ff
+b06_bfb7:   .db $ff                     ; 1BFB7:  ff
+b06_bfb8:   .db $ff                     ; 1BFB8:  ff
+b06_bfb9:   .db $ff                     ; 1BFB9:  ff
+b06_bfba:   .db $ff                     ; 1BFBA:  ff
+b06_bfbb:   .db $ff                     ; 1BFBB:  ff
+b06_bfbc:   .db $ff                     ; 1BFBC:  ff
+b06_bfbd:   .db $ff                     ; 1BFBD:  ff
+b06_bfbe:   .db $ff                     ; 1BFBE:  ff
+b06_bfbf:   .db $ff                     ; 1BFBF:  ff
+b06_bfc0:   .db $ff                     ; 1BFC0:  ff
+b06_bfc1:   .db $ff                     ; 1BFC1:  ff
+b06_bfc2:   .db $ff                     ; 1BFC2:  ff
+b06_bfc3:   .db $ff                     ; 1BFC3:  ff
+b06_bfc4:   .db $ff                     ; 1BFC4:  ff
+b06_bfc5:   .db $ff                     ; 1BFC5:  ff
+b06_bfc6:   .db $ff                     ; 1BFC6:  ff
+b06_bfc7:   .db $ff                     ; 1BFC7:  ff
+b06_bfc8:   .db $ff                     ; 1BFC8:  ff
+b06_bfc9:   .db $ff                     ; 1BFC9:  ff
+b06_bfca:   .db $ff                     ; 1BFCA:  ff
+b06_bfcb:   .db $ff                     ; 1BFCB:  ff
+b06_bfcc:   .db $ff                     ; 1BFCC:  ff
+b06_bfcd:   .db $ff                     ; 1BFCD:  ff
+b06_bfce:   .db $ff                     ; 1BFCE:  ff
+b06_bfcf:   .db $ff                     ; 1BFCF:  ff
+b06_bfd0:   .db $ff                     ; 1BFD0:  ff
+b06_bfd1:   .db $ff                     ; 1BFD1:  ff
+b06_bfd2:   .db $ff                     ; 1BFD2:  ff
+b06_bfd3:   .db $ff                     ; 1BFD3:  ff
+b06_bfd4:   .db $ff                     ; 1BFD4:  ff
+b06_bfd5:   .db $ff                     ; 1BFD5:  ff
+b06_bfd6:   .db $ff                     ; 1BFD6:  ff
+b06_bfd7:   .db $ff                     ; 1BFD7:  ff
+b06_bfd8:   .db $ff                     ; 1BFD8:  ff
+b06_bfd9:   .db $ff                     ; 1BFD9:  ff
+b06_bfda:   .db $ff                     ; 1BFDA:  ff
+b06_bfdb:   .db $ff                     ; 1BFDB:  ff
+b06_bfdc:   .db $ff                     ; 1BFDC:  ff
+b06_bfdd:   .db $ff                     ; 1BFDD:  ff
+b06_bfde:   .db $ff                     ; 1BFDE:  ff
+b06_bfdf:   .db $ff                     ; 1BFDF:  ff
+b06_bfe0:   .db $ff                     ; 1BFE0:  ff
+b06_bfe1:   .db $ff                     ; 1BFE1:  ff
+b06_bfe2:   .db $ff                     ; 1BFE2:  ff
+b06_bfe3:   .db $ff                     ; 1BFE3:  ff
+b06_bfe4:   .db $ff                     ; 1BFE4:  ff
+b06_bfe5:   .db $ff                     ; 1BFE5:  ff
+b06_bfe6:   .db $ff                     ; 1BFE6:  ff
+b06_bfe7:   .db $ff                     ; 1BFE7:  ff
+b06_bfe8:   .db $ff                     ; 1BFE8:  ff
+b06_bfe9:   .db $ff                     ; 1BFE9:  ff
+b06_bfea:   .db $ff                     ; 1BFEA:  ff
+b06_bfeb:   .db $ff                     ; 1BFEB:  ff
+b06_bfec:   .db $ff                     ; 1BFEC:  ff
+b06_bfed:   .db $ff                     ; 1BFED:  ff
+b06_bfee:   .db $ff                     ; 1BFEE:  ff
+b06_bfef:   .db $ff                     ; 1BFEF:  ff
+b06_bff0:   .db $ff                     ; 1BFF0:  ff
+b06_bff1:   .db $ff                     ; 1BFF1:  ff
+b06_bff2:   .db $ff                     ; 1BFF2:  ff
+b06_bff3:   .db $ff                     ; 1BFF3:  ff
+b06_bff4:   .db $ff                     ; 1BFF4:  ff
+b06_bff5:   .db $ff                     ; 1BFF5:  ff
+b06_bff6:   .db $ff                     ; 1BFF6:  ff
+b06_bff7:   .db $ff                     ; 1BFF7:  ff
+b06_bff8:   .db $ff                     ; 1BFF8:  ff
+b06_bff9:   .db $ff                     ; 1BFF9:  ff
+b06_bffa:   .db $ff                     ; 1BFFA:  ff
+b06_bffb:   .db $ff                     ; 1BFFB:  ff
+b06_bffc:   .db $ff                     ; 1BFFC:  ff
+b06_bffd:   .db $ff                     ; 1BFFD:  ff
+b06_bffe:   .db $ff                     ; 1BFFE:  ff
+b06_bfff:   .db $ff                     ; 1BFFF:  ff
