@@ -5,7 +5,7 @@ Consumes a label-walk Workflow's returned JSON and does, mechanically, the four 
 coordinator used to do by hand between every batch (the slow, error-prone glue):
   1. WRITE survivors into mesen-labels.toml `[prg.bankN]` (formatted entries, verdict/
      confidence-flagged comments, REFUTED -> helper_<addr>, dedup + collision guard).
-  2. REGEN: py -3 tools/mesen-labels.py --mlb --asm  +  py -3 tools/decompile-all.py
+  2. REGEN: py -3.14 tools/mesen-labels.py --mlb --asm  +  py -3 tools/decompile-all.py
   3. GUARD (HARD FAIL, exit 2): only decompiled/bank_NN.c may change (no cross-bank bleed),
      and its diff must be PURE RENAMES (sub_XXXX -> name, zero logic lines).
   4. COMMIT (with --commit): toml + .mlb + decompiled/bank_NN.c, templated message + tally.
@@ -96,7 +96,8 @@ def run(cmd):
 
 
 def regen():
-    for cmd in (["py", "-3", "tools/mesen-labels.py", "--mlb", "--asm"],
+    # --mlb uses emu-harness (py -3.14); --asm output is identical under 3.9 and 3.14 (checked 2026-10-22)
+    for cmd in (["py", "-3.14", "tools/mesen-labels.py", "--mlb", "--asm"],
                 ["py", "-3", "tools/decompile-all.py"]):
         r = run(cmd)
         if r.returncode != 0:

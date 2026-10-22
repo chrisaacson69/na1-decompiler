@@ -6,8 +6,9 @@ The toml is authoritative; this tool NEVER writes back to it. Targets:
 
   --mlb [PATH]   Emit a Mesen 2 .mlb label file. Default PATH is beside the ROM
                  with the ROM's basename, so Mesen 2 auto-loads it on launch.
-                 (Type:Address:Label:Comment; types NesPrgRom / NesInternalRam /
-                  NesSaveRam / NesMemory. Mesen rejects a .mlb with empty prefixes.)
+                 Delegates to emu-harness (shared reader, NES locator, Mesen writer;
+                 needs `py -3.14` + `pip install -e ../../emu-harness`). Registry
+                 defects and labels Mesen would drop are printed.
 
   --asm          Regenerate source/1-asm-6502/bank_NN_labeled.asm (code banks
                  0/1/2/15) from each raw bank_NN.asm, rewriting code labels
@@ -24,7 +25,7 @@ The toml is authoritative; this tool NEVER writes back to it. Targets:
 The decompiler (vm_decompile.py) already reads the toml directly, so decompiled/*.c
 is covered for free -- this tool closes the gap for Mesen and the native disasm.
 
-Dependency-free (the format is uniform; no tomllib on py3.9). Run from anywhere.
+--asm / --verify are dependency-free and run on py -3 (3.9). Run from anywhere.
 """
 import argparse
 import re
@@ -125,35 +126,39 @@ def parse_toml(path=TOML):
 
 
 # ---------------------------------------------------------------------------
-# address -> Mesen 2 memory-type + type-relative address
+# --mlb / --check: the shared emu-harness label export (row A of its MIGRATION.md).
+# Imported here, not at the top, so --asm / --verify still run on py -3 (3.9);
+# these two need `py -3.14` with emu-harness installed (pip install -e ../../emu-harness).
 # ---------------------------------------------------------------------------
-def mlb_target(lab):
-    """Return (mesen_type, type_relative_address) or None to skip."""
-    if lab.bank is not None:
-        # PRG-ROM. Same low-14-bit mapping for the $8000-$BFFF switchable window
-        # and the $C000-$FFFF fixed bank: offset = bank*0x4000 + (cpu & 0x3FFF).
-        return "NesPrgRom", lab.bank * BANK_SIZE + (lab.addr & 0x3FFF)
-    a = lab.addr
-    if a < 0x0800:
-        return "NesInternalRam", a               # $0000-$07FF internal RAM
-    if 0x6000 <= a <= 0x7FFF:
-        return "NesSaveRam", a - 0x6000          # battery PRG-RAM, chip-relative
-    return "NesMemory", a                        # registers / mirrors: CPU bus
+def mlb_symbols():
+    """-> (symbols, registry defects, entries outside PRG), via emu-harness."""
+    from emu_harness.core.symbols import Symbol, read_registry
+    from emu_harness.machines.nes.memory import Cart, locate
+    reg, cart = read_registry(TOML), Cart.from_ines(ROM)
+    symbols, lost = [], []
+    for e in reg.entries:
+        where = locate(cart, e.section, e.addr)
+        if where is None:
+            lost.append(e)
+        else:
+            symbols.append(Symbol(where[0], where[1], e.name, e.comment))
+    return symbols, reg.defects, lost
 
 
-def emit_mlb(labels, out_path):
-    lines, by_type = [], {}
-    for lab in labels:
-        t = mlb_target(lab)
-        if t is None:
-            continue
-        mtype, addr = t
-        by_type[mtype] = by_type.get(mtype, 0) + 1
-        # Type:Address:Label:Comment  (Mesen splits on the first 3 colons,
-        # so colons inside the comment are safe).
-        lines.append(f"{mtype}:{addr:X}:{lab.name}:{lab.comment}")
-    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return by_type
+def emit_mlb(out_path):
+    from emu_harness.backends.mesen.labels import write_mlb
+    symbols, defects, lost = mlb_symbols()
+    problems = write_mlb(symbols, out_path)
+    by_type = {}
+    for s in symbols:
+        by_type[s.region] = by_type.get(s.region, 0) + 1
+    for d in defects:
+        print(f"  registry line {d.line}: {d.kind} {d.detail}")
+    for e in lost:
+        print(f"  outside PRG: line {e.line} [{e.section}] ${e.addr:04X} {e.name}")
+    for p in problems:
+        print(f"  dropped: {p}")
+    return by_type, len(problems)
 
 
 # ---------------------------------------------------------------------------
@@ -347,10 +352,8 @@ def main():
 
     if args.check or not (args.mlb or args.asm):
         by_type = {}
-        for lab in labels:
-            t = mlb_target(lab)
-            if t:
-                by_type[t[0]] = by_type.get(t[0], 0) + 1
+        for s in mlb_symbols()[0]:
+            by_type[s.region] = by_type.get(s.region, 0) + 1
         for t, n in sorted(by_type.items()):
             print(f"  {t:16s} {n}")
         if not (args.mlb or args.asm):
@@ -362,8 +365,8 @@ def main():
             out = ROM.with_suffix(".mlb")
         else:
             out = Path(args.mlb)
-        by_type = emit_mlb(labels, out)
-        total = sum(by_type.values())
+        by_type, dropped = emit_mlb(out)
+        total = sum(by_type.values()) - dropped
         print(f"Wrote {total} labels -> {out}")
         for t, n in sorted(by_type.items()):
             print(f"  {t:16s} {n}")
