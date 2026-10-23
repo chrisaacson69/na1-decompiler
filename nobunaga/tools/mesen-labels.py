@@ -25,7 +25,9 @@ The toml is authoritative; this tool NEVER writes back to it. Targets:
 The decompiler (vm_decompile.py) already reads the toml directly, so decompiled/*.c
 is covered for free -- this tool closes the gap for Mesen and the native disasm.
 
---asm / --verify are dependency-free and run on py -3 (3.9). Run from anywhere.
+Every target needs `py -3.14` with emu-harness installed (pip install -e ../../emu-harness):
+--mlb / --check use its registry reader and Mesen writer, --asm / --verify its passes/listing.
+Run from anywhere.
 """
 import argparse
 import re
@@ -162,134 +164,44 @@ def emit_mlb(out_path):
 
 
 # ---------------------------------------------------------------------------
-# --asm: rewrite raw disasm with toml names
+# --asm: rewrite raw disasm with toml names. The algorithm moved to emu-harness
+# passes/listing (row A3 of its MIGRATION.md; it was this file's apply_to_asm):
+# b{NN}_{addr} tokens and RAM operands renamed, the trailing `; OFFSET: bytes`
+# comment protected, fixed-bank anchors inserted. $C000-$FFFF labels count as
+# bank 15's whatever section they sit under.
 # ---------------------------------------------------------------------------
-def build_name_maps(labels):
-    code = {}   # (bank, addr) -> name   (for b{NN}_{addr} tokens)
-    ram = {}    # addr -> name           (bank-independent $0000-$7FFF operands)
-    for lab in labels:
-        if lab.bank is not None:
-            code[(lab.bank, lab.addr)] = lab.name
-        elif lab.addr <= 0x7FFF:
-            ram[lab.addr] = lab.name
-    return code, ram
-
-CODE_TOKEN_RE = re.compile(r"\bb(\d+)_([0-9a-fA-F]{4})\b")
-# (?<!#) so an IMMEDIATE constant `#$73` is never mistaken for a reference to
-# address $0073 -- only true memory operands ($73 / $0073 / $0073,x) get labeled.
-RAM_OPERAND_RE = re.compile(r"(?<!#)\$([0-9a-fA-F]{2,4})\b")
-# A line already carries an anchor iff it begins with `ident:` (labels are the
-# only line-start token followed by a colon; mnemonics/`hex` never are).
-EXISTING_ANCHOR_RE = re.compile(r"^\s*[A-Za-z_]\w*:")
-# The final per-line comment encodes the PRG file offset: `; 3C22C:  ad 73 00`.
-TRAIL_OFFSET_RE = re.compile(r";\s*([0-9A-Fa-f]{4,6}):")
-# Column the disassembler indents instruction bodies to (matches existing anchors
-# like `b15_c54f:   hex` = 9 + 3 = 12). Anchors longer than this just shift right.
-ANCHOR_COL = 12
-
-
-def apply_to_asm(text, code, ram, anchors=None):
-    """Rewrite a raw disasm. `anchors`, if given, maps PRG file-offset -> name and
-    INSERTS a `name:` anchor on any line whose trailing `; OFFSET:` matches and
-    that has no anchor yet -- recovering jump-table-reached entries (e.g. the
-    syscall handlers) that the recursive-descent disassembler never anchored."""
-    n_code = [0]
-    n_ram = [0]
-    inserted = []  # (offset, name) actually anchored
-
-    def code_sub(m):
-        bank, addr = int(m.group(1)), int(m.group(2), 16)
-        name = code.get((bank, addr))
-        if name:
-            n_code[0] += 1
-            return name
-        return m.group(0)
-
-    text = CODE_TOKEN_RE.sub(code_sub, text)
-
-    def ram_sub(m):
-        addr = int(m.group(1), 16)
-        name = ram.get(addr)
-        if name:
-            n_ram[0] += 1
-            return name
-        return m.group(0)
-
-    out_lines = []
-    for line in text.splitlines():
-        # Protect ONLY the final `; PRGOFFSET: rawbytes` comment (it encodes
-        # addresses as bare hex that must NOT be rewritten). Everything before it
-        # is fair game -- crucially the decoded-instruction comment on
-        # `hex 8d 73 00 ; sta $0073` lines (absolute zero-page access forced as raw
-        # bytes), so those labeled variables get substituted too.
-        idx = line.rfind(";")
-        if idx == -1:
-            line = RAM_OPERAND_RE.sub(ram_sub, line)
-        else:
-            line = RAM_OPERAND_RE.sub(ram_sub, line[:idx]) + line[idx:]
-
-        # Anchor insertion: only on a still-unanchored line whose trailing offset
-        # exactly matches a requested address. The exact line-start match is the
-        # safety -- native routines start a line, while fixed-bank VM-bytecode subs
-        # (e.g. math32_3arg $D6B8) sit mid-`hex`-line so they never match here.
-        if anchors and not EXISTING_ANCHOR_RE.match(line):
-            mo = TRAIL_OFFSET_RE.search(line)
-            if mo:
-                off = int(mo.group(1), 16)
-                name = anchors.get(off)
-                if name:
-                    ind = re.match(r"^( +)", line)
-                    indent = ind.group(1) if ind else ""
-                    body = line[len(indent):]
-                    anchor = name + ":"
-                    pad = max(1, ANCHOR_COL - len(anchor))
-                    line = anchor + (" " * pad) + body
-                    inserted.append((off, name))
-
-        out_lines.append(line)
-    return "\n".join(out_lines), n_code[0], n_ram[0], inserted
-
-
 # Only banks 0/1/2/15 contain code (3-14 are data per the ROADMAP). Bank 15's
 # raw disasm uses symbolic b15_ operands so code-label propagation is full; banks
 # 0/1/2 use raw $XXXX operands (their code reads better as decompiled/*.c), so
 # they mainly gain RAM-operand labels here.
 CODE_BANKS = (0, 1, 2, 15)
+FIXED_BANK = 15
 
 
-def build_anchor_map(labels):
-    """PRG file-offset -> name, for FIXED-bank (bank 15, $C000-$FFFF) labels only.
-    These are address-authoritative, so anchoring them carries no section risk.
-    The switchable window ($8000-$BFFF in banks 0-14) is deliberately excluded
-    until the toml section hygiene is settled (a wrong section there would anchor
-    the wrong bank's code)."""
-    anchors = {}
-    for lab in labels:
-        if lab.bank == 15 and lab.addr >= 0xC000:
-            off = 15 * BANK_SIZE + (lab.addr & 0x3FFF)
-            anchors[off] = lab.name
-    return anchors
+def _asm_maps():
+    from emu_harness.passes import listing
+    code, ram = listing.disasm6_maps(TOML, FIXED_BANK)
+    return listing, code, ram, listing.fixed_anchors(code, FIXED_BANK, BANK_SIZE)
 
 
-def _regen_one(bank, code, ram, anchors):
+def _regen_one(bank, listing, code, ram, anchors):
     """Return (raw_path, labeled_path, regenerated_text, nc, nr, inserted) or None."""
     raw = DISASM / f"bank_{bank:02d}.asm"
     if not raw.exists():
         return None
     text = raw.read_text(encoding="utf-8")
     # Anchor insertion is fixed-bank only -> bank 15's file.
-    bank_anchors = anchors if bank == 15 else None
-    labeled, nc, nr, inserted = apply_to_asm(text, code, ram, bank_anchors)
+    bank_anchors = anchors if bank == FIXED_BANK else None
+    labeled, nc, nr, inserted = listing.relabel_disasm6(text, code, ram, bank_anchors)
     out = raw.with_name(raw.stem + "_labeled.asm")
     return raw, out, labeled, nc, nr, inserted
 
 
 def emit_labeled_asm(labels, dry_run=False):
-    code, ram = build_name_maps(labels)
-    anchors = build_anchor_map(labels)
+    listing, code, ram, anchors = _asm_maps()
     results = []
     for bank in CODE_BANKS:
-        r = _regen_one(bank, code, ram, anchors)
+        r = _regen_one(bank, listing, code, ram, anchors)
         if r is None:
             continue
         _, out, labeled, nc, nr, inserted = r
@@ -302,11 +214,10 @@ def emit_labeled_asm(labels, dry_run=False):
 def verify_labeled_asm(labels):
     """Compare each committed *_labeled.asm against a fresh in-memory regen.
     Returns list of (filename, status) where status is 'ok' | 'STALE' | 'missing'."""
-    code, ram = build_name_maps(labels)
-    anchors = build_anchor_map(labels)
+    listing, code, ram, anchors = _asm_maps()
     results = []
     for bank in CODE_BANKS:
-        r = _regen_one(bank, code, ram, anchors)
+        r = _regen_one(bank, listing, code, ram, anchors)
         if r is None:
             continue
         _, out, labeled, _, _, _ = r
