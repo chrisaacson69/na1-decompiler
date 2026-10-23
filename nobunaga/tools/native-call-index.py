@@ -23,8 +23,35 @@ Commands (addr accepts C537 / 0xC537 / $C537, or bank:addr):
   stats                 edge + coverage summary
 """
 import sys
+from collections import defaultdict
+from importlib import import_module
+from pathlib import Path
 
 from emu_harness.vm.koei.nes import callgraph
+
+
+def build():
+    """The old index's shape, from the one graph, for the tools that import this module
+    (bank-ground-order, cluster-anon-subs): (name, lab_bank, defs, entry_targets, inbound, outbound),
+    keyed by CPU address as before. inbound[dst] = [(src, kind, None)], a root as (None, root, root);
+    outbound[src] = [(dst, kind)]. Names are read the way this tool always read them."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    labels = import_module("mesen-labels").parse_toml()
+    name = {lab.addr: lab.name for lab in labels}
+    lab_bank = {lab.addr: lab.bank for lab in labels}
+    G = callgraph.build("na1")
+    inbound, outbound = defaultdict(list), defaultdict(list)
+    for (s, d), ks in G.edges.items():
+        k = ",".join(sorted(ks))
+        for _site in range(G.sites[(s, d)]):         # one entry per call site, as before
+            inbound[d[1]].append((s[1], k, None))
+            outbound[s[1]].append((d[1], k))
+    for n, rs in G.roots.items():
+        for r in sorted(rs):
+            inbound[n[1]].append((None, r, r))
+    entry_targets = set(inbound) | {n[1] for n in G.subs}
+    return name, lab_bank, {}, entry_targets, inbound, outbound
+
 
 if __name__ == "__main__":
     cmd, rest = (sys.argv[1], sys.argv[2:]) if len(sys.argv) > 1 else ("stats", [])
