@@ -16,25 +16,27 @@ How it was found (see ROADMAP):
   ink is any non-zero pixel.
 
 Usage:
-  py -3 tools/render-text.py "NOBUNAGA"  --out assets/screens/text.png
-  py -3 tools/render-text.py "Lord  3" --scale 6 --fg f0b429 --bg 15151c
-  py -3 tools/render-text.py --atlas assets/screens/font-atlas.png      # dump the whole glyph set
+  py -3.14 tools/render-text.py "NOBUNAGA"  --out assets/screens/text.png
+  py -3.14 tools/render-text.py "Lord  3" --scale 6 --fg f0b429 --bg 15151c
+  py -3.14 tools/render-text.py --atlas assets/screens/font-atlas.png      # dump the whole glyph set
 
 Importable:  from render_text import render_text, FontError
              img = render_text("ATTACK", scale=4, fg=(240,180,41))
+
+The font itself (where it lives, char_classify, the 2bpp decode) is the shared library's
+(emu_harness.vm.koei.nes.assets.text, machines.nes.ppu); this tool keeps NA1's RGB presentation.
 """
 import sys, argparse
 from pathlib import Path
 from PIL import Image
 
+from emu_harness.machines.nes import ppu as NR
+from emu_harness.vm.koei.nes.assets import text as KT
+
 ROOT = Path(__file__).resolve().parent.parent
 ROM = ROOT / "Nobunaga's Ambition (USA).nes"
 HDR = 16
-FONT0_BANK, FONT0_ADDR = 0, 0xB2BA      # tiles 0..80  (primary)
-FONT6_BANK, FONT6_ADDR = 6, 0x8264      # tiles 77..   (lowercase tail + symbols)
-FONT6_TILE0 = 77                        # $14D0 / 16 = tile 0x4D = 77
 TILE_W = TILE_H = 8
-CHAR_BASE = 40                          # char_classify: tile = ascii - 40
 
 class FontError(Exception):
     pass
@@ -44,49 +46,18 @@ def _rom():
         raise FontError(f"ROM not found: {ROM}")
     return ROM.read_bytes()
 
-def _prg(addr, bank):
-    return HDR + bank * 0x4000 + (addr - 0x8000)
+_FONT = {}
 
 def _tile_bitmap(rom, tile):
     """Return the 8x8 ink mask (list of 8 rows of 8 bools) for a font tile index."""
-    if tile < FONT6_TILE0:
-        off = _prg(FONT0_ADDR, FONT0_BANK) + tile * 16
-    else:
-        off = _prg(FONT6_ADDR, FONT6_BANK) + (tile - FONT6_TILE0) * 16
-    rows = []
-    for y in range(8):
-        p0 = rom[off + y]
-        p1 = rom[off + y + 8]
-        rows.append([bool(((p0 >> (7 - x)) & 1) | ((p1 >> (7 - x)) & 1)) for x in range(8)])
-    return rows
-
-ent="""
-char_classify ($CDCA) maps ASCII -> font tile. The font omits some of ASCII's
-punctuation between the digit / upper / lower runs, so each range carries its OWN
-offset (calibrated against the glyph grid the game uploads from $B2BA):
-    '0'-'9' (48-57)  -> tile = c - 40    (digits start at tile 8)
-    'A'-'Z' (65-90)  -> tile = c - 43
-    'a'-'z' (97-122) -> tile = c - 47
-The named punctuation glyphs sit in the gaps; the common ones are mapped explicitly.
-"""
-# explicit tiles for punctuation read straight off the $B2BA glyph grid
-_PUNCT = {
-    '/': 7, '(': 3, ')': 4, '-': 5, '.': 6, ':': 18, '?': 21, '@': 22,
-    "'": 50, '#': 76, '%': 77, '*': 78, '+': 79, ',': 80, '!': 1,
-}
+    key = (len(rom), hash(rom))
+    if key not in _FONT:
+        _FONT[key] = KT.assemble_font_chr(rom[HDR:])[0]
+    return [[v != 0 for v in row] for row in NR.decode_tile(_FONT[key], tile)]
 
 def char_to_tile(ch):
     """char_classify: ASCII -> font tile index (None = render blank)."""
-    c = ord(ch)
-    if c == 32:                 # space -> blank
-        return None
-    if 48 <= c <= 57:           # digits
-        return c - 40
-    if 65 <= c <= 90:           # uppercase
-        return c - 43
-    if 97 <= c <= 122:          # lowercase
-        return c - 47
-    return _PUNCT.get(ch, None)
+    return KT.char_to_tile(ch)
 
 def render_text(text, scale=4, fg=(255, 255, 255), bg=None, tracking=0):
     """Render a single line of text in the game font. bg=None -> transparent."""

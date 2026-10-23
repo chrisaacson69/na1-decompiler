@@ -16,29 +16,27 @@ snapshots a frame at each present point (prompt_redraw / delay_loop), and render
 each frame's sprites with the real NES palette -> PNG frames + an animated GIF.
 
 Usage:
-    py -3 tools/run-animation.py <id> [--sram traces/X.dmp] [--out assets/animations/anim]
+    py -3.14 tools/run-animation.py <id> [--sram traces/X.dmp] [--out assets/animations/anim]
                                  [--pt 0|1] [--h 8|16] [--scale N] [--trace]
-    py -3 tools/run-animation.py --list      # dump the descriptor table
+    py -3.14 tools/run-animation.py --list      # dump the descriptor table
 
 Animation ids (descriptor table $AF80): 9 = Grow. (others TBD as labeled.)
+
+The interpreter harness, the PPU model and the NES pixels are the shared library's
+(emu_harness.vm.koei.nes.assets.animation, machines.nes.ppu), checked against Mesen's own
+PPU during Train (emu-harness row O3); this tool keeps NA1's CLI and descriptor listing.
 """
 import sys, argparse
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from na1dream.nobunaga_vm import NobunagaVM
-from PIL import Image
 
-# Reusable from render-portrait.py (kept local to avoid a hard import dep).
-NES_PALETTE = [
-    (124,124,124),(0,0,252),(0,0,188),(68,40,188),(148,0,132),(168,0,32),(168,16,0),(136,20,0),
-    (80,48,0),(0,120,0),(0,104,0),(0,88,0),(0,64,88),(0,0,0),(0,0,0),(0,0,0),
-    (188,188,188),(0,120,248),(0,88,248),(104,68,252),(216,0,204),(228,0,88),(248,56,0),(228,92,16),
-    (172,124,0),(0,184,0),(0,168,0),(0,168,68),(0,136,136),(0,0,0),(0,0,0),(0,0,0),
-    (248,248,248),(60,188,252),(104,136,252),(152,120,248),(248,120,248),(248,88,152),(248,120,88),(252,160,68),
-    (248,184,0),(184,248,24),(88,216,84),(88,248,152),(0,232,216),(120,120,120),(0,0,0),(0,0,0),
-    (252,252,252),(164,228,252),(184,184,248),(216,184,248),(248,184,248),(248,164,192),(240,208,176),(252,224,168),
-    (248,216,120),(216,248,120),(152,248,176),(176,248,204),(156,252,240),(248,212,252),(0,0,0),(0,0,0),
-]
+from emu_harness.machines.nes import ppu as NR
+from emu_harness.vm.koei.nes.assets import MASTER
+from emu_harness.vm.koei.nes.assets import animation as KA
+
+# The NES master palette (index -> RGB): the KOEI asset layer's one table.
+NES_PALETTE = MASTER
 
 ANIM_DESC = 0xAF80     # bank 14, 5 bytes/entry: {bank, data_src(LE), stream(LE)}
 ANIM_BANK = 14
@@ -66,149 +64,13 @@ def list_descriptors(vm):
 
 def decode_tile(chr_ram, addr, pal4):
     """2bpp tile at byte `addr` in chr_ram -> 8x8 list of (rgb, opaque?) using a 4-color palette."""
-    out = []
-    for y in range(8):
-        p0 = chr_ram[(addr + y) & 0x1FFF]
-        p1 = chr_ram[(addr + y + 8) & 0x1FFF]
-        for x in range(8):
-            v = ((p0 >> (7 - x)) & 1) | (((p1 >> (7 - x)) & 1) << 1)
-            out.append((pal4[v], v != 0))   # color 0 = transparent for sprites
-    return out
+    return [(pal4[v], v != 0) for row in NR.decode_tile(chr_ram, 0, addr) for v in row]
 
 
 def run(aid, sram, pt_base, sprite_h, scale, trace, out_prefix):
-    vm = NobunagaVM()
-    vm.load_sram(sram)
-    sel = vm.mem.read(0x6F5F)
-    vm.mem.write(ADDR_7FCB, aid)
-
-    bank, src, stream = descriptor(vm, aid)
-    print(f"=== animation id {aid}: bank {bank}, data ${src:04X}, stream ${stream:04X} "
-          f"(fief {sel}) ===")
-
-    # --- Python PPU model ---
-    chr_ram = bytearray(0x2000)          # two pattern tables
-    frames = []                          # list of (oam_copy, pal_copy, chr_copy)
-    state = {"uploads": 0, "present": 0}
-
-    vm.switch_bank(ANIM_BANK)
-    fp = 0x05FF
-    vm.vm_fp = fp
-    vm.vm_sp = (fp - 53) & 0xFFFF        # $80AD frame_off = -53
-    vm.vm_pc = 0x80B2                    # body (skip prologue)
-    vm.cpu.pc = vm.DISPATCHER_ADDR
-
-    def snapshot():
-        oam = bytes(vm.mem.read(OAM_SHADOW + i) for i in range(0x100))
-        pal = bytes(vm.mem.read(PAL_SHADOW + i) for i in range(0x20))
-        # dedupe identical consecutive frames (the loop redraws even when idle)
-        if frames and frames[-1][0] == oam and frames[-1][1] == pal:
-            return
-        frames.append((oam, pal, bytes(chr_ram)))
-        state["present"] += 1
-
-    orig = vm.step_one_vm_op
-    def hook():
-        if vm.cpu.pc == vm.DISPATCHER_ADDR and vm.mem.read(vm.vm_pc) == 0xE9:
-            tgt = vm.mem.read_word(vm.vm_pc + 1)
-            sp = vm.vm_sp
-            if tgt == PPU_UPLOAD_WRAP:
-                ub, usrc, udst, ucnt = (vm.mem.read_word(sp), vm.mem.read_word(sp+2),
-                                        vm.mem.read_word(sp+4), vm.mem.read_word(sp+6))
-                nbytes = (ucnt & 0xFFFF) * 16   # count is in TILES (16 bytes/tile)
-                for i in range(nbytes):
-                    chr_ram[(udst + i) & 0x1FFF] = vm.read_banked(ub, (usrc + i) & 0xFFFF)
-                state["uploads"] += 1
-                if trace:
-                    print(f"  upload  bank={ub} src=${usrc:04X} -> PPU ${udst:04X} x{ucnt} tiles")
-            elif tgt in (DELAY_LOOP, PROMPT_REDRAW):
-                snapshot()
-                if trace:
-                    print(f"  present @ ${'delay' if tgt==DELAY_LOOP else 'redraw'} "
-                          f"frame#{state['present']}")
-        return orig()
-    vm.step_one_vm_op = hook
-
-    try:
-        vm.run_until_outermost_return(max_ops=200000)
-    except Exception as e:
-        print(f"  (stopped: {e})")
-    snapshot()  # final
-
-    print(f"uploads={state['uploads']}  frames={len(frames)}")
-    if not frames:
-        print("no frames captured"); return
-
-    # --- render ---
-    imgs = []
-    frame_sprites = []   # active-sprite count per frame (to trim the trailing clear/blank)
-    sprite_bbox = None   # bbox of actually-DRAWN (non-backdrop) pixels = the animation's window
-    for fi, (oam, pal, chr_snap) in enumerate(frames):
-        active = [i for i in range(64) if oam[i*4] < 0xEF]
-        frame_sprites.append(len(active))
-        canvas = Image.new("RGB", (256, 240), NES_PALETTE[pal[0] & 0x3F])
-        px = canvas.load()
-        for i in active:
-            y, tile, attr, x = oam[i*4], oam[i*4+1], oam[i*4+2], oam[i*4+3]
-            palsel = 0x10 + (attr & 3) * 4   # sprite palettes live at $3F10+
-            pal4 = [NES_PALETTE[pal[palsel + k] & 0x3F] for k in range(4)]
-            flipx, flipy = attr & 0x40, attr & 0x80
-            rows = 2 if sprite_h == 16 else 1
-            for r in range(rows):
-                t = (tile & 0xFE) + r if sprite_h == 16 else tile
-                addr = pt_base + t * 16
-                tpx = decode_tile(chr_snap, addr, pal4)
-                for ty in range(8):
-                    for tx in range(8):
-                        rgb, op = tpx[ty*8 + tx]
-                        if not op:
-                            continue
-                        sx = x + (7 - tx if flipx else tx)
-                        sy = y + r*8 + (7 - ty if flipy else ty)
-                        if 0 <= sx < 256 and 0 <= sy < 240:
-                            px[sx, sy] = rgb
-                            if sprite_bbox is None:
-                                sprite_bbox = [sx, sy, sx + 1, sy + 1]
-                            else:
-                                if sx < sprite_bbox[0]: sprite_bbox[0] = sx
-                                if sy < sprite_bbox[1]: sprite_bbox[1] = sy
-                                if sx + 1 > sprite_bbox[2]: sprite_bbox[2] = sx + 1
-                                if sy + 1 > sprite_bbox[3]: sprite_bbox[3] = sy + 1
-        imgs.append(canvas)
-        if trace:
-            print(f"  frame {fi}: {len(active)} sprites")
-
-    Path(out_prefix).parent.mkdir(parents=True, exist_ok=True)
-    # Drop trailing clear/blank frames. The single-scene (bank-14) cutscenes end with a sprite-clear
-    # (one rich scene -> sprites blanked); don't show that empty tail. Trim only from the END, so
-    # mid-animation low-sprite frames are safe.
-    if imgs:
-        peak = max(frame_sprites)
-        while len(imgs) > 1 and frame_sprites[-1] < max(1, peak * 0.30):
-            imgs.pop(); frame_sprites.pop()
-
-    # Clip to the SPRITE bounding region (from OAM positions = the draw_sprite_grid window).
-    # NOT im.getbbox(): that keys on non-black pixels, but the backdrop is palette entry 0
-    # (often grey, e.g. Grow), so getbbox returned the whole 256x240 -> fullscreen GIFs.
-    if sprite_bbox:
-        pad = 8
-        bbox = (max(0, sprite_bbox[0]-pad), max(0, sprite_bbox[1]-pad),
-                min(256, sprite_bbox[2]+pad), min(240, sprite_bbox[3]+pad))
-        imgs = [im.crop(bbox) for im in imgs]
-
-    w, h = imgs[0].size
-    big = [im.resize((w*scale, h*scale), Image.NEAREST) for im in imgs]
-    big[0].save(f"{out_prefix}.gif", save_all=True, append_images=big[1:],
-                duration=120, loop=0, disposal=2)
-    # contact sheet of frames
-    cols = min(8, len(big))
-    import math
-    rows = math.ceil(len(big) / cols)
-    sheet = Image.new("RGB", (cols*(w*scale+4), rows*(h*scale+4)), (40,40,40))
-    for i, im in enumerate(big):
-        sheet.paste(im, ((i % cols)*(w*scale+4)+2, (i // cols)*(h*scale+4)+2))
-    sheet.save(f"{out_prefix}-frames.png")
-    print(f"wrote {out_prefix}.gif ({len(big)} frames, {w}x{h}) + -frames.png")
+    """Interpret animation `aid` and write <out_prefix>.gif + <out_prefix>-frames.png."""
+    KA.render_animation(aid, game="na1", sram=sram, pt=pt_base // 0x1000, sprite_h=sprite_h,
+                        scale=scale, trace=trace, out_prefix=out_prefix)
 
 
 def main():

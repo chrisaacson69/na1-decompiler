@@ -12,9 +12,10 @@ How it works (decoded 2026-06-02, see ROADMAP "PULL THE REAL STRATEGIC MAP"):
     the nametable. There are 9 sections (a pannable map); arrows switch sections.
   - Tilemap : bank 4 $8D5C, 0x1C0 (=448=28x16) bytes/section x 9 sections.
   - Attrs   : bank 4 $9D1C, 0x20 (=32) bytes/section (BG sub-palette per 16x16 quad).
-  - CHR     : bank 4, the map tileset uploaded to PT1 $15B0 (= tile $5B = 91), so a
-              tilemap cell value V indexes CHR-RAM[$1000 + V*16], and the uploaded
-              block starts at bank4 $845C for tile 91 -> CHR addr = $845C + (V-91)*16.
+  - CHR     : bank 4, the map tileset in PT1 from tile 81 ($1510), so a tilemap cell
+              value V indexes CHR-RAM[$1000 + V*16] = bank4 $83BC + (V-81)*16. (This
+              docstring said tile 91 / $845C; the live map-screen PPU capture shows the
+              tiles 81-90 the tilemaps use are the 160 bytes before it. emu-harness row O2.)
   - Palette : bank 15 $F67A (4 colors/sub-palette, stored as words w/ 0 high byte).
               Map BG palette 0 ~ [$3E,$12,$29,$30] = backdrop / sea / land / coast.
 
@@ -22,10 +23,14 @@ Tiles 8-17 are the game font's digits (0-9) overlaid as fief-number labels — d
 on a different CHR region; here they render from the same contiguous block (close
 enough for the terrain read) unless --font is added later.
 
+The section format, the font/terrain CHR, the attribute decode and the NES pixels are
+the shared library's (emu_harness.vm.koei.nes.assets.strategic_map, machines.nes.ppu);
+this tool keeps NA1's stitch/layout variants, labels and CLI.
+
 Usage:
-  py render-strategic-map.py                 # contact sheet of all 9 sections (3x3)
-  py render-strategic-map.py --section N      # one section, big
-  py render-strategic-map.py --scale 3 --out assets/maps/strategic/strategic-map.png
+  py -3.14 render-strategic-map.py                 # contact sheet of all 9 sections (3x3)
+  py -3.14 render-strategic-map.py --section N      # one section, big
+  py -3.14 render-strategic-map.py --scale 3 --out assets/maps/strategic/strategic-map.png
 """
 import sys, importlib.util
 from pathlib import Path
@@ -33,6 +38,10 @@ HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 from na1dream.nobunaga_vm import NobunagaVM
 from PIL import Image, ImageDraw
+
+from emu_harness.machines.nes import ppu as NR
+from emu_harness.vm.koei.nes.assets import MASTER
+from emu_harness.vm.koei.nes.assets import strategic_map as SM
 
 # render-text.py (hyphenated) holds the game-font glyph decoder. Font tiles 0..80
 # live in PT1 alongside the map terrain (tiles 91..234), so a tilemap cell value
@@ -42,24 +51,15 @@ _rt = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_rt)
 FONT_MAX_TILE = 80
 
-# Full NES master palette (same table as run-animation.py).
-NES_PALETTE = [
-    (124,124,124),(0,0,252),(0,0,188),(68,40,188),(148,0,132),(168,0,32),(168,16,0),(136,20,0),
-    (80,48,0),(0,120,0),(0,104,0),(0,88,0),(0,64,88),(0,0,0),(0,0,0),(0,0,0),
-    (188,188,188),(0,120,248),(0,88,248),(104,68,252),(216,0,204),(228,0,88),(248,56,0),(228,92,16),
-    (172,124,0),(0,184,0),(0,168,0),(0,168,68),(0,136,136),(0,0,0),(0,0,0),(0,0,0),
-    (248,248,248),(60,188,252),(104,136,252),(152,120,248),(248,120,248),(248,88,152),(248,120,88),(252,160,68),
-    (248,184,0),(184,248,24),(88,216,84),(88,248,152),(0,232,216),(120,120,120),(0,0,0),(0,0,0),
-    (252,252,252),(164,228,252),(184,184,248),(216,184,248),(248,184,248),(248,164,192),(240,208,176),(252,224,168),
-    (248,216,120),(216,248,120),(152,248,176),(176,248,204),(156,252,240),(248,212,252),(0,0,0),(0,0,0),
-]
+# The NES master palette (index -> RGB): the KOEI asset layer's one table.
+NES_PALETTE = MASTER
 
 BANK_MAP = 4
 TILEMAP = 0x8D5C       # 0x1C0 bytes/section
 ATTR    = 0x9D1C       # 0x20 bytes/section
 RECORDS = 0x9E3C       # 34 bytes/section: (col, row, fief_id) triples, 0xFF-terminated
-CHR_BASE = 0x845C      # bank4 byte addr that uploads to PT1 tile 91 ($15B0)
-CHR_TILE0 = 91         # tile index that CHR_BASE corresponds to
+CHR_BASE = SM.NA1["chr_base"]    # bank4 $83BC = PT1 tile 81 (the library's, grounded on the PPU capture)
+CHR_TILE0 = SM.NA1["chr_tile0"]
 SEC_W, SEC_H = 28, 16  # tiles
 N_SEC = 9
 PAL_TABLE = 0xF67A     # bank 15 (fixed)
@@ -74,12 +74,7 @@ PAL_TABLE = 0xF67A     # bank 15 (fixed)
 # at $F682 = the TITLE-SCREEN palette [$3E,$16,$38,$30], stored just before the
 # "Control"/"(Y/N)" strings, as sub-pal 1 and copied it into 2/3 -- the bogus RED.)
 # The palette is scenario-independent (same Map display code), so this covers 17 and 50.
-MAP_BG_PALETTE = [
-    [0x3E, 0x12, 0x29, 0x30],   # sub-pal0: backdrop / sea / land / white
-    [0x3E, 0x02, 0x12, 0x21],   # sub-pal1: deep-sea depth gradient
-    [0x3E, 0x18, 0x29, 0x30],   # sub-pal2: gold-brown earth / green / white (dominant land)
-    [0x3E, 0x18, 0x01, 0x30],   # sub-pal3: gold-brown / dark-blue / white (mountain/coast)
-]
+MAP_BG_PALETTE = SM.NA1["map_bg_palette"]
 
 
 def load_palettes(vm):
@@ -89,61 +84,32 @@ def load_palettes(vm):
     return [[NES_PALETTE[c] for c in s] for s in MAP_BG_PALETTE]
 
 
-def decode_tile(vm, tile_idx, rom):
-    """Return 8x8 list of palette-index (0-3) for a tilemap cell value.
-    Cells <= 80 are game-font glyphs (PT1 tiles uploaded from bank0 $B2BA);
-    cells >= 81 are map terrain (bank4 block, tile 91 -> $845C)."""
-    if tile_idx <= FONT_MAX_TILE:
-        # font glyph: 1bpp ink mask -> draw ink as palette color 3, else color 0
-        bmp = _rt._tile_bitmap(rom, tile_idx)
-        return [[3 if bmp[y][x] else 0 for x in range(8)] for y in range(8)]
-    addr = CHR_BASE + (tile_idx - CHR_TILE0) * 16
-    rows = []
-    for y in range(8):
-        p0 = vm.read_banked(BANK_MAP, addr + y)
-        p1 = vm.read_banked(BANK_MAP, addr + y + 8)
-        row = [((p0 >> (7 - x)) & 1) | (((p1 >> (7 - x)) & 1) << 1) for x in range(8)]
-        rows.append(row)
-    return rows
+_CHR = {}
 
+def decode_tile(vm, tile_idx, rom):
+    """Return 8x8 list of palette-index (0-3) for a tilemap cell value, from the library's
+    unified map CHR (font glyphs 0..80, terrain from 81). `vm` is kept for compatibility."""
+    key = (len(rom), hash(rom))
+    if key not in _CHR:
+        _CHR[key] = SM.assemble_chr(rom[16:] if rom[:4] == b"NES" else rom)
+    return NR.decode_tile(_CHR[key], tile_idx)
+
+
+_PLANES = {}
 
 def attr_palette(attr_bytes, tx, ty):
-    """Which BG sub-palette (0-3) applies at section-local tile (tx,ty). NES attribute
-    layout: 1 byte per 32x32px (4x4 tile) area; 2 bits per 16x16 (2x2 tile) quadrant.
-
-    The section is blitted to screen cols 2-29, rows 4-19, and its 32-byte attribute table
-    is uploaded to PPU $23C8 (the attribute byte for screen rows 4-7). Rows land on a 4-tile
-    attribute-cell boundary (row 4), so ty maps straight through -- but COLUMNS start at
-    screen col 2, which is MID-cell. So we must decode at screen col (tx+2); using the raw
-    section-local tx puts every other quad-column in the wrong cell, swapping sub-palettes
-    on adjacent quads (lakes/mountains flip colour). The table is 8 bytes/row (32 tiles)."""
-    sx = tx + 2                                   # section col 0 -> screen col 2
-    cell_x, cell_y = sx // 4, ty // 4
-    idx = cell_y * 8 + cell_x
-    if idx >= len(attr_bytes):
-        return 0
-    b = attr_bytes[idx]
-    quad = ((ty % 4) // 2) * 2 + ((sx % 4) // 2)  # 0 TL,1 TR,2 BL,3 BR
-    return (b >> (quad * 2)) & 3
+    """Which BG sub-palette (0-3) applies at section-local tile (tx,ty): the library's attribute
+    plane, which decodes at screen col tx+2 (the section is blitted from screen col 2)."""
+    key = tuple(attr_bytes)
+    if key not in _PLANES:
+        _PLANES[key] = SM._section_attr_plane(list(attr_bytes))
+    return _PLANES[key][ty * SEC_W + tx]
 
 
 def render_section(vm, sec, pals, scale=2, rom=None):
-    rom = rom if rom is not None else _rt._rom()
-    tm = [vm.read_banked(BANK_MAP, TILEMAP + sec * 0x1C0 + i) for i in range(0x1C0)]
-    at = [vm.read_banked(BANK_MAP, ATTR + sec * 0x20 + i) for i in range(0x20)]
-    img = Image.new("RGB", (SEC_W * 8, SEC_H * 8), (0, 0, 0))
-    px = img.load()
-    for ty in range(SEC_H):
-        for tx in range(SEC_W):
-            v = tm[ty * SEC_W + tx]
-            pal = pals[attr_palette(at, tx, ty)]
-            tile = decode_tile(vm, v, rom)
-            for yy in range(8):
-                for xx in range(8):
-                    px[tx * 8 + xx, ty * 8 + yy] = pal[tile[yy][xx]]
-    if scale != 1:
-        img = img.resize((img.width * scale, img.height * scale), Image.NEAREST)
-    return img
+    """One section through the library. `vm`, `pals` and `rom` are kept for compatibility: the
+    palette is the library's (pals is always load_palettes')."""
+    return SM.render_section(SM._prg(SM.game_cfg("na1")), sec, scale=scale)
 
 
 def _tilemap(vm, sec):

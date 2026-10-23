@@ -1,4 +1,4 @@
-#!/usr/bin/env py -3
+#!/usr/bin/env py -3.14
 """render-portrait.py — render Nobunaga's Ambition daimyo portraits from ROM.
 
 Two portrait systems (decoded 2026-06-01; see ROADMAP / project_nobunaga_daimyo_portraits):
@@ -31,12 +31,20 @@ COMPOSITE (RNG-generated replacement daimyo) — `sheet`/`faces` commands.
        3        $AD84     192     12
 
 Usage:
-  py -3 tools/render-portrait.py anthology [17|50]   # labeled grid of a scenario's daimyo (both if omitted)
-  py -3 tools/render-portrait.py sheet   [out.png]   # composite: all features x 5 variants, tile grid
-  py -3 tools/render-portrait.py faces   [out.png]   # composite: assemble 4 blocks as variant combos
+  py -3.14 tools/render-portrait.py anthology [17|50]   # labeled grid of a scenario's daimyo (both if omitted)
+  py -3.14 tools/render-portrait.py sheet   [out.png]   # composite: all features x 5 variants, tile grid
+  py -3.14 tools/render-portrait.py faces   [out.png]   # composite: assemble 4 blocks as variant combos
+
+The portrait formats themselves (preset descriptor + layout, composite feature blocks + tile maps)
+and the NES pixels are the shared library's (emu_harness.vm.koei.nes.assets.portrait,
+machines.nes.ppu); this tool keeps NA1's sheets, anthology, name generator and CLI.
 """
 import sys, glob, os
 from PIL import Image, ImageDraw
+
+from emu_harness.machines.nes import ppu as NR
+from emu_harness.vm.koei.nes.assets import MASTER
+from emu_harness.vm.koei.nes.assets import portrait as KP
 
 ROM = open(glob.glob("*.nes")[0] if glob.glob("*.nes") else
            glob.glob("**/*.nes", recursive=True)[0], "rb").read()
@@ -58,12 +66,7 @@ VARIANTS = 5
 PAL = [(248, 248, 248), (168, 168, 168), (96, 96, 96), (0, 0, 0)]
 
 def decode_tile(blob):
-    px = []
-    for y in range(8):
-        p0, p1 = blob[y], blob[y + 8]
-        row = [((p0 >> (7 - x)) & 1) | (((p1 >> (7 - x)) & 1) << 1) for x in range(8)]
-        px.append(row)
-    return px
+    return NR.decode_tile(blob, 0)
 
 def tile_img(blob, scale=4):
     px = decode_tile(blob)
@@ -119,19 +122,8 @@ def faces(out):
 # PRESET portraits (historical daimyo) + per-scenario anthology
 # ======================================================================
 
-# Standard NES (2C02) master palette — 64 colors, index -> RGB. Only the 4
-# portrait indices matter here, but the full table keeps the tool reusable for
-# any ROM graphic. (Common FCEUX/Nestopia-style values.)
-NES_PALETTE = [
-    (124,124,124),(0,0,252),(0,0,188),(68,40,188),(148,0,132),(168,0,32),(168,16,0),(136,20,0),
-    (80,48,0),(0,120,0),(0,104,0),(0,88,0),(0,64,88),(0,0,0),(0,0,0),(0,0,0),
-    (188,188,188),(0,120,248),(0,88,248),(104,68,252),(216,0,204),(228,0,88),(248,56,0),(228,92,16),
-    (172,124,0),(0,184,0),(0,168,0),(0,168,68),(0,136,136),(0,0,0),(0,0,0),(0,0,0),
-    (248,248,248),(60,188,252),(104,136,252),(152,120,248),(248,120,248),(248,88,152),(248,120,88),(252,160,68),
-    (248,184,0),(184,248,24),(88,216,84),(88,248,152),(0,232,216),(120,120,120),(0,0,0),(0,0,0),
-    (252,252,252),(164,228,252),(184,184,248),(216,184,248),(248,184,248),(248,164,192),(240,208,176),(252,224,168),
-    (248,216,120),(216,248,120),(152,248,176),(176,248,204),(156,252,240),(248,212,252),(0,0,0),(0,0,0),
-]
+# The NES master palette (index -> RGB): the KOEI asset layer's one table.
+NES_PALETTE = MASTER
 
 DESC_TABLE_CPU = 0xBBD0     # bank 8: 4-byte descriptors {bank, count, src_lo, src_hi}
 DESC_BANK = 8
@@ -156,11 +148,7 @@ def _portrait_palette():
 
 
 def _decode_tile_pal(blob, pal):
-    px = []
-    for y in range(8):
-        p0, p1 = blob[y], blob[y + 8]
-        px += [pal[((p0 >> (7 - x)) & 1) | (((p1 >> (7 - x)) & 1) << 1)] for x in range(8)]
-    return px
+    return [pal[v] for row in NR.decode_tile(blob, 0) for v in row]
 
 
 def _descriptor(mapid):
@@ -179,21 +167,7 @@ def _name(scenario, idx):
 def render_preset_portrait(mapid, scale=1):
     """Render daimyo portrait for `mapid` as a GRID*8 x GRID*8 px image (NES-exact),
     optionally integer-upscaled (NEAREST, pixel-preserving)."""
-    pal = _portrait_palette()
-    mt = prg(MAP_TABLE_CPU, MAP_TABLE_BANK) + mapid * (GRID * GRID)
-    tile_map = ROM[mt: mt + GRID * GRID]   # this portrait's own 6x6 tile-index map
-    _b, cnt, off = _descriptor(mapid)
-    im = Image.new("RGB", (GRID * 8, GRID * 8), pal[0])
-    for i, v in enumerate(tile_map):
-        ti = v - TILE_BASE
-        if 0 <= ti < cnt:
-            tile = Image.new("RGB", (8, 8))
-            tile.putdata(_decode_tile_pal(ROM[off + ti * 16: off + ti * 16 + 16], pal))
-            r, c = divmod(i, GRID)
-            im.paste(tile, (c * 8, r * 8))
-    if scale != 1:
-        im = im.resize((GRID * 8 * scale, GRID * 8 * scale), Image.NEAREST)
-    return im
+    return KP.render_preset_portrait(ROM, mapid, scale=scale)
 
 
 def anthology(scenario, out, scale=4, cols=None):
@@ -231,14 +205,9 @@ def anthology(scenario, out, scale=4, cols=None):
 #   CHR (bank 8): per-feature tile block, base + digit*stride, uploaded to a fixed tile base
 #   map (bank 9): per-feature 6x6 tile-index slice, base + digit*len -> the 36-byte layout
 # (CHR bank 8 / map bank 9 are the upload/sram-wrap BANK ARGs read from the bytecode.)
-# (name, chr_base, chr_stride, map_base, tile_base, n_tiles)
-COMPOSITE_FEATURES = [
-    ("head",  0xA604, 192, 0xAE34, 0x5B, 12),
-    ("eyes",  0xA9C4,  96, 0xAE70, 0x67,  6),
-    ("nose",  0xABA4,  96, 0xAE8E, 0x6D,  6),
-    ("mouth", 0xAD84, 192, 0xAEAC, 0x73, 12),
-]
-CHR_BANK, MAP_BANK = 8, 9
+# (name, chr_base, chr_stride, map_base, tile_base, n_tiles): the library's table
+COMPOSITE_FEATURES = KP.NA1["features"]
+CHR_BANK, MAP_BANK = KP.NA1["portrait_bank"], KP.NA1["map_bank"]
 
 # Daimyo NAME generator ($DCB2): name = a 2-char syllable from table1 ($F930, capitalized
 # first syllables) + a 2-char syllable from table2 ($F95D, lowercase), each rng_mod(11);
@@ -267,27 +236,7 @@ def generate_name(rng, used, s1, s2):
 def render_composite_portrait(digits, scale=1):
     """Render the composite face for base-5 (d0,d1,d2,d3) — exactly the generated-daimyo
     assembly. Returns a GRID*8 x GRID*8 px image (NES-exact)."""
-    pal = _portrait_palette()
-    # virtual CHR tile index -> source ROM offset (bank 8), per the upload bases
-    vtile = {}
-    tile_map = bytearray()
-    for (name, chr_base, stride, map_base, tbase, n), d in zip(COMPOSITE_FEATURES, digits):
-        chr_off = prg(chr_base + d * stride, CHR_BANK)
-        for k in range(n):
-            vtile[tbase + k] = chr_off + k * 16
-        mo = prg(map_base + d * n, MAP_BANK)
-        tile_map += ROM[mo: mo + n]          # this feature's tile-index slice
-    im = Image.new("RGB", (GRID * 8, GRID * 8), pal[0])
-    for i, v in enumerate(tile_map):
-        src = vtile.get(v)
-        if src is not None:
-            tile = Image.new("RGB", (8, 8))
-            tile.putdata(_decode_tile_pal(ROM[src: src + 16], pal))
-            r, c = divmod(i, GRID)
-            im.paste(tile, (c * 8, r * 8))
-    if scale != 1:
-        im = im.resize((GRID * 8 * scale, GRID * 8 * scale), Image.NEAREST)
-    return im
+    return KP.render_composite_face(ROM, digits, scale=scale, gray=False)
 
 
 def random_faces(out, n=36, cols=9, seed=1573, scale=3):
