@@ -31,6 +31,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import na1_regen
 from walk_guard import snapshot_decompiled, find_guard_violations
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -138,9 +139,11 @@ def run(cmd):
 
 
 def regen():
-    r = run(["py", "-3", "tools/decompile-all.py"])
-    if r.returncode != 0:
-        die(f"regen failed: decompile-all.py\n{r.stdout}\n{r.stderr}")
+    # every bytecode bank's tiers from the shared engine (tools/na1_regen.py; decompile-all.py was
+    # removed when the engine graduated)
+    errs = na1_regen.regen()
+    if errs:
+        die("regen failed:\n  " + "\n  ".join(errs))
 
 
 def assert_guard(bank, before):

@@ -28,6 +28,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import na1_regen
 from walk_guard import snapshot_decompiled, find_guard_violations
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -96,12 +97,14 @@ def run(cmd):
 
 
 def regen():
-    # --mlb uses emu-harness (py -3.14); --asm output is identical under 3.9 and 3.14 (checked 2026-10-22)
-    for cmd in (["py", "-3.14", "tools/mesen-labels.py", "--mlb", "--asm"],
-                ["py", "-3", "tools/decompile-all.py"]):
-        r = run(cmd)
-        if r.returncode != 0:
-            die(f"regen step failed: {' '.join(cmd)}\n{r.stdout}\n{r.stderr}")
+    # the .mlb + labeled 6502 listings, then every bytecode bank's tiers from the shared engine
+    # (tools/na1_regen.py; decompile-all.py was removed when the engine graduated)
+    r = run(["py", "-3.14", "tools/mesen-labels.py", "--mlb", "--asm"])
+    if r.returncode != 0:
+        die(f"regen step failed: mesen-labels.py --mlb --asm\n{r.stdout}\n{r.stderr}")
+    errs = na1_regen.regen()
+    if errs:
+        die("regen step failed:\n  " + "\n  ".join(errs))
 
 
 def assert_pure_rename(bank, before):
