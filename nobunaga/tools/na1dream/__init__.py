@@ -10,4 +10,4 @@ The NA1 defaults (ROM, labels, asset enums) come from the engine's `na1` title p
 """
 from emu_harness.core.alias import alias_package
 
-alias_package(__name__, "emu_harness.vm.koei")
+alias_package(__name__, "emu_harness.vm.koei", also=("emu_harness.vm.koei.nes",))
