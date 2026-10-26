@@ -8,10 +8,10 @@ Mesen writes its dumps to a fixed Debugger folder (below). Conventions (Chris,
   *.txt  = trace log                                 e.g. "Nobunaga's Ambition (USA).txt"
   no name given -> the most recent file of that type (by mtime)
 
-Usage:
-  py mesen-dump.py list                       # recent dumps + tracelogs, newest first
-  py mesen-dump.py path [name] [--trace]       # print the resolved absolute path (latest if no name)
-  py mesen-dump.py get  [name] [--trace]       # copy into traces/ + register provenance; print local path
+Usage (py -3.14: the Debugger folder comes from emu-harness):
+  py -3.14 mesen-dump.py list                  # recent dumps + tracelogs, newest first
+  py -3.14 mesen-dump.py path [name] [--trace] # print the resolved absolute path (latest if no name)
+  py -3.14 mesen-dump.py get  [name] [--trace] # copy into traces/ + register provenance; print local path
 
 `name` is a case-insensitive substring (e.g. "tanmba" matches "TanmbaBattle.dmp").
 --trace selects *.txt tracelogs; default is *.dmp SRAM.
@@ -19,8 +19,9 @@ Usage:
 import os, sys, shutil, time, subprocess
 from pathlib import Path
 
-MESEN_DIR = Path(r"C:\Users\Chris.Isaacson\AppData\Local\Microsoft\WinGet\Packages"
-                 r"\SourMesen.Mesen2_Microsoft.Winget.Source_8wekyb3d8bbwe\Debugger")
+from emu_harness.backends.mesen import debugger_dir, debugger_files
+
+MESEN_DIR = debugger_dir()      # Mesen's home comes from emu-harness's config.toml
 HERE = Path(__file__).parent
 TRACES = HERE.parent / "traces"
 
@@ -28,9 +29,7 @@ TRACES = HERE.parent / "traces"
 def _candidates(trace=False):
     if not MESEN_DIR.is_dir():
         sys.exit(f"Mesen Debugger dir not found: {MESEN_DIR}")
-    ext = ".txt" if trace else ".dmp"
-    fs = [p for p in MESEN_DIR.iterdir() if p.is_file() and p.suffix.lower() == ext]
-    return sorted(fs, key=lambda p: p.stat().st_mtime, reverse=True)
+    return debugger_files(".txt" if trace else ".dmp")
 
 
 def resolve(name=None, trace=False):

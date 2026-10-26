@@ -6,17 +6,17 @@ Mesen's NesSaveRam.dmp lives in the Debugger directory and gets rewritten
 each time you "Save Memory Dump" (Tools -> Memory Tools). This script copies
 it into traces/ with a tag so it survives the next overwrite.
 
-Usage:
-    py capture-test.py <tag> pre              ; snapshot before command
-    py capture-test.py <tag> post             ; snapshot after command
-    py capture-test.py <tag> diff             ; diff PRE vs POST (no copy)
-    py capture-test.py <tag> diff --fief 8    ; spotlight one fief
+Usage (py -3.14: the Debugger folder comes from emu-harness):
+    py -3.14 capture-test.py <tag> pre             ; snapshot before command
+    py -3.14 capture-test.py <tag> post             ; snapshot after command
+    py -3.14 capture-test.py <tag> diff             ; diff PRE vs POST (no copy)
+    py -3.14 capture-test.py <tag> diff --fief 8    ; spotlight one fief
 
 Examples:
-    py capture-test.py grow-25-spring pre
+    py -3.14 capture-test.py grow-25-spring pre
     (run Grow 25 in-game, save memory dump)
-    py capture-test.py grow-25-spring post
-    py capture-test.py grow-25-spring diff --fief 8
+    py -3.14 capture-test.py grow-25-spring post
+    py -3.14 capture-test.py grow-25-spring diff --fief 8
 
 The PRE/POST files live in traces/<tag>_PRE.dmp and traces/<tag>_POST.dmp.
 """
@@ -27,11 +27,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-MESEN_DUMP = Path(
-    r"C:\Users\Chris.Isaacson\AppData\Local\Microsoft\WinGet\Packages"
-    r"\SourMesen.Mesen2_Microsoft.Winget.Source_8wekyb3d8bbwe\Debugger"
-    r"\Nobunaga's Ambition (USA) - NesSaveRam.dmp"
-)
+from emu_harness.backends.mesen import debugger_dir
+
+# Mesen's GUI dump for this ROM, in its Debugger folder (emu-harness resolves the folder)
+MESEN_DUMP = debugger_dir() / "Nobunaga's Ambition (USA) - NesSaveRam.dmp"
 HERE = Path(__file__).resolve().parent          # tools/
 PROJ = HERE.parent                                # project root
 TRACES = PROJ / "traces"                           # data lands here regardless of CWD
