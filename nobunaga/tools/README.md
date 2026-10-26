@@ -67,7 +67,7 @@ created: 2026-05-29
 |---|---|---|
 | `analyze-sram.py` | ✅ | Analyze an 8 KB SRAM `.dmp`, 2 modes: `structure` (byte distribution / runs / page summaries) and `detail` (ASCII strings / record stride-fitting / region dumps). **Merged sram-analyze + sram-detail, 2026-05-29** — verified byte-identical. |
 | `sram-decode-province.py` | ✅ | Decode the live 17×26 province table from an SRAM dump; `--diff <other>` for PRE/POST. The decoder `capture-test.py diff` calls. *(moved from root → tools/, 2026-05-29)* |
-| `combat-trace-decode.py` | ✅ | Decode the large `*-combat-init.txt` traces. |
+| `combat-trace-decode.py` | ✅ | Decode the large `*-combat-init.txt` traces. py -3.14 since 2026-10-26: lines parsed by emu-harness (any Mesen column layout; no longer crashes on traces without `Fr:`); every row/bulk upload matches emu-harness `machines/nes/trace` byte for byte (2,336/2,336 over 6 traces). |
 | `sram-decode.py` | 🧪 | Discovery one-shot: located the `$7BFE` tactical staging buffer + metatile patterns. **Its input `sram_dump.txt` no longer exists; finding is canonical in `render-from-sram.py`.** Kept for provenance only. |
 | `combat-map-decode.py` | 🧪 | Discovery one-shot: reconstructed the tactical nametable from a Mesen *trace* (not SRAM — wrong cluster). Superseded by `combat-trace-decode.py`. Hardcoded trace path. Provenance only. |
 
@@ -90,7 +90,7 @@ created: 2026-05-29
 | `render-fief-from-ppu.py <fief>` | ✅ | Parameterized fief PPU renderer (`--list` shows available dumps). **Replaced the 16 per-fief `render-<fief>-from-ppu.py` copies, 2026-05-29.** |
 | `render-mino-full.py`, `render-iga-full.py` | 🔁 | Full-map-from-SRAM variants → generalize (still pending). |
 | `title-render.py` | ✅🧪 | Title-screen renderer, ROM-sourced CHR (`$AC4A`) → grayscale PPM. Canonical of the title one-shots; **`render-title2.py` retired 2026-05-29** (placeholder palette, depended on extracted intermediates). |
-| `title-nametable.py`, `title-tiles-extract.py`, `find-title-assets.py`, `extract-chr-from-trace.py` | 🧪 | Title-screen one-shots (asset located + rendered; keep for provenance). |
+| `title-nametable.py`, `title-tiles-extract.py`, `find-title-assets.py`, `extract-chr-from-trace.py` | 🧪 | Title-screen one-shots (asset located + rendered; keep for provenance). `title-nametable` / `title-render` need `nametable_bytes.txt`, which is not in the repo. `extract-chr-from-trace` runs on emu-harness's register-level PPU rebuild (py -3.14; identical output). |
 
 ## Strategic / scenario analysis
 | Script | Status | Purpose |
