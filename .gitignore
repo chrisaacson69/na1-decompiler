@@ -5,7 +5,8 @@
 NAsave*
 
 # === Machine-local / editor / caches ===
-**/.claude/
+**/.claude/*
+!/.claude/skills/
 **/__pycache__/
 *.pyc
 .DS_Store

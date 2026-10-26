@@ -1,0 +1,14 @@
+{
+  "_about": "NA1's facts for the emu-harness walk workflows (emu-harness/workflows/*.workflow.js; PHASES.md section 5). Merge this object into the workflow args as `context`. Moved out of the vault walk skills 2026-10-26; the layout paths follow source/README.md.",
+  "title": "Nobunaga's Ambition (NES)",
+  "readable": "source/4-c/bank_{bb}.c",
+  "lower": "source/2-asm-vm/bank_{bb}_vm.asm",
+  "marker": "the '; sub $ADDR' marker",
+  "callers": "py -3.14 tools/native-call-index.py callers {addr}",
+  "calls": "py -3.14 tools/native-call-index.py calls {addr}",
+  "rederive": "py -3.14 -m emu_harness.vm.koei.nes.vm_decompile source/2-asm-vm/bank_{bb}_vm.asm {addr}",
+  "refs_rom": "py -3.14 tools/rom-xref.py refs {addr}",
+  "refs_ram": "py -3.14 tools/data-xref.py refs {addr}",
+  "frame_hint": "the VM's quick slots $00-$3F and frame ops $81-$A3; into a province field via $7001+idx*26, a host_call arg, or a loop counter",
+  "caveats": "- The province record is the LIVE $7001 map: gold@+0 ... output@+8 (anchored by the verified effect_grow) ... header@+24 (base koku / development ceiling). 26 bytes, idx*26, 16-bit LE.\n- Do NOT confuse it with the ROM scenario-DEFAULTS table (header first, @+0) that dump-defaults.py reads. ROM and SRAM are two representations of one record (endianness and field order differ); boot init transforms ROM -> SRAM. If an offset or value seems to conflict, ask first which representation it is.\n- The bytecode's $A8 store family renders subtly in the C: confirm write vs read direction in the bytecode.\n- native-call-index resolves bytecode CALL_abs edges, so callers / calls return real data (a genuine 0 means indirect or table dispatch).\n- Launcher is 'py -3.14' (not 'python', not on PATH; a silent failure). Run all tools from the project root (nobunaga/)."
+}
