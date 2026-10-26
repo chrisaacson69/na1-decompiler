@@ -36,9 +36,10 @@ created: 2026-05-29
 ## Command / effect testing
 | Script | Status | Purpose |
 |---|---|---|
-| `capture-test.py` | ✅ | PRE/POST snapshot manager (the snap protocol in [commands/README](../commands/README.md)). Auto-registers each snap via `data-index.py`; pass `--note` for provenance. *(moved from root → tools/, 2026-05-29)* |
+| `capture-test.py` | ✅ | PRE/POST snapshot manager (py -3.14: Mesen's Debugger folder from emu-harness) (the snap protocol in [commands/README](../commands/README.md)). Auto-registers each snap via `data-index.py`; pass `--note` for provenance. *(moved from root → tools/, 2026-05-29)* |
 | `data-index.py` | ✅ | Provenance index for empirical captures (`add`/`scan`/`show`) → `traces/INDEX.tsv`. The fix for "what is this dump?" — see [traces/README](../traces/README.md). |
-| `mesen-dump.py` | ✅ | Resolve/fetch Mesen Debugger output by convention (2026-05-30). `list` · `path [name] [--trace]` · `get [name] [--trace]` (copies to `traces/` + auto-registers via `data-index`). `.dmp`=SRAM, `.txt`=tracelog; no name → newest by mtime; `name` = case-insensitive substring. Removes the manual hunt for a freshly-saved battle dump. |
+| `mesen-dump.py` | ✅ | Resolve/fetch Mesen Debugger output by convention (2026-05-30; folder from emu-harness since 2026-10-26, py -3.14). `list` · `path [name] [--trace]` · `get [name] [--trace]` (copies to `traces/` + auto-registers via `data-index`). `.dmp`=SRAM, `.txt`=tracelog; no name → newest by mtime; `name` = case-insensitive substring. Removes the manual hunt for a freshly-saved battle dump. |
+| `vm-trace.py` | ✅ | Headless VM trace (2026-10-26, emu-harness row P2): an emu-harness `watch` on the dispatcher + `lua/vm-trace.lua`'s trigger/depth logic in Python, from any savestate + input script. `--check` runs the Lua probe in the same session and diffs (NAsave1.mss, trigger $858D: 240/240 identical). py -3.14. |
 | `run-effect.py` | ✅ | Generic effect-handler runner (`grow`/`build`/`dam`/`give…`); captures host_call args (sqrt_int/math32/pct_op). **Absorbed `run-grow.py`, 2026-05-29** — use `run-effect.py grow <pre> [amount]`. ⚠️ **reverses captured args for display** — true frame order is the reverse (see probe-math32). |
 | `probe-map-emit.py` | 🧪 | Harness w/ a working **syscall layer**: intercepts `host_call $F226`, reads the param struct from `vm_sp` (`struct[0]`=task id), dispatches — emulates `memcpy_banked`($10)/`rng`($11), stubs `wait_for_nmi`($13)/PPU, auto-stubs+logs unknowns. Runs `$885E` clean. **Finding: `$885E` is the staging→PPU *render* driver, not the ROM→SRAM populator** (task `$14`=ppu_blit reads `struct[12]` staging ptr → PPUDATA). Real emit still unfound — see ROADMAP step 2'. Promote the syscall layer into `nobunaga_vm` next. |
 | `probe-math32.py` | ✅ | Probes the 3 VM arithmetic helpers (`math32_3arg`/`math32_2arg`/`pct_op`) in the emulator with controlled args. **Cracked the ext-op blocker 2026-05-29**: `pct_op=⌊ab/100⌋`, `math32_3arg=⌊ab/c⌋`, `math32_2arg=⌊100a/(a+b)⌋`. Self-documents its conclusions. |
@@ -108,7 +109,7 @@ created: 2026-05-29
 | `dispatch-logger.lua` | ✅ | Log bytecode dispatch at `$E867` (console v1 / CSV v2). |
 | `dashboard.lua` | ✅ | Live econ/army overlay during play. |
 | `ai-war-logger.lua` | ✅ | Empirical AI war-target measurement (hooks `$B79B`). |
-| `vm-trace.lua` | 🔁 | Lower-level VM trace; overlaps `dispatch-logger`. |
+| `vm-trace.lua` | 🔁 | Lower-level VM trace; overlaps `dispatch-logger`. Headless twin: `vm-trace.py` (identical output; keep this one for the GUI). |
 | `test-overlay.lua` | 🧪 | Diagnostic overlay. |
 
 ## Discovery / one-shots (🧪 — keep for provenance, don't extend)
