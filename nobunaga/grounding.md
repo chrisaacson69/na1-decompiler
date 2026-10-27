@@ -396,7 +396,7 @@ All confirmed (well-named orchestrators); 1 comment refute:
 
 ### Bank 1 full-verify batch #10 — targeting/trade/war-prep + 2 value-bug flags (76/131)   [2026-06-10]
 1 rename + 2 DREAM value-bug flags:
-- `$8327` `scale_div10_capcheck` ✅ — the 3rd/last bank-1 ext-op sub (4-c value-wrong, flagged); = -1 if >arg3 else floor(a*b/10).
+- `$8327` `scale_div10_capcheck` ✅ — the 3rd/last bank-1 ext-op sub (4-c value-wrong, flagged); = -1 if math32_muladddiv(a,b) > arg3 (signed; i.e. a*b > 10*arg3) else a*b/10. **Corrected 2026-10-27:** the June fold said `floor(a*b/10) >= arg3`, which refuses an exactly affordable purchase; checked against the ROM by cfg_gate.
 - `$97EA` `relations_roll_vs_owner` ✅ — bytecode shows `relations_matrix_get(...) > rng_mod(100)` (a real roll); **4-c renders the
   roll as phi_980d_0 — value-wrong, flagged** (nearly mis-renamed it).
 - `$8B0A` `effect_subhandler_A003` → **`effect_sell_rice_for_gold`** (gold += rate*rice/10, rice -= amount).

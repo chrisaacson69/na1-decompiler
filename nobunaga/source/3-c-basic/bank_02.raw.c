@@ -611,7 +611,7 @@ word prompt_province_selection(word arg1, word arg2) {
     sub_D134(msg_d_d_b536, arg1, arg2);    // $879C
     local11 = sub_D59D(arg1, arg2);    // $87A6
     if (!(local11)) goto L_87B5;    // $87A8
-    if ((local11 == 1)) goto L_87B5;    // $87AF
+    if ((local11 == -1)) goto L_87B5;    // $87AF
 L_87B5:
     clear_rect_left_lower();    // $87B2
     return local11;    // $87B6

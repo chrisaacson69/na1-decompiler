@@ -192,7 +192,7 @@ def recruit_arm_train(m: "M.Memory", idx: int, try_war) -> int:
 
     # ARMS BUY: gold -> arms (sink the old port dropped)
     price = P.scale_div10_capcheck(men, m.r16(M.ARMS_BUY_PRICE_RATE), header)
-    if m.r16(fief + M.F_GOLD) >= price and price != 1:
+    if m.s16(fief + M.F_GOLD) >= price and price != -1:   # bytecode $B5B5 SCMPGE, $B5BD != -1 (4-c had printed != 1)
         units = (gs // price) if price else 0
         if units:
             m.w16(fief + M.F_GOLD,

@@ -1091,14 +1091,17 @@ L_D6B2:
 // (body @ $D6BD)
 
 word sub_D6B8(word arg1, word arg2, word arg3) {
-    return ((arg1 * arg2) / arg3);    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
+    // sdiv32: KOEI's 32-bit signed divide; a negative divisor d divides by |d| - 1 (ROM bug)
+    if (!arg3) return 0xFFFF;
+    return (word)sdiv32((sword)arg1 * (sword)arg2, (sword)arg3);
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D6DE
 // (body @ $D6E3)
 
 word sub_D6DE(word arg1, word arg2) {
-    return ((arg1 * 100) / (arg1 + arg2));    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
+    if (!arg1 && !arg2) return 0;
+    return (word)(((dword)arg1 * 100) / ((dword)arg1 + arg2));
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D70D

@@ -49,19 +49,31 @@ def sqrt_int(x: int) -> int:
     return isqrt(x) if x > 0 else 0
 
 
+# The five 32-bit ext-op helpers point at emu-harness's ROM-checked models (cfg_gate checks them
+# against the ROM's own subs over an edge grid) instead of keeping a copy: the copies here had come
+# from the June 4-c folds, which were unsigned and dropped the guards (NA1 revisit 2026-10-27).
+# The ROM works in 16-bit words; these return signed ints (0xFFFF -> -1), the sim's convention.
+from emu_harness.vm.koei.nes.vm_decompile import na1_extop_model
+
+
+def _rom16(stub, *args):
+    v = na1_extop_model(stub)(*(x & 0xFFFF for x in args))
+    return v - 0x10000 if v & 0x8000 else v
+
+
 def math32_3arg(a: int, b: int, c: int) -> int:
-    """math32_3arg $D6B8 = (a*b)/c.  (c==0 guarded by callers via sqrt+amount>0.)"""
-    return (a * b) // c if c else 0
+    """math32_3arg $D6B8 = signed (a*b)/c; c == 0 -> -1 (a guard in its bytecode)."""
+    return _rom16(0xD6B8, a, b, c)
 
 
 def math32_2arg(a: int, b: int) -> int:
-    """math32_2arg $D6DE = (a*100)/(a+b) -- a's percentage weight of (a+b)."""
-    return (a * 100) // (a + b) if (a + b) else 0
+    """math32_2arg $D6DE = (a*100)/(a+b), unsigned; (0, 0) -> 0."""
+    return _rom16(0xD6DE, a, b)
 
 
 def math32_muladddiv(rate: int, amount: int) -> int:
-    """math32_muladddiv $8303 = (rate*amount + 9)/10  (round-up-ish /10 scale)."""
-    return (rate * amount + 9) // 10
+    """math32_muladddiv $8303 = signed (rate*amount + 9)/10."""
+    return _rom16(0x8303, rate, amount)
 
 
 def pct_op(arg1: int, arg2: int) -> int:
@@ -75,14 +87,14 @@ def pct_op(arg1: int, arg2: int) -> int:
 
 
 def ratio_times10_capped(a: int, b: int, c: int) -> int:
-    """ratio_times10_capped $8357 = min((a*10)/b, c)."""
-    return min_word((a * 10) // b if b else 0xFFFF, c)
+    """ratio_times10_capped $8357 = signed min((a*10)/b, c)."""
+    return _rom16(0x8357, a, b, c)
 
 
 def scale_div10_capcheck(a: int, b: int, c: int) -> int:
-    """scale_div10_capcheck $8327 = ((a*b)/10 >= c) ? 0xFFFF : (a*b)/10."""
-    v = (a * b) // 10
-    return 0xFFFF if v >= c else v
+    """scale_div10_capcheck $8327 = -1 if muladddiv(a, b) > c (i.e. a*b > 10c) else (a*b)/10.
+    The June form (a*b/10 >= c) refused an exactly affordable purchase."""
+    return _rom16(0x8327, a, b, c)
 
 
 def scaled_force_transfer(stat, recruit_stat, count, force, header) -> int:
@@ -361,8 +373,10 @@ def _smoke():
     assert math32_2arg(40, 60) == 40                  # 40*100/100
     assert math32_muladddiv(10, 5) == 5               # (50+9)/10
     assert ratio_times10_capped(100, 50, 999) == 20   # 100*10/50
-    assert scale_div10_capcheck(700, 150, 99999) == 10500
-    assert scale_div10_capcheck(700, 150, 100) == 0xFFFF  # cap tripped
+    assert scale_div10_capcheck(700, 150, 20000) == 10500
+    assert scale_div10_capcheck(700, 150, 100) == -1      # cap tripped (0xFFFF)
+    assert scale_div10_capcheck(10, 10, 10) == 10         # exactly affordable: the ROM allows it
+    assert math32_3arg(5, 7, 0) == -1                     # the c == 0 guard
 
     m = M.Memory()
     f = m.fief(5)

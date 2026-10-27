@@ -194,7 +194,8 @@ L_82EB:
 // (body @ $8308)
 
 word math32_muladddiv(word arg1, word arg2) {
-    return ((arg1 * arg2 + 9) / 10);    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
+    // sdiv32: KOEI's 32-bit signed divide; a negative divisor d divides by |d| - 1 (ROM bug)
+    return (word)sdiv32((sword)arg1 * (sword)arg2 + 9, 10);
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8327
@@ -202,7 +203,9 @@ word math32_muladddiv(word arg1, word arg2) {
 // (body @ $832C)
 
 word scale_div10_capcheck(word arg1, word arg2, word arg3) {
-    return ((((arg1 * arg2) / 10) >= arg3) ? 0xFFFF : ((arg1 * arg2) / 10));    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
+    // sdiv32: KOEI's 32-bit signed divide; a negative divisor d divides by |d| - 1 (ROM bug)
+    if ((sword)math32_muladddiv(arg1, arg2) > (sword)arg3) return 0xFFFF;
+    return (word)sdiv32((sword)arg1 * (sword)arg2, 10);
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8357
@@ -210,7 +213,8 @@ word scale_div10_capcheck(word arg1, word arg2, word arg3) {
 // (body @ $835C)
 
 word ratio_times10_capped(word arg1, word arg2, word arg3) {
-    return min_word(((arg1 * 10) / arg2), arg3);    // [CERTIFIED ext-op fold vs ROM 2026-06-10]
+    // sdiv32: KOEI's 32-bit signed divide; a negative divisor d divides by |d| - 1 (ROM bug)
+    return min_word((word)sdiv32((sword)arg1 * 10, (sword)arg2), arg3);
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8379
@@ -1590,7 +1594,7 @@ L_9A08:
     sub_E80C(18);    // $9A01
     sub_D326(phi_9a08_0);    // $9A08
     local7 = (((*(byte*)(local6) - local5) > 0) ? 1 : -1);    // $9A1B
-    if ((local7 != 1)) goto L_9A2D;    // $9A20
+    if ((local7 != -1)) goto L_9A2D;    // $9A20
     if ((*(byte*)((sub_D7EA() + 4)) < 1)) goto L_9A38;    // $9A2A
 L_9A2D:
     *(byte*)((sub_D7EA() + 4)) = (*(byte*)((sub_D7EA() + 4)) + local7);    // $9A37
@@ -2390,7 +2394,7 @@ L_A72C:
     ui_input_prompt_active_flag = 1;    // $A72D
     local10 = sub_D59D(1, 99);    // $A737
     ui_input_prompt_active_flag = 0;    // $A739
-    if ((local10 != 1)) goto L_A768;    // $A740
+    if ((local10 != -1)) goto L_A768;    // $A740
     sub_CD20();    // $A743
     if ((scenario_fief_count != 50)) goto L_A6FD;    // $A74C
 L_A753:
@@ -3392,7 +3396,7 @@ L_B571:
     *(word*)((local11 + 6)) = (*(word*)((local11 + 6)) - (*(word*)((local11 + 16)) * local8));    // $B59F
     local8 = scale_div10_capcheck(*(word*)((local11 + 16)), arms_buy_price_rate, *(word*)((local11 + 24)));    // $B5B1
     if ((*(word*)(local11) >= local8)) {    // $B5B6
-    if ((local8 != 1)) {    // $B5BD
+    if ((local8 != -1)) {    // $B5BD
     local8 = (local10 / local8);    // $B5C3
     if (local8) {    // $B5C4
     *(word*)(local11) = (*(word*)(local11) - scale_div10_capcheck(local8, arms_buy_price_rate, *(word*)(local11)));    // $B5D8

@@ -345,7 +345,7 @@ L_86B2:
     goto L_86F1;    // $86B7
 L_86BA:
     ui_cursor_row = (ui_cursor_row - 1);    // $86BE
-    if ((local10 != 1)) goto L_86F1;    // $86C5
+    if ((local10 != -1)) goto L_86F1;    // $86C5
     if ((scenario_fief_count != 50)) goto L_86DF;    // $86CE
     local11 = (local11 + 1);    // $86D3
     if (!(((unsigned)local11 >= (unsigned)9))) goto L_86DB;    // $86D6

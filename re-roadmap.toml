@@ -42,10 +42,10 @@ evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobun
 
 [phase.structure]
 status   = "partial"
-gate     = "Round-trip byte-identical (499 subs) and stack audit clean (187 opcodes) on 658c689. cfg_gate FAILS: 496/499 raw witnesses match the bytecode CFG; b1/$8327, b15/$D6B8, b15/$D6DE diverge. All three are the June 'CERTIFIED' ext-op folds (vm_decompile._EXTOP_OVERRIDES_NA1), which print one straight-line return where the bytecode branches. Primitives probed against the ROM on edge inputs (value-oracle.oracle_run, 2026-10-27): scale_div10_capcheck is ab > 10c ? 0xFFFF : ab/10, the certified formula (ab/10 >= c) is wrong on 6 of 8 edge inputs; math32_3arg returns 0xFFFF for c = 0 (the lambda says 0, the C divides by zero); math32_2arg returns 0 for (0,0) (the C divides by zero). The June grid (9 points) had no input on any branch edge. One call graph with leaves-first order: callgraph na1 --bank-order."
+gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). Open: the textual invert_condition scan, the attic probes."
 checked  = "2026-10-27"
-toolset  = "658c689"
-evidence = ["nobunaga/tools/value-oracle.py", "nobunaga/source/2-asm-vm/bank_01_vm.asm", "nobunaga/source/2-asm-vm/bank_15_vm.asm"]
+toolset  = "54be6fe"
+evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
 
 [phase.naming]
 status   = "partial"
@@ -145,7 +145,8 @@ status = "open"
 item   = "The June 'CERTIFIED' ext-op folds are wrong at the branch edges (ROM run 2026-10-27): scale_div10_capcheck $8327 = ab > 10c ? 0xFFFF : ab/10 (certified ab/10 >= c fails 6/8 edge inputs); math32_3arg $D6B8 returns 0xFFFF for c = 0; math32_2arg $D6DE returns 0 for (0,0). Fix emu-harness vm_decompile._EXTOP_OVERRIDES_NA1 (or let DREAM fold the branch), widen value-oracle's grid to every branch edge, re-run cfg_gate to 499/499, then correct every place the old formulas went (CONTEXT.md glossary, appendix-formulas.md, commands pages, econ_sim.py, na1sim/vmprims.py). Note: May's tools/probe-math32.py (now attic) had both guards right; the June fold re-derived the helpers instead of reusing it. Vault memory project_nobunaga_math32_cracked carries the correction."
 phase  = "structure"
 source = "cfg_gate + value-oracle edge run, 2026-10-27"
-status = "open"
+status = "closed"
+closed = "2026-10-27: re-derived from the bytecode and the measured primitives (emu-harness 4a7f90b): 15,317 edge inputs, 0 disagree; cfg_gate checks each override by value. KOEI's sdiv32 divides by |d| - 1 for a negative divisor (all titles that carry it). Downstream: na1sim points at the models (vmprims; ai_vm's arms purchase tests != -1, not != 1), value-oracle certify-extop defers to the gate, grounding.md $8327 corrected. The appendix had stated math32_3arg's c == 0 guard all along; the June fold contradicted it."
 
 [[revisit]]
 item   = "NA1 has never been graded: it is every sibling's native_floor oracle, and native_floor crashes on it (KeyError 'oracle'; it should refuse with a message). Grade the root from its descendants: run native_floor / match the other way (siblings' independently walked names vs NA1's), and settle each disagreement at the bytes."
@@ -158,7 +159,8 @@ closed = "2026-10-27: native_floor --oracle (emu-harness 4ed0685) graded NA1 by 
 item   = "titles emulate <title> <0xSUB> [args] (PHASES.md section 4's primitive probe) only builds the VM and prints 'call helpers programmatically'; NA1's value-oracle.oracle_run is the working version. Move oracle_run into the library behind that CLI (an emu-harness fix, found here)."
 phase  = "structure"
 source = "build-tool revisit 2026-10-27"
-status = "open"
+status = "closed"
+closed = "2026-10-27: titles.run_sub, converted from value-oracle.oracle_run; `titles emulate na1 0xD6B8 5 7 0` -> $FFFF (emu-harness 4a7f90b)."
 
 [[revisit]]
 item   = "Discover gate never measured on NA1's native code: walker conflicts (NativeMap.conflicts through passes.native.explain), every jump table read to its end, and a Mesen CDL over real play for executed bytes the listings do not decode (Mappy's hole check found 63 B that way)."
@@ -198,4 +200,4 @@ source = "data phase 2026-10-27"
 status = "open"
 
 [next]
-session = "structure: the ext-op fix first (the June certified folds are wrong at their branch edges; the same formulas live in na1sim/vmprims.py; scale_div10_capcheck feeds the arms purchase, bank 1 $B5B1 / $B5D8), then the invert_condition scan, then the attic probes."
+session = "structure, continued: scan NA1's C for invert_condition splits that are not at the top level (a polarity bug no gate sees), make the inverter parse; then read tools/attic for probes that are guards (probe-primitives, probe-math32, ...)."

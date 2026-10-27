@@ -38,46 +38,25 @@ def oracle_run(body, bank, args, frame_off=-16, max_ops=20000, sram=None):
     return vm.regL
 
 
-# The 5 ext-op subs (bug 1.3): DREAM emits `// ext_op ...` + a stub return.
-# (name, body, bank, n_args, candidate formula as a python lambda)
-# Formulas CERTIFIED against the real ROM 2026-06-10 (oracle == these for the whole grid).
-EXTOP_SUBS = [
-    ("math32_muladddiv",     0x8308, 1, 2, lambda a: (a[0]*a[1] + 9) // 10),
-    ("scale_div10_capcheck", 0x832C, 1, 3, lambda a: 0xFFFF if (a[0]*a[1])//10 >= a[2] else (a[0]*a[1])//10),
-    ("ratio_times10_capped", 0x835C, 1, 3, lambda a: min((a[0]*10)//a[1], a[2]) if a[1] else 0),
-    ("math32_3arg",          0xD6BD, 15, 3, lambda a: (a[0]*a[1])//a[2] if a[2] else 0),
-    ("math32_2arg",          0xD6E3, 15, 2, lambda a: (a[0]*100)//(a[0]+a[1]) if (a[0]+a[1]) else 0),
-]
-
-INPUT_GRID = [
-    (50, 80, 30), (10, 10, 5), (7, 3, 100), (100, 45, 40),
-    (255, 12, 9), (3, 7, 2), (1, 1, 1), (200, 200, 50), (33, 9, 1000),
-]
-
-
 def certify_extop():
-    print("=== value-oracle: certifying the 5 ext-op subs against the real ROM ===\n")
-    for name, body, bank, nargs, formula in EXTOP_SUBS:
-        ok = True
-        rows = []
-        for g in INPUT_GRID:
-            a = list(g[:nargs])
-            got = oracle_run(body, bank, a)
-            exp = formula(a)
-            match = (got == (exp & 0xFFFF))
-            ok = ok and match
-            rows.append((a, got, exp, match))
-        status = "CONFIRMED" if ok else "FORMULA MISMATCH (revise lambda)"
-        print(f"{name} (${body:04X} bank {bank}) -- {status}")
-        for a, got, exp, match in rows:
-            flag = "" if match else "   <-- MISMATCH"
-            print(f"    args={a}  oracle={got:>6}  formula={exp & 0xFFFF:>6}{flag}")
-        print()
+    """Superseded 2026-10-27. The June lambdas here were unsigned and dropped the guards, and the
+    9-point grid had no input on a branch edge, so they "certified" wrong formulas. The models now
+    live with the C they describe (emu-harness vm_decompile._EXTOP_OVERRIDES_NA1), and cfg_gate
+    checks them against the ROM over an edge grid; this delegates to that check."""
+    from emu_harness.vm.koei.nes import vm_decompile as VC
+    from emu_harness.vm.koei.nes.gates.cfg_gate import override_value_check
+    VC.set_schema("na1")
+    bad = 0
+    for stub in VC._EXTOP_OVERRIDE:
+        diffs = override_value_check(stub)
+        bad += bool(diffs)
+        print(f"${stub:04X}: {'CONFIRMED' if not diffs else f'{len(diffs)} DISAGREE, e.g. {diffs[:3]}'}")
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "certify-extop"
     if cmd == "certify-extop":
-        certify_extop()
+        sys.exit(certify_extop())
     else:
         print(__doc__)
