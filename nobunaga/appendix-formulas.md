@@ -15,10 +15,10 @@ updated: 2026-06-17
 - `√x` = `cbcd_sqrt` ($CBCD) — integer square root, truncated
 - `header` = fief's max-economy ceiling (column at province record offset +24, e.g. 1640 for Mikawa)
 - `pct_op(b, p) = ⌊b × p ÷ 100⌋` — split-by-10 to avoid 16-bit overflow ($D70D)
-- `math32_3arg(a, b, c) = ⌊(a × b) ÷ c⌋` — 32-bit signed ($D6B8)
+- `math32_3arg(a, b, c) = ⌊(a × b) ÷ c⌋` — 32-bit signed ($D6B8); **`c = 0` returns `$FFFF`**, and a **negative `c` divides by |c|−1** (KOEI's `sdiv32` one's-complements a negative divisor: a ROM bug, in every KOEI NES title that has it)
 - `math32_2arg(a, b) = ⌊100 × a ÷ (a + b)⌋` — `a`'s share of the total `(a+b)` as a percent ($D6DE; `(0,0)→0` guard)
 
-> **All three helpers emulator-verified 2026-05-29** via `tools/probe-math32.py` (direct execution of the real native handlers, all test vectors matched — ground truth, not inference). The underlying `B7` extended-opcode table was never decoded and is not needed: these three composite helpers are the interface every formula calls. ⚠️ `run-effect.py` *reverses* captured arg order for display — true frame order is arg1@fp+0x0B, arg2@+0x0D, arg3@+0x0F.
+> **Re-checked against the ROM 2026-10-27** (15,317 inputs incl. `$8000` / `$FFFF` / zero divisors; the May probe's test vectors missed the edges). The checked models are emu-harness `vm_decompile.na1_extop_model`, which `cfg_gate` runs against the ROM on every gate run; cite those, not a copy. The underlying `B7` extended-opcode table was never decoded and is not needed: these three composite helpers are the interface every formula calls. ⚠️ `run-effect.py` *reverses* captured arg order for display — true frame order is arg1@fp+0x0B, arg2@+0x0D, arg3@+0x0F.
 
 ## 1. Grow ($87F0) — develop output
 

@@ -90,7 +90,7 @@ source = "emu-harness MIGRATION.md row F1b"
 status = "open"
 
 [[revisit]]
-item   = "Before the next walk batch: regenerate source/ (py -3.14 tools/na1_regen.py), since the committed C predates the engine's enum names / banner / F2 fixes (18 files change) and every batch's guard would refuse the non-rename diff. Since 3c3900e the committed C is also wrong in meaning at 3 sites ($82E9, $89FD, $930A inverted an || to an &&). source/4-c/all_banks.c has no generator since decompile-merged.py went: regenerate it from the shared engine, or retire it."
+item   = "Before the next walk batch: regenerate source/ (py -3.14 tools/na1_regen.py), since the committed C predates the engine's enum names / banner / F2 fixes (18 files change) and every batch's guard would refuse the non-rename diff. Since 3c3900e the committed C is also wrong in meaning at 3 sites ($82E9, $89FD, $930A inverted an || to an &&). source/4-c/all_banks.c: emu-harness has cli/decompile_merged.py (found 2026-10-27), never run on NA1 since the move; run it or retire all_banks.c."
 phase  = "presentation"
 source = "emu-harness MIGRATION.md row J"
 status = "open"
@@ -163,23 +163,23 @@ status = "closed"
 closed = "2026-10-27: titles.run_sub, converted from value-oracle.oracle_run; `titles emulate na1 0xD6B8 5 7 0` -> $FFFF (emu-harness 4a7f90b)."
 
 [[revisit]]
-item   = "Discover gate never measured on NA1's native code: walker conflicts (NativeMap.conflicts through passes.native.explain), every jump table read to its end, and a Mesen CDL over real play for executed bytes the listings do not decode (Mappy's hole check found 63 B that way)."
+item   = "Discover gate never measured on NA1's native code: walker conflicts (NativeMap.conflicts through passes.native.explain), every jump table read to its end, and a Mesen CDL over real play for executed bytes the listings do not decode (Mappy's hole check found 63 B that way). CLOSED 2026-10-27: every quick-route resolves (checked by script); it also stated the June ext-op formulas, now replaced by a pointer to the ROM-checked models. tools/README.md rebuilt against the disk (it listed ~20 engine rows that had moved, and 23 scripts on disk had no row); appendix-formulas, appendix-asset-extraction, commands/README and the root README re-pointed."
 phase  = "discover"
 source = "build-tool revisit 2026-10-27 (PHASES.md section 2 gate)"
 status = "closed"
 closed = "2026-10-27: measured, tools/native_discover.py: 2 conflicts both explained, 5 dispatch sites all the VM's own, 0 holes over 30.3 M traced steps; it found the missed syscall RTI continuation $F23C and the bytecode-only natives."
 
 [[revisit]]
-item   = "CONTEXT.md, the read-first file, routes to 6 tools that no longer exist (tools/cpu6502.py, nobunaga_vm.py, vm_decompile.py, decompile-all.py, decompile-merged.py, probe-math32.py: moved to emu-harness or attic). Re-point every quick-route at its emu-harness module or the NA1 shim, and check tools/README.md the same way."
+item   = "CONTEXT.md, the read-first file, routes to 6 tools that no longer exist (tools/cpu6502.py, nobunaga_vm.py, vm_decompile.py, decompile-all.py, decompile-merged.py, probe-math32.py: moved to emu-harness or attic). Re-point every quick-route at its emu-harness module or the NA1 shim, and check tools/README.md the same way. CLOSED 2026-10-27: all 32 read; 2 were guard ideas (ternary-folds compared the ROM with hand-written Python, not with the C, so it guarded nothing; espionage Q1, the CALL argument order) and go to emu-harness gates.value_probe; compare-opcodes was converted, math32 is superseded by cfg_gate. The attic is deleted, with tools/RETIRED.md holding each verdict and its restore commit, and 7 broken or superseded tools/ scripts with it."
 phase  = "presentation"
 source = "recon revisit 2026-10-27"
-status = "open"
+status = "closed"
 
 [[revisit]]
 item   = "tools/attic holds other probes that may be guards rather than archaeology, as probe-compare-opcodes was (probe-primitives, probe-math32, ...). Read each: a probe that checks a primitive against the live handler belongs in emu-harness gates; the rest stay."
 phase  = "structure"
 source = "recon revisit 2026-10-27"
-status = "open"
+status = "closed"
 
 [[revisit]]
 item   = "Names from discover: $EF92 vm_op_trigger_syscall_shared is the illegal-opcode BRK trap (rename, e.g. vm_illegal_opcode_brk; $EF93 vm_op_FF likewise); label $F23C (syscall_return, the RTI continuation) and the syscall table entries; mark the 5 dead bytecode subs dead in their comments; drop any label at $F007 / $FFFF."
@@ -199,5 +199,17 @@ phase  = "naming"
 source = "data phase 2026-10-27"
 status = "open"
 
+[[revisit]]
+item   = "Cherry-pick NA1's remaining tools (registry: tools/README.md). The 18 scripts in its 'Not yet reviewed' table were never registered before 2026-10-27; and three VM-opcode tools still carry their own 160-210 lines although MIGRATION row F is done (analyze-vm-opcodes, classify-handlers, vm-opcode-labels): compare each with its emu-harness counterpart (koei_isa_probe, the shared opcode table) and retire it where the output matches. paste-analyze / paste-full look like paste-era inputs. A one-off goes to tools/RETIRED.md; no attic."
+phase  = "presentation"
+source = "attic review 2026-10-27"
+status = "open"
+
+[[revisit]]
+item   = "The render tools (~17 render-*, the batch-render-* wrappers, build-site / build-wiki / wikipages): sort live title-only asset tools from outdated ones when the assets phase runs (RENDER-TOOLS-TRIAGE.md is the June triage). render-strategic-50 fails only because its output dir ../atlas/ is gone (ARCHITECTURE.md's atlas -> renders/<kind> debt)."
+phase  = "assets"
+source = "attic review 2026-10-27"
+status = "open"
+
 [next]
-session = "structure, continued: read tools/attic for probes that are guards (probe-primitives, probe-math32, ...)."
+session = "structure, continued: build emu-harness gates.value_probe (the rendered C evaluated against titles.run_sub; fixtures min_word / max_word / is_tile_in_bounds / is_cell_clear_of_bits and a non-commutative call; planted: the textual inverter and a swapped argument order)."

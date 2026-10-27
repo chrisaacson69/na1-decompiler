@@ -23,7 +23,7 @@
 | `batch-render-fief-maps.py` / `batch-render-anims.py` | batch wrappers over the above (deliverables) |
 | `render-daimyo-banners.py` | daimyo crest/banner chart |
 | `render-strategic-50.py` / `render-strategic-atlas.py` | 50-node geographic + 17-map composite variants |
-| `title-render.py` ⚠core | title-screen reconstruction (nametable + tiles) |
+| ~~`title-render.py`~~ | retired 2026-10-27: its input `nametable_bytes.txt` is gone ([RETIRED.md](RETIRED.md)) |
 
 ## Legacy → leave as-is, mark superseded (no re-run expected)
 | Tool | Why |
@@ -32,7 +32,7 @@
 | `render-fief-truecolor.py` | true-color experiment |
 | `render-from-sram.py` | stylized metatile-box viz (not real CHR) — analysis, not an asset render |
 | `viability-map.py` | invasion-viability analysis chart (not asset rendering) |
-| `combat-map-decode.py` / `title-nametable.py` / `title-tiles-extract.py` | one-shot trace→nametable/tile reconstructions |
+| `combat-map-decode.py` / ~~`title-nametable.py`~~ (retired) / `title-tiles-extract.py` | one-shot trace→nametable/tile reconstructions |
 
 ## Disposition summary
 - **Migrate (5):** reusable primitives → `koei-nes/assets/` (config-locate planes → `nes-render`). Start with `render-portrait`.

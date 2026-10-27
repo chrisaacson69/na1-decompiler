@@ -28,7 +28,7 @@ honest `goto`). Progress is measured by residual goto count: lower = more struct
 
 | Dir | What |
 |---|---|
-| [`nobunaga/`](./nobunaga/) | The decompiler + analysis: VM disassembler, opcode-keyed C emitter, the CFG region reducer (`tools/vm_reduce.py`), the equivalence gate, the decompiled banks, and the chapter/appendix markdown. |
+| [`nobunaga/`](./nobunaga/) | The decompiler + analysis: VM disassembler, opcode-keyed C emitter, the equivalence gate (the engine itself now lives in [emu-harness](https://github.com/chrisaacson69/emu-harness), `emu_harness.vm.koei.nes`), the decompiled banks, and the chapter/appendix markdown. |
 | [`docs/`](./docs/) | **Generated** Pages site (by `tools/build-site.py`) — do not hand-edit; edit sources in `nobunaga/` and rebuild. |
 | [`lowering-atlas/`](./lowering-atlas/) | The **forward** catalog — compile C, observe which CFG shapes the compiler emits, and source the decompiler's inverse-lowering "atom table" forward rather than guessing it. |
 
@@ -42,10 +42,11 @@ from a one-off pattern-match. Current state: **V2 = 929 gotos, 222 ahead of the 
 ## Build
 
 ```sh
-# decompiler (run from nobunaga/)
-py tools/decompile-all.py --v2     # regenerate decompiled/*.v2.c
-py tools/vm-cfg-gate.py            # the hard CFG-equivalence gate
-py tools/test-vm-cfg.py            # structuring test suite
+# decompiler (run from nobunaga/; the engine is emu-harness)
+py -3.14 tools/na1_regen.py                                    # regenerate source/ (all tiers)
+py -3.14 -m emu_harness.vm.koei.nes.gates.cfg_gate             # the hard CFG-equivalence gate
+py -3.14 -m emu_harness.vm.koei.nes.gates.test_vm_cfg          # structuring test suite
+py -3.14 -m emu_harness status na1-decompiler                  # every phase gate's last result
 
 # publishing
 py nobunaga/tools/build-site.py    # regenerate docs/ (the Pages site)
