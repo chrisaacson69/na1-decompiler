@@ -41,10 +41,10 @@ toolset  = "ca94e34"
 evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobunaga/commands/README.md"]
 
 [phase.structure]
-status   = "partial"
-gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). invert_condition parses the top level (emu-harness 3c3900e): the textual one flipped the comparison inside an already-negated !(...), so 3 NA1 sites inverted !(A || B) to A && !B ($82E9 is_cell_clear_of_bits, $89FD, $930A; the ROM sides with the goto form, $82DB(0, 5) = 1); 83 if-lines change on regen, 3 in meaning; cfg_gate stays CLEAN (it checks CFG shape, not rewritten polarity); the test checks each inversion by value and plants the textual one. Open: the attic probes."
+status   = "done"
+gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). invert_condition parses the top level (emu-harness 3c3900e): the textual one flipped the comparison inside an already-negated !(...), so 3 NA1 sites inverted !(A || B) to A && !B ($82E9 is_cell_clear_of_bits, $89FD, $930A; the ROM sides with the goto form, $82DB(0, 5) = 1); 83 if-lines change on regen, 3 in meaning; cfg_gate stays CLEAN (it checks CFG shape, not rewritten polarity); the test checks each inversion by value and plants the textual one. gates.value_probe (emu-harness f556de3): the rendered C of 5 fixture subs (min_word, max_word, is_tile_in_bounds, unit_strength_ptr, is_cell_clear_of_bits) evaluated over 684 inputs equals titles.run_sub, a call running its callee on the ROM so argument order counts; planted, the textual inverter and reversed call arguments each fail it. The attic is read and retired (tools/RETIRED.md)."
 checked  = "2026-10-27"
-toolset  = "3c3900e"
+toolset  = "f556de3"
 evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
 
 [phase.naming]
@@ -194,7 +194,7 @@ source = "data phase 2026-10-27 (data-apply guard)"
 status = "closed"
 
 [[revisit]]
-item   = "Naming from the data phase: two June comments flag a wrong name that was never applied ($A5E6 spawn_zealot_uprising_force_from_province, 'SHOULD BE RENAMED spawn_uprising_force_from_province'; $A0ED amount_div_force_factor, MISLABEL); and the 4 RAM names given by kind only (fief_index_list, province_candidate_list, battle_unit_byte_table, list_remove_matching_list) want their roles."
+item   = "Naming from the data phase: two June comments flag a wrong name that was never applied ($A5E6 spawn_zealot_uprising_force_from_province, 'SHOULD BE RENAMED spawn_uprising_force_from_province'; $A0ED amount_div_force_factor, MISLABEL); and the 4 RAM names given by kind only (fief_index_list, province_candidate_list, battle_unit_byte_table, list_remove_matching_list) want their roles. Also min_word ($CB5E): its comment says unsigned, but value_probe's pass over $8000 / $FFFF shows a signed min (as vm_decompile's note says); it is one of the 148 fixed-region names filed under [prg.bank0], which is why bank 15's C prints sub_CB5E."
 phase  = "naming"
 source = "data phase 2026-10-27"
 status = "open"
@@ -212,4 +212,4 @@ source = "attic review 2026-10-27"
 status = "open"
 
 [next]
-session = "structure, continued: build emu-harness gates.value_probe (the rendered C evaluated against titles.run_sub; fixtures min_word / max_word / is_tile_in_bounds / is_cell_clear_of_bits and a non-commutative call; planted: the textual inverter and a swapped argument order)."
+session = "naming: start with the open revisits (the 148 fixed-region names under [prg.bank0], the discover renames, the June MISLABEL comments); the C should be regenerated first (presentation revisit), since it still carries the 3 inverted || sites."
