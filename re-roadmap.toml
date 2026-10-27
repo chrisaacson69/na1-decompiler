@@ -141,7 +141,7 @@ status = "open"
 # --- revisits: new, from filling this roadmap (2026-10-27) ------------------------------------
 
 [[revisit]]
-item   = "The June 'CERTIFIED' ext-op folds are wrong at the branch edges (ROM run 2026-10-27): scale_div10_capcheck $8327 = ab > 10c ? 0xFFFF : ab/10 (certified ab/10 >= c fails 6/8 edge inputs); math32_3arg $D6B8 returns 0xFFFF for c = 0; math32_2arg $D6DE returns 0 for (0,0). Fix emu-harness vm_decompile._EXTOP_OVERRIDES_NA1 (or let DREAM fold the branch), widen value-oracle's grid to every branch edge, re-run cfg_gate to 499/499, then correct every place the old formulas went (CONTEXT.md glossary, appendix-formulas.md, commands pages, econ_sim.py, vault memory)."
+item   = "The June 'CERTIFIED' ext-op folds are wrong at the branch edges (ROM run 2026-10-27): scale_div10_capcheck $8327 = ab > 10c ? 0xFFFF : ab/10 (certified ab/10 >= c fails 6/8 edge inputs); math32_3arg $D6B8 returns 0xFFFF for c = 0; math32_2arg $D6DE returns 0 for (0,0). Fix emu-harness vm_decompile._EXTOP_OVERRIDES_NA1 (or let DREAM fold the branch), widen value-oracle's grid to every branch edge, re-run cfg_gate to 499/499, then correct every place the old formulas went (CONTEXT.md glossary, appendix-formulas.md, commands pages, econ_sim.py, na1sim/vmprims.py). Note: May's tools/probe-math32.py (now attic) had both guards right; the June fold re-derived the helpers instead of reusing it. Vault memory project_nobunaga_math32_cracked carries the correction."
 phase  = "structure"
 source = "cfg_gate + value-oracle edge run, 2026-10-27"
 status = "open"
