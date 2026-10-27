@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 0
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1336 CPU addresses named
+  labels:       1371 CPU addresses named
 
   bank 0: found 98 bytecode-subroutine stubs
 
@@ -283,7 +283,7 @@ VM bytecode disassembly
  >$8244  61                         PUSH_qimm   ; inline operand = 1
   $8245  E9 A4 CB 02                CALL_abs_imm1          $CBA4 (chr_bank0_set_wrap) {bytecode}, $02
   $8249  8E 8B B8                   PUSH_imm2              $B88B (msg_koei)
-  $824C  8E ED 7F                   PUSH_imm2              $7FED
+  $824C  8E ED 7F                   PUSH_imm2              $7FED (sram_save_signature)
   $824F  E9 B0 CA 04                CALL_abs_imm1          $CAB0 (strcmp) {bytecode}, $04
   $8253  D7 26 82                   JUMPT_abs              $8226
   $8256  60                         PUSH_qimm   ; inline operand = 0
@@ -410,7 +410,7 @@ VM bytecode disassembly
   $8341  41                         LOADL_qimm   ; inline operand = 1
   $8342  CF                         RETURN
  >$8343  8E AB B8                   PUSH_imm2              $B8AB (str_data_cant_be_used)
-  $8346  8E ED 7F                   PUSH_imm2              $7FED
+  $8346  8E ED 7F                   PUSH_imm2              $7FED (sram_save_signature)
   $8349  E9 D9 CA 04                CALL_abs_imm1          $CAD9 (strcpy) {bytecode}, $04
   $834D  60                         PUSH_qimm   ; inline operand = 0
   $834E  E9 A4 CB 02                CALL_abs_imm1          $CBA4 (chr_bank0_set_wrap) {bytecode}, $02
@@ -1363,7 +1363,7 @@ VM bytecode disassembly
  >$89D7  40                         LOADL_qimm   ; inline operand = 0
   $89D8  2B                         STORE_quick   ; inline operand = 11
  >$89D9  0B                         LOADL_quick   ; inline operand = 11
-  $89DA  8C D5 7F                   LOADR_imm2             $7FD5
+  $89DA  8C D5 7F                   LOADR_imm2             $7FD5 (player_daimyo)
   $89DD  BB                         ADD
   $89DE  B3                         PUSHL
   $89DF  89 FF                      BYTE_LOADL_imm1        -1
@@ -1581,7 +1581,7 @@ VM bytecode disassembly
 ; sub $8B70   (frame_off=-2, body @ $8B75)
 ; ============================================================
   $8B75  0C                         LOADL_quick   ; inline operand = 12
-  $8B76  8C 79 7B                   LOADR_imm2             $7B79
+  $8B76  8C 79 7B                   LOADR_imm2             $7B79 (fief_revolt_type)
   $8B79  BB                         ADD
   $8B7A  D3                         BYTE_DEREF
   $8B7B  56                         LOADR_qimm   ; inline operand = 6
@@ -1590,7 +1590,7 @@ VM bytecode disassembly
   $8B80  8A 28 BA                   LOADL_imm2             $BA28 (msg_pirates)
   $8B83  D6 9A 8B                   JUMP_abs               $8B9A
  >$8B86  0C                         LOADL_quick   ; inline operand = 12
-  $8B87  8C 79 7B                   LOADR_imm2             $7B79
+  $8B87  8C 79 7B                   LOADR_imm2             $7B79 (fief_revolt_type)
   $8B8A  BB                         ADD
   $8B8B  D3                         BYTE_DEREF
   $8B8C  57                         LOADR_qimm   ; inline operand = 7
@@ -1634,7 +1634,7 @@ VM bytecode disassembly
 ; sub $8BE6   (frame_off=-2, body @ $8BEB)
 ; ============================================================
   $8BEB  AC A2 E4                   CALL_abs               $E4A2 (build_owned_fief_list) {bytecode}
-  $8BEE  8A 89 6F                   LOADL_imm2             $6F89
+  $8BEE  8A 89 6F                   LOADL_imm2             $6F89 (fief_index_list)
   $8BF1  D6 03 8C                   JUMP_abs               $8C03
  >$8BF4  0B                         LOADL_quick   ; inline operand = 11
   $8BF5  D3                         BYTE_DEREF
@@ -1685,7 +1685,7 @@ VM bytecode disassembly
   $8C3D  B5                         MULT
   $8C3E  1D                         LOADR_quick   ; inline operand = 13
   $8C3F  BB                         ADD
-  $8C40  8C 93 61                   LOADR_imm2             $6193
+  $8C40  8C 93 61                   LOADR_imm2             $6193 (relations_matrix)
   $8C43  BB                         ADD
   $8C44  CF                         RETURN
 
@@ -2226,7 +2226,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $8FF8   (frame_off=-14, body @ $8FFD)
 ; ============================================================
-  $8FFD  8A AD 7B                   LOADL_imm2             $7BAD
+  $8FFD  8A AD 7B                   LOADL_imm2             $7BAD (province_candidate_list)
   $9000  2B                         STORE_quick   ; inline operand = 11
   $9001  40                         LOADL_qimm   ; inline operand = 0
   $9002  29                         STORE_quick   ; inline operand = 9
@@ -2892,7 +2892,7 @@ VM bytecode disassembly
   $9487  29                         STORE_quick   ; inline operand = 9
   $9488  40                         LOADL_qimm   ; inline operand = 0
   $9489  2A                         STORE_quick   ; inline operand = 10
-  $948A  8A 89 6F                   LOADL_imm2             $6F89
+  $948A  8A 89 6F                   LOADL_imm2             $6F89 (fief_index_list)
   $948D  2B                         STORE_quick   ; inline operand = 11
   $948E  D6 A4 94                   JUMP_abs               $94A4
  >$9491  0B                         LOADL_quick   ; inline operand = 11
@@ -2962,7 +2962,7 @@ VM bytecode disassembly
   $951E  D0                         INC
   $951F  2B                         STORE_quick   ; inline operand = 11
   $9520  D1                         DEC
-  $9521  8C AD 7B                   LOADR_imm2             $7BAD
+  $9521  8C AD 7B                   LOADR_imm2             $7BAD (province_candidate_list)
   $9524  BB                         ADD
   $9525  D3                         BYTE_DEREF
   $9526  2A                         STORE_quick   ; inline operand = 10
@@ -3310,7 +3310,7 @@ VM bytecode disassembly
 ; ============================================================
   $977D  40                         LOADL_qimm   ; inline operand = 0
   $977E  27                         STORE_quick   ; inline operand = 7
-  $977F  8A AD 7B                   LOADL_imm2             $7BAD
+  $977F  8A AD 7B                   LOADL_imm2             $7BAD (province_candidate_list)
   $9782  D6 6E 98                   JUMP_abs               $986E
  >$9785  0B                         LOADL_quick   ; inline operand = 11
   $9786  D3                         BYTE_DEREF
@@ -3379,7 +3379,7 @@ VM bytecode disassembly
   $97F9  D6 06 98                   JUMP_abs               $9806
  >$97FC  0B                         LOADL_quick   ; inline operand = 11
   $97FD  D3                         BYTE_DEREF
-  $97FE  8C 7F 6E                   LOADR_imm2             $6E7F
+  $97FE  8C 7F 6E                   LOADR_imm2             $6E7F (list_remove_matching_list)
   $9801  BB                         ADD
   $9802  B3                         PUSHL
   $9803  0A                         LOADL_quick   ; inline operand = 10
@@ -3460,7 +3460,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $9879   (frame_off=-2, body @ $987E)
 ; ============================================================
-  $987E  8A 89 6F                   LOADL_imm2             $6F89
+  $987E  8A 89 6F                   LOADL_imm2             $6F89 (fief_index_list)
   $9881  D6 98 98                   JUMP_abs               $9898
  >$9884  A0 0B 00                   BYTE_LOADL_far         $000B
   $9887  B3                         PUSHL
@@ -3716,17 +3716,17 @@ VM bytecode disassembly
   $9A1B  53                         LOADR_qimm   ; inline operand = 3
   $9A1C  B8                         UDIV
   $9A1D  2B                         STORE_quick   ; inline operand = 11
-  $9A1E  8E 89 6F                   PUSH_imm2              $6F89
+  $9A1E  8E 89 6F                   PUSH_imm2              $6F89 (fief_index_list)
   $9A21  0B                         LOADL_quick   ; inline operand = 11
   $9A22  D1                         DEC
   $9A23  B3                         PUSHL
   $9A24  E9 C6 98 04                CALL_abs_imm1          $98C6 (select_provinces_and_assign_ai_state) {bytecode}, $04
   $9A28  8D 34                      BYTE_PUSH_imm1         +52
-  $9A2A  8E 89 6F                   PUSH_imm2              $6F89
+  $9A2A  8E 89 6F                   PUSH_imm2              $6F89 (fief_index_list)
   $9A2D  3B                         PUSH_quick   ; inline operand = 11
   $9A2E  E9 74 99 06                CALL_abs_imm1          $9974 (process_first_n_unmarked_list_entries) {bytecode}, $06
   $9A32  8D 32                      BYTE_PUSH_imm1         +50
-  $9A34  8E 89 6F                   PUSH_imm2              $6F89
+  $9A34  8E 89 6F                   PUSH_imm2              $6F89 (fief_index_list)
   $9A37  0B                         LOADL_quick   ; inline operand = 11
   $9A38  D2                         LSHIFT1
   $9A39  B3                         PUSHL
@@ -3746,14 +3746,14 @@ VM bytecode disassembly
   $9A55  40                         LOADL_qimm   ; inline operand = 0
   $9A56  28                         STORE_quick   ; inline operand = 8
  >$9A57  08                         LOADL_quick   ; inline operand = 8
-  $9A58  8C D5 7F                   LOADR_imm2             $7FD5
+  $9A58  8C D5 7F                   LOADR_imm2             $7FD5 (player_daimyo)
   $9A5B  BB                         ADD
   $9A5C  D3                         BYTE_DEREF
   $9A5D  8B 18                      BYTE_LOADR_imm1        +24
   $9A5F  C0                         CMPEQ
   $9A60  D8 6C 9A                   JUMPF_abs              $9A6C
   $9A63  08                         LOADL_quick   ; inline operand = 8
-  $9A64  8C D5 7F                   LOADR_imm2             $7FD5
+  $9A64  8C D5 7F                   LOADR_imm2             $7FD5 (player_daimyo)
   $9A67  BB                         ADD
   $9A68  B3                         PUSHL
   $9A69  89 33                      BYTE_LOADL_imm1        +51
@@ -4034,7 +4034,7 @@ VM bytecode disassembly
 ; ============================================================
   $9CB8  8D 14                      BYTE_PUSH_imm1         +20
   $9CBA  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
-  $9CBE  8A AD 7B                   LOADL_imm2             $7BAD
+  $9CBE  8A AD 7B                   LOADL_imm2             $7BAD (province_candidate_list)
   $9CC1  D6 F5 9C                   JUMP_abs               $9CF5
  >$9CC4  0B                         LOADL_quick   ; inline operand = 11
   $9CC5  D3                         BYTE_DEREF
@@ -4085,7 +4085,7 @@ VM bytecode disassembly
 ; ============================================================
   $9D05  8D 1F                      BYTE_PUSH_imm1         +31
   $9D07  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
-  $9D0B  8A AD 7B                   LOADL_imm2             $7BAD
+  $9D0B  8A AD 7B                   LOADL_imm2             $7BAD (province_candidate_list)
   $9D0E  D6 7B 9D                   JUMP_abs               $9D7B
  >$9D11  0B                         LOADL_quick   ; inline operand = 11
   $9D12  D3                         BYTE_DEREF
@@ -4316,7 +4316,7 @@ VM bytecode disassembly
 ; ============================================================
   $9EA2  40                         LOADL_qimm   ; inline operand = 0
   $9EA3  29                         STORE_quick   ; inline operand = 9
-  $9EA4  8A AD 7B                   LOADL_imm2             $7BAD
+  $9EA4  8A AD 7B                   LOADL_imm2             $7BAD (province_candidate_list)
   $9EA7  2B                         STORE_quick   ; inline operand = 11
   $9EA8  40                         LOADL_qimm   ; inline operand = 0
   $9EA9  D6 CA 9E                   JUMP_abs               $9ECA
@@ -5208,7 +5208,7 @@ VM bytecode disassembly
   $A42C  0A                         LOADL_quick   ; inline operand = 10
   $A42D  A8 EB 7F                   STORE_abs              $7FEB (sram_save_checksum)
   $A430  8E 17 BF                   PUSH_imm2              $BF17 (msg_koei_bf17)
-  $A433  8E ED 7F                   PUSH_imm2              $7FED
+  $A433  8E ED 7F                   PUSH_imm2              $7FED (sram_save_signature)
   $A436  E9 D9 CA 04                CALL_abs_imm1          $CAD9 (strcpy) {bytecode}, $04
   $A43A  60                         PUSH_qimm   ; inline operand = 0
   $A43B  E9 A4 CB 02                CALL_abs_imm1          $CBA4 (chr_bank0_set_wrap) {bytecode}, $02
@@ -5322,7 +5322,7 @@ VM bytecode disassembly
   $A527  D0                         INC
   $A528  28                         STORE_quick   ; inline operand = 8
   $A529  D1                         DEC
-  $A52A  8C AD 7B                   LOADR_imm2             $7BAD
+  $A52A  8C AD 7B                   LOADR_imm2             $7BAD (province_candidate_list)
   $A52D  BB                         ADD
   $A52E  B3                         PUSHL
   $A52F  09                         LOADL_quick   ; inline operand = 9
@@ -5335,7 +5335,7 @@ VM bytecode disassembly
   $A538  C6                         UCMPLT
   $A539  D7 05 A5                   JUMPT_abs              $A505
   $A53C  08                         LOADL_quick   ; inline operand = 8
-  $A53D  8C AD 7B                   LOADR_imm2             $7BAD
+  $A53D  8C AD 7B                   LOADR_imm2             $7BAD (province_candidate_list)
   $A540  BB                         ADD
   $A541  B3                         PUSHL
   $A542  89 FF                      BYTE_LOADL_imm1        -1

@@ -928,7 +928,7 @@ word draw_unit_roster_columns(word arg1) {
         case 11:
             if (!((!(is_no_province_selected()) || arg1))) goto L_8CE1;    // $8CB8
             local11 = (local11 + 1);    // $8CBD
-            phi_8cc4_0 = 0xB591;    // $8CC1
+            phi_8cc4_0 = roster_fmt_4d_1;    // $8CC1
             phi_8cc4_1 = *(byte*)((local11 - 1));    // $8CC1
 L_8CC4:
             sub_D134(phi_8cc4_0, phi_8cc4_1);    // $8CC4
@@ -940,13 +940,13 @@ L_8CCB:
             phi_ret_8d38 = build_blit_fief_tile_block(12, 20);    // $8CDE
             goto L_8D38;    // $8CDE
 L_8CE1:
-            phi_8d0e_0 = 0xB595;    // $8CE4
+            phi_8d0e_0 = roster_dashes_1;    // $8CE4
             goto L_8D0E;    // $8CE4
         case 12:
         case 13:
         case 14:
             local9 = (local9 + 2);    // $8CE9
-            phi_8cc4_0 = 0xB59A;    // $8CF1
+            phi_8cc4_0 = roster_fmt_4d_2;    // $8CF1
             phi_8cc4_1 = *(word*)((local9 + -2));    // $8CF1
             goto L_8CC4;    // $8CF1
         case 15:
@@ -954,11 +954,11 @@ L_8CE1:
         case 17:
             if (!((!(is_no_province_selected()) || arg1))) goto L_8D0B;    // $8CFB
             local10 = (local10 + 2);    // $8D00
-            phi_8cc4_0 = 0xB59E;    // $8D08
+            phi_8cc4_0 = roster_fmt_4d_3;    // $8D08
             phi_8cc4_1 = *(word*)((local10 + -2));    // $8D08
             goto L_8CC4;    // $8D08
 L_8D0B:
-            phi_8d0e_0 = 0xB5A2;    // $8D0B
+            phi_8d0e_0 = roster_dashes_2;    // $8D0B
 L_8D0E:
         default:
         }
@@ -1383,7 +1383,7 @@ L_92A5:
 // (body @ $92CF)
 
 word battle_init_defender(void) {
-    mem_7FE1 = 255;    // $92D2
+    input_mode3_latch = 255;    // $92D2
     local11 = 0;    // $92D6
     battle_defender_status_flag_6f66 = (fief_is_daimyo_capital[battle_defending_province] << 7);    // $92E1
     war_defender_gold = *(word*)(((battle_defending_province * 26) + 0x7001));    // $92EF
@@ -2084,7 +2084,7 @@ word ai_strength_term_gated_table_word(word arg1, word arg2, word arg3) {
 word ai_eval_battle_strength_total(word arg1, word arg2, word arg3) {
     ai_sum_battle_strength();    // $9C8D
     local11 = *(word*)(unit_strength_ptr(arg1, arg2));    // $9C97
-    local10 = ((((((test_6f65_bit7(arg1) ? local11 : 0) + ai_terrain_strength_term(arg1, arg2)) + ai_province_stat_diff_term(arg1, arg2)) + ai_strength_term_gated_table_word(arg1, arg2, arg3)) + ai_score_strength_term_40pct(local11, arg1)) + sub_D70D(local11, (*(byte*)((arg3 + 0x7BEE)) * 20)));    // $9CDC
+    local10 = ((((((test_6f65_bit7(arg1) ? local11 : 0) + ai_terrain_strength_term(arg1, arg2)) + ai_province_stat_diff_term(arg1, arg2)) + ai_strength_term_gated_table_word(arg1, arg2, arg3)) + ai_score_strength_term_40pct(local11, arg1)) + sub_D70D(local11, (battle_unit_byte_table[arg3] * 20)));    // $9CDC
     if (get_province_ai_state(get_battle_side_province(arg1))) {    // $9CE7
     phi_push_9cf9 = (115 - (const_two * 15));    // $9CF4
     } else {
@@ -2163,7 +2163,7 @@ L_9E1C:
 
 word resolve_attack_apply_mutual_casualties(word arg1) {
     validate_phase_unit_cells_draw_cursor(arg1);    // $9E26
-    *(byte*)((arg1 + 0x7BEE)) = (*(byte*)((arg1 + 0x7BEE)) + 1);    // $9E32
+    battle_unit_byte_table[arg1] = (battle_unit_byte_table[arg1] + 1);    // $9E32
     local11 = calc_battle_strength_pct_one_side(arg1);    // $9E38
     reduce_defending_province_town_chaos((apply_pct_reduction_to_unit_strength(cur_combat_side, cur_combat_unit_slot, (100 - local11)) + apply_pct_reduction_to_unit_strength((cur_combat_side ^ 1), arg1, local11)), arg1);    // $9E59
     if (((local11 == 50))) return 0;    // $9E61
@@ -3182,7 +3182,7 @@ L_ADDB:
     combat_casualty_skip_flag_7bf3 = 0;    // $ADDC
     local11 = 0;    // $ADE0
 L_ADE1:
-    *(byte*)((local11 + 0x7BEE)) = 0;    // $ADE8
+    battle_unit_byte_table[local11] = 0;    // $ADE8
     local11 = (local11 + 1);    // $ADEB
     if (((unsigned)local11 < (unsigned)5)) goto L_ADE1;    // $ADEF
     if (!((!(is_no_province_selected()) || cur_combat_side))) goto L_AE08;    // $ADFB

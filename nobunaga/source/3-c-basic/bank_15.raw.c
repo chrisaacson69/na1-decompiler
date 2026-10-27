@@ -664,7 +664,7 @@ L_D171:
     local8 = ui_cursor_row;    // $D183
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $D18D
     sub_CC7B(21, 26);    // $D195
-    sub_D134(0xF68A, (local11 + 1));    // $D19F
+    sub_D134(msg_control_n, (local11 + 1));    // $D19F
     sub_CC7B(local9, local8);    // $D1A5
     ui_input_sel_latch_7fdf = local11;    // $D1AA
 L_D1AD:
@@ -679,7 +679,7 @@ L_D1C9:
     phi_val_d1ca = 0;    // $D1C9
 L_D1CA:
     local11 = phi_val_d1ca;    // $D1CA
-    if (!((*(byte*)((local11 + 0x7FD5)) != sub_D772(local10)))) goto L_D171;    // $D1D9
+    if (!((player_daimyo[local11] != sub_D772(local10)))) goto L_D171;    // $D1D9
     phi_val_d1ca = (local11 + 1);    // $D1DE
     goto L_D1CA;    // $D1DE
 L_D1E1:
@@ -691,14 +691,14 @@ L_D1E8:
     phi_val_d1e4 = battle_defending_province;    // $D1EB
     goto L_D1E4;    // $D1EB
 L_D1EE:
-    if ((mem_7FE1 != 255)) goto L_D23D;    // $D1F5
+    if ((input_mode3_latch != 255)) goto L_D23D;    // $D1F5
     phi_val_d1fe = 0;    // $D1F9
     goto L_D1FE;    // $D1F9
 L_D1FC:
     phi_val_d1fe = (local11 + 1);    // $D1FD
 L_D1FE:
     local11 = phi_val_d1fe;    // $D1FE
-    if (!((*(byte*)((local11 + 0x7FD5)) != sub_D77E()))) goto L_D214;    // $D20B
+    if (!((player_daimyo[local11] != sub_D77E()))) goto L_D214;    // $D20B
     if (((unsigned)local11 < (unsigned)8)) goto L_D1FC;    // $D211
 L_D214:
     if (!(((unsigned)local11 >= (unsigned)8))) goto L_D237;    // $D217
@@ -708,12 +708,12 @@ L_D21E:
     phi_val_d220 = (local11 + 1);    // $D21F
 L_D220:
     local11 = phi_val_d220;    // $D220
-    if ((*(byte*)((local11 + 0x7FD5)) != sub_D772(battle_defending_province))) goto L_D21E;    // $D231
+    if ((player_daimyo[local11] != sub_D772(battle_defending_province))) goto L_D21E;    // $D231
     local11 = (local11 + 1);    // $D236
 L_D237:
-    mem_7FE1 = (local11 & 1);    // $D23A
+    input_mode3_latch = (local11 & 1);    // $D23A
 L_D23D:
-    local11 = mem_7FE1;    // $D240
+    local11 = input_mode3_latch;    // $D240
     if (!(cur_combat_side)) goto L_D16B;    // $D244
     phi_val_d16a = (local11 ^ 1);    // $D24B
     goto L_D16A;    // $D24B
@@ -911,7 +911,7 @@ L_D469:
     if (!(((unsigned)*(word*)(((local4 << 1) + &local6)) >= (unsigned)10))) goto L_D485;    // $D477
     *(word*)(((local4 << 1) + &local6)) = 0;    // $D484
 L_D485:
-    phi_d492_0 = 0xF6A1;    // $D48F
+    phi_d492_0 = cursor_nav_fmt_d_1;    // $D48F
     phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D48F
 L_D492:
     sub_D134(phi_d492_0, phi_d492_1);    // $D492
@@ -925,13 +925,13 @@ L_D4AF:
     if (!(((unsigned)*(word*)(((local4 << 1) + &local6)) >= (unsigned)10))) goto L_D4CB;    // $D4BD
     *(word*)(((local4 << 1) + &local6)) = 9;    // $D4CA
 L_D4CB:
-    phi_d492_0 = 0xF6A4;    // $D4D8
+    phi_d492_0 = cursor_nav_fmt_d_2;    // $D4D8
     phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D4D8
     goto L_D492;    // $D4D8
 L_D4DB:
     if (!(local4)) goto L_D460;    // $D4DC
     read_frame_timer(0);    // $D4E0
-    sub_CEC4(0xF6A7);    // $D4E7
+    sub_CEC4(cursor_nav_space);    // $D4E7
     ui_window_col = (ui_window_col - 2);    // $D4F1
     read_frame_timer(1);    // $D4F5
     local4 = (local4 - 1);    // $D4FF
@@ -948,7 +948,7 @@ L_D528:
     ui_window_col = (ui_window_col + 1);    // $D531
     local4 = (local4 + 1);    // $D53A
     *(word*)(((local4 << 1) + &local6)) = 0;    // $D540
-    sub_D134(0xF6A9, *(word*)(((local4 << 1) + &local6)));    // $D54E
+    sub_D134(cursor_nav_fmt_d_3, *(word*)(((local4 << 1) + &local6)));    // $D54E
     ui_window_col = (ui_window_col - 1);    // $D556
     read_frame_timer(1);    // $D55A
     goto L_D509;    // $D55E
@@ -1056,7 +1056,7 @@ L_D66B:
 // (body @ $D67C)
 
 word draw_current_year(void) {
-    return sub_D134(0xF6C4, current_game_year);    // $D686
+    return sub_D134(draw_current_year_fmt, current_game_year);    // $D686
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D687
@@ -1072,18 +1072,18 @@ word draw_current_season(void) {
         default: goto L_D6A5;    // $D68F
     }    // $D68F
 L_D69E:
-    phi_d6a1_0 = 0xF6C7;    // $D69E
+    phi_d6a1_0 = msg_spring;    // $D69E
 L_D6A1:
 L_D6A5:
     return sub_CEC4(phi_d6a1_0);    // $D6A5
 L_D6A6:
-    phi_d6a1_0 = 0xF6CE;    // $D6A9
+    phi_d6a1_0 = msg_summer;    // $D6A9
     goto L_D6A1;    // $D6A9
 L_D6AC:
-    phi_d6a1_0 = 0xF6D5;    // $D6AF
+    phi_d6a1_0 = msg_fall;    // $D6AF
     goto L_D6A1;    // $D6AF
 L_D6B2:
-    phi_d6a1_0 = 0xF6DA;    // $D6B5
+    phi_d6a1_0 = msg_winter;    // $D6B5
     goto L_D6A1;    // $D6B5
 }
 
@@ -1403,11 +1403,11 @@ word test_6f65_bit7(word arg1) {
 // (body @ $D9FC)
 
 word revolt_type_message(word arg1) {
-    if (!((*(byte*)((arg1 + 0x7B79)) == 6))) goto L_DA0D;    // $DA04
+    if ((fief_revolt_type[arg1] != 6)) goto L_DA0D;    // $DA04
     goto L_DA21;    // $DA0A
 L_DA0D:
 L_DA21:
-    local11 = ((*(byte*)((arg1 + 0x7B79)) == 7) ? msg_christns_f6f5 : msg_rioters_f6fe);    // $DA21
+    local11 = ((fief_revolt_type[arg1] == 7) ? msg_christns_f6f5 : msg_rioters_f6fe);    // $DA21
     return local11;    // $DA23
 }
 
@@ -1722,12 +1722,12 @@ L_DE97:
         default: goto L_DEB9;    // $DE98
     }    // $DE98
 L_DEAD:
-    phi_val_deb0 = 0xF720;    // $DEAD
+    phi_val_deb0 = uprising_label_zealots;    // $DEAD
 L_DEB0:
     local11 = phi_val_deb0;    // $DEB0
     return local11;    // $DEB2
 L_DEB3:
-    phi_val_deb0 = 0xF728;    // $DEB6
+    phi_val_deb0 = uprising_label_monks;    // $DEB6
     goto L_DEB0;    // $DEB6
 L_DEB9:
     phi_val_deb0 = revolt_type_message(arg1);    // $DEBE

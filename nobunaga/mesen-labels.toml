@@ -231,6 +231,16 @@ prg_bank_count = 16        # 256 KB total
 # ============================================================================
 # PRG-ROM bank 15 (the fixed kernel at CPU $C000-$FFFF)
 # ============================================================================
+"0x6F89" = { name = "fief_index_list", comment = "[DATA PHASE 2026-10-27] Byte list of fief indices, passed by address: find_first_enemy_owned_fief, avg_daimyo_charisma_over_fief_list, mark_fief_list_entry_removed, select_provinces_and_assign_ai_state (25 refs, 15 subs). Kind only; its length and terminator are naming work." }
+"0x6193" = { name = "relations_matrix", comment = "[DATA PHASE 2026-10-27] Daimyo relations matrix base: read through relations_matrix_cell_addr / relations_matrix_get, written by set_pact_relation, used by effect_war_a. (400 = 50 x 8 past fief_history_table is a coincidence.)" }
+"0x7BAD" = { name = "province_candidate_list", comment = "[DATA PHASE 2026-10-27] Byte list of provinces built by collect_high_loyalty_provinces_to_candidate_list, consumed by announce_seasonal_event, revolt_spread_sweep_flip_fief_ownership, decay_fief_list_wealth_and_output_disaster1." }
+"0x7BEE" = { name = "battle_unit_byte_table", comment = "[DATA PHASE 2026-10-27] Byte table indexed by side or unit: incremented in resolve_attack_apply_mutual_casualties, zeroed per entry in run_both_sides_combat_turn, tested > 0 in find_flagged_present_unit_type, read by ai_eval_battle_strength_total. Follows battle_side_strength_mod ($7BEA, a word pair). Role to be named in the naming phase." }
+"0x7FD5" = { name = "player_daimyo", comment = "[DATA PHASE 2026-10-27] Byte per human player: the daimyo that player controls. init_new_game_state sets each to -1 (255); poll_input compares player_daimyo[player] with fief_owner(..) where it prints 'Control %d' (player + 1); reassign_owner50_fiefs_to_daimyo24 rewrites 24 -> 51." }
+"0x7B79" = { name = "fief_revolt_type", comment = "[DATA PHASE 2026-10-27] Byte per fief: the revolt type. Values 6 and 7 select the message in select_rebellion_message (bank 0) and revolt_type_message (bank 15)." }
+"0x7FE1" = { name = "input_mode3_latch", comment = "[DATA PHASE 2026-10-27] poll_input mode 3's latch: stores buttons & 1 ($D23A), read at $D1EE; battle_init_defender resets it to 255. The mode-3 twin of ui_input_sel_latch_7fdf two bytes below." }
+"0x6E7F" = { name = "list_remove_matching_list", comment = "[DATA PHASE 2026-10-27] Byte table indexed by fief: list_remove_matching takes it as its list, revolt_spread_sweep_flip_fief_ownership writes entries, ai_try_war_attack reads [selected_province_idx]. Provenance name; the role is naming work." }
+"0x6FE5" = { name = "unit_count_digit_tiles", comment = "[DATA PHASE 2026-10-27] 9-byte entries (side * 9): draw_unit_count_digits writes tile 178 or 179 and the digits, then ppu_copy_rect_wrap draws the entry." }
+"0x7FED" = { name = "sram_save_signature", comment = "[DATA PHASE 2026-10-27] The save's signature string: verify_sram_save_integrity strcmp's it with 'KOEI'; write_sram_save_checksum_and_signature strcpy's 'KOEI'; on failure the 'data can't be used' text. Follows sram_save_checksum." }
 
 [prg.bank15]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
@@ -703,6 +713,18 @@ prg_bank_count = 16        # 256 KB total
 # Bank 0 is almost entirely VM bytecode + data, not native 6502 code.
 # The 3-byte entry at $8000 ('4C 78 A7' = JMP $A778) is essentially the only native code in this bank,
 # followed by JSR $E823 at $A778 which enters the VM. Everything after that is bytecode.
+"0xF68A" = { name = "msg_control_n", comment = "[ROM-STR] \"Control %d\" (poll_input prints player + 1)" }
+"0xF6A1" = { name = "cursor_nav_fmt_d_1", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 1st of 3)" }
+"0xF6A4" = { name = "cursor_nav_fmt_d_2", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 2nd of 3)" }
+"0xF6A7" = { name = "cursor_nav_space", comment = "[ROM-STR] \" \" (cursor_nav_loop; the tables lane read it as binary)" }
+"0xF6A9" = { name = "cursor_nav_fmt_d_3", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 3rd of 3)" }
+"0xF6C4" = { name = "draw_current_year_fmt", comment = "[ROM-STR] \"%d\" (draw_current_year prints current_game_year)" }
+"0xF6C7" = { name = "msg_spring", comment = "[ROM-STR] \"Spring\" (draw_current_season)" }
+"0xF6CE" = { name = "msg_summer", comment = "[ROM-STR] \"Summer\" (draw_current_season)" }
+"0xF6D5" = { name = "msg_fall", comment = "[ROM-STR] \"Fall\" (draw_current_season)" }
+"0xF6DA" = { name = "msg_winter", comment = "[ROM-STR] \"Winter\" (draw_current_season)" }
+"0xF720" = { name = "uprising_label_zealots", comment = "[ROM-STR] \"Zealots\" (select_uprising_message; bank 1 msg_zealots $BA43 is a different string, 'Zealots ')" }
+"0xF728" = { name = "uprising_label_monks", comment = "[ROM-STR] \"Monks\" (select_uprising_message)" }
 
 [prg.bank0]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
@@ -1396,6 +1418,13 @@ prg_bank_count = 16        # 256 KB total
 # PRG bank 2 — battle setup / tactical-map code (session 2026-05-30)
 # Bank 2's $8000 = JMP $AFE1. The tactical-map ROM->SRAM->PPU pipeline lives here.
 # ============================================================================
+"0xBB36" = { name = "cycle_economy_rate_fmt", comment = "[ROM-STR] \"%2d.%1d\": cycle_economy_rate prints a value in tenths (v / 10 . v % 10)" }
+"0xBB49" = { name = "msg_has_retreated", comment = "[ROM-STR] \" has\nretreated\" (resolve_siege_assault_outcome)" }
+"0xBB58" = { name = "msg_has_fled", comment = "[ROM-STR] \" has fled\" (resolve_siege_assault_outcome)" }
+"0xBE59" = { name = "effect_assign_fmt_3d_1", comment = "[ROM-STR] \"%3d\" (effect_assign, 1st of 4)" }
+"0xBE5D" = { name = "effect_assign_fmt_3d_2", comment = "[ROM-STR] \"%3d\" (effect_assign, 2nd of 4)" }
+"0xBE61" = { name = "effect_assign_fmt_3d_3", comment = "[ROM-STR] \"%3d\" (effect_assign, 3rd of 4)" }
+"0xBE65" = { name = "effect_assign_fmt_3d_4", comment = "[ROM-STR] \"%3d\" (effect_assign, 4th of 4)" }
 
 [prg.bank2]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
@@ -1634,11 +1663,17 @@ prg_bank_count = 16        # 256 KB total
 "0xA8CF" = { name = "ai_select_unit_combat_action", comment = "[HIGH CONFIRMED 2026-06-10] Per-unit AI action selector: if ai_claim_province_when_strong_enough(fief) -> return 1; else ai_rng_resolve_combat_apply_casualties, then dispatch by state — slot 0 -> ai_choose_combat_action_by_battle_strength; else (attacker side AND ai_attacker_outstrengths_defender AND not unit_type_count_gt3) -> ai_advance_units_toward_reachable_enemies; else ai_advance_units_into_free_adjacent_cells." }
 "0xABB7" = { name = "ai_run_all_units_combat_actions", comment = "[HIGH CONFIRMED 2026-06-10] One side's combat turn: loops the 5 unit slots (is_unit_present gate), refreshes the unit window, and per present unit invokes ai_select_unit_combat_action; returns the resolved/continue flag via check_unit_type0_present_both_sides ($AB8E)." }
 "0xADD1" = { name = "run_both_sides_combat_turn", comment = "[HIGH CONFIRMED 2026-06-10] One combat day (called by the resolution path): halve_defender_morale_for_breaching_attackers, then for each side (cur_combat_side 0,1) clears the 5 per-type counters ($7BEE+0..4), skips sides that are battleside_not_state5_or_resting, and runs the per-side AI/player handler ai_run_all_units_combat_actions; early-exits when it signals combat resolved." }
+"0xB591" = { name = "roster_fmt_4d_1", comment = "[ROM-STR] \"%4d\" (draw_unit_roster_columns, 1st column)" }
+"0xB595" = { name = "roster_dashes_1", comment = "[ROM-STR] \"----\" (draw_unit_roster_columns; the tables lane read it as binary)" }
+"0xB59A" = { name = "roster_fmt_4d_2", comment = "[ROM-STR] \"%4d\" (draw_unit_roster_columns, 2nd column)" }
+"0xB59E" = { name = "roster_fmt_4d_3", comment = "[ROM-STR] \"%4d\" (draw_unit_roster_columns, 3rd column)" }
+"0xB5A2" = { name = "roster_dashes_2", comment = "[ROM-STR] \"----\" (draw_unit_roster_columns; the tables lane read it as binary)" }
 
 [prg.bank10]
 # AUDIO bytecode (1 sub). Entry $8000 = native stub (JMP $8003; JSR $E823 vm_entry) -> this bytecode.
 # Reached via call_bank10_entry ($CA03) / call_bank_wrap(10). Folded into the corpus 2026-06-10 (ch.19).
 "0x8003" = { name = "play_audio_by_id", comment = "[HIGH CONFIRMED 2026-06-10] Bank-10 audio entry (body of call_bank10_entry). Gated on audio_wait_gate==1. Dispatches on sound_request_id ($7FE5): >64 = no-op; <27 = song (load 3 voices from the $8617 table at id*3, audio_control(1..3,1)); 27-63 = single SFX voice (load 1 from $8617[id], channel = byte&4). The sound/music trigger bytecode requests via call_bank10_entry." }
+"0x8617" = { name = "play_audio_by_id_stream_ptrs", comment = "[ROM-DATA] word pointer table read by play_audio_by_id ($8090, $80D9, $8110, ...): the audio streams in bank 10" }
 
 [prg.bank14]
 # AI-TURN CUTSCENE / ANIMATION engine (3 subs). Entry $8000 = native stub (JMP $80AD; JSR $E823 vm_entry).

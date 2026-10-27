@@ -14,14 +14,14 @@ word play_audio_by_id(void) {
     if ((!(((unsigned)sound_request_id <= (unsigned)64)))) return ((unsigned)sound_request_id > (unsigned)64);    // $8016
     if (((unsigned)sound_request_id < (unsigned)27)) {    // $8020
     local11 = (sound_request_id * 3);    // $8028
-    syscall_audio_load_voice(1, 10, *(word*)(((local11 << 1) + 0x8617)));    // $8034
-    syscall_audio_load_voice(2, 10, *(word*)((((local11 + 1) << 1) + 0x8617)));    // $8044
-    syscall_audio_load_voice(3, 10, *(word*)((((local11 + 2) << 1) + 0x8617)));    // $8054
+    syscall_audio_load_voice(1, 10, *(word*)(((local11 << 1) + play_audio_by_id_stream_ptrs)));    // $8034
+    syscall_audio_load_voice(2, 10, *(word*)((((local11 + 1) << 1) + play_audio_by_id_stream_ptrs)));    // $8044
+    syscall_audio_load_voice(3, 10, *(word*)((((local11 + 2) << 1) + play_audio_by_id_stream_ptrs)));    // $8054
     syscall_audio_control(1, 1);    // $805B
     syscall_audio_control(2, 1);    // $8062
     phi_ret_808e = syscall_audio_control(3, 1);    // $806D
     } else {
-    local9 = *(word*)(((sound_request_id << 1) + 0x8617));    // $8079
+    local9 = *(word*)(((sound_request_id << 1) + play_audio_by_id_stream_ptrs));    // $8079
     local10 = (*(byte*)(local9) & 4);    // $807E
     syscall_audio_load_voice(local10, 10, local9);    // $8083
     phi_ret_808e = syscall_audio_control(local10, 1);    // $808A

@@ -128,7 +128,7 @@ L_8235:
     return 0;    // $8243
 L_8244:
     chr_bank0_set_wrap(1);    // $8245
-    if (strcmp(0x7FED, msg_koei)) goto L_8226;    // $8253
+    if (strcmp(sram_save_signature, msg_koei)) goto L_8226;    // $8253
     chr_bank0_set_wrap(0);    // $8257
     local8 = syscall_sram_block_with_checksum(1, 0, ai_per_fief_loop_index, 255);    // $8269
     local11 = 0x6100;    // $826D
@@ -164,7 +164,7 @@ L_8323:
     ui_msg_col_shift_flag = 1;    // $833E
     return 1;    // $8342
 L_8343:
-    strcpy(0x7FED, str_data_cant_be_used);    // $8349
+    strcpy(sram_save_signature, str_data_cant_be_used);    // $8349
     chr_bank0_set_wrap(0);    // $834E
     delay_loop_count = 50;    // $8354
     audio_wait_gate = 1;    // $8358
@@ -506,7 +506,7 @@ L_89C1:
 L_89D7:
     local11 = 0;    // $89D8
 L_89D9:
-    *(byte*)((local11 + 0x7FD5)) = -1;    // $89E1
+    player_daimyo[local11] = -1;    // $89E1
     local11 = (local11 + 1);    // $89E4
     if (((unsigned)local11 < (unsigned)8)) goto L_89D9;    // $89E8
     prompt_select_scenario_size();    // $89EB
@@ -593,11 +593,11 @@ L_8B44:
 // (body @ $8B75)
 
 word select_rebellion_message(word arg1) {
-    if (!((*(byte*)((arg1 + 0x7B79)) == 6))) goto L_8B86;    // $8B7D
+    if ((fief_revolt_type[arg1] != 6)) goto L_8B86;    // $8B7D
     goto L_8B9A;    // $8B83
 L_8B86:
 L_8B9A:
-    local11 = ((*(byte*)((arg1 + 0x7B79)) == 7) ? str_enemy_morale_falling : msg_rioters);    // $8B9A
+    local11 = ((fief_revolt_type[arg1] == 7) ? str_enemy_morale_falling : msg_rioters);    // $8B9A
     return local11;    // $8B9C
 }
 
@@ -1659,17 +1659,17 @@ L_9A04:
     selected_province_idx = 30;    // $9A10
     local10 = (build_eligible_province_list(1) + 1);    // $9A19
     local11 = ((unsigned)local10 / (unsigned)3);    // $9A1D
-    select_provinces_and_assign_ai_state((local11 - 1), 0x6F89);    // $9A24
-    process_first_n_unmarked_list_entries(local11, 0x6F89, 52);    // $9A2E
-    process_first_n_unmarked_list_entries((local10 - (local11 << 1)), 0x6F89, 50);    // $9A3E
+    select_provinces_and_assign_ai_state((local11 - 1), fief_index_list);    // $9A24
+    process_first_n_unmarked_list_entries(local11, fief_index_list, 52);    // $9A2E
+    process_first_n_unmarked_list_entries((local10 - (local11 << 1)), fief_index_list, 50);    // $9A3E
     post_elim_owner_sentinel_id = 51;    // $9A44
     mem_6DC0 = 1;    // $9A48
     mem_6D15 = 5;    // $9A4C
     redraw_fief_on_map(30);    // $9A51
     local8 = 0;    // $9A56
 L_9A57:
-    if (!((*(byte*)((local8 + 0x7FD5)) == 24))) goto L_9A6C;    // $9A60
-    *(byte*)((local8 + 0x7FD5)) = 51;    // $9A6B
+    if ((player_daimyo[local8] != 24)) goto L_9A6C;    // $9A60
+    player_daimyo[local8] = 51;    // $9A6B
 L_9A6C:
     local8 = (local8 + 1);    // $9A6E
     if (((unsigned)local8 < (unsigned)8)) goto L_9A57;    // $9A72
@@ -2329,7 +2329,7 @@ L_A3FB:
     if (((unsigned)local11 < (unsigned)0x7F00)) goto L_A3FB;    // $A417
     local10 = (local10 + syscall_sram_block_with_checksum(0, local9, ui_transient_state, save_sram_81eb));    // $A42B
     sram_save_checksum = local10;    // $A42D
-    strcpy(0x7FED, msg_koei_bf17);    // $A436
+    strcpy(sram_save_signature, msg_koei_bf17);    // $A436
     chr_bank0_set_wrap(0);    // $A43B
     sram_save_pending_flag = 0;    // $A440
     message_display(str_save_and_illness_msgs);    // $A446
@@ -2407,7 +2407,7 @@ L_A531:
     local9 = (local9 + 1);    // $A533
 L_A534:
     if (((unsigned)local9 < (unsigned)scenario_fief_count)) goto L_A505;    // $A539
-    *(byte*)((local8 + 0x7BAD)) = -1;    // $A544
+    province_candidate_list[local8] = -1;    // $A544
     if (!(local8)) goto L_A55B;    // $A546
     announce_seasonal_event(ai_planner_event_handler_select);    // $A54C
     (*(local11))();    // $A551

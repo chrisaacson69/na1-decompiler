@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 10
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1336 CPU addresses named
+  labels:       1371 CPU addresses named
 
   bank 10: found 1 bytecode-subroutine stubs
 
@@ -28,7 +28,7 @@ VM bytecode disassembly
   $8028  2B                         STORE_quick   ; inline operand = 11
   $8029  0B                         LOADL_quick   ; inline operand = 11
   $802A  D2                         LSHIFT1
-  $802B  8C 17 86                   LOADR_imm2             $8617
+  $802B  8C 17 86                   LOADR_imm2             $8617 (play_audio_by_id_stream_ptrs)
   $802E  BB                         ADD
   $802F  B0                         DEREF
   $8030  B3                         PUSHL
@@ -39,7 +39,7 @@ VM bytecode disassembly
   $8038  0B                         LOADL_quick   ; inline operand = 11
   $8039  D0                         INC
   $803A  D2                         LSHIFT1
-  $803B  8C 17 86                   LOADR_imm2             $8617
+  $803B  8C 17 86                   LOADR_imm2             $8617 (play_audio_by_id_stream_ptrs)
   $803E  BB                         ADD
   $803F  B0                         DEREF
   $8040  B3                         PUSHL
@@ -50,7 +50,7 @@ VM bytecode disassembly
   $8048  0B                         LOADL_quick   ; inline operand = 11
   $8049  72                         ADD_qimm   ; inline operand = 2
   $804A  D2                         LSHIFT1
-  $804B  8C 17 86                   LOADR_imm2             $8617
+  $804B  8C 17 86                   LOADR_imm2             $8617 (play_audio_by_id_stream_ptrs)
   $804E  BB                         ADD
   $804F  B0                         DEREF
   $8050  B3                         PUSHL
@@ -73,7 +73,7 @@ VM bytecode disassembly
   $806D  D6 8E 80                   JUMP_abs               $808E
  >$8070  A4 E5 7F                   LOADL_abs              $7FE5 (sound_request_id)
   $8073  D2                         LSHIFT1
-  $8074  8C 17 86                   LOADR_imm2             $8617
+  $8074  8C 17 86                   LOADR_imm2             $8617 (play_audio_by_id_stream_ptrs)
   $8077  BB                         ADD
   $8078  B0                         DEREF
   $8079  29                         STORE_quick   ; inline operand = 9

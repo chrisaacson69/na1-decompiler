@@ -34,11 +34,11 @@ toolset  = "4ed0685"
 evidence = ["nobunaga/tools/native_discover.py", "nobunaga/traces/README.md"]
 
 [phase.data]
-status   = "partial"
-gate     = "The data walk ran in June (/data-walk, three lanes; the command pages, province record, scenario defaults, strings). Measured today: dataxref na1 hot --unlabeled leaves 20 hot RAM/SRAM addresses unnamed ($6005/$6007/$6009, $6E7F, $6FE5, $700F, $76AB, $7FED, ...); dataxref na1 strings --toml proposes ~19 referenced strings still unlabeled. Province record proven by effect_grow -> output@+8; ROM defaults vs live $7001 are two representations (CONTEXT.md)."
+status   = "done"
+gate     = "Oracle lanes, deterministic (dataxref na1 strings / tables / hot): strings 21 -> 0, tables 4 -> 0, hot unlabeled 20 -> 10, the 10 left being fields of labelled records, not gaps (province_table_live +6/8/12/14/16/18, fief_history_table +2/4/6, province_unit_type_pct +2). 35 labels written through tools/data-apply.py (refuses an existing address or name; regen; walk.guard name mapping, every C / listing file equal once each new name maps back to its literal; a planted label on a code address fails it; the registry restores byte-identical). ROM text named from its decoded string and its one reader (the duplicate %3d / %4d / %d format strings by reader and order, no address keys); the tables lane had read 3 short strings ('----', ' ') as binary. RAM by kind from its readers: player_daimyo ($7FD5; poll_input compares it with fief_owner where it prints 'Control %d'), sram_save_signature ($7FED; strcmp with 'KOEI'), fief_revolt_type, unit_count_digit_tiles, input_mode3_latch, relations_matrix ($6193; the 50 x 8 offset from fief_history_table was a coincidence), and 4 provenance / kind names (fief_index_list, province_candidate_list, battle_unit_byte_table, list_remove_matching_list) whose roles are naming work. Manual lane: no manual on this machine; the record fields' meanings were proven live by the snap protocol (commands/README.md). The .mlb regenerated (+35, and row A's 4 settled conflicts reached it)."
 checked  = "2026-10-27"
-toolset  = "658c689"
-evidence = ["nobunaga/mesen-labels.toml", "nobunaga/commands/README.md", "nobunaga/tools/data-xref.py"]
+toolset  = "ca94e34"
+evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobunaga/commands/README.md"]
 
 [phase.structure]
 status   = "partial"
@@ -185,5 +185,17 @@ phase  = "naming"
 source = "discover 2026-10-27"
 status = "open"
 
+[[revisit]]
+item   = "vm_decompile.invert_condition is textual: it strips one paren layer and splits at the FIRST space-bounded comparison operator, falling back to !(...). Seen in the data phase: naming an operand changed `if (!((x == 6)))` into `if ((x != 6))` (equivalent, but the shape depends on a name). The risk: on a condition with a comparison nested in a call or a ternary, a first-match split inverts the wrong operator, a polarity bug no structural gate sees (the 323-site class). Scan NA1's C for inversions whose split is not at the top level, and make the inverter parse."
+phase  = "structure"
+source = "data phase 2026-10-27 (data-apply guard)"
+status = "open"
+
+[[revisit]]
+item   = "Naming from the data phase: two June comments flag a wrong name that was never applied ($A5E6 spawn_zealot_uprising_force_from_province, 'SHOULD BE RENAMED spawn_uprising_force_from_province'; $A0ED amount_div_force_factor, MISLABEL); and the 4 RAM names given by kind only (fief_index_list, province_candidate_list, battle_unit_byte_table, list_remove_matching_list) want their roles."
+phase  = "naming"
+source = "data phase 2026-10-27"
+status = "open"
+
 [next]
-session = "data: status starts there (partial): the 20 hot unnamed RAM/SRAM addresses and ~19 referenced strings, by the oracle lanes. Then structure, whose ext-op fix is the most consequential open item (the wrong scale_div10_capcheck / math32_3arg also live in na1sim/vmprims.py; scale_div10_capcheck feeds the arms purchase, bank 1 $B5B1 / $B5D8)."
+session = "structure: the ext-op fix first (the June certified folds are wrong at their branch edges; the same formulas live in na1sim/vmprims.py; scale_div10_capcheck feeds the arms purchase, bank 1 $B5B1 / $B5D8), then the invert_condition scan, then the attic probes."
