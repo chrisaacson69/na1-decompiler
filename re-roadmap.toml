@@ -42,9 +42,9 @@ evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobun
 
 [phase.structure]
 status   = "partial"
-gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). Open: the textual invert_condition scan, the attic probes."
+gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). invert_condition parses the top level (emu-harness 3c3900e): the textual one flipped the comparison inside an already-negated !(...), so 3 NA1 sites inverted !(A || B) to A && !B ($82E9 is_cell_clear_of_bits, $89FD, $930A; the ROM sides with the goto form, $82DB(0, 5) = 1); 83 if-lines change on regen, 3 in meaning; cfg_gate stays CLEAN (it checks CFG shape, not rewritten polarity); the test checks each inversion by value and plants the textual one. Open: the attic probes."
 checked  = "2026-10-27"
-toolset  = "54be6fe"
+toolset  = "3c3900e"
 evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
 
 [phase.naming]
@@ -90,7 +90,7 @@ source = "emu-harness MIGRATION.md row F1b"
 status = "open"
 
 [[revisit]]
-item   = "Before the next walk batch: regenerate source/ (py -3.14 tools/na1_regen.py), since the committed C predates the engine's enum names / banner / F2 fixes (18 files change) and every batch's guard would refuse the non-rename diff. source/4-c/all_banks.c has no generator since decompile-merged.py went: regenerate it from the shared engine, or retire it."
+item   = "Before the next walk batch: regenerate source/ (py -3.14 tools/na1_regen.py), since the committed C predates the engine's enum names / banner / F2 fixes (18 files change) and every batch's guard would refuse the non-rename diff. Since 3c3900e the committed C is also wrong in meaning at 3 sites ($82E9, $89FD, $930A inverted an || to an &&). source/4-c/all_banks.c has no generator since decompile-merged.py went: regenerate it from the shared engine, or retire it."
 phase  = "presentation"
 source = "emu-harness MIGRATION.md row J"
 status = "open"
@@ -188,10 +188,10 @@ source = "discover 2026-10-27"
 status = "open"
 
 [[revisit]]
-item   = "vm_decompile.invert_condition is textual: it strips one paren layer and splits at the FIRST space-bounded comparison operator, falling back to !(...). Seen in the data phase: naming an operand changed `if (!((x == 6)))` into `if ((x != 6))` (equivalent, but the shape depends on a name). The risk: on a condition with a comparison nested in a call or a ternary, a first-match split inverts the wrong operator, a polarity bug no structural gate sees (the 323-site class). Scan NA1's C for inversions whose split is not at the top level, and make the inverter parse."
+item   = "vm_decompile.invert_condition is textual: it strips one paren layer and splits at the FIRST space-bounded comparison operator, falling back to !(...). Seen in the data phase: naming an operand changed `if (!((x == 6)))` into `if ((x != 6))` (equivalent, but the shape depends on a name). The risk: on a condition with a comparison nested in a call or a ternary, a first-match split inverts the wrong operator, a polarity bug no structural gate sees (the 323-site class). Scan NA1's C for inversions whose split is not at the top level, and make the inverter parse. CLOSED 2026-10-27 (emu-harness 3c3900e): every NA1 call instrumented (103), not a grep; the bug was a different shape than feared, the already-negated condition, and it hit 3 sites, all !(A || B)."
 phase  = "structure"
 source = "data phase 2026-10-27 (data-apply guard)"
-status = "open"
+status = "closed"
 
 [[revisit]]
 item   = "Naming from the data phase: two June comments flag a wrong name that was never applied ($A5E6 spawn_zealot_uprising_force_from_province, 'SHOULD BE RENAMED spawn_uprising_force_from_province'; $A0ED amount_div_force_factor, MISLABEL); and the 4 RAM names given by kind only (fief_index_list, province_candidate_list, battle_unit_byte_table, list_remove_matching_list) want their roles."
@@ -200,4 +200,4 @@ source = "data phase 2026-10-27"
 status = "open"
 
 [next]
-session = "structure, continued: scan NA1's C for invert_condition splits that are not at the top level (a polarity bug no gate sees), make the inverter parse; then read tools/attic for probes that are guards (probe-primitives, probe-math32, ...)."
+session = "structure, continued: read tools/attic for probes that are guards (probe-primitives, probe-math32, ...)."
