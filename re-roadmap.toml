@@ -1,0 +1,180 @@
+# re-roadmap.toml: where NA1 stands, read by `py -3.14 -m emu_harness status na1-decompiler`.
+# Phases and gates: emu-harness PHASES.md. First filled 2026-10-27 from nobunaga/CONTEXT.md, ROADMAP.md,
+# the chapters, and emu-harness MIGRATION.md (the per-project revisit table), with the vm-track gates
+# re-run on emu-harness 658c689. A gate claimed before emu-harness and not re-run here has toolset "".
+# NA1 is the root of the KOEI oracle chain (the later titles' native names came from it), so it was
+# never graded by anything: this revisit grades it.
+
+[project]
+name    = "Nobunaga's Ambition (USA)"
+track   = "vm"
+machine = "nes"
+profile = "na1"
+entry   = ["nobunaga/CONTEXT.md", "nobunaga/ROADMAP.md", "nobunaga/README.md", "nobunaga/source/README.md"]
+
+[phase.classify]
+status   = "done"
+gate     = "VM track, turn-based: the 6502 hosts the Sea-16 bytecode VM (fetch-decode at the dispatcher, 256-entry handler table, per-routine vm_entry stubs) and the game logic is bytecode in banks 0, 1, 2, 10, 14, 15; MMC1, 16 x 16K PRG, battery SRAM. The static-runtime join is cheap (bank switches are explicit syscalls). NA1 is the family's root: no sibling fingerprint applies (games.toml: 'NA1 is the oracle, never a native_floor target')."
+checked  = "2026-10-27"
+toolset  = "658c689"
+evidence = ["nobunaga/01-boot-and-dispatch.md", "nobunaga/05-bytecode-vm.md", "nobunaga/08-vm-instruction-set.md"]
+
+[phase.recon]
+status   = "done"
+gate     = "window_check na1: 16 banks of 16K, 0 problems. Every bytecode bank tiles: gates.roundtrip --game na1 re-encodes 499 subs, 45,711 code bytes in banks 0/1/2/10/14/15 byte-identical (ROUND-TRIP CLEAN). The shared toolchain's assumptions, re-derived on NA1's own handlers: operand lengths (tools/koei_isa_probe.py na1: 0 live opcodes disagree with the decoder), stack effects (gates.stack_audit: 187/208 gated opcodes confirmed, 21 never emitted in NA1), compare direction and signedness (gates.compare_probe: 10/10; new in this revisit, converted from the atticked NA1 probe; a planted C3/C5 swap fails it). One opcode table, emu-harness's, read through nobunaga_vm.OPCODES_PATH; the legacy nobunaga/vm-opcodes.toml is retired and the appendix regenerates from the shared table (it differs from the June appendix by the 4 lengths row F2 measured: $AD 2, $E0-$E2 2)."
+checked  = "2026-10-27"
+toolset  = "47e7f66"
+evidence = ["nobunaga/source/2-asm-vm/", "nobunaga/appendix-vm-opcodes.md", "nobunaga/tools/gen-opcode-appendix.py"]
+
+[phase.discover]
+status   = "partial"
+gate     = "callgraph na1: 792 subs, 2,344 sub-level edges, 5 cross-bank pairs, 1 unresolved call, 0 subs not lifted; 7 bank-15 orphans (no caller, no root: fill_bytes $CA97, memchr $CAF0, clear_rect_lower_right $CCBA, clear_rect_top_strip $CCD1, get_6f5d_or_ff $CCF9, and $F007, $FFFF unnamed). Native floor: n/a by design (NA1 is every sibling's oracle), so NA1's own native subs were named by hand and never graded. Not measured: walker conflicts, every jump table read in full, a CDL over real play for executed-but-undecoded bytes."
+checked  = "2026-10-27"
+toolset  = "658c689"
+evidence = ["nobunaga/tools/native-call-index.py"]
+
+[phase.data]
+status   = "partial"
+gate     = "The data walk ran in June (/data-walk, three lanes; the command pages, province record, scenario defaults, strings). Measured today: dataxref na1 hot --unlabeled leaves 20 hot RAM/SRAM addresses unnamed ($6005/$6007/$6009, $6E7F, $6FE5, $700F, $76AB, $7FED, ...); dataxref na1 strings --toml proposes ~19 referenced strings still unlabeled. Province record proven by effect_grow -> output@+8; ROM defaults vs live $7001 are two representations (CONTEXT.md)."
+checked  = "2026-10-27"
+toolset  = "658c689"
+evidence = ["nobunaga/mesen-labels.toml", "nobunaga/commands/README.md", "nobunaga/tools/data-xref.py"]
+
+[phase.structure]
+status   = "partial"
+gate     = "Round-trip byte-identical (499 subs) and stack audit clean (187 opcodes) on 658c689. cfg_gate FAILS: 496/499 raw witnesses match the bytecode CFG; b1/$8327, b15/$D6B8, b15/$D6DE diverge. All three are the June 'CERTIFIED' ext-op folds (vm_decompile._EXTOP_OVERRIDES_NA1), which print one straight-line return where the bytecode branches. Primitives probed against the ROM on edge inputs (value-oracle.oracle_run, 2026-10-27): scale_div10_capcheck is ab > 10c ? 0xFFFF : ab/10, the certified formula (ab/10 >= c) is wrong on 6 of 8 edge inputs; math32_3arg returns 0xFFFF for c = 0 (the lambda says 0, the C divides by zero); math32_2arg returns 0 for (0,0) (the C divides by zero). The June grid (9 points) had no input on any branch edge. One call graph with leaves-first order: callgraph na1 --bank-order."
+checked  = "2026-10-27"
+toolset  = "658c689"
+evidence = ["nobunaga/tools/value-oracle.py", "nobunaga/source/2-asm-vm/bank_01_vm.asm", "nobunaga/source/2-asm-vm/bank_15_vm.asm"]
+
+[phase.naming]
+status   = "partial"
+gate     = "Bottom-up walks done before emu-harness: bank 15 135/135 subs named, bank 1 57/57 (verifier corrected 29/50), bank 0 by /label-walk, the code+data naming epic; var-walk piloted. mesen-labels.toml: 1,377 entries, 106 carry an address suffix (mostly duplicate format strings, msg_fmt__3d_be5d). Not on the current toolset: the guard cannot run until source/ is regenerated (revisit), no top-down verify pass in the PHASES.md sense, the cross-title drift proposals (match family) not applied, and the 3 ext-op formulas above are wrong in the names' comments and docs."
+checked  = ""
+toolset  = ""
+evidence = ["nobunaga/mesen-labels.toml", "nobunaga/walk-context.json", "nobunaga/tools/na1_regen.py"]
+
+[phase.presentation]
+status   = "partial"
+gate     = "The full vm ladder exists: 1-asm-6502 (16 banks + 4 labeled), 2-asm-vm, 3-c-basic, 4-c (DREAM), plus all_banks.c. Stale against the shared engine: the committed C predates the asset-enum names, banner and F2 fixes (18 files change on regen); the 4 *_labeled.asm are untracked; all_banks.c has no generator since decompile-merged.py went; 2-asm-vm banners say 0 CPU addresses named."
+checked  = ""
+toolset  = ""
+evidence = ["nobunaga/source/README.md", "nobunaga/tools/na1_regen.py", "nobunaga/tools/mesen-labels.py"]
+
+[phase.assets]
+status   = "partial"
+gate     = "Render tools are thin over the library (rows O1-O3): portraits (two systems), strategic map, fief tactical maps from ROM (byte-exact Mino 17, Tanba 55/55), the animation VM against Mesen's own PPU (O3), text. Not done: the committed outputs regenerated after the tools went thin (row O close), and a live-PPU match for each render family as Mappy's assets gate does."
+checked  = ""
+toolset  = ""
+evidence = ["nobunaga/assets/README.md", "nobunaga/appendix-asset-extraction.md"]
+
+[phase.live]
+status   = "partial"
+gate     = "The snap protocol (capture-test.py PRE/POST over SRAM) verified the 21 roster commands and the economy formulas against the running game; run-effect.py runs a handler over loaded SRAM; econ_sim.py validated end to end (May 2026). Not in the gate's form: the game's own routine over live RAM for every input, with a planted fault that fails it."
+checked  = ""
+toolset  = ""
+evidence = ["nobunaga/commands/README.md", "nobunaga/tools/capture-test.py", "nobunaga/tools/run-effect.py", "nobunaga/tools/econ_sim.py"]
+
+# --- revisits: from emu-harness MIGRATION.md (per-project table) ------------------------------
+
+[[revisit]]
+item   = "The 4 source/1-asm-6502/bank_NN_labeled.asm were removed from git by 2d2e7ef and exist only as untracked files, while CONTEXT.md and mesen-labels.py call them committed and --verify checks them. MIGRATION says re-add them (they verify clean); Chris (2026-10-27): they may be legacy artifacts that never carried forward. Decide which: if the ladder wants a labeled 6502 rung, regenerate it with the shared tools (passes.listing / mesen-labels.py --asm) and commit; if not, delete them and drop the references."
+phase  = "presentation"
+source = "emu-harness MIGRATION.md row A3"
+status = "open"
+
+[[revisit]]
+item   = "Regenerate 4-c / 3-c-basic: the engine restores 19 asset-enum names (trigger_cutscene(CUTSCENE_...), call_bank10_entry(AUDIO_...)). source/README.md says decompile_all no longer runs: it does again. v2-corpus.py still loads the long-gone decompile-all.py."
+phase  = "presentation"
+source = "emu-harness MIGRATION.md row F1b"
+status = "open"
+
+[[revisit]]
+item   = "Before the next walk batch: regenerate source/ (py -3.14 tools/na1_regen.py), since the committed C predates the engine's enum names / banner / F2 fixes (18 files change) and every batch's guard would refuse the non-rename diff. source/4-c/all_banks.c has no generator since decompile-merged.py went: regenerate it from the shared engine, or retire it."
+phase  = "presentation"
+source = "emu-harness MIGRATION.md row J"
+status = "open"
+
+[[revisit]]
+item   = "nobunaga/vm-opcodes.toml is a legacy opcode table (the old spec's lengths) still read by analyze-vm-opcodes / gen-opcode-appendix; point them at the shared table and retire it."
+phase  = "recon"
+source = "emu-harness MIGRATION.md row F3"
+status = "closed"
+closed = "2026-10-27: the premise was wrong. No code read nobunaga/vm-opcodes.toml (only stale permission strings in .claude/settings.local.json); it is removed. The real break was gen-opcode-appendix.py, which read na1dream/vm-opcodes-v2.toml, a data file the module alias does not carry: it now reads nobunaga_vm.OPCODES_PATH, and the regenerated appendix (and the site copy via build-site.py, 2 files changed) carries the 4 lengths row F2 measured. analyze-vm-opcodes never read a table. The $A8 text hand-edited into the generated appendix moved into the shared table (emu-harness 47e7f66). Found on the way: the compare-direction probe had been atticked and no longer imported; it is emu-harness gates.compare_probe now (9 titles, 90/90)."
+
+[[revisit]]
+item   = "148 fixed-region ($C000+) names are filed under [prg.bank0] (rng_mod $CA52, min_word, draw_message, cursor_nav_loop, nmi_off, ...), so bank 15's scoped view (its listing, its C, the family report) cannot see them. Move them to [prg.bank15]."
+phase  = "naming"
+source = "emu-harness MIGRATION.md row E family FILLs"
+status = "open"
+
+[[revisit]]
+item   = "fill_bytes $CA97, memchr $CAF0 and 5 more bank-15 routines have no caller and no root (callgraph na1 --orphans --bank 15; 7 on 2026-10-27, incl. unnamed $F007 and $FFFF). Confirm dead, or find the computed call."
+phase  = "discover"
+source = "emu-harness MIGRATION.md row H"
+status = "open"
+
+[[revisit]]
+item   = "The strategic-map notes / memory name $845C -> PT1 tile 91 ($15B0) as the tileset upload; the live capture shows it starts at tile 81 ($83BC). Find the upload call and correct the memory."
+phase  = "assets"
+source = "emu-harness MIGRATION.md row O2"
+status = "open"
+
+[[revisit]]
+item   = "Regenerate the committed render outputs after the tools went thin: animation GIFs / frame sheets, the fief PPU renders and truecolor maps, the strategic contact sheets (stale since 06-17). batch-render-anims / batch-render-fief-maps must run under py -3.14."
+phase  = "assets"
+source = "emu-harness MIGRATION.md row O close"
+status = "open"
+
+[[revisit]]
+item   = "All KOEI NES titles: committed .mlb added 2026-10-23; regenerate after registry edits. Committed 2-asm-vm listings say 'labels: 0 CPU addresses named'; a regeneration shows the real count."
+phase  = "presentation"
+source = "emu-harness MIGRATION.md rows A gap, F1b (all KOEI NES titles)"
+status = "open"
+
+[[revisit]]
+item   = "All KOEI NES titles: cross-title name drift (match family proposes RENAME / READ / FILL across the family). For NA1, the root, read it the other way: where a descendant's independently walked name disagrees with NA1's, the lower artifact decides which is wrong. Apply, then regenerate .mlb / listings / C."
+phase  = "naming"
+source = "emu-harness MIGRATION.md row E family (all KOEI NES titles)"
+status = "open"
+
+# --- revisits: new, from filling this roadmap (2026-10-27) ------------------------------------
+
+[[revisit]]
+item   = "The June 'CERTIFIED' ext-op folds are wrong at the branch edges (ROM run 2026-10-27): scale_div10_capcheck $8327 = ab > 10c ? 0xFFFF : ab/10 (certified ab/10 >= c fails 6/8 edge inputs); math32_3arg $D6B8 returns 0xFFFF for c = 0; math32_2arg $D6DE returns 0 for (0,0). Fix emu-harness vm_decompile._EXTOP_OVERRIDES_NA1 (or let DREAM fold the branch), widen value-oracle's grid to every branch edge, re-run cfg_gate to 499/499, then correct every place the old formulas went (CONTEXT.md glossary, appendix-formulas.md, commands pages, econ_sim.py, vault memory)."
+phase  = "structure"
+source = "cfg_gate + value-oracle edge run, 2026-10-27"
+status = "open"
+
+[[revisit]]
+item   = "NA1 has never been graded: it is every sibling's native_floor oracle, and native_floor crashes on it (KeyError 'oracle'; it should refuse with a message). Grade the root from its descendants: run native_floor / match the other way (siblings' independently walked names vs NA1's), and settle each disagreement at the bytes."
+phase  = "discover"
+source = "build-tool revisit 2026-10-27"
+status = "open"
+
+[[revisit]]
+item   = "titles emulate <title> <0xSUB> [args] (PHASES.md section 4's primitive probe) only builds the VM and prints 'call helpers programmatically'; NA1's value-oracle.oracle_run is the working version. Move oracle_run into the library behind that CLI (an emu-harness fix, found here)."
+phase  = "structure"
+source = "build-tool revisit 2026-10-27"
+status = "open"
+
+[[revisit]]
+item   = "Discover gate never measured on NA1's native code: walker conflicts (NativeMap.conflicts through passes.native.explain), every jump table read to its end, and a Mesen CDL over real play for executed bytes the listings do not decode (Mappy's hole check found 63 B that way)."
+phase  = "discover"
+source = "build-tool revisit 2026-10-27 (PHASES.md section 2 gate)"
+status = "open"
+
+[[revisit]]
+item   = "CONTEXT.md, the read-first file, routes to 6 tools that no longer exist (tools/cpu6502.py, nobunaga_vm.py, vm_decompile.py, decompile-all.py, decompile-merged.py, probe-math32.py: moved to emu-harness or attic). Re-point every quick-route at its emu-harness module or the NA1 shim, and check tools/README.md the same way."
+phase  = "presentation"
+source = "recon revisit 2026-10-27"
+status = "open"
+
+[[revisit]]
+item   = "tools/attic holds other probes that may be guards rather than archaeology, as probe-compare-opcodes was (probe-primitives, probe-math32, ...). Read each: a probe that checks a primitive against the live handler belongs in emu-harness gates; the rest stay."
+phase  = "structure"
+source = "recon revisit 2026-10-27"
+status = "open"
+
+[next]
+session = "discover: its three revisits (grade the root from its descendants; the 7 bank-15 orphans; the never-measured conflicts / jump tables / CDL hole check). Then structure's ext-op fix, the most consequential: the wrong scale_div10_capcheck / math32_3arg also live in na1sim/vmprims.py, and scale_div10_capcheck feeds the arms purchase (bank 1 $B5B1, $B5D8)."

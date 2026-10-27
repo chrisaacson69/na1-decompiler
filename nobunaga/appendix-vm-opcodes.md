@@ -3,7 +3,7 @@ status: active
 ---
 # Appendix — The VM Opcode Reference (canonical)
 
-> The authoritative 256-entry opcode table for the Sea-16 VM. **Generated** by `tools/gen-opcode-appendix.py` from `tools/na1dream/vm-opcodes-v2.toml` (pops/pushes/semantics) fused with `nobunaga_vm.OPCODE_INFO` (execution-validated mnemonic + operand byte-length). Do not hand-edit — edit a source and regenerate. Cited by [ch.6 (VM Disassembler)](./06-vm-disassembler.md) and [ch.8 (VM Instruction Set)](./08-vm-instruction-set.md).
+> The authoritative 256-entry opcode table for the Sea-16 VM. **Generated** by `tools/gen-opcode-appendix.py` from emu-harness `vm/koei/nes/vm-opcodes-v2.toml` (pops/pushes/semantics) fused with `nobunaga_vm.OPCODE_INFO` (execution-validated mnemonic + operand byte-length). Do not hand-edit — edit a source and regenerate. Cited by [ch.6 (VM Disassembler)](./06-vm-disassembler.md) and [ch.8 (VM Instruction Set)](./08-vm-instruction-set.md).
 
 **Legend.** *Operand* = inline bytes consumed after the opcode (`nibble` = the value is the opcode's low 4 bits, $00-$7F). *Stack* = `pops→pushes` on the descending word stack at `vm_sp`. *V* = ✓ when verified against the ROM/emulator. Registers: `regL`=$08, `regR`=$0C, frame base `vm_fp`=$04. Only **$80** and **$CE** are ILLEGAL; opcodes the table leaves undefined are trapped (never emitted by the compiler).
 
@@ -61,7 +61,7 @@ status: active
 | `$AA` | `PUSH_abs` | 2 bytes | 0→1 | ✓ | push word from absolute address |
 | `$AB` | `BYTE_PUSH_abs` | 2 bytes | — | · | — |
 | `$AC` | `CALL_abs` | 2 bytes | — | ✓ | Call subroutine at absolute address |
-| `$AD` | `COPY_imm2` | 4 bytes | — | · | TBD - some 2-word immediate copy |
+| `$AD` | `COPY_imm2` | 2 bytes | — | · | TBD - some 2-word immediate copy |
 | `$AE` | `UNSTACK_imm1` | 1 byte | — | · | sp += byte |
 | `$AF` | `UNSTACK_imm2` | 2 bytes | — | · | sp += word |
 
@@ -132,9 +132,9 @@ status: active
 
 | Opcode | Mnemonic | Operand | Stack | V | Description |
 |---|---|---|---|:-:|---|
-| `$E0` | `SLOADBF` | 1 byte | — | · | — |
-| `$E1` | `ULOADBF` | 1 byte | — | · | — |
-| `$E2` | `STOREBF` | 1 byte | — | · | — |
+| `$E0` | `SLOADBF` | 2 bytes | — | · | — |
+| `$E1` | `ULOADBF` | 2 bytes | — | · | — |
+| `$E2` | `STOREBF` | 2 bytes | — | · | — |
 | `$E3` | `JUMP_back` | 1 byte | — | · | — |
 | `$E4` | `JUMPT_back` | 1 byte | — | · | — |
 | `$E5` | `JUMPF_back` | 1 byte | — | · | — |

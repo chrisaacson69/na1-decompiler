@@ -4,7 +4,8 @@
 Fuses two authoritative sources (run from tools/):
   - na1dream.nobunaga_vm.OPCODE_INFO  -> per-opcode (mnemonic, operand byte length),
     execution-validated (this is the source that CORRECTED the early wrong lengths).
-  - na1dream/vm-opcodes-v2.toml        -> per-group pops/pushes/verified/description.
+  - nobunaga_vm.OPCODES_PATH (emu-harness vm/koei/nes/vm-opcodes-v2.toml)
+                                       -> per-group pops/pushes/verified/description.
 
 Output groups consecutive identical opcodes into ranges. Regenerate after editing
 either source; do NOT hand-edit the appendix.
@@ -12,7 +13,6 @@ either source; do NOT hand-edit the appendix.
 import re, sys
 from pathlib import Path
 
-PKG = Path(__file__).resolve().parent / "na1dream"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from na1dream import nobunaga_vm  # noqa: E402
 
@@ -47,7 +47,7 @@ def parse_toml(path):
         sections[cur][k] = v
     return sections
 
-SEC = parse_toml(PKG / "vm-opcodes-v2.toml")
+SEC = parse_toml(Path(nobunaga_vm.OPCODES_PATH))   # the shared table, in emu-harness
 # Match a toml section to an opcode by MNEMONIC (not address range), so undefined
 # opcodes in the gaps ($91-$9F, $EB-$FF) don't inherit a neighbour's fields.
 SEC_BY_MNEMONIC = {f.get("mnemonic"): f for f in SEC.values() if f.get("mnemonic")}
@@ -110,7 +110,7 @@ out = []
 out.append("---\nstatus: active\n---")
 out.append("# Appendix — The VM Opcode Reference (canonical)\n")
 out.append("> The authoritative 256-entry opcode table for the Sea-16 VM. "
-           "**Generated** by `tools/gen-opcode-appendix.py` from `tools/na1dream/vm-opcodes-v2.toml` "
+           "**Generated** by `tools/gen-opcode-appendix.py` from emu-harness `vm/koei/nes/vm-opcodes-v2.toml` "
            "(pops/pushes/semantics) fused with `nobunaga_vm.OPCODE_INFO` (execution-validated mnemonic + "
            "operand byte-length). Do not hand-edit — edit a source and regenerate. Cited by "
            "[ch.6 (VM Disassembler)](./06-vm-disassembler.md) and [ch.8 (VM Instruction Set)](./08-vm-instruction-set.md).\n")

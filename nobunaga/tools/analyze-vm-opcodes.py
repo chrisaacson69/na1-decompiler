@@ -12,7 +12,8 @@ Modes:
             no_operand/opcode_operand/...). [was opcode-classify.py]
 
 ROM defaults to "Nobunaga's Ambition (USA).nes" in the project root; override with
-a positional path. Output of `dispatch`/`survey` feeds vm-opcodes-v2.toml by hand.
+a positional path. Output of `dispatch`/`survey` once fed the opcode table by hand; the table is emu-harness
+vm/koei/nes/vm-opcodes-v2.toml now, and its lengths are measured by tools/koei_isa_probe.py there.
 """
 
 import argparse
