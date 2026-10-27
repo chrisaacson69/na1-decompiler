@@ -16,22 +16,22 @@ entry   = ["nobunaga/CONTEXT.md", "nobunaga/ROADMAP.md", "nobunaga/README.md", "
 status   = "done"
 gate     = "VM track, turn-based: the 6502 hosts the Sea-16 bytecode VM (fetch-decode at the dispatcher, 256-entry handler table, per-routine vm_entry stubs) and the game logic is bytecode in banks 0, 1, 2, 10, 14, 15; MMC1, 16 x 16K PRG, battery SRAM. The static-runtime join is cheap (bank switches are explicit syscalls). NA1 is the family's root: no sibling fingerprint applies (games.toml: 'NA1 is the oracle, never a native_floor target')."
 checked  = "2026-10-27"
-toolset  = "658c689"
+toolset  = "4ed0685"
 evidence = ["nobunaga/01-boot-and-dispatch.md", "nobunaga/05-bytecode-vm.md", "nobunaga/08-vm-instruction-set.md"]
 
 [phase.recon]
 status   = "done"
-gate     = "window_check na1: 16 banks of 16K, 0 problems. Every bytecode bank tiles: gates.roundtrip --game na1 re-encodes 499 subs, 45,711 code bytes in banks 0/1/2/10/14/15 byte-identical (ROUND-TRIP CLEAN). The shared toolchain's assumptions, re-derived on NA1's own handlers: operand lengths (tools/koei_isa_probe.py na1: 0 live opcodes disagree with the decoder), stack effects (gates.stack_audit: 187/208 gated opcodes confirmed, 21 never emitted in NA1), compare direction and signedness (gates.compare_probe: 10/10; new in this revisit, converted from the atticked NA1 probe; a planted C3/C5 swap fails it). One opcode table, emu-harness's, read through nobunaga_vm.OPCODES_PATH; the legacy nobunaga/vm-opcodes.toml is retired and the appendix regenerates from the shared table (it differs from the June appendix by the 4 lengths row F2 measured: $AD 2, $E0-$E2 2)."
+gate     = "window_check na1: 16 banks of 16K, 0 problems. Every bytecode bank tiles: gates.roundtrip --game na1 re-encodes 499 subs, 45,711 code bytes in banks 0/1/2/10/14/15 byte-identical (ROUND-TRIP CLEAN). The shared toolchain's assumptions, re-derived on NA1's own handlers: operand lengths (tools/koei_isa_probe.py na1: 0 live opcodes disagree with the decoder), stack effects (gates.stack_audit: 187/208 gated opcodes confirmed, 21 never emitted in NA1), compare direction and signedness (gates.compare_probe: 10/10 16-bit and 10/10 32-bit ext-op names; new in this revisit, converted from the atticked NA1 probe; a planted C3/C5 swap fails it). One opcode table, emu-harness's, read through nobunaga_vm.OPCODES_PATH; the legacy nobunaga/vm-opcodes.toml is retired and the appendix regenerates from the shared table (it differs from the June appendix by the 4 lengths row F2 measured: $AD 2, $E0-$E2 2)."
 checked  = "2026-10-27"
-toolset  = "47e7f66"
+toolset  = "4ed0685"
 evidence = ["nobunaga/source/2-asm-vm/", "nobunaga/appendix-vm-opcodes.md", "nobunaga/tools/gen-opcode-appendix.py"]
 
 [phase.discover]
-status   = "partial"
-gate     = "callgraph na1: 792 subs, 2,344 sub-level edges, 5 cross-bank pairs, 1 unresolved call, 0 subs not lifted; 7 bank-15 orphans (no caller, no root: fill_bytes $CA97, memchr $CAF0, clear_rect_lower_right $CCBA, clear_rect_top_strip $CCD1, get_6f5d_or_ff $CCF9, and $F007, $FFFF unnamed). Native floor: n/a by design (NA1 is every sibling's oracle), so NA1's own native subs were named by hand and never graded. Not measured: walker conflicts, every jump table read in full, a CDL over real play for executed-but-undecoded bytes."
+status   = "done"
+gate     = "tools/native_discover.py (PASS; exit 1 on an unexplained conflict or a hole). Fixed bank: the 135 bytecode subs' bodies masked as data (extents from the round-trip encoder) with the VM tables, then NativeMap.reach from native_floor's seeds and subs plus what they missed: 2 natives only bytecode calls (syscall_dispatch $F226, sqrt_int $CBCD), the 23 syscall-table JMP entries ($C173), and $F23C, the syscall RTI continuation (syscall_dispatch pushes $F23C, PHP, JMP ($FFFE); only RTI reaches it). 335 native routines, 5,539 code bytes. Conflicts 2, both explained: $EF92/$EF93, the illegal-opcode BRK traps. Phantoms dropped: $F007 (JSR-census hit from the operand bytes of lda $0720 / beq), $FFFF (data 20 FF FF). Dispatch: 5 JMP (ind) sites, all the VM's and kernel's own (vm_dispatch via the split handler tables, ext_op_dispatch, vm_return, syscall_dispatch via the IRQ vector, irq_handler into the syscall table). Holes: 14 Mesen traces, 30.3 M fixed-bank steps, 1,928 distinct PCs = 1,856 walk instruction starts + 72 bytecode stubs, 0 holes. Planted fault (no $F23C seed): 6 holes at $F23C-$F245, 3,133 executions each. Graded: native_floor na1 --oracle ro3k (63 'differs', nearly all the fuzzy matcher collapsing short handlers); against the bytes, 157/157 vm_op_XX labels sit at their opcode's handler and 10/10 cmp32 names measure right on the live handler (gates.compare_probe); one NA1 name is wrong ($EF92)."
 checked  = "2026-10-27"
-toolset  = "658c689"
-evidence = ["nobunaga/tools/native-call-index.py"]
+toolset  = "4ed0685"
+evidence = ["nobunaga/tools/native_discover.py", "nobunaga/traces/README.md"]
 
 [phase.data]
 status   = "partial"
@@ -78,7 +78,7 @@ evidence = ["nobunaga/commands/README.md", "nobunaga/tools/capture-test.py", "no
 # --- revisits: from emu-harness MIGRATION.md (per-project table) ------------------------------
 
 [[revisit]]
-item   = "The 4 source/1-asm-6502/bank_NN_labeled.asm were removed from git by 2d2e7ef and exist only as untracked files, while CONTEXT.md and mesen-labels.py call them committed and --verify checks them. MIGRATION says re-add them (they verify clean); Chris (2026-10-27): they may be legacy artifacts that never carried forward. Decide which: if the ladder wants a labeled 6502 rung, regenerate it with the shared tools (passes.listing / mesen-labels.py --asm) and commit; if not, delete them and drop the references."
+item   = "The 4 source/1-asm-6502/bank_NN_labeled.asm were removed from git by 2d2e7ef and exist only as untracked files, while CONTEXT.md and mesen-labels.py call them committed and --verify checks them. MIGRATION says re-add them (they verify clean); Chris (2026-10-27): a gap, not a relic. The KOEI titles are part 6502, part VM, and the VM side is documented well while the 6502 side is not. The labeled 6502 rung stays and is regenerated by the shared tools (passes.listing), with one design change to try: bytecode regions shown as a pointer into the VM listing (sub name + range) instead of large .byte sections, so the 6502 listing reads as the native program. Discover's native work feeds it."
 phase  = "presentation"
 source = "emu-harness MIGRATION.md row A3"
 status = "open"
@@ -112,7 +112,8 @@ status = "open"
 item   = "fill_bytes $CA97, memchr $CAF0 and 5 more bank-15 routines have no caller and no root (callgraph na1 --orphans --bank 15; 7 on 2026-10-27, incl. unnamed $F007 and $FFFF). Confirm dead, or find the computed call."
 phase  = "discover"
 source = "emu-harness MIGRATION.md row H"
-status = "open"
+status = "closed"
+closed = "2026-10-27: 5 are dead bytecode library subs (fill_bytes, memchr, clear_rect_lower_right, clear_rect_top_strip, get_6f5d_or_ff): 0 executions in 30.3 M traced steps, and no bank holds their address after a call opcode. $F007 and $FFFF are not routines: JSR-census phantoms from operand / data bytes (native_discover.py drops them). The census weakness is per-title and logged for the toolset (MIGRATION.md)."
 
 [[revisit]]
 item   = "The strategic-map notes / memory name $845C -> PT1 tile 91 ($15B0) as the tileset upload; the live capture shows it starts at tile 81 ($83BC). Find the upload call and correct the memory."
@@ -150,7 +151,8 @@ status = "open"
 item   = "NA1 has never been graded: it is every sibling's native_floor oracle, and native_floor crashes on it (KeyError 'oracle'; it should refuse with a message). Grade the root from its descendants: run native_floor / match the other way (siblings' independently walked names vs NA1's), and settle each disagreement at the bytes."
 phase  = "discover"
 source = "build-tool revisit 2026-10-27"
-status = "open"
+status = "closed"
+closed = "2026-10-27: native_floor --oracle (emu-harness 4ed0685) graded NA1 by ro3k. The bytes decide: 157/157 vm_op_XX names at their handler-table entry, 10/10 cmp32 names on the live handler; NA1 $EF92 is misnamed (naming revisit). Going the other way it found 10 wrong compare names in na2/bk/GemFire, inherited from NA1 by signature, and a wrong na2 ext-op table address (logged in MIGRATION.md)."
 
 [[revisit]]
 item   = "titles emulate <title> <0xSUB> [args] (PHASES.md section 4's primitive probe) only builds the VM and prints 'call helpers programmatically'; NA1's value-oracle.oracle_run is the working version. Move oracle_run into the library behind that CLI (an emu-harness fix, found here)."
@@ -162,7 +164,8 @@ status = "open"
 item   = "Discover gate never measured on NA1's native code: walker conflicts (NativeMap.conflicts through passes.native.explain), every jump table read to its end, and a Mesen CDL over real play for executed bytes the listings do not decode (Mappy's hole check found 63 B that way)."
 phase  = "discover"
 source = "build-tool revisit 2026-10-27 (PHASES.md section 2 gate)"
-status = "open"
+status = "closed"
+closed = "2026-10-27: measured, tools/native_discover.py: 2 conflicts both explained, 5 dispatch sites all the VM's own, 0 holes over 30.3 M traced steps; it found the missed syscall RTI continuation $F23C and the bytecode-only natives."
 
 [[revisit]]
 item   = "CONTEXT.md, the read-first file, routes to 6 tools that no longer exist (tools/cpu6502.py, nobunaga_vm.py, vm_decompile.py, decompile-all.py, decompile-merged.py, probe-math32.py: moved to emu-harness or attic). Re-point every quick-route at its emu-harness module or the NA1 shim, and check tools/README.md the same way."
@@ -176,5 +179,11 @@ phase  = "structure"
 source = "recon revisit 2026-10-27"
 status = "open"
 
+[[revisit]]
+item   = "Names from discover: $EF92 vm_op_trigger_syscall_shared is the illegal-opcode BRK trap (rename, e.g. vm_illegal_opcode_brk; $EF93 vm_op_FF likewise); label $F23C (syscall_return, the RTI continuation) and the syscall table entries; mark the 5 dead bytecode subs dead in their comments; drop any label at $F007 / $FFFF."
+phase  = "naming"
+source = "discover 2026-10-27"
+status = "open"
+
 [next]
-session = "discover: its three revisits (grade the root from its descendants; the 7 bank-15 orphans; the never-measured conflicts / jump tables / CDL hole check). Then structure's ext-op fix, the most consequential: the wrong scale_div10_capcheck / math32_3arg also live in na1sim/vmprims.py, and scale_div10_capcheck feeds the arms purchase (bank 1 $B5B1, $B5D8)."
+session = "data: status starts there (partial): the 20 hot unnamed RAM/SRAM addresses and ~19 referenced strings, by the oracle lanes. Then structure, whose ext-op fix is the most consequential open item (the wrong scale_div10_capcheck / math32_3arg also live in na1sim/vmprims.py; scale_div10_capcheck feeds the arms purchase, bank 1 $B5B1 / $B5D8)."
