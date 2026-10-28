@@ -2541,6 +2541,9 @@ local10 = { name = "pass_marker", comment = "[MED] Init $FF @$A23E; ==$FF gates 
 [vars.bank0."0x9621"]
 # reassign_daimyo24_fiefs_to_owner50
 "fp-5" = { name = "saved_ai_turn_flags", comment = "[HIGH] byte save of ai_turn_flags ($6DA1) at $9673, OR'd |4 during message block, restored back to $6DA1 at $969F" }
+# far-frame slots (var-walk-apply --merge)
+local10 = { name = "saved_audio_wait_gate", comment = "[HIGH] audio_wait_gate saved @ $966C before forcing 1 @ $9677; restored @ $9698 after trigger_cutscene" }
+local11 = { name = "fief", comment = "[HIGH] loop index < scenario_fief_count @ $965E; fief_owner, fief_is_daimyo_capital, fief_to_daimyo_map=50, redraw_fief_on_map" }
 
 [vars.bank0."0x8DE1"]
 # dedup_owners_to_6f4f
@@ -4271,4 +4274,60 @@ local11 = { name = "uprising_msg", comment = "[MED] Stores the result of select_
 [vars.bank0."0x8E63"]
 # process_fiefs_with_state_ff
 local11 = { name = "fief", comment = "[HIGH] Loop idx 0..scenario_fief_count (UCMPLT $8E94); pushed to province_state_is_FF $8E6C, stored to selected_province_idx $8E75" }
+
+# --- bank-00 var-walk far-frame batch (--merge, new sections) (9 subs) ---
+[vars.bank0."0x98A3"]
+# set_fief_ownership_record
+arg1 = { name = "daimyo", comment = "[HIGH] LOADL_quick 12 BYTE_POPSTORE to fief_to_daimyo_map[arg4] @ $98AE; callers push 51 / caller local14" }
+arg2 = { name = "is_capital", comment = "[HIGH] LOADL_quick 13 BYTE_POPSTORE to fief_is_daimyo_capital[arg4] @ $98B6; callers push 0 / caller local11" }
+arg3 = { name = "ai_state", comment = "[HIGH] LOADL_quick 14 BYTE_POPSTORE to province_ai_state[arg4] @ $98BE; callers push province_ai_state[..] byte or 0" }
+arg4 = { name = "fief", comment = "[HIGH] LOADL_quick 15 indexes $6E15/$6DA2/$6CF7 per-fief tables; PUSH_quick 15 to redraw_fief_on_map @ $98C0" }
+
+[vars.bank0."0x9879"]
+# mark_fief_list_entry_removed
+arg1 = { name = "fief", comment = "[HIGH] BYTE_LOADL_far $000B (arg1 low byte) CMPEQ vs list entry @ $9884; caller pushes BYTE_DEREF fief byte" }
+local11 = { name = "list_ptr", comment = "[HIGH] byte ptr from fief_index_list $6F89, INC to $FF terminator; matching entry BYTE_POPSTORE $C8 @ $988F" }
+
+[vars.bank0."0x9614"]
+# append_candidate_priority1
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 as arg1 of append_candidate_pair @ $961B; caller pushes BYTE_DEREF list entry last @ $97A5" }
+arg2 = { name = "idx", comment = "[HIGH] PUSH_quick 13 as arg2 of append_candidate_pair @ $961A; caller pushes post-inc count-1 @ $97A0-A4" }
+
+[vars.bank0."0x9595"]
+# province_conquest_roll_predicate
+arg1 = { name = "fief", comment = "[HIGH] idx*26+$7001 @ $95AB; pushed to fief_to_daimyo_record_addr @ $95BB; printed arg1+1; caller pushes list byte" }
+local9 = { name = "rebel_men", comment = "[HIGH] fief->men - local10 (SUB @ $95F4); printed as rebels (arg3 of draw_message $95F6); compared vs local10" }
+local10 = { name = "loyal_men", comment = "[HIGH] pct_op(men, rng+charisma+morale pct) @ $95EA; printed as loyals; returns loyal<rebels (tie = coin flip)" }
+local11 = { name = "fief_rec", comment = "[HIGH] &province_table_live[arg1] @ $95B3; +18 morale DEREF @ $95D1, +16 men DEREF @ $95E6/$95F0" }
+
+[vars.bank0."0x9558"]
+# avg_province_wealth_over_fiefs
+local8 = { name = "fief", comment = "[HIGH] loop index < scenario_fief_count ($9589); idx*26+$700F = province_table_live[fief].wealth @ $9566" }
+local9 = { name = "wealth", comment = "[HIGH] DEREF $700F+fief*26 (wealth@+14) @ $956E; split into /count and %count" }
+local10 = { name = "remainder_sum", comment = "[HIGH] accumulates wealth UMOD fief_count @ $957D-81; final /count added to local11 @ $958D-93" }
+local11 = { name = "quotient_sum", comment = "[HIGH] accumulates wealth UDIV fief_count @ $9574-78; added to remainder_sum/count for the return @ $9592" }
+
+[vars.bank0."0x952F"]
+# avg_fief_tax_rate
+local10 = { name = "fief", comment = "[HIGH] loop index 0..scenario_fief_count (UCMPLT @ $954B); indexes fief_tax_rate $6D2D @ $953A" }
+local11 = { name = "tax_total", comment = "[MED] accumulates fief_tax_rate[fief] @ $9541-43; UDIV by scenario_fief_count in place @ $9554 and returned (sum -> average)" }
+
+[vars.bank0."0x94B1"]
+# announce_seasonal_event
+arg1 = { name = "event_kind", comment = "[HIGH] SWITCH selector @ $94B7/$94DC: 1=typhoon msgs, 2=plague msgs; caller pushes ai_planner_event_handler_select $6F7B" }
+local10 = { name = "fief", comment = "[HIGH] province_candidate_list[local11] byte @ $9526; pushed to get_province_ai_state, daimyo_name_width; printed as local10+1" }
+local11 = { name = "list_idx", comment = "[HIGH] init 0 @ $94CF; post-inc index into province_candidate_list $7BAD @ $951D; loop ends on $FF" }
+
+[vars.bank0."0x946D"]
+# get_fief_daimyo_charisma
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 -> fief_to_daimyo_record_addr @ $9473 (+4 charisma); callers push fief_index_list byte / fief args" }
+
+[vars.bank0."0x8FF8"]
+# collect_high_loyalty_provinces_to_candidate_list
+local5 = { name = "fief", comment = "[HIGH] &province_table_live[sel] ($9011-$9016); DEREF gold pushed w/ local5 to record_apply_two_grows $904D, then *local5=0 $9053; +12 -> local7" }
+local6 = { name = "loyalty_before", comment = "[HIGH] *(local7) loyalty snapshot at $901D before giveaway; pushed as arg1 to stat_above_threshold_and_gap_predicate $905E vs fresh *local7" }
+local7 = { name = "loyalty_ptr", comment = "[HIGH] local5+12 (ADD_qimm 12 @ $9019) = &fief->loyalty; DEREF at $901C (snapshot) and $905C (after giveaway)" }
+local8 = { name = "fief_rec", comment = "[MED] same &province_table_live[sel] as local5 (STORE 5 then STORE 8 @ $9016-17); only DEREF'd at $901F (gold@+0) as JUMPF test" }
+local9 = { name = "candidate_count", comment = "[MED] init 0 @ $9002; INC/STORE/DEC then pushed as arg2 idx to append_candidate_zero_priority ($9070, $908A); sub returns right after" }
+local11 = { name = "list_ptr", comment = "[HIGH] byte ptr init $7BAD @ $8FFD; post-inc + BYTE_DEREF @ $90B6 -> selected_province_idx; loop until $FF terminator" }
 
