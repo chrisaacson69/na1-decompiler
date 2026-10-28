@@ -312,7 +312,7 @@ L_860E:
     ui_window_col = saved_window_col;    // $860F
 L_8612:
     rolled_value = (rng_mod(50) + 60);    // $861A
-    draw_message(msg_fmt__3d, (rng_mod(50) + 60));    // $861F
+    draw_message(msg_fmt__3d, rolled_value);    // $861F
     if (!(poll_input())) goto L_860E;    // $8626
     return rolled_value;    // $862A
 }
@@ -337,7 +337,7 @@ L_865E:
     syscall16_sram_wrap(3, scenario_src, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // $866D
     message_display(msg_watch_other_daimyos_battle);    // $8674
     ui_confirm_flag_6e7d = prompt_y_n();    // $867B
-    return prompt_y_n();    // $867E
+    return ui_confirm_flag_6e7d;    // $867E
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $867F
@@ -380,7 +380,7 @@ L_86ED:
 L_86F1:
     render_map_section(phi_86ed_0);    // $86ED
     fief = number_input(1, scenario_fief_count);    // $86F9
-    if ((number_input(1, scenario_fief_count) <= 0)) goto L_86BA;    // $86FC
+    if ((fief <= 0)) goto L_86BA;    // $86FC
     fief = (fief - 1);    // $8701
     if ((province_ai_state[fief] == 5)) goto L_8734;    // $8709
     message_display(msg_is);    // $870F
@@ -544,7 +544,7 @@ L_8A13:
 L_8A1F:
     message_display(msg_how_many_players);    // $8A22
     newgame_player_count = number_input(1, 8);    // $8A2C
-    if (!(number_input(1, 8))) goto L_8A1F;    // $8A2F
+    if (!(newgame_player_count)) goto L_8A1F;    // $8A2F
     i = 0;    // $8A33
 L_8A34:
     loan_rate[i] = (rng_mod(10) + 8);    // $8A41
@@ -577,7 +577,7 @@ L_8ABC:
 L_8AC9:
     message_display(msg_please_select_skill_level);    // $8ACC
     const_two = number_input(1, 5);    // $8AD6
-    if (!(number_input(1, 5))) goto L_8AC9;    // $8AD9
+    if (!(const_two)) goto L_8AC9;    // $8AD9
     message_display(msg_is_everything_ok_so_far);    // $8ADF
     if (prompt_y_n()) goto L_8B44;    // $8AE6
     repaint_screen();    // $8AE9
@@ -1066,7 +1066,7 @@ word check_and_process_daimyo_natural_death(word fief) {
     if (!(phi_ret_91fc)) goto L_91FC;    // $919F
     daimyo = fief_owner(fief);    // $91A7
     death_cause = check_daimyo_natural_death(daimyo);    // $91AD
-    phi_ret_91fc = check_daimyo_natural_death(daimyo);    // $91AE
+    phi_ret_91fc = death_cause;    // $91AE
     if (!(phi_ret_91fc)) goto L_91FC;    // $91AE
     if ((death_cause != 1)) goto L_91BE;    // $91B4
     if (!(current_season)) goto L_91BE;    // $91BA
@@ -1134,7 +1134,7 @@ L_9279:
     arms_buy_price_rate = (calc_year_scaled_random_value() / 2);    // $9281
     gold_men_hire_rate = pct_op(calc_year_scaled_random_value(), 70);    // $928E
     hire_gold_rate = (((rng_mod(101) + ((current_game_year - 1560) * 10)) + 4) / 4);    // $92A5
-    return (((rng_mod(101) + ((current_game_year - 1560) * 10)) + 4) / 4);    // $92A8
+    return hire_gold_rate;    // $92A8
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $92A9
@@ -1687,7 +1687,7 @@ L_9A9E:
 
 word driver_diplomacy_gold_transfer(void) {
     gold_amount = prompt_diplomacy_pact();    // $9AB4
-    phi_ret_9b11 = prompt_diplomacy_pact();    // $9AB5
+    phi_ret_9b11 = gold_amount;    // $9AB5
     if (!(phi_ret_9b11)) goto L_9B11;    // $9AB5
     open_message_window();    // $9AB8
     daimyo_name_width(selected_province_idx);    // $9ABE
@@ -1746,7 +1746,7 @@ L_9B7E:
 
 word marry_transfer_gold_between_provinces(void) {
     gold_amount = marriage_pact_handler();    // $9B87
-    phi_ret_9be4 = marriage_pact_handler();    // $9B88
+    phi_ret_9be4 = gold_amount;    // $9B88
     if (!(phi_ret_9be4)) goto L_9BE4;    // $9B88
     open_message_window();    // $9B8B
     daimyo_name_width(selected_province_idx);    // $9B91
@@ -1873,7 +1873,7 @@ L_9D11:
     fief->output = pct_op(fief->output, (rng_mod(50) + 50));    // $9D46
     if (!(fief_is_daimyo_capital[*(byte*)(fief_list_ptr)])) goto L_9D79;    // $9D4E
     daimyo = fief_to_daimyo_record_addr(*(byte*)(fief_list_ptr));    // $9D5F
-    deduct_byte_at(&fief_to_daimyo_record_addr(*(byte*)(fief_list_ptr))->health, (rng_mod(9) + 1));    // $9D62
+    deduct_byte_at((daimyo + 1), (rng_mod(9) + 1));    // $9D62
     daimyo_weakness_flag[fief_owner(*(byte*)(fief_list_ptr))] = (*(byte*)((daimyo + 1)) <= 50);    // $9D78
 L_9D79:
     fief_list_ptr = (fief_list_ptr + 1);    // $9D7A
@@ -2146,7 +2146,7 @@ L_A15A:
 word consume_province_army_upkeep(word fief) {
     upkeep = (fief->men / 2);    // $A166
     affordable = min_word(*(word*)(fief), fief->rice);    // $A172
-    if (!((min_word(*(word*)(fief), fief->rice) < upkeep))) goto L_A181;    // $A175
+    if ((affordable >= upkeep)) goto L_A181;    // $A175
     upkeep = affordable;    // $A179
     fief->men = (affordable << 1);    // $A180
 L_A181:
@@ -2443,23 +2443,23 @@ L_A616:
 L_A62C:
     if (!((fief_to_daimyo_record_addr(battle_defending_province)->charisma < (rng_mod(const_two) + 70)))) goto L_A661;    // $A641
     men_transfer = pct_op(*(word*)(local9), rng_mod(50));    // $A652
-    *(word*)(output_ptr) = (*(word*)(output_ptr) + pct_op(*(word*)(local9), rng_mod(50)));    // $A659
+    *(word*)(output_ptr) = (*(word*)(output_ptr) + men_transfer);    // $A659
     *(word*)(local9) = (*(word*)(local9) - men_transfer);    // $A660
 L_A661:
     war_attacker_men = *(word*)(output_ptr);    // $A663
 L_A666:
     local9 = &fief->rice;    // $A668
     war_attacker_rice = pct_op(*(word*)(local9), (rng_mod(31) + 50));    // $A679
-    *(word*)(local9) = (*(word*)(local9) - pct_op(*(word*)(local9), (rng_mod(31) + 50)));    // $A682
+    *(word*)(local9) = (*(word*)(local9) - war_attacker_rice);    // $A682
     goto L_A6B8;    // $A683
 L_A686:
     if (!((*(word*)(local9) > 20))) goto L_A6AB;    // $A68B
     war_attacker_men = pct_op(*(word*)(local9), (rng_mod(70) + 20));    // $A69E
-    *(word*)(local9) = (*(word*)(local9) - pct_op(*(word*)(local9), (rng_mod(70) + 20)));    // $A6A7
+    *(word*)(local9) = (*(word*)(local9) - war_attacker_men);    // $A6A7
     goto L_A666;    // $A6A8
 L_A6AB:
     war_attacker_men = (rng_mod(10) + 25);    // $A6B2
-    war_attacker_rice = (rng_mod(10) + 25);    // $A6B5
+    war_attacker_rice = war_attacker_men;    // $A6B5
 L_A6B8:
     war_attacker_gold = 0;    // $A6B9
     ai_turn_flags = (ai_turn_flags | (is_uprising ? 64 : 32));    // $A6CC

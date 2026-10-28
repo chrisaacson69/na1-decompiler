@@ -43,7 +43,7 @@ L_8059:
     set_cursor(window_col, cursor_row);    // $805B
     list_ptr = eligible_fief_list;    // $8060
     picked_fief = select_province_by_cursor(1, scenario_fief_count);    // $8069
-    if (select_province_by_cursor(1, scenario_fief_count)) goto L_8088;    // $806A
+    if (picked_fief) goto L_8088;    // $806A
     return 0;    // $806E
 L_806F:
     if (!((*(byte*)(list_ptr) == (picked_fief - 1)))) goto L_8085;    // $8076
@@ -309,7 +309,7 @@ word effect_view_a(word fief) {
     cap_fief_stats(fief);    // $8471
     set_cursor(10, 5);    // $8477
     is_owned = (province_state_is_FF(fief) ? 0 : 1);    // $8488
-    if (!((province_state_is_FF(fief) ? 0 : 1))) goto L_84C3;    // $8489
+    if (!(is_owned)) goto L_84C3;    // $8489
     is_capital = fief_is_daimyo_capital[fief];    // $8492
     if (get_province_ai_state(fief)) {    // $8498
     dsel_84a9 = is_capital;    // $84A9
@@ -926,7 +926,7 @@ word resolve_siege_assault_outcome(void) {
     defender_strength = ((((fief_is_daimyo_capital[battle_defending_province] + 2) * *(word*)(defender_men_ptr)) + (((*(word*)(defender_arms_ptr) / 2) + (*(word*)(defender_skill_ptr) / 2)) << 1)) + *(word*)(defender_morale_ptr));    // $8EA4
     local5 = fief_to_daimyo_record_addr(battle_defending_province);    // $8EAC
     attacker_daimyo = selected_province_daimyo_record();    // $8EB3
-    if (!((selected_province_daimyo_record()->drive < fief_to_daimyo_record_addr(battle_defending_province)->drive))) goto L_8ECB;    // $8EB8
+    if (!((*(byte*)((attacker_daimyo + 2)) < *(byte*)((local5 + 2))))) goto L_8ECB;    // $8EB8
     defender_strength = (defender_strength + pct_op(*(word*)(defender_morale_ptr), 10));    // $8EC7
     goto L_8ED7;    // $8EC8
 L_8ECB:
@@ -1083,12 +1083,12 @@ word decrement_byte_at(word stat_ptr) {
 
 word ninja_mission_resolve_vs_defender(word ninja_units) {
     attacker_daimyo = selected_province_daimyo_record();    // $9195
-    attacker_charisma_ptr = &selected_province_daimyo_record()->charisma;    // $9197
+    attacker_charisma_ptr = (attacker_daimyo + 4);    // $9197
     if (get_province_ai_state(battle_defending_province)) goto L_92E3;    // $919F
     is_counterattack = 0;    // $91A3
     victim_men_ptr = &province_table_live[battle_defending_province].men;    // $91AE
     defender_daimyo = fief_to_daimyo_record_addr(battle_defending_province);    // $91B6
-    victim_health_ptr = &fief_to_daimyo_record_addr(battle_defending_province)->health;    // $91B8
+    victim_health_ptr = (defender_daimyo + 1);    // $91B8
     victim_luck_ptr = (victim_health_ptr + 2);    // $91BB
     victim_charisma_ptr = (victim_luck_ptr + 1);    // $91BE
     if (!(((*(byte*)(victim_charisma_ptr) + *(byte*)((defender_daimyo + 5))) <= (*(byte*)(attacker_charisma_ptr) + *(byte*)((attacker_daimyo + 5)))))) goto L_92E3;    // $91D2
@@ -1104,7 +1104,7 @@ L_9213:
     hit_landed = 1;    // $9214
     if ((*(word*)(victim_men_ptr) <= (rng_mod(10) + 1))) {    // $9220
     hit_pct = (rng_mod(*(byte*)(victim_charisma_ptr)) + 50);    // $922C
-    if (((rng_mod(*(byte*)(victim_charisma_ptr)) + 50) > 100)) {    // $9230
+    if ((hit_pct > 100)) {    // $9230
     hit_pct = 100;    // $9235
     }
 L_9236:
@@ -1199,7 +1199,7 @@ word effect_war_combat_prep_c(word fief) {
 
 word effect_war_combat_prep_d(word fief) {
     is_too_weak = fief_owner_weakness(fief);    // $9372
-    if (fief_owner_weakness(fief)) {    // $9373
+    if (is_too_weak) {    // $9373
     redraw_window(msg_lord_you_are_too_weak_for_batt);    // $9379
     }
 L_9380:
@@ -1413,7 +1413,7 @@ word driver_move(void) {
     if (province_select_helper(1, deduped_owner_list)) {    // $96F5
     redraw_window(msg_move_where);    // $96FB
     battle_defending_province = province_select_prompt(deduped_owner_list);    // $9706
-    if (province_select_prompt(deduped_owner_list)) {    // $9709
+    if (battle_defending_province) {    // $9709
     battle_defending_province = (battle_defending_province - 1);    // $9710
     open_message_window();    // $9713
     dest_fief = &province_table_live[battle_defending_province];    // $9720
@@ -1422,7 +1422,7 @@ word driver_move(void) {
     if (!(max_movable)) goto L_97B5;    // $9743
     redraw_window(msg_how_many_men);    // $9749
     men_to_move = number_input(1, max_movable);    // $9753
-    if (number_input(1, max_movable)) {    // $9754
+    if (men_to_move) {    // $9754
     if (fief_is_daimyo_capital[selected_province_idx]) {    // $975F
     if (effect_war_combat_prep_d(selected_province_idx)) goto L_9797;    // $9769
     redraw_window(msg_will_you_lead_them_personally);    // $976F
@@ -1518,7 +1518,7 @@ word driver_war(void) {
     if (province_select_helper(2, deduped_owner_list)) {    // $989F
     redraw_window(msg_attack_where);    // $98A5
     battle_defending_province = province_select_prompt(deduped_owner_list);    // $98B0
-    if (province_select_prompt(deduped_owner_list)) {    // $98B3
+    if (battle_defending_province) {    // $98B3
     open_message_window();    // $98B6
     battle_defending_province = (battle_defending_province - 1);    // $98BD
     if (fief_list_parallel_lookup(battle_defending_province, &relation_flags)) {    // $98CB
@@ -1537,10 +1537,10 @@ L_98DA:
 L_9906:
     redraw_window(driver_war_how_many_men);    // $9909
     war_attacker_men = number_input(1, max_men);    // $9913
-    if (number_input(1, max_men)) {    // $9916
+    if (war_attacker_men) {    // $9916
     message_display(msg_how_much_rice_will_they_take);    // $991C
     war_attacker_rice = number_input(1, min_word(attacker_rec->rice, war_attacker_men));    // $9931
-    if (number_input(1, min_word(attacker_rec->rice, war_attacker_men))) {    // $9934
+    if (war_attacker_rice) {    // $9934
     war_side_state_flag = 0;    // $9938
     if (fief_is_daimyo_capital[attacker_fief]) {    // $9941
     open_message_window();    // $9944
@@ -1583,7 +1583,7 @@ word driver_tax(void) {
     draw_message(msg_tax_is_d_enter_new_tax, *(byte*)(tax_rate_ptr));    // $99C2
     battle_defending_province = selected_province_idx;    // $99C9
     local5 = number_input(1, (defender_owner_is_honganji() ? 30 : 100));    // $99DF
-    if (number_input(1, (defender_owner_is_honganji() ? 30 : 100))) {    // $99E0
+    if (local5) {    // $99E0
     if ((*(byte*)(tax_rate_ptr) != local5)) {    // $99E7
     if ((local5 > *(byte*)(tax_rate_ptr))) {    // $99F0
     phi_9a08_0 = msg_the_peasants_are_protesting;    // $99FC
@@ -1623,7 +1623,7 @@ word driver_send(void) {
     if (province_select_helper(4, fief_index_list)) {    // $9A6F
     redraw_window(msg_send_where);    // $9A75
     target_idx = province_select_prompt(fief_index_list);    // $9A80
-    if (province_select_prompt(fief_index_list)) {    // $9A81
+    if (target_idx) {    // $9A81
     target_idx = (target_idx - 1);    // $9A86
     fief = &province_table_live[target_idx];    // $9A8E
     target_ceiling = province_table_live[target_idx].header;    // $9A92
@@ -1631,7 +1631,7 @@ word driver_send(void) {
     rice_amount = 0;    // $9A95
     open_message_window();    // $9A96
     local9 = effect_war_combat_prep_a(selected_province_idx);    // $9AA0
-    if (effect_war_combat_prep_a(selected_province_idx)) {    // $9AA1
+    if (local9) {    // $9AA1
     local9 = effect_send(target_ceiling, *(word*)((fief + 6)), local9);    // $9AAE
     if (!(local9)) goto L_9AD9;    // $9AAF
     redraw_window(msg_rice);    // $9AB5
@@ -1650,7 +1650,7 @@ L_9AD9:
 L_9AE3:
     confirm_prompt();    // $9AE0
     local9 = effect_war_combat_prep_c(selected_province_idx);    // $9AEA
-    if (effect_war_combat_prep_c(selected_province_idx)) {    // $9AEB
+    if (local9) {    // $9AEB
     local9 = effect_send(target_ceiling, *(word*)(fief), local9);    // $9AF7
     if (!(local9)) goto L_9B22;    // $9AF8
     redraw_window(msg_gold);    // $9AFE
@@ -1715,7 +1715,7 @@ L_9BCF:
     message_display(str_dams_value_label);    // $9BED
     draw_message(msg_s_is_d_spend_how_much_on_it, msg_dams_value, *(word*)(dams_ptr));    // $9BFA
     local9 = number_input(1, max_spend);    // $9C04
-    if (number_input(1, max_spend)) {    // $9C05
+    if (local9) {    // $9C05
     fief->gold = (fief->gold - local9);    // $9C0E
     local9 = ((local9 << 1) / effect_dam(fief));    // $9C19
     if (local9) goto L_9C20;    // $9C1A
@@ -1747,13 +1747,13 @@ word driver_pact(void) {
     if (!(province_select_helper(6, fief_index_list))) goto L_9D3B;    // $9C6E
     redraw_window(msg_which_fief);    // $9C74
     battle_defending_province = province_select_prompt(fief_index_list);    // $9C7F
-    if (!(province_select_prompt(fief_index_list))) goto L_9D39;    // $9C82
+    if (!(battle_defending_province)) goto L_9D39;    // $9C82
     battle_defending_province = (battle_defending_province - 1);    // $9C89
     selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive - 1);    // $9C93
     acted = 1;    // $9C95
     open_message_window();    // $9C96
     pact_price = prompt_diplomacy_pact();    // $9C9C
-    if (!(prompt_diplomacy_pact())) goto L_9D19;    // $9C9D
+    if (!(pact_price)) goto L_9D19;    // $9C9D
     draw_message(msg_lord_s_s_wants_d_gold_pay, daimyo_name_table[selected_province_owner()], daimyo_name_table[fief_owner(battle_defending_province)], pact_price);    // $9CBC
     if (!(prompt_y_n())) goto L_9D05;    // $9CC3
     if (!((fief->gold < pact_price))) goto L_9CD7;    // $9CCA
@@ -1801,7 +1801,7 @@ L_9D66:
     message_display(str_output_label_alias2);    // $9D6E
     draw_message(msg_s_is_d_spend_how_much_on_it, msg_output, fief->output);    // $9D7C
     local10 = number_input(1, fief->gold);    // $9D88
-    if (number_input(1, fief->gold)) {    // $9D89
+    if (local10) {    // $9D89
     fief->gold = (fief->gold - local10);    // $9D92
     local10 = effect_grow(fief, local10);    // $9D99
     trigger_cutscene(CUTSCENE_GROW);    // $9D9B
@@ -1831,13 +1831,13 @@ word driver_marry(void) {
     if (!(province_select_helper(8, fief_index_list))) goto L_9EFA;    // $9DEA
     redraw_window(msg_which_fief);    // $9DF0
     battle_defending_province = province_select_prompt(fief_index_list);    // $9DFB
-    if (province_select_prompt(fief_index_list)) {    // $9DFE
+    if (battle_defending_province) {    // $9DFE
     *(byte*)((daimyo + 2)) = (*(byte*)((daimyo + 2)) - 1);    // $9E06
     turn_used = 1;    // $9E08
     battle_defending_province = (battle_defending_province - 1);    // $9E0D
     open_message_window();    // $9E10
     gold_demand = marriage_pact_handler();    // $9E16
-    if (!(marriage_pact_handler())) goto L_9EC6;    // $9E17
+    if (!(gold_demand)) goto L_9EC6;    // $9E17
     active_province_idx_copy = (rng_mod(22) + 53);    // $9E22
     palette_swap(1);    // $9E26
     draw_daimyo_portrait(2, 4);    // $9E2C
@@ -1902,10 +1902,10 @@ word effect_loan(word fief) {
 L_9F2F:
     if ((fief->town > fief->debt)) {    // $9F38
     max_loan = ratio_times10_capped((fief->town - fief->debt), (loan_rate + 10), (fief->header - *(word*)(fief)));    // $9F58
-    if (ratio_times10_capped((fief->town - fief->debt), (loan_rate + 10), (fief->header - *(word*)(fief)))) {    // $9F59
+    if (max_loan) {    // $9F59
     draw_message(msg_s_would_you_like_to_borrow, msg_how_much_f99d);    // $9F62
     loan_amount = number_input(1, max_loan);    // $9F6C
-    if (number_input(1, max_loan)) {    // $9F6D
+    if (loan_amount) {    // $9F6D
     effect_take_loan(loan_amount);    // $9F71
     clamp_amount_to_province_max(fief);    // $9F76
     cycle_economy_rate(0);    // $9F7B
@@ -1935,7 +1935,7 @@ word prompt_repay_debt(word fief) {
     if (fief->debt) {    // $9FBE
     if (!(*(word*)(fief))) goto L_9FF1;    // $9FC3
     repay_amount = number_input(1, min_word(fief->debt, *(word*)(fief)));    // $9FD7
-    if (!(number_input(1, min_word(fief->debt, *(word*)(fief))))) goto L_9FEC;    // $9FD8
+    if (!(repay_amount)) goto L_9FEC;    // $9FD8
     *(word*)(fief) = (*(word*)(fief) - repay_amount);    // $9FE1
     fief->debt = (fief->debt - repay_amount);    // $9FE9
     return 1;    // $9FEB
@@ -1962,10 +1962,10 @@ word effect_sell_rice(word fief) {
     message_display(msg_sell_rice_prompt);    // $A00B
     if (!(fief->rice)) goto L_A059;    // $A012
     max_sell = ratio_times10_capped((fief->header - *(word*)(fief)), gold_rice_exchange_rate, fief->rice);    // $A02A
-    if (!(ratio_times10_capped((fief->header - *(word*)(fief)), gold_rice_exchange_rate, fief->rice))) goto L_A053;    // $A02B
+    if (!(max_sell)) goto L_A053;    // $A02B
     draw_message(msg_s_rice_will_you_sell, msg_how_much_f99d);    // $A034
     sell_amount = number_input(1, max_sell);    // $A03E
-    if (number_input(1, max_sell)) {    // $A03F
+    if (sell_amount) {    // $A03F
     effect_sell_rice_for_gold(sell_amount);    // $A043
     clamp_amount_to_province_max(fief);    // $A048
     cycle_economy_rate(1);    // $A04D
@@ -1992,11 +1992,11 @@ word effect_buy_rice(word fief) {
     message_display(msg_buy_rice_prompt);    // $A070
     if (!(province_table_live[selected_province_idx].gold)) goto L_A0DE;    // $A07F
     max_buyable = ratio_times10_capped(*(word*)(fief), gold_rice_exchange_rate, (fief->header - fief->rice));    // $A097
-    if (!(ratio_times10_capped(*(word*)(fief), gold_rice_exchange_rate, (fief->header - fief->rice)))) goto L_A0D8;    // $A098
+    if (!(max_buyable)) goto L_A0D8;    // $A098
     redraw_window(msg_how_much_f99d);    // $A09E
     redraw_window(msg_rice_will_you_buy);    // $A0A5
     buy_amount = number_input(1, max_buyable);    // $A0AF
-    if (number_input(1, max_buyable)) {    // $A0B0
+    if (buy_amount) {    // $A0B0
     *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_rice_exchange_rate, buy_amount));    // $A0C1
     fief->rice = (fief->rice + buy_amount);    // $A0C9
     clamp_amount_to_province_max((fief + 6));    // $A0CD
@@ -2043,10 +2043,10 @@ L_A12D:
     local11 = ((arms_buy_price_rate + 9) / 10);    // $A13A
     if (!((*(word*)(fief) >= local11))) goto L_A1A0;    // $A13F
     local11 = ratio_times10_capped(*(word*)(fief), arms_buy_price_rate, (fief->header - fief->arms));    // $A158
-    if (!(ratio_times10_capped(*(word*)(fief), arms_buy_price_rate, (fief->header - fief->arms)))) goto L_A19A;    // $A159
+    if (!(local11)) goto L_A19A;    // $A159
     redraw_window(msg_how_many);    // $A15F
     buy_amount = number_input(1, local11);    // $A169
-    if (number_input(1, local11)) {    // $A16A
+    if (buy_amount) {    // $A16A
     *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(arms_buy_price_rate, buy_amount));    // $A17B
     fief->arms = (fief->arms + amount_div_force_factor(fief, buy_amount));    // $A18A
     clamp_amount_to_province_max((fief + 22));    // $A18F
@@ -2091,7 +2091,7 @@ word driver_trade(void) {
     do {    // $A1F0
         message_display(msg_lord_how_may_i_serve_you);    // $A1F3
         local11 = submenu_prompt(6);    // $A1FC
-        trade_handler = *(word*)(((submenu_prompt(6) << 1) + jumptab_b9dc));    // $A203
+        trade_handler = *(word*)(((local11 << 1) + jumptab_b9dc));    // $A203
         if (!((*(trade_handler))(&province_table_live[selected_province_idx]))) goto L_A231;    // $A212
         trigger_cutscene(CUTSCENE_TRADE);    // $A216
         message_display(msg_let_s_do_business_again);    // $A21D
@@ -2150,21 +2150,21 @@ word effect_ninja_failed(word arg1, word arg2) {
 
 word effect_ninja_sabotage(word arg1) {
     max_affordable_count = ratio_times10_capped(*(word*)(arg1), hire_gold_rate, arg1->header);    // $A2E6
-    if (!(ratio_times10_capped(*(word*)(arg1), hire_gold_rate, arg1->header))) goto L_A360;    // $A2E7
+    if (!(max_affordable_count)) goto L_A360;    // $A2E7
     message_display(msg_how_many);    // $A2ED
     unit_count = number_input(1, max_affordable_count);    // $A2F7
-    if (!(number_input(1, max_affordable_count))) goto L_A551;    // $A2F8
+    if (!(unit_count)) goto L_A551;    // $A2F8
     build_eligible_province_list(0);    // $A2FC
     if (!(province_select_helper(255, fief_index_list))) goto L_A551;    // $A30A
     redraw_window(msg_send_where);    // $A310
     battle_defending_province = province_select_prompt(fief_index_list);    // $A31B
-    if (!(province_select_prompt(fief_index_list))) goto L_A551;    // $A31E
+    if (!(battle_defending_province)) goto L_A551;    // $A31E
     battle_defending_province = (battle_defending_province - 1);    // $A325
     open_message_window();    // $A328
     message_display(msg_what_mission);    // $A32E
     redraw_window(msg_uprisng_2_revolt_3_dams_4_assa);    // $A335
     mission = number_input(1, 5);    // $A33F
-    if (!(number_input(1, 5))) goto L_A551;    // $A340
+    if (!(mission)) goto L_A551;    // $A340
     if ((mission == 4)) {    // $A346
     if (fief_is_daimyo_capital[battle_defending_province]) goto L_A36C;    // $A351
     message_display(msg_the_daimyo_is_out);    // $A357
@@ -2280,10 +2280,10 @@ L_A551:
 word effect_hire_men(word fief) {
     headroom = (fief->header - fief->men);    // $A563
     max_affordable = ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men));    // $A56F
-    if (!(ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->header - fief->men)))) goto L_A5DD;    // $A570
+    if (!(max_affordable)) goto L_A5DD;    // $A570
     message_display(msg_how_many);    // $A576
     amount = number_input(1, max_affordable);    // $A580
-    if (number_input(1, max_affordable)) {    // $A581
+    if (amount) {    // $A581
     *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_men_hire_rate, amount));    // $A592
     apply_hire_unit_stats(fief, amount);    // $A595
     cap_arms_at_index(selected_province_idx, fief);    // $A59D
@@ -2368,7 +2368,7 @@ word driver_view(void) {
 L_A6D0:
     has_eligible_targets = 0;    // $A6D1
     eligible_list_result = build_eligible_province_list(1);    // $A6D7
-    if (build_eligible_province_list(1)) {    // $A6D8
+    if (eligible_list_result) {    // $A6D8
     has_eligible_targets = 1;    // $A6DC
     }
 L_A6DD:
@@ -2386,7 +2386,7 @@ L_A713:
     effect_view_a(viewed_fief);    // $A70F
     message_display(msg_view_which_fief);    // $A716
     eligible_list_result = build_eligible_province_list(1);    // $A71F
-    if (build_eligible_province_list(1)) {    // $A720
+    if (eligible_list_result) {    // $A720
     redraw_window(msg_view_vassals);    // $A726
     has_eligible_targets = 1;    // $A72B
     }
@@ -2468,7 +2468,7 @@ L_A87C:
     message_display(str_town_value_label);    // $A884
     draw_message(msg_s_is_d_spend_how_much_on_it, driver_build_town_value, fief->town);    // $A892
     amount = number_input(1, fief->gold);    // $A89E
-    if (number_input(1, fief->gold)) {    // $A89F
+    if (amount) {    // $A89F
     fief->gold = (fief->gold - amount);    // $A8A8
     amount = effect_build(fief, amount);    // $A8AF
     trigger_cutscene(CUTSCENE_BUILD);    // $A8B2
@@ -2492,7 +2492,7 @@ word give_transfer_apply(word fief, word resource_kind, word give_type) {
     resource_ptr = ((resource_kind == 1) ? fief : (fief + 6));    // $A8E4
     message_display(msg_give_how_much);    // $A8E8
     amount = number_input(1, *(word*)(resource_ptr));    // $A8F4
-    if (number_input(1, *(word*)(resource_ptr))) {    // $A8F5
+    if (amount) {    // $A8F5
     *(word*)(resource_ptr) = (*(word*)(resource_ptr) - amount);    // $A8FE
     if ((give_type == 1)) {    // $A902
     develop_loyalty(fief, amount);    // $A907
@@ -2547,7 +2547,7 @@ word give_rice_gold_eligibility(word fief) {
 
 word effect_give_b(word fief, word give_type) {
     local11 = give_rice_gold_eligibility(fief);    // $A968
-    if (!(give_rice_gold_eligibility(fief))) goto L_A9BB;    // $A969
+    if (!(local11)) goto L_A9BB;    // $A969
     eligibility_flags = local11;    // $A96D
     message_display(str_gold_rice_prompt);    // $A971
     local11 = prompt_ab_window(msg_gold_rice);    // $A97C
@@ -2593,7 +2593,7 @@ L_A9D3:
 
 word effect_give_c(word fief) {
     local11 = effect_give_a(fief);    // $A9DF
-    if (!(effect_give_a(fief))) goto L_AA05;    // $A9E0
+    if (!(local11)) goto L_AA05;    // $A9E0
     message_display(str_peasants_men_prompt);    // $A9E6
     local11 = prompt_ab_window(msg_peasnts_men);    // $A9F1
     if (local11) goto L_A9FB;    // $A9F3
@@ -2621,7 +2621,7 @@ word driver_give(void) {
     fief = &province_table_live[selected_province_idx];    // $AA2E
     eligible_mask = effect_give_a(fief);    // $AA34
     give_type = effect_give_c(fief);    // $AA3A
-    if (effect_give_c(fief)) {    // $AA3B
+    if (give_type) {    // $AA3B
     if ((eligible_mask & give_type)) goto L_AA5C;    // $AA41
     eligible_mask = (eligible_mask - 1);    // $AA46
     if (eligible_mask) {    // $AA47
@@ -2669,12 +2669,12 @@ word driver_bribe(void) {
     if (province_select_helper(15, fief_index_list)) {    // $AAD2
     redraw_window(msg_bribe_which);    // $AAD8
     battle_defending_province = province_select_prompt(fief_index_list);    // $AAE3
-    if (province_select_prompt(fief_index_list)) {    // $AAE6
+    if (battle_defending_province) {    // $AAE6
     open_message_window();    // $AAE9
     battle_defending_province = (battle_defending_province - 1);    // $AAF0
     message_display(msg_gold_for_spy);    // $AAF6
     bribe_gold = number_input(1, (fief->gold + -10));    // $AB04
-    if (number_input(1, (fief->gold + -10))) {    // $AB05
+    if (bribe_gold) {    // $AB05
     fief->gold = (fief->gold - 10);    // $AB0E
     effect_bribe(bribe_gold);    // $AB10
     return 1;    // $AB15
@@ -3009,7 +3009,7 @@ L_AF9A:
 L_AF9C:
     redraw_window(driver_grant_which_fief);    // $AF9F
     battle_defending_province = province_select_prompt(fief_index_list);    // $AFAA
-    if (!(province_select_prompt(fief_index_list))) goto L_B060;    // $AFAD
+    if (!(battle_defending_province)) goto L_B060;    // $AFAD
     battle_defending_province = (battle_defending_province - 1);    // $AFB4
     open_message_window();    // $AFB7
     message_display(msg_what_are_your_orders);    // $AFBD
@@ -3025,7 +3025,7 @@ L_AFCC:
     if ((i < 6)) goto L_AFCC;    // $AFF2
 L_AFF5:
     new_policy = (submenu_prompt(6) + 1);    // $AFFB
-    if (!(((submenu_prompt(6) + 1) != 6))) goto L_AF85;    // $AFFE
+    if ((new_policy == 6)) goto L_AF85;    // $AFFE
     if ((province_ai_state[battle_defending_province] != new_policy)) goto L_B023;    // $B00B
 L_B01D:
     draw_message(msg_it_s_already_a_s_state, *(word*)(((new_policy << 1) + governance_policy_name_ptrs)));    // $B019
@@ -3087,7 +3087,7 @@ word setting_message_wait_speed(void) {
     message_display(msg_wait_is_now);    // $B0DA
     draw_message(msg_d_enter_new_wait, sqrt_int((delay_loop_count / 2)));    // $B0EC
     new_wait = number_input(1, 10);    // $B0F6
-    if (number_input(1, 10)) {    // $B0F7
+    if (new_wait) {    // $B0F7
     delay_loop_count = ((new_wait * new_wait) << 1);    // $B0FE
     } else {
     }
@@ -3542,7 +3542,7 @@ L_B7F2:
         daimyo_name_width(selected_province_idx);    // $B7F8
         redraw_window(msg_your_orders);    // $B7FF
         command = command_menu_select_loop();    // $B806
-        cmd_handler = *(word*)(((command_menu_select_loop() << 1) + command_driver_table));    // $B80D
+        cmd_handler = *(word*)(((command << 1) + command_driver_table));    // $B80D
         result = (*(cmd_handler))();    // $B80F
     }
     if ((command == 1)) goto L_B874;    // $B818

@@ -759,7 +759,7 @@ L_D28C:
     button = 0;    // $D293
 L_D294:
     button = poll_input();    // $D297
-    if (!(poll_input())) goto L_D294;    // $D298
+    if (!(button)) goto L_D294;    // $D298
     return button;    // $D29C
 }
 
@@ -840,7 +840,7 @@ word prompt_ab_window(word prompt_msg) {
 L_D360:
     set_cursor_sprite(1);    // $D35C
     choice = wait_button_edge();    // $D363
-    if (!((wait_button_edge() != 64))) goto L_D378;    // $D367
+    if ((choice == 64)) goto L_D378;    // $D367
     if ((choice == 128)) goto L_D378;    // $D36F
     if ((choice != 2)) goto L_D360;    // $D375
 L_D378:
@@ -870,7 +870,7 @@ word prompt_y_n(void) {
 L_D3B8:
     set_cursor_sprite(1);    // $D3B4
     answer = wait_button_edge();    // $D3BB
-    if (!((wait_button_edge() != 64))) goto L_D3CA;    // $D3BF
+    if ((answer == 64)) goto L_D3CA;    // $D3BF
     if ((answer != 128)) goto L_D3B8;    // $D3C7
 L_D3CA:
     set_cursor_sprite(0);    // $D3CB
@@ -1194,7 +1194,7 @@ word selected_province_owner(void) {
 word daimyo_name_width(word fief) {
     redraw_window(daimyo_name_width_lord);    // $D793
     daimyo_name_ptr = daimyo_name_table[fief_owner(fief)];    // $D7A2
-    redraw_window(daimyo_name_table[fief_owner(fief)]);    // $D7A4
+    redraw_window(daimyo_name_ptr);    // $D7A4
     return char_advance_width(44);    // $D7AE
 }
 
@@ -1205,7 +1205,7 @@ word daimyo_name_width(word fief) {
 word draw_daimyo_name(word fief) {
     redraw_window(draw_daimyo_name_lord);    // $D7B7
     daimyo_name_ptr = daimyo_name_table[fief_owner(fief)];    // $D7C6
-    return redraw_window(daimyo_name_table[fief_owner(fief)]);    // $D7CC
+    return redraw_window(daimyo_name_ptr);    // $D7CC
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D7CD
@@ -1283,7 +1283,7 @@ L_D863:
     fief_rec->dams = min_word(fief_rec->dams, 100);    // $D87B
     i = 0;    // $D87D
     daimyo_rec = fief_to_daimyo_record_addr(fief);    // $D883
-    daimyo_byte_ptr = fief_to_daimyo_record_addr(fief);    // $D884
+    daimyo_byte_ptr = daimyo_rec;    // $D884
     goto L_D8A9;    // $D885
 L_D888:
     if (!((*(byte*)(daimyo_byte_ptr) > 235))) goto L_D894;    // $D88E
@@ -1698,7 +1698,7 @@ L_DD67:
 word init_new_daimyo_province_stats(word fief) {
     fief_to_daimyo_record_addr(fief)->age = (rng_mod(20) + 20);    // $DD94
     stats_base = &fief_to_daimyo_record_addr(fief)->health;    // $DD9B
-    stat_ptr = &fief_to_daimyo_record_addr(fief)->health;    // $DD9C
+    stat_ptr = stats_base;    // $DD9C
     goto L_DDC8;    // $DD9C
 L_DD9F:
     *(byte*)(stat_ptr) = pct_op(*(byte*)(stat_ptr), (rng_mod(20) + 50));    // $DDB0
@@ -1777,7 +1777,7 @@ word reassign_fiefs_to_conqueror(void) {
     conqueror_fief = ((battle_winner_province_sel == battle_defending_province) ? selected_province_idx : battle_defending_province);    // $DED9
     conqueror_daimyo = fief_owner(((battle_winner_province_sel == battle_defending_province) ? selected_province_idx : battle_defending_province));    // $DEDF
     defeated_daimyo = fief_owner(battle_winner_province_sel);    // $DEE7
-    pool_push_pop(fief_owner(battle_winner_province_sel));    // $DEE9
+    pool_push_pop(defeated_daimyo);    // $DEE9
     list_remove_matching(defeated_daimyo);    // $DEEE
     fief_idx = 0;    // $DEF3
     goto L_DF33;    // $DEF3
@@ -2043,7 +2043,7 @@ word marriage_pact_handler(void) {
     if (!(prompt_y_n())) goto L_E359;    // $E33D
     message_display(msg_demand_gold);    // $E343
     demanded_gold = number_input(1, 0x270F);    // $E34F
-    if (number_input(1, 0x270F)) goto L_E35B;    // $E350
+    if (demanded_gold) goto L_E35B;    // $E350
     open_message_window();    // $E353
     goto L_E35B;    // $E356
 L_E359:
@@ -2074,7 +2074,7 @@ word prompt_diplomacy_pact(void) {
     draw_daimyo_name_menu(msg_pact);    // $E3BE
     redraw_window(msg_demand_gold);    // $E3C5
     demanded_gold = number_input(1, 0x270F);    // $E3D1
-    if (number_input(1, 0x270F)) goto L_E3D8;    // $E3D2
+    if (demanded_gold) goto L_E3D8;    // $E3D2
 L_E3D8:
     open_message_window();    // $E3D5
     ui_input_mode = saved_input_mode;    // $E3D9
