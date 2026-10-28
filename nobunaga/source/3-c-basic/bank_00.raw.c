@@ -14,13 +14,13 @@ extern word battle_staging_entry_flag_array[];
 extern byte daimyo_name_table[][9];
 extern byte daimyo_turn_order[];
 extern byte daimyo_weakness_flag[];
+extern byte event_affected_fief_list[];
 extern byte fief_history_table[];
 extern byte fief_is_daimyo_capital[];
 extern byte fief_to_daimyo_map[];
 extern byte list_remove_matching_list[];
 extern word loan_rate[];
 extern byte province_ai_state[];
-extern byte province_candidate_list[];
 extern byte province_name_table[][10];
 extern byte province_unit_type_pct[][5];
 extern byte relations_matrix[];
@@ -1335,9 +1335,9 @@ L_9516:
 L_951D:
     confirm_prompt();    // $951A
     list_idx = (list_idx + 1);    // $951F
-    fief = province_candidate_list[(list_idx - 1)];    // $9526
-    if ((province_candidate_list[(list_idx - 1)] != 255)) goto L_94D3;    // $952B
-    return (province_candidate_list[(list_idx - 1)] != 255);    // $952E
+    fief = event_affected_fief_list[(list_idx - 1)];    // $9526
+    if ((event_affected_fief_list[(list_idx - 1)] != 255)) goto L_94D3;    // $952B
+    return (event_affected_fief_list[(list_idx - 1)] != 255);    // $952E
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $952F
@@ -2383,12 +2383,12 @@ L_A520:
 L_A523:
     if (!(phi_val_a523)) goto L_A531;    // $A523
     selected_count = (selected_count + 1);    // $A528
-    province_candidate_list[(selected_count - 1)] = fief_i;    // $A530
+    event_affected_fief_list[(selected_count - 1)] = fief_i;    // $A530
 L_A531:
     fief_i = (fief_i + 1);    // $A533
 L_A534:
     if (((unsigned)fief_i < (unsigned)scenario_fief_count)) goto L_A505;    // $A539
-    province_candidate_list[selected_count] = -1;    // $A544
+    event_affected_fief_list[selected_count] = -1;    // $A544
     if (!(selected_count)) goto L_A55B;    // $A546
     announce_seasonal_event(ai_planner_event_handler_select);    // $A54C
     (*(event_handler_fn))();    // $A551

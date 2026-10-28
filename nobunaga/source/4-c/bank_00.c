@@ -14,13 +14,13 @@ extern word battle_staging_entry_flag_array[];
 extern byte daimyo_name_table[][9];
 extern byte daimyo_turn_order[];
 extern byte daimyo_weakness_flag[];
+extern byte event_affected_fief_list[];
 extern byte fief_history_table[];
 extern byte fief_is_daimyo_capital[];
 extern byte fief_to_daimyo_map[];
 extern byte list_remove_matching_list[];
 extern word loan_rate[];
 extern byte province_ai_state[];
-extern byte province_candidate_list[];
 extern byte province_name_table[][10];
 extern byte province_unit_type_pct[][5];
 extern byte relations_matrix[];
@@ -1343,8 +1343,8 @@ word announce_seasonal_event(word event_kind) {
     list_idx = 0;    // $94CF
     while (1) {    // $951D
         list_idx = (list_idx + 1);    // $951F
-        fief = province_candidate_list[(list_idx - 1)];    // $9526
-        if ((province_candidate_list[(list_idx - 1)] != 255)) {    // $951D
+        fief = event_affected_fief_list[(list_idx - 1)];    // $9526
+        if ((event_affected_fief_list[(list_idx - 1)] != 255)) {    // $951D
             if (get_province_ai_state(fief)) {    // $94D3
                 switch (event_kind) {    // $94DB
                     case 1:
@@ -1372,7 +1372,7 @@ word announce_seasonal_event(word event_kind) {
             break;
         }
     }
-    return (province_candidate_list[(list_idx - 1)] != 255);    // $952E
+    return (event_affected_fief_list[(list_idx - 1)] != 255);    // $952E
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $952F
@@ -2401,12 +2401,12 @@ word ai_strategic_turn_planner(void) {
                     }
                     if (phi_val_a523) {    // $A523
                         selected_count = (selected_count + 1);    // $A528
-                        province_candidate_list[(selected_count - 1)] = fief_i;    // $A530
+                        event_affected_fief_list[(selected_count - 1)] = fief_i;    // $A530
                     }
                 }
                 fief_i = (fief_i + 1);    // $A533
             }
-            province_candidate_list[selected_count] = -1;    // $A544
+            event_affected_fief_list[selected_count] = -1;    // $A544
             if (selected_count) {    // $A53C
                 announce_seasonal_event(ai_planner_event_handler_select);    // $A54C
                 (*(event_handler_fn))();    // $A551
