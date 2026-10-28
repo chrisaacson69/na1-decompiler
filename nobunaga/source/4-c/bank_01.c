@@ -2549,8 +2549,8 @@ word effect_give_a(word fief) {
 // $A94D give_rice_gold_eligibility
 // (body @ $A952)
 
-word give_rice_gold_eligibility(word arg1) {
-    return give_eligibility_flags(*(word*)(arg1), arg1->rice);    // $A95D
+word give_rice_gold_eligibility(word fief) {
+    return give_eligibility_flags(*(word*)(fief), fief->rice);    // $A95D
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $A95E
@@ -2706,19 +2706,19 @@ L_AB20:
 // $AB22 render_arms_edit_screen
 // (body @ $AB27)
 
-word render_arms_edit_screen(word arg1, word arg2) {
-    local11 = 0;    // $AB28
+word render_arms_edit_screen(word arg1, word edit_buffer) {
+    i = 0;    // $AB28
     while (1) {    // $AB29
 L_AB29:
-        *(word*)(((local11 << 1) + arg2)) = province_unit_type_pct[((selected_province_idx * 5) + local11)];    // $AB3A
-        set_cursor(14, (local11 + 20));    // $AB40
-        if ((*(word*)(((local11 << 1) + arg2)) > 0x270F)) {    // $AB4D
-        *(word*)(((local11 << 1) + arg2)) = 0x270F;    // $AB58
+        *(word*)(((i << 1) + edit_buffer)) = province_unit_type_pct[((selected_province_idx * 5) + i)];    // $AB3A
+        set_cursor(14, (i + 20));    // $AB40
+        if ((*(word*)(((i << 1) + edit_buffer)) > 0x270F)) {    // $AB4D
+        *(word*)(((i << 1) + edit_buffer)) = 0x270F;    // $AB58
         }
 L_AB59:
-        draw_message(render_arms_edit_screen_fmt_3d, *(word*)(((local11 << 1) + arg2)));    // $AB62
-        set_cursor(5, (local11 + 20));    // $AB6B
-        switch (local11) {    // $AB70
+        draw_message(render_arms_edit_screen_fmt_3d, *(word*)(((i << 1) + edit_buffer)));    // $AB62
+        set_cursor(5, (i + 20));    // $AB6B
+        switch (i) {    // $AB70
             case 1: goto L_AB7D;    // $AB70
             case 2: goto L_ABB5;    // $AB70
             default: goto L_ABB9;    // $AB70
@@ -2726,15 +2726,15 @@ L_AB59:
 L_AB7D:
         phi_val_ab7e = 2;    // $AB7D
 L_AB7E:
-        local10 = phi_val_ab7e;    // $AB7E
-        draw_message(msg_d_s, (local11 + 1), *(word*)(((local10 << 1) + unit_type_name_table)));    // $AB8D
+        unit_type_idx = phi_val_ab7e;    // $AB7E
+        draw_message(msg_d_s, (i + 1), *(word*)(((unit_type_idx << 1) + unit_type_name_table)));    // $AB8D
         set_cursor(5, 25);    // $AB94
         redraw_window(msg_available_0);    // $AB9B
         set_cursor(4, 20);    // $ABA2
         set_cursor_sprite(2);    // $ABA7
-        local11 = (local11 + 1);    // $ABAD
-        if (((unsigned)local11 < (unsigned)5)) continue;    // $ABB1
-        return ((unsigned)local11 < (unsigned)5);    // $ABB4
+        i = (i + 1);    // $ABAD
+        if (((unsigned)i < (unsigned)5)) continue;    // $ABB1
+        return ((unsigned)i < (unsigned)5);    // $ABB4
 L_ABB5:
         phi_val_ab7e = 0;    // $ABB6
         goto L_AB7E;    // $ABB6
@@ -2748,23 +2748,23 @@ L_ABB9:
 // $ABBD commit_arms_record_from_buffer
 // (body @ $ABC2)
 
-word commit_arms_record_from_buffer(word arg1, word arg2) {
-    local9 = 0;    // $ABC3
-    local10 = ((selected_province_idx * 5) + 0x76A9);    // $ABCD
-    local11 = 0;    // $ABCF
+word commit_arms_record_from_buffer(word edit_buffer, word cancel) {
+    changed = 0;    // $ABC3
+    unit_pct_row = ((selected_province_idx * 5) + 0x76A9);    // $ABCD
+    i = 0;    // $ABCF
     do {    // $ABD0
-        if ((*(byte*)((local10 + local11)) != *(word*)(((local11 << 1) + arg1)))) {    // $ABDC
-        local9 = 1;    // $ABE0
+        if ((*(byte*)((unit_pct_row + i)) != *(word*)(((i << 1) + edit_buffer)))) {    // $ABDC
+        changed = 1;    // $ABE0
         }
 L_ABE1:
-        local11 = (local11 + 1);    // $ABE3
-    } while (((unsigned)local11 < (unsigned)5));    // $ABE7
-    if ((arg2 || !(local9))) return 0;    // $ABEF
-    local11 = 0;    // $ABF5
+        i = (i + 1);    // $ABE3
+    } while (((unsigned)i < (unsigned)5));    // $ABE7
+    if ((cancel || !(changed))) return 0;    // $ABEF
+    i = 0;    // $ABF5
     do {    // $ABF6
-        *(byte*)((local10 + local11)) = *(word*)(((local11 << 1) + arg1));    // $ABFF
-        local11 = (local11 + 1);    // $AC02
-    } while (((unsigned)local11 < (unsigned)5));    // $AC06
+        *(byte*)((unit_pct_row + i)) = *(word*)(((i << 1) + edit_buffer));    // $ABFF
+        i = (i + 1);    // $AC02
+    } while (((unsigned)i < (unsigned)5));    // $AC06
     trigger_cutscene(CUTSCENE_ASSIGN_ARMS);    // $AC0B
     return 1;    // $AC10
 }
@@ -2859,16 +2859,16 @@ L_AD5D:
 // (body @ $AD6C)
 
 word driver_assign(void) {
-    local11 = &province_table_live[selected_province_idx];    // $AD76
-    if ((local11->men <= 0)) {    // $AD7D
+    fief = &province_table_live[selected_province_idx];    // $AD76
+    if ((fief->men <= 0)) {    // $AD7D
     message_display(msg_you_have_no_soldiers);    // $AD83
     confirm_prompt();    // $AD87
     return 0;    // $AD8B
     }
 L_AD8C:
-    if (!((local11->gold >= 30))) goto L_ADA7;    // $AD91
+    if (!((fief->gold >= 30))) goto L_ADA7;    // $AD91
     if (effect_assign(30)) {    // $AD9A
-    local11->gold = (local11->gold - 30);    // $ADA4
+    fief->gold = (fief->gold - 30);    // $ADA4
     return 1;    // $ADA6
 L_ADA7:
     message_display(msg_you_have_no_gold);    // $ADAA

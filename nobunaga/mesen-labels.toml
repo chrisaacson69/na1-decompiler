@@ -3522,3 +3522,27 @@ arg3 = { name = "give_type", comment = "[MED] recipient selector: slot14==1 ($A9
 local10 = { name = "amount", comment = "[HIGH] number_input(1,*local11) result ($A8F4); subtracted from *local11 ($A8F8-$A8FE); arg2 of the develop_* calls" }
 local11 = { name = "resource_ptr", comment = "[HIGH] ptr to fief gold (+0) or rice (+6) ($A8E4); deref is number_input max ($A8ED); POPSTORE *ptr -= amount ($A8FE)" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xAD67"]
+# driver_assign
+local11 = { name = "fief", comment = "[HIGH] $7001+prov*26 province ptr: +16 men SCMPLE 0 -> no soldiers; +0 gold SCMPGE 30, then gold -= 30 (POPSTORE @$ADA4)" }
+
+[vars.bank1."0xABBD"]
+# commit_arms_record_from_buffer
+arg1 = { name = "edit_buffer", comment = "[HIGH] Word array (i<<1)+slot12 DEREF: compared to record bytes, then BYTE_POPSTORE'd into it; caller pushes LEAL_far $FFF0 last (arg1)" }
+arg2 = { name = "cancel", comment = "[MED] LOADL_quick 13 JUMPT $ABF2 -> return 0 before any write: nonzero cancels the commit. Caller pushes its local11 (PUSH_quick 11 @$AD53)" }
+local9 = { name = "changed", comment = "[HIGH] Flag: STORE 0 @$ABC3, set 1 @$ABE0 when buffer word CMPNE record byte; zero (with arg2 zero) returns 0 without commit" }
+local10 = { name = "unit_pct_row", comment = "[MED] Ptr $76A9 (province_unit_type_pct) + selected_province_idx*5: the 5-byte row, BYTE_DEREF'd in compare, BYTE_POPSTORE'd in copy" }
+local11 = { name = "i", comment = "[HIGH] Index 0..4 (UCMPLT 5) in the compare loop $ABD0 and the copy loop $ABF6, the same role each time: buffer word i / row byte i" }
+
+[vars.bank1."0xAB22"]
+# render_arms_edit_screen
+# arg1 left positional — Never read in body (no slot-12 op); caller $AC25 pushes its own arg1 as a pass-through. An unused slot earns no name, so
+arg2 = { name = "edit_buffer", comment = "[HIGH] Word array (i<<1)+slot13: filled from province_unit_type_pct, capped at $270F, drawn by fmt_3d; caller pushes LEAL_far $FFF0 (local buf)" }
+local10 = { name = "unit_type_idx", comment = "[HIGH] STORE_quick 10 @$AB7E from SWITCH on i (1->2, 2->0, else 1); LSHIFT1+$F9AF unit_type_name_table DEREF gives the row label" }
+local11 = { name = "i", comment = "[HIGH] Row counter 0..4 (STORE 0, INC, UCMPLT 5 @$ABB0): indexes edit_buffer and pct[prov*5+i], cursor row i+20, label switch key" }
+
+[vars.bank1."0xA94D"]
+# give_rice_gold_eligibility
+arg1 = { name = "fief", comment = "[HIGH] Province record ptr: LOADL_quick 12+6 DEREF (rice@+6) and LOADL_quick 12 DEREF (gold@+0) pushed to give_eligibility_flags $A91E" }
+
