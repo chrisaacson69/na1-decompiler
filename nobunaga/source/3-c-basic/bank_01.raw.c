@@ -2897,15 +2897,15 @@ L_AF06:
 // $AF10 browse_map_sections
 // (body @ $AF15)
 
-word browse_map_sections(word arg1) {
+word browse_map_sections(word map_section) {
     message_display(msg_arrows_other_sections);    // $AF18
     redraw_window(msg_a_button_menu);    // $AF1F
     goto L_AF2B;    // $AF23
 L_AF26:
 L_AF2B:
-    render_map_section(arg1);    // $AF27
-    arg1 = fief_select_input_loop(arg1);    // $AF30
-    if ((arg1 != 10)) goto L_AF26;    // $AF33
+    render_map_section(map_section);    // $AF27
+    map_section = fief_select_input_loop(map_section);    // $AF30
+    if ((map_section != 10)) goto L_AF26;    // $AF33
     return 0;    // $AF37
 }
 
@@ -2982,11 +2982,11 @@ L_B060:
 
 word setting_sound_on_off(void) {
     message_display(msg_sound);    // $B06E
-    local11 = prompt_ab_window(msg_on_off);    // $B079
-    if ((local11 != 2)) goto L_B082;    // $B07D
+    sound_choice = prompt_ab_window(msg_on_off);    // $B079
+    if ((sound_choice != 2)) goto L_B082;    // $B07D
     return 0;    // $B081
 L_B082:
-    audio_wait_gate = local11;    // $B083
+    audio_wait_gate = sound_choice;    // $B083
     if (audio_wait_gate) goto L_B096;    // $B089
     syscall_audio_control(0, 0);    // $B08F
     goto L_B09B;    // $B093
@@ -3025,9 +3025,9 @@ L_B0C8:
 word setting_message_wait_speed(void) {
     message_display(msg_wait_is_now);    // $B0DA
     draw_message(msg_d_enter_new_wait, sqrt_int((delay_loop_count / 2)));    // $B0EC
-    local11 = number_input(1, 10);    // $B0F6
+    new_wait = number_input(1, 10);    // $B0F6
     if (!(number_input(1, 10))) goto L_B104;    // $B0F7
-    delay_loop_count = ((local11 * local11) << 1);    // $B0FE
+    delay_loop_count = ((new_wait * new_wait) << 1);    // $B0FE
     goto L_B107;    // $B101
 L_B104:
 L_B107:
@@ -3055,9 +3055,9 @@ L_B129:
 
 word setting_watch_battles(void) {
     message_display(msg_watch_others_battle);    // $B133
-    local11 = prompt_ab_window(msg_y_n);    // $B13E
-    if ((local11 == 2)) goto L_B149;    // $B142
-    ui_confirm_flag_6e7d = local11;    // $B146
+    watch_choice = prompt_ab_window(msg_y_n);    // $B13E
+    if ((watch_choice == 2)) goto L_B149;    // $B142
+    ui_confirm_flag_6e7d = watch_choice;    // $B146
 L_B149:
     return 0;    // $B14A
 }

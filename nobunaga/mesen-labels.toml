@@ -3546,3 +3546,20 @@ local11 = { name = "i", comment = "[HIGH] Row counter 0..4 (STORE 0, INC, UCMPLT
 # give_rice_gold_eligibility
 arg1 = { name = "fief", comment = "[HIGH] Province record ptr: LOADL_quick 12+6 DEREF (rice@+6) and LOADL_quick 12 DEREF (gold@+0) pushed to give_eligibility_flags $A91E" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xB12B"]
+# setting_watch_battles
+local11 = { name = "watch_choice", comment = "[HIGH] Watch-battles y/n answer: STORE_quick 11 <- prompt_ab_window(msg_y_n) $B13E; if !=2, STORE_abs $6E7D ui_confirm_flag_6e7d at $B146" }
+
+[vars.bank1."0xB0D2"]
+# setting_message_wait_speed
+local11 = { name = "new_wait", comment = "[HIGH] New wait level: STORE_quick 11 <- number_input(1,10) $B0F6; 0 -> open_message_window; else $6D65 = (l11*l11)<<1 at $B0FA-$B0FE" }
+
+[vars.bank1."0xB066"]
+# setting_sound_on_off
+local11 = { name = "sound_choice", comment = "[HIGH] Sound on/off answer: STORE_quick 11 <- prompt_ab_window(msg_on_off) $B079; ==2 returns early; else STORE_abs $6F4D audio_wait_gate $B083" }
+
+[vars.bank1."0xAF10"]
+# browse_map_sections
+arg1 = { name = "map_section", comment = "[HIGH] Map section index: callers push local11 (province_to_map_section byte); PUSH_quick 12 -> render_map_section/$ADF6, STORE_quick 12, !=10 loops" }
+
