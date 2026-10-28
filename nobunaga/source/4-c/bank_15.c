@@ -21,8 +21,8 @@ extern byte relations_matrix[];
 // $CA03 call_bank10_entry
 // (body @ $CA08)
 
-word call_bank10_entry(word arg1) {
-    sound_request_id = arg1;    // $CA09
+word call_bank10_entry(word sound_id) {
+    sound_request_id = sound_id;    // $CA09
     return call_bank_wrap(10);    // $CA11
 }
 
@@ -258,8 +258,8 @@ word ppu_fill_rect_wrap(word rect_start_a, word rect_start_b, word rect_end_a, w
 // $CC54 ppu_copy_rect_wrap
 // (body @ $CC59)
 
-word ppu_copy_rect_wrap(word arg1, word arg2, word arg3, word arg4, word arg5, word arg6) {
-    return syscall_ppu_copy_rect(0, arg1, arg2, arg3, arg4, arg5, arg6);    // $CC68
+word ppu_copy_rect_wrap(word left_col, word top_row, word right_col, word bottom_row, word arg5, word arg6) {
+    return syscall_ppu_copy_rect(0, left_col, top_row, right_col, bottom_row, arg5, arg6);    // $CC68
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CC69
@@ -274,10 +274,10 @@ word clear_rect_right_panel(void) {
 // $CC7B set_cursor
 // (body @ $CC80)
 
-word set_cursor(word arg1, word arg2) {
-    ui_window_col = arg1;    // $CC81
-    ui_cursor_row = arg2;    // $CC85
-    return arg2;    // $CC88
+word set_cursor(word col, word row) {
+    ui_window_col = col;    // $CC81
+    ui_cursor_row = row;    // $CC85
+    return row;    // $CC88
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CC89
@@ -391,26 +391,26 @@ L_CDC9:
 // $CDCA char_classify
 // (body @ $CDCF)
 
-word char_classify(word arg1) {
-    if (!((*(byte*)&arg1 >= 95))) goto L_CDF4;    // $CDD5
-    if (!((*(byte*)&arg1 <= 122))) goto L_CDF4;    // $CDDE
+word char_classify(word ch) {
+    if (!((*(byte*)&ch >= 95))) goto L_CDF4;    // $CDD5
+    if (!((*(byte*)&ch <= 122))) goto L_CDF4;    // $CDDE
     goto L_CE11;    // $CDE3
 L_CDE6:
-    if (!((*(byte*)&arg1 <= 90))) goto L_CDFD;    // $CDEC
+    if (!((*(byte*)&ch <= 90))) goto L_CDFD;    // $CDEC
     goto L_CE11;    // $CDF1
 L_CDF4:
-    if ((*(byte*)&arg1 >= 65)) goto L_CDE6;    // $CDFA
+    if ((*(byte*)&ch >= 65)) goto L_CDE6;    // $CDFA
 L_CDFD:
-    if ((*(byte*)&arg1 >= 45)) {    // $CE03
-    if ((*(byte*)&arg1 <= 58)) {    // $CE0C
+    if ((*(byte*)&ch >= 45)) {    // $CE03
+    if ((*(byte*)&ch <= 58)) {    // $CE0C
 L_CE11:
 L_CE16:
-    *(byte*)&arg1 = (*(byte*)&arg1 - 40);    // $CE16
-    return *(byte*)&arg1;    // $CE1C
+    *(byte*)&ch = (*(byte*)&ch - 40);    // $CE16
+    return *(byte*)&ch;    // $CE1C
     }
     }
 L_CE1D:
-    switch (*(byte*)&arg1) {    // $CE20
+    switch (*(byte*)&ch) {    // $CE20
     case 32:
     case 33:
         goto L_CE11;    // $CE57
@@ -507,8 +507,8 @@ word fill_attr_wrap(void) {
 // $CF6A ppu_render_rect_wrap
 // (body @ $CF6F)
 
-word ppu_render_rect_wrap(word arg1, word arg2, word arg3, word arg4, word arg5) {
-    return syscall_ppu_render_rect(0, arg1, arg2, arg3, arg4, arg5);    // $CF7B
+word ppu_render_rect_wrap(word left_col, word top_row, word right_col, word bottom_row, word arg5) {
+    return syscall_ppu_render_rect(0, left_col, top_row, right_col, bottom_row, arg5);    // $CF7B
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CF7C

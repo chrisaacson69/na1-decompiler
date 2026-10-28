@@ -2711,3 +2711,32 @@ arg2 = { name = "rect_start_b", comment = "[MED] PUSH_quick 13 -> syscall 12; va
 arg3 = { name = "rect_end_a", comment = "[MED] PUSH_quick 14 -> syscall 12; values 29 or 19, >= arg1: far edge of arg1's axis. NB sub also reads arg5 via PUSH_near $13 (always 1)" }
 arg4 = { name = "rect_end_b", comment = "[MED] PUSH_quick 15 -> syscall 12; values 3..26, >= arg2: far edge of arg2's axis (pairs 3/3, 4/6, 7/26, 20/25, 26/26)" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 12 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xCA03"]
+# call_bank10_entry
+arg1 = { name = "sound_id", comment = "[HIGH] Sound request id: LOADL_quick 12 -> STORE_abs $7FE5 (sound_request_id), then call_bank_wrap(10). Callers push 5,6,0,28,30." }
+
+[vars.bank15."0xCC54"]
+# ppu_copy_rect_wrap
+arg1 = { name = "left_col", comment = "[HIGH] Rect start column: PUSH_quick 12 -> syscall 20 ($F226). Literal callers pass 0 with arg3=31; bank 2 passes x, with arg3=x+5." }
+arg2 = { name = "top_row", comment = "[HIGH] Rect start row: PUSH_quick 13 -> syscall 20. Literal callers pass 0/3/5 with arg4 19..29; bank 2 passes y, with arg4=y+5." }
+arg3 = { name = "right_col", comment = "[HIGH] Inclusive end column: PUSH_quick 14 -> syscall 20. Literal callers pass 31; bank 1 passes min(local11+8,29); bank 2 passes arg1+5." }
+arg4 = { name = "bottom_row", comment = "[HIGH] Inclusive end row: PUSH_quick 15 -> syscall 20. Literal callers pass 19..29 (max 29 = last row); bank 2 passes arg2+5." }
+
+[vars.bank15."0xCC7B"]
+# set_cursor
+arg1 = { name = "col", comment = "[HIGH] Cursor column: LOADL_quick 12 -> STORE_abs $7FCD (ui_window_col). Callers push 2,3,11,13; set_cursor(2,24) follows render_rect(2,24,31,26)." }
+arg2 = { name = "row", comment = "[HIGH] Cursor row: LOADL_quick 13 -> STORE_abs $7FCF (ui_cursor_row). Callers push 4,6,7,8,10,24,26." }
+
+[vars.bank15."0xCDCA"]
+# char_classify
+arg1 = { name = "ch", comment = "[MED] Char code: BYTE_LOADL_far $0B tested vs '_'..'z','A'..'Z','-'..':' and SWITCH 32..63. Overwritten by its mapped code only at $CE16, then returned." }
+
+[vars.bank15."0xCF6A"]
+# ppu_render_rect_wrap
+arg1 = { name = "left_col", comment = "[HIGH] Rect start column: PUSH_quick 12 -> syscall 13 ($F226). Callers pass 0..20, always <= arg3. render(2,24,31,26) is paired with set_cursor(2,24)." }
+arg2 = { name = "top_row", comment = "[HIGH] Rect start row: PUSH_quick 13 -> syscall 13. Callers pass 3..26, always <= arg4; it matches set_cursor's row in the $8044/$806C pair." }
+arg3 = { name = "right_col", comment = "[HIGH] Inclusive end column: PUSH_quick 14 -> syscall 13. Callers pass 10..31 (31 = last column), always >= arg1." }
+arg4 = { name = "bottom_row", comment = "[HIGH] Inclusive end row: PUSH_quick 15 -> syscall 13. Callers pass 7..26, always >= arg2; it equals arg2 for single-row rects such as (14,18,26,18) at $8793." }
+
