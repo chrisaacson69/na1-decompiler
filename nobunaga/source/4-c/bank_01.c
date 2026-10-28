@@ -138,7 +138,7 @@ word count_eligible_targets(word cmd, word fief_list, word print_flag) {
                         draw_message(count_eligible_targets_fmt_2d, (*(byte*)((fief_list - 1)) + 1));    // $81A8
                         page_entry_count = (page_entry_count + 1);    // $81AE
                         if ((page_entry_count != 18)) {    // $81A0
-                            char_advance_width((((unsigned)page_entry_count % (unsigned)6) ? 32 : 10));    // $81C3
+                            put_char((((unsigned)page_entry_count % (unsigned)6) ? 32 : 10));    // $81C3
                         }
                         if ((page_entry_count == 18)) {    // $81C7
                             if ((*(byte*)(fief_list) != 255)) {    // $81CE
@@ -793,12 +793,12 @@ word effect_take_loan(word amount) {
 
 word play_result_jingle(word failed) {
     syscall_audio_control(0, 0);    // $8B97
-    call_bank10_entry((failed ? 8 : 7));    // $8BA5
+    play_audio((failed ? 8 : 7));    // $8BA5
     if ((audio_wait_gate == 1)) {    // $8BA4
         while (syscall_audio_control(1, 2)) {    // $8BB1
         }
     }
-    return call_bank10_entry(AUDIO_UI_CONFIRM);    // $8BC0
+    return play_audio(AUDIO_UI_CONFIRM);    // $8BC0
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8BC1
@@ -2362,10 +2362,10 @@ word driver_train(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $A6B3
-// $A6B3 effect_view_d
+// $A6B3 view_spy_roll
 // (body @ $A6B8)
 
-word effect_view_d(word daimyo) {
+word view_spy_roll(word daimyo) {
     return (rng_mod(*(byte*)((daimyo + 3))) + *(byte*)((daimyo + 5)));    // $A6C6
 }
 
@@ -2439,7 +2439,7 @@ L_A7C6:
     set_cursor(16, 7);    // $A7E1
     draw_selected_province_stat(province_table_live[selected_province_idx].gold);    // $A7F1
 L_A7F5:
-    if (!((effect_view_d(selected_province_daimyo_record()) > effect_view_d(fief_to_daimyo_record_addr(target_fief))))) goto L_A817;    // $A80A
+    if (!((view_spy_roll(selected_province_daimyo_record()) > view_spy_roll(fief_to_daimyo_record_addr(target_fief))))) goto L_A817;    // $A80A
     if (!(rng_mod(const_two))) goto L_A82B;    // $A814
 L_A817:
     if (rng_mod(3)) goto L_A82B;    // $A81C
@@ -3043,7 +3043,7 @@ word setting_sound_on_off(void) {
         if (!(audio_wait_gate)) {    // $B082
             syscall_audio_control(0, 0);    // $B08F
         } else {
-            call_bank10_entry(AUDIO_UI_CONFIRM);    // $B097
+            play_audio(AUDIO_UI_CONFIRM);    // $B097
         }
         return 0;    // $B09C
     }
@@ -3502,7 +3502,7 @@ word issue_province_command(word fief) {
         }
     } else {
         view_selected_fief();    // $B7DA
-        call_bank10_entry(27);    // $B7DF
+        play_audio(27);    // $B7DF
         command = 0;    // $B7E4
         result = 0;    // $B7E5
         while (!(result)) {    // $B810

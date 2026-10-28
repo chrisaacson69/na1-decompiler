@@ -235,7 +235,7 @@ VM bytecode disassembly
   $81BD  D6 C2 81                   JUMP_abs               $81C2
  >$81C0  89 20                      BYTE_LOADL_imm1        +32
  >$81C2  B3                         PUSHL
-  $81C3  E9 81 CE 02                CALL_abs_imm1          $CE81 (char_advance_width) {bytecode}, $02
+  $81C3  E9 81 CE 02                CALL_abs_imm1          $CE81 (put_char) {bytecode}, $02
  >$81C7  0A                         LOADL_quick   ; inline operand = 10
   $81C8  8B 12                      BYTE_LOADR_imm1        +18
   $81CA  C0                         CMPEQ
@@ -1757,7 +1757,7 @@ VM bytecode disassembly
   $8BA0  D6 A4 8B                   JUMP_abs               $8BA4
  >$8BA3  48                         LOADL_qimm   ; inline operand = 8
  >$8BA4  B3                         PUSHL
-  $8BA5  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $8BA5  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $8BA9  A4 4D 6F                   LOADL_abs              $6F4D (audio_wait_gate)
   $8BAC  51                         LOADR_qimm   ; inline operand = 1
   $8BAD  C0                         CMPEQ
@@ -1768,7 +1768,7 @@ VM bytecode disassembly
   $8BB4  E9 26 F2 06                CALL_abs_imm1          $F226 (syscall_dispatch) {native}, $06
   $8BB8  D7 B1 8B                   JUMPT_abs              $8BB1
  >$8BBB  61                         PUSH_qimm   ; inline operand = 1
-  $8BBC  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $8BBC  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $8BC0  CF                         RETURN
 
 ; ============================================================
@@ -5819,11 +5819,11 @@ VM bytecode disassembly
  >$A7F5  3A                         PUSH_quick   ; inline operand = 10
   $A7F6  E9 DA D7 02                CALL_abs_imm1          $D7DA (fief_to_daimyo_record_addr) {bytecode}, $02
   $A7FA  B3                         PUSHL
-  $A7FB  E9 B3 A6 02                CALL_abs_imm1          $A6B3 (effect_view_d) {bytecode}, $02
+  $A7FB  E9 B3 A6 02                CALL_abs_imm1          $A6B3 (view_spy_roll) {bytecode}, $02
   $A7FF  B3                         PUSHL
   $A800  AC EA D7                   CALL_abs               $D7EA (selected_province_daimyo_record) {bytecode}
   $A803  B3                         PUSHL
-  $A804  E9 B3 A6 02                CALL_abs_imm1          $A6B3 (effect_view_d) {bytecode}, $02
+  $A804  E9 B3 A6 02                CALL_abs_imm1          $A6B3 (view_spy_roll) {bytecode}, $02
   $A808  B4                         POPR
   $A809  C4                         SCMPGT
   $A80A  D8 17 A8                   JUMPF_abs              $A817
@@ -7007,7 +7007,7 @@ VM bytecode disassembly
   $B08F  E9 26 F2 06                CALL_abs_imm1          $F226 (syscall_dispatch) {native}, $06
   $B093  D6 9B B0                   JUMP_abs               $B09B
  >$B096  61                         PUSH_qimm   ; inline operand = 1
-  $B097  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $B097  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
  >$B09B  40                         LOADL_qimm   ; inline operand = 0
   $B09C  CF                         RETURN
 
@@ -8053,7 +8053,7 @@ VM bytecode disassembly
   $B7D7  D6 74 B8                   JUMP_abs               $B874
  >$B7DA  AC A7 85                   CALL_abs               $85A7 (view_selected_fief) {bytecode}
   $B7DD  8D 1B                      BYTE_PUSH_imm1         +27
-  $B7DF  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $B7DF  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $B7E3  40                         LOADL_qimm   ; inline operand = 0
   $B7E4  27                         STORE_quick   ; inline operand = 7
   $B7E5  D6 10 B8                   JUMP_abs               $B810

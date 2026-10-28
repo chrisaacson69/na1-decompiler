@@ -71,7 +71,7 @@ VM bytecode disassembly
   $8084  8E 05 B8                   PUSH_imm2              $B805 (msg_you_united_japan)
   $8087  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $808B  65                         PUSH_qimm   ; inline operand = 5
-  $808C  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $808C  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $8090  A4 4D 6F                   LOADL_abs              $6F4D (audio_wait_gate)
   $8093  D7 B8 80                   JUMPT_abs              $80B8
   $8096  AC 59 D7                   CALL_abs               $D759 (standard_delay) {bytecode}
@@ -139,7 +139,7 @@ VM bytecode disassembly
   $8116  D7 04 81                   JUMPT_abs              $8104
   $8119  D6 B1 81                   JUMP_abs               $81B1
  >$811C  66                         PUSH_qimm   ; inline operand = 6
-  $811D  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $811D  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $8121  8D 1A                      BYTE_PUSH_imm1         +26
   $8123  6B                         PUSH_qimm   ; inline operand = 11
   $8124  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
@@ -224,7 +224,7 @@ VM bytecode disassembly
  >$81B1  60                         PUSH_qimm   ; inline operand = 0
   $81B2  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
   $81B6  60                         PUSH_qimm   ; inline operand = 0
-  $81B7  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $81B7  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $81BB  40                         LOADL_qimm   ; inline operand = 0
   $81BC  A8 D3 7F                   STORE_abs              $7FD3 (ui_input_mode)
   $81BF  8A FF 00                   LOADL_imm2             $00FF
@@ -1341,7 +1341,7 @@ VM bytecode disassembly
   $89A8  41                         LOADL_qimm   ; inline operand = 1
   $89A9  A8 4D 6F                   STORE_abs              $6F4D (audio_wait_gate)
   $89AC  60                         PUSH_qimm   ; inline operand = 0
-  $89AD  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $89AD  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $89B1  AC AC 88                   CALL_abs               $88AC (render_boot_title_screens) {bytecode}
   $89B4  40                         LOADL_qimm   ; inline operand = 0
   $89B5  A8 E7 7F                   STORE_abs              $7FE7 (ui_timer_gate_flag_7fe7)
@@ -1758,7 +1758,7 @@ VM bytecode disassembly
   $8CC1  C4                         SCMPGT
   $8CC2  D8 22 8D                   JUMPF_abs              $8D22
   $8CC5  8D 1C                      BYTE_PUSH_imm1         +28
-  $8CC7  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $8CC7  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $8CCB  8E 5E BA                   PUSH_imm2              $BA5E (str_bid_for_fief_prompt)
   $8CCE  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8CD2  09                         LOADL_quick   ; inline operand = 9
@@ -2093,7 +2093,7 @@ VM bytecode disassembly
   $8F10  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_uprising_message) {bytecode}, $02
   $8F14  2A                         STORE_quick   ; inline operand = 10
   $8F15  8D 1E                      BYTE_PUSH_imm1         +30
-  $8F17  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $8F17  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $8F1B  0C                         LOADL_quick   ; inline operand = 12
   $8F1C  8B 1A                      BYTE_LOADR_imm1        +26
   $8F1E  B5                         MULT
@@ -3321,7 +3321,7 @@ VM bytecode disassembly
   $9790  D3                         BYTE_DEREF
   $9791  A8 5F 6F                   STORE_abs              $6F5F (selected_province_idx)
   $9794  8D 1E                      BYTE_PUSH_imm1         +30
-  $9796  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $9796  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $979A  AC 1E 8C                   CALL_abs               $8C1E (cur_flag_and_selected_ai_state5) {bytecode}
   $979D  D8 AF 97                   JUMPF_abs              $97AF
   $97A0  07                         LOADL_quick   ; inline operand = 7
@@ -4391,7 +4391,7 @@ VM bytecode disassembly
  >$9F11  0A                         LOADL_quick   ; inline operand = 10
   $9F12  D9 02 00 00 00 1F 9F 01 00 3B 9F 10 ... SWITCH_noncontig       count=2   ; .table 2 (key,target) + default (noncontiguous); SWITCH 0=>$9F1F 1=>$9F3B default=>$9F10
  >$9F1F  8D 1E                      BYTE_PUSH_imm1         +30
-  $9F21  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $9F21  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $9F25  8E 0B BF                   PUSH_imm2              $BF0B (msg_riot)
   $9F28  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9F2C  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
@@ -4400,7 +4400,7 @@ VM bytecode disassembly
   $9F35  AC F8 8F                   CALL_abs               $8FF8 (resolve_riot_event_on_listed_fiefs) {bytecode}
   $9F38  D6 10 9F                   JUMP_abs               $9F10
  >$9F3B  8D 1E                      BYTE_PUSH_imm1         +30
-  $9F3D  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $9F3D  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $9F41  8E 10 BF                   PUSH_imm2              $BF10 (msg_revolt)
   $9F44  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9F48  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
@@ -5293,7 +5293,7 @@ VM bytecode disassembly
   $A4E9  D7 F6 A4                   JUMPT_abs              $A4F6
   $A4EC  42                         LOADL_qimm   ; inline operand = 2
   $A4ED  A8 7B 6F                   STORE_abs              $6F7B (ai_planner_event_handler_select)
-  $A4F0  8A 00 9D                   LOADL_imm2             $9D00 (random_event_ravage_output_hidden_mark_weakness)
+  $A4F0  8A 00 9D                   LOADL_imm2             $9D00 (random_event_ravage_men_output_mark_weakness)
   $A4F3  D6 FD A4                   JUMP_abs               $A4FD
  >$A4F6  43                         LOADL_qimm   ; inline operand = 3
   $A4F7  A8 7B 6F                   STORE_abs              $6F7B (ai_planner_event_handler_select)
@@ -5693,7 +5693,7 @@ VM bytecode disassembly
 ; ============================================================
  >$A77D  AC A3 89                   CALL_abs               $89A3 (init_new_game_state) {bytecode}
   $A780  61                         PUSH_qimm   ; inline operand = 1
-  $A781  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $A781  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
  >$A785  40                         LOADL_qimm   ; inline operand = 0
   $A786  A8 79 6F                   STORE_abs              $6F79 (ai_turn_loop_redispatch_flag)
   $A789  AC 55 A4                   CALL_abs               $A455 (ai_strategic_turn_planner) {bytecode}
@@ -5710,7 +5710,7 @@ VM bytecode disassembly
   $A7A4  DA                         AND
   $A7A5  D7 AD A7                   JUMPT_abs              $A7AD
   $A7A8  61                         PUSH_qimm   ; inline operand = 1
-  $A7A9  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $A7A9  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
  >$A7AD  AC 55 A4                   CALL_abs               $A455 (ai_strategic_turn_planner) {bytecode}
  >$A7B0  A5 A1 6D                   BYTE_LOADL_abs         $6DA1 (ai_turn_flags)
   $A7B3  8C 80 00                   LOADR_imm2             $0080 (skip_vblank_wait)
@@ -5742,7 +5742,7 @@ VM bytecode disassembly
   $A7F4  DA                         AND
   $A7F5  D7 FD A7                   JUMPT_abs              $A7FD
   $A7F8  61                         PUSH_qimm   ; inline operand = 1
-  $A7F9  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $A7F9  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
  >$A7FD  A4 79 6F                   LOADL_abs              $6F79 (ai_turn_loop_redispatch_flag)
   $A800  D7 85 A7                   JUMPT_abs              $A785
   $A803  AC 42 A7                   CALL_abs               $A742 (shuffle_fief_turn_order_array) {bytecode}
@@ -5761,7 +5761,7 @@ VM bytecode disassembly
   $A826  DA                         AND
   $A827  D7 2F A8                   JUMPT_abs              $A82F
   $A82A  61                         PUSH_qimm   ; inline operand = 1
-  $A82B  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $A82B  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
  >$A82F  40                         LOADL_qimm   ; inline operand = 0
   $A830  A8 79 6F                   STORE_abs              $6F79 (ai_turn_loop_redispatch_flag)
   $A833  D6 06 A8                   JUMP_abs               $A806

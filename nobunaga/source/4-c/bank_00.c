@@ -48,7 +48,7 @@ word show_game_ending_and_play_again_prompt(void) {
         redraw_window(show_game_ending_and_play_again_prompt_congratulations_my_lord_3);    // $8076
         draw_message(msg_in_the_year_4d, current_game_year);    // $8080
         redraw_window(msg_you_united_japan);    // $8087
-        call_bank10_entry(5);    // $808C
+        play_audio(5);    // $808C
         if (!(audio_wait_gate)) {    // $8067
             standard_delay();    // $8096
         } else {
@@ -92,7 +92,7 @@ word show_game_ending_and_play_again_prompt(void) {
             local11 = (local11 + 1);    // $8112
         } while (((unsigned)local11 < (unsigned)4));
     } else {
-        call_bank10_entry(6);    // $811D
+        play_audio(6);    // $811D
         set_cursor(11, 26);    // $8124
         redraw_window(msg_game_over);    // $812B
         flash_cycle = 0;    // $8130
@@ -124,7 +124,7 @@ word show_game_ending_and_play_again_prompt(void) {
         } while (((unsigned)local11 < (unsigned)4));
     }
     palette_swap(0);    // $81B2
-    call_bank10_entry(0);    // $81B7
+    play_audio(0);    // $81B7
     ui_input_mode = 0;    // $81BC
     ui_input_sel_latch_7fdf = 255;    // $81C2
     while (1) {    // $81C5
@@ -548,7 +548,7 @@ word render_boot_title_screens(void) {
 
 word init_new_game_state(void) {
     audio_wait_gate = 1;    // $89A9
-    call_bank10_entry(0);    // $89AD
+    play_audio(0);    // $89AD
     render_boot_title_screens();    // $89B1
     ui_timer_gate_flag_7fe7 = 0;    // $89B5
     delay_loop_count = 50;    // $89BA
@@ -766,7 +766,7 @@ word auction_ownerless_fief_to_bidders(word owner_count) {
             if (get_province_ai_state(selected_province_idx)) {    // $8C95
                 if (!(rest_turns_remaining[selected_province_owner()])) {    // $8CAA
                     if ((province_table_live[selected_province_idx].gold > 0)) {    // $8CB5
-                        call_bank10_entry(28);    // $8CC7
+                        play_audio(28);    // $8CC7
                         message_display(str_bid_for_fief_prompt);    // $8CCE
                         draw_lord_name_salutation(*(byte*)(owner_ptr));    // $8CD5
                         draw_message(msg_would_you_like_to_bid_for_fief, (battle_defending_province + 1));    // $8CE1
@@ -907,7 +907,7 @@ word show_uprising_strengths_and_decide_winner(word attacker_strength, word loya
 
 word resolve_riot_uprising_contest(word fief) {
     fief_name_str = select_uprising_message(fief);    // $8F14
-    call_bank10_entry(AUDIO_CONFLICT);    // $8F17
+    play_audio(AUDIO_CONFLICT);    // $8F17
     rec = &province_table_live[fief];    // $8F23
     attacker_strength = (((sqrt_int(rec->output) + sqrt_int(rec->wealth)) + rng_mod(20)) + 10);    // $8F41
     defender_men = rec->men;    // $8F46
@@ -1525,7 +1525,7 @@ word resolve_revolt_event_on_listed_fiefs(void) {
         if ((*(byte*)(fief_list_ptr) != 255)) {    // $986E
             if (!(try_trigger_akechi_revolt(*(byte*)(fief_list_ptr)))) {    // $9785
                 selected_province_idx = *(byte*)(fief_list_ptr);    // $9791
-                call_bank10_entry(AUDIO_CONFLICT);    // $9796
+                play_audio(AUDIO_CONFLICT);    // $9796
                 if (cur_flag_and_selected_ai_state5()) {    // $978F
                     candidate_count = (candidate_count + 1);    // $97A2
                     append_candidate_priority1(*(byte*)(fief_list_ptr), (candidate_count - 1));    // $97A8
@@ -1899,10 +1899,10 @@ word decay_fief_list_wealth_and_output_disaster1(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9D00
-// $9D00 random_event_ravage_output_hidden_mark_weakness
+// $9D00 random_event_ravage_men_output_mark_weakness
 // (body @ $9D05)
 
-word random_event_ravage_output_hidden_mark_weakness(void) {
+word random_event_ravage_men_output_mark_weakness(void) {
     trigger_cutscene(CUTSCENE_RAVAGE);    // $9D07
     fief_list_ptr = 0x7BAD;    // $9D0E
     while ((*(byte*)(fief_list_ptr) != 255)) {    // $9D7B
@@ -2020,14 +2020,14 @@ word ai_event_build_two_batches_dispatch_or_announce(void) {
             default:
                 break;
             case 0:
-                call_bank10_entry(AUDIO_CONFLICT);    // $9F21
+                play_audio(AUDIO_CONFLICT);    // $9F21
                 message_display(msg_riot);    // $9F28
                 confirm_prompt();    // $9F2C
                 trigger_cutscene(CUTSCENE_AI_EVENT_23);    // $9F31
                 resolve_riot_event_on_listed_fiefs();    // $9F35
                 break;
             case 1:
-                call_bank10_entry(AUDIO_CONFLICT);    // $9F3D
+                play_audio(AUDIO_CONFLICT);    // $9F3D
                 message_display(msg_revolt);    // $9F44
                 confirm_prompt();    // $9F48
                 trigger_cutscene(CUTSCENE_AI_EVENT_25);    // $9F4D
@@ -2384,7 +2384,7 @@ word ai_strategic_turn_planner(void) {
             if (!(ai_planner_event_handler_select)) {    // $A4DE
                 if (!(rng_mod(4))) {    // $A4E4
                     ai_planner_event_handler_select = 2;    // $A4ED
-                    event_handler_fn = random_event_ravage_output_hidden_mark_weakness;    // $A4F3
+                    event_handler_fn = random_event_ravage_men_output_mark_weakness;    // $A4F3
                 } else {
                     ai_planner_event_handler_select = 3;    // $A4F7
                     event_handler_fn = ai_event_build_two_batches_dispatch_or_announce;    // $A4FA
@@ -2546,7 +2546,7 @@ word shuffle_fief_turn_order_array(void) {
 word vm_bootstrap(void) {
     while (1) {    // $A77D
         init_new_game_state();    // $A77D
-        call_bank10_entry(AUDIO_UI_CONFIRM);    // $A781
+        play_audio(AUDIO_UI_CONFIRM);    // $A781
         while (1) {    // $A785
             ai_turn_loop_redispatch_flag = 0;    // $A786
             ai_strategic_turn_planner();    // $A789
@@ -2554,7 +2554,7 @@ word vm_bootstrap(void) {
                 battle_defender_province_staging = -1;    // $A796
                 call_bank_wrap(2);    // $A79A
                 if (!((ai_turn_flags & 128))) {    // $A7A5
-                    call_bank10_entry(AUDIO_UI_CONFIRM);    // $A7A9
+                    play_audio(AUDIO_UI_CONFIRM);    // $A7A9
                 }
                 ai_strategic_turn_planner();    // $A7AD
             }
@@ -2568,7 +2568,7 @@ word vm_bootstrap(void) {
                 spawn_uprising_force_from_province((battle_staging_entry_flag_array ? 0 : 1));    // $A7E5
                 call_bank_wrap(2);    // $A7EA
                 if (!((ai_turn_flags & 128))) {    // $A7F5
-                    call_bank10_entry(AUDIO_UI_CONFIRM);    // $A7F9
+                    play_audio(AUDIO_UI_CONFIRM);    // $A7F9
                 }
             }
             if (ai_turn_loop_redispatch_flag) continue;    // $A800
@@ -2579,7 +2579,7 @@ word vm_bootstrap(void) {
                 if (!(ai_turn_loop_redispatch_flag)) break;    // $A818
                 call_bank_wrap(2);    // $A81C
                 if (!((ai_turn_flags & 128))) {    // $A827
-                    call_bank10_entry(AUDIO_UI_CONFIRM);    // $A82B
+                    play_audio(AUDIO_UI_CONFIRM);    // $A82B
                 }
                 ai_turn_loop_redispatch_flag = 0;    // $A830
             }

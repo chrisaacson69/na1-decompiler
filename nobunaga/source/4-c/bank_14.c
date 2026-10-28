@@ -149,8 +149,8 @@ L_81F5:
     goto L_811A;    // $8213
 L_8216:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8219
-    call_bank10_entry(*(byte*)((*(word*)(fp - 35) - 1)));    // $821E
+    play_audio(*(byte*)((*(word*)(fp - 35) - 1)));    // $821E
     goto L_811A;    // $8222
 L_8225:
-    return call_bank10_entry(*(byte*)((*(word*)(fp - 35) - 1)));    // $8225
+    return play_audio(*(byte*)((*(word*)(fp - 35) - 1)));    // $8225
 }

@@ -303,7 +303,7 @@ VM bytecode disassembly
   $821B  D1                         DEC
   $821C  D3                         BYTE_DEREF
   $821D  B3                         PUSHL
-  $821E  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
+  $821E  E9 03 CA 02                CALL_abs_imm1          $CA03 (play_audio) {bytecode}, $02
   $8222  D6 1A 81                   JUMP_abs               $811A
  >$8225  CF                         RETURN
 

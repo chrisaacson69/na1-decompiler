@@ -6,7 +6,7 @@
 # function name -> { arg_index = enum_table_name }  (arg_index is 0-based, pop/print order = arg1,arg2,...)
 [arg_enums]
 trigger_cutscene  = { 0 = "cutscene" }
-call_bank10_entry = { 0 = "audio_cue" }
+play_audio = { 0 = "audio_cue" }
 
 # cutscene/animation IDs (run_cutscene, bank 14) — id -> readable constant
 [cutscene]
@@ -45,7 +45,7 @@ call_bank10_entry = { 0 = "audio_cue" }
 32 = "CUTSCENE_REST"
 33 = "CUTSCENE_HIRE"
 
-# bank-10 audio cue IDs (call_bank10_entry) — id -> readable constant.
+# bank-10 audio cue IDs (play_audio) — id -> readable constant.
 # Audio is "play and listen" to confirm; only the high-confidence ones named, rest left numeric. [P] throughout.
 [audio_cue]
 1  = "AUDIO_UI_CONFIRM"               # [P] common: after init, sound-toggle, result jingle, vm_bootstrap

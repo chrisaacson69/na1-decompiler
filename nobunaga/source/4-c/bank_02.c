@@ -94,10 +94,10 @@ word prompt_yes_no(void) {
     }
     set_cursor_sprite(0);    // $824E
     if ((local11 == 64)) {    // $824D
-        char_advance_width(89);    // $825B
+        put_char(89);    // $825B
         local11 = 1;    // $8260
     } else {
-        char_advance_width(78);    // $8265
+        put_char(78);    // $8265
         local11 = 0;    // $8269
     }
     clear_rect_left_lower();    // $826B
@@ -823,7 +823,7 @@ word draw_terrain_feature_if_valid(word col, word row) {
 word draw_combat_day_header(word day) {
     set_cursor(2, 5);    // $8B40
     draw_current_year();    // $8B44
-    char_advance_width(10);    // $8B48
+    put_char(10);    // $8B48
     draw_current_season();    // $8B4C
     return draw_message(msg_day_2d, day);    // $8B57
 }
@@ -1281,7 +1281,7 @@ word paged_flee_fief_list_display(void) {
         fief_list_ptr = (fief_list_ptr + 1);    // $9146
         draw_message(paged_flee_fief_list_display_fmt_2d, (*(byte*)((fief_list_ptr - 1)) + 1));    // $914E
         page_count = (page_count + 1);    // $9154
-        char_advance_width((((unsigned)page_count % (unsigned)3) ? 32 : 10));    // $9162
+        put_char((((unsigned)page_count % (unsigned)3) ? 32 : 10));    // $9162
         if ((page_count == 6)) {    // $9161
             if ((*(byte*)(fief_list_ptr) != 255)) {    // $916C
                 if ((prompt_hit_any_key_return_button() == 2)) {    // $9175
@@ -1492,7 +1492,7 @@ word announce_battle_outcome_retreat_or_won(word fief, word outcome) {
         draw_lord_name_salutation(fief);    // $9455
         redraw_window(str_battle_outcome_msgs);    // $945C
         redraw_window(conclusion_msg);    // $9461
-        call_bank10_entry((is_winner ? 4 : 3));    // $946F
+        play_audio((is_winner ? 4 : 3));    // $946F
         if (audio_wait_gate) {    // $946E
             while (1) {    // $9479
                 phi_ret_94f5 = syscall_audio_control(1, 2);    // $9480
@@ -1552,7 +1552,7 @@ word announce_combat_side_daimyo_and_status(word attack_outcome, word enemy_unit
         } else {
             message_display(str_position_unit_prompt);    // $9522
             draw_daimyo_name(fief);    // $9527
-            char_advance_width(10);    // $952C
+            put_char(10);    // $952C
             redraw_window(*(word*)((((((attack_outcome - 1) << 1) + 4) << 1) + combat_message_table)));    // $953B
         }
         announce_side = (announce_side ^ 1);    // $9543
@@ -1583,7 +1583,7 @@ word announce_combat_side_daimyo_and_status(word attack_outcome, word enemy_unit
         if (get_province_ai_state(fief)) {    // $9569
             message_display(str_position_unit_prompt_alias);    // $957A
             draw_daimyo_name(fief);    // $957F
-            char_advance_width(10);    // $9584
+            put_char(10);    // $9584
             redraw_window(mem_B1A6);    // $958B
             if ((attack_outcome == 2)) {    // $9577
                 clear_rect_left_lower_alt();    // $9595
@@ -2071,7 +2071,7 @@ word deploy_both_sides_units_loop(void) {
 // (body @ $9B4F)
 
 word validate_phase_unit_cells_draw_cursor(word enemy_unit_slot) {
-    call_bank10_entry((wrap_index_0_2_to_zero(cur_combat_unit_slot) + 31));    // $9B59
+    play_audio((wrap_index_0_2_to_zero(cur_combat_unit_slot) + 31));    // $9B59
     enemy_side = (cur_combat_side ^ 1);    // $9B62
     target_col = *(byte*)(unit_col_ptr(enemy_side, enemy_unit_slot));    // $9B6A
     target_row = *(byte*)(unit_row_ptr(enemy_side, enemy_unit_slot));    // $9B72
@@ -3007,7 +3007,7 @@ word player_move_unit_with_occupancy_check_loop(void) {
 word combat_command_select_target_resolve_attack(void) {
     own_province = get_battle_side_province(cur_combat_side);    // $AA07
     message_display(mem_B4F4);    // $AA0B
-    char_advance_width(10);    // $AA10
+    put_char(10);    // $AA10
     if ((is_no_province_selected() || (ai_turn_planner_resume_flag == 1))) {    // $AA00
         phi_aa25_0 = mem_B1D4;    // $AA22
         redraw_window(phi_aa25_0);    // $AA25
@@ -3054,7 +3054,7 @@ word combat_command_select_target_resolve_attack(void) {
 word combat_flee_to_fief_command(void) {
     source_fief = get_battle_side_province(cur_combat_side);    // $AAB3
     message_display(mem_B4F6);    // $AAB7
-    char_advance_width(10);    // $AABC
+    put_char(10);    // $AABC
     if (cur_combat_unit_slot) {    // $AAAC
         redraw_window(mem_B1B8);    // $AAC9
         clear_rect_left_lower_alt();    // $AACD
@@ -3441,7 +3441,7 @@ word battle_init_driver(void) {
     ui_input_mode = 3;    // $AFE7
     sram_save_checksum = (rng_mod(4) + 53);    // $AFF1
     repaint_screen();    // $AFF4
-    call_bank10_entry(AUDIO_BATTLE_START);    // $AFF8
+    play_audio(AUDIO_BATTLE_START);    // $AFF8
     map_populate();    // $AFFC
     render_combat_map_screen();    // $AFFF
     result = battle_init_defender();    // $B005
