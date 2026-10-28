@@ -40,7 +40,7 @@ _cluster = import_module("cluster-anon-subs")
 # read the line above each to recover (stub addr, name) — anon subs (no such line) are skipped.
 BODY_RE = re.compile(r'^// \(body @ \$[0-9A-Fa-f]{4}\)', re.M)
 NAMED_HDR_RE = re.compile(r'^// \$([0-9A-Fa-f]{4}) (\S.*)$')
-SLOT_RE = re.compile(r'\b(arg[1-4]|local\d+)\b')
+SLOT_RE = re.compile(r'\b(arg\d+|local\d+)\b')     # argN: the sub's real args (M3), not a fixed four
 ANON_RE = re.compile(r'^(?:sub|helper)_[0-9A-Fa-f]+$')
 # Far-frame spill locals the disassembler renders raw: *(word|byte*)(fp ± N) / (fp ± N).
 FAR_RE = re.compile(r'\*\((?:word|byte)\*\)\(fp ([+-]) (\d+)\)|\(fp ([+-]) (\d+)\)')
@@ -70,8 +70,8 @@ def recorded_slots(bank):
     per-SLOT done-tracking: a sub WITH a section is still a target if it has new far slots."""
     text = TOML.read_text(encoding="utf-8")
     sec_re = re.compile(rf'\[vars\.bank{bank}\."0x([0-9A-Fa-f]+)"\]')
-    key_re = re.compile(r'^\s*(?:"(fp[+-]\d+)"|(arg[1-4]|local\d+))\s*=')
-    pos_re = re.compile(r'^\s*#\s*((?:fp[+-]\d+)|arg[1-4]|local\d+)\s+left positional')
+    key_re = re.compile(r'^\s*(?:"(fp[+-]\d+)"|(arg\d+|local\d+))\s*=')
+    pos_re = re.compile(r'^\s*#\s*((?:fp[+-]\d+)|arg\d+|local\d+)\s+left positional')
     out, cur = {}, None
     for line in text.splitlines():
         m = sec_re.search(line)
@@ -111,7 +111,7 @@ def parse_named_subs(bank, far=False, recorded=None):
         if far:
             slots = [k for k in far_slots(chunk) if k not in recorded.get(addr, set())]
         else:
-            slots = sorted(set(SLOT_RE.findall(chunk)), key=_slot_key)
+            slots = sorted(set(SLOT_RE.findall(chunk)) - recorded.get(addr, set()), key=_slot_key)
         if slots:
             out.append({"addr": addr, "name": name, "slots": slots})
     return out
@@ -250,9 +250,11 @@ def main():
         named = parse_named_subs(a.bank, far=True, recorded=recorded_slots(a.bank))
         targets = list(named)                            # per-slot done-tracking already applied
     else:
-        named = parse_named_subs(a.bank)
-        done = done_addrs(a.bank)
-        targets = [s for s in named if s["addr"] not in done]
+        # Per-SLOT done-tracking, as --far does: a walked sub comes back only for slots it has not
+        # recorded (named, or '# left positional'). Section-exists tracking hid every slot a later
+        # engine fix made visible (arg5+, once the fixed arg1..arg4 went).
+        named = parse_named_subs(a.bank, recorded=recorded_slots(a.bank))
+        targets = list(named)
     if a.name_match:
         rx = re.compile(a.name_match)
         targets = [s for s in targets if rx.search(s["name"])]

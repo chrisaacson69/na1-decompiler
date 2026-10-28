@@ -37,7 +37,7 @@ from walk_guard import snapshot_decompiled, find_guard_violations
 ROOT = Path(__file__).resolve().parent.parent
 TOML = ROOT / "mesen-labels.toml"
 DECOMPILED = ROOT / "source" / "4-c"   # structured C (stage 4)
-SLOT_RE = re.compile(r'^(arg[1-4]|local\d+|fp[+-]\d+)$')   # positional OR far-frame (fp±N)
+SLOT_RE = re.compile(r'^(arg\d+|local\d+|fp[+-]\d+)$')   # positional OR far-frame (fp±N)
 
 
 def die(msg, code=2):
@@ -100,8 +100,8 @@ def render_block(bank, v):
     return addr, n_named, head + "\n" + "\n".join(body) + "\n"
 
 
-SLOT_KEY_RE = re.compile(r'^\s*(?:"(fp[+-]\d+)"|(arg[1-4]|local\d+))\s*=')
-SLOT_POS_COMMENT_RE = re.compile(r'^\s*#\s*((?:fp[+-]\d+)|arg[1-4]|local\d+)\s+left positional')
+SLOT_KEY_RE = re.compile(r'^\s*(?:"(fp[+-]\d+)"|(arg\d+|local\d+))\s*=')
+SLOT_POS_COMMENT_RE = re.compile(r'^\s*#\s*((?:fp[+-]\d+)|arg\d+|local\d+)\s+left positional')
 
 
 def section_span(text, bank, addr):
