@@ -230,10 +230,10 @@ source = "naming census 2026-10-28"
 status = "open"
 
 [[revisit]]
-item   = "Discover walked only the fixed bank's natives. Bank 2 $8003 (tactical_hex_step) is native 6502 in a bytecode bank, reached by CALL {native}; it is the only native call target below $C000 in NA1's bytecode, but natives reached from 6502 code in the switchable banks (and the non-bytecode banks 3-9, 11-13) were never censused."
+item   = "Discover walked only the fixed bank's natives. Bank 2 $8003 (tactical_hex_step) is native 6502 in a bytecode bank, reached by CALL {native}; it is the only native call target below $C000 in NA1's bytecode, but natives reached from 6502 code in the switchable banks (and the non-bytecode banks 3-9, 11-13) were never censused. CLOSED 2026-10-28: censused both ways. Traces: every switchable-window PC in the 14 Mesen traces matched to its bank by its instruction bytes (176 distinct, 0 from RAM); minus the bytecode stubs and the $8000 entry JMPs, the only native code executed is bank 2 $8003-$8085 (tactical_hex_step, 70 PCs). Static: the fixed bank's 7 direct JSR/JMP into $8000-$BFFF are 2 bank-entry calls (reset $C0D7, syscall_call_bank $C343), 3 inside bytecode bytes, 2 inside tables. The sound bank (10) holds one bytecode routine (play_audio_by_id), its stream table and the streams; the native music player (music_note_to_period, music_set_pitch, music_set_duration, syscall_audio_*) is in the fixed bank, already walked. The 5 bank entry JMPs are labelled (784dad9)."
 phase  = "discover"
 source = "naming 2026-10-28"
-status = "open"
+status = "closed"
 
 [next]
 session = "naming, continued: decide the immediate-rendering fix (emu-harness engine, family-wide) and whether to run the var walk (agents); then the top-down verify pass. (The status tool starts at discover: the switchable-bank native census contests its gate.)"
