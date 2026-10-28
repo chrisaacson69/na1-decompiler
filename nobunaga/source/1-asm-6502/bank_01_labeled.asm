@@ -1,6 +1,6 @@
 .base $8000
 
-b01_8000:   jmp $b89b                   ; 4000:  4c 9b b8
+bank1_entry:   jmp $b89b                   ; 4000:  4c 9b b8
 prompt_message_and_redraw:   jsr $e823                   ; 4003:  20 23 e8
 b01_8006:   brk                         ; 4006:  00
 b01_8007:   brk                         ; 4007:  00

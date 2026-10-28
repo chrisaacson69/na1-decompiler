@@ -1429,6 +1429,7 @@ prg_bank_count = 16        # 256 KB total
 "0xBE5D" = { name = "effect_assign_fmt_3d_2", comment = "[ROM-STR] \"%3d\" (effect_assign, 2nd of 4)" }
 "0xBE61" = { name = "effect_assign_fmt_3d_3", comment = "[ROM-STR] \"%3d\" (effect_assign, 3rd of 4)" }
 "0xBE65" = { name = "effect_assign_fmt_3d_4", comment = "[ROM-STR] \"%3d\" (effect_assign, 4th of 4)" }
+"0x8000" = { name = "bank1_entry", comment = "[HIGH 2026-10-28] Bank 1 entry point: 3 bytes, JMP $B89B (ai_per_fief_command_driver), the target call_bank_wrap(1) reaches. Read from the ROM bytes; labelled like bank0_entry." }
 
 [prg.bank2]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
@@ -1669,12 +1670,14 @@ prg_bank_count = 16        # 256 KB total
 # --- bank-02 label-walk batch via label-walk-apply.py (1 CONF) ---
 # propose@C -> independent verify@bytecode; names are the verifier's. 
 "0x8003" = { name = "tactical_hex_step", comment = "[HIGH CONFIRMED] NATIVE 6502 (bank 2, $8003-$8085), called from bytecode via CALL_abs_imm1 {native}. tactical_hex_step(&x, &y, dir): one step on the 11x5 offset-column hex grid of the tactical map (x 0..10, y 0..4). dir 1 = y+1, 4 = y-1; 0/2/3/5 = x-1/x+1/x-1/x+1, then y moves or not by the parity of the new x (down-left, down-right, up-left, up-right). Returns 1 if the step stays on the map, 0 at an edge; a diagonal can move x and then fail on y, leaving x changed. Caller validate_dir_code_and_dispatch maps keypad '1','2','3','7','8','9' to dir 0-5." }
+"0x8000" = { name = "bank2_entry", comment = "[HIGH 2026-10-28] Bank 2 entry point: 3 bytes, JMP $AFE1 (battle_init_driver), the target call_bank_wrap(2) reaches. Read from the ROM bytes; labelled like bank0_entry." }
 
 [prg.bank10]
 # AUDIO bytecode (1 sub). Entry $8000 = native stub (JMP $8003; JSR $E823 vm_entry) -> this bytecode.
 # Reached via call_bank10_entry ($CA03) / call_bank_wrap(10). Folded into the corpus 2026-06-10 (ch.19).
 "0x8003" = { name = "play_audio_by_id", comment = "[HIGH CONFIRMED 2026-06-10] Bank-10 audio entry (body of call_bank10_entry). Gated on audio_wait_gate==1. Dispatches on sound_request_id ($7FE5): >64 = no-op; <27 = song (load 3 voices from the $8617 table at id*3, audio_control(1..3,1)); 27-63 = single SFX voice (load 1 from $8617[id], channel = byte&4). The sound/music trigger bytecode requests via call_bank10_entry." }
 "0x8617" = { name = "play_audio_by_id_stream_ptrs", comment = "[ROM-DATA] word pointer table read by play_audio_by_id ($8090, $80D9, $8110, ...): the audio streams in bank 10" }
+"0x8000" = { name = "bank10_entry", comment = "[HIGH 2026-10-28] Bank 10 entry point: 3 bytes, JMP $8003 (play_audio_by_id), the target call_bank_wrap(10) reaches. Read from the ROM bytes; labelled like bank0_entry." }
 
 [prg.bank14]
 # AI-TURN CUTSCENE / ANIMATION engine (3 subs). Entry $8000 = native stub (JMP $80AD; JSR $E823 vm_entry).
@@ -1683,6 +1686,7 @@ prg_bank_count = 16        # 256 KB total
 "0x801D" = { name = "draw_sprite_grid", comment = "[HIGH CONFIRMED 2026-06-10] Renders a rectangular block of OAM sprites: reads tile/attr data from SRAM (syscall16_sram_wrap), then loops rows x cols calling syscall_set_sprite stepping 8px per col/row from base (arg2,arg3), advancing the OAM index; ends with wait_for_nmi. The cutscene engine's multi-sprite blit primitive." }
 "0x80AD" = { name = "run_cutscene", comment = "[HIGH CONFIRMED 2026-06-10] The AI-turn cutscene SCRIPT INTERPRETER. Reads a 5-byte descriptor at cutscene_id*5 + cutscene_table ($AF80), loads its palette (32 entries) + CHR (ppu_upload_block), then runs a command stream via a big switch: set/move position, draw_sprite_grid, cutscene_delay, loop (counter at fp-39), clear-all-sprites, play audio via call_bank10_entry, and end. Driven by trigger_cutscene ($E80C)." }
 "0xAF80" = { name = "cutscene_table", comment = "[MED 2026-06-10] Bank-14 cutscene descriptor table: 5 bytes/entry indexed by cutscene_id ($7FCB). Per entry: SRAM source bank + data pointers (palette/CHR/script). Read by run_cutscene ($80AD)." }
+"0x8000" = { name = "bank14_entry", comment = "[HIGH 2026-10-28] Bank 14 entry point: 3 bytes, JMP $80AD (run_cutscene), the target call_bank_wrap(14) reaches. Read from the ROM bytes; labelled like bank0_entry." }
 
 [prg.bank4]
 

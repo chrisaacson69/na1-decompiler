@@ -1,6 +1,6 @@
 .base $8000
 
-b02_8000:   jmp $afe1                   ; 8000:  4c e1 af
+bank2_entry:   jmp $afe1                   ; 8000:  4c e1 af
 tactical_hex_step:   ldx #$00                    ; 8003:  a2 00
 b02_8005:   ldy #$07                    ; 8005:  a0 07
 b02_8007:   lda (vm_sp_lo),y                 ; 8007:  b1 02
