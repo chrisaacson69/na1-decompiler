@@ -115,7 +115,7 @@ prg_bank_count = 16        # 256 KB total
 "0x6E15" = { name = "fief_to_daimyo_map",   comment = "17-byte array, position i = current owner-daimyo idx for fief i+1 (1-based). Found 2026-05-25 via SRAM cross-reference. Initial state: identity (fief i+1 owned by daimyo i). After conquests, values change — e.g. when Tokugawa took Owari, position 16 changed from 16 (Oda) to 7 (Tokugawa). Daimyos whose value doesn't appear anywhere have lost their home; they remain in daimyo_table_17 as 'wandering' (status=$01 in chapter 7 terms, vs $00 for fief-holding lords)." }
 "0x7515" = { name = "zealot_uprising_slot", comment = "Province-record-format slot (26 bytes, idx=50) for the zealot/Ikko-Ikki uprising force when it spawns. Uses standard 26-byte province record layout so it slots into combat engine without special-casing. Distinguishing markers: header=9999 (special), extreme loyalty/morale (1300/1516 observed), tiny skill/arms (4/4). Cleared after combat resolution. Spawn check likely lives in bank-0 season-turnover code." }
 "0x7001" = { name = "province_table_live",  comment = "AUTHORITATIVE live working province table (chapter 9 §4 reconciliation). 17 records x 26 bytes for the 17-fief scenario. Confirmed field layout (offsets, all 16-bit LE since loadA_ind_word reads low-byte-first): +0=gold, +2=debt, +4=town, +6=rice, +8=output, +10=dams, +12=loyalty, +14=wealth, +16=men, +18=morale, +20=skill, +22=arms, +24=header (base koku, the development ceiling). Record N is at $7001 + N*26." }
-"0x752F" = { name = "daimyo_table", comment = "Daimyo records, 7 bytes each, for both scenarios (17 in the 17-fief, 50 in the 50-fief: traces/EzoBattle.dmp has record 49 = Shimazu, renamed 2026-10-28 from daimyo_table_17). Each: +0 age, +1 Health, +2 Drive, +3 Luck, +4 Charisma, +5 IQ, +6 status/generated-flag. Index parallel to daimyo_name_table at $77A8. Tokugawa is record 7 at $7560. **+6 (status) = the ORIGINAL-vs-GENERATED flag** (0 = original scenario daimyo, 1 = generated/replacement): set to 1 by assign_unique_daimyo_face_code ($DB97) on succession, and read by draw_daimyo_portrait ($E76F) to choose preset (dedicated) vs composite portrait. 50-fief records are the parallel daimyo_defaults table at bank-3 $9532; live SRAM records load from there at new-game." }
+"0x752F" = { name = "daimyo_table", comment = "Daimyo records, 7 bytes each, for both scenarios: 17 in the 17-fief, 53 in the 50-fief (assign_unique_daimyo_face_code bounds its scan at 53 when scenario_fief_count == 50; traces/EzoBattle.dmp has record 49 = Shimazu). Renamed 2026-10-28 from daimyo_table_17. Each: +0 age, +1 Health, +2 Drive, +3 Luck, +4 Charisma, +5 IQ, +6 status/generated-flag. Index parallel to daimyo_name_table at $77A8. Tokugawa is record 7 at $7560. **+6 (status) = the ORIGINAL-vs-GENERATED flag** (0 = original scenario daimyo, 1 = generated/replacement): set to 1 by assign_unique_daimyo_face_code ($DB97) on succession, and read by draw_daimyo_portrait ($E76F) to choose preset (dedicated) vs composite portrait. 50-fief records are the parallel daimyo_defaults table at bank-3 $9532; live SRAM records load from there at new-game." }
 "0x7560" = { name = "daimyo_rec_tokugawa",  comment = "Player slot in 17-fief scenario. Record 7 of daimyo_table_17. Format: age + H + D + L + Ch + IQ + status (7 bytes)." }
 "0x77A8" = { name = "daimyo_name_table",    comment = "17-fief daimyo names — 17 names x 9 bytes (8 ASCII chars + null pad). Indices parallel to daimyo_table_17. Order in 17-fief scenario: Hatakeyama, Uesugi, Hojo, Honganji, Asakura, Anekoji, Imagawa, Tokugawa, Iera, Tsutsui, Asai, Rokkaku, Kitabatake, Ashikaga, Miyoshi, Takeda, Oda. WHEN A DAIMYO IS DISPLACED AND REGENERATED (via zealot conquest, etc.), this entry is overwritten — sometimes cleanly (e.g. 'Iera' -> 'Saito'), sometimes with partial syllable-overwrite producing garbled names like 'Sate\\0ui' (from 'Tsutsui'). The name regenerator may use a clean-name table with a syllable-stitch fallback." }
 "0x7C00" = { name = "map_tile_data",        comment = "Strategic-map background tile indices. ~558 bytes covering the 18x31 map grid." }
@@ -2961,4 +2961,31 @@ arg1 = { name = "current_value", comment = "[HIGH] pct_op(arg1, math32_2arg(arg4
 arg2 = { name = "incoming_value", comment = "[HIGH] pct_op(arg2|1, math32_2arg(arg3,arg4)) @$DA32: base weighted by arg3's share; callers push rng-rolled stat or *local9" }
 arg3 = { name = "incoming_weight", comment = "[MED] math32_2arg 1st arg @$DA2C: 100*arg3/(arg3+arg4) weights arg2; caller @$DF99 pushes war_attacker_men. Result capped by arg5 (fp+$13)" }
 arg4 = { name = "current_weight", comment = "[MED] math32_2arg 1st arg @$DA3C: 100*arg4/(arg3+arg4) weights arg1; caller @$DF96 pushes war_defender_men" }
+
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 10 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xDA7D"]
+# set_marriage_relation
+local10 = { name = "defender_owner", comment = "[HIGH] STORE_quick 10 @$DA8D = fief_owner($6F63 battle_defending_province); UCMPLT vs local11 picks row/col of relations_matrix $6193 (*54)" }
+local11 = { name = "selected_owner", comment = "[HIGH] STORE_quick 11 @$DA85 = selected_province_owner() $D77E; the other daimyo of the pair, row or col of relations_matrix[r*54+c]=90" }
+
+[vars.bank15."0xDAAB"]
+# load_daimyo_relation_row
+arg1 = { name = "fief", comment = "[MED] LOADL_quick 12 <<3 + $8300/$8004 SRAM row for syscall16; callers push $6F63 battle_defending_province or $6F5F selected_province_idx" }
+
+[vars.bank15."0xDB4B"]
+# draw_owner_name
+arg1 = { name = "fief", comment = "[HIGH] LOADL_quick 12 indexes province_ai_state $6CF7 (!=$FF) and PUSH_quick 12 -> fief_owner $D772; caller pushes $6F57 province" }
+
+[vars.bank15."0xDB6E"]
+# draw_province_lord_name
+arg1 = { name = "fief", comment = "[HIGH] LOADL_quick 12 indexes province_ai_state $6CF7, PUSH_quick 12 -> fief_owner $D772; callers push $6F5F selected_province_idx" }
+
+[vars.bank15."0xDB97"]
+# assign_unique_daimyo_face_code
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 -> fief_to_daimyo_record_addr $D7DA (+6 byte=1) and -> fief_owner $D772 for the face table store" }
+local8 = { name = "is_unique", comment = "[HIGH] STORE_quick 8 =1 @$DBE1 before scan, =0 on table match @$DBF2; JUMPF @$DBFD retries rng draw while 0" }
+local9 = { name = "daimyo_count", comment = "[HIGH] STORE_quick 9 @$DBDD = 53 if scenario_fief_count $6D9D==50 else 17; UCMPLT bound for local11 scan @$DBF7" }
+local10 = { name = "face_code", comment = "[HIGH] STORE_quick 10 @$DBCC = 4 rng_mod(5) digits *1,5,25,125; compared to $6EB1 table, POPSTORE to table[fief_owner] @$DC0C" }
+local11 = { name = "i", comment = "[HIGH] STORE_quick 11 =0 @$DBDF, INC @$DBF4, LSHIFT1 index into daimyo_face_code_table $6EB1 while < local9" }
 

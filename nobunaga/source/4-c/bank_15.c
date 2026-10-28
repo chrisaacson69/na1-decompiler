@@ -1456,10 +1456,10 @@ word set_pact_relation(void) {
 // (body @ $DA82)
 
 word set_marriage_relation(void) {
-    local11 = selected_province_owner();    // $DA85
-    local10 = fief_owner(battle_defending_province);    // $DA8D
-    dsel_daa1 = ((unsigned)local11 < (unsigned)local10);    // $DAA1
-    relations_matrix[((dsel_daa1 ? (local10 * 54) : (local11 * 54)) + (dsel_daa1 ? local11 : local10))] = 90;    // $DAA9
+    selected_owner = selected_province_owner();    // $DA85
+    defender_owner = fief_owner(battle_defending_province);    // $DA8D
+    dsel_daa1 = ((unsigned)selected_owner < (unsigned)defender_owner);    // $DAA1
+    relations_matrix[((dsel_daa1 ? (defender_owner * 54) : (selected_owner * 54)) + (dsel_daa1 ? selected_owner : defender_owner))] = 90;    // $DAA9
     return 90;    // $DAAA
 }
 
@@ -1467,8 +1467,8 @@ word set_marriage_relation(void) {
 // $DAAB load_daimyo_relation_row
 // (body @ $DAB0)
 
-word load_daimyo_relation_row(word arg1) {
-    syscall16_sram_wrap(4, ((arg1 << 3) + ((scenario_fief_count == 17) ? relation_sram_8300 : relation_sram_base)), deduped_owner_list, 8);    // $DACF
+word load_daimyo_relation_row(word fief) {
+    syscall16_sram_wrap(4, ((fief << 3) + ((scenario_fief_count == 17) ? relation_sram_8300 : relation_sram_base)), deduped_owner_list, 8);    // $DACF
     return 0x6F4F;    // $DAD6
 }
 
@@ -1519,10 +1519,10 @@ L_DB4A:
 // $DB4B draw_owner_name
 // (body @ $DB50)
 
-word draw_owner_name(word arg1) {
-    phi_ret_db6d = (province_ai_state[arg1] != 255);    // $DB5A
+word draw_owner_name(word fief) {
+    phi_ret_db6d = (province_ai_state[fief] != 255);    // $DB5A
     if (phi_ret_db6d) {    // $DB5A
-    phi_ret_db6d = redraw_window(daimyo_name_table[fief_owner(arg1)]);    // $DB69
+    phi_ret_db6d = redraw_window(daimyo_name_table[fief_owner(fief)]);    // $DB69
     }
 L_DB6D:
     return phi_ret_db6d;    // $DB6D
@@ -1532,9 +1532,9 @@ L_DB6D:
 // $DB6E draw_province_lord_name
 // (body @ $DB73)
 
-word draw_province_lord_name(word arg1) {
-    if ((province_ai_state[arg1] != 255)) {    // $DB7D
-    phi_db92_0 = daimyo_name_table[fief_owner(arg1)];    // $DB8C
+word draw_province_lord_name(word fief) {
+    if ((province_ai_state[fief] != 255)) {    // $DB7D
+    phi_db92_0 = daimyo_name_table[fief_owner(fief)];    // $DB8C
     } else {
     phi_db92_0 = msg_no_lord;    // $DB8F
     }
@@ -1547,26 +1547,26 @@ L_DB92:
 // $DB97 assign_unique_daimyo_face_code
 // (body @ $DB9C)
 
-word assign_unique_daimyo_face_code(word arg1) {
-    fief_to_daimyo_record_addr(arg1)->status = 1;    // $DBA4
-    local8 = 0;    // $DBA6
+word assign_unique_daimyo_face_code(word fief) {
+    fief_to_daimyo_record_addr(fief)->status = 1;    // $DBA4
+    is_unique = 0;    // $DBA6
 L_DBA7:
-    local10 = ((((rng_mod(5) * 125) + (rng_mod(5) * 25)) + (rng_mod(5) * 5)) + rng_mod(5));    // $DBCC
-    local9 = ((scenario_fief_count == 50) ? 53 : 17);    // $DBDD
-    local11 = 0;    // $DBDF
-    local8 = 1;    // $DBE1
+    face_code = ((((rng_mod(5) * 125) + (rng_mod(5) * 25)) + (rng_mod(5) * 5)) + rng_mod(5));    // $DBCC
+    daimyo_count = ((scenario_fief_count == 50) ? 53 : 17);    // $DBDD
+    i = 0;    // $DBDF
+    is_unique = 1;    // $DBE1
     goto L_DBF6;    // $DBE2
 L_DBE5:
-    if ((daimyo_face_code_table[local11] == local10)) {    // $DBEE
-    local8 = 0;    // $DBF2
+    if ((daimyo_face_code_table[i] == face_code)) {    // $DBEE
+    is_unique = 0;    // $DBF2
     }
 L_DBF3:
-    local11 = (local11 + 1);    // $DBF5
+    i = (i + 1);    // $DBF5
 L_DBF6:
-    if (((unsigned)local11 < (unsigned)local9)) goto L_DBE5;    // $DBF9
-    if (!(local8)) goto L_DBA7;    // $DBFD
-    daimyo_face_code_table[fief_owner(arg1)] = local10;    // $DC0C
-    return local10;    // $DC0D
+    if (((unsigned)i < (unsigned)daimyo_count)) goto L_DBE5;    // $DBF9
+    if (!(is_unique)) goto L_DBA7;    // $DBFD
+    daimyo_face_code_table[fief_owner(fief)] = face_code;    // $DC0C
+    return face_code;    // $DC0D
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DC0E
