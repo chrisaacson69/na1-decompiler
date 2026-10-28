@@ -2572,6 +2572,9 @@ local5 = { name = "dedup_buf", comment = "[HIGH] base byte of local dedup scratc
 [vars.bank15."0xDC88"]
 # read_map_cell
 "fp-1" = { name = "cell", comment = "[HIGH] 1-byte dest buffer: syscall16_sram_wrap(4,src,(fp-1),1) reads the map cell byte into it, then return *(byte*)(fp-1)" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "col", comment = "[HIGH] LOADR_quick 12 added unscaled to mapid*55+row*11 + $A57E: column in 11-wide row; caller $9BC5 pushes *unit_col_ptr last (arg1)" }
+arg2 = { name = "row", comment = "[HIGH] LOADL_quick 13 * 11 (LOADR_qimm 11, MULT) = row stride in cell offset; caller $9BBD pushes *unit_row_ptr first (arg2)" }
 
 [vars.bank15."0xD134"]
 # ui_helper_d134
@@ -2587,6 +2590,9 @@ local5 = { name = "dedup_buf", comment = "[HIGH] base byte of local dedup scratc
 "fp-13" = { name = "conv_buf", comment = "[HIGH] Scratch conversion buffer: address taken (fp-13) as num_to_ascii dest / atoi_decimal scratch for the converted number." }
 "fp-3" = { name = "fmt_cursor", comment = "[HIGH] Format-string read cursor: init from arg1, incremented and dereferenced to read each format char/spec byte." }
 "fp-1" = { name = "ch", comment = "[HIGH] Current format char byte: loaded from cursor, tested vs '%'(37)/'.'(46), fed to is_digit/to_upper switch." }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "arg_list", comment = "[HIGH] Packed arg block: first word DEREF -> fmt cursor $FD, then +2 copied to vararg ptr $E9; caller draw_message pushes LEAL_far $000B last" }
+arg2 = { name = "dst", comment = "[HIGH] Output cursor: LOADL_quick 13/INC/STORE/DEC then BYTE_POPSTORE ch/pad/conv; NUL at $D130; caller pushes LEAL_far $FF6A (msg buf)" }
 
 [vars.bank15."0xCFD4"]
 # atoi_decimal
@@ -2600,6 +2606,9 @@ local11 = { name = "value", comment = "[HIGH] Accumulator: STORE_q11 0, then loc
 "fp-37" = { name = "tile_buf", comment = "[HIGH] byte tile buffer; its addr (fp-37) passed to ppu_copy_rect_wrap(...,(fp-37),4); fp-5 writes classified chars into it" }
 "fp-5" = { name = "buf_ptr", comment = "[HIGH] word write-cursor into tile_buf; init=(fp-37), pre-incremented, *(buf_ptr)=char_classify(cur_char) per char" }
 "fp-3" = { name = "cur_char", comment = "[HIGH] byte: current char from msg string arg1; tested ==10 (newline) and passed to char_classify before buffering" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "text", comment = "[HIGH] String ptr: LOADL_quick 12/INC/STORE_quick 12/DEC/BYTE_DEREF -> cur char $FFFD, loop JUMPT while nonzero; callers push msg_*/name tables" }
+local11 = { name = "run_start_col", comment = "[HIGH] STORE_quick 11 = ui_window_col at $CF21 (run start); CMPNE vs ui_window_col; PUSH_quick 11 = arg1 (left col) of ppu_copy_rect_wrap" }
 
 [vars.bank15."0xCB80"]
 # swap_byte
@@ -2980,6 +2989,9 @@ arg4 = { name = "current_weight", comment = "[MED] math32_2arg 1st arg @$DA3C: 1
 
 # --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 10 slots) ---
 # propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+# far-frame slots (var-walk-apply --merge)
+arg5 = { name = "cap", comment = "[HIGH] PUSH_near $13 pushed first = arg2 of min_word($CB5E) whose arg1 is the summed pct_op terms: upper clamp on the weighted result" }
+
 [vars.bank15."0xDA7D"]
 # set_marriage_relation
 local10 = { name = "defender_owner", comment = "[HIGH] STORE_quick 10 @$DA8D = fief_owner($6F63 battle_defending_province); UCMPLT vs local11 picks row/col of relations_matrix $6193 (*54)" }

@@ -456,11 +456,11 @@ L_CEC3:
 // $CEC4 redraw_window
 // (body @ $CEC9)
 
-word redraw_window(word arg1) {
+word redraw_window(word text) {
     goto L_CF1E;    // $CEC9
 L_CECC:
     if (!((cur_char == 10))) goto L_CEEC;    // $CED1
-    if ((local11 == ui_window_col)) goto L_CF1B;    // $CED9
+    if ((run_start_col == ui_window_col)) goto L_CF1B;    // $CED9
     goto L_CF13;    // $CEE9
 L_CEEC:
     buf_ptr = (buf_ptr + 1);    // $CEEF
@@ -469,19 +469,19 @@ L_CEEC:
     if ((ui_window_col == 32)) {    // $CF06
 L_CF13:
 L_CF1B:
-    ppu_copy_rect_wrap(local11, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // $CF17
+    ppu_copy_rect_wrap(run_start_col, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // $CF17
 L_CF1E:
     cursor_advance_row();    // $CF1B
-    local11 = ui_window_col;    // $CF21
+    run_start_col = ui_window_col;    // $CF21
     buf_ptr = &tile_buf;    // $CF25
     }
 L_CF27:
-    arg1 = (arg1 + 1);    // $CF29
-    cur_char = *(byte*)((arg1 - 1));    // $CF2C
-    if (*(byte*)((arg1 - 1))) goto L_CECC;    // $CF2F
-    phi_ret_cf4f = (local11 != ui_window_col);    // $CF37
+    text = (text + 1);    // $CF29
+    cur_char = *(byte*)((text - 1));    // $CF2C
+    if (*(byte*)((text - 1))) goto L_CECC;    // $CF2F
+    phi_ret_cf4f = (run_start_col != ui_window_col);    // $CF37
     if (phi_ret_cf4f) {    // $CF37
-    phi_ret_cf4f = ppu_copy_rect_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // $CF4B
+    phi_ret_cf4f = ppu_copy_rect_wrap(run_start_col, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // $CF4B
     }
 L_CF4F:
     return phi_ret_cf4f;    // $CF4F
@@ -561,14 +561,14 @@ word atoi_decimal(word cursor_ptr) {
 // $CFFC format_string
 // (body @ $D001)
 
-word format_string(word arg1, word arg2) {
-    arg1 = (arg1 + 2);    // $D003
-    fmt_cursor = *(word*)((arg1 + -2));    // $D007
-    vararg_ptr = arg1;    // $D00A
+word format_string(word arg_list, word dst) {
+    arg_list = (arg_list + 2);    // $D003
+    fmt_cursor = *(word*)((arg_list + -2));    // $D007
+    vararg_ptr = arg_list;    // $D00A
     goto L_D018;    // $D00C
 L_D00F:
-    arg2 = (arg2 + 1);    // $D011
-    *(byte*)((arg2 - 1)) = ch;    // $D017
+    dst = (dst + 1);    // $D011
+    *(byte*)((dst - 1)) = ch;    // $D017
 L_D018:
     fmt_cursor = (fmt_cursor + 1);    // $D01B
     ch = *(byte*)((fmt_cursor - 1));    // $D01F
@@ -620,16 +620,16 @@ L_D0E5:
     has_precision = 0;    // $D0EF
     goto L_D0FC;    // $D0F1
 L_D0F4:
-    arg2 = (arg2 + 1);    // $D0F6
-    *(byte*)((arg2 - 1)) = 32;    // $D0FB
+    dst = (dst + 1);    // $D0F6
+    *(byte*)((dst - 1)) = 32;    // $D0FB
 L_D0FC:
     pad = (pad - 1);    // $D0FF
     if (((pad + 1) > 0)) goto L_D0F4;    // $D104
 L_D107:
     if (!(*(byte*)(out_cursor))) goto L_D018;    // $D10A
     if ((!(has_precision) || (width > 0))) {    // $D116
-    arg2 = (arg2 + 1);    // $D11B
-    *(byte*)((arg2 - 1)) = *(byte*)(out_cursor);    // $D121
+    dst = (dst + 1);    // $D11B
+    *(byte*)((dst - 1)) = *(byte*)(out_cursor);    // $D121
     width = (width - 1);    // $D125
     }
 L_D127:
@@ -638,7 +638,7 @@ L_D127:
 L_D12F:
     return out_cursor;    // $D12F
 L_D130:
-    *(byte*)(arg2) = 0;    // $D132
+    *(byte*)(dst) = 0;    // $D132
     return 0;    // $D133
     }
 }
@@ -1437,8 +1437,8 @@ L_DA21:
 // $DA24 weighted_average_capped
 // (body @ $DA29)
 
-word weighted_average_capped(word current_value, word incoming_value, word incoming_weight, word current_weight, word arg5) {
-    return min_word((pct_op(current_value, math32_2arg(current_weight, incoming_weight)) + pct_op((incoming_value | 1), math32_2arg(incoming_weight, current_weight))), arg5);    // $DA4E
+word weighted_average_capped(word current_value, word incoming_value, word incoming_weight, word current_weight, word cap) {
+    return min_word((pct_op(current_value, math32_2arg(current_weight, incoming_weight)) + pct_op((incoming_value | 1), math32_2arg(incoming_weight, current_weight))), cap);    // $DA4E
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DA4F
@@ -1616,8 +1616,8 @@ word fief_to_mapid(word fief) {
 // $DC88 read_map_cell
 // (body @ $DC8D)
 
-word read_map_cell(word arg1, word arg2) {
-    syscall16_sram_wrap(4, ((((fief_to_mapid(battle_defending_province) * 55) + (arg2 * 11)) + arg1) + map_cell_sram_a57e), &cell, 1);    // $DCAA
+word read_map_cell(word col, word row) {
+    syscall16_sram_wrap(4, ((((fief_to_mapid(battle_defending_province) * 55) + (row * 11)) + col) + map_cell_sram_a57e), &cell, 1);    // $DCAA
     return cell;    // $DCB1
 }
 
