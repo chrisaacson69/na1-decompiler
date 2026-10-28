@@ -196,10 +196,10 @@ word max_word(word a, word b) {
 // $CB80 swap_byte
 // (body @ $CB85)
 
-word swap_byte(word arg1, word arg2) {
-    tmp_byte = *(byte*)(arg1);    // $CB87
-    *(byte*)(arg1) = *(byte*)(arg2);    // $CB8D
-    *(byte*)(arg2) = tmp_byte;    // $CB92
+word swap_byte(word byte_ptr_a, word byte_ptr_b) {
+    tmp_byte = *(byte*)(byte_ptr_a);    // $CB87
+    *(byte*)(byte_ptr_a) = *(byte*)(byte_ptr_b);    // $CB8D
+    *(byte*)(byte_ptr_b) = tmp_byte;    // $CB92
     return tmp_byte;    // $CB93
 }
 
@@ -258,8 +258,8 @@ word ppu_fill_rect_wrap(word rect_start_a, word rect_start_b, word rect_end_a, w
 // $CC54 ppu_copy_rect_wrap
 // (body @ $CC59)
 
-word ppu_copy_rect_wrap(word left_col, word top_row, word right_col, word bottom_row, word arg5, word arg6) {
-    return syscall_ppu_copy_rect(0, left_col, top_row, right_col, bottom_row, arg5, arg6);    // $CC68
+word ppu_copy_rect_wrap(word left_col, word top_row, word right_col, word bottom_row, word src_tiles, word arg6) {
+    return syscall_ppu_copy_rect(0, left_col, top_row, right_col, bottom_row, src_tiles, arg6);    // $CC68
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CC69
@@ -547,14 +547,14 @@ L_CFBC:
 // $CFD4 atoi_decimal
 // (body @ $CFD9)
 
-word atoi_decimal(word arg1) {
-    local11 = 0;    // $CFDA
-    while (((*(byte*)(*(word*)(arg1)) + -48) < 10)) {    // $CFED
-        local11 = (digit + (local11 * 10));    // $CFE7
-        *(word*)(arg1) = (*(word*)(arg1) + 1);    // $CFEC
-        digit = (*(byte*)(*(word*)(arg1)) + -48);    // $CFF2
+word atoi_decimal(word cursor_ptr) {
+    value = 0;    // $CFDA
+    while (((*(byte*)(*(word*)(cursor_ptr)) + -48) < 10)) {    // $CFED
+        value = (digit + (value * 10));    // $CFE7
+        *(word*)(cursor_ptr) = (*(word*)(cursor_ptr) + 1);    // $CFEC
+        digit = (*(byte*)(*(word*)(cursor_ptr)) + -48);    // $CFF2
     }
-    return local11;    // $CFFB
+    return value;    // $CFFB
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CFFC
