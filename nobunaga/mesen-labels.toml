@@ -3843,3 +3843,56 @@ arg1 = { name = "col", comment = "[MED] PUSH_quick 12 @$8FF4 -> 2nd arg of side_
 arg2 = { name = "row", comment = "[MED] PUSH_quick 13 @$8FF3 -> 3rd arg of side_has_unit_at_cell; $9058 passes its own arg2, $A65E pushes local9 (is_tile_in_bounds arg2)" }
 local11 = { name = "side", comment = "[HIGH] loop 0..1 (STORE_quick 11 @$8FF2, UCMPLT 2 @$9004); pushed last @$8FF5 = arg1 (side) of side_has_unit_at_cell" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (8 subs) ---
+[vars.bank2."0xA148"]
+# find_flagged_present_unit_type
+arg1 = { name = "list_ptr", comment = "[HIGH] byte list ptr: BYTE_DEREF @$A157, INC each iter @$A185; callers pass LEAL_far $FFF6 / build_reachable list" }
+local10 = { name = "best_target", comment = "[MED] init $FF; set to *list_ptr when table[$7BEE+*p] > table[best] (or >0) @$A183; argmax unit slot, returned" }
+local11 = { name = "i", comment = "[HIGH] loop counter 0..5 (UCMPLT 6 @$A18E) bounding the list walk" }
+
+[vars.bank2."0xA04E"]
+# is_unit_at_coords
+arg1 = { name = "col", comment = "[HIGH] LOADR_quick 12 CMPEQ *unit_col_ptr(side,slot) @$A063; callers push local10 / local9 last" }
+arg2 = { name = "row", comment = "[HIGH] LOADR_quick 13 CMPEQ *unit_row_ptr(side,slot) @$A06F" }
+arg3 = { name = "side", comment = "[HIGH] PUSH_quick 14 as side arg1 of is_unit_present/unit_col_ptr/unit_row_ptr; a caller pushes cur_combat_side^1" }
+arg4 = { name = "unit_slot", comment = "[HIGH] PUSH_quick 15 as slot arg2 of is_unit_present/unit_col_ptr/unit_row_ptr @$A053" }
+
+[vars.bank2."0xA01A"]
+# unit_type_count_gt3_and_equals_arg1
+arg1 = { name = "unit_slot", comment = "[MED] callers push cur_combat_unit_slot / their arg2; LOADR_quick 12 CMPEQ against present_count-1 @$A043" }
+local10 = { name = "i", comment = "[HIGH] loop 0..4 (UCMPLT 5 @$A036); PUSH_quick 10 as slot to is_unit_present(cur_combat_side, i) @$A024" }
+local11 = { name = "present_count", comment = "[HIGH] init 0, INC per present unit @$A02F; tested UCMPGT 3 and (count-1)==arg1" }
+
+[vars.bank2."0x9DA8"]
+# reduce_defending_province_town_chaos
+arg1 = { name = "casualties", comment = "[MED] caller pushes sum of two apply_pct_reduction results; halved in place (UDIV 2 @$9DE8), compared/subtracted vs town" }
+arg2 = { name = "enemy_unit_slot", comment = "[HIGH] PUSH_quick 13 as unit_slot to unit_row_ptr/unit_col_ptr(enemy_side, arg2) @$9DC6/$9DCE" }
+local10 = { name = "town_ptr", comment = "[HIGH] $7005+battle_defending_province*26 (town@+4) @$9DF4; DEREF, zeroed via POPSTORE, ptr arg1 of word_sub_saturating" }
+local11 = { name = "enemy_side", comment = "[HIGH] cur_combat_side XOR 1 @$9DB2; side arg1 of unit_row_ptr/unit_col_ptr @$9DC7/$9DCF" }
+
+[vars.bank2."0x9647"]
+# find_free_tactical_placement_cell
+arg1 = { name = "col_out", comment = "[HIGH] out ptr: PUSH_quick 12; LOADL local11; POPSTORE @$965B; callers pass LEAL_far $FFFE last" }
+arg2 = { name = "row_out", comment = "[HIGH] out ptr: PUSH_quick 13; LOADL local10; POPSTORE @$965E; callers pass LEAL_far $FFFC" }
+local10 = { name = "row", comment = "[HIGH] inner loop 0..4 (UCMPLT 5); row arg2 of is_cell_clear_of_bits @$9652; stored to *row_out" }
+local11 = { name = "col", comment = "[HIGH] outer loop 0..10 (UCMPLT 11); col arg1 of is_cell_clear_of_bits @$9653; stored to *col_out" }
+
+[vars.bank2."0x94F6"]
+# announce_combat_side_daimyo_and_status
+arg1 = { name = "attack_outcome", comment = "[MED] caller pushes resolve_attack_apply_mutual_casualties() result; tested truthy @$9511, ==2 @$958F, (arg1-1) indexes $B196 table" }
+arg2 = { name = "enemy_unit_slot", comment = "[MED] caller's unit slot; PUSH_quick 13 as slot to is_unit_present(cur_combat_side^1, arg2) @$95A3 and draw_combat_message" }
+local10 = { name = "announce_side", comment = "[MED] side idx: init cur_combat_side^1 @$9500, XOR 1 toggle @$953F, to get_battle_side_province @$9569, CMPEQ cur_combat_side" }
+local11 = { name = "fief", comment = "[HIGH] both stores are get_battle_side_province(side) @$9508/$956E; fed to get_province_ai_state and draw_daimyo_name" }
+
+[vars.bank2."0x8B25"]
+# draw_terrain_feature_if_valid
+arg1 = { name = "col", comment = "[HIGH] callers push *cur_unit_col_ptr/*unit_col_ptr last; to is_cell_valid_for_phase and arg1 of draw_tactical_terrain_feature" }
+arg2 = { name = "row", comment = "[HIGH] callers push *cur_unit_row_ptr/*unit_row_ptr first; PUSH_quick 13 as arg2 of draw_tactical_terrain_feature @$8B32" }
+
+[vars.bank2."0x840B"]
+# draw_tactical_cursor_region
+arg1 = { name = "show", comment = "[HIGH] LOADL_quick 12 ==1 @$841B picks draw vs park-offscreen ($F8,$F8) loop; callers push PUSH_qimm 1 / 0" }
+local9 = { name = "row", comment = "[HIGH] seeded from $7BF7 row @$8428; &fp-6 to calc_tactical_cell_coords; y=(row<<3)-1 sprite arg; INC on wrap @$8458" }
+local10 = { name = "col", comment = "[HIGH] seeded from $7BF5 @$8424; &fp-4 to calc_tactical_cell_coords; x=col<<3; INC, -4 when (col&3)==2 @$8448" }
+local11 = { name = "sprite_idx", comment = "[HIGH] loop 1..16 (SCMPLE 16) in both branches; PUSH_quick 11 as sprite index to syscall 3 @$8442/$8471" }
+
