@@ -3171,3 +3171,32 @@ local11 = { name = "fief", comment = "[HIGH] Loop index 0..scenario_fief_count (
 # trigger_cutscene
 arg1 = { name = "cutscene", comment = "[HIGH] Callers push small constants (15,5,7,4,20,31,23,25); $E819 LOADL_quick 12 -> STORE_abs $7FCB cutscene_id if ai_turn_flags&4, then bank 14" }
 
+# --- bank-14 var-walk batch via var-walk-apply.py (3 subs / 18 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank14."0x8003"]
+# busy_wait_delay
+arg1 = { name = "delay_count", comment = "[HIGH] Outer loop count: slot12 DEC/STORE $8015-17, JUMPT while nonzero $8018; caller $81BC pushes a script byte read via the $DD stream pointer" }
+local11 = { name = "spin", comment = "[HIGH] Inner busy-wait counter: set to 50 $800B-0D, DEC/STORE/JUMPT loop $800E-12, reloaded on each outer pass" }
+
+[vars.bank14."0x801D"]
+# draw_sprite_grid
+arg1 = { name = "bank", comment = "[HIGH] Bank: pushed last (callee arg1) to all three syscall16_sram_wrap calls $8028/$8041/$8052; caller $81B7 pushes its local7 (cutscene bank)" }
+arg2 = { name = "origin_x", comment = "[MED] Column origin: slot13 copied to local9 at each row start $8061; local9 goes +8 per inner (column) step; caller $81B6 pushes its local10" }
+arg3 = { name = "origin_y", comment = "[MED] Row origin: slot14 seeds local8 $805A-5B; local8 goes +8 per outer (row) step; caller $81B5 pushes its local9" }
+arg4 = { name = "grid_def_ptr", comment = "[HIGH] Src of 6-byte header copy to fp-152 (sram_wrap $8027); caller $81A5-B4 pushes word from fp-53 table indexed by script byte*2" }
+local5 = { name = "sprite_slot", comment = "[HIGH] Starts at 16 $8057; post-incremented and its old value pushed as the sprite index to syscall_dispatch(3,...) $807E-84" }
+local6 = { name = "rows", comment = "[HIGH] Header byte fp-151 ($8031-34); bound of the outer loop local11 < local6 (SCMPLT $80A0-A3)" }
+local7 = { name = "cols", comment = "[HIGH] Header byte fp-152 ($802D-30); bound of the inner loop local10 < local7 (SCMPLT $8091-94)" }
+local8 = { name = "cur_y", comment = "[MED] Row cursor: = arg3 $805B, +8 per outer step $809B-9F; pushed after cur_x to syscall_dispatch(3) $807C" }
+local9 = { name = "cur_x", comment = "[MED] Column cursor: reset to arg2 per row $8062, +8 per inner step $808C-90; pushed after sprite_slot to syscall_dispatch(3) $807D" }
+local10 = { name = "col", comment = "[HIGH] Inner loop index: 0 at $8063-64, post-inc $8088-8A, loop while < local7 (cols) $8091-94" }
+local11 = { name = "row", comment = "[HIGH] Outer loop index: 0 at $805C-5D, post-inc $8097-99, loop while < local6 (rows) $80A0-A3" }
+
+[vars.bank14."0x80AD"]
+# run_cutscene
+local7 = { name = "cutscene_bank", comment = "[HIGH] Byte 0 of cutscene_table[id*5] ($80BD-C0); pushed as bank to every sram_wrap, ppu_upload_block_wrap, and draw_sprite_grid arg1" }
+local8 = { name = "sprite_slot", comment = "[HIGH] Loop 16..63 ($81F2-820A) hiding sprites: pushed as index to syscall_dispatch(3, slot, 248, 248, 0, 2) in opcodes 67/70" }
+local9 = { name = "pos_y", comment = "[MED] Set from a script byte by opcodes 76 ($8163) and 86 ($8194); pushed as draw_sprite_grid arg3 (origin_y) at $81B5" }
+local10 = { name = "pos_x", comment = "[MED] Set from script by ops 76/86 ($815B/$818C); op 88 adds sign-extended byte delta ($8167-81); pushed as draw_sprite_grid arg2 $81B6" }
+local11 = { name = "palette_idx", comment = "[HIGH] Loop 16..31 ($80D7-FD); pushed as arg1 to palette_write_wrap(idx, byte copied from script) $80F1, one entry per pass" }
+

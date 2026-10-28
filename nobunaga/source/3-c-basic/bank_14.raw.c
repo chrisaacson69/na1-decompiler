@@ -13,52 +13,52 @@ extern struct daimyo daimyo_table[];    /* at $752F */
 // $8003 busy_wait_delay
 // (body @ $8008)
 
-word busy_wait_delay(word arg1) {
+word busy_wait_delay(word delay_count) {
     goto L_8018;    // $8008
 L_800B:
-    local11 = 50;    // $800D
+    spin = 50;    // $800D
 L_800E:
-    local11 = (local11 - 1);    // $8010
-    if (local11) goto L_800E;    // $8012
-    arg1 = (arg1 - 1);    // $8017
+    spin = (spin - 1);    // $8010
+    if (spin) goto L_800E;    // $8012
+    delay_count = (delay_count - 1);    // $8017
 L_8018:
-    if (arg1) goto L_800B;    // $8019
-    return arg1;    // $801C
+    if (delay_count) goto L_800B;    // $8019
+    return delay_count;    // $801C
 }
 
 // Decompiled from source/2-asm-vm/bank_14_vm.asm sub $801D
 // $801D draw_sprite_grid
 // (body @ $8022)
 
-word draw_sprite_grid(word arg1, word arg2, word arg3, word arg4) {
-    syscall16_sram_wrap(arg1, arg4, (fp - 152), 6);    // $8029
-    local7 = *(byte*)(fp - 152);    // $8030
-    local6 = *(byte*)(fp - 151);    // $8034
+word draw_sprite_grid(word bank, word origin_x, word origin_y, word grid_def_ptr) {
+    syscall16_sram_wrap(bank, grid_def_ptr, (fp - 152), 6);    // $8029
+    cols = *(byte*)(fp - 152);    // $8030
+    rows = *(byte*)(fp - 151);    // $8034
     *(word*)(fp - 144) = (fp - 78);    // $803A
-    syscall16_sram_wrap(arg1, *(word*)(fp - 150), (fp - 78), 64);    // $8042
+    syscall16_sram_wrap(bank, *(word*)(fp - 150), (fp - 78), 64);    // $8042
     *(word*)(fp - 146) = (fp - 142);    // $804B
-    syscall16_sram_wrap(arg1, *(word*)(fp - 148), (fp - 142), 64);    // $8053
-    local5 = 16;    // $8059
-    local8 = arg3;    // $805B
-    local11 = 0;    // $805D
+    syscall16_sram_wrap(bank, *(word*)(fp - 148), (fp - 142), 64);    // $8053
+    sprite_slot = 16;    // $8059
+    cur_y = origin_y;    // $805B
+    row = 0;    // $805D
     goto L_80A0;    // $805E
 L_8061:
-    local9 = arg2;    // $8062
-    local10 = 0;    // $8064
+    cur_x = origin_x;    // $8062
+    col = 0;    // $8064
     goto L_8091;    // $8065
 L_8068:
     *(word*)(fp - 146) = (*(word*)(fp - 146) + 1);    // $806C
     *(word*)(fp - 144) = (*(word*)(fp - 144) + 1);    // $8076
-    local5 = (local5 + 1);    // $8080
-    syscall_set_sprite((local5 - 1), local9, local8, *(byte*)((*(word*)(fp - 144) - 1)), *(byte*)((*(word*)(fp - 146) - 1)));    // $8084
-    local10 = (local10 + 1);    // $808A
-    local9 = (local9 + 8);    // $8090
+    sprite_slot = (sprite_slot + 1);    // $8080
+    syscall_set_sprite((sprite_slot - 1), cur_x, cur_y, *(byte*)((*(word*)(fp - 144) - 1)), *(byte*)((*(word*)(fp - 146) - 1)));    // $8084
+    col = (col + 1);    // $808A
+    cur_x = (cur_x + 8);    // $8090
 L_8091:
-    if ((local10 < local7)) goto L_8068;    // $8094
-    local11 = (local11 + 1);    // $8099
-    local8 = (local8 + 8);    // $809F
+    if ((col < cols)) goto L_8068;    // $8094
+    row = (row + 1);    // $8099
+    cur_y = (cur_y + 8);    // $809F
 L_80A0:
-    if ((local11 < local6)) goto L_8061;    // $80A3
+    if ((row < rows)) goto L_8061;    // $80A3
     return syscall_wait_for_nmi();    // $80AC
 }
 
@@ -68,21 +68,21 @@ L_80A0:
 
 word run_cutscene(void) {
     *(word*)(fp - 41) = ((cutscene_id * 5) + cutscene_table);    // $80BB
-    local7 = *(byte*)(*(word*)(fp - 41));    // $80C0
+    cutscene_bank = *(byte*)(*(word*)(fp - 41));    // $80C0
     *(word*)(fp - 33) = (fp - 31);    // $80C6
-    syscall16_sram_wrap(local7, *(word*)((*(word*)(fp - 41) + 1)), (fp - 31), 21);    // $80CF
+    syscall16_sram_wrap(cutscene_bank, *(word*)((*(word*)(fp - 41) + 1)), (fp - 31), 21);    // $80CF
     *(word*)(fp - 35) = *(word*)(fp - 33);    // $80D5
     phi_val_80f8 = 16;    // $80D9
     goto L_80F8;    // $80D9
 L_80DC:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $80E4
-    syscall16_sram_wrap(local7, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
-    palette_write_wrap(local11, *(byte*)(fp - 36));    // $80F2
-    phi_val_80f8 = (local11 + 1);    // $80F7
+    syscall16_sram_wrap(cutscene_bank, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
+    palette_write_wrap(palette_idx, *(byte*)(fp - 36));    // $80F2
+    phi_val_80f8 = (palette_idx + 1);    // $80F7
 L_80F8:
-    local11 = phi_val_80f8;    // $80F8
-    if ((local11 < 32)) goto L_80DC;    // $80FD
-    ppu_upload_block_wrap(local7, *(word*)((*(word*)(fp - 33) + 17)), 0x0100, *(byte*)((*(word*)(fp - 33) + 16)));    // $8110
+    palette_idx = phi_val_80f8;    // $80F8
+    if ((palette_idx < 32)) goto L_80DC;    // $80FD
+    ppu_upload_block_wrap(cutscene_bank, *(word*)((*(word*)(fp - 33) + 17)), 0x0100, *(byte*)((*(word*)(fp - 33) + 16)));    // $8110
 L_8118:
     *(word*)(fp - 35) = *(word*)((*(word*)(fp - 41) + 3));    // $8118
 L_811A:
@@ -114,26 +114,26 @@ L_811A:
     }    // $8121
 L_8154:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8157
-    local10 = *(byte*)((*(word*)(fp - 35) - 1));    // $815B
+    pos_x = *(byte*)((*(word*)(fp - 35) - 1));    // $815B
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $815F
-    local9 = *(byte*)((*(word*)(fp - 35) - 1));    // $8163
+    pos_y = *(byte*)((*(word*)(fp - 35) - 1));    // $8163
     goto L_811A;    // $8164
 L_8167:
-    local10 = (local10 + *(byte*)(*(word*)(fp - 35)));    // $816D
+    pos_x = (pos_x + *(byte*)(*(word*)(fp - 35)));    // $816D
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8171
     if (!((*(byte*)((*(word*)(fp - 35) - 1)) > 127))) goto L_811A;    // $8178
-    local10 = (local10 - 0x0100);    // $8181
+    pos_x = (pos_x - 0x0100);    // $8181
     goto L_811A;    // $8182
 L_8185:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8188
-    local10 = *(byte*)((*(word*)(fp - 35) - 1));    // $818C
+    pos_x = *(byte*)((*(word*)(fp - 35) - 1));    // $818C
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8190
-    local9 = *(byte*)((*(word*)(fp - 35) - 1));    // $8194
+    pos_y = *(byte*)((*(word*)(fp - 35) - 1));    // $8194
 L_8195:
-    syscall16_sram_wrap(local7, *(word*)((*(word*)(fp - 33) + 19)), (fp - 53), 10);    // $81A1
+    syscall16_sram_wrap(cutscene_bank, *(word*)((*(word*)(fp - 33) + 19)), (fp - 53), 10);    // $81A1
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81AC
 L_81BC:
-    draw_sprite_grid(local7, local10, local9, *(word*)(((*(byte*)((*(word*)(fp - 35) - 1)) << 1) + (fp - 53))));    // $81B8
+    draw_sprite_grid(cutscene_bank, pos_x, pos_y, *(word*)(((*(byte*)((*(word*)(fp - 35) - 1)) << 1) + (fp - 53))));    // $81B8
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81BF
     busy_wait_delay(*(byte*)((*(word*)(fp - 35) - 1)));    // $81C4
     goto L_811A;    // $81C8
@@ -149,11 +149,11 @@ L_81DC:
 L_81EC:
 L_81F2:
     delay_loop(50);    // $81EE
-    local8 = 16;    // $81F4
+    sprite_slot = 16;    // $81F4
 L_81F5:
-    syscall_set_sprite(local8, 248, 248, 0, 2);    // $81FF
-    local8 = (local8 + 1);    // $8205
-    if ((local8 < 64)) goto L_81F5;    // $820A
+    syscall_set_sprite(sprite_slot, 248, 248, 0, 2);    // $81FF
+    sprite_slot = (sprite_slot + 1);    // $8205
+    if ((sprite_slot < 64)) goto L_81F5;    // $820A
     syscall_wait_for_nmi();    // $820F
     goto L_811A;    // $8213
 L_8216:
