@@ -3200,3 +3200,27 @@ local9 = { name = "pos_y", comment = "[MED] Set from a script byte by opcodes 76
 local10 = { name = "pos_x", comment = "[MED] Set from script by ops 76/86 ($815B/$818C); op 88 adds sign-extended byte delta ($8167-81); pushed as draw_sprite_grid arg2 $81B6" }
 local11 = { name = "palette_idx", comment = "[HIGH] Loop 16..31 ($80D7-FD); pushed as arg1 to palette_write_wrap(idx, byte copied from script) $80F1, one entry per pass" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x8327"]
+# scale_div10_capcheck
+arg1 = { name = "amount", comment = "[HIGH] multiplicand: slot12 to math32_muladddiv @$832D and long mul @$8345, /10; callers pass fief->men (+16) or local8" }
+arg2 = { name = "rate", comment = "[HIGH] multiplier: slot13 to math32_muladddiv @$832C and long mul @$8340; both callers push arms_buy_price_rate $6E0F" }
+arg3 = { name = "cap", comment = "[HIGH] bound: LOADR_quick 14 SCMPGT @$8332, over -> return -1 @$8337; callers push fief->header (+24) or *fief (gold)" }
+
+[vars.bank1."0x82AC"]
+# clamp_amount_to_province_max
+arg1 = { name = "amount_ptr", comment = "[HIGH] word ptr: *slot12 min'd with header ($7019=$7001+24) @$82C1, floored at 0, POPSTOREd back; callers pass fief+6/+16/+22" }
+
+[vars.bank1."0x8271"]
+# relations_rng_predicate
+arg1 = { name = "defender_fief", comment = "[MED] fief idx: slot12 to fief_owner @$827D and relations_matrix_get @$8295; sole caller pushes battle_defending_province $6F63 last" }
+arg2 = { name = "attacker_fief", comment = "[MED] fief idx: slot13 to fief_owner @$8277 and relations_matrix_get @$8294; sole caller pushes selected_province_idx $6F5F" }
+
+[vars.bank1."0x8172"]
+# count_eligible_targets
+arg1 = { name = "cmd", comment = "[MED] cmd id: slot12 pushed last (arg1) to target_eligible_by_cmd @$8182 and prompt_message_and_redraw @$81E7; callers pass their own arg1" }
+arg2 = { name = "fief_list", comment = "[HIGH] byte list of fief idx: slot13 INC'd @$81EE, *(arg2-1) checked vs $FF; entry indexes province_ai_state $6CF7 @$818D" }
+arg3 = { name = "print_flag", comment = "[HIGH] flag: LOADL_quick 14 + JUMPF @$819C gates the draw_message path; callers push qimm 0 (@$87A4) or 1 (@$87C3)" }
+local10 = { name = "page_entry_count", comment = "[MED] entries drawn on this page: INC after draw_message @$81AC, %6 picks spacing @$81B8, ==18 page break @$81CA, zeroed @$81EC" }
+local11 = { name = "eligible_count", comment = "[HIGH] count: INC @$819A when eligible and ai_state!=$FF; zeroed if ui_prompt_redraw returns 2 @$81E0; returned @$81FA" }
+

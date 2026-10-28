@@ -116,33 +116,33 @@ L_8166:
 // $8172 count_eligible_targets
 // (body @ $8177)
 
-word count_eligible_targets(word arg1, word arg2, word arg3) {
-    local10 = 0;    // $8178
-    local11 = 0;    // $817A
+word count_eligible_targets(word cmd, word fief_list, word print_flag) {
+    page_entry_count = 0;    // $8178
+    eligible_count = 0;    // $817A
     goto L_81EE;    // $817B
 L_817E:
-    if (!(target_eligible_by_cmd(arg1, *(byte*)((arg2 - 1))))) goto L_81EE;    // $8187
-    if (!((province_ai_state[*(byte*)((arg2 - 1))] != 255))) goto L_81EE;    // $8196
-    local11 = (local11 + 1);    // $819B
-    if (!(arg3)) goto L_81EE;    // $819D
-    draw_message(count_eligible_targets_fmt_2d, (*(byte*)((arg2 - 1)) + 1));    // $81A8
-    local10 = (local10 + 1);    // $81AE
-    if ((local10 == 18)) goto L_81C7;    // $81B3
+    if (!(target_eligible_by_cmd(cmd, *(byte*)((fief_list - 1))))) goto L_81EE;    // $8187
+    if (!((province_ai_state[*(byte*)((fief_list - 1))] != 255))) goto L_81EE;    // $8196
+    eligible_count = (eligible_count + 1);    // $819B
+    if (!(print_flag)) goto L_81EE;    // $819D
+    draw_message(count_eligible_targets_fmt_2d, (*(byte*)((fief_list - 1)) + 1));    // $81A8
+    page_entry_count = (page_entry_count + 1);    // $81AE
+    if ((page_entry_count == 18)) goto L_81C7;    // $81B3
 L_81C7:
-    char_advance_width((((unsigned)local10 % (unsigned)6) ? 32 : 10));    // $81C3
-    if ((local10 != 18)) goto L_81EE;    // $81CB
-    if (!((*(byte*)(arg2) != 255))) goto L_81EE;    // $81D4
+    char_advance_width((((unsigned)page_entry_count % (unsigned)6) ? 32 : 10));    // $81C3
+    if ((page_entry_count != 18)) goto L_81EE;    // $81CB
+    if (!((*(byte*)(fief_list) != 255))) goto L_81EE;    // $81D4
     if (!((ui_prompt_redraw() == 2))) goto L_81E4;    // $81DC
-    local11 = 0;    // $81E0
+    eligible_count = 0;    // $81E0
     goto L_81FA;    // $81E1
 L_81E4:
-    prompt_message_and_redraw(arg1, str_fief_list_columns);    // $81E8
-    local10 = 0;    // $81ED
+    prompt_message_and_redraw(cmd, str_fief_list_columns);    // $81E8
+    page_entry_count = 0;    // $81ED
 L_81EE:
-    arg2 = (arg2 + 1);    // $81F0
-    if ((*(byte*)((arg2 - 1)) != 255)) goto L_817E;    // $81F7
+    fief_list = (fief_list + 1);    // $81F0
+    if ((*(byte*)((fief_list - 1)) != 255)) goto L_817E;    // $81F7
 L_81FA:
-    return local11;    // $81FB
+    return eligible_count;    // $81FB
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $81FC
@@ -172,18 +172,18 @@ word relations_matrix_get(word party_a, word party_b, word order_flag) {
 // $8271 relations_rng_predicate
 // (body @ $8276)
 
-word relations_rng_predicate(word arg1, word arg2) {
-    return (((unsigned)rng_mod(100) < (unsigned)relations_matrix_get(fief_owner(arg1), fief_owner(arg2), 1)) || ((unsigned)rng_mod(100) < (unsigned)relations_matrix_get(arg1, arg2, 0)));    // $82AB
+word relations_rng_predicate(word defender_fief, word attacker_fief) {
+    return (((unsigned)rng_mod(100) < (unsigned)relations_matrix_get(fief_owner(defender_fief), fief_owner(attacker_fief), 1)) || ((unsigned)rng_mod(100) < (unsigned)relations_matrix_get(defender_fief, attacker_fief, 0)));    // $82AB
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $82AC
 // $82AC clamp_amount_to_province_max
 // (body @ $82B1)
 
-word clamp_amount_to_province_max(word arg1) {
-    *(word*)(arg1) = min_word(province_table_live[selected_province_idx].header, *(word*)(arg1));    // $82C5
-    *(word*)(arg1) = ((*(word*)(arg1) < 0) ? 0 : *(word*)(arg1));    // $82D4
-    return *(word*)(arg1);    // $82D5
+word clamp_amount_to_province_max(word amount_ptr) {
+    *(word*)(amount_ptr) = min_word(province_table_live[selected_province_idx].header, *(word*)(amount_ptr));    // $82C5
+    *(word*)(amount_ptr) = ((*(word*)(amount_ptr) < 0) ? 0 : *(word*)(amount_ptr));    // $82D4
+    return *(word*)(amount_ptr);    // $82D5
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $82D6
@@ -217,10 +217,10 @@ word math32_muladddiv(word rate, word amount) {
 // $8327 scale_div10_capcheck
 // (body @ $832C)
 
-word scale_div10_capcheck(word arg1, word arg2, word arg3) {
+word scale_div10_capcheck(word amount, word rate, word cap) {
     // sdiv32: KOEI's 32-bit signed divide; a negative divisor d divides by |d| - 1 (ROM bug)
-    if ((sword)math32_muladddiv(arg1, arg2) > (sword)arg3) return 0xFFFF;
-    return (word)sdiv32((sword)arg1 * (sword)arg2, 10);
+    if ((sword)math32_muladddiv(amount, rate) > (sword)cap) return 0xFFFF;
+    return (word)sdiv32((sword)amount * (sword)rate, 10);
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8357
