@@ -23,7 +23,7 @@ evidence = ["nobunaga/01-boot-and-dispatch.md", "nobunaga/05-bytecode-vm.md", "n
 status   = "done"
 gate     = "window_check na1: 16 banks of 16K, 0 problems. Every bytecode bank tiles: gates.roundtrip --game na1 re-encodes 499 subs, 45,711 code bytes in banks 0/1/2/10/14/15 byte-identical (ROUND-TRIP CLEAN). The shared toolchain's assumptions, re-derived on NA1's own handlers: operand lengths (tools/koei_isa_probe.py na1: 0 live opcodes disagree with the decoder), stack effects (gates.stack_audit: 187/208 gated opcodes confirmed, 21 never emitted in NA1), compare direction and signedness (gates.compare_probe: 10/10 16-bit and 10/10 32-bit ext-op names; new in this revisit, converted from the atticked NA1 probe; a planted C3/C5 swap fails it). One opcode table, emu-harness's, read through nobunaga_vm.OPCODES_PATH; the legacy nobunaga/vm-opcodes.toml is retired and the appendix regenerates from the shared table (it differs from the June appendix by the 4 lengths row F2 measured: $AD 2, $E0-$E2 2)."
 checked  = "2026-10-28"
-toolset  = "4fa7923"
+toolset  = "f19a0f2"
 evidence = ["nobunaga/source/2-asm-vm/", "nobunaga/appendix-vm-opcodes.md", "nobunaga/tools/gen-opcode-appendix.py"]
 
 [phase.discover]
@@ -44,7 +44,7 @@ evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobun
 status   = "done"
 gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). invert_condition parses the top level (emu-harness 3c3900e): the textual one flipped the comparison inside an already-negated !(...), so 3 NA1 sites inverted !(A || B) to A && !B ($82E9 is_cell_clear_of_bits, $89FD, $930A; the ROM sides with the goto form, $82DB(0, 5) = 1); 83 if-lines change on regen, 3 in meaning; cfg_gate stays CLEAN (it checks CFG shape, not rewritten polarity); the test checks each inversion by value and plants the textual one. gates.value_probe (emu-harness f556de3): the rendered C of 5 fixture subs (min_word, max_word, is_tile_in_bounds, unit_strength_ptr, is_cell_clear_of_bits) evaluated over 684 inputs equals titles.run_sub, a call running its callee on the ROM so argument order counts; planted, the textual inverter and reversed call arguments each fail it. The attic is read and retired (tools/RETIRED.md)."
 checked  = "2026-10-28"
-toolset  = "4fa7923"
+toolset  = "f19a0f2"
 evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
 
 [phase.naming]
@@ -229,6 +229,7 @@ item   = "Var walk: [vars] sections cover 135 of 499 subs; the C has ~4,100 posi
 phase  = "naming"
 source = "naming census 2026-10-28"
 status = "open"
+progress = "2026-10-28: the regen path had applied NO [vars] names since the engine moved (titles.decompile never passed var_names; emu-harness f19a0f2), so all June names were absent from source/ and the apply guard passed on empty diffs; restored (892 names, checked per sub) and var-walk-apply now fails a write with no C change. Calibration, bank 15 batch 1 (48bea76): 5 subs / 9 slots, all CONFIRMED HIGH, 10 agents, 524k tokens, 49 s, verifiers citing bytecode. About 105k tokens per sub with an independent verifier; bank 15 has 88 named subs left. value_probe reads the per-sub C, not the bank-level array pass or slot names (its fixtures use neither)."
 
 [[revisit]]
 item   = "Not done on the current toolset: the top-down verify pass (PHASES.md: a routine's first ops lie about its role); 87 address-suffixed names (most duplicate format strings msg_fmt__3d_be5d, and kind names relation_sram_8300 / portrait_gfx_a604); the OPEN questions in 4 comments (is_ai_count_ge_8: what 8 caps; scaled_force_transfer's arg roles; defender_owner_is_keyed_daimyo: who daimyo 3 / 20 are; daimyo_record_addr's per-stat map); $796A, which select_message_string_by_flags_and_arg returns on ai_turn_flags & 16 where the other paths return a message, is zero in every SRAM dump (written only on that path)."
