@@ -52,7 +52,7 @@ def regen(banks=BANKS):
             f = ROOT / o
             if f.exists():
                 body = f.read_text(encoding="utf-8")
-                head = BANNER.format(rel=o.split("source/", 1)[1], bank=b, raw="  (--raw: direct goto/label form, the structurer baseline)" if x else " -> DREAM structurer (V2 fallback)")
+                head = BANNER.format(rel=o.split("source/", 1)[1], bank=b, raw="  (--raw: direct goto/label form, the structurer baseline)" if x else " -> V1 template structurer (titles.decompile; DREAM is not wired in here)")
                 f.write_text(head + body, encoding="utf-8")
     return errs
 

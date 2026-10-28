@@ -72,15 +72,14 @@ word run_cutscene(void) {
     *(word*)(fp - 33) = (fp - 31);    // $80C6
     syscall16_sram_wrap(cutscene_bank, *(word*)((*(word*)(fp - 41) + 1)), (fp - 31), 21);    // $80CF
     *(word*)(fp - 35) = *(word*)(fp - 33);    // $80D5
-    phi_val_80f8 = 16;    // $80D9
+    palette_idx = 16;    // $80D9
     goto L_80F8;    // $80D9
 L_80DC:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $80E4
     syscall16_sram_wrap(cutscene_bank, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
     palette_write_wrap(palette_idx, *(byte*)(fp - 36));    // $80F2
-    phi_val_80f8 = (palette_idx + 1);    // $80F7
+    palette_idx = (palette_idx + 1);    // $80F7
 L_80F8:
-    palette_idx = phi_val_80f8;    // $80F8
     if ((palette_idx < 32)) goto L_80DC;    // $80FD
     ppu_upload_block_wrap(cutscene_bank, *(word*)((*(word*)(fp - 33) + 17)), 0x0100, *(byte*)((*(word*)(fp - 33) + 16)));    // $8110
 L_8118:
