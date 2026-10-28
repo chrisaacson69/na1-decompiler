@@ -685,7 +685,7 @@ word find_first_enemy_owned_fief(void) {
     fief_list_ptr = 0x6F89;    // $8BF1
     while (1) {    // $8C03
         if ((*(byte*)(fief_list_ptr) != 255)) {    // $8C03
-            if (is_enemy_owned(*(byte*)(fief_list_ptr))) {    // $8BF4
+            if (is_owned_by_selected_daimyo(*(byte*)(fief_list_ptr))) {    // $8BF4
                 return *(byte*)(fief_list_ptr);    // $8C00
             } else {
                 fief_list_ptr = (fief_list_ptr + 1);    // $8C02
@@ -1029,10 +1029,10 @@ word saturating_sub_byte_then_reset_if_ge_100(word cell_ptr, word decay_amount) 
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $90E8
-// $90E8 normalize_relations_matrix_lower
+// $90E8 decay_relations_matrix_upper
 // (body @ $90ED)
 
-word normalize_relations_matrix_lower(word decay_amount) {
+word decay_relations_matrix_upper(word decay_amount) {
     row = 0;    // $90EE
     while (((unsigned)row < (unsigned)scenario_fief_count)) {    // $9114
         col = 0;    // $90F2
@@ -1048,10 +1048,10 @@ word normalize_relations_matrix_lower(word decay_amount) {
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $911E
-// $911E normalize_relations_matrix_upper
+// $911E decay_relations_matrix_lower
 // (body @ $9123)
 
-word normalize_relations_matrix_upper(word decay) {
+word decay_relations_matrix_lower(word decay) {
     row = 0;    // $9124
     while (((unsigned)row < (unsigned)scenario_fief_count)) {    // $914A
         col = 0;    // $9128
@@ -2059,8 +2059,8 @@ word event_boost_province_wealth_loyalty(word fief_idx, word fief) {
 
 word per_turn_age_daimyo_decay_health_and_province_stats(void) {
     if ((current_game_year != 0x0618)) {    // $9F98
-        normalize_relations_matrix_lower(4);    // $9F9C
-        normalize_relations_matrix_upper(2);    // $9FA1
+        decay_relations_matrix_upper(4);    // $9F9C
+        decay_relations_matrix_lower(2);    // $9FA1
         i = 0;    // $9FA6
         daimyo = daimyo_record_addr(0);    // $9FAC
         while (((unsigned)i < (unsigned)(scenario_fief_count + 3))) {    // $9FC4
@@ -2112,7 +2112,7 @@ word per_turn_age_daimyo_decay_health_and_province_stats(void) {
 // (body @ $A06B)
 
 word init_province_highwater_from_records(void) {
-    normalize_relations_matrix_lower(2);    // $A06C
+    decay_relations_matrix_upper(2);    // $A06C
     fief_idx = 0;    // $A071
     while (((unsigned)fief_idx < (unsigned)scenario_fief_count)) {    // $A09F
         history_ptr = &fief_history_table[(fief_idx << 3)];    // $A07B
@@ -2232,7 +2232,7 @@ word calc_fief_rice_income(word fief_idx, word fief) {
 // (body @ $A274)
 
 word harvest_income_sweep_all_fiefs(void) {
-    normalize_relations_matrix_lower(2);    // $A275
+    decay_relations_matrix_upper(2);    // $A275
     fief_idx = 0;    // $A27A
     while (((unsigned)fief_idx < (unsigned)scenario_fief_count)) {    // $A2D5
         update_province_highwater_marks(fief_idx);    // $A27E
@@ -2304,7 +2304,7 @@ word per_period_fief_daimyo_update_driver(void) {
             harvest_income_sweep_all_fiefs();    // $A38B
             break;
         case 3:
-            normalize_relations_matrix_lower(2);    // $A392
+            decay_relations_matrix_upper(2);    // $A392
             break;
     }
     fief_idx = 0;    // $A382

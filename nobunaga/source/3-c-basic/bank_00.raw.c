@@ -654,7 +654,7 @@ word find_first_enemy_owned_fief(void) {
     fief_list_ptr = 0x6F89;    // $8BF1
     goto L_8C03;    // $8BF1
 L_8BF4:
-    if (!(is_enemy_owned(*(byte*)(fief_list_ptr)))) goto L_8C01;    // $8BFB
+    if (!(is_owned_by_selected_daimyo(*(byte*)(fief_list_ptr)))) goto L_8C01;    // $8BFB
     return *(byte*)(fief_list_ptr);    // $8C00
 L_8C01:
     fief_list_ptr = (fief_list_ptr + 1);    // $8C02
@@ -994,10 +994,10 @@ word saturating_sub_byte_then_reset_if_ge_100(word cell_ptr, word decay_amount) 
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $90E8
-// $90E8 normalize_relations_matrix_lower
+// $90E8 decay_relations_matrix_upper
 // (body @ $90ED)
 
-word normalize_relations_matrix_lower(word decay_amount) {
+word decay_relations_matrix_upper(word decay_amount) {
     row = 0;    // $90EE
     goto L_9114;    // $90EE
 L_90F1:
@@ -1017,10 +1017,10 @@ L_9114:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $911E
-// $911E normalize_relations_matrix_upper
+// $911E decay_relations_matrix_lower
 // (body @ $9123)
 
-word normalize_relations_matrix_upper(word decay) {
+word decay_relations_matrix_lower(word decay) {
     row = 0;    // $9124
     goto L_914A;    // $9124
 L_9127:
@@ -2024,8 +2024,8 @@ L_9F8B:
 
 word per_turn_age_daimyo_decay_health_and_province_stats(void) {
     if ((current_game_year == 0x0618)) goto L_A037;    // $9F98
-    normalize_relations_matrix_lower(4);    // $9F9C
-    normalize_relations_matrix_upper(2);    // $9FA1
+    decay_relations_matrix_upper(4);    // $9F9C
+    decay_relations_matrix_lower(2);    // $9FA1
     i = 0;    // $9FA6
     daimyo = daimyo_record_addr(0);    // $9FAC
     goto L_9FC4;    // $9FAD
@@ -2078,7 +2078,7 @@ L_A065:
 // (body @ $A06B)
 
 word init_province_highwater_from_records(void) {
-    normalize_relations_matrix_lower(2);    // $A06C
+    decay_relations_matrix_upper(2);    // $A06C
     fief_idx = 0;    // $A071
     goto L_A09F;    // $A071
 L_A074:
@@ -2200,7 +2200,7 @@ L_A26D:
 // (body @ $A274)
 
 word harvest_income_sweep_all_fiefs(void) {
-    normalize_relations_matrix_lower(2);    // $A275
+    decay_relations_matrix_upper(2);    // $A275
     fief_idx = 0;    // $A27A
     goto L_A2D5;    // $A27A
 L_A27D:
@@ -2282,7 +2282,7 @@ L_A38B:
     harvest_income_sweep_all_fiefs();    // $A38B
     goto L_A381;    // $A38E
 L_A391:
-    normalize_relations_matrix_lower(2);    // $A392
+    decay_relations_matrix_upper(2);    // $A392
     goto L_A381;    // $A396
 L_A399:
     check_and_process_daimyo_natural_death(fief_idx);    // $A39A

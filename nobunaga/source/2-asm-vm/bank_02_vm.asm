@@ -1851,7 +1851,7 @@ VM bytecode disassembly
   $8D3F  62                         PUSH_qimm   ; inline operand = 2
   $8D40  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $8D44  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $8D47  E9 D3 D9 02                CALL_abs_imm1          $D9D3 (redraw_window_row) {bytecode}, $02
+  $8D47  E9 D3 D9 02                CALL_abs_imm1          $D9D3 (draw_province_name) {bytecode}, $02
   $8D4B  A4 63 6F                   LOADL_abs              $6F63 (battle_defending_province)
   $8D4E  D0                         INC
   $8D4F  B3                         PUSHL

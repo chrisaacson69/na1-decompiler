@@ -1401,10 +1401,10 @@ word get_6da2_cur(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9B7
-// $D9B7 is_enemy_owned
+// $D9B7 is_owned_by_selected_daimyo
 // (body @ $D9BC)
 
-word is_enemy_owned(word fief) {
+word is_owned_by_selected_daimyo(word fief) {
     return (fief_owner(fief) == selected_province_owner());    // $D9C7
 }
 
@@ -1417,10 +1417,10 @@ word province_ai_state_addr(word fief) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9D3
-// $D9D3 redraw_window_row
+// $D9D3 draw_province_name
 // (body @ $D9D8)
 
-word redraw_window_row(word province_idx) {
+word draw_province_name(word province_idx) {
     return redraw_window(province_name_table[province_idx]);    // $D9E4
 }
 
@@ -1679,7 +1679,7 @@ word filter_province_list_by_owner(word match_enemy, word out_list) {
     src_ptr = out_list;    // $DD44
     goto L_DD67;    // $DD44
 L_DD47:
-    if ((is_enemy_owned(*(byte*)(src_ptr)) ^ match_enemy)) goto L_DD65;    // $DD50
+    if ((is_owned_by_selected_daimyo(*(byte*)(src_ptr)) ^ match_enemy)) goto L_DD65;    // $DD50
     if (province_state_is_FF(*(byte*)(src_ptr))) goto L_DD65;    // $DD5A
     write_ptr = (write_ptr + 1);    // $DD5F
     *(byte*)((write_ptr - 1)) = *(byte*)(src_ptr);    // $DD64
@@ -1830,10 +1830,10 @@ L_DF94:
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DFBC
-// $DFBC clamp_field_6d2d_to_30
+// $DFBC cap_honganji_fief_tax_rate_at_30
 // (body @ $DFC1)
 
-word clamp_field_6d2d_to_30(void) {
+word cap_honganji_fief_tax_rate_at_30(void) {
     saved_defending_province = battle_defending_province;    // $DFC4
     battle_defending_province = 0;    // $DFC6
     goto L_DFEC;    // $DFC6
@@ -1942,7 +1942,7 @@ L_E19C:
     fief_is_daimyo_capital[selected_province_idx] = (fief_is_daimyo_capital[selected_province_idx] ^ fief_is_daimyo_capital[battle_defending_province]);    // $E1C6
 L_E1C7:
     ai_turn_flags = (ai_turn_flags & -113);    // $E1CE
-    clamp_field_6d2d_to_30();    // $E1D1
+    cap_honganji_fief_tax_rate_at_30();    // $E1D1
     cap_fief_stats(battle_defending_province);    // $E1D7
     phi_ret_e1e6 = attacker_is_uprising;    // $E1DC
     if (phi_ret_e1e6) goto L_E1E6;    // $E1DC
@@ -2187,7 +2187,7 @@ word build_eligible_province_list(word want_enemy) {
     goto L_E545;    // $E51C
 L_E51F:
     if (province_state_is_FF(fief)) goto L_E543;    // $E524
-    if ((is_enemy_owned(fief) ^ want_enemy)) goto L_E543;    // $E52E
+    if ((is_owned_by_selected_daimyo(fief) ^ want_enemy)) goto L_E543;    // $E52E
     if ((selected_province_idx == fief)) goto L_E543;    // $E536
     list_ptr = (list_ptr + 1);    // $E53B
     *(byte*)((list_ptr - 1)) = fief;    // $E53F

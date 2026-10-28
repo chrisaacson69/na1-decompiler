@@ -2867,7 +2867,7 @@ VM bytecode disassembly
  >$DD47  07                         LOADL_quick   ; inline operand = 7
   $DD48  D3                         BYTE_DEREF
   $DD49  B3                         PUSHL
-  $DD4A  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_enemy_owned) {bytecode}, $02
+  $DD4A  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_owned_by_selected_daimyo) {bytecode}, $02
   $DD4E  1C                         LOADR_quick   ; inline operand = 12
   $DD4F  DC                         XOR
   $DD50  D7 65 DD                   JUMPT_abs              $DD65
@@ -3538,7 +3538,7 @@ VM bytecode disassembly
   $E1CA  A5 A1 6D                   BYTE_LOADL_abs         $6DA1 (ai_turn_flags)
   $E1CD  DA                         AND
   $E1CE  A9 A1 6D                   BYTE_STORE_abs         $6DA1 (ai_turn_flags)
-  $E1D1  AC BC DF                   CALL_abs               $DFBC (clamp_field_6d2d_to_30) {bytecode}
+  $E1D1  AC BC DF                   CALL_abs               $DFBC (cap_honganji_fief_tax_rate_at_30) {bytecode}
   $E1D4  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
   $E1D7  E9 36 D8 02                CALL_abs_imm1          $D836 (cap_fief_stats) {bytecode}, $02
   $E1DB  08                         LOADL_quick   ; inline operand = 8
@@ -3985,7 +3985,7 @@ VM bytecode disassembly
   $E520  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
   $E524  D7 43 E5                   JUMPT_abs              $E543
   $E527  3B                         PUSH_quick   ; inline operand = 11
-  $E528  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_enemy_owned) {bytecode}, $02
+  $E528  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_owned_by_selected_daimyo) {bytecode}, $02
   $E52C  1C                         LOADR_quick   ; inline operand = 12
   $E52D  DC                         XOR
   $E52E  D7 43 E5                   JUMPT_abs              $E543

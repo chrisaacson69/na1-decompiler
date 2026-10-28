@@ -1000,7 +1000,7 @@ L_8D38:
 
 word draw_combat_fief_day_header(void) {
     set_cursor(2, 3);    // $8D40
-    redraw_window_row(battle_defending_province);    // $8D47
+    draw_province_name(battle_defending_province);    // $8D47
     draw_message(draw_combat_fief_day_header_fief_2d, (battle_defending_province + 1));    // $8D53
     return draw_combat_day_header(1);    // $8D5C
 }

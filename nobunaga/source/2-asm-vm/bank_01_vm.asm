@@ -172,14 +172,14 @@ VM bytecode disassembly
   $8134  0C                         LOADL_quick   ; inline operand = 12
   $8135  D9 08 00 01 00 5A 81 02 00 66 81 04 ... SWITCH_noncontig       count=8   ; .table 8 (key,target) + default (noncontiguous); SWITCH 1=>$815A 2=>$8166 4=>$815A 6=>$8166 8=>$8166 15=>$8166 19=>$815A 255=>$8166 default=>$8164
  >$815A  3D                         PUSH_quick   ; inline operand = 13
-  $815B  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_enemy_owned) {bytecode}, $02
+  $815B  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_owned_by_selected_daimyo) {bytecode}, $02
   $815F  D6 63 81                   JUMP_abs               $8163
  >$8162  40                         LOADL_qimm   ; inline operand = 0
  >$8163  2B                         STORE_quick   ; inline operand = 11
  >$8164  0B                         LOADL_quick   ; inline operand = 11
   $8165  CF                         RETURN
  >$8166  3D                         PUSH_quick   ; inline operand = 13
-  $8167  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_enemy_owned) {bytecode}, $02
+  $8167  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_owned_by_selected_daimyo) {bytecode}, $02
   $816B  D7 62 81                   JUMPT_abs              $8162
   $816E  41                         LOADL_qimm   ; inline operand = 1
   $816F  D6 63 81                   JUMP_abs               $8163
@@ -678,7 +678,7 @@ VM bytecode disassembly
   $84DB  8D 16                      BYTE_PUSH_imm1         +22
   $84DD  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $84E1  3C                         PUSH_quick   ; inline operand = 12
-  $84E2  E9 D3 D9 02                CALL_abs_imm1          $D9D3 (redraw_window_row) {bytecode}, $02
+  $84E2  E9 D3 D9 02                CALL_abs_imm1          $D9D3 (draw_province_name) {bytecode}, $02
   $84E6  64                         PUSH_qimm   ; inline operand = 4
   $84E7  6A                         PUSH_qimm   ; inline operand = 10
   $84E8  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
@@ -826,7 +826,7 @@ VM bytecode disassembly
   $85F3  40                         LOADL_qimm   ; inline operand = 0
   $85F4  D6 15 86                   JUMP_abs               $8615
  >$85F7  38                         PUSH_quick   ; inline operand = 8
-  $85F8  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_enemy_owned) {bytecode}, $02
+  $85F8  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_owned_by_selected_daimyo) {bytecode}, $02
   $85FC  D8 13 86                   JUMPF_abs              $8613
   $85FF  08                         LOADL_quick   ; inline operand = 8
   $8600  8C F7 6C                   LOADR_imm2             $6CF7 (province_ai_state)

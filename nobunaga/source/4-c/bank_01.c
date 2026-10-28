@@ -102,7 +102,7 @@ word target_eligible_by_cmd(word cmd, word fief) {
         case 1:
         case 4:
         case 19:
-            eligible = is_enemy_owned(fief);    // $815F
+            eligible = is_owned_by_selected_daimyo(fief);    // $815F
             break;
         default:
             break;
@@ -111,7 +111,7 @@ word target_eligible_by_cmd(word cmd, word fief) {
         case 8:
         case 15:
         case 255:
-            if (is_enemy_owned(fief)) {    // $8166
+            if (is_owned_by_selected_daimyo(fief)) {    // $8166
                 eligible = 0;    // $8162
             } else {
                 eligible = 1;    // $816F
@@ -350,7 +350,7 @@ word effect_view_a(word fief) {
     set_cursor(14, 3);    // $84CC
     draw_message(effect_view_a_fief_2d, (fief + 1));    // $84D6
     set_cursor(22, 3);    // $84DD
-    redraw_window_row(fief);    // $84E2
+    draw_province_name(fief);    // $84E2
     set_cursor(10, 4);    // $84E8
     if (is_owned) {    // $84C6
         draw_owner_name(fief);    // $84F1
@@ -434,7 +434,7 @@ word effect_view_b(void) {
     fief_list_ptr = 0x6F89;    // $85F2
     local8 = 0;    // $85F4
     while (((unsigned)local8 < (unsigned)scenario_fief_count)) {    // $8615
-        if (is_enemy_owned(local8)) {    // $85F7
+        if (is_owned_by_selected_daimyo(local8)) {    // $85F7
             if ((province_ai_state[local8] != 255)) {    // $85FF
                 fief_list_ptr = (fief_list_ptr + 1);    // $860E
                 *(byte*)((fief_list_ptr - 1)) = local8;    // $8612

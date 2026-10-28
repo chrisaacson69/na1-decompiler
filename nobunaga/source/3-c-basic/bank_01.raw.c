@@ -98,7 +98,7 @@ word target_eligible_by_cmd(word cmd, word fief) {
         default: goto L_8164;    // $8135
     }    // $8135
 L_815A:
-    eligible = is_enemy_owned(fief);    // $815F
+    eligible = is_owned_by_selected_daimyo(fief);    // $815F
     goto L_8163;    // $815F
 L_8162:
     eligible = 0;    // $8162
@@ -106,7 +106,7 @@ L_8163:
 L_8164:
     return eligible;    // $8165
 L_8166:
-    if (is_enemy_owned(fief)) goto L_8162;    // $816B
+    if (is_owned_by_selected_daimyo(fief)) goto L_8162;    // $816B
     eligible = 1;    // $816F
     goto L_8163;    // $816F
 }
@@ -329,7 +329,7 @@ L_84C6:
     set_cursor(14, 3);    // $84CC
     draw_message(effect_view_a_fief_2d, (fief + 1));    // $84D6
     set_cursor(22, 3);    // $84DD
-    redraw_window_row(fief);    // $84E2
+    draw_province_name(fief);    // $84E2
     set_cursor(10, 4);    // $84E8
     if (!(is_owned)) goto L_84F8;    // $84ED
     draw_owner_name(fief);    // $84F1
@@ -415,7 +415,7 @@ word effect_view_b(void) {
     local8 = 0;    // $85F4
     goto L_8615;    // $85F4
 L_85F7:
-    if (!(is_enemy_owned(local8))) goto L_8613;    // $85FC
+    if (!(is_owned_by_selected_daimyo(local8))) goto L_8613;    // $85FC
     if ((province_ai_state[local8] == 255)) goto L_8613;    // $8609
     fief_list_ptr = (fief_list_ptr + 1);    // $860E
     *(byte*)((fief_list_ptr - 1)) = local8;    // $8612

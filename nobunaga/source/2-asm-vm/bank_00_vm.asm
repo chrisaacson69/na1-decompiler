@@ -1639,7 +1639,7 @@ VM bytecode disassembly
  >$8BF4  0B                         LOADL_quick   ; inline operand = 11
   $8BF5  D3                         BYTE_DEREF
   $8BF6  B3                         PUSHL
-  $8BF7  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_enemy_owned) {bytecode}, $02
+  $8BF7  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_owned_by_selected_daimyo) {bytecode}, $02
   $8BFB  D8 01 8C                   JUMPF_abs              $8C01
   $8BFE  0B                         LOADL_quick   ; inline operand = 11
   $8BFF  D3                         BYTE_DEREF
@@ -4454,9 +4454,9 @@ VM bytecode disassembly
   $9F97  C1                         CMPNE
   $9F98  D8 37 A0                   JUMPF_abs              $A037
   $9F9B  64                         PUSH_qimm   ; inline operand = 4
-  $9F9C  E9 E8 90 02                CALL_abs_imm1          $90E8 (normalize_relations_matrix_lower) {bytecode}, $02
+  $9F9C  E9 E8 90 02                CALL_abs_imm1          $90E8 (decay_relations_matrix_upper) {bytecode}, $02
   $9FA0  62                         PUSH_qimm   ; inline operand = 2
-  $9FA1  E9 1E 91 02                CALL_abs_imm1          $911E (normalize_relations_matrix_upper) {bytecode}, $02
+  $9FA1  E9 1E 91 02                CALL_abs_imm1          $911E (decay_relations_matrix_lower) {bytecode}, $02
   $9FA5  40                         LOADL_qimm   ; inline operand = 0
   $9FA6  2B                         STORE_quick   ; inline operand = 11
   $9FA7  60                         PUSH_qimm   ; inline operand = 0
@@ -4579,7 +4579,7 @@ VM bytecode disassembly
 ; sub $A066   (frame_off=-8, body @ $A06B)
 ; ============================================================
   $A06B  62                         PUSH_qimm   ; inline operand = 2
-  $A06C  E9 E8 90 02                CALL_abs_imm1          $90E8 (normalize_relations_matrix_lower) {bytecode}, $02
+  $A06C  E9 E8 90 02                CALL_abs_imm1          $90E8 (decay_relations_matrix_upper) {bytecode}, $02
   $A070  40                         LOADL_qimm   ; inline operand = 0
   $A071  D6 9F A0                   JUMP_abs               $A09F
  >$A074  0B                         LOADL_quick   ; inline operand = 11
@@ -4957,7 +4957,7 @@ VM bytecode disassembly
 ; sub $A26F   (frame_off=-6, body @ $A274)
 ; ============================================================
   $A274  62                         PUSH_qimm   ; inline operand = 2
-  $A275  E9 E8 90 02                CALL_abs_imm1          $90E8 (normalize_relations_matrix_lower) {bytecode}, $02
+  $A275  E9 E8 90 02                CALL_abs_imm1          $90E8 (decay_relations_matrix_upper) {bytecode}, $02
   $A279  40                         LOADL_qimm   ; inline operand = 0
   $A27A  D6 D5 A2                   JUMP_abs               $A2D5
  >$A27D  3A                         PUSH_quick   ; inline operand = 10
@@ -5118,7 +5118,7 @@ VM bytecode disassembly
  >$A38B  AC 6F A2                   CALL_abs               $A26F (harvest_income_sweep_all_fiefs) {bytecode}
   $A38E  D6 81 A3                   JUMP_abs               $A381
  >$A391  62                         PUSH_qimm   ; inline operand = 2
-  $A392  E9 E8 90 02                CALL_abs_imm1          $90E8 (normalize_relations_matrix_lower) {bytecode}, $02
+  $A392  E9 E8 90 02                CALL_abs_imm1          $90E8 (decay_relations_matrix_upper) {bytecode}, $02
   $A396  D6 81 A3                   JUMP_abs               $A381
  >$A399  3B                         PUSH_quick   ; inline operand = 11
   $A39A  E9 94 91 02                CALL_abs_imm1          $9194 (check_and_process_daimyo_natural_death) {bytecode}, $02
