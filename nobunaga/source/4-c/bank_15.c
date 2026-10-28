@@ -909,10 +909,10 @@ word prompt_y_n(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D3ED
-// $D3ED cursor_nav_loop
+// $D3ED input_number_digits
 // (body @ $D3F2)
 
-word cursor_nav_loop(word max_digits) {
+word input_number_digits(word max_digits) {
     digit_pos = 0;    // $D3F3
     digits = 0;    // $D3F5
     digit_idx = 1;    // $D3F7
@@ -1032,7 +1032,7 @@ word select_province_by_cursor(word min_value, word max_value) {
             i = (i + 1);    // $D5C1
         }
         set_cursor(col, row);    // $D5CB
-        entered_value = cursor_nav_loop(digit_count);    // $D5D4
+        entered_value = input_number_digits(digit_count);    // $D5D4
         if (!((entered_value <= 0))) {    // $D5C9
             if ((entered_value >= min_value)) {    // $D5DB
                 if ((entered_value <= max_value)) {    // $D5E1
@@ -1061,12 +1061,12 @@ word number_input(word min_value, word max_value) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D609
-// $D609 ui_prompt_redraw
+// $D609 wait_hit_any_key
 // (body @ $D60E)
 
-word ui_prompt_redraw(void) {
+word wait_hit_any_key(void) {
     set_cursor(2, 26);    // $D611
-    redraw_window(ui_prompt_redraw_hit_any_key);    // $D618
+    redraw_window(wait_hit_any_key_hit_any_key);    // $D618
     button = wait_button_edge();    // $D61F
     open_message_window();    // $D620
     reset_prompt_selection();    // $D623

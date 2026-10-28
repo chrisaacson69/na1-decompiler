@@ -2788,10 +2788,10 @@ word ai_choose_combat_action_by_battle_strength(word unit_type) {
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $A721
-// $A721 ai_rng_resolve_combat_apply_casualties
+// $A721 ai_try_bribe_strongest_enemy_unit
 // (body @ $A726)
 
-word ai_rng_resolve_combat_apply_casualties(void) {
+word ai_try_bribe_strongest_enemy_unit(void) {
     enemy_side = (cur_combat_side ^ 1);    // $A72B
     if (rng_mod((const_two + 1))) {    // $A726
         if (!((*(word*)(side_resource_ptr(cur_combat_side)) <= *(word*)((side_resource_ptr(cur_combat_side) + 4))))) {    // $A738
@@ -2896,7 +2896,7 @@ word ai_select_unit_combat_action(word fief, word unit_idx) {
     if (ai_claim_province_when_strong_enough(fief)) {    // $A8D4
         return 1;    // $A8DD
     } else {
-        ai_rng_resolve_combat_apply_casualties();    // $A8DE
+        ai_try_bribe_strongest_enemy_unit();    // $A8DE
         if (!(cur_combat_unit_slot)) {    // $A8DE
             ai_choose_combat_action_by_battle_strength(fief);    // $A8E8
         } else {

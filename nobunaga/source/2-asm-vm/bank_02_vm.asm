@@ -5962,7 +5962,7 @@ VM bytecode disassembly
   $A8D9  D8 DE A8                   JUMPF_abs              $A8DE
   $A8DC  41                         LOADL_qimm   ; inline operand = 1
   $A8DD  CF                         RETURN
- >$A8DE  AC 21 A7                   CALL_abs               $A721 (ai_rng_resolve_combat_apply_casualties) {bytecode}
+ >$A8DE  AC 21 A7                   CALL_abs               $A721 (ai_try_bribe_strongest_enemy_unit) {bytecode}
   $A8E1  A4 E4 7B                   LOADL_abs              $7BE4 (cur_combat_unit_slot)
   $A8E4  D7 EF A8                   JUMPT_abs              $A8EF
   $A8E7  3C                         PUSH_quick   ; inline operand = 12

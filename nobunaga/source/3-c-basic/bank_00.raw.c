@@ -26,10 +26,10 @@ extern byte province_unit_type_pct[][5];
 extern byte relations_matrix[];
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8003
-// $8003 display_fullscreen_graphic_sequence
+// $8003 show_game_ending_and_play_again_prompt
 // (body @ $8008)
 
-word display_fullscreen_graphic_sequence(void) {
+word show_game_ending_and_play_again_prompt(void) {
     syscall_audio_control(0, 0);    // $800B
     repaint_screen();    // $800F
     if (!(count_6da2_set())) goto L_811C;    // $8015
@@ -45,7 +45,7 @@ L_8052:
     if (((unsigned)local11 < (unsigned)8)) goto L_8052;    // $8064
     palette_swap(0);    // $8068
     set_cursor(2, 24);    // $806F
-    redraw_window(display_fullscreen_graphic_sequence_congratulations_my_lord_3);    // $8076
+    redraw_window(show_game_ending_and_play_again_prompt_congratulations_my_lord_3);    // $8076
     draw_message(msg_in_the_year_4d, current_game_year);    // $8080
     redraw_window(msg_you_united_japan);    // $8087
     call_bank10_entry(5);    // $808C
@@ -72,7 +72,7 @@ L_80D7:
     ppu_copy_rect_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // $80FE
     local11 = 0;    // $8103
 L_8104:
-    palette_write_wrap(local11, display_fullscreen_graphic_sequence_congratulations_my_lord_1[local11]);    // $810C
+    palette_write_wrap(local11, show_game_ending_and_play_again_prompt_congratulations_my_lord_1[local11]);    // $810C
     local11 = (local11 + 1);    // $8112
     if (((unsigned)local11 < (unsigned)4)) goto L_8104;    // $8116
     goto L_81B1;    // $8119
@@ -104,7 +104,7 @@ L_816F:
     ppu_copy_rect_wrap(0, 5, 31, 24, cinematic_gfx_ace4, 6);    // $8196
     local11 = 0;    // $819B
 L_819C:
-    palette_write_wrap(local11, display_fullscreen_graphic_sequence_congratulations_my_lord_2[local11]);    // $81A4
+    palette_write_wrap(local11, show_game_ending_and_play_again_prompt_congratulations_my_lord_2[local11]);    // $81A4
     local11 = (local11 + 1);    // $81AA
     if (((unsigned)local11 < (unsigned)4)) goto L_819C;    // $81AE
 L_81B1:
@@ -134,17 +134,17 @@ L_821D:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $821E
-// $821E verify_sram_save_integrity
+// $821E prompt_new_game_or_load_save
 // (body @ $8223)
 
-word verify_sram_save_integrity(void) {
+word prompt_new_game_or_load_save(void) {
     goto L_8235;    // $8223
 L_8226:
     chr_bank0_set_wrap(0);    // $8227
     message_display(msg_no_saved_data);    // $822E
 L_8235:
     confirm_prompt();    // $8232
-    message_display(verify_sram_save_integrity_new_game);    // $8238
+    message_display(prompt_new_game_or_load_save_new_game);    // $8238
     if (!(prompt_y_n())) goto L_8244;    // $823F
     return 0;    // $8243
 L_8244:
@@ -194,7 +194,7 @@ L_8343:
     ui_msg_col_shift_flag = 0;    // $8364
     open_message_window();    // $8367
     message_display(msg_data_can_t_be_used);    // $836D
-    ui_prompt_redraw();    // $8371
+    wait_hit_any_key();    // $8371
     goto L_8235;    // $8374
 }
 
@@ -518,7 +518,7 @@ word init_new_game_state(void) {
 L_89C1:
     ui_input_mode = 0;    // $89C2
     ui_msg_col_shift_flag = 0;    // $89C6
-    if (!(verify_sram_save_integrity())) goto L_89D7;    // $89CC
+    if (!(prompt_new_game_or_load_save())) goto L_89D7;    // $89CC
     return syscall_audio_control(0, 0);    // $89D6
 L_89D7:
     i = 0;    // $89D8
@@ -873,10 +873,10 @@ word display_two_message_prompt_then_compare(word attacker_strength, word loyal_
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8F0A
-// $8F0A ai_resolve_province_takeover_attempt
+// $8F0A resolve_riot_uprising_contest
 // (body @ $8F0F)
 
-word ai_resolve_province_takeover_attempt(word fief) {
+word resolve_riot_uprising_contest(word fief) {
     fief_name_str = select_uprising_message(fief);    // $8F14
     call_bank10_entry(AUDIO_CONFLICT);    // $8F17
     rec = &province_table_live[fief];    // $8F23
@@ -962,7 +962,7 @@ L_908A:
     candidate_count = (candidate_count + 1);    // $908C
     return append_candidate_zero_priority(selected_province_idx, (candidate_count - 1));    // $9096
 L_9097:
-    ai_resolve_province_takeover_attempt(selected_province_idx);    // $909A
+    resolve_riot_uprising_contest(selected_province_idx);    // $909A
     province_table_live[selected_province_idx].loyalty = (province_table_live[selected_province_idx].loyalty + (rng_mod(30) + 50));    // $90B5
 L_90B6:
     list_ptr = (list_ptr + 1);    // $90B8
@@ -1479,10 +1479,10 @@ L_9776:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9778
-// $9778 revolt_spread_sweep_flip_fief_ownership
+// $9778 resolve_revolt_event_on_listed_fiefs
 // (body @ $977D)
 
-word revolt_spread_sweep_flip_fief_ownership(void) {
+word resolve_revolt_event_on_listed_fiefs(void) {
     candidate_count = 0;    // $977E
     fief_list_ptr = 0x7BAD;    // $9782
     goto L_986E;    // $9782
@@ -1629,10 +1629,10 @@ L_99AA:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $99AB
-// $99AB reassign_owner50_fiefs_to_daimyo24
+// $99AB resolve_akechi_revolt_outcome
 // (body @ $99B0)
 
-word reassign_owner50_fiefs_to_daimyo24(void) {
+word resolve_akechi_revolt_outcome(void) {
     repaint_screen();    // $99B0
     palette_swap(1);    // $99B4
     if ((battle_winner_province_sel != selected_province_idx)) goto L_9A04;    // $99BF
@@ -1677,7 +1677,7 @@ L_9A6C:
 L_9A9E:
     redraw_window(msg_nobunaga_s_ambition_of_a_unite);    // $9A9A
     palette_swap(0);    // $9A9F
-    ui_prompt_redraw();    // $9AA3
+    wait_hit_any_key();    // $9AA3
     return render_map_section(6);    // $9AAB
 }
 
@@ -1999,7 +1999,7 @@ L_9F3B:
     message_display(msg_revolt);    // $9F44
     confirm_prompt();    // $9F48
     trigger_cutscene(CUTSCENE_AI_EVENT_25);    // $9F4D
-    revolt_spread_sweep_flip_fief_ownership();    // $9F51
+    resolve_revolt_event_on_listed_fiefs();    // $9F51
     goto L_9F10;    // $9F54
 }
 
@@ -2328,7 +2328,7 @@ word ai_strategic_turn_planner(void) {
     ui_input_mode = 1;    // $A45B
     repaint_screen();    // $A45E
     if ((ai_turn_planner_resume_flag != 1)) goto L_A473;    // $A466
-    reassign_owner50_fiefs_to_daimyo24();    // $A469
+    resolve_akechi_revolt_outcome();    // $A469
     ai_turn_planner_resume_flag = 2;    // $A46D
     goto L_A5D4;    // $A470
 L_A473:
@@ -2550,6 +2550,6 @@ L_A82F:
 L_A839:
     if (!((ai_turn_flags & 128))) goto L_A785;    // $A840
 L_A843:
-    display_fullscreen_graphic_sequence();    // $A843
+    show_game_ending_and_play_again_prompt();    // $A843
     goto L_A77D;    // $A846
 }

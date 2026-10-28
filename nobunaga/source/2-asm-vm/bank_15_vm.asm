@@ -1649,7 +1649,7 @@ VM bytecode disassembly
   $D5CA  39                         PUSH_quick   ; inline operand = 9
   $D5CB  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $D5CF  3B                         PUSH_quick   ; inline operand = 11
-  $D5D0  E9 ED D3 02                CALL_abs_imm1          $D3ED (cursor_nav_loop) {bytecode}, $02
+  $D5D0  E9 ED D3 02                CALL_abs_imm1          $D3ED (input_number_digits) {bytecode}, $02
   $D5D4  27                         STORE_quick   ; inline operand = 7
   $D5D5  07                         LOADL_quick   ; inline operand = 7
   $D5D6  50                         LOADR_qimm   ; inline operand = 0
@@ -1691,7 +1691,7 @@ VM bytecode disassembly
   $D60E  8D 1A                      BYTE_PUSH_imm1         +26
   $D610  62                         PUSH_qimm   ; inline operand = 2
   $D611  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $D615  8E B7 F6                   PUSH_imm2              $F6B7 (ui_prompt_redraw_hit_any_key)
+  $D615  8E B7 F6                   PUSH_imm2              $F6B7 (wait_hit_any_key_hit_any_key)
   $D618  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $D61C  AC 87 D2                   CALL_abs               $D287 (wait_button_edge) {bytecode}
   $D61F  2B                         STORE_quick   ; inline operand = 11

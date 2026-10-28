@@ -131,7 +131,7 @@ L_81C7:
     char_advance_width((((unsigned)page_entry_count % (unsigned)6) ? 32 : 10));    // $81C3
     if ((page_entry_count != 18)) goto L_81EE;    // $81CB
     if (!((*(byte*)(fief_list) != 255))) goto L_81EE;    // $81D4
-    if (!((ui_prompt_redraw() == 2))) goto L_81E4;    // $81DC
+    if (!((wait_hit_any_key() == 2))) goto L_81E4;    // $81DC
     eligible_count = 0;    // $81E0
     goto L_81FA;    // $81E1
 L_81E4:
@@ -385,10 +385,10 @@ word effect_view_defending_province(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $85A7
-// $85A7 effect_view_c
+// $85A7 view_selected_fief
 // (body @ $85AC)
 
-word effect_view_c(void) {
+word view_selected_fief(void) {
     return effect_view_a(selected_province_idx);    // $85B3
 }
 
@@ -462,7 +462,7 @@ L_86A8:
     page_col = (page_col + 1);    // $86E4
     if (!(((page_col == 4) || (*(byte*)((fief_list_ptr + 1)) == 255)))) goto L_8703;    // $86F1
     palette_swap(0);    // $86F5
-    if ((ui_prompt_redraw() == 2)) goto L_870F;    // $86FE
+    if ((wait_hit_any_key() == 2)) goto L_870F;    // $86FE
     page_col = 0;    // $8702
 L_8703:
     fief_list_ptr = (fief_list_ptr + 1);    // $8704
@@ -2368,7 +2368,7 @@ L_A787:
     confirm_prompt();    // $A7B7
     if ((has_eligible_targets == 1)) goto L_A713;    // $A7BD
 L_A7C0:
-    effect_view_c();    // $A7C0
+    view_selected_fief();    // $A7C0
     goto L_A785;    // $A7C3
 L_A7C6:
     province_table_live[selected_province_idx].gold = (province_table_live[selected_province_idx].gold - 10);    // $A7D5
@@ -3432,7 +3432,7 @@ word issue_province_command(word fief) {
     fief_to_daimyo_record_addr(fief)->health = (fief_to_daimyo_record_addr(fief)->health + 4);    // $B7D6
     goto L_B874;    // $B7D7
 L_B7DA:
-    effect_view_c();    // $B7DA
+    view_selected_fief();    // $B7DA
     call_bank10_entry(27);    // $B7DF
     command = 0;    // $B7E4
     result = 0;    // $B7E5
@@ -3440,7 +3440,7 @@ L_B7DA:
 L_B7E8:
     if ((command != 17)) goto L_B7F2;    // $B7EC
 L_B7F2:
-    effect_view_c();    // $B7EF
+    view_selected_fief();    // $B7EF
     open_message_window();    // $B7F2
     daimyo_name_width(selected_province_idx);    // $B7F8
     redraw_window(msg_your_orders);    // $B7FF
@@ -3509,7 +3509,7 @@ L_B8FA:
     ai_turn_flags = (ai_turn_flags | -128);    // $B901
     phi_ret_b90d = count_6da2_set();    // $B907
     if (!(phi_ret_b90d)) goto L_B90D;    // $B907
-    phi_ret_b90d = ui_prompt_redraw();    // $B90A
+    phi_ret_b90d = wait_hit_any_key();    // $B90A
 L_B90D:
     return phi_ret_b90d;    // $B90D
 L_B90E:
