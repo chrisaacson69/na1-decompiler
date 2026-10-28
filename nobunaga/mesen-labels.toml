@@ -3341,3 +3341,36 @@ arg2 = { name = "target_fief", comment = "[HIGH] Target fief idx: PUSH_quick 13 
 local10 = { name = "target_resistance", comment = "[HIGH] Stored once @$8D3A: target daimyo byte+4 + target loyalty + rng_mod(10)*2; bar in SCMPGT local11>local10 @$8D3D" }
 local11 = { name = "briber_score", comment = "[HIGH] Stored once @$8D1A: briber daimyo byte+4 + loyalty ($700D+arg1*26); must SCMPGT local10 @$8D3D, then rng_mod(2) coin flip" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x97C1"]
+# fief_list_parallel_lookup
+arg1 = { name = "fief", comment = "[HIGH] $97CF LOADR_q 12 compared CMPEQ with each list byte; caller $98C4 pushes battle_defending_province last (= arg1)" }
+arg2 = { name = "value_cursor", comment = "[MED] caller LEAL_far $FFEA (&local1) pushed first; +2 per step $97DB; DEREF returned on match $97D4" }
+local11 = { name = "list_cursor", comment = "[HIGH] $97C9 = $6F4F (deduped_owner_list); BYTE_DEREF compare, INC per step $97D7, loop ends at $FF terminator $97E5" }
+
+[vars.bank1."0x96D1"]
+# driver_move
+local8 = { name = "source_fief", comment = "[HIGH] $972B STORE_q 8 = $7001+selected_province_idx*26; ->men (+16) at $9738 is the min_word source bound" }
+local9 = { name = "dest_fief", comment = "[HIGH] $9720 STORE_q 9 = $7001+battle_defending_province*26; header(+24)-men(+16) headroom $972C; arg2 of cap_arms_at_index $97AB" }
+local10 = { name = "max_movable", comment = "[HIGH] $9741 = min_word(src men, dest headroom); 0 -> 'can't hold more' ($9743); number_input max arg at $974D" }
+local11 = { name = "men_to_move", comment = "[HIGH] $9753 = number_input(1, local10), 0 aborts; pushed as effect_move arg at $97A6" }
+
+[vars.bank1."0x939D"]
+# fief_men_ratio_pct
+arg1 = { name = "fief", comment = "[HIGH] $93A8 PUSH_q 12 -> fief_men_if_provisioned, pushed last = math32_2arg numerator: 100*men(arg1)/(men1+men2); callers push their local11" }
+arg2 = { name = "other_fief", comment = "[HIGH] $93A2 PUSH_q 13 -> fief_men_if_provisioned, the math32_2arg partner; callers push selected_province_idx ($947A), local9/local10, byte" }
+
+[vars.bank1."0x918D"]
+# ninja_mission_resolve_vs_defender
+arg1 = { name = "ninja_units", comment = "[MED] caller $A508 PUSH_quick 9; $9249 LOADL_q 12 / pct_op(*local11,local10) SDIV: units divided by defender men*pct, the dividend in the success test" }
+local2 = { name = "defender_daimyo", comment = "[HIGH] $91B6 STORE_q 2 = fief_to_daimyo_record_addr(battle_defending_province); its +5 byte summed in the opening contest at $91C8" }
+local3 = { name = "attacker_daimyo", comment = "[HIGH] $9195 STORE_q 3 = selected_province_daimyo_record(); +5 byte in contest $91BF; local3+1 becomes victim ptr on counterattack $91F9" }
+local4 = { name = "victim_health_ptr", comment = "[MED] =defender rec+1 ($91B8), swapped to attacker rec+1 ($91FB); deduct_byte_at target $9272, >230/zero death check $9290, zeroed $92A6" }
+local5 = { name = "attacker_charisma_ptr", comment = "[MED] = attacker rec+4 ($9196 ADD_qimm 4); byte read in contest $91C3 and rng roll $91E0; decrement_byte_at arg at $920E and fail path $92E3" }
+local6 = { name = "victim_charisma_ptr", comment = "[MED] = defender rec+4 ($91BE), swapped to local5 on counterattack ($91FD); rng_mod(*local6)+50 builds hit pct at $9223" }
+local7 = { name = "victim_luck_ptr", comment = "[LOW] Coordinator amend: daimyo record +3 is luck (games.toml [na1.structs.daimyo], SRAM-verified; +1 health / +4 charisma agree). = local4+2 (victim rec+3) at $91BB, recomputed $920B on swap; byte read /10 ($9236) and /100 ($9251) in resist rolls; field unidentified" }
+local8 = { name = "hit_landed", comment = "[HIGH] set 1 at $9213, cleared 0 at $925E by resist roll; $9260 JUMPF picks damage path vs the -1/repelled path at $92BC" }
+local9 = { name = "is_counterattack", comment = "[HIGH] 0 at $91A3, 1 at $920C when roles swap; damage /(local9+1) at $9264; selects msg_counterattacked at $9277/$92C1" }
+local10 = { name = "hit_pct", comment = "[HIGH] = rng_mod(*local6)+50 at $922C, capped at 100 ($9233); passed as pct_op 2nd arg (percent) at $9240" }
+local11 = { name = "victim_men_ptr", comment = "[HIGH] = $7011+idx*26 (&province.men) for defender $91AE, swapped to selected province $9208; word DEREF at $921C/$9241" }
+

@@ -1091,43 +1091,43 @@ word decrement_byte_at(word stat_ptr) {
 // $918D ninja_mission_resolve_vs_defender
 // (body @ $9192)
 
-word ninja_mission_resolve_vs_defender(word arg1) {
-    local3 = selected_province_daimyo_record();    // $9195
-    local5 = &selected_province_daimyo_record()->charisma;    // $9197
+word ninja_mission_resolve_vs_defender(word ninja_units) {
+    attacker_daimyo = selected_province_daimyo_record();    // $9195
+    attacker_charisma_ptr = &selected_province_daimyo_record()->charisma;    // $9197
     if (get_province_ai_state(battle_defending_province)) goto L_92E3;    // $919F
-    local9 = 0;    // $91A3
-    local11 = &province_table_live[battle_defending_province].men;    // $91AE
-    local2 = fief_to_daimyo_record_addr(battle_defending_province);    // $91B6
-    local4 = &fief_to_daimyo_record_addr(battle_defending_province)->health;    // $91B8
-    local7 = (local4 + 2);    // $91BB
-    local6 = (local7 + 1);    // $91BE
-    if (!(((*(byte*)(local6) + *(byte*)((local2 + 5))) <= (*(byte*)(local5) + *(byte*)((local3 + 5)))))) goto L_92E3;    // $91D2
-    if (((*(byte*)(local6) - rng_mod((const_two * 10))) > (*(byte*)(local5) - rng_mod((const_two * 10))))) {    // $91F6
-    local4 = (local3 + 1);    // $91FB
-    local6 = local5;    // $91FD
-    local11 = &province_table_live[selected_province_idx].men;    // $9208
-    local7 = (local4 + 2);    // $920B
-    local9 = 1;    // $920D
+    is_counterattack = 0;    // $91A3
+    victim_men_ptr = &province_table_live[battle_defending_province].men;    // $91AE
+    defender_daimyo = fief_to_daimyo_record_addr(battle_defending_province);    // $91B6
+    victim_health_ptr = &fief_to_daimyo_record_addr(battle_defending_province)->health;    // $91B8
+    victim_luck_ptr = (victim_health_ptr + 2);    // $91BB
+    victim_charisma_ptr = (victim_luck_ptr + 1);    // $91BE
+    if (!(((*(byte*)(victim_charisma_ptr) + *(byte*)((defender_daimyo + 5))) <= (*(byte*)(attacker_charisma_ptr) + *(byte*)((attacker_daimyo + 5)))))) goto L_92E3;    // $91D2
+    if (((*(byte*)(victim_charisma_ptr) - rng_mod((const_two * 10))) > (*(byte*)(attacker_charisma_ptr) - rng_mod((const_two * 10))))) {    // $91F6
+    victim_health_ptr = (attacker_daimyo + 1);    // $91FB
+    victim_charisma_ptr = attacker_charisma_ptr;    // $91FD
+    victim_men_ptr = &province_table_live[selected_province_idx].men;    // $9208
+    victim_luck_ptr = (victim_health_ptr + 2);    // $920B
+    is_counterattack = 1;    // $920D
     }
 L_9213:
-    decrement_byte_at(local5);    // $920F
-    local8 = 1;    // $9214
-    if ((*(word*)(local11) <= (rng_mod(10) + 1))) {    // $9220
-    local10 = (rng_mod(*(byte*)(local6)) + 50);    // $922C
-    if (((rng_mod(*(byte*)(local6)) + 50) > 100)) {    // $9230
-    local10 = 100;    // $9235
+    decrement_byte_at(attacker_charisma_ptr);    // $920F
+    hit_landed = 1;    // $9214
+    if ((*(word*)(victim_men_ptr) <= (rng_mod(10) + 1))) {    // $9220
+    hit_pct = (rng_mod(*(byte*)(victim_charisma_ptr)) + 50);    // $922C
+    if (((rng_mod(*(byte*)(victim_charisma_ptr)) + 50) > 100)) {    // $9230
+    hit_pct = 100;    // $9235
     }
 L_9236:
-    if (((arg1 / pct_op(*(word*)(local11), local10)) <= rng_mod((*(byte*)(local7) / 10)))) {    // $924E
-    if (rng_mod((*(byte*)(local7) / 100))) {    // $925B
-    local8 = 0;    // $925F
+    if (((ninja_units / pct_op(*(word*)(victim_men_ptr), hit_pct)) <= rng_mod((*(byte*)(victim_luck_ptr) / 10)))) {    // $924E
+    if (rng_mod((*(byte*)(victim_luck_ptr) / 100))) {    // $925B
+    hit_landed = 0;    // $925F
     }
     }
     }
 L_9260:
-    if (!(local8)) goto L_92BC;    // $9261
-    deduct_byte_at(local4, (rng_mod(((unsigned)*(byte*)(local4) / (unsigned)(local9 + 1))) + 1));    // $9273
-    if (local9) {    // $9278
+    if (!(hit_landed)) goto L_92BC;    // $9261
+    deduct_byte_at(victim_health_ptr, (rng_mod(((unsigned)*(byte*)(victim_health_ptr) / (unsigned)(is_counterattack + 1))) + 1));    // $9273
+    if (is_counterattack) {    // $9278
     phi_9284_0 = msg_counterattacked;    // $927E
     } else {
     phi_9284_0 = msg_enemy_morale_is_falling_to_pie;    // $9281
@@ -1137,15 +1137,15 @@ L_9284:
     confirm_prompt();    // $9288
 L_9290:
     trigger_cutscene(CUTSCENE_NINJA_ASSASSIN_RESULT);    // $928C
-    if (!(((230 > *(byte*)(local4)) || !(*(byte*)(local4))))) goto L_92F2;    // $929D
-    if (local9) goto L_92F2;    // $92A1
-    *(byte*)(local4) = 0;    // $92A6
+    if (!(((230 > *(byte*)(victim_health_ptr)) || !(*(byte*)(victim_health_ptr))))) goto L_92F2;    // $929D
+    if (is_counterattack) goto L_92F2;    // $92A1
+    *(byte*)(victim_health_ptr) = 0;    // $92A6
     if (!(fief_is_daimyo_capital[battle_defending_province])) goto L_92D9;    // $92AF
     find_fiefs_of_owner(battle_defending_province);    // $92B5
     goto L_92F2;    // $92B9
 L_92BC:
-    *(byte*)(local4) = (*(byte*)(local4) - 1);    // $92C0
-    if (!(local9)) goto L_92E3;    // $92C2
+    *(byte*)(victim_health_ptr) = (*(byte*)(victim_health_ptr) - 1);    // $92C0
+    if (!(is_counterattack)) goto L_92E3;    // $92C2
     redraw_window(msg_counterattacked);    // $92C8
     redraw_window(msg_you_have_repelled);    // $92CF
     confirm_prompt();    // $92D3
@@ -1154,7 +1154,7 @@ L_92D9:
     neutralize_fief(battle_defending_province);    // $92DC
     goto L_92F2;    // $92E0
 L_92E3:
-    decrement_byte_at(local5);    // $92E4
+    decrement_byte_at(attacker_charisma_ptr);    // $92E4
     redraw_window(msg_your_ninja_failed);    // $92EB
 L_92F2:
     confirm_prompt();    // $92EF
@@ -1231,8 +1231,8 @@ word fief_men_if_provisioned(word fief) {
 // $939D fief_men_ratio_pct
 // (body @ $93A2)
 
-word fief_men_ratio_pct(word arg1, word arg2) {
-    return math32_2arg(fief_men_if_provisioned(arg1), fief_men_if_provisioned(arg2));    // $93B2
+word fief_men_ratio_pct(word fief, word other_fief) {
+    return math32_2arg(fief_men_if_provisioned(fief), fief_men_if_provisioned(other_fief));    // $93B2
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $93B3
@@ -1427,13 +1427,13 @@ word driver_move(void) {
     if (province_select_prompt(deduped_owner_list)) {    // $9709
     battle_defending_province = (battle_defending_province - 1);    // $9710
     open_message_window();    // $9713
-    local9 = &province_table_live[battle_defending_province];    // $9720
-    local8 = &province_table_live[selected_province_idx];    // $972B
-    local10 = min_word(local8->men, (local9->header - local9->men));    // $9741
-    if (!(local10)) goto L_97B5;    // $9743
+    dest_fief = &province_table_live[battle_defending_province];    // $9720
+    source_fief = &province_table_live[selected_province_idx];    // $972B
+    max_movable = min_word(source_fief->men, (dest_fief->header - dest_fief->men));    // $9741
+    if (!(max_movable)) goto L_97B5;    // $9743
     redraw_window(msg_how_many_men);    // $9749
-    local11 = number_input(1, local10);    // $9753
-    if (number_input(1, local10)) {    // $9754
+    men_to_move = number_input(1, max_movable);    // $9753
+    if (number_input(1, max_movable)) {    // $9754
     if (fief_is_daimyo_capital[selected_province_idx]) {    // $975F
     if (effect_war_combat_prep_d(selected_province_idx)) goto L_9797;    // $9769
     redraw_window(msg_will_you_lead_them_personally);    // $976F
@@ -1447,8 +1447,8 @@ L_9797:
     trigger_cutscene(CUTSCENE_MOVE);    // $9798
     message_display(msg_they_have_arrived_safely);    // $979F
     confirm_prompt();    // $97A3
-    effect_move(local11);    // $97A7
-    cap_arms_at_index(battle_defending_province, local9);    // $97AF
+    effect_move(men_to_move);    // $97A7
+    cap_arms_at_index(battle_defending_province, dest_fief);    // $97AF
     return 1;    // $97B4
 L_97B5:
     message_display(msg_that_fief_can_t_hold_more_men);    // $97B8
@@ -1464,14 +1464,14 @@ L_97BF:
 // $97C1 fief_list_parallel_lookup
 // (body @ $97C6)
 
-word fief_list_parallel_lookup(word arg1, word arg2) {
-    local11 = 0x6F4F;    // $97C9
-    while ((*(byte*)(local11) != 255)) {    // $97E0
-        if ((*(byte*)(local11) == arg1)) return *(word*)(arg2);    // $97D1
-        local11 = (local11 + 1);    // $97D9
-        arg2 = (arg2 + 2);    // $97DD
+word fief_list_parallel_lookup(word fief, word value_cursor) {
+    list_cursor = 0x6F4F;    // $97C9
+    while ((*(byte*)(list_cursor) != 255)) {    // $97E0
+        if ((*(byte*)(list_cursor) == fief)) return *(word*)(value_cursor);    // $97D1
+        list_cursor = (list_cursor + 1);    // $97D9
+        value_cursor = (value_cursor + 2);    // $97DD
     }
-    return (*(byte*)(local11) != 255);    // $97E9
+    return (*(byte*)(list_cursor) != 255);    // $97E9
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $97EA
