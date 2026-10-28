@@ -1595,45 +1595,45 @@ L_DBF6:
 // $DC0E pool_push_pop
 // (body @ $DC13)
 
-word pool_push_pop(word arg1) {
-    if (!(((unsigned)arg1 > (unsigned)49))) goto L_DC2A;    // $DC17
+word pool_push_pop(word daimyo_or_pop) {
+    if (!(((unsigned)daimyo_or_pop > (unsigned)49))) goto L_DC2A;    // $DC17
     daimyo_pool_sp_6e4a = (daimyo_pool_sp_6e4a - 1);    // $DC1E
     return *(byte*)((daimyo_pool_sp_6e4a + 0x6E4B));    // $DC29
 L_DC2A:
     daimyo_pool_sp_6e4a = (daimyo_pool_sp_6e4a + 1);    // $DC2E
-    daimyo_pool_sp_6e4a[daimyo_pool_sp_6e4a] = arg1;    // $DC3A
-    return arg1;    // $DC3B
+    daimyo_pool_sp_6e4a[daimyo_pool_sp_6e4a] = daimyo_or_pop;    // $DC3A
+    return daimyo_or_pop;    // $DC3B
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DC3C
 // $DC3C list_remove_matching
 // (body @ $DC41)
 
-word list_remove_matching(word arg1) {
-    local10 = 0x6E7F;    // $DC44
-    local11 = 0;    // $DC46
+word list_remove_matching(word daimyo) {
+    entry_ptr = 0x6E7F;    // $DC44
+    i = 0;    // $DC46
     goto L_DC5D;    // $DC47
 L_DC4A:
-    if (!((*(byte*)(local10) == arg1))) goto L_DC55;    // $DC4E
-    *(byte*)(local10) = -1;    // $DC54
+    if (!((*(byte*)(entry_ptr) == daimyo))) goto L_DC55;    // $DC4E
+    *(byte*)(entry_ptr) = -1;    // $DC54
 L_DC55:
-    local10 = (local10 + 1);    // $DC57
-    local11 = (local11 + 1);    // $DC5B
+    entry_ptr = (entry_ptr + 1);    // $DC57
+    i = (i + 1);    // $DC5B
 L_DC5D:
-    if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_DC4A;    // $DC62
-    return ((unsigned)local11 < (unsigned)scenario_fief_count);    // $DC65
+    if (((unsigned)i < (unsigned)scenario_fief_count)) goto L_DC4A;    // $DC62
+    return ((unsigned)i < (unsigned)scenario_fief_count);    // $DC65
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DC66
 // $DC66 fief_to_mapid
 // (body @ $DC6B)
 
-word fief_to_mapid(word arg1) {
-    if (!(((unsigned)arg1 > (unsigned)50))) goto L_DC74;    // $DC6F
-    return arg1;    // $DC73
+word fief_to_mapid(word fief) {
+    if (!(((unsigned)fief > (unsigned)50))) goto L_DC74;    // $DC6F
+    return fief;    // $DC73
 L_DC74:
     dsel_dc87 = (scenario_fief_count == 50);    // $DC87
-    return (dsel_dc87 ? arg1 : province_to_mapid_table[arg1]);    // $DC87
+    return (dsel_dc87 ? fief : province_to_mapid_table[fief]);    // $DC87
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DC88
@@ -1708,49 +1708,49 @@ L_DD67:
 // $DD81 init_new_daimyo_province_stats
 // (body @ $DD86)
 
-word init_new_daimyo_province_stats(word arg1) {
-    fief_to_daimyo_record_addr(arg1)->age = (rng_mod(20) + 20);    // $DD94
-    local10 = &fief_to_daimyo_record_addr(arg1)->health;    // $DD9B
-    phi_val_ddc8 = &fief_to_daimyo_record_addr(arg1)->health;    // $DD9C
+word init_new_daimyo_province_stats(word fief) {
+    fief_to_daimyo_record_addr(fief)->age = (rng_mod(20) + 20);    // $DD94
+    stats_base = &fief_to_daimyo_record_addr(fief)->health;    // $DD9B
+    phi_val_ddc8 = &fief_to_daimyo_record_addr(fief)->health;    // $DD9C
     goto L_DDC8;    // $DD9C
 L_DD9F:
-    *(byte*)(local11) = pct_op(*(byte*)(local11), (rng_mod(20) + 50));    // $DDB0
-    *(byte*)(local11) = (*(byte*)(local11) + ((*(byte*)(local11) < 30) ? 30 : 0));    // $DDC5
-    phi_val_ddc8 = (local11 + 1);    // $DDC7
+    *(byte*)(stat_ptr) = pct_op(*(byte*)(stat_ptr), (rng_mod(20) + 50));    // $DDB0
+    *(byte*)(stat_ptr) = (*(byte*)(stat_ptr) + ((*(byte*)(stat_ptr) < 30) ? 30 : 0));    // $DDC5
+    phi_val_ddc8 = (stat_ptr + 1);    // $DDC7
 L_DDC8:
-    local11 = phi_val_ddc8;    // $DDC8
-    if (((unsigned)local11 <= (unsigned)(local10 + 4))) goto L_DD9F;    // $DDCF
-    local8 = &province_table_live[arg1];    // $DDDA
-    phi_val_de45 = &province_table_live[arg1];    // $DDDB
+    stat_ptr = phi_val_ddc8;    // $DDC8
+    if (((unsigned)stat_ptr <= (unsigned)(stats_base + 4))) goto L_DD9F;    // $DDCF
+    fief_rec = &province_table_live[fief];    // $DDDA
+    phi_val_de45 = &province_table_live[fief];    // $DDDB
     goto L_DE45;    // $DDDB
 L_DDDE:
-    if (!((&province_table_live[arg1].arms == local9))) goto L_DE0A;    // $DDE8
-    *(word*)(local9) = pct_op(*(word*)(local9), (rng_mod(31) + 50));    // $DDFC
-    if (!((*(word*)(local9) < 50))) goto L_DE3B;    // $DE02
+    if (!((&province_table_live[fief].arms == field_ptr))) goto L_DE0A;    // $DDE8
+    *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), (rng_mod(31) + 50));    // $DDFC
+    if (!((*(word*)(field_ptr) < 50))) goto L_DE3B;    // $DE02
     phi_push_de3c = 50;    // $DE07
     goto L_DE3C;    // $DE07
 L_DE0A:
-    if (!(fief_is_daimyo_capital[arg1])) goto L_DE1F;    // $DE11
+    if (!(fief_is_daimyo_capital[fief])) goto L_DE1F;    // $DE11
     phi_push_de27 = (rng_mod(20) + 50);    // $DE1C
     goto L_DE27;    // $DE1C
 L_DE1F:
     phi_push_de27 = (rng_mod(30) + 30);    // $DE25
 L_DE27:
-    *(word*)(local9) = pct_op(*(word*)(local9), phi_push_de27);    // $DE2F
-    if (!((*(word*)(local9) < 10))) goto L_DE3B;    // $DE34
+    *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), phi_push_de27);    // $DE2F
+    if (!((*(word*)(field_ptr) < 10))) goto L_DE3B;    // $DE34
     phi_push_de3c = 10;    // $DE38
     goto L_DE3C;    // $DE38
 L_DE3B:
     phi_push_de3c = 0;    // $DE3B
 L_DE3C:
-    *(word*)(local9) = (*(word*)(local9) + phi_push_de3c);    // $DE42
-    phi_val_de45 = (local9 + 2);    // $DE44
+    *(word*)(field_ptr) = (*(word*)(field_ptr) + phi_push_de3c);    // $DE42
+    phi_val_de45 = (field_ptr + 2);    // $DE44
 L_DE45:
-    local9 = phi_val_de45;    // $DE45
-    if (((unsigned)local9 < (unsigned)&local8->header)) goto L_DDDE;    // $DE4D
-    province_table_live[arg1].loyalty = (province_table_live[arg1].loyalty + 50);    // $DE5E
-    province_table_live[arg1].morale = (province_table_live[arg1].morale + 50);    // $DE6D
-    fief_tax_rate[arg1] = 20;    // $DE76
+    field_ptr = phi_val_de45;    // $DE45
+    if (((unsigned)field_ptr < (unsigned)&fief_rec->header)) goto L_DDDE;    // $DE4D
+    province_table_live[fief].loyalty = (province_table_live[fief].loyalty + 50);    // $DE5E
+    province_table_live[fief].morale = (province_table_live[fief].morale + 50);    // $DE6D
+    fief_tax_rate[fief] = 20;    // $DE76
     return 20;    // $DE77
 }
 
@@ -1758,14 +1758,14 @@ L_DE45:
 // $DE78 select_uprising_message
 // (body @ $DE7D)
 
-word select_uprising_message(word arg1) {
+word select_uprising_message(word fief) {
     if (!((ai_turn_flags & 32))) goto L_DE8A;    // $DE83
     return select_uprising_message_rebels;    // $DE89
 L_DE8A:
     if (!((ai_turn_flags & 16))) goto L_DE97;    // $DE90
     return 0x796A;    // $DE96
 L_DE97:
-    switch (arg1) {    // $DE98
+    switch (fief) {    // $DE98
         case 7: goto L_DEAD;    // $DE98
         case 13: goto L_DEB3;    // $DE98
         case 23: goto L_DEAD;    // $DE98
@@ -1775,13 +1775,13 @@ L_DE97:
 L_DEAD:
     phi_val_deb0 = uprising_label_zealots;    // $DEAD
 L_DEB0:
-    local11 = phi_val_deb0;    // $DEB0
-    return local11;    // $DEB2
+    message = phi_val_deb0;    // $DEB0
+    return message;    // $DEB2
 L_DEB3:
     phi_val_deb0 = uprising_label_monks;    // $DEB6
     goto L_DEB0;    // $DEB6
 L_DEB9:
-    phi_val_deb0 = revolt_type_message(arg1);    // $DEBE
+    phi_val_deb0 = revolt_type_message(fief);    // $DEBE
     goto L_DEB0;    // $DEBE
 }
 

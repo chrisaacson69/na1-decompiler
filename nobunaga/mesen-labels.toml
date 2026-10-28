@@ -2989,3 +2989,32 @@ local9 = { name = "daimyo_count", comment = "[HIGH] STORE_quick 9 @$DBDD = 53 if
 local10 = { name = "face_code", comment = "[HIGH] STORE_quick 10 @$DBCC = 4 rng_mod(5) digits *1,5,25,125; compared to $6EB1 table, POPSTORE to table[fief_owner] @$DC0C" }
 local11 = { name = "i", comment = "[HIGH] STORE_quick 11 =0 @$DBDF, INC @$DBF4, LSHIFT1 index into daimyo_face_code_table $6EB1 while < local9" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 12 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xDC0E"]
+# pool_push_pop
+arg1 = { name = "daimyo_or_pop", comment = "[MED] LOADL_quick 12 UCMPGT 49: if >49 pop $6E4B[--sp]; else BYTE_POPSTORE at $6E4A+(++sp). Callers push daimyo ids; $E21B passes $FF to pop" }
+
+[vars.bank15."0xDC3C"]
+# list_remove_matching
+arg1 = { name = "daimyo", comment = "[MED] LOADR_quick 12 CMPEQ vs *local10; equal bytes set to $FF. Callers push the same daimyo ids as pool_push_pop; $E425 passes fief_owner()" }
+local10 = { name = "entry_ptr", comment = "[HIGH] STORE_quick 10 = $6E7F; BYTE_DEREF to compare, PUSH_quick 10 + BYTE_POPSTORE -1 to clear; INC each pass" }
+local11 = { name = "i", comment = "[HIGH] Loop counter: STORE_quick 11 = 0, INC each pass, loops while UCMPLT scenario_fief_count ($6D9D)" }
+
+[vars.bank15."0xDC66"]
+# fief_to_mapid
+arg1 = { name = "fief", comment = "[HIGH] Indexes province_to_mapid_table $F70E (BYTE_DEREF); returned as-is if UCMPGT 50 or fief_count==50. Callers push province idx / owner ids" }
+
+[vars.bank15."0xDD81"]
+# init_new_daimyo_province_stats
+arg1 = { name = "fief", comment = "[HIGH] Passed to fief_to_daimyo_record_addr; indexes $7001+arg1*26, fief_is_daimyo_capital $6DA2, fief_tax_rate $6D2D. Caller pushes its arg1" }
+local8 = { name = "fief_rec", comment = "[HIGH] STORE_quick 8 = arg1*26+$7001 (province record); local8+24 (header) is the UCMPLT end bound of the local9 loop" }
+local9 = { name = "field_ptr", comment = "[MED] Word cursor from local8, +2 per pass while < local8+24; DEREF -> pct_op -> POPSTORE; arms (+22) +50 if <50, others +10 if <10" }
+local10 = { name = "stats_base", comment = "[MED] STORE_quick 10 = fief_to_daimyo_record_addr(arg1)+1; never written again, only start of local11 and local10+4 UCMPLE loop bound" }
+local11 = { name = "stat_ptr", comment = "[MED] Byte cursor local10..local10+4 (UCMPLE), INC per pass; *ptr = pct_op(*ptr, rng_mod(20)+50), then +30 if below 30" }
+
+[vars.bank15."0xDE78"]
+# select_uprising_message
+arg1 = { name = "fief", comment = "[HIGH] LOADL_quick 12 SWITCH (7/23 zealots, 13/30 monks), default PUSH_quick 12 to revolt_type_message; callers push battle_defending_province" }
+local11 = { name = "message", comment = "[HIGH] STORE_quick 11 at $DEB0 gets $F720/$F728 label or revolt_type_message result; LOADL_quick 11 RETURN" }
+
