@@ -2934,3 +2934,31 @@ arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 to fief_owner $D772, CMP
 # province_ai_state_addr
 arg1 = { name = "fief", comment = "[HIGH] index: slot12 + $6CF7 province_ai_state, address RETURNed; callers push battle_defending_province $6F63 / fief local" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 11 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xD5E9"]
+# number_input
+arg1 = { name = "min_value", comment = "[HIGH] Lower bound: PUSH_quick 12 is the 1st arg to draw_message fmt $F6AC and select_province_by_cursor; all callers PUSH_qimm 1 last" }
+arg2 = { name = "max_value", comment = "[HIGH] Upper bound: PUSH_quick 13, 2nd arg of select_province_by_cursor; callers push scenario_fief_count, 8, 5, prov gold, min_word cap" }
+local11 = { name = "entered_value", comment = "[HIGH] STORE_quick 11 @$D5FD of select_province_by_cursor(min,max); SCMPGT 0 gates open_message_window, returned @$D607" }
+
+[vars.bank15."0xD9D3"]
+# redraw_window_row
+arg1 = { name = "province_idx", comment = "[HIGH] LOADL_quick 12 *10 + province_name_table $7985 -> redraw_window; caller @$8D44 pushes battle_defending_province" }
+
+[vars.bank15."0xD9E5"]
+# test_6f65_bit7
+arg1 = { name = "side", comment = "[HIGH] Byte index into war_side_state_flag $6F65, tests &$80; callers push cur_combat_side or a 0/1 CMPEQ result (@$AE42)" }
+
+[vars.bank15."0xD9F7"]
+# revolt_type_message
+arg1 = { name = "fief_idx", comment = "[HIGH] LOADL_quick 12 + fief_revolt_type $7B79, BYTE_DEREF compared to 6 and 7 (@$D9FC, $DA0D); caller passes its own arg1" }
+local11 = { name = "revolt_message", comment = "[HIGH] STORE_quick 11 @$DA21 of the pirates/christians/rioters msg ptr ($F6ED/$F6F5/$F6FE) picked by revolt type; returned" }
+
+[vars.bank15."0xDA24"]
+# weighted_average_capped
+arg1 = { name = "current_value", comment = "[HIGH] pct_op(arg1, math32_2arg(arg4,arg3)) @$DA42: base weighted by arg4's share; callers push fief->morale/skill/arms, *local10" }
+arg2 = { name = "incoming_value", comment = "[HIGH] pct_op(arg2|1, math32_2arg(arg3,arg4)) @$DA32: base weighted by arg3's share; callers push rng-rolled stat or *local9" }
+arg3 = { name = "incoming_weight", comment = "[MED] math32_2arg 1st arg @$DA2C: 100*arg3/(arg3+arg4) weights arg2; caller @$DF99 pushes war_attacker_men. Result capped by arg5 (fp+$13)" }
+arg4 = { name = "current_weight", comment = "[MED] math32_2arg 1st arg @$DA3C: 100*arg4/(arg3+arg4) weights arg1; caller @$DF96 pushes war_defender_men" }
+

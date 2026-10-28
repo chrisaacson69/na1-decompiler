@@ -1027,14 +1027,14 @@ L_D5E7:
 // $D5E9 number_input
 // (body @ $D5EE)
 
-word number_input(word arg1, word arg2) {
-    draw_message(number_input_d_d, arg1, arg2);    // $D5F3
-    local11 = select_province_by_cursor(arg1, arg2);    // $D5FD
-    if ((local11 > 0)) {    // $D601
+word number_input(word min_value, word max_value) {
+    draw_message(number_input_d_d, min_value, max_value);    // $D5F3
+    entered_value = select_province_by_cursor(min_value, max_value);    // $D5FD
+    if ((entered_value > 0)) {    // $D601
     }
 L_D607:
     open_message_window();    // $D604
-    return local11;    // $D608
+    return entered_value;    // $D608
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D609
@@ -1407,29 +1407,29 @@ word province_ai_state_addr(word fief) {
 // $D9D3 redraw_window_row
 // (body @ $D9D8)
 
-word redraw_window_row(word arg1) {
-    return redraw_window(province_name_table[arg1]);    // $D9E4
+word redraw_window_row(word province_idx) {
+    return redraw_window(province_name_table[province_idx]);    // $D9E4
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9E5
 // $D9E5 test_6f65_bit7
 // (body @ $D9EA)
 
-word test_6f65_bit7(word arg1) {
-    return ((war_side_state_flag[arg1] & 128) != 0);    // $D9F6
+word test_6f65_bit7(word side) {
+    return ((war_side_state_flag[side] & 128) != 0);    // $D9F6
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9F7
 // $D9F7 revolt_type_message
 // (body @ $D9FC)
 
-word revolt_type_message(word arg1) {
-    if ((fief_revolt_type[arg1] == 6)) {    // $DA04
+word revolt_type_message(word fief_idx) {
+    if ((fief_revolt_type[fief_idx] == 6)) {    // $DA04
     } else {
     }
 L_DA21:
-    local11 = ((fief_revolt_type[arg1] == 7) ? revolt_type_message_christns : revolt_type_message_rioters);    // $DA21
-    return local11;    // $DA23
+    revolt_message = ((fief_revolt_type[fief_idx] == 7) ? revolt_type_message_christns : revolt_type_message_rioters);    // $DA21
+    return revolt_message;    // $DA23
     }
 }
 
@@ -1437,8 +1437,8 @@ L_DA21:
 // $DA24 weighted_average_capped
 // (body @ $DA29)
 
-word weighted_average_capped(word arg1, word arg2, word arg3, word arg4, word arg5) {
-    return min_word((pct_op(arg1, math32_2arg(arg4, arg3)) + pct_op((arg2 | 1), math32_2arg(arg3, arg4))), arg5);    // $DA4E
+word weighted_average_capped(word current_value, word incoming_value, word incoming_weight, word current_weight, word arg5) {
+    return min_word((pct_op(current_value, math32_2arg(current_weight, incoming_weight)) + pct_op((incoming_value | 1), math32_2arg(incoming_weight, current_weight))), arg5);    // $DA4E
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DA4F
