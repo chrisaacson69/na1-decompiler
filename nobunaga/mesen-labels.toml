@@ -3796,3 +3796,50 @@ arg1 = { name = "x_ptr", comment = "[MED] Pointer: caller $9AA1 pushes LEAL_far 
 arg2 = { name = "y_ptr", comment = "[MED] Pointer: caller $9A9D pushes LEAL_far $FFFA (&local9, row); PUSH_quick 13 @$8558 forwards it as arg2 of step_coord_by_direction" }
 arg3 = { name = "dir_code", comment = "[MED] Raw dir code (caller local11): ==48 returns 0 @$854C; else rewritten (code-48)>>1-1 by STORE_quick 14 @$8556, passed as direction" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (7 subs) ---
+[vars.bank2."0x960E"]
+# is_cell_valid_for_phase
+arg1 = { name = "cell", comment = "[MED] LOADL_quick 12 vs <5/2..7/>5 per tactical_battle_phase 0/1/2 @$9613-$963E; callers push tactical_cursor_cell, 0, 5, 10, local9" }
+
+[vars.bank2."0x93AA"]
+# announce_battle_outcome_retreat_or_won
+arg1 = { name = "fief", comment = "[HIGH] callers push selected_province_idx/battle_defending_province last; cmp $6F63/$6F57, fief_owner, get_province_ai_state, daimyo_name_width" }
+arg2 = { name = "outcome", comment = "[MED] callers pass their arg1 @$AF78; clamped/adjusted (>7->7, DEC, 4-x) then <<1 index into $B632/$B640/$B650 msg tables" }
+local6 = { name = "conclusion_msg", comment = "[HIGH] DEREF of jumptab_b632 or battle_conclusion_msgs_loser[outcome-1] @$9453; pushed to redraw_window @$9460" }
+local7 = { name = "is_defender", comment = "[HIGH] =(fief==battle_defending_province) @$93B4; side arg to is_unit_present/side_has_rice_for_day; XOR 1 -> get_battle_side_province" }
+local8 = { name = "is_winner", comment = "[HIGH] =(fief==battle_winner_province_sel) @$93C9; branches @$940B/$9486; selects sound 4 vs 3 for call_bank10_entry @$9465" }
+local9 = { name = "enemy_fief", comment = "[HIGH] =get_battle_side_province(is_defender^1) @$93BD; fed to fief_owner @$9490 and get_province_ai_state @$94BA" }
+local10 = { name = "owner_daimyo", comment = "[HIGH] =fief_owner(fief) @$93C3; *9 + $77A8 daimyo_name_table @$94A2 for 'hung on to the end and won' message" }
+local11 = { name = "i", comment = "[HIGH] loop 0..15 @$93E4; palette_write_wrap(i, byte $B658[i]) @$93D4-$93DC" }
+
+[vars.bank2."0x936A"]
+# draw_combat_message
+arg1 = { name = "msg_idx", comment = "[HIGH] LOADL_quick 12 <<1 + $B196 combat_message_table, DEREF @$937A -> format ptr for draw_message; caller pushes 7 @$955F" }
+arg2 = { name = "unit_slot", comment = "[MED] caller pushes cur_combat_unit_slot @$9554; INC/STORE_quick 13 @$9376 then pushed as draw_message value (1-based)" }
+
+[vars.bank2."0x929C"]
+# clear_all_unit_positions
+local10 = { name = "unit_slot", comment = "[HIGH] inner loop 0..4 @$92BA; pushed first @$92A5/$92AC = arg2 (unit_slot) of unit_col_ptr/unit_row_ptr" }
+local11 = { name = "side", comment = "[HIGH] outer loop 0..1 @$92C3; pushed last @$92A6/$92AD = arg1 (side) of unit_col_ptr/unit_row_ptr; both set to $C8" }
+
+[vars.bank2."0x91D5"]
+# distribute_men_into_unit_strengths
+local6 = { name = "unit_pct_table", comment = "[HIGH] =get_battle_side_province(side)*5+$76A9 province_unit_type_pct @$91F7; byte at +unit_slot pushed as pct_op percent @$9227" }
+local7 = { name = "unit_slot", comment = "[HIGH] 0..4 index: slot<<1 into strength words @$9222, pct byte @$9228, round-robin mod 5 @$925B, remove_unit(side,slot) @$9283" }
+local8 = { name = "side", comment = "[HIGH] outer loop 0..1 @$9292; arg to side_resource_ptr, get_battle_side_province, remove_unit; side*10+$6FBC @$91E4" }
+local9 = { name = "unit_strengths", comment = "[HIGH] =side*10+$6FBC @$91EB: base of side's 5 strength words, indexed slot<<1 and POPSTOREd @$9231/$923F/$926A" }
+local10 = { name = "men_allocated", comment = "[HIGH] =slot0 share @$920E (min 1), += pct_op shares @$9233-$9235; subtracted from local11 @$9249 for the remainder" }
+# local11 left positional — two roles: side men (side_resource_ptr+4 @$91E3) as pct_op base, then remainder local11-local10 @$924D decremented @$926
+
+[vars.bank2."0x912B"]
+# paged_flee_fief_list_display
+local9 = { name = "fief_list_ptr", comment = "[HIGH] =$6F4F deduped_owner_list @$913B; post-inc BYTE_DEREF @$9144, +1 printed via draw_message; loop until byte==$FF @$9188" }
+local10 = { name = "any_listed", comment = "[HIGH] 0 @$913A, set 1 per printed entry @$9142; JUMPT gates 'no fief to flee to' @$9192; return value @$919F" }
+local11 = { name = "page_count", comment = "[HIGH] entries on page: INC per entry @$9152; UMOD 3 picks spacing 10/32 @$9157; ==6 prompts @$9168, reset 0 @$9187" }
+
+[vars.bank2."0x8FEC"]
+# is_any_unit_at_tile
+arg1 = { name = "col", comment = "[MED] PUSH_quick 12 @$8FF4 -> 2nd arg of side_has_unit_at_cell; $9058 passes its own arg1, $A660 pushes local10 (also is_tile_in_bounds arg1)" }
+arg2 = { name = "row", comment = "[MED] PUSH_quick 13 @$8FF3 -> 3rd arg of side_has_unit_at_cell; $9058 passes its own arg2, $A65E pushes local9 (is_tile_in_bounds arg2)" }
+local11 = { name = "side", comment = "[HIGH] loop 0..1 (STORE_quick 11 @$8FF2, UCMPLT 2 @$9004); pushed last @$8FF5 = arg1 (side) of side_has_unit_at_cell" }
+

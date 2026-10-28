@@ -1170,12 +1170,12 @@ word side_has_unit_at_cell(word side, word col, word row) {
 // $8FEC is_any_unit_at_tile
 // (body @ $8FF1)
 
-word is_any_unit_at_tile(word arg1, word arg2) {
-    local11 = 0;    // $8FF2
+word is_any_unit_at_tile(word col, word row) {
+    side = 0;    // $8FF2
     do {    // $8FF3
-        if ((side_has_unit_at_cell(local11, arg1, arg2))) return 1;    // $8FFA
-        local11 = (local11 + 1);    // $9001
-    } while (((unsigned)local11 < (unsigned)2));    // $9005
+        if ((side_has_unit_at_cell(side, col, row))) return 1;    // $8FFA
+        side = (side + 1);    // $9001
+    } while (((unsigned)side < (unsigned)2));    // $9005
     return 0;    // $9009
 }
 
@@ -1275,27 +1275,27 @@ word prompt_hit_any_key_return_button(void) {
 // (body @ $9130)
 
 word paged_flee_fief_list_display(void) {
-    local11 = 0;    // $9131
+    page_count = 0;    // $9131
     message_display(paged_flee_fief_list_display_msg_1);    // $9135
-    local10 = 0;    // $913A
-    local9 = 0x6F4F;    // $913E
-    while ((*(byte*)(local9) != 255)) {    // $9188
-        local10 = 1;    // $9143
-        local9 = (local9 + 1);    // $9146
-        draw_message(paged_flee_fief_list_display_fmt_2d, (*(byte*)((local9 - 1)) + 1));    // $914E
-        local11 = (local11 + 1);    // $9154
-        char_advance_width((((unsigned)local11 % (unsigned)3) ? 32 : 10));    // $9162
-        if ((local11 != 6)) continue;    // $9169
-        if (!((*(byte*)(local9) != 255))) continue;    // $9172
+    any_listed = 0;    // $913A
+    fief_list_ptr = 0x6F4F;    // $913E
+    while ((*(byte*)(fief_list_ptr) != 255)) {    // $9188
+        any_listed = 1;    // $9143
+        fief_list_ptr = (fief_list_ptr + 1);    // $9146
+        draw_message(paged_flee_fief_list_display_fmt_2d, (*(byte*)((fief_list_ptr - 1)) + 1));    // $914E
+        page_count = (page_count + 1);    // $9154
+        char_advance_width((((unsigned)page_count % (unsigned)3) ? 32 : 10));    // $9162
+        if ((page_count != 6)) continue;    // $9169
+        if (!((*(byte*)(fief_list_ptr) != 255))) continue;    // $9172
         if ((prompt_hit_any_key_return_button() == 2)) return 0;    // $917A
         message_display(paged_flee_fief_list_display_msg_2);    // $9182
-        local11 = 0;    // $9187
+        page_count = 0;    // $9187
     }
-    if (local10) goto L_919F;    // $9192
+    if (any_listed) goto L_919F;    // $9192
     redraw_window(msg_there_is_no_fief_to_flee_to);    // $9198
 L_919F:
     clear_rect_left_lower_alt();    // $919C
-    return local10;    // $91A0
+    return any_listed;    // $91A0
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $91A1
@@ -1321,56 +1321,56 @@ L_91D1:
 // (body @ $91DA)
 
 word distribute_men_into_unit_strengths(void) {
-    local8 = 0;    // $91DB
+    side = 0;    // $91DB
 L_91DC:
-    local11 = *(word*)((side_resource_ptr(local8) + 4));    // $91E3
-    local9 = ((local8 * 10) + 0x6FBC);    // $91EB
-    local6 = province_unit_type_pct[get_battle_side_province(local8)];    // $91F7
-    war_side_state_flag[local8] = (war_side_state_flag[local8] | 31);    // $9203
-    *(word*)(local9) = pct_op(local11, *(byte*)(local6));    // $920D
-    local10 = pct_op(local11, *(byte*)(local6));    // $920E
-    if ((pct_op(local11, *(byte*)(local6)) <= 0)) {    // $9211
-    *(word*)(local9) = 1;    // $9216
-    local10 = 1;    // $9217
+    local11 = *(word*)((side_resource_ptr(side) + 4));    // $91E3
+    unit_strengths = ((side * 10) + 0x6FBC);    // $91EB
+    unit_pct_table = province_unit_type_pct[get_battle_side_province(side)];    // $91F7
+    war_side_state_flag[side] = (war_side_state_flag[side] | 31);    // $9203
+    *(word*)(unit_strengths) = pct_op(local11, *(byte*)(unit_pct_table));    // $920D
+    men_allocated = pct_op(local11, *(byte*)(unit_pct_table));    // $920E
+    if ((pct_op(local11, *(byte*)(unit_pct_table)) <= 0)) {    // $9211
+    *(word*)(unit_strengths) = 1;    // $9216
+    men_allocated = 1;    // $9217
     }
 L_9218:
-    local7 = 1;    // $9219
+    unit_slot = 1;    // $9219
 L_921A:
-    if (((local11 - local10) > 0)) {    // $921F
-    *(word*)(((local7 << 1) + local9)) = pct_op(local11, *(byte*)((local6 + local7)));    // $9231
-    local10 = (local10 + pct_op(local11, *(byte*)((local6 + local7))));    // $9235
+    if (((local11 - men_allocated) > 0)) {    // $921F
+    *(word*)(((unit_slot << 1) + unit_strengths)) = pct_op(local11, *(byte*)((unit_pct_table + unit_slot)));    // $9231
+    men_allocated = (men_allocated + pct_op(local11, *(byte*)((unit_pct_table + unit_slot))));    // $9235
     } else {
-    *(word*)(((local7 << 1) + local9)) = 0;    // $923F
+    *(word*)(((unit_slot << 1) + unit_strengths)) = 0;    // $923F
     }
 L_9240:
-    local7 = (local7 + 1);    // $9242
-    if (((unsigned)local7 < (unsigned)5)) goto L_921A;    // $9246
-    local11 = (local11 - local10);    // $924D
+    unit_slot = (unit_slot + 1);    // $9242
+    if (((unsigned)unit_slot < (unsigned)5)) goto L_921A;    // $9246
+    local11 = (local11 - men_allocated);    // $924D
     if ((local11 > 0)) {    // $9250
-    local7 = 0;    // $9254
+    unit_slot = 0;    // $9254
     goto L_9273;    // $9255
 L_9258:
-    local7 = ((unsigned)local7 % (unsigned)5);    // $925C
-    if (*(byte*)((local7 + local6))) {    // $9260
-    *(word*)(((local7 << 1) + local9)) = (*(word*)(((local7 << 1) + local9)) + 1);    // $926A
+    unit_slot = ((unsigned)unit_slot % (unsigned)5);    // $925C
+    if (*(byte*)((unit_slot + unit_pct_table))) {    // $9260
+    *(word*)(((unit_slot << 1) + unit_strengths)) = (*(word*)(((unit_slot << 1) + unit_strengths)) + 1);    // $926A
     }
 L_926B:
     local11 = (local11 - 1);    // $926D
-    local7 = (local7 + 1);    // $9271
+    unit_slot = (unit_slot + 1);    // $9271
 L_9273:
     if ((local11 > 0)) goto L_9258;    // $9276
     }
 L_9279:
-    local7 = 0;    // $927A
+    unit_slot = 0;    // $927A
 L_927B:
-    if (*(word*)(((local7 << 1) + local9))) goto L_9289;    // $9280
+    if (*(word*)(((unit_slot << 1) + unit_strengths))) goto L_9289;    // $9280
 L_9289:
-    remove_unit(local8, local7);    // $9285
-    local7 = (local7 + 1);    // $928B
-    if (((unsigned)local7 < (unsigned)5)) goto L_927B;    // $928F
-    local8 = (local8 + 1);    // $9294
-    if (((unsigned)local8 < (unsigned)2)) goto L_91DC;    // $9298
-    return ((unsigned)local8 < (unsigned)2);    // $929B
+    remove_unit(side, unit_slot);    // $9285
+    unit_slot = (unit_slot + 1);    // $928B
+    if (((unsigned)unit_slot < (unsigned)5)) goto L_927B;    // $928F
+    side = (side + 1);    // $9294
+    if (((unsigned)side < (unsigned)2)) goto L_91DC;    // $9298
+    return ((unsigned)side < (unsigned)2);    // $929B
     }
 }
 
@@ -1379,17 +1379,17 @@ L_9289:
 // (body @ $92A1)
 
 word clear_all_unit_positions(void) {
-    local11 = 0;    // $92A2
+    side = 0;    // $92A2
 L_92A3:
-    local10 = 0;    // $92A4
+    unit_slot = 0;    // $92A4
 L_92A5:
-    *(byte*)(unit_row_ptr(local11, local10)) = -56;    // $92B5
-    *(byte*)(unit_col_ptr(local11, local10)) = -56;    // $92B6
-    local10 = (local10 + 1);    // $92B9
-    if (((unsigned)local10 < (unsigned)5)) goto L_92A5;    // $92BD
-    local11 = (local11 + 1);    // $92C2
-    if (((unsigned)local11 < (unsigned)2)) goto L_92A3;    // $92C6
-    return ((unsigned)local11 < (unsigned)2);    // $92C9
+    *(byte*)(unit_row_ptr(side, unit_slot)) = -56;    // $92B5
+    *(byte*)(unit_col_ptr(side, unit_slot)) = -56;    // $92B6
+    unit_slot = (unit_slot + 1);    // $92B9
+    if (((unsigned)unit_slot < (unsigned)5)) goto L_92A5;    // $92BD
+    side = (side + 1);    // $92C2
+    if (((unsigned)side < (unsigned)2)) goto L_92A3;    // $92C6
+    return ((unsigned)side < (unsigned)2);    // $92C9
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $92CA
@@ -1435,10 +1435,10 @@ L_9368:
 // $936A draw_combat_message
 // (body @ $936F)
 
-word draw_combat_message(word arg1, word arg2) {
+word draw_combat_message(word msg_idx, word unit_slot) {
     message_display(combat_msg_blank_str);    // $9372
-    arg2 = (arg2 + 1);    // $9378
-    return draw_message(*(word*)(((arg1 << 1) + combat_message_table)), arg2);    // $9386
+    unit_slot = (unit_slot + 1);    // $9378
+    return draw_message(*(word*)(((msg_idx << 1) + combat_message_table)), unit_slot);    // $9386
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9387
@@ -1453,83 +1453,83 @@ word draw_unit_type_label(void) {
 // $93AA announce_battle_outcome_retreat_or_won
 // (body @ $93AF)
 
-word announce_battle_outcome_retreat_or_won(word arg1, word arg2) {
-    local7 = (arg1 == battle_defending_province);    // $93B4
-    local9 = get_battle_side_province((local7 ^ 1));    // $93BD
-    local10 = fief_owner(arg1);    // $93C3
-    local8 = (arg1 == battle_winner_province_sel);    // $93C9
+word announce_battle_outcome_retreat_or_won(word fief, word outcome) {
+    is_defender = (fief == battle_defending_province);    // $93B4
+    enemy_fief = get_battle_side_province((is_defender ^ 1));    // $93BD
+    owner_daimyo = fief_owner(fief);    // $93C3
+    is_winner = (fief == battle_winner_province_sel);    // $93C9
     repaint_screen();    // $93CA
     palette_swap(1);    // $93CE
-    local11 = 0;    // $93D3
+    i = 0;    // $93D3
     do {    // $93D4
-        palette_write_wrap(local11, msg_the_enemy_has_turned_tail_and[local11]);    // $93DC
-        local11 = (local11 + 1);    // $93E2
-    } while (((unsigned)local11 < (unsigned)16));    // $93E7
+        palette_write_wrap(i, msg_the_enemy_has_turned_tail_and[i]);    // $93DC
+        i = (i + 1);    // $93E2
+    } while (((unsigned)i < (unsigned)16));    // $93E7
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $93F4
     palette_swap(0);    // $93F9
     set_cursor(2, 3);    // $93FF
-    if (!(get_province_ai_state(arg1))) goto L_9486;    // $9408
-    if (local8) goto L_9439;    // $940C
-    if (((unsigned)arg2 > (unsigned)7)) {    // $9412
+    if (!(get_province_ai_state(fief))) goto L_9486;    // $9408
+    if (is_winner) goto L_9439;    // $940C
+    if (((unsigned)outcome > (unsigned)7)) {    // $9412
     phi_val_942e = 7;    // $9416
     } else {
-    if (!(local7)) goto L_942F;    // $941A
-    if ((arg2 != 1)) goto L_942F;    // $9420
-    if (is_unit_present(local7, 0)) goto L_942F;    // $9429
-    phi_val_942e = (arg2 + 1);    // $942D
+    if (!(is_defender)) goto L_942F;    // $941A
+    if ((outcome != 1)) goto L_942F;    // $9420
+    if (is_unit_present(is_defender, 0)) goto L_942F;    // $9429
+    phi_val_942e = (outcome + 1);    // $942D
     }
 L_942E:
-    arg2 = phi_val_942e;    // $942E
+    outcome = phi_val_942e;    // $942E
 L_942F:
-    arg2 = (arg2 - 1);    // $9431
+    outcome = (outcome - 1);    // $9431
     goto L_9451;    // $9436
 L_9439:
-    if ((arg2 == 1)) {    // $943C
-    if (side_has_rice_for_day(local7)) goto L_944A;    // $9444
-    arg2 = (arg2 + 1);    // $9449
+    if ((outcome == 1)) {    // $943C
+    if (side_has_rice_for_day(is_defender)) goto L_944A;    // $9444
+    outcome = (outcome + 1);    // $9449
     }
 L_944A:
-    arg2 = (arg2 - 1);    // $944C
+    outcome = (outcome - 1);    // $944C
 L_9451:
-    local6 = *(word*)(((arg2 << 1) + battle_conclusion_msgs_loser));    // $9453
-    daimyo_name_width(arg1);    // $9455
+    conclusion_msg = *(word*)(((outcome << 1) + battle_conclusion_msgs_loser));    // $9453
+    daimyo_name_width(fief);    // $9455
     redraw_window(str_battle_outcome_msgs);    // $945C
-    redraw_window(local6);    // $9461
-    call_bank10_entry((local8 ? 4 : 3));    // $946F
+    redraw_window(conclusion_msg);    // $9461
+    call_bank10_entry((is_winner ? 4 : 3));    // $946F
     if (!(audio_wait_gate)) goto L_94F2;    // $9476
 L_9479:
     phi_ret_94f5 = syscall_audio_control(1, 2);    // $9480
     if (!(phi_ret_94f5)) goto L_94F5;    // $9480
     goto L_9479;    // $9483
 L_9486:
-    if (local8) goto L_94F2;    // $9487
-    if (((unsigned)arg2 <= (unsigned)2)) {    // $948D
+    if (is_winner) goto L_94F2;    // $9487
+    if (((unsigned)outcome <= (unsigned)2)) {    // $948D
     phi_94ad_0 = msg_s_has_retreated;    // $949F
-    phi_94ad_1 = daimyo_name_table[fief_owner(local9)];    // $949F
+    phi_94ad_1 = daimyo_name_table[fief_owner(enemy_fief)];    // $949F
     goto L_94AD;    // $949F
 L_94A2:
     phi_94ad_0 = msg_s_hung_on_to_the_end_and_won;    // $94AA
-    phi_94ad_1 = daimyo_name_table[local10];    // $94AA
+    phi_94ad_1 = daimyo_name_table[owner_daimyo];    // $94AA
 L_94AD:
     draw_message(phi_94ad_0, phi_94ad_1);    // $94AD
     } else {
-    if ((arg2 == 3)) goto L_94A2;    // $94B7
-    if (get_province_ai_state(local9)) goto L_94F2;    // $94BF
-    if ((arg2 != 7)) goto L_94CC;    // $94C5
+    if ((outcome == 3)) goto L_94A2;    // $94B7
+    if (get_province_ai_state(enemy_fief)) goto L_94F2;    // $94BF
+    if ((outcome != 7)) goto L_94CC;    // $94C5
     phi_val_94d4 = 4;    // $94C9
     goto L_94D4;    // $94C9
 L_94CC:
-    if ((arg2 != 8)) goto L_94D5;    // $94CF
-    phi_val_94d4 = (arg2 - 1);    // $94D3
+    if ((outcome != 8)) goto L_94D5;    // $94CF
+    phi_val_94d4 = (outcome - 1);    // $94D3
 L_94D4:
-    arg2 = phi_val_94d4;    // $94D4
+    outcome = phi_val_94d4;    // $94D4
 L_94D5:
-    arg2 = (arg2 - 4);    // $94D9
-    if (!(((unsigned)arg2 <= (unsigned)3))) goto L_94F2;    // $94DC
+    outcome = (outcome - 4);    // $94D9
+    if (!(((unsigned)outcome <= (unsigned)3))) goto L_94F2;    // $94DC
     draw_owner_name(battle_winner_province_sel);    // $94E2
     }
 L_94F2:
-    redraw_window(*(word*)(((arg2 << 1) + battle_conclusion_msgs_observer)));    // $94EE
+    redraw_window(*(word*)(((outcome << 1) + battle_conclusion_msgs_observer)));    // $94EE
     phi_ret_94f5 = standard_delay();    // $94F2
 L_94F5:
     return phi_ret_94f5;    // $94F5
@@ -1624,8 +1624,8 @@ L_9601:
 // $960E is_cell_valid_for_phase
 // (body @ $9613)
 
-word is_cell_valid_for_phase(word arg1) {
-    return ((((unsigned)arg1 < (unsigned)5) && (!(tactical_battle_phase) || ((((unsigned)arg1 > (unsigned)2) && ((((unsigned)arg1 < (unsigned)8) && ((tactical_battle_phase == 1) || (((unsigned)arg1 > (unsigned)5) && (tactical_battle_phase == 2)))) || (!(((unsigned)arg1 < (unsigned)8)) && (((unsigned)arg1 > (unsigned)5) && (tactical_battle_phase == 2))))) || (!(((unsigned)arg1 > (unsigned)2)) && (((unsigned)arg1 > (unsigned)5) && (tactical_battle_phase == 2)))))) || (!(((unsigned)arg1 < (unsigned)5)) && ((((unsigned)arg1 > (unsigned)2) && ((((unsigned)arg1 < (unsigned)8) && ((tactical_battle_phase == 1) || (((unsigned)arg1 > (unsigned)5) && (tactical_battle_phase == 2)))) || (!(((unsigned)arg1 < (unsigned)8)) && (((unsigned)arg1 > (unsigned)5) && (tactical_battle_phase == 2))))) || (!(((unsigned)arg1 > (unsigned)2)) && (((unsigned)arg1 > (unsigned)5) && (tactical_battle_phase == 2))))));    // $9646
+word is_cell_valid_for_phase(word cell) {
+    return ((((unsigned)cell < (unsigned)5) && (!(tactical_battle_phase) || ((((unsigned)cell > (unsigned)2) && ((((unsigned)cell < (unsigned)8) && ((tactical_battle_phase == 1) || (((unsigned)cell > (unsigned)5) && (tactical_battle_phase == 2)))) || (!(((unsigned)cell < (unsigned)8)) && (((unsigned)cell > (unsigned)5) && (tactical_battle_phase == 2))))) || (!(((unsigned)cell > (unsigned)2)) && (((unsigned)cell > (unsigned)5) && (tactical_battle_phase == 2)))))) || (!(((unsigned)cell < (unsigned)5)) && ((((unsigned)cell > (unsigned)2) && ((((unsigned)cell < (unsigned)8) && ((tactical_battle_phase == 1) || (((unsigned)cell > (unsigned)5) && (tactical_battle_phase == 2)))) || (!(((unsigned)cell < (unsigned)8)) && (((unsigned)cell > (unsigned)5) && (tactical_battle_phase == 2))))) || (!(((unsigned)cell > (unsigned)2)) && (((unsigned)cell > (unsigned)5) && (tactical_battle_phase == 2))))));    // $9646
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9647
