@@ -224,35 +224,35 @@ word scale_div10_capcheck(word amount, word rate, word cap) {
 // $8357 ratio_times10_capped
 // (body @ $835C)
 
-word ratio_times10_capped(word arg1, word arg2, word arg3) {
+word ratio_times10_capped(word amount, word rate, word cap) {
     // sdiv32: KOEI's 32-bit signed divide; a negative divisor d divides by |d| - 1 (ROM bug)
-    return min_word((word)sdiv32((sword)arg1 * 10, (sword)arg2), arg3);
+    return min_word((word)sdiv32((sword)amount * 10, (sword)rate), cap);
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8379
 // $8379 apply_two_grows_const1_override
 // (body @ $837E)
 
-word apply_two_grows_const1_override(word arg1, word arg2) {
-    local11 = const_two;    // $8381
+word apply_two_grows_const1_override(word fief, word amount) {
+    saved_const_two = const_two;    // $8381
     const_two = 1;    // $8383
-    record_apply_two_grows(arg1, arg2);    // $8388
-    *(word*)(arg1) = (*(word*)(arg1) - arg2);    // $8392
-    if ((*(word*)(arg1) < 0)) {    // $8397
-    *(word*)(arg1) = 0;    // $839C
+    record_apply_two_grows(fief, amount);    // $8388
+    *(word*)(fief) = (*(word*)(fief) - amount);    // $8392
+    if ((*(word*)(fief) < 0)) {    // $8397
+    *(word*)(fief) = 0;    // $839C
     }
 L_839D:
-    const_two = local11;    // $839E
-    return local11;    // $83A1
+    const_two = saved_const_two;    // $839E
+    return saved_const_two;    // $83A1
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $83A2
 // $83A2 draw_province_stat_or_dashes
 // (body @ $83A7)
 
-word draw_province_stat_or_dashes(word arg1, word arg2) {
-    if ((province_ai_state[arg1] != 255)) {    // $83B1
-    phi_ret_83c6 = draw_message(msg_fmt__4d, arg2);    // $83BC
+word draw_province_stat_or_dashes(word province_idx, word value) {
+    if ((province_ai_state[province_idx] != 255)) {    // $83B1
+    phi_ret_83c6 = draw_message(msg_fmt__4d, value);    // $83BC
     } else {
     phi_ret_83c6 = redraw_window(str_field_dashes);    // $83C2
     }
@@ -273,9 +273,9 @@ word draw_selected_province_stat(word arg1) {
 // $83D5 draw_province_stat3_or_dashes
 // (body @ $83DA)
 
-word draw_province_stat3_or_dashes(word arg1, word arg2) {
-    if ((province_ai_state[arg1] != 255)) {    // $83E4
-    phi_ret_83f9 = draw_message(draw_province_stat3_or_dashes_fmt_3d, arg2);    // $83EF
+word draw_province_stat3_or_dashes(word province_idx, word value) {
+    if ((province_ai_state[province_idx] != 255)) {    // $83E4
+    phi_ret_83f9 = draw_message(draw_province_stat3_or_dashes_fmt_3d, value);    // $83EF
     } else {
     phi_ret_83f9 = redraw_window(str_field_dashes3);    // $83F5
     }

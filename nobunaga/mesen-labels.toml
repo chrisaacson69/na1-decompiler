@@ -3224,3 +3224,26 @@ arg3 = { name = "print_flag", comment = "[HIGH] flag: LOADL_quick 14 + JUMPF @$8
 local10 = { name = "page_entry_count", comment = "[MED] entries drawn on this page: INC after draw_message @$81AC, %6 picks spacing @$81B8, ==18 page break @$81CA, zeroed @$81EC" }
 local11 = { name = "eligible_count", comment = "[HIGH] count: INC @$819A when eligible and ai_state!=$FF; zeroed if ui_prompt_redraw returns 2 @$81E0; returned @$81FA" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x83D5"]
+# draw_province_stat3_or_dashes
+arg1 = { name = "province_idx", comment = "[HIGH] LOADL_quick 12 @$83DA + $6CF7 province_ai_state, BYTE_DEREF, ==$FF -> dashes3; callers PUSH_quick 12 @$8542/$B84D" }
+arg2 = { name = "value", comment = "[HIGH] PUSH_quick 13 @$83E7 printed by draw_message(fmt_3d $BA74); callers push a BYTE_DEREF via post-inc local10 @$8540/$B84B" }
+
+[vars.bank1."0x83A2"]
+# draw_province_stat_or_dashes
+arg1 = { name = "province_idx", comment = "[HIGH] LOADL_quick 12 @$83A7 + $6CF7 province_ai_state, BYTE_DEREF, ==$FF -> dashes; caller pushes selected_province_idx @$83CD" }
+arg2 = { name = "value", comment = "[HIGH] PUSH_quick 13 @$83B4 is the value printed by draw_message(msg_fmt__4d $BA6B); callers push a DEREF'd word @$8554/$B863" }
+
+[vars.bank1."0x8379"]
+# apply_two_grows_const1_override
+arg1 = { name = "fief", comment = "[MED] PUSH_quick 12 @$8387 -> record_apply_two_grows arg1; word @+0 (gold) gets -= arg2 @$8392, clamped to 0 @$839C" }
+arg2 = { name = "amount", comment = "[HIGH] PUSH_quick 13 @$8386 -> record_apply_two_grows; POPR/SUB @$838E subtracts it from *arg1; caller pushes a SUB difference @$9601" }
+local11 = { name = "saved_const_two", comment = "[HIGH] STORE_quick 11 @$8381 saves $6D63 const_two before it is set to 1; LOADL_quick 11 @$839D restores it via STORE_abs $6D63" }
+
+[vars.bank1."0x8357"]
+# ratio_times10_capped
+arg1 = { name = "amount", comment = "[MED] LOADL_quick 12 @$8362 widened, times LONG imm 10, over arg2; callers push fief gold (LOADL 12/DEREF @$A090,$A2DF) or local9 @$8B6A" }
+arg2 = { name = "rate", comment = "[HIGH] LOADL_quick 13 @$835D widened to long, used as divisor of the long op; callers PUSH_abs $6E0D/$6E0F/$6E11/$6E13 rate globals" }
+arg3 = { name = "cap", comment = "[HIGH] PUSH_quick 14 @$835C = 2nd arg of min_word($CB5E) caps the ratio; callers push a difference (SUB) or fief->header (+24 @$A2D8)" }
+
