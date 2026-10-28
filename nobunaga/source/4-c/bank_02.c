@@ -7,12 +7,21 @@
 struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
 
+extern word battle_side_strength_mod[];
+extern byte battle_unit_byte_table[];
+extern word daimyo_face_code_table[];
+extern byte daimyo_name_table[][9];
+extern byte province_unit_type_pct[][5];
+extern byte unit_count_digit_tiles[][9];
+extern byte war_attacker_gold[][6];
+extern byte war_side_state_flag[];
+
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8086
 // $8086 compose_upload_daimyo_portrait
 // (body @ $808B)
 
 word compose_upload_daimyo_portrait(word arg1) {
-    local11 = *(word*)(((active_province_idx_copy << 1) + 0x6EB1));    // $8094
+    local11 = daimyo_face_code_table[active_province_idx_copy];    // $8094
     local9 = ((unsigned)local11 / (unsigned)5);    // $8098
     local10 = ((unsigned)local11 % (unsigned)5);    // $809C
     local8 = ((unsigned)local9 / (unsigned)5);    // $80A0
@@ -108,7 +117,7 @@ word set_tactical_cursor_pos(word arg1, word arg2) {
 // (body @ $8283)
 
 word side_resource_ptr(word arg1) {
-    return ((arg1 * 6) + 0x6F7D);    // $828A
+    return war_attacker_gold[arg1];    // $828A
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $828B
@@ -763,7 +772,7 @@ L_8A11:
     } else {
     }
 L_8A47:
-    *(byte*)(((arg1 * 9) + 0x6FE5)) = (test_6f65_bit7(arg1) ? 178 : 179);    // $8A47
+    *(byte*)(unit_count_digit_tiles[arg1]) = (test_6f65_bit7(arg1) ? 178 : 179);    // $8A47
     local11 = min_word(*(word*)(unit_strength_ptr(arg1, arg2)), 0x270F);    // $8A57
     local7 = 0;    // $8A59
     local10 = ((unsigned)local11 / (unsigned)0x03E8);    // $8A5F
@@ -795,7 +804,7 @@ L_8AE9:
 L_8AF3:
     *(byte*)(((arg1 * 9) + 0x6FEC)) = (local10 + 8);    // $8AF3
     ppu_render_rect_wrap((local9 + 1), (local8 + 2), (local9 + 2), (local8 + 2), *(byte*)(((arg1 * 9) + 0x6FE4)));    // $8B09
-    phi_ret_8b24 = ppu_copy_rect_wrap(local9, (local8 + 2), (local9 + 3), (local8 + 3), ((arg1 * 9) + 0x6FE5), 2);    // $8B20
+    phi_ret_8b24 = ppu_copy_rect_wrap(local9, (local8 + 2), (local9 + 3), (local8 + 3), unit_count_digit_tiles[arg1], 2);    // $8B20
 L_8B24:
     return phi_ret_8b24;    // $8B24
     }
@@ -899,7 +908,7 @@ word combat_unit_window_refresh(void) {
 L_8C1D:
         set_cursor(2, 8);    // $8C1F
 L_8C2A:
-        phi_push_8c30 = ((fief_owner(battle_defending_province) * 9) + 0x77A8);    // $8C2F
+        phi_push_8c30 = daimyo_name_table[fief_owner(battle_defending_province)];    // $8C2F
         }
 L_8C30:
         redraw_window(phi_push_8c30);    // $8C31
@@ -1007,12 +1016,12 @@ word draw_combat_roster_window(void) {
     if (is_no_province_selected()) {    // $8DC1
     phi_push_8dd7 = select_uprising_message(battle_defending_province);    // $8DCB
     } else {
-    phi_push_8dd7 = ((selected_province_owner() * 9) + 0x77A8);    // $8DD6
+    phi_push_8dd7 = daimyo_name_table[selected_province_owner()];    // $8DD6
     }
 L_8DD7:
     redraw_window(phi_push_8dd7);    // $8DD8
     ui_window_col = 22;    // $8DDE
-    redraw_window(((fief_owner(battle_defending_province) * 9) + 0x77A8));    // $8DEF
+    redraw_window(daimyo_name_table[fief_owner(battle_defending_province)]);    // $8DEF
     local11 = 0;    // $8DF4
     local10 = 6;    // $8DF6
     while (((unsigned)local11 < (unsigned)18)) {    // $8E29
@@ -1042,7 +1051,7 @@ L_8DD7:
 // (body @ $8E45)
 
 word ai_score_strength_term_40pct(word arg1, word arg2) {
-    return (pct_op(pct_op(arg1, 40), *(word*)(((arg2 << 1) + 0x7BEA))) + arg1);    // $8E5B
+    return (pct_op(pct_op(arg1, 40), battle_side_strength_mod[arg2]) + arg1);    // $8E5B
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8E5C
@@ -1060,7 +1069,7 @@ word ai_sum_battle_strength(void) {
         local9 = (local9 + 1);    // $8E80
         local10 = (local10 + 1);    // $8E86
         local11 = (local11 + 1);    // $8E8C
-        *(word*)(((((*(byte*)((local11 - 1)) <= *(byte*)((local10 - 1))) ? 1 : 0) << 1) + 0x7BEA)) = (*(word*)(((((*(byte*)((local11 - 1)) <= *(byte*)((local10 - 1))) ? 1 : 0) << 1) + 0x7BEA)) + *(byte*)((local9 - 1)));    // $8EA2
+        battle_side_strength_mod[((*(byte*)((local11 - 1)) <= *(byte*)((local10 - 1))) ? 1 : 0)] = (battle_side_strength_mod[((*(byte*)((local11 - 1)) <= *(byte*)((local10 - 1))) ? 1 : 0)] + *(byte*)((local9 - 1)));    // $8EA2
         phi_val_8ea5 = (local6 + 1);    // $8EA4
         local6 = phi_val_8ea5;    // $8EA5
     }
@@ -1071,7 +1080,7 @@ word ai_sum_battle_strength(void) {
         local9 = (local9 + 1);    // $8EC6
         local7 = (local7 + 2);    // $8ECC
         local8 = (local8 + 2);    // $8ED3
-        *(word*)(((((*(word*)((local8 + -2)) <= *(word*)((local7 + -2))) ? 1 : 0) << 1) + 0x7BEA)) = (*(word*)(((((*(word*)((local8 + -2)) <= *(word*)((local7 + -2))) ? 1 : 0) << 1) + 0x7BEA)) + *(byte*)((local9 - 1)));    // $8EEA
+        battle_side_strength_mod[((*(word*)((local8 + -2)) <= *(word*)((local7 + -2))) ? 1 : 0)] = (battle_side_strength_mod[((*(word*)((local8 + -2)) <= *(word*)((local7 + -2))) ? 1 : 0)] + *(byte*)((local9 - 1)));    // $8EEA
         local6 = (local6 + 1);    // $8EED
     } while ((local6 <= 7));    // $8EF1
     return (local6 <= 7);    // $8EF4
@@ -1314,7 +1323,7 @@ word distribute_men_into_unit_strengths(void) {
 L_91DC:
     local11 = *(word*)((side_resource_ptr(local8) + 4));    // $91E3
     local9 = ((local8 * 10) + 0x6FBC);    // $91EB
-    local6 = ((get_battle_side_province(local8) * 5) + 0x76A9);    // $91F7
+    local6 = province_unit_type_pct[get_battle_side_province(local8)];    // $91F7
     war_side_state_flag[local8] = (war_side_state_flag[local8] | 31);    // $9203
     *(word*)(local9) = pct_op(local11, *(byte*)(local6));    // $920D
     local10 = pct_op(local11, *(byte*)(local6));    // $920E
@@ -1494,11 +1503,11 @@ L_9486:
     if (local8) goto L_94F2;    // $9487
     if (((unsigned)arg2 <= (unsigned)2)) {    // $948D
     phi_94ad_0 = msg_s_has_retreated;    // $949F
-    phi_94ad_1 = ((fief_owner(local9) * 9) + 0x77A8);    // $949F
+    phi_94ad_1 = daimyo_name_table[fief_owner(local9)];    // $949F
     goto L_94AD;    // $949F
 L_94A2:
     phi_94ad_0 = msg_s_hung_on_to_the_end_and_won;    // $94AA
-    phi_94ad_1 = ((local10 * 9) + 0x77A8);    // $94AA
+    phi_94ad_1 = daimyo_name_table[local10];    // $94AA
 L_94AD:
     draw_message(phi_94ad_0, phi_94ad_1);    // $94AD
     } else {
@@ -1928,7 +1937,7 @@ L_9A21:
     if (is_cur_unit_absent()) goto L_9AF5;    // $9A24
     if (cur_combat_unit_slot) goto L_9A56;    // $9A2A
     message_display(msg_lord);    // $9A30
-    redraw_window(((fief_owner(get_battle_side_province(cur_combat_side)) * 9) + 0x77A8));    // $9A47
+    redraw_window(daimyo_name_table[fief_owner(get_battle_side_province(cur_combat_side))]);    // $9A47
     phi_9a65_0 = msg_please_position_unit_d;    // $9A53
     phi_9a65_1 = (cur_combat_unit_slot + 1);    // $9A53
     goto L_9A65;    // $9A53
@@ -2348,7 +2357,7 @@ L_A156:
     goto L_A17D;    // $A172
 L_A175:
 L_A17D:
-    if (!((*(byte*)((*(byte*)(arg1) + 0x7BEE)) > 0))) goto L_A184;    // $A17E
+    if (!((battle_unit_byte_table[*(byte*)(arg1)] > 0))) goto L_A184;    // $A17E
     local10 = *(byte*)(arg1);    // $A183
 L_A184:
     arg1 = (arg1 + 1);    // $A186
@@ -3043,7 +3052,7 @@ L_ABC5:
     if (get_province_ai_state(get_battle_side_province(cur_combat_side))) goto L_ABF4;    // $ABE7
     phi_push_ac06 = select_uprising_message(battle_defending_province);    // $ABF1
     } else {
-    phi_push_ac06 = ((fief_owner(get_battle_side_province(cur_combat_side)) * 9) + 0x77A8);    // $AC05
+    phi_push_ac06 = daimyo_name_table[fief_owner(get_battle_side_province(cur_combat_side))];    // $AC05
     }
 L_AC06:
     message_display(phi_push_ac06);    // $AC07
@@ -3262,8 +3271,8 @@ L_AEF1:
 L_AEF4:
     if ((*(byte*)(local8) != 255)) goto L_AEC7;    // $AEFA
     redraw_window(msg_has_passed_from);    // $AF00
-    draw_message(msg_lord_s_to, ((fief_owner(battle_winner_province_sel) * 9) + 0x77A8));    // $AF15
-    draw_message(msg_lord_s, ((fief_owner(get_battle_side_province((local7 ^ 1))) * 9) + 0x77A8));    // $AF30
+    draw_message(msg_lord_s_to, daimyo_name_table[fief_owner(battle_winner_province_sel)]);    // $AF15
+    draw_message(msg_lord_s, daimyo_name_table[fief_owner(get_battle_side_province((local7 ^ 1)))]);    // $AF30
     standard_delay();    // $AF34
     return repaint_screen();    // $AF3A
 }
@@ -3275,7 +3284,7 @@ L_AEF4:
 word dispatch_battle_resolution(word arg1) {
     syscall_audio_control(0, 0);    // $AF43
     if ((arg1 == 5)) {    // $AF4A
-    if ((*(byte*)((((battle_winner_province_sel == battle_defending_province) ? 1 : 0) + 0x6F65)) & 31)) goto L_AF6A;    // $AF64
+    if ((war_side_state_flag[((battle_winner_province_sel == battle_defending_province) ? 1 : 0)] & 31)) goto L_AF6A;    // $AF64
     arg1 = (arg1 + 1);    // $AF69
     }
 L_AF6A:
