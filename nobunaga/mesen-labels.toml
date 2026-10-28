@@ -3636,3 +3636,26 @@ arg1 = { name = "side", comment = "[MED] LOADL_quick 12 @$8283 *6 + $6F7D (war_a
 # prompt_yes_no
 # local11 left positional — Scratch: STORE_quick 11 @$823E holds wait_button_edge code (cmp 64/$80), then STORE_quick 11 @$826A holds 1/0 answer ret
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank2."0x83A2"]
+# calc_tactical_cell_coords
+arg1 = { name = "col_ptr", comment = "[MED] in/out ptr: *arg1&1 staggers y @$83AB; *arg1=(*arg1-3*phase$6FFE)*4+10 @$83C4; caller @$8429 passes &local10 (=$7BF5 cell)" }
+arg2 = { name = "row_ptr", comment = "[MED] in/out ptr: *arg2=(*arg2+1)*4+(col&1)*2 POPSTORE @$83B5; caller @$8429 passes &local9 (=$7BF7 tactical_cursor_row)" }
+
+[vars.bank2."0x836A"]
+# side_has_rice_for_day
+arg1 = { name = "side", comment = "[HIGH] PUSH_quick 12 to side_resource_ptr @$836F/$8383; callers push cur_combat_side $7BE8 or local7" }
+local10 = { name = "rice_needed", comment = "[MED] ceil(local11/15): UDIV @$8378 then INC on UMOD remainder @$8381; UCMPLE vs side_resource[+2] @$838D is the return" }
+local11 = { name = "side_men", comment = "[HIGH] Coordinator amend: side block +4 is men (war_attacker_men $6F81 / war_defender_men $6F87, the gold/rice/men triple). Rice needed per day = ceil(men / 15). single role: holds DEREF side_resource_ptr(side)+4 @$8376, dividend of /15 and %15; field identity (troops?) unverified" }
+
+[vars.bank2."0x82DB"]
+# is_cell_clear_of_bits
+arg1 = { name = "col", comment = "[HIGH] UCMPGT 10 bounds check @$82E2, read_map_cell arg1 @$82EF; caller @$9DBE pushes *cur_unit_col_ptr() last (= arg1)" }
+arg2 = { name = "row", comment = "[HIGH] UCMPGT 4 bounds check @$82E8, read_map_cell arg2 @$82EE; caller @$9DB8 pushes *cur_unit_row_ptr() (= arg2)" }
+arg3 = { name = "mask", comment = "[HIGH] LOADR_quick 14, AND with read_map_cell result @$82F4; callers push constant bit masks 2/8/32/$C2" }
+
+[vars.bank2."0x82C9"]
+# unit_strength_ptr
+arg1 = { name = "side", comment = "[MED] LOADL_quick 12 *10 (LOADR_qimm 10, MULT @$82D2): 5-word block per side in $6FBC+arg1*10; callers push their side arg or local7 @$9EEA" }
+arg2 = { name = "unit_slot", comment = "[HIGH] LOADL_quick 13, LSHIFT1 @$82CF: word index within the side's 5-word block at $6FBC; callers push arg2, or arg1 @$9EE9" }
+

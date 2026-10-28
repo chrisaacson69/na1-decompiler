@@ -161,19 +161,19 @@ word cur_unit_row_ptr(void) {
 // $82C9 unit_strength_ptr
 // (body @ $82CE)
 
-word unit_strength_ptr(word arg1, word arg2) {
-    return (((arg1 * 10) + (arg2 << 1)) + 0x6FBC);    // $82DA
+word unit_strength_ptr(word side, word unit_slot) {
+    return (((side * 10) + (unit_slot << 1)) + 0x6FBC);    // $82DA
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $82DB
 // $82DB is_cell_clear_of_bits
 // (body @ $82E0)
 
-word is_cell_clear_of_bits(word arg1, word arg2, word arg3) {
-    if (!((((unsigned)arg1 > (unsigned)10) || ((unsigned)arg2 > (unsigned)4)))) goto L_82EE;    // $82E9
+word is_cell_clear_of_bits(word col, word row, word mask) {
+    if (!((((unsigned)col > (unsigned)10) || ((unsigned)row > (unsigned)4)))) goto L_82EE;    // $82E9
     return 1;    // $82ED
 L_82EE:
-    return ((read_map_cell(arg1, arg2) & arg3) ? 0 : 1);    // $82FE
+    return ((read_map_cell(col, row) & mask) ? 0 : 1);    // $82FE
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $82FF
@@ -213,13 +213,13 @@ L_835A:
 // $836A side_has_rice_for_day
 // (body @ $836F)
 
-word side_has_rice_for_day(word arg1) {
-    local11 = *(word*)((side_resource_ptr(arg1) + 4));    // $8376
-    local10 = ((unsigned)*(word*)((side_resource_ptr(arg1) + 4)) / (unsigned)15);    // $8379
-    if (!(((unsigned)local11 % (unsigned)15))) goto L_8383;    // $837D
-    local10 = (local10 + 1);    // $8382
+word side_has_rice_for_day(word side) {
+    side_men = *(word*)((side_resource_ptr(side) + 4));    // $8376
+    rice_needed = ((unsigned)*(word*)((side_resource_ptr(side) + 4)) / (unsigned)15);    // $8379
+    if (!(((unsigned)side_men % (unsigned)15))) goto L_8383;    // $837D
+    rice_needed = (rice_needed + 1);    // $8382
 L_8383:
-    return ((unsigned)local10 <= (unsigned)*(word*)((side_resource_ptr(arg1) + 2)));    // $838E
+    return ((unsigned)rice_needed <= (unsigned)*(word*)((side_resource_ptr(side) + 2)));    // $838E
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $838F
@@ -234,10 +234,10 @@ word get_battle_side_province(word side) {
 // $83A2 calc_tactical_cell_coords
 // (body @ $83A7)
 
-word calc_tactical_cell_coords(word arg1, word arg2) {
-    *(word*)(arg2) = ((((*(word*)(arg2) + 1) << 1) << 1) + ((*(word*)(arg1) & 1) << 1));    // $83B5
-    *(word*)(arg1) = ((((*(word*)(arg1) - (tactical_battle_phase * 3)) << 1) << 1) + 10);    // $83C4
-    return *(word*)(arg1);    // $83C5
+word calc_tactical_cell_coords(word col_ptr, word row_ptr) {
+    *(word*)(row_ptr) = ((((*(word*)(row_ptr) + 1) << 1) << 1) + ((*(word*)(col_ptr) & 1) << 1));    // $83B5
+    *(word*)(col_ptr) = ((((*(word*)(col_ptr) - (tactical_battle_phase * 3)) << 1) << 1) + 10);    // $83C4
+    return *(word*)(col_ptr);    // $83C5
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $83C6
