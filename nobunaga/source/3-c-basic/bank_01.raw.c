@@ -46,7 +46,7 @@ L_8059:
     return 0;    // $806E
 L_806F:
     if (!((*(byte*)(list_ptr) == (picked_fief - 1)))) goto L_8085;    // $8076
-    if (province_state_is_FF((picked_fief - 1))) goto L_8085;    // $8080
+    if (province_is_ownerless((picked_fief - 1))) goto L_8085;    // $8080
     return picked_fief;    // $8084
 L_8085:
     list_ptr = (list_ptr + 1);    // $8087
@@ -306,7 +306,7 @@ word effect_view_a(word fief) {
     draw_current_season();    // $846D
     cap_fief_stats(fief);    // $8471
     set_cursor(10, 5);    // $8477
-    is_owned = (province_state_is_FF(fief) ? 0 : 1);    // $8488
+    is_owned = (province_is_ownerless(fief) ? 0 : 1);    // $8488
     if (!(is_owned)) goto L_84C3;    // $8489
     is_capital = fief_is_daimyo_capital[fief];    // $8492
     if (!(get_province_ai_state(fief))) goto L_84B9;    // $8498
@@ -2806,7 +2806,7 @@ L_ADF4:
 
 word fief_select_input_loop(word map_section) {
     fief_anchor = map_section;    // $ADFC
-    syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c), &fief_cell_buf, 34);    // $AE11
+    copy_from_bank(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c), &fief_cell_buf, 34);    // $AE11
     cell_ptr = &fief_cell_buf;    // $AE18
     found_flag = 0;    // $AE1B
 L_AE1D:

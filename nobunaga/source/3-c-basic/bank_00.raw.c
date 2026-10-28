@@ -334,7 +334,7 @@ L_8656:
     scenario_fief_count = 50;    // $8658
     scenario_src = scenario_select_gfx_8004;    // $865B
 L_865E:
-    syscall16_sram_wrap(3, scenario_src, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // $866D
+    copy_from_bank(3, scenario_src, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // $866D
     message_display(msg_watch_other_daimyos_battle);    // $8674
     ui_confirm_flag_6e7d = prompt_y_n();    // $867B
     return ui_confirm_flag_6e7d;    // $867E
@@ -824,7 +824,7 @@ word resolve_ownerless_fiefs_by_auction(void) {
     fief = 0;    // $8E69
     goto L_8E8F;    // $8E69
 L_8E6C:
-    if (!(province_state_is_FF(fief))) goto L_8E8D;    // $8E71
+    if (!(province_is_ownerless(fief))) goto L_8E8D;    // $8E71
     selected_province_idx = fief;    // $8E75
     battle_defending_province = selected_province_idx;    // $8E7B
     build_selected_fief_neighbor_list();    // $8E7E
@@ -1899,7 +1899,7 @@ L_9D95:
 
 word ai_event_eligibility_check_loyalty_variant(word fief) {
     battle_defending_province = fief;    // $9DA9
-    return !(((square_over_2025_probability_roll(province_table_live[fief].loyalty) && (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(province_table_live[fief].loyalty)) && ((square_over_2025_probability_roll((100 - fief_tax_rate[fief])) && (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll((100 - fief_tax_rate[fief]))) && ((square_over_2025_probability_roll(fief_to_daimyo_record_addr(fief)->charisma) && (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(fief_to_daimyo_record_addr(fief)->charisma)) && (rng_mod(0x03E8) || (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(fief) || rng_mod(4)))))))))))));    // $9E20
+    return !(((square_over_2025_probability_roll(province_table_live[fief].loyalty) && (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_is_ownerless(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(province_table_live[fief].loyalty)) && ((square_over_2025_probability_roll((100 - fief_tax_rate[fief])) && (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_is_ownerless(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll((100 - fief_tax_rate[fief]))) && ((square_over_2025_probability_roll(fief_to_daimyo_record_addr(fief)->charisma) && (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_is_ownerless(fief) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(fief_to_daimyo_record_addr(fief)->charisma)) && (rng_mod(0x03E8) || (!((province_table_live[fief].output > 0)) || (!((province_table_live[fief].men > 2)) || (defender_owner_is_honganji() || (province_is_ownerless(fief) || rng_mod(4)))))))))))));    // $9E20
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9E21
@@ -1913,7 +1913,7 @@ word ai_event_eligibility_check_morale_variant(word fief) {
     if (rng_mod((defender_owner_is_honganji() ? 20 : 0x03E8))) goto L_9E76;    // $9E5D
 L_9E60:
     if (!((province_table_live[fief].men > 2))) goto L_9E76;    // $9E6B
-    if (!(province_state_is_FF(fief))) goto L_9E7A;    // $9E73
+    if (!(province_is_ownerless(fief))) goto L_9E7A;    // $9E73
 L_9E76:
     phi_ret_9e7b = 0;    // $9E77
     goto L_9E7B;    // $9E77
@@ -1928,7 +1928,7 @@ L_9E7B:
 // (body @ $9E81)
 
 word select_event_eligibility_check_by_type(word event_type, word fief) {
-    if (!(province_state_is_FF(fief))) goto L_9E8B;    // $9E86
+    if (!(province_is_ownerless(fief))) goto L_9E8B;    // $9E86
     return 0;    // $9E8A
 L_9E8B:
     if ((event_type != 1)) goto L_9E97;    // $9E8E
@@ -2374,7 +2374,7 @@ L_A4FE:
     selected_count = 0;    // $A501
     goto L_A534;    // $A502
 L_A505:
-    if (province_state_is_FF(fief_i)) goto L_A531;    // $A50A
+    if (province_is_ownerless(fief_i)) goto L_A531;    // $A50A
     if ((ai_planner_event_handler_select == 3)) goto L_A520;    // $A512
     phi_val_a523 = (rng_mod(40) < 3);    // $A51D
     goto L_A523;    // $A51D

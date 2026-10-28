@@ -915,7 +915,7 @@ VM bytecode disassembly
   $8668  8E 01 60                   PUSH_imm2              $6001 (ai_per_fief_loop_index)
   $866B  3B                         PUSH_quick   ; inline operand = 11
   $866C  63                         PUSH_qimm   ; inline operand = 3
-  $866D  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $866D  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $8671  8E DD B8                   PUSH_imm2              $B8DD (msg_watch_other_daimyos_battle)
   $8674  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8678  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
@@ -1994,7 +1994,7 @@ VM bytecode disassembly
   $8E68  40                         LOADL_qimm   ; inline operand = 0
   $8E69  D6 8F 8E                   JUMP_abs               $8E8F
  >$8E6C  3B                         PUSH_quick   ; inline operand = 11
-  $8E6D  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $8E6D  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $8E71  D8 8D 8E                   JUMPF_abs              $8E8D
   $8E74  0B                         LOADL_quick   ; inline operand = 11
   $8E75  A8 5F 6F                   STORE_abs              $6F5F (selected_province_idx)
@@ -4236,7 +4236,7 @@ VM bytecode disassembly
   $9E05  AC 12 DB                   CALL_abs               $DB12 (defender_owner_is_honganji) {bytecode}
   $9E08  D7 1B 9E                   JUMPT_abs              $9E1B
   $9E0B  3C                         PUSH_quick   ; inline operand = 12
-  $9E0C  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $9E0C  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $9E10  D7 1B 9E                   JUMPT_abs              $9E1B
   $9E13  64                         PUSH_qimm   ; inline operand = 4
   $9E14  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
@@ -4285,7 +4285,7 @@ VM bytecode disassembly
   $9E6A  C4                         SCMPGT
   $9E6B  D8 76 9E                   JUMPF_abs              $9E76
   $9E6E  3C                         PUSH_quick   ; inline operand = 12
-  $9E6F  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $9E6F  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $9E73  D8 7A 9E                   JUMPF_abs              $9E7A
  >$9E76  40                         LOADL_qimm   ; inline operand = 0
   $9E77  D6 7B 9E                   JUMP_abs               $9E7B
@@ -4296,7 +4296,7 @@ VM bytecode disassembly
 ; sub $9E7C   (frame_off=+0, body @ $9E81)
 ; ============================================================
   $9E81  3D                         PUSH_quick   ; inline operand = 13
-  $9E82  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $9E82  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $9E86  D8 8B 9E                   JUMPF_abs              $9E8B
   $9E89  40                         LOADL_qimm   ; inline operand = 0
   $9E8A  CF                         RETURN
@@ -5305,7 +5305,7 @@ VM bytecode disassembly
   $A501  28                         STORE_quick   ; inline operand = 8
   $A502  D6 34 A5                   JUMP_abs               $A534
  >$A505  39                         PUSH_quick   ; inline operand = 9
-  $A506  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $A506  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $A50A  D7 31 A5                   JUMPT_abs              $A531
   $A50D  A4 7B 6F                   LOADL_abs              $6F7B (ai_planner_event_handler_select)
   $A510  53                         LOADR_qimm   ; inline operand = 3

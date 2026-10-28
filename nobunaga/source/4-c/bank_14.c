@@ -29,13 +29,13 @@ word busy_wait_delay(word delay_count) {
 // (body @ $8022)
 
 word draw_sprite_grid(word bank, word origin_x, word origin_y, word grid_def_ptr) {
-    syscall16_sram_wrap(bank, grid_def_ptr, (fp - 152), 6);    // $8029
+    copy_from_bank(bank, grid_def_ptr, (fp - 152), 6);    // $8029
     cols = *(byte*)(fp - 152);    // $8030
     rows = *(byte*)(fp - 151);    // $8034
     *(word*)(fp - 144) = (fp - 78);    // $803A
-    syscall16_sram_wrap(bank, *(word*)(fp - 150), (fp - 78), 64);    // $8042
+    copy_from_bank(bank, *(word*)(fp - 150), (fp - 78), 64);    // $8042
     *(word*)(fp - 146) = (fp - 142);    // $804B
-    syscall16_sram_wrap(bank, *(word*)(fp - 148), (fp - 142), 64);    // $8053
+    copy_from_bank(bank, *(word*)(fp - 148), (fp - 142), 64);    // $8053
     sprite_slot = 16;    // $8059
     cur_y = origin_y;    // $805B
     row = 0;    // $805D
@@ -64,12 +64,12 @@ word run_cutscene(void) {
     *(word*)(fp - 41) = ((cutscene_id * 5) + cutscene_table);    // $80BB
     cutscene_bank = *(byte*)(*(word*)(fp - 41));    // $80C0
     *(word*)(fp - 33) = (fp - 31);    // $80C6
-    syscall16_sram_wrap(cutscene_bank, *(word*)((*(word*)(fp - 41) + 1)), (fp - 31), 21);    // $80CF
+    copy_from_bank(cutscene_bank, *(word*)((*(word*)(fp - 41) + 1)), (fp - 31), 21);    // $80CF
     *(word*)(fp - 35) = *(word*)(fp - 33);    // $80D5
     palette_idx = 16;    // $80D9
     while ((palette_idx < 32)) {    // $80F8
         *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $80E4
-        syscall16_sram_wrap(cutscene_bank, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
+        copy_from_bank(cutscene_bank, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
         palette_write_wrap(palette_idx, *(byte*)(fp - 36));    // $80F2
         palette_idx = (palette_idx + 1);    // $80F7
     }
@@ -121,7 +121,7 @@ L_8185:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8190
     pos_y = *(byte*)((*(word*)(fp - 35) - 1));    // $8194
 L_8195:
-    syscall16_sram_wrap(cutscene_bank, *(word*)((*(word*)(fp - 33) + 19)), (fp - 53), 10);    // $81A1
+    copy_from_bank(cutscene_bank, *(word*)((*(word*)(fp - 33) + 19)), (fp - 53), 10);    // $81A1
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81AC
     draw_sprite_grid(cutscene_bank, pos_x, pos_y, *(word*)(((*(byte*)((*(word*)(fp - 35) - 1)) << 1) + (fp - 53))));    // $81B8
 L_81BC:

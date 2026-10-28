@@ -2472,7 +2472,7 @@ VM bytecode disassembly
  >$DACC  BB                         ADD
   $DACD  B3                         PUSHL
   $DACE  64                         PUSH_qimm   ; inline operand = 4
-  $DACF  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $DACF  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $DAD3  8A 4F 6F                   LOADL_imm2             $6F4F (deduped_owner_list)
   $DAD6  CF                         RETURN
 
@@ -2760,7 +2760,7 @@ VM bytecode disassembly
   $DCA7  BB                         ADD
   $DCA8  B3                         PUSHL
   $DCA9  64                         PUSH_qimm   ; inline operand = 4
-  $DCAA  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $DCAA  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $DCAE  A0 FF FF                   BYTE_LOADL_far         $FFFF
   $DCB1  CF                         RETURN
 
@@ -2874,7 +2874,7 @@ VM bytecode disassembly
   $DD53  07                         LOADL_quick   ; inline operand = 7
   $DD54  D3                         BYTE_DEREF
   $DD55  B3                         PUSHL
-  $DD56  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $DD56  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $DD5A  D7 65 DD                   JUMPT_abs              $DD65
   $DD5D  06                         LOADL_quick   ; inline operand = 6
   $DD5E  D0                         INC
@@ -2900,7 +2900,7 @@ VM bytecode disassembly
   $DD77  DE F8 FF                   LEAL_far               $FFF8
   $DD7A  B3                         PUSHL
   $DD7B  60                         PUSH_qimm   ; inline operand = 0
-  $DD7C  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $DD7C  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $DD80  CF                         RETURN
 
 ; ============================================================
@@ -3115,7 +3115,7 @@ VM bytecode disassembly
   $DEFC  C0                         CMPEQ
   $DEFD  D8 31 DF                   JUMPF_abs              $DF31
   $DF00  3B                         PUSH_quick   ; inline operand = 11
-  $DF01  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $DF01  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $DF05  D7 31 DF                   JUMPT_abs              $DF31
   $DF08  0B                         LOADL_quick   ; inline operand = 11
   $DF09  8C 15 6E                   LOADR_imm2             $6E15 (fief_to_daimyo_map)
@@ -3365,7 +3365,7 @@ VM bytecode disassembly
   $E079  BB                         ADD
   $E07A  B3                         PUSHL
   $E07B  64                         PUSH_qimm   ; inline operand = 4
-  $E07C  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E07C  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
  >$E080  08                         LOADL_quick   ; inline operand = 8
   $E081  D7 A6 E0                   JUMPT_abs              $E0A6
   $E084  AC 73 DF                   CALL_abs               $DF73 (merge_force_stats_men_weighted) {bytecode}
@@ -3443,7 +3443,7 @@ VM bytecode disassembly
   $E10E  08                         LOADL_quick   ; inline operand = 8
   $E10F  D7 20 E1                   JUMPT_abs              $E120
   $E112  39                         PUSH_quick   ; inline operand = 9
-  $E113  E9 E5 D9 02                CALL_abs_imm1          $D9E5 (test_6f65_bit7) {bytecode}, $02
+  $E113  E9 E5 D9 02                CALL_abs_imm1          $D9E5 (side_led_by_daimyo) {bytecode}, $02
   $E117  D8 20 E1                   JUMPF_abs              $E120
   $E11A  AC C1 DE                   CALL_abs               $DEC1 (reassign_fiefs_to_conqueror) {bytecode}
   $E11D  D6 9C E1                   JUMP_abs               $E19C
@@ -3982,7 +3982,7 @@ VM bytecode disassembly
   $E51B  40                         LOADL_qimm   ; inline operand = 0
   $E51C  D6 45 E5                   JUMP_abs               $E545
  >$E51F  3B                         PUSH_quick   ; inline operand = 11
-  $E520  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
+  $E520  E9 99 D9 02                CALL_abs_imm1          $D999 (province_is_ownerless) {bytecode}, $02
   $E524  D7 43 E5                   JUMPT_abs              $E543
   $E527  3B                         PUSH_quick   ; inline operand = 11
   $E528  E9 B7 D9 02                CALL_abs_imm1          $D9B7 (is_owned_by_selected_daimyo) {bytecode}, $02
@@ -4037,7 +4037,7 @@ VM bytecode disassembly
   $E578  BB                         ADD
   $E579  B3                         PUSHL
   $E57A  64                         PUSH_qimm   ; inline operand = 4
-  $E57B  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E57B  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $E57F  DE DA FF                   LEAL_far               $FFDA
   $E582  85 D8                      STORE_near             $D8
  >$E584  81 D8                      LOADL_near             $D8
@@ -4152,7 +4152,7 @@ VM bytecode disassembly
   $E64F  BB                         ADD
   $E650  B3                         PUSHL
   $E651  64                         PUSH_qimm   ; inline operand = 4
-  $E652  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E652  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $E656  DE DA FF                   LEAL_far               $FFDA
   $E659  85 D8                      STORE_near             $D8
   $E65B  D6 7E E6                   JUMP_abs               $E67E
@@ -4287,7 +4287,7 @@ VM bytecode disassembly
   $E732  BB                         ADD
   $E733  B3                         PUSHL
   $E734  69                         PUSH_qimm   ; inline operand = 9
-  $E735  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E735  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $E739  66                         PUSH_qimm   ; inline operand = 6
   $E73A  0C                         LOADL_quick   ; inline operand = 12
   $E73B  7C                         ADD_qimm   ; inline operand = 12
@@ -4299,7 +4299,7 @@ VM bytecode disassembly
   $E743  BB                         ADD
   $E744  B3                         PUSHL
   $E745  69                         PUSH_qimm   ; inline operand = 9
-  $E746  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E746  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $E74A  66                         PUSH_qimm   ; inline operand = 6
   $E74B  0C                         LOADL_quick   ; inline operand = 12
   $E74C  8F 12                      BYTE_ADD_imm1          +18
@@ -4311,7 +4311,7 @@ VM bytecode disassembly
   $E755  BB                         ADD
   $E756  B3                         PUSHL
   $E757  69                         PUSH_qimm   ; inline operand = 9
-  $E758  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E758  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $E75C  6C                         PUSH_qimm   ; inline operand = 12
   $E75D  0C                         LOADL_quick   ; inline operand = 12
   $E75E  8F 18                      BYTE_ADD_imm1          +24
@@ -4323,7 +4323,7 @@ VM bytecode disassembly
   $E767  BB                         ADD
   $E768  B3                         PUSHL
   $E769  69                         PUSH_qimm   ; inline operand = 9
-  $E76A  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E76A  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $E76E  CF                         RETURN
 
 ; ============================================================
@@ -4367,7 +4367,7 @@ VM bytecode disassembly
   $E7BA  B3                         PUSHL
   $E7BB  87 D8                      PUSH_near              $D8
   $E7BD  68                         PUSH_qimm   ; inline operand = 8
-  $E7BE  E9 BD CB 08                CALL_abs_imm1          $CBBD (syscall16_sram_wrap) {bytecode}, $08
+  $E7BE  E9 BD CB 08                CALL_abs_imm1          $CBBD (copy_from_bank) {bytecode}, $08
   $E7C2  DE D4 FF                   LEAL_far               $FFD4
   $E7C5  85 D8                      STORE_near             $D8
   $E7C7  81 D8                      LOADL_near             $D8
