@@ -725,6 +725,149 @@ prg_bank_count = 16        # 256 KB total
 "0xF6DA" = { name = "msg_winter", comment = "[ROM-STR] \"Winter\" (draw_current_season)" }
 "0xF720" = { name = "uprising_label_zealots", comment = "[ROM-STR] \"Zealots\" (select_uprising_message; bank 1 msg_zealots $BA43 is a different string, 'Zealots ')" }
 "0xF728" = { name = "uprising_label_monks", comment = "[ROM-STR] \"Monks\" (select_uprising_message)" }
+# moved 2026-10-28 from [prg.bank0/1/2]: fixed-region names every bank's view must see
+"0xC4DC" = { name = "ui_unused",           comment = "Reserved." }
+"0xC537" = { name = "wait_vblank",         comment = "Spin until PPUSTATUS bit 7 set; early-out if skip_vblank_wait ($0080) non-zero. Calls music_driver during spin." }
+"0xC54F" = { name = "nmi_off",             comment = "Clear bit 7 of ppuctrl_shadow (disable NMI generation); used as the NMI re-entry guard" }
+"0xC567" = { name = "rendering_on",        comment = "OR $18 into ppumask_shadow (enable BG + sprite rendering)" }
+"0xC570" = { name = "write_ppumask",       comment = "Write A to PPUMASK ($2001) and update ppumask_shadow" }
+"0xC628" = { name = "controller_poll",     comment = "Strobe $4016 and shift 8 bits into $006E (P1) or $006F (P2); X = player index" }
+"0xC68A" = { name = "nmi_on",              comment = "Set bit 7 of ppuctrl_shadow (enable NMI generation)" }
+"0xC693" = { name = "ppu_safe_gate",       comment = "Composite preamble for foreground PPU updates: nmi_off → wait_vblank → rendering_off" }
+"0xC69D" = { name = "rendering_off",       comment = "AND $E7 into ppumask_shadow (clear BG + sprite enable; blank screen)" }
+"0xC6A6" = { name = "write_ppuctrl",       comment = "Write A to PPUCTRL ($2000) and update ppuctrl_shadow" }
+"0xC6AD" = { name = "mul_xy_by_3",         comment = "Helper used by BRK dispatcher: multiply X register by 3 with carry, used to scale task ID to table offset" }
+"0xC6D4" = { name = "palette_upload",      comment = "If palette_dirty != 0: blank screen, set PPUADDR=$3F00, copy 32 bytes from palette_shadow to PPUDATA, restore rendering, clear palette_dirty" }
+"0xC757" = { name = "reset_ppu_init",        comment = "Reset-path PPU init: ppu_safe_gate, then upload $30 bytes from tab_c775 to PPU $0000, then screen_on. Walked 2026-05-31; was the pre-identified b15_c757." }
+"0xC7A5" = { name = "music_driver",        comment = "NMI music tick: jsr music_trigger_pass ($C7AC), jsr music_sequencer_pass ($C817), rts. Entry sits just past the 17-byte data pad tab_b15_c794 ($C794-$C7A4)." }
+"0xC7AC" = { name = "music_trigger_pass", comment = "music_driver pass 1: scan the 5 voices ($0734 + N*9); for each voice whose trigger byte (record+0) is 1-4 (a play request), program its APU channel registers from record bytes 1-4 and mark it played (trigger += 4 -> 5-8). Helpers: music_voice_step_trigger ($C7DE) per voice, music_start_voice ($C7EF) writes the channel. | Pass 1: scan 5 voices at $0734; for any voice with byte 0 in 1..4, write 4 APU register bytes and set byte 0 = byte 0 + 4 (one-shot)" }
+"0xC7C9" = { name = "music_advance_voice", comment = "music_ptr += 9 (advance to next 9-byte voice record); music_voice_idx++. The scan-step shared by trigger_pass and sequencer_pass. | Advance the music scan to the next voice: inc music_voice_idx, music_ptr += 9 (the 9-byte voice-record stride). Shared by both music passes. (also named music_next_voice)" }
+"0xC7DE" = { name = "music_voice_check",   comment = "Per-voice trigger check: skip if byte 0 is 0 (idle) or >= 5 (dormant), else call music_voice_play" }
+"0xC7EF" = { name = "music_voice_play",    comment = "Per-voice play: compute APU base from byte 0, optionally skip if triangle mute, write bytes 1-4 to APU registers" }
+"0xC817" = { name = "music_sequencer_pass", comment = "music_driver pass 2: scan the 5 voices; for each non-muted voice (audio_mute_triangle[idx]==0) advance its note sequence via music_voice_advance ($C83D). | Pass 2: for each active voice, decrement byte 8 (duration countdown). When zero, advance song pointer (bytes 6-7), load new pitch (bytes 3-4), trigger (byte 0), reset countdown (byte 8)." }
+"0xC83D" = { name = "music_voice_step",      comment = "Per-voice sequencer tick (called from music_sequencer_pass for active voices). If stream byte < 5: load note (music_load_note). Else: countdown record[8] via music_dec_duration; on expiry, music_next_event drives the next stream event." }
+"0xC857" = { name = "music_load_note",       comment = "Start a note: music_load_voice_cfg then write 4 note-parameter bytes (from the stream) into record offsets [0,1,2,4] via music_read_stream_byte." }
+"0xC877" = { name = "music_load_voice_cfg",  comment = "Copy the voice's 3-byte instrument config from v0_config[voice_idx*3] ($0725) into record offsets [5,6,7] (bank + stream pointer)." }
+"0xC894" = { name = "music_read_stream_byte", comment = "Banked song-stream fetch: save current bank, switch to record[5] (song bank), read one byte via the record[6,7] pointer, increment that pointer (record[6,7]), restore bank. Returns byte in A. The cross-bank stream reader the whole driver runs on." }
+"0xC8C4" = { name = "music_dec_duration",    comment = "Decrement record[8] (note-duration countdown) and store back. Returns Z when it hits zero (time for next event)." }
+"0xC8CE" = { name = "music_next_event",      comment = "Process one stream event: music_read_stream_byte; if < $F0 it's a note -> music_set_pitch + music_set_duration; if >= $F0 it's a command -> music_handle_command. Loops until a playable event is set." }
+"0xC8E4" = { name = "music_handle_command",  comment = "Stream control byte >= $F0. $F0 = note-off (silence the APU channel for this voice, clear its active flag, return C set = stop). Other values fall through to music_restart_stream (pattern loop/restart)." }
+"0xC906" = { name = "music_restart_stream",  comment = "Reload the 3-byte voice config into record[5,6,7] and clear record[0] — i.e. restart the voice's pattern stream from its configured start (the loop command target). jmp-reached from music_handle_command." }
+"0xC929" = { name = "music_set_pitch",       comment = "Convert note -> APU timer period via music_note_to_period, then splice the period hi/lo into record[3,4] (the channel's timer bytes), preserving the low control bits of record[4]." }
+"0xC94B" = { name = "music_note_to_period",  comment = "Note byte -> 16-bit APU period in $7E/$7F: low nibble indexes the 12-entry base-period table tab_c96f (2 bytes each); high nibble is the octave (right-shift the period that many times)." }
+"0xC990" = { name = "music_set_duration",    comment = "Read the next stream byte (note length), shift left 3 (x8 = ticks), store into record[8] (the duration countdown)." }
+"0xCA46" = { name = "rng_next_wrapper",    comment = "[HIGH CONFIRMED 2026-06-10] Thin wrapper: syscall_rng_next() -- advances and returns the RNG." }
+"0xCA52" = { name = "rng_mod",             comment = "[HIGH CONFIRMED 2026-06-10] rng_mod(n): returns 0 if n<1, else rng_next() mod n = a uniform 0..n-1. THE randomness primitive, 155 callers." }
+"0xCB5E" = { name = "min_word",            comment = "[HIGH CONFIRMED 2026-06-10] Returns min(a, b) (unsigned). Kernel primitive, 29 callers." }
+"0xCBBD" = { name = "syscall16_sram_wrap", comment = "Thin wrapper around syscall 16 (sram_block_checksum/copy). Called by combat_helper_dd3a after filtering the candidate list — plumbing, not scoring. Read 2026-05-31." }
+"0xCBCD" = { name = "sqrt_int",            comment = "Integer square root (native code; chapter 9). Classic restoring algorithm, 2 bits per iteration, 8 iterations over 16-bit input. Called as host_call sqrt_int, $02 with one word arg on the data stack. Used by Grow/Dam/Build/Train effects to drive the diminishing-returns curve." }
+"0xCC35" = { name = "palette_swap",        comment = "[HIGH CONFIRMED 2026-06-10] return syscall_palette_swap(arg1) -- 1-op forward to the native palette-swap syscall (body @ $CC3A: PUSH local12; CALL syscall_palette_swap; RETURN). NOT marriage-related: 'marry_helper_cc35' was wrong-category (it appears in effect/marriage screens that swap palettes, e.g. palette_swap(1)/palette_swap(0) bracketing palette_write_wrap blocks). 91 call sites." }
+"0xCC69" = { name = "clear_rect_right_panel", comment = "[HIGH CONFIRMED 2026-06-10] ppu_fill_rect_wrap(22, 7, 29, 18, 1) -- blanks the right-side panel (cols 22-29, rows 7-18) with tile $01. A fixed-geometry clear, sibling of clear_rect_top_strip/left_upper/left_lower. NOT trade-specific (wrong-category). Was 'trade_helper_cc69'." }
+"0xCC7B" = { name = "set_cursor",          comment = "[HIGH CONFIRMED 2026-06-10] set_cursor(col,row): ui_window_col=arg1; ui_cursor_row=arg2 -- 5-op setter (LOADL 12; STORE $7FCD ui_window_col; LOADL 13; STORE $7FCF ui_cursor_row; RETURN @ $CC80). The text-cursor/draw-origin positioning primitive (the 'locate(col,row)' every redraw_window then consumes; axes confirmed by consumers -- $7FCD=col/X line-wrap boundary, $7FCF=row/Y). Was 'ui_helper_cc7b' (TBD); 211 call sites. UI-primitive vocabulary -- chapter 18 section pending once the cluster (cc89/d134/...) is ground." }
+"0xCC89" = { name = "open_message_window",  comment = "[HIGH CONFIRMED 2026-06-10] open_message_window(): ppu_fill_rect_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22) (body @ $CC8E). Draws the standard bottom message-window rectangle and homes the text cursor to its origin -- the 'open/prepare the message window before printing' primitive (14 callers, command pre-roll). The shift coord (20 vs 22) is picked by ui_msg_col_shift_flag ($7FD1) and lands in set_cursor's ROW arg (see $7FD1 amend). Was 'ui_helper_cc89' (role TBD)." }
+"0xCD20" = { name = "repaint_screen",      comment = "[HIGH CONFIRMED 2026-06-10] Full-screen repaint + UI-state reset. Bracketed palette_swap(1)..(0); fill_nametable_wrap + fill_attr_wrap (clear scaffolding); then two DIRTY-FLAG-gated reloads: if ui_pending_flag_7fc9 -> rewrite sprite palette entries 7/11/15 + clear flag; if ui_pending_flag_7fc7 -> reload 4 bg palette entries from strategic_map_bg_palette + ppu_upload_block_wrap(strategic_map_chr_tiles) + clear flag. Finally latches+clears selected_record_idx_9e3c, resets ui_input_sel_latch_7fdf=255, set_cursor(2,20), clears ui_state_flag_7bf9 + combat_unit_window_mode_flag. ~18 call sites. Was 'ui_helper_cd20' (TBD); all callees grounded so this is a depth-0 leaf. Consumes the two dirty flags whose producers are noted at $7FC9/$7FC7." }
+"0xCEC4" = { name = "redraw_window",       comment = "[HIGH CONFIRMED 2026-06-10] redraw_window: renders a window/message string at the current UI position. 147 callers -- the core UI draw." }
+"0xD134" = { name = "draw_message",        comment = "[HIGH CONFIRMED 2026-06-10] draw_message(fmt, ...): format_string(&fmt, &msg_buf); return redraw_window(&msg_buf) -- printf-then-draw wrapper (body @ $D139). Formats a printf-style message (with its inline varargs) into the -150 frame msg_buf via format_string ($CFFC, the %C/%D/%S core), then draws the buffer. 193 call sites, all (msg_*_Nd, value) -- the '_2d/_4d' suffixes encode the printf width. AMENDS the old 'ui_helper_d134' note (REFUTED: d134 is NOT the substitution layer -- $CFFC is; d134 is the format+draw wrapper around it)." }
+"0xD326" = { name = "message_display",     comment = "[HIGH CONFIRMED 2026-06-10] message_display: shows a message string (the 'show feedback' primitive). The single most-used helper, 159 callers." }
+"0xD351" = { name = "prompt_ab_window",     comment = "[HIGH CONFIRMED 2026-06-10] A/B prompt over a caller-supplied window (body @ $D356): redraw_window(arg1); read_frame_timer(1); poll wait_button_edge until A(64)/B(128)/btn(2); read_frame_timer(0); on A echo glyph 60 + return 1, on B echo glyph 62 + return 0, on btn-2 return 2; open_message_window() to restore. Confirms the old 'candidate: 2-choice prompt' note (it's 3-way incl. a cancel/btn-2). Sibling of prompt_y_n ($D3A7) but takes the window arg + has the 3rd exit. 7 sites. Was 'ui_helper_d351'." }
+"0xD3A7" = { name = "prompt_y_n",          comment = "[HIGH CONFIRMED 2026-06-10] Y/N confirm prompt: redraw_window(msg_y_n_f695); poll wait_button_edge until A(64)/B(128); on A echo 'Y' (char_advance_width(89)) + return 1, else return 0 (body @ $D3AC). 8 callers. Was 'ui_helper_d3a7' (TBD). Sibling of confirm_prompt ($D766) -- this one draws the explicit 'Y/N' string + echoes the choice." }
+"0xD3ED" = { name = "cursor_nav_loop",     comment = "Menu/cursor navigation loop: switch(sub_D14E()) on NES button bits (1=R,2=L,16=Start,32=Sel,64=B,128=A) to move the selection cursor over candidates. The war-target PICK bottoms out HERE — controller input, not a target-scorer (read 2026-05-31). AI drives the same path via sub_D14E's AI branch." }
+"0xD59D" = { name = "select_province_by_cursor", comment = "[HIGH CONFIRMED 2026-06-10] select_province_by_cursor(min,max): the number/cursor province picker -- prompts for a value in [min,max] and returns it (the shared selection primitive behind the command prompts)." }
+"0xD5E9" = { name = "number_input",        comment = "[HIGH CONFIRMED 2026-06-10] number_input(min,max): the digit-entry prompt; reads a number in [min,max] (or 0/cancel). 27 callers -- every amount prompt." }
+"0xD6B8" = { name = "math32_3arg",         comment = "[HIGH CERTIFIED 2026-06-10] = (arg1*arg2)/arg3 in 32-bit. Oracle-proven. (bug 1.3 ext-op stub.)" }
+"0xD6DE" = { name = "math32_2arg",         comment = "[HIGH CERTIFIED 2026-06-10] = (arg1*100)/(arg1+arg2) -- arg1's PERCENTAGE of the (arg1+arg2) total. Oracle CORRECTS the prior 'a*b/c' note (was wrong). (bug 1.3 ext-op stub.)" }
+"0xD70D" = { name = "pct_op",              comment = "[HIGH CONFIRMED 2026-06-10] Percentage op: returns a*b/100 (a scaled by b percent). The most-used arithmetic helper -- 60 callers across the game." }
+"0xD759" = { name = "standard_delay",      comment = "[HIGH CONFIRMED 2026-06-10] return delay_loop(delay_loop_count) -- 2-op wrapper (PUSH $6D65 delay_loop_count; CALL $D73E delay_loop; RETURN @ $D75E). Runs the standard configurable busy-wait; delay_loop_count ($6D65) is the user-adjustable message-speed setting. 3 callers. Was 'ui_helper_d759'." }
+"0xD766" = { name = "confirm_prompt",      comment = "[HIGH CONFIRMED 2026-06-10] confirm_prompt: shows a prompt and waits for the player to acknowledge. 89 callers." }
+"0xD772" = { name = "fief_owner",          comment = "[HIGH CONFIRMED 2026-06-10] return fief_to_daimyo_map[fief] -- 5-op accessor (LOADL 12 fief; LOADR_imm2 $6E15 fief_to_daimyo_map; ADD; BYTE_DEREF; RETURN @ $D777). Takes a fief id, returns its owning daimyo id. Was 'ui_helper_d772' (low-fidelity: NOT a UI helper, a data accessor; the 'fief->owner' note scattered in other comments is now ground-truthed)." }
+"0xD77E" = { name = "selected_province_owner", comment = "[HIGH CONFIRMED 2026-06-10] return fief_owner(selected_province_idx) -- 2-op accessor (PUSH $6F5F selected_province_idx; CALL $D772 fief_owner; RETURN @ $D783). The owning daimyo id of the currently-selected province. Called by 5 drivers (Marry/Pact diplomacy among them -- act on the selected province's lord). Was 'ui_helper_d77e' (TBD); NOT a UI helper (a data accessor, like fief_owner)." }
+"0xD7EA" = { name = "selected_province_daimyo_record", comment = "[CONFIRMED 2026-06-02] Returns fief_to_daimyo_record_addr(selected_province_idx) — the ACTIVE/attacker daimyo's 7-byte record. Used by ai_sum_battle_strength as the attacker side of the daimyo-stat comparison (vs the defending province's record); also 4 other drivers. (was ui_helper_d7ea.)" }
+"0xD836" = { name = "cap_fief_stats",       comment = "[HIGH CONFIRMED 2026-06-10] cap_fief_stats(fief): caps every field of the $7001 province record (offsets +0..+22) at the record's +24 cap field via min_word. Confirms $7001+24 = the per-fief stat CAP/header." }
+"0xD972" = { name = "fief_owner_weakness",  comment = "[HIGH CONFIRMED 2026-06-10] Accessor: return daimyo_weakness_flag[fief_owner(arg1)] (body @ $D977) -- the weakness/condition mark of the fief's owning daimyo. Data accessor, NOT a 'war helper' (wrong-category, like fief_owner/selected_province_owner); built on the grounded fief_owner leaf. 9 sites. Semantic of daimyo_weakness_flag itself still inherited from its var label." }
+"0xD999" = { name = "province_state_is_FF", comment = "Returns ($6CF7[arg1] == 0xFF) — province is in the EXCLUDED state. Eligibility filter used by combat_helper_dd3a. Read 2026-05-31." }
+"0xD9B7" = { name = "is_enemy_owned",      comment = "Candidate target predicate: returns (fief_to_daimyo_map[ui_helper_d77e()] == arg) — i.e. the candidate fief's owner matches the target daimyo (enemy-ownership match). Eligibility, not strength. Read 2026-05-31." }
+"0xDA4F" = { name = "set_pact_relation",   comment = "[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193 stride-54) cell between selected_province_idx and battle_defending_province to 70 -- establishing a non-aggression pact. (was diplomacy_helper2.)" }
+"0xDA7D" = { name = "set_marriage_relation",   comment = "[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193) cell between the two daimyo (selected_province_owner / fief_owner(defender)) to 90 -- the marriage alliance bond. (was diplomacy_helper3.)" }
+"0xDAD7" = { name = "compact_relation_list", comment = "[MED 2026-06-10] load_daimyo_relation_row(selected_province_idx) into the $6F4F buffer, then compact it in place: keep only entries whose province still exists (get_province_ai_state != 255), FF-terminate. Builds the active-daimyo relation list. NOT a 'combat pre-roll' (wrong-category). Was 'combat_helper_dad7'." }
+"0xDB12" = { name = "defender_owner_is_keyed_daimyo", comment = "[MED PROBABLE 2026-06-10] Combat predicate (NOT tax -- wrong-category): return fief_owner(battle_defending_province) == (scenario_fief_count==17 ? 3 : 20). I.e. is the defending province owned by the scenario's keyed daimyo (index 3 in the 17-fief scenario, 20 in the 50-fief). OPEN: confirm who daimyo 3/20 is (likely the scenario protagonist/Nobunaga) via the daimyo table. Was 'tax_helper_db12'." }
+"0xDB35" = { name = "increment_ai_player_count", comment = "[MED 2026-06-10] ai_player_count++; if (is_ai_count_ge_8()) set_6da1_bit7(). Bumps the daimyo/AI count and sets the $6DA1 bit-7 flag once it reaches 8 (the >=8 threshold). NOT a UI helper (wrong-category). Was 'ui_helper_db35'." }
+"0xDD3A" = { name = "filter_province_list_by_owner", comment = "[HIGH CONFIRMED 2026-06-10] In-place filter of a province-id list: walks out_list (FF-terminated), keeps each province whose is_enemy_owned(p) matches arg1 (match_enemy) AND that still exists (!province_state_is_FF), into a scratch buf, FF-terminates, then writes buf back over out_list (syscall16_sram_wrap bank 0). NOT a 'combat pre-roll' (wrong-category) -- a list-prune by ownership. Was 'combat_helper_dd3a'." }
+"0xE315" = { name = "marriage_pact_handler", comment = "[MED 2026-06-10] Marriage-pact logic, two paths on whether battle_defending_province has an owner. OWNED (interactive): set ui_input_mode=2, draw_daimyo_name_menu(msg_marriage_pact) + redraw_window(msg_accept) + prompt_y_n; on yes, demand gold via number_input(1..9999); returns the entered amount (0 on decline). UNOWNED (auto/AI): 50% gate (rng_mod 2), then weakness/rng test (fief_owner_weakness(selected) or rng_mod(3)); if the province's $7001 stat > 200 returns pct_op(stat, rng_mod(30)+50)+200, else 0. Was 'marry_helper_e315'." }
+"0xE3A4" = { name = "prompt_diplomacy_pact",    comment = "[HIGH CONFIRMED 2026-06-10] Pact negotiation prompt: if the defender is AI, draws the pact menu (draw_daimyo_name_menu(msg_pact)), demands gold (number_input up to 9999), and runs the accept/reject flow. The diplomacy negotiation UI. (was diplomacy_helper.)" }
+"0xE4DC" = { name = "build_fiefs_excluding_daimyo", comment = "[MED 2026-06-10] build_owned_fief_list() into $6F89, then compact it in place keeping only fiefs whose owner (fief_owner) != arg1 -- the owned fiefs NOT held by daimyo arg1. Used in the marriage flow (candidate target list excluding a given daimyo's holdings). Was 'marry_helper_e4dc'." }
+"0xE510" = { name = "build_eligible_province_list", comment = "[HIGH CONFIRMED 2026-06-10] build_eligible_province_list(enemy_flag): scans all fiefs [0, scenario_fief_count); keeps those that EXIST (!province_state_is_FF), match the ownership filter (is_enemy_owned(i) == enemy_flag), and are NOT selected_province_idx; appends each idx to the $6F89 buffer, FF-terminates it, returns the count (body @ $E515). The candidate-list BUILDER the Send/Pact/View/Marry target-select commands then pick from (confirms the prior caller note -- it builds the list, isn't a 'cursor/menu enter primitive')." }
+"0xE5F2" = { name = "render_map_section",  comment = "[HIGH CONFIRMED 2026-06-10] The strategic-map SECTION renderer. If arg1 != the current section: palette_swap(1); clear the right margin (ppu_fill_rect 30,4..31,19); ppu_copy_rect the section's 28x16 tilemap (strategic_map_section_tilemaps + arg1*0x1C0, bank 4) to cols 2-29 rows 4-19; ppu_upload_block the section's 32-byte attribute table (strategic_map_section_attributes + arg1*32 -> PPU $23C8); mark selected_record_idx_9e3c=arg1; then walk the section's 34-byte record list and draw every fief's lord name (draw_province_lord_name); palette_swap(0). A 'map section' = tilemap(0x1C0) + attributes(32) + fief records(34). 8 sites. Was 'map_helper_e5f2'. The graphics-thread keystone; see ch.16/19." }
+"0xE76F" = { name = "draw_daimyo_portrait", comment = "[HIGH 2026-06-01] Draws the daimyo portrait (stat-roll/info screens; caller sets active_province_idx_copy $6F5B first). Loads a 4-entry palette, then BRANCHES on the daimyo record's status/generated flag (record[+6], the 7th byte of daimyo_table_17): flag==0 (an ORIGINAL scenario daimyo) -> PRESET path: descriptor table at $BBD0 (graphics bank, NOT the string bank the decompiler resolves it to) indexed by fief_to_mapid*4, read 8 bytes, upload that daimyo's DEDICATED portrait CHR to $15B0; flag==1 (a GENERATED/replacement daimyo) -> COMPOSITE path: unpack_record_to_sram_e6b9 builds the base-5 face from $6EB1. Then blits the 8x8 portrait. THIS is why the original 50 have fixed faces (preset) while death-replacements get random composite faces. (was the mislabeled 'marry_helper_e76f'.)" }
+"0xE80C" = { name = "trigger_cutscene",    comment = "[HIGH CONFIRMED 2026-06-10] If the AI-turn cutscene flag is set (ai_turn_flags & 4): store the cutscene id (arg1) into cutscene_id ($7FCB), then run the bank-14 cutscene engine via call_bank_wrap(14) -> run_cutscene ($80AD); else return 0. ~34 sites. Was 'ui_helper_e80c' (TBD) -- the long-open bank-14 cross-bank case, now resolved by folding bank 14 into the corpus (ch.19). (Its call was the one made unconditional by the return_phi bug, fixed f50d874.)" }
+"0xF7D4" = { name = "governance_policy_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the AI governance-policy names: Home fief/Industrial/Military/Balanced/Farming/Direct (driver_grant). (was grant_menu_str_ptrs.)" }
+"0xF816" = { name = "lord_command_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the 14 lord-command names: Move/War/Tax/Send/Dam/Pact/Grow/Marry/Trade/Hire/Train/View/Build/Give. REFUTES the prior fief_stat_label name -- these are COMMAND names (its reader fief_info_display draws the command menu)." }
+"0xF8AE" = { name = "fief_stat_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to fief/daimyo stat names: Age/Hlth/Driv/Luck/Char/IQ (daimyo record +0..+5) then Gold/Debt/Town/Rice/Output/Dams/Lylty/Wealth (province record)." }
+"0xF98A" = { name = "msg_no_fiefs", comment = "[ROM-STR] \"\nno fiefs\"" }
+"0xF994" = { name = "msg_fiefs", comment = "[ROM-STR] \"  Fiefs \"" }
+"0xF99D" = { name = "msg_how_much_f99d", comment = "[ROM-STR] \"How much\"" }
+"0xF9A6" = { name = "msg_how_many", comment = "[ROM-STR] \"How many\"" }
+"0xF9AF" = { name = "unit_type_name_table", comment = "[ROM-DATA HIGH 2026-06-10] 3 word-ptrs to the unit-type name strings (verified in ROM): [0] $F9B5 'Rifles', [1] $F9BD 'Infntry', [2] $F9C5 'Cavalry'. Read by draw_unit_type_label ($9387). (was 'draw_unit_label_data_f9af'.)" }
+"0xF9B5" = { name = "str_unit_rifles", comment = "[ROM-STR 2026-06-10] \"Rifles \" — unit-type name, entry 0 of unit_type_name_table." }
+"0xF9BD" = { name = "str_unit_infantry", comment = "[ROM-STR 2026-06-10] \"Infntry\" — unit-type name, entry 1 of unit_type_name_table." }
+"0xF9C5" = { name = "str_unit_cavalry", comment = "[ROM-STR 2026-06-10] \"Cavalry\" — unit-type name, entry 2 of unit_type_name_table." }
+"0xF9CD" = { name = "msg_move_where", comment = "[ROM-STR] \"\nMove where?\n\"" }
+"0xF9DB" = { name = "msg_how_many_men", comment = "[ROM-STR] \"How many men\"" }
+"0xF9E8" = { name = "msg_will_you_lead_them_personally", comment = "[ROM-STR] \"Will you lead\nthem personally\"" }
+"0xFA06" = { name = "msg_they_have_arrived_safely", comment = "[ROM-STR] \"They have\narrived safely\"" }
+"0xFA1F" = { name = "msg_attack_where", comment = "[ROM-STR] \"\nAttack where?\n\"" }
+"0xFA2F" = { name = "msg_how_many_men_fa2f", comment = "[ROM-STR] \"How many men\"" }
+"0xFA3C" = { name = "msg_how_much_rice_will_they_take", comment = "[ROM-STR] \"How much rice\nwill they take\"" }
+"0xFA59" = { name = "msg_will_you_lead_them_personally_fa59", comment = "[ROM-STR] \"Will you lead\nthem personally\"" }
+"0xFA77" = { name = "msg_tax_is_d_enter_new_tax", comment = "[ROM-STR] \"Tax is %d\nEnter new tax\"" }
+"0xFA8F" = { name = "msg_the_peasants_are_delighted", comment = "[ROM-STR] \"The peasants are\ndelighted!\"" }
+"0xFAAB" = { name = "msg_the_peasants_are_protesting", comment = "[ROM-STR] \"The peasants are\nprotesting!\"" }
+"0xFAC8" = { name = "msg_send_where", comment = "[ROM-STR] \"\nSend where? \"" }
+"0xFAD6" = { name = "msg_lord_you_are_too_weak_for_batt", comment = "[ROM-STR] \"Lord, you are too\nweak for battle!\"" }
+"0xFAFA" = { name = "msg_gold", comment = "[ROM-STR] \"Gold\"" }
+"0xFAFF" = { name = "msg_rice", comment = "[ROM-STR] \"Rice\"" }
+"0xFB04" = { name = "msg_the_supplies_have_arrived_safe", comment = "[ROM-STR] \"The supplies have\narrived safely\"" }
+"0xFB25" = { name = "msg_s_is_d_spend_how_much_on_it", comment = "[ROM-STR] \"%s is %d\nSpend how much\non it\"" }
+"0xFB43" = { name = "msg_dams_value_is_now_d", comment = "[ROM-STR] \"Dams value is\nnow %d\"" }
+"0xFB58" = { name = "msg_output_is_now_d", comment = "[ROM-STR] \"Output is now\n%d\"" }
+"0xFB69" = { name = "msg_no_merchant_in_the_area", comment = "[ROM-STR] \"No merchant in\nthe area\"" }
+"0xFB81" = { name = "msg_recruit_which", comment = "[ROM-STR] \"Recruit which\"" }
+"0xFB90" = { name = "msg_lord_s_we_now_have_d_men", comment = "[ROM-STR] \"Lord %s, we\nnow have %d men\"" }
+"0xFBAE" = { name = "msg_what_mission", comment = "[ROM-STR] \"What mission\"" }
+"0xFBBB" = { name = "msg_enemy_morale_is_falling_to_pie", comment = "[ROM-STR] \"Enemy morale is\nfalling to pieces!\"" }
+"0xFBDE" = { name = "msg_skill_is_now_d", comment = "[ROM-STR] \"Skill is now %d\"" }
+"0xFBEF" = { name = "msg_view_which_fief", comment = "[ROM-STR] \"View which fief?\n\"" }
+"0xFC01" = { name = "msg_our_spy_was_caught", comment = "[ROM-STR] \"Our spy was\ncaught\"" }
+"0xFC14" = { name = "msg_town_value_is_now_d", comment = "[ROM-STR] \"Town value is now\n%d\"" }
+"0xFC29" = { name = "msg_gold_for_spy", comment = "[ROM-STR] \"Gold for spy\"" }
+"0xFC36" = { name = "msg_d_peasants_have_defected", comment = "[ROM-STR] \"%d peasants\nhave defected\"" }
+"0xFC50" = { name = "msg_no_peasants_defected", comment = "[ROM-STR] \"No peasants\ndefected!\"" }
+"0xFC66" = { name = "msg_seasons", comment = "[ROM-STR] \"Seasons\"" }
+"0xFC6E" = { name = "msg_it_will_do_you_good", comment = "[ROM-STR] \"It will do you\ngood\"" }
+"0xFC82" = { name = "msg_lord_you_are_truly_wise", comment = "[ROM-STR] \"Lord, you are\ntruly wise!\"" }
+"0xFC9C" = { name = "msg_which_fief", comment = "[ROM-STR] \"\nWhich fief? \"" }
+"0xFCAA" = { name = "msg_lord_s_they_ve_refused", comment = "[ROM-STR] \"Lord %s\nthey`ve refused!\"" }
+"0xFCC3" = { name = "msg_your_bride_to_be_has_arrived", comment = "[ROM-STR] \"Your bride-to-be\nhas arrived\"" }
+"0xFCE0" = { name = "msg_don_t_you_long_to_hear_the_pit", comment = "[ROM-STR] \"Don`t you long to\nhear the\npitter-patter of\na little lord`s\nfoot\"" }
+"0xFD27" = { name = "msg_lord_s_s_wants_d_gold_pay", comment = "[ROM-STR] \"Lord %s,\n%s wants\n%d gold\nPay\"" }
+"0xFD45" = { name = "msg_lord_s_s_wants_d_gold_pay_fd45", comment = "[ROM-STR] \"Lord %s,\n%s wants\n%d gold\nPay\"" }
+"0xFD63" = { name = "msg_war_is_inevitable_so_don_t_let", comment = "[ROM-STR] \"War is inevitable\nso don`t let your\nguard down!\"" }
+"0xFD93" = { name = "msg_who_needs_him_anyway", comment = "[ROM-STR] \"Who needs him\nanyway\"" }
+"0xFDA8" = { name = "msg_give_how_much", comment = "[ROM-STR] \"Give how much\"" }
+"0xFDB6" = { name = "msg_thank_you_lord", comment = "[ROM-STR] \"Thank you Lord!\"" }
+"0xFDC6" = { name = "msg_we_re_at_our_limit", comment = "[ROM-STR] \"We`re at our\nlimit\"" }
+"0xFDD8" = { name = "str_you_have_no_units", comment = "[ROM-STR 2026-06-10] 'You have no [units]' message (ai_advance_units_when_attacked)." }
+"0xFDD9" = { name = "msg_you_have_no_gold", comment = "[ROM-STR] \"You have no gold!\"" }
+"0xFDEB" = { name = "msg_you_have_no_rice", comment = "[ROM-STR] \"You have no rice!\"" }
+"0xFDFD" = { name = "msg_you_have_no_soldiers", comment = "[ROM-STR] \"You have no\nsoldiers!\"" }
+"0xFE13" = { name = "msg_you_have_no_peasants", comment = "[ROM-STR] \"You have no\npeasants!\"" }
+"0xFE29" = { name = "msg_they_are_your_allies", comment = "[ROM-STR] \"They are your\nallies!\"" }
+"0xFE40" = { name = "msg_which_fief_fe40", comment = "[ROM-STR] \"\nWhich fief \"" }
+"0xFE4D" = { name = "msg_what_are_your_orders", comment = "[ROM-STR] \"\nWhat are your\norders?\"" }
+"0xFE64" = { name = "msg_it_s_currently_a_s_state_ok_to", comment = "[ROM-STR] \"It`s currently a\n%s state\nOK to make it a\n%s state\"" }
+"0xFE97" = { name = "msg_bribe_which", comment = "[ROM-STR] \"\nBribe which? \"" }
+"0xFEE9" = { name = "governance_state_label_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to abbreviated governance-state labels: Assign/Ind/Mil/Bal/Farm/Dir/Menu (draw_fief_view_label). (was province_state_label_ptrs.)" }
+"0xFF1A" = { name = "settings_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to settings-menu items: Sound/Animat/Wait/Save/Battle/End/Menu (driver_other)." }
+"0xFF4F" = { name = "trade_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to trade-menu items: Loan/Repay/Sell/Buy/Arms/Menu (driver_trade)." }
 
 [prg.bank0]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
@@ -753,7 +896,6 @@ prg_bank_count = 16        # 256 KB total
 "0xBC2A" = { name = "str_typhoon_msg", comment = "[ROM-STR 2026-06-10] 'a typhoon has struck fief %2d!'" }
 "0xBC4B" = { name = "str_plague_msg", comment = "[ROM-STR 2026-06-10] 'plague has come to fief %2d!'" }
 "0xBF1C" = { name = "str_save_and_illness_msgs", comment = "[ROM-STR 2026-06-10] 'Data has been saved',' has taken ill','Disloyal'" }
-"0xF8AE" = { name = "fief_stat_name_ptrs_alias", comment = "[ROM-DATA 2026-06-10] Alias of fief_stat_name_ptrs ($F8AE)." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xAC4A" = { name = "msg_fmt_blank", comment = "[ROM-STR] \"017?100\"" }
 "0xB7CA" = { name = "msg_congratulations_my_lord", comment = "[ROM-STR] \">[16]*(>[16](0>[16](0>[16]80Congratulations my Lord!\n\"" }
@@ -965,42 +1107,13 @@ prg_bank_count = 16        # 256 KB total
 "0xA742" = { name = "shuffle_fief_turn_order_array", comment = "[HIGH AMENDED 2026-06-10] Fisher-Yates shuffle of the turn-order byte array at $6F1B (identity-init'd by init_new_game_state): per fief, cap_fief_stats ($D836) + two rng_mod($6D9D) draws + swap_byte ($CB80). The documented per-turn turn-order randomization. Caller vm_bootstrap $A803 (once per turn). Proposer's 'no-ops' REFUTED (host_calls hidden by lossy C)." }
 
 # --- PPU register shadow API (chapter 3) ---
-"0xC54F" = { name = "nmi_off",             comment = "Clear bit 7 of ppuctrl_shadow (disable NMI generation); used as the NMI re-entry guard" }
-"0xC567" = { name = "rendering_on",        comment = "OR $18 into ppumask_shadow (enable BG + sprite rendering)" }
-"0xC570" = { name = "write_ppumask",       comment = "Write A to PPUMASK ($2001) and update ppumask_shadow" }
-"0xC68A" = { name = "nmi_on",              comment = "Set bit 7 of ppuctrl_shadow (enable NMI generation)" }
-"0xC693" = { name = "ppu_safe_gate",       comment = "Composite preamble for foreground PPU updates: nmi_off → wait_vblank → rendering_off" }
-"0xC69D" = { name = "rendering_off",       comment = "AND $E7 into ppumask_shadow (clear BG + sprite enable; blank screen)" }
-"0xC6A6" = { name = "write_ppuctrl",       comment = "Write A to PPUCTRL ($2000) and update ppuctrl_shadow" }
-"0xC537" = { name = "wait_vblank",         comment = "Spin until PPUSTATUS bit 7 set; early-out if skip_vblank_wait ($0080) non-zero. Calls music_driver during spin." }
 
 # --- NMI subsystems (chapter 3) ---
-"0xC628" = { name = "controller_poll",     comment = "Strobe $4016 and shift 8 bits into $006E (P1) or $006F (P2); X = player index" }
-"0xC6AD" = { name = "mul_xy_by_3",         comment = "Helper used by BRK dispatcher: multiply X register by 3 with carry, used to scale task ID to table offset" }
-"0xC6D4" = { name = "palette_upload",      comment = "If palette_dirty != 0: blank screen, set PPUADDR=$3F00, copy 32 bytes from palette_shadow to PPUDATA, restore rendering, clear palette_dirty" }
-"0xC7A5" = { name = "music_driver",        comment = "NMI music tick: jsr music_trigger_pass ($C7AC), jsr music_sequencer_pass ($C817), rts. Entry sits just past the 17-byte data pad tab_b15_c794 ($C794-$C7A4)." }
-"0xC7AC" = { name = "music_trigger_pass", comment = "music_driver pass 1: scan the 5 voices ($0734 + N*9); for each voice whose trigger byte (record+0) is 1-4 (a play request), program its APU channel registers from record bytes 1-4 and mark it played (trigger += 4 -> 5-8). Helpers: music_voice_step_trigger ($C7DE) per voice, music_start_voice ($C7EF) writes the channel. | Pass 1: scan 5 voices at $0734; for any voice with byte 0 in 1..4, write 4 APU register bytes and set byte 0 = byte 0 + 4 (one-shot)" }
-"0xC817" = { name = "music_sequencer_pass", comment = "music_driver pass 2: scan the 5 voices; for each non-muted voice (audio_mute_triangle[idx]==0) advance its note sequence via music_voice_advance ($C83D). | Pass 2: for each active voice, decrement byte 8 (duration countdown). When zero, advance song pointer (bytes 6-7), load new pitch (bytes 3-4), trigger (byte 0), reset countdown (byte 8)." }
-"0xC7C9" = { name = "music_advance_voice", comment = "music_ptr += 9 (advance to next 9-byte voice record); music_voice_idx++. The scan-step shared by trigger_pass and sequencer_pass. | Advance the music scan to the next voice: inc music_voice_idx, music_ptr += 9 (the 9-byte voice-record stride). Shared by both music passes. (also named music_next_voice)" }
-"0xC7DE" = { name = "music_voice_check",   comment = "Per-voice trigger check: skip if byte 0 is 0 (idle) or >= 5 (dormant), else call music_voice_play" }
-"0xC7EF" = { name = "music_voice_play",    comment = "Per-voice play: compute APU base from byte 0, optionally skip if triangle mute, write bytes 1-4 to APU registers" }
 
 # --- Music driver internal helpers (walked 2026-05-31, native 6502 walk increment 4) ---
 # All operate on the 9-byte-per-voice record at $0734 (5 voices), via music_ptr ($7A/$7B) + music_voice_idx ($79).
-"0xC83D" = { name = "music_voice_step",      comment = "Per-voice sequencer tick (called from music_sequencer_pass for active voices). If stream byte < 5: load note (music_load_note). Else: countdown record[8] via music_dec_duration; on expiry, music_next_event drives the next stream event." }
-"0xC857" = { name = "music_load_note",       comment = "Start a note: music_load_voice_cfg then write 4 note-parameter bytes (from the stream) into record offsets [0,1,2,4] via music_read_stream_byte." }
-"0xC877" = { name = "music_load_voice_cfg",  comment = "Copy the voice's 3-byte instrument config from v0_config[voice_idx*3] ($0725) into record offsets [5,6,7] (bank + stream pointer)." }
-"0xC894" = { name = "music_read_stream_byte", comment = "Banked song-stream fetch: save current bank, switch to record[5] (song bank), read one byte via the record[6,7] pointer, increment that pointer (record[6,7]), restore bank. Returns byte in A. The cross-bank stream reader the whole driver runs on." }
-"0xC8C4" = { name = "music_dec_duration",    comment = "Decrement record[8] (note-duration countdown) and store back. Returns Z when it hits zero (time for next event)." }
-"0xC8CE" = { name = "music_next_event",      comment = "Process one stream event: music_read_stream_byte; if < $F0 it's a note -> music_set_pitch + music_set_duration; if >= $F0 it's a command -> music_handle_command. Loops until a playable event is set." }
-"0xC8E4" = { name = "music_handle_command",  comment = "Stream control byte >= $F0. $F0 = note-off (silence the APU channel for this voice, clear its active flag, return C set = stop). Other values fall through to music_restart_stream (pattern loop/restart)." }
-"0xC906" = { name = "music_restart_stream",  comment = "Reload the 3-byte voice config into record[5,6,7] and clear record[0] — i.e. restart the voice's pattern stream from its configured start (the loop command target). jmp-reached from music_handle_command." }
-"0xC929" = { name = "music_set_pitch",       comment = "Convert note -> APU timer period via music_note_to_period, then splice the period hi/lo into record[3,4] (the channel's timer bytes), preserving the low control bits of record[4]." }
-"0xC94B" = { name = "music_note_to_period",  comment = "Note byte -> 16-bit APU period in $7E/$7F: low nibble indexes the 12-entry base-period table tab_c96f (2 bytes each); high nibble is the octave (right-shift the period that many times)." }
-"0xC990" = { name = "music_set_duration",    comment = "Read the next stream byte (note length), shift left 3 (x8 = ticks), store into record[8] (the duration countdown)." }
 
 # Reset-path PPU init (adjacent to the audio block; NOT audio). Sole caller: reset_handler.
-"0xC757" = { name = "reset_ppu_init",        comment = "Reset-path PPU init: ppu_safe_gate, then upload $30 bytes from tab_c775 to PPU $0000, then screen_on. Walked 2026-05-31; was the pre-identified b15_c757." }
 
 # ----------------------------------------------------------------------------
 # Bank-15 math + UI primitives (chapters 9-11, this-session decode)
@@ -1008,50 +1121,7 @@ prg_bank_count = 16        # 256 KB total
 # walking the bytecode subroutines in disasm/bank_15_vm.asm.
 # ----------------------------------------------------------------------------
 
-"0xCBCD" = { name = "sqrt_int",            comment = "Integer square root (native code; chapter 9). Classic restoring algorithm, 2 bits per iteration, 8 iterations over 16-bit input. Called as host_call sqrt_int, $02 with one word arg on the data stack. Used by Grow/Dam/Build/Train effects to drive the diminishing-returns curve." }
-"0xD70D" = { name = "pct_op",              comment = "[HIGH CONFIRMED 2026-06-10] Percentage op: returns a*b/100 (a scaled by b percent). The most-used arithmetic helper -- 60 callers across the game." }
-"0xD6B8" = { name = "math32_3arg",         comment = "[HIGH CERTIFIED 2026-06-10] = (arg1*arg2)/arg3 in 32-bit. Oracle-proven. (bug 1.3 ext-op stub.)" }
-"0xD6DE" = { name = "math32_2arg",         comment = "[HIGH CERTIFIED 2026-06-10] = (arg1*100)/(arg1+arg2) -- arg1's PERCENTAGE of the (arg1+arg2) total. Oracle CORRECTS the prior 'a*b/c' note (was wrong). (bug 1.3 ext-op stub.)" }
 
-"0xD326" = { name = "message_display",     comment = "[HIGH CONFIRMED 2026-06-10] message_display: shows a message string (the 'show feedback' primitive). The single most-used helper, 159 callers." }
-"0xD766" = { name = "confirm_prompt",      comment = "[HIGH CONFIRMED 2026-06-10] confirm_prompt: shows a prompt and waits for the player to acknowledge. 89 callers." }
-"0xCEC4" = { name = "redraw_window",       comment = "[HIGH CONFIRMED 2026-06-10] redraw_window: renders a window/message string at the current UI position. 147 callers -- the core UI draw." }
-"0xD5E9" = { name = "number_input",        comment = "[HIGH CONFIRMED 2026-06-10] number_input(min,max): the digit-entry prompt; reads a number in [min,max] (or 0/cancel). 27 callers -- every amount prompt." }
-"0xCC89" = { name = "open_message_window",  comment = "[HIGH CONFIRMED 2026-06-10] open_message_window(): ppu_fill_rect_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22) (body @ $CC8E). Draws the standard bottom message-window rectangle and homes the text cursor to its origin -- the 'open/prepare the message window before printing' primitive (14 callers, command pre-roll). The shift coord (20 vs 22) is picked by ui_msg_col_shift_flag ($7FD1) and lands in set_cursor's ROW arg (see $7FD1 amend). Was 'ui_helper_cc89' (role TBD)." }
-"0xD134" = { name = "draw_message",        comment = "[HIGH CONFIRMED 2026-06-10] draw_message(fmt, ...): format_string(&fmt, &msg_buf); return redraw_window(&msg_buf) -- printf-then-draw wrapper (body @ $D139). Formats a printf-style message (with its inline varargs) into the -150 frame msg_buf via format_string ($CFFC, the %C/%D/%S core), then draws the buffer. 193 call sites, all (msg_*_Nd, value) -- the '_2d/_4d' suffixes encode the printf width. AMENDS the old 'ui_helper_d134' note (REFUTED: d134 is NOT the substitution layer -- $CFFC is; d134 is the format+draw wrapper around it)." }
-"0xD3A7" = { name = "prompt_y_n",          comment = "[HIGH CONFIRMED 2026-06-10] Y/N confirm prompt: redraw_window(msg_y_n_f695); poll wait_button_edge until A(64)/B(128); on A echo 'Y' (char_advance_width(89)) + return 1, else return 0 (body @ $D3AC). 8 callers. Was 'ui_helper_d3a7' (TBD). Sibling of confirm_prompt ($D766) -- this one draws the explicit 'Y/N' string + echoes the choice." }
-"0xE80C" = { name = "trigger_cutscene",    comment = "[HIGH CONFIRMED 2026-06-10] If the AI-turn cutscene flag is set (ai_turn_flags & 4): store the cutscene id (arg1) into cutscene_id ($7FCB), then run the bank-14 cutscene engine via call_bank_wrap(14) -> run_cutscene ($80AD); else return 0. ~34 sites. Was 'ui_helper_e80c' (TBD) -- the long-open bank-14 cross-bank case, now resolved by folding bank 14 into the corpus (ch.19). (Its call was the one made unconditional by the return_phi bug, fixed f50d874.)" }
-"0xCC7B" = { name = "set_cursor",          comment = "[HIGH CONFIRMED 2026-06-10] set_cursor(col,row): ui_window_col=arg1; ui_cursor_row=arg2 -- 5-op setter (LOADL 12; STORE $7FCD ui_window_col; LOADL 13; STORE $7FCF ui_cursor_row; RETURN @ $CC80). The text-cursor/draw-origin positioning primitive (the 'locate(col,row)' every redraw_window then consumes; axes confirmed by consumers -- $7FCD=col/X line-wrap boundary, $7FCF=row/Y). Was 'ui_helper_cc7b' (TBD); 211 call sites. UI-primitive vocabulary -- chapter 18 section pending once the cluster (cc89/d134/...) is ground." }
-"0xD7EA" = { name = "selected_province_daimyo_record", comment = "[CONFIRMED 2026-06-02] Returns fief_to_daimyo_record_addr(selected_province_idx) — the ACTIVE/attacker daimyo's 7-byte record. Used by ai_sum_battle_strength as the attacker side of the daimyo-stat comparison (vs the defending province's record); also 4 other drivers. (was ui_helper_d7ea.)" }
-"0xE510" = { name = "build_eligible_province_list", comment = "[HIGH CONFIRMED 2026-06-10] build_eligible_province_list(enemy_flag): scans all fiefs [0, scenario_fief_count); keeps those that EXIST (!province_state_is_FF), match the ownership filter (is_enemy_owned(i) == enemy_flag), and are NOT selected_province_idx; appends each idx to the $6F89 buffer, FF-terminates it, returns the count (body @ $E515). The candidate-list BUILDER the Send/Pact/View/Marry target-select commands then pick from (confirms the prior caller note -- it builds the list, isn't a 'cursor/menu enter primitive')." }
-"0xD77E" = { name = "selected_province_owner", comment = "[HIGH CONFIRMED 2026-06-10] return fief_owner(selected_province_idx) -- 2-op accessor (PUSH $6F5F selected_province_idx; CALL $D772 fief_owner; RETURN @ $D783). The owning daimyo id of the currently-selected province. Called by 5 drivers (Marry/Pact diplomacy among them -- act on the selected province's lord). Was 'ui_helper_d77e' (TBD); NOT a UI helper (a data accessor, like fief_owner)." }
-"0xCB5E" = { name = "min_word",            comment = "[HIGH CONFIRMED 2026-06-10] Returns min(a, b) (unsigned). Kernel primitive, 29 callers." }
-"0xD351" = { name = "prompt_ab_window",     comment = "[HIGH CONFIRMED 2026-06-10] A/B prompt over a caller-supplied window (body @ $D356): redraw_window(arg1); read_frame_timer(1); poll wait_button_edge until A(64)/B(128)/btn(2); read_frame_timer(0); on A echo glyph 60 + return 1, on B echo glyph 62 + return 0, on btn-2 return 2; open_message_window() to restore. Confirms the old 'candidate: 2-choice prompt' note (it's 3-way incl. a cancel/btn-2). Sibling of prompt_y_n ($D3A7) but takes the window arg + has the 3rd exit. 7 sites. Was 'ui_helper_d351'." }
-"0xCD20" = { name = "repaint_screen",      comment = "[HIGH CONFIRMED 2026-06-10] Full-screen repaint + UI-state reset. Bracketed palette_swap(1)..(0); fill_nametable_wrap + fill_attr_wrap (clear scaffolding); then two DIRTY-FLAG-gated reloads: if ui_pending_flag_7fc9 -> rewrite sprite palette entries 7/11/15 + clear flag; if ui_pending_flag_7fc7 -> reload 4 bg palette entries from strategic_map_bg_palette + ppu_upload_block_wrap(strategic_map_chr_tiles) + clear flag. Finally latches+clears selected_record_idx_9e3c, resets ui_input_sel_latch_7fdf=255, set_cursor(2,20), clears ui_state_flag_7bf9 + combat_unit_window_mode_flag. ~18 call sites. Was 'ui_helper_cd20' (TBD); all callees grounded so this is a depth-0 leaf. Consumes the two dirty flags whose producers are noted at $7FC9/$7FC7." }
-"0xCA52" = { name = "rng_mod",             comment = "[HIGH CONFIRMED 2026-06-10] rng_mod(n): returns 0 if n<1, else rng_next() mod n = a uniform 0..n-1. THE randomness primitive, 155 callers." }
-"0xCA46" = { name = "rng_next_wrapper",    comment = "[HIGH CONFIRMED 2026-06-10] Thin wrapper: syscall_rng_next() -- advances and returns the RNG." }
-"0xDAD7" = { name = "compact_relation_list", comment = "[MED 2026-06-10] load_daimyo_relation_row(selected_province_idx) into the $6F4F buffer, then compact it in place: keep only entries whose province still exists (get_province_ai_state != 255), FF-terminate. Builds the active-daimyo relation list. NOT a 'combat pre-roll' (wrong-category). Was 'combat_helper_dad7'." }
-"0xDD3A" = { name = "filter_province_list_by_owner", comment = "[HIGH CONFIRMED 2026-06-10] In-place filter of a province-id list: walks out_list (FF-terminated), keeps each province whose is_enemy_owned(p) matches arg1 (match_enemy) AND that still exists (!province_state_is_FF), into a scratch buf, FF-terminates, then writes buf back over out_list (syscall16_sram_wrap bank 0). NOT a 'combat pre-roll' (wrong-category) -- a list-prune by ownership. Was 'combat_helper_dd3a'." }
-"0xD972" = { name = "fief_owner_weakness",  comment = "[HIGH CONFIRMED 2026-06-10] Accessor: return daimyo_weakness_flag[fief_owner(arg1)] (body @ $D977) -- the weakness/condition mark of the fief's owning daimyo. Data accessor, NOT a 'war helper' (wrong-category, like fief_owner/selected_province_owner); built on the grounded fief_owner leaf. 9 sites. Semantic of daimyo_weakness_flag itself still inherited from its var label." }
-"0xD59D" = { name = "select_province_by_cursor", comment = "[HIGH CONFIRMED 2026-06-10] select_province_by_cursor(min,max): the number/cursor province picker -- prompts for a value in [min,max] and returns it (the shared selection primitive behind the command prompts)." }
-"0xD3ED" = { name = "cursor_nav_loop",     comment = "Menu/cursor navigation loop: switch(sub_D14E()) on NES button bits (1=R,2=L,16=Start,32=Sel,64=B,128=A) to move the selection cursor over candidates. The war-target PICK bottoms out HERE — controller input, not a target-scorer (read 2026-05-31). AI drives the same path via sub_D14E's AI branch." }
-"0xD9B7" = { name = "is_enemy_owned",      comment = "Candidate target predicate: returns (fief_to_daimyo_map[ui_helper_d77e()] == arg) — i.e. the candidate fief's owner matches the target daimyo (enemy-ownership match). Eligibility, not strength. Read 2026-05-31." }
-"0xD999" = { name = "province_state_is_FF", comment = "Returns ($6CF7[arg1] == 0xFF) — province is in the EXCLUDED state. Eligibility filter used by combat_helper_dd3a. Read 2026-05-31." }
-"0xCBBD" = { name = "syscall16_sram_wrap", comment = "Thin wrapper around syscall 16 (sram_block_checksum/copy). Called by combat_helper_dd3a after filtering the candidate list — plumbing, not scoring. Read 2026-05-31." }
-"0xE3A4" = { name = "prompt_diplomacy_pact",    comment = "[HIGH CONFIRMED 2026-06-10] Pact negotiation prompt: if the defender is AI, draws the pact menu (draw_daimyo_name_menu(msg_pact)), demands gold (number_input up to 9999), and runs the accept/reject flow. The diplomacy negotiation UI. (was diplomacy_helper.)" }
-"0xDA4F" = { name = "set_pact_relation",   comment = "[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193 stride-54) cell between selected_province_idx and battle_defending_province to 70 -- establishing a non-aggression pact. (was diplomacy_helper2.)" }
-"0xDA7D" = { name = "set_marriage_relation",   comment = "[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193) cell between the two daimyo (selected_province_owner / fief_owner(defender)) to 90 -- the marriage alliance bond. (was diplomacy_helper3.)" }
-"0xE4DC" = { name = "build_fiefs_excluding_daimyo", comment = "[MED 2026-06-10] build_owned_fief_list() into $6F89, then compact it in place keeping only fiefs whose owner (fief_owner) != arg1 -- the owned fiefs NOT held by daimyo arg1. Used in the marriage flow (candidate target list excluding a given daimyo's holdings). Was 'marry_helper_e4dc'." }
-"0xE315" = { name = "marriage_pact_handler", comment = "[MED 2026-06-10] Marriage-pact logic, two paths on whether battle_defending_province has an owner. OWNED (interactive): set ui_input_mode=2, draw_daimyo_name_menu(msg_marriage_pact) + redraw_window(msg_accept) + prompt_y_n; on yes, demand gold via number_input(1..9999); returns the entered amount (0 on decline). UNOWNED (auto/AI): 50% gate (rng_mod 2), then weakness/rng test (fief_owner_weakness(selected) or rng_mod(3)); if the province's $7001 stat > 200 returns pct_op(stat, rng_mod(30)+50)+200, else 0. Was 'marry_helper_e315'." }
-"0xE76F" = { name = "draw_daimyo_portrait", comment = "[HIGH 2026-06-01] Draws the daimyo portrait (stat-roll/info screens; caller sets active_province_idx_copy $6F5B first). Loads a 4-entry palette, then BRANCHES on the daimyo record's status/generated flag (record[+6], the 7th byte of daimyo_table_17): flag==0 (an ORIGINAL scenario daimyo) -> PRESET path: descriptor table at $BBD0 (graphics bank, NOT the string bank the decompiler resolves it to) indexed by fief_to_mapid*4, read 8 bytes, upload that daimyo's DEDICATED portrait CHR to $15B0; flag==1 (a GENERATED/replacement daimyo) -> COMPOSITE path: unpack_record_to_sram_e6b9 builds the base-5 face from $6EB1. Then blits the 8x8 portrait. THIS is why the original 50 have fixed faces (preset) while death-replacements get random composite faces. (was the mislabeled 'marry_helper_e76f'.)" }
-"0xCC35" = { name = "palette_swap",        comment = "[HIGH CONFIRMED 2026-06-10] return syscall_palette_swap(arg1) -- 1-op forward to the native palette-swap syscall (body @ $CC3A: PUSH local12; CALL syscall_palette_swap; RETURN). NOT marriage-related: 'marry_helper_cc35' was wrong-category (it appears in effect/marriage screens that swap palettes, e.g. palette_swap(1)/palette_swap(0) bracketing palette_write_wrap blocks). 91 call sites." }
-"0xCC69" = { name = "clear_rect_right_panel", comment = "[HIGH CONFIRMED 2026-06-10] ppu_fill_rect_wrap(22, 7, 29, 18, 1) -- blanks the right-side panel (cols 22-29, rows 7-18) with tile $01. A fixed-geometry clear, sibling of clear_rect_top_strip/left_upper/left_lower. NOT trade-specific (wrong-category). Was 'trade_helper_cc69'." }
-"0xDB35" = { name = "increment_ai_player_count", comment = "[MED 2026-06-10] ai_player_count++; if (is_ai_count_ge_8()) set_6da1_bit7(). Bumps the daimyo/AI count and sets the $6DA1 bit-7 flag once it reaches 8 (the >=8 threshold). NOT a UI helper (wrong-category). Was 'ui_helper_db35'." }
-"0xDB12" = { name = "defender_owner_is_keyed_daimyo", comment = "[MED PROBABLE 2026-06-10] Combat predicate (NOT tax -- wrong-category): return fief_owner(battle_defending_province) == (scenario_fief_count==17 ? 3 : 20). I.e. is the defending province owned by the scenario's keyed daimyo (index 3 in the 17-fief scenario, 20 in the 50-fief). OPEN: confirm who daimyo 3/20 is (likely the scenario protagonist/Nobunaga) via the daimyo table. Was 'tax_helper_db12'." }
-"0xD759" = { name = "standard_delay",      comment = "[HIGH CONFIRMED 2026-06-10] return delay_loop(delay_loop_count) -- 2-op wrapper (PUSH $6D65 delay_loop_count; CALL $D73E delay_loop; RETURN @ $D75E). Runs the standard configurable busy-wait; delay_loop_count ($6D65) is the user-adjustable message-speed setting. 3 callers. Was 'ui_helper_d759'." }
-"0xD772" = { name = "fief_owner",          comment = "[HIGH CONFIRMED 2026-06-10] return fief_to_daimyo_map[fief] -- 5-op accessor (LOADL 12 fief; LOADR_imm2 $6E15 fief_to_daimyo_map; ADD; BYTE_DEREF; RETURN @ $D777). Takes a fief id, returns its owning daimyo id. Was 'ui_helper_d772' (low-fidelity: NOT a UI helper, a data accessor; the 'fief->owner' note scattered in other comments is now ground-truthed)." }
-"0xE5F2" = { name = "render_map_section",  comment = "[HIGH CONFIRMED 2026-06-10] The strategic-map SECTION renderer. If arg1 != the current section: palette_swap(1); clear the right margin (ppu_fill_rect 30,4..31,19); ppu_copy_rect the section's 28x16 tilemap (strategic_map_section_tilemaps + arg1*0x1C0, bank 4) to cols 2-29 rows 4-19; ppu_upload_block the section's 32-byte attribute table (strategic_map_section_attributes + arg1*32 -> PPU $23C8); mark selected_record_idx_9e3c=arg1; then walk the section's 34-byte record list and draw every fief's lord name (draw_province_lord_name); palette_swap(0). A 'map section' = tilemap(0x1C0) + attributes(32) + fief records(34). 8 sites. Was 'map_helper_e5f2'. The graphics-thread keystone; see ch.16/19." }
-"0xC4DC" = { name = "ui_unused",           comment = "Reserved." }
 
 
 # ============================================================================
@@ -1097,15 +1167,6 @@ prg_bank_count = 16        # 256 KB total
 "0xBE2E" = { name = "str_peasants_men_prompt_nl", comment = "[ROM-STR 2026-06-10] '(Peasnts/Men)?' (nl alias)" }
 "0xBE30" = { name = "str_peasants_men_prompt", comment = "[ROM-STR 2026-06-10] '(Peasnts/Men)?'" }
 "0xBE41" = { name = "str_amount_available_fields", comment = "[ROM-STR 2026-06-10] '%3d','%d%s','available  0','(arrows)'" }
-"0xF7D4" = { name = "governance_policy_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the AI governance-policy names: Home fief/Industrial/Military/Balanced/Farming/Direct (driver_grant). (was grant_menu_str_ptrs.)" }
-"0xF816" = { name = "lord_command_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to the 14 lord-command names: Move/War/Tax/Send/Dam/Pact/Grow/Marry/Trade/Hire/Train/View/Build/Give. REFUTES the prior fief_stat_label name -- these are COMMAND names (its reader fief_info_display draws the command menu)." }
-"0xF8AE" = { name = "fief_stat_name_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to fief/daimyo stat names: Age/Hlth/Driv/Luck/Char/IQ (daimyo record +0..+5) then Gold/Debt/Town/Rice/Output/Dams/Lylty/Wealth (province record)." }
-"0xF9AF" = { name = "unit_type_name_table_alias", comment = "[ROM-DATA 2026-06-10] Alias of unit_type_name_table ($F9AF: Rifles/Infntry/Cavalry); read by render_arms_edit_screen." }
-"0xFEA6" = { name = "province_to_map_section_50", comment = "[MAP] 50-fief scenario: province index -> strategic-map section (values 0-8, 50 entries). Read by driver_map/driver_view; scenario_fief_count==50 branch selects this (vs province_to_map_section_17 $FED8)." }
-"0xFED8" = { name = "province_to_map_section_17", comment = "[MAP] 17-fief scenario: province index -> strategic-map section (values 0/1, 17 entries). Read by driver_map/driver_view. 50-fief uses province_to_map_section_50 $FEA6." }
-"0xFEE9" = { name = "governance_state_label_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to abbreviated governance-state labels: Assign/Ind/Mil/Bal/Farm/Dir/Menu (draw_fief_view_label). (was province_state_label_ptrs.)" }
-"0xFF1A" = { name = "settings_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to settings-menu items: Sound/Animat/Wait/Save/Battle/End/Menu (driver_other)." }
-"0xFF4F" = { name = "trade_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to trade-menu items: Loan/Repay/Sell/Buy/Arms/Menu (driver_trade)." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xB9F6" = { name = "msg_s_s_s", comment = "[ROM-STR] \"%s%s%s\"" }
 "0xB9FD" = { name = "msg_attack", comment = "[ROM-STR] \"Attack\"" }
@@ -1197,64 +1258,6 @@ prg_bank_count = 16        # 256 KB total
 "0xBF83" = { name = "msg_what_a_waste", comment = "[ROM-STR] \"What a waste!\"" }
 "0xBF91" = { name = "msg_your_orders", comment = "[ROM-STR] \"\nyour orders?\"" }
 "0xBF9F" = { name = "msg_turn_2d_fief_2d", comment = "[ROM-STR] \"Turn %2d  Fief %2d\"" }
-"0xF98A" = { name = "msg_no_fiefs", comment = "[ROM-STR] \"\nno fiefs\"" }
-"0xF994" = { name = "msg_fiefs", comment = "[ROM-STR] \"  Fiefs \"" }
-"0xF99D" = { name = "msg_how_much_f99d", comment = "[ROM-STR] \"How much\"" }
-"0xF9A6" = { name = "msg_how_many", comment = "[ROM-STR] \"How many\"" }
-"0xF9CD" = { name = "msg_move_where", comment = "[ROM-STR] \"\nMove where?\n\"" }
-"0xF9DB" = { name = "msg_how_many_men", comment = "[ROM-STR] \"How many men\"" }
-"0xF9E8" = { name = "msg_will_you_lead_them_personally", comment = "[ROM-STR] \"Will you lead\nthem personally\"" }
-"0xFA06" = { name = "msg_they_have_arrived_safely", comment = "[ROM-STR] \"They have\narrived safely\"" }
-"0xFA1F" = { name = "msg_attack_where", comment = "[ROM-STR] \"\nAttack where?\n\"" }
-"0xFA2F" = { name = "msg_how_many_men_fa2f", comment = "[ROM-STR] \"How many men\"" }
-"0xFA3C" = { name = "msg_how_much_rice_will_they_take", comment = "[ROM-STR] \"How much rice\nwill they take\"" }
-"0xFA59" = { name = "msg_will_you_lead_them_personally_fa59", comment = "[ROM-STR] \"Will you lead\nthem personally\"" }
-"0xFA77" = { name = "msg_tax_is_d_enter_new_tax", comment = "[ROM-STR] \"Tax is %d\nEnter new tax\"" }
-"0xFA8F" = { name = "msg_the_peasants_are_delighted", comment = "[ROM-STR] \"The peasants are\ndelighted!\"" }
-"0xFAAB" = { name = "msg_the_peasants_are_protesting", comment = "[ROM-STR] \"The peasants are\nprotesting!\"" }
-"0xFAC8" = { name = "msg_send_where", comment = "[ROM-STR] \"\nSend where? \"" }
-"0xFAD6" = { name = "msg_lord_you_are_too_weak_for_batt", comment = "[ROM-STR] \"Lord, you are too\nweak for battle!\"" }
-"0xFAFA" = { name = "msg_gold", comment = "[ROM-STR] \"Gold\"" }
-"0xFAFF" = { name = "msg_rice", comment = "[ROM-STR] \"Rice\"" }
-"0xFB04" = { name = "msg_the_supplies_have_arrived_safe", comment = "[ROM-STR] \"The supplies have\narrived safely\"" }
-"0xFB25" = { name = "msg_s_is_d_spend_how_much_on_it", comment = "[ROM-STR] \"%s is %d\nSpend how much\non it\"" }
-"0xFB43" = { name = "msg_dams_value_is_now_d", comment = "[ROM-STR] \"Dams value is\nnow %d\"" }
-"0xFB58" = { name = "msg_output_is_now_d", comment = "[ROM-STR] \"Output is now\n%d\"" }
-"0xFB69" = { name = "msg_no_merchant_in_the_area", comment = "[ROM-STR] \"No merchant in\nthe area\"" }
-"0xFB81" = { name = "msg_recruit_which", comment = "[ROM-STR] \"Recruit which\"" }
-"0xFB90" = { name = "msg_lord_s_we_now_have_d_men", comment = "[ROM-STR] \"Lord %s, we\nnow have %d men\"" }
-"0xFBAE" = { name = "msg_what_mission", comment = "[ROM-STR] \"What mission\"" }
-"0xFBBB" = { name = "msg_enemy_morale_is_falling_to_pie", comment = "[ROM-STR] \"Enemy morale is\nfalling to pieces!\"" }
-"0xFBDE" = { name = "msg_skill_is_now_d", comment = "[ROM-STR] \"Skill is now %d\"" }
-"0xFBEF" = { name = "msg_view_which_fief", comment = "[ROM-STR] \"View which fief?\n\"" }
-"0xFC01" = { name = "msg_our_spy_was_caught", comment = "[ROM-STR] \"Our spy was\ncaught\"" }
-"0xFC14" = { name = "msg_town_value_is_now_d", comment = "[ROM-STR] \"Town value is now\n%d\"" }
-"0xFC29" = { name = "msg_gold_for_spy", comment = "[ROM-STR] \"Gold for spy\"" }
-"0xFC36" = { name = "msg_d_peasants_have_defected", comment = "[ROM-STR] \"%d peasants\nhave defected\"" }
-"0xFC50" = { name = "msg_no_peasants_defected", comment = "[ROM-STR] \"No peasants\ndefected!\"" }
-"0xFC66" = { name = "msg_seasons", comment = "[ROM-STR] \"Seasons\"" }
-"0xFC6E" = { name = "msg_it_will_do_you_good", comment = "[ROM-STR] \"It will do you\ngood\"" }
-"0xFC82" = { name = "msg_lord_you_are_truly_wise", comment = "[ROM-STR] \"Lord, you are\ntruly wise!\"" }
-"0xFC9C" = { name = "msg_which_fief", comment = "[ROM-STR] \"\nWhich fief? \"" }
-"0xFCAA" = { name = "msg_lord_s_they_ve_refused", comment = "[ROM-STR] \"Lord %s\nthey`ve refused!\"" }
-"0xFCC3" = { name = "msg_your_bride_to_be_has_arrived", comment = "[ROM-STR] \"Your bride-to-be\nhas arrived\"" }
-"0xFCE0" = { name = "msg_don_t_you_long_to_hear_the_pit", comment = "[ROM-STR] \"Don`t you long to\nhear the\npitter-patter of\na little lord`s\nfoot\"" }
-"0xFD27" = { name = "msg_lord_s_s_wants_d_gold_pay", comment = "[ROM-STR] \"Lord %s,\n%s wants\n%d gold\nPay\"" }
-"0xFD45" = { name = "msg_lord_s_s_wants_d_gold_pay_fd45", comment = "[ROM-STR] \"Lord %s,\n%s wants\n%d gold\nPay\"" }
-"0xFD63" = { name = "msg_war_is_inevitable_so_don_t_let", comment = "[ROM-STR] \"War is inevitable\nso don`t let your\nguard down!\"" }
-"0xFD93" = { name = "msg_who_needs_him_anyway", comment = "[ROM-STR] \"Who needs him\nanyway\"" }
-"0xFDA8" = { name = "msg_give_how_much", comment = "[ROM-STR] \"Give how much\"" }
-"0xFDB6" = { name = "msg_thank_you_lord", comment = "[ROM-STR] \"Thank you Lord!\"" }
-"0xFDC6" = { name = "msg_we_re_at_our_limit", comment = "[ROM-STR] \"We`re at our\nlimit\"" }
-"0xFDD9" = { name = "msg_you_have_no_gold", comment = "[ROM-STR] \"You have no gold!\"" }
-"0xFDEB" = { name = "msg_you_have_no_rice", comment = "[ROM-STR] \"You have no rice!\"" }
-"0xFDFD" = { name = "msg_you_have_no_soldiers", comment = "[ROM-STR] \"You have no\nsoldiers!\"" }
-"0xFE13" = { name = "msg_you_have_no_peasants", comment = "[ROM-STR] \"You have no\npeasants!\"" }
-"0xFE29" = { name = "msg_they_are_your_allies", comment = "[ROM-STR] \"They are your\nallies!\"" }
-"0xFE40" = { name = "msg_which_fief_fe40", comment = "[ROM-STR] \"\nWhich fief \"" }
-"0xFE4D" = { name = "msg_what_are_your_orders", comment = "[ROM-STR] \"\nWhat are your\norders?\"" }
-"0xFE64" = { name = "msg_it_s_currently_a_s_state_ok_to", comment = "[ROM-STR] \"It`s currently a\n%s state\nOK to make it a\n%s state\"" }
-"0xFE97" = { name = "msg_bribe_which", comment = "[ROM-STR] \"\nBribe which? \"" }
 
 # --- The command driver table ---
 "0xB9B2" = { name = "command_driver_table", comment = "34-entry pointer table — entry N points to the bytecode subroutine that drives menu command N+1. Entries 0-20 are the 21 lord commands, 21-33 are sub-handlers reachable from within those drivers. See command-table.txt for the full listing. Chapter 9's foundational find." }
@@ -1346,7 +1349,6 @@ prg_bank_count = 16        # 256 KB total
 "0xAF10" = { name = "browse_map_sections",  comment = "[HIGH CONFIRMED 2026-06-10] Strategic-map section browser: message_display(msg_arrows_other_sections) + redraw_window(msg_a_button_menu), then loops fief_select_input_loop + render_map_section to scroll between map sections until the A-menu input (10) exits. arg1 = anchor fief. (was 'map_helper_af10'.)" }
 
 # Harvest / season-end stat cap sweep
-"0xD836" = { name = "cap_fief_stats",       comment = "[HIGH CONFIRMED 2026-06-10] cap_fief_stats(fief): caps every field of the $7001 province record (offsets +0..+22) at the record's +24 cap field via min_word. Confirms $7001+24 = the per-fief stat CAP/header." }
 
 # --- Pilot cluster $8250-$83D5 (2026-05-31) — bank_01 anon-sub walk, framework-discovery batch ---
 # Method: propose@decompiled-C -> independent verify@bytecode (vm-disasm + ext-op table + call-index) -> root write.
@@ -1464,13 +1466,6 @@ prg_bank_count = 16        # 256 KB total
 "0xBA57" = { name = "str_passed_from_lord", comment = "[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'" }
 "0xBA7F" = { name = "battle_select_palette", comment = "[GFX-PALETTE 2026-06-10] Battle-setup screen palette (palette_write_wrap, battle_setup_select_province)." }
 "0xBBD0" = { name = "fief_tile_descriptor_table", comment = "[ROM-DATA 2026-06-10] Per-fief tile-upload descriptors (build_blit_fief_tile_block, mapid*4)." }
-"0xF9AF" = { name = "unit_type_name_table", comment = "[ROM-DATA HIGH 2026-06-10] 3 word-ptrs to the unit-type name strings (verified in ROM): [0] $F9B5 'Rifles', [1] $F9BD 'Infntry', [2] $F9C5 'Cavalry'. Read by draw_unit_type_label ($9387). (was 'draw_unit_label_data_f9af'.)" }
-"0xF9B5" = { name = "str_unit_rifles", comment = "[ROM-STR 2026-06-10] \"Rifles \" — unit-type name, entry 0 of unit_type_name_table." }
-"0xF9BD" = { name = "str_unit_infantry", comment = "[ROM-STR 2026-06-10] \"Infntry\" — unit-type name, entry 1 of unit_type_name_table." }
-"0xF9C5" = { name = "str_unit_cavalry", comment = "[ROM-STR 2026-06-10] \"Cavalry\" — unit-type name, entry 2 of unit_type_name_table." }
-"0xFDD8" = { name = "str_you_have_no_units", comment = "[ROM-STR 2026-06-10] 'You have no [units]' message (ai_advance_units_when_attacked)." }
-"0xFEA6" = { name = "province_to_map_section_50", comment = "[MAP] 50-fief scenario: province index -> strategic-map section (values 0-8, 50 entries); read here by battle_init_driver. (vs province_to_map_section_17 $FED8)." }
-"0xFED8" = { name = "province_to_map_section_17", comment = "[MAP] 17-fief scenario: province index -> strategic-map section (values 0/1, 17 entries); read here by battle_init_driver. 50-fief uses province_to_map_section_50 $FEA6." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xB526" = { name = "msg_y_n_b526", comment = "[ROM-STR] \"\n(Y/N)? \"" }
 "0xB52F" = { name = "msg_d_d", comment = "[ROM-STR] \"8932170\n(%d-%d)\n\"" }
@@ -1668,6 +1663,10 @@ prg_bank_count = 16        # 256 KB total
 "0xB59A" = { name = "roster_fmt_4d_2", comment = "[ROM-STR] \"%4d\" (draw_unit_roster_columns, 2nd column)" }
 "0xB59E" = { name = "roster_fmt_4d_3", comment = "[ROM-STR] \"%4d\" (draw_unit_roster_columns, 3rd column)" }
 "0xB5A2" = { name = "roster_dashes_2", comment = "[ROM-STR] \"----\" (draw_unit_roster_columns; the tables lane read it as binary)" }
+
+# --- bank-02 label-walk batch via label-walk-apply.py (1 CONF) ---
+# propose@C -> independent verify@bytecode; names are the verifier's. 
+"0x8003" = { name = "tactical_hex_step", comment = "[HIGH CONFIRMED] NATIVE 6502 (bank 2, $8003-$8085), called from bytecode via CALL_abs_imm1 {native}. tactical_hex_step(&x, &y, dir): one step on the 11x5 offset-column hex grid of the tactical map (x 0..10, y 0..4). dir 1 = y+1, 4 = y-1; 0/2/3/5 = x-1/x+1/x-1/x+1, then y moves or not by the parity of the new x (down-left, down-right, up-left, up-right). Returns 1 if the step stays on the map, 0 at an edge; a diagonal can move x and then fail on y, leaving x changed. Caller validate_dir_code_and_dispatch maps keypad '1','2','3','7','8','9' to dir 0-5." }
 
 [prg.bank10]
 # AUDIO bytecode (1 sub). Entry $8000 = native stub (JMP $8003; JSR $E823 vm_entry) -> this bytecode.

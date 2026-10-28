@@ -20,10 +20,10 @@ word compose_upload_daimyo_portrait(word arg1) {
     ppu_upload_block_wrap(8, ((local9 * 96) + digit_gfx_a9c4), 0x18B0, 6);    // $80CE
     ppu_upload_block_wrap(8, ((local8 * 96) + portrait_gfx_eyes), 0x1910, 6);    // $80E0
     ppu_upload_block_wrap(8, ((local7 * 192) + digit_gfx_ad84), 0x1970, 12);    // $80F3
-    sub_CBBD(9, ((local10 * 12) + portrait_sram_ae34), arg1, 12);    // $8102
-    sub_CBBD(9, ((local9 * 6) + portrait_sram_ae70), (arg1 + 12), 6);    // $8113
-    sub_CBBD(9, ((local8 * 6) + portrait_sram_ae8e), (arg1 + 18), 6);    // $8125
-    return sub_CBBD(9, ((local7 * 12) + digit_sram_aeac), (arg1 + 24), 12);    // $813B
+    syscall16_sram_wrap(9, ((local10 * 12) + portrait_sram_ae34), arg1, 12);    // $8102
+    syscall16_sram_wrap(9, ((local9 * 6) + portrait_sram_ae70), (arg1 + 12), 6);    // $8113
+    syscall16_sram_wrap(9, ((local8 * 6) + portrait_sram_ae8e), (arg1 + 18), 6);    // $8125
+    return syscall16_sram_wrap(9, ((local7 * 12) + digit_sram_aeac), (arg1 + 24), 12);    // $813B
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $813C
@@ -38,14 +38,14 @@ L_8144:
     if (((unsigned)*(word*)(fp - 41) < (unsigned)4)) goto L_8144;    // $815C
     if (*(byte*)((daimyo_record_addr(active_province_idx_copy) + 6))) goto L_81E8;    // $8168
     *(word*)(fp - 43) = (((fief_to_mapid(active_province_idx_copy) << 1) << 1) + fief_tile_descriptor_table);    // $8178
-    sub_CBBD(8, *(word*)(fp - 43), (fp - 47), 4);    // $8182
+    syscall16_sram_wrap(8, *(word*)(fp - 43), (fp - 47), 4);    // $8182
     *(word*)(fp - 43) = (fp - 47);    // $8189
     ppu_upload_block_wrap(*(byte*)(*(word*)(fp - 43)), *(word*)((*(word*)(fp - 43) + 2)), 0x17F0, *(byte*)((*(word*)(fp - 43) + 1)));    // $819C
     *(word*)(fp - 41) = 0;    // $81A1
     *(word*)(fp - 38) = ((fief_to_mapid(active_province_idx_copy) * 36) + fief_tile_block_tiles);    // $81B1
     goto L_81DD;    // $81B3
 L_81B6:
-    sub_CBBD(8, *(word*)(fp - 38), (fp - 39), 1);    // $81BE
+    syscall16_sram_wrap(8, *(word*)(fp - 38), (fp - 39), 1);    // $81BE
     *(byte*)((*(word*)(fp - 41) + (fp - 36))) = (*(byte*)(fp - 39) + 36);    // $81D0
     *(word*)(fp - 41) = (*(word*)(fp - 41) + 1);    // $81D4
     *(word*)(fp - 38) = (*(word*)(fp - 38) + 1);    // $81DA
@@ -72,7 +72,7 @@ L_8218:
 // (body @ $822F)
 
 word prompt_yes_no(void) {
-    sub_CEC4(msg_y_n_b526);    // $8232
+    redraw_window(msg_y_n_b526);    // $8232
 L_823B:
     read_frame_timer(1);    // $8237
     local11 = wait_button_edge();    // $823E
@@ -451,7 +451,7 @@ L_85EE:
     phi_85ef_0 = 0;    // $85EE
 L_85EF:
     erase_cursor_advance_phase(phi_85ef_0);    // $85EF
-    sub_CC7B(local10, local9);    // $85F5
+    set_cursor(local10, local9);    // $85F5
 L_85FE:
     read_frame_timer(2);    // $85FA
     local11 = 0;    // $85FF
@@ -502,7 +502,7 @@ L_865C:
 // (body @ $866E)
 
 word combat_command_menu_input_loop(word arg1, word arg2) {
-    sub_CC7B(3, 10);    // $8670
+    set_cursor(3, 10);    // $8670
     read_frame_timer(2);    // $8675
     local10 = 0;    // $867A
     local11 = 0;    // $867C
@@ -528,14 +528,14 @@ L_86AD:
     read_frame_timer(0);    // $86AE
     ui_cursor_row = (ui_cursor_row - 1);    // $86B6
     if ((ui_cursor_row != 9)) goto L_86C8;    // $86BB
-    sub_CC7B(3, 15);    // $86C0
+    set_cursor(3, 15);    // $86C0
     phi_val_86d4 = 5;    // $86C5
     goto L_86D4;    // $86C5
 L_86C8:
     phi_val_86d4 = (local10 - 1);    // $86CA
     goto L_86D4;    // $86CA
 L_86CD:
-    sub_CC7B(3, 10);    // $86CF
+    set_cursor(3, 10);    // $86CF
     phi_val_86d4 = 0;    // $86D3
 L_86D4:
     local10 = phi_val_86d4;    // $86D4
@@ -555,7 +555,7 @@ L_86E2:
 // (body @ $86FE)
 
 word select_menu_entry_by_cursor(word arg1, word arg2) {
-    sub_CC7B(2, 21);    // $8701
+    set_cursor(2, 21);    // $8701
     read_frame_timer(2);    // $8706
     local10 = 0;    // $870B
     local11 = 0;    // $870D
@@ -581,14 +581,14 @@ L_8743:
     read_frame_timer(0);    // $8744
     ui_cursor_row = (ui_cursor_row - 1);    // $874C
     if ((ui_cursor_row != 20)) goto L_8760;    // $8752
-    sub_CC7B(2, 26);    // $8758
+    set_cursor(2, 26);    // $8758
     phi_val_876d = 5;    // $875D
     goto L_876D;    // $875D
 L_8760:
     phi_val_876d = (local10 - 1);    // $8762
     goto L_876D;    // $8762
 L_8765:
-    sub_CC7B(2, 21);    // $8768
+    set_cursor(2, 21);    // $8768
     phi_val_876d = 0;    // $876C
 L_876D:
     local10 = phi_val_876d;    // $876D
@@ -608,8 +608,8 @@ L_877B:
 // (body @ $8797)
 
 word prompt_province_selection(word arg1, word arg2) {
-    sub_D134(msg_d_d_b536, arg1, arg2);    // $879C
-    local11 = sub_D59D(arg1, arg2);    // $87A6
+    draw_message(msg_d_d_b536, arg1, arg2);    // $879C
+    local11 = select_province_by_cursor(arg1, arg2);    // $87A6
     if (!(local11)) goto L_87B5;    // $87A8
     if ((local11 == -1)) goto L_87B5;    // $87AF
 L_87B5:
@@ -659,7 +659,7 @@ L_8826:
 // (body @ $882F)
 
 word upload_map_cell_tiles(word arg1, word arg2) {
-    sub_CBBD(5, ((arg1 * 49) + 0x9C24), ((arg2 * 9) + 0x6FE4), 1);    // $8842
+    syscall16_sram_wrap(5, ((arg1 * 49) + 0x9C24), ((arg2 * 9) + 0x6FE4), 1);    // $8842
     return ppu_upload_block_wrap(5, ((arg1 * 49) + daimyo_banner_chr), ((arg2 * 48) + 5392), 3);    // $885D
 }
 
@@ -679,16 +679,16 @@ L_8865:
     ppu_copy_rect_wrap(11, 3, 12, 3, map_scroll_marker_tiles, 2);    // $88BE
     goto L_88D2;    // $88C2
 L_88C5:
-    sub_CC7B(11, 3);    // $88C7
+    set_cursor(11, 3);    // $88C7
 L_88D2:
-    sub_CEC4(map_scroll_marker_tiles_b);    // $88CE
+    redraw_window(map_scroll_marker_tiles_b);    // $88CE
     if ((tactical_battle_phase == 2)) goto L_88EB;    // $88D7
     ppu_copy_rect_wrap(27, 3, 28, 3, map_scroll_marker_tiles_a, 2);    // $88E4
     goto L_88F9;    // $88E8
 L_88EB:
-    sub_CC7B(27, 3);    // $88EE
+    set_cursor(27, 3);    // $88EE
 L_88F9:
-    sub_CEC4(map_scroll_marker_tiles_c);    // $88F5
+    redraw_window(map_scroll_marker_tiles_c);    // $88F5
     return ppu_render_rect_wrap(2, 3, 8, 6, 1);    // $8902
 }
 
@@ -735,7 +735,7 @@ L_8936:
 // (body @ $897C)
 
 word render_combat_map_screen(void) {
-    sub_CC35(1);    // $897D
+    palette_swap(1);    // $897D
     local11 = 0;    // $8982
 L_8983:
     palette_write_wrap(local11, combat_map_palette[local11]);    // $898B
@@ -746,13 +746,13 @@ L_8983:
     phi_push_89bb = sram_save_checksum;    // $89B0
     goto L_89BB;    // $89B0
 L_89B3:
-    phi_push_89bb = fief_to_mapid(sub_D77E());    // $89B7
+    phi_push_89bb = fief_to_mapid(selected_province_owner());    // $89B7
 L_89BB:
     upload_map_cell_tiles(phi_push_89bb, 0);    // $89BC
-    upload_map_cell_tiles(fief_to_mapid(sub_D772(battle_defending_province)), 1);    // $89CE
+    upload_map_cell_tiles(fief_to_mapid(fief_owner(battle_defending_province)), 1);    // $89CE
     tactical_battle_phase = 0;    // $89D3
     map_render_driver();    // $89D6
-    return sub_CC35(0);    // $89DE
+    return palette_swap(0);    // $89DE
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $89DF
@@ -775,7 +775,7 @@ L_8A11:
 L_8A2E:
 L_8A47:
     *(byte*)(((arg1 * 9) + 0x6FE5)) = (test_6f65_bit7(arg1) ? 178 : 179);    // $8A47
-    local11 = sub_CB5E(*(word*)(unit_strength_ptr(arg1, arg2)), 0x270F);    // $8A57
+    local11 = min_word(*(word*)(unit_strength_ptr(arg1, arg2)), 0x270F);    // $8A57
     local7 = 0;    // $8A59
     local10 = ((unsigned)local11 / (unsigned)0x03E8);    // $8A5F
     if (((unsigned)local11 / (unsigned)0x03E8)) goto L_8A6F;    // $8A60
@@ -828,11 +828,11 @@ L_8B38:
 // (body @ $8B3E)
 
 word draw_combat_day_header(word arg1) {
-    sub_CC7B(2, 5);    // $8B40
+    set_cursor(2, 5);    // $8B40
     draw_current_year();    // $8B44
     char_advance_width(10);    // $8B48
     draw_current_season();    // $8B4C
-    return sub_D134(msg_day_2d, arg1);    // $8B57
+    return draw_message(msg_day_2d, arg1);    // $8B57
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8B58
@@ -864,7 +864,7 @@ word draw_side_resource_field(word arg1, word arg2) {
     if (!(phi_ret_8bd7)) goto L_8BD7;    // $8B94
     local11 = ui_window_col;    // $8B9A
     local10 = ui_cursor_row;    // $8B9E
-    sub_CC7B(6, ((arg1 ? 9 : 15) + arg2));    // $8BAC
+    set_cursor(6, ((arg1 ? 9 : 15) + arg2));    // $8BAC
     switch (arg2) {    // $8BB1
         case 0: goto L_8BC2;    // $8BB1
         case 1: goto L_8BD8;    // $8BB1
@@ -876,8 +876,8 @@ L_8BC2:
 L_8BC7:
     local9 = *(word*)(phi_val_8bc7);    // $8BC8
 L_8BC9:
-    sub_D134(msg_fmt__4d_b574, local9);    // $8BCD
-    phi_ret_8bd7 = sub_CC7B(local11, local10);    // $8BD3
+    draw_message(msg_fmt__4d_b574, local9);    // $8BCD
+    phi_ret_8bd7 = set_cursor(local11, local10);    // $8BD3
 L_8BD7:
     return phi_ret_8bd7;    // $8BD7
 L_8BD8:
@@ -900,20 +900,20 @@ L_8BF8:
     local11 = 1;    // $8BFC
 L_8BFD:
     if (local11) goto L_8C1D;    // $8BFE
-    sub_CC7B(2, 14);    // $8C03
+    set_cursor(2, 14);    // $8C03
     if (!(is_no_province_selected())) goto L_8C17;    // $8C0A
     phi_push_8c30 = select_uprising_message(battle_defending_province);    // $8C14
     goto L_8C30;    // $8C14
 L_8C17:
-    sub_D77E();    // $8C17
+    selected_province_owner();    // $8C17
     goto L_8C2A;    // $8C1A
 L_8C1D:
-    sub_CC7B(2, 8);    // $8C1F
+    set_cursor(2, 8);    // $8C1F
 L_8C2A:
-    phi_push_8c30 = ((sub_D772(battle_defending_province) * 9) + 0x77A8);    // $8C2F
+    phi_push_8c30 = ((fief_owner(battle_defending_province) * 9) + 0x77A8);    // $8C2F
 L_8C30:
-    sub_CEC4(phi_push_8c30);    // $8C31
-    sub_D134(msg_gold_4d_rice_4d_men_4d, *(word*)(side_resource_ptr(local11)), *(word*)((side_resource_ptr(local11) + 2)), *(word*)((side_resource_ptr(local11) + 4)));    // $8C4F
+    redraw_window(phi_push_8c30);    // $8C31
+    draw_message(msg_gold_4d_rice_4d_men_4d, *(word*)(side_resource_ptr(local11)), *(word*)((side_resource_ptr(local11) + 2)), *(word*)((side_resource_ptr(local11) + 4)));    // $8C4F
     local11 = (local11 - 1);    // $8C55
     if ((local11 >= 0)) goto L_8BFD;    // $8C59
     combat_unit_window_mode_flag = 2;    // $8C5D
@@ -952,12 +952,12 @@ L_8CB1:
     phi_8cc4_0 = roster_fmt_4d_1;    // $8CC1
     phi_8cc4_1 = *(byte*)((local11 - 1));    // $8CC1
 L_8CC4:
-    sub_D134(phi_8cc4_0, phi_8cc4_1);    // $8CC4
+    draw_message(phi_8cc4_0, phi_8cc4_1);    // $8CC4
     goto L_8D12;    // $8CC8
 L_8CCB:
     phi_ret_8d38 = is_no_province_selected();    // $8CCE
     if (phi_ret_8d38) goto L_8D38;    // $8CCE
-    active_province_idx_copy = sub_D77E();    // $8CD4
+    active_province_idx_copy = selected_province_owner();    // $8CD4
     phi_ret_8d38 = build_blit_fief_tile_block(12, 20);    // $8CDE
     goto L_8D38;    // $8CDE
 L_8CE1:
@@ -978,12 +978,12 @@ L_8D0B:
     phi_8d0e_0 = roster_dashes_2;    // $8D0B
 L_8D0E:
 L_8D12:
-    sub_CEC4(phi_8d0e_0);    // $8D0E
+    redraw_window(phi_8d0e_0);    // $8D0E
     ui_cursor_row = (ui_cursor_row + 1);    // $8D16
     if (((unsigned)ui_cursor_row < (unsigned)18)) goto L_8C88;    // $8D1F
     if (!(arg1)) goto L_8CCB;    // $8D23
-    active_province_idx_copy = sub_D772(battle_defending_province);    // $8D2D
-    phi_ret_8d38 = sub_E76F(24, 20);    // $8D34
+    active_province_idx_copy = fief_owner(battle_defending_province);    // $8D2D
+    phi_ret_8d38 = draw_daimyo_portrait(24, 20);    // $8D34
 L_8D38:
     return phi_ret_8d38;    // $8D38
 }
@@ -993,9 +993,9 @@ L_8D38:
 // (body @ $8D3E)
 
 word draw_combat_fief_day_header(void) {
-    sub_CC7B(2, 3);    // $8D40
+    set_cursor(2, 3);    // $8D40
     redraw_window_row(battle_defending_province);    // $8D47
-    sub_D134(msg_fief_2d_b5a7, (battle_defending_province + 1));    // $8D53
+    draw_message(msg_fief_2d_b5a7, (battle_defending_province + 1));    // $8D53
     return draw_combat_day_header(1);    // $8D5C
 }
 
@@ -1004,7 +1004,7 @@ word draw_combat_fief_day_header(void) {
 // (body @ $8D62)
 
 word draw_combat_roster_window(void) {
-    sub_CC35(1);    // $8D63
+    palette_swap(1);    // $8D63
     palette_write_wrap(7, 43);    // $8D6A
     palette_write_wrap(11, 35);    // $8D71
     ppu_fill_rect_wrap(11, 3, 29, 3, 1);    // $8D7B
@@ -1015,16 +1015,16 @@ word draw_combat_roster_window(void) {
     ppu_render_rect_wrap(18, 12, 23, 17, 2);    // $8DAA
     ui_input_sel_latch_7fdf = 255;    // $8DB1
     combat_unit_window_mode_flag = 0;    // $8DB5
-    sub_CC7B(12, 4);    // $8DBA
+    set_cursor(12, 4);    // $8DBA
     if (!(is_no_province_selected())) goto L_8DCE;    // $8DC1
     phi_push_8dd7 = select_uprising_message(battle_defending_province);    // $8DCB
     goto L_8DD7;    // $8DCB
 L_8DCE:
-    phi_push_8dd7 = ((sub_D77E() * 9) + 0x77A8);    // $8DD6
+    phi_push_8dd7 = ((selected_province_owner() * 9) + 0x77A8);    // $8DD6
 L_8DD7:
-    sub_CEC4(phi_push_8dd7);    // $8DD8
+    redraw_window(phi_push_8dd7);    // $8DD8
     ui_window_col = 22;    // $8DDE
-    sub_CEC4(((sub_D772(battle_defending_province) * 9) + 0x77A8));    // $8DEF
+    redraw_window(((fief_owner(battle_defending_province) * 9) + 0x77A8));    // $8DEF
     local11 = 0;    // $8DF4
     local10 = 6;    // $8DF6
     goto L_8E29;    // $8DF7
@@ -1040,8 +1040,8 @@ L_8DFA:
         default: goto L_8E10;    // $8DFB
     }    // $8DFB
 L_8E10:
-    sub_CC7B(18, local10);    // $8E13
-    sub_CEC4(*(word*)(((local11 << 1) + 0xF8AE)));    // $8E1F
+    set_cursor(18, local10);    // $8E13
+    redraw_window(*(word*)(((local11 << 1) + fief_stat_name_ptrs)));    // $8E1F
     local10 = (local10 + 1);    // $8E25
 L_8E26:
     local11 = (local11 + 1);    // $8E28
@@ -1049,7 +1049,7 @@ L_8E29:
     if (((unsigned)local11 < (unsigned)18)) goto L_8DFA;    // $8E2D
     draw_unit_roster_columns(0);    // $8E31
     draw_unit_roster_columns(1);    // $8E36
-    return sub_CC35(0);    // $8E3F
+    return palette_swap(0);    // $8E3F
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8E40
@@ -1057,7 +1057,7 @@ L_8E29:
 // (body @ $8E45)
 
 word ai_score_strength_term_40pct(word arg1, word arg2) {
-    return (sub_D70D(sub_D70D(arg1, 40), *(word*)(((arg2 << 1) + 0x7BEA))) + arg1);    // $8E5B
+    return (pct_op(pct_op(arg1, 40), *(word*)(((arg2 << 1) + 0x7BEA))) + arg1);    // $8E5B
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8E5C
@@ -1067,7 +1067,7 @@ word ai_score_strength_term_40pct(word arg1, word arg2) {
 word ai_sum_battle_strength(void) {
     mem_7BEC = 0;    // $8E62
     battle_side_strength_mod = 0;    // $8E65
-    local11 = (sub_D7EA() + 1);    // $8E6C
+    local11 = (selected_province_daimyo_record() + 1);    // $8E6C
     local10 = (fief_to_daimyo_record_addr(battle_defending_province) + 1);    // $8E75
     local9 = battle_strength_stat_weights;    // $8E79
     phi_val_8ea5 = 0;    // $8E7B
@@ -1121,7 +1121,7 @@ word validate_dir_code_and_dispatch(word arg1, word arg2, word arg3) {
     if (!(((unsigned)arg3 >= (unsigned)6))) goto L_8F4B;    // $8F43
     arg3 = (arg3 - 3);    // $8F4A
 L_8F4B:
-    return sub_8003(arg1, arg2, arg3);    // $8F52
+    return tactical_hex_step(arg1, arg2, arg3);    // $8F52
 L_8F53:
     return 0;    // $8F54
 }
@@ -1212,7 +1212,7 @@ word is_map_cell_blocked(word arg1, word arg2) {
 
 word battleside_not_state5_or_resting(word arg1) {
     local11 = get_battle_side_province(arg1);    // $903A
-    return ((get_province_ai_state(local11) != 5) || rest_turns_remaining[sub_D772(local11)]);    // $9057
+    return ((get_province_ai_state(local11) != 5) || rest_turns_remaining[fief_owner(local11)]);    // $9057
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9058
@@ -1237,7 +1237,7 @@ L_909E:
 // (body @ $90A5)
 
 word prompt_unit_move_direction_at_tile(void) {
-    sub_CEC4(msg_up_up_rt_down_rt_down_down_lt);    // $90A8
+    redraw_window(msg_up_up_rt_down_rt_down_down_lt);    // $90A8
     return select_menu_entry_by_cursor(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // $90BA
 }
 
@@ -1246,13 +1246,13 @@ word prompt_unit_move_direction_at_tile(void) {
 // (body @ $90C0)
 
 word build_daimyo_province_list(word arg1) {
-    local5 = sub_D772(arg1);    // $90C5
+    local5 = fief_owner(arg1);    // $90C5
     local7 = &local8;    // $90C9
     phi_val_90f0 = 0x6F4F;    // $90CD
     goto L_90F0;    // $90CD
 L_90D0:
-    if (sub_D999(*(byte*)(local6))) goto L_90EE;    // $90D7
-    if (!((sub_D772(*(byte*)(local6)) == local5))) goto L_90EE;    // $90E3
+    if (province_state_is_FF(*(byte*)(local6))) goto L_90EE;    // $90D7
+    if (!((fief_owner(*(byte*)(local6)) == local5))) goto L_90EE;    // $90E3
     local7 = (local7 + 1);    // $90E8
     *(byte*)((local7 - 1)) = *(byte*)(local6);    // $90ED
 L_90EE:
@@ -1261,7 +1261,7 @@ L_90F0:
     local6 = phi_val_90f0;    // $90F0
     if ((*(byte*)(local6) != 255)) goto L_90D0;    // $90F7
     *(byte*)(local7) = -1;    // $90FD
-    return sub_CBBD(2, &local8, deduped_owner_list, 8);    // $910B
+    return syscall16_sram_wrap(2, &local8, deduped_owner_list, 8);    // $910B
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $910C
@@ -1269,8 +1269,8 @@ L_90F0:
 // (body @ $9111)
 
 word prompt_hit_any_key_return_button(void) {
-    sub_CC7B(2, 24);    // $9114
-    sub_CEC4(msg_hit_any_key);    // $911B
+    set_cursor(2, 24);    // $9114
+    redraw_window(msg_hit_any_key);    // $911B
     local11 = wait_button_edge();    // $9122
     clear_rect_left_lower();    // $9123
     reset_prompt_selection();    // $9126
@@ -1283,14 +1283,14 @@ word prompt_hit_any_key_return_button(void) {
 
 word paged_flee_fief_list_display(void) {
     local11 = 0;    // $9131
-    sub_D326(msg_fief_b5f6);    // $9135
+    message_display(msg_fief_b5f6);    // $9135
     local10 = 0;    // $913A
     local9 = 0x6F4F;    // $913E
     goto L_9188;    // $913F
 L_9142:
     local10 = 1;    // $9143
     local9 = (local9 + 1);    // $9146
-    sub_D134(msg_fmt__2d_b5fd, (*(byte*)((local9 - 1)) + 1));    // $914E
+    draw_message(msg_fmt__2d_b5fd, (*(byte*)((local9 - 1)) + 1));    // $914E
     local11 = (local11 + 1);    // $9154
     char_advance_width((((unsigned)local11 % (unsigned)3) ? 32 : 10));    // $9162
     if ((local11 != 6)) goto L_9188;    // $9169
@@ -1298,12 +1298,12 @@ L_9142:
     if (!((prompt_hit_any_key_return_button() == 2))) goto L_917F;    // $917A
     return 0;    // $917E
 L_917F:
-    sub_D326(msg_fief_b601);    // $9182
+    message_display(msg_fief_b601);    // $9182
     local11 = 0;    // $9187
 L_9188:
     if ((*(byte*)(local9) != 255)) goto L_9142;    // $918E
     if (local10) goto L_919F;    // $9192
-    sub_CEC4(msg_there_is_no_fief_to_flee_to);    // $9198
+    redraw_window(msg_there_is_no_fief_to_flee_to);    // $9198
 L_919F:
     clear_rect_left_lower_alt();    // $919C
     return local10;    // $91A0
@@ -1315,8 +1315,8 @@ L_919F:
 
 word prompt_select_province_from_list(void) {
     local10 = 0x6F4F;    // $91A9
-    local11 = sub_D59D(1, scenario_fief_count);    // $91B2
-    if (!(sub_D59D(1, scenario_fief_count))) goto L_91D1;    // $91B3
+    local11 = select_province_by_cursor(1, scenario_fief_count);    // $91B2
+    if (!(select_province_by_cursor(1, scenario_fief_count))) goto L_91D1;    // $91B3
     local11 = (local11 - 1);    // $91B8
     goto L_91C8;    // $91B9
 L_91BC:
@@ -1341,17 +1341,17 @@ L_91DC:
     local9 = ((local8 * 10) + 0x6FBC);    // $91EB
     local6 = ((get_battle_side_province(local8) * 5) + 0x76A9);    // $91F7
     war_side_state_flag[local8] = (war_side_state_flag[local8] | 31);    // $9203
-    *(word*)(local9) = sub_D70D(local11, *(byte*)(local6));    // $920D
-    local10 = sub_D70D(local11, *(byte*)(local6));    // $920E
-    if (!((sub_D70D(local11, *(byte*)(local6)) <= 0))) goto L_9218;    // $9211
+    *(word*)(local9) = pct_op(local11, *(byte*)(local6));    // $920D
+    local10 = pct_op(local11, *(byte*)(local6));    // $920E
+    if (!((pct_op(local11, *(byte*)(local6)) <= 0))) goto L_9218;    // $9211
     *(word*)(local9) = 1;    // $9216
     local10 = 1;    // $9217
 L_9218:
     local7 = 1;    // $9219
 L_921A:
     if (!(((local11 - local10) > 0))) goto L_9239;    // $921F
-    *(word*)(((local7 << 1) + local9)) = sub_D70D(local11, *(byte*)((local6 + local7)));    // $9231
-    local10 = (local10 + sub_D70D(local11, *(byte*)((local6 + local7))));    // $9235
+    *(word*)(((local7 << 1) + local9)) = pct_op(local11, *(byte*)((local6 + local7)));    // $9231
+    local10 = (local10 + pct_op(local11, *(byte*)((local6 + local7))));    // $9235
     goto L_9240;    // $9236
 L_9239:
     *(word*)(((local7 << 1) + local9)) = 0;    // $923F
@@ -1443,9 +1443,9 @@ L_9368:
 // (body @ $936F)
 
 word draw_combat_message(word arg1, word arg2) {
-    sub_D326(combat_msg_blank_str);    // $9372
+    message_display(combat_msg_blank_str);    // $9372
     arg2 = (arg2 + 1);    // $9378
-    return sub_D134(*(word*)(((arg1 << 1) + combat_message_table)), arg2);    // $9386
+    return draw_message(*(word*)(((arg1 << 1) + combat_message_table)), arg2);    // $9386
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9387
@@ -1453,7 +1453,7 @@ word draw_combat_message(word arg1, word arg2) {
 // (body @ $938C)
 
 word draw_unit_type_label(void) {
-    return sub_D134(msg_unit_d_s, (cur_combat_unit_slot + 1), *(word*)(((((unsigned)(wrap_index_0_2_to_zero(cur_combat_unit_slot) + 1) % (unsigned)3) << 1) + unit_type_name_table)));    // $93A9
+    return draw_message(msg_unit_d_s, (cur_combat_unit_slot + 1), *(word*)(((((unsigned)(wrap_index_0_2_to_zero(cur_combat_unit_slot) + 1) % (unsigned)3) << 1) + unit_type_name_table)));    // $93A9
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $93AA
@@ -1463,18 +1463,18 @@ word draw_unit_type_label(void) {
 word announce_battle_outcome_retreat_or_won(word arg1, word arg2) {
     local7 = (arg1 == battle_defending_province);    // $93B4
     local9 = get_battle_side_province((local7 ^ 1));    // $93BD
-    local10 = sub_D772(arg1);    // $93C3
+    local10 = fief_owner(arg1);    // $93C3
     local8 = (arg1 == battle_winner_province_sel);    // $93C9
-    sub_CD20();    // $93CA
-    sub_CC35(1);    // $93CE
+    repaint_screen();    // $93CA
+    palette_swap(1);    // $93CE
     local11 = 0;    // $93D3
 L_93D4:
     palette_write_wrap(local11, msg_the_enemy_has_turned_tail_and[local11]);    // $93DC
     local11 = (local11 + 1);    // $93E2
     if (((unsigned)local11 < (unsigned)16)) goto L_93D4;    // $93E7
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $93F4
-    sub_CC35(0);    // $93F9
-    sub_CC7B(2, 3);    // $93FF
+    palette_swap(0);    // $93F9
+    set_cursor(2, 3);    // $93FF
     if (!(get_province_ai_state(arg1))) goto L_9486;    // $9408
     if (local8) goto L_9439;    // $940C
     if (!(((unsigned)arg2 > (unsigned)7))) goto L_9419;    // $9412
@@ -1499,8 +1499,8 @@ L_944A:
 L_9451:
     local6 = *(word*)(((arg2 << 1) + battle_conclusion_msgs_loser));    // $9453
     daimyo_name_width(arg1);    // $9455
-    sub_CEC4(str_battle_outcome_msgs);    // $945C
-    sub_CEC4(local6);    // $9461
+    redraw_window(str_battle_outcome_msgs);    // $945C
+    redraw_window(local6);    // $9461
     call_bank10_entry((local8 ? 4 : 3));    // $946F
     if (!(audio_wait_gate)) goto L_94F2;    // $9476
 L_9479:
@@ -1511,13 +1511,13 @@ L_9486:
     if (local8) goto L_94F2;    // $9487
     if (!(((unsigned)arg2 <= (unsigned)2))) goto L_94B4;    // $948D
     phi_94ad_0 = msg_s_has_retreated;    // $949F
-    phi_94ad_1 = ((sub_D772(local9) * 9) + 0x77A8);    // $949F
+    phi_94ad_1 = ((fief_owner(local9) * 9) + 0x77A8);    // $949F
     goto L_94AD;    // $949F
 L_94A2:
     phi_94ad_0 = msg_s_hung_on_to_the_end_and_won;    // $94AA
     phi_94ad_1 = ((local10 * 9) + 0x77A8);    // $94AA
 L_94AD:
-    sub_D134(phi_94ad_0, phi_94ad_1);    // $94AD
+    draw_message(phi_94ad_0, phi_94ad_1);    // $94AD
     goto L_94F2;    // $94B1
 L_94B4:
     if ((arg2 == 3)) goto L_94A2;    // $94B7
@@ -1535,8 +1535,8 @@ L_94D5:
     if (!(((unsigned)arg2 <= (unsigned)3))) goto L_94F2;    // $94DC
     draw_owner_name(battle_winner_province_sel);    // $94E2
 L_94F2:
-    sub_CEC4(*(word*)(((arg2 << 1) + battle_conclusion_msgs_observer)));    // $94EE
-    phi_ret_94f5 = sub_D759();    // $94F2
+    redraw_window(*(word*)(((arg2 << 1) + battle_conclusion_msgs_observer)));    // $94EE
+    phi_ret_94f5 = standard_delay();    // $94F2
 L_94F5:
     return phi_ret_94f5;    // $94F5
 }
@@ -1550,14 +1550,14 @@ word announce_combat_side_daimyo_and_status(word arg1, word arg2) {
     local11 = get_battle_side_province(cur_combat_side);    // $9508
     if (!(get_province_ai_state(get_battle_side_province(cur_combat_side)))) goto L_9569;    // $950E
     if (arg1) goto L_951F;    // $9512
-    sub_D326(mem_B1C6);    // $9518
+    message_display(mem_B1C6);    // $9518
     goto L_953F;    // $951C
 L_951F:
-    sub_D326(str_position_unit_prompt);    // $9522
+    message_display(str_position_unit_prompt);    // $9522
     draw_daimyo_name(local11);    // $9527
     char_advance_width(10);    // $952C
 L_953F:
-    sub_CEC4(*(word*)((((((arg1 - 1) << 1) + 4) << 1) + combat_message_table)));    // $953B
+    redraw_window(*(word*)((((((arg1 - 1) << 1) + 4) << 1) + combat_message_table)));    // $953B
     local10 = (local10 ^ 1);    // $9543
 L_9544:
     clear_rect_left_lower_alt();    // $9544
@@ -1573,16 +1573,16 @@ L_9568:
 L_9569:
     local11 = get_battle_side_province(local10);    // $956E
     if (!(get_province_ai_state(get_battle_side_province(local10)))) goto L_95A2;    // $9574
-    sub_D326(str_position_unit_prompt_alias);    // $957A
+    message_display(str_position_unit_prompt_alias);    // $957A
     draw_daimyo_name(local11);    // $957F
     char_advance_width(10);    // $9584
-    sub_CEC4(mem_B1A6);    // $958B
+    redraw_window(mem_B1A6);    // $958B
     if ((arg1 != 2)) goto L_9544;    // $9592
     clear_rect_left_lower_alt();    // $9595
-    sub_D326(mem_B1D6);    // $959B
+    message_display(mem_B1D6);    // $959B
     goto L_9544;    // $959F
 L_95A2:
-    return sub_D326(mem_B1D6);    // $95A2
+    return message_display(mem_B1D6);    // $95A2
 L_95A3:
     phi_ret_9568 = is_unit_present((cur_combat_side ^ 1), arg2);    // $95AE
     if (phi_ret_9568) goto L_9568;    // $95AE
@@ -1611,9 +1611,9 @@ L_95E2:
 L_95E3:
     tactical_battle_phase = phi_val_95e3;    // $95E3
 L_95E6:
-    sub_CC35(1);    // $95E7
+    palette_swap(1);    // $95E7
     map_render_driver();    // $95EB
-    sub_CC35(0);    // $95EF
+    palette_swap(0);    // $95EF
     return draw_unit_counts_in_valid_cells();    // $95F6
 L_95F7:
     phi_val_95e3 = 1;    // $95F8
@@ -1720,7 +1720,7 @@ L_9757:
 L_9765:
     local9 = local11;    // $9766
     local8 = local10;    // $9768
-    if (!(sub_8003(&local9, &local8, local7))) goto L_9787;    // $9776
+    if (!(tactical_hex_step(&local9, &local8, local7))) goto L_9787;    // $9776
     if ((local9 != arg1)) goto L_9787;    // $977C
     if ((local8 != arg2)) goto L_9787;    // $9782
     return 1;    // $9786
@@ -1782,7 +1782,7 @@ L_9819:
 L_9829:
     local11 = *(byte*)(unit_col_ptr(cur_combat_side, 0));    // $9832
     local10 = *(byte*)(unit_row_ptr(cur_combat_side, 0));    // $983C
-    if (!(sub_8003(&local11, &local10, local9))) goto L_9853;    // $984A
+    if (!(tactical_hex_step(&local11, &local10, local9))) goto L_9853;    // $984A
 L_9853:
     commit_unit_move_and_redraw_count(local11, local10);    // $984F
     phi_val_9855 = (local9 + 1);    // $9854
@@ -1816,7 +1816,7 @@ L_989B:
 L_98B1:
     local9 = local11;    // $98B2
     local8 = local10;    // $98B4
-    if (!(sub_8003(&local9, &local8, local6))) goto L_98E1;    // $98C2
+    if (!(tactical_hex_step(&local9, &local8, local6))) goto L_98E1;    // $98C2
     if (!(commit_unit_dest_tile_if_valid(local9, local8))) goto L_98E1;    // $98CB
     cur_combat_unit_slot = (cur_combat_unit_slot + 1);    // $98D2
     draw_unit_count_digits(cur_combat_side, (cur_combat_unit_slot - 1));    // $98DA
@@ -1843,7 +1843,7 @@ word seek_enemy_adjacent_cell_and_commit_move(word arg1, word arg2) {
 L_9905:
     local10 = arg1;    // $9906
     local9 = arg2;    // $9908
-    if (!(sub_8003(&local10, &local9, local11))) goto L_9928;    // $9916
+    if (!(tactical_hex_step(&local10, &local9, local11))) goto L_9928;    // $9916
     if (side_has_unit_at_cell((cur_combat_side ^ 1), local10, local9)) goto L_9931;    // $9925
 L_9928:
     local11 = (local11 + 1);    // $992A
@@ -1863,8 +1863,8 @@ L_9952:
 // (body @ $9959)
 
 word rng_search_combat_rect_for_unit_cell(word arg1) {
-    local7 = sub_CA52(2);    // $995E
-    local6 = sub_CA52(2);    // $9964
+    local7 = rng_mod(2);    // $995E
+    local6 = rng_mod(2);    // $9964
     switch (arg1) {    // $9966
         case 1: goto L_9975;    // $9966
         case 2: goto L_997D;    // $9966
@@ -1930,7 +1930,7 @@ L_99EF:
 L_99F9:
     if (is_cur_unit_absent()) goto L_99EF;    // $99FC
 L_9A0F:
-    commit_unit_move_and_redraw_count(sub_CA52(11), sub_CA52(5));    // $9A0B
+    commit_unit_move_and_redraw_count(rng_mod(11), rng_mod(5));    // $9A0B
     if (((unsigned)cur_combat_unit_slot < (unsigned)5)) goto L_99F9;    // $9A14
     return ((unsigned)cur_combat_unit_slot < (unsigned)5);    // $9A17
 }
@@ -1944,17 +1944,17 @@ word player_interactive_unit_move_loop(void) {
 L_9A21:
     if (is_cur_unit_absent()) goto L_9AF5;    // $9A24
     if (cur_combat_unit_slot) goto L_9A56;    // $9A2A
-    sub_D326(msg_lord);    // $9A30
-    sub_CEC4(((sub_D772(get_battle_side_province(cur_combat_side)) * 9) + 0x77A8));    // $9A47
+    message_display(msg_lord);    // $9A30
+    redraw_window(((fief_owner(get_battle_side_province(cur_combat_side)) * 9) + 0x77A8));    // $9A47
     phi_9a65_0 = msg_please_position_unit_d;    // $9A53
     phi_9a65_1 = (cur_combat_unit_slot + 1);    // $9A53
     goto L_9A65;    // $9A53
 L_9A56:
-    sub_CC7B(7, 24);    // $9A59
+    set_cursor(7, 24);    // $9A59
     phi_9a65_0 = msg_fmt__d_b9bf;    // $9A62
     phi_9a65_1 = (cur_combat_unit_slot + 1);    // $9A62
 L_9A65:
-    sub_D134(phi_9a65_0, phi_9a65_1);    // $9A65
+    draw_message(phi_9a65_0, phi_9a65_1);    // $9A65
     phi_val_9a8c = combat_arena_y_min;    // $9A6C
     goto L_9A8C;    // $9A6C
 L_9A6F:
@@ -2066,7 +2066,7 @@ L_9BE7:
 L_9BEA:
     local11 = (local11 - 1);    // $9BEC
 L_9BED:
-    return (sub_D70D(*(word*)(unit_strength_ptr(arg1, arg2)), *(word*)(((local11 << 1) + terrain_strength_mult_table))) * 3);    // $9C03
+    return (pct_op(*(word*)(unit_strength_ptr(arg1, arg2)), *(word*)(((local11 << 1) + terrain_strength_mult_table))) * 3);    // $9C03
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9C04
@@ -2084,7 +2084,7 @@ L_9C32:
     local9 = (local9 + 2);    // $9C3B
     local10 = (*(word*)((local9 + -2)) - *(word*)((local8 + -2)));    // $9C41
     if (!(((*(word*)((local9 + -2)) - *(word*)((local8 + -2))) > 0))) goto L_9C5C;    // $9C44
-    local7 = (local7 + sub_D70D(*(word*)(unit_strength_ptr(arg1, arg2)), (local10 / 100)));    // $9C5B
+    local7 = (local7 + pct_op(*(word*)(unit_strength_ptr(arg1, arg2)), (local10 / 100)));    // $9C5B
 L_9C5C:
     local11 = (local11 + 1);    // $9C5E
 L_9C5F:
@@ -2110,14 +2110,14 @@ L_9C86:
 word ai_eval_battle_strength_total(word arg1, word arg2, word arg3) {
     ai_sum_battle_strength();    // $9C8D
     local11 = *(word*)(unit_strength_ptr(arg1, arg2));    // $9C97
-    local10 = ((((((test_6f65_bit7(arg1) ? local11 : 0) + ai_terrain_strength_term(arg1, arg2)) + ai_province_stat_diff_term(arg1, arg2)) + ai_strength_term_gated_table_word(arg1, arg2, arg3)) + ai_score_strength_term_40pct(local11, arg1)) + sub_D70D(local11, (battle_unit_byte_table[arg3] * 20)));    // $9CDC
+    local10 = ((((((test_6f65_bit7(arg1) ? local11 : 0) + ai_terrain_strength_term(arg1, arg2)) + ai_province_stat_diff_term(arg1, arg2)) + ai_strength_term_gated_table_word(arg1, arg2, arg3)) + ai_score_strength_term_40pct(local11, arg1)) + pct_op(local11, (battle_unit_byte_table[arg3] * 20)));    // $9CDC
     if (!(get_province_ai_state(get_battle_side_province(arg1)))) goto L_9CF7;    // $9CE7
     phi_push_9cf9 = (115 - (const_two * 15));    // $9CF4
     goto L_9CF9;    // $9CF4
 L_9CF7:
     phi_push_9cf9 = 100;    // $9CF7
 L_9CF9:
-    return sub_D70D((local11 + local10), phi_push_9cf9);    // $9D02
+    return pct_op((local11 + local10), phi_push_9cf9);    // $9D02
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9D03
@@ -2126,8 +2126,8 @@ L_9CF9:
 
 word apply_pct_reduction_to_unit_strength(word arg1, word arg2, word arg3) {
     local11 = unit_strength_ptr(arg1, arg2);    // $9D0E
-    local10 = (sub_D70D(*(word*)(local11), arg3) + (((unsigned)arg3 >= (unsigned)50) ? 1 : 0));    // $9D29
-    if (!(((unsigned)(sub_D70D(*(word*)(local11), arg3) + (((unsigned)arg3 >= (unsigned)50) ? 1 : 0)) > (unsigned)*(word*)(local11)))) goto L_9D32;    // $9D2C
+    local10 = (pct_op(*(word*)(local11), arg3) + (((unsigned)arg3 >= (unsigned)50) ? 1 : 0));    // $9D29
+    if (!(((unsigned)(pct_op(*(word*)(local11), arg3) + (((unsigned)arg3 >= (unsigned)50) ? 1 : 0)) > (unsigned)*(word*)(local11)))) goto L_9D32;    // $9D2C
     local10 = *(word*)(local11);    // $9D31
 L_9D32:
     *(word*)((side_resource_ptr(arg1) + 4)) = (*(word*)((side_resource_ptr(arg1) + 4)) - local10);    // $9D3D
@@ -2148,7 +2148,7 @@ L_9D73:
 // (body @ $9D7A)
 
 word calc_battle_strength_pct_one_side(word arg1) {
-    return sub_D6DE(ai_eval_battle_strength_total(cur_combat_side, cur_combat_unit_slot, arg1), ai_eval_battle_strength_total((cur_combat_side ^ 1), arg1, cur_combat_unit_slot));    // $9D99
+    return math32_2arg(ai_eval_battle_strength_total(cur_combat_side, cur_combat_unit_slot, arg1), ai_eval_battle_strength_total((cur_combat_side ^ 1), arg1, cur_combat_unit_slot));    // $9D99
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9D9A
@@ -2169,7 +2169,7 @@ word reduce_defending_province_town_chaos(word arg1, word arg2) {
     if (!(is_cell_clear_of_bits(*(byte*)(unit_col_ptr(local11, arg2)), *(byte*)(unit_row_ptr(local11, arg2)), 8))) goto L_9DDE;    // $9DDA
     return is_cell_clear_of_bits(*(byte*)(unit_col_ptr(local11, arg2)), *(byte*)(unit_row_ptr(local11, arg2)), 8);    // $9DDD
 L_9DDE:
-    sub_D326(msg_the_town_is_in_complete_chaos);    // $9DE1
+    message_display(msg_the_town_is_in_complete_chaos);    // $9DE1
     arg1 = ((unsigned)arg1 / (unsigned)2);    // $9DE9
     local10 = ((battle_defending_province * 26) + 0x7005);    // $9DF4
     if (!(((unsigned)*(word*)(local10) <= (unsigned)arg1))) goto L_9E02;    // $9DF9
@@ -2177,7 +2177,7 @@ L_9DDE:
     goto L_9E1C;    // $9DFF
 L_9E02:
 L_9E1C:
-    word_sub_saturating(local10, (sub_D70D(*(word*)(local10), sub_D6DE(arg1, (*(word*)(local10) - arg1))) * 10));    // $9E18
+    word_sub_saturating(local10, (pct_op(*(word*)(local10), math32_2arg(arg1, (*(word*)(local10) - arg1))) * 10));    // $9E18
     return clear_rect_left_lower_alt();    // $9E1F
 }
 
@@ -2206,13 +2206,13 @@ word resolve_attack_apply_casualties(word arg1, word arg2) {
     local9 = get_battle_side_province(cur_combat_side);    // $9E94
     local7 = (cur_combat_side ^ 1);    // $9E9A
     local8 = get_battle_side_province((cur_combat_side ^ 1));    // $9EA0
-    local11 = ((sub_CA52((6 - const_two)) + *(word*)(((local9 * 26) + 0x7013))) + *(byte*)((fief_to_daimyo_record_addr(local9) + 4)));    // $9EC1
+    local11 = ((rng_mod((6 - const_two)) + *(word*)(((local9 * 26) + 0x7013))) + *(byte*)((fief_to_daimyo_record_addr(local9) + 4)));    // $9EC1
     local10 = ((*(word*)(((local8 * 26) + 0x7013)) + *(byte*)((fief_to_daimyo_record_addr(local8) + 4))) + (const_two << 1));    // $9EDC
     if (combat_casualty_skip_flag_7bf3) goto L_9F37;    // $9EE0
     if ((local11 <= local10)) goto L_9F37;    // $9EE6
     arg2 = (arg2 / *(word*)(unit_strength_ptr(local7, arg1)));    // $9EF3
     if ((arg2 <= 0)) goto L_9FCE;    // $9EF7
-    local11 = sub_D70D(*(word*)(unit_strength_ptr(local7, arg1)), sub_D6DE((local11 - local10), local11));    // $9F10
+    local11 = pct_op(*(word*)(unit_strength_ptr(local7, arg1)), math32_2arg((local11 - local10), local11));    // $9F10
     if (!(((*(word*)((side_resource_ptr(cur_combat_side) + 4)) + local11) > 0x270F))) goto L_9F33;    // $9F20
     local11 = (0x270F - *(word*)((side_resource_ptr(cur_combat_side) + 4)));    // $9F32
 L_9F33:
@@ -2220,7 +2220,7 @@ L_9F33:
 L_9F37:
     if (!(get_province_ai_state(local9))) goto L_9F46;    // $9F3C
 L_9F46:
-    sub_D326(mem_B1CE);    // $9F42
+    message_display(mem_B1CE);    // $9F42
     draw_unit_count_digits(local7, arg1);    // $9F48
     draw_unit_count_digits(cur_combat_side, 0);    // $9F50
     return clear_rect_left_lower_alt();    // $9F57
@@ -2233,12 +2233,12 @@ L_9F58:
     draw_side_resource_field(cur_combat_side, 2);    // $9F96
     if (!(get_province_ai_state(local8))) goto L_9FA9;    // $9F9F
 L_9FA9:
-    sub_D326(mem_B19A);    // $9FA5
+    message_display(mem_B19A);    // $9FA5
     if (!(get_province_ai_state(local9))) goto L_9FC7;    // $9FAE
-    sub_D326(combat_message_table);    // $9FB4
-    sub_D134(msg_fmt__d_b9e9, local11);    // $9FBC
+    message_display(combat_message_table);    // $9FB4
+    draw_message(msg_fmt__d_b9e9, local11);    // $9FBC
 L_9FC7:
-    sub_CEC4(mem_B198);    // $9FC3
+    redraw_window(mem_B198);    // $9FC3
     combat_casualty_skip_flag_7bf3 = 1;    // $9FC8
     goto L_9F46;    // $9FCB
 L_9FCE:
@@ -2247,7 +2247,7 @@ L_9FCE:
     *(word*)(((local8 * 26) + 0x7013)) = 0;    // $A007
 L_A008:
     if (!(get_province_ai_state(local9))) goto L_9FC7;    // $A00D
-    sub_D326(mem_B1CA);    // $A013
+    message_display(mem_B1CA);    // $A013
     goto L_9FC7;    // $A017
 }
 
@@ -2293,7 +2293,7 @@ word find_adjacent_unit_around_tile(word arg1, word arg2, word arg3, word arg4) 
 L_A081:
     local10 = arg1;    // $A082
     local9 = arg2;    // $A084
-    if (!(sub_8003(&local10, &local9, local11))) goto L_A0A2;    // $A092
+    if (!(tactical_hex_step(&local10, &local9, local11))) goto L_A0A2;    // $A092
     if (!(is_unit_at_coords(local10, local9, arg3, arg4))) goto L_A0A2;    // $A09D
     return 1;    // $A0A1
 L_A0A2:
@@ -2335,7 +2335,7 @@ L_A0FF:
     *(byte*)(local7) = -1;    // $A102
     local9 = arg1;    // $A104
     local8 = arg2;    // $A106
-    if (!(sub_8003(&local9, &local8, local11))) goto L_A138;    // $A114
+    if (!(tactical_hex_step(&local9, &local8, local11))) goto L_A138;    // $A114
     local10 = 0;    // $A118
 L_A119:
     if (!(is_unit_at_coords(local9, local8, (cur_combat_side ^ 1), local10))) goto L_A12F;    // $A126
@@ -2385,7 +2385,7 @@ word ai_place_units_near_enemy_loop(void) {
 L_A19B:
     local7 = *(byte*)(cur_unit_col_ptr());    // $A19F
     local6 = *(byte*)(cur_unit_row_ptr());    // $A1A4
-    if (!(sub_8003(&local7, &local6, local5))) goto L_A1E5;    // $A1B2
+    if (!(tactical_hex_step(&local7, &local6, local5))) goto L_A1E5;    // $A1B2
     local8 = build_reachable_enemy_target_list(local7, local6, &local9);    // $A1BF
     local4 = 0;    // $A1C1
 L_A1C2:
@@ -2490,7 +2490,7 @@ L_A336:
 L_A338:
     local9 = local7;    // $A339
     local8 = local6;    // $A33B
-    if (!(sub_8003(&local9, &local8, local11))) goto L_A3A3;    // $A349
+    if (!(tactical_hex_step(&local9, &local8, local11))) goto L_A3A3;    // $A349
     if ((local9 != local5)) goto L_A35C;    // $A34F
     if ((local8 != local4)) goto L_A35C;    // $A355
     return (6 - local11);    // $A35B
@@ -2526,7 +2526,7 @@ word ai_step_unit_toward_target(word arg1, word arg2) {
     arg1 = *(byte*)(cur_unit_col_ptr());    // $A3D2
     arg2 = *(byte*)(cur_unit_row_ptr());    // $A3D7
     local11 = (local11 - 1);    // $A3DA
-    if (!(sub_8003(&arg1, &arg2, local11))) goto L_A3F6;    // $A3E8
+    if (!(tactical_hex_step(&arg1, &arg2, local11))) goto L_A3F6;    // $A3E8
     if (!(place_unit_at_tile_if_free(arg1, arg2))) goto L_A3F6;    // $A3F1
     return 1;    // $A3F5
 L_A3F6:
@@ -2695,7 +2695,7 @@ L_A631:
 L_A641:
     local10 = local8;    // $A642
     local9 = local7;    // $A644
-    if (!(sub_8003(&local10, &local9, local11))) goto L_A675;    // $A652
+    if (!(tactical_hex_step(&local10, &local9, local11))) goto L_A675;    // $A652
     if (!(is_tile_in_bounds(local10, local9))) goto L_A675;    // $A65B
     if (is_any_unit_at_tile(local10, local9)) goto L_A675;    // $A664
     if (is_map_cell_blocked(local10, local9)) goto L_A675;    // $A66D
@@ -2754,7 +2754,7 @@ L_A720:
 
 word ai_rng_resolve_combat_apply_casualties(void) {
     local8 = (cur_combat_side ^ 1);    // $A72B
-    if (!(sub_CA52((const_two + 1)))) goto L_A799;    // $A735
+    if (!(rng_mod((const_two + 1)))) goto L_A799;    // $A735
     if ((*(word*)(side_resource_ptr(cur_combat_side)) <= *(word*)((side_resource_ptr(cur_combat_side) + 4)))) goto L_A799;    // $A74C
     if (is_no_province_selected()) goto L_A799;    // $A752
     if (!(get_province_ai_state(get_battle_side_province(local8)))) goto L_A799;    // $A75F
@@ -2864,7 +2864,7 @@ L_A90C:
 word player_move_unit_until_placed_loop(void) {
     local11 = get_battle_side_province(cur_combat_side);    // $A91A
 L_A91B:
-    sub_D326(combat_command_menu_str_ptrs);    // $A91E
+    message_display(combat_command_menu_str_ptrs);    // $A91E
     local9 = *(byte*)(cur_unit_col_ptr());    // $A926
     local8 = *(byte*)(cur_unit_row_ptr());    // $A92B
     local10 = prompt_unit_move_direction_at_tile();    // $A92F
@@ -2877,7 +2877,7 @@ L_A93B:
     if (!(place_unit_at_tile_if_free(local9, local8))) goto L_A95F;    // $A95A
     return 0;    // $A95E
 L_A95F:
-    sub_D326(mem_B1C4);    // $A962
+    message_display(mem_B1C4);    // $A962
     clear_rect_left_lower_alt();    // $A966
     goto L_A91B;    // $A969
 }
@@ -2890,7 +2890,7 @@ word player_move_unit_with_occupancy_check_loop(void) {
     local9 = get_battle_side_province(cur_combat_side);    // $A978
     local11 = (cur_combat_side ^ 1);    // $A97E
 L_A97F:
-    sub_D326(mem_B4F2);    // $A982
+    message_display(mem_B4F2);    // $A982
     local7 = *(byte*)(cur_unit_col_ptr());    // $A98A
     local6 = *(byte*)(cur_unit_row_ptr());    // $A98F
     local8 = prompt_unit_move_direction_at_tile();    // $A993
@@ -2912,7 +2912,7 @@ L_A9DB:
     announce_combat_side_daimyo_and_status(resolve_attack_apply_mutual_casualties(local10), local10);    // $A9E8
     return 0;    // $A9ED
 L_A9EE:
-    sub_D326(mem_B1C0);    // $A9F1
+    message_display(mem_B1C0);    // $A9F1
     clear_rect_left_lower_alt();    // $A9F5
     goto L_A97F;    // $A9F8
 }
@@ -2923,19 +2923,19 @@ L_A9EE:
 
 word combat_command_select_target_resolve_attack(void) {
     local9 = get_battle_side_province(cur_combat_side);    // $AA07
-    sub_D326(mem_B4F4);    // $AA0B
+    message_display(mem_B4F4);    // $AA0B
     char_advance_width(10);    // $AA10
     if (!((is_no_province_selected() || (ai_turn_planner_resume_flag == 1)))) goto L_AA32;    // $AA1F
     phi_aa25_0 = mem_B1D4;    // $AA22
 L_AA25:
-    sub_CEC4(phi_aa25_0);    // $AA25
+    redraw_window(phi_aa25_0);    // $AA25
     goto L_AA62;    // $AA29
 L_AA2C:
     phi_aa25_0 = mem_B1B8;    // $AA2F
     goto L_AA25;    // $AA2F
 L_AA32:
     if (cur_combat_unit_slot) goto L_AA2C;    // $AA35
-    sub_CEC4(mem_B1A8);    // $AA3B
+    redraw_window(mem_B1A8);    // $AA3B
     local10 = prompt_province_selection(1, 5);    // $AA45
     if (!(prompt_province_selection(1, 5))) goto L_AAA2;    // $AA46
     local10 = (local10 - 1);    // $AA4B
@@ -2944,7 +2944,7 @@ L_AA32:
     phi_aa5e_0 = mem_B1C2;    // $AA5B
 L_AA5E:
 L_AA62:
-    sub_D326(phi_aa5e_0);    // $AA5E
+    message_display(phi_aa5e_0);    // $AA5E
     clear_rect_left_lower_alt();    // $AA62
     return 1;    // $AA66
 L_AA67:
@@ -2953,7 +2953,7 @@ L_AA67:
     phi_aa5e_0 = mem_B1CC;    // $AA85
     goto L_AA5E;    // $AA85
 L_AA88:
-    sub_D326(mem_B1C8);    // $AA8B
+    message_display(mem_B1C8);    // $AA8B
     local11 = prompt_province_selection(1, local11);    // $AA95
     if (!(local11)) goto L_AA62;    // $AA96
     resolve_attack_apply_casualties(local10, local11);    // $AA9B
@@ -2969,23 +2969,23 @@ L_AAA2:
 
 word combat_flee_to_fief_command(void) {
     local11 = get_battle_side_province(cur_combat_side);    // $AAB3
-    sub_D326(mem_B4F6);    // $AAB7
+    message_display(mem_B4F6);    // $AAB7
     char_advance_width(10);    // $AABC
     if (!(cur_combat_unit_slot)) goto L_AAD3;    // $AAC3
-    sub_CEC4(mem_B1B8);    // $AAC9
+    redraw_window(mem_B1B8);    // $AAC9
     clear_rect_left_lower_alt();    // $AACD
     goto L_AB35;    // $AAD0
 L_AAD3:
-    sub_CEC4(mem_B1AA);    // $AAD6
+    redraw_window(mem_B1AA);    // $AAD6
     if (!(prompt_yes_no())) goto L_AB35;    // $AADD
     load_daimyo_relation_row(battle_defending_province);    // $AAE3
     build_daimyo_province_list(local11);    // $AAE8
     if (!(paged_flee_fief_list_display())) goto L_AB32;    // $AAEF
-    sub_CEC4(mem_B1D0);    // $AAF5
+    redraw_window(mem_B1D0);    // $AAF5
     local10 = prompt_select_province_from_list();    // $AAFC
     if (!((prompt_select_province_from_list() != 255))) goto L_AB32;    // $AB01
     clear_rect_left_lower();    // $AB04
-    sub_D326(mem_B1D2);    // $AB0A
+    message_display(mem_B1D2);    // $AB0A
     if (!(prompt_yes_no())) goto L_AB35;    // $AB11
     battle_winner_province_sel = local11;    // $AB15
     if (!(test_6f65_bit7(cur_combat_side))) goto L_AB30;    // $AB1F
@@ -3004,10 +3004,10 @@ L_AB35:
 // (body @ $AB3C)
 
 word redraw_combat_side_window(void) {
-    sub_D326(mem_B4F8);    // $AB3F
+    message_display(mem_B4F8);    // $AB3F
     if (cur_combat_unit_slot) goto L_AB65;    // $AB46
 L_AB65:
-    sub_CEC4(*(word*)((((test_6f65_bit7(cur_combat_side) ? 18 : 19) << 1) + combat_message_table)));    // $AB61
+    redraw_window(*(word*)((((test_6f65_bit7(cur_combat_side) ? 18 : 19) << 1) + combat_message_table)));    // $AB61
     clear_rect_left_lower_alt();    // $AB65
     return 0;    // $AB69
 }
@@ -3018,8 +3018,8 @@ L_AB65:
 
 word prompt_hit_any_key_and_redraw_combat_screen(void) {
     draw_combat_roster_window();    // $AB6F
-    sub_CC7B(2, 26);    // $AB75
-    sub_CEC4(msg_hit_any_key_b9ec);    // $AB7C
+    set_cursor(2, 26);    // $AB75
+    redraw_window(msg_hit_any_key_b9ec);    // $AB7C
     wait_button_edge();    // $AB80
     reset_prompt_selection();    // $AB83
     render_combat_map_screen();    // $AB86
@@ -3060,10 +3060,10 @@ L_ABC5:
     phi_push_ac06 = select_uprising_message(battle_defending_province);    // $ABF1
     goto L_AC06;    // $ABF1
 L_ABF4:
-    phi_push_ac06 = ((sub_D772(get_battle_side_province(cur_combat_side)) * 9) + 0x77A8);    // $AC05
+    phi_push_ac06 = ((fief_owner(get_battle_side_province(cur_combat_side)) * 9) + 0x77A8);    // $AC05
 L_AC06:
-    sub_D326(phi_push_ac06);    // $AC07
-    sub_CEC4(msg_giving_orders_for);    // $AC0E
+    message_display(phi_push_ac06);    // $AC07
+    redraw_window(msg_giving_orders_for);    // $AC0E
     draw_unit_type_label();    // $AC12
     local10 = *(byte*)(cur_unit_col_ptr());    // $AC19
     if (is_cell_valid_for_phase(*(byte*)(cur_unit_col_ptr()))) goto L_AC27;    // $AC1F
@@ -3110,8 +3110,8 @@ L_AC99:
     clear_rect_left_lower();    // $ACA4
     local11 = 0;    // $ACA8
 L_ACA9:
-    sub_CC7B(4, (local11 + 10));    // $ACAD
-    sub_CEC4(*(word*)(((local11 << 1) + combat_command_menu_str_ptrs)));    // $ACB9
+    set_cursor(4, (local11 + 10));    // $ACAD
+    redraw_window(*(word*)(((local11 << 1) + combat_command_menu_str_ptrs)));    // $ACB9
     local11 = (local11 + 1);    // $ACBF
     if (((unsigned)local11 < (unsigned)6)) goto L_ACA9;    // $ACC3
     combat_unit_window_mode_flag = 1;    // $ACC7
@@ -3120,9 +3120,9 @@ L_ACCA:
     if (is_cell_valid_for_phase(local9)) goto L_ACDC;    // $ACD4
 L_ACDC:
     erase_cursor_advance_phase(local9);    // $ACD8
-    sub_D326(str_combat_orders_labels);    // $ACDF
+    message_display(str_combat_orders_labels);    // $ACDF
     draw_daimyo_name(get_battle_side_province(cur_combat_side));    // $ACEB
-    sub_CEC4(msg_your_orders_for);    // $ACF2
+    redraw_window(msg_your_orders_for);    // $ACF2
     draw_unit_type_label();    // $ACF6
     local11 = combat_command_menu_input_loop(*(byte*)(cur_unit_col_ptr()), *(byte*)(cur_unit_row_ptr()));    // $AD07
     local8 = *(word*)(((local11 << 1) + combat_command_jumptab));    // $AD0F
@@ -3147,15 +3147,15 @@ L_AD36:
 
 word display_morale_falling_message(void) {
     if (!(get_province_ai_state(battle_defending_province))) goto L_AD7B;    // $AD44
-    sub_D326(str_our_morale_falling);    // $AD4A
+    message_display(str_our_morale_falling);    // $AD4A
     phi_ad58_0 = msg_our;    // $AD55
 L_AD58:
     draw_daimyo_name(battle_defending_province);    // $AD51
-    sub_CEC4(phi_ad58_0);    // $AD58
-    sub_CEC4(msg_morale_is_falling);    // $AD5F
+    redraw_window(phi_ad58_0);    // $AD58
+    redraw_window(msg_morale_is_falling);    // $AD5F
     return clear_rect_left_lower_alt();    // $AD66
 L_AD67:
-    sub_D326(str_enemy_morale_falling);    // $AD6A
+    message_display(str_enemy_morale_falling);    // $AD6A
     phi_ad58_0 = msg_enemy;    // $AD78
     draw_daimyo_name(selected_province_idx);    // $AD71
     goto L_AD58;    // $AD78
@@ -3220,15 +3220,15 @@ L_AE2A:
 // (body @ $AE31)
 
 word transfer_owned_fiefs_and_announce_succession(void) {
-    sub_CD20();    // $AE31
-    local10 = sub_D772(battle_winner_province_sel);    // $AE3B
+    repaint_screen();    // $AE31
+    local10 = fief_owner(battle_winner_province_sel);    // $AE3B
     local7 = (battle_winner_province_sel == battle_defending_province);    // $AE43
     if (!(test_6f65_bit7((battle_winner_province_sel == battle_defending_province)))) goto L_AE69;    // $AE49
     if ((battle_winner_province_sel == 50)) goto L_AE69;    // $AE52
     announce_daimyo_death(battle_winner_province_sel);    // $AE58
     if (!(get_province_ai_state(battle_winner_province_sel))) goto L_AE69;    // $AE63
 L_AE69:
-    sub_DB35();    // $AE66
+    increment_ai_player_count();    // $AE66
     if (!(is_no_province_selected())) goto L_AE70;    // $AE6C
     return is_no_province_selected();    // $AE6F
 L_AE70:
@@ -3237,7 +3237,7 @@ L_AE70:
     phi_val_ae93 = 0;    // $AE7D
     goto L_AE93;    // $AE7D
 L_AE80:
-    if (!((sub_D772(local11) == local10))) goto L_AE91;    // $AE87
+    if (!((fief_owner(local11) == local10))) goto L_AE91;    // $AE87
     local8 = (local8 + 1);    // $AE8C
     *(byte*)((local8 - 1)) = local11;    // $AE90
 L_AE91:
@@ -3247,8 +3247,8 @@ L_AE93:
     if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_AE80;    // $AE99
 L_AE9C:
     *(byte*)(local8) = -1;    // $AE9F
-    sub_CC7B(2, 3);    // $AEA2
-    sub_CEC4(msg_fief_ba4c);    // $AEA9
+    set_cursor(2, 3);    // $AEA2
+    redraw_window(msg_fief_ba4c);    // $AEA9
     local8 = 0x6F89;    // $AEB0
     local9 = 0;    // $AEB2
     goto L_AEF4;    // $AEB3
@@ -3261,20 +3261,20 @@ L_AEC6:
     return battle_defending_province;    // $AEC6
 L_AEC7:
     if (!((get_province_ai_state(*(byte*)(local8)) != 255))) goto L_AEF1;    // $AED2
-    sub_D134(msg_fmt__2d_ba52, (*(byte*)(local8) + 1));    // $AEDC
+    draw_message(msg_fmt__2d_ba52, (*(byte*)(local8) + 1));    // $AEDC
     local9 = (local9 + 1);    // $AEE2
     if ((local9 != 9)) goto L_AEF1;    // $AEE5
-    sub_CEC4(str_passed_from_lord);    // $AEEB
+    redraw_window(str_passed_from_lord);    // $AEEB
     local9 = 0;    // $AEF0
 L_AEF1:
     local8 = (local8 + 1);    // $AEF3
 L_AEF4:
     if ((*(byte*)(local8) != 255)) goto L_AEC7;    // $AEFA
-    sub_CEC4(msg_has_passed_from);    // $AF00
-    sub_D134(msg_lord_s_to, ((sub_D772(battle_winner_province_sel) * 9) + 0x77A8));    // $AF15
-    sub_D134(msg_lord_s, ((sub_D772(get_battle_side_province((local7 ^ 1))) * 9) + 0x77A8));    // $AF30
-    sub_D759();    // $AF34
-    return sub_CD20();    // $AF3A
+    redraw_window(msg_has_passed_from);    // $AF00
+    draw_message(msg_lord_s_to, ((fief_owner(battle_winner_province_sel) * 9) + 0x77A8));    // $AF15
+    draw_message(msg_lord_s, ((fief_owner(get_battle_side_province((local7 ^ 1))) * 9) + 0x77A8));    // $AF30
+    standard_delay();    // $AF34
+    return repaint_screen();    // $AF3A
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $AF3B
@@ -3296,18 +3296,18 @@ L_AF80:
     apply_conquest_outcome();    // $AF8B
     phi_ret_afe0 = (ai_turn_flags & 128);    // $AF95
     if (phi_ret_afe0) goto L_AFE0;    // $AF95
-    phi_ret_afe0 = sub_E5F2(latched_selected_record_idx);    // $AF9F
+    phi_ret_afe0 = render_map_section(latched_selected_record_idx);    // $AF9F
     goto L_AFE0;    // $AF9F
 L_AFA2:
-    sub_CD20();    // $AFA2
-    sub_CC35(1);    // $AFA6
+    repaint_screen();    // $AFA2
+    palette_swap(1);    // $AFA6
     local11 = 0;    // $AFAB
 L_AFAC:
     palette_write_wrap(local11, battle_select_palette[local11]);    // $AFB4
     local11 = (local11 + 1);    // $AFBA
     if (((unsigned)local11 < (unsigned)16)) goto L_AFAC;    // $AFBF
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $AFCC
-    sub_CC35(0);    // $AFD1
+    palette_swap(0);    // $AFD1
     post_elim_owner_sentinel_id = 50;    // $AFD7
     phi_ret_afe0 = redraw_fief_on_map(30);    // $AFDC
 L_AFE0:
@@ -3320,8 +3320,8 @@ L_AFE0:
 
 word battle_init_driver(void) {
     ui_input_mode = 3;    // $AFE7
-    sram_save_checksum = (sub_CA52(4) + 53);    // $AFF1
-    sub_CD20();    // $AFF4
+    sram_save_checksum = (rng_mod(4) + 53);    // $AFF1
+    repaint_screen();    // $AFF4
     call_bank10_entry(AUDIO_BATTLE_START);    // $AFF8
     map_populate();    // $AFFC
     render_combat_map_screen();    // $AFFF

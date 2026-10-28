@@ -26,13 +26,13 @@ L_8018:
 // (body @ $8022)
 
 word draw_sprite_grid(word arg1, word arg2, word arg3, word arg4) {
-    sub_CBBD(arg1, arg4, (fp - 152), 6);    // $8029
+    syscall16_sram_wrap(arg1, arg4, (fp - 152), 6);    // $8029
     local7 = *(byte*)(fp - 152);    // $8030
     local6 = *(byte*)(fp - 151);    // $8034
     *(word*)(fp - 144) = (fp - 78);    // $803A
-    sub_CBBD(arg1, *(word*)(fp - 150), (fp - 78), 64);    // $8042
+    syscall16_sram_wrap(arg1, *(word*)(fp - 150), (fp - 78), 64);    // $8042
     *(word*)(fp - 146) = (fp - 142);    // $804B
-    sub_CBBD(arg1, *(word*)(fp - 148), (fp - 142), 64);    // $8053
+    syscall16_sram_wrap(arg1, *(word*)(fp - 148), (fp - 142), 64);    // $8053
     local5 = 16;    // $8059
     local8 = arg3;    // $805B
     local11 = 0;    // $805D
@@ -65,13 +65,13 @@ word run_cutscene(void) {
     *(word*)(fp - 41) = ((cutscene_id * 5) + cutscene_table);    // $80BB
     local7 = *(byte*)(*(word*)(fp - 41));    // $80C0
     *(word*)(fp - 33) = (fp - 31);    // $80C6
-    sub_CBBD(local7, *(word*)((*(word*)(fp - 41) + 1)), (fp - 31), 21);    // $80CF
+    syscall16_sram_wrap(local7, *(word*)((*(word*)(fp - 41) + 1)), (fp - 31), 21);    // $80CF
     *(word*)(fp - 35) = *(word*)(fp - 33);    // $80D5
     phi_val_80f8 = 16;    // $80D9
     goto L_80F8;    // $80D9
 L_80DC:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $80E4
-    sub_CBBD(local7, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
+    syscall16_sram_wrap(local7, (*(word*)(fp - 35) - 1), (fp - 36), 1);    // $80E9
     palette_write_wrap(local11, *(byte*)(fp - 36));    // $80F2
     phi_val_80f8 = (local11 + 1);    // $80F7
 L_80F8:
@@ -101,7 +101,7 @@ L_811A:
         *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $8190
         local9 = *(byte*)((*(word*)(fp - 35) - 1));    // $8194
     case 68:
-        sub_CBBD(local7, *(word*)((*(word*)(fp - 33) + 19)), (fp - 53), 10);    // $81A1
+        syscall16_sram_wrap(local7, *(word*)((*(word*)(fp - 33) + 19)), (fp - 53), 10);    // $81A1
         *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81AC
     case 87:
         draw_sprite_grid(local7, local10, local9, *(word*)(((*(byte*)((*(word*)(fp - 35) - 1)) << 1) + (fp - 53))));    // $81B8

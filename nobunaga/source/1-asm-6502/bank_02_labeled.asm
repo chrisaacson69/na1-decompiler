@@ -1,7 +1,7 @@
 .base $8000
 
 b02_8000:   jmp $afe1                   ; 8000:  4c e1 af
-b02_8003:   ldx #$00                    ; 8003:  a2 00
+tactical_hex_step:   ldx #$00                    ; 8003:  a2 00
 b02_8005:   ldy #$07                    ; 8005:  a0 07
 b02_8007:   lda (vm_sp_lo),y                 ; 8007:  b1 02
 b02_8009:   sta $0008,y                 ; 8009:  99 08 00
@@ -4970,7 +4970,7 @@ b02_9e26:   sbc #$4a                    ; 9E26:  e9 4a
 b02_9e28:   .db $9b                     ; 9E28:  9b
 b02_9e29:   .db vm_sp_lo                     ; 9E29:  02
 b02_9e2a:   .db $0c                     ; 9E2A:  0c
-b02_9e2b:   sty $7bee                   ; 9E2B:  8c ee 7b
+b02_9e2b:   sty battle_unit_byte_table                   ; 9E2B:  8c ee 7b
 b02_9e2e:   .db $bb                     ; 9E2E:  bb
 b02_9e2f:   .db $b3                     ; 9E2F:  b3
 b02_9e30:   .db $d3                     ; 9E30:  d3
@@ -5513,19 +5513,19 @@ b02_a15e:   eor $c6,x                   ; A15E:  55 c6
 b02_a160:   cld                         ; A160:  d8
 b02_a161:   adc $a1,x                   ; A161:  75 a1
 b02_a163:   asl a                       ; A163:  0a
-b02_a164:   sty $7bee                   ; A164:  8c ee 7b
+b02_a164:   sty battle_unit_byte_table                   ; A164:  8c ee 7b
 b02_a167:   .db $bb                     ; A167:  bb
 b02_a168:   .db $d3                     ; A168:  d3
 b02_a169:   .db $b3                     ; A169:  b3
 b02_a16a:   .db $0c                     ; A16A:  0c
 b02_a16b:   .db $d3                     ; A16B:  d3
-b02_a16c:   sty $7bee                   ; A16C:  8c ee 7b
+b02_a16c:   sty battle_unit_byte_table                   ; A16C:  8c ee 7b
 b02_a16f:   .db $bb                     ; A16F:  bb
 b02_a170:   .db $d3                     ; A170:  d3
 b02_a171:   ldy $d6,x                   ; A171:  b4 d6
 b02_a173:   adc $0ca1,x                 ; A173:  7d a1 0c
 b02_a176:   .db $d3                     ; A176:  d3
-b02_a177:   sty $7bee                   ; A177:  8c ee 7b
+b02_a177:   sty battle_unit_byte_table                   ; A177:  8c ee 7b
 b02_a17a:   .db $bb                     ; A17A:  bb
 b02_a17b:   .db $d3                     ; A17B:  d3
 b02_a17c:   bvc $a142                   ; A17C:  50 c4
@@ -7593,7 +7593,7 @@ b02_adde:   .db music_ptr_hi                     ; ADDE:  7b
 b02_addf:   rti                         ; ADDF:  40
 b02_ade0:   .db $2b                     ; ADE0:  2b
 b02_ade1:   .db $0b                     ; ADE1:  0b
-b02_ade2:   sty $7bee                   ; ADE2:  8c ee 7b
+b02_ade2:   sty battle_unit_byte_table                   ; ADE2:  8c ee 7b
 b02_ade5:   .db $bb                     ; ADE5:  bb
 b02_ade6:   .db $b3                     ; ADE6:  b3
 b02_ade7:   rti                         ; ADE7:  40
@@ -8816,18 +8816,18 @@ b02_b589:   eor $6e65                   ; B589:  4d 65 6e
 b02_b58c:   jsr $3425                   ; B58C:  20 25 34
 b02_b58f:   .db $64                     ; B58F:  64
 b02_b590:   brk                         ; B590:  00
-b02_b591:   and $34                     ; B591:  25 34
+roster_fmt_4d_1:   and $34                     ; B591:  25 34
 b02_b593:   .db $64                     ; B593:  64
 b02_b594:   brk                         ; B594:  00
-b02_b595:   and $2d2d                   ; B595:  2d 2d 2d
+roster_dashes_1:   and $2d2d                   ; B595:  2d 2d 2d
 b02_b598:   and $2500                   ; B598:  2d 00 25
 b02_b59b:   .db $34                     ; B59B:  34
 b02_b59c:   .db $64                     ; B59C:  64
 b02_b59d:   brk                         ; B59D:  00
-b02_b59e:   and $34                     ; B59E:  25 34
+roster_fmt_4d_3:   and $34                     ; B59E:  25 34
 b02_b5a0:   .db $64                     ; B5A0:  64
 b02_b5a1:   brk                         ; B5A1:  00
-b02_b5a2:   and $2d2d                   ; B5A2:  2d 2d 2d
+roster_dashes_2:   and $2d2d                   ; B5A2:  2d 2d 2d
 b02_b5a5:   and $0a00                   ; B5A5:  2d 00 0a
 b02_b5a8:   lsr brk_jmp_target_hi                     ; B5A8:  46 69
 b02_b5aa:   adc brk_scratch_lo                     ; B5AA:  65 66

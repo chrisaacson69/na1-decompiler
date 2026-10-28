@@ -420,7 +420,7 @@ word daimyo_creation_stat_roll_screen(void) {
     local9 = 1;    // $8831
 L_8832:
     set_cursor(16, (local9 + 11));    // $8837
-    redraw_window(*(word*)(((local9 << 1) + fief_stat_name_ptrs_alias)));    // $8843
+    redraw_window(*(word*)(((local9 << 1) + fief_stat_name_ptrs)));    // $8843
     ui_window_col = 22;    // $8849
     draw_message(msg_fmt_blank_b9a7);    // $884F
     local9 = (local9 + 1);    // $8855
@@ -2230,7 +2230,7 @@ L_A299:
 L_A2C1:
     repay_province_debt_from_gold(local11, *(word*)(local11));    // $A2C5
     consume_province_army_upkeep(local11);    // $A2CA
-    sub_D836(local10);    // $A2CF
+    cap_fief_stats(local10);    // $A2CF
     phi_val_a2d5 = (local10 + 1);    // $A2D4
 L_A2D5:
     local10 = phi_val_a2d5;    // $A2D5
@@ -2363,7 +2363,7 @@ L_A498:
     phi_val_a4ae = 0;    // $A49C
     goto L_A4AE;    // $A49C
 L_A49F:
-    sub_D836(local9);    // $A4A0
+    cap_fief_stats(local9);    // $A4A0
     daimyo_weakness_flag[local9] = 0;    // $A4AB
     phi_val_a4ae = (local9 + 1);    // $A4AD
 L_A4AE:
@@ -2515,7 +2515,7 @@ word shuffle_fief_turn_order_array(void) {
     phi_val_a76e = 0;    // $A748
     goto L_A76E;    // $A748
 L_A74B:
-    sub_D836(local11);    // $A74C
+    cap_fief_stats(local11);    // $A74C
     swap_byte((rng_mod(scenario_fief_count) + 0x6F1B), (rng_mod(scenario_fief_count) + 0x6F1B));    // $A768
     phi_val_a76e = (local11 + 1);    // $A76D
 L_A76E:

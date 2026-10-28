@@ -2447,7 +2447,7 @@ b15_d1ce:   .db $d7                     ; 3D1CE:  d7
 b15_d1cf:   .db vm_sp_lo                     ; 3D1CF:  02
 b15_d1d0:   .db $b3                     ; 3D1D0:  b3
 b15_d1d1:   .db $0b                     ; 3D1D1:  0b
-b15_d1d2:   sty $7fd5                   ; 3D1D2:  8c d5 7f
+b15_d1d2:   sty player_daimyo                   ; 3D1D2:  8c d5 7f
 b15_d1d5:   .db $bb                     ; 3D1D5:  bb
 b15_d1d6:   .db $d3                     ; 3D1D6:  d3
 b15_d1d7:   ldy $c1,x                   ; 3D1D7:  b4 c1
@@ -2476,7 +2476,7 @@ b15_d1fd:   bne $d22a                   ; 3D1FD:  d0 2b
 b15_d1ff:   ldy $d77e                   ; 3D1FF:  ac 7e d7
 b15_d202:   .db $b3                     ; 3D202:  b3
 b15_d203:   .db $0b                     ; 3D203:  0b
-b15_d204:   sty $7fd5                   ; 3D204:  8c d5 7f
+b15_d204:   sty player_daimyo                   ; 3D204:  8c d5 7f
 b15_d207:   .db $bb                     ; 3D207:  bb
 b15_d208:   .db $d3                     ; 3D208:  d3
 b15_d209:   ldy $c1,x                   ; 3D209:  b4 c1
@@ -2505,7 +2505,7 @@ b15_d226:   .db $d7                     ; 3D226:  d7
 b15_d227:   .db vm_sp_lo                     ; 3D227:  02
 b15_d228:   .db $b3                     ; 3D228:  b3
 b15_d229:   .db $0b                     ; 3D229:  0b
-b15_d22a:   sty $7fd5                   ; 3D22A:  8c d5 7f
+b15_d22a:   sty player_daimyo                   ; 3D22A:  8c d5 7f
 b15_d22d:   .db $bb                     ; 3D22D:  bb
 b15_d22e:   .db $d3                     ; 3D22E:  d3
 b15_d22f:   ldy $c1,x                   ; 3D22F:  b4 c1
@@ -3777,7 +3777,7 @@ b15_d9f4:   bvc $d9b7                   ; 3D9F4:  50 c1
 b15_d9f6:   .db $cf                     ; 3D9F6:  cf
 revolt_type_message:   jsr $e823                   ; 3D9F7:  20 23 e8
 b15_d9fa:   inc $0cff,x                 ; 3D9FA:  fe ff 0c
-b15_d9fd:   sty $7b79                   ; 3D9FD:  8c 79 7b
+b15_d9fd:   sty fief_revolt_type                   ; 3D9FD:  8c 79 7b
 b15_da00:   .db $bb                     ; 3DA00:  bb
 b15_da01:   .db $d3                     ; 3DA01:  d3
 b15_da02:   lsr $c0,x                   ; 3DA02:  56 c0
@@ -3786,7 +3786,7 @@ b15_da05:   ora $8ada                   ; 3DA05:  0d da 8a
 b15_da08:   sbc $d6f6                   ; 3DA08:  ed f6 d6
 b15_da0b:   and ($da,x)                 ; 3DA0B:  21 da
 b15_da0d:   .db $0c                     ; 3DA0D:  0c
-b15_da0e:   sty $7b79                   ; 3DA0E:  8c 79 7b
+b15_da0e:   sty fief_revolt_type                   ; 3DA0E:  8c 79 7b
 b15_da11:   .db $bb                     ; 3DA11:  bb
 b15_da12:   .db $d3                     ; 3DA12:  d3
 b15_da13:   .db $57                     ; 3DA13:  57
@@ -3852,7 +3852,7 @@ b15_da6e:   rol $b5,x                   ; 3DA6E:  36 b5
 b15_da70:   ldx $5f                     ; 3DA70:  a6 5f
 b15_da72:   .db p2_buttons                     ; 3DA72:  6f
 b15_da73:   .db $bb                     ; 3DA73:  bb
-b15_da74:   sty $6193                   ; 3DA74:  8c 93 61
+b15_da74:   sty relations_matrix                   ; 3DA74:  8c 93 61
 b15_da77:   .db $bb                     ; 3DA77:  bb
 b15_da78:   .db $b3                     ; 3DA78:  b3
 b15_da79:   .db skip_wallclock                     ; 3DA79:  89
@@ -3886,7 +3886,7 @@ b15_da9d:   .db $8b                     ; 3DA9D:  8b
 b15_da9e:   rol $b5,x                   ; 3DA9E:  36 b5
 b15_daa0:   .db $1a                     ; 3DAA0:  1a
 b15_daa1:   .db $bb                     ; 3DAA1:  bb
-b15_daa2:   sty $6193                   ; 3DAA2:  8c 93 61
+b15_daa2:   sty relations_matrix                   ; 3DAA2:  8c 93 61
 b15_daa5:   .db $bb                     ; 3DAA5:  bb
 b15_daa6:   .db $b3                     ; 3DAA6:  b3
 b15_daa7:   .db skip_wallclock                     ; 3DAA7:  89
@@ -5125,7 +5125,7 @@ b15_e1f7:   .db $8b                     ; 3E1F7:  8b
 b15_e1f8:   rol $b5,x                   ; 3E1F8:  36 b5
 b15_e1fa:   .db $1b                     ; 3E1FA:  1b
 b15_e1fb:   .db $bb                     ; 3E1FB:  bb
-b15_e1fc:   sty $6193                   ; 3E1FC:  8c 93 61
+b15_e1fc:   sty relations_matrix                   ; 3E1FC:  8c 93 61
 b15_e1ff:   .db $bb                     ; 3E1FF:  bb
 b15_e200:   .db $b3                     ; 3E200:  b3
 b15_e201:   .db $0b                     ; 3E201:  0b
@@ -5133,7 +5133,7 @@ b15_e202:   .db $8b                     ; 3E202:  8b
 b15_e203:   rol $b5,x                   ; 3E203:  36 b5
 b15_e205:   .db ppu_queue_a_lo                     ; 3E205:  1c
 b15_e206:   .db $bb                     ; 3E206:  bb
-b15_e207:   sty $6193                   ; 3E207:  8c 93 61
+b15_e207:   sty relations_matrix                   ; 3E207:  8c 93 61
 b15_e20a:   .db $bb                     ; 3E20A:  bb
 b15_e20b:   .db $b3                     ; 3E20B:  b3
 b15_e20c:   rti                         ; 3E20C:  40
@@ -8146,7 +8146,7 @@ b15_f685:   brk                         ; 3F685:  00
 b15_f686:   sec                         ; 3F686:  38
 b15_f687:   brk                         ; 3F687:  00
 b15_f688:   bmi $f68a                   ; 3F688:  30 00
-b15_f68a:   .db $43                     ; 3F68A:  43
+msg_control_n:   .db $43                     ; 3F68A:  43
 b15_f68b:   .db p2_buttons                     ; 3F68B:  6f
 b15_f68c:   ror $7274                   ; 3F68C:  6e 74 72
 b15_f68f:   .db p2_buttons                     ; 3F68F:  6f
@@ -8160,11 +8160,11 @@ b15_f69a:   and #$3f                    ; 3F69A:  29 3f
 b15_f69c:   jsr $2500                   ; 3F69C:  20 00 25
 b15_f69f:   .db $64                     ; 3F69F:  64
 b15_f6a0:   brk                         ; 3F6A0:  00
-b15_f6a1:   and $64                     ; 3F6A1:  25 64
+cursor_nav_fmt_d_1:   and $64                     ; 3F6A1:  25 64
 b15_f6a3:   brk                         ; 3F6A3:  00
-b15_f6a4:   and $64                     ; 3F6A4:  25 64
+cursor_nav_fmt_d_2:   and $64                     ; 3F6A4:  25 64
 b15_f6a6:   brk                         ; 3F6A6:  00
-b15_f6a7:   jsr $2500                   ; 3F6A7:  20 00 25
+cursor_nav_space:   jsr $2500                   ; 3F6A7:  20 00 25
 b15_f6aa:   .db $64                     ; 3F6AA:  64
 b15_f6ab:   brk                         ; 3F6AB:  00
 msg_d_d_f6ac:   asl a                       ; 3F6AC:  0a
@@ -8179,20 +8179,20 @@ b15_f6bd:   adc $6b20,y                 ; 3F6BD:  79 20 6b
 b15_f6c0:   adc music_voice_idx                     ; 3F6C0:  65 79
 b15_f6c2:   brk                         ; 3F6C2:  00
 b15_f6c3:   brk                         ; 3F6C3:  00
-b15_f6c4:   and $64                     ; 3F6C4:  25 64
+draw_current_year_fmt:   and $64                     ; 3F6C4:  25 64
 b15_f6c6:   brk                         ; 3F6C6:  00
-b15_f6c7:   .db $53                     ; 3F6C7:  53
+msg_spring:   .db $53                     ; 3F6C7:  53
 b15_f6c8:   bvs $f73c                   ; 3F6C8:  70 72
 b15_f6ca:   adc #$6e                    ; 3F6CA:  69 6e
 b15_f6cc:   .db brk_scratch_hi                     ; 3F6CC:  67
 b15_f6cd:   brk                         ; 3F6CD:  00
-b15_f6ce:   .db $53                     ; 3F6CE:  53
+msg_summer:   .db $53                     ; 3F6CE:  53
 b15_f6cf:   adc $6d,x                   ; 3F6CF:  75 6d
 b15_f6d1:   adc $7265                   ; 3F6D1:  6d 65 72
 b15_f6d4:   brk                         ; 3F6D4:  00
-b15_f6d5:   lsr $61                     ; 3F6D5:  46 61
+msg_fall:   lsr $61                     ; 3F6D5:  46 61
 b15_f6d7:   jmp ($006c)                 ; 3F6D7:  6c 6c 00
-b15_f6da:   .db $57                     ; 3F6DA:  57
+msg_winter:   .db $57                     ; 3F6DA:  57
 b15_f6db:   adc #$6e                    ; 3F6DB:  69 6e
 b15_f6dd:   .db palette_dirty                     ; 3F6DD:  74
 b15_f6de:   adc ppumask_shadow                     ; 3F6DE:  65 72
@@ -8237,12 +8237,12 @@ b15_f718:   .db $1a                     ; 3F718:  1a
 b15_f719:   .db $1b                     ; 3F719:  1b
 b15_f71a:   ora $201e,y                 ; 3F71A:  19 1e 20
 b15_f71d:   asl $0018                   ; 3F71D:  0e 18 00
-b15_f720:   .db $5a                     ; 3F720:  5a
+uprising_label_zealots:   .db $5a                     ; 3F720:  5a
 b15_f721:   adc $61                     ; 3F721:  65 61
 b15_f723:   jmp ($746f)                 ; 3F723:  6c 6f 74
 b15_f726:   .db prg_bank_shadow                     ; 3F726:  73
 b15_f727:   brk                         ; 3F727:  00
-b15_f728:   eor $6e6f                   ; 3F728:  4d 6f 6e
+uprising_label_monks:   eor $6e6f                   ; 3F728:  4d 6f 6e
 b15_f72b:   .db $6b                     ; 3F72B:  6b
 b15_f72c:   .db prg_bank_shadow                     ; 3F72C:  73
 b15_f72d:   brk                         ; 3F72D:  00

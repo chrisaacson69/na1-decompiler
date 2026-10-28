@@ -364,7 +364,7 @@ b00_8244:   adc ($e9,x)                 ; 244:  61 e9
 b00_8246:   ldy $cb                     ; 246:  a4 cb
 b00_8248:   .db vm_sp_lo                     ; 248:  02
 b00_8249:   stx $b88b                   ; 249:  8e 8b b8
-b00_824c:   stx $7fed                   ; 24C:  8e ed 7f
+b00_824c:   stx sram_save_signature                   ; 24C:  8e ed 7f
 b00_824f:   sbc #$b0                    ; 24F:  e9 b0
 b00_8251:   dex                         ; 251:  ca
 b00_8252:   .db vm_fp_lo                     ; 252:  04
@@ -511,7 +511,7 @@ b00_833e:   tay                         ; 33E:  a8
 b00_833f:   cmp ($7f),y                 ; 33F:  d1 7f
 b00_8341:   eor ($cf,x)                 ; 341:  41 cf
 b00_8343:   stx $b8ab                   ; 343:  8e ab b8
-b00_8346:   stx $7fed                   ; 346:  8e ed 7f
+b00_8346:   stx sram_save_signature                   ; 346:  8e ed 7f
 b00_8349:   sbc #$d9                    ; 349:  e9 d9
 b00_834b:   dex                         ; 34B:  ca
 b00_834c:   .db vm_fp_lo                     ; 34C:  04
@@ -1552,7 +1552,7 @@ b00_89d5:   asl $cf                     ; 9D5:  06 cf
 b00_89d7:   rti                         ; 9D7:  40
 b00_89d8:   .db $2b                     ; 9D8:  2b
 b00_89d9:   .db $0b                     ; 9D9:  0b
-b00_89da:   sty $7fd5                   ; 9DA:  8c d5 7f
+b00_89da:   sty player_daimyo                   ; 9DA:  8c d5 7f
 b00_89dd:   .db $bb                     ; 9DD:  bb
 b00_89de:   .db $b3                     ; 9DE:  b3
 b00_89df:   .db skip_wallclock                     ; 9DF:  89
@@ -1809,7 +1809,7 @@ b00_8b6e:   .db vm_fp_lo                     ; B6E:  04
 b00_8b6f:   .db $cf                     ; B6F:  cf
 select_rebellion_message:   jsr $e823                   ; B70:  20 23 e8
 b00_8b73:   inc $0cff,x                 ; B73:  fe ff 0c
-b00_8b76:   sty $7b79                   ; B76:  8c 79 7b
+b00_8b76:   sty fief_revolt_type                   ; B76:  8c 79 7b
 b00_8b79:   .db $bb                     ; B79:  bb
 b00_8b7a:   .db $d3                     ; B7A:  d3
 b00_8b7b:   lsr $c0,x                   ; B7B:  56 c0
@@ -1821,7 +1821,7 @@ b00_8b82:   tsx                         ; B82:  ba
 b00_8b83:   dec $9a,x                   ; B83:  d6 9a
 b00_8b85:   .db $8b                     ; B85:  8b
 b00_8b86:   .db $0c                     ; B86:  0c
-b00_8b87:   sty $7b79                   ; B87:  8c 79 7b
+b00_8b87:   sty fief_revolt_type                   ; B87:  8c 79 7b
 b00_8b8a:   .db $bb                     ; B8A:  bb
 b00_8b8b:   .db $d3                     ; B8B:  d3
 b00_8b8c:   .db $57                     ; B8C:  57
@@ -3843,7 +3843,7 @@ b00_97f9:   dec vm_ip_lo,x                   ; 17F9:  d6 06
 b00_97fb:   tya                         ; 17FB:  98
 b00_97fc:   .db $0b                     ; 17FC:  0b
 b00_97fd:   .db $d3                     ; 17FD:  d3
-b00_97fe:   sty $6e7f                   ; 17FE:  8c 7f 6e
+b00_97fe:   sty list_remove_matching_list                   ; 17FE:  8c 7f 6e
 b00_9801:   .db $bb                     ; 1801:  bb
 b00_9802:   .db $b3                     ; 1802:  b3
 b00_9803:   asl a                       ; 1803:  0a
@@ -4173,7 +4173,7 @@ b00_9a1a:   asl a                       ; 1A1A:  0a
 b00_9a1b:   .db $53                     ; 1A1B:  53
 b00_9a1c:   clv                         ; 1A1C:  b8
 b00_9a1d:   .db $2b                     ; 1A1D:  2b
-b00_9a1e:   stx $6f89                   ; 1A1E:  8e 89 6f
+b00_9a1e:   stx fief_index_list                   ; 1A1E:  8e 89 6f
 b00_9a21:   .db $0b                     ; 1A21:  0b
 b00_9a22:   cmp ($b3),y                 ; 1A22:  d1 b3
 b00_9a24:   sbc #$c6                    ; 1A24:  e9 c6
@@ -4186,7 +4186,7 @@ b00_9a2d:   .db $3b                     ; 1A2D:  3b
 b00_9a2e:   sbc #$74                    ; 1A2E:  e9 74
 b00_9a30:   sta $8d06,y                 ; 1A30:  99 06 8d
 b00_9a33:   .db $32                     ; 1A33:  32
-b00_9a34:   stx $6f89                   ; 1A34:  8e 89 6f
+b00_9a34:   stx fief_index_list                   ; 1A34:  8e 89 6f
 b00_9a37:   .db $0b                     ; 1A37:  0b
 b00_9a38:   .db $d2                     ; 1A38:  d2
 b00_9a39:   .db $b3                     ; 1A39:  b3
@@ -4207,14 +4207,14 @@ b00_9a53:   sbc vm_sp_lo                     ; 1A53:  e5 02
 b00_9a55:   rti                         ; 1A55:  40
 b00_9a56:   plp                         ; 1A56:  28
 b00_9a57:   php                         ; 1A57:  08
-b00_9a58:   sty $7fd5                   ; 1A58:  8c d5 7f
+b00_9a58:   sty player_daimyo                   ; 1A58:  8c d5 7f
 b00_9a5b:   .db $bb                     ; 1A5B:  bb
 b00_9a5c:   .db $d3                     ; 1A5C:  d3
 b00_9a5d:   .db $8b                     ; 1A5D:  8b
 b00_9a5e:   clc                         ; 1A5E:  18
 b00_9a5f:   cpy #$d8                    ; 1A5F:  c0 d8
 b00_9a61:   jmp ($089a)                 ; 1A61:  6c 9a 08
-b00_9a64:   sty $7fd5                   ; 1A64:  8c d5 7f
+b00_9a64:   sty player_daimyo                   ; 1A64:  8c d5 7f
 b00_9a67:   .db $bb                     ; 1A67:  bb
 b00_9a68:   .db $b3                     ; 1A68:  b3
 b00_9a69:   .db skip_wallclock                     ; 1A69:  89
@@ -5804,7 +5804,7 @@ b00_a42d:   tay                         ; 242D:  a8
 b00_a42e:   .db $eb                     ; 242E:  eb
 b00_a42f:   .db $7f                     ; 242F:  7f
 b00_a430:   stx $bf17                   ; 2430:  8e 17 bf
-b00_a433:   stx $7fed                   ; 2433:  8e ed 7f
+b00_a433:   stx sram_save_signature                   ; 2433:  8e ed 7f
 b00_a436:   sbc #$d9                    ; 2436:  e9 d9
 b00_a438:   dex                         ; 2438:  ca
 b00_a439:   .db vm_fp_lo                     ; 2439:  04
@@ -5964,7 +5964,7 @@ b00_a535:   ldx $9d                     ; 2535:  a6 9d
 b00_a537:   adc $d7c6                   ; 2537:  6d c6 d7
 b00_a53a:   ora $a5                     ; 253A:  05 a5
 b00_a53c:   php                         ; 253C:  08
-b00_a53d:   sty $7bad                   ; 253D:  8c ad 7b
+b00_a53d:   sty province_candidate_list                   ; 253D:  8c ad 7b
 b00_a540:   .db $bb                     ; 2540:  bb
 b00_a541:   .db $b3                     ; 2541:  b3
 b00_a542:   .db skip_wallclock                     ; 2542:  89

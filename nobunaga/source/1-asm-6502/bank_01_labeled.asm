@@ -304,7 +304,7 @@ b01_821b:   rol $b5,x                   ; 421B:  36 b5
 b01_821d:   ldx $5f                     ; 421D:  a6 5f
 b01_821f:   .db p2_buttons                     ; 421F:  6f
 b01_8220:   .db $bb                     ; 4220:  bb
-b01_8221:   sty $6193                   ; 4221:  8c 93 61
+b01_8221:   sty relations_matrix                   ; 4221:  8c 93 61
 b01_8224:   .db $bb                     ; 4224:  bb
 b01_8225:   .db $b3                     ; 4225:  b3
 b01_8226:   rti                         ; 4226:  40
@@ -334,7 +334,7 @@ b01_8243:   .db $8b                     ; 4243:  8b
 b01_8244:   rol $b5,x                   ; 4244:  36 b5
 b01_8246:   .db $1a                     ; 4246:  1a
 b01_8247:   .db $bb                     ; 4247:  bb
-b01_8248:   sty $6193                   ; 4248:  8c 93 61
+b01_8248:   sty relations_matrix                   ; 4248:  8c 93 61
 b01_824b:   .db $bb                     ; 424B:  bb
 b01_824c:   .db $b3                     ; 424C:  b3
 b01_824d:   rti                         ; 424D:  40
@@ -356,7 +356,7 @@ b01_8264:   .db $82                     ; 4264:  82
 b01_8265:   ora $368b                   ; 4265:  0d 8b 36
 b01_8268:   lda ppu_queue_a_lo,x                   ; 4268:  b5 1c
 b01_826a:   .db $bb                     ; 426A:  bb
-b01_826b:   sty $6193                   ; 426B:  8c 93 61
+b01_826b:   sty relations_matrix                   ; 426B:  8c 93 61
 b01_826e:   .db $bb                     ; 426E:  bb
 b01_826f:   .db $d3                     ; 426F:  d3
 b01_8270:   .db $cf                     ; 4270:  cf
@@ -3426,7 +3426,7 @@ b01_94e7:   sty vm_sp_lo,x                   ; 54E7:  94 02
 b01_94e9:   and #$a4                    ; 54E9:  29 a4
 b01_94eb:   .db $5f                     ; 54EB:  5f
 b01_94ec:   .db p2_buttons                     ; 54EC:  6f
-b01_94ed:   sty $6e7f                   ; 54ED:  8c 7f 6e
+b01_94ed:   sty list_remove_matching_list                   ; 54ED:  8c 7f 6e
 b01_94f0:   .db $bb                     ; 54F0:  bb
 b01_94f1:   .db $d3                     ; 54F1:  d3
 b01_94f2:   .db $b3                     ; 54F2:  b3
@@ -4331,7 +4331,7 @@ b01_9a61:   .db $ff                     ; 5A61:  ff
 b01_9a62:   adc ($e9,x)                 ; 5A62:  61 e9
 b01_9a64:   bpl $9a4b                   ; 5A64:  10 e5
 b01_9a66:   .db vm_sp_lo                     ; 5A66:  02
-b01_9a67:   stx $6f89                   ; 5A67:  8e 89 6f
+b01_9a67:   stx fief_index_list                   ; 5A67:  8e 89 6f
 b01_9a6a:   .db $64                     ; 5A6A:  64
 b01_9a6b:   sbc #$9f                    ; 5A6B:  e9 9f
 b01_9a6d:   .db $87                     ; 5A6D:  87
@@ -4654,7 +4654,7 @@ b01_9c5f:   rti                         ; 5C5F:  40
 b01_9c60:   and #$60                    ; 5C60:  29 60
 b01_9c62:   sbc #$10                    ; 5C62:  e9 10
 b01_9c64:   sbc vm_sp_lo                     ; 5C64:  e5 02
-b01_9c66:   stx $6f89                   ; 5C66:  8e 89 6f
+b01_9c66:   stx fief_index_list                   ; 5C66:  8e 89 6f
 b01_9c69:   ror $e9                     ; 5C69:  66 e9
 b01_9c6b:   .db $9f                     ; 5C6B:  9f
 b01_9c6c:   .db $87                     ; 5C6C:  87
@@ -4891,7 +4891,7 @@ b01_9dda:   ldy $d77e                   ; 5DDA:  ac 7e d7
 b01_9ddd:   .db $b3                     ; 5DDD:  b3
 b01_9dde:   sbc #$dc                    ; 5DDE:  e9 dc
 b01_9de0:   cpx vm_sp_lo                     ; 5DE0:  e4 02
-b01_9de2:   stx $6f89                   ; 5DE2:  8e 89 6f
+b01_9de2:   stx fief_index_list                   ; 5DE2:  8e 89 6f
 b01_9de5:   pla                         ; 5DE5:  68
 b01_9de6:   sbc #$9f                    ; 5DE6:  e9 9f
 b01_9de8:   .db $87                     ; 5DE8:  87
@@ -5703,7 +5703,7 @@ b01_a2f9:   eor ($a5),y                 ; 62F9:  51 a5
 b01_a2fb:   rts                         ; 62FB:  60
 b01_a2fc:   sbc #$10                    ; 62FC:  e9 10
 b01_a2fe:   sbc vm_sp_lo                     ; 62FE:  e5 02
-b01_a300:   stx $6f89                   ; 6300:  8e 89 6f
+b01_a300:   stx fief_index_list                   ; 6300:  8e 89 6f
 b01_a303:   stx $00ff                   ; 6303:  8e ff 00
 b01_a306:   sbc #$9f                    ; 6306:  e9 9f
 b01_a308:   .db $87                     ; 6308:  87
@@ -6958,7 +6958,7 @@ b01_aac3:   asl $ab,x                   ; 6AC3:  16 ab
 b01_aac5:   rts                         ; 6AC5:  60
 b01_aac6:   sbc #$10                    ; 6AC6:  e9 10
 b01_aac8:   sbc vm_sp_lo                     ; 6AC8:  e5 02
-b01_aaca:   stx $6f89                   ; 6ACA:  8e 89 6f
+b01_aaca:   stx fief_index_list                   ; 6ACA:  8e 89 6f
 b01_aacd:   .db p2_buttons                     ; 6ACD:  6f
 b01_aace:   sbc #$9f                    ; 6ACE:  e9 9f
 b01_aad0:   .db $87                     ; 6AD0:  87
@@ -7665,7 +7665,7 @@ b01_af80:   bpl $af67                   ; 6F80:  10 e5
 b01_af82:   .db vm_sp_lo                     ; 6F82:  02
 b01_af83:   rti                         ; 6F83:  40
 b01_af84:   rol a                       ; 6F84:  2a
-b01_af85:   stx $6f89                   ; 6F85:  8e 89 6f
+b01_af85:   stx fief_index_list                   ; 6F85:  8e 89 6f
 b01_af88:   sta $e913                   ; 6F88:  8d 13 e9
 b01_af8b:   .db $9f                     ; 6F8B:  9f
 b01_af8c:   .db $87                     ; 6F8C:  87
@@ -9536,7 +9536,7 @@ b01_bb2e:   adc $2065                   ; 7B2E:  6d 65 20
 b01_bb31:   ror brk_jmp_target_hi                     ; 7B31:  66 69
 b01_bb33:   adc brk_scratch_lo                     ; 7B33:  65 66
 b01_bb35:   brk                         ; 7B35:  00
-b01_bb36:   and $32                     ; 7B36:  25 32
+cycle_economy_rate_fmt:   and $32                     ; 7B36:  25 32
 b01_bb38:   .db $64                     ; 7B38:  64
 b01_bb39:   rol $3125                   ; 7B39:  2e 25 31
 b01_bb3c:   .db $64                     ; 7B3C:  64
@@ -9548,7 +9548,7 @@ b01_bb43:   jsr $6f6c                   ; 7B43:  20 6c 6f
 b01_bb46:   .db prg_bank_shadow                     ; 7B46:  73
 b01_bb47:   .db palette_dirty                     ; 7B47:  74
 b01_bb48:   brk                         ; 7B48:  00
-b01_bb49:   jsr $6168                   ; 7B49:  20 68 61
+msg_has_retreated:   jsr $6168                   ; 7B49:  20 68 61
 b01_bb4c:   .db prg_bank_shadow                     ; 7B4C:  73
 b01_bb4d:   asl a                       ; 7B4D:  0a
 b01_bb4e:   .db ppumask_shadow                     ; 7B4E:  72
@@ -9558,7 +9558,7 @@ b01_bb52:   adc $61                     ; 7B52:  65 61
 b01_bb54:   .db palette_dirty                     ; 7B54:  74
 b01_bb55:   adc $64                     ; 7B55:  65 64
 b01_bb57:   brk                         ; 7B57:  00
-b01_bb58:   jsr $6168                   ; 7B58:  20 68 61
+msg_has_fled:   jsr $6168                   ; 7B58:  20 68 61
 b01_bb5b:   .db prg_bank_shadow                     ; 7B5B:  73
 b01_bb5c:   jsr $6c66                   ; 7B5C:  20 66 6c
 b01_bb5f:   adc $64                     ; 7B5F:  65 64
@@ -9989,16 +9989,16 @@ b01_be4e:   adc (brk_jmp_target_hi,x)                 ; 7E4E:  61 69
 b01_be50:   jmp ($6261)                 ; 7E50:  6c 61 62
 b01_be53:   jmp ($2065)                 ; 7E53:  6c 65 20
 b01_be56:   jsr $0030                   ; 7E56:  20 30 00
-b01_be59:   and $33                     ; 7E59:  25 33
+effect_assign_fmt_3d_1:   and $33                     ; 7E59:  25 33
 b01_be5b:   .db $64                     ; 7E5B:  64
 b01_be5c:   brk                         ; 7E5C:  00
-b01_be5d:   and $33                     ; 7E5D:  25 33
+effect_assign_fmt_3d_2:   and $33                     ; 7E5D:  25 33
 b01_be5f:   .db $64                     ; 7E5F:  64
 b01_be60:   brk                         ; 7E60:  00
-b01_be61:   and $33                     ; 7E61:  25 33
+effect_assign_fmt_3d_3:   and $33                     ; 7E61:  25 33
 b01_be63:   .db $64                     ; 7E63:  64
 b01_be64:   brk                         ; 7E64:  00
-b01_be65:   and $33                     ; 7E65:  25 33
+effect_assign_fmt_3d_4:   and $33                     ; 7E65:  25 33
 b01_be67:   .db $64                     ; 7E67:  64
 b01_be68:   brk                         ; 7E68:  00
 msg_arrows_other_sections:   plp                         ; 7E69:  28

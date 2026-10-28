@@ -569,6 +569,148 @@ NesPrgRom:3F6D5:msg_fall:[ROM-STR] "Fall" (draw_current_season)
 NesPrgRom:3F6DA:msg_winter:[ROM-STR] "Winter" (draw_current_season)
 NesPrgRom:3F720:uprising_label_zealots:[ROM-STR] "Zealots" (select_uprising_message; bank 1 msg_zealots $BA43 is a different string, 'Zealots ')
 NesPrgRom:3F728:uprising_label_monks:[ROM-STR] "Monks" (select_uprising_message)
+NesPrgRom:3C4DC:ui_unused:Reserved.
+NesPrgRom:3C537:wait_vblank:Spin until PPUSTATUS bit 7 set; early-out if skip_vblank_wait ($0080) non-zero. Calls music_driver during spin.
+NesPrgRom:3C54F:nmi_off:Clear bit 7 of ppuctrl_shadow (disable NMI generation); used as the NMI re-entry guard
+NesPrgRom:3C567:rendering_on:OR $18 into ppumask_shadow (enable BG + sprite rendering)
+NesPrgRom:3C570:write_ppumask:Write A to PPUMASK ($2001) and update ppumask_shadow
+NesPrgRom:3C628:controller_poll:Strobe $4016 and shift 8 bits into $006E (P1) or $006F (P2); X = player index
+NesPrgRom:3C68A:nmi_on:Set bit 7 of ppuctrl_shadow (enable NMI generation)
+NesPrgRom:3C693:ppu_safe_gate:Composite preamble for foreground PPU updates: nmi_off → wait_vblank → rendering_off
+NesPrgRom:3C69D:rendering_off:AND $E7 into ppumask_shadow (clear BG + sprite enable; blank screen)
+NesPrgRom:3C6A6:write_ppuctrl:Write A to PPUCTRL ($2000) and update ppuctrl_shadow
+NesPrgRom:3C6AD:mul_xy_by_3:Helper used by BRK dispatcher: multiply X register by 3 with carry, used to scale task ID to table offset
+NesPrgRom:3C6D4:palette_upload:If palette_dirty != 0: blank screen, set PPUADDR=$3F00, copy 32 bytes from palette_shadow to PPUDATA, restore rendering, clear palette_dirty
+NesPrgRom:3C757:reset_ppu_init:Reset-path PPU init: ppu_safe_gate, then upload $30 bytes from tab_c775 to PPU $0000, then screen_on. Walked 2026-05-31; was the pre-identified b15_c757.
+NesPrgRom:3C7A5:music_driver:NMI music tick: jsr music_trigger_pass ($C7AC), jsr music_sequencer_pass ($C817), rts. Entry sits just past the 17-byte data pad tab_b15_c794 ($C794-$C7A4).
+NesPrgRom:3C7AC:music_trigger_pass:music_driver pass 1: scan the 5 voices ($0734 + N*9); for each voice whose trigger byte (record+0) is 1-4 (a play request), program its APU channel registers from record bytes 1-4 and mark it played (trigger += 4 -> 5-8). Helpers: music_voice_step_trigger ($C7DE) per voice, music_start_voice ($C7EF) writes the channel. | Pass 1: scan 5 voices at $0734; for any voice with byte 0 in 1..4, write 4 APU register bytes and set byte 0 = byte 0 + 4 (one-shot)
+NesPrgRom:3C7C9:music_advance_voice:music_ptr += 9 (advance to next 9-byte voice record); music_voice_idx++. The scan-step shared by trigger_pass and sequencer_pass. | Advance the music scan to the next voice: inc music_voice_idx, music_ptr += 9 (the 9-byte voice-record stride). Shared by both music passes. (also named music_next_voice)
+NesPrgRom:3C7DE:music_voice_check:Per-voice trigger check: skip if byte 0 is 0 (idle) or >= 5 (dormant), else call music_voice_play
+NesPrgRom:3C7EF:music_voice_play:Per-voice play: compute APU base from byte 0, optionally skip if triangle mute, write bytes 1-4 to APU registers
+NesPrgRom:3C817:music_sequencer_pass:music_driver pass 2: scan the 5 voices; for each non-muted voice (audio_mute_triangle[idx]==0) advance its note sequence via music_voice_advance ($C83D). | Pass 2: for each active voice, decrement byte 8 (duration countdown). When zero, advance song pointer (bytes 6-7), load new pitch (bytes 3-4), trigger (byte 0), reset countdown (byte 8).
+NesPrgRom:3C83D:music_voice_step:Per-voice sequencer tick (called from music_sequencer_pass for active voices). If stream byte < 5: load note (music_load_note). Else: countdown record[8] via music_dec_duration; on expiry, music_next_event drives the next stream event.
+NesPrgRom:3C857:music_load_note:Start a note: music_load_voice_cfg then write 4 note-parameter bytes (from the stream) into record offsets [0,1,2,4] via music_read_stream_byte.
+NesPrgRom:3C877:music_load_voice_cfg:Copy the voice's 3-byte instrument config from v0_config[voice_idx*3] ($0725) into record offsets [5,6,7] (bank + stream pointer).
+NesPrgRom:3C894:music_read_stream_byte:Banked song-stream fetch: save current bank, switch to record[5] (song bank), read one byte via the record[6,7] pointer, increment that pointer (record[6,7]), restore bank. Returns byte in A. The cross-bank stream reader the whole driver runs on.
+NesPrgRom:3C8C4:music_dec_duration:Decrement record[8] (note-duration countdown) and store back. Returns Z when it hits zero (time for next event).
+NesPrgRom:3C8CE:music_next_event:Process one stream event: music_read_stream_byte; if < $F0 it's a note -> music_set_pitch + music_set_duration; if >= $F0 it's a command -> music_handle_command. Loops until a playable event is set.
+NesPrgRom:3C8E4:music_handle_command:Stream control byte >= $F0. $F0 = note-off (silence the APU channel for this voice, clear its active flag, return C set = stop). Other values fall through to music_restart_stream (pattern loop/restart).
+NesPrgRom:3C906:music_restart_stream:Reload the 3-byte voice config into record[5,6,7] and clear record[0] — i.e. restart the voice's pattern stream from its configured start (the loop command target). jmp-reached from music_handle_command.
+NesPrgRom:3C929:music_set_pitch:Convert note -> APU timer period via music_note_to_period, then splice the period hi/lo into record[3,4] (the channel's timer bytes), preserving the low control bits of record[4].
+NesPrgRom:3C94B:music_note_to_period:Note byte -> 16-bit APU period in $7E/$7F: low nibble indexes the 12-entry base-period table tab_c96f (2 bytes each); high nibble is the octave (right-shift the period that many times).
+NesPrgRom:3C990:music_set_duration:Read the next stream byte (note length), shift left 3 (x8 = ticks), store into record[8] (the duration countdown).
+NesPrgRom:3CA46:rng_next_wrapper:[HIGH CONFIRMED 2026-06-10] Thin wrapper: syscall_rng_next() -- advances and returns the RNG.
+NesPrgRom:3CA52:rng_mod:[HIGH CONFIRMED 2026-06-10] rng_mod(n): returns 0 if n<1, else rng_next() mod n = a uniform 0..n-1. THE randomness primitive, 155 callers.
+NesPrgRom:3CB5E:min_word:[HIGH CONFIRMED 2026-06-10] Returns min(a, b) (unsigned). Kernel primitive, 29 callers.
+NesPrgRom:3CBBD:syscall16_sram_wrap:Thin wrapper around syscall 16 (sram_block_checksum/copy). Called by combat_helper_dd3a after filtering the candidate list — plumbing, not scoring. Read 2026-05-31.
+NesPrgRom:3CBCD:sqrt_int:Integer square root (native code; chapter 9). Classic restoring algorithm, 2 bits per iteration, 8 iterations over 16-bit input. Called as host_call sqrt_int, $02 with one word arg on the data stack. Used by Grow/Dam/Build/Train effects to drive the diminishing-returns curve.
+NesPrgRom:3CC35:palette_swap:[HIGH CONFIRMED 2026-06-10] return syscall_palette_swap(arg1) -- 1-op forward to the native palette-swap syscall (body @ $CC3A: PUSH local12; CALL syscall_palette_swap; RETURN). NOT marriage-related: 'marry_helper_cc35' was wrong-category (it appears in effect/marriage screens that swap palettes, e.g. palette_swap(1)/palette_swap(0) bracketing palette_write_wrap blocks). 91 call sites.
+NesPrgRom:3CC69:clear_rect_right_panel:[HIGH CONFIRMED 2026-06-10] ppu_fill_rect_wrap(22, 7, 29, 18, 1) -- blanks the right-side panel (cols 22-29, rows 7-18) with tile $01. A fixed-geometry clear, sibling of clear_rect_top_strip/left_upper/left_lower. NOT trade-specific (wrong-category). Was 'trade_helper_cc69'.
+NesPrgRom:3CC7B:set_cursor:[HIGH CONFIRMED 2026-06-10] set_cursor(col,row): ui_window_col=arg1; ui_cursor_row=arg2 -- 5-op setter (LOADL 12; STORE $7FCD ui_window_col; LOADL 13; STORE $7FCF ui_cursor_row; RETURN @ $CC80). The text-cursor/draw-origin positioning primitive (the 'locate(col,row)' every redraw_window then consumes; axes confirmed by consumers -- $7FCD=col/X line-wrap boundary, $7FCF=row/Y). Was 'ui_helper_cc7b' (TBD); 211 call sites. UI-primitive vocabulary -- chapter 18 section pending once the cluster (cc89/d134/...) is ground.
+NesPrgRom:3CC89:open_message_window:[HIGH CONFIRMED 2026-06-10] open_message_window(): ppu_fill_rect_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22) (body @ $CC8E). Draws the standard bottom message-window rectangle and homes the text cursor to its origin -- the 'open/prepare the message window before printing' primitive (14 callers, command pre-roll). The shift coord (20 vs 22) is picked by ui_msg_col_shift_flag ($7FD1) and lands in set_cursor's ROW arg (see $7FD1 amend). Was 'ui_helper_cc89' (role TBD).
+NesPrgRom:3CD20:repaint_screen:[HIGH CONFIRMED 2026-06-10] Full-screen repaint + UI-state reset. Bracketed palette_swap(1)..(0); fill_nametable_wrap + fill_attr_wrap (clear scaffolding); then two DIRTY-FLAG-gated reloads: if ui_pending_flag_7fc9 -> rewrite sprite palette entries 7/11/15 + clear flag; if ui_pending_flag_7fc7 -> reload 4 bg palette entries from strategic_map_bg_palette + ppu_upload_block_wrap(strategic_map_chr_tiles) + clear flag. Finally latches+clears selected_record_idx_9e3c, resets ui_input_sel_latch_7fdf=255, set_cursor(2,20), clears ui_state_flag_7bf9 + combat_unit_window_mode_flag. ~18 call sites. Was 'ui_helper_cd20' (TBD); all callees grounded so this is a depth-0 leaf. Consumes the two dirty flags whose producers are noted at $7FC9/$7FC7.
+NesPrgRom:3CEC4:redraw_window:[HIGH CONFIRMED 2026-06-10] redraw_window: renders a window/message string at the current UI position. 147 callers -- the core UI draw.
+NesPrgRom:3D134:draw_message:[HIGH CONFIRMED 2026-06-10] draw_message(fmt, ...): format_string(&fmt, &msg_buf); return redraw_window(&msg_buf) -- printf-then-draw wrapper (body @ $D139). Formats a printf-style message (with its inline varargs) into the -150 frame msg_buf via format_string ($CFFC, the %C/%D/%S core), then draws the buffer. 193 call sites, all (msg_*_Nd, value) -- the '_2d/_4d' suffixes encode the printf width. AMENDS the old 'ui_helper_d134' note (REFUTED: d134 is NOT the substitution layer -- $CFFC is; d134 is the format+draw wrapper around it).
+NesPrgRom:3D326:message_display:[HIGH CONFIRMED 2026-06-10] message_display: shows a message string (the 'show feedback' primitive). The single most-used helper, 159 callers.
+NesPrgRom:3D351:prompt_ab_window:[HIGH CONFIRMED 2026-06-10] A/B prompt over a caller-supplied window (body @ $D356): redraw_window(arg1); read_frame_timer(1); poll wait_button_edge until A(64)/B(128)/btn(2); read_frame_timer(0); on A echo glyph 60 + return 1, on B echo glyph 62 + return 0, on btn-2 return 2; open_message_window() to restore. Confirms the old 'candidate: 2-choice prompt' note (it's 3-way incl. a cancel/btn-2). Sibling of prompt_y_n ($D3A7) but takes the window arg + has the 3rd exit. 7 sites. Was 'ui_helper_d351'.
+NesPrgRom:3D3A7:prompt_y_n:[HIGH CONFIRMED 2026-06-10] Y/N confirm prompt: redraw_window(msg_y_n_f695); poll wait_button_edge until A(64)/B(128); on A echo 'Y' (char_advance_width(89)) + return 1, else return 0 (body @ $D3AC). 8 callers. Was 'ui_helper_d3a7' (TBD). Sibling of confirm_prompt ($D766) -- this one draws the explicit 'Y/N' string + echoes the choice.
+NesPrgRom:3D3ED:cursor_nav_loop:Menu/cursor navigation loop: switch(sub_D14E()) on NES button bits (1=R,2=L,16=Start,32=Sel,64=B,128=A) to move the selection cursor over candidates. The war-target PICK bottoms out HERE — controller input, not a target-scorer (read 2026-05-31). AI drives the same path via sub_D14E's AI branch.
+NesPrgRom:3D59D:select_province_by_cursor:[HIGH CONFIRMED 2026-06-10] select_province_by_cursor(min,max): the number/cursor province picker -- prompts for a value in [min,max] and returns it (the shared selection primitive behind the command prompts).
+NesPrgRom:3D5E9:number_input:[HIGH CONFIRMED 2026-06-10] number_input(min,max): the digit-entry prompt; reads a number in [min,max] (or 0/cancel). 27 callers -- every amount prompt.
+NesPrgRom:3D6B8:math32_3arg:[HIGH CERTIFIED 2026-06-10] = (arg1*arg2)/arg3 in 32-bit. Oracle-proven. (bug 1.3 ext-op stub.)
+NesPrgRom:3D6DE:math32_2arg:[HIGH CERTIFIED 2026-06-10] = (arg1*100)/(arg1+arg2) -- arg1's PERCENTAGE of the (arg1+arg2) total. Oracle CORRECTS the prior 'a*b/c' note (was wrong). (bug 1.3 ext-op stub.)
+NesPrgRom:3D70D:pct_op:[HIGH CONFIRMED 2026-06-10] Percentage op: returns a*b/100 (a scaled by b percent). The most-used arithmetic helper -- 60 callers across the game.
+NesPrgRom:3D759:standard_delay:[HIGH CONFIRMED 2026-06-10] return delay_loop(delay_loop_count) -- 2-op wrapper (PUSH $6D65 delay_loop_count; CALL $D73E delay_loop; RETURN @ $D75E). Runs the standard configurable busy-wait; delay_loop_count ($6D65) is the user-adjustable message-speed setting. 3 callers. Was 'ui_helper_d759'.
+NesPrgRom:3D766:confirm_prompt:[HIGH CONFIRMED 2026-06-10] confirm_prompt: shows a prompt and waits for the player to acknowledge. 89 callers.
+NesPrgRom:3D772:fief_owner:[HIGH CONFIRMED 2026-06-10] return fief_to_daimyo_map[fief] -- 5-op accessor (LOADL 12 fief; LOADR_imm2 $6E15 fief_to_daimyo_map; ADD; BYTE_DEREF; RETURN @ $D777). Takes a fief id, returns its owning daimyo id. Was 'ui_helper_d772' (low-fidelity: NOT a UI helper, a data accessor; the 'fief->owner' note scattered in other comments is now ground-truthed).
+NesPrgRom:3D77E:selected_province_owner:[HIGH CONFIRMED 2026-06-10] return fief_owner(selected_province_idx) -- 2-op accessor (PUSH $6F5F selected_province_idx; CALL $D772 fief_owner; RETURN @ $D783). The owning daimyo id of the currently-selected province. Called by 5 drivers (Marry/Pact diplomacy among them -- act on the selected province's lord). Was 'ui_helper_d77e' (TBD); NOT a UI helper (a data accessor, like fief_owner).
+NesPrgRom:3D7EA:selected_province_daimyo_record:[CONFIRMED 2026-06-02] Returns fief_to_daimyo_record_addr(selected_province_idx) — the ACTIVE/attacker daimyo's 7-byte record. Used by ai_sum_battle_strength as the attacker side of the daimyo-stat comparison (vs the defending province's record); also 4 other drivers. (was ui_helper_d7ea.)
+NesPrgRom:3D836:cap_fief_stats:[HIGH CONFIRMED 2026-06-10] cap_fief_stats(fief): caps every field of the $7001 province record (offsets +0..+22) at the record's +24 cap field via min_word. Confirms $7001+24 = the per-fief stat CAP/header.
+NesPrgRom:3D972:fief_owner_weakness:[HIGH CONFIRMED 2026-06-10] Accessor: return daimyo_weakness_flag[fief_owner(arg1)] (body @ $D977) -- the weakness/condition mark of the fief's owning daimyo. Data accessor, NOT a 'war helper' (wrong-category, like fief_owner/selected_province_owner); built on the grounded fief_owner leaf. 9 sites. Semantic of daimyo_weakness_flag itself still inherited from its var label.
+NesPrgRom:3D999:province_state_is_FF:Returns ($6CF7[arg1] == 0xFF) — province is in the EXCLUDED state. Eligibility filter used by combat_helper_dd3a. Read 2026-05-31.
+NesPrgRom:3D9B7:is_enemy_owned:Candidate target predicate: returns (fief_to_daimyo_map[ui_helper_d77e()] == arg) — i.e. the candidate fief's owner matches the target daimyo (enemy-ownership match). Eligibility, not strength. Read 2026-05-31.
+NesPrgRom:3DA4F:set_pact_relation:[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193 stride-54) cell between selected_province_idx and battle_defending_province to 70 -- establishing a non-aggression pact. (was diplomacy_helper2.)
+NesPrgRom:3DA7D:set_marriage_relation:[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193) cell between the two daimyo (selected_province_owner / fief_owner(defender)) to 90 -- the marriage alliance bond. (was diplomacy_helper3.)
+NesPrgRom:3DAD7:compact_relation_list:[MED 2026-06-10] load_daimyo_relation_row(selected_province_idx) into the $6F4F buffer, then compact it in place: keep only entries whose province still exists (get_province_ai_state != 255), FF-terminate. Builds the active-daimyo relation list. NOT a 'combat pre-roll' (wrong-category). Was 'combat_helper_dad7'.
+NesPrgRom:3DB12:defender_owner_is_keyed_daimyo:[MED PROBABLE 2026-06-10] Combat predicate (NOT tax -- wrong-category): return fief_owner(battle_defending_province) == (scenario_fief_count==17 ? 3 : 20). I.e. is the defending province owned by the scenario's keyed daimyo (index 3 in the 17-fief scenario, 20 in the 50-fief). OPEN: confirm who daimyo 3/20 is (likely the scenario protagonist/Nobunaga) via the daimyo table. Was 'tax_helper_db12'.
+NesPrgRom:3DB35:increment_ai_player_count:[MED 2026-06-10] ai_player_count++; if (is_ai_count_ge_8()) set_6da1_bit7(). Bumps the daimyo/AI count and sets the $6DA1 bit-7 flag once it reaches 8 (the >=8 threshold). NOT a UI helper (wrong-category). Was 'ui_helper_db35'.
+NesPrgRom:3DD3A:filter_province_list_by_owner:[HIGH CONFIRMED 2026-06-10] In-place filter of a province-id list: walks out_list (FF-terminated), keeps each province whose is_enemy_owned(p) matches arg1 (match_enemy) AND that still exists (!province_state_is_FF), into a scratch buf, FF-terminates, then writes buf back over out_list (syscall16_sram_wrap bank 0). NOT a 'combat pre-roll' (wrong-category) -- a list-prune by ownership. Was 'combat_helper_dd3a'.
+NesPrgRom:3E315:marriage_pact_handler:[MED 2026-06-10] Marriage-pact logic, two paths on whether battle_defending_province has an owner. OWNED (interactive): set ui_input_mode=2, draw_daimyo_name_menu(msg_marriage_pact) + redraw_window(msg_accept) + prompt_y_n; on yes, demand gold via number_input(1..9999); returns the entered amount (0 on decline). UNOWNED (auto/AI): 50% gate (rng_mod 2), then weakness/rng test (fief_owner_weakness(selected) or rng_mod(3)); if the province's $7001 stat > 200 returns pct_op(stat, rng_mod(30)+50)+200, else 0. Was 'marry_helper_e315'.
+NesPrgRom:3E3A4:prompt_diplomacy_pact:[HIGH CONFIRMED 2026-06-10] Pact negotiation prompt: if the defender is AI, draws the pact menu (draw_daimyo_name_menu(msg_pact)), demands gold (number_input up to 9999), and runs the accept/reject flow. The diplomacy negotiation UI. (was diplomacy_helper.)
+NesPrgRom:3E4DC:build_fiefs_excluding_daimyo:[MED 2026-06-10] build_owned_fief_list() into $6F89, then compact it in place keeping only fiefs whose owner (fief_owner) != arg1 -- the owned fiefs NOT held by daimyo arg1. Used in the marriage flow (candidate target list excluding a given daimyo's holdings). Was 'marry_helper_e4dc'.
+NesPrgRom:3E510:build_eligible_province_list:[HIGH CONFIRMED 2026-06-10] build_eligible_province_list(enemy_flag): scans all fiefs [0, scenario_fief_count); keeps those that EXIST (!province_state_is_FF), match the ownership filter (is_enemy_owned(i) == enemy_flag), and are NOT selected_province_idx; appends each idx to the $6F89 buffer, FF-terminates it, returns the count (body @ $E515). The candidate-list BUILDER the Send/Pact/View/Marry target-select commands then pick from (confirms the prior caller note -- it builds the list, isn't a 'cursor/menu enter primitive').
+NesPrgRom:3E5F2:render_map_section:[HIGH CONFIRMED 2026-06-10] The strategic-map SECTION renderer. If arg1 != the current section: palette_swap(1); clear the right margin (ppu_fill_rect 30,4..31,19); ppu_copy_rect the section's 28x16 tilemap (strategic_map_section_tilemaps + arg1*0x1C0, bank 4) to cols 2-29 rows 4-19; ppu_upload_block the section's 32-byte attribute table (strategic_map_section_attributes + arg1*32 -> PPU $23C8); mark selected_record_idx_9e3c=arg1; then walk the section's 34-byte record list and draw every fief's lord name (draw_province_lord_name); palette_swap(0). A 'map section' = tilemap(0x1C0) + attributes(32) + fief records(34). 8 sites. Was 'map_helper_e5f2'. The graphics-thread keystone; see ch.16/19.
+NesPrgRom:3E76F:draw_daimyo_portrait:[HIGH 2026-06-01] Draws the daimyo portrait (stat-roll/info screens; caller sets active_province_idx_copy $6F5B first). Loads a 4-entry palette, then BRANCHES on the daimyo record's status/generated flag (record[+6], the 7th byte of daimyo_table_17): flag==0 (an ORIGINAL scenario daimyo) -> PRESET path: descriptor table at $BBD0 (graphics bank, NOT the string bank the decompiler resolves it to) indexed by fief_to_mapid*4, read 8 bytes, upload that daimyo's DEDICATED portrait CHR to $15B0; flag==1 (a GENERATED/replacement daimyo) -> COMPOSITE path: unpack_record_to_sram_e6b9 builds the base-5 face from $6EB1. Then blits the 8x8 portrait. THIS is why the original 50 have fixed faces (preset) while death-replacements get random composite faces. (was the mislabeled 'marry_helper_e76f'.)
+NesPrgRom:3E80C:trigger_cutscene:[HIGH CONFIRMED 2026-06-10] If the AI-turn cutscene flag is set (ai_turn_flags & 4): store the cutscene id (arg1) into cutscene_id ($7FCB), then run the bank-14 cutscene engine via call_bank_wrap(14) -> run_cutscene ($80AD); else return 0. ~34 sites. Was 'ui_helper_e80c' (TBD) -- the long-open bank-14 cross-bank case, now resolved by folding bank 14 into the corpus (ch.19). (Its call was the one made unconditional by the return_phi bug, fixed f50d874.)
+NesPrgRom:3F7D4:governance_policy_name_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to the AI governance-policy names: Home fief/Industrial/Military/Balanced/Farming/Direct (driver_grant). (was grant_menu_str_ptrs.)
+NesPrgRom:3F816:lord_command_name_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to the 14 lord-command names: Move/War/Tax/Send/Dam/Pact/Grow/Marry/Trade/Hire/Train/View/Build/Give. REFUTES the prior fief_stat_label name -- these are COMMAND names (its reader fief_info_display draws the command menu).
+NesPrgRom:3F8AE:fief_stat_name_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to fief/daimyo stat names: Age/Hlth/Driv/Luck/Char/IQ (daimyo record +0..+5) then Gold/Debt/Town/Rice/Output/Dams/Lylty/Wealth (province record).
+NesPrgRom:3F98A:msg_no_fiefs:[ROM-STR] "\nno fiefs"
+NesPrgRom:3F994:msg_fiefs:[ROM-STR] "  Fiefs "
+NesPrgRom:3F99D:msg_how_much_f99d:[ROM-STR] "How much"
+NesPrgRom:3F9A6:msg_how_many:[ROM-STR] "How many"
+NesPrgRom:3F9AF:unit_type_name_table:[ROM-DATA HIGH 2026-06-10] 3 word-ptrs to the unit-type name strings (verified in ROM): [0] $F9B5 'Rifles', [1] $F9BD 'Infntry', [2] $F9C5 'Cavalry'. Read by draw_unit_type_label ($9387). (was 'draw_unit_label_data_f9af'.)
+NesPrgRom:3F9B5:str_unit_rifles:[ROM-STR 2026-06-10] "Rifles " — unit-type name, entry 0 of unit_type_name_table.
+NesPrgRom:3F9BD:str_unit_infantry:[ROM-STR 2026-06-10] "Infntry" — unit-type name, entry 1 of unit_type_name_table.
+NesPrgRom:3F9C5:str_unit_cavalry:[ROM-STR 2026-06-10] "Cavalry" — unit-type name, entry 2 of unit_type_name_table.
+NesPrgRom:3F9CD:msg_move_where:[ROM-STR] "\nMove where?\n"
+NesPrgRom:3F9DB:msg_how_many_men:[ROM-STR] "How many men"
+NesPrgRom:3F9E8:msg_will_you_lead_them_personally:[ROM-STR] "Will you lead\nthem personally"
+NesPrgRom:3FA06:msg_they_have_arrived_safely:[ROM-STR] "They have\narrived safely"
+NesPrgRom:3FA1F:msg_attack_where:[ROM-STR] "\nAttack where?\n"
+NesPrgRom:3FA2F:msg_how_many_men_fa2f:[ROM-STR] "How many men"
+NesPrgRom:3FA3C:msg_how_much_rice_will_they_take:[ROM-STR] "How much rice\nwill they take"
+NesPrgRom:3FA59:msg_will_you_lead_them_personally_fa59:[ROM-STR] "Will you lead\nthem personally"
+NesPrgRom:3FA77:msg_tax_is_d_enter_new_tax:[ROM-STR] "Tax is %d\nEnter new tax"
+NesPrgRom:3FA8F:msg_the_peasants_are_delighted:[ROM-STR] "The peasants are\ndelighted!"
+NesPrgRom:3FAAB:msg_the_peasants_are_protesting:[ROM-STR] "The peasants are\nprotesting!"
+NesPrgRom:3FAC8:msg_send_where:[ROM-STR] "\nSend where? "
+NesPrgRom:3FAD6:msg_lord_you_are_too_weak_for_batt:[ROM-STR] "Lord, you are too\nweak for battle!"
+NesPrgRom:3FAFA:msg_gold:[ROM-STR] "Gold"
+NesPrgRom:3FAFF:msg_rice:[ROM-STR] "Rice"
+NesPrgRom:3FB04:msg_the_supplies_have_arrived_safe:[ROM-STR] "The supplies have\narrived safely"
+NesPrgRom:3FB25:msg_s_is_d_spend_how_much_on_it:[ROM-STR] "%s is %d\nSpend how much\non it"
+NesPrgRom:3FB43:msg_dams_value_is_now_d:[ROM-STR] "Dams value is\nnow %d"
+NesPrgRom:3FB58:msg_output_is_now_d:[ROM-STR] "Output is now\n%d"
+NesPrgRom:3FB69:msg_no_merchant_in_the_area:[ROM-STR] "No merchant in\nthe area"
+NesPrgRom:3FB81:msg_recruit_which:[ROM-STR] "Recruit which"
+NesPrgRom:3FB90:msg_lord_s_we_now_have_d_men:[ROM-STR] "Lord %s, we\nnow have %d men"
+NesPrgRom:3FBAE:msg_what_mission:[ROM-STR] "What mission"
+NesPrgRom:3FBBB:msg_enemy_morale_is_falling_to_pie:[ROM-STR] "Enemy morale is\nfalling to pieces!"
+NesPrgRom:3FBDE:msg_skill_is_now_d:[ROM-STR] "Skill is now %d"
+NesPrgRom:3FBEF:msg_view_which_fief:[ROM-STR] "View which fief?\n"
+NesPrgRom:3FC01:msg_our_spy_was_caught:[ROM-STR] "Our spy was\ncaught"
+NesPrgRom:3FC14:msg_town_value_is_now_d:[ROM-STR] "Town value is now\n%d"
+NesPrgRom:3FC29:msg_gold_for_spy:[ROM-STR] "Gold for spy"
+NesPrgRom:3FC36:msg_d_peasants_have_defected:[ROM-STR] "%d peasants\nhave defected"
+NesPrgRom:3FC50:msg_no_peasants_defected:[ROM-STR] "No peasants\ndefected!"
+NesPrgRom:3FC66:msg_seasons:[ROM-STR] "Seasons"
+NesPrgRom:3FC6E:msg_it_will_do_you_good:[ROM-STR] "It will do you\ngood"
+NesPrgRom:3FC82:msg_lord_you_are_truly_wise:[ROM-STR] "Lord, you are\ntruly wise!"
+NesPrgRom:3FC9C:msg_which_fief:[ROM-STR] "\nWhich fief? "
+NesPrgRom:3FCAA:msg_lord_s_they_ve_refused:[ROM-STR] "Lord %s\nthey`ve refused!"
+NesPrgRom:3FCC3:msg_your_bride_to_be_has_arrived:[ROM-STR] "Your bride-to-be\nhas arrived"
+NesPrgRom:3FCE0:msg_don_t_you_long_to_hear_the_pit:[ROM-STR] "Don`t you long to\nhear the\npitter-patter of\na little lord`s\nfoot"
+NesPrgRom:3FD27:msg_lord_s_s_wants_d_gold_pay:[ROM-STR] "Lord %s,\n%s wants\n%d gold\nPay"
+NesPrgRom:3FD45:msg_lord_s_s_wants_d_gold_pay_fd45:[ROM-STR] "Lord %s,\n%s wants\n%d gold\nPay"
+NesPrgRom:3FD63:msg_war_is_inevitable_so_don_t_let:[ROM-STR] "War is inevitable\nso don`t let your\nguard down!"
+NesPrgRom:3FD93:msg_who_needs_him_anyway:[ROM-STR] "Who needs him\nanyway"
+NesPrgRom:3FDA8:msg_give_how_much:[ROM-STR] "Give how much"
+NesPrgRom:3FDB6:msg_thank_you_lord:[ROM-STR] "Thank you Lord!"
+NesPrgRom:3FDC6:msg_we_re_at_our_limit:[ROM-STR] "We`re at our\nlimit"
+NesPrgRom:3FDD8:str_you_have_no_units:[ROM-STR 2026-06-10] 'You have no [units]' message (ai_advance_units_when_attacked).
+NesPrgRom:3FDD9:msg_you_have_no_gold:[ROM-STR] "You have no gold!"
+NesPrgRom:3FDEB:msg_you_have_no_rice:[ROM-STR] "You have no rice!"
+NesPrgRom:3FDFD:msg_you_have_no_soldiers:[ROM-STR] "You have no\nsoldiers!"
+NesPrgRom:3FE13:msg_you_have_no_peasants:[ROM-STR] "You have no\npeasants!"
+NesPrgRom:3FE29:msg_they_are_your_allies:[ROM-STR] "They are your\nallies!"
+NesPrgRom:3FE40:msg_which_fief_fe40:[ROM-STR] "\nWhich fief "
+NesPrgRom:3FE4D:msg_what_are_your_orders:[ROM-STR] "\nWhat are your\norders?"
+NesPrgRom:3FE64:msg_it_s_currently_a_s_state_ok_to:[ROM-STR] "It`s currently a\n%s state\nOK to make it a\n%s state"
+NesPrgRom:3FE97:msg_bribe_which:[ROM-STR] "\nBribe which? "
+NesPrgRom:3FEE9:governance_state_label_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to abbreviated governance-state labels: Assign/Ind/Mil/Bal/Farm/Dir/Menu (draw_fief_view_label). (was province_state_label_ptrs.)
+NesPrgRom:3FF1A:settings_menu_str_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to settings-menu items: Sound/Animat/Wait/Save/Battle/End/Menu (driver_other).
+NesPrgRom:3FF4F:trade_menu_str_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to trade-menu items: Loan/Repay/Sell/Buy/Arms/Menu (driver_trade).
 NesPrgRom:0004:scenario_select_gfx_8004:[GFX-TILES 2026-06-10] Scenario-select screen tile source (assigned then ppu_copy_rect_wrap, init_new_game_state).
 NesPrgRom:01EB:save_sram_81eb:[SRAM-ADDR 2026-06-10] SRAM save-block address (syscall_sram_block_with_checksum, verify_sram_save_integrity).
 NesPrgRom:0264:boot_title_gfx_8264:[GFX-TILES 2026-06-10] Boot-title tile-upload source (ppu_upload_block_wrap, render_boot_title_screens).
@@ -594,7 +736,6 @@ NesPrgRom:3BC6:str_ninja_sent_against:[ROM-STR 2026-06-10] 'someone has sent nin
 NesPrgRom:3C2A:str_typhoon_msg:[ROM-STR 2026-06-10] 'a typhoon has struck fief %2d!'
 NesPrgRom:3C4B:str_plague_msg:[ROM-STR 2026-06-10] 'plague has come to fief %2d!'
 NesPrgRom:3F1C:str_save_and_illness_msgs:[ROM-STR 2026-06-10] 'Data has been saved',' has taken ill','Disloyal'
-NesPrgRom:3F8AE:fief_stat_name_ptrs_alias:[ROM-DATA 2026-06-10] Alias of fief_stat_name_ptrs ($F8AE).
 NesPrgRom:2C4A:msg_fmt_blank:[ROM-STR] "017?100"
 NesPrgRom:37CA:msg_congratulations_my_lord:[ROM-STR] ">[16]*(>[16](0>[16](0>[16]80Congratulations my Lord!\n"
 NesPrgRom:37D2:msg_congratulations_my_lord_b7d2:[ROM-STR] ">[16](0>[16]80Congratulations my Lord!\n"
@@ -785,78 +926,6 @@ NesPrgRom:2455:ai_strategic_turn_planner:[HIGH CONFIRMED 2026-06-10] THE AI per-
 NesPrgRom:25D5:rng_mod_30:[HIGH AMENDED 2026-06-10] returns rng_mod((const_two+1)*10) = rng_mod(30) = 0..29. Pure RNG tail-call helper (proposer's '0_to_30' was off-by-one; rng_mod(n) is 0..n-1). Used by $A5E6.
 NesPrgRom:25E6:spawn_zealot_uprising_force_from_province:[MED AMENDED 2026-06-10; flavor-corrected 2026-06-12] MISLABEL: this is the GENERIC uprising-attacker spawner, not zealot-specific. Populates the uprising attacker slot (idx 50 / record $7515) by scaling the target province's record (8 pct_op entries = 40-59% of defender stats) while depleting its output@+8/hidden@+16/men@+6; charisma-gated transfers; sets selected_province_idx=50; ai_turn_flags bit 64 (uprising) / 32 (revolt). The 'zealot/monk/rebel' wording is cosmetic and keyed by FIEF INDEX downstream (select_message_string_by_flags_and_arg: fiefs 7/23='zealots', 13/30='monks', else rebels) — see appendix-events.md. SHOULD BE RENAMED spawn_uprising_force_from_province. PRE-battle setup (scratch $6F7D-$6F81 consumed later by apply_conquest_outcome). Sole caller vm_bootstrap $A7E5.
 NesPrgRom:2742:shuffle_fief_turn_order_array:[HIGH AMENDED 2026-06-10] Fisher-Yates shuffle of the turn-order byte array at $6F1B (identity-init'd by init_new_game_state): per fief, cap_fief_stats ($D836) + two rng_mod($6D9D) draws + swap_byte ($CB80). The documented per-turn turn-order randomization. Caller vm_bootstrap $A803 (once per turn). Proposer's 'no-ops' REFUTED (host_calls hidden by lossy C).
-NesPrgRom:3C54F:nmi_off:Clear bit 7 of ppuctrl_shadow (disable NMI generation); used as the NMI re-entry guard
-NesPrgRom:3C567:rendering_on:OR $18 into ppumask_shadow (enable BG + sprite rendering)
-NesPrgRom:3C570:write_ppumask:Write A to PPUMASK ($2001) and update ppumask_shadow
-NesPrgRom:3C68A:nmi_on:Set bit 7 of ppuctrl_shadow (enable NMI generation)
-NesPrgRom:3C693:ppu_safe_gate:Composite preamble for foreground PPU updates: nmi_off → wait_vblank → rendering_off
-NesPrgRom:3C69D:rendering_off:AND $E7 into ppumask_shadow (clear BG + sprite enable; blank screen)
-NesPrgRom:3C6A6:write_ppuctrl:Write A to PPUCTRL ($2000) and update ppuctrl_shadow
-NesPrgRom:3C537:wait_vblank:Spin until PPUSTATUS bit 7 set; early-out if skip_vblank_wait ($0080) non-zero. Calls music_driver during spin.
-NesPrgRom:3C628:controller_poll:Strobe $4016 and shift 8 bits into $006E (P1) or $006F (P2); X = player index
-NesPrgRom:3C6AD:mul_xy_by_3:Helper used by BRK dispatcher: multiply X register by 3 with carry, used to scale task ID to table offset
-NesPrgRom:3C6D4:palette_upload:If palette_dirty != 0: blank screen, set PPUADDR=$3F00, copy 32 bytes from palette_shadow to PPUDATA, restore rendering, clear palette_dirty
-NesPrgRom:3C7A5:music_driver:NMI music tick: jsr music_trigger_pass ($C7AC), jsr music_sequencer_pass ($C817), rts. Entry sits just past the 17-byte data pad tab_b15_c794 ($C794-$C7A4).
-NesPrgRom:3C7AC:music_trigger_pass:music_driver pass 1: scan the 5 voices ($0734 + N*9); for each voice whose trigger byte (record+0) is 1-4 (a play request), program its APU channel registers from record bytes 1-4 and mark it played (trigger += 4 -> 5-8). Helpers: music_voice_step_trigger ($C7DE) per voice, music_start_voice ($C7EF) writes the channel. | Pass 1: scan 5 voices at $0734; for any voice with byte 0 in 1..4, write 4 APU register bytes and set byte 0 = byte 0 + 4 (one-shot)
-NesPrgRom:3C817:music_sequencer_pass:music_driver pass 2: scan the 5 voices; for each non-muted voice (audio_mute_triangle[idx]==0) advance its note sequence via music_voice_advance ($C83D). | Pass 2: for each active voice, decrement byte 8 (duration countdown). When zero, advance song pointer (bytes 6-7), load new pitch (bytes 3-4), trigger (byte 0), reset countdown (byte 8).
-NesPrgRom:3C7C9:music_advance_voice:music_ptr += 9 (advance to next 9-byte voice record); music_voice_idx++. The scan-step shared by trigger_pass and sequencer_pass. | Advance the music scan to the next voice: inc music_voice_idx, music_ptr += 9 (the 9-byte voice-record stride). Shared by both music passes. (also named music_next_voice)
-NesPrgRom:3C7DE:music_voice_check:Per-voice trigger check: skip if byte 0 is 0 (idle) or >= 5 (dormant), else call music_voice_play
-NesPrgRom:3C7EF:music_voice_play:Per-voice play: compute APU base from byte 0, optionally skip if triangle mute, write bytes 1-4 to APU registers
-NesPrgRom:3C83D:music_voice_step:Per-voice sequencer tick (called from music_sequencer_pass for active voices). If stream byte < 5: load note (music_load_note). Else: countdown record[8] via music_dec_duration; on expiry, music_next_event drives the next stream event.
-NesPrgRom:3C857:music_load_note:Start a note: music_load_voice_cfg then write 4 note-parameter bytes (from the stream) into record offsets [0,1,2,4] via music_read_stream_byte.
-NesPrgRom:3C877:music_load_voice_cfg:Copy the voice's 3-byte instrument config from v0_config[voice_idx*3] ($0725) into record offsets [5,6,7] (bank + stream pointer).
-NesPrgRom:3C894:music_read_stream_byte:Banked song-stream fetch: save current bank, switch to record[5] (song bank), read one byte via the record[6,7] pointer, increment that pointer (record[6,7]), restore bank. Returns byte in A. The cross-bank stream reader the whole driver runs on.
-NesPrgRom:3C8C4:music_dec_duration:Decrement record[8] (note-duration countdown) and store back. Returns Z when it hits zero (time for next event).
-NesPrgRom:3C8CE:music_next_event:Process one stream event: music_read_stream_byte; if < $F0 it's a note -> music_set_pitch + music_set_duration; if >= $F0 it's a command -> music_handle_command. Loops until a playable event is set.
-NesPrgRom:3C8E4:music_handle_command:Stream control byte >= $F0. $F0 = note-off (silence the APU channel for this voice, clear its active flag, return C set = stop). Other values fall through to music_restart_stream (pattern loop/restart).
-NesPrgRom:3C906:music_restart_stream:Reload the 3-byte voice config into record[5,6,7] and clear record[0] — i.e. restart the voice's pattern stream from its configured start (the loop command target). jmp-reached from music_handle_command.
-NesPrgRom:3C929:music_set_pitch:Convert note -> APU timer period via music_note_to_period, then splice the period hi/lo into record[3,4] (the channel's timer bytes), preserving the low control bits of record[4].
-NesPrgRom:3C94B:music_note_to_period:Note byte -> 16-bit APU period in $7E/$7F: low nibble indexes the 12-entry base-period table tab_c96f (2 bytes each); high nibble is the octave (right-shift the period that many times).
-NesPrgRom:3C990:music_set_duration:Read the next stream byte (note length), shift left 3 (x8 = ticks), store into record[8] (the duration countdown).
-NesPrgRom:3C757:reset_ppu_init:Reset-path PPU init: ppu_safe_gate, then upload $30 bytes from tab_c775 to PPU $0000, then screen_on. Walked 2026-05-31; was the pre-identified b15_c757.
-NesPrgRom:3CBCD:sqrt_int:Integer square root (native code; chapter 9). Classic restoring algorithm, 2 bits per iteration, 8 iterations over 16-bit input. Called as host_call sqrt_int, $02 with one word arg on the data stack. Used by Grow/Dam/Build/Train effects to drive the diminishing-returns curve.
-NesPrgRom:3D70D:pct_op:[HIGH CONFIRMED 2026-06-10] Percentage op: returns a*b/100 (a scaled by b percent). The most-used arithmetic helper -- 60 callers across the game.
-NesPrgRom:3D6B8:math32_3arg:[HIGH CERTIFIED 2026-06-10] = (arg1*arg2)/arg3 in 32-bit. Oracle-proven. (bug 1.3 ext-op stub.)
-NesPrgRom:3D6DE:math32_2arg:[HIGH CERTIFIED 2026-06-10] = (arg1*100)/(arg1+arg2) -- arg1's PERCENTAGE of the (arg1+arg2) total. Oracle CORRECTS the prior 'a*b/c' note (was wrong). (bug 1.3 ext-op stub.)
-NesPrgRom:3D326:message_display:[HIGH CONFIRMED 2026-06-10] message_display: shows a message string (the 'show feedback' primitive). The single most-used helper, 159 callers.
-NesPrgRom:3D766:confirm_prompt:[HIGH CONFIRMED 2026-06-10] confirm_prompt: shows a prompt and waits for the player to acknowledge. 89 callers.
-NesPrgRom:3CEC4:redraw_window:[HIGH CONFIRMED 2026-06-10] redraw_window: renders a window/message string at the current UI position. 147 callers -- the core UI draw.
-NesPrgRom:3D5E9:number_input:[HIGH CONFIRMED 2026-06-10] number_input(min,max): the digit-entry prompt; reads a number in [min,max] (or 0/cancel). 27 callers -- every amount prompt.
-NesPrgRom:3CC89:open_message_window:[HIGH CONFIRMED 2026-06-10] open_message_window(): ppu_fill_rect_wrap(2, shift?20:22, 19, 25, 1); set_cursor(2, shift?20:22) (body @ $CC8E). Draws the standard bottom message-window rectangle and homes the text cursor to its origin -- the 'open/prepare the message window before printing' primitive (14 callers, command pre-roll). The shift coord (20 vs 22) is picked by ui_msg_col_shift_flag ($7FD1) and lands in set_cursor's ROW arg (see $7FD1 amend). Was 'ui_helper_cc89' (role TBD).
-NesPrgRom:3D134:draw_message:[HIGH CONFIRMED 2026-06-10] draw_message(fmt, ...): format_string(&fmt, &msg_buf); return redraw_window(&msg_buf) -- printf-then-draw wrapper (body @ $D139). Formats a printf-style message (with its inline varargs) into the -150 frame msg_buf via format_string ($CFFC, the %C/%D/%S core), then draws the buffer. 193 call sites, all (msg_*_Nd, value) -- the '_2d/_4d' suffixes encode the printf width. AMENDS the old 'ui_helper_d134' note (REFUTED: d134 is NOT the substitution layer -- $CFFC is; d134 is the format+draw wrapper around it).
-NesPrgRom:3D3A7:prompt_y_n:[HIGH CONFIRMED 2026-06-10] Y/N confirm prompt: redraw_window(msg_y_n_f695); poll wait_button_edge until A(64)/B(128); on A echo 'Y' (char_advance_width(89)) + return 1, else return 0 (body @ $D3AC). 8 callers. Was 'ui_helper_d3a7' (TBD). Sibling of confirm_prompt ($D766) -- this one draws the explicit 'Y/N' string + echoes the choice.
-NesPrgRom:3E80C:trigger_cutscene:[HIGH CONFIRMED 2026-06-10] If the AI-turn cutscene flag is set (ai_turn_flags & 4): store the cutscene id (arg1) into cutscene_id ($7FCB), then run the bank-14 cutscene engine via call_bank_wrap(14) -> run_cutscene ($80AD); else return 0. ~34 sites. Was 'ui_helper_e80c' (TBD) -- the long-open bank-14 cross-bank case, now resolved by folding bank 14 into the corpus (ch.19). (Its call was the one made unconditional by the return_phi bug, fixed f50d874.)
-NesPrgRom:3CC7B:set_cursor:[HIGH CONFIRMED 2026-06-10] set_cursor(col,row): ui_window_col=arg1; ui_cursor_row=arg2 -- 5-op setter (LOADL 12; STORE $7FCD ui_window_col; LOADL 13; STORE $7FCF ui_cursor_row; RETURN @ $CC80). The text-cursor/draw-origin positioning primitive (the 'locate(col,row)' every redraw_window then consumes; axes confirmed by consumers -- $7FCD=col/X line-wrap boundary, $7FCF=row/Y). Was 'ui_helper_cc7b' (TBD); 211 call sites. UI-primitive vocabulary -- chapter 18 section pending once the cluster (cc89/d134/...) is ground.
-NesPrgRom:3D7EA:selected_province_daimyo_record:[CONFIRMED 2026-06-02] Returns fief_to_daimyo_record_addr(selected_province_idx) — the ACTIVE/attacker daimyo's 7-byte record. Used by ai_sum_battle_strength as the attacker side of the daimyo-stat comparison (vs the defending province's record); also 4 other drivers. (was ui_helper_d7ea.)
-NesPrgRom:3E510:build_eligible_province_list:[HIGH CONFIRMED 2026-06-10] build_eligible_province_list(enemy_flag): scans all fiefs [0, scenario_fief_count); keeps those that EXIST (!province_state_is_FF), match the ownership filter (is_enemy_owned(i) == enemy_flag), and are NOT selected_province_idx; appends each idx to the $6F89 buffer, FF-terminates it, returns the count (body @ $E515). The candidate-list BUILDER the Send/Pact/View/Marry target-select commands then pick from (confirms the prior caller note -- it builds the list, isn't a 'cursor/menu enter primitive').
-NesPrgRom:3D77E:selected_province_owner:[HIGH CONFIRMED 2026-06-10] return fief_owner(selected_province_idx) -- 2-op accessor (PUSH $6F5F selected_province_idx; CALL $D772 fief_owner; RETURN @ $D783). The owning daimyo id of the currently-selected province. Called by 5 drivers (Marry/Pact diplomacy among them -- act on the selected province's lord). Was 'ui_helper_d77e' (TBD); NOT a UI helper (a data accessor, like fief_owner).
-NesPrgRom:3CB5E:min_word:[HIGH CONFIRMED 2026-06-10] Returns min(a, b) (unsigned). Kernel primitive, 29 callers.
-NesPrgRom:3D351:prompt_ab_window:[HIGH CONFIRMED 2026-06-10] A/B prompt over a caller-supplied window (body @ $D356): redraw_window(arg1); read_frame_timer(1); poll wait_button_edge until A(64)/B(128)/btn(2); read_frame_timer(0); on A echo glyph 60 + return 1, on B echo glyph 62 + return 0, on btn-2 return 2; open_message_window() to restore. Confirms the old 'candidate: 2-choice prompt' note (it's 3-way incl. a cancel/btn-2). Sibling of prompt_y_n ($D3A7) but takes the window arg + has the 3rd exit. 7 sites. Was 'ui_helper_d351'.
-NesPrgRom:3CD20:repaint_screen:[HIGH CONFIRMED 2026-06-10] Full-screen repaint + UI-state reset. Bracketed palette_swap(1)..(0); fill_nametable_wrap + fill_attr_wrap (clear scaffolding); then two DIRTY-FLAG-gated reloads: if ui_pending_flag_7fc9 -> rewrite sprite palette entries 7/11/15 + clear flag; if ui_pending_flag_7fc7 -> reload 4 bg palette entries from strategic_map_bg_palette + ppu_upload_block_wrap(strategic_map_chr_tiles) + clear flag. Finally latches+clears selected_record_idx_9e3c, resets ui_input_sel_latch_7fdf=255, set_cursor(2,20), clears ui_state_flag_7bf9 + combat_unit_window_mode_flag. ~18 call sites. Was 'ui_helper_cd20' (TBD); all callees grounded so this is a depth-0 leaf. Consumes the two dirty flags whose producers are noted at $7FC9/$7FC7.
-NesPrgRom:3CA52:rng_mod:[HIGH CONFIRMED 2026-06-10] rng_mod(n): returns 0 if n<1, else rng_next() mod n = a uniform 0..n-1. THE randomness primitive, 155 callers.
-NesPrgRom:3CA46:rng_next_wrapper:[HIGH CONFIRMED 2026-06-10] Thin wrapper: syscall_rng_next() -- advances and returns the RNG.
-NesPrgRom:3DAD7:compact_relation_list:[MED 2026-06-10] load_daimyo_relation_row(selected_province_idx) into the $6F4F buffer, then compact it in place: keep only entries whose province still exists (get_province_ai_state != 255), FF-terminate. Builds the active-daimyo relation list. NOT a 'combat pre-roll' (wrong-category). Was 'combat_helper_dad7'.
-NesPrgRom:3DD3A:filter_province_list_by_owner:[HIGH CONFIRMED 2026-06-10] In-place filter of a province-id list: walks out_list (FF-terminated), keeps each province whose is_enemy_owned(p) matches arg1 (match_enemy) AND that still exists (!province_state_is_FF), into a scratch buf, FF-terminates, then writes buf back over out_list (syscall16_sram_wrap bank 0). NOT a 'combat pre-roll' (wrong-category) -- a list-prune by ownership. Was 'combat_helper_dd3a'.
-NesPrgRom:3D972:fief_owner_weakness:[HIGH CONFIRMED 2026-06-10] Accessor: return daimyo_weakness_flag[fief_owner(arg1)] (body @ $D977) -- the weakness/condition mark of the fief's owning daimyo. Data accessor, NOT a 'war helper' (wrong-category, like fief_owner/selected_province_owner); built on the grounded fief_owner leaf. 9 sites. Semantic of daimyo_weakness_flag itself still inherited from its var label.
-NesPrgRom:3D59D:select_province_by_cursor:[HIGH CONFIRMED 2026-06-10] select_province_by_cursor(min,max): the number/cursor province picker -- prompts for a value in [min,max] and returns it (the shared selection primitive behind the command prompts).
-NesPrgRom:3D3ED:cursor_nav_loop:Menu/cursor navigation loop: switch(sub_D14E()) on NES button bits (1=R,2=L,16=Start,32=Sel,64=B,128=A) to move the selection cursor over candidates. The war-target PICK bottoms out HERE — controller input, not a target-scorer (read 2026-05-31). AI drives the same path via sub_D14E's AI branch.
-NesPrgRom:3D9B7:is_enemy_owned:Candidate target predicate: returns (fief_to_daimyo_map[ui_helper_d77e()] == arg) — i.e. the candidate fief's owner matches the target daimyo (enemy-ownership match). Eligibility, not strength. Read 2026-05-31.
-NesPrgRom:3D999:province_state_is_FF:Returns ($6CF7[arg1] == 0xFF) — province is in the EXCLUDED state. Eligibility filter used by combat_helper_dd3a. Read 2026-05-31.
-NesPrgRom:3CBBD:syscall16_sram_wrap:Thin wrapper around syscall 16 (sram_block_checksum/copy). Called by combat_helper_dd3a after filtering the candidate list — plumbing, not scoring. Read 2026-05-31.
-NesPrgRom:3E3A4:prompt_diplomacy_pact:[HIGH CONFIRMED 2026-06-10] Pact negotiation prompt: if the defender is AI, draws the pact menu (draw_daimyo_name_menu(msg_pact)), demands gold (number_input up to 9999), and runs the accept/reject flow. The diplomacy negotiation UI. (was diplomacy_helper.)
-NesPrgRom:3DA4F:set_pact_relation:[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193 stride-54) cell between selected_province_idx and battle_defending_province to 70 -- establishing a non-aggression pact. (was diplomacy_helper2.)
-NesPrgRom:3DA7D:set_marriage_relation:[HIGH CONFIRMED 2026-06-10] Sets the relations_matrix ($6193) cell between the two daimyo (selected_province_owner / fief_owner(defender)) to 90 -- the marriage alliance bond. (was diplomacy_helper3.)
-NesPrgRom:3E4DC:build_fiefs_excluding_daimyo:[MED 2026-06-10] build_owned_fief_list() into $6F89, then compact it in place keeping only fiefs whose owner (fief_owner) != arg1 -- the owned fiefs NOT held by daimyo arg1. Used in the marriage flow (candidate target list excluding a given daimyo's holdings). Was 'marry_helper_e4dc'.
-NesPrgRom:3E315:marriage_pact_handler:[MED 2026-06-10] Marriage-pact logic, two paths on whether battle_defending_province has an owner. OWNED (interactive): set ui_input_mode=2, draw_daimyo_name_menu(msg_marriage_pact) + redraw_window(msg_accept) + prompt_y_n; on yes, demand gold via number_input(1..9999); returns the entered amount (0 on decline). UNOWNED (auto/AI): 50% gate (rng_mod 2), then weakness/rng test (fief_owner_weakness(selected) or rng_mod(3)); if the province's $7001 stat > 200 returns pct_op(stat, rng_mod(30)+50)+200, else 0. Was 'marry_helper_e315'.
-NesPrgRom:3E76F:draw_daimyo_portrait:[HIGH 2026-06-01] Draws the daimyo portrait (stat-roll/info screens; caller sets active_province_idx_copy $6F5B first). Loads a 4-entry palette, then BRANCHES on the daimyo record's status/generated flag (record[+6], the 7th byte of daimyo_table_17): flag==0 (an ORIGINAL scenario daimyo) -> PRESET path: descriptor table at $BBD0 (graphics bank, NOT the string bank the decompiler resolves it to) indexed by fief_to_mapid*4, read 8 bytes, upload that daimyo's DEDICATED portrait CHR to $15B0; flag==1 (a GENERATED/replacement daimyo) -> COMPOSITE path: unpack_record_to_sram_e6b9 builds the base-5 face from $6EB1. Then blits the 8x8 portrait. THIS is why the original 50 have fixed faces (preset) while death-replacements get random composite faces. (was the mislabeled 'marry_helper_e76f'.)
-NesPrgRom:3CC35:palette_swap:[HIGH CONFIRMED 2026-06-10] return syscall_palette_swap(arg1) -- 1-op forward to the native palette-swap syscall (body @ $CC3A: PUSH local12; CALL syscall_palette_swap; RETURN). NOT marriage-related: 'marry_helper_cc35' was wrong-category (it appears in effect/marriage screens that swap palettes, e.g. palette_swap(1)/palette_swap(0) bracketing palette_write_wrap blocks). 91 call sites.
-NesPrgRom:3CC69:clear_rect_right_panel:[HIGH CONFIRMED 2026-06-10] ppu_fill_rect_wrap(22, 7, 29, 18, 1) -- blanks the right-side panel (cols 22-29, rows 7-18) with tile $01. A fixed-geometry clear, sibling of clear_rect_top_strip/left_upper/left_lower. NOT trade-specific (wrong-category). Was 'trade_helper_cc69'.
-NesPrgRom:3DB35:increment_ai_player_count:[MED 2026-06-10] ai_player_count++; if (is_ai_count_ge_8()) set_6da1_bit7(). Bumps the daimyo/AI count and sets the $6DA1 bit-7 flag once it reaches 8 (the >=8 threshold). NOT a UI helper (wrong-category). Was 'ui_helper_db35'.
-NesPrgRom:3DB12:defender_owner_is_keyed_daimyo:[MED PROBABLE 2026-06-10] Combat predicate (NOT tax -- wrong-category): return fief_owner(battle_defending_province) == (scenario_fief_count==17 ? 3 : 20). I.e. is the defending province owned by the scenario's keyed daimyo (index 3 in the 17-fief scenario, 20 in the 50-fief). OPEN: confirm who daimyo 3/20 is (likely the scenario protagonist/Nobunaga) via the daimyo table. Was 'tax_helper_db12'.
-NesPrgRom:3D759:standard_delay:[HIGH CONFIRMED 2026-06-10] return delay_loop(delay_loop_count) -- 2-op wrapper (PUSH $6D65 delay_loop_count; CALL $D73E delay_loop; RETURN @ $D75E). Runs the standard configurable busy-wait; delay_loop_count ($6D65) is the user-adjustable message-speed setting. 3 callers. Was 'ui_helper_d759'.
-NesPrgRom:3D772:fief_owner:[HIGH CONFIRMED 2026-06-10] return fief_to_daimyo_map[fief] -- 5-op accessor (LOADL 12 fief; LOADR_imm2 $6E15 fief_to_daimyo_map; ADD; BYTE_DEREF; RETURN @ $D777). Takes a fief id, returns its owning daimyo id. Was 'ui_helper_d772' (low-fidelity: NOT a UI helper, a data accessor; the 'fief->owner' note scattered in other comments is now ground-truthed).
-NesPrgRom:3E5F2:render_map_section:[HIGH CONFIRMED 2026-06-10] The strategic-map SECTION renderer. If arg1 != the current section: palette_swap(1); clear the right margin (ppu_fill_rect 30,4..31,19); ppu_copy_rect the section's 28x16 tilemap (strategic_map_section_tilemaps + arg1*0x1C0, bank 4) to cols 2-29 rows 4-19; ppu_upload_block the section's 32-byte attribute table (strategic_map_section_attributes + arg1*32 -> PPU $23C8); mark selected_record_idx_9e3c=arg1; then walk the section's 34-byte record list and draw every fief's lord name (draw_province_lord_name); palette_swap(0). A 'map section' = tilemap(0x1C0) + attributes(32) + fief records(34). 8 sites. Was 'map_helper_e5f2'. The graphics-thread keystone; see ch.16/19.
-NesPrgRom:3C4DC:ui_unused:Reserved.
 NesPrgRom:4D5A:window_tile_gfx_8d5a:[GFX-TILES 2026-06-10] Window/menu tile source (ppu_copy_rect_wrap, fief_select_input_loop); shared $8D5A blob.
 NesPrgRom:5E3C:record_sram_9e3c:[SRAM-ADDR 2026-06-10] SRAM record-area address (syscall16_sram_wrap, fief_select_input_loop).
 NesPrgRom:79DC:jumptab_b9dc:[ROM-DATA] pointer/dispatch table; read by driver_trade via imm-word ptr; bytes: 04 9f af 9f 03 a0 68 a0 13 a1 af a1
@@ -889,12 +958,6 @@ NesPrgRom:7E1F:str_gold_rice_prompt:[ROM-STR 2026-06-10] '(Gold/Rice)?'
 NesPrgRom:7E2E:str_peasants_men_prompt_nl:[ROM-STR 2026-06-10] '(Peasnts/Men)?' (nl alias)
 NesPrgRom:7E30:str_peasants_men_prompt:[ROM-STR 2026-06-10] '(Peasnts/Men)?'
 NesPrgRom:7E41:str_amount_available_fields:[ROM-STR 2026-06-10] '%3d','%d%s','available  0','(arrows)'
-NesPrgRom:3F7D4:governance_policy_name_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to the AI governance-policy names: Home fief/Industrial/Military/Balanced/Farming/Direct (driver_grant). (was grant_menu_str_ptrs.)
-NesPrgRom:3F816:lord_command_name_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to the 14 lord-command names: Move/War/Tax/Send/Dam/Pact/Grow/Marry/Trade/Hire/Train/View/Build/Give. REFUTES the prior fief_stat_label name -- these are COMMAND names (its reader fief_info_display draws the command menu).
-NesPrgRom:3F9AF:unit_type_name_table_alias:[ROM-DATA 2026-06-10] Alias of unit_type_name_table ($F9AF: Rifles/Infntry/Cavalry); read by render_arms_edit_screen.
-NesPrgRom:3FEE9:governance_state_label_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to abbreviated governance-state labels: Assign/Ind/Mil/Bal/Farm/Dir/Menu (draw_fief_view_label). (was province_state_label_ptrs.)
-NesPrgRom:3FF1A:settings_menu_str_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to settings-menu items: Sound/Animat/Wait/Save/Battle/End/Menu (driver_other).
-NesPrgRom:3FF4F:trade_menu_str_ptrs:[ROM-DATA 2026-06-10] Word-ptrs to trade-menu items: Loan/Repay/Sell/Buy/Arms/Menu (driver_trade).
 NesPrgRom:79F6:msg_s_s_s:[ROM-STR] "%s%s%s"
 NesPrgRom:79FD:msg_attack:[ROM-STR] "Attack"
 NesPrgRom:7A14:msg_market:[ROM-STR] "__Market__"
@@ -985,64 +1048,6 @@ NesPrgRom:7F75:msg_change_which:[ROM-STR] "Change which?"
 NesPrgRom:7F83:msg_what_a_waste:[ROM-STR] "What a waste!"
 NesPrgRom:7F91:msg_your_orders:[ROM-STR] "\nyour orders?"
 NesPrgRom:7F9F:msg_turn_2d_fief_2d:[ROM-STR] "Turn %2d  Fief %2d"
-NesPrgRom:3F98A:msg_no_fiefs:[ROM-STR] "\nno fiefs"
-NesPrgRom:3F994:msg_fiefs:[ROM-STR] "  Fiefs "
-NesPrgRom:3F99D:msg_how_much_f99d:[ROM-STR] "How much"
-NesPrgRom:3F9A6:msg_how_many:[ROM-STR] "How many"
-NesPrgRom:3F9CD:msg_move_where:[ROM-STR] "\nMove where?\n"
-NesPrgRom:3F9DB:msg_how_many_men:[ROM-STR] "How many men"
-NesPrgRom:3F9E8:msg_will_you_lead_them_personally:[ROM-STR] "Will you lead\nthem personally"
-NesPrgRom:3FA06:msg_they_have_arrived_safely:[ROM-STR] "They have\narrived safely"
-NesPrgRom:3FA1F:msg_attack_where:[ROM-STR] "\nAttack where?\n"
-NesPrgRom:3FA2F:msg_how_many_men_fa2f:[ROM-STR] "How many men"
-NesPrgRom:3FA3C:msg_how_much_rice_will_they_take:[ROM-STR] "How much rice\nwill they take"
-NesPrgRom:3FA59:msg_will_you_lead_them_personally_fa59:[ROM-STR] "Will you lead\nthem personally"
-NesPrgRom:3FA77:msg_tax_is_d_enter_new_tax:[ROM-STR] "Tax is %d\nEnter new tax"
-NesPrgRom:3FA8F:msg_the_peasants_are_delighted:[ROM-STR] "The peasants are\ndelighted!"
-NesPrgRom:3FAAB:msg_the_peasants_are_protesting:[ROM-STR] "The peasants are\nprotesting!"
-NesPrgRom:3FAC8:msg_send_where:[ROM-STR] "\nSend where? "
-NesPrgRom:3FAD6:msg_lord_you_are_too_weak_for_batt:[ROM-STR] "Lord, you are too\nweak for battle!"
-NesPrgRom:3FAFA:msg_gold:[ROM-STR] "Gold"
-NesPrgRom:3FAFF:msg_rice:[ROM-STR] "Rice"
-NesPrgRom:3FB04:msg_the_supplies_have_arrived_safe:[ROM-STR] "The supplies have\narrived safely"
-NesPrgRom:3FB25:msg_s_is_d_spend_how_much_on_it:[ROM-STR] "%s is %d\nSpend how much\non it"
-NesPrgRom:3FB43:msg_dams_value_is_now_d:[ROM-STR] "Dams value is\nnow %d"
-NesPrgRom:3FB58:msg_output_is_now_d:[ROM-STR] "Output is now\n%d"
-NesPrgRom:3FB69:msg_no_merchant_in_the_area:[ROM-STR] "No merchant in\nthe area"
-NesPrgRom:3FB81:msg_recruit_which:[ROM-STR] "Recruit which"
-NesPrgRom:3FB90:msg_lord_s_we_now_have_d_men:[ROM-STR] "Lord %s, we\nnow have %d men"
-NesPrgRom:3FBAE:msg_what_mission:[ROM-STR] "What mission"
-NesPrgRom:3FBBB:msg_enemy_morale_is_falling_to_pie:[ROM-STR] "Enemy morale is\nfalling to pieces!"
-NesPrgRom:3FBDE:msg_skill_is_now_d:[ROM-STR] "Skill is now %d"
-NesPrgRom:3FBEF:msg_view_which_fief:[ROM-STR] "View which fief?\n"
-NesPrgRom:3FC01:msg_our_spy_was_caught:[ROM-STR] "Our spy was\ncaught"
-NesPrgRom:3FC14:msg_town_value_is_now_d:[ROM-STR] "Town value is now\n%d"
-NesPrgRom:3FC29:msg_gold_for_spy:[ROM-STR] "Gold for spy"
-NesPrgRom:3FC36:msg_d_peasants_have_defected:[ROM-STR] "%d peasants\nhave defected"
-NesPrgRom:3FC50:msg_no_peasants_defected:[ROM-STR] "No peasants\ndefected!"
-NesPrgRom:3FC66:msg_seasons:[ROM-STR] "Seasons"
-NesPrgRom:3FC6E:msg_it_will_do_you_good:[ROM-STR] "It will do you\ngood"
-NesPrgRom:3FC82:msg_lord_you_are_truly_wise:[ROM-STR] "Lord, you are\ntruly wise!"
-NesPrgRom:3FC9C:msg_which_fief:[ROM-STR] "\nWhich fief? "
-NesPrgRom:3FCAA:msg_lord_s_they_ve_refused:[ROM-STR] "Lord %s\nthey`ve refused!"
-NesPrgRom:3FCC3:msg_your_bride_to_be_has_arrived:[ROM-STR] "Your bride-to-be\nhas arrived"
-NesPrgRom:3FCE0:msg_don_t_you_long_to_hear_the_pit:[ROM-STR] "Don`t you long to\nhear the\npitter-patter of\na little lord`s\nfoot"
-NesPrgRom:3FD27:msg_lord_s_s_wants_d_gold_pay:[ROM-STR] "Lord %s,\n%s wants\n%d gold\nPay"
-NesPrgRom:3FD45:msg_lord_s_s_wants_d_gold_pay_fd45:[ROM-STR] "Lord %s,\n%s wants\n%d gold\nPay"
-NesPrgRom:3FD63:msg_war_is_inevitable_so_don_t_let:[ROM-STR] "War is inevitable\nso don`t let your\nguard down!"
-NesPrgRom:3FD93:msg_who_needs_him_anyway:[ROM-STR] "Who needs him\nanyway"
-NesPrgRom:3FDA8:msg_give_how_much:[ROM-STR] "Give how much"
-NesPrgRom:3FDB6:msg_thank_you_lord:[ROM-STR] "Thank you Lord!"
-NesPrgRom:3FDC6:msg_we_re_at_our_limit:[ROM-STR] "We`re at our\nlimit"
-NesPrgRom:3FDD9:msg_you_have_no_gold:[ROM-STR] "You have no gold!"
-NesPrgRom:3FDEB:msg_you_have_no_rice:[ROM-STR] "You have no rice!"
-NesPrgRom:3FDFD:msg_you_have_no_soldiers:[ROM-STR] "You have no\nsoldiers!"
-NesPrgRom:3FE13:msg_you_have_no_peasants:[ROM-STR] "You have no\npeasants!"
-NesPrgRom:3FE29:msg_they_are_your_allies:[ROM-STR] "They are your\nallies!"
-NesPrgRom:3FE40:msg_which_fief_fe40:[ROM-STR] "\nWhich fief "
-NesPrgRom:3FE4D:msg_what_are_your_orders:[ROM-STR] "\nWhat are your\norders?"
-NesPrgRom:3FE64:msg_it_s_currently_a_s_state_ok_to:[ROM-STR] "It`s currently a\n%s state\nOK to make it a\n%s state"
-NesPrgRom:3FE97:msg_bribe_which:[ROM-STR] "\nBribe which? "
 NesPrgRom:79B2:command_driver_table:34-entry pointer table — entry N points to the bytecode subroutine that drives menu command N+1. Entries 0-20 are the 21 lord commands, 21-33 are sub-handlers reachable from within those drivers. See command-table.txt for the full listing. Chapter 9's foundational find.
 NesPrgRom:56D1:driver_move:[HIGH CONFIRMED 2026-06-10] Move command (cmd 1): requires men (effect_war_combat_prep_b); filters the player's own provinces, province_select_helper/prompt for the destination, then relocates troops (effect_move blends unit quality).
 NesPrgRom:5850:driver_war:[HIGH CONFIRMED 2026-06-10] War command (cmd 2): capital-only + not-too-weak (prep_d); requires gold/rice/men (prep_c/a/b); marks relations (effect_war_e); province_select for the target fief, then launches the battle. The main offensive command.
@@ -1119,7 +1124,6 @@ NesPrgRom:4357:ratio_times10_capped:[HIGH CERTIFIED 2026-06-10] = min((arg1*10)/
 NesPrgRom:4A4E:cycle_economy_rate:[HIGH CONFIRMED 2026-06-10] Cycles an economy rate field selected by arg1 (switch): e.g. arg1=0 increments loan_rate (wrap >15 -> rng_mod(15)), arg1=2 increments gold_rice_exchange_rate; sets ui_window_col=26 + a cursor row, redraws the new value, then restores the saved cursor. The +1/wrap rate adjuster behind the economy command menus. (was 'helper_8A4E'.)
 NesPrgRom:43C7:draw_selected_province_stat:[HIGH CONFIRMED 2026-06-10] Thin wrapper: draw_province_stat_or_dashes(selected_province_idx, arg1) — draws stat value arg1 for the currently-selected province (or '----' if inactive). (was 'helper_83C7'.)
 NesPrgRom:6F10:browse_map_sections:[HIGH CONFIRMED 2026-06-10] Strategic-map section browser: message_display(msg_arrows_other_sections) + redraw_window(msg_a_button_menu), then loops fief_select_input_loop + render_map_section to scroll between map sections until the A-menu input (10) exits. arg1 = anchor fief. (was 'map_helper_af10'.)
-NesPrgRom:3D836:cap_fief_stats:[HIGH CONFIRMED 2026-06-10] cap_fief_stats(fief): caps every field of the $7001 province record (offsets +0..+22) at the record's +24 cap field via min_word. Confirms $7001+24 = the per-fief stat CAP/header.
 NesPrgRom:4250:relations_matrix_get:[HIGH CONFIRMED 2026-06-10] Pure getter into the 54-stride relations matrix at $6193: dsel = (party_a < party_b) ^ order_flag canonicalizes which party is row vs col, then returns byte[$6193 + row*54 + col]. 3 args (party_a, party_b, order_flag); no side effects. (cf. clear_fief_pair_6193 $E1E7.)
 NesPrgRom:4271:relations_rng_predicate:[HIGH CONFIRMED 2026-06-10] Probabilistic relations gate: returns 1 iff EITHER rng_mod(100) < relations_matrix_get(fief_owner(arg1), fief_owner(arg2), 1) (owner relation) OR rng_mod(100) < relations_matrix_get(arg1, arg2, 0) (province relation). An OR of two relation-vs-roll checks; AI-decision gate.
 NesPrgRom:4303:math32_muladddiv:[HIGH CERTIFIED 2026-06-10] = (rate*amount + 9) / 10 (rounded scale-by). Oracle-proven vs ROM. DREAM renders this as ext-op stub 'return rate' (bug 1.3).
@@ -1220,10 +1224,6 @@ NesPrgRom:BA31:str_enemy_morale_falling:[ROM-STR 2026-06-10] 'enemy','morale is 
 NesPrgRom:BA57:str_passed_from_lord:[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'
 NesPrgRom:BA7F:battle_select_palette:[GFX-PALETTE 2026-06-10] Battle-setup screen palette (palette_write_wrap, battle_setup_select_province).
 NesPrgRom:BBD0:fief_tile_descriptor_table:[ROM-DATA 2026-06-10] Per-fief tile-upload descriptors (build_blit_fief_tile_block, mapid*4).
-NesPrgRom:3F9B5:str_unit_rifles:[ROM-STR 2026-06-10] "Rifles " — unit-type name, entry 0 of unit_type_name_table.
-NesPrgRom:3F9BD:str_unit_infantry:[ROM-STR 2026-06-10] "Infntry" — unit-type name, entry 1 of unit_type_name_table.
-NesPrgRom:3F9C5:str_unit_cavalry:[ROM-STR 2026-06-10] "Cavalry" — unit-type name, entry 2 of unit_type_name_table.
-NesPrgRom:3FDD8:str_you_have_no_units:[ROM-STR 2026-06-10] 'You have no [units]' message (ai_advance_units_when_attacked).
 NesPrgRom:B526:msg_y_n_b526:[ROM-STR] "\n(Y/N)? "
 NesPrgRom:B52F:msg_d_d:[ROM-STR] "8932170\n(%d-%d)\n"
 NesPrgRom:B536:msg_d_d_b536:[ROM-STR] "\n(%d-%d)\n"
@@ -1393,6 +1393,7 @@ NesPrgRom:B595:roster_dashes_1:[ROM-STR] "----" (draw_unit_roster_columns; the t
 NesPrgRom:B59A:roster_fmt_4d_2:[ROM-STR] "%4d" (draw_unit_roster_columns, 2nd column)
 NesPrgRom:B59E:roster_fmt_4d_3:[ROM-STR] "%4d" (draw_unit_roster_columns, 3rd column)
 NesPrgRom:B5A2:roster_dashes_2:[ROM-STR] "----" (draw_unit_roster_columns; the tables lane read it as binary)
+NesPrgRom:8003:tactical_hex_step:[HIGH CONFIRMED] NATIVE 6502 (bank 2, $8003-$8085), called from bytecode via CALL_abs_imm1 {native}. tactical_hex_step(&x, &y, dir): one step on the 11x5 offset-column hex grid of the tactical map (x 0..10, y 0..4). dir 1 = y+1, 4 = y-1; 0/2/3/5 = x-1/x+1/x-1/x+1, then y moves or not by the parity of the new x (down-left, down-right, up-left, up-right). Returns 1 if the step stays on the map, 0 at an edge; a diagonal can move x and then fail on y, leaving x changed. Caller validate_dir_code_and_dispatch maps keypad '1','2','3','7','8','9' to dir 0-5.
 NesPrgRom:28003:play_audio_by_id:[HIGH CONFIRMED 2026-06-10] Bank-10 audio entry (body of call_bank10_entry). Gated on audio_wait_gate==1. Dispatches on sound_request_id ($7FE5): >64 = no-op; <27 = song (load 3 voices from the $8617 table at id*3, audio_control(1..3,1)); 27-63 = single SFX voice (load 1 from $8617[id], channel = byte&4). The sound/music trigger bytecode requests via call_bank10_entry.
 NesPrgRom:28617:play_audio_by_id_stream_ptrs:[ROM-DATA] word pointer table read by play_audio_by_id ($8090, $80D9, $8110, ...): the audio streams in bank 10
 NesPrgRom:38003:cutscene_delay:[HIGH CONFIRMED 2026-06-10] Busy-wait: arg1 outer iterations x ~50 inner (nested decrement loops). The cutscene engine's timing-delay primitive.
