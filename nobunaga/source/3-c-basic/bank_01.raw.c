@@ -288,7 +288,7 @@ L_83F9:
 // $83FA effect_view_a
 // (body @ $83FF)
 
-word effect_view_a(word arg1) {
+word effect_view_a(word fief) {
     repaint_screen();    // $83FF
     palette_swap(1);    // $8403
     palette_write_wrap(7, 35);    // $840A
@@ -305,14 +305,14 @@ word effect_view_a(word arg1) {
     draw_current_year();    // $8464
     set_cursor(7, 3);    // $8469
     draw_current_season();    // $846D
-    cap_fief_stats(arg1);    // $8471
+    cap_fief_stats(fief);    // $8471
     set_cursor(10, 5);    // $8477
-    local8 = (province_state_is_FF(arg1) ? 0 : 1);    // $8488
-    if (!((province_state_is_FF(arg1) ? 0 : 1))) goto L_84C3;    // $8489
-    local6 = fief_is_daimyo_capital[arg1];    // $8492
-    if (!(get_province_ai_state(arg1))) goto L_84B9;    // $8498
-    dsel_84a9 = local6;    // $84A9
-    phi_push_84b5 = *(word*)((((dsel_84a9 ? 0 : province_ai_state[arg1]) << 1) + governance_policy_name_ptrs));    // $84AF
+    is_owned = (province_state_is_FF(fief) ? 0 : 1);    // $8488
+    if (!((province_state_is_FF(fief) ? 0 : 1))) goto L_84C3;    // $8489
+    is_capital = fief_is_daimyo_capital[fief];    // $8492
+    if (!(get_province_ai_state(fief))) goto L_84B9;    // $8498
+    dsel_84a9 = is_capital;    // $84A9
+    phi_push_84b5 = *(word*)((((dsel_84a9 ? 0 : province_ai_state[fief]) << 1) + governance_policy_name_ptrs));    // $84AF
     goto L_84B5;    // $84AF
 L_84B2:
     phi_push_84b5 = msg_home_fief;    // $84B2
@@ -320,7 +320,7 @@ L_84B5:
     phi_84c6_0 = phi_push_84b5;    // $84B6
     goto L_84C6;    // $84B6
 L_84B9:
-    if (local6) goto L_84B2;    // $84BA
+    if (is_capital) goto L_84B2;    // $84BA
     phi_push_84b5 = msg_direct;    // $84C0
     goto L_84B5;    // $84C0
 L_84C3:
@@ -328,47 +328,47 @@ L_84C3:
 L_84C6:
     redraw_window(phi_84c6_0);    // $84C6
     set_cursor(14, 3);    // $84CC
-    draw_message(effect_view_a_fief_2d, (arg1 + 1));    // $84D6
+    draw_message(effect_view_a_fief_2d, (fief + 1));    // $84D6
     set_cursor(22, 3);    // $84DD
-    redraw_window_row(arg1);    // $84E2
+    redraw_window_row(fief);    // $84E2
     set_cursor(10, 4);    // $84E8
-    if (!(local8)) goto L_84F8;    // $84ED
-    draw_owner_name(arg1);    // $84F1
+    if (!(is_owned)) goto L_84F8;    // $84ED
+    draw_owner_name(fief);    // $84F1
     goto L_84FF;    // $84F5
 L_84F8:
 L_84FF:
     redraw_window(str_fief_info_labels);    // $84FB
-    local10 = fief_to_daimyo_record_addr(arg1);    // $8504
-    local7 = &province_table_live[arg1];    // $850D
-    local9 = &province_table_live[arg1];    // $850E
-    local11 = 0;    // $8510
+    daimyo_stat_ptr = fief_to_daimyo_record_addr(fief);    // $8504
+    fief_record = &province_table_live[fief];    // $850D
+    stat_ptr = &province_table_live[fief];    // $850E
+    stat_idx = 0;    // $8510
 L_8511:
-    if (!(((unsigned)local11 < (unsigned)6))) goto L_851E;    // $8514
+    if (!(((unsigned)stat_idx < (unsigned)6))) goto L_851E;    // $8514
     phi_8522_0 = 2;    // $851B
-    phi_8522_1 = (local11 + 13);    // $851B
+    phi_8522_1 = (stat_idx + 13);    // $851B
     goto L_8522;    // $851B
 L_851E:
     phi_8522_0 = 10;    // $8521
-    phi_8522_1 = (local11 + 1);    // $8521
+    phi_8522_1 = (stat_idx + 1);    // $8521
 L_8522:
     set_cursor(phi_8522_0, phi_8522_1);    // $8522
-    redraw_window(*(word*)(((local11 << 1) + fief_stat_name_ptrs)));    // $852E
-    if (!(((unsigned)local11 < (unsigned)6))) goto L_854A;    // $8535
+    redraw_window(*(word*)(((stat_idx << 1) + fief_stat_name_ptrs)));    // $852E
+    if (!(((unsigned)stat_idx < (unsigned)6))) goto L_854A;    // $8535
     ui_window_col = 6;    // $8539
-    local10 = (local10 + 1);    // $853E
-    draw_province_stat3_or_dashes(arg1, *(byte*)((local10 - 1)));    // $8543
+    daimyo_stat_ptr = (daimyo_stat_ptr + 1);    // $853E
+    draw_province_stat3_or_dashes(fief, *(byte*)((daimyo_stat_ptr - 1)));    // $8543
     goto L_855B;    // $8547
 L_854A:
     ui_window_col = 16;    // $854C
-    local9 = (local9 + 2);    // $8551
+    stat_ptr = (stat_ptr + 2);    // $8551
 L_855B:
-    draw_province_stat_or_dashes(arg1, *(word*)((local9 + -2)));    // $8557
-    local11 = (local11 + 1);    // $855D
-    if (((unsigned)local11 < (unsigned)18)) goto L_8511;    // $8562
-    if (!(local8)) goto L_858C;    // $8566
-    active_province_idx_copy = fief_owner(arg1);    // $856E
+    draw_province_stat_or_dashes(fief, *(word*)((stat_ptr + -2)));    // $8557
+    stat_idx = (stat_idx + 1);    // $855D
+    if (((unsigned)stat_idx < (unsigned)18)) goto L_8511;    // $8562
+    if (!(is_owned)) goto L_858C;    // $8566
+    active_province_idx_copy = fief_owner(fief);    // $856E
     draw_daimyo_portrait(2, 4);    // $8573
-    if (!(fief_owner_weakness(arg1))) goto L_858C;    // $857C
+    if (!(fief_owner_weakness(fief))) goto L_858C;    // $857C
     set_cursor(2, 11);    // $8581
 L_858C:
     redraw_window(msg_sick);    // $8588
@@ -412,25 +412,25 @@ L_85D9:
 // (body @ $85EF)
 
 word effect_view_b(void) {
-    local11 = 0x6F89;    // $85F2
+    fief_list_ptr = 0x6F89;    // $85F2
     phi_val_8615 = 0;    // $85F4
     goto L_8615;    // $85F4
 L_85F7:
     if (!(is_enemy_owned(local8))) goto L_8613;    // $85FC
     if ((province_ai_state[local8] == 255)) goto L_8613;    // $8609
-    local11 = (local11 + 1);    // $860E
-    *(byte*)((local11 - 1)) = local8;    // $8612
+    fief_list_ptr = (fief_list_ptr + 1);    // $860E
+    *(byte*)((fief_list_ptr - 1)) = local8;    // $8612
 L_8613:
     phi_val_8615 = (local8 + 1);    // $8614
 L_8615:
     local8 = phi_val_8615;    // $8615
     if (((unsigned)local8 < (unsigned)scenario_fief_count)) goto L_85F7;    // $861B
-    *(byte*)(local11) = -1;    // $8621
-    local10 = 0;    // $8623
+    *(byte*)(fief_list_ptr) = -1;    // $8621
+    page_col = 0;    // $8623
     phi_val_8705 = 0x6F89;    // $8627
     goto L_8705;    // $8627
 L_862A:
-    if (local10) goto L_8664;    // $862B
+    if (page_col) goto L_8664;    // $862B
     repaint_screen();    // $862E
     palette_swap(1);    // $8632
     palette_write_wrap(7, 43);    // $8639
@@ -440,37 +440,37 @@ L_862A:
     set_cursor(2, 3);    // $8659
 L_8664:
     redraw_window(msg_fief_gold_town_rice_output_dam);    // $8660
-    cap_fief_stats(*(byte*)(local11));    // $8667
+    cap_fief_stats(*(byte*)(fief_list_ptr));    // $8667
     ui_cursor_row = 3;    // $866C
-    local6 = ((local10 * 5) + 11);    // $8673
-    ui_window_col = ((local10 * 5) + 11);    // $8674
-    draw_message(effect_view_b_fmt_2d, (*(byte*)(local11) + 1));    // $867E
-    local9 = &province_table_live[*(byte*)(local11)];    // $868B
-    ui_window_col = (local6 - 1);    // $868E
+    col_x = ((page_col * 5) + 11);    // $8673
+    ui_window_col = ((page_col * 5) + 11);    // $8674
+    draw_message(effect_view_b_fmt_2d, (*(byte*)(fief_list_ptr) + 1));    // $867E
+    stat_ptr = &province_table_live[*(byte*)(fief_list_ptr)];    // $868B
+    ui_window_col = (col_x - 1);    // $868E
     ui_cursor_row = (ui_cursor_row + 2);    // $8695
-    local9 = (local9 + 2);    // $869A
-    draw_message(effect_view_b_fmt_4d_1, *(word*)((local9 + -2)));    // $86A2
+    stat_ptr = (stat_ptr + 2);    // $869A
+    draw_message(effect_view_b_fmt_4d_1, *(word*)((stat_ptr + -2)));    // $86A2
     local8 = 0;    // $86A7
 L_86A8:
-    ui_window_col = (local6 - 1);    // $86AA
-    local9 = (local9 + 2);    // $86AF
-    draw_message(effect_view_b_fmt_4d_2, *(word*)(local9));    // $86B5
+    ui_window_col = (col_x - 1);    // $86AA
+    stat_ptr = (stat_ptr + 2);    // $86AF
+    draw_message(effect_view_b_fmt_4d_2, *(word*)(stat_ptr));    // $86B5
     local8 = (local8 + 1);    // $86BB
     if ((local8 < 10)) goto L_86A8;    // $86BF
-    ui_window_col = (local6 - 1);    // $86C4
-    draw_message(effect_view_b_fmt_4d_3, fief_tax_rate[*(byte*)(local11)]);    // $86D2
-    ui_window_col = (local6 - 1);    // $86D8
-    draw_fief_view_label(*(byte*)(local11));    // $86DE
-    local10 = (local10 + 1);    // $86E4
-    if (!(((local10 == 4) || (*(byte*)((local11 + 1)) == 255)))) goto L_8703;    // $86F1
+    ui_window_col = (col_x - 1);    // $86C4
+    draw_message(effect_view_b_fmt_4d_3, fief_tax_rate[*(byte*)(fief_list_ptr)]);    // $86D2
+    ui_window_col = (col_x - 1);    // $86D8
+    draw_fief_view_label(*(byte*)(fief_list_ptr));    // $86DE
+    page_col = (page_col + 1);    // $86E4
+    if (!(((page_col == 4) || (*(byte*)((fief_list_ptr + 1)) == 255)))) goto L_8703;    // $86F1
     palette_swap(0);    // $86F5
     if ((ui_prompt_redraw() == 2)) goto L_870F;    // $86FE
-    local10 = 0;    // $8702
+    page_col = 0;    // $8702
 L_8703:
-    phi_val_8705 = (local11 + 1);    // $8704
+    phi_val_8705 = (fief_list_ptr + 1);    // $8704
 L_8705:
-    local11 = phi_val_8705;    // $8705
-    if ((*(byte*)(local11) != 255)) goto L_862A;    // $870C
+    fief_list_ptr = phi_val_8705;    // $8705
+    if ((*(byte*)(fief_list_ptr) != 255)) goto L_862A;    // $870C
 L_870F:
     palette_write_wrap(7, 33);    // $8712
     return palette_write_wrap(11, 48);    // $871D
@@ -574,15 +574,15 @@ L_8849:
 // $887D add_effect_gain_clamped
 // (body @ $8882)
 
-word add_effect_gain_clamped(word arg1, word arg2) {
-    local11 = arg1;    // $8883
+word add_effect_gain_clamped(word gain, word stat_ptr) {
+    adj_gain = gain;    // $8883
     if (!(fief_owner_weakness(selected_province_idx))) goto L_8899;    // $888B
-    local11 = (local11 / 2);    // $8892
-    if (local11) goto L_8899;    // $8893
-    local11 = (local11 + 1);    // $8898
+    adj_gain = (adj_gain / 2);    // $8892
+    if (adj_gain) goto L_8899;    // $8893
+    adj_gain = (adj_gain + 1);    // $8898
 L_8899:
-    *(word*)(arg2) = (*(word*)(arg2) + local11);    // $889F
-    return clamp_amount_to_province_max(arg2);    // $88A5
+    *(word*)(stat_ptr) = (*(word*)(stat_ptr) + adj_gain);    // $889F
+    return clamp_amount_to_province_max(stat_ptr);    // $88A5
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $88A6
@@ -690,11 +690,11 @@ L_8A48:
 // $8A4E cycle_economy_rate
 // (body @ $8A53)
 
-word cycle_economy_rate(word arg1) {
-    local10 = ui_window_col;    // $8A56
-    local9 = ui_cursor_row;    // $8A5A
+word cycle_economy_rate(word rate_sel) {
+    saved_col = ui_window_col;    // $8A56
+    saved_row = ui_cursor_row;    // $8A5A
     ui_window_col = 26;    // $8A5D
-    switch (arg1) {    // $8A61
+    switch (rate_sel) {    // $8A61
         case 0: goto L_8A74;    // $8A61
         case 1: goto L_8ABC;    // $8A61
         case 2: goto L_8AAA;    // $8A61
@@ -711,10 +711,10 @@ L_8A8B:
     ui_cursor_row = 21;    // $8A8D
     phi_val_8a93 = loan_rate;    // $8A90
 L_8A93:
-    local11 = phi_val_8a93;    // $8A93
+    rate_value = phi_val_8a93;    // $8A93
 L_8A94:
-    draw_message(cycle_economy_rate_fmt, (local11 / 10), (local11 % 10));    // $8A9F
-    return set_cursor(local10, local9);    // $8AA9
+    draw_message(cycle_economy_rate_fmt, (rate_value / 10), (rate_value % 10));    // $8A9F
+    return set_cursor(saved_col, saved_row);    // $8AA9
 L_8AAA:
     phi_val_8aae = (gold_rice_exchange_rate + 1);    // $8AAD
 L_8AAE:

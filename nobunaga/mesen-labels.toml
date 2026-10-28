@@ -3267,3 +3267,35 @@ local10 = { name = "saved_window_col", comment = "[HIGH] STORE_quick 10 of ui_wi
 # draw_selected_province_stat
 arg1 = { name = "stat_value", comment = "[HIGH] PUSH_quick 12 @$83CC -> arg2 (value) of $83A2 after sel idx; callers push DEREF of rec+0/+2 (gold/debt), $7001+sel*26 @$A7EF" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x8A4E"]
+# cycle_economy_rate
+arg1 = { name = "rate_sel", comment = "[HIGH] LOADL_quick 12 @$8A60 into SWITCH_contig limit 6 picking loan/exchange/arms/men/hire rate; callers push constants 0..5" }
+local9 = { name = "saved_row", comment = "[HIGH] STORE_quick 9 @$8A5A = ui_cursor_row on entry; pushed as set_cursor arg2 @$8AA3 to restore" }
+local10 = { name = "saved_col", comment = "[HIGH] STORE_quick 10 @$8A56 = ui_window_col on entry; pushed as set_cursor arg1 @$8AA4 to restore" }
+local11 = { name = "rate_value", comment = "[HIGH] STORE_quick 11 @$8A93 = updated rate from the case; drawn as local11/10 and local11%10 via draw_message @$8A94" }
+
+[vars.bank1."0x887D"]
+# add_effect_gain_clamped
+arg1 = { name = "gain", comment = "[HIGH] LOADL_quick 12 @$8882 copied to local11; callers push last local11<<1 / local9 / local7 (amounts)" }
+arg2 = { name = "stat_ptr", comment = "[HIGH] *arg2 += local11 @$889A-$889F (DEREF/ADD/POPSTORE), then passed to clamp_amount_to_province_max; callers push fief+4, +10" }
+local11 = { name = "adj_gain", comment = "[HIGH] =arg1 @$8883; halved (SDIV 2, min 1) @$888E when fief_owner_weakness(selected); added to *arg2 @$8899" }
+
+[vars.bank1."0x85EA"]
+# effect_view_b
+local6 = { name = "col_x", comment = "[HIGH] STORE_quick 6 @$8673 = local10*5+11, also to ui_window_col; later ui_window_col = local6-1 for each field" }
+# local8 left positional — Scratch: fief index 0..scenario_fief_count in list-build loop ($85F7-$861B), then row counter 0..9 ($86A7-$86BF)
+local9 = { name = "stat_ptr", comment = "[HIGH] STORE_quick 9 @$868B = $7001+fief*26; +=2 per row @$8699/$86AE, word DEREF passed to draw_message 4-digit fmts" }
+local10 = { name = "page_col", comment = "[HIGH] Column on page: 0 @$8623, INC @$86E3, ==4 triggers prompt and reset @$8702; 0 means repaint @$862A" }
+local11 = { name = "fief_list_ptr", comment = "[MED] Cursor into fief list $6F89: write cursor @$860C (BYTE_POPSTORE), FF-terminated @$861E, then read cursor @$8705" }
+
+[vars.bank1."0x83FA"]
+# effect_view_a
+arg1 = { name = "fief", comment = "[HIGH] Fief index: PUSH_quick 12 to cap_fief_stats/province_state_is_FF/fief_to_daimyo_record_addr; idx*26+$7001 @$8505; callers push $6F63/$6F5F" }
+local6 = { name = "is_capital", comment = "[HIGH] STORE_quick 6 @$8492 = byte fief_is_daimyo_capital[arg1]; read @$849B/$84B9 to pick msg_home_fief vs policy name" }
+local7 = { name = "fief_record", comment = "[LOW] Dead store: STORE_quick 7 @$850D = $7001+arg1*26 (province record ptr), never loaded afterward" }
+local8 = { name = "is_owned", comment = "[HIGH] STORE_quick 8 @$8488 = province_state_is_FF(arg1)?0:1; LOADL_quick 8 @$84EC/$8565 gates owner name and portrait/sick block" }
+local9 = { name = "stat_ptr", comment = "[HIGH] STORE_quick 9 @$850E = &province_table_live[arg1]; +=2 @$8551, word *(p-2) passed to draw_province_stat_or_dashes" }
+local10 = { name = "daimyo_stat_ptr", comment = "[HIGH] STORE_quick 10 @$8504 = fief_to_daimyo_record_addr(arg1); post-inc byte deref @$853C to draw_province_stat3_or_dashes" }
+local11 = { name = "stat_idx", comment = "[HIGH] Loop 0..17 (UCMPLT 18 @$855F); <6 picks column/draw fn, indexes fief_stat_name_ptrs @$8526, sets cursor row" }
+
