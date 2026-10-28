@@ -2820,3 +2820,31 @@ arg1 = { name = "daimyo", comment = "[HIGH] Daimyo index: LOADL_quick 12 *7 + $7
 arg1 = { name = "fief", comment = "[HIGH] Fief index: LOADL_quick 12 *26 + $7001 province_table_live; callers push battle_defending_province / own fief arg" }
 local11 = { name = "fief_rec", comment = "[HIGH] Province record ptr (STORE_quick 11 $D804): +8 output read ($D807), +12 loyalty and +14 wealth zeroed via POPSTORE" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 11 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xD14E"]
+# poll_input
+local8 = { name = "saved_cursor_row", comment = "[HIGH] STORE_quick 8 <- ui_cursor_row $7FCF at $D183; pushed back into set_cursor at $D1A3 after the control-N banner draws. Only use." }
+local9 = { name = "saved_cursor_col", comment = "[HIGH] STORE_quick 9 <- ui_window_col $7FCD at $D17F; pushed last at $D1A4, so it is arg1 of set_cursor $CC7B, restoring the col. Only use." }
+local10 = { name = "fief", comment = "[HIGH] STORE_quick 10 <- selected_province_idx $6F5F or battle_defending_province $6F63 ($D1E4); read once: PUSH_quick 10 -> fief_owner $D1CB" }
+local11 = { name = "controller_port", comment = "[MED] init 2; player_daimyo[$7FD5+slot]==owner search index; &1/^1 into $7FDF/$7FE1 latches; +1 to draw_message; PUSH_quick 11 to syscall 6" }
+
+[vars.bank15."0xD78B"]
+# daimyo_name_width
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 -> fief_owner $D772 at $D797; callers push selected_province_idx $6F5F, battle_defending_province $6F63, local10" }
+local11 = { name = "daimyo_name_ptr", comment = "[HIGH] STORE_quick 11 = fief_owner(arg1)*9 + daimyo_name_table $77A8 at $D7A2, then pushed to redraw_window $CEC4" }
+
+[vars.bank15."0xD7AF"]
+# draw_daimyo_name
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 -> fief_owner $D772 at $D7BB; callers push $6F63, $6F5F, get_battle_side_province() results" }
+local11 = { name = "daimyo_name_ptr", comment = "[HIGH] STORE_quick 11 = fief_owner(arg1)*9 + daimyo_name_table $77A8 at $D7C6, then pushed to redraw_window $CEC4" }
+
+[vars.bank15."0xD7DA"]
+# fief_to_daimyo_record_addr
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 -> fief_owner $D772 at $D7DF, owner -> daimyo_record_addr; callers push $6F63, literal 30, byte *local11" }
+
+[vars.bank15."0xD815"]
+# clear_military_stats_if_no_men
+arg1 = { name = "fief", comment = "[HIGH] LOADL_quick 12 *26 + $7011 ($7001+16, men) at $D81A; callers push selected_province_idx $6F5F or caller's arg1" }
+local11 = { name = "men_field_ptr", comment = "[HIGH] STORE_quick 11 = &province[arg1].men ($7011+idx*26); DEREF; if 0, POPSTORE 0 to +2/+4/+6 (morale, skill, arms)" }
+

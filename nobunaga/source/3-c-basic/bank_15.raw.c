@@ -666,7 +666,7 @@ word draw_message(word arg1) {
 // (body @ $D153)
 
 word poll_input(void) {
-    local11 = 2;    // $D154
+    controller_port = 2;    // $D154
     switch (ui_input_mode) {    // $D158
         case 0: goto L_D169;    // $D158
         case 1: goto L_D1E1;    // $D158
@@ -678,19 +678,19 @@ word poll_input(void) {
 L_D169:
     phi_val_d16a = 0;    // $D169
 L_D16A:
-    local11 = phi_val_d16a;    // $D16A
+    controller_port = phi_val_d16a;    // $D16A
 L_D16B:
-    if (((unsigned)local11 > (unsigned)1)) goto L_D1C9;    // $D16E
+    if (((unsigned)controller_port > (unsigned)1)) goto L_D1C9;    // $D16E
 L_D171:
-    local11 = (local11 & 1);    // $D174
-    if ((local11 == ui_input_sel_latch_7fdf)) goto L_D1AD;    // $D179
-    local9 = ui_window_col;    // $D17F
-    local8 = ui_cursor_row;    // $D183
+    controller_port = (controller_port & 1);    // $D174
+    if ((controller_port == ui_input_sel_latch_7fdf)) goto L_D1AD;    // $D179
+    saved_cursor_col = ui_window_col;    // $D17F
+    saved_cursor_row = ui_cursor_row;    // $D183
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $D18D
     set_cursor(21, 26);    // $D195
-    draw_message(msg_control_n, (local11 + 1));    // $D19F
-    set_cursor(local9, local8);    // $D1A5
-    ui_input_sel_latch_7fdf = local11;    // $D1AA
+    draw_message(msg_control_n, (controller_port + 1));    // $D19F
+    set_cursor(saved_cursor_col, saved_cursor_row);    // $D1A5
+    ui_input_sel_latch_7fdf = controller_port;    // $D1AA
 L_D1AD:
     if ((ui_timer_gate_flag_7fe7 == 2)) goto L_D269;    // $D1B2
     frame_counter = (frame_counter - 1);    // $D1B9
@@ -702,14 +702,14 @@ L_D1AD:
 L_D1C9:
     phi_val_d1ca = 0;    // $D1C9
 L_D1CA:
-    local11 = phi_val_d1ca;    // $D1CA
-    if (!((player_daimyo[local11] != fief_owner(local10)))) goto L_D171;    // $D1D9
-    phi_val_d1ca = (local11 + 1);    // $D1DE
+    controller_port = phi_val_d1ca;    // $D1CA
+    if (!((player_daimyo[controller_port] != fief_owner(fief)))) goto L_D171;    // $D1D9
+    phi_val_d1ca = (controller_port + 1);    // $D1DE
     goto L_D1CA;    // $D1DE
 L_D1E1:
     phi_val_d1e4 = selected_province_idx;    // $D1E1
 L_D1E4:
-    local10 = phi_val_d1e4;    // $D1E4
+    fief = phi_val_d1e4;    // $D1E4
     goto L_D16B;    // $D1E5
 L_D1E8:
     phi_val_d1e4 = battle_defending_province;    // $D1EB
@@ -719,27 +719,27 @@ L_D1EE:
     phi_val_d1fe = 0;    // $D1F9
     goto L_D1FE;    // $D1F9
 L_D1FC:
-    phi_val_d1fe = (local11 + 1);    // $D1FD
+    phi_val_d1fe = (controller_port + 1);    // $D1FD
 L_D1FE:
-    local11 = phi_val_d1fe;    // $D1FE
-    if (!((player_daimyo[local11] != selected_province_owner()))) goto L_D214;    // $D20B
-    if (((unsigned)local11 < (unsigned)8)) goto L_D1FC;    // $D211
+    controller_port = phi_val_d1fe;    // $D1FE
+    if (!((player_daimyo[controller_port] != selected_province_owner()))) goto L_D214;    // $D20B
+    if (((unsigned)controller_port < (unsigned)8)) goto L_D1FC;    // $D211
 L_D214:
-    if (!(((unsigned)local11 >= (unsigned)8))) goto L_D237;    // $D217
+    if (!(((unsigned)controller_port >= (unsigned)8))) goto L_D237;    // $D217
     phi_val_d220 = 0;    // $D21B
     goto L_D220;    // $D21B
 L_D21E:
-    phi_val_d220 = (local11 + 1);    // $D21F
+    phi_val_d220 = (controller_port + 1);    // $D21F
 L_D220:
-    local11 = phi_val_d220;    // $D220
-    if ((player_daimyo[local11] != fief_owner(battle_defending_province))) goto L_D21E;    // $D231
-    local11 = (local11 + 1);    // $D236
+    controller_port = phi_val_d220;    // $D220
+    if ((player_daimyo[controller_port] != fief_owner(battle_defending_province))) goto L_D21E;    // $D231
+    controller_port = (controller_port + 1);    // $D236
 L_D237:
-    input_mode3_latch = (local11 & 1);    // $D23A
+    input_mode3_latch = (controller_port & 1);    // $D23A
 L_D23D:
-    local11 = input_mode3_latch;    // $D240
+    controller_port = input_mode3_latch;    // $D240
     if (!(cur_combat_side)) goto L_D16B;    // $D244
-    phi_val_d16a = (local11 ^ 1);    // $D24B
+    phi_val_d16a = (controller_port ^ 1);    // $D24B
     goto L_D16A;    // $D24B
 L_D24E:
     phi_val_d16a = 1;    // $D24F
@@ -747,7 +747,7 @@ L_D24E:
 L_D252:
 L_D269:
     syscall_set_sprite(0, (ui_window_col << 3), ((ui_cursor_row << 3) - 1), 0, ui_timer_gate_flag_7fe7);    // $D265
-    return syscall_read_controller(local11);    // $D26F
+    return syscall_read_controller(controller_port);    // $D26F
 L_D270:
     syscall_set_sprite(0, 248, 248, 0, 2);    // $D27A
     frame_counter = 200;    // $D281
@@ -1201,10 +1201,10 @@ word selected_province_owner(void) {
 // $D78B daimyo_name_width
 // (body @ $D790)
 
-word daimyo_name_width(word arg1) {
+word daimyo_name_width(word fief) {
     redraw_window(daimyo_name_width_lord);    // $D793
-    local11 = daimyo_name_table[fief_owner(arg1)];    // $D7A2
-    redraw_window(daimyo_name_table[fief_owner(arg1)]);    // $D7A4
+    daimyo_name_ptr = daimyo_name_table[fief_owner(fief)];    // $D7A2
+    redraw_window(daimyo_name_table[fief_owner(fief)]);    // $D7A4
     return char_advance_width(44);    // $D7AE
 }
 
@@ -1212,10 +1212,10 @@ word daimyo_name_width(word arg1) {
 // $D7AF draw_daimyo_name
 // (body @ $D7B4)
 
-word draw_daimyo_name(word arg1) {
+word draw_daimyo_name(word fief) {
     redraw_window(draw_daimyo_name_lord);    // $D7B7
-    local11 = daimyo_name_table[fief_owner(arg1)];    // $D7C6
-    return redraw_window(daimyo_name_table[fief_owner(arg1)]);    // $D7CC
+    daimyo_name_ptr = daimyo_name_table[fief_owner(fief)];    // $D7C6
+    return redraw_window(daimyo_name_table[fief_owner(fief)]);    // $D7CC
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D7CD
@@ -1230,8 +1230,8 @@ word daimyo_record_addr(word daimyo) {
 // $D7DA fief_to_daimyo_record_addr
 // (body @ $D7DF)
 
-word fief_to_daimyo_record_addr(word arg1) {
-    return daimyo_record_addr(fief_owner(arg1));    // $D7E9
+word fief_to_daimyo_record_addr(word fief) {
+    return daimyo_record_addr(fief_owner(fief));    // $D7E9
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D7EA
@@ -1261,13 +1261,13 @@ L_D814:
 // $D815 clear_military_stats_if_no_men
 // (body @ $D81A)
 
-word clear_military_stats_if_no_men(word arg1) {
-    local11 = &province_table_live[arg1].men;    // $D822
-    phi_ret_d835 = *(word*)(local11);    // $D825
+word clear_military_stats_if_no_men(word fief) {
+    men_field_ptr = &province_table_live[fief].men;    // $D822
+    phi_ret_d835 = *(word*)(men_field_ptr);    // $D825
     if (phi_ret_d835) goto L_D835;    // $D825
-    *(word*)((local11 + 6)) = 0;    // $D832
-    *(word*)((local11 + 4)) = 0;    // $D833
-    *(word*)((local11 + 2)) = 0;    // $D834
+    *(word*)((men_field_ptr + 6)) = 0;    // $D832
+    *(word*)((men_field_ptr + 4)) = 0;    // $D833
+    *(word*)((men_field_ptr + 2)) = 0;    // $D834
     phi_ret_d835 = 0;    // $D834
 L_D835:
     return phi_ret_d835;    // $D835
