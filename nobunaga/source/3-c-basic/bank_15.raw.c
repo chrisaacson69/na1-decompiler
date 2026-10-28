@@ -358,11 +358,11 @@ word repaint_screen(void) {
     ui_pending_flag_7fc9 = 0;    // $CD4C
 L_CD4F:
     if (!(ui_pending_flag_7fc7)) goto L_CD7E;    // $CD52
-    local11 = 0;    // $CD56
+    palette_idx = 0;    // $CD56
 L_CD57:
-    palette_write_wrap(local11, *(word*)(((local11 << 1) + strategic_map_bg_palette)));    // $CD60
-    local11 = (local11 + 1);    // $CD66
-    if (((unsigned)local11 < (unsigned)4)) goto L_CD57;    // $CD6A
+    palette_write_wrap(palette_idx, *(word*)(((palette_idx << 1) + strategic_map_bg_palette)));    // $CD60
+    palette_idx = (palette_idx + 1);    // $CD66
+    if (((unsigned)palette_idx < (unsigned)4)) goto L_CD57;    // $CD6A
     ppu_upload_block_wrap(4, strategic_map_chr_tiles, 0x15B0, 36);    // $CD76
     ui_pending_flag_7fc7 = 0;    // $CD7B
 L_CD7E:
@@ -827,13 +827,13 @@ word clear_rect_left_lower_alt(void) {
 // $D326 message_display
 // (body @ $D32B)
 
-word message_display(word arg1) {
+word message_display(word msg_ptr) {
     if (!(ui_msg_oneshot_flag_7fc5)) goto L_D338;    // $D32E
     clear_rect_left_lower();    // $D331
     ui_msg_oneshot_flag_7fc5 = 0;    // $D335
 L_D338:
     set_cursor(2, (ui_msg_col_shift_flag ? 20 : 22));    // $D347
-    return redraw_window(arg1);    // $D350
+    return redraw_window(msg_ptr);    // $D350
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D351
@@ -993,16 +993,16 @@ L_D573:
 // $D586 count_decimal_digits
 // (body @ $D58B)
 
-word count_decimal_digits(word arg1) {
+word count_decimal_digits(word value) {
     phi_val_d596 = 0;    // $D58C
     goto L_D596;    // $D58C
 L_D58F:
-    arg1 = (arg1 / 10);    // $D593
-    phi_val_d596 = (local11 + 1);    // $D595
+    value = (value / 10);    // $D593
+    phi_val_d596 = (digit_count + 1);    // $D595
 L_D596:
-    local11 = phi_val_d596;    // $D596
-    if (arg1) goto L_D58F;    // $D598
-    return local11;    // $D59C
+    digit_count = phi_val_d596;    // $D596
+    if (value) goto L_D58F;    // $D598
+    return digit_count;    // $D59C
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D59D
@@ -1121,19 +1121,19 @@ L_D6B2:
 // $D6B8 math32_3arg
 // (body @ $D6BD)
 
-word math32_3arg(word arg1, word arg2, word arg3) {
+word math32_3arg(word multiplicand, word multiplier, word divisor) {
     // sdiv32: KOEI's 32-bit signed divide; a negative divisor d divides by |d| - 1 (ROM bug)
-    if (!arg3) return 0xFFFF;
-    return (word)sdiv32((sword)arg1 * (sword)arg2, (sword)arg3);
+    if (!divisor) return 0xFFFF;
+    return (word)sdiv32((sword)multiplicand * (sword)multiplier, (sword)divisor);
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D6DE
 // $D6DE math32_2arg
 // (body @ $D6E3)
 
-word math32_2arg(word arg1, word arg2) {
-    if (!arg1 && !arg2) return 0;
-    return (word)(((dword)arg1 * 100) / ((dword)arg1 + arg2));
+word math32_2arg(word part, word other_part) {
+    if (!part && !other_part) return 0;
+    return (word)(((dword)part * 100) / ((dword)part + other_part));
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D70D

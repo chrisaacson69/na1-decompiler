@@ -2769,3 +2769,29 @@ local11 = { name = "digit_count", comment = "[HIGH] STORE_quick 11 of the value/
 # set_cursor_sprite
 arg1 = { name = "cursor_mode", comment = "[MED] Slot 12 selector: 0 -> sprite at $F8,$F8 + syscall 1; 1 -> parked; else at col*8,row*8-1. $7FE7 = arg1-1 (or 2). Callers push 0/2" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 9 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xCD20"]
+# repaint_screen
+local11 = { name = "palette_idx", comment = "[HIGH] Loop idx 0..3: STORE_quick 11=0 @$CD56, INC/UCMPLT 4 @$CD64; indexes word table $F67A (LSHIFT1) and pushed as arg1 of palette_write_wrap" }
+
+[vars.bank15."0xD326"]
+# message_display
+arg1 = { name = "msg_ptr", comment = "[HIGH] Message/string ptr: PUSH_quick 12 @$D34B passed to redraw_window; callers PUSH_imm2 msg addrs ($B821,$B83E,$B890,$B8C7...)" }
+
+[vars.bank15."0xD586"]
+# count_decimal_digits
+arg1 = { name = "value", comment = "[HIGH] Number being counted: arg1 = arg1 SDIV 10 @$D591-$D593, loop continues while nonzero (JUMPT @$D598)" }
+local11 = { name = "digit_count", comment = "[HIGH] Counter: init 0 @$D58B, INC per /10 iteration @$D594, stored @$D596, returned via LOADL_quick 11 @$D59B" }
+
+[vars.bank15."0xD6B8"]
+# math32_3arg
+arg1 = { name = "multiplicand", comment = "[HIGH] Factor a of a*b/c: LOADL_quick 12 @$D6CB into 32-bit op; callers' last push = amount (PUSH_quick 13/12) or arms(+22)+x sum" }
+arg2 = { name = "multiplier", comment = "[HIGH] Factor b of a*b/c: LOADL_quick 13 @$D6C6; callers push rate 6-const_two ($6D63) before arg1" }
+arg3 = { name = "divisor", comment = "[HIGH] Divisor c: zero test LOADL_quick 14/JUMPF @$D6BD returns -1; first push = sqrt_int(...) result in bank1 callers" }
+
+[vars.bank15."0xD6DE"]
+# math32_2arg
+arg1 = { name = "part", comment = "[HIGH] Numerator share: 100*arg1/(arg1+arg2) (LOADL_quick 12 @$D6F2,$D6FB, LONG $19 100, $01, $02); 0 if both args zero" }
+arg2 = { name = "other_part", comment = "[HIGH] Complement added to arg1 for denominator: LOADL_quick 13 @$D6ED, LONG $03 add with arg1; zero-check @$D6E7" }
+
