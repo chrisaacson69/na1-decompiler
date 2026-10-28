@@ -4,6 +4,9 @@
 // Deterministic (fixed ROM + toml -> identical output). DO NOT hand-edit -- regenerate.
 // Pipeline: titles disasm -> vm_decompile -> DREAM structurer (V2 fallback)
 // ============================================================
+struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
+extern struct province province_table_live[];    /* at $7001 */
+
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CA03
 // $CA03 call_bank10_entry
 // (body @ $CA08)
@@ -1219,11 +1222,11 @@ word selected_province_daimyo_record(void) {
 // (body @ $D7FC)
 
 word clear_econ_stats_if_no_output(word arg1) {
-    local11 = ((arg1 * 26) + 0x7001);    // $D804
-    phi_ret_d814 = *(word*)((local11 + 8));    // $D808
+    local11 = &province_table_live[arg1];    // $D804
+    phi_ret_d814 = local11->output;    // $D808
     if (phi_ret_d814) goto L_D814;    // $D808
-    *(word*)((local11 + 14)) = 0;    // $D812
-    *(word*)((local11 + 12)) = 0;    // $D813
+    local11->wealth = 0;    // $D812
+    local11->loyalty = 0;    // $D813
     phi_ret_d814 = 0;    // $D813
 L_D814:
     return phi_ret_d814;    // $D814
@@ -1234,7 +1237,7 @@ L_D814:
 // (body @ $D81A)
 
 word clear_military_stats_if_no_men(word arg1) {
-    local11 = ((arg1 * 26) + 0x7011);    // $D822
+    local11 = &province_table_live[arg1].men;    // $D822
     phi_ret_d835 = *(word*)(local11);    // $D825
     if (phi_ret_d835) goto L_D835;    // $D825
     *(word*)((local11 + 6)) = 0;    // $D832
@@ -1250,11 +1253,11 @@ L_D835:
 // (body @ $D83B)
 
 word cap_fief_stats(word arg1) {
-    local7 = ((arg1 * 26) + 0x7001);    // $D843
+    local7 = &province_table_live[arg1];    // $D843
     local10 = local7;    // $D845
     phi_val_d863 = local7;    // $D846
     while (((unsigned)local11 < (unsigned)(local10 + 24))) {    // $D863
-        *(word*)(local11) = min_word(*(word*)(local11), *(word*)((local7 + 24)));    // $D856
+        *(word*)(local11) = min_word(*(word*)(local11), local7->header);    // $D856
         if ((*(word*)(local11) < 0)) {    // $D85B
         *(word*)(local11) = 0;    // $D860
         }
@@ -1262,7 +1265,7 @@ L_D861:
         phi_val_d863 = (local11 + 2);    // $D862
         local11 = phi_val_d863;    // $D863
     }
-    *(word*)((local7 + 10)) = min_word(*(word*)((local7 + 10)), 100);    // $D87B
+    local7->dams = min_word(local7->dams, 100);    // $D87B
     local9 = 0;    // $D87D
     local6 = fief_to_daimyo_record_addr(arg1);    // $D883
     local8 = fief_to_daimyo_record_addr(arg1);    // $D884
@@ -1679,10 +1682,10 @@ word init_new_daimyo_province_stats(word arg1) {
         phi_val_ddc8 = (local11 + 1);    // $DDC7
         local11 = phi_val_ddc8;    // $DDC8
     }
-    local8 = ((arg1 * 26) + 0x7001);    // $DDDA
-    phi_val_de45 = ((arg1 * 26) + 0x7001);    // $DDDB
-    while (((unsigned)local9 < (unsigned)(local8 + 24))) {    // $DE45
-        if (!((((arg1 * 26) + 0x7017) == local9))) goto L_DE0A;    // $DDE8
+    local8 = &province_table_live[arg1];    // $DDDA
+    phi_val_de45 = &province_table_live[arg1];    // $DDDB
+    while (((unsigned)local9 < (unsigned)&local8->header)) {    // $DE45
+        if (!((&province_table_live[arg1].arms == local9))) goto L_DE0A;    // $DDE8
         *(word*)(local9) = pct_op(*(word*)(local9), (rng_mod(31) + 50));    // $DDFC
         if (!((*(word*)(local9) < 50))) goto L_DE3B;    // $DE02
         phi_push_de3c = 50;    // $DE07
@@ -1705,8 +1708,8 @@ L_DE3C:
         phi_val_de45 = (local9 + 2);    // $DE44
         local9 = phi_val_de45;    // $DE45
     }
-    *(word*)(((arg1 * 26) + 0x700D)) = (*(word*)(((arg1 * 26) + 0x700D)) + 50);    // $DE5E
-    *(word*)(((arg1 * 26) + 0x7013)) = (*(word*)(((arg1 * 26) + 0x7013)) + 50);    // $DE6D
+    province_table_live[arg1].loyalty = (province_table_live[arg1].loyalty + 50);    // $DE5E
+    province_table_live[arg1].morale = (province_table_live[arg1].morale + 50);    // $DE6D
     fief_tax_rate[arg1] = 20;    // $DE76
     return 20;    // $DE77
         }
@@ -1784,8 +1787,8 @@ word daimyo_stat_transfer(word arg1, word arg2) {
 // (body @ $DF78)
 
 word transfer_force_triplet(void) {
-    local9 = ((selected_province_idx * 26) + 0x7013);    // $DF82
-    local10 = ((battle_defending_province * 26) + 0x7013);    // $DF8D
+    local9 = &province_table_live[selected_province_idx].morale;    // $DF82
+    local10 = &province_table_live[battle_defending_province].morale;    // $DF8D
     local11 = *(word*)((local10 + 6));    // $DF91
     local8 = 0;    // $DF93
     do {    // $DF94
@@ -1840,7 +1843,7 @@ L_E03B:
 
 word apply_conquest_outcome(void) {
     cap_fief_stats(battle_defending_province);    // $E044
-    local6 = ((battle_defending_province * 26) + 0x7001);    // $E052
+    local6 = &province_table_live[battle_defending_province];    // $E052
     local8 = (selected_province_idx == 50);    // $E059
     local9 = (battle_winner_province_sel == battle_defending_province);    // $E061
     if (local9) {    // $E063
@@ -1874,11 +1877,11 @@ L_E0B8:
     war_attacker_gold = 0;    // $E0C8
     }
 L_E0CB:
-    *(word*)(local6) = (war_attacker_gold + war_defender_gold);    // $E0D3
-    *(word*)((local6 + 6)) = (war_attacker_rice + war_defender_rice);    // $E0DE
-    *(word*)((local6 + 16)) = (war_attacker_men + war_defender_men);    // $E0EA
+    local6->gold = (war_attacker_gold + war_defender_gold);    // $E0D3
+    local6->rice = (war_attacker_rice + war_defender_rice);    // $E0DE
+    local6->men = (war_attacker_men + war_defender_men);    // $E0EA
     if (local7) {    // $E0EC
-    *(word*)((local6 + 8)) = (*(word*)((local6 + 8)) - pct_op(*(word*)((local6 + 8)), (rng_mod(10) + 10)));    // $E105
+    local6->output = (local6->output - pct_op(local6->output, (rng_mod(10) + 10)));    // $E105
     }
 L_E106:
     local10 = (battle_defending_province + 0x6E15);    // $E10D
@@ -2032,8 +2035,8 @@ L_E361:
     if (!(fief_owner_weakness(selected_province_idx))) goto L_E37D;    // $E372
     if (rng_mod(3)) goto L_E3A2;    // $E37A
 L_E37D:
-    local10 = *(word*)(((selected_province_idx * 26) + 0x7001));    // $E388
-    if ((*(word*)(((selected_province_idx * 26) + 0x7001)) > 200)) return (pct_op(local10, (rng_mod(30) + 50)) + 200);    // $E38D
+    local10 = province_table_live[selected_province_idx].gold;    // $E388
+    if ((province_table_live[selected_province_idx].gold > 200)) return (pct_op(local10, (rng_mod(30) + 50)) + 200);    // $E38D
     return 0;    // $E3A3
 }
 
@@ -2058,7 +2061,7 @@ L_E3DE:
     if (!(fief_owner_weakness(selected_province_idx))) goto L_E3F0;    // $E3E5
     if (rng_mod(3)) goto L_E423;    // $E3ED
 L_E3F0:
-    local10 = *(word*)(((selected_province_idx * 26) + 0x7001));    // $E3FB
+    local10 = province_table_live[selected_province_idx].gold;    // $E3FB
     if (rng_mod(const_two)) goto L_E421;    // $E403
     phi_ret_e422 = ((pct_op(local10, 50) + pct_op(local10, rng_mod(50))) + 20);    // $E41E
     goto L_E422;    // $E41E

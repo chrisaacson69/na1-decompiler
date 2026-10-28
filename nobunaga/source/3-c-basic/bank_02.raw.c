@@ -4,6 +4,9 @@
 // Deterministic (fixed ROM + toml -> identical output). DO NOT hand-edit -- regenerate.
 // Pipeline: titles disasm -> vm_decompile  (--raw: direct goto/label form, the structurer baseline)
 // ============================================================
+struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
+extern struct province province_table_live[];    /* at $7001 */
+
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8086
 // $8086 compose_upload_daimyo_portrait
 // (body @ $808B)
@@ -925,7 +928,7 @@ L_8C30:
 // (body @ $8C66)
 
 word draw_unit_roster_columns(word arg1) {
-    local10 = ((get_battle_side_province(arg1) * 26) + 0x7013);    // $8C72
+    local10 = &province_table_live[get_battle_side_province(arg1)].morale;    // $8C72
     local11 = fief_to_daimyo_record_addr(get_battle_side_province(arg1));    // $8C7D
     local9 = side_resource_ptr(arg1);    // $8C83
     ui_cursor_row = 6;    // $8C85
@@ -1081,8 +1084,8 @@ L_8E7E:
 L_8EA5:
     local6 = phi_val_8ea5;    // $8EA5
     if ((local6 < 5)) goto L_8E7E;    // $8EA9
-    local8 = ((selected_province_idx * 26) + 0x7013);    // $8EB6
-    local7 = ((battle_defending_province * 26) + 0x7013);    // $8EC1
+    local8 = &province_table_live[selected_province_idx].morale;    // $8EB6
+    local7 = &province_table_live[battle_defending_province].morale;    // $8EC1
     local6 = 5;    // $8EC3
 L_8EC4:
     local9 = (local9 + 1);    // $8EC6
@@ -1410,20 +1413,20 @@ word battle_init_defender(void) {
     input_mode3_latch = 255;    // $92D2
     local11 = 0;    // $92D6
     battle_defender_status_flag_6f66 = (fief_is_daimyo_capital[battle_defending_province] << 7);    // $92E1
-    war_defender_gold = *(word*)(((battle_defending_province * 26) + 0x7001));    // $92EF
-    if (!((*(word*)(((battle_defending_province * 26) + 0x7001)) <= 0))) goto L_9307;    // $92F4
-    *(word*)(((battle_defending_province * 26) + 0x7001)) = 0;    // $9303
+    war_defender_gold = province_table_live[battle_defending_province].gold;    // $92EF
+    if (!((province_table_live[battle_defending_province].gold <= 0))) goto L_9307;    // $92F4
+    province_table_live[battle_defending_province].gold = 0;    // $9303
     war_defender_gold = 0;    // $9304
 L_9307:
-    war_defender_rice = *(word*)(((battle_defending_province * 26) + 0x7007));    // $9312
-    if (!((*(word*)(((battle_defending_province * 26) + 0x7007)) <= 0))) goto L_932C;    // $9317
-    *(word*)(((battle_defending_province * 26) + 0x7007)) = 0;    // $9326
+    war_defender_rice = province_table_live[battle_defending_province].rice;    // $9312
+    if (!((province_table_live[battle_defending_province].rice <= 0))) goto L_932C;    // $9317
+    province_table_live[battle_defending_province].rice = 0;    // $9326
     war_defender_rice = 0;    // $9327
     local11 = 7;    // $932B
 L_932C:
-    war_defender_men = *(word*)(((battle_defending_province * 26) + 0x7011));    // $9337
-    if (!((*(word*)(((battle_defending_province * 26) + 0x7011)) <= 0))) goto L_9351;    // $933C
-    *(word*)(((battle_defending_province * 26) + 0x7011)) = 0;    // $934B
+    war_defender_men = province_table_live[battle_defending_province].men;    // $9337
+    if (!((province_table_live[battle_defending_province].men <= 0))) goto L_9351;    // $933C
+    province_table_live[battle_defending_province].men = 0;    // $934B
     war_defender_men = 0;    // $934C
     local11 = 8;    // $9350
 L_9351:
@@ -2074,8 +2077,8 @@ L_9BED:
 // (body @ $9C09)
 
 word ai_province_stat_diff_term(word arg1, word arg2) {
-    local9 = ((get_battle_side_province(arg1) * 26) + 0x7013);    // $9C15
-    local8 = ((get_battle_side_province((arg1 ? 0 : 1)) * 26) + 0x7013);    // $9C2B
+    local9 = &province_table_live[get_battle_side_province(arg1)].morale;    // $9C15
+    local8 = &province_table_live[get_battle_side_province((arg1 ? 0 : 1))].morale;    // $9C2B
     local11 = 0;    // $9C2D
     local7 = 0;    // $9C2E
     goto L_9C5F;    // $9C2F
@@ -2171,7 +2174,7 @@ word reduce_defending_province_town_chaos(word arg1, word arg2) {
 L_9DDE:
     message_display(msg_the_town_is_in_complete_chaos);    // $9DE1
     arg1 = ((unsigned)arg1 / (unsigned)2);    // $9DE9
-    local10 = ((battle_defending_province * 26) + 0x7005);    // $9DF4
+    local10 = &province_table_live[battle_defending_province].town;    // $9DF4
     if (!(((unsigned)*(word*)(local10) <= (unsigned)arg1))) goto L_9E02;    // $9DF9
     *(word*)(local10) = 0;    // $9DFE
     goto L_9E1C;    // $9DFF
@@ -2206,8 +2209,8 @@ word resolve_attack_apply_casualties(word arg1, word arg2) {
     local9 = get_battle_side_province(cur_combat_side);    // $9E94
     local7 = (cur_combat_side ^ 1);    // $9E9A
     local8 = get_battle_side_province((cur_combat_side ^ 1));    // $9EA0
-    local11 = ((rng_mod((6 - const_two)) + *(word*)(((local9 * 26) + 0x7013))) + *(byte*)((fief_to_daimyo_record_addr(local9) + 4)));    // $9EC1
-    local10 = ((*(word*)(((local8 * 26) + 0x7013)) + *(byte*)((fief_to_daimyo_record_addr(local8) + 4))) + (const_two << 1));    // $9EDC
+    local11 = ((rng_mod((6 - const_two)) + province_table_live[local9].morale) + *(byte*)((fief_to_daimyo_record_addr(local9) + 4)));    // $9EC1
+    local10 = ((province_table_live[local8].morale + *(byte*)((fief_to_daimyo_record_addr(local8) + 4))) + (const_two << 1));    // $9EDC
     if (combat_casualty_skip_flag_7bf3) goto L_9F37;    // $9EE0
     if ((local11 <= local10)) goto L_9F37;    // $9EE6
     arg2 = (arg2 / *(word*)(unit_strength_ptr(local7, arg1)));    // $9EF3
@@ -2242,9 +2245,9 @@ L_9FC7:
     combat_casualty_skip_flag_7bf3 = 1;    // $9FC8
     goto L_9F46;    // $9FCB
 L_9FCE:
-    *(word*)(((local8 * 26) + 0x7013)) = (*(word*)(((local8 * 26) + 0x7013)) - (get_province_ai_state(local9) ? (6 - const_two) : const_two));    // $9FEE
-    if (!((*(word*)(((local8 * 26) + 0x7013)) <= 0))) goto L_A008;    // $9FFA
-    *(word*)(((local8 * 26) + 0x7013)) = 0;    // $A007
+    province_table_live[local8].morale = (province_table_live[local8].morale - (get_province_ai_state(local9) ? (6 - const_two) : const_two));    // $9FEE
+    if (!((province_table_live[local8].morale <= 0))) goto L_A008;    // $9FFA
+    province_table_live[local8].morale = 0;    // $A007
 L_A008:
     if (!(get_province_ai_state(local9))) goto L_9FC7;    // $A00D
     message_display(mem_B1CA);    // $A013
@@ -2760,9 +2763,9 @@ word ai_rng_resolve_combat_apply_casualties(void) {
     if (!(get_province_ai_state(get_battle_side_province(local8)))) goto L_A799;    // $A75F
     if (cur_combat_unit_slot) goto L_A799;    // $A765
     if ((*(word*)((side_resource_ptr(cur_combat_side) + 4)) > (*(word*)((side_resource_ptr(local8) + 4)) / 2))) goto L_A799;    // $A77D
-    if (!(((unsigned)*(word*)(((get_battle_side_province(local8) * 26) + 0x7013)) > (unsigned)(const_two * 100)))) goto L_A79A;    // $A796
+    if (!(((unsigned)province_table_live[get_battle_side_province(local8)].morale > (unsigned)(const_two * 100)))) goto L_A79A;    // $A796
 L_A799:
-    return ((unsigned)*(word*)(((get_battle_side_province(local8) * 26) + 0x7013)) > (unsigned)(const_two * 100));    // $A799
+    return ((unsigned)province_table_live[get_battle_side_province(local8)].morale > (unsigned)(const_two * 100));    // $A799
 L_A79A:
     local10 = 0;    // $A79B
     local9 = 0;    // $A79C
@@ -3169,7 +3172,7 @@ L_AD7B:
 // (body @ $AD8B)
 
 word halve_defender_morale_for_breaching_attackers(void) {
-    local10 = ((battle_defending_province * 26) + 0x7013);    // $AD95
+    local10 = &province_table_live[battle_defending_province].morale;    // $AD95
     local11 = 0;    // $AD97
 L_AD98:
     if (!(is_unit_present(0, local11))) goto L_ADC7;    // $AD9E

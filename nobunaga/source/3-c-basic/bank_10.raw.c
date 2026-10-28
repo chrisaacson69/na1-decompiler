@@ -4,6 +4,9 @@
 // Deterministic (fixed ROM + toml -> identical output). DO NOT hand-edit -- regenerate.
 // Pipeline: titles disasm -> vm_decompile  (--raw: direct goto/label form, the structurer baseline)
 // ============================================================
+struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
+extern struct province province_table_live[];    /* at $7001 */
+
 // Decompiled from source/2-asm-vm/bank_10_vm.asm sub $8003
 // $8003 play_audio_by_id
 // (body @ $8008)
