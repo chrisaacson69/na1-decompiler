@@ -1188,11 +1188,11 @@ word selected_province_owner(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D78B
-// $D78B daimyo_name_width
+// $D78B draw_lord_name_salutation
 // (body @ $D790)
 
-word daimyo_name_width(word fief) {
-    redraw_window(daimyo_name_width_lord);    // $D793
+word draw_lord_name_salutation(word fief) {
+    redraw_window(draw_lord_name_salutation_lord);    // $D793
     daimyo_name_ptr = daimyo_name_table[fief_owner(fief)];    // $D7A2
     redraw_window(daimyo_name_ptr);    // $D7A4
     return char_advance_width(44);    // $D7AE
@@ -1485,10 +1485,10 @@ word load_daimyo_relation_row(word fief) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DAD7
-// $DAD7 compact_relation_list
+// $DAD7 build_selected_fief_neighbor_list
 // (body @ $DADC)
 
-word compact_relation_list(void) {
+word build_selected_fief_neighbor_list(void) {
     load_daimyo_relation_row(selected_province_idx);    // $DADF
     src = 0x6F4F;    // $DAE6
     dst = 0x6F4F;    // $DAE7

@@ -951,7 +951,7 @@ L_8F3E:
 L_8F42:
     if (!(fief_is_daimyo_capital[battle_defending_province])) goto L_8FA1;    // $8F4A
     swap_word(battle_defending_province, selected_province_idx);    // $8F53
-    compact_relation_list();    // $8F57
+    build_selected_fief_neighbor_list();    // $8F57
     filter_province_list_by_owner(1, deduped_owner_list);    // $8F5E
     if ((deduped_owner_list == 255)) goto L_8F95;    // $8F69
     if (!(rng_mod((*(byte*)((local5 + 3)) / 10)))) goto L_8F95;    // $8F76
@@ -1291,7 +1291,7 @@ word ai_try_war_attack(void) {
     if (!((fief_owner_weakness(attacker_idx) || (!(fief->men) || !(fief->rice))))) goto L_94C5;    // $94C0
     return 0;    // $94C4
 L_94C5:
-    compact_relation_list();    // $94C5
+    build_selected_fief_neighbor_list();    // $94C5
     filter_province_list_by_owner(0, deduped_owner_list);    // $94CC
     target_idx = pick_weakest_men_fief(deduped_owner_list);    // $94D7
     if ((target_idx != 255)) goto L_94E2;    // $94DD
@@ -1396,7 +1396,7 @@ word driver_move(void) {
     if (effect_war_combat_prep_b(selected_province_idx)) goto L_96E2;    // $96DD
     return 0;    // $96E1
 L_96E2:
-    compact_relation_list();    // $96E2
+    build_selected_fief_neighbor_list();    // $96E2
     filter_province_list_by_owner(1, deduped_owner_list);    // $96E9
     if (!(province_select_helper(1, deduped_owner_list))) goto L_97BF;    // $96F5
     redraw_window(msg_move_where);    // $96FB
@@ -1502,7 +1502,7 @@ L_986C:
     if (!(effect_war_combat_prep_c(attacker_fief))) goto L_9998;    // $9871
     if (!(effect_war_combat_prep_a(attacker_fief))) goto L_9998;    // $9879
     if (!(effect_war_combat_prep_b(attacker_fief))) goto L_9998;    // $9881
-    compact_relation_list();    // $9884
+    build_selected_fief_neighbor_list();    // $9884
     filter_province_list_by_owner(0, deduped_owner_list);    // $988B
     effect_war_e(&relation_flags);    // $9893
     if (!(province_select_helper(2, deduped_owner_list))) goto L_9998;    // $989F
@@ -1853,7 +1853,7 @@ L_9EFF:
 word effect_loan(word fief) {
     message_display(msg_loan_prompt);    // $9F0C
     if (!((*(word*)(fief) >= fief->stat_cap))) goto L_9F2F;    // $9F19
-    daimyo_name_width(selected_province_idx);    // $9F1F
+    draw_lord_name_salutation(selected_province_idx);    // $9F1F
     redraw_window(msg_the_treasure_room_is_already_f);    // $9F26
     confirm_prompt();    // $9F2A
     return 0;    // $9F2E
@@ -3442,7 +3442,7 @@ L_B7E8:
 L_B7F2:
     view_selected_fief();    // $B7EF
     open_message_window();    // $B7F2
-    daimyo_name_width(selected_province_idx);    // $B7F8
+    draw_lord_name_salutation(selected_province_idx);    // $B7F8
     redraw_window(msg_your_orders);    // $B7FF
     command = command_menu_select_loop();    // $B806
     cmd_handler = *(word*)(((command << 1) + command_driver_table));    // $B80D

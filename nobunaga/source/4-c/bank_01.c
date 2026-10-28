@@ -964,7 +964,7 @@ word resolve_siege_assault_outcome(void) {
     } else {
         if (fief_is_daimyo_capital[battle_defending_province]) {    // $8F42
             swap_word(battle_defending_province, selected_province_idx);    // $8F53
-            compact_relation_list();    // $8F57
+            build_selected_fief_neighbor_list();    // $8F57
             filter_province_list_by_owner(1, deduped_owner_list);    // $8F5E
             if ((deduped_owner_list != 255)) {    // $8F4D
                 if (rng_mod((*(byte*)((local5 + 3)) / 10))) {    // $8F6C
@@ -1323,7 +1323,7 @@ word ai_try_war_attack(void) {
     if ((fief_owner_weakness(attacker_idx) || (!(fief->men) || !(fief->rice)))) {    // $949F
         return 0;    // $94C4
     } else {
-        compact_relation_list();    // $94C5
+        build_selected_fief_neighbor_list();    // $94C5
         filter_province_list_by_owner(0, deduped_owner_list);    // $94CC
         target_idx = pick_weakest_men_fief(deduped_owner_list);    // $94D7
         if ((target_idx == 255)) {    // $94C5
@@ -1426,7 +1426,7 @@ word driver_move(void) {
     if (!(effect_war_combat_prep_b(selected_province_idx))) {    // $96D6
         return 0;    // $96E1
     } else {
-        compact_relation_list();    // $96E2
+        build_selected_fief_neighbor_list();    // $96E2
         filter_province_list_by_owner(1, deduped_owner_list);    // $96E9
         if (province_select_helper(1, deduped_owner_list)) {    // $96E2
             redraw_window(msg_move_where);    // $96FB
@@ -1529,7 +1529,7 @@ word driver_war(void) {
         return 0;    // $986B
     } else {
         if (!((!(effect_war_combat_prep_c(attacker_fief)) || !(effect_war_combat_prep_a(attacker_fief)) || !(effect_war_combat_prep_b(attacker_fief))))) {    // $986C
-            compact_relation_list();    // $9884
+            build_selected_fief_neighbor_list();    // $9884
             filter_province_list_by_owner(0, deduped_owner_list);    // $988B
             effect_war_e(&relation_flags);    // $9893
             if (province_select_helper(2, deduped_owner_list)) {    // $9884
@@ -1893,7 +1893,7 @@ word driver_marry(void) {
 word effect_loan(word fief) {
     message_display(msg_loan_prompt);    // $9F0C
     if ((*(word*)(fief) >= fief->stat_cap)) {    // $9F09
-        daimyo_name_width(selected_province_idx);    // $9F1F
+        draw_lord_name_salutation(selected_province_idx);    // $9F1F
         redraw_window(msg_the_treasure_room_is_already_f);    // $9F26
         confirm_prompt();    // $9F2A
         return 0;    // $9F2E
@@ -3510,7 +3510,7 @@ word issue_province_command(word fief) {
                 view_selected_fief();    // $B7EF
             }
             open_message_window();    // $B7F2
-            daimyo_name_width(selected_province_idx);    // $B7F8
+            draw_lord_name_salutation(selected_province_idx);    // $B7F8
             redraw_window(msg_your_orders);    // $B7FF
             command = command_menu_select_loop();    // $B806
             cmd_handler = *(word*)(((command << 1) + command_driver_table));    // $B80D

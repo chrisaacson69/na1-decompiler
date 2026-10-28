@@ -1489,7 +1489,7 @@ word announce_battle_outcome_retreat_or_won(word fief, word outcome) {
             outcome = (outcome - 1);    // $944C
         }
         conclusion_msg = *(word*)(((outcome << 1) + battle_conclusion_msgs_loser));    // $9453
-        daimyo_name_width(fief);    // $9455
+        draw_lord_name_salutation(fief);    // $9455
         redraw_window(str_battle_outcome_msgs);    // $945C
         redraw_window(conclusion_msg);    // $9461
         call_bank10_entry((is_winner ? 4 : 3));    // $946F

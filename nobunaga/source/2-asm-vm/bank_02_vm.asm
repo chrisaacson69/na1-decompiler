@@ -2959,7 +2959,7 @@ VM bytecode disassembly
   $9452  B0                         DEREF
   $9453  26                         STORE_quick   ; inline operand = 6
   $9454  3C                         PUSH_quick   ; inline operand = 12
-  $9455  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
+  $9455  E9 8B D7 02                CALL_abs_imm1          $D78B (draw_lord_name_salutation) {bytecode}, $02
   $9459  8E 6C B9                   PUSH_imm2              $B96C (str_battle_outcome_msgs)
   $945C  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $9460  36                         PUSH_quick   ; inline operand = 6

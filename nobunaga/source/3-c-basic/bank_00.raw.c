@@ -733,7 +733,7 @@ L_8C95:
     if (!((province_table_live[selected_province_idx].gold > 0))) goto L_8D22;    // $8CC2
     call_bank10_entry(28);    // $8CC7
     message_display(str_bid_for_fief_prompt);    // $8CCE
-    daimyo_name_width(*(byte*)(owner_ptr));    // $8CD5
+    draw_lord_name_salutation(*(byte*)(owner_ptr));    // $8CD5
     draw_message(msg_would_you_like_to_bid_for_fief, (battle_defending_province + 1));    // $8CE1
     if (!(prompt_y_n())) goto L_8D22;    // $8CE8
     message_display(msg_how_much);    // $8CEE
@@ -763,7 +763,7 @@ L_8D4D:
     province_table_live[winner_fief].gold = (province_table_live[winner_fief].gold - bid);    // $8D88
     if (!(get_province_ai_state(winner_fief))) goto L_8DAC;    // $8D8E
     message_display(str_fief_is_yours);    // $8D94
-    daimyo_name_width(winner_fief);    // $8D99
+    draw_lord_name_salutation(winner_fief);    // $8D99
     draw_message(msg_fief_2d_is_yours, (battle_defending_province + 1));    // $8DA5
     goto L_8DD6;    // $8DA9
 L_8DAC:
@@ -827,7 +827,7 @@ L_8E6C:
     if (!(province_state_is_FF(fief))) goto L_8E8D;    // $8E71
     selected_province_idx = fief;    // $8E75
     battle_defending_province = selected_province_idx;    // $8E7B
-    compact_relation_list();    // $8E7E
+    build_selected_fief_neighbor_list();    // $8E7E
 L_8E8D:
     auction_ownerless_fief_to_bidders(dedup_owners(deduped_owner_list));    // $8E89
     fief = (fief + 1);    // $8E8E
@@ -859,10 +859,10 @@ L_8ECF:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8ED3
-// $8ED3 display_two_message_prompt_then_compare
+// $8ED3 show_uprising_strengths_and_decide_winner
 // (body @ $8ED8)
 
-word display_two_message_prompt_then_compare(word attacker_strength, word loyal_men, word fief) {
+word show_uprising_strengths_and_decide_winner(word attacker_strength, word loyal_men, word fief) {
     uprising_msg = select_uprising_message(fief);    // $8EDD
     side_msg = select_message_string_by_flags_and_arg(fief);    // $8EE3
     message_display(msg_in_fief);    // $8EE7
@@ -882,7 +882,7 @@ word resolve_riot_uprising_contest(word fief) {
     rec = &province_table_live[fief];    // $8F23
     attacker_strength = (((sqrt_int(rec->output) + sqrt_int(rec->wealth)) + rng_mod(20)) + 10);    // $8F41
     defender_men = rec->men;    // $8F46
-    if (!(display_two_message_prompt_then_compare(attacker_strength, defender_men, fief))) goto L_8F96;    // $8F4E
+    if (!(show_uprising_strengths_and_decide_winner(attacker_strength, defender_men, fief))) goto L_8F96;    // $8F4E
     message_display(str_uprising_outcome_msgs);    // $8F54
     draw_message(msg_s_have_won, fief_name_str);    // $8F5C
     confirm_prompt();    // $8F60
@@ -943,7 +943,7 @@ L_9006:
     if (!(fief_rec->gold)) goto L_908A;    // $9020
     if (rest_turns_remaining[selected_province_owner()]) goto L_908A;    // $902B
     message_display(str_people_rebelling);    // $9031
-    daimyo_name_width(selected_province_idx);    // $9038
+    draw_lord_name_salutation(selected_province_idx);    // $9038
     redraw_window(msg_the_people_are_rebelling_will);    // $903F
     if (!(prompt_y_n())) goto L_908A;    // $9046
     record_apply_two_grows(fief, fief->gold);    // $904D
@@ -1237,7 +1237,7 @@ word ravage_defender_loyalty(void) {
 
 word ravage_defending_province_sweep(void) {
     message_display(str_ninja_sent_against);    // $93C7
-    daimyo_name_width(battle_defending_province);    // $93CE
+    draw_lord_name_salutation(battle_defending_province);    // $93CE
     redraw_window(msg_someone_has_sent_ninja_aginst);    // $93D5
     draw_message(msg_fmt__2d, (battle_defending_province + 1));    // $93E1
     confirm_prompt();    // $93E5
@@ -1321,13 +1321,13 @@ L_94E9:
     goto L_94C7;    // $94EC
 L_94EF:
     message_display(str_typhoon_msg);    // $94F2
-    daimyo_name_width(fief);    // $94F7
+    draw_lord_name_salutation(fief);    // $94F7
     phi_9516_0 = msg_a_typhoon_has_struck_fief_2d;    // $9501
     phi_9516_1 = (fief + 1);    // $9501
     goto L_9516;    // $9501
 L_9504:
     message_display(str_plague_msg);    // $9507
-    daimyo_name_width(fief);    // $950C
+    draw_lord_name_salutation(fief);    // $950C
     phi_9516_0 = msg_plague_has_come_to_fief_2d;    // $9513
     phi_9516_1 = (fief + 1);    // $9513
 L_9516:
@@ -1451,7 +1451,7 @@ word try_trigger_akechi_revolt(word fief) {
     selected_province_idx = 30;    // $96E5
     if (!(cur_flag_and_selected_ai_state5())) goto L_976E;    // $96EB
     if ((ai_turn_flags & 2)) goto L_976E;    // $96F3
-    compact_relation_list();    // $96F6
+    build_selected_fief_neighbor_list();    // $96F6
     filter_province_list_by_owner(1, deduped_owner_list);    // $96FD
     war_attacker_men = 0;    // $9702
     fief_list_ptr = 0x6F4F;    // $9708
@@ -1562,7 +1562,7 @@ word set_fief_ownership_record(word daimyo, word is_capital, word ai_state, word
 // (body @ $98CB)
 
 word assign_fiefs_to_owner_51_keep_ai_state(word target_count, word fief_list_ptr) {
-    compact_relation_list();    // $98CB
+    build_selected_fief_neighbor_list();    // $98CB
     filter_province_list_by_owner(1, deduped_owner_list);    // $98D2
     list_buf_cursor = &list_buf;    // $98D9
     owned_fief_ptr = 0x6F4F;    // $98DD
@@ -1690,7 +1690,7 @@ word driver_diplomacy_gold_transfer(void) {
     phi_ret_9b11 = gold_amount;    // $9AB5
     if (!(phi_ret_9b11)) goto L_9B11;    // $9AB5
     open_message_window();    // $9AB8
-    daimyo_name_width(selected_province_idx);    // $9ABE
+    draw_lord_name_salutation(selected_province_idx);    // $9ABE
     draw_message(msg_will_you_ally_with_fief_2d_for, (battle_defending_province + 1), gold_amount);    // $9ACB
     if (!(prompt_y_n())) goto L_9B07;    // $9AD2
     trigger_cutscene(CUTSCENE_ALLY_ACCEPT_GOLD);    // $9AD6
@@ -1717,7 +1717,7 @@ word ai_event_scan_ai_capitals_run_diplomacy_action(void) {
 L_9B1B:
     if (!(fief_is_daimyo_capital[selected_province_idx])) goto L_9B6D;    // $9B23
     if (get_province_ai_state(selected_province_idx)) goto L_9B6D;    // $9B2D
-    compact_relation_list();    // $9B30
+    build_selected_fief_neighbor_list();    // $9B30
     owner_cursor = 0x6F4F;    // $9B36
     goto L_9B63;    // $9B36
 L_9B39:
@@ -1749,7 +1749,7 @@ word marry_transfer_gold_between_provinces(void) {
     phi_ret_9be4 = gold_amount;    // $9B88
     if (!(phi_ret_9be4)) goto L_9BE4;    // $9B88
     open_message_window();    // $9B8B
-    daimyo_name_width(selected_province_idx);    // $9B91
+    draw_lord_name_salutation(selected_province_idx);    // $9B91
     draw_message(msg_will_you_accept_4d_units_of_go, gold_amount, (battle_defending_province + 1));    // $9B9E
     if (!(prompt_y_n())) goto L_9BDA;    // $9BA5
     trigger_cutscene(CUTSCENE_MARRY_ACCEPT_GOLD);    // $9BA9

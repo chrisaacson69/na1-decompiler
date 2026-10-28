@@ -1915,7 +1915,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $D78B   (frame_off=-2, body @ $D790)
 ; ============================================================
-  $D790  8E E1 F6                   PUSH_imm2              $F6E1 (daimyo_name_width_lord)
+  $D790  8E E1 F6                   PUSH_imm2              $F6E1 (draw_lord_name_salutation_lord)
   $D793  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $D797  3C                         PUSH_quick   ; inline operand = 12
   $D798  E9 72 D7 02                CALL_abs_imm1          $D772 (fief_owner) {bytecode}, $02

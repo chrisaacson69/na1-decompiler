@@ -2358,7 +2358,7 @@ VM bytecode disassembly
   $8F4D  8E 5F 6F                   PUSH_imm2              $6F5F (selected_province_idx)
   $8F50  8E 63 6F                   PUSH_imm2              $6F63 (battle_defending_province)
   $8F53  E9 94 CB 04                CALL_abs_imm1          $CB94 (swap_word) {bytecode}, $04
-  $8F57  AC D7 DA                   CALL_abs               $DAD7 (compact_relation_list) {bytecode}
+  $8F57  AC D7 DA                   CALL_abs               $DAD7 (build_selected_fief_neighbor_list) {bytecode}
   $8F5A  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $8F5D  61                         PUSH_qimm   ; inline operand = 1
   $8F5E  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
@@ -3130,7 +3130,7 @@ VM bytecode disassembly
   $94C0  D7 C5 94                   JUMPT_abs              $94C5
  >$94C3  40                         LOADL_qimm   ; inline operand = 0
   $94C4  CF                         RETURN
- >$94C5  AC D7 DA                   CALL_abs               $DAD7 (compact_relation_list) {bytecode}
+ >$94C5  AC D7 DA                   CALL_abs               $DAD7 (build_selected_fief_neighbor_list) {bytecode}
   $94C8  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $94CB  60                         PUSH_qimm   ; inline operand = 0
   $94CC  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
@@ -3459,7 +3459,7 @@ VM bytecode disassembly
   $96DD  D7 E2 96                   JUMPT_abs              $96E2
   $96E0  40                         LOADL_qimm   ; inline operand = 0
   $96E1  CF                         RETURN
- >$96E2  AC D7 DA                   CALL_abs               $DAD7 (compact_relation_list) {bytecode}
+ >$96E2  AC D7 DA                   CALL_abs               $DAD7 (build_selected_fief_neighbor_list) {bytecode}
   $96E5  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $96E8  61                         PUSH_qimm   ; inline operand = 1
   $96E9  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
@@ -3676,7 +3676,7 @@ VM bytecode disassembly
   $987C  39                         PUSH_quick   ; inline operand = 9
   $987D  E9 3A 93 02                CALL_abs_imm1          $933A (effect_war_combat_prep_b) {bytecode}, $02
   $9881  D8 98 99                   JUMPF_abs              $9998
-  $9884  AC D7 DA                   CALL_abs               $DAD7 (compact_relation_list) {bytecode}
+  $9884  AC D7 DA                   CALL_abs               $DAD7 (build_selected_fief_neighbor_list) {bytecode}
   $9887  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $988A  60                         PUSH_qimm   ; inline operand = 0
   $988B  E9 3A DD 04                CALL_abs_imm1          $DD3A (filter_province_list_by_owner) {bytecode}, $04
@@ -4573,7 +4573,7 @@ VM bytecode disassembly
   $9F18  C5                         SCMPGE
   $9F19  D8 2F 9F                   JUMPF_abs              $9F2F
   $9F1C  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $9F1F  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
+  $9F1F  E9 8B D7 02                CALL_abs_imm1          $D78B (draw_lord_name_salutation) {bytecode}, $02
   $9F23  8E 07 BC                   PUSH_imm2              $BC07 (msg_the_treasure_room_is_already_f)
   $9F26  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $9F2A  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
@@ -8064,7 +8064,7 @@ VM bytecode disassembly
   $B7EF  AC A7 85                   CALL_abs               $85A7 (view_selected_fief) {bytecode}
  >$B7F2  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
   $B7F5  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $B7F8  E9 8B D7 02                CALL_abs_imm1          $D78B (daimyo_name_width) {bytecode}, $02
+  $B7F8  E9 8B D7 02                CALL_abs_imm1          $D78B (draw_lord_name_salutation) {bytecode}, $02
   $B7FC  8E 91 BF                   PUSH_imm2              $BF91 (msg_your_orders)
   $B7FF  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $B803  AC B4 B6                   CALL_abs               $B6B4 (command_menu_select_loop) {bytecode}
