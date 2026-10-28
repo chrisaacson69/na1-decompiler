@@ -3455,3 +3455,26 @@ local9 = { name = "fief", comment = "[HIGH] = $7001+selected_province_idx*26 (ST
 local10 = { name = "turn_used", comment = "[MED] 0 at entry, 1 at $9E07 once target fief picked; LOADL_quick 10 + RETURN on every exit = action-taken result" }
 local11 = { name = "gold_demand", comment = "[HIGH] = marriage_pact_handler() $E315 (0=refused); %d in draw_message $FD45, SCMPLE vs own gold, subtracted from own fief, added to target" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xA274"]
+# report_fief_stat_decline
+arg1 = { name = "stat_idx", comment = "[HIGH] slot12 ==7 -> msg_town_value, else (arg1<<1)+fief_stat_name_ptrs DEREF @$A286; callers push constants 12/13/11 last" }
+arg2 = { name = "decline_amount", comment = "[HIGH] PUSH_quick 13 @$A279 pushed first = final %d of msg_fief_..._declined_by_d via draw_message; callers push their local7" }
+
+[vars.bank1."0xA255"]
+# hire_stat_drain_rng
+arg1 = { name = "stat_value", comment = "[HIGH] PUSH_quick 12 @$A261 = base of pct_op(arg1, sqrt_int(arg2)); callers push fief field deref (+4/+6/+10/+12/+14/+18) last" }
+arg2 = { name = "unit_count", comment = "[LOW] PUSH_quick 13 @$A25B -> sqrt_int, root is pct_op percent; callers push their local9 (also ninja_mission arg); count role inferred" }
+
+[vars.bank1."0xA113"]
+# effect_buy_arms
+arg1 = { name = "fief", comment = "[HIGH] Province record ptr: slot12 +16 men guard, +0 gold debited $A17B, +22 arms credited $A18A, +24 header; to amount_div_force_factor" }
+local10 = { name = "buy_amount", comment = "[HIGH] STORE_quick 10 @$A169 = number_input(1, local11); priced by math32_muladddiv, converted by amount_div_force_factor into ->arms" }
+# local11 left positional — Reused scratch: (rate+9)/10 min price vs gold @$A13A-$A13E, then reassigned ratio_times10_capped max for number_input @$
+
+[vars.bank1."0xA068"]
+# effect_buy_rice
+arg1 = { name = "fief", comment = "[HIGH] Province record ptr: LOADL_quick 12 DEREF gold@+0 (debited $A0C1), +6 rice credited $A0C9, +24 header; arg1+6 to clamp $A0CD" }
+local10 = { name = "buy_amount", comment = "[HIGH] STORE_quick 10 @$A0AF = number_input(1, local11); fed to math32_muladddiv for gold cost and added to fief->rice @$A0C2" }
+local11 = { name = "max_buyable", comment = "[HIGH] STORE_quick 11 @$A097 = ratio_times10_capped(gold, rate, header-rice); only use is PUSH_quick 11 as number_input max @$A0A9" }
+

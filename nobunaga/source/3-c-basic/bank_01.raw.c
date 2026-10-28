@@ -1954,18 +1954,18 @@ L_A063:
 // $A068 effect_buy_rice
 // (body @ $A06D)
 
-word effect_buy_rice(word arg1) {
+word effect_buy_rice(word fief) {
     message_display(msg_buy_rice_prompt);    // $A070
     if (!(province_table_live[selected_province_idx].gold)) goto L_A0DE;    // $A07F
-    local11 = ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice));    // $A097
-    if (!(ratio_times10_capped(*(word*)(arg1), gold_rice_exchange_rate, (arg1->header - arg1->rice)))) goto L_A0D8;    // $A098
+    max_buyable = ratio_times10_capped(*(word*)(fief), gold_rice_exchange_rate, (fief->header - fief->rice));    // $A097
+    if (!(ratio_times10_capped(*(word*)(fief), gold_rice_exchange_rate, (fief->header - fief->rice)))) goto L_A0D8;    // $A098
     redraw_window(msg_how_much_f99d);    // $A09E
     redraw_window(msg_rice_will_you_buy);    // $A0A5
-    local10 = number_input(1, local11);    // $A0AF
-    if (!(number_input(1, local11))) goto L_A0E8;    // $A0B0
-    *(word*)(arg1) = (*(word*)(arg1) - math32_muladddiv(gold_rice_exchange_rate, local10));    // $A0C1
-    arg1->rice = (arg1->rice + local10);    // $A0C9
-    clamp_amount_to_province_max((arg1 + 6));    // $A0CD
+    buy_amount = number_input(1, max_buyable);    // $A0AF
+    if (!(number_input(1, max_buyable))) goto L_A0E8;    // $A0B0
+    *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_rice_exchange_rate, buy_amount));    // $A0C1
+    fief->rice = (fief->rice + buy_amount);    // $A0C9
+    clamp_amount_to_province_max((fief + 6));    // $A0CD
     cycle_economy_rate(2);    // $A0D2
     return 1;    // $A0D7
 L_A0D8:
@@ -1997,23 +1997,23 @@ L_A10F:
 // $A113 effect_buy_arms
 // (body @ $A118)
 
-word effect_buy_arms(word arg1) {
-    if (!((arg1->men <= 0))) goto L_A12D;    // $A11E
+word effect_buy_arms(word fief) {
+    if (!((fief->men <= 0))) goto L_A12D;    // $A11E
     message_display(msg_weapons_for_who);    // $A124
     confirm_prompt();    // $A128
     return 0;    // $A12C
 L_A12D:
     message_display(msg_buy_arms_prompt);    // $A130
     local11 = ((arms_buy_price_rate + 9) / 10);    // $A13A
-    if (!((*(word*)(arg1) >= local11))) goto L_A1A0;    // $A13F
-    local11 = ratio_times10_capped(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms));    // $A158
-    if (!(ratio_times10_capped(*(word*)(arg1), arms_buy_price_rate, (arg1->header - arg1->arms)))) goto L_A19A;    // $A159
+    if (!((*(word*)(fief) >= local11))) goto L_A1A0;    // $A13F
+    local11 = ratio_times10_capped(*(word*)(fief), arms_buy_price_rate, (fief->header - fief->arms));    // $A158
+    if (!(ratio_times10_capped(*(word*)(fief), arms_buy_price_rate, (fief->header - fief->arms)))) goto L_A19A;    // $A159
     redraw_window(msg_how_many);    // $A15F
-    local10 = number_input(1, local11);    // $A169
+    buy_amount = number_input(1, local11);    // $A169
     if (!(number_input(1, local11))) goto L_A1AA;    // $A16A
-    *(word*)(arg1) = (*(word*)(arg1) - math32_muladddiv(arms_buy_price_rate, local10));    // $A17B
-    arg1->arms = (arg1->arms + amount_div_force_factor(arg1, local10));    // $A18A
-    clamp_amount_to_province_max((arg1 + 22));    // $A18F
+    *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(arms_buy_price_rate, buy_amount));    // $A17B
+    fief->arms = (fief->arms + amount_div_force_factor(fief, buy_amount));    // $A18A
+    clamp_amount_to_province_max((fief + 22));    // $A18F
     cycle_economy_rate(3);    // $A194
     return 1;    // $A199
 L_A19A:
@@ -2084,17 +2084,17 @@ L_A253:
 // $A255 hire_stat_drain_rng
 // (body @ $A25A)
 
-word hire_stat_drain_rng(word arg1, word arg2) {
-    return ((rng_mod(max_word(pct_op(arg1, sqrt_int(arg2)), 1)) + 1) * 5);    // $A273
+word hire_stat_drain_rng(word stat_value, word unit_count) {
+    return ((rng_mod(max_word(pct_op(stat_value, sqrt_int(unit_count)), 1)) + 1) * 5);    // $A273
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $A274
 // $A274 report_fief_stat_decline
 // (body @ $A279)
 
-word report_fief_stat_decline(word arg1, word arg2) {
-    dsel_a28d = (arg1 == 7);    // $A28D
-    return draw_message(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), (dsel_a28d ? msg_town_value : *(word*)(((arg1 << 1) + fief_stat_name_ptrs))), arg2);    // $A29A
+word report_fief_stat_decline(word stat_idx, word decline_amount) {
+    dsel_a28d = (stat_idx == 7);    // $A28D
+    return draw_message(msg_fief_d_s_s_has_declined_by_d, (battle_defending_province + 1), (dsel_a28d ? msg_town_value : *(word*)(((stat_idx << 1) + fief_stat_name_ptrs))), decline_amount);    // $A29A
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $A29B
