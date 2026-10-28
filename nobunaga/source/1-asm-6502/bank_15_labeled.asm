@@ -7057,8 +7057,8 @@ b15_ef89:   bne $ef8f                   ; 3EF89:  d0 04
 b15_ef8b:   inc scratch_ptr_hi                     ; 3EF8B:  e6 01
 b15_ef8d:   ldx #$00                    ; 3EF8D:  a2 00
 b15_ef8f:   jmp (scratch_ptr_lo)                 ; 3EF8F:  6c 00 00
-vm_op_trigger_syscall_shared:   brk                         ; 3EF92:  00
-vm_op_FF:   brk                         ; 3EF93:  00
+vm_op_unused_brk:   brk                         ; 3EF92:  00
+vm_op_FF_unused_brk:   brk                         ; 3EF93:  00
 b15_ef94:   jmp $e867                   ; 3EF94:  4c 67 e8
 vm_fetch_sbyte:   ldx #$00                    ; 3EF97:  a2 00
 b15_ef99:   lda (vm_ip_lo),y                 ; 3EF99:  b1 06
@@ -7533,7 +7533,7 @@ b15_f235:   lda #$3c                    ; 3F235:  a9 3c
 b15_f237:   pha                         ; 3F237:  48
 b15_f238:   php                         ; 3F238:  08
 b15_f239:   jmp ($fffe)                 ; 3F239:  6c fe ff
-b15_f23c:   nop                         ; 3F23C:  ea
+syscall_rti_return:   nop                         ; 3F23C:  ea
 b15_f23d:   lda brk_scratch_lo                     ; 3F23D:  a5 66
 b15_f23f:   sta $08                     ; 3F23F:  85 08
 b15_f241:   lda brk_scratch_hi                     ; 3F241:  a5 67

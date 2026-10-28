@@ -6066,7 +6066,7 @@ b00_a5e1:   sbc #$52                    ; 25E1:  e9 52
 b00_a5e3:   dex                         ; 25E3:  ca
 b00_a5e4:   .db vm_sp_lo                     ; 25E4:  02
 b00_a5e5:   .db $cf                     ; 25E5:  cf
-spawn_zealot_uprising_force_from_province:   jsr $e823                   ; 25E6:  20 23 e8
+spawn_uprising_force_from_province:   jsr $e823                   ; 25E6:  20 23 e8
 b00_a5e9:   .db $f2                     ; 25E9:  f2
 b00_a5ea:   .db $ff                     ; 25EA:  ff
 b00_a5eb:   ldy $63                     ; 25EB:  a4 63

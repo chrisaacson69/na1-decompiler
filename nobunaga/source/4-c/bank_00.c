@@ -2406,10 +2406,10 @@ word rng_mod_30(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $A5E6
-// $A5E6 spawn_zealot_uprising_force_from_province
+// $A5E6 spawn_uprising_force_from_province
 // (body @ $A5EB)
 
-word spawn_zealot_uprising_force_from_province(word arg1) {
+word spawn_uprising_force_from_province(word arg1) {
     local5 = ((battle_defending_province * 26) + 0x7001);    // $A5F5
     local10 = (((battle_defending_province * 26) + 0x7001) + 8);    // $A5F7
     local9 = (local5 + 16);    // $A5FB
@@ -2510,7 +2510,7 @@ L_A7B0:
     }
 L_A7D9:
     confirm_prompt();    // $A7D6
-    spawn_zealot_uprising_force_from_province((battle_staging_entry_flag_array ? 0 : 1));    // $A7E5
+    spawn_uprising_force_from_province((battle_staging_entry_flag_array ? 0 : 1));    // $A7E5
     call_bank_wrap(2);    // $A7EA
     if ((ai_turn_flags & 128)) goto L_A7FD;    // $A7F5
     }
