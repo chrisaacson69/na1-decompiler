@@ -74,11 +74,15 @@ def recorded_slots(bank):
     pos_re = re.compile(r'^\s*#\s*((?:fp[+-]\d+)|arg\d+|local\d+)\s+left positional')
     out, cur = {}, None
     for line in text.splitlines():
-        m = sec_re.search(line)
-        if m:
-            cur = m.group(1).upper(); out.setdefault(cur, set()); continue
-        if line.lstrip().startswith("[") and "vars.bank" not in line:
-            cur = None; continue
+        if line.lstrip().startswith("["):
+            # Any header ends the current section; only this bank's opens a new one. (The old test
+            # kept reading through another bank's [vars.bankM...] headers, crediting their slots to
+            # the section before them, so that sub's real gaps looked recorded and it never resurfaced.)
+            m = sec_re.match(line.strip())
+            cur = m.group(1).upper() if m else None
+            if cur:
+                out.setdefault(cur, set())
+            continue
         if cur is None:
             continue
         km = key_re.match(line)
