@@ -635,15 +635,15 @@ L_87B5:
 // $87B7 draw_tactical_terrain_feature
 // (body @ $87BC)
 
-word draw_tactical_terrain_feature(word arg1, word arg2) {
-    phi_ret_8821 = is_cell_clear_of_bits(arg1, arg2, 2);    // $87C3
+word draw_tactical_terrain_feature(word col, word row) {
+    phi_ret_8821 = is_cell_clear_of_bits(col, row, 2);    // $87C3
     if (!(phi_ret_8821)) goto L_8821;    // $87C3
-    local11 = arg1;    // $87C7
-    local10 = arg2;    // $87C9
-    calc_tactical_cell_coords(&local11, &local10);    // $87D2
-    local7 = lookup_terrain_attr_record(arg1, arg2);    // $87DC
-    ppu_copy_rect_wrap(local11, (local10 + 2), (local11 + 3), (local10 + 3), (local7 + 8), 2);    // $87EB
-    switch (*(byte*)(local7)) {    // $87F1
+    screen_col = col;    // $87C7
+    screen_row = row;    // $87C9
+    calc_tactical_cell_coords(&screen_col, &screen_row);    // $87D2
+    terrain_rec = lookup_terrain_attr_record(col, row);    // $87DC
+    ppu_copy_rect_wrap(screen_col, (screen_row + 2), (screen_col + 3), (screen_row + 3), (terrain_rec + 8), 2);    // $87EB
+    switch (*(byte*)(terrain_rec)) {    // $87F1
         case 87: goto L_8826;    // $87F1
         case 99: goto L_8826;    // $87F1
         case 115: goto L_8822;    // $87F1
@@ -655,9 +655,9 @@ word draw_tactical_terrain_feature(word arg1, word arg2) {
 L_880E:
     phi_val_880f = 1;    // $880E
 L_880F:
-    local8 = phi_val_880f;    // $880F
+    feature_variant = phi_val_880f;    // $880F
 L_8810:
-    phi_ret_8821 = ppu_render_rect_wrap((local11 + 1), (local10 + 2), (local11 + 2), (local10 + 2), local8);    // $881D
+    phi_ret_8821 = ppu_render_rect_wrap((screen_col + 1), (screen_row + 2), (screen_col + 2), (screen_row + 2), feature_variant);    // $881D
 L_8821:
     return phi_ret_8821;    // $8821
 L_8822:
@@ -711,37 +711,37 @@ L_88F9:
 // (body @ $8908)
 
 word map_populate(void) {
-    local10 = 0;    // $8909
+    row = 0;    // $8909
 L_890A:
-    local11 = 0;    // $890B
+    col = 0;    // $890B
 L_890C:
-    if (!(is_cell_clear_of_bits(local11, local10, 2))) goto L_891F;    // $8913
-    phi_val_8922 = lookup_terrain_attr_record(local11, local10);    // $891C
+    if (!(is_cell_clear_of_bits(col, row, 2))) goto L_891F;    // $8913
+    phi_val_8922 = lookup_terrain_attr_record(col, row);    // $891C
     goto L_8922;    // $891C
 L_891F:
     phi_val_8922 = map_water_cell_tile;    // $891F
 L_8922:
-    local6 = phi_val_8922;    // $8922
-    local7 = ((local10 << 1) << 1);    // $8926
-    if (!((local11 & 1))) goto L_8932;    // $892A
-    local7 = (local7 + 2);    // $8931
+    src_tile_ptr = phi_val_8922;    // $8922
+    dest_tile_row = ((row << 1) << 1);    // $8926
+    if (!((col & 1))) goto L_8932;    // $892A
+    dest_tile_row = (dest_tile_row + 2);    // $8931
 L_8932:
-    local9 = 0;    // $8933
+    tile_y = 0;    // $8933
 L_8934:
-    local8 = 0;    // $8935
+    tile_x = 0;    // $8935
 L_8936:
-    local6 = (local6 + 1);    // $8949
-    *(byte*)(((((local11 * 88) + ((local7 << 1) << 1)) + local8) + 0x7BFD)) = *(byte*)((local6 - 1));    // $894C
-    local8 = (local8 + 1);    // $894F
-    if (((unsigned)local8 < (unsigned)4)) goto L_8936;    // $8953
-    local9 = (local9 + 1);    // $8958
-    local7 = (local7 + 1);    // $895C
-    if (((unsigned)local9 < (unsigned)4)) goto L_8934;    // $8961
-    local11 = (local11 + 1);    // $8966
-    if (((unsigned)local11 < (unsigned)11)) goto L_890C;    // $896A
-    local10 = (local10 + 1);    // $896F
-    if (((unsigned)local10 < (unsigned)5)) goto L_890A;    // $8973
-    return ((unsigned)local10 < (unsigned)5);    // $8976
+    src_tile_ptr = (src_tile_ptr + 1);    // $8949
+    *(byte*)(((((col * 88) + ((dest_tile_row << 1) << 1)) + tile_x) + 0x7BFD)) = *(byte*)((src_tile_ptr - 1));    // $894C
+    tile_x = (tile_x + 1);    // $894F
+    if (((unsigned)tile_x < (unsigned)4)) goto L_8936;    // $8953
+    tile_y = (tile_y + 1);    // $8958
+    dest_tile_row = (dest_tile_row + 1);    // $895C
+    if (((unsigned)tile_y < (unsigned)4)) goto L_8934;    // $8961
+    col = (col + 1);    // $8966
+    if (((unsigned)col < (unsigned)11)) goto L_890C;    // $896A
+    row = (row + 1);    // $896F
+    if (((unsigned)row < (unsigned)5)) goto L_890A;    // $8973
+    return ((unsigned)row < (unsigned)5);    // $8976
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8977
@@ -750,11 +750,11 @@ L_8936:
 
 word render_combat_map_screen(void) {
     palette_swap(1);    // $897D
-    local11 = 0;    // $8982
+    palette_idx = 0;    // $8982
 L_8983:
-    palette_write_wrap(local11, combat_map_palette[local11]);    // $898B
-    local11 = (local11 + 1);    // $8991
-    if (((unsigned)local11 < (unsigned)16)) goto L_8983;    // $8996
+    palette_write_wrap(palette_idx, combat_map_palette[palette_idx]);    // $898B
+    palette_idx = (palette_idx + 1);    // $8991
+    if (((unsigned)palette_idx < (unsigned)16)) goto L_8983;    // $8996
     ppu_upload_block_wrap(4, 0x9F6E, 0x1570, 97);    // $89A2
     if (!(is_no_province_selected())) goto L_89B3;    // $89AA
     phi_push_89bb = sram_save_checksum;    // $89B0
@@ -841,12 +841,12 @@ L_8B38:
 // $8B39 draw_combat_day_header
 // (body @ $8B3E)
 
-word draw_combat_day_header(word arg1) {
+word draw_combat_day_header(word day) {
     set_cursor(2, 5);    // $8B40
     draw_current_year();    // $8B44
     char_advance_width(10);    // $8B48
     draw_current_season();    // $8B4C
-    return draw_message(msg_day_2d, arg1);    // $8B57
+    return draw_message(msg_day_2d, day);    // $8B57
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8B58

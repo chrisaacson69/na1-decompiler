@@ -3682,3 +3682,30 @@ arg1 = { name = "col", comment = "[MED] PUSH_quick 12 @$83CE is the last push, s
 arg2 = { name = "row", comment = "[MED] PUSH_quick 13 @$83CD -> arg2 of read_map_cell $DC88; its only use. Caller $8918 pushes local10 here and local11 as arg1 (a coordinate pair)" }
 local11 = { name = "attr_idx", comment = "[HIGH] =5 @$83CC; SWITCH fall-through DECs it to 0..5 by cell bits; @$8403 <<4 + $B11E terrain_attr_table, then returned. One role" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank2."0x8B39"]
+# draw_combat_day_header
+arg1 = { name = "day", comment = "[HIGH] PUSH_quick 12 as format arg2 of draw_message($B56A msg_day_2d) @$8B4F; callers push 1 (@$8D57) or local7 (@$B05B)" }
+
+[vars.bank2."0x8977"]
+# render_combat_map_screen
+local11 = { name = "palette_idx", comment = "[HIGH] loop 0..15 (UCMPLT 16 @$8995); indexes $B55A combat_map_palette and pushed as arg1 of palette_write_wrap @$898A" }
+
+[vars.bank2."0x8903"]
+# map_populate
+local6 = { name = "src_tile_ptr", comment = "[MED] = lookup_terrain_attr_record or $B54A map_water_cell_tile @$8922; post-INC'd, BYTE_DEREF source copied into $7BFD buffer @$8947" }
+local7 = { name = "dest_tile_row", comment = "[MED] = row<<2 @$8926, +2 if col odd @$892D, INC per middle iter @$895B; LSHIFT1x2 into $7BFD dest offset @$8936" }
+local8 = { name = "tile_x", comment = "[HIGH] innermost loop 0..3 (UCMPLT 4 @$8952); LOADR_quick 8 added into the $7BFD destination offset @$8940" }
+local9 = { name = "tile_y", comment = "[HIGH] middle loop counter 0..3 (STORE_quick 9 @$8933, UCMPLT 4 @$8960) over a cell's tile rows" }
+local10 = { name = "row", comment = "[HIGH] outer loop 0..4 (UCMPLT 5 @$8972); pushed as arg2 (row) of is_cell_clear_of_bits and lookup_terrain_attr_record" }
+local11 = { name = "col", comment = "[HIGH] loop 0..10 (UCMPLT 11 @$8968); pushed as arg1 (col) of cell helpers; *88 column stride into $7BFD @$893B" }
+
+[vars.bank2."0x87B7"]
+# draw_tactical_terrain_feature
+arg1 = { name = "col", comment = "[HIGH] PUSH_quick 12 last before is_cell_clear_of_bits/$83C6 = their arg1 (col, as map_populate's local11); copied to local11 @$87C7" }
+arg2 = { name = "row", comment = "[HIGH] PUSH_quick 13 = arg2 of is_cell_clear_of_bits/$83C6 (row, as map_populate's local10); copied to local10 @$87C9" }
+local7 = { name = "terrain_rec", comment = "[HIGH] STORE_quick 7 = lookup_terrain_attr_record(col,row) @$87DC; BYTE_DEREF is the switch key @$87F0; +8 pushed to ppu_copy_rect_wrap" }
+local8 = { name = "feature_variant", comment = "[MED] set 1/2/3 by switch on terrain_rec byte (STORE_quick 8 @$880F; default skips it); pushed as arg5 of ppu_render_rect_wrap @$8810" }
+local10 = { name = "screen_row", comment = "[HIGH] =row @$87C9, converted in place via LEAL $FFFC to calc_tactical_cell_coords; +2/+3 as row bounds in both rect draws" }
+local11 = { name = "screen_col", comment = "[HIGH] =col @$87C7, converted in place via LEAL $FFFE (arg1) to calc_tactical_cell_coords; +0..+3 as col bounds in both rect draws" }
+
