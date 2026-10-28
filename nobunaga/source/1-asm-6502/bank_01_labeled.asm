@@ -9409,7 +9409,7 @@ b01_ba5f:   .db $64                     ; 7A5F:  64
 b01_ba60:   rol $3125                   ; 7A60:  2e 25 31
 b01_ba63:   .db $64                     ; 7A63:  64
 b01_ba64:   brk                         ; 7A64:  00
-msg_fmt__2d_ba65:   and $32                     ; 7A65:  25 32
+count_eligible_targets_fmt_2d:   and $32                     ; 7A65:  25 32
 b01_ba67:   .db $64                     ; 7A67:  64
 b01_ba68:   brk                         ; 7A68:  00
 str_fief_list_columns:   and $2500                   ; 7A69:  2d 00 25
@@ -9453,7 +9453,7 @@ msg_home:   pha                         ; 7AAA:  48
 b01_baab:   .db p2_buttons                     ; 7AAB:  6f
 b01_baac:   adc $0a65                   ; 7AAC:  6d 65 0a
 b01_baaf:   brk                         ; 7AAF:  00
-msg_fief_bab0:   lsr brk_jmp_target_hi                     ; 7AB0:  46 69
+draw_fief_view_label_msg:   lsr brk_jmp_target_hi                     ; 7AB0:  46 69
 b01_bab2:   adc brk_scratch_lo                     ; 7AB2:  65 66
 b01_bab4:   brk                         ; 7AB4:  00
 msg_fief_gold_town_rice_output_dam:   lsr brk_jmp_target_hi                     ; 7AB5:  46 69
@@ -9501,18 +9501,18 @@ b01_bafc:   asl a                       ; 7AFC:  0a
 b01_bafd:   lsr brk_jmp_target_hi                     ; 7AFD:  46 69
 b01_baff:   adc brk_scratch_lo                     ; 7AFF:  65 66
 b01_bb01:   brk                         ; 7B01:  00
-msg_fmt__2d_bb02:   and $32                     ; 7B02:  25 32
+effect_view_b_fmt_2d:   and $32                     ; 7B02:  25 32
 b01_bb04:   .db $64                     ; 7B04:  64
 b01_bb05:   brk                         ; 7B05:  00
-msg_fmt__4d_bb06:   and $34                     ; 7B06:  25 34
+effect_view_b_fmt_4d_1:   and $34                     ; 7B06:  25 34
 b01_bb08:   .db $64                     ; 7B08:  64
 b01_bb09:   asl a                       ; 7B09:  0a
 b01_bb0a:   brk                         ; 7B0A:  00
-msg_fmt__4d_bb0b:   and $34                     ; 7B0B:  25 34
+effect_view_b_fmt_4d_2:   and $34                     ; 7B0B:  25 34
 b01_bb0d:   .db $64                     ; 7B0D:  64
 b01_bb0e:   asl a                       ; 7B0E:  0a
 b01_bb0f:   brk                         ; 7B0F:  00
-msg_fmt__4d_bb10:   and $34                     ; 7B10:  25 34
+effect_view_b_fmt_4d_3:   and $34                     ; 7B10:  25 34
 b01_bb12:   .db $64                     ; 7B12:  64
 b01_bb13:   asl a                       ; 7B13:  0a
 b01_bb14:   brk                         ; 7B14:  00
@@ -9522,10 +9522,10 @@ b01_bb17:   eor $6e65                   ; 7B17:  4d 65 6e
 b01_bb1a:   adc $5f,x                   ; 7B1A:  75 5f
 b01_bb1c:   .db $5f                     ; 7B1C:  5f
 b01_bb1d:   brk                         ; 7B1D:  00
-msg_fmt__2d_bb1e:   and $32                     ; 7B1E:  25 32
+fief_info_display_fmt_2d_1:   and $32                     ; 7B1E:  25 32
 b01_bb20:   .db $64                     ; 7B20:  64
 b01_bb21:   brk                         ; 7B21:  00
-msg_fmt__2d_bb22:   and $32                     ; 7B22:  25 32
+fief_info_display_fmt_2d_2:   and $32                     ; 7B22:  25 32
 b01_bb24:   .db $64                     ; 7B24:  64
 b01_bb25:   brk                         ; 7B25:  00
 str_not_home_and_status:   and $4e00                   ; 7B26:  2d 00 4e
@@ -9630,7 +9630,7 @@ b01_bbdc:   adc $20                     ; 7BDC:  65 20
 b01_bbde:   adc $6e65                   ; 7BDE:  6d 65 6e
 b01_bbe1:   brk                         ; 7BE1:  00
 str_is_this_ok:   brk                         ; 7BE2:  00
-msg_is_this_ok_bbe3:   eor #$73                    ; 7BE3:  49 73
+driver_send_is_this_ok:   eor #$73                    ; 7BE3:  49 73
 b01_bbe5:   jsr $6874                   ; 7BE5:  20 74 68
 b01_bbe8:   adc #$73                    ; 7BE8:  69 73
 b01_bbea:   jsr $4b4f                   ; 7BEA:  20 4f 4b
@@ -9811,7 +9811,7 @@ b01_bd0f:   jsr $6163                   ; 7D0F:  20 63 61
 b01_bd12:   .db prg_bank_shadow                     ; 7D12:  73
 b01_bd13:   pla                         ; 7D13:  68
 b01_bd14:   brk                         ; 7D14:  00
-msg_fmt__2d_bd15:   and $32                     ; 7D15:  25 32
+driver_trade_fmt_2d:   and $32                     ; 7D15:  25 32
 b01_bd17:   .db $64                     ; 7D17:  64
 b01_bd18:   brk                         ; 7D18:  00
 msg_lord_how_may_i_serve_you:   jmp $726f                   ; 7D19:  4c 6f 72
@@ -9867,7 +9867,7 @@ b01_bd74:   ror $7620                   ; 7D74:  6e 20 76
 b01_bd77:   adc ($6c,x)                 ; 7D77:  61 6c
 b01_bd79:   adc $65,x                   ; 7D79:  75 65
 b01_bd7b:   brk                         ; 7D7B:  00
-msg_your_ninja_failed_bd7c:   eor $756f,y                 ; 7D7C:  59 6f 75
+effect_ninja_failed_your_ninja_failed:   eor $756f,y                 ; 7D7C:  59 6f 75
 b01_bd7f:   .db ppumask_shadow                     ; 7D7F:  72
 b01_bd80:   jsr $696e                   ; 7D80:  20 6e 69
 b01_bd83:   ror $616a                   ; 7D83:  6e 6a 61
@@ -9950,7 +9950,7 @@ b01_be0f:   .db prg_bank_shadow                     ; 7E0F:  73
 b01_be10:   and #$0a                    ; 7E10:  29 0a
 b01_be12:   brk                         ; 7E12:  00
 str_town_value_label:   brk                         ; 7E13:  00
-msg_town_value_be14:   .db $54                     ; 7E14:  54
+driver_build_town_value:   .db $54                     ; 7E14:  54
 b01_be15:   .db p2_buttons                     ; 7E15:  6f
 b01_be16:   .db $77                     ; 7E16:  77
 b01_be17:   ror $7620                   ; 7E17:  6e 20 76
@@ -9978,7 +9978,7 @@ b01_be3a:   eor $6e65                   ; 7E3A:  4d 65 6e
 b01_be3d:   and #$3f                    ; 7E3D:  29 3f
 b01_be3f:   jsr $0a00                   ; 7E3F:  20 00 0a
 b01_be42:   brk                         ; 7E42:  00
-msg_fmt__3d_be43:   and $33                     ; 7E43:  25 33
+render_arms_edit_screen_fmt_3d:   and $33                     ; 7E43:  25 33
 b01_be45:   .db $64                     ; 7E45:  64
 b01_be46:   brk                         ; 7E46:  00
 msg_d_s:   and $64                     ; 7E47:  25 64
@@ -10029,7 +10029,7 @@ b01_be8e:   ror $2e29                   ; 7E8E:  6e 29 2e
 b01_be91:   rol $6d2e                   ; 7E91:  2e 2e 6d
 b01_be94:   adc p1_buttons                     ; 7E94:  65 6e
 b01_be96:   adc scratch_ptr_lo,x                   ; 7E96:  75 00
-msg_fmt__d_be98:   and $64                     ; 7E98:  25 64
+driver_grant_fmt_d:   and $64                     ; 7E98:  25 64
 b01_be9a:   brk                         ; 7E9A:  00
 msg_it_s_already_a_s_state:   eor #$74                    ; 7E9B:  49 74
 b01_be9d:   rts                         ; 7E9D:  60
@@ -10060,7 +10060,7 @@ b01_bec6:   ror $6d69                   ; 7EC6:  6e 69 6d
 b01_bec9:   adc (palette_dirty,x)                 ; 7EC9:  61 74
 b01_becb:   adc #$6f                    ; 7ECB:  69 6f
 b01_becd:   ror $000a                   ; 7ECD:  6e 0a 00
-msg_on_off_bed0:   plp                         ; 7ED0:  28
+setting_animation_on_off_msg:   plp                         ; 7ED0:  28
 b01_bed1:   .db p2_buttons                     ; 7ED1:  6f
 b01_bed2:   ror $6f2f                   ; 7ED2:  6e 2f 6f
 b01_bed5:   ror brk_scratch_lo                     ; 7ED5:  66 66
@@ -10140,14 +10140,14 @@ b01_bf60:   adc $0a                     ; 7F60:  65 0a
 b01_bf62:   .db brk_scratch_hi                     ; 7F62:  67
 b01_bf63:   adc ($6d,x)                 ; 7F63:  61 6d
 b01_bf65:   adc scratch_ptr_lo                     ; 7F65:  65 00
-msg_game_over_bf67:   .db $47                     ; 7F67:  47
+command_end_game_game_over:   .db $47                     ; 7F67:  47
 b01_bf68:   adc ($6d,x)                 ; 7F68:  61 6d
 b01_bf6a:   adc $20                     ; 7F6A:  65 20
 b01_bf6c:   .db p2_buttons                     ; 7F6C:  6f
 b01_bf6d:   ror $65,x                   ; 7F6D:  76 65
 b01_bf6f:   .db ppumask_shadow                     ; 7F6F:  72
 b01_bf70:   brk                         ; 7F70:  00
-msg_fmt__2d_bf71:   and $32                     ; 7F71:  25 32
+driver_other_fmt_2d:   and $32                     ; 7F71:  25 32
 b01_bf73:   .db $64                     ; 7F73:  64
 b01_bf74:   brk                         ; 7F74:  00
 msg_change_which:   .db $43                     ; 7F75:  43

@@ -63,7 +63,7 @@ VM bytecode disassembly
   $806C  8D 18                      BYTE_PUSH_imm1         +24
   $806E  62                         PUSH_qimm   ; inline operand = 2
   $806F  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $8073  8E DA B7                   PUSH_imm2              $B7DA (msg_congratulations_my_lord_b7da)
+  $8073  8E DA B7                   PUSH_imm2              $B7DA (display_fullscreen_graphic_sequence_congratulations_my_lord_3)
   $8076  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $807A  AA 9F 6D                   PUSH_abs               $6D9F (current_game_year)
   $807D  8E F4 B7                   PUSH_imm2              $B7F4 (msg_in_the_year_4d)
@@ -124,7 +124,7 @@ VM bytecode disassembly
   $8102  40                         LOADL_qimm   ; inline operand = 0
   $8103  2B                         STORE_quick   ; inline operand = 11
  >$8104  0B                         LOADL_quick   ; inline operand = 11
-  $8105  8C D2 B7                   LOADR_imm2             $B7D2 (msg_congratulations_my_lord_b7d2)
+  $8105  8C D2 B7                   LOADR_imm2             $B7D2 (display_fullscreen_graphic_sequence_congratulations_my_lord_1)
   $8108  BB                         ADD
   $8109  D3                         BYTE_DEREF
   $810A  B3                         PUSHL
@@ -208,7 +208,7 @@ VM bytecode disassembly
   $819A  40                         LOADL_qimm   ; inline operand = 0
   $819B  2B                         STORE_quick   ; inline operand = 11
  >$819C  0B                         LOADL_quick   ; inline operand = 11
-  $819D  8C D6 B7                   LOADR_imm2             $B7D6 (msg_congratulations_my_lord_b7d6)
+  $819D  8C D6 B7                   LOADR_imm2             $B7D6 (display_fullscreen_graphic_sequence_congratulations_my_lord_2)
   $81A0  BB                         ADD
   $81A1  D3                         BYTE_DEREF
   $81A2  B3                         PUSHL
@@ -274,7 +274,7 @@ VM bytecode disassembly
   $822B  8E 90 B8                   PUSH_imm2              $B890 (msg_no_saved_data)
   $822E  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $8232  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
- >$8235  8E 82 B8                   PUSH_imm2              $B882 (msg_new_game_b882)
+ >$8235  8E 82 B8                   PUSH_imm2              $B882 (verify_sram_save_integrity_new_game)
   $8238  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $823C  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
   $823F  D8 44 82                   JUMPF_abs              $8244
@@ -1158,7 +1158,7 @@ VM bytecode disassembly
   $8843  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $8847  89 16                      BYTE_LOADL_imm1        +22
   $8849  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
-  $884C  8E A7 B9                   PUSH_imm2              $B9A7 (msg_fmt_blank_b9a7)
+  $884C  8E A7 B9                   PUSH_imm2              $B9A7 (daimyo_creation_stat_roll_screen_fmt_blank)
   $884F  E9 34 D1 02                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $02
   $8853  09                         LOADL_quick   ; inline operand = 9
   $8854  D0                         INC
@@ -3049,12 +3049,12 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $9595   (frame_off=-6, body @ $959A)
 ; ============================================================
-  $959A  8E 6A BC                   PUSH_imm2              $BC6A (msg_in_fief_bc6a)
+  $959A  8E 6A BC                   PUSH_imm2              $BC6A (province_conquest_roll_predicate_in_fief)
   $959D  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $95A1  0C                         LOADL_quick   ; inline operand = 12
   $95A2  D0                         INC
   $95A3  B3                         PUSHL
-  $95A4  8E 73 BC                   PUSH_imm2              $BC73 (msg_fmt__2d_bc73)
+  $95A4  8E 73 BC                   PUSH_imm2              $BC73 (province_conquest_roll_predicate_fmt_2d)
   $95A7  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $95AB  0C                         LOADL_quick   ; inline operand = 12
   $95AC  8B 1A                      BYTE_LOADR_imm1        +26
@@ -5207,7 +5207,7 @@ VM bytecode disassembly
   $A42B  2A                         STORE_quick   ; inline operand = 10
   $A42C  0A                         LOADL_quick   ; inline operand = 10
   $A42D  A8 EB 7F                   STORE_abs              $7FEB (sram_save_checksum)
-  $A430  8E 17 BF                   PUSH_imm2              $BF17 (msg_koei_bf17)
+  $A430  8E 17 BF                   PUSH_imm2              $BF17 (write_sram_save_checksum_and_signature_koei)
   $A433  8E ED 7F                   PUSH_imm2              $7FED (sram_save_signature)
   $A436  E9 D9 CA 04                CALL_abs_imm1          $CAD9 (strcpy) {bytecode}, $04
   $A43A  60                         PUSH_qimm   ; inline operand = 0

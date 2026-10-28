@@ -8153,21 +8153,21 @@ b15_f68f:   .db p2_buttons                     ; 3F68F:  6f
 b15_f690:   jmp ($2520)                 ; 3F690:  6c 20 25
 b15_f693:   .db $64                     ; 3F693:  64
 b15_f694:   brk                         ; 3F694:  00
-msg_y_n_f695:   asl a                       ; 3F695:  0a
+prompt_y_n_msg:   asl a                       ; 3F695:  0a
 b15_f696:   plp                         ; 3F696:  28
 b15_f697:   eor $4e2f,y                 ; 3F697:  59 2f 4e
 b15_f69a:   and #$3f                    ; 3F69A:  29 3f
 b15_f69c:   jsr $2500                   ; 3F69C:  20 00 25
 b15_f69f:   .db $64                     ; 3F69F:  64
 b15_f6a0:   brk                         ; 3F6A0:  00
-cursor_nav_fmt_d_1:   and $64                     ; 3F6A1:  25 64
+cursor_nav_fmt_d_2:   and $64                     ; 3F6A1:  25 64
 b15_f6a3:   brk                         ; 3F6A3:  00
-cursor_nav_fmt_d_2:   and $64                     ; 3F6A4:  25 64
+cursor_nav_fmt_d_3:   and $64                     ; 3F6A4:  25 64
 b15_f6a6:   brk                         ; 3F6A6:  00
 cursor_nav_space:   jsr $2500                   ; 3F6A7:  20 00 25
 b15_f6aa:   .db $64                     ; 3F6AA:  64
 b15_f6ab:   brk                         ; 3F6AB:  00
-msg_d_d_f6ac:   asl a                       ; 3F6AC:  0a
+number_input_d_d:   asl a                       ; 3F6AC:  0a
 b15_f6ad:   plp                         ; 3F6AD:  28
 b15_f6ae:   and $64                     ; 3F6AE:  25 64
 b15_f6b0:   and $6425                   ; 3F6B0:  2d 25 64
@@ -8197,7 +8197,7 @@ b15_f6db:   adc #$6e                    ; 3F6DB:  69 6e
 b15_f6dd:   .db palette_dirty                     ; 3F6DD:  74
 b15_f6de:   adc ppumask_shadow                     ; 3F6DE:  65 72
 b15_f6e0:   brk                         ; 3F6E0:  00
-msg_lord_f6e1:   jmp $726f                   ; 3F6E1:  4c 6f 72
+daimyo_name_width_lord:   jmp $726f                   ; 3F6E1:  4c 6f 72
 b15_f6e4:   .db $64                     ; 3F6E4:  64
 b15_f6e5:   jsr $4c00                   ; 3F6E5:  20 00 4c
 b15_f6e8:   .db p2_buttons                     ; 3F6E8:  6f
@@ -8210,13 +8210,13 @@ b15_f6ef:   .db ppumask_shadow                     ; 3F6EF:  72
 b15_f6f0:   adc (palette_dirty,x)                 ; 3F6F0:  61 74
 b15_f6f2:   adc prg_bank_shadow                     ; 3F6F2:  65 73
 b15_f6f4:   brk                         ; 3F6F4:  00
-msg_christns_f6f5:   .db $43                     ; 3F6F5:  43
+revolt_type_message_christns:   .db $43                     ; 3F6F5:  43
 b15_f6f6:   pla                         ; 3F6F6:  68
 b15_f6f7:   .db ppumask_shadow                     ; 3F6F7:  72
 b15_f6f8:   adc #$73                    ; 3F6F8:  69 73
 b15_f6fa:   .db palette_dirty                     ; 3F6FA:  74
 b15_f6fb:   ror prg_bank_shadow                   ; 3F6FB:  6e 73 00
-msg_rioters_f6fe:   .db $52                     ; 3F6FE:  52
+revolt_type_message_rioters:   .db $52                     ; 3F6FE:  52
 b15_f6ff:   adc #$6f                    ; 3F6FF:  69 6f
 b15_f701:   .db palette_dirty                     ; 3F701:  74
 b15_f702:   adc ppumask_shadow                     ; 3F702:  65 72
@@ -8246,7 +8246,7 @@ uprising_label_monks:   eor $6e6f                   ; 3F728:  4d 6f 6e
 b15_f72b:   .db $6b                     ; 3F72B:  6b
 b15_f72c:   .db prg_bank_shadow                     ; 3F72C:  73
 b15_f72d:   brk                         ; 3F72D:  00
-msg_rebels_f72e:   .db $52                     ; 3F72E:  52
+select_uprising_message_rebels:   .db $52                     ; 3F72E:  52
 b15_f72f:   adc $62                     ; 3F72F:  65 62
 b15_f731:   adc $6c                     ; 3F731:  65 6c
 b15_f733:   .db prg_bank_shadow                     ; 3F733:  73
@@ -8284,7 +8284,7 @@ b15_f76f:   adc $6165,y                 ; 3F76F:  79 65 61
 b15_f772:   .db ppumask_shadow                     ; 3F772:  72
 b15_f773:   jsr $6425                   ; 3F773:  20 25 64
 b15_f776:   brk                         ; 3F776:  00
-msg_lord_f777:   jmp $726f                   ; 3F777:  4c 6f 72
+draw_daimyo_name_menu_lord:   jmp $726f                   ; 3F777:  4c 6f 72
 b15_f77a:   .db $64                     ; 3F77A:  64
 b15_f77b:   jsr $0a00                   ; 3F77B:  20 00 0a
 b15_f77e:   brk                         ; 3F77E:  00
@@ -8318,7 +8318,7 @@ msg_pact:   bvs $f810                   ; 3F7AD:  70 61
 b15_f7af:   .db $63                     ; 3F7AF:  63
 b15_f7b0:   .db palette_dirty                     ; 3F7B0:  74
 b15_f7b1:   brk                         ; 3F7B1:  00
-msg_fief_f7b2:   lsr brk_jmp_target_hi                     ; 3F7B2:  46 69
+neutralize_fief_msg:   lsr brk_jmp_target_hi                     ; 3F7B2:  46 69
 b15_f7b4:   adc brk_scratch_lo                     ; 3F7B4:  65 66
 b15_f7b6:   jsr $2500                   ; 3F7B6:  20 00 25
 b15_f7b9:   .db $64                     ; 3F7B9:  64
@@ -8700,7 +8700,7 @@ b15_fa29:   adc ppumask_shadow                     ; 3FA29:  65 72
 b15_fa2b:   adc $3f                     ; 3FA2B:  65 3f
 b15_fa2d:   asl a                       ; 3FA2D:  0a
 b15_fa2e:   brk                         ; 3FA2E:  00
-msg_how_many_men_fa2f:   pha                         ; 3FA2F:  48
+driver_war_how_many_men:   pha                         ; 3FA2F:  48
 b15_fa30:   .db p2_buttons                     ; 3FA30:  6f
 b15_fa31:   .db $77                     ; 3FA31:  77
 b15_fa32:   jsr $616d                   ; 3FA32:  20 6d 61
@@ -8724,7 +8724,7 @@ b15_fa51:   adc music_voice_idx                     ; 3FA51:  65 79
 b15_fa53:   jsr $6174                   ; 3FA53:  20 74 61
 b15_fa56:   .db $6b                     ; 3FA56:  6b
 b15_fa57:   adc scratch_ptr_lo                     ; 3FA57:  65 00
-msg_will_you_lead_them_personally_fa59:   .db $57                     ; 3FA59:  57
+driver_war_will_you_lead_them_personally:   .db $57                     ; 3FA59:  57
 b15_fa5a:   adc #$6c                    ; 3FA5A:  69 6c
 b15_fa5c:   jmp ($7920)                 ; 3FA5C:  6c 20 79
 b15_fa5f:   .db p2_buttons                     ; 3FA5F:  6f
@@ -9277,7 +9277,7 @@ b15_fe39:   jmp ($6569)                 ; 3FE39:  6c 69 65
 b15_fe3c:   .db prg_bank_shadow                     ; 3FE3C:  73
 b15_fe3d:   and (scratch_ptr_lo,x)                 ; 3FE3D:  21 00
 b15_fe3f:   brk                         ; 3FE3F:  00
-msg_which_fief_fe40:   asl a                       ; 3FE40:  0a
+driver_grant_which_fief:   asl a                       ; 3FE40:  0a
 b15_fe41:   .db $57                     ; 3FE41:  57
 b15_fe42:   pla                         ; 3FE42:  68
 b15_fe43:   adc #$63                    ; 3FE43:  69 63

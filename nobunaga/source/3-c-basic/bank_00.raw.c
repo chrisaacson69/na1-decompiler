@@ -43,7 +43,7 @@ L_8052:
     if (((unsigned)local11 < (unsigned)8)) goto L_8052;    // $8064
     palette_swap(0);    // $8068
     set_cursor(2, 24);    // $806F
-    redraw_window(msg_congratulations_my_lord_b7da);    // $8076
+    redraw_window(display_fullscreen_graphic_sequence_congratulations_my_lord_3);    // $8076
     draw_message(msg_in_the_year_4d, current_game_year);    // $8080
     redraw_window(msg_you_united_japan);    // $8087
     call_bank10_entry(5);    // $808C
@@ -70,7 +70,7 @@ L_80D7:
     ppu_copy_rect_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // $80FE
     local11 = 0;    // $8103
 L_8104:
-    palette_write_wrap(local11, msg_congratulations_my_lord_b7d2[local11]);    // $810C
+    palette_write_wrap(local11, display_fullscreen_graphic_sequence_congratulations_my_lord_1[local11]);    // $810C
     local11 = (local11 + 1);    // $8112
     if (((unsigned)local11 < (unsigned)4)) goto L_8104;    // $8116
     goto L_81B1;    // $8119
@@ -102,7 +102,7 @@ L_816F:
     ppu_copy_rect_wrap(0, 5, 31, 24, cinematic_gfx_ace4, 6);    // $8196
     local11 = 0;    // $819B
 L_819C:
-    palette_write_wrap(local11, msg_congratulations_my_lord_b7d6[local11]);    // $81A4
+    palette_write_wrap(local11, display_fullscreen_graphic_sequence_congratulations_my_lord_2[local11]);    // $81A4
     local11 = (local11 + 1);    // $81AA
     if (((unsigned)local11 < (unsigned)4)) goto L_819C;    // $81AE
 L_81B1:
@@ -142,7 +142,7 @@ L_8226:
     message_display(msg_no_saved_data);    // $822E
 L_8235:
     confirm_prompt();    // $8232
-    message_display(msg_new_game_b882);    // $8238
+    message_display(verify_sram_save_integrity_new_game);    // $8238
     if (!(prompt_y_n())) goto L_8244;    // $823F
     return 0;    // $8243
 L_8244:
@@ -441,7 +441,7 @@ L_8832:
     set_cursor(16, (local9 + 11));    // $8837
     redraw_window(*(word*)(((local9 << 1) + fief_stat_name_ptrs)));    // $8843
     ui_window_col = 22;    // $8849
-    draw_message(msg_fmt_blank_b9a7);    // $884F
+    draw_message(daimyo_creation_stat_roll_screen_fmt_blank);    // $884F
     local9 = (local9 + 1);    // $8855
     if ((local9 < 6)) goto L_8832;    // $8859
 L_8861:
@@ -1398,8 +1398,8 @@ L_9585:
 // (body @ $959A)
 
 word province_conquest_roll_predicate(word arg1) {
-    message_display(msg_in_fief_bc6a);    // $959D
-    draw_message(msg_fmt__2d_bc73, (arg1 + 1));    // $95A7
+    message_display(province_conquest_roll_predicate_in_fief);    // $959D
+    draw_message(province_conquest_roll_predicate_fmt_2d, (arg1 + 1));    // $95A7
     local11 = &province_table_live[arg1];    // $95B3
     local10 = pct_op(local11->men, (((((min_word(100, local11->morale) * 3) / 10) + ((min_word(200, *(byte*)((fief_to_daimyo_record_addr(arg1) + 4))) * 3) / 20)) + rng_mod(31)) + 10));    // $95EE
     local9 = (local11->men - local10);    // $95F5
@@ -2348,7 +2348,7 @@ L_A3FB:
     if (((unsigned)local11 < (unsigned)0x7F00)) goto L_A3FB;    // $A417
     local10 = (local10 + syscall_sram_block_with_checksum(0, local9, ui_transient_state, save_sram_81eb));    // $A42B
     sram_save_checksum = local10;    // $A42D
-    strcpy(sram_save_signature, msg_koei_bf17);    // $A436
+    strcpy(sram_save_signature, write_sram_save_checksum_and_signature_koei);    // $A436
     chr_bank0_set_wrap(0);    // $A43B
     sram_save_pending_flag = 0;    // $A440
     message_display(str_save_and_illness_msgs);    // $A446

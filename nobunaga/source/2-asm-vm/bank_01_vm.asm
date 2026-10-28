@@ -218,7 +218,7 @@ VM bytecode disassembly
   $81A2  D3                         BYTE_DEREF
   $81A3  D0                         INC
   $81A4  B3                         PUSHL
-  $81A5  8E 65 BA                   PUSH_imm2              $BA65 (msg_fmt__2d_ba65)
+  $81A5  8E 65 BA                   PUSH_imm2              $BA65 (count_eligible_targets_fmt_2d)
   $81A8  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $81AC  0A                         LOADL_quick   ; inline operand = 10
   $81AD  D0                         INC
@@ -555,7 +555,7 @@ VM bytecode disassembly
   $83E3  C1                         CMPNE
   $83E4  D8 F2 83                   JUMPF_abs              $83F2
   $83E7  3D                         PUSH_quick   ; inline operand = 13
-  $83E8  8E 74 BA                   PUSH_imm2              $BA74 (msg_fmt__3d_ba74)
+  $83E8  8E 74 BA                   PUSH_imm2              $BA74 (draw_province_stat3_or_dashes_fmt_3d)
   $83EB  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $83EF  D6 F9 83                   JUMP_abs               $83F9
  >$83F2  8E 78 BA                   PUSH_imm2              $BA78 (str_field_dashes3)
@@ -672,7 +672,7 @@ VM bytecode disassembly
   $84D0  0C                         LOADL_quick   ; inline operand = 12
   $84D1  D0                         INC
   $84D2  B3                         PUSHL
-  $84D3  8E 93 BA                   PUSH_imm2              $BA93 (msg_fief_2d_ba93)
+  $84D3  8E 93 BA                   PUSH_imm2              $BA93 (effect_view_a_fief_2d)
   $84D6  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $84DA  63                         PUSH_qimm   ; inline operand = 3
   $84DB  8D 16                      BYTE_PUSH_imm1         +22
@@ -805,7 +805,7 @@ VM bytecode disassembly
   $85C9  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $85CD  0A                         LOADL_quick   ; inline operand = 10
   $85CE  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
-  $85D1  8E B0 BA                   PUSH_imm2              $BAB0 (msg_fief_bab0)
+  $85D1  8E B0 BA                   PUSH_imm2              $BAB0 (draw_fief_view_label_msg)
   $85D4  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $85D8  CF                         RETURN
  >$85D9  3C                         PUSH_quick   ; inline operand = 12
@@ -900,7 +900,7 @@ VM bytecode disassembly
   $8678  D3                         BYTE_DEREF
   $8679  D0                         INC
   $867A  B3                         PUSHL
-  $867B  8E 02 BB                   PUSH_imm2              $BB02 (msg_fmt__2d_bb02)
+  $867B  8E 02 BB                   PUSH_imm2              $BB02 (effect_view_b_fmt_2d)
   $867E  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8682  0B                         LOADL_quick   ; inline operand = 11
   $8683  D3                         BYTE_DEREF
@@ -921,7 +921,7 @@ VM bytecode disassembly
   $869B  8F FE                      BYTE_ADD_imm1          -2
   $869D  B0                         DEREF
   $869E  B3                         PUSHL
-  $869F  8E 06 BB                   PUSH_imm2              $BB06 (msg_fmt__4d_bb06)
+  $869F  8E 06 BB                   PUSH_imm2              $BB06 (effect_view_b_fmt_4d_1)
   $86A2  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $86A6  40                         LOADL_qimm   ; inline operand = 0
   $86A7  28                         STORE_quick   ; inline operand = 8
@@ -933,7 +933,7 @@ VM bytecode disassembly
   $86AF  29                         STORE_quick   ; inline operand = 9
   $86B0  B0                         DEREF
   $86B1  B3                         PUSHL
-  $86B2  8E 0B BB                   PUSH_imm2              $BB0B (msg_fmt__4d_bb0b)
+  $86B2  8E 0B BB                   PUSH_imm2              $BB0B (effect_view_b_fmt_4d_2)
   $86B5  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $86B9  08                         LOADL_quick   ; inline operand = 8
   $86BA  D0                         INC
@@ -951,7 +951,7 @@ VM bytecode disassembly
   $86CC  BB                         ADD
   $86CD  D3                         BYTE_DEREF
   $86CE  B3                         PUSHL
-  $86CF  8E 10 BB                   PUSH_imm2              $BB10 (msg_fmt__4d_bb10)
+  $86CF  8E 10 BB                   PUSH_imm2              $BB10 (effect_view_b_fmt_4d_3)
   $86D2  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $86D6  06                         LOADL_quick   ; inline operand = 6
   $86D7  D1                         DEC
@@ -1019,7 +1019,7 @@ VM bytecode disassembly
   $8749  0B                         LOADL_quick   ; inline operand = 11
   $874A  D0                         INC
   $874B  B3                         PUSHL
-  $874C  8E 1E BB                   PUSH_imm2              $BB1E (msg_fmt__2d_bb1e)
+  $874C  8E 1E BB                   PUSH_imm2              $BB1E (fief_info_display_fmt_2d_1)
   $874F  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8753  0B                         LOADL_quick   ; inline operand = 11
   $8754  D2                         LSHIFT1
@@ -1046,7 +1046,7 @@ VM bytecode disassembly
   $8777  0B                         LOADL_quick   ; inline operand = 11
   $8778  D0                         INC
   $8779  B3                         PUSHL
-  $877A  8E 22 BB                   PUSH_imm2              $BB22 (msg_fmt__2d_bb22)
+  $877A  8E 22 BB                   PUSH_imm2              $BB22 (fief_info_display_fmt_2d_2)
   $877D  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $8781  0B                         LOADL_quick   ; inline operand = 11
   $8782  D2                         LSHIFT1
@@ -3735,7 +3735,7 @@ VM bytecode disassembly
   $9903  0A                         LOADL_quick   ; inline operand = 10
   $9904  D0                         INC
   $9905  2A                         STORE_quick   ; inline operand = 10
- >$9906  8E 2F FA                   PUSH_imm2              $FA2F (msg_how_many_men_fa2f)
+ >$9906  8E 2F FA                   PUSH_imm2              $FA2F (driver_war_how_many_men)
   $9909  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $990D  3A                         PUSH_quick   ; inline operand = 10
   $990E  61                         PUSH_qimm   ; inline operand = 1
@@ -3763,7 +3763,7 @@ VM bytecode disassembly
   $9940  D3                         BYTE_DEREF
   $9941  D8 59 99                   JUMPF_abs              $9959
   $9944  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
-  $9947  8E 59 FA                   PUSH_imm2              $FA59 (msg_will_you_lead_them_personally_fa59)
+  $9947  8E 59 FA                   PUSH_imm2              $FA59 (driver_war_will_you_lead_them_personally)
   $994A  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $994E  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
   $9951  D8 59 99                   JUMPF_abs              $9959
@@ -4032,7 +4032,7 @@ VM bytecode disassembly
   $9B2D  D7 34 9B                   JUMPT_abs              $9B34
   $9B30  0A                         LOADL_quick   ; inline operand = 10
   $9B31  D8 7C 9B                   JUMPF_abs              $9B7C
- >$9B34  8E E3 BB                   PUSH_imm2              $BBE3 (msg_is_this_ok_bbe3)
+ >$9B34  8E E3 BB                   PUSH_imm2              $BBE3 (driver_send_is_this_ok)
   $9B37  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $9B3B  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
   $9B3E  D8 7C 9B                   JUMPF_abs              $9B7C
@@ -4459,7 +4459,7 @@ VM bytecode disassembly
   $9E49  8C A8 77                   LOADR_imm2             $77A8 (daimyo_name_table)
   $9E4C  BB                         ADD
   $9E4D  B3                         PUSHL
-  $9E4E  8E 45 FD                   PUSH_imm2              $FD45 (msg_lord_s_s_wants_d_gold_pay_fd45)
+  $9E4E  8E 45 FD                   PUSH_imm2              $FD45 (driver_marry_lord_s_s_wants_d_gold_pay)
   $9E51  E9 34 D1 08                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $08
   $9E55  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
   $9E58  D8 A4 9E                   JUMPF_abs              $9EA4
@@ -4970,7 +4970,7 @@ VM bytecode disassembly
   $A1D1  0B                         LOADL_quick   ; inline operand = 11
   $A1D2  D0                         INC
   $A1D3  B3                         PUSHL
-  $A1D4  8E 15 BD                   PUSH_imm2              $BD15 (msg_fmt__2d_bd15)
+  $A1D4  8E 15 BD                   PUSH_imm2              $BD15 (driver_trade_fmt_2d)
   $A1D7  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $A1DB  0B                         LOADL_quick   ; inline operand = 11
   $A1DC  D2                         LSHIFT1
@@ -5083,7 +5083,7 @@ VM bytecode disassembly
   $A2A4  74                         ADD_qimm   ; inline operand = 4
   $A2A5  B3                         PUSHL
   $A2A6  E9 12 CA 04                CALL_abs_imm1          $CA12 (deduct_byte_at) {bytecode}, $04
-  $A2AA  8E 7C BD                   PUSH_imm2              $BD7C (msg_your_ninja_failed_bd7c)
+  $A2AA  8E 7C BD                   PUSH_imm2              $BD7C (effect_ninja_failed_your_ninja_failed)
   $A2AD  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $A2B1  AC 59 D7                   CALL_abs               $D759 (standard_delay) {bytecode}
   $A2B4  3D                         PUSH_quick   ; inline operand = 13
@@ -5889,7 +5889,7 @@ VM bytecode disassembly
   $A889  74                         ADD_qimm   ; inline operand = 4
   $A88A  B0                         DEREF
   $A88B  B3                         PUSHL
-  $A88C  8E 14 BE                   PUSH_imm2              $BE14 (msg_town_value_be14)
+  $A88C  8E 14 BE                   PUSH_imm2              $BE14 (driver_build_town_value)
   $A88F  8E 25 FB                   PUSH_imm2              $FB25 (msg_s_is_d_spend_how_much_on_it)
   $A892  E9 34 D1 06                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $06
   $A896  0B                         LOADL_quick   ; inline operand = 11
@@ -6300,7 +6300,7 @@ VM bytecode disassembly
   $AB5C  BB                         ADD
   $AB5D  B0                         DEREF
   $AB5E  B3                         PUSHL
-  $AB5F  8E 43 BE                   PUSH_imm2              $BE43 (msg_fmt__3d_be43)
+  $AB5F  8E 43 BE                   PUSH_imm2              $BE43 (render_arms_edit_screen_fmt_3d)
   $AB62  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $AB66  0B                         LOADL_quick   ; inline operand = 11
   $AB67  8F 14                      BYTE_ADD_imm1          +20
@@ -6882,7 +6882,7 @@ VM bytecode disassembly
   $AF96  E9 1E 87 02                CALL_abs_imm1          $871E (fief_info_display) {bytecode}, $02
  >$AF9A  40                         LOADL_qimm   ; inline operand = 0
   $AF9B  CF                         RETURN
- >$AF9C  8E 40 FE                   PUSH_imm2              $FE40 (msg_which_fief_fe40)
+ >$AF9C  8E 40 FE                   PUSH_imm2              $FE40 (driver_grant_which_fief)
   $AF9F  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $AFA3  8E 89 6F                   PUSH_imm2              $6F89 (fief_index_list)
   $AFA6  E9 4C 80 02                CALL_abs_imm1          $804C (province_select_prompt) {bytecode}, $02
@@ -6909,7 +6909,7 @@ VM bytecode disassembly
   $AFD5  09                         LOADL_quick   ; inline operand = 9
   $AFD6  D0                         INC
   $AFD7  B3                         PUSHL
-  $AFD8  8E 98 BE                   PUSH_imm2              $BE98 (msg_fmt__d_be98)
+  $AFD8  8E 98 BE                   PUSH_imm2              $BE98 (driver_grant_fmt_d)
   $AFDB  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $AFDF  09                         LOADL_quick   ; inline operand = 9
   $AFE0  D0                         INC
@@ -7016,7 +7016,7 @@ VM bytecode disassembly
 ; ============================================================
   $B0A2  8E C5 BE                   PUSH_imm2              $BEC5 (msg_animation)
   $B0A5  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
-  $B0A9  8E D0 BE                   PUSH_imm2              $BED0 (msg_on_off_bed0)
+  $B0A9  8E D0 BE                   PUSH_imm2              $BED0 (setting_animation_on_off_msg)
   $B0AC  E9 51 D3 02                CALL_abs_imm1          $D351 (prompt_ab_window) {bytecode}, $02
   $B0B0  D9 02 00 01 00 BD B0 00 00 C8 B0 C6 ... SWITCH_noncontig       count=2   ; .table 2 (key,target) + default (noncontiguous); SWITCH 1=>$B0BD 0=>$B0C8 default=>$B0C6
  >$B0BD  44                         LOADL_qimm   ; inline operand = 4
@@ -7108,7 +7108,7 @@ VM bytecode disassembly
   $B16D  6E                         PUSH_qimm   ; inline operand = 14
   $B16E  6C                         PUSH_qimm   ; inline operand = 12
   $B16F  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
-  $B173  8E 67 BF                   PUSH_imm2              $BF67 (msg_game_over_bf67)
+  $B173  8E 67 BF                   PUSH_imm2              $BF67 (command_end_game_game_over)
   $B176  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
  >$B17A  D6 7A B1                   JUMP_abs               $B17A
  >$B17D  AC 7E D7                   CALL_abs               $D77E (selected_province_owner) {bytecode}
@@ -7223,7 +7223,7 @@ VM bytecode disassembly
   $B251  09                         LOADL_quick   ; inline operand = 9
   $B252  D0                         INC
   $B253  B3                         PUSHL
-  $B254  8E 71 BF                   PUSH_imm2              $BF71 (msg_fmt__2d_bf71)
+  $B254  8E 71 BF                   PUSH_imm2              $BF71 (driver_other_fmt_2d)
   $B257  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $B25B  09                         LOADL_quick   ; inline operand = 9
   $B25C  D2                         LSHIFT1

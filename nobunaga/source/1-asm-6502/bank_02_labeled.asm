@@ -8756,7 +8756,7 @@ b02_b521:   brk                         ; B521:  00
 b02_b522:   plp                         ; B522:  28
 b02_b523:   brk                         ; B523:  00
 b02_b524:   bmi $b526                   ; B524:  30 00
-msg_y_n_b526:   asl a                       ; B526:  0a
+prompt_yes_no_y_n:   asl a                       ; B526:  0a
 b02_b527:   plp                         ; B527:  28
 b02_b528:   eor $4e2f,y                 ; B528:  59 2f 4e
 b02_b52b:   and #$3f                    ; B52B:  29 3f
@@ -8796,7 +8796,7 @@ b02_b56e:   jsr $2520                   ; B56E:  20 20 25
 b02_b571:   .db $32                     ; B571:  32
 b02_b572:   .db $64                     ; B572:  64
 b02_b573:   brk                         ; B573:  00
-msg_fmt__4d_b574:   and $34                     ; B574:  25 34
+draw_side_resource_field_fmt_4d:   and $34                     ; B574:  25 34
 b02_b576:   .db $64                     ; B576:  64
 b02_b577:   brk                         ; B577:  00
 msg_gold_4d_rice_4d_men_4d:   asl a                       ; B578:  0a
@@ -8871,15 +8871,15 @@ b02_b5ed:   jsr $6e61                   ; B5ED:  20 61 6e
 b02_b5f0:   adc $6b0a,y                 ; B5F0:  79 0a 6b
 b02_b5f3:   adc music_voice_idx                     ; B5F3:  65 79
 b02_b5f5:   brk                         ; B5F5:  00
-msg_fief_b5f6:   lsr brk_jmp_target_hi                     ; B5F6:  46 69
+paged_flee_fief_list_display_msg_1:   lsr brk_jmp_target_hi                     ; B5F6:  46 69
 b02_b5f8:   adc brk_scratch_lo                     ; B5F8:  65 66
 b02_b5fa:   .db $3a                     ; B5FA:  3a
 b02_b5fb:   asl a                       ; B5FB:  0a
 b02_b5fc:   brk                         ; B5FC:  00
-msg_fmt__2d_b5fd:   and $32                     ; B5FD:  25 32
+paged_flee_fief_list_display_fmt_2d:   and $32                     ; B5FD:  25 32
 b02_b5ff:   .db $64                     ; B5FF:  64
 b02_b600:   brk                         ; B600:  00
-msg_fief_b601:   lsr brk_jmp_target_hi                     ; B601:  46 69
+paged_flee_fief_list_display_msg_2:   lsr brk_jmp_target_hi                     ; B601:  46 69
 b02_b603:   adc brk_scratch_lo                     ; B603:  65 66
 b02_b605:   .db $3a                     ; B605:  3a
 b02_b606:   asl a                       ; B606:  0a
@@ -9402,7 +9402,7 @@ b02_b9b5:   ror $750a                   ; B9B5:  6e 0a 75
 b02_b9b8:   ror $7469                   ; B9B8:  6e 69 74
 b02_b9bb:   jsr $6425                   ; B9BB:  20 25 64
 b02_b9be:   brk                         ; B9BE:  00
-msg_fmt__d_b9bf:   and $64                     ; B9BF:  25 64
+player_interactive_unit_move_loop_fmt_d:   and $64                     ; B9BF:  25 64
 b02_b9c1:   brk                         ; B9C1:  00
 terrain_strength_mult_table:   .db $5a                     ; B9C2:  5a
 b02_b9c3:   brk                         ; B9C3:  00
@@ -9432,9 +9432,9 @@ b02_b9e3:   pla                         ; B9E3:  68
 b02_b9e4:   adc (p2_buttons,x)                 ; B9E4:  61 6f
 b02_b9e6:   .db prg_bank_shadow                     ; B9E6:  73
 b02_b9e7:   and (scratch_ptr_lo,x)                 ; B9E7:  21 00
-msg_fmt__d_b9e9:   and $64                     ; B9E9:  25 64
+resolve_attack_apply_casualties_fmt_d:   and $64                     ; B9E9:  25 64
 b02_b9eb:   brk                         ; B9EB:  00
-msg_hit_any_key_b9ec:   pha                         ; B9EC:  48
+prompt_hit_any_key_and_redraw_combat_screen_msg:   pha                         ; B9EC:  48
 b02_b9ed:   adc #$74                    ; B9ED:  69 74
 b02_b9ef:   jsr $6e61                   ; B9EF:  20 61 6e
 b02_b9f2:   adc $6b20,y                 ; B9F2:  79 20 6b
@@ -9497,11 +9497,11 @@ b02_ba43:   asl a                       ; BA43:  0a
 b02_ba44:   ror $61                     ; BA44:  66 61
 b02_ba46:   jmp ($696c)                 ; BA46:  6c 6c 69
 b02_ba49:   ror brk_scratch_hi                   ; BA49:  6e 67 00
-msg_fief_ba4c:   lsr brk_jmp_target_hi                     ; BA4C:  46 69
+transfer_owned_fiefs_and_announce_succession_fief:   lsr brk_jmp_target_hi                     ; BA4C:  46 69
 b02_ba4e:   adc brk_scratch_lo                     ; BA4E:  65 66
 b02_ba50:   asl a                       ; BA50:  0a
 b02_ba51:   brk                         ; BA51:  00
-msg_fmt__2d_ba52:   jsr $3225                   ; BA52:  20 25 32
+transfer_owned_fiefs_and_announce_succession_fmt_2d:   jsr $3225                   ; BA52:  20 25 32
 b02_ba55:   .db $64                     ; BA55:  64
 b02_ba56:   brk                         ; BA56:  00
 str_passed_from_lord:   asl a                       ; BA57:  0a

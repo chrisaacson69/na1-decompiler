@@ -171,27 +171,27 @@ NesPrgRom:3F7CC:marry_palette:[GFX-PALETTE 2026-06-10] Marriage-scene palette wo
 NesPrgRom:3FEA6:province_to_map_section_50:[MAP] 50-fief scenario: province index -> strategic-map section (values 0-8, 50 entries). Indexed by selected_province_idx in driver_map/render_section_for_selected_province; the scenario_fief_count==50 branch selects this table (vs province_to_map_section_17 $FED8).
 NesPrgRom:3FED8:province_to_map_section_17:[MAP] 17-fief scenario: province index -> strategic-map section (values 0/1, 17 entries). 50-fief uses province_to_map_section_50 $FEA6.
 NesPrgRom:3FBD0:msg_ng_to_pieces:[ROM-STR] "ng to pieces!"
-NesPrgRom:3F695:msg_y_n_f695:[ROM-STR] "\n(Y/N)? "
-NesPrgRom:3F69E:msg_fmt__d_f69e:[ROM-STR] "%d"
-NesPrgRom:3F6AC:msg_d_d_f6ac:[ROM-STR] "\n(%d-%d)? "
-NesPrgRom:3F6B7:msg_hit_any_key_f6b7:[ROM-STR] "Hit any key"
-NesPrgRom:3F6E1:msg_lord_f6e1:[ROM-STR] "Lord "
-NesPrgRom:3F6E7:msg_lord_f6e7:[ROM-STR] "Lord\n"
+NesPrgRom:3F695:prompt_y_n_msg:[ROM-STR] "\n(Y/N)? " Read by prompt_y_n. Renamed 2026-10-28 from msg_y_n_f695 (the duplicate-string convention: by reader, not address).
+NesPrgRom:3F69E:cursor_nav_fmt_d_1:[ROM-STR] "%d" (cursor_nav_loop, 1 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)
+NesPrgRom:3F6AC:number_input_d_d:[ROM-STR] "\n(%d-%d)? " Read by number_input. Renamed 2026-10-28 from msg_d_d_f6ac (the duplicate-string convention: by reader, not address).
+NesPrgRom:3F6B7:ui_prompt_redraw_hit_any_key:[ROM-STR] "Hit any key" Read by ui_prompt_redraw. Renamed 2026-10-28 from msg_hit_any_key_f6b7 (the duplicate-string convention: by reader, not address).
+NesPrgRom:3F6E1:daimyo_name_width_lord:[ROM-STR] "Lord " Read by daimyo_name_width. Renamed 2026-10-28 from msg_lord_f6e1 (the duplicate-string convention: by reader, not address).
+NesPrgRom:3F6E7:draw_daimyo_name_lord:[ROM-STR] "Lord\n" Read by draw_daimyo_name. Renamed 2026-10-28 from msg_lord_f6e7 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3F6ED:msg_pirates_f6ed:[ROM-STR] "Pirates"
-NesPrgRom:3F6F5:msg_christns_f6f5:[ROM-STR] "Christns"
-NesPrgRom:3F6FE:msg_rioters_f6fe:[ROM-STR] "Rioters"
+NesPrgRom:3F6F5:revolt_type_message_christns:[ROM-STR] "Christns" Read by revolt_type_message. Renamed 2026-10-28 from msg_christns_f6f5 (the duplicate-string convention: by reader, not address).
+NesPrgRom:3F6FE:revolt_type_message_rioters:[ROM-STR] "Rioters" Read by revolt_type_message. Renamed 2026-10-28 from msg_rioters_f6fe (the duplicate-string convention: by reader, not address).
 NesPrgRom:3F706:msg_no_lord:[ROM-STR] "no lord"
-NesPrgRom:3F72E:msg_rebels_f72e:[ROM-STR] "Rebels"
+NesPrgRom:3F72E:select_uprising_message_rebels:[ROM-STR] "Rebels" Read by select_uprising_message. Renamed 2026-10-28 from msg_rebels_f72e (the duplicate-string convention: by reader, not address).
 NesPrgRom:3F735:msg_is_now_fief_2d_s_daimyo:[ROM-STR] " is now\nfief %2d`s daimyo"
 NesPrgRom:3F74F:msg_was_killed:[ROM-STR] " was\nkilled"
 NesPrgRom:3F75B:msg_in_fief_2d_in_the_year_d:[ROM-STR] " in fief %2d\nin the year %d"
-NesPrgRom:3F777:msg_lord_f777:[ROM-STR] "Lord "
+NesPrgRom:3F777:draw_daimyo_name_menu_lord:[ROM-STR] "Lord " Read by draw_daimyo_name_menu. Renamed 2026-10-28 from msg_lord_f777 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3F77F:msg_wants_a_s:[ROM-STR] " wants a\n%s\n"
 NesPrgRom:3F78C:msg_demand_gold:[ROM-STR] "Demand gold"
 NesPrgRom:3F798:msg_marriage_pact:[ROM-STR] "marriage pact"
 NesPrgRom:3F7A6:msg_accept:[ROM-STR] "accept"
 NesPrgRom:3F7AD:msg_pact:[ROM-STR] "pact"
-NesPrgRom:3F7B2:msg_fief_f7b2:[ROM-STR] "Fief "
+NesPrgRom:3F7B2:neutralize_fief_msg:[ROM-STR] "Fief " Read by neutralize_fief. Renamed 2026-10-28 from msg_fief_f7b2 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3F7B8:msg_d_lost_its_leader:[ROM-STR] "%d lost its\nleader"
 NesPrgRom:3F930:msg_aiaoieueoikakikusasisusotatuto:[ROM-STR] "AiAoIeUeOiKaKiKuSaSiSuSoTaTuToNaNoHaHiHuYuYo"
 NesPrgRom:3F95D:msg_setenohomamimemoyarawagagizaze:[ROM-STR] "setenohomamimemoyarawagagizazedadubabibvbejo"
@@ -559,10 +559,10 @@ NesPrgRom:3E554:redraw_fief_on_map:[HIGH CONFIRMED 2026-06-10] Locate-and-redraw
 NesPrgRom:3E694:render_section_for_selected_province:[HIGH CONFIRMED 2026-06-10] render_map_section(province_to_map_section[selected_province_idx_latch_7fdd]) -- look up which map section contains the latched selected province (table province_to_map_section_50 or _17 by scenario) and render it. The 'jump the map to the selected province' entry. Was 'dispatch_map_helper_e694'.
 NesPrgRom:3E6B9:unpack_composite_face_record:[MED->HIGH 2026-06-01] The COMPOSITE-portrait builder for GENERATED daimyo: called by draw_daimyo_portrait ($E76F) on the flag==1 path. Unpacks the base-5 face code $6EB1[$6F5B*2] via repeated div/mod into a 9-wide record, writes to SRAM (uses ppu_upload_block_wrap/sram_wrap) — the same base-5 face machinery as compose_upload_daimyo_portrait ($8086). (was unpack_composite_face_record.)
 NesPrgRom:3F68A:msg_control_n:[ROM-STR] "Control %d" (poll_input prints player + 1)
-NesPrgRom:3F6A1:cursor_nav_fmt_d_1:[ROM-STR] "%d" (cursor_nav_loop, 1st of 3)
-NesPrgRom:3F6A4:cursor_nav_fmt_d_2:[ROM-STR] "%d" (cursor_nav_loop, 2nd of 3)
+NesPrgRom:3F6A1:cursor_nav_fmt_d_2:[ROM-STR] "%d" (cursor_nav_loop, 2 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)
+NesPrgRom:3F6A4:cursor_nav_fmt_d_3:[ROM-STR] "%d" (cursor_nav_loop, 3 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)
 NesPrgRom:3F6A7:cursor_nav_space:[ROM-STR] " " (cursor_nav_loop; the tables lane read it as binary)
-NesPrgRom:3F6A9:cursor_nav_fmt_d_3:[ROM-STR] "%d" (cursor_nav_loop, 3rd of 3)
+NesPrgRom:3F6A9:cursor_nav_fmt_d_4:[ROM-STR] "%d" (cursor_nav_loop, 4 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)
 NesPrgRom:3F6C4:draw_current_year_fmt:[ROM-STR] "%d" (draw_current_year prints current_game_year)
 NesPrgRom:3F6C7:msg_spring:[ROM-STR] "Spring" (draw_current_season)
 NesPrgRom:3F6CE:msg_summer:[ROM-STR] "Summer" (draw_current_season)
@@ -659,9 +659,9 @@ NesPrgRom:3F9DB:msg_how_many_men:[ROM-STR] "How many men"
 NesPrgRom:3F9E8:msg_will_you_lead_them_personally:[ROM-STR] "Will you lead\nthem personally"
 NesPrgRom:3FA06:msg_they_have_arrived_safely:[ROM-STR] "They have\narrived safely"
 NesPrgRom:3FA1F:msg_attack_where:[ROM-STR] "\nAttack where?\n"
-NesPrgRom:3FA2F:msg_how_many_men_fa2f:[ROM-STR] "How many men"
+NesPrgRom:3FA2F:driver_war_how_many_men:[ROM-STR] "How many men" Read by driver_war. Renamed 2026-10-28 from msg_how_many_men_fa2f (the duplicate-string convention: by reader, not address).
 NesPrgRom:3FA3C:msg_how_much_rice_will_they_take:[ROM-STR] "How much rice\nwill they take"
-NesPrgRom:3FA59:msg_will_you_lead_them_personally_fa59:[ROM-STR] "Will you lead\nthem personally"
+NesPrgRom:3FA59:driver_war_will_you_lead_them_personally:[ROM-STR] "Will you lead\nthem personally" Read by driver_war. Renamed 2026-10-28 from msg_will_you_lead_them_personally_fa59 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3FA77:msg_tax_is_d_enter_new_tax:[ROM-STR] "Tax is %d\nEnter new tax"
 NesPrgRom:3FA8F:msg_the_peasants_are_delighted:[ROM-STR] "The peasants are\ndelighted!"
 NesPrgRom:3FAAB:msg_the_peasants_are_protesting:[ROM-STR] "The peasants are\nprotesting!"
@@ -693,7 +693,7 @@ NesPrgRom:3FCAA:msg_lord_s_they_ve_refused:[ROM-STR] "Lord %s\nthey`ve refused!"
 NesPrgRom:3FCC3:msg_your_bride_to_be_has_arrived:[ROM-STR] "Your bride-to-be\nhas arrived"
 NesPrgRom:3FCE0:msg_don_t_you_long_to_hear_the_pit:[ROM-STR] "Don`t you long to\nhear the\npitter-patter of\na little lord`s\nfoot"
 NesPrgRom:3FD27:msg_lord_s_s_wants_d_gold_pay:[ROM-STR] "Lord %s,\n%s wants\n%d gold\nPay"
-NesPrgRom:3FD45:msg_lord_s_s_wants_d_gold_pay_fd45:[ROM-STR] "Lord %s,\n%s wants\n%d gold\nPay"
+NesPrgRom:3FD45:driver_marry_lord_s_s_wants_d_gold_pay:[ROM-STR] "Lord %s,\n%s wants\n%d gold\nPay" Read by driver_marry. Renamed 2026-10-28 from msg_lord_s_s_wants_d_gold_pay_fd45 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3FD63:msg_war_is_inevitable_so_don_t_let:[ROM-STR] "War is inevitable\nso don`t let your\nguard down!"
 NesPrgRom:3FD93:msg_who_needs_him_anyway:[ROM-STR] "Who needs him\nanyway"
 NesPrgRom:3FDA8:msg_give_how_much:[ROM-STR] "Give how much"
@@ -705,7 +705,7 @@ NesPrgRom:3FDEB:msg_you_have_no_rice:[ROM-STR] "You have no rice!"
 NesPrgRom:3FDFD:msg_you_have_no_soldiers:[ROM-STR] "You have no\nsoldiers!"
 NesPrgRom:3FE13:msg_you_have_no_peasants:[ROM-STR] "You have no\npeasants!"
 NesPrgRom:3FE29:msg_they_are_your_allies:[ROM-STR] "They are your\nallies!"
-NesPrgRom:3FE40:msg_which_fief_fe40:[ROM-STR] "\nWhich fief "
+NesPrgRom:3FE40:driver_grant_which_fief:[ROM-STR] "\nWhich fief " Read by driver_grant. Renamed 2026-10-28 from msg_which_fief_fe40 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3FE4D:msg_what_are_your_orders:[ROM-STR] "\nWhat are your\norders?"
 NesPrgRom:3FE64:msg_it_s_currently_a_s_state_ok_to:[ROM-STR] "It`s currently a\n%s state\nOK to make it a\n%s state"
 NesPrgRom:3FE97:msg_bribe_which:[ROM-STR] "\nBribe which? "
@@ -740,9 +740,9 @@ NesPrgRom:3C4B:str_plague_msg:[ROM-STR 2026-06-10] 'plague has come to fief %2d!
 NesPrgRom:3F1C:str_save_and_illness_msgs:[ROM-STR 2026-06-10] 'Data has been saved',' has taken ill','Disloyal'
 NesPrgRom:2C4A:msg_fmt_blank:[ROM-STR] "017?100"
 NesPrgRom:37CA:msg_congratulations_my_lord:[ROM-STR] ">[16]*(>[16](0>[16](0>[16]80Congratulations my Lord!\n"
-NesPrgRom:37D2:msg_congratulations_my_lord_b7d2:[ROM-STR] ">[16](0>[16]80Congratulations my Lord!\n"
-NesPrgRom:37D6:msg_congratulations_my_lord_b7d6:[ROM-STR] ">[16]80Congratulations my Lord!\n"
-NesPrgRom:37DA:msg_congratulations_my_lord_b7da:[ROM-STR] "Congratulations my Lord!\n"
+NesPrgRom:37D2:display_fullscreen_graphic_sequence_congratulations_my_lord_1:[ROM-STR] ">[16](0>[16]80Congratulations my Lord!\n" Read by display_fullscreen_graphic_sequence (1 of 3). Renamed 2026-10-28 from msg_congratulations_my_lord_b7d2 (the duplicate-string convention: by reader, not address).
+NesPrgRom:37D6:display_fullscreen_graphic_sequence_congratulations_my_lord_2:[ROM-STR] ">[16]80Congratulations my Lord!\n" Read by display_fullscreen_graphic_sequence (2 of 3). Renamed 2026-10-28 from msg_congratulations_my_lord_b7d6 (the duplicate-string convention: by reader, not address).
+NesPrgRom:37DA:display_fullscreen_graphic_sequence_congratulations_my_lord_3:[ROM-STR] "Congratulations my Lord!\n" Read by display_fullscreen_graphic_sequence (3 of 3). Renamed 2026-10-28 from msg_congratulations_my_lord_b7da (the duplicate-string convention: by reader, not address).
 NesPrgRom:37F4:msg_in_the_year_4d:[ROM-STR] "In the year %4d\n"
 NesPrgRom:3805:msg_you_united_japan:[ROM-STR] "you united Japan!"
 NesPrgRom:3817:msg_game_over:[ROM-STR] "Game over"
@@ -750,7 +750,7 @@ NesPrgRom:3821:msg_would_you_like_to_play_again:[ROM-STR] "Would you like to\npl
 NesPrgRom:383E:msg_thanks_for_playing:[ROM-STR] "Thanks for\nplaying"
 NesPrgRom:385A:msg_new_game:[ROM-STR] ">[16]'0>800>[16](0>[06](0>[18])0>[18][01]0> !0>#$%>&'(>)*+New game"
 NesPrgRom:3862:msg_new_game_b862:[ROM-STR] ">[16](0>[06](0>[18])0>[18][01]0> !0>#$%>&'(>)*+New game"
-NesPrgRom:3882:msg_new_game_b882:[ROM-STR] "New game"
+NesPrgRom:3882:verify_sram_save_integrity_new_game:[ROM-STR] "New game" Read by verify_sram_save_integrity. Renamed 2026-10-28 from msg_new_game_b882 (the duplicate-string convention: by reader, not address).
 NesPrgRom:388B:msg_koei:[ROM-STR] "KOEI"
 NesPrgRom:3890:msg_no_saved_data:[ROM-STR] "No saved data"
 NesPrgRom:389F:msg_data_loaded:[ROM-STR] "Data loaded"
@@ -769,7 +769,7 @@ NesPrgRom:3969:msg_please_set:[ROM-STR] "Please set"
 NesPrgRom:3974:msg_daimyo_abilities:[ROM-STR] "daimyo abilities"
 NesPrgRom:3985:msg_press_any_button:[ROM-STR] "Press any button"
 NesPrgRom:3996:msg_to_set_abilities:[ROM-STR] "to set abilities"
-NesPrgRom:39A7:msg_fmt_blank_b9a7:[ROM-STR] "-   -"
+NesPrgRom:39A7:daimyo_creation_stat_roll_screen_fmt_blank:[ROM-STR] "-   -" Read by daimyo_creation_stat_roll_screen. Renamed 2026-10-28 from msg_fmt_blank_b9a7 (the duplicate-string convention: by reader, not address).
 NesPrgRom:39AD:msg_total_4d:[ROM-STR] "Total  %4d"
 NesPrgRom:39B8:msg_is_this_ok:[ROM-STR] "Is this OK"
 NesPrgRom:39C3:msg_control_1:[ROM-STR] "Control 1"
@@ -805,8 +805,8 @@ NesPrgRom:3BF1:msg_summer_this_year_brings_typhoo:[ROM-STR] "Summer this year\nb
 NesPrgRom:3C13:msg_lord_plague_has_come:[ROM-STR] "Lord,\nplague has come!"
 NesPrgRom:3C2B:msg_a_typhoon_has_struck_fief_2d:[ROM-STR] "\na typhoon has\nstruck fief %2d!"
 NesPrgRom:3C4C:msg_plague_has_come_to_fief_2d:[ROM-STR] "\nplague has come\nto fief %2d!"
-NesPrgRom:3C6A:msg_in_fief_bc6a:[ROM-STR] "In fief "
-NesPrgRom:3C73:msg_fmt__2d_bc73:[ROM-STR] "%2d,"
+NesPrgRom:3C6A:province_conquest_roll_predicate_in_fief:[ROM-STR] "In fief " Read by province_conquest_roll_predicate. Renamed 2026-10-28 from msg_in_fief_bc6a (the duplicate-string convention: by reader, not address).
+NesPrgRom:3C73:province_conquest_roll_predicate_fmt_2d:[ROM-STR] "%2d," Read by province_conquest_roll_predicate. Renamed 2026-10-28 from msg_fmt__2d_bc73 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3C78:msg_loyals_4d_men_rebels_4d_men:[ROM-STR] "\n\nLoyals\n          %4d men\nRebels\n          %4d men"
 NesPrgRom:3CAC:msg_beware_a_treacherous_subordina:[ROM-STR] "Beware!\nA treacherous\nsubordinate has\nraised an army to\ndestroy "
 NesPrgRom:3CF1:msg_the_rebels_have_won:[ROM-STR] "The rebels have\nwon!"
@@ -825,7 +825,7 @@ NesPrgRom:3EBA:msg_you_ve_lost_a_daughter_but_gai:[ROM-STR] "you`ve lost a\ndaug
 NesPrgRom:3EE9:msg_the_princess_was_too_good_for:[ROM-STR] "The princess was\ntoo good for him"
 NesPrgRom:3F0B:msg_riot:[ROM-STR] "Riot"
 NesPrgRom:3F10:msg_revolt:[ROM-STR] "Revolt"
-NesPrgRom:3F17:msg_koei_bf17:[ROM-STR] "KOEI"
+NesPrgRom:3F17:write_sram_save_checksum_and_signature_koei:[ROM-STR] "KOEI" Read by write_sram_save_checksum_and_signature. Renamed 2026-10-28 from msg_koei_bf17 (the duplicate-string convention: by reader, not address).
 NesPrgRom:3F1D:msg_data_has_been_saved:[ROM-STR] "Data has been\nsaved"
 NesPrgRom:3F31:msg_has_taken_ill:[ROM-STR] " has\ntaken ill"
 NesPrgRom:3F40:msg_disloyal_troops_have_revolted:[ROM-STR] "Disloyal troops\nhave revolted"
@@ -968,24 +968,24 @@ NesPrgRom:7A2D:msg_rice_2d_1d:[ROM-STR] "Rice  %2d.%1d"
 NesPrgRom:7A3B:msg_arms_2d_1d:[ROM-STR] "Arms  %2d.%1d"
 NesPrgRom:7A49:msg_men_2d_1d:[ROM-STR] "Men   %2d.%1d"
 NesPrgRom:7A57:str_passed_from_lord:[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'
-NesPrgRom:7A65:msg_fmt__2d_ba65:[ROM-STR] "%2d"
+NesPrgRom:7A65:count_eligible_targets_fmt_2d:[ROM-STR] "%2d" Read by count_eligible_targets. Renamed 2026-10-28 from msg_fmt__2d_ba65 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7A6B:msg_fmt__4d:[ROM-STR] "%4d"
-NesPrgRom:7A74:msg_fmt__3d_ba74:[ROM-STR] "%3d"
+NesPrgRom:7A74:draw_province_stat3_or_dashes_fmt_3d:[ROM-STR] "%3d" Read by draw_province_stat3_or_dashes. Renamed 2026-10-28 from msg_fmt__3d_ba74 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7A7C:msg_home_fief:[ROM-STR] "Home fief"
 NesPrgRom:7A86:msg_direct:[ROM-STR] "Direct"
 NesPrgRom:7A8D:msg_empty:[ROM-STR] "Empty"
-NesPrgRom:7A93:msg_fief_2d_ba93:[ROM-STR] "Fief %2d"
+NesPrgRom:7A93:effect_view_a_fief_2d:[ROM-STR] "Fief %2d" Read by effect_view_a. Renamed 2026-10-28 from msg_fief_2d_ba93 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7AA5:msg_sick:[ROM-STR] "Sick"
 NesPrgRom:7AAA:msg_home:[ROM-STR] "Home\n"
-NesPrgRom:7AB0:msg_fief_bab0:[ROM-STR] "Fief"
+NesPrgRom:7AB0:draw_fief_view_label_msg:[ROM-STR] "Fief" Read by draw_fief_view_label. Renamed 2026-10-28 from msg_fief_bab0 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7AB5:msg_fief_gold_town_rice_output_dam:[ROM-STR] "Fief\n\nGold\nTown\nRice\nOutput\nDams\nLylty\nWealth\nMen\nMorale\nSkill\nA"
-NesPrgRom:7B02:msg_fmt__2d_bb02:[ROM-STR] "%2d"
-NesPrgRom:7B06:msg_fmt__4d_bb06:[ROM-STR] "%4d\n"
-NesPrgRom:7B0B:msg_fmt__4d_bb0b:[ROM-STR] "%4d\n"
-NesPrgRom:7B10:msg_fmt__4d_bb10:[ROM-STR] "%4d\n"
+NesPrgRom:7B02:effect_view_b_fmt_2d:[ROM-STR] "%2d" Read by effect_view_b. Renamed 2026-10-28 from msg_fmt__2d_bb02 (the duplicate-string convention: by reader, not address).
+NesPrgRom:7B06:effect_view_b_fmt_4d_1:[ROM-STR] "%4d\n" Read by effect_view_b (1 of 3). Renamed 2026-10-28 from msg_fmt__4d_bb06 (the duplicate-string convention: by reader, not address).
+NesPrgRom:7B0B:effect_view_b_fmt_4d_2:[ROM-STR] "%4d\n" Read by effect_view_b (2 of 3). Renamed 2026-10-28 from msg_fmt__4d_bb0b (the duplicate-string convention: by reader, not address).
+NesPrgRom:7B10:effect_view_b_fmt_4d_3:[ROM-STR] "%4d\n" Read by effect_view_b (3 of 3). Renamed 2026-10-28 from msg_fmt__4d_bb10 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7B15:msg_menu:[ROM-STR] "__Menu__"
-NesPrgRom:7B1E:msg_fmt__2d_bb1e:[ROM-STR] "%2d"
-NesPrgRom:7B22:msg_fmt__2d_bb22:[ROM-STR] "%2d"
+NesPrgRom:7B1E:fief_info_display_fmt_2d_1:[ROM-STR] "%2d" Read by fief_info_display (1 of 2). Renamed 2026-10-28 from msg_fmt__2d_bb1e (the duplicate-string convention: by reader, not address).
+NesPrgRom:7B22:fief_info_display_fmt_2d_2:[ROM-STR] "%2d" Read by fief_info_display (2 of 2). Renamed 2026-10-28 from msg_fmt__2d_bb22 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7B28:msg_not_home_fief:[ROM-STR] "Not home fief"
 NesPrgRom:7B3F:msg_has_lost:[ROM-STR] " has lost"
 NesPrgRom:7B62:msg_from_fief_2d_has:[ROM-STR] " from\nfief %2d has\n"
@@ -994,7 +994,7 @@ NesPrgRom:7B8D:msg_counterattacked:[ROM-STR] "Counterattacked!"
 NesPrgRom:7B9E:msg_you_have_repelled:[ROM-STR] "\nYou have repelled!"
 NesPrgRom:7BB2:msg_your_ninja_failed:[ROM-STR] "Your ninja failed"
 NesPrgRom:7BC4:msg_that_fief_can_t_hold_more_men:[ROM-STR] "That fief can`t\nhold more men"
-NesPrgRom:7BE3:msg_is_this_ok_bbe3:[ROM-STR] "Is this OK"
+NesPrgRom:7BE3:driver_send_is_this_ok:[ROM-STR] "Is this OK" Read by driver_send. Renamed 2026-10-28 from msg_is_this_ok_bbe3 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7BEF:msg_dams_value:[ROM-STR] "Dams value"
 NesPrgRom:7BFD:msg_output:[ROM-STR] "Output"
 NesPrgRom:7C07:msg_the_treasure_room_is_already_f:[ROM-STR] "\nThe treasure room\nis already full!"
@@ -1011,32 +1011,32 @@ NesPrgRom:7CC6:msg_sorry_no_credit:[ROM-STR] "Sorry, no credit"
 NesPrgRom:7CD7:msg_weapons_for_who:[ROM-STR] "Weapons? For who?"
 NesPrgRom:7CEA:msg_armory_full:[ROM-STR] "Armory full"
 NesPrgRom:7CF6:msg_we_merchants_deal_only_in_cash:[ROM-STR] "We merchants deal\nonly in cash"
-NesPrgRom:7D15:msg_fmt__2d_bd15:[ROM-STR] "%2d"
+NesPrgRom:7D15:driver_trade_fmt_2d:[ROM-STR] "%2d" Read by driver_trade. Renamed 2026-10-28 from msg_fmt__2d_bd15 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7D19:msg_lord_how_may_i_serve_you:[ROM-STR] "Lord,how may I\nserve you?"
 NesPrgRom:7D33:msg_let_s_do_business_again:[ROM-STR] "Let`s do business\nagain"
 NesPrgRom:7D4B:msg_bye:[ROM-STR] "Bye!"
 NesPrgRom:7D50:msg_fief_d_s_s_has_declined_by_d:[ROM-STR] "fief %d`s\n%s has\ndeclined by %d\n"
 NesPrgRom:7D71:msg_town_value:[ROM-STR] "Town value"
-NesPrgRom:7D7C:msg_your_ninja_failed_bd7c:[ROM-STR] "Your ninja\nfailed!"
+NesPrgRom:7D7C:effect_ninja_failed_your_ninja_failed:[ROM-STR] "Your ninja\nfailed!" Read by effect_ninja_failed. Renamed 2026-10-28 from msg_your_ninja_failed_bd7c (the duplicate-string convention: by reader, not address).
 NesPrgRom:7D8F:msg_uprisng_2_revolt_3_dams_4_assa:[ROM-STR] "\n1-Uprisng 2-Revolt\n3-Dams 4-Assassin\n5-Arson"
 NesPrgRom:7DBD:msg_the_daimyo_is_out:[ROM-STR] "the daimyo is out"
 NesPrgRom:7DD1:msg_men_ninja:[ROM-STR] "\n(Men/Ninja)? "
 NesPrgRom:7DE0:msg_the_men_can_t_train_any_furthe:[ROM-STR] "The men can`t\ntrain any further"
 NesPrgRom:7E00:msg_view_vassals:[ROM-STR] "(99-view vassals)\n"
-NesPrgRom:7E14:msg_town_value_be14:[ROM-STR] "Town value"
+NesPrgRom:7E14:driver_build_town_value:[ROM-STR] "Town value" Read by driver_build. Renamed 2026-10-28 from msg_town_value_be14 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7E20:msg_gold_rice:[ROM-STR] "(Gold/Rice)? "
 NesPrgRom:7E31:msg_peasnts_men:[ROM-STR] "(Peasnts/Men)? "
-NesPrgRom:7E43:msg_fmt__3d_be43:[ROM-STR] "%3d"
+NesPrgRom:7E43:render_arms_edit_screen_fmt_3d:[ROM-STR] "%3d" Read by render_arms_edit_screen. Renamed 2026-10-28 from msg_fmt__3d_be43 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7E47:msg_d_s:[ROM-STR] "%d%s"
 NesPrgRom:7E4C:msg_available_0:[ROM-STR] "available  0"
 NesPrgRom:7E69:msg_arrows_other_sections:[ROM-STR] "(arrows  )...other sections\n"
 NesPrgRom:7E86:msg_a_button_menu:[ROM-STR] "(A Button)...menu"
-NesPrgRom:7E98:msg_fmt__d_be98:[ROM-STR] "%d"
+NesPrgRom:7E98:driver_grant_fmt_d:[ROM-STR] "%d" Read by driver_grant. Renamed 2026-10-28 from msg_fmt__d_be98 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7E9B:msg_it_s_already_a_s_state:[ROM-STR] "It`s already a\n%s\nstate"
 NesPrgRom:7EB3:msg_sound:[ROM-STR] "Sound "
 NesPrgRom:7EBA:msg_on_off:[ROM-STR] "(on/off)? "
 NesPrgRom:7EC5:msg_animation:[ROM-STR] "Animation\n"
-NesPrgRom:7ED0:msg_on_off_bed0:[ROM-STR] "(on/off)? "
+NesPrgRom:7ED0:setting_animation_on_off_msg:[ROM-STR] "(on/off)? " Read by setting_animation_on_off. Renamed 2026-10-28 from msg_on_off_bed0 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7EDB:msg_wait_is_now:[ROM-STR] "Wait is now "
 NesPrgRom:7EE8:msg_d_enter_new_wait:[ROM-STR] "%d\nEnter new wait"
 NesPrgRom:7EFA:msg_are_you_sure:[ROM-STR] "Are you sure"
@@ -1044,8 +1044,8 @@ NesPrgRom:7F07:msg_game_will_save_at_end_of_seaso:[ROM-STR] "Game will save at\n
 NesPrgRom:7F27:msg_watch_others_battle:[ROM-STR] "Watch others\nbattle "
 NesPrgRom:7F3C:msg_y_n:[ROM-STR] "(Y/N)? "
 NesPrgRom:7F44:msg_do_you_really_want_to_end_the:[ROM-STR] "Do you really\nwant to end the\ngame"
-NesPrgRom:7F67:msg_game_over_bf67:[ROM-STR] "Game over"
-NesPrgRom:7F71:msg_fmt__2d_bf71:[ROM-STR] "%2d"
+NesPrgRom:7F67:command_end_game_game_over:[ROM-STR] "Game over" Read by command_end_game. Renamed 2026-10-28 from msg_game_over_bf67 (the duplicate-string convention: by reader, not address).
+NesPrgRom:7F71:driver_other_fmt_2d:[ROM-STR] "%2d" Read by driver_other. Renamed 2026-10-28 from msg_fmt__2d_bf71 (the duplicate-string convention: by reader, not address).
 NesPrgRom:7F75:msg_change_which:[ROM-STR] "Change which?"
 NesPrgRom:7F83:msg_what_a_waste:[ROM-STR] "What a waste!"
 NesPrgRom:7F91:msg_your_orders:[ROM-STR] "\nyour orders?"
@@ -1227,18 +1227,18 @@ NesPrgRom:BA31:str_enemy_morale_falling:[ROM-STR 2026-06-10] 'enemy','morale is 
 NesPrgRom:BA57:str_passed_from_lord:[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'
 NesPrgRom:BA7F:battle_select_palette:[GFX-PALETTE 2026-06-10] Battle-setup screen palette (palette_write_wrap, battle_setup_select_province).
 NesPrgRom:BBD0:fief_tile_descriptor_table:[ROM-DATA 2026-06-10] Per-fief tile-upload descriptors (build_blit_fief_tile_block, mapid*4).
-NesPrgRom:B526:msg_y_n_b526:[ROM-STR] "\n(Y/N)? "
+NesPrgRom:B526:prompt_yes_no_y_n:[ROM-STR] "\n(Y/N)? " Read by prompt_yes_no. Renamed 2026-10-28 from msg_y_n_b526 (the duplicate-string convention: by reader, not address).
 NesPrgRom:B52F:msg_d_d:[ROM-STR] "8932170\n(%d-%d)\n"
-NesPrgRom:B536:msg_d_d_b536:[ROM-STR] "\n(%d-%d)\n"
+NesPrgRom:B536:prompt_province_selection_d_d:[ROM-STR] "\n(%d-%d)\n" Read by prompt_province_selection. Renamed 2026-10-28 from msg_d_d_b536 (the duplicate-string convention: by reader, not address).
 NesPrgRom:B56A:msg_day_2d:[ROM-STR] "\nDay  %2d"
-NesPrgRom:B574:msg_fmt__4d_b574:[ROM-STR] "%4d"
+NesPrgRom:B574:draw_side_resource_field_fmt_4d:[ROM-STR] "%4d" Read by draw_side_resource_field. Renamed 2026-10-28 from msg_fmt__4d_b574 (the duplicate-string convention: by reader, not address).
 NesPrgRom:B578:msg_gold_4d_rice_4d_men_4d:[ROM-STR] "\nGold%4d\nRice%4d\nMen %4d"
-NesPrgRom:B5A7:msg_fief_2d_b5a7:[ROM-STR] "\nFief %2d"
+NesPrgRom:B5A7:draw_combat_fief_day_header_fief_2d:[ROM-STR] "\nFief %2d" Read by draw_combat_fief_day_header. Renamed 2026-10-28 from msg_fief_2d_b5a7 (the duplicate-string convention: by reader, not address).
 NesPrgRom:B5BE:msg_up_up_rt_down_rt_down_down_lt:[ROM-STR] "\n Up\n Up Rt\n Down Rt\n Down\n Down Lt\n Up Lt"
 NesPrgRom:B5E9:msg_hit_any_key:[ROM-STR] "\nHit any\nkey"
-NesPrgRom:B5F6:msg_fief_b5f6:[ROM-STR] "Fief:\n"
-NesPrgRom:B5FD:msg_fmt__2d_b5fd:[ROM-STR] "%2d"
-NesPrgRom:B601:msg_fief_b601:[ROM-STR] "Fief:\n"
+NesPrgRom:B5F6:paged_flee_fief_list_display_msg_1:[ROM-STR] "Fief:\n" Read by paged_flee_fief_list_display (1 of 2). Renamed 2026-10-28 from msg_fief_b5f6 (the duplicate-string convention: by reader, not address).
+NesPrgRom:B5FD:paged_flee_fief_list_display_fmt_2d:[ROM-STR] "%2d" Read by paged_flee_fief_list_display. Renamed 2026-10-28 from msg_fmt__2d_b5fd (the duplicate-string convention: by reader, not address).
+NesPrgRom:B601:paged_flee_fief_list_display_msg_2:[ROM-STR] "Fief:\n" Read by paged_flee_fief_list_display (2 of 2). Renamed 2026-10-28 from msg_fief_b601 (the duplicate-string convention: by reader, not address).
 NesPrgRom:B608:msg_there_is_no_fief_to_flee_to:[ROM-STR] "\nThere is\nno fief\nto flee\nto!"
 NesPrgRom:B627:msg_unit_d_s:[ROM-STR] "unit %d\n%s"
 NesPrgRom:B658:msg_the_enemy_has_turned_tail_and:[ROM-STR] ">[12])0>[02][12]!>[18])0>[18][01]0the enemy has turned\ntail and fled!\nHa Ha Ha Ha "
@@ -1246,17 +1246,17 @@ NesPrgRom:B96E:msg_s_has_retreated:[ROM-STR] "%s has retreated"
 NesPrgRom:B97F:msg_s_hung_on_to_the_end_and_won:[ROM-STR] "%s hung on to the end\nand won"
 NesPrgRom:B9A0:msg_lord:[ROM-STR] "Lord\n"
 NesPrgRom:B9A6:msg_please_position_unit_d:[ROM-STR] "\nPlease\nposition\nunit %d"
-NesPrgRom:B9BF:msg_fmt__d_b9bf:[ROM-STR] "%d"
+NesPrgRom:B9BF:player_interactive_unit_move_loop_fmt_d:[ROM-STR] "%d" Read by player_interactive_unit_move_loop. Renamed 2026-10-28 from msg_fmt__d_b9bf (the duplicate-string convention: by reader, not address).
 NesPrgRom:B9CA:msg_the_town_is_in_complete_chaos:[ROM-STR] "The\ntown\nis in\ncomplete\nchaos!"
-NesPrgRom:B9E9:msg_fmt__d_b9e9:[ROM-STR] "%d"
-NesPrgRom:B9EC:msg_hit_any_key_b9ec:[ROM-STR] "Hit any key"
+NesPrgRom:B9E9:resolve_attack_apply_casualties_fmt_d:[ROM-STR] "%d" Read by resolve_attack_apply_casualties. Renamed 2026-10-28 from msg_fmt__d_b9e9 (the duplicate-string convention: by reader, not address).
+NesPrgRom:B9EC:prompt_hit_any_key_and_redraw_combat_screen_msg:[ROM-STR] "Hit any key" Read by prompt_hit_any_key_and_redraw_combat_screen. Renamed 2026-10-28 from msg_hit_any_key_b9ec (the duplicate-string convention: by reader, not address).
 NesPrgRom:BA04:msg_giving_orders_for:[ROM-STR] "\nGiving\norders\nfor\n"
 NesPrgRom:BA19:msg_your_orders_for:[ROM-STR] "\nYour\norders\nfor\n"
 NesPrgRom:BA2C:msg_our:[ROM-STR] "\nour"
 NesPrgRom:BA32:msg_enemy:[ROM-STR] "\nenemy"
 NesPrgRom:BA39:msg_morale_is_falling:[ROM-STR] "\nmorale\nis\nfalling"
-NesPrgRom:BA4C:msg_fief_ba4c:[ROM-STR] "Fief\n"
-NesPrgRom:BA52:msg_fmt__2d_ba52:[ROM-STR] " %2d"
+NesPrgRom:BA4C:transfer_owned_fiefs_and_announce_succession_fief:[ROM-STR] "Fief\n" Read by transfer_owned_fiefs_and_announce_succession. Renamed 2026-10-28 from msg_fief_ba4c (the duplicate-string convention: by reader, not address).
+NesPrgRom:BA52:transfer_owned_fiefs_and_announce_succession_fmt_2d:[ROM-STR] " %2d" Read by transfer_owned_fiefs_and_announce_succession. Renamed 2026-10-28 from msg_fmt__2d_ba52 (the duplicate-string convention: by reader, not address).
 NesPrgRom:BA59:msg_has_passed_from:[ROM-STR] "\nhas passed from\n"
 NesPrgRom:BA6B:msg_lord_s_to:[ROM-STR] "Lord %s to\n"
 NesPrgRom:BA77:msg_lord_s:[ROM-STR] "Lord %s"

@@ -861,7 +861,7 @@ L_D3A1:
 // (body @ $D3AC)
 
 word prompt_y_n(void) {
-    redraw_window(msg_y_n_f695);    // $D3AF
+    redraw_window(prompt_y_n_msg);    // $D3AF
     read_frame_timer(1);    // $D3B4
     do {    // $D3B8
         local11 = wait_button_edge();    // $D3BB
@@ -895,7 +895,7 @@ word cursor_nav_loop(word arg1) {
         *(word*)(((local5 << 1) + &local6)) = 255;    // $D404
         local5 = (local5 + 1);    // $D407
     } while ((local5 <= 5));    // $D40B
-    draw_message(msg_fmt__d_f69e, local6);    // $D412
+    draw_message(cursor_nav_fmt_d_1, local6);    // $D412
     ui_window_col = (ui_window_col - 1);    // $D41A
     read_frame_timer(1);    // $D41E
     wait_button_edge();    // $D422
@@ -929,7 +929,7 @@ L_D469:
         *(word*)(((local4 << 1) + &local6)) = 0;    // $D484
         }
 L_D485:
-        phi_d492_0 = cursor_nav_fmt_d_1;    // $D48F
+        phi_d492_0 = cursor_nav_fmt_d_2;    // $D48F
         phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D48F
 L_D492:
         draw_message(phi_d492_0, phi_d492_1);    // $D492
@@ -944,7 +944,7 @@ L_D4AF:
         *(word*)(((local4 << 1) + &local6)) = 9;    // $D4CA
         }
 L_D4CB:
-        phi_d492_0 = cursor_nav_fmt_d_2;    // $D4D8
+        phi_d492_0 = cursor_nav_fmt_d_3;    // $D4D8
         phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D4D8
         goto L_D492;    // $D4D8
 L_D4DB:
@@ -967,7 +967,7 @@ L_D528:
         ui_window_col = (ui_window_col + 1);    // $D531
         local4 = (local4 + 1);    // $D53A
         *(word*)(((local4 << 1) + &local6)) = 0;    // $D540
-        draw_message(cursor_nav_fmt_d_3, *(word*)(((local4 << 1) + &local6)));    // $D54E
+        draw_message(cursor_nav_fmt_d_4, *(word*)(((local4 << 1) + &local6)));    // $D54E
         ui_window_col = (ui_window_col - 1);    // $D556
         read_frame_timer(1);    // $D55A
         goto L_D509;    // $D55E
@@ -1027,7 +1027,7 @@ L_D5E7:
 // (body @ $D5EE)
 
 word number_input(word arg1, word arg2) {
-    draw_message(msg_d_d_f6ac, arg1, arg2);    // $D5F3
+    draw_message(number_input_d_d, arg1, arg2);    // $D5F3
     local11 = select_province_by_cursor(arg1, arg2);    // $D5FD
     if ((local11 > 0)) {    // $D601
     }
@@ -1042,7 +1042,7 @@ L_D607:
 
 word ui_prompt_redraw(void) {
     set_cursor(2, 26);    // $D611
-    redraw_window(msg_hit_any_key_f6b7);    // $D618
+    redraw_window(ui_prompt_redraw_hit_any_key);    // $D618
     local11 = wait_button_edge();    // $D61F
     open_message_window();    // $D620
     reset_prompt_selection();    // $D623
@@ -1186,7 +1186,7 @@ word selected_province_owner(void) {
 // (body @ $D790)
 
 word daimyo_name_width(word arg1) {
-    redraw_window(msg_lord_f6e1);    // $D793
+    redraw_window(daimyo_name_width_lord);    // $D793
     local11 = daimyo_name_table[fief_owner(arg1)];    // $D7A2
     redraw_window(daimyo_name_table[fief_owner(arg1)]);    // $D7A4
     return char_advance_width(44);    // $D7AE
@@ -1197,7 +1197,7 @@ word daimyo_name_width(word arg1) {
 // (body @ $D7B4)
 
 word draw_daimyo_name(word arg1) {
-    redraw_window(msg_lord_f6e7);    // $D7B7
+    redraw_window(draw_daimyo_name_lord);    // $D7B7
     local11 = daimyo_name_table[fief_owner(arg1)];    // $D7C6
     return redraw_window(daimyo_name_table[fief_owner(arg1)]);    // $D7CC
 }
@@ -1427,7 +1427,7 @@ word revolt_type_message(word arg1) {
     } else {
     }
 L_DA21:
-    local11 = ((fief_revolt_type[arg1] == 7) ? msg_christns_f6f5 : msg_rioters_f6fe);    // $DA21
+    local11 = ((fief_revolt_type[arg1] == 7) ? revolt_type_message_christns : revolt_type_message_rioters);    // $DA21
     return local11;    // $DA23
     }
 }
@@ -1730,7 +1730,7 @@ L_DE3C:
 // (body @ $DE7D)
 
 word select_uprising_message(word arg1) {
-    if ((ai_turn_flags & 32)) return msg_rebels_f72e;    // $DE83
+    if ((ai_turn_flags & 32)) return select_uprising_message_rebels;    // $DE83
     if ((ai_turn_flags & 16)) return 0x796A;    // $DE90
     switch (arg1) {    // $DE98
     case 7:
@@ -2010,7 +2010,7 @@ word copy_arms_record_5(word arg1, word arg2) {
 
 word draw_daimyo_name_menu(word arg1) {
     open_message_window();    // $E2DB
-    message_display(msg_lord_f777);    // $E2E1
+    message_display(draw_daimyo_name_menu_lord);    // $E2E1
     redraw_window(daimyo_name_table[fief_owner(battle_defending_province)]);    // $E2F3
     redraw_window(str_marriage_event_msgs);    // $E2FA
     redraw_window(daimyo_name_table[selected_province_owner()]);    // $E308
@@ -2108,7 +2108,7 @@ L_E448:
 word neutralize_fief(word arg1) {
     phi_ret_e4a1 = (province_ai_state[arg1] != 255);    // $E463
     if (phi_ret_e4a1) {    // $E463
-    message_display(msg_fief_f7b2);    // $E469
+    message_display(neutralize_fief_msg);    // $E469
     draw_message(msg_d_lost_its_leader, (arg1 + 1));    // $E473
     confirm_prompt();    // $E477
     province_ai_state[arg1] = -1;    // $E482

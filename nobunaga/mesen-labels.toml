@@ -268,27 +268,27 @@ prg_bank_count = 16        # 256 KB total
 "0xFED8" = { name = "province_to_map_section_17", comment = "[MAP] 17-fief scenario: province index -> strategic-map section (values 0/1, 17 entries). 50-fief uses province_to_map_section_50 $FEA6." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xBBD0" = { name = "msg_ng_to_pieces", comment = "[ROM-STR] \"ng to pieces!\"" }
-"0xF695" = { name = "msg_y_n_f695", comment = "[ROM-STR] \"\n(Y/N)? \"" }
-"0xF69E" = { name = "msg_fmt__d_f69e", comment = "[ROM-STR] \"%d\"" }
-"0xF6AC" = { name = "msg_d_d_f6ac", comment = "[ROM-STR] \"\n(%d-%d)? \"" }
-"0xF6B7" = { name = "msg_hit_any_key_f6b7", comment = "[ROM-STR] \"Hit any key\"" }
-"0xF6E1" = { name = "msg_lord_f6e1", comment = "[ROM-STR] \"Lord \"" }
-"0xF6E7" = { name = "msg_lord_f6e7", comment = "[ROM-STR] \"Lord\n\"" }
+"0xF695" = { name = "prompt_y_n_msg", comment = "[ROM-STR] \"\n(Y/N)? \" Read by prompt_y_n. Renamed 2026-10-28 from msg_y_n_f695 (the duplicate-string convention: by reader, not address)." }
+"0xF69E" = { name = "cursor_nav_fmt_d_1", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 1 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)" }
+"0xF6AC" = { name = "number_input_d_d", comment = "[ROM-STR] \"\n(%d-%d)? \" Read by number_input. Renamed 2026-10-28 from msg_d_d_f6ac (the duplicate-string convention: by reader, not address)." }
+"0xF6B7" = { name = "ui_prompt_redraw_hit_any_key", comment = "[ROM-STR] \"Hit any key\" Read by ui_prompt_redraw. Renamed 2026-10-28 from msg_hit_any_key_f6b7 (the duplicate-string convention: by reader, not address)." }
+"0xF6E1" = { name = "daimyo_name_width_lord", comment = "[ROM-STR] \"Lord \" Read by daimyo_name_width. Renamed 2026-10-28 from msg_lord_f6e1 (the duplicate-string convention: by reader, not address)." }
+"0xF6E7" = { name = "draw_daimyo_name_lord", comment = "[ROM-STR] \"Lord\n\" Read by draw_daimyo_name. Renamed 2026-10-28 from msg_lord_f6e7 (the duplicate-string convention: by reader, not address)." }
 "0xF6ED" = { name = "msg_pirates_f6ed", comment = "[ROM-STR] \"Pirates\"" }
-"0xF6F5" = { name = "msg_christns_f6f5", comment = "[ROM-STR] \"Christns\"" }
-"0xF6FE" = { name = "msg_rioters_f6fe", comment = "[ROM-STR] \"Rioters\"" }
+"0xF6F5" = { name = "revolt_type_message_christns", comment = "[ROM-STR] \"Christns\" Read by revolt_type_message. Renamed 2026-10-28 from msg_christns_f6f5 (the duplicate-string convention: by reader, not address)." }
+"0xF6FE" = { name = "revolt_type_message_rioters", comment = "[ROM-STR] \"Rioters\" Read by revolt_type_message. Renamed 2026-10-28 from msg_rioters_f6fe (the duplicate-string convention: by reader, not address)." }
 "0xF706" = { name = "msg_no_lord", comment = "[ROM-STR] \"no lord\"" }
-"0xF72E" = { name = "msg_rebels_f72e", comment = "[ROM-STR] \"Rebels\"" }
+"0xF72E" = { name = "select_uprising_message_rebels", comment = "[ROM-STR] \"Rebels\" Read by select_uprising_message. Renamed 2026-10-28 from msg_rebels_f72e (the duplicate-string convention: by reader, not address)." }
 "0xF735" = { name = "msg_is_now_fief_2d_s_daimyo", comment = "[ROM-STR] \" is now\nfief %2d`s daimyo\"" }
 "0xF74F" = { name = "msg_was_killed", comment = "[ROM-STR] \" was\nkilled\"" }
 "0xF75B" = { name = "msg_in_fief_2d_in_the_year_d", comment = "[ROM-STR] \" in fief %2d\nin the year %d\"" }
-"0xF777" = { name = "msg_lord_f777", comment = "[ROM-STR] \"Lord \"" }
+"0xF777" = { name = "draw_daimyo_name_menu_lord", comment = "[ROM-STR] \"Lord \" Read by draw_daimyo_name_menu. Renamed 2026-10-28 from msg_lord_f777 (the duplicate-string convention: by reader, not address)." }
 "0xF77F" = { name = "msg_wants_a_s", comment = "[ROM-STR] \" wants a\n%s\n\"" }
 "0xF78C" = { name = "msg_demand_gold", comment = "[ROM-STR] \"Demand gold\"" }
 "0xF798" = { name = "msg_marriage_pact", comment = "[ROM-STR] \"marriage pact\"" }
 "0xF7A6" = { name = "msg_accept", comment = "[ROM-STR] \"accept\"" }
 "0xF7AD" = { name = "msg_pact", comment = "[ROM-STR] \"pact\"" }
-"0xF7B2" = { name = "msg_fief_f7b2", comment = "[ROM-STR] \"Fief \"" }
+"0xF7B2" = { name = "neutralize_fief_msg", comment = "[ROM-STR] \"Fief \" Read by neutralize_fief. Renamed 2026-10-28 from msg_fief_f7b2 (the duplicate-string convention: by reader, not address)." }
 "0xF7B8" = { name = "msg_d_lost_its_leader", comment = "[ROM-STR] \"%d lost its\nleader\"" }
 "0xF930" = { name = "msg_aiaoieueoikakikusasisusotatuto", comment = "[ROM-STR] \"AiAoIeUeOiKaKiKuSaSiSuSoTaTuToNaNoHaHiHuYuYo\"" }
 "0xF95D" = { name = "msg_setenohomamimemoyarawagagizaze", comment = "[ROM-STR] \"setenohomamimemoyarawagagizazedadubabibvbejo\"" }
@@ -715,10 +715,10 @@ prg_bank_count = 16        # 256 KB total
 # The 3-byte entry at $8000 ('4C 78 A7' = JMP $A778) is essentially the only native code in this bank,
 # followed by JSR $E823 at $A778 which enters the VM. Everything after that is bytecode.
 "0xF68A" = { name = "msg_control_n", comment = "[ROM-STR] \"Control %d\" (poll_input prints player + 1)" }
-"0xF6A1" = { name = "cursor_nav_fmt_d_1", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 1st of 3)" }
-"0xF6A4" = { name = "cursor_nav_fmt_d_2", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 2nd of 3)" }
+"0xF6A1" = { name = "cursor_nav_fmt_d_2", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 2 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)" }
+"0xF6A4" = { name = "cursor_nav_fmt_d_3", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 3 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)" }
 "0xF6A7" = { name = "cursor_nav_space", comment = "[ROM-STR] \" \" (cursor_nav_loop; the tables lane read it as binary)" }
-"0xF6A9" = { name = "cursor_nav_fmt_d_3", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 3rd of 3)" }
+"0xF6A9" = { name = "cursor_nav_fmt_d_4", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 4 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)" }
 "0xF6C4" = { name = "draw_current_year_fmt", comment = "[ROM-STR] \"%d\" (draw_current_year prints current_game_year)" }
 "0xF6C7" = { name = "msg_spring", comment = "[ROM-STR] \"Spring\" (draw_current_season)" }
 "0xF6CE" = { name = "msg_summer", comment = "[ROM-STR] \"Summer\" (draw_current_season)" }
@@ -816,9 +816,9 @@ prg_bank_count = 16        # 256 KB total
 "0xF9E8" = { name = "msg_will_you_lead_them_personally", comment = "[ROM-STR] \"Will you lead\nthem personally\"" }
 "0xFA06" = { name = "msg_they_have_arrived_safely", comment = "[ROM-STR] \"They have\narrived safely\"" }
 "0xFA1F" = { name = "msg_attack_where", comment = "[ROM-STR] \"\nAttack where?\n\"" }
-"0xFA2F" = { name = "msg_how_many_men_fa2f", comment = "[ROM-STR] \"How many men\"" }
+"0xFA2F" = { name = "driver_war_how_many_men", comment = "[ROM-STR] \"How many men\" Read by driver_war. Renamed 2026-10-28 from msg_how_many_men_fa2f (the duplicate-string convention: by reader, not address)." }
 "0xFA3C" = { name = "msg_how_much_rice_will_they_take", comment = "[ROM-STR] \"How much rice\nwill they take\"" }
-"0xFA59" = { name = "msg_will_you_lead_them_personally_fa59", comment = "[ROM-STR] \"Will you lead\nthem personally\"" }
+"0xFA59" = { name = "driver_war_will_you_lead_them_personally", comment = "[ROM-STR] \"Will you lead\nthem personally\" Read by driver_war. Renamed 2026-10-28 from msg_will_you_lead_them_personally_fa59 (the duplicate-string convention: by reader, not address)." }
 "0xFA77" = { name = "msg_tax_is_d_enter_new_tax", comment = "[ROM-STR] \"Tax is %d\nEnter new tax\"" }
 "0xFA8F" = { name = "msg_the_peasants_are_delighted", comment = "[ROM-STR] \"The peasants are\ndelighted!\"" }
 "0xFAAB" = { name = "msg_the_peasants_are_protesting", comment = "[ROM-STR] \"The peasants are\nprotesting!\"" }
@@ -850,7 +850,7 @@ prg_bank_count = 16        # 256 KB total
 "0xFCC3" = { name = "msg_your_bride_to_be_has_arrived", comment = "[ROM-STR] \"Your bride-to-be\nhas arrived\"" }
 "0xFCE0" = { name = "msg_don_t_you_long_to_hear_the_pit", comment = "[ROM-STR] \"Don`t you long to\nhear the\npitter-patter of\na little lord`s\nfoot\"" }
 "0xFD27" = { name = "msg_lord_s_s_wants_d_gold_pay", comment = "[ROM-STR] \"Lord %s,\n%s wants\n%d gold\nPay\"" }
-"0xFD45" = { name = "msg_lord_s_s_wants_d_gold_pay_fd45", comment = "[ROM-STR] \"Lord %s,\n%s wants\n%d gold\nPay\"" }
+"0xFD45" = { name = "driver_marry_lord_s_s_wants_d_gold_pay", comment = "[ROM-STR] \"Lord %s,\n%s wants\n%d gold\nPay\" Read by driver_marry. Renamed 2026-10-28 from msg_lord_s_s_wants_d_gold_pay_fd45 (the duplicate-string convention: by reader, not address)." }
 "0xFD63" = { name = "msg_war_is_inevitable_so_don_t_let", comment = "[ROM-STR] \"War is inevitable\nso don`t let your\nguard down!\"" }
 "0xFD93" = { name = "msg_who_needs_him_anyway", comment = "[ROM-STR] \"Who needs him\nanyway\"" }
 "0xFDA8" = { name = "msg_give_how_much", comment = "[ROM-STR] \"Give how much\"" }
@@ -862,7 +862,7 @@ prg_bank_count = 16        # 256 KB total
 "0xFDFD" = { name = "msg_you_have_no_soldiers", comment = "[ROM-STR] \"You have no\nsoldiers!\"" }
 "0xFE13" = { name = "msg_you_have_no_peasants", comment = "[ROM-STR] \"You have no\npeasants!\"" }
 "0xFE29" = { name = "msg_they_are_your_allies", comment = "[ROM-STR] \"They are your\nallies!\"" }
-"0xFE40" = { name = "msg_which_fief_fe40", comment = "[ROM-STR] \"\nWhich fief \"" }
+"0xFE40" = { name = "driver_grant_which_fief", comment = "[ROM-STR] \"\nWhich fief \" Read by driver_grant. Renamed 2026-10-28 from msg_which_fief_fe40 (the duplicate-string convention: by reader, not address)." }
 "0xFE4D" = { name = "msg_what_are_your_orders", comment = "[ROM-STR] \"\nWhat are your\norders?\"" }
 "0xFE64" = { name = "msg_it_s_currently_a_s_state_ok_to", comment = "[ROM-STR] \"It`s currently a\n%s state\nOK to make it a\n%s state\"" }
 "0xFE97" = { name = "msg_bribe_which", comment = "[ROM-STR] \"\nBribe which? \"" }
@@ -901,9 +901,9 @@ prg_bank_count = 16        # 256 KB total
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xAC4A" = { name = "msg_fmt_blank", comment = "[ROM-STR] \"017?100\"" }
 "0xB7CA" = { name = "msg_congratulations_my_lord", comment = "[ROM-STR] \">[16]*(>[16](0>[16](0>[16]80Congratulations my Lord!\n\"" }
-"0xB7D2" = { name = "msg_congratulations_my_lord_b7d2", comment = "[ROM-STR] \">[16](0>[16]80Congratulations my Lord!\n\"" }
-"0xB7D6" = { name = "msg_congratulations_my_lord_b7d6", comment = "[ROM-STR] \">[16]80Congratulations my Lord!\n\"" }
-"0xB7DA" = { name = "msg_congratulations_my_lord_b7da", comment = "[ROM-STR] \"Congratulations my Lord!\n\"" }
+"0xB7D2" = { name = "display_fullscreen_graphic_sequence_congratulations_my_lord_1", comment = "[ROM-STR] \">[16](0>[16]80Congratulations my Lord!\n\" Read by display_fullscreen_graphic_sequence (1 of 3). Renamed 2026-10-28 from msg_congratulations_my_lord_b7d2 (the duplicate-string convention: by reader, not address)." }
+"0xB7D6" = { name = "display_fullscreen_graphic_sequence_congratulations_my_lord_2", comment = "[ROM-STR] \">[16]80Congratulations my Lord!\n\" Read by display_fullscreen_graphic_sequence (2 of 3). Renamed 2026-10-28 from msg_congratulations_my_lord_b7d6 (the duplicate-string convention: by reader, not address)." }
+"0xB7DA" = { name = "display_fullscreen_graphic_sequence_congratulations_my_lord_3", comment = "[ROM-STR] \"Congratulations my Lord!\n\" Read by display_fullscreen_graphic_sequence (3 of 3). Renamed 2026-10-28 from msg_congratulations_my_lord_b7da (the duplicate-string convention: by reader, not address)." }
 "0xB7F4" = { name = "msg_in_the_year_4d", comment = "[ROM-STR] \"In the year %4d\n\"" }
 "0xB805" = { name = "msg_you_united_japan", comment = "[ROM-STR] \"you united Japan!\"" }
 "0xB817" = { name = "msg_game_over", comment = "[ROM-STR] \"Game over\"" }
@@ -911,7 +911,7 @@ prg_bank_count = 16        # 256 KB total
 "0xB83E" = { name = "msg_thanks_for_playing", comment = "[ROM-STR] \"Thanks for\nplaying\"" }
 "0xB85A" = { name = "msg_new_game", comment = "[ROM-STR] \">[16]'0>800>[16](0>[06](0>[18])0>[18][01]0> !0>#$%>&'(>)*+New game\"" }
 "0xB862" = { name = "msg_new_game_b862", comment = "[ROM-STR] \">[16](0>[06](0>[18])0>[18][01]0> !0>#$%>&'(>)*+New game\"" }
-"0xB882" = { name = "msg_new_game_b882", comment = "[ROM-STR] \"New game\"" }
+"0xB882" = { name = "verify_sram_save_integrity_new_game", comment = "[ROM-STR] \"New game\" Read by verify_sram_save_integrity. Renamed 2026-10-28 from msg_new_game_b882 (the duplicate-string convention: by reader, not address)." }
 "0xB88B" = { name = "msg_koei", comment = "[ROM-STR] \"KOEI\"" }
 "0xB890" = { name = "msg_no_saved_data", comment = "[ROM-STR] \"No saved data\"" }
 "0xB89F" = { name = "msg_data_loaded", comment = "[ROM-STR] \"Data loaded\"" }
@@ -930,7 +930,7 @@ prg_bank_count = 16        # 256 KB total
 "0xB974" = { name = "msg_daimyo_abilities", comment = "[ROM-STR] \"daimyo abilities\"" }
 "0xB985" = { name = "msg_press_any_button", comment = "[ROM-STR] \"Press any button\"" }
 "0xB996" = { name = "msg_to_set_abilities", comment = "[ROM-STR] \"to set abilities\"" }
-"0xB9A7" = { name = "msg_fmt_blank_b9a7", comment = "[ROM-STR] \"-   -\"" }
+"0xB9A7" = { name = "daimyo_creation_stat_roll_screen_fmt_blank", comment = "[ROM-STR] \"-   -\" Read by daimyo_creation_stat_roll_screen. Renamed 2026-10-28 from msg_fmt_blank_b9a7 (the duplicate-string convention: by reader, not address)." }
 "0xB9AD" = { name = "msg_total_4d", comment = "[ROM-STR] \"Total  %4d\"" }
 "0xB9B8" = { name = "msg_is_this_ok", comment = "[ROM-STR] \"Is this OK\"" }
 "0xB9C3" = { name = "msg_control_1", comment = "[ROM-STR] \"Control 1\"" }
@@ -966,8 +966,8 @@ prg_bank_count = 16        # 256 KB total
 "0xBC13" = { name = "msg_lord_plague_has_come", comment = "[ROM-STR] \"Lord,\nplague has come!\"" }
 "0xBC2B" = { name = "msg_a_typhoon_has_struck_fief_2d", comment = "[ROM-STR] \"\na typhoon has\nstruck fief %2d!\"" }
 "0xBC4C" = { name = "msg_plague_has_come_to_fief_2d", comment = "[ROM-STR] \"\nplague has come\nto fief %2d!\"" }
-"0xBC6A" = { name = "msg_in_fief_bc6a", comment = "[ROM-STR] \"In fief \"" }
-"0xBC73" = { name = "msg_fmt__2d_bc73", comment = "[ROM-STR] \"%2d,\"" }
+"0xBC6A" = { name = "province_conquest_roll_predicate_in_fief", comment = "[ROM-STR] \"In fief \" Read by province_conquest_roll_predicate. Renamed 2026-10-28 from msg_in_fief_bc6a (the duplicate-string convention: by reader, not address)." }
+"0xBC73" = { name = "province_conquest_roll_predicate_fmt_2d", comment = "[ROM-STR] \"%2d,\" Read by province_conquest_roll_predicate. Renamed 2026-10-28 from msg_fmt__2d_bc73 (the duplicate-string convention: by reader, not address)." }
 "0xBC78" = { name = "msg_loyals_4d_men_rebels_4d_men", comment = "[ROM-STR] \"\n\nLoyals\n          %4d men\nRebels\n          %4d men\"" }
 "0xBCAC" = { name = "msg_beware_a_treacherous_subordina", comment = "[ROM-STR] \"Beware!\nA treacherous\nsubordinate has\nraised an army to\ndestroy \"" }
 "0xBCF1" = { name = "msg_the_rebels_have_won", comment = "[ROM-STR] \"The rebels have\nwon!\"" }
@@ -986,7 +986,7 @@ prg_bank_count = 16        # 256 KB total
 "0xBEE9" = { name = "msg_the_princess_was_too_good_for", comment = "[ROM-STR] \"The princess was\ntoo good for him\"" }
 "0xBF0B" = { name = "msg_riot", comment = "[ROM-STR] \"Riot\"" }
 "0xBF10" = { name = "msg_revolt", comment = "[ROM-STR] \"Revolt\"" }
-"0xBF17" = { name = "msg_koei_bf17", comment = "[ROM-STR] \"KOEI\"" }
+"0xBF17" = { name = "write_sram_save_checksum_and_signature_koei", comment = "[ROM-STR] \"KOEI\" Read by write_sram_save_checksum_and_signature. Renamed 2026-10-28 from msg_koei_bf17 (the duplicate-string convention: by reader, not address)." }
 "0xBF1D" = { name = "msg_data_has_been_saved", comment = "[ROM-STR] \"Data has been\nsaved\"" }
 "0xBF31" = { name = "msg_has_taken_ill", comment = "[ROM-STR] \" has\ntaken ill\"" }
 "0xBF40" = { name = "msg_disloyal_troops_have_revolted", comment = "[ROM-STR] \"Disloyal troops\nhave revolted\"" }
@@ -1178,24 +1178,24 @@ prg_bank_count = 16        # 256 KB total
 "0xBA3B" = { name = "msg_arms_2d_1d", comment = "[ROM-STR] \"Arms  %2d.%1d\"" }
 "0xBA49" = { name = "msg_men_2d_1d", comment = "[ROM-STR] \"Men   %2d.%1d\"" }
 "0xBA57" = { name = "str_passed_from_lord", comment = "[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'" }
-"0xBA65" = { name = "msg_fmt__2d_ba65", comment = "[ROM-STR] \"%2d\"" }
+"0xBA65" = { name = "count_eligible_targets_fmt_2d", comment = "[ROM-STR] \"%2d\" Read by count_eligible_targets. Renamed 2026-10-28 from msg_fmt__2d_ba65 (the duplicate-string convention: by reader, not address)." }
 "0xBA6B" = { name = "msg_fmt__4d", comment = "[ROM-STR] \"%4d\"" }
-"0xBA74" = { name = "msg_fmt__3d_ba74", comment = "[ROM-STR] \"%3d\"" }
+"0xBA74" = { name = "draw_province_stat3_or_dashes_fmt_3d", comment = "[ROM-STR] \"%3d\" Read by draw_province_stat3_or_dashes. Renamed 2026-10-28 from msg_fmt__3d_ba74 (the duplicate-string convention: by reader, not address)." }
 "0xBA7C" = { name = "msg_home_fief", comment = "[ROM-STR] \"Home fief\"" }
 "0xBA86" = { name = "msg_direct", comment = "[ROM-STR] \"Direct\"" }
 "0xBA8D" = { name = "msg_empty", comment = "[ROM-STR] \"Empty\"" }
-"0xBA93" = { name = "msg_fief_2d_ba93", comment = "[ROM-STR] \"Fief %2d\"" }
+"0xBA93" = { name = "effect_view_a_fief_2d", comment = "[ROM-STR] \"Fief %2d\" Read by effect_view_a. Renamed 2026-10-28 from msg_fief_2d_ba93 (the duplicate-string convention: by reader, not address)." }
 "0xBAA5" = { name = "msg_sick", comment = "[ROM-STR] \"Sick\"" }
 "0xBAAA" = { name = "msg_home", comment = "[ROM-STR] \"Home\n\"" }
-"0xBAB0" = { name = "msg_fief_bab0", comment = "[ROM-STR] \"Fief\"" }
+"0xBAB0" = { name = "draw_fief_view_label_msg", comment = "[ROM-STR] \"Fief\" Read by draw_fief_view_label. Renamed 2026-10-28 from msg_fief_bab0 (the duplicate-string convention: by reader, not address)." }
 "0xBAB5" = { name = "msg_fief_gold_town_rice_output_dam", comment = "[ROM-STR] \"Fief\n\nGold\nTown\nRice\nOutput\nDams\nLylty\nWealth\nMen\nMorale\nSkill\nA\"" }
-"0xBB02" = { name = "msg_fmt__2d_bb02", comment = "[ROM-STR] \"%2d\"" }
-"0xBB06" = { name = "msg_fmt__4d_bb06", comment = "[ROM-STR] \"%4d\n\"" }
-"0xBB0B" = { name = "msg_fmt__4d_bb0b", comment = "[ROM-STR] \"%4d\n\"" }
-"0xBB10" = { name = "msg_fmt__4d_bb10", comment = "[ROM-STR] \"%4d\n\"" }
+"0xBB02" = { name = "effect_view_b_fmt_2d", comment = "[ROM-STR] \"%2d\" Read by effect_view_b. Renamed 2026-10-28 from msg_fmt__2d_bb02 (the duplicate-string convention: by reader, not address)." }
+"0xBB06" = { name = "effect_view_b_fmt_4d_1", comment = "[ROM-STR] \"%4d\n\" Read by effect_view_b (1 of 3). Renamed 2026-10-28 from msg_fmt__4d_bb06 (the duplicate-string convention: by reader, not address)." }
+"0xBB0B" = { name = "effect_view_b_fmt_4d_2", comment = "[ROM-STR] \"%4d\n\" Read by effect_view_b (2 of 3). Renamed 2026-10-28 from msg_fmt__4d_bb0b (the duplicate-string convention: by reader, not address)." }
+"0xBB10" = { name = "effect_view_b_fmt_4d_3", comment = "[ROM-STR] \"%4d\n\" Read by effect_view_b (3 of 3). Renamed 2026-10-28 from msg_fmt__4d_bb10 (the duplicate-string convention: by reader, not address)." }
 "0xBB15" = { name = "msg_menu", comment = "[ROM-STR] \"__Menu__\"" }
-"0xBB1E" = { name = "msg_fmt__2d_bb1e", comment = "[ROM-STR] \"%2d\"" }
-"0xBB22" = { name = "msg_fmt__2d_bb22", comment = "[ROM-STR] \"%2d\"" }
+"0xBB1E" = { name = "fief_info_display_fmt_2d_1", comment = "[ROM-STR] \"%2d\" Read by fief_info_display (1 of 2). Renamed 2026-10-28 from msg_fmt__2d_bb1e (the duplicate-string convention: by reader, not address)." }
+"0xBB22" = { name = "fief_info_display_fmt_2d_2", comment = "[ROM-STR] \"%2d\" Read by fief_info_display (2 of 2). Renamed 2026-10-28 from msg_fmt__2d_bb22 (the duplicate-string convention: by reader, not address)." }
 "0xBB28" = { name = "msg_not_home_fief", comment = "[ROM-STR] \"Not home fief\"" }
 "0xBB3F" = { name = "msg_has_lost", comment = "[ROM-STR] \" has lost\"" }
 "0xBB62" = { name = "msg_from_fief_2d_has", comment = "[ROM-STR] \" from\nfief %2d has\n\"" }
@@ -1204,7 +1204,7 @@ prg_bank_count = 16        # 256 KB total
 "0xBB9E" = { name = "msg_you_have_repelled", comment = "[ROM-STR] \"\nYou have repelled!\"" }
 "0xBBB2" = { name = "msg_your_ninja_failed", comment = "[ROM-STR] \"Your ninja failed\"" }
 "0xBBC4" = { name = "msg_that_fief_can_t_hold_more_men", comment = "[ROM-STR] \"That fief can`t\nhold more men\"" }
-"0xBBE3" = { name = "msg_is_this_ok_bbe3", comment = "[ROM-STR] \"Is this OK\"" }
+"0xBBE3" = { name = "driver_send_is_this_ok", comment = "[ROM-STR] \"Is this OK\" Read by driver_send. Renamed 2026-10-28 from msg_is_this_ok_bbe3 (the duplicate-string convention: by reader, not address)." }
 "0xBBEF" = { name = "msg_dams_value", comment = "[ROM-STR] \"Dams value\"" }
 "0xBBFD" = { name = "msg_output", comment = "[ROM-STR] \"Output\"" }
 "0xBC07" = { name = "msg_the_treasure_room_is_already_f", comment = "[ROM-STR] \"\nThe treasure room\nis already full!\"" }
@@ -1221,32 +1221,32 @@ prg_bank_count = 16        # 256 KB total
 "0xBCD7" = { name = "msg_weapons_for_who", comment = "[ROM-STR] \"Weapons? For who?\"" }
 "0xBCEA" = { name = "msg_armory_full", comment = "[ROM-STR] \"Armory full\"" }
 "0xBCF6" = { name = "msg_we_merchants_deal_only_in_cash", comment = "[ROM-STR] \"We merchants deal\nonly in cash\"" }
-"0xBD15" = { name = "msg_fmt__2d_bd15", comment = "[ROM-STR] \"%2d\"" }
+"0xBD15" = { name = "driver_trade_fmt_2d", comment = "[ROM-STR] \"%2d\" Read by driver_trade. Renamed 2026-10-28 from msg_fmt__2d_bd15 (the duplicate-string convention: by reader, not address)." }
 "0xBD19" = { name = "msg_lord_how_may_i_serve_you", comment = "[ROM-STR] \"Lord,how may I\nserve you?\"" }
 "0xBD33" = { name = "msg_let_s_do_business_again", comment = "[ROM-STR] \"Let`s do business\nagain\"" }
 "0xBD4B" = { name = "msg_bye", comment = "[ROM-STR] \"Bye!\"" }
 "0xBD50" = { name = "msg_fief_d_s_s_has_declined_by_d", comment = "[ROM-STR] \"fief %d`s\n%s has\ndeclined by %d\n\"" }
 "0xBD71" = { name = "msg_town_value", comment = "[ROM-STR] \"Town value\"" }
-"0xBD7C" = { name = "msg_your_ninja_failed_bd7c", comment = "[ROM-STR] \"Your ninja\nfailed!\"" }
+"0xBD7C" = { name = "effect_ninja_failed_your_ninja_failed", comment = "[ROM-STR] \"Your ninja\nfailed!\" Read by effect_ninja_failed. Renamed 2026-10-28 from msg_your_ninja_failed_bd7c (the duplicate-string convention: by reader, not address)." }
 "0xBD8F" = { name = "msg_uprisng_2_revolt_3_dams_4_assa", comment = "[ROM-STR] \"\n1-Uprisng 2-Revolt\n3-Dams 4-Assassin\n5-Arson\"" }
 "0xBDBD" = { name = "msg_the_daimyo_is_out", comment = "[ROM-STR] \"the daimyo is out\"" }
 "0xBDD1" = { name = "msg_men_ninja", comment = "[ROM-STR] \"\n(Men/Ninja)? \"" }
 "0xBDE0" = { name = "msg_the_men_can_t_train_any_furthe", comment = "[ROM-STR] \"The men can`t\ntrain any further\"" }
 "0xBE00" = { name = "msg_view_vassals", comment = "[ROM-STR] \"(99-view vassals)\n\"" }
-"0xBE14" = { name = "msg_town_value_be14", comment = "[ROM-STR] \"Town value\"" }
+"0xBE14" = { name = "driver_build_town_value", comment = "[ROM-STR] \"Town value\" Read by driver_build. Renamed 2026-10-28 from msg_town_value_be14 (the duplicate-string convention: by reader, not address)." }
 "0xBE20" = { name = "msg_gold_rice", comment = "[ROM-STR] \"(Gold/Rice)? \"" }
 "0xBE31" = { name = "msg_peasnts_men", comment = "[ROM-STR] \"(Peasnts/Men)? \"" }
-"0xBE43" = { name = "msg_fmt__3d_be43", comment = "[ROM-STR] \"%3d\"" }
+"0xBE43" = { name = "render_arms_edit_screen_fmt_3d", comment = "[ROM-STR] \"%3d\" Read by render_arms_edit_screen. Renamed 2026-10-28 from msg_fmt__3d_be43 (the duplicate-string convention: by reader, not address)." }
 "0xBE47" = { name = "msg_d_s", comment = "[ROM-STR] \"%d%s\"" }
 "0xBE4C" = { name = "msg_available_0", comment = "[ROM-STR] \"available  0\"" }
 "0xBE69" = { name = "msg_arrows_other_sections", comment = "[ROM-STR] \"(arrows  )...other sections\n\"" }
 "0xBE86" = { name = "msg_a_button_menu", comment = "[ROM-STR] \"(A Button)...menu\"" }
-"0xBE98" = { name = "msg_fmt__d_be98", comment = "[ROM-STR] \"%d\"" }
+"0xBE98" = { name = "driver_grant_fmt_d", comment = "[ROM-STR] \"%d\" Read by driver_grant. Renamed 2026-10-28 from msg_fmt__d_be98 (the duplicate-string convention: by reader, not address)." }
 "0xBE9B" = { name = "msg_it_s_already_a_s_state", comment = "[ROM-STR] \"It`s already a\n%s\nstate\"" }
 "0xBEB3" = { name = "msg_sound", comment = "[ROM-STR] \"Sound \"" }
 "0xBEBA" = { name = "msg_on_off", comment = "[ROM-STR] \"(on/off)? \"" }
 "0xBEC5" = { name = "msg_animation", comment = "[ROM-STR] \"Animation\n\"" }
-"0xBED0" = { name = "msg_on_off_bed0", comment = "[ROM-STR] \"(on/off)? \"" }
+"0xBED0" = { name = "setting_animation_on_off_msg", comment = "[ROM-STR] \"(on/off)? \" Read by setting_animation_on_off. Renamed 2026-10-28 from msg_on_off_bed0 (the duplicate-string convention: by reader, not address)." }
 "0xBEDB" = { name = "msg_wait_is_now", comment = "[ROM-STR] \"Wait is now \"" }
 "0xBEE8" = { name = "msg_d_enter_new_wait", comment = "[ROM-STR] \"%d\nEnter new wait\"" }
 "0xBEFA" = { name = "msg_are_you_sure", comment = "[ROM-STR] \"Are you sure\"" }
@@ -1254,8 +1254,8 @@ prg_bank_count = 16        # 256 KB total
 "0xBF27" = { name = "msg_watch_others_battle", comment = "[ROM-STR] \"Watch others\nbattle \"" }
 "0xBF3C" = { name = "msg_y_n", comment = "[ROM-STR] \"(Y/N)? \"" }
 "0xBF44" = { name = "msg_do_you_really_want_to_end_the", comment = "[ROM-STR] \"Do you really\nwant to end the\ngame\"" }
-"0xBF67" = { name = "msg_game_over_bf67", comment = "[ROM-STR] \"Game over\"" }
-"0xBF71" = { name = "msg_fmt__2d_bf71", comment = "[ROM-STR] \"%2d\"" }
+"0xBF67" = { name = "command_end_game_game_over", comment = "[ROM-STR] \"Game over\" Read by command_end_game. Renamed 2026-10-28 from msg_game_over_bf67 (the duplicate-string convention: by reader, not address)." }
+"0xBF71" = { name = "driver_other_fmt_2d", comment = "[ROM-STR] \"%2d\" Read by driver_other. Renamed 2026-10-28 from msg_fmt__2d_bf71 (the duplicate-string convention: by reader, not address)." }
 "0xBF75" = { name = "msg_change_which", comment = "[ROM-STR] \"Change which?\"" }
 "0xBF83" = { name = "msg_what_a_waste", comment = "[ROM-STR] \"What a waste!\"" }
 "0xBF91" = { name = "msg_your_orders", comment = "[ROM-STR] \"\nyour orders?\"" }
@@ -1470,18 +1470,18 @@ prg_bank_count = 16        # 256 KB total
 "0xBA7F" = { name = "battle_select_palette", comment = "[GFX-PALETTE 2026-06-10] Battle-setup screen palette (palette_write_wrap, battle_setup_select_province)." }
 "0xBBD0" = { name = "fief_tile_descriptor_table", comment = "[ROM-DATA 2026-06-10] Per-fief tile-upload descriptors (build_blit_fief_tile_block, mapid*4)." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
-"0xB526" = { name = "msg_y_n_b526", comment = "[ROM-STR] \"\n(Y/N)? \"" }
+"0xB526" = { name = "prompt_yes_no_y_n", comment = "[ROM-STR] \"\n(Y/N)? \" Read by prompt_yes_no. Renamed 2026-10-28 from msg_y_n_b526 (the duplicate-string convention: by reader, not address)." }
 "0xB52F" = { name = "msg_d_d", comment = "[ROM-STR] \"8932170\n(%d-%d)\n\"" }
-"0xB536" = { name = "msg_d_d_b536", comment = "[ROM-STR] \"\n(%d-%d)\n\"" }
+"0xB536" = { name = "prompt_province_selection_d_d", comment = "[ROM-STR] \"\n(%d-%d)\n\" Read by prompt_province_selection. Renamed 2026-10-28 from msg_d_d_b536 (the duplicate-string convention: by reader, not address)." }
 "0xB56A" = { name = "msg_day_2d", comment = "[ROM-STR] \"\nDay  %2d\"" }
-"0xB574" = { name = "msg_fmt__4d_b574", comment = "[ROM-STR] \"%4d\"" }
+"0xB574" = { name = "draw_side_resource_field_fmt_4d", comment = "[ROM-STR] \"%4d\" Read by draw_side_resource_field. Renamed 2026-10-28 from msg_fmt__4d_b574 (the duplicate-string convention: by reader, not address)." }
 "0xB578" = { name = "msg_gold_4d_rice_4d_men_4d", comment = "[ROM-STR] \"\nGold%4d\nRice%4d\nMen %4d\"" }
-"0xB5A7" = { name = "msg_fief_2d_b5a7", comment = "[ROM-STR] \"\nFief %2d\"" }
+"0xB5A7" = { name = "draw_combat_fief_day_header_fief_2d", comment = "[ROM-STR] \"\nFief %2d\" Read by draw_combat_fief_day_header. Renamed 2026-10-28 from msg_fief_2d_b5a7 (the duplicate-string convention: by reader, not address)." }
 "0xB5BE" = { name = "msg_up_up_rt_down_rt_down_down_lt", comment = "[ROM-STR] \"\n Up\n Up Rt\n Down Rt\n Down\n Down Lt\n Up Lt\"" }
 "0xB5E9" = { name = "msg_hit_any_key", comment = "[ROM-STR] \"\nHit any\nkey\"" }
-"0xB5F6" = { name = "msg_fief_b5f6", comment = "[ROM-STR] \"Fief:\n\"" }
-"0xB5FD" = { name = "msg_fmt__2d_b5fd", comment = "[ROM-STR] \"%2d\"" }
-"0xB601" = { name = "msg_fief_b601", comment = "[ROM-STR] \"Fief:\n\"" }
+"0xB5F6" = { name = "paged_flee_fief_list_display_msg_1", comment = "[ROM-STR] \"Fief:\n\" Read by paged_flee_fief_list_display (1 of 2). Renamed 2026-10-28 from msg_fief_b5f6 (the duplicate-string convention: by reader, not address)." }
+"0xB5FD" = { name = "paged_flee_fief_list_display_fmt_2d", comment = "[ROM-STR] \"%2d\" Read by paged_flee_fief_list_display. Renamed 2026-10-28 from msg_fmt__2d_b5fd (the duplicate-string convention: by reader, not address)." }
+"0xB601" = { name = "paged_flee_fief_list_display_msg_2", comment = "[ROM-STR] \"Fief:\n\" Read by paged_flee_fief_list_display (2 of 2). Renamed 2026-10-28 from msg_fief_b601 (the duplicate-string convention: by reader, not address)." }
 "0xB608" = { name = "msg_there_is_no_fief_to_flee_to", comment = "[ROM-STR] \"\nThere is\nno fief\nto flee\nto!\"" }
 "0xB627" = { name = "msg_unit_d_s", comment = "[ROM-STR] \"unit %d\n%s\"" }
 "0xB658" = { name = "msg_the_enemy_has_turned_tail_and", comment = "[ROM-STR] \">[12])0>[02][12]!>[18])0>[18][01]0the enemy has turned\ntail and fled!\nHa Ha Ha Ha \"" }
@@ -1489,17 +1489,17 @@ prg_bank_count = 16        # 256 KB total
 "0xB97F" = { name = "msg_s_hung_on_to_the_end_and_won", comment = "[ROM-STR] \"%s hung on to the end\nand won\"" }
 "0xB9A0" = { name = "msg_lord", comment = "[ROM-STR] \"Lord\n\"" }
 "0xB9A6" = { name = "msg_please_position_unit_d", comment = "[ROM-STR] \"\nPlease\nposition\nunit %d\"" }
-"0xB9BF" = { name = "msg_fmt__d_b9bf", comment = "[ROM-STR] \"%d\"" }
+"0xB9BF" = { name = "player_interactive_unit_move_loop_fmt_d", comment = "[ROM-STR] \"%d\" Read by player_interactive_unit_move_loop. Renamed 2026-10-28 from msg_fmt__d_b9bf (the duplicate-string convention: by reader, not address)." }
 "0xB9CA" = { name = "msg_the_town_is_in_complete_chaos", comment = "[ROM-STR] \"The\ntown\nis in\ncomplete\nchaos!\"" }
-"0xB9E9" = { name = "msg_fmt__d_b9e9", comment = "[ROM-STR] \"%d\"" }
-"0xB9EC" = { name = "msg_hit_any_key_b9ec", comment = "[ROM-STR] \"Hit any key\"" }
+"0xB9E9" = { name = "resolve_attack_apply_casualties_fmt_d", comment = "[ROM-STR] \"%d\" Read by resolve_attack_apply_casualties. Renamed 2026-10-28 from msg_fmt__d_b9e9 (the duplicate-string convention: by reader, not address)." }
+"0xB9EC" = { name = "prompt_hit_any_key_and_redraw_combat_screen_msg", comment = "[ROM-STR] \"Hit any key\" Read by prompt_hit_any_key_and_redraw_combat_screen. Renamed 2026-10-28 from msg_hit_any_key_b9ec (the duplicate-string convention: by reader, not address)." }
 "0xBA04" = { name = "msg_giving_orders_for", comment = "[ROM-STR] \"\nGiving\norders\nfor\n\"" }
 "0xBA19" = { name = "msg_your_orders_for", comment = "[ROM-STR] \"\nYour\norders\nfor\n\"" }
 "0xBA2C" = { name = "msg_our", comment = "[ROM-STR] \"\nour\"" }
 "0xBA32" = { name = "msg_enemy", comment = "[ROM-STR] \"\nenemy\"" }
 "0xBA39" = { name = "msg_morale_is_falling", comment = "[ROM-STR] \"\nmorale\nis\nfalling\"" }
-"0xBA4C" = { name = "msg_fief_ba4c", comment = "[ROM-STR] \"Fief\n\"" }
-"0xBA52" = { name = "msg_fmt__2d_ba52", comment = "[ROM-STR] \" %2d\"" }
+"0xBA4C" = { name = "transfer_owned_fiefs_and_announce_succession_fief", comment = "[ROM-STR] \"Fief\n\" Read by transfer_owned_fiefs_and_announce_succession. Renamed 2026-10-28 from msg_fief_ba4c (the duplicate-string convention: by reader, not address)." }
+"0xBA52" = { name = "transfer_owned_fiefs_and_announce_succession_fmt_2d", comment = "[ROM-STR] \" %2d\" Read by transfer_owned_fiefs_and_announce_succession. Renamed 2026-10-28 from msg_fmt__2d_ba52 (the duplicate-string convention: by reader, not address)." }
 "0xBA59" = { name = "msg_has_passed_from", comment = "[ROM-STR] \"\nhas passed from\n\"" }
 "0xBA6B" = { name = "msg_lord_s_to", comment = "[ROM-STR] \"Lord %s to\n\"" }
 "0xBA77" = { name = "msg_lord_s", comment = "[ROM-STR] \"Lord %s\"" }

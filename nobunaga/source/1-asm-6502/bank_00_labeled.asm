@@ -9597,7 +9597,7 @@ b00_b87b:   rol $27                     ; 387B:  26 27
 b00_b87d:   plp                         ; 387D:  28
 b00_b87e:   rol $2a29,x                 ; 387E:  3e 29 2a
 b00_b881:   .db $2b                     ; 3881:  2b
-msg_new_game_b882:   lsr $7765                   ; 3882:  4e 65 77
+verify_sram_save_integrity_new_game:   lsr $7765                   ; 3882:  4e 65 77
 b00_b885:   jsr $6167                   ; 3885:  20 67 61
 b00_b888:   adc $0065                   ; 3888:  6d 65 00
 msg_koei:   .db $4b                     ; 388B:  4b
@@ -9756,7 +9756,7 @@ b00_b9a1:   adc #$74                    ; 39A1:  69 74
 b00_b9a3:   adc #$65                    ; 39A3:  69 65
 b00_b9a5:   .db prg_bank_shadow                     ; 39A5:  73
 b00_b9a6:   brk                         ; 39A6:  00
-msg_fmt_blank_b9a7:   and $2020                   ; 39A7:  2d 20 20
+daimyo_creation_stat_roll_screen_fmt_blank:   and $2020                   ; 39A7:  2d 20 20
 b00_b9aa:   jsr $002d                   ; 39AA:  20 2d 00
 msg_total_4d:   .db $54                     ; 39AD:  54
 b00_b9ae:   .db p2_buttons                     ; 39AE:  6f
@@ -10145,7 +10145,7 @@ b00_bc62:   adc brk_scratch_lo                     ; 3C62:  65 66
 b00_bc64:   jsr $3225                   ; 3C64:  20 25 32
 b00_bc67:   .db $64                     ; 3C67:  64
 b00_bc68:   and (scratch_ptr_lo,x)                 ; 3C68:  21 00
-msg_in_fief_bc6a:   eor #$6e                    ; 3C6A:  49 6e
+province_conquest_roll_predicate_in_fief:   eor #$6e                    ; 3C6A:  49 6e
 b00_bc6c:   jsr $6966                   ; 3C6C:  20 66 69
 b00_bc6f:   adc brk_scratch_lo                     ; 3C6F:  65 66
 b00_bc71:   jsr $2500                   ; 3C71:  20 00 25
@@ -10516,7 +10516,7 @@ msg_revolt:   .db $52                     ; 3F10:  52
 b00_bf11:   adc mul_acc_hi                     ; 3F11:  65 76
 b00_bf13:   .db p2_buttons                     ; 3F13:  6f
 b00_bf14:   jmp (palette_dirty)                 ; 3F14:  6c 74 00
-msg_koei_bf17:   .db $4b                     ; 3F17:  4b
+write_sram_save_checksum_and_signature_koei:   .db $4b                     ; 3F17:  4b
 b00_bf18:   .db $4f                     ; 3F18:  4f
 b00_bf19:   eor $49                     ; 3F19:  45 49
 b00_bf1b:   brk                         ; 3F1B:  00
