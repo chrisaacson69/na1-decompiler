@@ -3402,3 +3402,31 @@ arg1 = { name = "fief_list_cursor", comment = "[HIGH] Byte cursor into $FF-termi
 arg2 = { name = "target_owner", comment = "[HIGH] Owner sought: $FF early-out @$9462, CMPEQ vs fief_owner(local11) @$9475; caller pushes byte $6E7F[selected_province_idx]" }
 local11 = { name = "fief", comment = "[HIGH] Current list entry *(byte*)arg1 (STORE_quick 11 @$946C); pushed to fief_owner/fief_men_ratio_pct, returned on match @$9488" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x9D3D"]
+# driver_grow
+# local10 left positional — scratch: gold spent (number_input $9D88, debited, arg2 of effect_grow), then overwritten by effect_grow return ($9D99, u
+local11 = { name = "fief", comment = "[HIGH] &$7001[selected_province_idx] ($9D4C); +8 output vs +24 header, DEREF gold debited; arg1 of effect_grow $87F0" }
+
+[vars.bank1."0x9C4F"]
+# driver_pact
+local9 = { name = "acted", comment = "[HIGH] 0 at $9C60, 1 at $9C95 after target chosen and drive (+2) decremented; LOADL_quick 9 returned on every exit" }
+local10 = { name = "pact_price", comment = "[HIGH] prompt_diplomacy_pact $E3A4 result; gold in draw_message, compared to own gold, debited own +0, credited target +0" }
+local11 = { name = "fief", comment = "[HIGH] &$7001[selected_province_idx] ($9C5E); DEREF gold compared < price ($9CC6), then gold -= price ($9CDC)" }
+
+[vars.bank1."0x9B7E"]
+# driver_dam
+local8 = { name = "fief", comment = "[HIGH] &$7001[selected_province_idx] ($9BA7); DEREF = gold, +10 = dams; pushed as arg1 of effect_dam $87D8" }
+# local9 left positional — scratch: gold spent (number_input $9C04, debited from gold), then dam gain spend*2/effect_dam min 1 ($9C19) for $887D
+local10 = { name = "dams_ptr", comment = "[HIGH] fief+10 ($9BA8 ADD_qimm 10); deref compared to 100, arg2 of add_effect_gain_clamped $887D, clamped to 100, displayed" }
+local11 = { name = "max_spend", comment = "[HIGH] min_word(gold, (100-dams)*effect_dam/2) at $9BE9; pushed as arg2 (max) of number_input $D5E9" }
+
+[vars.bank1."0x9A5D"]
+# driver_send
+local6 = { name = "fief", comment = "[MED] prov record ptr: &$7001[target] at $9A8E (+0/+6 credited $9B41), then &$7001[selected] at $9B5A (debited); same type, two fiefs" }
+local7 = { name = "target_ceiling", comment = "[HIGH] target fief header (+24, $9A8F BYTE_ADD 24/DEREF); pushed last = arg1 of effect_send $8BE5 for rice and gold" }
+local8 = { name = "target_idx", comment = "[HIGH] province_select_prompt $804C result, DEC to 0-based ($9A85), *26+$7001 gives the target record" }
+# local9 left positional — scratch: prep_a/effect_send rice cap ($9AA0/$9AAE), then reused for prep_c/effect_send gold cap ($9AEA/$9AF7)
+local10 = { name = "rice_amount", comment = "[HIGH] init 0 ($9A95); number_input result after msg_rice ($9AC3); added to target +6, subtracted from source +6 ($9B48/$9B62)" }
+local11 = { name = "gold_amount", comment = "[HIGH] init 0 ($9A94); number_input result after msg_gold ($9B0C); added to target +0, subtracted from source +0 ($9B41/$9B5B)" }
+
