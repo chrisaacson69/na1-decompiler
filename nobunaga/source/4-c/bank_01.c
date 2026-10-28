@@ -265,8 +265,8 @@ L_83C6:
 // $83C7 draw_selected_province_stat
 // (body @ $83CC)
 
-word draw_selected_province_stat(word arg1) {
-    return draw_province_stat_or_dashes(selected_province_idx, arg1);    // $83D4
+word draw_selected_province_stat(word stat_value) {
+    return draw_province_stat_or_dashes(selected_province_idx, stat_value);    // $83D4
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $83D5
@@ -403,15 +403,15 @@ word effect_view_c(void) {
 // $85B4 draw_fief_view_label
 // (body @ $85B9)
 
-word draw_fief_view_label(word arg1) {
-    local10 = ui_window_col;    // $85BC
-    if (fief_is_daimyo_capital[arg1]) {    // $85C3
+word draw_fief_view_label(word fief) {
+    saved_window_col = ui_window_col;    // $85BC
+    if (fief_is_daimyo_capital[fief]) {    // $85C3
     redraw_window(msg_home);    // $85C9
-    ui_window_col = local10;    // $85CE
+    ui_window_col = saved_window_col;    // $85CE
     return redraw_window(draw_fief_view_label_msg);    // $85D8
     }
 L_85D9:
-    return redraw_window(*(word*)(((get_province_ai_state(arg1) << 1) + governance_state_label_ptrs)));    // $85E9
+    return redraw_window(*(word*)(((get_province_ai_state(fief) << 1) + governance_state_label_ptrs)));    // $85E9
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $85EA
@@ -489,28 +489,28 @@ L_870F:
 // $871E fief_info_display
 // (body @ $8723)
 
-word fief_info_display(word arg1) {
-    fief_menu_info_mode_flag = arg1;    // $8724
+word fief_info_display(word page_flag) {
+    fief_menu_info_mode_flag = page_flag;    // $8724
     set_cursor(22, 5);    // $872A
     redraw_window(msg_menu);    // $8731
     clear_rect_right_panel();    // $8735
     if (fief_menu_info_mode_flag) goto L_876B;    // $873B
-    local11 = 0;    // $873F
+    command_idx = 0;    // $873F
     do {    // $8740
-        set_cursor(22, (local11 + 7));    // $8745
-        draw_message(fief_info_display_fmt_2d_1, (local11 + 1));    // $874F
-        redraw_window(*(word*)(((local11 << 1) + lord_command_name_ptrs)));    // $875B
-        local11 = (local11 + 1);    // $8761
-    } while (((unsigned)local11 < (unsigned)12));    // $8765
+        set_cursor(22, (command_idx + 7));    // $8745
+        draw_message(fief_info_display_fmt_2d_1, (command_idx + 1));    // $874F
+        redraw_window(*(word*)(((command_idx << 1) + lord_command_name_ptrs)));    // $875B
+        command_idx = (command_idx + 1);    // $8761
+    } while (((unsigned)command_idx < (unsigned)12));    // $8765
     goto L_8797;    // $8768
 L_876B:
-    local11 = 12;    // $876C
+    command_idx = 12;    // $876C
     do {    // $876D
-        set_cursor(22, (local11 + -5));    // $8773
-        draw_message(fief_info_display_fmt_2d_2, (local11 + 1));    // $877D
-        redraw_window(*(word*)(((local11 << 1) + lord_command_name_ptrs)));    // $8789
-        local11 = (local11 + 1);    // $878F
-    } while (((unsigned)local11 < (unsigned)21));    // $8794
+        set_cursor(22, (command_idx + -5));    // $8773
+        draw_message(fief_info_display_fmt_2d_2, (command_idx + 1));    // $877D
+        redraw_window(*(word*)(((command_idx << 1) + lord_command_name_ptrs)));    // $8789
+        command_idx = (command_idx + 1);    // $878F
+    } while (((unsigned)command_idx < (unsigned)21));    // $8794
 L_8797:
     battle_defending_province = selected_province_idx;    // $879A
     return 0;    // $879E
@@ -520,14 +520,14 @@ L_8797:
 // $879F province_select_helper
 // (body @ $87A4)
 
-word province_select_helper(word arg1, word arg2) {
-    if (count_eligible_targets(arg1, arg2, 0)) goto L_87BB;    // $87AB
-    prompt_message_and_redraw(arg1, msg_no_fiefs);    // $87B2
+word province_select_helper(word cmd, word fief_list) {
+    if (count_eligible_targets(cmd, fief_list, 0)) goto L_87BB;    // $87AB
+    prompt_message_and_redraw(cmd, msg_no_fiefs);    // $87B2
     confirm_prompt();    // $87B6
     return 0;    // $87BA
 L_87BB:
-    prompt_message_and_redraw(arg1, str_not_home_and_status);    // $87BF
-    return count_eligible_targets(arg1, arg2, 1);    // $87CA
+    prompt_message_and_redraw(cmd, str_not_home_and_status);    // $87BF
+    return count_eligible_targets(cmd, fief_list, 1);    // $87CA
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $87CB

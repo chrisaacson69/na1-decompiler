@@ -3247,3 +3247,23 @@ arg1 = { name = "amount", comment = "[MED] LOADL_quick 12 @$8362 widened, times 
 arg2 = { name = "rate", comment = "[HIGH] LOADL_quick 13 @$835D widened to long, used as divisor of the long op; callers PUSH_abs $6E0D/$6E0F/$6E11/$6E13 rate globals" }
 arg3 = { name = "cap", comment = "[HIGH] PUSH_quick 14 @$835C = 2nd arg of min_word($CB5E) caps the ratio; callers push a difference (SUB) or fief->header (+24 @$A2D8)" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x879F"]
+# province_select_helper
+arg1 = { name = "cmd", comment = "[HIGH] PUSH_quick 12 last -> arg1 of count_eligible_targets $8172 and prompt_message_and_redraw $8003; callers push 1,2,4,6,8,15,19,$FF" }
+arg2 = { name = "fief_list", comment = "[HIGH] PUSH_quick 13 -> arg2 of count_eligible_targets $8172 @$87A5/$87C4; callers push $6F4F deduped_owner_list or $6F89 fief_index_list" }
+
+[vars.bank1."0x871E"]
+# fief_info_display
+arg1 = { name = "page_flag", comment = "[HIGH] LOADL_quick 12 -> STORE_abs $7BE2 fief_menu_info_mode_flag @$8723; flag picks loop 0..11 vs 12..20 @$873B; callers push only 0/1" }
+local11 = { name = "command_idx", comment = "[HIGH] loop index both loops (0..<12 @$8763, 12..<21 @$8791): cursor row, shown as idx+1, *2 into lord_command_name_ptrs $F816" }
+
+[vars.bank1."0x85B4"]
+# draw_fief_view_label
+arg1 = { name = "fief", comment = "[HIGH] byte province index: LOADL_quick 12 + $6DA2 BYTE_DEREF @$85BD; PUSH_quick 12 -> get_province_ai_state @$85D9; caller pushes BYTE_DEREF" }
+local10 = { name = "saved_window_col", comment = "[HIGH] STORE_quick 10 of ui_window_col $7FCD @$85BC; LOADL_quick 10 -> STORE_abs $7FCD @$85CD restores it after msg_home redraw" }
+
+[vars.bank1."0x83C7"]
+# draw_selected_province_stat
+arg1 = { name = "stat_value", comment = "[HIGH] PUSH_quick 12 @$83CC -> arg2 (value) of $83A2 after sel idx; callers push DEREF of rec+0/+2 (gold/debt), $7001+sel*26 @$A7EF" }
+
