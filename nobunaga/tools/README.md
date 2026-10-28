@@ -51,6 +51,7 @@ Registered 2026-10-27 from each script's own docstring; none was in this registr
 | `verify-50fief-align.py` | 🔎 | Check whether 50-fief province NAME table and STATS table are index-aligned, and whether the daimyo->province link is shared-index. |
 | `viability-map.py` | 🔎 | starting-fief invasion viability ("who survives the opening"). |
 | `zp-harvest.py` | 🔎 | Harvest zero-page usage statistics from disasm6 output. |
+| `title-render.py`, `title-nametable.py` | 🔎 | Title-screen reconstruction: nametable + ROM CHR (`$AC4A`) -> grayscale PPM. Restored 2026-10-28 (retired the day before on a wrong reason): they open `nametable_bytes.txt` next to themselves, and it is at `nobunaga/`, so they need their path fixed. Assets phase decides. |
 
 ## Command / effect testing
 | Script | Status | Purpose |

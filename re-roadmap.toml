@@ -206,7 +206,7 @@ source = "attic review 2026-10-27"
 status = "open"
 
 [[revisit]]
-item   = "The render tools (~17 render-*, the batch-render-* wrappers, build-site / build-wiki / wikipages): sort live title-only asset tools from outdated ones when the assets phase runs (RENDER-TOOLS-TRIAGE.md is the June triage). render-strategic-50 fails only because its output dir ../atlas/ is gone (ARCHITECTURE.md's atlas -> renders/<kind> debt)."
+item   = "The render tools (~17 render-*, the batch-render-* wrappers, build-site / build-wiki / wikipages): sort live title-only asset tools from outdated ones when the assets phase runs (RENDER-TOOLS-TRIAGE.md is the June triage). Path drift, not missing files: render-strategic-50 writes ../atlas/ while its outputs live in assets/maps/strategic/, and title-render / title-nametable (restored 2026-10-28) open nametable_bytes.txt next to themselves while it is at nobunaga/."
 phase  = "assets"
 source = "attic review 2026-10-27"
 status = "open"

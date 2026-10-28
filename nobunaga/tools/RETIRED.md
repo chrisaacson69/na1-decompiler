@@ -72,13 +72,13 @@ created: 2026-10-27
 |---|---|---|
 | `probe-math32.py` | `fa8fc6e` | Empirically probe the three VM arithmetic helpers by calling them in the emulator with controlled arguments and reading the return value (regL). These |
 
-## Input file gone (cannot run)
+## Broken by a path move, finding recorded
+
+Corrected 2026-10-28: the input was not gone. It sits at `traces/sram_dump.txt`; the script opened it next to itself after the move into `tools/`. Its one finding (the `$7BFE` tactical staging buffer and its metatile patterns) is in `mesen-labels.toml` and the chapters. `title-render` / `title-nametable` were listed here on the same wrong reason (their input is `nobunaga/nametable_bytes.txt`) and are restored for the assets phase.
 
 | Script | Last commit | What it did |
 |---|---|---|
 | `sram-decode.py` | `c020647` | Parse SRAM dump and find the staging buffer + metatile patterns. |
-| `title-nametable.py` | `c020647` | Render the title-screen nametable from the trace extract. |
-| `title-render.py` | `c020647` | Reconstruct the title screen by combining the nametable (tile indices) with the CHR-RAM tile graphics (from ROM bank 0 $AC4A). Outputs grayscale PPM.  |
 
 ## Superseded → nestest log, `gates.stack_audit`, `titles.run_sub`
 
