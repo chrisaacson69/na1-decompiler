@@ -439,10 +439,10 @@ L_CE1D:
 // $CE81 char_advance_width
 // (body @ $CE86)
 
-word char_advance_width(word arg1) {
-    if ((*(byte*)&arg1 == 10)) return cursor_advance_row();    // $CE8B
-    *(byte*)&arg1 = char_classify(*(byte*)&arg1);    // $CE9A
-    syscall_ppu_fill_rect(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&arg1);    // $CEAF
+word char_advance_width(word ch) {
+    if ((*(byte*)&ch == 10)) return cursor_advance_row();    // $CE8B
+    *(byte*)&ch = char_classify(*(byte*)&ch);    // $CE9A
+    syscall_ppu_fill_rect(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&ch);    // $CEAF
     ui_window_col = (ui_window_col + 1);    // $CEB7
     phi_ret_cec3 = ((unsigned)ui_window_col > (unsigned)31);    // $CEBD
     if (phi_ret_cec3) {    // $CEBD
@@ -515,32 +515,32 @@ word ppu_render_rect_wrap(word left_col, word top_row, word right_col, word bott
 // $CF7C ppu_upload_block_wrap
 // (body @ $CF81)
 
-word ppu_upload_block_wrap(word arg1, word arg2, word arg3, word arg4) {
-    return syscall_ppu_upload_block(arg1, arg2, arg3, arg4);    // $CF8A
+word ppu_upload_block_wrap(word src_bank, word src_ptr, word ppu_addr, word length) {
+    return syscall_ppu_upload_block(src_bank, src_ptr, ppu_addr, length);    // $CF8A
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CF8B
 // $CF8B palette_write_wrap
 // (body @ $CF90)
 
-word palette_write_wrap(word arg1, word arg2) {
-    return syscall_palette_write(arg1, arg2);    // $CF97
+word palette_write_wrap(word palette_idx, word color) {
+    return syscall_palette_write(palette_idx, color);    // $CF97
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CF98
 // $CF98 num_to_ascii
 // (body @ $CF9D)
 
-word num_to_ascii(word arg1, word arg2, word arg3) {
-    if (((unsigned)arg2 < (unsigned)arg3)) {    // $CFA0
-    *(word*)(arg1) = (*(word*)(arg1) + 1);    // $CFA7
-    *(byte*)((*(word*)(arg1) - 1)) = (((unsigned)arg2 < (unsigned)10) ? (arg2 + 48) : (arg2 + 55));    // $CFB9
+word num_to_ascii(word out_cursor_ptr, word value, word radix) {
+    if (((unsigned)value < (unsigned)radix)) {    // $CFA0
+    *(word*)(out_cursor_ptr) = (*(word*)(out_cursor_ptr) + 1);    // $CFA7
+    *(byte*)((*(word*)(out_cursor_ptr) - 1)) = (((unsigned)value < (unsigned)10) ? (value + 48) : (value + 55));    // $CFB9
     return 1;    // $CFBB
     }
 L_CFBC:
-    local11 = num_to_ascii(arg1, ((unsigned)arg2 / (unsigned)arg3), arg3);    // $CFC6
-    num_to_ascii(arg1, ((unsigned)arg2 % (unsigned)arg3), arg3);    // $CFCD
-    return (local11 + 1);    // $CFD3
+    digit_count = num_to_ascii(out_cursor_ptr, ((unsigned)value / (unsigned)radix), radix);    // $CFC6
+    num_to_ascii(out_cursor_ptr, ((unsigned)value % (unsigned)radix), radix);    // $CFCD
+    return (digit_count + 1);    // $CFD3
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CFD4
@@ -756,17 +756,17 @@ word wait_button_edge(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D29D
-// $D29D read_frame_timer
+// $D29D set_cursor_sprite
 // (body @ $D2A2)
 
-word read_frame_timer(word arg1) {
-    ui_timer_gate_flag_7fe7 = (arg1 ? (arg1 - 1) : 2);    // $D2AC
-    if (arg1) goto L_D2CA;    // $D2B0
+word set_cursor_sprite(word cursor_mode) {
+    ui_timer_gate_flag_7fe7 = (cursor_mode ? (cursor_mode - 1) : 2);    // $D2AC
+    if (cursor_mode) goto L_D2CA;    // $D2B0
     syscall_set_sprite(0, 248, 248, 0, 2);    // $D2BD
     phi_ret_d2f8 = syscall_wait_for_nmi();    // $D2C7
     goto L_D2F8;    // $D2C7
 L_D2CA:
-    if ((arg1 == 1)) {    // $D2CD
+    if ((cursor_mode == 1)) {    // $D2CD
     phi_d2ec_0 = 248;    // $D2D8
     phi_d2ec_1 = 248;    // $D2D8
     phi_d2ec_2 = 0;    // $D2D8
@@ -831,14 +831,14 @@ L_D338:
 
 word prompt_ab_window(word arg1) {
     redraw_window(arg1);    // $D357
-    read_frame_timer(1);    // $D35C
+    set_cursor_sprite(1);    // $D35C
     do {    // $D360
         local11 = wait_button_edge();    // $D363
         if (!((wait_button_edge() != 64))) break;    // $D367
         if ((local11 == 128)) break;    // $D36F
     } while ((local11 != 2));    // $D375
 L_D378:
-    read_frame_timer(0);    // $D379
+    set_cursor_sprite(0);    // $D379
     if ((local11 == 64)) {    // $D381
     char_advance_width(60);    // $D386
     phi_val_d3a1 = 1;    // $D38B
@@ -863,13 +863,13 @@ L_D3A1:
 
 word prompt_y_n(void) {
     redraw_window(prompt_y_n_msg);    // $D3AF
-    read_frame_timer(1);    // $D3B4
+    set_cursor_sprite(1);    // $D3B4
     do {    // $D3B8
         local11 = wait_button_edge();    // $D3BB
         if (!((wait_button_edge() != 64))) break;    // $D3BF
     } while ((local11 != 128));    // $D3C7
 L_D3CA:
-    read_frame_timer(0);    // $D3CB
+    set_cursor_sprite(0);    // $D3CB
     if ((local11 == 64)) {    // $D3D3
     char_advance_width(89);    // $D3D8
     phi_val_d3e7 = 1;    // $D3DD
@@ -898,7 +898,7 @@ word cursor_nav_loop(word arg1) {
     } while ((local5 <= 5));    // $D40B
     draw_message(cursor_nav_fmt_d_1, local6);    // $D412
     ui_window_col = (ui_window_col - 1);    // $D41A
-    read_frame_timer(1);    // $D41E
+    set_cursor_sprite(1);    // $D41E
     wait_button_edge();    // $D422
     local2 = 0;    // $D426
     while (1) {    // $D427
@@ -913,11 +913,11 @@ L_D427:
             default: goto L_D460;    // $D42A
         }    // $D42A
 L_D447:
-        read_frame_timer(0);    // $D448
+        set_cursor_sprite(0);    // $D448
         if ((ui_input_prompt_active_flag == 1)) return -1;    // $D451
         return 0;    // $D458
 L_D459:
-        read_frame_timer(0);    // $D45A
+        set_cursor_sprite(0);    // $D45A
         local2 = 1;    // $D45F
 L_D460:
         if (!(local2)) continue;    // $D461
@@ -935,9 +935,9 @@ L_D485:
 L_D492:
         draw_message(phi_d492_0, phi_d492_1);    // $D492
         ui_window_col = (ui_window_col - 1);    // $D49A
-        read_frame_timer(0);    // $D49E
+        set_cursor_sprite(0);    // $D49E
         delay_loop(2);    // $D4A3
-        read_frame_timer(1);    // $D4A8
+        set_cursor_sprite(1);    // $D4A8
         goto L_D460;    // $D4AC
 L_D4AF:
         *(word*)(((local4 << 1) + &local6)) = (*(word*)(((local4 << 1) + &local6)) - 1);    // $D4BA
@@ -950,10 +950,10 @@ L_D4CB:
         goto L_D492;    // $D4D8
 L_D4DB:
         if (!(local4)) goto L_D460;    // $D4DC
-        read_frame_timer(0);    // $D4E0
+        set_cursor_sprite(0);    // $D4E0
         redraw_window(cursor_nav_space);    // $D4E7
         ui_window_col = (ui_window_col - 2);    // $D4F1
-        read_frame_timer(1);    // $D4F5
+        set_cursor_sprite(1);    // $D4F5
         local4 = (local4 - 1);    // $D4FF
         *(word*)((((local4 + 1) << 1) + &local6)) = 255;    // $D508
 L_D509:
@@ -964,13 +964,13 @@ L_D511:
         if (local4) goto L_D528;    // $D519
         if (!(*(word*)(((local4 << 1) + &local6)))) goto L_D460;    // $D525
 L_D528:
-        read_frame_timer(0);    // $D529
+        set_cursor_sprite(0);    // $D529
         ui_window_col = (ui_window_col + 1);    // $D531
         local4 = (local4 + 1);    // $D53A
         *(word*)(((local4 << 1) + &local6)) = 0;    // $D540
         draw_message(cursor_nav_fmt_d_4, *(word*)(((local4 << 1) + &local6)));    // $D54E
         ui_window_col = (ui_window_col - 1);    // $D556
-        read_frame_timer(1);    // $D55A
+        set_cursor_sprite(1);    // $D55A
         goto L_D509;    // $D55E
     }
 L_D561:

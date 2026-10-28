@@ -265,7 +265,7 @@ VM bytecode disassembly
   $822F  8E 26 B5                   PUSH_imm2              $B526 (prompt_yes_no_y_n)
   $8232  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $8236  61                         PUSH_qimm   ; inline operand = 1
-  $8237  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $8237  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
  >$823B  AC 87 D2                   CALL_abs               $D287 (wait_button_edge) {bytecode}
   $823E  2B                         STORE_quick   ; inline operand = 11
   $823F  8B 40                      BYTE_LOADR_imm1        +64
@@ -276,7 +276,7 @@ VM bytecode disassembly
   $8249  C1                         CMPNE
   $824A  D7 3B 82                   JUMPT_abs              $823B
  >$824D  60                         PUSH_qimm   ; inline operand = 0
-  $824E  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $824E  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $8252  0B                         LOADL_quick   ; inline operand = 11
   $8253  8B 40                      BYTE_LOADR_imm1        +64
   $8255  C0                         CMPEQ
@@ -815,7 +815,7 @@ VM bytecode disassembly
   $85CE  E9 0E 96 02                CALL_abs_imm1          $960E (is_cell_valid_for_phase) {bytecode}, $02
   $85D2  D7 FE 85                   JUMPT_abs              $85FE
   $85D5  60                         PUSH_qimm   ; inline operand = 0
-  $85D6  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $85D6  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $85DA  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $85DD  2A                         STORE_quick   ; inline operand = 10
   $85DE  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
@@ -831,7 +831,7 @@ VM bytecode disassembly
   $85F4  3A                         PUSH_quick   ; inline operand = 10
   $85F5  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $85F9  62                         PUSH_qimm   ; inline operand = 2
-  $85FA  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $85FA  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
  >$85FE  40                         LOADL_qimm   ; inline operand = 0
   $85FF  2B                         STORE_quick   ; inline operand = 11
  >$8600  0B                         LOADL_quick   ; inline operand = 11
@@ -840,7 +840,7 @@ VM bytecode disassembly
   $8603  E9 0E 96 02                CALL_abs_imm1          $960E (is_cell_valid_for_phase) {bytecode}, $02
   $8607  D7 FE 85                   JUMPT_abs              $85FE
   $860A  60                         PUSH_qimm   ; inline operand = 0
-  $860B  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $860B  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $860F  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $8612  2A                         STORE_quick   ; inline operand = 10
   $8613  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
@@ -900,7 +900,7 @@ VM bytecode disassembly
   $866F  63                         PUSH_qimm   ; inline operand = 3
   $8670  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $8674  62                         PUSH_qimm   ; inline operand = 2
-  $8675  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $8675  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $8679  40                         LOADL_qimm   ; inline operand = 0
   $867A  2A                         STORE_quick   ; inline operand = 10
   $867B  40                         LOADL_qimm   ; inline operand = 0
@@ -916,13 +916,13 @@ VM bytecode disassembly
  >$869E  44                         LOADL_qimm   ; inline operand = 4
   $869F  2A                         STORE_quick   ; inline operand = 10
  >$86A0  60                         PUSH_qimm   ; inline operand = 0
-  $86A1  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $86A1  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $86A5  41                         LOADL_qimm   ; inline operand = 1
   $86A6  2B                         STORE_quick   ; inline operand = 11
   $86A7  AC 09 D3                   CALL_abs               $D309 (clear_rect_left_lower) {bytecode}
   $86AA  D6 7D 86                   JUMP_abs               $867D
  >$86AD  60                         PUSH_qimm   ; inline operand = 0
-  $86AE  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $86AE  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $86B2  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
   $86B5  D1                         DEC
   $86B6  A8 CF 7F                   STORE_abs              $7FCF (ui_cursor_row)
@@ -943,12 +943,12 @@ VM bytecode disassembly
   $86D3  40                         LOADL_qimm   ; inline operand = 0
  >$86D4  2A                         STORE_quick   ; inline operand = 10
   $86D5  62                         PUSH_qimm   ; inline operand = 2
-  $86D6  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $86D6  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $86DA  62                         PUSH_qimm   ; inline operand = 2
   $86DB  E9 3E D7 02                CALL_abs_imm1          $D73E (delay_loop) {bytecode}, $02
   $86DF  D6 7D 86                   JUMP_abs               $867D
  >$86E2  60                         PUSH_qimm   ; inline operand = 0
-  $86E3  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $86E3  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $86E7  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
   $86EA  D0                         INC
   $86EB  A8 CF 7F                   STORE_abs              $7FCF (ui_cursor_row)
@@ -966,7 +966,7 @@ VM bytecode disassembly
   $8700  62                         PUSH_qimm   ; inline operand = 2
   $8701  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $8705  62                         PUSH_qimm   ; inline operand = 2
-  $8706  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $8706  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $870A  40                         LOADL_qimm   ; inline operand = 0
   $870B  2A                         STORE_quick   ; inline operand = 10
   $870C  40                         LOADL_qimm   ; inline operand = 0
@@ -985,13 +985,13 @@ VM bytecode disassembly
  >$8734  46                         LOADL_qimm   ; inline operand = 6
   $8735  2A                         STORE_quick   ; inline operand = 10
  >$8736  60                         PUSH_qimm   ; inline operand = 0
-  $8737  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $8737  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $873B  41                         LOADL_qimm   ; inline operand = 1
   $873C  2B                         STORE_quick   ; inline operand = 11
   $873D  AC 09 D3                   CALL_abs               $D309 (clear_rect_left_lower) {bytecode}
   $8740  D6 0E 87                   JUMP_abs               $870E
  >$8743  60                         PUSH_qimm   ; inline operand = 0
-  $8744  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $8744  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $8748  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
   $874B  D1                         DEC
   $874C  A8 CF 7F                   STORE_abs              $7FCF (ui_cursor_row)
@@ -1012,12 +1012,12 @@ VM bytecode disassembly
   $876C  40                         LOADL_qimm   ; inline operand = 0
  >$876D  2A                         STORE_quick   ; inline operand = 10
   $876E  62                         PUSH_qimm   ; inline operand = 2
-  $876F  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $876F  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $8773  62                         PUSH_qimm   ; inline operand = 2
   $8774  E9 3E D7 02                CALL_abs_imm1          $D73E (delay_loop) {bytecode}, $02
   $8778  D6 0E 87                   JUMP_abs               $870E
  >$877B  60                         PUSH_qimm   ; inline operand = 0
-  $877C  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $877C  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $8780  A4 CF 7F                   LOADL_abs              $7FCF (ui_cursor_row)
   $8783  D0                         INC
   $8784  A8 CF 7F                   STORE_abs              $7FCF (ui_cursor_row)

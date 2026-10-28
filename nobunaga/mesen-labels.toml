@@ -646,7 +646,7 @@ prg_bank_count = 16        # 256 KB total
 "0xCFFC" = { name = "format_string",            comment = "[HIGH] printf-style: scans for '%', switches on C/D/S, space-pads to width, calls num_to_ascii/atoi/strlen/to_upper. Session C 2026-05-31." }
 "0xD14E" = { name = "poll_input",               comment = "[HIGH] Controller-poll state machine (switch on mem_7FD3), indexes the input/selection table at $7FD5, returns a button code via syscall_dispatch(...,6)=read_controller. THE cursor/input handler (confirms prior analysis); 11 callers. Session C 2026-05-31." }
 "0xD287" = { name = "wait_button_edge",         comment = "[HIGH] Edge-detect on poll_input: spin while a button is held, then return the next press code. Debounce primitive; 10 callers. Session C 2026-05-31." }
-"0xD29D" = { name = "read_frame_timer",         comment = "[MED] Branches on arg1 (0/1/2) then returns frame_counter; a timing/poll accessor. 19 callers. Session C 2026-05-31." }
+"0xD29D" = { name = "set_cursor_sprite", comment = "[HIGH 2026-10-28] Places sprite 0 as the text cursor and resets its blink timer: arg1 0 = park it off-screen at (248, 248) and wait for NMI; 1 = park it; otherwise at (ui_window_col * 8, ui_cursor_row * 8 - 1) with attribute $7FE7. Sets $7FE7 = arg1 - 1 (2 for arg1 = 0), writes frame_counter = 200 and returns it. Renamed from read_frame_timer: the June note ([MED] 'returns frame_counter; a timing/poll accessor') read the store as a read. Found by the var walk's verifier, 2026-10-28." }
 "0xD2F9" = { name = "clear_rect_left_upper",      comment = "[HIGH AMENDED 2026-06-10] BLANKS a rect with tile $01: ppu_fill_rect_wrap(2,8,9,19,1) = cols 2-9, rows 8-19 (left-side panel, upper). Old comment had args reversed + miscategorized as 'window draw'. Renamed from clear_rect_left_upper." }
 "0xD309" = { name = "clear_rect_left_lower",      comment = "[HIGH AMENDED 2026-06-10] BLANKS a rect with tile $01: ppu_fill_rect_wrap(2,20,9,26,1) = cols 2-9, rows 20-26 (left-side panel, lower); 15 callers. Old comment had args reversed + miscategorized. Renamed from clear_rect_left_lower." }
 "0xD31A" = { name = "clear_rect_left_lower_alt",      comment = "[HIGH AMENDED 2026-06-10] Tail-calls clear_rect_left_lower (alias/same blank of cols 2-9, rows 20-26). Not a 'window draw'. Renamed from clear_rect_left_lower_alt." }
@@ -2739,4 +2739,33 @@ arg1 = { name = "left_col", comment = "[HIGH] Rect start column: PUSH_quick 12 -
 arg2 = { name = "top_row", comment = "[HIGH] Rect start row: PUSH_quick 13 -> syscall 13. Callers pass 3..26, always <= arg4; it matches set_cursor's row in the $8044/$806C pair." }
 arg3 = { name = "right_col", comment = "[HIGH] Inclusive end column: PUSH_quick 14 -> syscall 13. Callers pass 10..31 (31 = last column), always >= arg1." }
 arg4 = { name = "bottom_row", comment = "[HIGH] Inclusive end row: PUSH_quick 15 -> syscall 13. Callers pass 7..26, always >= arg2; it equals arg2 for single-row rects such as (14,18,26,18) at $8793." }
+
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 12 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xCE81"]
+# char_advance_width
+arg1 = { name = "ch", comment = "[MED] Char code: BYTE_LOADL_far $0B ==10 -> cursor_advance_row; else char_classify(arg1) stored back, pushed to syscall 12. Callers push 10/32/89/78" }
+
+[vars.bank15."0xCF7C"]
+# ppu_upload_block_wrap
+arg1 = { name = "src_bank", comment = "[MED] PUSH_quick 12 -> syscall 10 arg1. Callers push 0/4/6 beside $8000-$BFFF ROM ptrs (switchable window), so likely the source bank" }
+arg2 = { name = "src_ptr", comment = "[HIGH] PUSH_quick 13 -> syscall 10 arg2. Callers push ROM data addrs $9054/$9D04/$AF64/$B78A/$A84A, so source data pointer" }
+arg3 = { name = "ppu_addr", comment = "[HIGH] PUSH_quick 14 -> syscall 10 arg3. Callers push $1000/$1510/$14D0 (pattern table), $23C0 (NT0 attrs): PPU dest address" }
+arg4 = { name = "length", comment = "[MED] PUSH_quick 15 -> syscall 10 arg4. Callers push $AE/$FE/$F8/$9A/81/102, 4: transfer size/count (unit unverified)" }
+
+[vars.bank15."0xCF8B"]
+# palette_write_wrap
+arg1 = { name = "palette_idx", comment = "[MED] PUSH_quick 12 -> syscall 4 arg1. Callers push loop idx local11/local9 (also indexes palette table) or 3/7/11: palette entry index" }
+arg2 = { name = "color", comment = "[MED] PUSH_quick 13 -> syscall 4 arg2. Callers push table[i] (BYTE_DEREF of $B852+i etc.) or NES colors 43/37: color value" }
+
+[vars.bank15."0xCF98"]
+# num_to_ascii
+arg1 = { name = "out_cursor_ptr", comment = "[HIGH] Slot 12: DEREF/INC/POPSTORE post-increments *arg1, old value gets BYTE_POPSTORE digit; caller pushes LEAL_far $FFF1; passed to recursion" }
+arg2 = { name = "value", comment = "[HIGH] Slot 13: UCMPLT vs arg3; if smaller emits +48/+55 digit, else recurses on UDIV and UMOD by arg3: the number converted" }
+arg3 = { name = "radix", comment = "[HIGH] Slot 14: compare bound, UDIV/UMOD divisor for arg2, passed unchanged to recursion; +55 path supports digits >= 10: number base" }
+local11 = { name = "digit_count", comment = "[HIGH] STORE_quick 11 of the value/radix recursive call's return (chars emitted); sub returns LOADL_quick 11 + INC = total length" }
+
+[vars.bank15."0xD29D"]
+# set_cursor_sprite
+arg1 = { name = "cursor_mode", comment = "[MED] Slot 12 selector: 0 -> sprite at $F8,$F8 + syscall 1; 1 -> parked; else at col*8,row*8-1. $7FE7 = arg1-1 (or 2). Callers push 0/2" }
 

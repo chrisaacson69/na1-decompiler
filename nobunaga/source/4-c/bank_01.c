@@ -2731,7 +2731,7 @@ L_AB7E:
         set_cursor(5, 25);    // $AB94
         redraw_window(msg_available_0);    // $AB9B
         set_cursor(4, 20);    // $ABA2
-        read_frame_timer(2);    // $ABA7
+        set_cursor_sprite(2);    // $ABA7
         local11 = (local11 + 1);    // $ABAD
         if (((unsigned)local11 < (unsigned)5)) continue;    // $ABB1
         return ((unsigned)local11 < (unsigned)5);    // $ABB4
@@ -2792,7 +2792,7 @@ L_AC33:
             default: goto L_AC33;    // $AC36
         }    // $AC36
 L_AC53:
-        read_frame_timer(0);    // $AC54
+        set_cursor_sprite(0);    // $AC54
         cursor_row = (cursor_row - 1);    // $AC5A
         field_idx = (field_idx - 1);    // $AC5D
         if ((field_idx < 0)) {    // $AC60
@@ -2803,11 +2803,11 @@ L_AC67:
         }
 L_AC68:
         set_cursor(4, cursor_row);    // $AC6A
-        read_frame_timer(2);    // $AC6F
+        set_cursor_sprite(2);    // $AC6F
         delay_loop(2);    // $AC74
         continue;    // $AC78
 L_AC7B:
-        read_frame_timer(0);    // $AC7C
+        set_cursor_sprite(0);    // $AC7C
         cursor_row = (cursor_row + 1);    // $AC82
         field_idx = (field_idx + 1);    // $AC85
         if (!((field_idx >= 5))) goto L_AC68;    // $AC88
@@ -2821,7 +2821,7 @@ L_AC92:
         *(word*)(((field_idx << 1) + &edit_buffer)) = (*(word*)(((field_idx << 1) + &edit_buffer)) + 1);    // $ACC0
         }
 L_ACC1:
-        read_frame_timer(0);    // $ACC2
+        set_cursor_sprite(0);    // $ACC2
         set_cursor(14, cursor_row);    // $ACC8
         draw_message(effect_assign_fmt_3d_1, *(word*)(((field_idx << 1) + &edit_buffer)));    // $ACD9
         phi_ace8_0 = effect_assign_fmt_3d_2;    // $ACE5
@@ -2830,13 +2830,13 @@ L_ACE8:
         set_cursor(14, 25);    // $ACE0
         draw_message(phi_ace8_0, phi_ace8_1);    // $ACE8
         set_cursor(4, cursor_row);    // $ACEE
-        read_frame_timer(2);    // $ACF3
+        set_cursor_sprite(2);    // $ACF3
         continue;    // $ACF7
 L_ACFA:
         if (!((*(word*)(((field_idx << 1) + &edit_buffer)) > (field_idx ? 0 : 1)))) continue;    // $AD0F
         units_delta = (units_delta + 1);    // $AD14
         *(word*)(((field_idx << 1) + &edit_buffer)) = (*(word*)(((field_idx << 1) + &edit_buffer)) - 1);    // $AD20
-        read_frame_timer(0);    // $AD22
+        set_cursor_sprite(0);    // $AD22
         set_cursor(14, cursor_row);    // $AD28
         draw_message(effect_assign_fmt_3d_3, *(word*)(((field_idx << 1) + &edit_buffer)));    // $AD39
         phi_ace8_0 = effect_assign_fmt_3d_4;    // $AD48
@@ -2845,11 +2845,11 @@ L_ACFA:
         goto L_ACE8;    // $AD48
     }
 L_AD4B:
-    read_frame_timer(0);    // $AD4C
+    set_cursor_sprite(0);    // $AD4C
     open_message_window();    // $AD50
     return commit_arms_record_from_buffer(&edit_buffer, units_delta);    // $AD5C
 L_AD5D:
-    read_frame_timer(0);    // $AD5E
+    set_cursor_sprite(0);    // $AD5E
     open_message_window();    // $AD62
     return 0;    // $AD66
 }
@@ -3180,7 +3180,7 @@ L_B1A4:
 
 word submenu_prompt(word arg1) {
     set_cursor(21, 7);    // $B1AE
-    read_frame_timer(2);    // $B1B3
+    set_cursor_sprite(2);    // $B1B3
     wait_button_edge();    // $B1B7
     local10 = 0;    // $B1BB
     local11 = 0;    // $B1BD
@@ -3195,12 +3195,12 @@ word submenu_prompt(word arg1) {
 L_B1DC:
         local10 = (arg1 - 1);    // $B1DE
 L_B1DF:
-        read_frame_timer(0);    // $B1E0
+        set_cursor_sprite(0);    // $B1E0
         local11 = 1;    // $B1E5
         open_message_window();    // $B1E6
         continue;    // $B1E9
 L_B1EC:
-        read_frame_timer(0);    // $B1ED
+        set_cursor_sprite(0);    // $B1ED
         ui_cursor_row = (ui_cursor_row - 1);    // $B1F5
         if ((ui_cursor_row == 6)) {    // $B1FA
         set_cursor(21, (arg1 + 6));    // $B202
@@ -3210,11 +3210,11 @@ L_B20B:
         phi_val_b20c = (local10 - 1);    // $B20B
 L_B20C:
         local10 = phi_val_b20c;    // $B20C
-        read_frame_timer(2);    // $B20E
+        set_cursor_sprite(2);    // $B20E
         delay_loop(2);    // $B213
         continue;    // $B217
 L_B21A:
-        read_frame_timer(0);    // $B21B
+        set_cursor_sprite(0);    // $B21B
         ui_cursor_row = (ui_cursor_row + 1);    // $B223
         if (!(((arg1 + 7) == ui_cursor_row))) goto L_B239;    // $B22B
         set_cursor(21, 7);    // $B231
@@ -3464,7 +3464,7 @@ L_B6B0:
 
 word command_menu_select_loop(void) {
     set_cursor(21, 7);    // $B6BC
-    read_frame_timer(2);    // $B6C1
+    set_cursor_sprite(2);    // $B6C1
     wait_button_edge();    // $B6C5
     local10 = (fief_menu_info_mode_flag ? 12 : 0);    // $B6D3
     local11 = 0;    // $B6D5
@@ -3482,14 +3482,14 @@ L_B6D6:
 L_B6F6:
         local10 = 17;    // $B6F8
 L_B6F9:
-        read_frame_timer(0);    // $B6FA
+        set_cursor_sprite(0);    // $B6FA
         local11 = 1;    // $B6FF
 L_B703:
         open_message_window();    // $B700
         if (!(local11)) continue;    // $B704
         return local10;    // $B708
 L_B709:
-        read_frame_timer(0);    // $B70A
+        set_cursor_sprite(0);    // $B70A
         if (fief_menu_info_mode_flag) goto L_B724;    // $B711
 L_B719:
         fief_info_display(1);    // $B715
@@ -3512,17 +3512,17 @@ L_B746:
         phi_val_b74f = 20;    // $B74D
 L_B74F:
         local10 = phi_val_b74f;    // $B74F
-        read_frame_timer(2);    // $B751
+        set_cursor_sprite(2);    // $B751
         delay_loop(2);    // $B756
         goto L_B703;    // $B75A
 L_B75D:
-        read_frame_timer(0);    // $B75E
+        set_cursor_sprite(0);    // $B75E
         ui_cursor_row = (ui_cursor_row - 1);    // $B766
         if ((ui_cursor_row == 6)) goto L_B734;    // $B76B
         phi_val_b74f = (local10 - 1);    // $B770
         goto L_B74F;    // $B770
 L_B773:
-        read_frame_timer(0);    // $B774
+        set_cursor_sprite(0);    // $B774
         ui_cursor_row = (ui_cursor_row + 1);    // $B77C
         if ((ui_cursor_row == 19)) goto L_B729;    // $B782
         if ((ui_cursor_row != 16)) goto L_B796;    // $B78B

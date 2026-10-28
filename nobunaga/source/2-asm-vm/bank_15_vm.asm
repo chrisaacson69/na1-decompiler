@@ -1295,7 +1295,7 @@ VM bytecode disassembly
   $D356  3C                         PUSH_quick   ; inline operand = 12
   $D357  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $D35B  61                         PUSH_qimm   ; inline operand = 1
-  $D35C  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D35C  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
  >$D360  AC 87 D2                   CALL_abs               $D287 (wait_button_edge) {bytecode}
   $D363  2B                         STORE_quick   ; inline operand = 11
   $D364  8B 40                      BYTE_LOADR_imm1        +64
@@ -1310,7 +1310,7 @@ VM bytecode disassembly
   $D374  C1                         CMPNE
   $D375  D7 60 D3                   JUMPT_abs              $D360
  >$D378  60                         PUSH_qimm   ; inline operand = 0
-  $D379  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D379  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D37D  0B                         LOADL_quick   ; inline operand = 11
   $D37E  8B 40                      BYTE_LOADR_imm1        +64
   $D380  C0                         CMPEQ
@@ -1339,7 +1339,7 @@ VM bytecode disassembly
   $D3AC  8E 95 F6                   PUSH_imm2              $F695 (prompt_y_n_msg)
   $D3AF  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $D3B3  61                         PUSH_qimm   ; inline operand = 1
-  $D3B4  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D3B4  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
  >$D3B8  AC 87 D2                   CALL_abs               $D287 (wait_button_edge) {bytecode}
   $D3BB  2B                         STORE_quick   ; inline operand = 11
   $D3BC  8B 40                      BYTE_LOADR_imm1        +64
@@ -1350,7 +1350,7 @@ VM bytecode disassembly
   $D3C6  C1                         CMPNE
   $D3C7  D7 B8 D3                   JUMPT_abs              $D3B8
  >$D3CA  60                         PUSH_qimm   ; inline operand = 0
-  $D3CB  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D3CB  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D3CF  0B                         LOADL_quick   ; inline operand = 11
   $D3D0  8B 40                      BYTE_LOADR_imm1        +64
   $D3D2  C0                         CMPEQ
@@ -1399,14 +1399,14 @@ VM bytecode disassembly
   $D419  D1                         DEC
   $D41A  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
   $D41D  61                         PUSH_qimm   ; inline operand = 1
-  $D41E  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D41E  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D422  AC 87 D2                   CALL_abs               $D287 (wait_button_edge) {bytecode}
   $D425  40                         LOADL_qimm   ; inline operand = 0
   $D426  22                         STORE_quick   ; inline operand = 2
  >$D427  AC 4E D1                   CALL_abs               $D14E (poll_input) {bytecode}
   $D42A  D9 06 00 01 00 59 D4 02 00 47 D4 10 ... SWITCH_noncontig       count=6   ; .table 6 (key,target) + default (noncontiguous); SWITCH 1=>$D459 2=>$D447 16=>$D469 32=>$D4AF 64=>$D4DB 128=>$D511 default=>$D460
  >$D447  60                         PUSH_qimm   ; inline operand = 0
-  $D448  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D448  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D44C  A4 E0 7B                   LOADL_abs              $7BE0 (ui_input_prompt_active_flag)
   $D44F  51                         LOADR_qimm   ; inline operand = 1
   $D450  C0                         CMPEQ
@@ -1416,7 +1416,7 @@ VM bytecode disassembly
  >$D457  40                         LOADL_qimm   ; inline operand = 0
   $D458  CF                         RETURN
  >$D459  60                         PUSH_qimm   ; inline operand = 0
-  $D45A  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D45A  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D45E  41                         LOADL_qimm   ; inline operand = 1
   $D45F  22                         STORE_quick   ; inline operand = 2
  >$D460  02                         LOADL_quick   ; inline operand = 2
@@ -1460,11 +1460,11 @@ VM bytecode disassembly
   $D499  D1                         DEC
   $D49A  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
   $D49D  60                         PUSH_qimm   ; inline operand = 0
-  $D49E  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D49E  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D4A2  62                         PUSH_qimm   ; inline operand = 2
   $D4A3  E9 3E D7 02                CALL_abs_imm1          $D73E (delay_loop) {bytecode}, $02
   $D4A7  61                         PUSH_qimm   ; inline operand = 1
-  $D4A8  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D4A8  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D4AC  D6 60 D4                   JUMP_abs               $D460
  >$D4AF  DE F4 FF                   LEAL_far               $FFF4
   $D4B2  B3                         PUSHL
@@ -1501,7 +1501,7 @@ VM bytecode disassembly
  >$D4DB  04                         LOADL_quick   ; inline operand = 4
   $D4DC  D8 60 D4                   JUMPF_abs              $D460
   $D4DF  60                         PUSH_qimm   ; inline operand = 0
-  $D4E0  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D4E0  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D4E4  8E A7 F6                   PUSH_imm2              $F6A7 (cursor_nav_space)
   $D4E7  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $D4EB  42                         LOADL_qimm   ; inline operand = 2
@@ -1510,7 +1510,7 @@ VM bytecode disassembly
   $D4F0  BC                         SUB
   $D4F1  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
   $D4F4  61                         PUSH_qimm   ; inline operand = 1
-  $D4F5  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D4F5  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D4F9  DE F4 FF                   LEAL_far               $FFF4
   $D4FC  B3                         PUSHL
   $D4FD  04                         LOADL_quick   ; inline operand = 4
@@ -1542,7 +1542,7 @@ VM bytecode disassembly
   $D524  B0                         DEREF
   $D525  D8 60 D4                   JUMPF_abs              $D460
  >$D528  60                         PUSH_qimm   ; inline operand = 0
-  $D529  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D529  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D52D  A4 CD 7F                   LOADL_abs              $7FCD (ui_window_col)
   $D530  D0                         INC
   $D531  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
@@ -1571,7 +1571,7 @@ VM bytecode disassembly
   $D555  D1                         DEC
   $D556  A8 CD 7F                   STORE_abs              $7FCD (ui_window_col)
   $D559  61                         PUSH_qimm   ; inline operand = 1
-  $D55A  E9 9D D2 02                CALL_abs_imm1          $D29D (read_frame_timer) {bytecode}, $02
+  $D55A  E9 9D D2 02                CALL_abs_imm1          $D29D (set_cursor_sprite) {bytecode}, $02
   $D55E  D6 09 D5                   JUMP_abs               $D509
  >$D561  DE F4 FF                   LEAL_far               $FFF4
   $D564  B3                         PUSHL

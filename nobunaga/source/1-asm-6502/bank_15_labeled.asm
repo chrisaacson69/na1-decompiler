@@ -2576,7 +2576,7 @@ b15_d298:   cld                         ; 3D298:  d8
 b15_d299:   sty $d2,x                   ; 3D299:  94 d2
 b15_d29b:   .db $0b                     ; 3D29B:  0b
 b15_d29c:   .db $cf                     ; 3D29C:  cf
-read_frame_timer:   jsr $e823                   ; 3D29D:  20 23 e8
+set_cursor_sprite:   jsr $e823                   ; 3D29D:  20 23 e8
 b15_d2a0:   brk                         ; 3D2A0:  00
 b15_d2a1:   brk                         ; 3D2A1:  00
 b15_d2a2:   .db $0c                     ; 3D2A2:  0c
