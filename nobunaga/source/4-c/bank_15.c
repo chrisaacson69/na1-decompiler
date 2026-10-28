@@ -748,11 +748,11 @@ L_D270:
 word wait_button_edge(void) {
     do {    // $D28C
     } while (poll_input());    // $D28F
-    local11 = 0;    // $D293
+    button = 0;    // $D293
     do {    // $D294
-        local11 = poll_input();    // $D297
+        button = poll_input();    // $D297
     } while (!(poll_input()));    // $D298
-    return local11;    // $D29C
+    return button;    // $D29C
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D29D
@@ -1310,22 +1310,22 @@ word develop_gain(word amount, word stat_ptr, word companion_ptr) {
 // $D8F2 develop_gain_capped_loyalty
 // (body @ $D8F7)
 
-word develop_gain_capped_loyalty(word arg1, word arg2) {
-    local11 = develop_gain(arg2, (arg1 + 12), (arg1 + 8));    // $D902
-    local10 = (arg1->header - arg1->loyalty);    // $D90D
-    if ((local11 > (arg1->header - arg1->loyalty))) return local10;    // $D912
-    return local11;    // $D918
+word develop_gain_capped_loyalty(word fief, word amount) {
+    gain = develop_gain(amount, (fief + 12), (fief + 8));    // $D902
+    headroom = (fief->header - fief->loyalty);    // $D90D
+    if ((gain > (fief->header - fief->loyalty))) return headroom;    // $D912
+    return gain;    // $D918
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D919
 // $D919 develop_gain_capped_wealth
 // (body @ $D91E)
 
-word develop_gain_capped_wealth(word arg1, word arg2) {
-    local11 = develop_gain(arg2, (arg1 + 14), (arg1 + 4));    // $D929
-    local10 = (arg1->header - arg1->wealth);    // $D934
-    if ((local11 > (arg1->header - arg1->wealth))) return local10;    // $D939
-    return local11;    // $D93F
+word develop_gain_capped_wealth(word fief, word amount) {
+    gain = develop_gain(amount, (fief + 14), (fief + 4));    // $D929
+    headroom = (fief->header - fief->wealth);    // $D934
+    if ((gain > (fief->header - fief->wealth))) return headroom;    // $D939
+    return gain;    // $D93F
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D940
@@ -1351,8 +1351,8 @@ word set_6da1_bit7(void) {
 // $D972 fief_owner_weakness
 // (body @ $D977)
 
-word fief_owner_weakness(word arg1) {
-    return daimyo_weakness_flag[fief_owner(arg1)];    // $D981
+word fief_owner_weakness(word fief) {
+    return daimyo_weakness_flag[fief_owner(fief)];    // $D981
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D982
@@ -1367,8 +1367,8 @@ word no_human_players_left(void) {
 // $D98D get_province_ai_state
 // (body @ $D992)
 
-word get_province_ai_state(word arg1) {
-    return province_ai_state[arg1];    // $D998
+word get_province_ai_state(word fief) {
+    return province_ai_state[fief];    // $D998
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D999

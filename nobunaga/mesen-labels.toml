@@ -2848,3 +2848,31 @@ arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 -> fief_owner $D772 at $
 arg1 = { name = "fief", comment = "[HIGH] LOADL_quick 12 *26 + $7011 ($7001+16, men) at $D81A; callers push selected_province_idx $6F5F or caller's arg1" }
 local11 = { name = "men_field_ptr", comment = "[HIGH] STORE_quick 11 = &province[arg1].men ($7011+idx*26); DEREF; if 0, POPSTORE 0 to +2/+4/+6 (morale, skill, arms)" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 11 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xD287"]
+# wait_button_edge
+local11 = { name = "button", comment = "[HIGH] Zeroed ($D292 LOADL_qimm 0/STORE_quick 11), then set to poll_input() in the JUMPF loop at $D294 until nonzero; returned at $D29B" }
+
+[vars.bank15."0xD8F2"]
+# develop_gain_capped_loyalty
+arg1 = { name = "fief", comment = "[HIGH] Province record ptr: slot 12 +8 and +12 pushed to develop_gain ($D8F7-$D8FC); +12 and +24 DEREF'd for headroom ($D903-$D90A)" }
+arg2 = { name = "amount", comment = "[HIGH] PUSH_quick 13 last before CALL $D8BA, so it is develop_gain's arg1 (amount); the caller at $D945 forwards its own arg2" }
+local10 = { name = "headroom", comment = "[HIGH] STORE_quick 10 at $D90D = [fief+24] - [fief+12] (header - loyalty); returned at $D915 when gain > it (SCMPGT)" }
+local11 = { name = "gain", comment = "[HIGH] STORE_quick 11 at $D902 = develop_gain result; returned at $D917 when it is not greater than headroom" }
+
+[vars.bank15."0xD919"]
+# develop_gain_capped_wealth
+arg1 = { name = "fief", comment = "[HIGH] Province record ptr: slot 12 +4 and +14 pushed to develop_gain ($D91E-$D923); +14 and +24 DEREF'd for headroom ($D92A-$D931)" }
+arg2 = { name = "amount", comment = "[HIGH] PUSH_quick 13 last before CALL $D8BA = develop_gain's amount arg; the caller at $D953 forwards its own arg2" }
+local10 = { name = "headroom", comment = "[HIGH] STORE_quick 10 at $D934 = [fief+24] - [fief+14] (header - wealth); returned at $D93C when gain > it (SCMPGT)" }
+local11 = { name = "gain", comment = "[HIGH] STORE_quick 11 at $D929 = develop_gain result; returned at $D93E when it fits under headroom" }
+
+[vars.bank15."0xD972"]
+# fief_owner_weakness
+arg1 = { name = "fief", comment = "[HIGH] Fief index: PUSH_quick 12 to fief_owner ($D978); callers push selected_province_idx ($8884, $B8CF, $E36B) or a fief slot" }
+
+[vars.bank15."0xD98D"]
+# get_province_ai_state
+arg1 = { name = "fief", comment = "[HIGH] Fief index: LOADL_quick 12 + $6CF7 BYTE_DEREF ($D992); callers push selected_province_idx ($8CA0) or rng_mod(fief_count) ($9BF6)" }
+
