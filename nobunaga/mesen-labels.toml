@@ -2545,6 +2545,10 @@ local5 = { name = "dedup_buf", comment = "[HIGH] base byte of local dedup scratc
 [vars.bank1."0xB23E"]
 # driver_other
 "fp-7" = { name = "cmd_result", comment = "[HIGH] byte return code of dispatched submenu handler (call via jumptab_b9e8); tested !=1 at $B295 to re-loop the menu" }
+# far-frame slots (var-walk-apply --merge)
+local9 = { name = "i", comment = "[HIGH] loop idx 0..6: =0 @$B247, +7 set_cursor row, settings_menu_str_ptrs[i] @$B25D, INC/SCMPLT 7 @$B267-$B26D" }
+local10 = { name = "choice", comment = "[HIGH] submenu_prompt(7) result @$B27C; jumptab_b9e8 idx @$B27E; ==6 exit test @$B28C; return value is choice==5 @$B29F" }
+local11 = { name = "setting_handler", comment = "[HIGH] fn ptr: STORE_quick 11 @$B284 = jumptab_b9e8[choice]; LOADL_quick 11 + CALLPTR @$B286, result byte-stored to fp-7" }
 
 [vars.bank1."0xADF6"]
 # fief_select_input_loop
@@ -3586,4 +3590,25 @@ local8 = { name = "viewed_fief", comment = "[HIGH] =selected_province_idx @A6CF;
 local9 = { name = "eligible_list_result", comment = "[MED] return of build_eligible_province_list(1), STORE_quick 9 @A6D7/@A71F; only read as boolean JUMPT @A769" }
 local10 = { name = "target_fief", comment = "[MED] select_province_by_cursor(1,99) @A737 (-1 cancel, 99 special); DEC @A771 to 0-based; pushed to fief_owner/ai_state/daimyo addr" }
 local11 = { name = "map_section", comment = "[HIGH] BYTE_DEREF province_to_map_section_*[local8] -> STORE_quick 11 @A755; pushed to browse_map_sections @A75B" }
+
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xB6B4"]
+# command_menu_select_loop
+local10 = { name = "command_idx", comment = "[HIGH] cmd idx: 12/0 by info flag @$B6D3, 17 on btn2 @$B6F8, INC/DEC/wrap @$B74F (11/20/12/0); returned LOADL_quick 10 @$B707" }
+local11 = { name = "selection_made", comment = "[HIGH] loop-exit flag: =0 @$B6D5, =1 on confirm/cancel @$B6FF; JUMPF back to poll_input while 0 @$B704" }
+
+[vars.bank1."0xB2B2"]
+# ai_seed_fief_tax_rate
+arg1 = { name = "province_idx", comment = "[HIGH] callers PUSH_abs selected_province_idx @$B3C9/$B43F; LEAL_far $000B swap_word with $6F63 @$B2BE, swapped back @$B2EA" }
+
+[vars.bank1."0xAF66"]
+# driver_grant
+local9 = { name = "i", comment = "[HIGH] loop idx 0..5: =0 @$AFCB, +7 set_cursor row, (i+1) governance_state_label_ptrs idx, INC/SCMPLT 6 @$AFEC-$AFF2" }
+local10 = { name = "menu_drawn", comment = "[HIGH] flag: =0 @$AF84, tested @$AFC1 to skip redraw, =1 @$AFC6 after first draw; tested @$AF91 for fief_info_display(1) on exit" }
+local11 = { name = "new_policy", comment = "[HIGH] submenu_prompt(6)+1 @$AFFB (6=cancel); CMPEQ province_ai_state[] @$B00A, BYTE_POPSTORE into it @$B050; policy name idx" }
+
+[vars.bank1."0xA1B6"]
+# driver_trade
+local10 = { name = "trade_handler", comment = "[HIGH] fn ptr: STORE_quick 10 @$A203 = jumptab_b9dc[choice]; LOADL_quick 10 + CALLPTR_imm1 @$A210 with province_table_live rec pushed" }
+# local11 left positional — scratch: menu-draw loop idx 0..5 ($A1C4-$A1ED, SCMPLT 6), then reused for submenu_prompt(6) result @$A1FC (==5 exit @$A2
 
