@@ -4444,3 +4444,35 @@ local7 = { name = "candidate_count", comment = "[HIGH] =0 at $977E; INC/STORE_qu
 local10 = { name = "owner_ptr", comment = "[MED] &fief_to_daimyo_map[fief] ($97C9); byte passed to pool_push_pop/list_remove_matching and stored to $6E7F[fief] ($9805)" }
 local11 = { name = "fief_list_ptr", comment = "[HIGH] cursor init $7BAD province_candidate_list (STORE_quick 11 @$986E), INC per step until byte $FF; *local11 = fief arg to every helper" }
 
+# --- bank-00 var-walk far-frame batch (--merge, new sections) (5 subs) ---
+[vars.bank0."0xA3AA"]
+# write_sram_save_checksum_and_signature
+local9 = { name = "save_pending_flag", comment = "[MED] Copy of sram_save_pending_flag $6F61 (@$A3B2); PUSH_quick 9 as arg3 of every syscall 22 @$F226; 'slot' meaning unproven" }
+local10 = { name = "checksum", comment = "[HIGH] First syscall 22 result (@$A3C1), then += each block result (SWAP/ADD/STORE_quick 10); stored to sram_save_checksum $7FEB" }
+local11 = { name = "block_addr", comment = "[HIGH] Block cursor $6100..<$7000 then $7100..<$7F00, +$100 per step (@$A3D6/$A40B); PUSH_quick 11 as syscall 22 address arg" }
+
+[vars.bank0."0xA21F"]
+# calc_fief_rice_income
+arg1 = { name = "fief_idx", comment = "[HIGH] Caller pushes local10 last; PUSH_quick 12 to $A191/$A1AA, fief_tax_rate[$6D2D+idx], idx<<3 into $6003/$6005 @$A237-$A246" }
+arg2 = { name = "fief", comment = "[HIGH] Province record ptr (same caller slot as gold sub): LOADL_quick 13 +24 DEREF = header, used as income cap @$A25D/$A268" }
+local11 = { name = "rice_income", comment = "[HIGH] Sum harvest_base + nested pct_op(history,tax) + rng_mod variance @$A25C; capped at fief header (SCMPGT @$A264); returned" }
+
+[vars.bank0."0xA1E2"]
+# calc_fief_gold_income
+arg1 = { name = "fief_idx", comment = "[HIGH] Caller pushes local10 last (its fief_tax_rate index @$A29F); PUSH_quick 12 to $A191/$A1AA, indexes fief_tax_rate $6D2D @$A1F3" }
+arg2 = { name = "fief", comment = "[HIGH] Province record ptr: LOADL_quick 13 +4 DEREF (town, pct_op base) @$A1FA, +24 DEREF (header cap) @$A20D/$A218" }
+local11 = { name = "gold_income", comment = "[HIGH] Sum harvest_base + pct_op(town,tax) + rng_mod(variance+1) @$A20C; set to fief header if greater (SCMPGT @$A214); returned" }
+
+[vars.bank0."0x9F8C"]
+# per_turn_age_daimyo_decay_health_and_province_stats
+local8 = { name = "decay_amount", comment = "[HIGH] rng_mod(const_two) result (STORE_quick 8 @$A009); PUSH_quick 8 then SUB/POPSTORE from 3 stat words via local10 @$A00A-$A028" }
+local9 = { name = "daimyo", comment = "[HIGH] daimyo_record_addr(0) ptr (@$9FAC), +7 per step; BYTE_DEREF INC at +0 (age), DEC at +1 (health) @$9FB0-$9FBA" }
+local10 = { name = "stat_ptr", comment = "[HIGH] i*26+$700D = &province[i].loyalty (+12) @$9FF1; post-incremented +2 thrice: loyalty, wealth, men each -= decay_amount" }
+local11 = { name = "i", comment = "[MED] Loop index: daimyo loop (< fief_count+3 @$9FCB), reset 0, fief loop (< $6D9D @$A030); pushed to $D98D, *26 into $7001/$700D" }
+
+[vars.bank0."0x9ED9"]
+# ai_event_build_two_batches_dispatch_or_announce
+local9 = { name = "attempt", comment = "[HIGH] Loop counter: init 0 (LOADL_qimm 0 -> STORE_quick 9 @$9F00), INC on each failed build, loop while <2 (UCMPLT @$9F03)" }
+local10 = { name = "event_variant", comment = "[HIGH] rng_mod(2) result (STORE_quick 10 @$9EE5); +1 pushed to $9E9D; XOR 1 on failure @$9EFC; SWITCH 0=>msg_riot 1=>msg_revolt @$9F12" }
+local11 = { name = "no_candidates", comment = "[HIGH] Flag set 1 at entry @$9EDF, cleared to 0 when $9E9D build succeeds @$9EF5; ==1 @$9F09 calls random_event_type_dispatch $9C84" }
+

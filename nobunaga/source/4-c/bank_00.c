@@ -1966,25 +1966,25 @@ L_9EC8:
 // (body @ $9EDE)
 
 word ai_event_build_two_batches_dispatch_or_announce(void) {
-    local11 = 1;    // $9EDF
-    local10 = rng_mod(2);    // $9EE5
+    no_candidates = 1;    // $9EDF
+    event_variant = rng_mod(2);    // $9EE5
     phi_val_9f00 = 0;    // $9EE7
-    while (((unsigned)local9 < (unsigned)2)) {    // $9F00
-        if (build_event_eligible_fief_candidate_list((local10 + 1))) {    // $9EF1
-        local11 = 0;    // $9EF5
+    while (((unsigned)attempt < (unsigned)2)) {    // $9F00
+        if (build_event_eligible_fief_candidate_list((event_variant + 1))) {    // $9EF1
+        no_candidates = 0;    // $9EF5
         } else {
-        local10 = (local10 ^ 1);    // $9EFD
-        phi_val_9f00 = (local9 + 1);    // $9EFF
-        local9 = phi_val_9f00;    // $9F00
+        event_variant = (event_variant ^ 1);    // $9EFD
+        phi_val_9f00 = (attempt + 1);    // $9EFF
+        attempt = phi_val_9f00;    // $9F00
     }
         }
 L_9F07:
-    if ((local11 == 1)) {    // $9F0A
+    if ((no_candidates == 1)) {    // $9F0A
 L_9F10:
     return random_event_type_dispatch();    // $9F10
     }
 L_9F11:
-    switch (local10) {    // $9F12
+    switch (event_variant) {    // $9F12
         case 0: goto L_9F1F;    // $9F12
         case 1: goto L_9F3B;    // $9F12
         default: goto L_9F10;    // $9F12
@@ -2030,34 +2030,34 @@ word per_turn_age_daimyo_decay_health_and_province_stats(void) {
     if ((current_game_year != 0x0618)) {    // $9F98
     normalize_relations_matrix_lower(4);    // $9F9C
     normalize_relations_matrix_upper(2);    // $9FA1
-    local11 = 0;    // $9FA6
-    local9 = daimyo_record_addr(0);    // $9FAC
-    while (((unsigned)local11 < (unsigned)(scenario_fief_count + 3))) {    // $9FC4
-        *(byte*)(local9) = (*(byte*)(local9) + 1);    // $9FB4
-        *(byte*)((local9 + 1)) = (*(byte*)((local9 + 1)) - 1);    // $9FBA
-        local11 = (local11 + 1);    // $9FBD
-        local9 = (local9 + 7);    // $9FC1
+    i = 0;    // $9FA6
+    daimyo = daimyo_record_addr(0);    // $9FAC
+    while (((unsigned)i < (unsigned)(scenario_fief_count + 3))) {    // $9FC4
+        *(byte*)(daimyo) = (*(byte*)(daimyo) + 1);    // $9FB4
+        *(byte*)((daimyo + 1)) = (*(byte*)((daimyo + 1)) - 1);    // $9FBA
+        i = (i + 1);    // $9FBD
+        daimyo = (daimyo + 7);    // $9FC1
     }
     phi_val_a02b = 0;    // $9FD0
-    while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $A02B
-        if (get_province_ai_state(local11)) goto L_9FE9;    // $9FD8
+    while (((unsigned)i < (unsigned)scenario_fief_count)) {    // $A02B
+        if (get_province_ai_state(i)) goto L_9FE9;    // $9FD8
 L_9FE9:
-        event_boost_province_wealth_loyalty(local11, &province_table_live[local11]);    // $9FE5
-        local10 = &province_table_live[local11].loyalty;    // $9FF1
-        if (!(get_province_ai_state(local11))) goto L_A029;    // $9FF7
+        event_boost_province_wealth_loyalty(i, &province_table_live[i]);    // $9FE5
+        stat_ptr = &province_table_live[i].loyalty;    // $9FF1
+        if (!(get_province_ai_state(i))) goto L_A029;    // $9FF7
         if ((const_two == 1)) goto L_A029;    // $9FFF
-        local8 = rng_mod(const_two);    // $A009
-        local10 = (local10 + 2);    // $A00D
-        *(word*)((local10 + -2)) = (*(word*)((local10 + -2)) - local8);    // $A014
-        local10 = (local10 + 2);    // $A018
-        *(word*)((local10 + -2)) = (*(word*)((local10 + -2)) - local8);    // $A01F
-        local10 = (local10 + 2);    // $A023
-        *(word*)(local10) = (*(word*)(local10) - local8);    // $A028
+        decay_amount = rng_mod(const_two);    // $A009
+        stat_ptr = (stat_ptr + 2);    // $A00D
+        *(word*)((stat_ptr + -2)) = (*(word*)((stat_ptr + -2)) - decay_amount);    // $A014
+        stat_ptr = (stat_ptr + 2);    // $A018
+        *(word*)((stat_ptr + -2)) = (*(word*)((stat_ptr + -2)) - decay_amount);    // $A01F
+        stat_ptr = (stat_ptr + 2);    // $A023
+        *(word*)(stat_ptr) = (*(word*)(stat_ptr) - decay_amount);    // $A028
 L_A029:
-        phi_val_a02b = (local11 + 1);    // $A02A
-        local11 = phi_val_a02b;    // $A02B
+        phi_val_a02b = (i + 1);    // $A02A
+        i = phi_val_a02b;    // $A02B
     }
-    phi_ret_a065 = ((unsigned)local11 < (unsigned)scenario_fief_count);    // $A034
+    phi_ret_a065 = ((unsigned)i < (unsigned)scenario_fief_count);    // $A034
     } else {
     if (!(get_province_ai_state(24))) goto L_A04E;    // $A03D
     if ((scenario_fief_count != 50)) goto L_A04E;    // $A046
@@ -2184,26 +2184,26 @@ word calc_fief_harvest_base_term(word fief_idx) {
 // $A1E2 calc_fief_gold_income
 // (body @ $A1E7)
 
-word calc_fief_gold_income(word arg1, word arg2) {
-    local11 = ((calc_fief_harvest_base_term(arg1) + pct_op(arg2->town, fief_tax_rate[arg1])) + rng_mod((calc_charisma_scaled_income_variance(arg1) + 1)));    // $A20C
-    if ((local11 > arg2->header)) {    // $A215
-    local11 = arg2->header;    // $A21C
+word calc_fief_gold_income(word fief_idx, word fief) {
+    gold_income = ((calc_fief_harvest_base_term(fief_idx) + pct_op(fief->town, fief_tax_rate[fief_idx])) + rng_mod((calc_charisma_scaled_income_variance(fief_idx) + 1)));    // $A20C
+    if ((gold_income > fief->header)) {    // $A215
+    gold_income = fief->header;    // $A21C
     }
 L_A21D:
-    return local11;    // $A21E
+    return gold_income;    // $A21E
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $A21F
 // $A21F calc_fief_rice_income
 // (body @ $A224)
 
-word calc_fief_rice_income(word arg1, word arg2) {
-    local11 = ((calc_fief_harvest_base_term(arg1) + pct_op(pct_op(*(word*)(&fief_history_table[(arg1 << 3)]), *(word*)(((arg1 << 3) + 0x6005))), fief_tax_rate[arg1])) + rng_mod((calc_charisma_scaled_income_variance(arg1) + 1)));    // $A25C
-    if ((local11 > arg2->header)) {    // $A265
-    local11 = arg2->header;    // $A26C
+word calc_fief_rice_income(word fief_idx, word fief) {
+    rice_income = ((calc_fief_harvest_base_term(fief_idx) + pct_op(pct_op(*(word*)(&fief_history_table[(fief_idx << 3)]), *(word*)(((fief_idx << 3) + 0x6005))), fief_tax_rate[fief_idx])) + rng_mod((calc_charisma_scaled_income_variance(fief_idx) + 1)));    // $A25C
+    if ((rice_income > fief->header)) {    // $A265
+    rice_income = fief->header;    // $A26C
     }
 L_A26D:
-    return local11;    // $A26E
+    return rice_income;    // $A26E
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $A26F
@@ -2305,21 +2305,21 @@ L_A3A0:
 // (body @ $A3AF)
 
 word write_sram_save_checksum_and_signature(void) {
-    local9 = sram_save_pending_flag;    // $A3B2
-    local10 = syscall_sram_block_with_checksum(0, local9, ai_per_fief_loop_index, 255);    // $A3C1
-    local11 = 0x6100;    // $A3C5
+    save_pending_flag = sram_save_pending_flag;    // $A3B2
+    checksum = syscall_sram_block_with_checksum(0, save_pending_flag, ai_per_fief_loop_index, 255);    // $A3C1
+    block_addr = 0x6100;    // $A3C5
     do {    // $A3C6
-        local10 = (local10 + syscall_sram_block_with_checksum(0, local9, local11, 0x0100));    // $A3D5
-        local11 = (local11 + 0x0100);    // $A3DC
-    } while (((unsigned)local11 < (unsigned)0x7000));    // $A3E2
-    local10 = (local10 + syscall_sram_block_with_checksum(0, local9, province_table_live, 255));    // $A3F6
-    local11 = 0x7100;    // $A3FA
+        checksum = (checksum + syscall_sram_block_with_checksum(0, save_pending_flag, block_addr, 0x0100));    // $A3D5
+        block_addr = (block_addr + 0x0100);    // $A3DC
+    } while (((unsigned)block_addr < (unsigned)0x7000));    // $A3E2
+    checksum = (checksum + syscall_sram_block_with_checksum(0, save_pending_flag, province_table_live, 255));    // $A3F6
+    block_addr = 0x7100;    // $A3FA
     do {    // $A3FB
-        local10 = (local10 + syscall_sram_block_with_checksum(0, local9, local11, 0x0100));    // $A40A
-        local11 = (local11 + 0x0100);    // $A411
-    } while (((unsigned)local11 < (unsigned)0x7F00));    // $A417
-    local10 = (local10 + syscall_sram_block_with_checksum(0, local9, ui_transient_state, save_sram_81eb));    // $A42B
-    sram_save_checksum = local10;    // $A42D
+        checksum = (checksum + syscall_sram_block_with_checksum(0, save_pending_flag, block_addr, 0x0100));    // $A40A
+        block_addr = (block_addr + 0x0100);    // $A411
+    } while (((unsigned)block_addr < (unsigned)0x7F00));    // $A417
+    checksum = (checksum + syscall_sram_block_with_checksum(0, save_pending_flag, ui_transient_state, save_sram_81eb));    // $A42B
+    sram_save_checksum = checksum;    // $A42D
     strcpy(sram_save_signature, write_sram_save_checksum_and_signature_koei);    // $A436
     chr_bank0_set_wrap(0);    // $A43B
     sram_save_pending_flag = 0;    // $A440
