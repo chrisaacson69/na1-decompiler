@@ -3374,3 +3374,31 @@ local9 = { name = "is_counterattack", comment = "[HIGH] 0 at $91A3, 1 at $920C w
 local10 = { name = "hit_pct", comment = "[HIGH] = rng_mod(*local6)+50 at $922C, capped at 100 ($9233); passed as pct_op 2nd arg (percent) at $9240" }
 local11 = { name = "victim_men_ptr", comment = "[HIGH] = $7011+idx*26 (&province.men) for defender $91AE, swapped to selected province $9208; word DEREF at $921C/$9241" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x999A"]
+# driver_tax
+# local5 left positional — Scratch: number_input new rate (STORE_quick 5 @$99DF), then overwritten with old-new delta @$9A41 for effect_tax; two ro
+local6 = { name = "tax_rate_ptr", comment = "[HIGH] =$6D2D+selected_province_idx @$99A6; BYTE_DEREF reads old rate, BYTE_POPSTORE writes new rate @$9A3D" }
+local7 = { name = "charisma_delta", comment = "[HIGH] +1/-1 by sign of old-new rate @$9A1B; added to daimyo_record+4 (charisma) via BYTE_POPSTORE @$9A37, skipped if -1 and charisma<1" }
+local8 = { name = "old_tax_rate", comment = "[HIGH] Saves *(byte*)tax_rate_ptr @$9A3A before the new rate is stored; minuend of the delta @$9A3E" }
+local10 = { name = "wealth_ptr", comment = "[HIGH] =loyalty_ptr+2 @$99B4 (province wealth@+14); DEREF into effect_tax, result POPSTOREd back @$9A55" }
+local11 = { name = "loyalty_ptr", comment = "[HIGH] =$700D+sel*26 (=$7001 rec+12 loyalty) @$99B1; DEREF into effect_tax, result POPSTOREd back @$9A4B" }
+
+[vars.bank1."0x9850"]
+# driver_war
+local1 = { name = "relation_flags", comment = "[MED] Out buffer at fp-22 (LEAL_far $FFEA): filled by effect_war_e @$9893, then read by fief_list_parallel_lookup for allies check @$98C7" }
+local9 = { name = "attacker_fief", comment = "[HIGH] =selected_province_idx (STORE_quick 9 @$9858); indexes $6DA2 capital flag, pushed to effect_war_combat_prep_* and fief_owner_weakness" }
+local10 = { name = "max_men", comment = "[HIGH] min_word(rec->men,rec->gold) @$98ED, /4 (min 1) if weak @$98FD; pushed as max to number_input @$990D for men sent" }
+local11 = { name = "attacker_rec", comment = "[HIGH] =$7001+sel*26 (STORE_quick 11 @$98E4); DEREF +0 gold/+6 rice/+16 men, each reduced by POPSTORE @$9967/$9971/$997C" }
+
+[vars.bank1."0x97EA"]
+# relations_roll_vs_owner
+arg1 = { name = "fief", comment = "[MED] Fief idx: PUSH_quick 12 to fief_owner @$97FB, or raw to relations_matrix_get beside selected_province_idx @$9809; callers push list byte" }
+arg2 = { name = "use_owner_relation", comment = "[MED] Flag (callers push 1 / 0): LOADL_quick 13 JUMPF @$97F6 picks owner-vs-owner (flag 1) or idx path, where it is pushed as the 0 flag @$9808" }
+
+[vars.bank1."0x945D"]
+# find_fief_by_owner_men_minority
+arg1 = { name = "fief_list_cursor", comment = "[HIGH] Byte cursor into $FF-terminated list: BYTE_DEREF @$946B/$948E, INC+STORE_quick 12 @$948A; caller pushes $6F4F last (=arg1)" }
+arg2 = { name = "target_owner", comment = "[HIGH] Owner sought: $FF early-out @$9462, CMPEQ vs fief_owner(local11) @$9475; caller pushes byte $6E7F[selected_province_idx]" }
+local11 = { name = "fief", comment = "[HIGH] Current list entry *(byte*)arg1 (STORE_quick 11 @$946C); pushed to fief_owner/fief_men_ratio_pct, returned on match @$9488" }
+
