@@ -3109,3 +3109,21 @@ local11 = { name = "demanded_gold", comment = "[HIGH] STORE_quick 11 = number_in
 # neutralize_fief
 arg1 = { name = "fief", comment = "[HIGH] indexes $6CF7/$6DA2/$6D2D byte arrays; PUSH_quick 12 to copy_arms_record_5/redraw_fief_on_map; arg1+1 in msg; callers push fief idx" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (3 subs / 6 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xE425"]
+# find_fiefs_of_owner
+# arg1 left positional — Scratch: callers push a fief ($92B2 battle_defending_province), then $E42F STORE_quick 12 overwrites it with fief_owner(
+local11 = { name = "fief", comment = "[HIGH] Loop index 0..scenario_fief_count ($E435/$E44A, UCMPLT $E44F); pushed to fief_owner $E439 and neutralize_fief $E443" }
+
+[vars.bank15."0xE510"]
+# build_eligible_province_list
+arg1 = { name = "want_enemy", comment = "[HIGH] Callers push literal 0/1 (PUSH_qimm); $E52C LOADR_quick 12 XOR is_enemy_owned(fief) skips fiefs whose enemy status mismatches" }
+local9 = { name = "list_ptr", comment = "[HIGH] Write cursor: =$6F89 fief_index_list at $E515, post-inc + BYTE_POPSTORE of fief at $E539, $FF terminator stored at $E54E" }
+local10 = { name = "count", comment = "[HIGH] Starts 0 ($E519), INC per appended fief ($E540), returned at $E552 as the number of list entries" }
+local11 = { name = "fief", comment = "[HIGH] Loop index 0..scenario_fief_count ($E545 UCMPLT); pushed to province_state_is_FF/is_enemy_owned, != selected_province_idx, stored to list" }
+
+[vars.bank15."0xE80C"]
+# trigger_cutscene
+arg1 = { name = "cutscene", comment = "[HIGH] Callers push small constants (15,5,7,4,20,31,23,25); $E819 LOADL_quick 12 -> STORE_abs $7FCB cutscene_id if ai_turn_flags&4, then bank 14" }
+

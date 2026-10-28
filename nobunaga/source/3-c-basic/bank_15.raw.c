@@ -2126,14 +2126,14 @@ word find_fiefs_of_owner(word arg1) {
     phi_val_e44a = 0;    // $E436
     goto L_E44A;    // $E436
 L_E439:
-    if (!((fief_owner(local11) == arg1))) goto L_E448;    // $E440
+    if (!((fief_owner(fief) == arg1))) goto L_E448;    // $E440
 L_E448:
-    neutralize_fief(local11);    // $E444
-    phi_val_e44a = (local11 + 1);    // $E449
+    neutralize_fief(fief);    // $E444
+    phi_val_e44a = (fief + 1);    // $E449
 L_E44A:
-    local11 = phi_val_e44a;    // $E44A
-    if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_E439;    // $E450
-    return ((unsigned)local11 < (unsigned)scenario_fief_count);    // $E453
+    fief = phi_val_e44a;    // $E44A
+    if (((unsigned)fief < (unsigned)scenario_fief_count)) goto L_E439;    // $E450
+    return ((unsigned)fief < (unsigned)scenario_fief_count);    // $E453
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E454
@@ -2204,25 +2204,25 @@ L_E501:
 // $E510 build_eligible_province_list
 // (body @ $E515)
 
-word build_eligible_province_list(word arg1) {
-    local9 = 0x6F89;    // $E518
-    local10 = 0;    // $E51A
+word build_eligible_province_list(word want_enemy) {
+    list_ptr = 0x6F89;    // $E518
+    count = 0;    // $E51A
     phi_val_e545 = 0;    // $E51C
     goto L_E545;    // $E51C
 L_E51F:
-    if (province_state_is_FF(local11)) goto L_E543;    // $E524
-    if ((is_enemy_owned(local11) ^ arg1)) goto L_E543;    // $E52E
-    if ((selected_province_idx == local11)) goto L_E543;    // $E536
-    local9 = (local9 + 1);    // $E53B
-    *(byte*)((local9 - 1)) = local11;    // $E53F
-    local10 = (local10 + 1);    // $E542
+    if (province_state_is_FF(fief)) goto L_E543;    // $E524
+    if ((is_enemy_owned(fief) ^ want_enemy)) goto L_E543;    // $E52E
+    if ((selected_province_idx == fief)) goto L_E543;    // $E536
+    list_ptr = (list_ptr + 1);    // $E53B
+    *(byte*)((list_ptr - 1)) = fief;    // $E53F
+    count = (count + 1);    // $E542
 L_E543:
-    phi_val_e545 = (local11 + 1);    // $E544
+    phi_val_e545 = (fief + 1);    // $E544
 L_E545:
-    local11 = phi_val_e545;    // $E545
-    if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_E51F;    // $E54B
-    *(byte*)(local9) = -1;    // $E551
-    return local10;    // $E553
+    fief = phi_val_e545;    // $E545
+    if (((unsigned)fief < (unsigned)scenario_fief_count)) goto L_E51F;    // $E54B
+    *(byte*)(list_ptr) = -1;    // $E551
+    return count;    // $E553
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E554
@@ -2348,10 +2348,10 @@ L_E7FA:
 // $E80C trigger_cutscene
 // (body @ $E811)
 
-word trigger_cutscene(word arg1) {
+word trigger_cutscene(word cutscene) {
     phi_ret_e822 = (ai_turn_flags & 4);    // $E816
     if (!(phi_ret_e822)) goto L_E822;    // $E816
-    cutscene_id = arg1;    // $E81A
+    cutscene_id = cutscene;    // $E81A
     phi_ret_e822 = call_bank_wrap(14);    // $E81E
 L_E822:
     return phi_ret_e822;    // $E822
