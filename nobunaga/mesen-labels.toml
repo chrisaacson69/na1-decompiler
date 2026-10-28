@@ -4385,3 +4385,62 @@ local9 = { name = "count", comment = "[HIGH] Entry count: LOADL_qimm 0/STORE_qui
 local10 = { name = "charisma_sum", comment = "[HIGH] Sum: 0 init, += get_fief_daimyo_charisma($946D) result each pass ($9499 ADD/STORE_quick 10), UDIV dividend at $94AD" }
 local11 = { name = "fief_list_ptr", comment = "[HIGH] Cursor: init $6F89 fief_index_list, BYTE_DEREF as fief idx pushed to $946D, INC per pass, loop ends on 255 ($94A6)" }
 
+# --- bank-00 var-walk far-frame batch (--merge, new sections) (10 subs) ---
+[vars.bank0."0xA2ED"]
+# drift_daimyo_luck
+arg1 = { name = "daimyo", comment = "[MED] PUSH_quick 12 to daimyo_record_addr ($A2F3); caller pushes its loop local11" }
+local11 = { name = "luck_ptr", comment = "[HIGH] daimyo_record_addr(arg1)+3 = luck ($A2F8); byte += rng_mod(11) then -= 5 via BYTE_POPSTORE" }
+
+[vars.bank0."0xA191"]
+# calc_charisma_scaled_income_variance
+arg1 = { name = "fief_idx", comment = "[HIGH] LOADL_quick 12 indexes fief_tax_rate $6D2D byte; PUSH_quick 12 to get_fief_daimyo_charisma; callers pass own arg1" }
+
+[vars.bank0."0xA15B"]
+# consume_province_army_upkeep
+arg1 = { name = "fief", comment = "[HIGH] caller pushes province ptr local11; LOADL_quick 12 +16 men, +6 rice, +0 gold DEREF/POPSTORE" }
+local10 = { name = "affordable", comment = "[MED] min_word(gold, rice) ($A172); if < local11 it caps upkeep and men = local10<<1 (LSHIFT1 @$A17F)" }
+local11 = { name = "upkeep", comment = "[HIGH] men SDIV 2 ($A166), clamped to local10, then SUBbed from gold (+0) and rice (+6)" }
+
+[vars.bank0."0xA128"]
+# event_boost_province_gold_output
+arg1 = { name = "fief_idx", comment = "[HIGH] caller pushes local10 last (PUSH_quick 10 @$A294); PUSH_quick 12 to get_fief_daimyo_charisma" }
+arg2 = { name = "fief", comment = "[HIGH] caller pushes local11 = idx*26+$7001; LOADL_quick 13 +0 gold and +8 output DEREF/ADD/POPSTORE" }
+local11 = { name = "charisma_bonus", comment = "[HIGH] get_fief_daimyo_charisma(arg1) SDIV 10 ($A134); LOADR_quick 11 added to rng_mod(10) gains" }
+
+[vars.bank0."0xA0A9"]
+# update_province_highwater_marks
+arg1 = { name = "fief_idx", comment = "[HIGH] LOADL_quick 12 *26+$7001 and <<3 into fief_history_table $6003..$6009; caller pushes its loop local10" }
+local10 = { name = "stat_value", comment = "[MED] current stat (+8,+10,+12,+14 of fief) each step; compared SCMPGE with history word and POPSTOREd there; one role" }
+local11 = { name = "fief", comment = "[HIGH] &province_table_live[arg1] ($A0B6); DEREF +8 output,+10 dams,+12 loyalty,+14 wealth" }
+
+[vars.bank0."0xA066"]
+# init_province_highwater_from_records
+local8 = { name = "src_ptr", comment = "[HIGH] idx*26+$7009 = &province_table_live[idx].output ($A084); +2 per step, DEREF as source word of copy" }
+local9 = { name = "history_ptr", comment = "[HIGH] $6003 + idx<<3 fief_history_table ($A07B); +2 per step, pushed as POPSTORE destination" }
+local10 = { name = "word_idx", comment = "[HIGH] inner counter 0..3 (UCMPLT 4 @$A099) over the 4 copied words" }
+local11 = { name = "fief_idx", comment = "[HIGH] outer loop 0..scenario_fief_count-1 (UCMPLT $6D9D @$A0A4); indexes $7009 and fief_history_table" }
+
+[vars.bank0."0x9F57"]
+# event_boost_province_wealth_loyalty
+arg1 = { name = "fief_idx", comment = "[HIGH] caller pushes its index local11 last (PUSH_quick 11 @$9FE4); PUSH_quick 12 to get_fief_daimyo_charisma" }
+arg2 = { name = "fief", comment = "[HIGH] caller pushes idx*26+$7001; LOADL_quick 13 +14 wealth and +12 loyalty DEREF/ADD/POPSTORE" }
+local11 = { name = "charisma_bonus", comment = "[HIGH] get_fief_daimyo_charisma(arg1) SDIV 10 ($9F63); LOADR_quick 11 added to rng_mod(10)/rng_mod(40) gains" }
+
+[vars.bank0."0x9E7C"]
+# select_event_eligibility_check_by_type
+arg1 = { name = "event_type", comment = "[HIGH] LOADL_quick 12 CMPEQ 1 ($9E8D) selects loyalty variant $9DA3 else morale variant $9E21; caller pushes its arg1 last" }
+arg2 = { name = "fief", comment = "[MED] caller pushes daimyo_turn_order[i] byte; PUSH_quick 13 to province_state_is_FF and both eligibility checks" }
+
+[vars.bank0."0x99AB"]
+# reassign_owner50_fiefs_to_daimyo24
+local8 = { name = "player_idx", comment = "[HIGH] loop 0..7 (UCMPLT 8 @$9A71) indexing player_daimyo $7FD5[local8]; entries ==24 rewritten to 51" }
+local10 = { name = "eligible_count", comment = "[MED] build_eligible_province_list(1)+1 ($9A19); UDIV 3 -> local11, and local10 - 2*local11 as count for process_first_n_unmarked" }
+# local11 left positional — scratch: fief loop index vs scenario_fief_count in one branch ($99DD-$99FE), local10/3 group count in the other ($9A1D);
+
+[vars.bank0."0x9778"]
+# revolt_spread_sweep_flip_fief_ownership
+local5 = { name = "fief", comment = "[HIGH] &province_table_live[*local11]: STORE_quick 5 after *26+$7001 ($9829); +18 morale and +16 men DEREF/POPSTORE in loyal-men-won branch" }
+local7 = { name = "candidate_count", comment = "[HIGH] =0 at $977E; INC/STORE_quick 7 then DEC pushed as arg2 of append_candidate_priority1 ($97A8): pre-increment count = append index" }
+local10 = { name = "owner_ptr", comment = "[MED] &fief_to_daimyo_map[fief] ($97C9); byte passed to pool_push_pop/list_remove_matching and stored to $6E7F[fief] ($9805)" }
+local11 = { name = "fief_list_ptr", comment = "[HIGH] cursor init $7BAD province_candidate_list (STORE_quick 11 @$986E), INC per step until byte $FF; *local11 = fief arg to every helper" }
+
