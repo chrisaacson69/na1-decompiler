@@ -52,7 +52,7 @@ word sub_CA46(void) {
 // (body @ $CA57)
 
 word sub_CA52(word arg1) {
-    if ((!((arg1 >= 1)))) return 0;    // $CA5A
+    if ((arg1 < 1)) return 0;    // $CA5A
     return (sub_CA46() % arg1);    // $CA64
 }
 
@@ -123,7 +123,7 @@ word strcpy(word arg1, word arg2) {
 
 word memchr(word arg1, word arg2, word arg3) {
     while (arg3) {    // $CB0B
-        if ((!((*(byte*)(arg1) != *(byte*)&arg2)))) return arg1;    // $CB00
+        if ((*(byte*)(arg1) == *(byte*)&arg2)) return arg1;    // $CB00
         arg1 = (arg1 + 1);    // $CB07
         arg3 = (arg3 - 1);    // $CB0A
     }
@@ -418,7 +418,7 @@ L_CE1D:
 // (body @ $CE86)
 
 word char_advance_width(word arg1) {
-    if ((!((*(byte*)&arg1 != 10)))) return cursor_advance_row();    // $CE8B
+    if ((*(byte*)&arg1 == 10)) return cursor_advance_row();    // $CE8B
     *(byte*)&arg1 = char_classify(*(byte*)&arg1);    // $CE9A
     syscall_ppu_fill_rect(0, ui_window_col, ui_cursor_row, ui_window_col, ui_cursor_row, *(byte*)&arg1);    // $CEAF
     ui_window_col = (ui_window_col + 1);    // $CEB7
@@ -886,7 +886,7 @@ L_D427:
         }    // $D42A
 L_D447:
         read_frame_timer(0);    // $D448
-        if (((ui_input_prompt_active_flag == 1))) return -1;    // $D451
+        if ((ui_input_prompt_active_flag == 1)) return -1;    // $D451
         return 0;    // $D458
 L_D459:
         read_frame_timer(0);    // $D45A
@@ -1095,7 +1095,7 @@ word sub_D6DE(word arg1, word arg2) {
 // (body @ $D712)
 
 word sub_D70D(word arg1, word arg2) {
-    if (((arg2 == 100))) return arg1;    // $D716
+    if ((arg2 == 100)) return arg1;    // $D716
     return (((((arg2 % 10) * (arg1 / 10)) / 10) + (((arg1 % 10) * arg2) / 100)) + ((arg2 / 10) * (arg1 / 10)));    // $D73D
 }
 
@@ -1261,7 +1261,7 @@ L_D8A1:
 // (body @ $D8BF)
 
 word develop_gain(word arg1, word arg2, word arg3) {
-    if ((!((arg1 >= 1)))) return 0;    // $D8C2
+    if ((arg1 < 1)) return 0;    // $D8C2
     local11 = sub_D6B8(arg1, (6 - const_two), (sub_CBCD(((*(word*)(arg2) + *(word*)(arg3)) / 2)) + sub_CBCD(arg1)));    // $D8E9
     if (!(local11)) return 1;    // $D8EB
     return local11;    // $D8F1
@@ -1274,7 +1274,7 @@ word develop_gain(word arg1, word arg2, word arg3) {
 word develop_gain_capped_loyalty(word arg1, word arg2) {
     local11 = develop_gain(arg2, (arg1 + 12), (arg1 + 8));    // $D902
     local10 = (arg1->header - arg1->loyalty);    // $D90D
-    if ((!((local11 <= (arg1->header - arg1->loyalty))))) return local10;    // $D912
+    if ((local11 > (arg1->header - arg1->loyalty))) return local10;    // $D912
     return local11;    // $D918
 }
 
@@ -1285,7 +1285,7 @@ word develop_gain_capped_loyalty(word arg1, word arg2) {
 word develop_gain_capped_wealth(word arg1, word arg2) {
     local11 = develop_gain(arg2, (arg1 + 14), (arg1 + 4));    // $D929
     local10 = (arg1->header - arg1->wealth);    // $D934
-    if ((!((local11 <= (arg1->header - arg1->wealth))))) return local10;    // $D939
+    if ((local11 > (arg1->header - arg1->wealth))) return local10;    // $D939
     return local11;    // $D93F
 }
 
@@ -1451,7 +1451,7 @@ L_DB01:
 // (body @ $DB17)
 
 word sub_DB12(void) {
-    if (((scenario_fief_count == 17))) return (sub_D772(battle_defending_province) == 3);    // $DB1D
+    if ((scenario_fief_count == 17)) return (sub_D772(battle_defending_province) == 3);    // $DB1D
     return (sub_D772(battle_defending_province) == 20);    // $DB34
 }
 
@@ -1560,7 +1560,7 @@ L_DC55:
 // (body @ $DC6B)
 
 word fief_to_mapid(word arg1) {
-    if ((!(((unsigned)arg1 <= (unsigned)50)))) return arg1;    // $DC6F
+    if (((unsigned)arg1 > (unsigned)50)) return arg1;    // $DC6F
     dsel_dc87 = (scenario_fief_count == 50);    // $DC87
     return (dsel_dc87 ? arg1 : province_to_mapid_table[arg1]);    // $DC87
 }
@@ -1683,8 +1683,8 @@ L_DE3C:
 // (body @ $DE7D)
 
 word select_uprising_message(word arg1) {
-    if (!(!((ai_turn_flags & 32)))) return msg_rebels_f72e;    // $DE83
-    if (!(!((ai_turn_flags & 16)))) return 0x796A;    // $DE90
+    if ((ai_turn_flags & 32)) return msg_rebels_f72e;    // $DE83
+    if ((ai_turn_flags & 16)) return 0x796A;    // $DE90
     switch (arg1) {    // $DE98
     case 7:
     case 23:
@@ -1997,7 +1997,7 @@ L_E361:
     if (sub_CA52(3)) goto L_E3A2;    // $E37A
 L_E37D:
     local10 = *(word*)(((selected_province_idx * 26) + 0x7001));    // $E388
-    if ((!((*(word*)(((selected_province_idx * 26) + 0x7001)) <= 200)))) return (sub_D70D(local10, (sub_CA52(30) + 50)) + 200);    // $E38D
+    if ((*(word*)(((selected_province_idx * 26) + 0x7001)) > 200)) return (sub_D70D(local10, (sub_CA52(30) + 50)) + 200);    // $E38D
     return 0;    // $E3A3
 }
 

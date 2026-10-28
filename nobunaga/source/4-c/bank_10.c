@@ -11,7 +11,7 @@
 word play_audio_by_id(void) {
     phi_ret_808e = (audio_wait_gate == 1);    // $800D
     if (phi_ret_808e) {    // $800D
-    if ((!(((unsigned)sound_request_id <= (unsigned)64)))) return ((unsigned)sound_request_id > (unsigned)64);    // $8016
+    if (((unsigned)sound_request_id > (unsigned)64)) return ((unsigned)sound_request_id > (unsigned)64);    // $8016
     if (((unsigned)sound_request_id < (unsigned)27)) {    // $8020
     local11 = (sound_request_id * 3);    // $8028
     syscall_audio_load_voice(1, 10, *(word*)(((local11 << 1) + play_audio_by_id_stream_ptrs)));    // $8034
