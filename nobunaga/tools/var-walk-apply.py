@@ -247,6 +247,11 @@ def main():
     before = snapshot_decompiled(DECOMPILED)
     regen()
     assert_guard(a.bank, before)
+    # An empty diff is not a pass when names were written: the regen path dropped every [vars]
+    # name from June to 2026-10-28 and this guard stayed green on nothing.
+    if total_named and before == snapshot_decompiled(DECOMPILED):
+        die(f"{total_named} slot names written but no decompiled file changed: the regen is not "
+            "applying [vars] names (check titles.decompile passes var_names). Do NOT commit.")
     print(f"guard PASS: only bank_{a.bank:02d}.c + all_banks.c changed, both pure renames.")
 
     if not a.commit:
