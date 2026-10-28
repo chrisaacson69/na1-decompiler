@@ -3563,3 +3563,27 @@ local11 = { name = "sound_choice", comment = "[HIGH] Sound on/off answer: STORE_
 # browse_map_sections
 arg1 = { name = "map_section", comment = "[HIGH] Map section index: callers push local11 (province_to_map_section byte); PUSH_quick 12 -> render_map_section/$ADF6, STORE_quick 12, !=10 loops" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xB1A6"]
+# submenu_prompt
+arg1 = { name = "item_count", comment = "[HIGH] callers push 6/6/7 (@A1F7,@AFF5,@B277); LOADL_quick 12: arg1-1 @B1DC/@B206, arg1+6 row @B1FE, arg1+7==ui_cursor_row @B228" }
+local10 = { name = "selected_idx", comment = "[HIGH] menu index: 0 @B1BB, DEC/INC @B20B/@B23A, wraps to arg1-1 or 0 @B235; returned LOADL_quick 10 RETURN @B1C2" }
+local11 = { name = "done", comment = "[HIGH] loop-exit flag: 0 @B1BD, tested JUMPF @B1BF, set 1 @B1E5 on poll_input keys 1/2" }
+
+[vars.bank1."0xB14B"]
+# command_end_game
+local10 = { name = "fief_idx", comment = "[HIGH] loop idx: 0 @B181, INC @B198, UCMPLT scenario_fief_count @B19E; pushed to fief_owner @B185, province_ai_state[] index @B190" }
+local11 = { name = "owner", comment = "[HIGH] =selected_province_owner() STORE_quick 11 @B180; LOADR_quick 11 CMPEQ vs fief_owner(local10) @B18A gates ai_state clear" }
+
+[vars.bank1."0xAF38"]
+# driver_map
+local11 = { name = "map_section", comment = "[HIGH] BYTE_DEREF province_to_map_section_50/_17[selected_province_idx] -> STORE_quick 11 @AF5A; pushed to browse_map_sections @AF60" }
+
+[vars.bank1."0xA6C7"]
+# driver_view
+local7 = { name = "has_eligible_targets", comment = "[MED] boolean: STORE_quick 7 =0 @A6D1, =1 @A6DC/@A72B when build_eligible_province_list(1) nonzero; tested JUMPT @A6DE, ==1 @A7BC" }
+local8 = { name = "viewed_fief", comment = "[HIGH] =selected_province_idx @A6CF; indexes map_section tables @A6FD/@A74F, pushed to effect_view_a @A70E/@A760; =local10 @A83F" }
+local9 = { name = "eligible_list_result", comment = "[MED] return of build_eligible_province_list(1), STORE_quick 9 @A6D7/@A71F; only read as boolean JUMPT @A769" }
+local10 = { name = "target_fief", comment = "[MED] select_province_by_cursor(1,99) @A737 (-1 cancel, 99 special); DEC @A771 to 0-based; pushed to fief_owner/ai_state/daimyo addr" }
+local11 = { name = "map_section", comment = "[HIGH] BYTE_DEREF province_to_map_section_*[local8] -> STORE_quick 11 @A755; pushed to browse_map_sections @A75B" }
+
