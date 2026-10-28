@@ -3018,3 +3018,35 @@ local11 = { name = "stat_ptr", comment = "[MED] Byte cursor local10..local10+4 (
 arg1 = { name = "fief", comment = "[HIGH] LOADL_quick 12 SWITCH (7/23 zealots, 13/30 monks), default PUSH_quick 12 to revolt_type_message; callers push battle_defending_province" }
 local11 = { name = "message", comment = "[HIGH] STORE_quick 11 at $DEB0 gets $F720/$F728 label or revolt_type_message result; LOADL_quick 11 RETURN" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 15 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xDEC1"]
+# reassign_fiefs_to_conqueror
+local8 = { name = "conqueror_fief", comment = "[MED] STORE_quick 8 @$DED9 = $6F5F if $6F57==$6F63 else $6F63; its owner (fief_owner) becomes local10; get_province_ai_state(local8) @$DF1F seeds ai" }
+local9 = { name = "defeated_daimyo", comment = "[MED] STORE_quick 9 @$DEE7 = fief_owner($6F57); passed to pool_push_pop and list_remove_matching; loop matches fief_owner(i)==local9 @$DEFB" }
+local10 = { name = "conqueror_daimyo", comment = "[MED] STORE_quick 10 @$DEDF = fief_owner(local8); BYTE_POPSTORE'd into fief_to_daimyo_map[i] ($6E15) @$DF0E for each reassigned fief" }
+local11 = { name = "fief_idx", comment = "[HIGH] loop index 0..$6D9D (INC/STORE_quick 11 @$DF31-33, UCMPLT); indexes $6E15/$6DA2/$6CF7, passed to fief_owner and redraw_fief_on_map" }
+
+[vars.bank15."0xDF3D"]
+# daimyo_stat_transfer
+arg1 = { name = "gaining_fief", comment = "[MED] PUSH_quick 12 -> fief_to_daimyo_record_addr @$DF42; that record's bytes +2,+4,+5 INC'd. Callers pass $6F5F or $6F63 (last pushed)" }
+arg2 = { name = "losing_fief", comment = "[MED] PUSH_quick 13 -> fief_to_daimyo_record_addr @$DF5A; that record's bytes +2,+4,+5 DEC'd. Callers pass the other of $6F63/$6F5F" }
+local11 = { name = "daimyo_rec", comment = "[MED] STORE_quick 11 = fief_to_daimyo_record_addr(arg1) @$DF47 then (arg2) @$DF5F; both times a daimyo record ptr, bytes +2/+4/+5 RMW'd" }
+
+[vars.bank15."0xDF73"]
+# transfer_force_triplet
+local8 = { name = "i", comment = "[HIGH] STORE_quick 8 = 0 @$DF93, INC'd @$DFA8, loop while local8 < 3 (UCMPLT @$DFB7): counter over 3 word fields" }
+local9 = { name = "src_field_ptr", comment = "[HIGH] = $6F5F*26+$7013 (&morale, +18) @$DF82, +=2 per iter; DEREF'd value is arg2 (incoming) of weighted_average_capped @$DFA2" }
+local10 = { name = "dst_field_ptr", comment = "[HIGH] = $6F63*26+$7013 (&morale) @$DF8D, +=2/iter; *local10 is arg1 of weighted_average_capped and POPSTORE target @$DFA6" }
+local11 = { name = "defender_header", comment = "[MED] = DEREF(local10+6) @$DF91 = defender record +24 header (base koku); pushed as arg5 (cap) of weighted_average_capped @$DF95" }
+
+[vars.bank15."0xDFBC"]
+# clamp_field_6d2d_to_30
+local11 = { name = "saved_defending_province", comment = "[HIGH] STORE_quick 11 = $6F63 @$DFC4 before $6F63 is reused as loop index; restored via LOADL_quick 11/STORE_abs $6F63 @$DFF9 before RETURN" }
+
+[vars.bank15."0xDFFE"]
+# cap_arms_at_index
+arg1 = { name = "fief_idx", comment = "[HIGH] LOADL_quick 12 *5 + $76AB / $76A9 (byte tables); callers' last push is $6F63 or $6F5F: a province index" }
+arg2 = { name = "fief", comment = "[HIGH] LOADL_quick 13 + 22, DEREF @$E003-6 = ->arms: a province record pointer" }
+local11 = { name = "arms_cap", comment = "[HIGH] = arms SDIV 50 + 20 @$E00C; byte at idx*5+$76AB clamped to it, excess added to idx*5+$76A9 byte" }
+

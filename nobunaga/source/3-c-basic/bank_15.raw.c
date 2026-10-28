@@ -1790,42 +1790,42 @@ L_DEB9:
 // (body @ $DEC6)
 
 word reassign_fiefs_to_conqueror(void) {
-    local8 = ((battle_winner_province_sel == battle_defending_province) ? selected_province_idx : battle_defending_province);    // $DED9
-    local10 = fief_owner(((battle_winner_province_sel == battle_defending_province) ? selected_province_idx : battle_defending_province));    // $DEDF
-    local9 = fief_owner(battle_winner_province_sel);    // $DEE7
+    conqueror_fief = ((battle_winner_province_sel == battle_defending_province) ? selected_province_idx : battle_defending_province);    // $DED9
+    conqueror_daimyo = fief_owner(((battle_winner_province_sel == battle_defending_province) ? selected_province_idx : battle_defending_province));    // $DEDF
+    defeated_daimyo = fief_owner(battle_winner_province_sel);    // $DEE7
     pool_push_pop(fief_owner(battle_winner_province_sel));    // $DEE9
-    list_remove_matching(local9);    // $DEEE
+    list_remove_matching(defeated_daimyo);    // $DEEE
     phi_val_df33 = 0;    // $DEF3
     goto L_DF33;    // $DEF3
 L_DEF6:
-    if (!((fief_owner(local11) == local9))) goto L_DF31;    // $DEFD
-    if (province_state_is_FF(local11)) goto L_DF31;    // $DF05
-    fief_to_daimyo_map[local11] = local10;    // $DF0F
-    fief_is_daimyo_capital[local11] = 0;    // $DF17
-    province_ai_state[local11] = (get_province_ai_state(local8) ? 5 : 0);    // $DF2B
+    if (!((fief_owner(fief_idx) == defeated_daimyo))) goto L_DF31;    // $DEFD
+    if (province_state_is_FF(fief_idx)) goto L_DF31;    // $DF05
+    fief_to_daimyo_map[fief_idx] = conqueror_daimyo;    // $DF0F
+    fief_is_daimyo_capital[fief_idx] = 0;    // $DF17
+    province_ai_state[fief_idx] = (get_province_ai_state(conqueror_fief) ? 5 : 0);    // $DF2B
 L_DF31:
-    redraw_fief_on_map(local11);    // $DF2D
-    phi_val_df33 = (local11 + 1);    // $DF32
+    redraw_fief_on_map(fief_idx);    // $DF2D
+    phi_val_df33 = (fief_idx + 1);    // $DF32
 L_DF33:
-    local11 = phi_val_df33;    // $DF33
-    if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_DEF6;    // $DF39
-    return ((unsigned)local11 < (unsigned)scenario_fief_count);    // $DF3C
+    fief_idx = phi_val_df33;    // $DF33
+    if (((unsigned)fief_idx < (unsigned)scenario_fief_count)) goto L_DEF6;    // $DF39
+    return ((unsigned)fief_idx < (unsigned)scenario_fief_count);    // $DF3C
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DF3D
 // $DF3D daimyo_stat_transfer
 // (body @ $DF42)
 
-word daimyo_stat_transfer(word arg1, word arg2) {
-    local11 = fief_to_daimyo_record_addr(arg1);    // $DF47
-    *(byte*)((local11 + 2)) = (*(byte*)((local11 + 2)) + 1);    // $DF4D
-    *(byte*)((local11 + 4)) = (*(byte*)((local11 + 4)) + 1);    // $DF53
-    *(byte*)((local11 + 5)) = (*(byte*)((local11 + 5)) + 1);    // $DF59
-    local11 = fief_to_daimyo_record_addr(arg2);    // $DF5F
-    *(byte*)((local11 + 2)) = (*(byte*)((local11 + 2)) - 1);    // $DF65
-    *(byte*)((local11 + 4)) = (*(byte*)((local11 + 4)) - 1);    // $DF6B
-    *(byte*)((local11 + 5)) = (*(byte*)((local11 + 5)) - 1);    // $DF71
-    return *(byte*)((local11 + 5));    // $DF72
+word daimyo_stat_transfer(word gaining_fief, word losing_fief) {
+    daimyo_rec = fief_to_daimyo_record_addr(gaining_fief);    // $DF47
+    *(byte*)((daimyo_rec + 2)) = (*(byte*)((daimyo_rec + 2)) + 1);    // $DF4D
+    *(byte*)((daimyo_rec + 4)) = (*(byte*)((daimyo_rec + 4)) + 1);    // $DF53
+    *(byte*)((daimyo_rec + 5)) = (*(byte*)((daimyo_rec + 5)) + 1);    // $DF59
+    daimyo_rec = fief_to_daimyo_record_addr(losing_fief);    // $DF5F
+    *(byte*)((daimyo_rec + 2)) = (*(byte*)((daimyo_rec + 2)) - 1);    // $DF65
+    *(byte*)((daimyo_rec + 4)) = (*(byte*)((daimyo_rec + 4)) - 1);    // $DF6B
+    *(byte*)((daimyo_rec + 5)) = (*(byte*)((daimyo_rec + 5)) - 1);    // $DF71
+    return *(byte*)((daimyo_rec + 5));    // $DF72
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DF73
@@ -1833,17 +1833,17 @@ word daimyo_stat_transfer(word arg1, word arg2) {
 // (body @ $DF78)
 
 word transfer_force_triplet(void) {
-    local9 = &province_table_live[selected_province_idx].morale;    // $DF82
-    local10 = &province_table_live[battle_defending_province].morale;    // $DF8D
-    local11 = *(word*)((local10 + 6));    // $DF91
-    local8 = 0;    // $DF93
+    src_field_ptr = &province_table_live[selected_province_idx].morale;    // $DF82
+    dst_field_ptr = &province_table_live[battle_defending_province].morale;    // $DF8D
+    defender_header = *(word*)((dst_field_ptr + 6));    // $DF91
+    i = 0;    // $DF93
 L_DF94:
-    *(word*)(local10) = weighted_average_capped(*(word*)(local10), *(word*)(local9), war_attacker_men, war_defender_men, local11);    // $DFA6
-    local8 = (local8 + 1);    // $DFA9
-    local10 = (local10 + 2);    // $DFAD
-    local9 = (local9 + 2);    // $DFB2
-    if (((unsigned)local8 < (unsigned)3)) goto L_DF94;    // $DFB8
-    return ((unsigned)local8 < (unsigned)3);    // $DFBB
+    *(word*)(dst_field_ptr) = weighted_average_capped(*(word*)(dst_field_ptr), *(word*)(src_field_ptr), war_attacker_men, war_defender_men, defender_header);    // $DFA6
+    i = (i + 1);    // $DFA9
+    dst_field_ptr = (dst_field_ptr + 2);    // $DFAD
+    src_field_ptr = (src_field_ptr + 2);    // $DFB2
+    if (((unsigned)i < (unsigned)3)) goto L_DF94;    // $DFB8
+    return ((unsigned)i < (unsigned)3);    // $DFBB
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DFBC
@@ -1851,7 +1851,7 @@ L_DF94:
 // (body @ $DFC1)
 
 word clamp_field_6d2d_to_30(void) {
-    local11 = battle_defending_province;    // $DFC4
+    saved_defending_province = battle_defending_province;    // $DFC4
     phi_val_dfec = 0;    // $DFC6
     goto L_DFEC;    // $DFC6
 L_DFC9:
@@ -1863,21 +1863,21 @@ L_DFE8:
 L_DFEC:
     battle_defending_province = phi_val_dfec;    // $DFEC
     if (((unsigned)battle_defending_province < (unsigned)scenario_fief_count)) goto L_DFC9;    // $DFF6
-    battle_defending_province = local11;    // $DFFA
-    return local11;    // $DFFD
+    battle_defending_province = saved_defending_province;    // $DFFA
+    return saved_defending_province;    // $DFFD
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DFFE
 // $DFFE cap_arms_at_index
 // (body @ $E003)
 
-word cap_arms_at_index(word arg1, word arg2) {
-    local11 = ((arg2->arms / 50) + 20);    // $E00C
-    phi_ret_e03b = ((unsigned)*(byte*)(((arg1 * 5) + 0x76AB)) > (unsigned)local11);    // $E017
+word cap_arms_at_index(word fief_idx, word fief) {
+    arms_cap = ((fief->arms / 50) + 20);    // $E00C
+    phi_ret_e03b = ((unsigned)*(byte*)(((fief_idx * 5) + 0x76AB)) > (unsigned)arms_cap);    // $E017
     if (!(phi_ret_e03b)) goto L_E03B;    // $E017
-    *(byte*)(province_unit_type_pct[arg1]) = (*(byte*)(province_unit_type_pct[arg1]) + (*(byte*)(((arg1 * 5) + 0x76AB)) - local11));    // $E030
-    *(byte*)(((arg1 * 5) + 0x76AB)) = local11;    // $E03A
-    phi_ret_e03b = local11;    // $E03A
+    *(byte*)(province_unit_type_pct[fief_idx]) = (*(byte*)(province_unit_type_pct[fief_idx]) + (*(byte*)(((fief_idx * 5) + 0x76AB)) - arms_cap));    // $E030
+    *(byte*)(((fief_idx * 5) + 0x76AB)) = arms_cap;    // $E03A
+    phi_ret_e03b = arms_cap;    // $E03A
 L_E03B:
     return phi_ret_e03b;    // $E03B
 }
