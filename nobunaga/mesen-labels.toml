@@ -3734,3 +3734,33 @@ local9 = { name = "resource_value", comment = "[HIGH] word DEREF'd from side_res
 local10 = { name = "saved_cursor_row", comment = "[HIGH] saves ui_cursor_row $7FCF on entry (STORE_quick 10); pushed as set_cursor arg2 (row) at $8BD1 to restore" }
 local11 = { name = "saved_window_col", comment = "[HIGH] saves ui_window_col $7FCD on entry (STORE_quick 11); pushed last = set_cursor arg1 (col) at $8BD2 to restore" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (5 subs) ---
+[vars.bank2."0x8F97"]
+# remove_unit
+arg1 = { name = "side", comment = "[HIGH] indexes war_side_state_flag[side] @$8FA3 (AND-cleared); arg1 of unit_col_ptr/unit_row_ptr @$8FAE/$8FB5" }
+arg2 = { name = "unit_slot", comment = "[HIGH] indexes unit_presence_clear_masks[slot] @$8F9C; arg2 of unit_col_ptr/unit_row_ptr @$8FAD/$8FB4" }
+
+[vars.bank2."0x8F79"]
+# is_unit_present
+arg1 = { name = "side", comment = "[HIGH] indexes war_side_state_flag[side] @$8F84; callers push cur_combat_side (or ^1) last, e.g. @$954A/$95A9" }
+arg2 = { name = "unit_slot", comment = "[HIGH] UCMPLT 5 @$8F7F, then URSHIFT bit position in the side flag @$8F8A; callers pass cur_combat_unit_slot @$9547" }
+
+[vars.bank2."0x8F28"]
+# validate_dir_code_and_dispatch
+arg1 = { name = "col_ptr", comment = "[MED] ptr to caller's local (LEAL $FFFA=&local9 @$A940, &local7 @$A9A4); passed through as arg1 of tactical_hex_step @$8F4D" }
+arg2 = { name = "row_ptr", comment = "[MED] ptr to caller's local (LEAL $FFF8=&local8 @$A93C, &local6 @$A9A0); passed through as arg2 of tactical_hex_step @$8F4C" }
+arg3 = { name = "dir_code", comment = "[MED] key dir code: rejects 52..54 (@$8F2E/$8F35), rebased -49 then -3 if >=6 in place; arg3 of tactical_hex_step @$8F4B" }
+
+[vars.bank2."0x8D5D"]
+# draw_combat_roster_window
+local10 = { name = "row", comment = "[HIGH] screen row: =6 @$8DF5; arg2 of set_cursor(18,row) @$8E10; INC'd @$8E23 once per printed stat line" }
+local11 = { name = "stat_idx", comment = "[HIGH] loop idx 0..17 (UCMPLT 18 @$8E2A); SWITCH skips 7,8,10-13 @$8DFB; indexes fief_stat_name_ptrs[idx*2] @$8E17" }
+
+[vars.bank2."0x84F7"]
+# step_coord_by_direction
+arg1 = { name = "x_ptr", comment = "[HIGH] ptr: DEREF @$8512/$852C/$8535 gives the x (+/-1 for dir 1/2) into local11; written back by POPSTORE @$8526 on success" }
+arg2 = { name = "y_ptr", comment = "[HIGH] ptr: DEREF @$8515/$8530/$853E gives the y (+1 dir0, -1 dir3) into local10; written back by POPSTORE @$8529 on success" }
+arg3 = { name = "direction", comment = "[HIGH] direction 0..3: UCMPLT 4 @$84FE, then SWITCH_contig selector @$8503; caller $8556 computes it from a key code and passes it" }
+local11 = { name = "new_x", comment = "[HIGH] candidate x after the step (STORE_quick 11 @$8514/$852F); is arg1 of is_tile_in_bounds @$851A; stored to *arg1 @$8525" }
+local10 = { name = "new_y", comment = "[HIGH] candidate y after the step (STORE_quick 10 @$8518); is arg2 of is_tile_in_bounds @$8519; stored to *arg2 @$8528" }
+

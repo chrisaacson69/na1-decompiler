@@ -351,9 +351,9 @@ L_84F3:
 // $84F7 step_coord_by_direction
 // (body @ $84FC)
 
-word step_coord_by_direction(word arg1, word arg2, word arg3) {
-    if (!(((unsigned)arg3 < (unsigned)4))) goto L_8522;    // $84FF
-    switch (arg3) {    // $8503
+word step_coord_by_direction(word x_ptr, word y_ptr, word direction) {
+    if (!(((unsigned)direction < (unsigned)4))) goto L_8522;    // $84FF
+    switch (direction) {    // $8503
         case 0: goto L_8512;    // $8503
         case 1: goto L_852C;    // $8503
         case 2: goto L_8535;    // $8503
@@ -361,30 +361,30 @@ word step_coord_by_direction(word arg1, word arg2, word arg3) {
         default: goto L_8519;    // $8503
     }    // $8503
 L_8512:
-    local11 = *(word*)(arg1);    // $8514
-    phi_val_8518 = (*(word*)(arg2) + 1);    // $8517
+    new_x = *(word*)(x_ptr);    // $8514
+    phi_val_8518 = (*(word*)(y_ptr) + 1);    // $8517
 L_8518:
-    local10 = phi_val_8518;    // $8518
+    new_y = phi_val_8518;    // $8518
 L_8519:
-    if (is_tile_in_bounds(local11, local10)) goto L_8524;    // $851F
+    if (is_tile_in_bounds(new_x, new_y)) goto L_8524;    // $851F
 L_8522:
     return 0;    // $8523
 L_8524:
-    *(word*)(arg1) = local11;    // $8526
-    *(word*)(arg2) = local10;    // $8529
+    *(word*)(x_ptr) = new_x;    // $8526
+    *(word*)(y_ptr) = new_y;    // $8529
     return 1;    // $852B
 L_852C:
-    phi_val_852f = (*(word*)(arg1) - 1);    // $852E
+    phi_val_852f = (*(word*)(x_ptr) - 1);    // $852E
 L_852F:
-    local11 = phi_val_852f;    // $852F
-    phi_val_8518 = *(word*)(arg2);    // $8532
+    new_x = phi_val_852f;    // $852F
+    phi_val_8518 = *(word*)(y_ptr);    // $8532
     goto L_8518;    // $8532
 L_8535:
-    phi_val_852f = (*(word*)(arg1) + 1);    // $8538
+    phi_val_852f = (*(word*)(x_ptr) + 1);    // $8538
     goto L_852F;    // $8538
 L_853B:
-    local11 = *(word*)(arg1);    // $853D
-    phi_val_8518 = (*(word*)(arg2) - 1);    // $8541
+    new_x = *(word*)(x_ptr);    // $853D
+    phi_val_8518 = (*(word*)(y_ptr) - 1);    // $8541
     goto L_8518;    // $8541
 }
 
@@ -1024,15 +1024,15 @@ L_8DD7:
     redraw_window(phi_push_8dd7);    // $8DD8
     ui_window_col = 22;    // $8DDE
     redraw_window(daimyo_name_table[fief_owner(battle_defending_province)]);    // $8DEF
-    local11 = 0;    // $8DF4
-    local10 = 6;    // $8DF6
-    while (((unsigned)local11 < (unsigned)18)) {    // $8E29
-        switch (local11) {    // $8DFB
+    stat_idx = 0;    // $8DF4
+    row = 6;    // $8DF6
+    while (((unsigned)stat_idx < (unsigned)18)) {    // $8E29
+        switch (stat_idx) {    // $8DFB
         case 9:
         default:
-            set_cursor(18, local10);    // $8E13
-            redraw_window(*(word*)(((local11 << 1) + fief_stat_name_ptrs)));    // $8E1F
-            local10 = (local10 + 1);    // $8E25
+            set_cursor(18, row);    // $8E13
+            redraw_window(*(word*)(((stat_idx << 1) + fief_stat_name_ptrs)));    // $8E1F
+            row = (row + 1);    // $8E25
         case 7:
         case 8:
         case 10:
@@ -1040,7 +1040,7 @@ L_8DD7:
         case 12:
         case 13:
         }
-        local11 = (local11 + 1);    // $8E28
+        stat_idx = (stat_idx + 1);    // $8E28
     }
     draw_unit_roster_columns(0);    // $8E31
     draw_unit_roster_columns(1);    // $8E36
@@ -1109,14 +1109,14 @@ word is_tile_in_bounds(word x, word y) {
 // $8F28 validate_dir_code_and_dispatch
 // (body @ $8F2D)
 
-word validate_dir_code_and_dispatch(word arg1, word arg2, word arg3) {
-    if ((((unsigned)arg3 <= (unsigned)51) || ((unsigned)arg3 >= (unsigned)55))) {    // $8F38
-    arg3 = (arg3 - 49);    // $8F40
-    if (((unsigned)arg3 >= (unsigned)6)) {    // $8F43
-    arg3 = (arg3 - 3);    // $8F4A
+word validate_dir_code_and_dispatch(word col_ptr, word row_ptr, word dir_code) {
+    if ((((unsigned)dir_code <= (unsigned)51) || ((unsigned)dir_code >= (unsigned)55))) {    // $8F38
+    dir_code = (dir_code - 49);    // $8F40
+    if (((unsigned)dir_code >= (unsigned)6)) {    // $8F43
+    dir_code = (dir_code - 3);    // $8F4A
     }
 L_8F4B:
-    return tactical_hex_step(arg1, arg2, arg3);    // $8F52
+    return tactical_hex_step(col_ptr, row_ptr, dir_code);    // $8F52
     }
 L_8F53:
     return 0;    // $8F54
@@ -1137,18 +1137,18 @@ word end_war_relocate_capital(word from_fief, word to_fief) {
 // $8F79 is_unit_present
 // (body @ $8F7E)
 
-word is_unit_present(word arg1, word arg2) {
-    return (((unsigned)arg2 < (unsigned)5) && (((unsigned)war_side_state_flag[arg1] >> arg2) & 1));    // $8F96
+word is_unit_present(word side, word unit_slot) {
+    return (((unsigned)unit_slot < (unsigned)5) && (((unsigned)war_side_state_flag[side] >> unit_slot) & 1));    // $8F96
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8F97
 // $8F97 remove_unit
 // (body @ $8F9C)
 
-word remove_unit(word arg1, word arg2) {
-    war_side_state_flag[arg1] = (war_side_state_flag[arg1] & unit_presence_clear_masks[arg2]);    // $8FAC
-    *(byte*)(unit_row_ptr(arg1, arg2)) = -56;    // $8FBD
-    *(byte*)(unit_col_ptr(arg1, arg2)) = -56;    // $8FBE
+word remove_unit(word side, word unit_slot) {
+    war_side_state_flag[side] = (war_side_state_flag[side] & unit_presence_clear_masks[unit_slot]);    // $8FAC
+    *(byte*)(unit_row_ptr(side, unit_slot)) = -56;    // $8FBD
+    *(byte*)(unit_col_ptr(side, unit_slot)) = -56;    // $8FBE
     return -56;    // $8FBF
 }
 
