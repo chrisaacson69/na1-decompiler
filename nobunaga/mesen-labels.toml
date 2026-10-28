@@ -3430,3 +3430,28 @@ local8 = { name = "target_idx", comment = "[HIGH] province_select_prompt $804C r
 local10 = { name = "rice_amount", comment = "[HIGH] init 0 ($9A95); number_input result after msg_rice ($9AC3); added to target +6, subtracted from source +6 ($9B48/$9B62)" }
 local11 = { name = "gold_amount", comment = "[HIGH] init 0 ($9A94); number_input result after msg_gold ($9B0C); added to target +0, subtracted from source +0 ($9B41/$9B5B)" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xA003"]
+# effect_sell_rice
+arg1 = { name = "fief", comment = "[HIGH] province record ptr (slot 12): DEREF rice@+6, gold@+0, header@+24; PUSH_quick 12 to clamp_amount_to_province_max $82AC" }
+local10 = { name = "max_sell", comment = "[HIGH] = ratio_times10_capped(header-gold, $6E0D rate, rice) $8357 (0 -> msg_treasury_full); max arg to number_input" }
+local11 = { name = "sell_amount", comment = "[HIGH] = number_input(1, local10) $D5E9 (0 = cancel); PUSH_quick 11 to effect_sell_rice_for_gold $8B0A" }
+
+[vars.bank1."0x9FAF"]
+# prompt_repay_debt
+arg1 = { name = "fief", comment = "[HIGH] province record ptr (slot 12): debt@+2 and gold@+0 tested nonzero, both POPSTORE-reduced by local11 at $9FDB/$9FE2" }
+local11 = { name = "repay_amount", comment = "[HIGH] = number_input(1, min_word(debt, gold)) $D5E9 (0 = cancel); subtracted from fief gold@+0 and debt@+2" }
+
+[vars.bank1."0x9F04"]
+# effect_loan
+arg1 = { name = "fief", comment = "[HIGH] province record ptr (slot 12): DEREF gold@+0, debt@+2, town@+4, header@+24; PUSH_quick 12 to clamp_amount_to_province_max $82AC" }
+local10 = { name = "max_loan", comment = "[HIGH] = ratio_times10_capped(town-debt, loan_rate+10, header-gold) $8357 (0 -> can't borrow); max arg to number_input $D5E9" }
+local11 = { name = "loan_amount", comment = "[HIGH] = number_input(1, local10) $D5E9 (0 = cancel); PUSH_quick 11 to effect_take_loan $8B40" }
+
+[vars.bank1."0x9DC4"]
+# driver_marry
+local8 = { name = "daimyo", comment = "[HIGH] STORE_quick 8 from CALL $D7EA selected_province_daimyo_record; +2/+3/+4 (drive/luck/charisma) BYTE DEC at $9E01 and $9EE3-$9EF4" }
+local9 = { name = "fief", comment = "[HIGH] = $7001+selected_province_idx*26 (STORE_quick 9 @$9E65); gold@+0 checked SCMPLE vs local11, then gold -= local11 @$9E84" }
+local10 = { name = "turn_used", comment = "[MED] 0 at entry, 1 at $9E07 once target fief picked; LOADL_quick 10 + RETURN on every exit = action-taken result" }
+local11 = { name = "gold_demand", comment = "[HIGH] = marriage_pact_handler() $E315 (0=refused); %d in draw_message $FD45, SCMPLE vs own gold, subtracted from own fief, added to target" }
+
