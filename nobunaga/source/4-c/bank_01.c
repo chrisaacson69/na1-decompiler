@@ -2500,19 +2500,19 @@ L_A8D2:
 // $A8D3 give_transfer_apply
 // (body @ $A8D8)
 
-word give_transfer_apply(word arg1, word arg2, word arg3) {
-    local11 = ((arg2 == 1) ? arg1 : (arg1 + 6));    // $A8E4
+word give_transfer_apply(word fief, word resource_kind, word give_type) {
+    resource_ptr = ((resource_kind == 1) ? fief : (fief + 6));    // $A8E4
     message_display(msg_give_how_much);    // $A8E8
-    local10 = number_input(1, *(word*)(local11));    // $A8F4
-    if (number_input(1, *(word*)(local11))) {    // $A8F5
-    *(word*)(local11) = (*(word*)(local11) - local10);    // $A8FE
-    if ((arg3 == 1)) {    // $A902
-    develop_loyalty(arg1, local10);    // $A907
-    develop_wealth(arg1, local10);    // $A90D
+    amount = number_input(1, *(word*)(resource_ptr));    // $A8F4
+    if (number_input(1, *(word*)(resource_ptr))) {    // $A8F5
+    *(word*)(resource_ptr) = (*(word*)(resource_ptr) - amount);    // $A8FE
+    if ((give_type == 1)) {    // $A902
+    develop_loyalty(fief, amount);    // $A907
+    develop_wealth(fief, amount);    // $A90D
     } else {
     }
 L_A91A:
-    develop_morale(arg1, local10);    // $A916
+    develop_morale(fief, amount);    // $A916
     return 1;    // $A91B
 L_A91C:
     return 0;    // $A91D
@@ -2524,17 +2524,17 @@ L_A91C:
 // $A91E give_eligibility_flags
 // (body @ $A923)
 
-word give_eligibility_flags(word arg1, word arg2) {
-    local11 = 0;    // $A924
-    if ((arg2 > 0)) {    // $A928
-    local11 = 2;    // $A92C
+word give_eligibility_flags(word amount_bit0, word amount_bit1) {
+    flags = 0;    // $A924
+    if ((amount_bit1 > 0)) {    // $A928
+    flags = 2;    // $A92C
     }
 L_A92D:
-    if ((arg1 > 0)) {    // $A930
-    local11 = (local11 | 1);    // $A937
+    if ((amount_bit0 > 0)) {    // $A930
+    flags = (flags | 1);    // $A937
     }
 L_A938:
-    return local11;    // $A939
+    return flags;    // $A939
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $A93A
@@ -2632,13 +2632,13 @@ L_AA1D:
 // (body @ $AA24)
 
 word driver_give(void) {
-    local9 = &province_table_live[selected_province_idx];    // $AA2E
-    local10 = effect_give_a(local9);    // $AA34
-    local11 = effect_give_c(local9);    // $AA3A
-    if (effect_give_c(local9)) {    // $AA3B
-    if ((local10 & local11)) goto L_AA5C;    // $AA41
-    local10 = (local10 - 1);    // $AA46
-    if (local10) {    // $AA47
+    fief = &province_table_live[selected_province_idx];    // $AA2E
+    eligible_mask = effect_give_a(fief);    // $AA34
+    give_type = effect_give_c(fief);    // $AA3A
+    if (effect_give_c(fief)) {    // $AA3B
+    if ((eligible_mask & give_type)) goto L_AA5C;    // $AA41
+    eligible_mask = (eligible_mask - 1);    // $AA46
+    if (eligible_mask) {    // $AA47
     phi_aa53_0 = msg_you_have_no_peasants;    // $AA4D
     } else {
     phi_aa53_0 = msg_you_have_no_soldiers;    // $AA50
@@ -2648,17 +2648,17 @@ L_AA53:
     confirm_prompt();    // $AA57
     return 0;    // $AA5B
 L_AA5C:
-    if ((local11 == 1)) {    // $AA64
+    if ((give_type == 1)) {    // $AA64
     } else {
     }
 L_AA79:
-    if ((local9->morale >= local9->header)) {    // $AA7B
+    if ((fief->morale >= fief->header)) {    // $AA7B
     message_display(msg_we_re_at_our_limit);    // $AA81
     confirm_prompt();    // $AA85
     return 0;    // $AA89
     }
 L_AA8A:
-    if (effect_give_b(local9, local11)) {    // $AA90
+    if (effect_give_b(fief, give_type)) {    // $AA90
     trigger_cutscene(CUTSCENE_GIVE);    // $AA94
     selected_province_daimyo_record()->charisma = (selected_province_daimyo_record()->charisma + 1);    // $AA9F
     message_display(msg_thank_you_lord);    // $AAA3
@@ -2677,8 +2677,8 @@ L_AAAC:
 // (body @ $AAB3)
 
 word driver_bribe(void) {
-    local11 = &province_table_live[selected_province_idx];    // $AABD
-    if (!((local11->gold > 10))) goto L_AB16;    // $AAC2
+    fief = &province_table_live[selected_province_idx];    // $AABD
+    if (!((fief->gold > 10))) goto L_AB16;    // $AAC2
     build_eligible_province_list(0);    // $AAC6
     if (province_select_helper(15, fief_index_list)) {    // $AAD2
     redraw_window(msg_bribe_which);    // $AAD8
@@ -2687,10 +2687,10 @@ word driver_bribe(void) {
     open_message_window();    // $AAE9
     battle_defending_province = (battle_defending_province - 1);    // $AAF0
     message_display(msg_gold_for_spy);    // $AAF6
-    local10 = number_input(1, (local11->gold + -10));    // $AB04
-    if (number_input(1, (local11->gold + -10))) {    // $AB05
-    local11->gold = (local11->gold - 10);    // $AB0E
-    effect_bribe(local10);    // $AB10
+    bribe_gold = number_input(1, (fief->gold + -10));    // $AB04
+    if (number_input(1, (fief->gold + -10))) {    // $AB05
+    fief->gold = (fief->gold - 10);    // $AB0E
+    effect_bribe(bribe_gold);    // $AB10
     return 1;    // $AB15
 L_AB16:
     message_display(msg_you_have_no_gold);    // $AB19

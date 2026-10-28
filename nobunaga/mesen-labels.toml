@@ -3496,3 +3496,29 @@ local11 = { name = "fief", comment = "[HIGH] &province_table_live[sel idx] (STOR
 # driver_hire
 local11 = { name = "fief", comment = "[HIGH] &province_table_live[selected_province_idx] ($A60A-$A614 idx*26+$7001, STORE_quick 11); PUSH_quick 11 as arg1 to $A2D2 / $A553" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xAAAE"]
+# driver_bribe
+local10 = { name = "bribe_gold", comment = "[HIGH] number_input(1, fief->gold - 10) result ($AB04); PUSH_quick 10 as arg1 of effect_bribe ($AB0F)" }
+local11 = { name = "fief", comment = "[HIGH] $7001+sel_idx*26 ($AABD); ->gold tested >10 ($AAC1), sets input max, then POPSTORE gold -= 10 ($AB08-$AB0E)" }
+
+[vars.bank1."0xAA1F"]
+# driver_give
+local9 = { name = "fief", comment = "[HIGH] $7001+sel_idx*26 ($AA2E); derefs +24 header, +14 wealth, +12 loyalty, +18 morale; arg1 of effect_give_a/b/c" }
+local10 = { name = "eligible_mask", comment = "[MED] effect_give_a(fief) result ($AA34); ANDed with local11 ($AA40) as a bitmask; DEC'd in place ($AA45) to pick the no-peasants/soldiers msg" }
+local11 = { name = "give_type", comment = "[MED] effect_give_c result ($AA3A); ==1 limit-tests header vs (loyalty+wealth)/2, else morale ($AA64); arg2 of effect_give_b ($AA8A)" }
+
+[vars.bank1."0xA91E"]
+# give_eligibility_flags
+arg1 = { name = "amount_bit0", comment = "[LOW] slot12 SCMPGT 0 ($A92F) sets flag bit 1 via OR ($A936); callers push fief->output ($A944) or fief->gold ($A956)" }
+arg2 = { name = "amount_bit1", comment = "[LOW] slot13 SCMPGT 0 ($A927) sets flags=2 ($A92B); callers push fief->men (+16, $A93F) or fief->rice (+6, $A952)" }
+local11 = { name = "flags", comment = "[HIGH] bitmask: STORE_quick 11 = 0 ($A924), =2 ($A92C), |=1 ($A936-$A937); returned via LOADL_quick 11 ($A938)" }
+
+[vars.bank1."0xA8D3"]
+# give_transfer_apply
+arg1 = { name = "fief", comment = "[HIGH] province record ptr: slot12 or slot12+6 -> local11 ($A8DE/$A8E3); PUSH_quick 12 as arg1 of develop_loyalty/wealth/morale; caller pushes its slot12" }
+arg2 = { name = "resource_kind", comment = "[MED] selector: slot13==1 ($A8DA) picks fief+0 gold, else fief+6 rice for local11; caller pushes its local11 ($A9B4)" }
+arg3 = { name = "give_type", comment = "[MED] recipient selector: slot14==1 ($A902) -> develop_loyalty+develop_wealth; else develop_morale only ($A914). Caller pushes its arg2" }
+local10 = { name = "amount", comment = "[HIGH] number_input(1,*local11) result ($A8F4); subtracted from *local11 ($A8F8-$A8FE); arg2 of the develop_* calls" }
+local11 = { name = "resource_ptr", comment = "[HIGH] ptr to fief gold (+0) or rice (+6) ($A8E4); deref is number_input max ($A8ED); POPSTORE *ptr -= amount ($A8FE)" }
+
