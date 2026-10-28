@@ -2004,7 +2004,7 @@ VM bytecode disassembly
   $8E81  8E 4F 6F                   PUSH_imm2              $6F4F (deduped_owner_list)
   $8E84  E9 E1 8D 02                CALL_abs_imm1          $8DE1 (dedup_owners) {bytecode}, $02
   $8E88  B3                         PUSHL
-  $8E89  E9 75 8C 02                CALL_abs_imm1          $8C75 (resolve_ownerless_province_succession) {bytecode}, $02
+  $8E89  E9 75 8C 02                CALL_abs_imm1          $8C75 (auction_ownerless_fief_to_bidders) {bytecode}, $02
  >$8E8D  0B                         LOADL_quick   ; inline operand = 11
   $8E8E  D0                         INC
  >$8E8F  2B                         STORE_quick   ; inline operand = 11
@@ -4024,7 +4024,7 @@ VM bytecode disassembly
   $9C96  D9 02 00 00 00 A3 9C 01 00 A7 9C AD ... SWITCH_noncontig       count=2   ; .table 2 (key,target) + default (noncontiguous); SWITCH 0=>$9CA3 1=>$9CA7 default=>$9CAD
  >$9CA3  AC E5 9B                   CALL_abs               $9BE5 (ai_event_marry_random_eligible_fief) {bytecode}
  >$9CA6  CF                         RETURN
- >$9CA7  AC 12 9B                   CALL_abs               $9B12 (ai_scan_idle_fiefs_run_diplomacy_action) {bytecode}
+ >$9CA7  AC 12 9B                   CALL_abs               $9B12 (ai_event_scan_ai_capitals_run_diplomacy_action) {bytecode}
   $9CAA  D6 A6 9C                   JUMP_abs               $9CA6
  >$9CAD  AC 22 9C                   CALL_abs               $9C22 (random_ravage_sweep_bounded_fiefs) {bytecode}
   $9CB0  D6 A6 9C                   JUMP_abs               $9CA6
@@ -4397,7 +4397,7 @@ VM bytecode disassembly
   $9F2C  AC 66 D7                   CALL_abs               $D766 (confirm_prompt) {bytecode}
   $9F2F  8D 17                      BYTE_PUSH_imm1         +23
   $9F31  E9 0C E8 02                CALL_abs_imm1          $E80C (trigger_cutscene) {bytecode}, $02
-  $9F35  AC F8 8F                   CALL_abs               $8FF8 (collect_high_loyalty_provinces_to_candidate_list) {bytecode}
+  $9F35  AC F8 8F                   CALL_abs               $8FF8 (resolve_riot_event_on_listed_fiefs) {bytecode}
   $9F38  D6 10 9F                   JUMP_abs               $9F10
  >$9F3B  8D 1E                      BYTE_PUSH_imm1         +30
   $9F3D  E9 03 CA 02                CALL_abs_imm1          $CA03 (call_bank10_entry) {bytecode}, $02
@@ -5105,7 +5105,7 @@ VM bytecode disassembly
   $A35C  67                         PUSH_qimm   ; inline operand = 7
   $A35D  E9 7B CC 04                CALL_abs_imm1          $CC7B (set_cursor) {bytecode}, $04
   $A361  AC 87 D6                   CALL_abs               $D687 (draw_current_season) {bytecode}
-  $A364  AC 63 8E                   CALL_abs               $8E63 (process_fiefs_with_state_ff) {bytecode}
+  $A364  AC 63 8E                   CALL_abs               $8E63 (resolve_ownerless_fiefs_by_auction) {bytecode}
   $A367  89 FF                      BYTE_LOADL_imm1        -1
   $A369  A9 67 6F                   BYTE_STORE_abs         $6F67 (battle_defender_province_staging)
   $A36C  A4 5F 6D                   LOADL_abs              $6D5F (current_season)

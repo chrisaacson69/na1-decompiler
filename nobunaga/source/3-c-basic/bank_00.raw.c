@@ -713,10 +713,10 @@ L_8C74:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8C75
-// $8C75 resolve_ownerless_province_succession
+// $8C75 auction_ownerless_fief_to_bidders
 // (body @ $8C7A)
 
-word resolve_ownerless_province_succession(word owner_count) {
+word auction_ownerless_fief_to_bidders(word owner_count) {
     best_bid = 0;    // $8C7B
     bid = 0;    // $8C7D
     if (!(((unsigned)owner_count < (unsigned)2))) goto L_8C8C;    // $8C81
@@ -817,10 +817,10 @@ L_8E51:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8E63
-// $8E63 process_fiefs_with_state_ff
+// $8E63 resolve_ownerless_fiefs_by_auction
 // (body @ $8E68)
 
-word process_fiefs_with_state_ff(void) {
+word resolve_ownerless_fiefs_by_auction(void) {
     fief = 0;    // $8E69
     goto L_8E8F;    // $8E69
 L_8E6C:
@@ -829,7 +829,7 @@ L_8E6C:
     battle_defending_province = selected_province_idx;    // $8E7B
     compact_relation_list();    // $8E7E
 L_8E8D:
-    resolve_ownerless_province_succession(dedup_owners(deduped_owner_list));    // $8E89
+    auction_ownerless_fief_to_bidders(dedup_owners(deduped_owner_list));    // $8E89
     fief = (fief + 1);    // $8E8E
 L_8E8F:
     if (((unsigned)fief < (unsigned)scenario_fief_count)) goto L_8E6C;    // $8E95
@@ -927,10 +927,10 @@ L_8FF6:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8FF8
-// $8FF8 collect_high_loyalty_provinces_to_candidate_list
+// $8FF8 resolve_riot_event_on_listed_fiefs
 // (body @ $8FFD)
 
-word collect_high_loyalty_provinces_to_candidate_list(void) {
+word resolve_riot_event_on_listed_fiefs(void) {
     list_ptr = 0x7BAD;    // $9000
     candidate_count = 0;    // $9002
     goto L_90B6;    // $9003
@@ -1708,10 +1708,10 @@ L_9B11:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9B12
-// $9B12 ai_scan_idle_fiefs_run_diplomacy_action
+// $9B12 ai_event_scan_ai_capitals_run_diplomacy_action
 // (body @ $9B17)
 
-word ai_scan_idle_fiefs_run_diplomacy_action(void) {
+word ai_event_scan_ai_capitals_run_diplomacy_action(void) {
     selected_province_idx = 0;    // $9B18
     goto L_9B71;    // $9B18
 L_9B1B:
@@ -1834,7 +1834,7 @@ L_9CA3:
 L_9CA6:
     return phi_ret_9ca6;    // $9CA6
 L_9CA7:
-    phi_ret_9ca6 = ai_scan_idle_fiefs_run_diplomacy_action();    // $9CAA
+    phi_ret_9ca6 = ai_event_scan_ai_capitals_run_diplomacy_action();    // $9CAA
     goto L_9CA6;    // $9CAA
 L_9CAD:
     phi_ret_9ca6 = random_ravage_sweep_bounded_fiefs();    // $9CB0
@@ -1992,7 +1992,7 @@ L_9F1F:
     message_display(msg_riot);    // $9F28
     confirm_prompt();    // $9F2C
     trigger_cutscene(CUTSCENE_AI_EVENT_23);    // $9F31
-    collect_high_loyalty_provinces_to_candidate_list();    // $9F35
+    resolve_riot_event_on_listed_fiefs();    // $9F35
     goto L_9F10;    // $9F38
 L_9F3B:
     call_bank10_entry(AUDIO_CONFLICT);    // $9F3D
@@ -2261,7 +2261,7 @@ L_A349:
     draw_current_year();    // $A358
     set_cursor(7, 3);    // $A35D
     draw_current_season();    // $A361
-    process_fiefs_with_state_ff();    // $A364
+    resolve_ownerless_fiefs_by_auction();    // $A364
     battle_defender_province_staging = -1;    // $A369
     switch (current_season) {    // $A36F
         case 0: goto L_A37E;    // $A36F

@@ -3517,7 +3517,7 @@ VM bytecode disassembly
   $987C  AC F5 8E                   CALL_abs               $8EF5 (ai_attacker_outstrengths_defender) {bytecode}
   $987F  D8 FD 98                   JUMPF_abs              $98FD
   $9882  65                         PUSH_qimm   ; inline operand = 5
-  $9883  E9 10 98 02                CALL_abs_imm1          $9810 (ai_place_unit_in_free_slot_resolve_coords) {bytecode}, $02
+  $9883  E9 10 98 02                CALL_abs_imm1          $9810 (ai_place_units_around_lead_unit) {bytecode}, $02
   $9887  41                         LOADL_qimm   ; inline operand = 1
   $9888  D6 EC 98                   JUMP_abs               $98EC
  >$988B  AC F8 97                   CALL_abs               $97F8 (is_cur_unit_absent) {bytecode}
@@ -3677,7 +3677,7 @@ VM bytecode disassembly
   $99AE  E9 FE 98 04                CALL_abs_imm1          $98FE (seek_enemy_adjacent_cell_and_commit_move) {bytecode}, $04
   $99B2  D8 BB 99                   JUMPF_abs              $99BB
   $99B5  63                         PUSH_qimm   ; inline operand = 3
-  $99B6  E9 10 98 02                CALL_abs_imm1          $9810 (ai_place_unit_in_free_slot_resolve_coords) {bytecode}, $02
+  $99B6  E9 10 98 02                CALL_abs_imm1          $9810 (ai_place_units_around_lead_unit) {bytecode}, $02
   $99BA  CF                         RETURN
  >$99BB  0A                         LOADL_quick   ; inline operand = 10
   $99BC  D0                         INC
@@ -3705,7 +3705,7 @@ VM bytecode disassembly
   $99E1  AC 65 98                   CALL_abs               $9865 (ai_advance_units_when_attacker_stronger) {bytecode}
   $99E4  D6 0F 9A                   JUMP_abs               $9A0F
  >$99E7  3C                         PUSH_quick   ; inline operand = 12
-  $99E8  E9 54 99 02                CALL_abs_imm1          $9954 (rng_search_combat_rect_for_unit_cell) {bytecode}, $02
+  $99E8  E9 54 99 02                CALL_abs_imm1          $9954 (ai_place_units_near_enemy_by_rect_scan) {bytecode}, $02
   $99EC  D6 0F 9A                   JUMP_abs               $9A0F
  >$99EF  A4 E4 7B                   LOADL_abs              $7BE4 (cur_combat_unit_slot)
   $99F2  D0                         INC

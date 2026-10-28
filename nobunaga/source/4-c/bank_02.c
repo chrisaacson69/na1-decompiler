@@ -1801,10 +1801,10 @@ word is_cur_unit_absent(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9810
-// $9810 ai_place_unit_in_free_slot_resolve_coords
+// $9810 ai_place_units_around_lead_unit
 // (body @ $9815)
 
-word ai_place_unit_in_free_slot_resolve_coords(word max_slots) {
+word ai_place_units_around_lead_unit(word max_slots) {
     slot_idx = 0;    // $9816
     while (1) {    // $9855
         if (((unsigned)slot_idx < (unsigned)6)) {    // $9855
@@ -1835,7 +1835,7 @@ word ai_advance_units_when_attacker_stronger(void) {
     find_free_tactical_placement_cell(&unit_x, &unit_y);    // $9872
     commit_unit_move_and_redraw_count(unit_x, unit_y);    // $9878
     if (ai_attacker_outstrengths_defender()) {    // $986A
-        ai_place_unit_in_free_slot_resolve_coords(5);    // $9883
+        ai_place_units_around_lead_unit(5);    // $9883
         unit_idx = 1;    // $9888
         while (1) {    // $98EC
             if (((unsigned)unit_idx < (unsigned)cur_combat_unit_slot)) {    // $98EC
@@ -1914,10 +1914,10 @@ word seek_enemy_adjacent_cell_and_commit_move(word dest_col, word dest_row) {
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9954
-// $9954 rng_search_combat_rect_for_unit_cell
+// $9954 ai_place_units_near_enemy_by_rect_scan
 // (body @ $9959)
 
-word rng_search_combat_rect_for_unit_cell(word approach_dir) {
+word ai_place_units_near_enemy_by_rect_scan(word approach_dir) {
     flip_x = rng_mod(2);    // $995E
     flip_y = rng_mod(2);    // $9964
     switch (approach_dir) {    // $9959
@@ -1946,7 +1946,7 @@ word rng_search_combat_rect_for_unit_cell(word approach_dir) {
                 dsel_99ab = flip_y;    // $99AB
                 y = (dsel_99ab ? yi : (combat_arena_y_max - yi));    // $99AB
                 if (seek_enemy_adjacent_cell_and_commit_move(x, y)) {    // $99AB
-                    return ai_place_unit_in_free_slot_resolve_coords(3);    // $99BA
+                    return ai_place_units_around_lead_unit(3);    // $99BA
                 } else {
                     yi = (yi + 1);    // $99BC
                     continue;
@@ -1969,7 +1969,7 @@ word ai_place_combat_units_random_or_smart(word arena_rect) {
     if (cur_combat_side) {    // $99D7
         ai_advance_units_when_attacker_stronger();    // $99E1
     } else {
-        rng_search_combat_rect_for_unit_cell(arena_rect);    // $99E8
+        ai_place_units_near_enemy_by_rect_scan(arena_rect);    // $99E8
     }
     while (((unsigned)cur_combat_unit_slot < (unsigned)5)) {    // $9A0F
         if (is_cur_unit_absent()) {    // $99F9
