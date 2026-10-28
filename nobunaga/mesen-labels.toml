@@ -2602,3 +2602,29 @@ local5 = { name = "dedup_buf", comment = "[HIGH] base byte of local dedup scratc
 # swap_byte
 "fp-1" = { name = "tmp_byte", comment = "[HIGH] swap temp: holds byte read from *arg1 ($CB87), written into *arg2 ($CB92) & returned; classic byte-swap holder" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 9 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xCA12"]
+# deduct_byte_at
+arg1 = { name = "stat_ptr", comment = "[HIGH] Address of the byte stat reduced (BYTE_DEREF+BYTE_POPSTORE); callers push daimyo_record+1/+4 etc. Floors at 0 when *p < amount." }
+arg2 = { name = "amount", comment = "[HIGH] Low byte subtracted from *stat_ptr (saturates to 0 if larger); callers push 1, rng_mod(9)+1, etc. (pushed first)." }
+
+[vars.bank15."0xCA31"]
+# word_sub_saturating
+arg1 = { name = "value_ptr", comment = "[HIGH] Pointer to a 16-bit word: DEREF at $CA37, POPSTORE target at $CA44. Callers pass a field address (b02: &province.town)." }
+arg2 = { name = "amount", comment = "[HIGH] Subtrahend: *value_ptr - amount (SUB $CA39). Callers push computed decrements (pct_op results)." }
+local11 = { name = "result", comment = "[HIGH] Saturated difference max(*value_ptr - amount, 0); stored back through value_ptr ($CA44) and returned. Single role." }
+
+[vars.bank15."0xCA52"]
+# rng_mod
+arg1 = { name = "modulus", comment = "[HIGH] Exclusive bound: 0 if signed modulus<1 else rng_next_wrapper()%modulus, in [0,modulus); callers push literals 5 ($DBA7), 11 ($DCBB)" }
+
+[vars.bank15."0xCA65"]
+# is_digit
+arg1 = { name = "ch", comment = "[HIGH] Character code tested '0'(48)<=ch<='9'(57), only use; format_string pushes the fmt byte it just read (*$FD -> fp-1) at $D042" }
+
+[vars.bank15."0xCA7E"]
+# strlen
+arg1 = { name = "str", comment = "[HIGH] String cursor: quick slot 12 is BYTE_DEREF'd as the NUL loop test and INC'd each pass; format_string pushes a pointer it read from its vararg list" }
+local11 = { name = "len", comment = "[HIGH] Length counter: quick slot 11 is set to 0, INC'd alongside str each pass, then returned; format_string subtracts it from the field width" }
+

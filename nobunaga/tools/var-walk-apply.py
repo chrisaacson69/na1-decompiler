@@ -7,7 +7,7 @@ and mechanically does the glue between batches:
      `slot = { name = "...", comment = "..." }` line per CONFIRMED/AMENDED slot. REFUTED slots
      are DROPPED (left positional = the honest scratch signal), recorded only as a `# left
      positional` comment so the sub still counts as processed (won't recur next batch).
-  2. REGEN: py -3 tools/decompile-all.py  (var names feed vm_decompile; .mlb/.asm don't carry
+  2. REGEN: tools/na1_regen.py, the emu-harness engine  (var names feed vm_decompile; .mlb/.asm don't carry
      frame-slot names, so mesen-labels.py is intentionally NOT re-run.)
   3. GUARD (HARD FAIL, exit 2): only decompiled/bank_NN.c AND all_banks.c may change (var renames
      hit the per-bank file AND the merged view — that is EXPECTED, unlike label-walk), and each

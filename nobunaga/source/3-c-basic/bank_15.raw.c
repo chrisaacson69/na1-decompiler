@@ -30,26 +30,26 @@ word call_bank10_entry(word arg1) {
 // $CA12 deduct_byte_at
 // (body @ $CA17)
 
-word deduct_byte_at(word arg1, word arg2) {
-    if (!((*(byte*)(arg1) < *(byte*)&arg2))) goto L_CA27;    // $CA20
+word deduct_byte_at(word stat_ptr, word amount) {
+    if (!((*(byte*)(stat_ptr) < *(byte*)&amount))) goto L_CA27;    // $CA20
     goto L_CA2F;    // $CA24
 L_CA27:
 L_CA2F:
-    *(byte*)(arg1) = (*(byte*)(arg1) - *(byte*)&arg2);    // $CA2F
-    return *(byte*)(arg1);    // $CA30
+    *(byte*)(stat_ptr) = (*(byte*)(stat_ptr) - *(byte*)&amount);    // $CA2F
+    return *(byte*)(stat_ptr);    // $CA30
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CA31
 // $CA31 word_sub_saturating
 // (body @ $CA36)
 
-word word_sub_saturating(word arg1, word arg2) {
-    local11 = (*(word*)(arg1) - arg2);    // $CA3A
-    if (!(((*(word*)(arg1) - arg2) < 0))) goto L_CA42;    // $CA3D
-    local11 = 0;    // $CA41
+word word_sub_saturating(word value_ptr, word amount) {
+    result = (*(word*)(value_ptr) - amount);    // $CA3A
+    if (!(((*(word*)(value_ptr) - amount) < 0))) goto L_CA42;    // $CA3D
+    result = 0;    // $CA41
 L_CA42:
-    *(word*)(arg1) = local11;    // $CA44
-    return local11;    // $CA45
+    *(word*)(value_ptr) = result;    // $CA44
+    return result;    // $CA45
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CA46
@@ -64,34 +64,34 @@ word rng_next_wrapper(void) {
 // $CA52 rng_mod
 // (body @ $CA57)
 
-word rng_mod(word arg1) {
-    if ((arg1 >= 1)) goto L_CA5F;    // $CA5A
+word rng_mod(word modulus) {
+    if ((modulus >= 1)) goto L_CA5F;    // $CA5A
     return 0;    // $CA5E
 L_CA5F:
-    return (rng_next_wrapper() % arg1);    // $CA64
+    return (rng_next_wrapper() % modulus);    // $CA64
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CA65
 // $CA65 is_digit
 // (body @ $CA6A)
 
-word is_digit(word arg1) {
-    return (((unsigned)48 <= (unsigned)arg1) && ((unsigned)arg1 <= (unsigned)57));    // $CA7D
+word is_digit(word ch) {
+    return (((unsigned)48 <= (unsigned)ch) && ((unsigned)ch <= (unsigned)57));    // $CA7D
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CA7E
 // $CA7E strlen
 // (body @ $CA83)
 
-word strlen(word arg1) {
-    local11 = 0;    // $CA84
+word strlen(word str) {
+    len = 0;    // $CA84
     goto L_CA90;    // $CA85
 L_CA88:
-    arg1 = (arg1 + 1);    // $CA8A
-    local11 = (local11 + 1);    // $CA8E
+    str = (str + 1);    // $CA8A
+    len = (len + 1);    // $CA8E
 L_CA90:
-    if (*(byte*)(arg1)) goto L_CA88;    // $CA92
-    return local11;    // $CA96
+    if (*(byte*)(str)) goto L_CA88;    // $CA92
+    return len;    // $CA96
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CA97
@@ -208,10 +208,10 @@ word max_word(word arg1, word arg2) {
 // (body @ $CB85)
 
 word swap_byte(word arg1, word arg2) {
-    *(byte*)(fp - 1) = *(byte*)(arg1);    // $CB87
+    tmp_byte = *(byte*)(arg1);    // $CB87
     *(byte*)(arg1) = *(byte*)(arg2);    // $CB8D
-    *(byte*)(arg2) = *(byte*)(fp - 1);    // $CB92
-    return *(byte*)(fp - 1);    // $CB93
+    *(byte*)(arg2) = tmp_byte;    // $CB92
+    return tmp_byte;    // $CB93
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CB94
@@ -472,28 +472,28 @@ L_CEC3:
 word redraw_window(word arg1) {
     goto L_CF1E;    // $CEC9
 L_CECC:
-    if (!((*(byte*)(fp - 3) == 10))) goto L_CEEC;    // $CED1
+    if (!((cur_char == 10))) goto L_CEEC;    // $CED1
     if ((local11 == ui_window_col)) goto L_CF1B;    // $CED9
     goto L_CF13;    // $CEE9
 L_CEEC:
-    *(word*)(fp - 5) = (*(word*)(fp - 5) + 1);    // $CEEF
-    *(byte*)((*(word*)(fp - 5) - 1)) = char_classify(*(byte*)(fp - 3));    // $CEFB
+    buf_ptr = (buf_ptr + 1);    // $CEEF
+    *(byte*)((buf_ptr - 1)) = char_classify(cur_char);    // $CEFB
     ui_window_col = (ui_window_col + 1);    // $CF00
     if ((ui_window_col != 32)) goto L_CF27;    // $CF06
 L_CF13:
 L_CF1B:
-    ppu_copy_rect_wrap(local11, ui_cursor_row, 31, ui_cursor_row, (fp - 37), 4);    // $CF17
+    ppu_copy_rect_wrap(local11, ui_cursor_row, 31, ui_cursor_row, &tile_buf, 4);    // $CF17
 L_CF1E:
     cursor_advance_row();    // $CF1B
     local11 = ui_window_col;    // $CF21
-    *(word*)(fp - 5) = (fp - 37);    // $CF25
+    buf_ptr = &tile_buf;    // $CF25
 L_CF27:
     arg1 = (arg1 + 1);    // $CF29
-    *(byte*)(fp - 3) = *(byte*)((arg1 - 1));    // $CF2C
+    cur_char = *(byte*)((arg1 - 1));    // $CF2C
     if (*(byte*)((arg1 - 1))) goto L_CECC;    // $CF2F
     phi_ret_cf4f = (local11 != ui_window_col);    // $CF37
     if (!(phi_ret_cf4f)) goto L_CF4F;    // $CF37
-    phi_ret_cf4f = ppu_copy_rect_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, (fp - 37), 4);    // $CF4B
+    phi_ret_cf4f = ppu_copy_rect_wrap(local11, ui_cursor_row, (ui_window_col - 1), ui_cursor_row, &tile_buf, 4);    // $CF4B
 L_CF4F:
     return phi_ret_cf4f;    // $CF4F
 }
@@ -561,10 +561,10 @@ word atoi_decimal(word arg1) {
     local11 = 0;    // $CFDA
     goto L_CFED;    // $CFDB
 L_CFDE:
-    local11 = (*(byte*)(fp - 3) + (local11 * 10));    // $CFE7
+    local11 = (digit + (local11 * 10));    // $CFE7
     *(word*)(arg1) = (*(word*)(arg1) + 1);    // $CFEC
 L_CFED:
-    *(byte*)(fp - 3) = (*(byte*)(*(word*)(arg1)) + -48);    // $CFF2
+    digit = (*(byte*)(*(word*)(arg1)) + -48);    // $CFF2
     if (((*(byte*)(*(word*)(arg1)) + -48) < 10)) goto L_CFDE;    // $CFF7
     return local11;    // $CFFB
 }
@@ -575,36 +575,36 @@ L_CFED:
 
 word format_string(word arg1, word arg2) {
     arg1 = (arg1 + 2);    // $D003
-    *(word*)(fp - 3) = *(word*)((arg1 + -2));    // $D007
-    *(word*)(fp - 23) = arg1;    // $D00A
+    fmt_cursor = *(word*)((arg1 + -2));    // $D007
+    vararg_ptr = arg1;    // $D00A
     goto L_D018;    // $D00C
 L_D00F:
     arg2 = (arg2 + 1);    // $D011
-    *(byte*)((arg2 - 1)) = *(byte*)(fp - 1);    // $D017
+    *(byte*)((arg2 - 1)) = ch;    // $D017
 L_D018:
-    *(word*)(fp - 3) = (*(word*)(fp - 3) + 1);    // $D01B
-    *(byte*)(fp - 1) = *(byte*)((*(word*)(fp - 3) - 1));    // $D01F
-    if (!(*(byte*)((*(word*)(fp - 3) - 1)))) goto L_D130;    // $D022
-    if (!((*(byte*)(fp - 1) == 37))) goto L_D00F;    // $D02B
-    *(word*)(fp - 15) = (fp - 13);    // $D031
-    *(word*)(fp - 21) = 6;    // $D034
-    *(word*)(fp - 17) = 0;    // $D037
-    *(byte*)(fp - 1) = *(byte*)(*(word*)(fp - 3));    // $D03C
-    if (!(is_digit(*(byte*)(fp - 1)))) goto L_D055;    // $D047
-    atoi_decimal((fp - 3));    // $D04E
+    fmt_cursor = (fmt_cursor + 1);    // $D01B
+    ch = *(byte*)((fmt_cursor - 1));    // $D01F
+    if (!(*(byte*)((fmt_cursor - 1)))) goto L_D130;    // $D022
+    if (!((ch == 37))) goto L_D00F;    // $D02B
+    out_cursor = &conv_buf;    // $D031
+    width = 6;    // $D034
+    has_precision = 0;    // $D037
+    ch = *(byte*)(fmt_cursor);    // $D03C
+    if (!(is_digit(ch))) goto L_D055;    // $D047
+    atoi_decimal(&fmt_cursor);    // $D04E
     goto L_D056;    // $D052
 L_D055:
 L_D056:
-    *(word*)(fp - 19) = 0;    // $D056
-    *(word*)(fp - 3) = (*(word*)(fp - 3) + 1);    // $D05B
-    *(byte*)(fp - 1) = *(byte*)((*(word*)(fp - 3) - 1));    // $D05F
-    if (!((*(byte*)((*(word*)(fp - 3) - 1)) == 46))) goto L_D07F;    // $D065
-    *(word*)(fp - 21) = atoi_decimal((fp - 3));    // $D070
-    *(word*)(fp - 17) = 1;    // $D073
-    *(word*)(fp - 3) = (*(word*)(fp - 3) + 1);    // $D078
-    *(byte*)(fp - 1) = *(byte*)((*(word*)(fp - 3) - 1));    // $D07C
+    pad = 0;    // $D056
+    fmt_cursor = (fmt_cursor + 1);    // $D05B
+    ch = *(byte*)((fmt_cursor - 1));    // $D05F
+    if (!((*(byte*)((fmt_cursor - 1)) == 46))) goto L_D07F;    // $D065
+    width = atoi_decimal(&fmt_cursor);    // $D070
+    has_precision = 1;    // $D073
+    fmt_cursor = (fmt_cursor + 1);    // $D078
+    ch = *(byte*)((fmt_cursor - 1));    // $D07C
 L_D07F:
-    switch (to_upper(*(byte*)(fp - 1))) {    // $D087
+    switch (to_upper(ch)) {    // $D087
         case 0: goto L_D12F;    // $D087
         case 67: goto L_D0D0;    // $D087
         case 68: goto L_D09C;    // $D087
@@ -612,41 +612,41 @@ L_D07F:
         default: goto L_D00F;    // $D087
     }    // $D087
 L_D09C:
-    *(word*)(fp - 23) = (*(word*)(fp - 23) + 2);    // $D0A0
-    *(word*)(fp - 19) = (*(word*)(fp - 19) - num_to_ascii((fp - 15), *(word*)((*(word*)(fp - 23) + -2)), 10));    // $D0B2
+    vararg_ptr = (vararg_ptr + 2);    // $D0A0
+    pad = (pad - num_to_ascii(&out_cursor, *(word*)((vararg_ptr + -2)), 10));    // $D0B2
     goto L_D0E5;    // $D0B4
 L_D0B7:
-    *(word*)(fp - 23) = (*(word*)(fp - 23) + 2);    // $D0BA
-    *(word*)(fp - 15) = *(word*)((*(word*)(fp - 23) + -2));    // $D0BF
-    *(word*)(fp - 19) = (*(word*)(fp - 19) - strlen(*(word*)(fp - 15)));    // $D0CB
+    vararg_ptr = (vararg_ptr + 2);    // $D0BA
+    out_cursor = *(word*)((vararg_ptr + -2));    // $D0BF
+    pad = (pad - strlen(out_cursor));    // $D0CB
     goto L_D0FC;    // $D0CD
 L_D0D0:
-    *(word*)(fp - 19) = (*(word*)(fp - 19) - 1);    // $D0D3
-    *(word*)(fp - 15) = (*(word*)(fp - 15) + 1);    // $D0D8
-    *(word*)(fp - 23) = (*(word*)(fp - 23) + 2);    // $D0DF
-    *(byte*)((*(word*)(fp - 15) - 1)) = *(word*)((*(word*)(fp - 23) + -2));    // $D0E4
+    pad = (pad - 1);    // $D0D3
+    out_cursor = (out_cursor + 1);    // $D0D8
+    vararg_ptr = (vararg_ptr + 2);    // $D0DF
+    *(byte*)((out_cursor - 1)) = *(word*)((vararg_ptr + -2));    // $D0E4
 L_D0E5:
-    *(byte*)(*(word*)(fp - 15)) = 0;    // $D0E8
-    *(word*)(fp - 15) = (fp - 13);    // $D0EC
-    *(word*)(fp - 17) = 0;    // $D0EF
+    *(byte*)(out_cursor) = 0;    // $D0E8
+    out_cursor = &conv_buf;    // $D0EC
+    has_precision = 0;    // $D0EF
     goto L_D0FC;    // $D0F1
 L_D0F4:
     arg2 = (arg2 + 1);    // $D0F6
     *(byte*)((arg2 - 1)) = 32;    // $D0FB
 L_D0FC:
-    *(word*)(fp - 19) = (*(word*)(fp - 19) - 1);    // $D0FF
-    if (((*(word*)(fp - 19) + 1) > 0)) goto L_D0F4;    // $D104
+    pad = (pad - 1);    // $D0FF
+    if (((pad + 1) > 0)) goto L_D0F4;    // $D104
 L_D107:
-    if (!(*(byte*)(*(word*)(fp - 15)))) goto L_D018;    // $D10A
-    if (!((!(*(word*)(fp - 17)) || (*(word*)(fp - 21) > 0)))) goto L_D127;    // $D116
+    if (!(*(byte*)(out_cursor))) goto L_D018;    // $D10A
+    if (!((!(has_precision) || (width > 0)))) goto L_D127;    // $D116
     arg2 = (arg2 + 1);    // $D11B
-    *(byte*)((arg2 - 1)) = *(byte*)(*(word*)(fp - 15));    // $D121
-    *(word*)(fp - 21) = (*(word*)(fp - 21) - 1);    // $D125
+    *(byte*)((arg2 - 1)) = *(byte*)(out_cursor);    // $D121
+    width = (width - 1);    // $D125
 L_D127:
-    *(word*)(fp - 15) = (*(word*)(fp - 15) + 1);    // $D12A
+    out_cursor = (out_cursor + 1);    // $D12A
     goto L_D107;    // $D12C
 L_D12F:
-    return *(word*)(fp - 15);    // $D12F
+    return out_cursor;    // $D12F
 L_D130:
     *(byte*)(arg2) = 0;    // $D132
     return 0;    // $D133
@@ -657,8 +657,8 @@ L_D130:
 // (body @ $D139)
 
 word draw_message(word arg1) {
-    format_string(&arg1, (fp - 150));    // $D141
-    return redraw_window((fp - 150));    // $D14D
+    format_string(&arg1, &msg_buf);    // $D141
+    return redraw_window(&msg_buf);    // $D14D
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D14E
@@ -1277,53 +1277,53 @@ L_D835:
 // $D836 cap_fief_stats
 // (body @ $D83B)
 
-word cap_fief_stats(word arg1) {
-    local7 = &province_table_live[arg1];    // $D843
-    local10 = local7;    // $D845
-    phi_val_d863 = local7;    // $D846
+word cap_fief_stats(word fief) {
+    fief_rec = &province_table_live[fief];    // $D843
+    rec_base = fief_rec;    // $D845
+    phi_val_d863 = fief_rec;    // $D846
     goto L_D863;    // $D846
 L_D849:
-    *(word*)(local11) = min_word(*(word*)(local11), local7->header);    // $D856
-    if (!((*(word*)(local11) < 0))) goto L_D861;    // $D85B
-    *(word*)(local11) = 0;    // $D860
+    *(word*)(field_ptr) = min_word(*(word*)(field_ptr), fief_rec->header);    // $D856
+    if (!((*(word*)(field_ptr) < 0))) goto L_D861;    // $D85B
+    *(word*)(field_ptr) = 0;    // $D860
 L_D861:
-    phi_val_d863 = (local11 + 2);    // $D862
+    phi_val_d863 = (field_ptr + 2);    // $D862
 L_D863:
-    local11 = phi_val_d863;    // $D863
-    if (((unsigned)local11 < (unsigned)(local10 + 24))) goto L_D849;    // $D86B
-    local7->dams = min_word(local7->dams, 100);    // $D87B
-    local9 = 0;    // $D87D
-    local6 = fief_to_daimyo_record_addr(arg1);    // $D883
-    local8 = fief_to_daimyo_record_addr(arg1);    // $D884
+    field_ptr = phi_val_d863;    // $D863
+    if (((unsigned)field_ptr < (unsigned)(rec_base + 24))) goto L_D849;    // $D86B
+    fief_rec->dams = min_word(fief_rec->dams, 100);    // $D87B
+    i = 0;    // $D87D
+    daimyo_rec = fief_to_daimyo_record_addr(fief);    // $D883
+    daimyo_byte_ptr = fief_to_daimyo_record_addr(fief);    // $D884
     goto L_D8A9;    // $D885
 L_D888:
-    if (!((*(byte*)(local8) > 235))) goto L_D894;    // $D88E
-    *(byte*)(local8) = 0;    // $D893
+    if (!((*(byte*)(daimyo_byte_ptr) > 235))) goto L_D894;    // $D88E
+    *(byte*)(daimyo_byte_ptr) = 0;    // $D893
 L_D894:
-    if (!((*(byte*)(local8) > 210))) goto L_D8A1;    // $D89A
-    *(byte*)(local8) = -46;    // $D8A0
+    if (!((*(byte*)(daimyo_byte_ptr) > 210))) goto L_D8A1;    // $D89A
+    *(byte*)(daimyo_byte_ptr) = -46;    // $D8A0
 L_D8A1:
-    local8 = (local8 + 1);    // $D8A3
-    local9 = (local9 + 1);    // $D8A7
+    daimyo_byte_ptr = (daimyo_byte_ptr + 1);    // $D8A3
+    i = (i + 1);    // $D8A7
 L_D8A9:
-    if (((unsigned)local9 < (unsigned)6)) goto L_D888;    // $D8AC
-    clear_military_stats_if_no_men(arg1);    // $D8B0
-    return clear_econ_stats_if_no_output(arg1);    // $D8B9
+    if (((unsigned)i < (unsigned)6)) goto L_D888;    // $D8AC
+    clear_military_stats_if_no_men(fief);    // $D8B0
+    return clear_econ_stats_if_no_output(fief);    // $D8B9
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D8BA
 // $D8BA develop_gain
 // (body @ $D8BF)
 
-word develop_gain(word arg1, word arg2, word arg3) {
-    if ((arg1 >= 1)) goto L_D8C7;    // $D8C2
+word develop_gain(word amount, word stat_ptr, word companion_ptr) {
+    if ((amount >= 1)) goto L_D8C7;    // $D8C2
     return 0;    // $D8C6
 L_D8C7:
-    local11 = math32_3arg(arg1, (6 - const_two), (sqrt_int(((*(word*)(arg2) + *(word*)(arg3)) / 2)) + sqrt_int(arg1)));    // $D8E9
-    if (local11) goto L_D8F0;    // $D8EB
+    gain = math32_3arg(amount, (6 - const_two), (sqrt_int(((*(word*)(stat_ptr) + *(word*)(companion_ptr)) / 2)) + sqrt_int(amount)));    // $D8E9
+    if (gain) goto L_D8F0;    // $D8EB
     return 1;    // $D8EF
 L_D8F0:
-    return local11;    // $D8F1
+    return gain;    // $D8F1
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D8F2
@@ -1501,18 +1501,18 @@ word load_daimyo_relation_row(word arg1) {
 
 word compact_relation_list(void) {
     load_daimyo_relation_row(selected_province_idx);    // $DADF
-    local10 = 0x6F4F;    // $DAE6
-    local11 = 0x6F4F;    // $DAE7
+    src = 0x6F4F;    // $DAE6
+    dst = 0x6F4F;    // $DAE7
     goto L_DB04;    // $DAE8
 L_DAEB:
-    if (!((get_province_ai_state(*(byte*)(local10)) != 255))) goto L_DB01;    // $DAF6
-    local11 = (local11 + 1);    // $DAFB
-    *(byte*)((local11 - 1)) = *(byte*)(local10);    // $DB00
+    if (!((get_province_ai_state(*(byte*)(src)) != 255))) goto L_DB01;    // $DAF6
+    dst = (dst + 1);    // $DAFB
+    *(byte*)((dst - 1)) = *(byte*)(src);    // $DB00
 L_DB01:
-    local10 = (local10 + 1);    // $DB03
+    src = (src + 1);    // $DB03
 L_DB04:
-    if ((*(byte*)(local10) != 255)) goto L_DAEB;    // $DB0A
-    *(byte*)(local11) = -1;    // $DB10
+    if ((*(byte*)(src) != 255)) goto L_DAEB;    // $DB0A
+    *(byte*)(dst) = -1;    // $DB10
     return -1;    // $DB11
 }
 
@@ -1641,8 +1641,8 @@ L_DC74:
 // (body @ $DC8D)
 
 word read_map_cell(word arg1, word arg2) {
-    syscall16_sram_wrap(4, ((((fief_to_mapid(battle_defending_province) * 55) + (arg2 * 11)) + arg1) + map_cell_sram_a57e), (fp - 1), 1);    // $DCAA
-    return *(byte*)(fp - 1);    // $DCB1
+    syscall16_sram_wrap(4, ((((fief_to_mapid(battle_defending_province) * 55) + (arg2 * 11)) + arg1) + map_cell_sram_a57e), &cell, 1);    // $DCAA
+    return cell;    // $DCB1
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DCB2
@@ -1651,7 +1651,7 @@ word read_map_cell(word arg1, word arg2) {
 
 word generate_daimyo_name(word arg1) {
 L_DCB7:
-    local9 = (fp - 13);    // $DCBA
+    local9 = &name_buf;    // $DCBA
     local11 = (rng_mod(11) << 1);    // $DCC1
     local10 = (rng_mod(11) << 1);    // $DCC8
     *(byte*)(local9) = msg_aiaoieueoikakikusasisusotatuto[local11];    // $DCD0
@@ -1669,7 +1669,7 @@ L_DCB7:
     phi_val_dd1c = 0;    // $DCFF
     goto L_DD1C;    // $DCFF
 L_DD02:
-    if (strcmp((fp - 13), daimyo_name_table[local11])) goto L_DD1A;    // $DD12
+    if (strcmp(&name_buf, daimyo_name_table[local11])) goto L_DD1A;    // $DD12
     local8 = 1;    // $DD16
     goto L_DD25;    // $DD17
 L_DD1A:
@@ -1679,29 +1679,29 @@ L_DD1C:
     if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_DD02;    // $DD22
 L_DD25:
     if (local8) goto L_DCB7;    // $DD26
-    return strcpy(daimyo_name_table[arg1], (fp - 13));    // $DD39
+    return strcpy(daimyo_name_table[arg1], &name_buf);    // $DD39
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DD3A
 // $DD3A filter_province_list_by_owner
 // (body @ $DD3F)
 
-word filter_province_list_by_owner(word arg1, word arg2) {
-    local6 = &local8;    // $DD42
-    phi_val_dd67 = arg2;    // $DD44
+word filter_province_list_by_owner(word match_enemy, word out_list) {
+    write_ptr = &buf;    // $DD42
+    phi_val_dd67 = out_list;    // $DD44
     goto L_DD67;    // $DD44
 L_DD47:
-    if ((is_enemy_owned(*(byte*)(local7)) ^ arg1)) goto L_DD65;    // $DD50
-    if (province_state_is_FF(*(byte*)(local7))) goto L_DD65;    // $DD5A
-    local6 = (local6 + 1);    // $DD5F
-    *(byte*)((local6 - 1)) = *(byte*)(local7);    // $DD64
+    if ((is_enemy_owned(*(byte*)(src_ptr)) ^ match_enemy)) goto L_DD65;    // $DD50
+    if (province_state_is_FF(*(byte*)(src_ptr))) goto L_DD65;    // $DD5A
+    write_ptr = (write_ptr + 1);    // $DD5F
+    *(byte*)((write_ptr - 1)) = *(byte*)(src_ptr);    // $DD64
 L_DD65:
-    phi_val_dd67 = (local7 + 1);    // $DD66
+    phi_val_dd67 = (src_ptr + 1);    // $DD66
 L_DD67:
-    local7 = phi_val_dd67;    // $DD67
-    if ((*(byte*)(local7) != 255)) goto L_DD47;    // $DD6E
-    *(byte*)(local6) = -1;    // $DD74
-    return syscall16_sram_wrap(0, &local8, arg2, 8);    // $DD80
+    src_ptr = phi_val_dd67;    // $DD67
+    if ((*(byte*)(src_ptr) != 255)) goto L_DD47;    // $DD6E
+    *(byte*)(write_ptr) = -1;    // $DD74
+    return syscall16_sram_wrap(0, &buf, out_list, 8);    // $DD80
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DD81
@@ -2160,22 +2160,22 @@ L_E4A1:
 // (body @ $E4A7)
 
 word build_owned_fief_list(void) {
-    local10 = selected_province_idx;    // $E4AA
-    local11 = 0x6F89;    // $E4AE
+    saved_fief = selected_province_idx;    // $E4AA
+    write_ptr = 0x6F89;    // $E4AE
     phi_val_e4c6 = 0;    // $E4B0
     goto L_E4C6;    // $E4B0
 L_E4B3:
     if (!(get_6da2_cur())) goto L_E4C2;    // $E4B6
-    local11 = (local11 + 1);    // $E4BB
-    *(byte*)((local11 - 1)) = selected_province_idx;    // $E4C1
+    write_ptr = (write_ptr + 1);    // $E4BB
+    *(byte*)((write_ptr - 1)) = selected_province_idx;    // $E4C1
 L_E4C2:
     phi_val_e4c6 = (selected_province_idx + 1);    // $E4C5
 L_E4C6:
     selected_province_idx = phi_val_e4c6;    // $E4C6
     if (((unsigned)selected_province_idx < (unsigned)scenario_fief_count)) goto L_E4B3;    // $E4D0
-    *(byte*)(local11) = -1;    // $E4D6
-    selected_province_idx = local10;    // $E4D8
-    return local10;    // $E4DB
+    *(byte*)(write_ptr) = -1;    // $E4D6
+    selected_province_idx = saved_fief;    // $E4D8
+    return saved_fief;    // $E4DB
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E4DC
@@ -2234,21 +2234,21 @@ word redraw_fief_on_map(word arg1) {
     if (!(phi_ret_e594)) goto L_E594;    // $E55E
     local11 = ui_window_col;    // $E564
     local10 = ui_cursor_row;    // $E568
-    syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c_alias), (fp - 38), 34);    // $E57B
-    *(word*)(fp - 40) = (fp - 38);    // $E582
+    syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c_alias), &record_buf, 34);    // $E57B
+    rec_cursor = &record_buf;    // $E582
 L_E584:
-    if ((*(byte*)(*(word*)(fp - 40)) != 255)) goto L_E595;    // $E58B
+    if ((*(byte*)(rec_cursor) != 255)) goto L_E595;    // $E58B
 L_E58E:
     phi_ret_e594 = set_cursor(local11, local10);    // $E590
 L_E594:
     return phi_ret_e594;    // $E594
 L_E595:
-    *(word*)(fp - 40) = (*(word*)(fp - 40) + 1);    // $E598
-    ui_window_col = *(byte*)((*(word*)(fp - 40) - 1));    // $E59C
-    *(word*)(fp - 40) = (*(word*)(fp - 40) + 1);    // $E5A2
-    ui_cursor_row = *(byte*)((*(word*)(fp - 40) - 1));    // $E5A6
-    *(word*)(fp - 40) = (*(word*)(fp - 40) + 1);    // $E5AC
-    if (!((*(byte*)((*(word*)(fp - 40) - 1)) == arg1))) goto L_E584;    // $E5B2
+    rec_cursor = (rec_cursor + 1);    // $E598
+    ui_window_col = *(byte*)((rec_cursor - 1));    // $E59C
+    rec_cursor = (rec_cursor + 1);    // $E5A2
+    ui_cursor_row = *(byte*)((rec_cursor - 1));    // $E5A6
+    rec_cursor = (rec_cursor + 1);    // $E5AC
+    if (!((*(byte*)((rec_cursor - 1)) == arg1))) goto L_E584;    // $E5B2
     ppu_copy_rect_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + window_tile_gfx_8d5a_alias), 4);    // $E5E6
     draw_province_lord_name(arg1);    // $E5EB
     goto L_E58E;    // $E5EF
@@ -2268,18 +2268,18 @@ word render_map_section(word arg1) {
     selected_record_idx_9e3c = arg1;    // $E637
     local11 = ui_window_col;    // $E63D
     local10 = ui_cursor_row;    // $E641
-    syscall16_sram_wrap(4, ((arg1 * 34) + record_sram_9e3c_alias), (fp - 38), 34);    // $E652
-    *(word*)(fp - 40) = (fp - 38);    // $E659
+    syscall16_sram_wrap(4, ((arg1 * 34) + record_sram_9e3c_alias), &record_buf, 34);    // $E652
+    cursor = &record_buf;    // $E659
     goto L_E67E;    // $E65B
 L_E65E:
-    *(word*)(fp - 40) = (*(word*)(fp - 40) + 1);    // $E661
-    ui_window_col = *(byte*)((*(word*)(fp - 40) - 1));    // $E665
-    *(word*)(fp - 40) = (*(word*)(fp - 40) + 1);    // $E66B
-    ui_cursor_row = *(byte*)((*(word*)(fp - 40) - 1));    // $E66F
-    *(word*)(fp - 40) = (*(word*)(fp - 40) + 1);    // $E675
+    cursor = (cursor + 1);    // $E661
+    ui_window_col = *(byte*)((cursor - 1));    // $E665
+    cursor = (cursor + 1);    // $E66B
+    ui_cursor_row = *(byte*)((cursor - 1));    // $E66F
+    cursor = (cursor + 1);    // $E675
 L_E67E:
-    draw_province_lord_name(*(byte*)((*(word*)(fp - 40) - 1)));    // $E67A
-    if ((*(byte*)(*(word*)(fp - 40)) != 255)) goto L_E65E;    // $E685
+    draw_province_lord_name(*(byte*)((cursor - 1)));    // $E67A
+    if ((*(byte*)(cursor) != 255)) goto L_E65E;    // $E685
     set_cursor(local11, local10);    // $E68A
     phi_ret_e693 = palette_swap(0);    // $E68F
 L_E693:
@@ -2298,48 +2298,48 @@ word render_section_for_selected_province(void) {
 // $E6B9 unpack_composite_face_record
 // (body @ $E6BE)
 
-word unpack_composite_face_record(word arg1) {
-    local11 = daimyo_face_code_table[active_province_idx_copy];    // $E6C7
-    local9 = ((unsigned)local11 / (unsigned)5);    // $E6CB
-    local10 = ((unsigned)local11 % (unsigned)5);    // $E6CF
-    local8 = ((unsigned)local9 / (unsigned)5);    // $E6D3
-    local9 = ((unsigned)local9 % (unsigned)5);    // $E6D7
-    local7 = ((unsigned)local8 / (unsigned)5);    // $E6DB
-    local8 = ((unsigned)local8 % (unsigned)5);    // $E6DF
-    ppu_upload_block_wrap(8, ((local10 * 192) + portrait_gfx_a604), 0x15B0, 12);    // $E6EF
-    ppu_upload_block_wrap(8, ((local9 * 96) + 0xA9C4), 0x1670, 6);    // $E701
-    ppu_upload_block_wrap(8, ((local8 * 96) + portrait_gfx_eyes), 0x16D0, 6);    // $E713
-    ppu_upload_block_wrap(8, ((local7 * 192) + portrait_gfx_ad84), 0x1730, 12);    // $E726
-    syscall16_sram_wrap(9, ((local10 * 12) + portrait_sram_ae34), arg1, 12);    // $E735
-    syscall16_sram_wrap(9, ((local9 * 6) + portrait_sram_ae70), (arg1 + 12), 6);    // $E746
-    syscall16_sram_wrap(9, ((local8 * 6) + portrait_sram_ae8e), (arg1 + 18), 6);    // $E758
-    return syscall16_sram_wrap(9, ((local7 * 12) + portrait_sram_aeac), (arg1 + 24), 12);    // $E76E
+word unpack_composite_face_record(word dst_buf) {
+    face_code = daimyo_face_code_table[active_province_idx_copy];    // $E6C7
+    part_nose = ((unsigned)face_code / (unsigned)5);    // $E6CB
+    part_face = ((unsigned)face_code % (unsigned)5);    // $E6CF
+    part_eyes = ((unsigned)part_nose / (unsigned)5);    // $E6D3
+    part_nose = ((unsigned)part_nose % (unsigned)5);    // $E6D7
+    part_hair = ((unsigned)part_eyes / (unsigned)5);    // $E6DB
+    part_eyes = ((unsigned)part_eyes % (unsigned)5);    // $E6DF
+    ppu_upload_block_wrap(8, ((part_face * 192) + portrait_gfx_a604), 0x15B0, 12);    // $E6EF
+    ppu_upload_block_wrap(8, ((part_nose * 96) + 0xA9C4), 0x1670, 6);    // $E701
+    ppu_upload_block_wrap(8, ((part_eyes * 96) + portrait_gfx_eyes), 0x16D0, 6);    // $E713
+    ppu_upload_block_wrap(8, ((part_hair * 192) + portrait_gfx_ad84), 0x1730, 12);    // $E726
+    syscall16_sram_wrap(9, ((part_face * 12) + portrait_sram_ae34), dst_buf, 12);    // $E735
+    syscall16_sram_wrap(9, ((part_nose * 6) + portrait_sram_ae70), (dst_buf + 12), 6);    // $E746
+    syscall16_sram_wrap(9, ((part_eyes * 6) + portrait_sram_ae8e), (dst_buf + 18), 6);    // $E758
+    return syscall16_sram_wrap(9, ((part_hair * 12) + portrait_sram_aeac), (dst_buf + 24), 12);    // $E76E
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E76F
 // $E76F draw_daimyo_portrait
 // (body @ $E774)
 
-word draw_daimyo_portrait(word arg1, word arg2) {
-    *(word*)(fp - 38) = 0;    // $E775
+word draw_daimyo_portrait(word col, word row) {
+    pal_idx = 0;    // $E775
 L_E777:
-    palette_write_wrap(*(word*)(fp - 38), *(word*)(((*(word*)(fp - 38) << 1) + marry_palette)));    // $E782
-    *(word*)(fp - 38) = (*(word*)(fp - 38) + 1);    // $E789
-    if (((unsigned)*(word*)(fp - 38) < (unsigned)4)) goto L_E777;    // $E78F
+    palette_write_wrap(pal_idx, *(word*)(((pal_idx << 1) + marry_palette)));    // $E782
+    pal_idx = (pal_idx + 1);    // $E789
+    if (((unsigned)pal_idx < (unsigned)4)) goto L_E777;    // $E78F
     if (((unsigned)active_province_idx_copy >= (unsigned)53)) goto L_E7A7;    // $E798
     if (daimyo_record_addr(active_province_idx_copy)->status) goto L_E7EE;    // $E7A4
 L_E7A7:
-    *(word*)(fp - 40) = (((fief_to_mapid(active_province_idx_copy) << 1) << 1) + msg_ng_to_pieces);    // $E7B4
-    syscall16_sram_wrap(8, *(word*)(fp - 40), (fp - 44), 4);    // $E7BE
-    *(word*)(fp - 40) = (fp - 44);    // $E7C5
-    ppu_upload_block_wrap(*(byte*)(*(word*)(fp - 40)), *(word*)((*(word*)(fp - 40) + 2)), 0x15B0, *(byte*)((*(word*)(fp - 40) + 1)));    // $E7D8
+    descriptor_ptr = (((fief_to_mapid(active_province_idx_copy) << 1) << 1) + msg_ng_to_pieces);    // $E7B4
+    syscall16_sram_wrap(8, descriptor_ptr, &descriptor_buf, 4);    // $E7BE
+    descriptor_ptr = &descriptor_buf;    // $E7C5
+    ppu_upload_block_wrap(*(byte*)(descriptor_ptr), *(word*)((descriptor_ptr + 2)), 0x15B0, *(byte*)((descriptor_ptr + 1)));    // $E7D8
     phi_push_e7fa = ((fief_to_mapid(active_province_idx_copy) * 36) + jumptab_b144);    // $E7EB
     goto L_E7FA;    // $E7EB
 L_E7EE:
-    unpack_composite_face_record((fp - 36));    // $E7F2
-    phi_push_e7fa = (fp - 36);    // $E7F7
+    unpack_composite_face_record(&face_buf);    // $E7F2
+    phi_push_e7fa = &face_buf;    // $E7F7
 L_E7FA:
-    ppu_copy_rect_wrap(arg1, arg2, (arg1 + 5), (arg2 + 5), phi_push_e7fa, 8);    // $E803
+    ppu_copy_rect_wrap(col, row, (col + 5), (row + 5), phi_push_e7fa, 8);    // $E803
     ui_pending_flag_7fc7 = 1;    // $E808
     return 1;    // $E80B
 }
