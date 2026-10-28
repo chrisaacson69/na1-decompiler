@@ -647,8 +647,8 @@ L_D130:
 // $D134 draw_message
 // (body @ $D139)
 
-word draw_message(word arg1) {
-    format_string(&arg1, &msg_buf);    // $D141
+word draw_message(word fmt) {
+    format_string(&fmt, &msg_buf);    // $D141
     return redraw_window(&msg_buf);    // $D14D
 }
 
@@ -1625,28 +1625,28 @@ word read_map_cell(word col, word row) {
 // $DCB2 generate_daimyo_name
 // (body @ $DCB7)
 
-word generate_daimyo_name(word arg1) {
+word generate_daimyo_name(word daimyo) {
 L_DCB7:
-    local9 = &name_buf;    // $DCBA
+    name_ptr = &name_buf;    // $DCBA
     local11 = (rng_mod(11) << 1);    // $DCC1
-    local10 = (rng_mod(11) << 1);    // $DCC8
-    *(byte*)(local9) = msg_aiaoieueoikakikusasisusotatuto[local11];    // $DCD0
-    local9 = (local9 + 1);    // $DCD3
+    syllable2_idx = (rng_mod(11) << 1);    // $DCC8
+    *(byte*)(name_ptr) = msg_aiaoieueoikakikusasisusotatuto[local11];    // $DCD0
+    name_ptr = (name_ptr + 1);    // $DCD3
     local11 = (local11 + 1);    // $DCD7
-    *(byte*)(local9) = msg_aiaoieueoikakikusasisusotatuto[local11];    // $DCDD
-    local9 = (local9 + 1);    // $DCE0
-    *(byte*)(local9) = msg_setenohomamimemoyarawagagizaze[local10];    // $DCE8
-    local9 = (local9 + 1);    // $DCEB
-    local10 = (local10 + 1);    // $DCEF
-    *(byte*)(local9) = msg_setenohomamimemoyarawagagizaze[local10];    // $DCF5
-    local9 = (local9 + 1);    // $DCF8
-    *(byte*)(local9) = 0;    // $DCFB
-    local8 = 0;    // $DCFD
+    *(byte*)(name_ptr) = msg_aiaoieueoikakikusasisusotatuto[local11];    // $DCDD
+    name_ptr = (name_ptr + 1);    // $DCE0
+    *(byte*)(name_ptr) = msg_setenohomamimemoyarawagagizaze[syllable2_idx];    // $DCE8
+    name_ptr = (name_ptr + 1);    // $DCEB
+    syllable2_idx = (syllable2_idx + 1);    // $DCEF
+    *(byte*)(name_ptr) = msg_setenohomamimemoyarawagagizaze[syllable2_idx];    // $DCF5
+    name_ptr = (name_ptr + 1);    // $DCF8
+    *(byte*)(name_ptr) = 0;    // $DCFB
+    is_duplicate = 0;    // $DCFD
     phi_val_dd1c = 0;    // $DCFF
     goto L_DD1C;    // $DCFF
 L_DD02:
     if (strcmp(&name_buf, daimyo_name_table[local11])) goto L_DD1A;    // $DD12
-    local8 = 1;    // $DD16
+    is_duplicate = 1;    // $DD16
     goto L_DD25;    // $DD17
 L_DD1A:
     phi_val_dd1c = (local11 + 1);    // $DD1B
@@ -1654,8 +1654,8 @@ L_DD1C:
     local11 = phi_val_dd1c;    // $DD1C
     if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_DD02;    // $DD22
 L_DD25:
-    if (local8) goto L_DCB7;    // $DD26
-    return strcpy(daimyo_name_table[arg1], &name_buf);    // $DD39
+    if (is_duplicate) goto L_DCB7;    // $DD26
+    return strcpy(daimyo_name_table[daimyo], &name_buf);    // $DD39
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DD3A
@@ -2193,17 +2193,17 @@ L_E543:
 // $E554 redraw_fief_on_map
 // (body @ $E559)
 
-word redraw_fief_on_map(word arg1) {
+word redraw_fief_on_map(word fief) {
     phi_ret_e594 = ((unsigned)selected_record_idx_9e3c <= (unsigned)8);    // $E55E
     if (!(phi_ret_e594)) goto L_E594;    // $E55E
-    local11 = ui_window_col;    // $E564
-    local10 = ui_cursor_row;    // $E568
+    saved_col = ui_window_col;    // $E564
+    saved_row = ui_cursor_row;    // $E568
     syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c_alias), &record_buf, 34);    // $E57B
     rec_cursor = &record_buf;    // $E582
     do {    // $E584
         if ((*(byte*)(rec_cursor) != 255)) goto L_E595;    // $E58B
 L_E58E:
-        phi_ret_e594 = set_cursor(local11, local10);    // $E590
+        phi_ret_e594 = set_cursor(saved_col, saved_row);    // $E590
 L_E594:
         return phi_ret_e594;    // $E594
 L_E595:
@@ -2212,9 +2212,9 @@ L_E595:
         rec_cursor = (rec_cursor + 1);    // $E5A2
         ui_cursor_row = *(byte*)((rec_cursor - 1));    // $E5A6
         rec_cursor = (rec_cursor + 1);    // $E5AC
-    } while (!((*(byte*)((rec_cursor - 1)) == arg1)));    // $E5B2
+    } while (!((*(byte*)((rec_cursor - 1)) == fief)));    // $E5B2
     ppu_copy_rect_wrap(ui_window_col, ui_cursor_row, min_word((ui_window_col + 8), 29), ui_cursor_row, ((((selected_record_idx_9e3c * 0x01C0) + ((ui_cursor_row + -4) * 28)) + ui_window_col) + window_tile_gfx_8d5a_alias), 4);    // $E5E6
-    draw_province_lord_name(arg1);    // $E5EB
+    draw_province_lord_name(fief);    // $E5EB
     goto L_E58E;    // $E5EF
 }
 
@@ -2222,17 +2222,17 @@ L_E595:
 // $E5F2 render_map_section
 // (body @ $E5F7)
 
-word render_map_section(word arg1) {
-    phi_ret_e693 = (arg1 != selected_record_idx_9e3c);    // $E5FC
+word render_map_section(word map_section) {
+    phi_ret_e693 = (map_section != selected_record_idx_9e3c);    // $E5FC
     if (phi_ret_e693) {    // $E5FC
     palette_swap(1);    // $E600
     ppu_fill_rect_wrap(30, 4, 31, 19, 1);    // $E60C
-    ppu_copy_rect_wrap(2, 4, 29, 19, ((arg1 * 0x01C0) + strategic_map_section_tilemaps), 4);    // $E621
-    ppu_upload_block_wrap(4, ((arg1 << 5) + strategic_map_section_attributes), 0x23C8, 2);    // $E632
-    selected_record_idx_9e3c = arg1;    // $E637
-    local11 = ui_window_col;    // $E63D
-    local10 = ui_cursor_row;    // $E641
-    syscall16_sram_wrap(4, ((arg1 * 34) + record_sram_9e3c_alias), &record_buf, 34);    // $E652
+    ppu_copy_rect_wrap(2, 4, 29, 19, ((map_section * 0x01C0) + strategic_map_section_tilemaps), 4);    // $E621
+    ppu_upload_block_wrap(4, ((map_section << 5) + strategic_map_section_attributes), 0x23C8, 2);    // $E632
+    selected_record_idx_9e3c = map_section;    // $E637
+    saved_col = ui_window_col;    // $E63D
+    saved_row = ui_cursor_row;    // $E641
+    syscall16_sram_wrap(4, ((map_section * 34) + record_sram_9e3c_alias), &record_buf, 34);    // $E652
     cursor = &record_buf;    // $E659
     while ((*(byte*)(cursor) != 255)) {    // $E67E
         cursor = (cursor + 1);    // $E661
@@ -2242,7 +2242,7 @@ word render_map_section(word arg1) {
         cursor = (cursor + 1);    // $E675
         draw_province_lord_name(*(byte*)((cursor - 1)));    // $E67A
     }
-    set_cursor(local11, local10);    // $E68A
+    set_cursor(saved_col, saved_row);    // $E68A
     phi_ret_e693 = palette_swap(0);    // $E68F
     }
 L_E693:

@@ -2559,15 +2559,29 @@ local5 = { name = "dedup_buf", comment = "[HIGH] base byte of local dedup scratc
 # map_helper_e5f2
 "fp-40" = { name = "cursor", comment = "[HIGH] word walk-pointer; init to &record_buf ($E659), inc'd + loadA_ind_byte deref'd each iter, read until byte==255" }
 "fp-38" = { name = "record_buf", comment = "[HIGH] 34-byte struct buffer; syscall16_sram_wrap(4,record_data,&this,34) copies record in, then walked field-wise by cursor" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "map_section", comment = "[HIGH] Map section: callers push province_to_map_section_* bytes or consts; *0x1C0 tilemaps, <<5 attrs, *34 SRAM rec, stored to $6F5D ($E637)" }
+local10 = { name = "saved_row", comment = "[HIGH] Saved ui_cursor_row ($E63E STORE_quick 10) before lord-name loop; restored as set_cursor arg2 (row) via PUSH_quick 10 at $E688" }
+local11 = { name = "saved_col", comment = "[HIGH] Saved ui_window_col ($E63A STORE_quick 11) before lord-name loop; restored as set_cursor arg1 (col) via PUSH_quick 11 at $E689" }
 
 [vars.bank15."0xE554"]
 # find_record_9e3c
 "fp-38" = { name = "record_buf", comment = "[HIGH] 34-byte buffer; syscall16_sram_wrap(4, selected_record_idx*34+record_sram_9e3c_alias, &(fp-38), 34) copies a 9e3c record into it" }
 "fp-40" = { name = "rec_cursor", comment = "[HIGH] read pointer; init = &record_buf, walked field-wise (col,row,fief byte per entry), scans for entry whose fief == arg1, 255-terminated" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "fief", comment = "[HIGH] Fief index: callers push battle_defending_province / fief idx; LOADR_quick 12 CMPEQ vs entry byte 3 ($E5B0), pushed to draw_province_lord_name" }
+local10 = { name = "saved_row", comment = "[HIGH] Saved ui_cursor_row ($E565 STORE_quick 10); restored as set_cursor arg2 (row) via PUSH_quick 10 at $E58E" }
+local11 = { name = "saved_col", comment = "[HIGH] Saved ui_window_col ($E561 STORE_quick 11); restored as set_cursor arg1 (col) via PUSH_quick 11 at $E58F" }
 
 [vars.bank15."0xDCB2"]
 # generate_daimyo_name
 "fp-13" = { name = "name_buf", comment = "[HIGH] 5-byte scratch buffer the 2-syllable kana name is assembled into; addr passed to strcmp dedup vs $77A8 then strcpy'd out" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "daimyo", comment = "[HIGH] Daimyo index: caller pushes fief_owner() result ($E22F); LOADL_quick 12 *9 + daimyo_name_table = strcpy dest at $DD2D" }
+local8 = { name = "is_duplicate", comment = "[HIGH] Duplicate flag: 0 at $DCFD, 1 when strcmp equals an existing name ($DD16), LOADL_quick 8 + JUMPT $DCB7 retries generation" }
+local9 = { name = "name_ptr", comment = "[HIGH] Write cursor into name buf: LEAL_far $FFF3 -> STORE_quick 9, pushed as BYTE_POPSTORE target and INC'd after each of 5 byte stores" }
+local10 = { name = "syllable2_idx", comment = "[HIGH] rng_mod(11)<<1 ($DCC8); indexes 2 consecutive bytes of syllable table $F95D (LOADL_quick 10 at $DCE2, INC at $DCEE)" }
+# local11 left positional — Reused: first-syllable idx rng_mod(11)<<1 into $F930 ($DCC1), then loop idx vs scenario_fief_count ($DD1C). Two roles, p
 
 [vars.bank15."0xDC88"]
 # read_map_cell
@@ -2579,6 +2593,8 @@ arg2 = { name = "row", comment = "[HIGH] LOADL_quick 13 * 11 (LOADR_qimm 11, MUL
 [vars.bank15."0xD134"]
 # ui_helper_d134
 "fp-150" = { name = "msg_buf", comment = "[HIGH] text buffer format_string writes into ($D141) then redraw_window renders ($D14D); printf-style msg output buf" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "fmt", comment = "[HIGH] Format string, head of the variadic list: callers' last push is PUSH_imm2 msg_*; LEAL_far $000B (&arg1) is format_string's arg list at $D13D" }
 
 [vars.bank15."0xCFFC"]
 # format_string
