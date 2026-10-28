@@ -2273,16 +2273,16 @@ L_A5F2:
 word driver_hire(void) {
     if (!(effect_war_combat_prep_c(selected_province_idx))) goto L_A635;    // $A600
     message_display(msg_recruit_which);    // $A606
-    local11 = &province_table_live[selected_province_idx];    // $A614
+    fief = &province_table_live[selected_province_idx];    // $A614
     switch (prompt_ab_window(msg_men_ninja)) {    // $A61C
         case 0: goto L_A629;    // $A61C
         case 1: goto L_A62F;    // $A61C
         default: goto L_A635;    // $A61C
     }    // $A61C
 L_A629:
-    return effect_ninja_sabotage(local11);    // $A62E
+    return effect_ninja_sabotage(fief);    // $A62E
 L_A62F:
-    return effect_hire_men(local11);    // $A634
+    return effect_hire_men(fief);    // $A634
 L_A635:
     return 0;    // $A636
 }
@@ -2292,9 +2292,9 @@ L_A635:
 // (body @ $A63C)
 
 word driver_train(void) {
-    local11 = &province_table_live[selected_province_idx];    // $A646
-    if (!((local11->skill < local11->header))) goto L_A6A7;    // $A652
-    if (!((local11->men <= 0))) goto L_A671;    // $A65B
+    fief = &province_table_live[selected_province_idx];    // $A646
+    if (!((fief->skill < fief->header))) goto L_A6A7;    // $A652
+    if (!((fief->men <= 0))) goto L_A671;    // $A65B
     redraw_window(msg_you_have_no_soldiers);    // $A661
     clear_military_stats_if_no_men(selected_province_idx);    // $A668
     confirm_prompt();    // $A66C
@@ -2302,8 +2302,8 @@ word driver_train(void) {
 L_A671:
     trigger_cutscene(CUTSCENE_TRAIN);    // $A672
     effect_train();    // $A676
-    local11->skill = *(word*)(((local11->skill > local11->header) ? &local11->header : &local11->skill));    // $A695
-    draw_message(msg_skill_is_now_d, local11->skill);    // $A69E
+    fief->skill = *(word*)(((fief->skill > fief->header) ? &fief->header : &fief->skill));    // $A695
+    draw_message(msg_skill_is_now_d, fief->skill);    // $A69E
     confirm_prompt();    // $A6A2
     return 1;    // $A6A6
 L_A6A7:
@@ -2316,8 +2316,8 @@ L_A6A7:
 // $A6B3 effect_view_d
 // (body @ $A6B8)
 
-word effect_view_d(word arg1) {
-    return (rng_mod(*(byte*)((arg1 + 3))) + *(byte*)((arg1 + 5)));    // $A6C6
+word effect_view_d(word daimyo) {
+    return (rng_mod(*(byte*)((daimyo + 3))) + *(byte*)((daimyo + 5)));    // $A6C6
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $A6C7
@@ -2415,21 +2415,21 @@ L_A843:
 // (body @ $A858)
 
 word driver_build(void) {
-    local11 = &province_table_live[selected_province_idx];    // $A862
-    if (!((local11->header <= local11->town))) goto L_A87C;    // $A86D
+    fief = &province_table_live[selected_province_idx];    // $A862
+    if (!((fief->header <= fief->town))) goto L_A87C;    // $A86D
     message_display(msg_we_re_at_our_limit);    // $A873
     confirm_prompt();    // $A877
     return 0;    // $A87B
 L_A87C:
-    if (!(local11->gold)) goto L_A8C6;    // $A87E
+    if (!(fief->gold)) goto L_A8C6;    // $A87E
     message_display(str_town_value_label);    // $A884
-    draw_message(msg_s_is_d_spend_how_much_on_it, driver_build_town_value, local11->town);    // $A892
-    local10 = number_input(1, local11->gold);    // $A89E
-    if (!(number_input(1, local11->gold))) goto L_A8D2;    // $A89F
-    local11->gold = (local11->gold - local10);    // $A8A8
-    local10 = effect_build(local11, local10);    // $A8AF
+    draw_message(msg_s_is_d_spend_how_much_on_it, driver_build_town_value, fief->town);    // $A892
+    amount = number_input(1, fief->gold);    // $A89E
+    if (!(number_input(1, fief->gold))) goto L_A8D2;    // $A89F
+    fief->gold = (fief->gold - amount);    // $A8A8
+    amount = effect_build(fief, amount);    // $A8AF
     trigger_cutscene(CUTSCENE_BUILD);    // $A8B2
-    draw_message(msg_town_value_is_now_d, local11->town);    // $A8BD
+    draw_message(msg_town_value_is_now_d, fief->town);    // $A8BD
     confirm_prompt();    // $A8C1
     return 1;    // $A8C5
 L_A8C6:

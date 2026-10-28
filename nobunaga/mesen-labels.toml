@@ -3478,3 +3478,21 @@ arg1 = { name = "fief", comment = "[HIGH] Province record ptr: LOADL_quick 12 DE
 local10 = { name = "buy_amount", comment = "[HIGH] STORE_quick 10 @$A0AF = number_input(1, local11); fed to math32_muladddiv for gold cost and added to fief->rice @$A0C2" }
 local11 = { name = "max_buyable", comment = "[HIGH] STORE_quick 11 @$A097 = ratio_times10_capped(gold, rate, header-rice); only use is PUSH_quick 11 as number_input max @$A0A9" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0xA853"]
+# driver_build
+local10 = { name = "amount", comment = "[MED] =number_input(1,fief->gold) @$A89E; 0 exits; gold-=it @$A8A8; arg2 of effect_build. Its return is stored @$A8AF, never read (dead)" }
+local11 = { name = "fief", comment = "[HIGH] &province_table_live[sel idx] (STORE_quick 11 @$A862); derefs +4 town, +24 header, +0 gold; arg1 of effect_build @$A8AA" }
+
+[vars.bank1."0xA6B3"]
+# effect_view_d
+arg1 = { name = "daimyo", comment = "[HIGH] daimyo record ptr (callers push fief_to_daimyo_record_addr / selected_province_daimyo_record); returns byte+5 iq + rng_mod(byte+3 luck)" }
+
+[vars.bank1."0xA637"]
+# driver_train
+local11 = { name = "fief", comment = "[HIGH] &province_table_live[sel idx] (STORE_quick 11 @$A646); derefs +24 header, +20 skill, +16 men; skill=min(skill,header) POPSTORE @$A695" }
+
+[vars.bank1."0xA5F4"]
+# driver_hire
+local11 = { name = "fief", comment = "[HIGH] &province_table_live[selected_province_idx] ($A60A-$A614 idx*26+$7001, STORE_quick 11); PUSH_quick 11 as arg1 to $A2D2 / $A553" }
+
