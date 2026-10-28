@@ -3049,12 +3049,12 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $9595   (frame_off=-6, body @ $959A)
 ; ============================================================
-  $959A  8E 6A BC                   PUSH_imm2              $BC6A (province_conquest_roll_predicate_in_fief)
+  $959A  8E 6A BC                   PUSH_imm2              $BC6A (uprising_rebels_win_roll_in_fief)
   $959D  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $95A1  0C                         LOADL_quick   ; inline operand = 12
   $95A2  D0                         INC
   $95A3  B3                         PUSHL
-  $95A4  8E 73 BC                   PUSH_imm2              $BC73 (province_conquest_roll_predicate_fmt_2d)
+  $95A4  8E 73 BC                   PUSH_imm2              $BC73 (uprising_rebels_win_roll_fmt_2d)
   $95A7  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $95AB  0C                         LOADL_quick   ; inline operand = 12
   $95AC  8B 1A                      BYTE_LOADR_imm1        +26
@@ -3337,7 +3337,7 @@ VM bytecode disassembly
  >$97AF  0B                         LOADL_quick   ; inline operand = 11
   $97B0  D3                         BYTE_DEREF
   $97B1  B3                         PUSHL
-  $97B2  E9 95 95 02                CALL_abs_imm1          $9595 (province_conquest_roll_predicate) {bytecode}, $02
+  $97B2  E9 95 95 02                CALL_abs_imm1          $9595 (uprising_rebels_win_roll) {bytecode}, $02
   $97B6  D8 19 98                   JUMPF_abs              $9819
   $97B9  8E F1 BC                   PUSH_imm2              $BCF1 (msg_the_rebels_have_won)
   $97BC  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02

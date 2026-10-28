@@ -4,7 +4,7 @@
 // Deterministic (fixed ROM + toml -> identical output). DO NOT hand-edit -- regenerate.
 // Pipeline: titles disasm -> vm_decompile -> DREAM structurer (V2 fallback)
 // ============================================================
-struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
+struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word stat_cap; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
 struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
 extern struct daimyo daimyo_table[];    /* at $752F */
@@ -1294,7 +1294,7 @@ word cap_fief_stats(word fief) {
     rec_base = fief_rec;    // $D845
     field_ptr = fief_rec;    // $D846
     while (((unsigned)field_ptr < (unsigned)(rec_base + 24))) {    // $D863
-        *(word*)(field_ptr) = min_word(*(word*)(field_ptr), fief_rec->header);    // $D856
+        *(word*)(field_ptr) = min_word(*(word*)(field_ptr), fief_rec->stat_cap);    // $D856
         if ((*(word*)(field_ptr) < 0)) {    // $D849
             *(word*)(field_ptr) = 0;    // $D860
         }
@@ -1341,8 +1341,8 @@ word develop_gain(word amount, word stat_ptr, word companion_ptr) {
 
 word develop_gain_capped_loyalty(word fief, word amount) {
     gain = develop_gain(amount, (fief + 12), (fief + 8));    // $D902
-    headroom = (fief->header - fief->loyalty);    // $D90D
-    if ((gain > (fief->header - fief->loyalty))) {    // $D8F7
+    headroom = (fief->stat_cap - fief->loyalty);    // $D90D
+    if ((gain > (fief->stat_cap - fief->loyalty))) {    // $D8F7
         return headroom;    // $D916
     } else {
         return gain;    // $D918
@@ -1355,8 +1355,8 @@ word develop_gain_capped_loyalty(word fief, word amount) {
 
 word develop_gain_capped_wealth(word fief, word amount) {
     gain = develop_gain(amount, (fief + 14), (fief + 4));    // $D929
-    headroom = (fief->header - fief->wealth);    // $D934
-    if ((gain > (fief->header - fief->wealth))) {    // $D91E
+    headroom = (fief->stat_cap - fief->wealth);    // $D934
+    if ((gain > (fief->stat_cap - fief->wealth))) {    // $D91E
         return headroom;    // $D93D
     } else {
         return gain;    // $D93F
@@ -1722,7 +1722,7 @@ word init_new_daimyo_province_stats(word fief) {
     }
     fief_rec = &province_table_live[fief];    // $DDDA
     field_ptr = &province_table_live[fief];    // $DDDB
-    while (((unsigned)field_ptr < (unsigned)&fief_rec->header)) {    // $DE45
+    while (((unsigned)field_ptr < (unsigned)&fief_rec->stat_cap)) {    // $DE45
         if ((&province_table_live[fief].arms == field_ptr)) {    // $DDDE
             *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), (rng_mod(31) + 50));    // $DDFC
             if ((*(word*)(field_ptr) < 50)) {    // $DDEB

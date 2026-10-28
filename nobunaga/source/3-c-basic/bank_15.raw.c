@@ -4,7 +4,7 @@
 // Deterministic (fixed ROM + toml -> identical output). DO NOT hand-edit -- regenerate.
 // Pipeline: titles disasm -> vm_decompile  (--raw: direct goto/label form, the structurer baseline)
 // ============================================================
-struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
+struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word stat_cap; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
 struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
 extern struct daimyo daimyo_table[];    /* at $752F */
@@ -1273,7 +1273,7 @@ word cap_fief_stats(word fief) {
     field_ptr = fief_rec;    // $D846
     goto L_D863;    // $D846
 L_D849:
-    *(word*)(field_ptr) = min_word(*(word*)(field_ptr), fief_rec->header);    // $D856
+    *(word*)(field_ptr) = min_word(*(word*)(field_ptr), fief_rec->stat_cap);    // $D856
     if (!((*(word*)(field_ptr) < 0))) goto L_D861;    // $D85B
     *(word*)(field_ptr) = 0;    // $D860
 L_D861:
@@ -1321,8 +1321,8 @@ L_D8F0:
 
 word develop_gain_capped_loyalty(word fief, word amount) {
     gain = develop_gain(amount, (fief + 12), (fief + 8));    // $D902
-    headroom = (fief->header - fief->loyalty);    // $D90D
-    if (!((gain > (fief->header - fief->loyalty)))) goto L_D917;    // $D912
+    headroom = (fief->stat_cap - fief->loyalty);    // $D90D
+    if (!((gain > (fief->stat_cap - fief->loyalty)))) goto L_D917;    // $D912
     return headroom;    // $D916
 L_D917:
     return gain;    // $D918
@@ -1334,8 +1334,8 @@ L_D917:
 
 word develop_gain_capped_wealth(word fief, word amount) {
     gain = develop_gain(amount, (fief + 14), (fief + 4));    // $D929
-    headroom = (fief->header - fief->wealth);    // $D934
-    if (!((gain > (fief->header - fief->wealth)))) goto L_D93E;    // $D939
+    headroom = (fief->stat_cap - fief->wealth);    // $D934
+    if (!((gain > (fief->stat_cap - fief->wealth)))) goto L_D93E;    // $D939
     return headroom;    // $D93D
 L_D93E:
     return gain;    // $D93F
@@ -1732,7 +1732,7 @@ L_DE3C:
     *(word*)(field_ptr) = (*(word*)(field_ptr) + phi_push_de3c);    // $DE42
     field_ptr = (field_ptr + 2);    // $DE44
 L_DE45:
-    if (((unsigned)field_ptr < (unsigned)&fief_rec->header)) goto L_DDDE;    // $DE4D
+    if (((unsigned)field_ptr < (unsigned)&fief_rec->stat_cap)) goto L_DDDE;    // $DE4D
     province_table_live[fief].loyalty = (province_table_live[fief].loyalty + 50);    // $DE5E
     province_table_live[fief].morale = (province_table_live[fief].morale + 50);    // $DE6D
     fief_tax_rate[fief] = 20;    // $DE76

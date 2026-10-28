@@ -4,7 +4,7 @@
 // Deterministic (fixed ROM + toml -> identical output). DO NOT hand-edit -- regenerate.
 // Pipeline: titles disasm -> vm_decompile -> DREAM structurer (V2 fallback)
 // ============================================================
-struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
+struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word stat_cap; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
 struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
 extern struct daimyo daimyo_table[];    /* at $752F */
@@ -300,7 +300,7 @@ word apply_scenario_starting_stat_boosts(void) {
             }
             init_daimyo_arms_record(local11);    // $858F
         }
-        field_ptr = &province_table_live[local11].header;    // $859B
+        field_ptr = &province_table_live[local11].stat_cap;    // $859B
         *(word*)(field_ptr) = pct_op((*(word*)(field_ptr) + 1000), (rng_mod(20) + 80));    // $85B0
         local11 = (local11 + 1);    // $85B3
     }
@@ -1408,12 +1408,12 @@ word avg_province_wealth_over_fiefs(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9595
-// $9595 province_conquest_roll_predicate
+// $9595 uprising_rebels_win_roll
 // (body @ $959A)
 
-word province_conquest_roll_predicate(word fief) {
-    message_display(province_conquest_roll_predicate_in_fief);    // $959D
-    draw_message(province_conquest_roll_predicate_fmt_2d, (fief + 1));    // $95A7
+word uprising_rebels_win_roll(word fief) {
+    message_display(uprising_rebels_win_roll_in_fief);    // $959D
+    draw_message(uprising_rebels_win_roll_fmt_2d, (fief + 1));    // $95A7
     fief_rec = &province_table_live[fief];    // $95B3
     loyal_men = pct_op(fief_rec->men, (((((min_word(100, fief_rec->morale) * 3) / 10) + ((min_word(200, fief_to_daimyo_record_addr(fief)->charisma) * 3) / 20)) + rng_mod(31)) + 10));    // $95EE
     rebel_men = (fief_rec->men - loyal_men);    // $95F5
@@ -1530,7 +1530,7 @@ word revolt_spread_sweep_flip_fief_ownership(void) {
                     candidate_count = (candidate_count + 1);    // $97A2
                     append_candidate_priority1(*(byte*)(fief_list_ptr), (candidate_count - 1));    // $97A8
                 } else {
-                    if (province_conquest_roll_predicate(*(byte*)(fief_list_ptr))) {    // $97AF
+                    if (uprising_rebels_win_roll(*(byte*)(fief_list_ptr))) {    // $97AF
                         message_display(msg_the_rebels_have_won);    // $97BC
                         confirm_prompt();    // $97C0
                         owner_ptr = &fief_to_daimyo_map[*(byte*)(fief_list_ptr)];    // $97C9
@@ -2209,8 +2209,8 @@ word calc_fief_harvest_base_term(word fief_idx) {
 
 word calc_fief_gold_income(word fief_idx, word fief) {
     gold_income = ((calc_fief_harvest_base_term(fief_idx) + pct_op(fief->town, fief_tax_rate[fief_idx])) + rng_mod((calc_charisma_scaled_income_variance(fief_idx) + 1)));    // $A20C
-    if ((gold_income > fief->header)) {    // $A1E7
-        gold_income = fief->header;    // $A21C
+    if ((gold_income > fief->stat_cap)) {    // $A1E7
+        gold_income = fief->stat_cap;    // $A21C
     }
     return gold_income;    // $A21E
 }
@@ -2221,8 +2221,8 @@ word calc_fief_gold_income(word fief_idx, word fief) {
 
 word calc_fief_rice_income(word fief_idx, word fief) {
     rice_income = ((calc_fief_harvest_base_term(fief_idx) + pct_op(pct_op(*(word*)(&fief_history_table[(fief_idx << 3)]), *(word*)(((fief_idx << 3) + 0x6005))), fief_tax_rate[fief_idx])) + rng_mod((calc_charisma_scaled_income_variance(fief_idx) + 1)));    // $A25C
-    if ((rice_income > fief->header)) {    // $A224
-        rice_income = fief->header;    // $A26C
+    if ((rice_income > fief->stat_cap)) {    // $A224
+        rice_income = fief->stat_cap;    // $A26C
     }
     return rice_income;    // $A26E
 }
@@ -2516,11 +2516,11 @@ word spawn_uprising_force_from_province(word is_uprising) {
     staging_ptr = (staging_ptr + 2);    // $A706
     *(word*)((staging_ptr + -2)) = war_attacker_men;    // $A70D
     staging_ptr = (staging_ptr + 2);    // $A710
-    *(word*)((staging_ptr + -2)) = (fief->header - fief->morale);    // $A71F
+    *(word*)((staging_ptr + -2)) = (fief->stat_cap - fief->morale);    // $A71F
     staging_ptr = (staging_ptr + 2);    // $A722
     *(word*)((staging_ptr + -2)) = rng_mod_30();    // $A729
     *(word*)(staging_ptr) = rng_mod_30();    // $A72E
-    mem_7521 = (fief->header - fief->loyalty);    // $A739
+    mem_7521 = (fief->stat_cap - fief->loyalty);    // $A739
     selected_province_idx = 50;    // $A73E
     return 50;    // $A741
 }

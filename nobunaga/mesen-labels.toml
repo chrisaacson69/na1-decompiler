@@ -966,8 +966,8 @@ prg_bank_count = 16        # 256 KB total
 "0xBC13" = { name = "msg_lord_plague_has_come", comment = "[ROM-STR] \"Lord,\nplague has come!\"" }
 "0xBC2B" = { name = "msg_a_typhoon_has_struck_fief_2d", comment = "[ROM-STR] \"\na typhoon has\nstruck fief %2d!\"" }
 "0xBC4C" = { name = "msg_plague_has_come_to_fief_2d", comment = "[ROM-STR] \"\nplague has come\nto fief %2d!\"" }
-"0xBC6A" = { name = "province_conquest_roll_predicate_in_fief", comment = "[ROM-STR] \"In fief \" Read by province_conquest_roll_predicate. Renamed 2026-10-28 from msg_in_fief_bc6a (the duplicate-string convention: by reader, not address)." }
-"0xBC73" = { name = "province_conquest_roll_predicate_fmt_2d", comment = "[ROM-STR] \"%2d,\" Read by province_conquest_roll_predicate. Renamed 2026-10-28 from msg_fmt__2d_bc73 (the duplicate-string convention: by reader, not address)." }
+"0xBC6A" = { name = "uprising_rebels_win_roll_in_fief", comment = "[ROM-STR] \"In fief \" Read by uprising_rebels_win_roll (the duplicate-string convention: by reader, not address)." }
+"0xBC73" = { name = "uprising_rebels_win_roll_fmt_2d", comment = "[ROM-STR] \"%2d,\" Read by uprising_rebels_win_roll (the duplicate-string convention: by reader, not address)." }
 "0xBC78" = { name = "msg_loyals_4d_men_rebels_4d_men", comment = "[ROM-STR] \"\n\nLoyals\n          %4d men\nRebels\n          %4d men\"" }
 "0xBCAC" = { name = "msg_beware_a_treacherous_subordina", comment = "[ROM-STR] \"Beware!\nA treacherous\nsubordinate has\nraised an army to\ndestroy \"" }
 "0xBCF1" = { name = "msg_the_rebels_have_won", comment = "[ROM-STR] \"The rebels have\nwon!\"" }
@@ -1055,7 +1055,7 @@ prg_bank_count = 16        # 256 KB total
 "0x94B1" = { name = "announce_seasonal_event", comment = "[HIGH CONFIRMED 2026-06-10] Announces a seasonal event by arg1: 1 -> summer typhoon, 2 -> plague, etc. (message_display + confirm_prompt per case). REFUTES the old 'by_ai_state_mode' framing -- arg1 is the event id, not an AI state. (was announce_provinces_by_ai_state_mode.)" }
 "0x952F" = { name = "avg_fief_tax_rate", comment = "[HIGH CONFIRMED 2026-06-10] Sums fief_tax_rate ($6D2D) across all active fiefs and divides by scenario_fief_count -- the average tax rate. (was avg_byte_array_6d2d_over_fiefs.)" }
 "0x9558" = { name = "avg_province_wealth_over_fiefs", comment = "[HIGH AMENDED 2026-06-10] split-mean (UDIV+UMOD) of province field +14 ($700F) over all fiefs = floor(sum/count). Field +14 = WEALTH (proposer said arms; 3 field-map sources - dashboard.lua/sram-decode-province.py/vm_decompile.py - agree +14=wealth, +22=arms)." }
-"0x9595" = { name = "province_conquest_roll_predicate", comment = "[MED AMENDED 2026-06-10] displays + computes a weighted random score from province field+18, field+16, and random daimyo charisma(+4) terms; returns TRUE when 2*score < field+16 (via SCMPLT, coinflip on tie). Single caller $97B2 gates daimyo-elimination/conquest on TRUE. Proposer mechanism right; 'below_threshold' imprecise (test is 2*score<field16)." }
+"0x9595" = { name = "uprising_rebels_win_roll", comment = "[HIGH top-down 2026-10-28] The uprising roll: prints 'In fief N' and 'loyals %4d men, rebels %4d men'; loyal% = min(morale,100)*3/10 + min(charisma,200)*3/20 + rng_mod(31) + 10 (10..100), loyal_men = pct_op(men, loyal%), rebels = men - loyal_men; returns TRUE when the rebels win (loyal < rebels; a tie is rng_mod(2)==0). Sole caller revolt_spread_sweep_flip_fief_ownership ($97AF). Was province_conquest_roll_predicate (a conquest it is not)." }
 "0x9614" = { name = "append_candidate_priority1", comment = "[HIGH CONFIRMED 2026-06-10] priority-1 counterpart of $8FD3: append_candidate_entry_6f67 ($8E99) with the priority/flag field = 1 (vs 0). Thin wrapper." }
 "0x9621" = { name = "reassign_daimyo24_fiefs_to_owner50", comment = "[MED AMENDED 2026-06-10] loops fiefs; for each owned by daimyo 24 with $6DA2 flag clear, sets fief_to_daimyo_map ($6E15) = 50 + refreshes via find_record_9e3c ($E554); then zeroes province_ai_state[selected], sets $6DA1 bit, UI. Byte-symmetric mirror of $99AB (owner 50->24). A scripted 50-fief reassignment event; literal owner-IDs (proposer's 'zealot' unsupported by bytecode)." }
 "0x96B0" = { name = "scenario50_fief30_event_eligible", comment = "[MED AMENDED 2026-06-10] eligibility predicate for a scripted 50-fief event: hard-gates scenario_fief_count==50 AND fief==30 AND owner==24 AND daimyo-record(30) >= 40 (proposer had <=40, direction inverted) AND flags clear; then a combat-strength accumulation ($6F81 vs $270F cap) + RNG roll; on full pass triggers $9621 + sets $6E48=1, returns 1. 'zealot/uprising' semantics dropped (no bytecode support)." }
@@ -4299,7 +4299,7 @@ arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 as arg1 of append_candid
 arg2 = { name = "idx", comment = "[HIGH] PUSH_quick 13 as arg2 of append_candidate_pair @ $961A; caller pushes post-inc count-1 @ $97A0-A4" }
 
 [vars.bank0."0x9595"]
-# province_conquest_roll_predicate
+# uprising_rebels_win_roll
 arg1 = { name = "fief", comment = "[HIGH] idx*26+$7001 @ $95AB; pushed to fief_to_daimyo_record_addr @ $95BB; printed arg1+1; caller pushes list byte" }
 local9 = { name = "rebel_men", comment = "[HIGH] fief->men - local10 (SUB @ $95F4); printed as rebels (arg3 of draw_message $95F6); compared vs local10" }
 local10 = { name = "loyal_men", comment = "[HIGH] pct_op(men, rng+charisma+morale pct) @ $95EA; printed as loyals; returns loyal<rebels (tie = coin flip)" }
