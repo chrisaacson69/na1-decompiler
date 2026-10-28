@@ -5919,7 +5919,7 @@ VM bytecode disassembly
   $A883  C8                         UCMPGT
   $A884  D8 CD A8                   JUMPF_abs              $A8CD
  >$A887  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $A88A  E9 AB DA 02                CALL_abs_imm1          $DAAB (load_daimyo_relation_row) {bytecode}, $02
+  $A88A  E9 AB DA 02                CALL_abs_imm1          $DAAB (load_fief_neighbor_list) {bytecode}, $02
   $A88E  AA E8 7B                   PUSH_abs               $7BE8 (cur_combat_side)
   $A891  E9 8F 83 02                CALL_abs_imm1          $838F (get_battle_side_province) {bytecode}, $02
   $A895  2B                         STORE_quick   ; inline operand = 11
@@ -6200,7 +6200,7 @@ VM bytecode disassembly
   $AADA  AC 2A 82                   CALL_abs               $822A (prompt_yes_no) {bytecode}
   $AADD  D8 35 AB                   JUMPF_abs              $AB35
   $AAE0  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
-  $AAE3  E9 AB DA 02                CALL_abs_imm1          $DAAB (load_daimyo_relation_row) {bytecode}, $02
+  $AAE3  E9 AB DA 02                CALL_abs_imm1          $DAAB (load_fief_neighbor_list) {bytecode}, $02
   $AAE7  3B                         PUSH_quick   ; inline operand = 11
   $AAE8  E9 BB 90 02                CALL_abs_imm1          $90BB (build_daimyo_province_list) {bytecode}, $02
   $AAEC  AC 2B 91                   CALL_abs               $912B (paged_flee_fief_list_display) {bytecode}
@@ -6636,7 +6636,7 @@ VM bytecode disassembly
   $AE5C  AA 57 6F                   PUSH_abs               $6F57 (battle_winner_province_sel)
   $AE5F  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $AE63  D8 69 AE                   JUMPF_abs              $AE69
-  $AE66  AC 35 DB                   CALL_abs               $DB35 (increment_ai_player_count) {bytecode}
+  $AE66  AC 35 DB                   CALL_abs               $DB35 (retire_human_player_check_game_over) {bytecode}
  >$AE69  AC FF 82                   CALL_abs               $82FF (is_no_province_selected) {bytecode}
   $AE6C  D8 70 AE                   JUMPF_abs              $AE70 (portrait_sram_ae70)
   $AE6F  CF                         RETURN

@@ -2480,7 +2480,7 @@ VM bytecode disassembly
 ; sub $DAD7   (frame_off=-4, body @ $DADC)
 ; ============================================================
   $DADC  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
-  $DADF  E9 AB DA 02                CALL_abs_imm1          $DAAB (load_daimyo_relation_row) {bytecode}, $02
+  $DADF  E9 AB DA 02                CALL_abs_imm1          $DAAB (load_fief_neighbor_list) {bytecode}, $02
   $DAE3  8A 4F 6F                   LOADL_imm2             $6F4F (deduped_owner_list)
   $DAE6  2A                         STORE_quick   ; inline operand = 10
   $DAE7  2B                         STORE_quick   ; inline operand = 11

@@ -2807,7 +2807,7 @@ L_A86A:
     if (cur_combat_side) goto L_A8CD;    // $A87D
     if (!(((unsigned)fief > (unsigned)29))) goto L_A8CD;    // $A884
 L_A887:
-    load_daimyo_relation_row(battle_defending_province);    // $A88A
+    load_fief_neighbor_list(battle_defending_province);    // $A88A
     side_fief = get_battle_side_province(cur_combat_side);    // $A895
     build_daimyo_province_list(side_fief);    // $A897
     owner = deduped_owner_list;    // $A89E
@@ -2968,7 +2968,7 @@ word combat_flee_to_fief_command(void) {
 L_AAD3:
     redraw_window(mem_B1AA);    // $AAD6
     if (!(prompt_yes_no())) goto L_AB35;    // $AADD
-    load_daimyo_relation_row(battle_defending_province);    // $AAE3
+    load_fief_neighbor_list(battle_defending_province);    // $AAE3
     build_daimyo_province_list(source_fief);    // $AAE8
     if (!(paged_flee_fief_list_display())) goto L_AB32;    // $AAEF
     redraw_window(mem_B1D0);    // $AAF5
@@ -3217,7 +3217,7 @@ word transfer_owned_fiefs_and_announce_succession(void) {
     announce_daimyo_death(battle_winner_province_sel);    // $AE58
     if (!(get_province_ai_state(battle_winner_province_sel))) goto L_AE69;    // $AE63
 L_AE69:
-    increment_ai_player_count();    // $AE66
+    retire_human_player_check_game_over();    // $AE66
     if (!(is_no_province_selected())) goto L_AE70;    // $AE6C
     return is_no_province_selected();    // $AE6F
 L_AE70:

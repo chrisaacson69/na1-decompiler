@@ -14,7 +14,7 @@ VM bytecode disassembly
   $800A  6A                         PUSH_qimm   ; inline operand = 10
   $800B  E9 26 F2 06                CALL_abs_imm1          $F226 (syscall_dispatch) {native}, $06
   $800F  AC 20 CD                   CALL_abs               $CD20 (repaint_screen) {bytecode}
-  $8012  AC 28 D6                   CALL_abs               $D628 (count_6da2_set) {bytecode}
+  $8012  AC 28 D6                   CALL_abs               $D628 (is_unification_victory) {bytecode}
   $8015  D8 1C 81                   JUMPF_abs              $811C
   $8018  61                         PUSH_qimm   ; inline operand = 1
   $8019  E9 35 CC 02                CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
@@ -2065,7 +2065,7 @@ VM bytecode disassembly
   $8ED9  E9 78 DE 02                CALL_abs_imm1          $DE78 (select_uprising_message) {bytecode}, $02
   $8EDD  2B                         STORE_quick   ; inline operand = 11
   $8EDE  3E                         PUSH_quick   ; inline operand = 14
-  $8EDF  E9 9D 8B 02                CALL_abs_imm1          $8B9D (select_message_string_by_flags_and_arg) {bytecode}, $02
+  $8EDF  E9 9D 8B 02                CALL_abs_imm1          $8B9D (select_rebel_force_label) {bytecode}, $02
   $8EE3  2A                         STORE_quick   ; inline operand = 10
   $8EE4  8E C0 BA                   PUSH_imm2              $BAC0 (msg_in_fief)
   $8EE7  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
@@ -2491,7 +2491,7 @@ VM bytecode disassembly
   $91C8  3C                         PUSH_quick   ; inline operand = 12
   $91C9  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $91CD  D8 D3 91                   JUMPF_abs              $91D3
-  $91D0  AC 35 DB                   CALL_abs               $DB35 (increment_ai_player_count) {bytecode}
+  $91D0  AC 35 DB                   CALL_abs               $DB35 (retire_human_player_check_game_over) {bytecode}
  >$91D3  0B                         LOADL_quick   ; inline operand = 11
   $91D4  59                         LOADR_qimm   ; inline operand = 9
   $91D5  B5                         MULT

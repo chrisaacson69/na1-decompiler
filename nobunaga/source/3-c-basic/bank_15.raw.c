@@ -1049,10 +1049,10 @@ word wait_hit_any_key(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D628
-// $D628 count_6da2_set
+// $D628 is_unification_victory
 // (body @ $D62D)
 
-word count_6da2_set(void) {
+word is_unification_victory(void) {
     fief_idx = 0;    // $D62E
     count = 0;    // $D62F
     goto L_D64E;    // $D630
@@ -1476,10 +1476,10 @@ word set_marriage_relation(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DAAB
-// $DAAB load_daimyo_relation_row
+// $DAAB load_fief_neighbor_list
 // (body @ $DAB0)
 
-word load_daimyo_relation_row(word fief) {
+word load_fief_neighbor_list(word fief) {
     syscall16_sram_wrap(4, ((fief << 3) + ((scenario_fief_count == 17) ? relation_sram_8300 : relation_sram_base)), deduped_owner_list, 8);    // $DACF
     return 0x6F4F;    // $DAD6
 }
@@ -1489,7 +1489,7 @@ word load_daimyo_relation_row(word fief) {
 // (body @ $DADC)
 
 word build_selected_fief_neighbor_list(void) {
-    load_daimyo_relation_row(selected_province_idx);    // $DADF
+    load_fief_neighbor_list(selected_province_idx);    // $DADF
     src = 0x6F4F;    // $DAE6
     dst = 0x6F4F;    // $DAE7
     goto L_DB04;    // $DAE8
@@ -1517,10 +1517,10 @@ L_DB2A:
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DB35
-// $DB35 increment_ai_player_count
+// $DB35 retire_human_player_check_game_over
 // (body @ $DB3A)
 
-word increment_ai_player_count(void) {
+word retire_human_player_check_game_over(void) {
     ai_player_count = (ai_player_count + 1);    // $DB3E
     phi_ret_db4a = no_human_players_left();    // $DB44
     if (!(phi_ret_db4a)) goto L_DB4A;    // $DB44

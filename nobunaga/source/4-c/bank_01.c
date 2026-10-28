@@ -3118,7 +3118,7 @@ word setting_watch_battles(void) {
 word command_end_game(void) {
     message_display(msg_do_you_really_want_to_end_the);    // $B153
     if (prompt_y_n()) {    // $B150
-        increment_ai_player_count();    // $B15D
+        retire_human_player_check_game_over();    // $B15D
         if ((ai_turn_flags & 128)) {    // $B15D
             repaint_screen();    // $B16A
             set_cursor(12, 14);    // $B16F
@@ -3571,11 +3571,11 @@ L_B8AA:
     if (!(fief_owner_weakness(selected_province_idx))) goto L_B8EE;    // $B8D6
     ai_turn_flags = (ai_turn_flags | (rng_mod(4) ? 0 : 1));    // $B8EB
 L_B8EE:
-    if (count_6da2_set()) goto L_B8FA;    // $B8F1
+    if (is_unification_victory()) goto L_B8FA;    // $B8F1
     if (!(no_human_players_left())) goto L_B90E;    // $B8F7
 L_B8FA:
     ai_turn_flags = (ai_turn_flags | -128);    // $B901
-    phi_ret_b90d = count_6da2_set();    // $B907
+    phi_ret_b90d = is_unification_victory();    // $B907
     if (!(phi_ret_b90d)) goto L_B90D;    // $B907
     phi_ret_b90d = wait_hit_any_key();    // $B90A
 L_B90D:

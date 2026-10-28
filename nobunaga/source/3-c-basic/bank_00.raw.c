@@ -32,7 +32,7 @@ extern byte relations_matrix[];
 word show_game_ending_and_play_again_prompt(void) {
     syscall_audio_control(0, 0);    // $800B
     repaint_screen();    // $800F
-    if (!(count_6da2_set())) goto L_811C;    // $8015
+    if (!(is_unification_victory())) goto L_811C;    // $8015
     palette_swap(1);    // $8019
     ppu_upload_block_wrap(6, 0x9054, 0x1510, 174);    // $8027
     ppu_copy_rect_wrap(0, 0, 31, 22, 0x8D74, 6);    // $8035
@@ -616,10 +616,10 @@ L_8B9A:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8B9D
-// $8B9D select_message_string_by_flags_and_arg
+// $8B9D select_rebel_force_label
 // (body @ $8BA2)
 
-word select_message_string_by_flags_and_arg(word fief) {
+word select_rebel_force_label(word fief) {
     if (!((ai_turn_flags & 32))) goto L_8BAF;    // $8BA8
     return msg_rebels;    // $8BAE
 L_8BAF:
@@ -864,7 +864,7 @@ L_8ECF:
 
 word show_uprising_strengths_and_decide_winner(word attacker_strength, word loyal_men, word fief) {
     uprising_msg = select_uprising_message(fief);    // $8EDD
-    side_msg = select_message_string_by_flags_and_arg(fief);    // $8EE3
+    side_msg = select_rebel_force_label(fief);    // $8EE3
     message_display(msg_in_fief);    // $8EE7
     draw_message(msg_fmt__d, (fief + 1), uprising_msg);    // $8EF2
     draw_message(msg_loyals_4d_men_s_4d_men, loyal_men, side_msg, attacker_strength);    // $8EFC
@@ -1076,7 +1076,7 @@ L_91BE:
     list_remove_matching(daimyo);    // $91C4
     if (!(get_province_ai_state(fief))) goto L_91D3;    // $91CD
 L_91D3:
-    increment_ai_player_count();    // $91D0
+    retire_human_player_check_game_over();    // $91D0
     message_display(daimyo_name_table[daimyo]);    // $91DB
     draw_message(msg_died_of_s, *(word*)((((death_cause - 1) << 1) + str_death_cause_msgs)));    // $91EB
     clear_fief_pair_matrix(fief);    // $91F0

@@ -7099,7 +7099,7 @@ VM bytecode disassembly
   $B153  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $B157  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
   $B15A  D8 A4 B1                   JUMPF_abs              $B1A4
-  $B15D  AC 35 DB                   CALL_abs               $DB35 (increment_ai_player_count) {bytecode}
+  $B15D  AC 35 DB                   CALL_abs               $DB35 (retire_human_player_check_game_over) {bytecode}
   $B160  A5 A1 6D                   BYTE_LOADL_abs         $6DA1 (ai_turn_flags)
   $B163  8C 80 00                   LOADR_imm2             $0080 (skip_vblank_wait)
   $B166  DA                         AND
@@ -8204,7 +8204,7 @@ VM bytecode disassembly
   $B8E7  A5 A1 6D                   BYTE_LOADL_abs         $6DA1 (ai_turn_flags)
   $B8EA  DB                         OR
   $B8EB  A9 A1 6D                   BYTE_STORE_abs         $6DA1 (ai_turn_flags)
- >$B8EE  AC 28 D6                   CALL_abs               $D628 (count_6da2_set) {bytecode}
+ >$B8EE  AC 28 D6                   CALL_abs               $D628 (is_unification_victory) {bytecode}
   $B8F1  D7 FA B8                   JUMPT_abs              $B8FA
   $B8F4  AC 82 D9                   CALL_abs               $D982 (no_human_players_left) {bytecode}
   $B8F7  D8 0E B9                   JUMPF_abs              $B90E
@@ -8213,7 +8213,7 @@ VM bytecode disassembly
   $B8FD  A5 A1 6D                   BYTE_LOADL_abs         $6DA1 (ai_turn_flags)
   $B900  DB                         OR
   $B901  A9 A1 6D                   BYTE_STORE_abs         $6DA1 (ai_turn_flags)
-  $B904  AC 28 D6                   CALL_abs               $D628 (count_6da2_set) {bytecode}
+  $B904  AC 28 D6                   CALL_abs               $D628 (is_unification_victory) {bytecode}
   $B907  D8 0D B9                   JUMPF_abs              $B90D
   $B90A  AC 09 D6                   CALL_abs               $D609 (wait_hit_any_key) {bytecode}
  >$B90D  CF                         RETURN

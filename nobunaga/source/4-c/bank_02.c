@@ -2853,7 +2853,7 @@ word ai_claim_province_when_strong_enough(word fief) {
     } else {
         if (!((ai_own_double_lt_enemy_total() || !(side_has_rice_for_day(cur_combat_side))))) {    // $A86A
             if (!((cur_combat_side || !(((unsigned)fief > (unsigned)29))))) {    // $A87A
-                load_daimyo_relation_row(battle_defending_province);    // $A88A
+                load_fief_neighbor_list(battle_defending_province);    // $A88A
                 side_fief = get_battle_side_province(cur_combat_side);    // $A895
                 build_daimyo_province_list(side_fief);    // $A897
                 owner = deduped_owner_list;    // $A89E
@@ -2869,7 +2869,7 @@ word ai_claim_province_when_strong_enough(word fief) {
                 }
             }
         } else {
-            load_daimyo_relation_row(battle_defending_province);    // $A88A
+            load_fief_neighbor_list(battle_defending_province);    // $A88A
             side_fief = get_battle_side_province(cur_combat_side);    // $A895
             build_daimyo_province_list(side_fief);    // $A897
             owner = deduped_owner_list;    // $A89E
@@ -3061,7 +3061,7 @@ word combat_flee_to_fief_command(void) {
     } else {
         redraw_window(mem_B1AA);    // $AAD6
         if (prompt_yes_no()) {    // $AAD3
-            load_daimyo_relation_row(battle_defending_province);    // $AAE3
+            load_fief_neighbor_list(battle_defending_province);    // $AAE3
             build_daimyo_province_list(source_fief);    // $AAE8
             if (paged_flee_fief_list_display()) {    // $AAE0
                 redraw_window(mem_B1D0);    // $AAF5
@@ -3346,7 +3346,7 @@ word transfer_owned_fiefs_and_announce_succession(void) {
         if ((battle_winner_province_sel != 50)) {    // $AE4C
             announce_daimyo_death(battle_winner_province_sel);    // $AE58
             if (get_province_ai_state(battle_winner_province_sel)) {    // $AE55
-                increment_ai_player_count();    // $AE66
+                retire_human_player_check_game_over();    // $AE66
             }
         }
     }
