@@ -399,10 +399,10 @@ L_853B:
 // $8544 step_coord_from_dir_code
 // (body @ $8549)
 
-word step_coord_from_dir_code(word arg1, word arg2, word arg3) {
-    if ((arg3 == 48)) goto L_855F;    // $854D
-    arg3 = (((unsigned)(arg3 + -48) >> 1) - 1);    // $8556
-    return step_coord_by_direction(arg1, arg2, arg3);    // $855E
+word step_coord_from_dir_code(word x_ptr, word y_ptr, word dir_code) {
+    if ((dir_code == 48)) goto L_855F;    // $854D
+    dir_code = (((unsigned)(dir_code + -48) >> 1) - 1);    // $8556
+    return step_coord_by_direction(x_ptr, y_ptr, dir_code);    // $855E
 L_855F:
     return 0;    // $8560
 }
@@ -1174,15 +1174,15 @@ word remove_unit(word side, word unit_slot) {
 // $8FC0 side_has_unit_at_cell
 // (body @ $8FC5)
 
-word side_has_unit_at_cell(word arg1, word arg2, word arg3) {
-    local11 = 0;    // $8FC6
+word side_has_unit_at_cell(word side, word col, word row) {
+    unit_slot = 0;    // $8FC6
 L_8FC7:
-    if (!((*(byte*)(unit_col_ptr(arg1, local11)) == arg2))) goto L_8FE1;    // $8FD0
-    if (!((*(byte*)(unit_row_ptr(arg1, local11)) == arg3))) goto L_8FE1;    // $8FDC
+    if (!((*(byte*)(unit_col_ptr(side, unit_slot)) == col))) goto L_8FE1;    // $8FD0
+    if (!((*(byte*)(unit_row_ptr(side, unit_slot)) == row))) goto L_8FE1;    // $8FDC
     return 1;    // $8FE0
 L_8FE1:
-    local11 = (local11 + 1);    // $8FE3
-    if (((unsigned)local11 < (unsigned)5)) goto L_8FC7;    // $8FE7
+    unit_slot = (unit_slot + 1);    // $8FE3
+    if (((unsigned)unit_slot < (unsigned)5)) goto L_8FC7;    // $8FE7
     return 0;    // $8FEB
 }
 
@@ -1205,19 +1205,19 @@ L_8FFF:
 // $900A wrap_index_0_2_to_zero
 // (body @ $900F)
 
-word wrap_index_0_2_to_zero(word arg1) {
-    if (!(((unsigned)arg1 > (unsigned)2))) goto L_9017;    // $9012
-    arg1 = 0;    // $9016
+word wrap_index_0_2_to_zero(word idx) {
+    if (!(((unsigned)idx > (unsigned)2))) goto L_9017;    // $9012
+    idx = 0;    // $9016
 L_9017:
-    return arg1;    // $9018
+    return idx;    // $9018
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9019
 // $9019 is_map_cell_blocked
 // (body @ $901E)
 
-word is_map_cell_blocked(word arg1, word arg2) {
-    return (is_cell_clear_of_bits(arg1, arg2, 194) ? 0 : 1);    // $902F
+word is_map_cell_blocked(word col, word row) {
+    return (is_cell_clear_of_bits(col, row, 194) ? 0 : 1);    // $902F
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9030
@@ -1285,10 +1285,10 @@ L_90F0:
 word prompt_hit_any_key_return_button(void) {
     set_cursor(2, 24);    // $9114
     redraw_window(msg_hit_any_key);    // $911B
-    local11 = wait_button_edge();    // $9122
+    button = wait_button_edge();    // $9122
     clear_rect_left_lower();    // $9123
     reset_prompt_selection();    // $9126
-    return local11;    // $912A
+    return button;    // $912A
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $912B
@@ -1328,18 +1328,18 @@ L_919F:
 // (body @ $91A6)
 
 word prompt_select_province_from_list(void) {
-    local10 = 0x6F4F;    // $91A9
-    local11 = select_province_by_cursor(1, scenario_fief_count);    // $91B2
+    list_ptr = 0x6F4F;    // $91A9
+    selected_fief = select_province_by_cursor(1, scenario_fief_count);    // $91B2
     if (!(select_province_by_cursor(1, scenario_fief_count))) goto L_91D1;    // $91B3
-    local11 = (local11 - 1);    // $91B8
+    selected_fief = (selected_fief - 1);    // $91B8
     goto L_91C8;    // $91B9
 L_91BC:
-    if (!((*(byte*)(local10) == local11))) goto L_91C5;    // $91C0
-    return local11;    // $91C4
+    if (!((*(byte*)(list_ptr) == selected_fief))) goto L_91C5;    // $91C0
+    return selected_fief;    // $91C4
 L_91C5:
-    local10 = (local10 + 1);    // $91C7
+    list_ptr = (list_ptr + 1);    // $91C7
 L_91C8:
-    if ((*(byte*)(local10) != 255)) goto L_91BC;    // $91CE
+    if ((*(byte*)(list_ptr) != 255)) goto L_91BC;    // $91CE
 L_91D1:
     return 255;    // $91D4
 }

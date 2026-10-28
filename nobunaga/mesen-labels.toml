@@ -3764,3 +3764,35 @@ arg3 = { name = "direction", comment = "[HIGH] direction 0..3: UCMPLT 4 @$84FE, 
 local11 = { name = "new_x", comment = "[HIGH] candidate x after the step (STORE_quick 11 @$8514/$852F); is arg1 of is_tile_in_bounds @$851A; stored to *arg1 @$8525" }
 local10 = { name = "new_y", comment = "[HIGH] candidate y after the step (STORE_quick 10 @$8518); is arg2 of is_tile_in_bounds @$8519; stored to *arg2 @$8528" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (6 subs) ---
+[vars.bank2."0x91A1"]
+# prompt_select_province_from_list
+local10 = { name = "list_ptr", comment = "[HIGH] Byte ptr: =$6F4F @$91A9, BYTE_DEREF vs sel @$91BD and vs $FF terminator @$91C9, INC @$91C6" }
+local11 = { name = "selected_fief", comment = "[HIGH] select_province_by_cursor(1,scenario_fief_count) @$91B2; 0 -> return $FF; DEC to 0-based, matched vs list bytes, returned @$91C3" }
+
+[vars.bank2."0x910C"]
+# prompt_hit_any_key_return_button
+local11 = { name = "button", comment = "[HIGH] STORE_quick 11 @$9122 of wait_button_edge() result, kept across cleanup calls, LOADL_quick 11 @$9129 returned" }
+
+[vars.bank2."0x9019"]
+# is_map_cell_blocked
+arg1 = { name = "col", comment = "[HIGH] PUSH_quick 12 @$9022 as arg1 of is_cell_clear_of_bits(.., .., $C2); caller $A65F passes local10 (col, as in $991A)" }
+arg2 = { name = "row", comment = "[HIGH] PUSH_quick 13 @$9021 as arg2 of is_cell_clear_of_bits; caller $A65E passes local9 (row, as in $9919)" }
+
+[vars.bank2."0x900A"]
+# wrap_index_0_2_to_zero
+arg1 = { name = "idx", comment = "[MED] Index: UCMPGT 2 @$9011 then STORE_quick 12 =0, returned @$9017; callers pass cur_combat_unit_slot ($938C) or $9C69's arg2/arg3" }
+
+[vars.bank2."0x8FC0"]
+# side_has_unit_at_cell
+arg1 = { name = "side", comment = "[HIGH] PUSH_quick 12 as arg1 of unit_col_ptr/unit_row_ptr (@$8FC8,$8FD4); caller $991B passes cur_combat_side^1" }
+arg2 = { name = "col", comment = "[HIGH] LOADR_quick 13 @$8FCE CMPEQ vs BYTE_DEREF of unit_col_ptr(side,i); caller $991A passes local10 (the col)" }
+arg3 = { name = "row", comment = "[HIGH] LOADR_quick 14 @$8FDA CMPEQ vs BYTE_DEREF of unit_row_ptr(side,i); caller $9919 passes local9 (the row)" }
+local11 = { name = "unit_slot", comment = "[HIGH] Loop index 0..4: init 0 @$8FC6, INC @$8FE2, UCMPLT 5 @$8FE6; pushed as arg2 (unit_slot) of unit_col_ptr/unit_row_ptr" }
+
+[vars.bank2."0x8544"]
+# step_coord_from_dir_code
+arg1 = { name = "x_ptr", comment = "[MED] Pointer: caller $9AA1 pushes LEAL_far $FFFC (&local10, col); PUSH_quick 12 @$8559 forwards it as arg1 of step_coord_by_direction" }
+arg2 = { name = "y_ptr", comment = "[MED] Pointer: caller $9A9D pushes LEAL_far $FFFA (&local9, row); PUSH_quick 13 @$8558 forwards it as arg2 of step_coord_by_direction" }
+arg3 = { name = "dir_code", comment = "[MED] Raw dir code (caller local11): ==48 returns 0 @$854C; else rewritten (code-48)>>1-1 by STORE_quick 14 @$8556, passed as direction" }
+
