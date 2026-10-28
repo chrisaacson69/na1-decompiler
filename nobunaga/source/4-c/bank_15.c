@@ -218,40 +218,40 @@ word swap_word(word word_a_ptr, word word_b_ptr) {
 // $CBA4 chr_bank0_set_wrap
 // (body @ $CBA9)
 
-word chr_bank0_set_wrap(word arg1) {
-    return syscall_set_chr_bank0_reg(arg1);    // $CBB0
+word chr_bank0_set_wrap(word chr_bank) {
+    return syscall_set_chr_bank0_reg(chr_bank);    // $CBB0
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CBB1
 // $CBB1 call_bank_wrap
 // (body @ $CBB6)
 
-word call_bank_wrap(word arg1) {
-    return syscall_call_bank(arg1);    // $CBBC
+word call_bank_wrap(word bank) {
+    return syscall_call_bank(bank);    // $CBBC
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CBBD
 // $CBBD syscall16_sram_wrap
 // (body @ $CBC2)
 
-word syscall16_sram_wrap(word arg1, word arg2, word arg3, word arg4) {
-    return syscall_memcpy_banked(arg1, arg2, arg3, arg4);    // $CBCC
+word syscall16_sram_wrap(word bank, word src, word dst, word len) {
+    return syscall_memcpy_banked(bank, src, dst, len);    // $CBCC
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CC35
 // $CC35 palette_swap
 // (body @ $CC3A)
 
-word palette_swap(word arg1) {
-    return syscall_palette_swap(arg1);    // $CC41
+word palette_swap(word palette_sel) {
+    return syscall_palette_swap(palette_sel);    // $CC41
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CC42
 // $CC42 ppu_fill_rect_wrap
 // (body @ $CC47)
 
-word ppu_fill_rect_wrap(word arg1, word arg2, word arg3, word arg4, word arg5) {
-    return syscall_ppu_fill_rect(0, arg1, arg2, arg3, arg4, arg5);    // $CC53
+word ppu_fill_rect_wrap(word rect_start_a, word rect_start_b, word rect_end_a, word rect_end_b, word arg5) {
+    return syscall_ppu_fill_rect(0, rect_start_a, rect_start_b, rect_end_a, rect_end_b, arg5);    // $CC53
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CC54

@@ -2683,3 +2683,31 @@ arg1 = { name = "word_a_ptr", comment = "[HIGH] Word ptr: DEREF'd at $CB9A into 
 arg2 = { name = "word_b_ptr", comment = "[HIGH] Word ptr: DEREF'd at $CB9E (stored into *arg1), then gets saved local11 via PUSH_quick 13/POPSTORE $CBA2. Callers push &$6F5F or &$6F63" }
 local11 = { name = "saved_a", comment = "[HIGH] Swap temp: STORE_quick 11 of *arg1 at $CB9B, LOADL_quick 11 at $CBA1 written to *arg2. One role; left in the accumulator at RETURN $CBA3" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 11 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xCBA4"]
+# chr_bank0_set_wrap
+arg1 = { name = "chr_bank", comment = "[MED] PUSH_quick 12 -> syscall 21 (CHR bank0 reg). Callers push only 0/1; 1 before $7FED/$7FEB SRAM reads, 0 after (SNROM WRAM gate?)" }
+
+[vars.bank15."0xCBB1"]
+# call_bank_wrap
+arg1 = { name = "bank", comment = "[HIGH] PUSH_quick 12 -> syscall 7 (call bank); callers push constant PRG bank numbers 1, 2, 10 ($CA0D), 14 ($E81E)" }
+
+[vars.bank15."0xCBBD"]
+# syscall16_sram_wrap
+arg1 = { name = "bank", comment = "[HIGH] PUSH_quick 12, last arg to syscall 16; callers' final push is a const 3/4/8/9 (source bank selector)" }
+arg2 = { name = "src", comment = "[HIGH] PUSH_quick 13 -> syscall 16; callers push idx*34+$9E3C, idx*12+$AE34, PUSH_near $D5 (ptr from $BBD0 table): source address" }
+arg3 = { name = "dst", comment = "[HIGH] PUSH_quick 14 -> syscall 16; callers push $6001, LEAL_far $FFD1/$FFD9 (&local), caller arg1 out_buf: destination buffer" }
+arg4 = { name = "len", comment = "[HIGH] PUSH_quick 15 -> syscall 16; callers push consts 4/1 or $7FCF-$6001+2 (span size): byte count" }
+
+[vars.bank15."0xCC35"]
+# palette_swap
+arg1 = { name = "palette_sel", comment = "[MED] PUSH_quick 12 -> syscall 18; ~43 callers push only 0 or 1 (0 after gfx upload $8201, 1 after repaint $8303): palette select/toggle" }
+
+[vars.bank15."0xCC42"]
+# ppu_fill_rect_wrap
+arg1 = { name = "rect_start_a", comment = "[MED] PUSH_quick 12 -> syscall 12; values 2..22, always <= arg3. Axis (col vs row) unproven: $CCA2 ties arg2 to ui_msg_col_shift_flag" }
+arg2 = { name = "rect_start_b", comment = "[MED] PUSH_quick 13 -> syscall 12; values 3..26, always <= arg4. $CCA2 picks 20/22 via ui_msg_col_shift_flag, so axis is unproven" }
+arg3 = { name = "rect_end_a", comment = "[MED] PUSH_quick 14 -> syscall 12; values 29 or 19, >= arg1: far edge of arg1's axis. NB sub also reads arg5 via PUSH_near $13 (always 1)" }
+arg4 = { name = "rect_end_b", comment = "[MED] PUSH_quick 15 -> syscall 12; values 3..26, >= arg2: far edge of arg2's axis (pairs 3/3, 4/6, 7/26, 20/25, 26/26)" }
+
