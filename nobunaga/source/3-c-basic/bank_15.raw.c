@@ -2018,12 +2018,12 @@ L_E2CF:
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E2D6
-// $E2D6 draw_daimyo_name_menu
+// $E2D6 draw_diplomacy_proposal_message
 // (body @ $E2DB)
 
-word draw_daimyo_name_menu(word pact_msg) {
+word draw_diplomacy_proposal_message(word pact_msg) {
     open_message_window();    // $E2DB
-    message_display(draw_daimyo_name_menu_lord);    // $E2E1
+    message_display(draw_diplomacy_proposal_message_lord);    // $E2E1
     redraw_window(daimyo_name_table[fief_owner(battle_defending_province)]);    // $E2F3
     redraw_window(str_marriage_event_msgs);    // $E2FA
     redraw_window(daimyo_name_table[selected_province_owner()]);    // $E308
@@ -2038,7 +2038,7 @@ word marriage_pact_handler(void) {
     if (!(get_province_ai_state(battle_defending_province))) goto L_E361;    // $E321
     saved_input_mode = ui_input_mode;    // $E327
     ui_input_mode = 2;    // $E329
-    draw_daimyo_name_menu(msg_marriage_pact);    // $E32F
+    draw_diplomacy_proposal_message(msg_marriage_pact);    // $E32F
     redraw_window(msg_accept);    // $E336
     if (!(prompt_y_n())) goto L_E359;    // $E33D
     message_display(msg_demand_gold);    // $E343
@@ -2071,7 +2071,7 @@ word prompt_diplomacy_pact(void) {
     if (!(get_province_ai_state(battle_defending_province))) goto L_E3DE;    // $E3B0
     saved_input_mode = ui_input_mode;    // $E3B6
     ui_input_mode = 2;    // $E3B8
-    draw_daimyo_name_menu(msg_pact);    // $E3BE
+    draw_diplomacy_proposal_message(msg_pact);    // $E3BE
     redraw_window(msg_demand_gold);    // $E3C5
     demanded_gold = number_input(1, 0x270F);    // $E3D1
     if (demanded_gold) goto L_E3D8;    // $E3D2

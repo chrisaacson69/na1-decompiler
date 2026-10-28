@@ -3693,7 +3693,7 @@ VM bytecode disassembly
 ; sub $E2D6   (frame_off=+0, body @ $E2DB)
 ; ============================================================
   $E2DB  AC 89 CC                   CALL_abs               $CC89 (open_message_window) {bytecode}
-  $E2DE  8E 77 F7                   PUSH_imm2              $F777 (draw_daimyo_name_menu_lord)
+  $E2DE  8E 77 F7                   PUSH_imm2              $F777 (draw_diplomacy_proposal_message_lord)
   $E2E1  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $E2E5  AA 63 6F                   PUSH_abs               $6F63 (battle_defending_province)
   $E2E8  E9 72 D7 02                CALL_abs_imm1          $D772 (fief_owner) {bytecode}, $02
@@ -3728,7 +3728,7 @@ VM bytecode disassembly
   $E328  42                         LOADL_qimm   ; inline operand = 2
   $E329  A8 D3 7F                   STORE_abs              $7FD3 (ui_input_mode)
   $E32C  8E 98 F7                   PUSH_imm2              $F798 (msg_marriage_pact)
-  $E32F  E9 D6 E2 02                CALL_abs_imm1          $E2D6 (draw_daimyo_name_menu) {bytecode}, $02
+  $E32F  E9 D6 E2 02                CALL_abs_imm1          $E2D6 (draw_diplomacy_proposal_message) {bytecode}, $02
   $E333  8E A6 F7                   PUSH_imm2              $F7A6 (msg_accept)
   $E336  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $E33A  AC A7 D3                   CALL_abs               $D3A7 (prompt_y_n) {bytecode}
@@ -3789,7 +3789,7 @@ VM bytecode disassembly
   $E3B7  42                         LOADL_qimm   ; inline operand = 2
   $E3B8  A8 D3 7F                   STORE_abs              $7FD3 (ui_input_mode)
   $E3BB  8E AD F7                   PUSH_imm2              $F7AD (msg_pact)
-  $E3BE  E9 D6 E2 02                CALL_abs_imm1          $E2D6 (draw_daimyo_name_menu) {bytecode}, $02
+  $E3BE  E9 D6 E2 02                CALL_abs_imm1          $E2D6 (draw_diplomacy_proposal_message) {bytecode}, $02
   $E3C2  8E 8C F7                   PUSH_imm2              $F78C (msg_demand_gold)
   $E3C5  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
   $E3C9  8E 0F 27                   PUSH_imm2              $270F

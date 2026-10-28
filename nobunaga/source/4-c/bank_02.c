@@ -2236,10 +2236,10 @@ word resolve_attack_apply_mutual_casualties(word enemy_unit_slot) {
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9E73
-// $9E73 resolve_attack_apply_casualties
+// $9E73 resolve_bribe_enemy_unit
 // (body @ $9E78)
 
-word resolve_attack_apply_casualties(word target_slot, word arg2) {
+word resolve_bribe_enemy_unit(word target_slot, word arg2) {
     *(word*)(side_resource_ptr(cur_combat_side)) = (*(word*)(side_resource_ptr(cur_combat_side)) - arg2);    // $9E84
     draw_side_resource_field(cur_combat_side, 0);    // $9E89
     own_fief = get_battle_side_province(cur_combat_side);    // $9E94
@@ -2270,7 +2270,7 @@ word resolve_attack_apply_casualties(word target_slot, word arg2) {
                 }
                 if (get_province_ai_state(own_fief)) {    // $9FA9
                     message_display(combat_message_table);    // $9FB4
-                    draw_message(resolve_attack_apply_casualties_fmt_d, local11);    // $9FBC
+                    draw_message(resolve_bribe_enemy_unit_fmt_d, local11);    // $9FBC
                     redraw_window(mem_B198);    // $9FC3
                 }
                 combat_casualty_skip_flag_7bf3 = 1;    // $9FC8
@@ -2811,7 +2811,7 @@ word ai_try_bribe_strongest_enemy_unit(void) {
                                     }
                                     unit_type = (unit_type + 1);    // $A7C3
                                 }
-                                return resolve_attack_apply_casualties(strongest_unit_type, (*(word*)(side_resource_ptr(cur_combat_side)) - *(word*)((side_resource_ptr(cur_combat_side) + 4))));    // $A7E4
+                                return resolve_bribe_enemy_unit(strongest_unit_type, (*(word*)(side_resource_ptr(cur_combat_side)) - *(word*)((side_resource_ptr(cur_combat_side) + 4))));    // $A7E4
                             }
                         }
                     }
@@ -3033,7 +3033,7 @@ word combat_command_select_target_resolve_attack(void) {
                         message_display(mem_B1C8);    // $AA8B
                         local11 = prompt_province_selection(1, local11);    // $AA95
                         if (local11) {    // $AA88
-                            resolve_attack_apply_casualties(target_idx, local11);    // $AA9B
+                            resolve_bribe_enemy_unit(target_idx, local11);    // $AA9B
                         }
                     }
                 }

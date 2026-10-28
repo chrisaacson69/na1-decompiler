@@ -7504,7 +7504,7 @@ VM bytecode disassembly
   $B423  B0                         DEREF
   $B424  BC                         SUB
   $B425  B1                         POPSTORE
- >$B426  AC C9 95                   CALL_abs               $95C9 (ai_develop_grow_if_men_exceeds_gold) {bytecode}
+ >$B426  AC C9 95                   CALL_abs               $95C9 (ai_develop_spend_gold_surplus_over_men) {bytecode}
   $B429  41                         LOADL_qimm   ; inline operand = 1
   $B42A  CF                         RETURN
 
@@ -7611,7 +7611,7 @@ VM bytecode disassembly
   $B4C1  3B                         PUSH_quick   ; inline operand = 11
   $B4C2  E9 F0 87 04                CALL_abs_imm1          $87F0 (effect_grow) {bytecode}, $04
   $B4C6  D6 CC B4                   JUMP_abs               $B4CC
- >$B4C9  AC C9 95                   CALL_abs               $95C9 (ai_develop_grow_if_men_exceeds_gold) {bytecode}
+ >$B4C9  AC C9 95                   CALL_abs               $95C9 (ai_develop_spend_gold_surplus_over_men) {bytecode}
  >$B4CC  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
   $B4CF  E9 36 D8 02                CALL_abs_imm1          $D836 (cap_fief_stats) {bytecode}, $02
   $B4D3  41                         LOADL_qimm   ; inline operand = 1

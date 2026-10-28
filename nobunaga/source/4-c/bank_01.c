@@ -1374,10 +1374,10 @@ word effect_train(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $95C9
-// $95C9 ai_develop_grow_if_men_exceeds_gold
+// $95C9 ai_develop_spend_gold_surplus_over_men
 // (body @ $95CE)
 
-word ai_develop_grow_if_men_exceeds_gold(void) {
+word ai_develop_spend_gold_surplus_over_men(void) {
     if (!(rng_mod(2))) {    // $95CE
         selected_province_daimyo_record()->charisma = (selected_province_daimyo_record()->charisma + 1);    // $95DD
     }
@@ -3305,7 +3305,7 @@ word ai_develop_town_handler(void) {
         fief->town = (fief->town + gain);    // $B41E
         fief->gold = (fief->gold - gain);    // $B425
     }
-    ai_develop_grow_if_men_exceeds_gold();    // $B426
+    ai_develop_spend_gold_surplus_over_men();    // $B426
     return 1;    // $B42A
 }
 
@@ -3331,7 +3331,7 @@ word ai_develop_dam_and_grow(void) {
         fief->output = (fief->output + grow_amount);    // $B4BF
         effect_grow(fief, grow_amount);    // $B4C2
     } else {
-        ai_develop_grow_if_men_exceeds_gold();    // $B4C9
+        ai_develop_spend_gold_surplus_over_men();    // $B4C9
     }
     cap_fief_stats(selected_province_idx);    // $B4CF
     return 1;    // $B4D4

@@ -2189,10 +2189,10 @@ L_9E66:
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $9E73
-// $9E73 resolve_attack_apply_casualties
+// $9E73 resolve_bribe_enemy_unit
 // (body @ $9E78)
 
-word resolve_attack_apply_casualties(word target_slot, word arg2) {
+word resolve_bribe_enemy_unit(word target_slot, word arg2) {
     *(word*)(side_resource_ptr(cur_combat_side)) = (*(word*)(side_resource_ptr(cur_combat_side)) - arg2);    // $9E84
     draw_side_resource_field(cur_combat_side, 0);    // $9E89
     own_fief = get_battle_side_province(cur_combat_side);    // $9E94
@@ -2228,7 +2228,7 @@ L_9FA9:
     message_display(mem_B19A);    // $9FA5
     if (!(get_province_ai_state(own_fief))) goto L_9FC7;    // $9FAE
     message_display(combat_message_table);    // $9FB4
-    draw_message(resolve_attack_apply_casualties_fmt_d, local11);    // $9FBC
+    draw_message(resolve_bribe_enemy_unit_fmt_d, local11);    // $9FBC
 L_9FC7:
     redraw_window(mem_B198);    // $9FC3
     combat_casualty_skip_flag_7bf3 = 1;    // $9FC8
@@ -2766,7 +2766,7 @@ L_A7C1:
     unit_type = (unit_type + 1);    // $A7C3
 L_A7C4:
     if (((unsigned)unit_type < (unsigned)5)) goto L_A7A0;    // $A7C7
-    return resolve_attack_apply_casualties(strongest_unit_type, (*(word*)(side_resource_ptr(cur_combat_side)) - *(word*)((side_resource_ptr(cur_combat_side) + 4))));    // $A7E4
+    return resolve_bribe_enemy_unit(strongest_unit_type, (*(word*)(side_resource_ptr(cur_combat_side)) - *(word*)((side_resource_ptr(cur_combat_side) + 4))));    // $A7E4
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $A7E5
@@ -2946,7 +2946,7 @@ L_AA88:
     message_display(mem_B1C8);    // $AA8B
     local11 = prompt_province_selection(1, local11);    // $AA95
     if (!(local11)) goto L_AA62;    // $AA96
-    resolve_attack_apply_casualties(target_idx, local11);    // $AA9B
+    resolve_bribe_enemy_unit(target_idx, local11);    // $AA9B
     goto L_AA62;    // $AA9F
 L_AAA2:
     clear_rect_left_lower();    // $AAA2

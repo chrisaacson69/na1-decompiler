@@ -3315,7 +3315,7 @@ VM bytecode disassembly
  >$9785  0B                         LOADL_quick   ; inline operand = 11
   $9786  D3                         BYTE_DEREF
   $9787  B3                         PUSHL
-  $9788  E9 B0 96 02                CALL_abs_imm1          $96B0 (scenario50_fief30_event_eligible) {bytecode}, $02
+  $9788  E9 B0 96 02                CALL_abs_imm1          $96B0 (try_trigger_akechi_revolt) {bytecode}, $02
   $978C  D7 78 98                   JUMPT_abs              $9878
   $978F  0B                         LOADL_quick   ; inline operand = 11
   $9790  D3                         BYTE_DEREF
@@ -3720,11 +3720,11 @@ VM bytecode disassembly
   $9A21  0B                         LOADL_quick   ; inline operand = 11
   $9A22  D1                         DEC
   $9A23  B3                         PUSHL
-  $9A24  E9 C6 98 04                CALL_abs_imm1          $98C6 (select_provinces_and_assign_ai_state) {bytecode}, $04
+  $9A24  E9 C6 98 04                CALL_abs_imm1          $98C6 (assign_fiefs_to_owner_51_keep_ai_state) {bytecode}, $04
   $9A28  8D 34                      BYTE_PUSH_imm1         +52
   $9A2A  8E 89 6F                   PUSH_imm2              $6F89 (fief_index_list)
   $9A2D  3B                         PUSH_quick   ; inline operand = 11
-  $9A2E  E9 74 99 06                CALL_abs_imm1          $9974 (process_first_n_unmarked_list_entries) {bytecode}, $06
+  $9A2E  E9 74 99 06                CALL_abs_imm1          $9974 (assign_first_n_unmarked_fiefs_to_owner) {bytecode}, $06
   $9A32  8D 32                      BYTE_PUSH_imm1         +50
   $9A34  8E 89 6F                   PUSH_imm2              $6F89 (fief_index_list)
   $9A37  0B                         LOADL_quick   ; inline operand = 11
@@ -3734,7 +3734,7 @@ VM bytecode disassembly
   $9A3B  B4                         POPR
   $9A3C  BC                         SUB
   $9A3D  B3                         PUSHL
-  $9A3E  E9 74 99 06                CALL_abs_imm1          $9974 (process_first_n_unmarked_list_entries) {bytecode}, $06
+  $9A3E  E9 74 99 06                CALL_abs_imm1          $9974 (assign_first_n_unmarked_fiefs_to_owner) {bytecode}, $06
   $9A42  89 33                      BYTE_LOADL_imm1        +51
   $9A44  A9 33 6E                   BYTE_STORE_abs         $6E33 (post_elim_owner_sentinel_id)
   $9A47  41                         LOADL_qimm   ; inline operand = 1

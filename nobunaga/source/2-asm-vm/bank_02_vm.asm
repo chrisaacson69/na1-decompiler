@@ -4544,7 +4544,7 @@ VM bytecode disassembly
   $9FB1  AA 96 B1                   PUSH_abs               $B196 (combat_message_table)
   $9FB4  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
   $9FB8  3B                         PUSH_quick   ; inline operand = 11
-  $9FB9  8E E9 B9                   PUSH_imm2              $B9E9 (resolve_attack_apply_casualties_fmt_d)
+  $9FB9  8E E9 B9                   PUSH_imm2              $B9E9 (resolve_bribe_enemy_unit_fmt_d)
   $9FBC  E9 34 D1 04                CALL_abs_imm1          $D134 (draw_message) {bytecode}, $04
   $9FC0  AA 98 B1                   PUSH_abs               $B198
   $9FC3  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
@@ -5825,7 +5825,7 @@ VM bytecode disassembly
   $A7DD  BC                         SUB
   $A7DE  B3                         PUSHL
   $A7DF  3B                         PUSH_quick   ; inline operand = 11
-  $A7E0  E9 73 9E 04                CALL_abs_imm1          $9E73 (resolve_attack_apply_casualties) {bytecode}, $04
+  $A7E0  E9 73 9E 04                CALL_abs_imm1          $9E73 (resolve_bribe_enemy_unit) {bytecode}, $04
   $A7E4  CF                         RETURN
 
 ; ============================================================
@@ -6173,7 +6173,7 @@ VM bytecode disassembly
   $AA96  D8 62 AA                   JUMPF_abs              $AA62
   $AA99  3B                         PUSH_quick   ; inline operand = 11
   $AA9A  3A                         PUSH_quick   ; inline operand = 10
-  $AA9B  E9 73 9E 04                CALL_abs_imm1          $9E73 (resolve_attack_apply_casualties) {bytecode}, $04
+  $AA9B  E9 73 9E 04                CALL_abs_imm1          $9E73 (resolve_bribe_enemy_unit) {bytecode}, $04
   $AA9F  D6 62 AA                   JUMP_abs               $AA62
  >$AAA2  AC 09 D3                   CALL_abs               $D309 (clear_rect_left_lower) {bytecode}
   $AAA5  41                         LOADL_qimm   ; inline operand = 1

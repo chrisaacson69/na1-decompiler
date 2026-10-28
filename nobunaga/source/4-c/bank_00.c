@@ -1469,10 +1469,10 @@ word reassign_daimyo24_fiefs_to_owner50(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $96B0
-// $96B0 scenario50_fief30_event_eligible
+// $96B0 try_trigger_akechi_revolt
 // (body @ $96B5)
 
-word scenario50_fief30_event_eligible(word fief) {
+word try_trigger_akechi_revolt(word fief) {
     event_fired = 0;    // $96B6
     if ((scenario_fief_count == 50)) {    // $96B5
         if ((fief == 30)) {    // $96C0
@@ -1523,7 +1523,7 @@ word resolve_revolt_event_on_listed_fiefs(void) {
     fief_list_ptr = 0x7BAD;    // $9782
     while (1) {    // $986E
         if ((*(byte*)(fief_list_ptr) != 255)) {    // $986E
-            if (!(scenario50_fief30_event_eligible(*(byte*)(fief_list_ptr)))) {    // $9785
+            if (!(try_trigger_akechi_revolt(*(byte*)(fief_list_ptr)))) {    // $9785
                 selected_province_idx = *(byte*)(fief_list_ptr);    // $9791
                 call_bank10_entry(AUDIO_CONFLICT);    // $9796
                 if (cur_flag_and_selected_ai_state5()) {    // $978F
@@ -1594,10 +1594,10 @@ word set_fief_ownership_record(word daimyo, word is_capital, word ai_state, word
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $98C6
-// $98C6 select_provinces_and_assign_ai_state
+// $98C6 assign_fiefs_to_owner_51_keep_ai_state
 // (body @ $98CB)
 
-word select_provinces_and_assign_ai_state(word target_count, word fief_list_ptr) {
+word assign_fiefs_to_owner_51_keep_ai_state(word target_count, word fief_list_ptr) {
     compact_relation_list();    // $98CB
     filter_province_list_by_owner(1, deduped_owner_list);    // $98D2
     list_buf_cursor = &list_buf;    // $98D9
@@ -1638,10 +1638,10 @@ L_994B:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9974
-// $9974 process_first_n_unmarked_list_entries
+// $9974 assign_first_n_unmarked_fiefs_to_owner
 // (body @ $9979)
 
-word process_first_n_unmarked_list_entries(word remaining, word fief_list_ptr, word new_owner) {
+word assign_first_n_unmarked_fiefs_to_owner(word remaining, word fief_list_ptr, word new_owner) {
     is_capital = 1;    // $997A
     while (1) {    // $99A6
         if (remaining) {    // $99A6
@@ -1685,9 +1685,9 @@ word resolve_akechi_revolt_outcome(void) {
         selected_province_idx = 30;    // $9A10
         eligible_count = (build_eligible_province_list(1) + 1);    // $9A19
         local11 = ((unsigned)eligible_count / (unsigned)3);    // $9A1D
-        select_provinces_and_assign_ai_state((local11 - 1), fief_index_list);    // $9A24
-        process_first_n_unmarked_list_entries(local11, fief_index_list, 52);    // $9A2E
-        process_first_n_unmarked_list_entries((eligible_count - (local11 << 1)), fief_index_list, 50);    // $9A3E
+        assign_fiefs_to_owner_51_keep_ai_state((local11 - 1), fief_index_list);    // $9A24
+        assign_first_n_unmarked_fiefs_to_owner(local11, fief_index_list, 52);    // $9A2E
+        assign_first_n_unmarked_fiefs_to_owner((eligible_count - (local11 << 1)), fief_index_list, 50);    // $9A3E
         post_elim_owner_sentinel_id = 51;    // $9A44
         mem_6DC0 = 1;    // $9A48
         mem_6D15 = 5;    // $9A4C

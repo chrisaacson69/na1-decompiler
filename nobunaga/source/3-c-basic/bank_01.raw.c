@@ -1344,10 +1344,10 @@ L_95C7:
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $95C9
-// $95C9 ai_develop_grow_if_men_exceeds_gold
+// $95C9 ai_develop_spend_gold_surplus_over_men
 // (body @ $95CE)
 
-word ai_develop_grow_if_men_exceeds_gold(void) {
+word ai_develop_spend_gold_surplus_over_men(void) {
     if (rng_mod(2)) goto L_95DE;    // $95D3
     selected_province_daimyo_record()->charisma = (selected_province_daimyo_record()->charisma + 1);    // $95DD
 L_95DE:
@@ -3241,7 +3241,7 @@ word ai_develop_town_handler(void) {
     fief->town = (fief->town + gain);    // $B41E
     fief->gold = (fief->gold - gain);    // $B425
 L_B426:
-    ai_develop_grow_if_men_exceeds_gold();    // $B426
+    ai_develop_spend_gold_surplus_over_men();    // $B426
     return 1;    // $B42A
 }
 
@@ -3269,7 +3269,7 @@ L_B497:
     goto L_B4CC;    // $B4C6
 L_B4C9:
 L_B4CC:
-    ai_develop_grow_if_men_exceeds_gold();    // $B4C9
+    ai_develop_spend_gold_surplus_over_men();    // $B4C9
     cap_fief_stats(selected_province_idx);    // $B4CF
     return 1;    // $B4D4
 }
