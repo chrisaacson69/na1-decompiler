@@ -840,31 +840,31 @@ L_D338:
 // $D351 prompt_ab_window
 // (body @ $D356)
 
-word prompt_ab_window(word arg1) {
-    redraw_window(arg1);    // $D357
+word prompt_ab_window(word prompt_msg) {
+    redraw_window(prompt_msg);    // $D357
 L_D360:
     set_cursor_sprite(1);    // $D35C
-    local11 = wait_button_edge();    // $D363
+    choice = wait_button_edge();    // $D363
     if (!((wait_button_edge() != 64))) goto L_D378;    // $D367
-    if ((local11 == 128)) goto L_D378;    // $D36F
-    if ((local11 != 2)) goto L_D360;    // $D375
+    if ((choice == 128)) goto L_D378;    // $D36F
+    if ((choice != 2)) goto L_D360;    // $D375
 L_D378:
     set_cursor_sprite(0);    // $D379
-    if ((local11 != 64)) goto L_D38E;    // $D381
+    if ((choice != 64)) goto L_D38E;    // $D381
     char_advance_width(60);    // $D386
     phi_val_d3a1 = 1;    // $D38B
     goto L_D3A1;    // $D38B
 L_D38E:
-    if ((local11 != 128)) goto L_D3A0;    // $D393
+    if ((choice != 128)) goto L_D3A0;    // $D393
     char_advance_width(62);    // $D398
     phi_val_d3a1 = 0;    // $D39D
     goto L_D3A1;    // $D39D
 L_D3A0:
     phi_val_d3a1 = 2;    // $D3A0
 L_D3A1:
-    local11 = phi_val_d3a1;    // $D3A1
+    choice = phi_val_d3a1;    // $D3A1
     open_message_window();    // $D3A2
-    return local11;    // $D3A6
+    return choice;    // $D3A6
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D3A7
@@ -875,12 +875,12 @@ word prompt_y_n(void) {
     redraw_window(prompt_y_n_msg);    // $D3AF
 L_D3B8:
     set_cursor_sprite(1);    // $D3B4
-    local11 = wait_button_edge();    // $D3BB
+    answer = wait_button_edge();    // $D3BB
     if (!((wait_button_edge() != 64))) goto L_D3CA;    // $D3BF
-    if ((local11 != 128)) goto L_D3B8;    // $D3C7
+    if ((answer != 128)) goto L_D3B8;    // $D3C7
 L_D3CA:
     set_cursor_sprite(0);    // $D3CB
-    if ((local11 != 64)) goto L_D3E0;    // $D3D3
+    if ((answer != 64)) goto L_D3E0;    // $D3D3
     char_advance_width(89);    // $D3D8
     phi_val_d3e7 = 1;    // $D3DD
     goto L_D3E7;    // $D3DD
@@ -888,28 +888,28 @@ L_D3E0:
     char_advance_width(78);    // $D3E2
     phi_val_d3e7 = 0;    // $D3E6
 L_D3E7:
-    local11 = phi_val_d3e7;    // $D3E7
+    answer = phi_val_d3e7;    // $D3E7
     open_message_window();    // $D3E8
-    return local11;    // $D3EC
+    return answer;    // $D3EC
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D3ED
 // $D3ED cursor_nav_loop
 // (body @ $D3F2)
 
-word cursor_nav_loop(word arg1) {
-    local4 = 0;    // $D3F3
-    local6 = 0;    // $D3F5
-    local5 = 1;    // $D3F7
+word cursor_nav_loop(word max_digits) {
+    digit_pos = 0;    // $D3F3
+    digits = 0;    // $D3F5
+    digit_idx = 1;    // $D3F7
 L_D3F8:
-    *(word*)(((local5 << 1) + &local6)) = 255;    // $D404
-    local5 = (local5 + 1);    // $D407
-    if ((local5 <= 5)) goto L_D3F8;    // $D40B
-    draw_message(cursor_nav_fmt_d_1, local6);    // $D412
+    *(word*)(((digit_idx << 1) + &digits)) = 255;    // $D404
+    digit_idx = (digit_idx + 1);    // $D407
+    if ((digit_idx <= 5)) goto L_D3F8;    // $D40B
+    draw_message(cursor_nav_fmt_d_1, digits);    // $D412
     ui_window_col = (ui_window_col - 1);    // $D41A
     set_cursor_sprite(1);    // $D41E
     wait_button_edge();    // $D422
-    local2 = 0;    // $D426
+    confirmed = 0;    // $D426
 L_D427:
     switch (poll_input()) {    // $D42A
         case 1: goto L_D459;    // $D42A
@@ -928,19 +928,19 @@ L_D457:
     return 0;    // $D458
 L_D459:
     set_cursor_sprite(0);    // $D45A
-    local2 = 1;    // $D45F
+    confirmed = 1;    // $D45F
 L_D460:
-    if (!(local2)) goto L_D427;    // $D461
-    local3 = 0;    // $D465
+    if (!(confirmed)) goto L_D427;    // $D461
+    value = 0;    // $D465
     phi_val_d573 = 0;    // $D466
     goto L_D573;    // $D466
 L_D469:
-    *(word*)(((local4 << 1) + &local6)) = (*(word*)(((local4 << 1) + &local6)) + 1);    // $D474
-    if (!(((unsigned)*(word*)(((local4 << 1) + &local6)) >= (unsigned)10))) goto L_D485;    // $D477
-    *(word*)(((local4 << 1) + &local6)) = 0;    // $D484
+    *(word*)(((digit_pos << 1) + &digits)) = (*(word*)(((digit_pos << 1) + &digits)) + 1);    // $D474
+    if (!(((unsigned)*(word*)(((digit_pos << 1) + &digits)) >= (unsigned)10))) goto L_D485;    // $D477
+    *(word*)(((digit_pos << 1) + &digits)) = 0;    // $D484
 L_D485:
     phi_d492_0 = cursor_nav_fmt_d_2;    // $D48F
-    phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D48F
+    phi_d492_1 = *(word*)(((digit_pos << 1) + &digits));    // $D48F
 L_D492:
     draw_message(phi_d492_0, phi_d492_1);    // $D492
     ui_window_col = (ui_window_col - 1);    // $D49A
@@ -949,44 +949,44 @@ L_D492:
     set_cursor_sprite(1);    // $D4A8
     goto L_D460;    // $D4AC
 L_D4AF:
-    *(word*)(((local4 << 1) + &local6)) = (*(word*)(((local4 << 1) + &local6)) - 1);    // $D4BA
-    if (!(((unsigned)*(word*)(((local4 << 1) + &local6)) >= (unsigned)10))) goto L_D4CB;    // $D4BD
-    *(word*)(((local4 << 1) + &local6)) = 9;    // $D4CA
+    *(word*)(((digit_pos << 1) + &digits)) = (*(word*)(((digit_pos << 1) + &digits)) - 1);    // $D4BA
+    if (!(((unsigned)*(word*)(((digit_pos << 1) + &digits)) >= (unsigned)10))) goto L_D4CB;    // $D4BD
+    *(word*)(((digit_pos << 1) + &digits)) = 9;    // $D4CA
 L_D4CB:
     phi_d492_0 = cursor_nav_fmt_d_3;    // $D4D8
-    phi_d492_1 = *(word*)(((local4 << 1) + &local6));    // $D4D8
+    phi_d492_1 = *(word*)(((digit_pos << 1) + &digits));    // $D4D8
     goto L_D492;    // $D4D8
 L_D4DB:
-    if (!(local4)) goto L_D460;    // $D4DC
+    if (!(digit_pos)) goto L_D460;    // $D4DC
     set_cursor_sprite(0);    // $D4E0
     redraw_window(cursor_nav_space);    // $D4E7
     ui_window_col = (ui_window_col - 2);    // $D4F1
     set_cursor_sprite(1);    // $D4F5
-    local4 = (local4 - 1);    // $D4FF
-    *(word*)((((local4 + 1) << 1) + &local6)) = 255;    // $D508
+    digit_pos = (digit_pos - 1);    // $D4FF
+    *(word*)((((digit_pos + 1) << 1) + &digits)) = 255;    // $D508
 L_D509:
     delay_loop(2);    // $D50A
     goto L_D460;    // $D50E
 L_D511:
-    if (!(((arg1 - 1) != local4))) goto L_D460;    // $D515
-    if (local4) goto L_D528;    // $D519
-    if (!(*(word*)(((local4 << 1) + &local6)))) goto L_D460;    // $D525
+    if (!(((max_digits - 1) != digit_pos))) goto L_D460;    // $D515
+    if (digit_pos) goto L_D528;    // $D519
+    if (!(*(word*)(((digit_pos << 1) + &digits)))) goto L_D460;    // $D525
 L_D528:
     set_cursor_sprite(0);    // $D529
     ui_window_col = (ui_window_col + 1);    // $D531
-    local4 = (local4 + 1);    // $D53A
-    *(word*)(((local4 << 1) + &local6)) = 0;    // $D540
-    draw_message(cursor_nav_fmt_d_4, *(word*)(((local4 << 1) + &local6)));    // $D54E
+    digit_pos = (digit_pos + 1);    // $D53A
+    *(word*)(((digit_pos << 1) + &digits)) = 0;    // $D540
+    draw_message(cursor_nav_fmt_d_4, *(word*)(((digit_pos << 1) + &digits)));    // $D54E
     ui_window_col = (ui_window_col - 1);    // $D556
     set_cursor_sprite(1);    // $D55A
     goto L_D509;    // $D55E
 L_D561:
-    local3 = ((local3 * 10) + *(word*)(((local5 << 1) + &local6)));    // $D570
-    phi_val_d573 = (local5 + 1);    // $D572
+    value = ((value * 10) + *(word*)(((digit_idx << 1) + &digits)));    // $D570
+    phi_val_d573 = (digit_idx + 1);    // $D572
 L_D573:
-    local5 = phi_val_d573;    // $D573
-    if ((*(word*)(((local5 << 1) + &local6)) != 255)) goto L_D561;    // $D581
-    return local3;    // $D585
+    digit_idx = phi_val_d573;    // $D573
+    if ((*(word*)(((digit_idx << 1) + &digits)) != 255)) goto L_D561;    // $D581
+    return value;    // $D585
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D586
@@ -1052,10 +1052,10 @@ L_D607:
 word ui_prompt_redraw(void) {
     set_cursor(2, 26);    // $D611
     redraw_window(ui_prompt_redraw_hit_any_key);    // $D618
-    local11 = wait_button_edge();    // $D61F
+    button = wait_button_edge();    // $D61F
     open_message_window();    // $D620
     reset_prompt_selection();    // $D623
-    return local11;    // $D627
+    return button;    // $D627
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D628
@@ -1063,22 +1063,22 @@ word ui_prompt_redraw(void) {
 // (body @ $D62D)
 
 word count_6da2_set(void) {
-    local10 = 0;    // $D62E
-    local11 = 0;    // $D62F
+    fief_idx = 0;    // $D62E
+    count = 0;    // $D62F
     goto L_D64E;    // $D630
 L_D633:
-    if (fief_is_daimyo_capital[local10]) goto L_D648;    // $D639
-    if (!((get_province_ai_state(local10) == 255))) goto L_D64B;    // $D645
+    if (fief_is_daimyo_capital[fief_idx]) goto L_D648;    // $D639
+    if (!((get_province_ai_state(fief_idx) == 255))) goto L_D64B;    // $D645
 L_D648:
-    local11 = (local11 + 1);    // $D64A
+    count = (count + 1);    // $D64A
 L_D64B:
-    local10 = (local10 + 1);    // $D64D
+    fief_idx = (fief_idx + 1);    // $D64D
 L_D64E:
-    if (((unsigned)local10 < (unsigned)scenario_fief_count)) goto L_D633;    // $D653
-    if ((local11 != 1)) goto L_D66B;    // $D659
-    local11 = (local11 & (no_human_players_left() ? 0 : 1));    // $D66A
+    if (((unsigned)fief_idx < (unsigned)scenario_fief_count)) goto L_D633;    // $D653
+    if ((count != 1)) goto L_D66B;    // $D659
+    count = (count & (no_human_players_left() ? 0 : 1));    // $D66A
 L_D66B:
-    return ((local11 != 1) ? 0 : 1);    // $D676
+    return ((count != 1) ? 0 : 1);    // $D676
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D677

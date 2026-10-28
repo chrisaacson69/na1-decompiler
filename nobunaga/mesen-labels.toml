@@ -2876,3 +2876,32 @@ arg1 = { name = "fief", comment = "[HIGH] Fief index: PUSH_quick 12 to fief_owne
 # get_province_ai_state
 arg1 = { name = "fief", comment = "[HIGH] Fief index: LOADL_quick 12 + $6CF7 BYTE_DEREF ($D992); callers push selected_province_idx ($8CA0) or rng_mod(fief_count) ($9BF6)" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 12 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xD351"]
+# prompt_ab_window
+arg1 = { name = "prompt_msg", comment = "[HIGH] Message ptr: PUSH_quick 12 -> redraw_window($CEC4) @$D356; every caller PUSH_imm2 a msg_* string (msg_on_off, msg_y_n, msg_gold_rice)" }
+local11 = { name = "choice", comment = "[MED] User's answer: STORE_quick 11 of wait_button_edge @$D363 (cmp 64/128/2), recoded 1/0/2 via phi @$D3A1, LOADL_quick 11 RETURN" }
+
+[vars.bank15."0xD3A7"]
+# prompt_y_n
+local11 = { name = "answer", comment = "[MED] Y/N answer: wait_button_edge code @$D3BB (loop till 64/128), recoded 1 (Y,char 89)/0 (N,78) @$D3E7, returned" }
+
+[vars.bank15."0xD3ED"]
+# cursor_nav_loop
+arg1 = { name = "max_digits", comment = "[MED] Digit-count bound: key 128 @$D511 LOADL_quick 12, DEC, CMPNE local4 refuses advance at last pos; caller pushes its local11" }
+local2 = { name = "confirmed", comment = "[HIGH] Exit flag: 0 @$D426, set 1 on key 1 @$D45F; tested @$D460 (JUMPF back to poll_input) gating the accumulate tail" }
+local3 = { name = "value", comment = "[HIGH] Decimal accumulator: 0 @$D465, value = value*10 + digits[i] @$D56B-$D570, returned @$D584" }
+local4 = { name = "digit_pos", comment = "[HIGH] Cursor digit index: digits[local4] inc/dec mod 10 (keys 16/32), DEC on key 64 @$D4FF, INC on key 128 @$D53A" }
+local5 = { name = "digit_idx", comment = "[HIGH] Digit-array loop index: init loop 1..5 sets digits[i]=$FF @$D3F8; tail loop from 0 @$D573 until digits[i]==$FF" }
+local6 = { name = "digits", comment = "[HIGH] Base of 6-word digit array: LEAL_far $FFF4 (=local6) + idx<<1; digits[0]=0 @$D3F5, PUSH_quick 6 to draw_message @$D40E" }
+
+[vars.bank15."0xD609"]
+# ui_prompt_redraw
+local11 = { name = "button", comment = "[HIGH] Button code: STORE_quick 11 of wait_button_edge @$D61F after 'hit any key' redraw, LOADL_quick 11 RETURN @$D626" }
+
+[vars.bank15."0xD628"]
+# count_6da2_set
+local10 = { name = "fief_idx", comment = "[HIGH] Fief index loop 0..scenario_fief_count ($6D9D, UCMPLT @$D652); byte-indexes $6DA2[] and PUSH_quick 10 to get_province_ai_state" }
+local11 = { name = "count", comment = "[MED] Counts fiefs with $6DA2[i]!=0 or ai_state==$FF (INC @$D648); if ==1 ANDed with !no_human_players_left; returns count==1" }
+
