@@ -2537,6 +2537,11 @@ local10 = { name = "pass_marker", comment = "[MED] Init $FF @$A23E; ==$FF gates 
 "fp-58" = { name = "remaining", comment = "[HIGH] remaining slots to fill = arg1_count - copied; set arg1-fp56 @$992A then DEC each iter, loop while >0 ($9948)" }
 "fp-56" = { name = "count", comment = "[HIGH] province copy counter; init 0 @$98DF, INC per entry @$9900-05, loop bound 'while count<arg1' @$9906/$990D" }
 "fp-54" = { name = "list_buf", comment = "[HIGH] base of output fief-id list buffer; LEAL_far $FFCA->local10 @$98D9, walked+written forward, -1 terminated @$994E" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "target_count", comment = "[MED] Bound: LOADR_quick 12 vs near $C8 copied count (UCMPLT $9909/$9910); arg1-count = shortfall at $9914; caller pushes local11-1" }
+arg2 = { name = "fief_list_ptr", comment = "[HIGH] Fallback list cursor (caller pushes $6F89): BYTE_DEREF, skips 200, copies entry and marks 200 ($9924), INC, ends at 255" }
+local10 = { name = "list_buf_cursor", comment = "[MED] Cursor into frame buffer LEAL_far $FFCA: post-inc byte writes, 255 terminator at $994B, then re-walked to call $98A3 per entry" }
+local11 = { name = "owned_fief_ptr", comment = "[MED] Cursor over filtered $6F4F list (filter_province_list_by_owner): BYTE_DEREF copied to buf, passed to $9879 to mark removed, INC" }
 
 [vars.bank0."0x9621"]
 # reassign_daimyo24_fiefs_to_owner50
@@ -4330,4 +4335,53 @@ local7 = { name = "loyalty_ptr", comment = "[HIGH] local5+12 (ADD_qimm 12 @ $901
 local8 = { name = "fief_rec", comment = "[MED] same &province_table_live[sel] as local5 (STORE 5 then STORE 8 @ $9016-17); only DEREF'd at $901F (gold@+0) as JUMPF test" }
 local9 = { name = "candidate_count", comment = "[MED] init 0 @ $9002; INC/STORE/DEC then pushed as arg2 idx to append_candidate_zero_priority ($9070, $908A); sub returns right after" }
 local11 = { name = "list_ptr", comment = "[HIGH] byte ptr init $7BAD @ $8FFD; post-inc + BYTE_DEREF @ $90B6 -> selected_province_idx; loop until $FF terminator" }
+
+# --- bank-00 var-walk far-frame batch (--merge, new sections) (9 subs) ---
+[vars.bank0."0x9D86"]
+# square_over_2025_probability_roll
+arg1 = { name = "stat", comment = "[HIGH] Clamped to 50 ($9D8C), squared (LOADL/LOADR_quick 12 MULT) vs rng_mod(2025); callers push loyalty, morale, charisma, 100-tax" }
+
+[vars.bank0."0x9D00"]
+# random_event_ravage_output_hidden_mark_weakness
+local9 = { name = "daimyo", comment = "[HIGH] Daimyo record addr from fief_to_daimyo_record_addr $D7DA; +1 health deducted via $CA12, then health<=50 sets weakness flag" }
+local10 = { name = "fief", comment = "[HIGH] Province record ptr $7001+idx*26 ($9D1A); +16 men and +8 output each rescaled by pct_op(field, 50+rng(50))" }
+local11 = { name = "fief_list_ptr", comment = "[HIGH] Cursor: init $7BAD, BYTE_DEREF fief idx (record, $6DA2 capital test, fief_owner), INC, ends at 255 ($9D7E)" }
+
+[vars.bank0."0x9CB3"]
+# decay_fief_list_wealth_and_output_disaster1
+local10 = { name = "fief", comment = "[HIGH] Province record ptr $7001+idx*26 ($9CCD); +14 wealth reduced by rng, +8 output scaled by pct_op with +10 dams" }
+local11 = { name = "fief_list_ptr", comment = "[HIGH] Cursor: init $7BAD province_candidate_list, BYTE_DEREF as fief idx, INC per pass, ends at 255 ($9CF8)" }
+
+[vars.bank0."0x9C22"]
+# random_ravage_sweep_bounded_fiefs
+local10 = { name = "ravaged_count", comment = "[MED] Counter: 0 at $9C27, post-inc at $9C4E per fief passing rng/ai-state tests; ravage only while old value < 8-ai_player_count" }
+local11 = { name = "fief", comment = "[HIGH] Fief index 0..scenario_fief_count-1 ($9C7C UCMPLT); pushed to get_province_ai_state $D98D, stored to $6F63 defender" }
+
+[vars.bank0."0x9B7F"]
+# marry_transfer_gold_between_provinces
+local11 = { name = "gold_amount", comment = "[HIGH] marriage_pact_handler $E315 result; 0 exits; pushed to 'accept %d units of gold' msg, +sel gold@+0, -defender gold@+0" }
+
+[vars.bank0."0x9AAC"]
+# driver_diplomacy_gold_transfer
+local11 = { name = "gold_amount", comment = "[HIGH] prompt_diplomacy_pact $E3A4 result; 0 exits; pushed to draw_message, added to $7001+sel*26 gold, subtracted from defender gold" }
+
+[vars.bank0."0x9974"]
+# process_first_n_unmarked_list_entries
+arg1 = { name = "remaining", comment = "[HIGH] Countdown: LOADL_quick 12 is the loop test at $99A6, DEC'd per assigned entry at $99A0; callers push local11 / local10-2*local11" }
+arg2 = { name = "fief_list_ptr", comment = "[HIGH] Cursor (caller pushes $6F89): BYTE_DEREF, 255 ends, 200 skipped, entry pushed to $98A3 then marked 200 ($999B), INC" }
+arg3 = { name = "new_owner", comment = "[HIGH] Owner: PUSH_quick 14 as last push (arg1) to set_fief_ownership_record $98A3, the slot sub $98C6 fills with 51; caller pushes 52" }
+local11 = { name = "is_capital", comment = "[MED] First-entry flag: 1 at $9979, pushed as $98A3 arg2 at $9994, cleared to 0 after first assignment ($999E)" }
+
+[vars.bank0."0x96B0"]
+# scenario50_fief30_event_eligible
+arg1 = { name = "fief", comment = "[HIGH] Fief idx: LOADL_quick 12 ==30 at $96C1, PUSH_quick 12 to fief_owner $D772; caller pushes BYTE_DEREF of list entry at $9786" }
+local8 = { name = "saved_selected_province", comment = "[HIGH] Saves $6F5F selected_province_idx at $96E2 before it is set to 30, written back at $9772 when local10==0" }
+local10 = { name = "event_fired", comment = "[HIGH] Flag: 0 at $96B5, set 1 at $976C after the event; gates the $6F5F restore ($976E) and is the RETURN value ($9776)" }
+local11 = { name = "fief_list_ptr", comment = "[HIGH] Cursor: $6F4F list via STORE_quick 11 at $9734, BYTE_DEREF idx*26+$7011 (men) summed into $6F81, INC, stops at 255" }
+
+[vars.bank0."0x947A"]
+# avg_daimyo_charisma_over_fief_list
+local9 = { name = "count", comment = "[HIGH] Entry count: LOADL_qimm 0/STORE_quick 9, +1 per entry at $94A0, then LOADR_quick 9 as the UDIV divisor at $94AE" }
+local10 = { name = "charisma_sum", comment = "[HIGH] Sum: 0 init, += get_fief_daimyo_charisma($946D) result each pass ($9499 ADD/STORE_quick 10), UDIV dividend at $94AD" }
+local11 = { name = "fief_list_ptr", comment = "[HIGH] Cursor: init $6F89 fief_index_list, BYTE_DEREF as fief idx pushed to $946D, INC per pass, loop ends on 255 ($94A6)" }
 
