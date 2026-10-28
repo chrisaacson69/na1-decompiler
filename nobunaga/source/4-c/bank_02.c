@@ -242,23 +242,23 @@ word calc_tactical_cell_coords(word col_ptr, word row_ptr) {
 // $83C6 lookup_terrain_attr_record
 // (body @ $83CB)
 
-word lookup_terrain_attr_record(word arg1, word arg2) {
-    local11 = 5;    // $83CC
-    switch ((read_map_cell(arg1, arg2) & 254)) {    // $83D7
+word lookup_terrain_attr_record(word col, word row) {
+    attr_idx = 5;    // $83CC
+    switch ((read_map_cell(col, row) & 254)) {    // $83D7
     case 32:
-        local11 = (local11 - 1);    // $83F6
+        attr_idx = (attr_idx - 1);    // $83F6
     case 16:
-        local11 = (local11 - 1);    // $83F9
+        attr_idx = (attr_idx - 1);    // $83F9
     case 8:
-        local11 = (local11 - 1);    // $83FC
+        attr_idx = (attr_idx - 1);    // $83FC
     case 128:
-        local11 = (local11 - 1);    // $83FF
+        attr_idx = (attr_idx - 1);    // $83FF
     case 4:
-        local11 = (local11 - 1);    // $8402
+        attr_idx = (attr_idx - 1);    // $8402
     case 64:
     default:
     }
-    return ((local11 << 4) + terrain_attr_table);    // $840A
+    return ((attr_idx << 4) + terrain_attr_table);    // $840A
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $840B
@@ -604,14 +604,14 @@ L_877B:
 // $8792 prompt_province_selection
 // (body @ $8797)
 
-word prompt_province_selection(word arg1, word arg2) {
-    draw_message(prompt_province_selection_d_d, arg1, arg2);    // $879C
-    local11 = select_province_by_cursor(arg1, arg2);    // $87A6
-    if (!(local11)) goto L_87B5;    // $87A8
-    if ((local11 == -1)) goto L_87B5;    // $87AF
+word prompt_province_selection(word min_value, word max_value) {
+    draw_message(prompt_province_selection_d_d, min_value, max_value);    // $879C
+    selection = select_province_by_cursor(min_value, max_value);    // $87A6
+    if (!(selection)) goto L_87B5;    // $87A8
+    if ((selection == -1)) goto L_87B5;    // $87AF
 L_87B5:
     clear_rect_left_lower();    // $87B2
-    return local11;    // $87B6
+    return selection;    // $87B6
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $87B7
@@ -655,9 +655,9 @@ L_8826:
 // $882A upload_map_cell_tiles
 // (body @ $882F)
 
-word upload_map_cell_tiles(word arg1, word arg2) {
-    syscall16_sram_wrap(5, ((arg1 * 49) + 0x9C24), ((arg2 * 9) + 0x6FE4), 1);    // $8842
-    return ppu_upload_block_wrap(5, ((arg1 * 49) + daimyo_banner_chr), ((arg2 * 48) + 5392), 3);    // $885D
+word upload_map_cell_tiles(word map_id, word dest_slot) {
+    syscall16_sram_wrap(5, ((map_id * 49) + 0x9C24), ((dest_slot * 9) + 0x6FE4), 1);    // $8842
+    return ppu_upload_block_wrap(5, ((map_id * 49) + daimyo_banner_chr), ((dest_slot * 48) + 5392), 3);    // $885D
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $885E
@@ -665,12 +665,12 @@ word upload_map_cell_tiles(word arg1, word arg2) {
 // (body @ $8863)
 
 word map_render_driver(void) {
-    local9 = 0;    // $8864
+    i = 0;    // $8864
     do {    // $8865
-        local11 = (((local9 << 1) << 1) + 10);    // $8869
-        ppu_copy_rect_wrap(local11, 4, (local11 + 3), 25, ((((tactical_battle_phase * 3) + local9) * 88) + 0x7BFD), 2);    // $8881
-        local9 = (local9 + 1);    // $8887
-    } while (((unsigned)local9 < (unsigned)5));    // $888B
+        left_col = (((i << 1) << 1) + 10);    // $8869
+        ppu_copy_rect_wrap(left_col, 4, (left_col + 3), 25, ((((tactical_battle_phase * 3) + i) * 88) + 0x7BFD), 2);    // $8881
+        i = (i + 1);    // $8887
+    } while (((unsigned)i < (unsigned)5));    // $888B
     ppu_upload_block_wrap(5, (((fief_to_mapid(battle_defending_province) * 144) + (tactical_battle_phase * 48)) + map_tile_gfx_8004), 0x23C8, 3);    // $88AC
     if (tactical_battle_phase) {    // $88B3
     ppu_copy_rect_wrap(11, 3, 12, 3, map_scroll_marker_tiles, 2);    // $88BE

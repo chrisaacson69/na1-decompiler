@@ -3659,3 +3659,26 @@ arg3 = { name = "mask", comment = "[HIGH] LOADR_quick 14, AND with read_map_cell
 arg1 = { name = "side", comment = "[MED] LOADL_quick 12 *10 (LOADR_qimm 10, MULT @$82D2): 5-word block per side in $6FBC+arg1*10; callers push their side arg or local7 @$9EEA" }
 arg2 = { name = "unit_slot", comment = "[HIGH] LOADL_quick 13, LSHIFT1 @$82CF: word index within the side's 5-word block at $6FBC; callers push arg2, or arg1 @$9EE9" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank2."0x885E"]
+# map_render_driver
+local9 = { name = "i", comment = "[HIGH] =0 @$8864, INC @$8886, loops while UCMPLT 5 @$888A; used in i*4+10 and in (tactical_battle_phase*3+i)*88 + $7BFD as the source offset" }
+local11 = { name = "left_col", comment = "[HIGH] =i*4+10 @$8869; PUSH_quick 11 @$8880 is arg1 (left col) and local11+3 is arg3 of ppu_copy_rect_wrap $CC54. Matches set_cursor(11,3) col order" }
+
+[vars.bank2."0x882A"]
+# upload_map_cell_tiles
+arg1 = { name = "map_id", comment = "[MED] LOADL_quick 12 *49 + $9C24 (sram src) and *49 + $9C25 daimyo_banner_chr (PPU src); caller $89CD pushes fief_to_mapid(fief_owner(..)) last" }
+arg2 = { name = "dest_slot", comment = "[MED] LOADL_quick 13 *9 + $6FE4 (SRAM dest) and *48 + $1510 (PPU addr): a destination slot. Caller $89C0 pushes 1; the other call's push is not shown" }
+
+[vars.bank2."0x8792"]
+# prompt_province_selection
+arg1 = { name = "min_value", comment = "[MED] PUSH_quick 12 -> %d arg of draw_message $D134 @$8798 and arg1 of select_province_by_cursor $D59D @$87A1; both callers push 1 (PUSH_qimm 1)" }
+arg2 = { name = "max_value", comment = "[MED] PUSH_quick 13 -> draw_message %d @$8797 and arg2 of select_province_by_cursor @$87A0; callers push 5 ($AA3F) or local11 ($AA8F)" }
+local11 = { name = "selection", comment = "[HIGH] STORE_quick 11 @$87A6 = select_province_by_cursor result; tested !=0 and CMPNE -1 (cancel) before clear_rect, then returned @$87B5" }
+
+[vars.bank2."0x83C6"]
+# lookup_terrain_attr_record
+arg1 = { name = "col", comment = "[MED] PUSH_quick 12 @$83CE is the last push, so it is arg1 of read_map_cell $DC88; one role (coordinate). Col-vs-row rests on read_map_cell's own param names" }
+arg2 = { name = "row", comment = "[MED] PUSH_quick 13 @$83CD -> arg2 of read_map_cell $DC88; its only use. Caller $8918 pushes local10 here and local11 as arg1 (a coordinate pair)" }
+local11 = { name = "attr_idx", comment = "[HIGH] =5 @$83CC; SWITCH fall-through DECs it to 0..5 by cell bits; @$8403 <<4 + $B11E terrain_attr_table, then returned. One role" }
+
