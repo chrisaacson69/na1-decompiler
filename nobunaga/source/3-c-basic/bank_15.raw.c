@@ -98,62 +98,62 @@ L_CA90:
 // $CA97 fill_bytes
 // (body @ $CA9C)
 
-word fill_bytes(word arg1, word arg2, word arg3) {
+word fill_bytes(word dest, word count, word value) {
     goto L_CAAB;    // $CA9C
 L_CA9F:
-    arg1 = (arg1 + 1);    // $CAA1
-    *(byte*)((arg1 - 1)) = *(byte*)&arg3;    // $CAA7
-    arg2 = (arg2 - 1);    // $CAAA
+    dest = (dest + 1);    // $CAA1
+    *(byte*)((dest - 1)) = *(byte*)&value;    // $CAA7
+    count = (count - 1);    // $CAAA
 L_CAAB:
-    if (arg2) goto L_CA9F;    // $CAAC
-    return arg2;    // $CAAF
+    if (count) goto L_CA9F;    // $CAAC
+    return count;    // $CAAF
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CAB0
 // $CAB0 strcmp
 // (body @ $CAB5)
 
-word strcmp(word arg1, word arg2) {
+word strcmp(word str1, word str2) {
     goto L_CAC7;    // $CAB5
 L_CAB8:
-    if (*(byte*)(arg1)) goto L_CABF;    // $CABA
+    if (*(byte*)(str1)) goto L_CABF;    // $CABA
     return 0;    // $CABE
 L_CABF:
-    arg1 = (arg1 + 1);    // $CAC1
-    arg2 = (arg2 + 1);    // $CAC5
+    str1 = (str1 + 1);    // $CAC1
+    str2 = (str2 + 1);    // $CAC5
 L_CAC7:
-    if ((*(byte*)(arg1) == *(byte*)(arg2))) goto L_CAB8;    // $CACE
-    return (*(byte*)(arg1) - *(byte*)(arg2));    // $CAD8
+    if ((*(byte*)(str1) == *(byte*)(str2))) goto L_CAB8;    // $CACE
+    return (*(byte*)(str1) - *(byte*)(str2));    // $CAD8
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CAD9
 // $CAD9 strcpy
 // (body @ $CADE)
 
-word strcpy(word arg1, word arg2) {
-    local11 = arg1;    // $CADF
+word strcpy(word dest, word src) {
+    dest_start = dest;    // $CADF
 L_CAE0:
-    arg1 = (arg1 + 1);    // $CAE2
-    arg2 = (arg2 + 1);    // $CAE7
-    *(byte*)((arg1 - 1)) = *(byte*)((arg2 - 1));    // $CAEA
-    if (*(byte*)((arg2 - 1))) goto L_CAE0;    // $CAEB
-    return local11;    // $CAEF
+    dest = (dest + 1);    // $CAE2
+    src = (src + 1);    // $CAE7
+    *(byte*)((dest - 1)) = *(byte*)((src - 1));    // $CAEA
+    if (*(byte*)((src - 1))) goto L_CAE0;    // $CAEB
+    return dest_start;    // $CAEF
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CAF0
 // $CAF0 memchr
 // (body @ $CAF5)
 
-word memchr(word arg1, word arg2, word arg3) {
+word memchr(word ptr, word value, word count) {
     goto L_CB0B;    // $CAF5
 L_CAF8:
-    if (!((*(byte*)(arg1) == *(byte*)&arg2))) goto L_CB05;    // $CB00
-    return arg1;    // $CB04
+    if (!((*(byte*)(ptr) == *(byte*)&value))) goto L_CB05;    // $CB00
+    return ptr;    // $CB04
 L_CB05:
-    arg1 = (arg1 + 1);    // $CB07
-    arg3 = (arg3 - 1);    // $CB0A
+    ptr = (ptr + 1);    // $CB07
+    count = (count - 1);    // $CB0A
 L_CB0B:
-    if (arg3) goto L_CAF8;    // $CB0C
+    if (count) goto L_CAF8;    // $CB0C
     return 0;    // $CB10
 }
 
@@ -161,8 +161,8 @@ L_CB0B:
 // $CB11 is_lower
 // (body @ $CB16)
 
-word is_lower(word arg1) {
-    return ((97 <= *(byte*)&arg1) && (*(byte*)&arg1 <= 122));    // $CB2F
+word is_lower(word ch) {
+    return ((97 <= *(byte*)&ch) && (*(byte*)&ch <= 122));    // $CB2F
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CB30

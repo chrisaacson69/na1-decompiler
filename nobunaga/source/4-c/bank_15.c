@@ -96,51 +96,51 @@ word strlen(word str) {
 // $CA97 fill_bytes
 // (body @ $CA9C)
 
-word fill_bytes(word arg1, word arg2, word arg3) {
-    while (arg2) {    // $CAAB
-        arg1 = (arg1 + 1);    // $CAA1
-        *(byte*)((arg1 - 1)) = *(byte*)&arg3;    // $CAA7
-        arg2 = (arg2 - 1);    // $CAAA
+word fill_bytes(word dest, word count, word value) {
+    while (count) {    // $CAAB
+        dest = (dest + 1);    // $CAA1
+        *(byte*)((dest - 1)) = *(byte*)&value;    // $CAA7
+        count = (count - 1);    // $CAAA
     }
-    return arg2;    // $CAAF
+    return count;    // $CAAF
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CAB0
 // $CAB0 strcmp
 // (body @ $CAB5)
 
-word strcmp(word arg1, word arg2) {
-    while ((*(byte*)(arg1) == *(byte*)(arg2))) {    // $CAC7
-        if (!(*(byte*)(arg1))) return 0;    // $CABA
-        arg1 = (arg1 + 1);    // $CAC1
-        arg2 = (arg2 + 1);    // $CAC5
+word strcmp(word str1, word str2) {
+    while ((*(byte*)(str1) == *(byte*)(str2))) {    // $CAC7
+        if (!(*(byte*)(str1))) return 0;    // $CABA
+        str1 = (str1 + 1);    // $CAC1
+        str2 = (str2 + 1);    // $CAC5
     }
-    return (*(byte*)(arg1) - *(byte*)(arg2));    // $CAD8
+    return (*(byte*)(str1) - *(byte*)(str2));    // $CAD8
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CAD9
 // $CAD9 strcpy
 // (body @ $CADE)
 
-word strcpy(word arg1, word arg2) {
-    local11 = arg1;    // $CADF
+word strcpy(word dest, word src) {
+    dest_start = dest;    // $CADF
     do {    // $CAE0
-        arg1 = (arg1 + 1);    // $CAE2
-        arg2 = (arg2 + 1);    // $CAE7
-        *(byte*)((arg1 - 1)) = *(byte*)((arg2 - 1));    // $CAEA
-    } while (*(byte*)((arg2 - 1)));    // $CAEB
-    return local11;    // $CAEF
+        dest = (dest + 1);    // $CAE2
+        src = (src + 1);    // $CAE7
+        *(byte*)((dest - 1)) = *(byte*)((src - 1));    // $CAEA
+    } while (*(byte*)((src - 1)));    // $CAEB
+    return dest_start;    // $CAEF
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CAF0
 // $CAF0 memchr
 // (body @ $CAF5)
 
-word memchr(word arg1, word arg2, word arg3) {
-    while (arg3) {    // $CB0B
-        if ((*(byte*)(arg1) == *(byte*)&arg2)) return arg1;    // $CB00
-        arg1 = (arg1 + 1);    // $CB07
-        arg3 = (arg3 - 1);    // $CB0A
+word memchr(word ptr, word value, word count) {
+    while (count) {    // $CB0B
+        if ((*(byte*)(ptr) == *(byte*)&value)) return ptr;    // $CB00
+        ptr = (ptr + 1);    // $CB07
+        count = (count - 1);    // $CB0A
     }
     return 0;    // $CB10
 }
@@ -149,8 +149,8 @@ word memchr(word arg1, word arg2, word arg3) {
 // $CB11 is_lower
 // (body @ $CB16)
 
-word is_lower(word arg1) {
-    return ((97 <= *(byte*)&arg1) && (*(byte*)&arg1 <= 122));    // $CB2F
+word is_lower(word ch) {
+    return ((97 <= *(byte*)&ch) && (*(byte*)&ch <= 122));    // $CB2F
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CB30

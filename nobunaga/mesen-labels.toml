@@ -2628,3 +2628,32 @@ arg1 = { name = "ch", comment = "[HIGH] Character code tested '0'(48)<=ch<='9'(5
 arg1 = { name = "str", comment = "[HIGH] String cursor: quick slot 12 is BYTE_DEREF'd as the NUL loop test and INC'd each pass; format_string pushes a pointer it read from its vararg list" }
 local11 = { name = "len", comment = "[HIGH] Length counter: quick slot 11 is set to 0, INC'd alongside str each pass, then returned; format_string subtracts it from the field width" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 12 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xCA97"]
+# fill_bytes
+arg1 = { name = "dest", comment = "[HIGH] memset dest cursor: slot 12 post-incremented (LOAD/INC/STORE/DEC), old value is the BYTE_POPSTORE address. No callers (0 edges)." }
+arg2 = { name = "count", comment = "[HIGH] Bytes left to fill: slot 13 is the JUMPT loop test and is DEC'd each pass. Left in acc at RETURN, so the sub returns 0." }
+arg3 = { name = "value", comment = "[HIGH] Fill byte: BYTE_LOADL_far $000F (low byte of slot 15) is stored to every dest byte. Never written." }
+
+[vars.bank15."0xCAB0"]
+# strcmp
+arg1 = { name = "str1", comment = "[HIGH] Left string ptr (quick slot 12): BYTE_DEREF'd, NUL-tested, INC'd in lockstep; callers pass &name_buf / sram_save_signature ($7FED)." }
+arg2 = { name = "str2", comment = "[HIGH] Right string ptr (quick slot 13): BYTE_DEREF'd vs str1, INC'd in lockstep; callers pass daimyo_name_table[i] / msg_koei." }
+
+[vars.bank15."0xCAD9"]
+# strcpy
+arg1 = { name = "dest", comment = "[HIGH] Destination ptr: quick 12 post-incremented, old value PUSHL'd as BYTE_POPSTORE target each iteration ($CAE0-$CAE4)." }
+arg2 = { name = "src", comment = "[HIGH] Source ptr: quick 13 post-incremented, BYTE_DEREF'd byte stored to dest; loop JUMPT exits on the NUL byte ($CAE5-$CAEB)." }
+local11 = { name = "dest_start", comment = "[HIGH] Saved original dest (STORE 11 <- arg1 at $CADF), never rewritten, returned at $CAEE-$CAEF: strcpy returns dest." }
+
+[vars.bank15."0xCAF0"]
+# memchr
+arg1 = { name = "ptr", comment = "[HIGH] Byte cursor: $CAFC BYTE_DEREF of slot 12, INC+STORE each step ($CB07), returned on match ($CB03). 0 direct callers (indirect)." }
+arg2 = { name = "value", comment = "[HIGH] Byte searched for: only BYTE_LOADL_far $000D read ($CAF8), CMPEQ vs *ptr, never stored. memchr c." }
+arg3 = { name = "count", comment = "[HIGH] Bytes left to scan: loop test JUMPT on slot 14 ($CB0C), DEC+STORE per step ($CB0A); returns 0 at exhaustion. memchr n." }
+
+[vars.bank15."0xCB11"]
+# is_lower
+arg1 = { name = "ch", comment = "[HIGH] Character code: low byte range-tested 97..122 ('a'..'z'). Sole caller to_upper pushes its own arg1 low byte, adds -32 if true." }
+
