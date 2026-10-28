@@ -2903,8 +2903,8 @@ L_ADF4:
 // $ADF6 fief_select_input_loop
 // (body @ $ADFB)
 
-word fief_select_input_loop(word arg1) {
-    fief_anchor = arg1;    // $ADFC
+word fief_select_input_loop(word map_section) {
+    fief_anchor = map_section;    // $ADFC
     syscall16_sram_wrap(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c), &fief_cell_buf, 34);    // $AE11
     cell_ptr = &fief_cell_buf;    // $AE18
     found_flag = 0;    // $AE1B
@@ -2912,13 +2912,13 @@ word fief_select_input_loop(word arg1) {
         if ((*(byte*)(cell_ptr) != 255)) goto L_AE56;    // $AE24
         goto L_AE77;    // $AE27
 L_AE2A:
-        ppu_copy_rect_wrap(local11, local10, min_word((local11 + 8), 29), local10, ((((selected_record_idx_9e3c * 0x01C0) + ((local10 + -4) * 28)) + local11) + window_tile_gfx_8d5a), 4);    // $AE4F
+        ppu_copy_rect_wrap(cell_col, cell_row, min_word((cell_col + 8), 29), cell_row, ((((selected_record_idx_9e3c * 0x01C0) + ((cell_row + -4) * 28)) + cell_col) + window_tile_gfx_8d5a), 4);    // $AE4F
         goto L_AEA2;    // $AE53
 L_AE56:
         cell_ptr = (cell_ptr + 1);    // $AE59
-        local11 = *(byte*)((cell_ptr - 1));    // $AE5D
+        cell_col = *(byte*)((cell_ptr - 1));    // $AE5D
         cell_ptr = (cell_ptr + 1);    // $AE61
-        local10 = *(byte*)((cell_ptr - 1));    // $AE65
+        cell_row = *(byte*)((cell_ptr - 1));    // $AE65
         cell_ptr = (cell_ptr + 1);    // $AE69
     } while (!((*(byte*)((cell_ptr - 1)) == selected_province_idx)));    // $AE71
     found_flag = 1;    // $AE75
@@ -2928,7 +2928,7 @@ L_AE78:
     if (!((found_flag == 1))) goto L_AEA2;    // $AE7E
     if ((blink_phase == 100)) goto L_AE2A;    // $AE86
     if ((blink_phase == 200)) {    // $AE8F
-    set_cursor(local11, local10);    // $AE94
+    set_cursor(cell_col, cell_row);    // $AE94
     draw_province_lord_name(selected_province_idx);    // $AE9B
     blink_phase = 0;    // $AEA0
     }
@@ -2942,35 +2942,35 @@ L_AEA2:
         default: goto L_AECF;    // $AEA5
     }    // $AEA5
 L_AEBE:
-    arg1 = 10;    // $AEBF
+    map_section = 10;    // $AEBF
 L_AEC0:
-    return arg1;    // $AEC1
+    return map_section;    // $AEC1
 L_AEC2:
-    if ((arg1 == 2)) {    // $AEC5
+    if ((map_section == 2)) {    // $AEC5
     phi_val_aece = 2;    // $AEC9
     } else {
-    phi_val_aece = (arg1 - 1);    // $AECD
+    phi_val_aece = (map_section - 1);    // $AECD
     }
 L_AECE:
-    arg1 = phi_val_aece;    // $AECE
+    map_section = phi_val_aece;    // $AECE
 L_AECF:
-    if ((fief_anchor != arg1)) goto L_AEC0;    // $AED4
+    if ((fief_anchor != map_section)) goto L_AEC0;    // $AED4
     goto L_AE78;    // $AEDA
 L_AEDD:
     if ((scenario_fief_count == 50)) goto L_AEC2;    // $AEE3
-    if (arg1) goto L_AECC;    // $AEE7
+    if (map_section) goto L_AECC;    // $AEE7
     phi_val_aece = 0;    // $AEEB
     goto L_AECE;    // $AEEB
 L_AEEE:
     if ((scenario_fief_count != 50)) goto L_AF06;    // $AEF4
-    if ((arg1 != 8)) goto L_AF01;    // $AEFA
+    if ((map_section != 8)) goto L_AF01;    // $AEFA
     phi_val_aece = 8;    // $AEFE
     goto L_AECE;    // $AEFE
 L_AF01:
-    phi_val_aece = (arg1 + 1);    // $AF03
+    phi_val_aece = (map_section + 1);    // $AF03
     goto L_AECE;    // $AF03
 L_AF06:
-    if ((arg1 != 1)) goto L_AF01;    // $AF09
+    if ((map_section != 1)) goto L_AF01;    // $AF09
     phi_val_aece = 1;    // $AF0D
     goto L_AECE;    // $AF0D
     }

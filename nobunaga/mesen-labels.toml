@@ -2559,6 +2559,11 @@ local11 = { name = "setting_handler", comment = "[HIGH] fn ptr: STORE_quick 11 @
 "fp-38" = { name = "fief_cell_buf", comment = "[HIGH] 34-byte buf: SRAM copy (syscall 4) of record selected_record_idx*34+record_sram_9e3c; fief adjacency/cell triples, 255-term" }
 
 # --- bank-15 var-walk far-frame batch (--merge, new sections) (9 subs) ---
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "map_section", comment = "[HIGH] Map section idx: caller PUSH_quick 12 (also fed to render_map_section); saved to $FFD7 anchor, =10 on key1, stepped +/-1, returned at $AEC1" }
+local10 = { name = "cell_row", comment = "[HIGH] 2nd byte of (col,row,prov) triplet via $D8 ptr (STORE_quick 10 @$AE65); row arg of set_cursor/ppu_copy_rect; (row-4)*28 tile offset @$AE2B" }
+local11 = { name = "cell_col", comment = "[HIGH] 1st triplet byte (STORE_quick 11 @$AE5D); arg1 of set_cursor/ppu_copy_rect, min(col+8,29) right edge @$AE45, added to tile src @$AE3B" }
+
 [vars.bank15."0xE5F2"]
 # map_helper_e5f2
 "fp-40" = { name = "cursor", comment = "[HIGH] word walk-pointer; init to &record_buf ($E659), inc'd + loadA_ind_byte deref'd each iter, read until byte==255" }
