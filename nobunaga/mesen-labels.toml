@@ -241,6 +241,7 @@ prg_bank_count = 16        # 256 KB total
 "0x6E7F" = { name = "list_remove_matching_list", comment = "[DATA PHASE 2026-10-27] Byte table indexed by fief: list_remove_matching takes it as its list, revolt_spread_sweep_flip_fief_ownership writes entries, ai_try_war_attack reads [selected_province_idx]. Provenance name; the role is naming work." }
 "0x6FE5" = { name = "unit_count_digit_tiles", comment = "[DATA PHASE 2026-10-27] 9-byte entries (side * 9): draw_unit_count_digits writes tile 178 or 179 and the digits, then ppu_copy_rect_wrap draws the entry." }
 "0x7FED" = { name = "sram_save_signature", comment = "[DATA PHASE 2026-10-27] The save's signature string: verify_sram_save_integrity strcmp's it with 'KOEI'; write_sram_save_checksum_and_signature strcpy's 'KOEI'; on failure the 'data can't be used' text. Follows sram_save_checksum." }
+"0x7985" = { name = "province_name_table", comment = "[HIGH 2026-10-28] SRAM table of 10-byte, zero-padded province names, indexed by province: redraw_window((idx * 10) + 0x7985) at $87C1 / $D9E4 draws one. Read from the SRAM dumps (traces/VICTORY-final-sram.dmp, aftertax.dmp, b2-beforecombat.dmp): 'Noto', 'Echigo', 'Musashi', 'Kaga', ... Missed by the data lane's hot list (2 refs, threshold 3)." }
 
 [prg.bank15]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---

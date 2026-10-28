@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 0
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1372 CPU addresses named
+  labels:       1373 CPU addresses named
 
   bank 0: found 98 bytecode-subroutine stubs
 
@@ -1090,7 +1090,7 @@ VM bytecode disassembly
   $87B7  A4 5F 6F                   LOADL_abs              $6F5F (selected_province_idx)
   $87BA  5A                         LOADR_qimm   ; inline operand = 10
   $87BB  B5                         MULT
-  $87BC  8C 85 79                   LOADR_imm2             $7985
+  $87BC  8C 85 79                   LOADR_imm2             $7985 (province_name_table)
   $87BF  BB                         ADD
   $87C0  B3                         PUSHL
   $87C1  E9 C4 CE 02                CALL_abs_imm1          $CEC4 (redraw_window) {bytecode}, $02
