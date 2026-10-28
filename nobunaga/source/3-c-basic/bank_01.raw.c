@@ -6,6 +6,8 @@
 // ============================================================
 struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
+struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
+extern struct daimyo daimyo_table[];    /* at $752F */
 
 extern byte daimyo_name_table[][9];
 extern byte fief_tax_rate[];
@@ -859,8 +861,8 @@ L_8CC8:
 // (body @ $8D07)
 
 word bribe_success_check(word arg1, word arg2) {
-    local11 = (province_table_live[arg1].loyalty + *(byte*)((fief_to_daimyo_record_addr(arg1) + 4)));    // $8D1A
-    local10 = (((rng_mod(10) * const_two) + province_table_live[arg2].loyalty) + *(byte*)((fief_to_daimyo_record_addr(arg2) + 4)));    // $8D3A
+    local11 = (province_table_live[arg1].loyalty + fief_to_daimyo_record_addr(arg1)->charisma);    // $8D1A
+    local10 = (((rng_mod(10) * const_two) + province_table_live[arg2].loyalty) + fief_to_daimyo_record_addr(arg2)->charisma);    // $8D3A
     if ((local11 <= local10)) goto L_8D4B;    // $8D3E
     if (!(rng_mod(2))) goto L_8D4B;    // $8D46
     return 1;    // $8D4A
@@ -892,7 +894,7 @@ word effect_bribe(word arg1) {
     goto L_8DE6;    // $8DBC
 L_8DBF:
     play_result_jingle(1);    // $8DC0
-    *(byte*)((selected_province_daimyo_record() + 4)) = (*(byte*)((selected_province_daimyo_record() + 4)) - 1);    // $8DCD
+    selected_province_daimyo_record()->charisma = (selected_province_daimyo_record()->charisma - 1);    // $8DCD
     redraw_window(msg_no_peasants_defected);    // $8DD1
     confirm_prompt();    // $8DD5
     local6 = 0;    // $8DD9
@@ -928,7 +930,7 @@ word resolve_siege_assault_outcome(void) {
     local10 = ((((fief_is_daimyo_capital[battle_defending_province] + 2) * *(word*)(*(word*)(fp - 34))) + (((*(word*)(*(word*)(fp - 32)) / 2) + (*(word*)(*(word*)(fp - 30)) / 2)) << 1)) + *(word*)(*(word*)(fp - 28)));    // $8EA4
     local5 = fief_to_daimyo_record_addr(battle_defending_province);    // $8EAC
     local6 = selected_province_daimyo_record();    // $8EB3
-    if (!((*(byte*)((selected_province_daimyo_record() + 2)) < *(byte*)((fief_to_daimyo_record_addr(battle_defending_province) + 2))))) goto L_8ECB;    // $8EB8
+    if (!((selected_province_daimyo_record()->drive < fief_to_daimyo_record_addr(battle_defending_province)->drive))) goto L_8ECB;    // $8EB8
     local10 = (local10 + pct_op(*(word*)(*(word*)(fp - 28)), 10));    // $8EC7
     goto L_8ED7;    // $8EC8
 L_8ECB:
@@ -1092,12 +1094,12 @@ word decrement_byte_at(word arg1) {
 
 word ninja_mission_resolve_vs_defender(word arg1) {
     local3 = selected_province_daimyo_record();    // $9195
-    local5 = (selected_province_daimyo_record() + 4);    // $9197
+    local5 = &selected_province_daimyo_record()->charisma;    // $9197
     if (get_province_ai_state(battle_defending_province)) goto L_92E3;    // $919F
     local9 = 0;    // $91A3
     local11 = &province_table_live[battle_defending_province].men;    // $91AE
     local2 = fief_to_daimyo_record_addr(battle_defending_province);    // $91B6
-    local4 = (fief_to_daimyo_record_addr(battle_defending_province) + 1);    // $91B8
+    local4 = &fief_to_daimyo_record_addr(battle_defending_province)->health;    // $91B8
     local7 = (local4 + 2);    // $91BB
     local6 = (local7 + 1);    // $91BE
     if (!(((*(byte*)(local6) + *(byte*)((local2 + 5))) <= (*(byte*)(local5) + *(byte*)((local3 + 5)))))) goto L_92E3;    // $91D2
@@ -1249,7 +1251,7 @@ L_93D2:
 // (body @ $93E2)
 
 word ai_relations_and_low_drive_skip_gate(word arg1) {
-    return ((((unsigned)relations_matrix_get(arg1, selected_province_idx, 0) > (unsigned)rng_mod(100)) && (*(byte*)((selected_province_daimyo_record() + 2)) < 50)) || (!(((unsigned)relations_matrix_get(arg1, selected_province_idx, 0) > (unsigned)rng_mod(100))) && (((unsigned)relations_matrix_get(fief_owner(arg1), selected_province_owner(), 1) > (unsigned)rng_mod(100)) && (*(byte*)((selected_province_daimyo_record() + 2)) < 50))));    // $9422
+    return ((((unsigned)relations_matrix_get(arg1, selected_province_idx, 0) > (unsigned)rng_mod(100)) && (selected_province_daimyo_record()->drive < 50)) || (!(((unsigned)relations_matrix_get(arg1, selected_province_idx, 0) > (unsigned)rng_mod(100))) && (((unsigned)relations_matrix_get(fief_owner(arg1), selected_province_owner(), 1) > (unsigned)rng_mod(100)) && (selected_province_daimyo_record()->drive < 50))));    // $9422
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $9423
@@ -1326,7 +1328,7 @@ L_952E:
     local10 = local9;    // $9546
 L_9547:
     if ((local10 != 30)) goto L_9561;    // $954B
-    if ((*(byte*)((selected_province_daimyo_record() + 2)) < (rng_mod(80) + 90))) goto L_9584;    // $955E
+    if ((selected_province_daimyo_record()->drive < (rng_mod(80) + 90))) goto L_9584;    // $955E
 L_9561:
     if (get_province_ai_state(local10)) goto L_9571;    // $9566
     if (!(rng_mod(2))) goto L_9584;    // $956E
@@ -1360,7 +1362,7 @@ L_95C7:
 
 word ai_develop_grow_if_men_exceeds_gold(void) {
     if (rng_mod(2)) goto L_95DE;    // $95D3
-    *(byte*)((selected_province_daimyo_record() + 4)) = (*(byte*)((selected_province_daimyo_record() + 4)) + 1);    // $95DD
+    selected_province_daimyo_record()->charisma = (selected_province_daimyo_record()->charisma + 1);    // $95DD
 L_95DE:
     local11 = &province_table_live[selected_province_idx];    // $95E8
     local10 = 0;    // $95EA
@@ -1376,7 +1378,7 @@ L_960A:
 // (body @ $9611)
 
 word ai_reinforce_province_arms_and_econ_10pct(void) {
-    *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) + rng_mod((const_two + 1)));    // $9623
+    selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive + rng_mod((const_two + 1)));    // $9623
     *(word*)(fp - 9) = &province_table_live[selected_province_idx];    // $962E
     if (!((province_table_live[selected_province_idx].men > 8))) goto L_9693;    // $9635
     *(byte*)(fp - 5) = 50;    // $963A
@@ -1586,9 +1588,9 @@ L_9A08:
     message_display(phi_9a08_0);    // $9A08
     local7 = (((*(byte*)(local6) - local5) > 0) ? 1 : -1);    // $9A1B
     if ((local7 != -1)) goto L_9A2D;    // $9A20
-    if ((*(byte*)((selected_province_daimyo_record() + 4)) < 1)) goto L_9A38;    // $9A2A
+    if ((selected_province_daimyo_record()->charisma < 1)) goto L_9A38;    // $9A2A
 L_9A2D:
-    *(byte*)((selected_province_daimyo_record() + 4)) = (*(byte*)((selected_province_daimyo_record() + 4)) + local7);    // $9A37
+    selected_province_daimyo_record()->charisma = (selected_province_daimyo_record()->charisma + local7);    // $9A37
 L_9A38:
     local8 = *(byte*)(local6);    // $9A3A
     *(byte*)(local6) = local5;    // $9A3D
@@ -1723,7 +1725,7 @@ word driver_pact(void) {
     battle_defending_province = province_select_prompt(fief_index_list);    // $9C7F
     if (!(province_select_prompt(fief_index_list))) goto L_9D39;    // $9C82
     battle_defending_province = (battle_defending_province - 1);    // $9C89
-    *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) - 1);    // $9C93
+    selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive - 1);    // $9C93
     local9 = 1;    // $9C95
     open_message_window();    // $9C96
     local10 = prompt_diplomacy_pact();    // $9C9C
@@ -1744,7 +1746,7 @@ L_9CD7:
 L_9D05:
 L_9D0C:
     message_display(msg_who_needs_him_anyway);    // $9D08
-    *(byte*)((selected_province_daimyo_record() + 2)) = (*(byte*)((selected_province_daimyo_record() + 2)) - 1);    // $9D13
+    selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive - 1);    // $9D13
 L_9D14:
     confirm_prompt();    // $9D14
     return local9;    // $9D18
@@ -2100,7 +2102,7 @@ word report_fief_stat_decline(word arg1, word arg2) {
 // (body @ $A2A0)
 
 word effect_ninja_failed(word arg1, word arg2) {
-    deduct_byte_at((selected_province_daimyo_record() + 4), 1);    // $A2A6
+    deduct_byte_at(&selected_province_daimyo_record()->charisma, 1);    // $A2A6
     redraw_window(effect_ninja_failed_your_ninja_failed);    // $A2AD
     standard_delay();    // $A2B1
     province_table_live[selected_province_idx].gold = (province_table_live[selected_province_idx].gold - math32_muladddiv(hire_gold_rate, arg2));    // $A2CB
@@ -2141,7 +2143,7 @@ L_A36C:
     trigger_cutscene(CUTSCENE_NINJA_ASSASSIN);    // $A36D
     arg1 = &province_table_live[battle_defending_province];    // $A37B
     message_display(str_men_ninja_train_msgs);    // $A37F
-    if (!((*(byte*)((fief_to_daimyo_record_addr(battle_defending_province) + 3)) < (*(byte*)((selected_province_daimyo_record() + 3)) + 30)))) goto L_A549;    // $A396
+    if (!((fief_to_daimyo_record_addr(battle_defending_province)->luck < (selected_province_daimyo_record()->luck + 30)))) goto L_A549;    // $A396
     switch (local10) {    // $A39A
         case 1: goto L_A3AB;    // $A39A
         case 2: goto L_A45A;    // $A39A
@@ -2593,7 +2595,7 @@ L_AA79:
 L_AA8A:
     if (!(effect_give_b(local9, local11))) goto L_AAAC;    // $AA90
     trigger_cutscene(CUTSCENE_GIVE);    // $AA94
-    *(byte*)((selected_province_daimyo_record() + 4)) = (*(byte*)((selected_province_daimyo_record() + 4)) + 1);    // $AA9F
+    selected_province_daimyo_record()->charisma = (selected_province_daimyo_record()->charisma + 1);    // $AA9F
     message_display(msg_thank_you_lord);    // $AAA3
     confirm_prompt();    // $AAA7
     return 1;    // $AAAB
@@ -3450,7 +3452,7 @@ word issue_province_command(word arg1) {
     effect_view_a(arg1);    // $B7BF
     standard_delay();    // $B7C3
     *(byte*)(local8) = (*(byte*)(local8) - 1);    // $B7CA
-    *(byte*)((fief_to_daimyo_record_addr(arg1) + 1)) = (*(byte*)((fief_to_daimyo_record_addr(arg1) + 1)) + 4);    // $B7D6
+    fief_to_daimyo_record_addr(arg1)->health = (fief_to_daimyo_record_addr(arg1)->health + 4);    // $B7D6
     goto L_B874;    // $B7D7
 L_B7DA:
     effect_view_c();    // $B7DA

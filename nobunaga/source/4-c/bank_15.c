@@ -6,10 +6,11 @@
 // ============================================================
 struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
+struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
+extern struct daimyo daimyo_table[];    /* at $752F */
 
 extern word daimyo_face_code_table[];
 extern byte daimyo_name_table[][9];
-extern byte daimyo_table_17[][7];
 extern byte fief_to_daimyo_map[];
 extern byte province_ai_state[];
 extern byte province_name_table[][10];
@@ -1207,7 +1208,7 @@ word draw_daimyo_name(word arg1) {
 // (body @ $D7D2)
 
 word daimyo_record_addr(word arg1) {
-    return daimyo_table_17[arg1];    // $D7D9
+    return &daimyo_table[arg1];    // $D7D9
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D7DA
@@ -1547,7 +1548,7 @@ L_DB92:
 // (body @ $DB9C)
 
 word assign_unique_daimyo_face_code(word arg1) {
-    *(byte*)((fief_to_daimyo_record_addr(arg1) + 6)) = 1;    // $DBA4
+    fief_to_daimyo_record_addr(arg1)->status = 1;    // $DBA4
     local8 = 0;    // $DBA6
 L_DBA7:
     local10 = ((((rng_mod(5) * 125) + (rng_mod(5) * 25)) + (rng_mod(5) * 5)) + rng_mod(5));    // $DBCC
@@ -1682,9 +1683,9 @@ L_DD65:
 // (body @ $DD86)
 
 word init_new_daimyo_province_stats(word arg1) {
-    *(byte*)(fief_to_daimyo_record_addr(arg1)) = (rng_mod(20) + 20);    // $DD94
-    local10 = (fief_to_daimyo_record_addr(arg1) + 1);    // $DD9B
-    phi_val_ddc8 = (fief_to_daimyo_record_addr(arg1) + 1);    // $DD9C
+    fief_to_daimyo_record_addr(arg1)->age = (rng_mod(20) + 20);    // $DD94
+    local10 = &fief_to_daimyo_record_addr(arg1)->health;    // $DD9B
+    phi_val_ddc8 = &fief_to_daimyo_record_addr(arg1)->health;    // $DD9C
     while (((unsigned)local11 <= (unsigned)(local10 + 4))) {    // $DDC8
         *(byte*)(local11) = pct_op(*(byte*)(local11), (rng_mod(20) + 50));    // $DDB0
         *(byte*)(local11) = (*(byte*)(local11) + ((*(byte*)(local11) < 30) ? 30 : 0));    // $DDC5
@@ -2289,7 +2290,7 @@ word draw_daimyo_portrait(word arg1, word arg2) {
         *(word*)(fp - 38) = (*(word*)(fp - 38) + 1);    // $E789
     } while (((unsigned)*(word*)(fp - 38) < (unsigned)4));    // $E78F
     if (((unsigned)active_province_idx_copy >= (unsigned)53)) goto L_E7A7;    // $E798
-    if (*(byte*)((daimyo_record_addr(active_province_idx_copy) + 6))) goto L_E7EE;    // $E7A4
+    if (daimyo_record_addr(active_province_idx_copy)->status) goto L_E7EE;    // $E7A4
 L_E7A7:
     *(word*)(fp - 40) = (((fief_to_mapid(active_province_idx_copy) << 1) << 1) + msg_ng_to_pieces);    // $E7B4
     syscall16_sram_wrap(8, *(word*)(fp - 40), (fp - 44), 4);    // $E7BE

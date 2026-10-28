@@ -6,6 +6,8 @@
 // ============================================================
 struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
+struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
+extern struct daimyo daimyo_table[];    /* at $752F */
 
 extern word battle_defender_province_staging[];
 extern word battle_staging_entry_flag_array[];
@@ -229,7 +231,7 @@ word apply_scenario_starting_stat_boosts(void) {
     goto L_85B4;    // $83F4
 L_83F7:
     if (get_province_ai_state(local11)) goto L_8593;    // $83FC
-    *(word*)(fp - 40) = ((fief_owner(local11) * 7) + 0x7530);    // $840A
+    *(word*)(fp - 40) = &daimyo_table[fief_owner(local11)].health;    // $840A
     phi_val_8423 = 0;    // $840D
     goto L_8423;    // $840D
 L_8410:
@@ -450,7 +452,7 @@ L_8832:
 L_8861:
     palette_swap(0);    // $885D
     local9 = 0;    // $8862
-    local11 = ((selected_province_idx * 7) + 0x7530);    // $886C
+    local11 = &daimyo_table[selected_province_idx].health;    // $886C
     local10 = 1;    // $886E
 L_886F:
     set_cursor(23, (local10 + 11));    // $8874
@@ -1265,7 +1267,7 @@ L_946B:
 // (body @ $9472)
 
 word get_fief_daimyo_charisma(word arg1) {
-    return *(byte*)((fief_to_daimyo_record_addr(arg1) + 4));    // $9479
+    return fief_to_daimyo_record_addr(arg1)->charisma;    // $9479
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $947A
@@ -1373,7 +1375,7 @@ word province_conquest_roll_predicate(word arg1) {
     message_display(province_conquest_roll_predicate_in_fief);    // $959D
     draw_message(province_conquest_roll_predicate_fmt_2d, (arg1 + 1));    // $95A7
     local11 = &province_table_live[arg1];    // $95B3
-    local10 = pct_op(local11->men, (((((min_word(100, local11->morale) * 3) / 10) + ((min_word(200, *(byte*)((fief_to_daimyo_record_addr(arg1) + 4))) * 3) / 20)) + rng_mod(31)) + 10));    // $95EE
+    local10 = pct_op(local11->men, (((((min_word(100, local11->morale) * 3) / 10) + ((min_word(200, fief_to_daimyo_record_addr(arg1)->charisma) * 3) / 20)) + rng_mod(31)) + 10));    // $95EE
     local9 = (local11->men - local10);    // $95F5
     draw_message(msg_loyals_4d_men_rebels_4d_men, local10, local9);    // $95FB
     confirm_prompt();    // $95FF
@@ -1433,7 +1435,7 @@ word scenario50_fief30_event_eligible(word arg1) {
     if ((scenario_fief_count == 50)) {    // $96BD
     if ((arg1 == 30)) {    // $96C4
     if ((fief_owner(arg1) == 24)) {    // $96CF
-    if ((*(byte*)(fief_to_daimyo_record_addr(30)) >= 40)) {    // $96DC
+    if ((fief_to_daimyo_record_addr(30)->age >= 40)) {    // $96DC
     local8 = selected_province_idx;    // $96E2
     selected_province_idx = 30;    // $96E5
     if (cur_flag_and_selected_ai_state5()) {    // $96EB
@@ -1874,7 +1876,7 @@ word random_event_ravage_output_hidden_mark_weakness(void) {
         local10->output = pct_op(local10->output, (rng_mod(50) + 50));    // $9D46
         if (fief_is_daimyo_capital[*(byte*)(local11)]) {    // $9D4E
         local9 = fief_to_daimyo_record_addr(*(byte*)(local11));    // $9D5F
-        deduct_byte_at((fief_to_daimyo_record_addr(*(byte*)(local11)) + 1), (rng_mod(9) + 1));    // $9D62
+        deduct_byte_at(&fief_to_daimyo_record_addr(*(byte*)(local11))->health, (rng_mod(9) + 1));    // $9D62
         daimyo_weakness_flag[fief_owner(*(byte*)(local11))] = (*(byte*)((local9 + 1)) <= 50);    // $9D78
         }
 L_9D79:
@@ -1902,7 +1904,7 @@ L_9D95:
 
 word ai_event_eligibility_check_loyalty_variant(word arg1) {
     battle_defending_province = arg1;    // $9DA9
-    return !(((square_over_2025_probability_roll(province_table_live[arg1].loyalty) && (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(province_table_live[arg1].loyalty)) && ((square_over_2025_probability_roll((100 - fief_tax_rate[arg1])) && (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))) || (!(square_over_2025_probability_roll((100 - fief_tax_rate[arg1]))) && ((square_over_2025_probability_roll(*(byte*)((fief_to_daimyo_record_addr(arg1) + 4))) && (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(*(byte*)((fief_to_daimyo_record_addr(arg1) + 4)))) && (rng_mod(0x03E8) || (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))))))))));    // $9E20
+    return !(((square_over_2025_probability_roll(province_table_live[arg1].loyalty) && (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(province_table_live[arg1].loyalty)) && ((square_over_2025_probability_roll((100 - fief_tax_rate[arg1])) && (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))) || (!(square_over_2025_probability_roll((100 - fief_tax_rate[arg1]))) && ((square_over_2025_probability_roll(fief_to_daimyo_record_addr(arg1)->charisma) && (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))) || (!(square_over_2025_probability_roll(fief_to_daimyo_record_addr(arg1)->charisma)) && (rng_mod(0x03E8) || (!((province_table_live[arg1].output > 0)) || (!((province_table_live[arg1].men > 2)) || (defender_owner_is_honganji() || (province_state_is_FF(arg1) || rng_mod(4)))))))))))));    // $9E20
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9E21
@@ -1912,7 +1914,7 @@ word ai_event_eligibility_check_loyalty_variant(word arg1) {
 word ai_event_eligibility_check_morale_variant(word arg1) {
     battle_defending_province = arg1;    // $9E27
     if (square_over_2025_probability_roll(province_table_live[arg1].morale)) goto L_9E60;    // $9E38
-    if (square_over_2025_probability_roll(*(byte*)((fief_to_daimyo_record_addr(arg1) + 4)))) goto L_9E60;    // $9E47
+    if (square_over_2025_probability_roll(fief_to_daimyo_record_addr(arg1)->charisma)) goto L_9E60;    // $9E47
     if (rng_mod((defender_owner_is_honganji() ? 20 : 0x03E8))) goto L_9E76;    // $9E5D
 L_9E60:
     if (!((province_table_live[arg1].men > 2))) goto L_9E76;    // $9E6B
@@ -2245,7 +2247,7 @@ word roll_3pct_event_chance(void) {
 // (body @ $A2F2)
 
 word drift_daimyo_luck(word arg1) {
-    local11 = (daimyo_record_addr(arg1) + 3);    // $A2F8
+    local11 = &daimyo_record_addr(arg1)->luck;    // $A2F8
     *(byte*)(local11) = (*(byte*)(local11) + rng_mod(11));    // $A304
     *(byte*)(local11) = (*(byte*)(local11) - 5);    // $A30B
     return *(byte*)(local11);    // $A30C
@@ -2441,7 +2443,7 @@ L_A616:
     *(word*)(local9) = (*(word*)(local10) / 2);    // $A622
     *(word*)(local10) = (*(word*)(local10) - *(word*)(local9));    // $A62B
 L_A62C:
-    if (!((*(byte*)((fief_to_daimyo_record_addr(battle_defending_province) + 4)) < (rng_mod(const_two) + 70)))) goto L_A661;    // $A641
+    if (!((fief_to_daimyo_record_addr(battle_defending_province)->charisma < (rng_mod(const_two) + 70)))) goto L_A661;    // $A641
     local11 = pct_op(*(word*)(local9), rng_mod(50));    // $A652
     *(word*)(local10) = (*(word*)(local10) + pct_op(*(word*)(local9), rng_mod(50)));    // $A659
     *(word*)(local9) = (*(word*)(local9) - local11);    // $A660

@@ -6,6 +6,8 @@
 // ============================================================
 struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word header; };    /* 26 bytes */
 extern struct province province_table_live[];    /* at $7001 */
+struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
+extern struct daimyo daimyo_table[];    /* at $752F */
 
 extern word battle_side_strength_mod[];
 extern byte battle_unit_byte_table[];
@@ -48,7 +50,7 @@ L_8144:
     palette_write_wrap(*(word*)(fp - 41), *(word*)(((*(word*)(fp - 41) << 1) + str_keypad_yn_prompt)));    // $814F
     *(word*)(fp - 41) = (*(word*)(fp - 41) + 1);    // $8156
     if (((unsigned)*(word*)(fp - 41) < (unsigned)4)) goto L_8144;    // $815C
-    if (*(byte*)((daimyo_record_addr(active_province_idx_copy) + 6))) goto L_81E8;    // $8168
+    if (daimyo_record_addr(active_province_idx_copy)->status) goto L_81E8;    // $8168
     *(word*)(fp - 43) = (((fief_to_mapid(active_province_idx_copy) << 1) << 1) + fief_tile_descriptor_table);    // $8178
     syscall16_sram_wrap(8, *(word*)(fp - 43), (fp - 47), 4);    // $8182
     *(word*)(fp - 43) = (fp - 47);    // $8189
@@ -1079,8 +1081,8 @@ word ai_score_strength_term_40pct(word arg1, word arg2) {
 word ai_sum_battle_strength(void) {
     mem_7BEC = 0;    // $8E62
     battle_side_strength_mod = 0;    // $8E65
-    local11 = (selected_province_daimyo_record() + 1);    // $8E6C
-    local10 = (fief_to_daimyo_record_addr(battle_defending_province) + 1);    // $8E75
+    local11 = &selected_province_daimyo_record()->health;    // $8E6C
+    local10 = &fief_to_daimyo_record_addr(battle_defending_province)->health;    // $8E75
     local9 = battle_strength_stat_weights;    // $8E79
     phi_val_8ea5 = 0;    // $8E7B
     goto L_8EA5;    // $8E7B
@@ -2218,8 +2220,8 @@ word resolve_attack_apply_casualties(word arg1, word arg2) {
     local9 = get_battle_side_province(cur_combat_side);    // $9E94
     local7 = (cur_combat_side ^ 1);    // $9E9A
     local8 = get_battle_side_province((cur_combat_side ^ 1));    // $9EA0
-    local11 = ((rng_mod((6 - const_two)) + province_table_live[local9].morale) + *(byte*)((fief_to_daimyo_record_addr(local9) + 4)));    // $9EC1
-    local10 = ((province_table_live[local8].morale + *(byte*)((fief_to_daimyo_record_addr(local8) + 4))) + (const_two << 1));    // $9EDC
+    local11 = ((rng_mod((6 - const_two)) + province_table_live[local9].morale) + fief_to_daimyo_record_addr(local9)->charisma);    // $9EC1
+    local10 = ((province_table_live[local8].morale + fief_to_daimyo_record_addr(local8)->charisma) + (const_two << 1));    // $9EDC
     if (combat_casualty_skip_flag_7bf3) goto L_9F37;    // $9EE0
     if ((local11 <= local10)) goto L_9F37;    // $9EE6
     arg2 = (arg2 / *(word*)(unit_strength_ptr(local7, arg1)));    // $9EF3

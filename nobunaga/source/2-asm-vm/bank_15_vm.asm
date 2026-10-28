@@ -1952,7 +1952,7 @@ VM bytecode disassembly
   $D7D2  0C                         LOADL_quick   ; inline operand = 12
   $D7D3  57                         LOADR_qimm   ; inline operand = 7
   $D7D4  B5                         MULT
-  $D7D5  8C 2F 75                   LOADR_imm2             $752F (daimyo_table_17)
+  $D7D5  8C 2F 75                   LOADR_imm2             $752F (daimyo_table)
   $D7D8  BB                         ADD
   $D7D9  CF                         RETURN
 
