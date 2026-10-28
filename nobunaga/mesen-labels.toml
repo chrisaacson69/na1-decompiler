@@ -3617,3 +3617,22 @@ local11 = { name = "new_policy", comment = "[HIGH] submenu_prompt(6)+1 @$AFFB (6
 local10 = { name = "trade_handler", comment = "[HIGH] fn ptr: STORE_quick 10 @$A203 = jumptab_b9dc[choice]; LOADL_quick 10 + CALLPTR_imm1 @$A210 with province_table_live rec pushed" }
 # local11 left positional — scratch: menu-draw loop idx 0..5 ($A1C4-$A1ED, SCMPLT 6), then reused for submenu_prompt(6) result @$A1FC (==5 exit @$A2
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank2."0x829A"]
+# unit_row_ptr
+arg1 = { name = "side", comment = "[HIGH] LOADL_quick 12 @$829F *5 into $6FDA row table; callers @$82C1/$97CB/$9834 push cur_combat_side last (= arg1)" }
+arg2 = { name = "unit_slot", comment = "[HIGH] LOADR_quick 13 @$82A2 added to side*5; callers push cur_combat_unit_slot @$82BE, 0 @$9833, or loop idx local7 @$98A5" }
+
+[vars.bank2."0x828B"]
+# unit_col_ptr
+arg1 = { name = "side", comment = "[HIGH] LOADL_quick 12 @$8290 *5 (units per side) into $6FD0; callers @$82B1/$97BE/$982A push cur_combat_side last (= arg1)" }
+arg2 = { name = "unit_slot", comment = "[HIGH] LOADR_quick 13 @$8293 added to side*5; callers push cur_combat_unit_slot @$82AE, 0 @$9829, or loop idx local7/local9" }
+
+[vars.bank2."0x827E"]
+# side_resource_ptr
+arg1 = { name = "side", comment = "[MED] LOADL_quick 12 @$8283 *6 + $6F7D (war_attacker_gold) = per-side 6-byte block; callers push loop idx local8, arg1, local11; +2/+4 used" }
+
+[vars.bank2."0x822A"]
+# prompt_yes_no
+# local11 left positional — Scratch: STORE_quick 11 @$823E holds wait_button_edge code (cmp 64/$80), then STORE_quick 11 @$826A holds 1/0 answer ret
+

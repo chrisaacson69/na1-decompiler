@@ -121,24 +121,24 @@ word set_tactical_cursor_pos(word cursor_cell, word cursor_row) {
 // $827E side_resource_ptr
 // (body @ $8283)
 
-word side_resource_ptr(word arg1) {
-    return war_attacker_gold[arg1];    // $828A
+word side_resource_ptr(word side) {
+    return war_attacker_gold[side];    // $828A
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $828B
 // $828B unit_col_ptr
 // (body @ $8290)
 
-word unit_col_ptr(word arg1, word arg2) {
-    return (((arg1 * 5) + arg2) + 0x6FD0);    // $8299
+word unit_col_ptr(word side, word unit_slot) {
+    return (((side * 5) + unit_slot) + 0x6FD0);    // $8299
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $829A
 // $829A unit_row_ptr
 // (body @ $829F)
 
-word unit_row_ptr(word arg1, word arg2) {
-    return (((arg1 * 5) + arg2) + 0x6FDA);    // $82A8
+word unit_row_ptr(word side, word unit_slot) {
+    return (((side * 5) + unit_slot) + 0x6FDA);    // $82A8
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $82A9
