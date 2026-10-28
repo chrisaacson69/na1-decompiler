@@ -227,7 +227,7 @@ word init_daimyo_arms_record(word idx) {
 word apply_scenario_starting_stat_boosts(void) {
     gold_rice_exchange_rate = (rng_mod(6) + 20);    // $83EE
     local11 = 0;    // $83F2
-    local9 = 0;    // $83F3
+    boosted_count = 0;    // $83F3
     goto L_85B4;    // $83F4
 L_83F7:
     if (get_province_ai_state(local11)) goto L_8593;    // $83FC
@@ -237,24 +237,24 @@ L_83F7:
 L_8410:
     stat_ptr = (stat_ptr + 1);    // $8419
     *(byte*)((stat_ptr - 1)) = (*(byte*)((stat_ptr - 1)) + (const_two * 5));    // $8420
-    phi_val_8423 = (local10 + 1);    // $8422
+    phi_val_8423 = (j + 1);    // $8422
 L_8423:
-    local10 = phi_val_8423;    // $8423
-    if (((unsigned)local10 < (unsigned)5)) goto L_8410;    // $8427
-    local8 = &province_table_live[local11];    // $8432
-    local8 = (local8 + 2);    // $843B
-    *(word*)((local8 + -2)) = (*(word*)((local8 + -2)) + (const_two * 10));    // $8442
-    local10 = 0;    // $8444
+    j = phi_val_8423;    // $8423
+    if (((unsigned)j < (unsigned)5)) goto L_8410;    // $8427
+    field_ptr = &province_table_live[local11];    // $8432
+    field_ptr = (field_ptr + 2);    // $843B
+    *(word*)((field_ptr + -2)) = (*(word*)((field_ptr + -2)) + (const_two * 10));    // $8442
+    j = 0;    // $8444
 L_8445:
-    local8 = (local8 + 2);    // $844D
-    *(word*)(local8) = (*(word*)(local8) + (const_two * 5));    // $8452
-    local10 = (local10 + 1);    // $8455
-    if (((unsigned)local10 < (unsigned)10)) goto L_8445;    // $8459
+    field_ptr = (field_ptr + 2);    // $844D
+    *(word*)(field_ptr) = (*(word*)(field_ptr) + (const_two * 5));    // $8452
+    j = (j + 1);    // $8455
+    if (((unsigned)j < (unsigned)10)) goto L_8445;    // $8459
     if ((scenario_fief_count != 50)) goto L_8507;    // $8462
     if (((local11 == 5) || ((local11 == 9) || ((local11 == 13) || ((local11 == 14) || ((local11 == 19) || ((local11 == 23) || ((local11 == 26) || ((local11 == 21) || ((local11 == 38) || ((local11 == 42) || ((local11 == 49) || (local11 == 24))))))))))))) {    // $84B2
     if (rng_mod(2)) {    // $84BA
-    *(word*)(((local9 << 1) + &boosted_fief_list)) = local11;    // $84C7
-    local9 = (local9 + 1);    // $84CA
+    *(word*)(((boosted_count << 1) + &boosted_fief_list)) = local11;    // $84C7
+    boosted_count = (boosted_count + 1);    // $84CA
     province_table_live[local11].gold = (province_table_live[local11].gold * 2);    // $84D8
     province_table_live[local11].rice = (province_table_live[local11].rice * 4);    // $84E6
     province_table_live[local11].loyalty = (province_table_live[local11].loyalty * 2);    // $84F4
@@ -263,8 +263,8 @@ L_8445:
 L_8507:
     if (((local11 == 1) || ((local11 == 2) || ((local11 == 4) || ((local11 == 7) || ((local11 == 10) || ((local11 == 15) || (local11 == 16)))))))) {    // $852F
     if (rng_mod(2)) {    // $8537
-    *(word*)(((local9 << 1) + &boosted_fief_list)) = local11;    // $8544
-    local9 = (local9 + 1);    // $8547
+    *(word*)(((boosted_count << 1) + &boosted_fief_list)) = local11;    // $8544
+    boosted_count = (boosted_count + 1);    // $8547
     province_table_live[local11].gold = (province_table_live[local11].gold * 2);    // $8555
     province_table_live[local11].rice = (province_table_live[local11].rice * 3);    // $8563
     province_table_live[local11].loyalty = (province_table_live[local11].loyalty * 2);    // $8571
@@ -278,8 +278,8 @@ L_8581:
 L_858E:
 L_8593:
     init_daimyo_arms_record(local11);    // $858F
-    local8 = &province_table_live[local11].header;    // $859B
-    *(word*)(local8) = pct_op((*(word*)(local8) + 1000), (rng_mod(20) + 80));    // $85B0
+    field_ptr = &province_table_live[local11].header;    // $859B
+    *(word*)(field_ptr) = pct_op((*(word*)(field_ptr) + 1000), (rng_mod(20) + 80));    // $85B0
     local11 = (local11 + 1);    // $85B3
 L_85B4:
     if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_83F7;    // $85B9
@@ -290,20 +290,20 @@ L_85C0:
     goto L_85EB;    // $85C1
 L_85C4:
     selected_province_idx = *(word*)(((local11 << 1) + &boosted_fief_list));    // $85CD
-    battle_defending_province = *(word*)(((local10 << 1) + &boosted_fief_list));    // $85D9
+    battle_defending_province = *(word*)(((j << 1) + &boosted_fief_list));    // $85D9
     if ((selected_province_idx != battle_defending_province)) {    // $85E3
     }
 L_85E9:
     set_marriage_relation();    // $85E6
-    phi_val_85eb = (local10 + 1);    // $85EA
+    phi_val_85eb = (j + 1);    // $85EA
 L_85EB:
-    local10 = phi_val_85eb;    // $85EB
-    if (((unsigned)local10 < (unsigned)local9)) goto L_85C4;    // $85EF
+    j = phi_val_85eb;    // $85EB
+    if (((unsigned)j < (unsigned)boosted_count)) goto L_85C4;    // $85EF
     phi_val_85f4 = (local11 + 1);    // $85F3
 L_85F4:
     local11 = phi_val_85f4;    // $85F4
-    if (((unsigned)local11 < (unsigned)local9)) goto L_85C0;    // $85F8
-    return ((unsigned)local11 < (unsigned)local9);    // $85FB
+    if (((unsigned)local11 < (unsigned)boosted_count)) goto L_85C0;    // $85F8
+    return ((unsigned)local11 < (unsigned)boosted_count);    // $85FB
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $85FC
@@ -826,18 +826,18 @@ L_8E51:
 
 word process_fiefs_with_state_ff(void) {
     phi_val_8e8f = 0;    // $8E69
-    while (((unsigned)local11 < (unsigned)scenario_fief_count)) {    // $8E8F
-        if (province_state_is_FF(local11)) {    // $8E71
-        selected_province_idx = local11;    // $8E75
+    while (((unsigned)fief < (unsigned)scenario_fief_count)) {    // $8E8F
+        if (province_state_is_FF(fief)) {    // $8E71
+        selected_province_idx = fief;    // $8E75
         battle_defending_province = selected_province_idx;    // $8E7B
         compact_relation_list();    // $8E7E
         }
 L_8E8D:
         resolve_ownerless_province_succession(dedup_owners(deduped_owner_list));    // $8E89
-        phi_val_8e8f = (local11 + 1);    // $8E8E
-        local11 = phi_val_8e8f;    // $8E8F
+        phi_val_8e8f = (fief + 1);    // $8E8E
+        fief = phi_val_8e8f;    // $8E8F
     }
-    return ((unsigned)local11 < (unsigned)scenario_fief_count);    // $8E98
+    return ((unsigned)fief < (unsigned)scenario_fief_count);    // $8E98
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8E99
@@ -864,14 +864,14 @@ word compare_greater_with_coinflip_tiebreak(word value_a, word value_b) {
 // $8ED3 display_two_message_prompt_then_compare
 // (body @ $8ED8)
 
-word display_two_message_prompt_then_compare(word arg1, word arg2, word arg3) {
-    local11 = select_uprising_message(arg3);    // $8EDD
-    local10 = select_message_string_by_flags_and_arg(arg3);    // $8EE3
+word display_two_message_prompt_then_compare(word attacker_strength, word loyal_men, word fief) {
+    uprising_msg = select_uprising_message(fief);    // $8EDD
+    side_msg = select_message_string_by_flags_and_arg(fief);    // $8EE3
     message_display(msg_in_fief);    // $8EE7
-    draw_message(msg_fmt__d, (arg3 + 1), local11);    // $8EF2
-    draw_message(msg_loyals_4d_men_s_4d_men, arg2, local10, arg1);    // $8EFC
+    draw_message(msg_fmt__d, (fief + 1), uprising_msg);    // $8EF2
+    draw_message(msg_loyals_4d_men_s_4d_men, loyal_men, side_msg, attacker_strength);    // $8EFC
     confirm_prompt();    // $8F00
-    return compare_greater_with_coinflip_tiebreak(arg1, arg2);    // $8F09
+    return compare_greater_with_coinflip_tiebreak(attacker_strength, loyal_men);    // $8F09
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8F0A
@@ -913,8 +913,8 @@ L_8FD2:
 // $8FD3 append_candidate_zero_priority
 // (body @ $8FD8)
 
-word append_candidate_zero_priority(word arg1, word arg2) {
-    return append_candidate_pair(arg1, arg2, 0);    // $8FDF
+word append_candidate_zero_priority(word fief, word idx) {
+    return append_candidate_pair(fief, idx, 0);    // $8FDF
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8FE0
@@ -991,9 +991,9 @@ L_90D6:
 // $90D7 saturating_sub_byte_then_reset_if_ge_100
 // (body @ $90DC)
 
-word saturating_sub_byte_then_reset_if_ge_100(word arg1, word arg2) {
-    deduct_byte_at(arg1, arg2);    // $90DE
-    return reset_byte_if_ge_100(arg1);    // $90E7
+word saturating_sub_byte_then_reset_if_ge_100(word cell_ptr, word decay_amount) {
+    deduct_byte_at(cell_ptr, decay_amount);    // $90DE
+    return reset_byte_if_ge_100(cell_ptr);    // $90E7
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $90E8
@@ -1092,10 +1092,10 @@ L_91FC:
 // $91FD clamp_value_to_range
 // (body @ $9202)
 
-word clamp_value_to_range(word arg1, word arg2, word arg3) {
-    if ((arg1 > arg2)) return arg1;    // $9205
-    if ((arg2 > arg3)) return arg3;    // $920D
-    return arg2;    // $9213
+word clamp_value_to_range(word lo, word value, word hi) {
+    if ((lo > value)) return lo;    // $9205
+    if ((value > hi)) return hi;    // $920D
+    return value;    // $9213
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $9214
@@ -1139,11 +1139,11 @@ L_9279:
 // $92A9 repay_province_debt_from_gold
 // (body @ $92AE)
 
-word repay_province_debt_from_gold(word arg1, word arg2) {
-    if (!(arg1->debt)) return 1;    // $92B1
-    arg2 = min_word(arg2, min_word(*(word*)(arg1), arg1->debt));    // $92C7
-    *(word*)(arg1) = (*(word*)(arg1) - arg2);    // $92CE
-    arg1->debt = (arg1->debt - arg2);    // $92D6
+word repay_province_debt_from_gold(word fief, word repay_amount) {
+    if (!(fief->debt)) return 1;    // $92B1
+    repay_amount = min_word(repay_amount, min_word(*(word*)(fief), fief->debt));    // $92C7
+    *(word*)(fief) = (*(word*)(fief) - repay_amount);    // $92CE
+    fief->debt = (fief->debt - repay_amount);    // $92D6
     return 0;    // $92D8
 }
 
@@ -1151,13 +1151,13 @@ word repay_province_debt_from_gold(word arg1, word arg2) {
 // $92D9 deduct_b_from_a_void_b_if_overdrawn
 // (body @ $92DE)
 
-word deduct_b_from_a_void_b_if_overdrawn(word arg1, word arg2) {
-    if ((*(word*)(arg1) <= 0)) goto L_92F5;    // $92E2
-    *(word*)(arg1) = (*(word*)(arg1) - *(word*)(arg2));    // $92ED
-    phi_ret_92f8 = (*(word*)(arg1) < 0);    // $92F2
+word deduct_b_from_a_void_b_if_overdrawn(word balance_ptr, word cost_ptr) {
+    if ((*(word*)(balance_ptr) <= 0)) goto L_92F5;    // $92E2
+    *(word*)(balance_ptr) = (*(word*)(balance_ptr) - *(word*)(cost_ptr));    // $92ED
+    phi_ret_92f8 = (*(word*)(balance_ptr) < 0);    // $92F2
     if (phi_ret_92f8) {    // $92F2
 L_92F5:
-    *(word*)(arg2) = 0;    // $92F7
+    *(word*)(cost_ptr) = 0;    // $92F7
     phi_ret_92f8 = 0;    // $92F7
     }
 L_92F8:
@@ -1168,9 +1168,9 @@ L_92F8:
 // $92F9 random_ravage_province_field
 // (body @ $92FE)
 
-word random_ravage_province_field(word arg1) {
-    if ((rng_mod(2) || (*(word*)(arg1) <= 0))) return 0;    // $930A
-    *(word*)(arg1) = pct_op(*(word*)(arg1), (rng_mod(30) + 40));    // $9320
+word random_ravage_province_field(word field_ptr) {
+    if ((rng_mod(2) || (*(word*)(field_ptr) <= 0))) return 0;    // $930A
+    *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), (rng_mod(30) + 40));    // $9320
     return 1;    // $9322
 }
 
@@ -1245,17 +1245,17 @@ word ravage_defending_province_sweep(void) {
     if (ravage_defender_wealth()) goto L_944E;    // $9408
     if (ravage_defender_output_and_bump_selected_arms()) goto L_944E;    // $940E
     if (rng_mod(2)) {    // $9416
-    local11 = &province_table_live[battle_defending_province];    // $9423
-    local10 = fief_to_daimyo_record_addr(battle_defending_province);    // $942B
-    if ((local11->dams <= 0)) {    // $9431
-    deduct_byte_at((local10 + 4), rng_mod(5));    // $943D
+    fief = &province_table_live[battle_defending_province];    // $9423
+    daimyo = fief_to_daimyo_record_addr(battle_defending_province);    // $942B
+    if ((fief->dams <= 0)) {    // $9431
+    deduct_byte_at((daimyo + 4), rng_mod(5));    // $943D
 L_944E:
-    deduct_byte_at((local10 + 1), rng_mod(5));    // $944A
+    deduct_byte_at((daimyo + 1), rng_mod(5));    // $944A
     confirm_prompt();    // $944E
     return 1;    // $9452
     }
 L_9453:
-    local11->dams = pct_op(local11->dams, (rng_mod(30) + 60));    // $9467
+    fief->dams = pct_op(fief->dams, (rng_mod(30) + 60));    // $9467
     goto L_944E;    // $9468
     }
 L_946B:

@@ -2555,6 +2555,11 @@ local11 = { name = "i", comment = "[MED] index into $FFF2 buffer in compare loop
 # apply_scenario_starting_stat_boosts
 "fp-40" = { name = "stat_ptr", comment = "[MED] walking byte-ptr = 0x7530 + d772(fief)*7; INC then byte at it += const_two*5 over 5 iters (boosts 5 stat bytes)" }
 "fp-38" = { name = "boosted_fief_list", comment = "[HIGH] word array buffer of boosted fief indices: writes [local9++]=fief (84C7/8544), later read [local11] into selected_province_idx (85CD)" }
+# far-frame slots (var-walk-apply --merge)
+local8 = { name = "field_ptr", comment = "[MED] Pointer into the current fief's record: $8432 sets it to $7001+local11*26 and steps it +2 per word; $859B re-points it to $7019 (+24 header) for pct_op" }
+local9 = { name = "boosted_count", comment = "[HIGH] Zeroed at $83F3. $84C1/$853E use it (LSHIFT1) as the write index into the fp-38 list, then INC; it is the UCMPLT bound at $85ED/$85F6" }
+local10 = { name = "j", comment = "[MED] Inner loop counter every time: 0..5 at $8424 (daimyo bytes), 0..10 at $8456 (record words), and the fp-38 list index below local9 at $85D4/$85EC" }
+# local11 left positional — Two loops: fief idx <scenario_fief_count ($85B4, fief_owner/$7001*26), then outer idx into fp-38 list <local9 ($85C8/$85
 
 [vars.bank0."0x8377"]
 # transfer_arms_field_pct
@@ -4218,4 +4223,52 @@ local10 = { name = "fief", comment = "[HIGH] number_input(1,scenario_fief_count)
 # init_daimyo_arms_record
 arg1 = { name = "idx", comment = "[MED] Row index: LOADL_quick 12 *5 + $76A9 at $839F (5-byte rows). Caller pushes its local11 (unknown). Table is province-labelled, sub daimyo: kept generic" }
 local11 = { name = "arms_record_ptr", comment = "[MED] &$76A9[arg1*5] (STORE_quick 11 @$83A6); ptr, +1, +3, +4 passed as args to transfer_arms_field_pct 4 times" }
+
+# --- bank-00 var-walk far-frame batch (--merge, new sections) (9 subs) ---
+[vars.bank0."0x93BF"]
+# ravage_defending_province_sweep
+local10 = { name = "daimyo", comment = "[HIGH] Stores fief_to_daimyo_record_addr(battle_defending_province) at $942B; +4 (charisma) and +1 (health) go to deduct_byte_at" }
+local11 = { name = "fief", comment = "[HIGH] Holds $7001+def*26 (stored $9423). +10 (dams) is DEREFed at $942E and scaled by pct_op(60+rng 30) at $9463" }
+
+[vars.bank0."0x92F9"]
+# random_ravage_province_field
+arg1 = { name = "field_ptr", comment = "[HIGH] Callers push $7001+def*26+off (+4/+8/+10/+12/+14/+18). *arg1 = pct_op(*arg1, 40+rng_mod(30)) at $931C/$9320" }
+
+[vars.bank0."0x92D9"]
+# deduct_b_from_a_void_b_if_overdrawn
+arg1 = { name = "balance_ptr", comment = "[MED] Word ptr (no callers). *arg1<=0 is checked at $92E1; *arg1 -= *arg2 at $92ED; *arg1<0 is rechecked at $92F1" }
+arg2 = { name = "cost_ptr", comment = "[MED] Word ptr (no callers). Its value is subtracted from *arg1 at $92E5. Zeroed by POPSTORE 0 at $92F5 when the balance is not positive" }
+
+[vars.bank0."0x92A9"]
+# repay_province_debt_from_gold
+arg1 = { name = "fief", comment = "[HIGH] Province record ptr (caller pushes local11 last). Reads +2 debt at $92AF; POPSTOREs to +0 gold $92CE and +2 debt $92D6" }
+arg2 = { name = "repay_amount", comment = "[MED] Caller pushes *fief (gold). Narrowed at $92C7 to min(arg2,gold,debt), then subtracted from gold and debt" }
+
+[vars.bank0."0x91FD"]
+# clamp_value_to_range
+arg1 = { name = "lo", comment = "[HIGH] Caller pushes 10 last ($926E). Returned when arg1 SCMPGT arg2 ($9204)" }
+arg2 = { name = "value", comment = "[HIGH] Caller pushes rng_mod(11)+rate-5. Returned when within range ($9212)" }
+arg3 = { name = "hi", comment = "[HIGH] Caller pushes 30 first ($9260). Returned when arg2 SCMPGT arg3 ($920C)" }
+
+[vars.bank0."0x90D7"]
+# saturating_sub_byte_then_reset_if_ge_100
+arg1 = { name = "cell_ptr", comment = "[HIGH] Callers push the relations_matrix_cell_addr result last; passed as the deduct_byte_at ptr $90DD and to reset_byte_if_ge_100 $90E2" }
+arg2 = { name = "decay_amount", comment = "[HIGH] Callers push their arg1 first. Passed as the deduct_byte_at amount (PUSH_quick 13 $90DC)" }
+
+[vars.bank0."0x8FD3"]
+# append_candidate_zero_priority
+arg1 = { name = "fief", comment = "[HIGH] Both callers push selected_province_idx last ($9075/$908F). Forwarded as append_candidate_pair arg1 (PUSH_quick 12 $8FDA)" }
+arg2 = { name = "idx", comment = "[HIGH] Callers push the post-incremented local9 minus 1 (the slot index). Forwarded as append_candidate_pair arg2 (PUSH_quick 13 $8FD9)" }
+
+[vars.bank0."0x8ED3"]
+# display_two_message_prompt_then_compare
+arg1 = { name = "attacker_strength", comment = "[MED] Caller pushes its local9 (the last push). Second %4d in the loyals/men draw_message at $8EF6, and arg1 of compare_greater $8F04" }
+arg2 = { name = "loyal_men", comment = "[MED] Caller pushes *(rec+16) (men). It is the first %4d after msg_loyals at $8EF8, so 'loyal' and not 'defender'. Arg2 of compare_greater $8F03" }
+arg3 = { name = "fief", comment = "[HIGH] Caller pushes its arg1 (the first push). PUSH_quick 14 into select_uprising_message/select_message_string; printed as arg3+1 via msg_fmt__d $8EEC" }
+local10 = { name = "side_msg", comment = "[MED] Stores the result of select_message_string_by_flags_and_arg(fief) at $8EE3; pushed $8EF7 as the string arg of the loyals/men draw_message" }
+local11 = { name = "uprising_msg", comment = "[MED] Stores the result of select_uprising_message(fief) at $8EDD; pushed $8EEB as a draw_message arg after fief+1" }
+
+[vars.bank0."0x8E63"]
+# process_fiefs_with_state_ff
+local11 = { name = "fief", comment = "[HIGH] Loop idx 0..scenario_fief_count (UCMPLT $8E94); pushed to province_state_is_FF $8E6C, stored to selected_province_idx $8E75" }
 
