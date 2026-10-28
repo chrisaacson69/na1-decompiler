@@ -1009,27 +1009,27 @@ L_D596:
 // $D59D select_province_by_cursor
 // (body @ $D5A2)
 
-word select_province_by_cursor(word arg1, word arg2) {
-    local11 = count_decimal_digits(arg2);    // $D5A7
-    local9 = ui_window_col;    // $D5AB
-    local8 = ui_cursor_row;    // $D5AF
+word select_province_by_cursor(word min_value, word max_value) {
+    digit_count = count_decimal_digits(max_value);    // $D5A7
+    col = ui_window_col;    // $D5AB
+    row = ui_cursor_row;    // $D5AF
 L_D5B0:
-    set_cursor(local9, local8);    // $D5B2
+    set_cursor(col, row);    // $D5B2
     phi_val_d5c2 = 0;    // $D5B7
     goto L_D5C2;    // $D5B7
 L_D5BA:
     char_advance_width(32);    // $D5BC
-    phi_val_d5c2 = (local10 + 1);    // $D5C1
+    phi_val_d5c2 = (i + 1);    // $D5C1
 L_D5C2:
-    local10 = phi_val_d5c2;    // $D5C2
-    if ((local10 < local11)) goto L_D5BA;    // $D5C6
-    set_cursor(local9, local8);    // $D5CB
-    local7 = cursor_nav_loop(local11);    // $D5D4
-    if ((local7 <= 0)) goto L_D5E7;    // $D5D8
-    if (!((local7 >= arg1))) goto L_D5B0;    // $D5DE
-    if (!((local7 <= arg2))) goto L_D5B0;    // $D5E4
+    i = phi_val_d5c2;    // $D5C2
+    if ((i < digit_count)) goto L_D5BA;    // $D5C6
+    set_cursor(col, row);    // $D5CB
+    entered_value = cursor_nav_loop(digit_count);    // $D5D4
+    if ((entered_value <= 0)) goto L_D5E7;    // $D5D8
+    if (!((entered_value >= min_value))) goto L_D5B0;    // $D5DE
+    if (!((entered_value <= max_value))) goto L_D5B0;    // $D5E4
 L_D5E7:
-    return local7;    // $D5E8
+    return entered_value;    // $D5E8
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D5E9
@@ -1356,10 +1356,10 @@ L_D93E:
 // $D940 record_apply_two_grows
 // (body @ $D945)
 
-word record_apply_two_grows(word arg1, word arg2) {
-    arg1->loyalty = (arg1->loyalty + develop_gain_capped_loyalty(arg1, arg2));    // $D952
-    arg1->wealth = (arg1->wealth + develop_gain_capped_wealth(arg1, arg2));    // $D960
-    return arg1->wealth;    // $D961
+word record_apply_two_grows(word fief, word amount) {
+    fief->loyalty = (fief->loyalty + develop_gain_capped_loyalty(fief, amount));    // $D952
+    fief->wealth = (fief->wealth + develop_gain_capped_wealth(fief, amount));    // $D960
+    return fief->wealth;    // $D961
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D962
@@ -1399,8 +1399,8 @@ word get_province_ai_state(word fief) {
 // $D999 province_state_is_FF
 // (body @ $D99E)
 
-word province_state_is_FF(word arg1) {
-    return (province_ai_state[arg1] == 255);    // $D9A8
+word province_state_is_FF(word fief) {
+    return (province_ai_state[fief] == 255);    // $D9A8
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9A9
@@ -1415,16 +1415,16 @@ word get_6da2_cur(void) {
 // $D9B7 is_enemy_owned
 // (body @ $D9BC)
 
-word is_enemy_owned(word arg1) {
-    return (fief_owner(arg1) == selected_province_owner());    // $D9C7
+word is_enemy_owned(word fief) {
+    return (fief_owner(fief) == selected_province_owner());    // $D9C7
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9C8
 // $D9C8 province_ai_state_addr
 // (body @ $D9CD)
 
-word province_ai_state_addr(word arg1) {
-    return &province_ai_state[arg1];    // $D9D2
+word province_ai_state_addr(word fief) {
+    return &province_ai_state[fief];    // $D9D2
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9D3

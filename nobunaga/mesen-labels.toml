@@ -2905,3 +2905,32 @@ local11 = { name = "button", comment = "[HIGH] Button code: STORE_quick 11 of wa
 local10 = { name = "fief_idx", comment = "[HIGH] Fief index loop 0..scenario_fief_count ($6D9D, UCMPLT @$D652); byte-indexes $6DA2[] and PUSH_quick 10 to get_province_ai_state" }
 local11 = { name = "count", comment = "[MED] Counts fiefs with $6DA2[i]!=0 or ai_state==$FF (INC @$D648); if ==1 ANDed with !no_human_players_left; returns count==1" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 12 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xD59D"]
+# select_province_by_cursor
+arg1 = { name = "min_value", comment = "[HIGH] lower bound: $D5DC LOADR_quick 12 + SCMPGE vs local7, retry if below; callers push 1 last (PUSH_qimm 1 before CALL)" }
+arg2 = { name = "max_value", comment = "[HIGH] upper bound: $D5E2 LOADR_quick 13 SCMPLE; $D5A2 count_decimal_digits(slot13); callers push scenario_fief_count / 99" }
+local7 = { name = "entered_value", comment = "[HIGH] $D5D4 STORE_quick 7 = cursor_nav_loop(); <=0 returns (cancel), else range-checked vs arg1/arg2; RETURNed at $D5E7" }
+local8 = { name = "row", comment = "[HIGH] $D5AF STORE_quick 8 = ui_cursor_row $7FCF; pushed first (arg2) to set_cursor $CC7B" }
+local9 = { name = "col", comment = "[HIGH] $D5AB STORE_quick 9 = ui_window_col $7FCD; pushed last (arg1) to set_cursor $CC7B" }
+local10 = { name = "i", comment = "[HIGH] loop counter: init 0 $D5B6, INC/STORE_quick 10 $D5C1, SCMPLT vs local11; each pass char_advance_width(32) blanks a digit" }
+local11 = { name = "digit_count", comment = "[HIGH] $D5A7 STORE_quick 11 = count_decimal_digits(arg2); loop bound and arg to cursor_nav_loop $D3ED" }
+
+[vars.bank15."0xD940"]
+# record_apply_two_grows
+arg1 = { name = "fief", comment = "[HIGH] province record ptr: slot12+12 (loyalty) and +14 (wealth) DEREF/ADD/POPSTORE; caller bank0 pushes local5 ptr last" }
+arg2 = { name = "amount", comment = "[HIGH] passed as arg2 to develop_gain_capped_loyalty $D8F2 / _wealth $D919; bank0 caller pushes *local5 (gold @+0)" }
+
+[vars.bank15."0xD999"]
+# province_state_is_FF
+arg1 = { name = "fief", comment = "[HIGH] index: slot12 + $6CF7 province_ai_state, BYTE_DEREF, CMPEQ $FF; callers push fief indices (loop i, byte list entries)" }
+
+[vars.bank15."0xD9B7"]
+# is_enemy_owned
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 to fief_owner $D772, CMPEQ vs selected_province_owner $D77E; callers push fief indices from fief_index_list" }
+
+[vars.bank15."0xD9C8"]
+# province_ai_state_addr
+arg1 = { name = "fief", comment = "[HIGH] index: slot12 + $6CF7 province_ai_state, address RETURNed; callers push battle_defending_province $6F63 / fief local" }
+
