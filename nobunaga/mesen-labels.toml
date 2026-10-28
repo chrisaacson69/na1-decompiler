@@ -2518,6 +2518,20 @@ arg2 = { name = "row", comment = "[HIGH] top-left ROW of 6x6 portrait; passed as
 "fp-21" = { name = "queue_end", comment = "[HIGH] One-past-end sentinel of the queue ring buffer; every (fp-21)==ptr check wraps the head/tail pointer back to fp-154" }
 
 # --- bank-00 var-walk far-frame batch (--merge, new sections) (5 subs) ---
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "target_col", comment = "[HIGH] CMPEQ vs unit col local5 @$A231; grid index row*11+arg1 @$A2BC; enqueued first (col) @$A2CE as BFS seed" }
+arg2 = { name = "target_row", comment = "[HIGH] CMPEQ vs unit row local4 @$A237; arg2*11 grid row index @$A2B9; enqueued second (row) @$A2D5" }
+local2 = { name = "queue_tail", comment = "[HIGH] =&queue $FF66 @$A2C7; post-inc BYTE_POPSTORE enqueue writes @$A2C9/$A37D; wraps to $FF66 at $FFEB @$A384" }
+# local3 left positional — Reused: grid fill ptr from $FF2F during init @$A245-$A24C, then queue head (dequeue) ptr from $FF66 @$A2C8/$A2DF
+local4 = { name = "unit_row", comment = "[HIGH] cur_unit_row_ptr deref @$A22E; goal test CMPEQ vs arg2 @$A236 and vs stepped row local8 @$A353" }
+local5 = { name = "unit_col", comment = "[HIGH] cur_unit_col_ptr deref @$A229; goal test CMPEQ vs arg1 @$A230 and vs stepped col local9 @$A34D" }
+local6 = { name = "cur_row", comment = "[HIGH] Second dequeued byte (row) @$A324-$A329; seeds local8 neighbor row @$A33A each direction" }
+local7 = { name = "cur_col", comment = "[MED] First dequeued byte @$A2DF (may be $FF level separator, then re-read @$A312); seeds local9 neighbor col @$A338" }
+# local8 left positional — Reused: init row loop index <5 (read_map_cell arg2 @$A24F) then stepped neighbor row (&local8 $FFF8) in BFS @$A33B
+# local9 left positional — Reused: init col loop index <11 (read_map_cell arg1 @$A250) then stepped neighbor col (&local9 $FFFA) in BFS @$A338
+local10 = { name = "pass_marker", comment = "[MED] Init $FF @$A23E; ==$FF gates own-unit blocking @$A276; URSHIFT 1 per pass, repeat while >=127 @$A3AF (two passes)" }
+# local11 left positional — Reused: own unit slot loop <5 (is_unit_present @$A280) then hex direction loop <6 (tactical_hex_step, ret 6-dir @$A358)
+
 [vars.bank0."0x98C6"]
 # select_provinces_and_assign_ai_state
 "fp-58" = { name = "remaining", comment = "[HIGH] remaining slots to fill = arg1_count - copied; set arg1-fp56 @$992A then DEC each iter, loop while >0 ($9948)" }
@@ -3895,4 +3909,69 @@ arg1 = { name = "show", comment = "[HIGH] LOADL_quick 12 ==1 @$841B picks draw v
 local9 = { name = "row", comment = "[HIGH] seeded from $7BF7 row @$8428; &fp-6 to calc_tactical_cell_coords; y=(row<<3)-1 sprite arg; INC on wrap @$8458" }
 local10 = { name = "col", comment = "[HIGH] seeded from $7BF5 @$8424; &fp-4 to calc_tactical_cell_coords; x=col<<3; INC, -4 when (col&3)==2 @$8448" }
 local11 = { name = "sprite_idx", comment = "[HIGH] loop 1..16 (SCMPLE 16) in both branches; PUSH_quick 11 as sprite index to syscall 3 @$8442/$8471" }
+
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (8 subs) ---
+[vars.bank2."0xAE2C"]
+# transfer_owned_fiefs_and_announce_succession
+local7 = { name = "winner_side", comment = "[MED] =(winner==$6F63 defending) CMPEQ @$AE42 (1=defender); arg to test_6f65_bit7 @$AE74; ^1 to get_battle_side_province @$AF19" }
+local8 = { name = "fief_list_ptr", comment = "[HIGH] =$6F89 @$AE70; post-inc BYTE_POPSTORE of owned fiefs @$AE8A, $FF terminator @$AE9C; reset and re-walked to print @$AEAD" }
+local9 = { name = "line_count", comment = "[HIGH] Init 0 @$AEB1; INC per drawn fief @$AEE0; at 9 redraw_window and reset 0 @$AEE3-$AEF0" }
+local10 = { name = "winner_daimyo", comment = "[HIGH] fief_owner(battle_winner_province_sel) @$AE37; CMPEQ vs fief_owner(local11) @$AE85" }
+local11 = { name = "fief", comment = "[HIGH] Fief index loop 0..scenario_fief_count-1 @$AE93; arg to fief_owner @$AE80; written to list @$AE8F" }
+
+[vars.bank2."0xAD86"]
+# halve_defender_morale_for_breaching_attackers
+local10 = { name = "morale_ptr", comment = "[HIGH] =$6F63*26+$7013 (=$7001+18, morale) @$AD8B; DEREF/SDIV 2/POPSTORE halves the word @$ADBB" }
+local11 = { name = "unit_slot", comment = "[HIGH] Loop 0..4 @$ADC7; arg2 (side 0 is arg1) to is_unit_present/unit_row_ptr/unit_col_ptr @$AD98-$ADAD" }
+
+[vars.bank2."0xA4FC"]
+# min_own_strength_pct_vs_list
+arg1 = { name = "unit_list_ptr", comment = "[HIGH] BYTE_DEREF entry @$A509 (<5 valid), to calc_battle_strength_pct_one_side @$A513; post-inc @$A51F; caller passes list ptr" }
+local9 = { name = "strength_pct", comment = "[HIGH] calc_battle_strength_pct_one_side result stored @$A517, UCMPLT vs running min local10" }
+local10 = { name = "min_strength", comment = "[HIGH] Init 100 @$A501; running min =local9 when lower @$A51D; returned @$A52D" }
+local11 = { name = "i", comment = "[HIGH] Loop counter: init 0 @$A504, INC @$A523, UCMPLT 6 @$A527" }
+
+[vars.bank2."0xA4BC"]
+# find_strongest_unit_type_by_strength
+arg1 = { name = "unit_list_ptr", comment = "[HIGH] BYTE_DEREF entry @$A4C7 (<5 valid), fed to calc_battle_strength_pct_one_side @$A4D1; post-inc @$A4E0; callers push &local" }
+arg2 = { name = "min_strength", comment = "[HIGH] Threshold: best local9 SCMPLT arg2 -> return $FF @$A4EE; callers push caller local7 ($A568) or 70 ($A6FB)" }
+local8 = { name = "strength_pct", comment = "[HIGH] Result of calc_battle_strength_pct_one_side stored @$A4D5, SCMPGT vs running best local9" }
+local9 = { name = "best_strength", comment = "[HIGH] Init 0 @$A4C3; running max: =local8 when greater @$A4DB; compared to arg2 at end @$A4EE" }
+local10 = { name = "i", comment = "[HIGH] Loop counter: init 0 @$A4C2, INC @$A4E4, UCMPLT 6 @$A4E8" }
+local11 = { name = "best_unit", comment = "[MED] List entry (*arg1, values <5 = unit slot) of the max-strength pick @$A4DD; returned @$A4FA unless below threshold" }
+
+[vars.bank2."0xA07A"]
+# find_adjacent_unit_around_tile
+arg1 = { name = "center_col", comment = "[HIGH] Copied to local10 (stepped col) each pass @$A081; callers push cur_unit_col_ptr deref last @$A0C8/$A587" }
+arg2 = { name = "center_row", comment = "[HIGH] Copied to local9 (stepped row) each pass @$A083; callers push cur_unit_row_ptr deref @$A0C3/$A582" }
+arg3 = { name = "side", comment = "[HIGH] Pass-through arg3 to is_unit_at_coords @$A096; caller $A57F pushes cur_combat_side" }
+arg4 = { name = "unit_slot", comment = "[LOW] Pass-through arg4 to is_unit_at_coords @$A095; callers push 0 ($A57E) or own arg1; role rests on callee param name, not seen here" }
+local9 = { name = "neighbor_row", comment = "[HIGH] =arg2 @$A084, stepped via &local9 ($FFFA, arg2 of tactical_hex_step), passed as row (arg2) to is_unit_at_coords @$A097" }
+local10 = { name = "neighbor_col", comment = "[HIGH] =arg1 @$A082, stepped via &local10 ($FFFC, arg1 of tactical_hex_step), passed as col (arg1) to is_unit_at_coords @$A098" }
+local11 = { name = "direction", comment = "[HIGH] Hex direction 0..5: init 0 @$A07F, arg3 to tactical_hex_step @$A085, INC/UCMPLT 6 loop @$A0A2" }
+
+[vars.bank2."0x9792"]
+# commit_unit_dest_tile_if_valid
+arg1 = { name = "dest_col", comment = "[HIGH] arg1 of the four tile tests @$9798-$97B3; BYTE_POPSTORE to unit_col_ptr(cur side, slot) @$97C6" }
+arg2 = { name = "dest_row", comment = "[HIGH] arg2 of the four tile tests @$9797-$97B2; BYTE_POPSTORE to unit_row_ptr(cur side, slot) @$97D3" }
+
+[vars.bank2."0x9735"]
+# tile_blocked_for_placement
+arg1 = { name = "col", comment = "[HIGH] Dest col: pushed last (arg1) to is_cell_clear_of_bits @$9743/$974D; CMPEQ vs stepped local9 @$977A; caller $97AB passes its dest col" }
+arg2 = { name = "row", comment = "[HIGH] Dest row: arg2 to is_cell_clear_of_bits @$9742/$974C; CMPEQ vs stepped local8 @$9780" }
+local7 = { name = "direction", comment = "[HIGH] Hex direction 0..5: init 0 @$9764, pushed as arg3 to tactical_hex_step @$9769, INC + UCMPLT 6 loop @$9787" }
+local8 = { name = "neighbor_row", comment = "[HIGH] Copy of local10 @$9768, stepped via &local8 ($FFF8, arg2 of tactical_hex_step), CMPEQ vs arg2 row @$977F" }
+local9 = { name = "neighbor_col", comment = "[HIGH] Copy of local11 @$9766, stepped via &local9 ($FFFA, arg1 of tactical_hex_step), CMPEQ vs arg1 col @$9779" }
+local10 = { name = "free_row", comment = "[HIGH] &local10 ($FFFC) arg2 out-param of find_free_tactical_placement_cell @$9757; seeds neighbor_row each pass @$9767" }
+local11 = { name = "free_col", comment = "[HIGH] &local11 ($FFFE) arg1 out-param of find_free_tactical_placement_cell @$975B; seeds neighbor_col each pass @$9765" }
+
+[vars.bank2."0x89DF"]
+# draw_unit_count_digits
+arg1 = { name = "side", comment = "[HIGH] arg1 to unit_col/row/strength_ptr @$89E5; test_6f65_bit7 @$8A36; side*9 tile buffer idx; callers push cur_combat_side last" }
+arg2 = { name = "unit_slot", comment = "[HIGH] arg2 to unit_col/row/strength_ptr @$89E4/$8A4B; callers push cur_combat_unit_slot" }
+local7 = { name = "digit_shown", comment = "[HIGH] Init 0 @$8A58, set 1 on nonzero digit @$8A6F/$8A9E; selects zero tile 8 vs blank 1 for zero digits @$8A92/$8ABF" }
+local8 = { name = "cell_row", comment = "[MED] unit_row_ptr deref @$89F3, bound >4 @$89FA; converted in place via &local8 by calc_tactical_cell_coords @$8A11; rect row" }
+local9 = { name = "cell_col", comment = "[MED] unit_col_ptr deref @$89EB, bound >10, is_cell_valid_for_phase @$8A01; converted in place @$8A15; rect col" }
+local10 = { name = "digit", comment = "[HIGH] Decimal digit: UDIV 1000/100/10 and final UMOD 10 @$8A5F/$8A86/$8AB3/$8AD9; written as digit+8 tile" }
+local11 = { name = "remaining_strength", comment = "[HIGH] min_word(strength, 9999) @$8A57, then UMOD 1000/100/10 reductions @$8A81/$8AAF" }
 

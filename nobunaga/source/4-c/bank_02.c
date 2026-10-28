@@ -761,52 +761,52 @@ L_89BB:
 // $89DF draw_unit_count_digits
 // (body @ $89E4)
 
-word draw_unit_count_digits(word arg1, word arg2) {
-    local9 = *(byte*)(unit_col_ptr(arg1, arg2));    // $89EB
-    local8 = *(byte*)(unit_row_ptr(arg1, arg2));    // $89F3
-    if ((((unsigned)local9 > (unsigned)10) || ((unsigned)local8 > (unsigned)4))) return ((unsigned)local8 > (unsigned)4);    // $89FD
-    if (is_cell_valid_for_phase(local9)) goto L_8A11;    // $8A06
-    phi_ret_8b24 = erase_cursor_advance_phase(local9);    // $8A0E
+word draw_unit_count_digits(word side, word unit_slot) {
+    cell_col = *(byte*)(unit_col_ptr(side, unit_slot));    // $89EB
+    cell_row = *(byte*)(unit_row_ptr(side, unit_slot));    // $89F3
+    if ((((unsigned)cell_col > (unsigned)10) || ((unsigned)cell_row > (unsigned)4))) return ((unsigned)cell_row > (unsigned)4);    // $89FD
+    if (is_cell_valid_for_phase(cell_col)) goto L_8A11;    // $8A06
+    phi_ret_8b24 = erase_cursor_advance_phase(cell_col);    // $8A0E
     goto L_8B24;    // $8A0E
 L_8A11:
-    calc_tactical_cell_coords(&local9, &local8);    // $8A19
-    if (arg2) {    // $8A1E
+    calc_tactical_cell_coords(&cell_col, &cell_row);    // $8A19
+    if (unit_slot) {    // $8A1E
     } else {
     }
 L_8A47:
-    *(byte*)(unit_count_digit_tiles[arg1]) = (test_6f65_bit7(arg1) ? 178 : 179);    // $8A47
-    local11 = min_word(*(word*)(unit_strength_ptr(arg1, arg2)), 0x270F);    // $8A57
-    local7 = 0;    // $8A59
-    local10 = ((unsigned)local11 / (unsigned)0x03E8);    // $8A5F
-    if (((unsigned)local11 / (unsigned)0x03E8)) goto L_8A6F;    // $8A60
+    *(byte*)(unit_count_digit_tiles[side]) = (test_6f65_bit7(side) ? 178 : 179);    // $8A47
+    remaining_strength = min_word(*(word*)(unit_strength_ptr(side, unit_slot)), 0x270F);    // $8A57
+    digit_shown = 0;    // $8A59
+    digit = ((unsigned)remaining_strength / (unsigned)0x03E8);    // $8A5F
+    if (((unsigned)remaining_strength / (unsigned)0x03E8)) goto L_8A6F;    // $8A60
     goto L_8A7B;    // $8A6C
 L_8A6F:
-    local7 = 1;    // $8A70
+    digit_shown = 1;    // $8A70
 L_8A7B:
-    *(byte*)(((arg1 * 9) + 0x6FE9)) = (local10 + 8);    // $8A7B
-    local11 = ((unsigned)local11 % (unsigned)0x03E8);    // $8A81
-    local10 = ((unsigned)local11 / (unsigned)100);    // $8A86
-    if (((unsigned)local11 / (unsigned)100)) goto L_8A9E;    // $8A87
+    *(byte*)(((side * 9) + 0x6FE9)) = (digit + 8);    // $8A7B
+    remaining_strength = ((unsigned)remaining_strength % (unsigned)0x03E8);    // $8A81
+    digit = ((unsigned)remaining_strength / (unsigned)100);    // $8A86
+    if (((unsigned)remaining_strength / (unsigned)100)) goto L_8A9E;    // $8A87
     goto L_8AAA;    // $8A9B
 L_8A9E:
-    local7 = 1;    // $8A9F
+    digit_shown = 1;    // $8A9F
 L_8AAA:
-    *(byte*)(((arg1 * 9) + 0x6FEA)) = (local7 ? (local10 + 8) : 1);    // $8AAA
-    local11 = ((unsigned)local11 % (unsigned)100);    // $8AAF
-    local10 = ((unsigned)local11 / (unsigned)10);    // $8AB3
-    if (((unsigned)local11 / (unsigned)10)) goto L_8ACB;    // $8AB4
+    *(byte*)(((side * 9) + 0x6FEA)) = (digit_shown ? (digit + 8) : 1);    // $8AAA
+    remaining_strength = ((unsigned)remaining_strength % (unsigned)100);    // $8AAF
+    digit = ((unsigned)remaining_strength / (unsigned)10);    // $8AB3
+    if (((unsigned)remaining_strength / (unsigned)10)) goto L_8ACB;    // $8AB4
     goto L_8AD5;    // $8AC8
 L_8ACB:
 L_8AD5:
-    *(byte*)(((arg1 * 9) + 0x6FEB)) = (local7 ? (local10 + 8) : 1);    // $8AD5
-    local10 = ((unsigned)local11 % (unsigned)10);    // $8AD9
-    if (((unsigned)local11 % (unsigned)10)) goto L_8AE9;    // $8ADA
+    *(byte*)(((side * 9) + 0x6FEB)) = (digit_shown ? (digit + 8) : 1);    // $8AD5
+    digit = ((unsigned)remaining_strength % (unsigned)10);    // $8AD9
+    if (((unsigned)remaining_strength % (unsigned)10)) goto L_8AE9;    // $8ADA
     goto L_8AF3;    // $8AE6
 L_8AE9:
 L_8AF3:
-    *(byte*)(((arg1 * 9) + 0x6FEC)) = (local10 + 8);    // $8AF3
-    ppu_render_rect_wrap((local9 + 1), (local8 + 2), (local9 + 2), (local8 + 2), *(byte*)(((arg1 * 9) + 0x6FE4)));    // $8B09
-    phi_ret_8b24 = ppu_copy_rect_wrap(local9, (local8 + 2), (local9 + 3), (local8 + 3), unit_count_digit_tiles[arg1], 2);    // $8B20
+    *(byte*)(((side * 9) + 0x6FEC)) = (digit + 8);    // $8AF3
+    ppu_render_rect_wrap((cell_col + 1), (cell_row + 2), (cell_col + 2), (cell_row + 2), *(byte*)(((side * 9) + 0x6FE4)));    // $8B09
+    phi_ret_8b24 = ppu_copy_rect_wrap(cell_col, (cell_row + 2), (cell_col + 3), (cell_row + 3), unit_count_digit_tiles[side], 2);    // $8B20
 L_8B24:
     return phi_ret_8b24;    // $8B24
     }
@@ -1701,23 +1701,23 @@ word is_coord_in_combat_rect(word tile_x, word tile_y) {
 // $9735 tile_blocked_for_placement
 // (body @ $973A)
 
-word tile_blocked_for_placement(word arg1, word arg2) {
+word tile_blocked_for_placement(word col, word row) {
     if (cur_combat_side) goto L_9790;    // $973D
-    if (!(is_cell_clear_of_bits(arg1, arg2, 32))) goto L_9755;    // $9748
-    if (is_cell_clear_of_bits(arg1, arg2, 8)) goto L_9757;    // $9752
+    if (!(is_cell_clear_of_bits(col, row, 32))) goto L_9755;    // $9748
+    if (is_cell_clear_of_bits(col, row, 8)) goto L_9757;    // $9752
 L_9755:
     return 1;    // $9756
 L_9757:
-    find_free_tactical_placement_cell(&local11, &local10);    // $975F
-    local7 = 0;    // $9764
+    find_free_tactical_placement_cell(&free_col, &free_row);    // $975F
+    direction = 0;    // $9764
     do {    // $9765
-        local9 = local11;    // $9766
-        local8 = local10;    // $9768
-        if (!(tactical_hex_step(&local9, &local8, local7))) goto L_9787;    // $9776
-        if ((local9 != arg1)) goto L_9787;    // $977C
-        if ((local8 == arg2)) return 1;    // $9782
-        local7 = (local7 + 1);    // $9789
-    } while (((unsigned)local7 < (unsigned)6));    // $978D
+        neighbor_col = free_col;    // $9766
+        neighbor_row = free_row;    // $9768
+        if (!(tactical_hex_step(&neighbor_col, &neighbor_row, direction))) goto L_9787;    // $9776
+        if ((neighbor_col != col)) goto L_9787;    // $977C
+        if ((neighbor_row == row)) return 1;    // $9782
+        direction = (direction + 1);    // $9789
+    } while (((unsigned)direction < (unsigned)6));    // $978D
 L_9790:
     return 0;    // $9791
 }
@@ -1726,13 +1726,13 @@ L_9790:
 // $9792 commit_unit_dest_tile_if_valid
 // (body @ $9797)
 
-word commit_unit_dest_tile_if_valid(word arg1, word arg2) {
-    if (is_any_unit_at_tile(arg1, arg2)) goto L_97D7;    // $979D
-    if (is_map_cell_blocked(arg1, arg2)) goto L_97D7;    // $97A6
-    if (tile_blocked_for_placement(arg1, arg2)) goto L_97D7;    // $97AF
-    if (is_coord_in_combat_rect(arg1, arg2)) {    // $97B8
-    *(byte*)(unit_col_ptr(cur_combat_side, cur_combat_unit_slot)) = arg1;    // $97C7
-    *(byte*)(unit_row_ptr(cur_combat_side, cur_combat_unit_slot)) = arg2;    // $97D4
+word commit_unit_dest_tile_if_valid(word dest_col, word dest_row) {
+    if (is_any_unit_at_tile(dest_col, dest_row)) goto L_97D7;    // $979D
+    if (is_map_cell_blocked(dest_col, dest_row)) goto L_97D7;    // $97A6
+    if (tile_blocked_for_placement(dest_col, dest_row)) goto L_97D7;    // $97AF
+    if (is_coord_in_combat_rect(dest_col, dest_row)) {    // $97B8
+    *(byte*)(unit_col_ptr(cur_combat_side, cur_combat_unit_slot)) = dest_col;    // $97C7
+    *(byte*)(unit_row_ptr(cur_combat_side, cur_combat_unit_slot)) = dest_row;    // $97D4
     return 1;    // $97D6
     }
 L_97D7:
@@ -2282,15 +2282,15 @@ word is_unit_at_coords(word col, word row, word side, word unit_slot) {
 // $A07A find_adjacent_unit_around_tile
 // (body @ $A07F)
 
-word find_adjacent_unit_around_tile(word arg1, word arg2, word arg3, word arg4) {
-    local11 = 0;    // $A080
+word find_adjacent_unit_around_tile(word center_col, word center_row, word side, word unit_slot) {
+    direction = 0;    // $A080
     do {    // $A081
-        local10 = arg1;    // $A082
-        local9 = arg2;    // $A084
-        if (!(tactical_hex_step(&local10, &local9, local11))) goto L_A0A2;    // $A092
-        if ((is_unit_at_coords(local10, local9, arg3, arg4))) return 1;    // $A09D
-        local11 = (local11 + 1);    // $A0A4
-    } while (((unsigned)local11 < (unsigned)6));    // $A0A8
+        neighbor_col = center_col;    // $A082
+        neighbor_row = center_row;    // $A084
+        if (!(tactical_hex_step(&neighbor_col, &neighbor_row, direction))) goto L_A0A2;    // $A092
+        if ((is_unit_at_coords(neighbor_col, neighbor_row, side, unit_slot))) return 1;    // $A09D
+        direction = (direction + 1);    // $A0A4
+    } while (((unsigned)direction < (unsigned)6));    // $A0A8
     return 0;    // $A0AC
 }
 
@@ -2417,12 +2417,12 @@ L_A21F:
 // $A221 bfs_path_distance_to_target
 // (body @ $A226)
 
-word bfs_path_distance_to_target(word arg1, word arg2) {
-    local5 = *(byte*)(cur_unit_col_ptr());    // $A22A
-    local4 = *(byte*)(cur_unit_row_ptr());    // $A22F
-    if ((local5 != arg1)) goto L_A23E;    // $A233
-    if ((local4 == arg2)) return 0;    // $A239
-    local10 = 255;    // $A241
+word bfs_path_distance_to_target(word target_col, word target_row) {
+    unit_col = *(byte*)(cur_unit_col_ptr());    // $A22A
+    unit_row = *(byte*)(cur_unit_row_ptr());    // $A22F
+    if ((unit_col != target_col)) goto L_A23E;    // $A233
+    if ((unit_row == target_row)) return 0;    // $A239
+    pass_marker = 255;    // $A241
 L_A242:
     local3 = &dist_grid;    // $A245
     local8 = 0;    // $A247
@@ -2435,7 +2435,7 @@ L_A24A:
     if (((unsigned)local9 < (unsigned)11)) goto L_A24A;    // $A26A
     local8 = (local8 + 1);    // $A26F
     if (((unsigned)local8 < (unsigned)5)) goto L_A248;    // $A273
-    if ((local10 == 255)) {    // $A27B
+    if ((pass_marker == 255)) {    // $A27B
     local11 = 0;    // $A27F
 L_A280:
     if (is_unit_present(cur_combat_side, local11)) {    // $A288
@@ -2446,62 +2446,62 @@ L_A2AC:
     if (((unsigned)local11 < (unsigned)5)) goto L_A280;    // $A2B2
     }
 L_A2B5:
-    *(byte*)((((arg2 * 11) + arg1) + &dist_grid)) = -1;    // $A2C3
-    local2 = &queue;    // $A2C7
+    *(byte*)((((target_row * 11) + target_col) + &dist_grid)) = -1;    // $A2C3
+    queue_tail = &queue;    // $A2C7
     local3 = &queue;    // $A2C8
-    local2 = (local2 + 1);    // $A2CB
-    *(byte*)((local2 - 1)) = arg1;    // $A2CF
-    local2 = (local2 + 1);    // $A2D2
-    *(byte*)((local2 - 1)) = arg2;    // $A2D6
-    local2 = (local2 + 1);    // $A2D9
-    *(byte*)((local2 - 1)) = -1;    // $A2DE
+    queue_tail = (queue_tail + 1);    // $A2CB
+    *(byte*)((queue_tail - 1)) = target_col;    // $A2CF
+    queue_tail = (queue_tail + 1);    // $A2D2
+    *(byte*)((queue_tail - 1)) = target_row;    // $A2D6
+    queue_tail = (queue_tail + 1);    // $A2D9
+    *(byte*)((queue_tail - 1)) = -1;    // $A2DE
 L_A2DF:
     local3 = (local3 + 1);    // $A2E1
-    local7 = *(byte*)((local3 - 1));    // $A2E4
+    cur_col = *(byte*)((local3 - 1));    // $A2E4
     if (!((*(byte*)((local3 - 1)) == 255))) goto L_A318;    // $A2E9
     if ((&queue_end == local3)) {    // $A2F1
     local3 = &queue;    // $A2F7
     }
 L_A2F8:
-    if ((local3 == local2)) goto L_A3AF;    // $A2FB
-    local2 = (local2 + 1);    // $A300
-    *(byte*)((local2 - 1)) = -1;    // $A305
-    if ((&queue_end == local2)) {    // $A30B
-    local2 = &queue;    // $A311
+    if ((local3 == queue_tail)) goto L_A3AF;    // $A2FB
+    queue_tail = (queue_tail + 1);    // $A300
+    *(byte*)((queue_tail - 1)) = -1;    // $A305
+    if ((&queue_end == queue_tail)) {    // $A30B
+    queue_tail = &queue;    // $A311
     }
 L_A312:
     local3 = (local3 + 1);    // $A314
-    local7 = *(byte*)((local3 - 1));    // $A317
+    cur_col = *(byte*)((local3 - 1));    // $A317
 L_A318:
     if ((&queue_end == local3)) {    // $A31D
     local3 = &queue;    // $A323
     }
 L_A324:
     local3 = (local3 + 1);    // $A326
-    local6 = *(byte*)((local3 - 1));    // $A329
+    cur_row = *(byte*)((local3 - 1));    // $A329
     if ((&queue_end == local3)) {    // $A32F
     local3 = &queue;    // $A335
     }
 L_A336:
     local11 = 0;    // $A337
 L_A338:
-    local9 = local7;    // $A339
-    local8 = local6;    // $A33B
+    local9 = cur_col;    // $A339
+    local8 = cur_row;    // $A33B
     if (!(tactical_hex_step(&local9, &local8, local11))) goto L_A3A3;    // $A349
-    if ((local9 != local5)) goto L_A35C;    // $A34F
-    if ((local8 == local4)) return (6 - local11);    // $A355
+    if ((local9 != unit_col)) goto L_A35C;    // $A34F
+    if ((local8 == unit_row)) return (6 - local11);    // $A355
     if ((*(byte*)((((local8 * 11) + local9) + &dist_grid)) < 16)) {    // $A36B
     *(byte*)((((local8 * 11) + local9) + &dist_grid)) = -1;    // $A37C
-    local2 = (local2 + 1);    // $A37F
-    *(byte*)((local2 - 1)) = local9;    // $A383
-    if ((&queue_end == local2)) {    // $A389
-    local2 = &queue;    // $A38F
+    queue_tail = (queue_tail + 1);    // $A37F
+    *(byte*)((queue_tail - 1)) = local9;    // $A383
+    if ((&queue_end == queue_tail)) {    // $A389
+    queue_tail = &queue;    // $A38F
     }
 L_A390:
-    local2 = (local2 + 1);    // $A392
-    *(byte*)((local2 - 1)) = local8;    // $A396
-    if ((&queue_end == local2)) {    // $A39C
-    local2 = &queue;    // $A3A2
+    queue_tail = (queue_tail + 1);    // $A392
+    *(byte*)((queue_tail - 1)) = local8;    // $A396
+    if ((&queue_end == queue_tail)) {    // $A39C
+    queue_tail = &queue;    // $A3A2
     }
     }
 L_A3A3:
@@ -2509,8 +2509,8 @@ L_A3A3:
     if (((unsigned)local11 < (unsigned)6)) goto L_A338;    // $A3A9
     goto L_A2DF;    // $A3AC
 L_A3AF:
-    local10 = ((unsigned)local10 >> 1);    // $A3B3
-    if (((unsigned)local10 >= (unsigned)127)) goto L_A242;    // $A3B8
+    pass_marker = ((unsigned)pass_marker >> 1);    // $A3B3
+    if (((unsigned)pass_marker >= (unsigned)127)) goto L_A242;    // $A3B8
     return 0;    // $A3BC
 }
 
@@ -2588,43 +2588,43 @@ L_A4BA:
 // $A4BC find_strongest_unit_type_by_strength
 // (body @ $A4C1)
 
-word find_strongest_unit_type_by_strength(word arg1, word arg2) {
-    local10 = 0;    // $A4C2
-    local9 = 0;    // $A4C3
-    while (((unsigned)local10 < (unsigned)6)) {    // $A4E8
-        if ((*(byte*)(arg1) < 5)) {    // $A4CB
-        local8 = calc_battle_strength_pct_one_side(*(byte*)(arg1));    // $A4D5
-        if ((calc_battle_strength_pct_one_side(*(byte*)(arg1)) > local9)) {    // $A4D8
-        local9 = local8;    // $A4DC
-        local11 = *(byte*)(arg1);    // $A4DF
+word find_strongest_unit_type_by_strength(word unit_list_ptr, word min_strength) {
+    i = 0;    // $A4C2
+    best_strength = 0;    // $A4C3
+    while (((unsigned)i < (unsigned)6)) {    // $A4E8
+        if ((*(byte*)(unit_list_ptr) < 5)) {    // $A4CB
+        strength_pct = calc_battle_strength_pct_one_side(*(byte*)(unit_list_ptr));    // $A4D5
+        if ((calc_battle_strength_pct_one_side(*(byte*)(unit_list_ptr)) > best_strength)) {    // $A4D8
+        best_strength = strength_pct;    // $A4DC
+        best_unit = *(byte*)(unit_list_ptr);    // $A4DF
         }
         }
 L_A4E0:
-        arg1 = (arg1 + 1);    // $A4E2
-        local10 = (local10 + 1);    // $A4E6
+        unit_list_ptr = (unit_list_ptr + 1);    // $A4E2
+        i = (i + 1);    // $A4E6
     }
-    return ((local9 < arg2) ? 255 : local11);    // $A4FB
+    return ((best_strength < min_strength) ? 255 : best_unit);    // $A4FB
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $A4FC
 // $A4FC min_own_strength_pct_vs_list
 // (body @ $A501)
 
-word min_own_strength_pct_vs_list(word arg1) {
-    local10 = 100;    // $A503
-    local11 = 0;    // $A505
-    while (((unsigned)local11 < (unsigned)6)) {    // $A527
-        if ((*(byte*)(arg1) < 5)) {    // $A50D
-        local9 = calc_battle_strength_pct_one_side(*(byte*)(arg1));    // $A517
-        if (((unsigned)calc_battle_strength_pct_one_side(*(byte*)(arg1)) < (unsigned)local10)) {    // $A51A
-        local10 = local9;    // $A51E
+word min_own_strength_pct_vs_list(word unit_list_ptr) {
+    min_strength = 100;    // $A503
+    i = 0;    // $A505
+    while (((unsigned)i < (unsigned)6)) {    // $A527
+        if ((*(byte*)(unit_list_ptr) < 5)) {    // $A50D
+        strength_pct = calc_battle_strength_pct_one_side(*(byte*)(unit_list_ptr));    // $A517
+        if (((unsigned)calc_battle_strength_pct_one_side(*(byte*)(unit_list_ptr)) < (unsigned)min_strength)) {    // $A51A
+        min_strength = strength_pct;    // $A51E
         }
         }
 L_A51F:
-        arg1 = (arg1 + 1);    // $A521
-        local11 = (local11 + 1);    // $A525
+        unit_list_ptr = (unit_list_ptr + 1);    // $A521
+        i = (i + 1);    // $A525
     }
-    return local10;    // $A52E
+    return min_strength;    // $A52E
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $A52F
@@ -3169,19 +3169,19 @@ L_AD7B:
 // (body @ $AD8B)
 
 word halve_defender_morale_for_breaching_attackers(void) {
-    local10 = &province_table_live[battle_defending_province].morale;    // $AD95
-    local11 = 0;    // $AD97
+    morale_ptr = &province_table_live[battle_defending_province].morale;    // $AD95
+    unit_slot = 0;    // $AD97
 L_AD98:
-    if (is_unit_present(0, local11)) {    // $AD9E
-    if (is_cell_clear_of_bits(*(byte*)(unit_col_ptr(0, local11)), *(byte*)(unit_row_ptr(0, local11)), 32)) goto L_ADC7;    // $ADB7
-    *(word*)(local10) = (*(word*)(local10) / 2);    // $ADC0
+    if (is_unit_present(0, unit_slot)) {    // $AD9E
+    if (is_cell_clear_of_bits(*(byte*)(unit_col_ptr(0, unit_slot)), *(byte*)(unit_row_ptr(0, unit_slot)), 32)) goto L_ADC7;    // $ADB7
+    *(word*)(morale_ptr) = (*(word*)(morale_ptr) / 2);    // $ADC0
     display_morale_falling_message();    // $ADC1
     } else {
-    local11 = (local11 + 1);    // $ADC9
-    if (((unsigned)local11 < (unsigned)5)) goto L_AD98;    // $ADCD
+    unit_slot = (unit_slot + 1);    // $ADC9
+    if (((unsigned)unit_slot < (unsigned)5)) goto L_AD98;    // $ADCD
     }
 L_ADD0:
-    return ((unsigned)local11 < (unsigned)5);    // $ADD0
+    return ((unsigned)unit_slot < (unsigned)5);    // $ADD0
     }
 }
 
@@ -3223,8 +3223,8 @@ L_AE2A:
 
 word transfer_owned_fiefs_and_announce_succession(void) {
     repaint_screen();    // $AE31
-    local10 = fief_owner(battle_winner_province_sel);    // $AE3B
-    local7 = (battle_winner_province_sel == battle_defending_province);    // $AE43
+    winner_daimyo = fief_owner(battle_winner_province_sel);    // $AE3B
+    winner_side = (battle_winner_province_sel == battle_defending_province);    // $AE43
     if (!(test_6f65_bit7((battle_winner_province_sel == battle_defending_province)))) goto L_AE69;    // $AE49
     if ((battle_winner_province_sel == 50)) goto L_AE69;    // $AE52
     announce_daimyo_death(battle_winner_province_sel);    // $AE58
@@ -3234,47 +3234,47 @@ L_AE69:
     if (!(is_no_province_selected())) goto L_AE70;    // $AE6C
     return is_no_province_selected();    // $AE6F
 L_AE70:
-    local8 = 0x6F89;    // $AE73
-    if (!(test_6f65_bit7(local7))) goto L_AEB6;    // $AE79
+    fief_list_ptr = 0x6F89;    // $AE73
+    if (!(test_6f65_bit7(winner_side))) goto L_AEB6;    // $AE79
     phi_val_ae93 = 0;    // $AE7D
     goto L_AE93;    // $AE7D
 L_AE80:
-    if (!((fief_owner(local11) == local10))) goto L_AE91;    // $AE87
-    local8 = (local8 + 1);    // $AE8C
-    *(byte*)((local8 - 1)) = local11;    // $AE90
+    if (!((fief_owner(fief) == winner_daimyo))) goto L_AE91;    // $AE87
+    fief_list_ptr = (fief_list_ptr + 1);    // $AE8C
+    *(byte*)((fief_list_ptr - 1)) = fief;    // $AE90
 L_AE91:
-    phi_val_ae93 = (local11 + 1);    // $AE92
+    phi_val_ae93 = (fief + 1);    // $AE92
 L_AE93:
-    local11 = phi_val_ae93;    // $AE93
-    if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_AE80;    // $AE99
+    fief = phi_val_ae93;    // $AE93
+    if (((unsigned)fief < (unsigned)scenario_fief_count)) goto L_AE80;    // $AE99
 L_AE9C:
-    *(byte*)(local8) = -1;    // $AE9F
+    *(byte*)(fief_list_ptr) = -1;    // $AE9F
     set_cursor(2, 3);    // $AEA2
     redraw_window(transfer_owned_fiefs_and_announce_succession_fief);    // $AEA9
-    local8 = 0x6F89;    // $AEB0
-    local9 = 0;    // $AEB2
+    fief_list_ptr = 0x6F89;    // $AEB0
+    line_count = 0;    // $AEB2
     goto L_AEF4;    // $AEB3
 L_AEB6:
-    if (!(local7)) goto L_AEC6;    // $AEB7
-    local8 = (local8 + 1);    // $AEBC
-    *(byte*)((local8 - 1)) = battle_defending_province;    // $AEC2
+    if (!(winner_side)) goto L_AEC6;    // $AEB7
+    fief_list_ptr = (fief_list_ptr + 1);    // $AEBC
+    *(byte*)((fief_list_ptr - 1)) = battle_defending_province;    // $AEC2
     goto L_AE9C;    // $AEC3
 L_AEC6:
     return battle_defending_province;    // $AEC6
 L_AEC7:
-    if (!((get_province_ai_state(*(byte*)(local8)) != 255))) goto L_AEF1;    // $AED2
-    draw_message(transfer_owned_fiefs_and_announce_succession_fmt_2d, (*(byte*)(local8) + 1));    // $AEDC
-    local9 = (local9 + 1);    // $AEE2
-    if ((local9 != 9)) goto L_AEF1;    // $AEE5
+    if (!((get_province_ai_state(*(byte*)(fief_list_ptr)) != 255))) goto L_AEF1;    // $AED2
+    draw_message(transfer_owned_fiefs_and_announce_succession_fmt_2d, (*(byte*)(fief_list_ptr) + 1));    // $AEDC
+    line_count = (line_count + 1);    // $AEE2
+    if ((line_count != 9)) goto L_AEF1;    // $AEE5
     redraw_window(str_passed_from_lord);    // $AEEB
-    local9 = 0;    // $AEF0
+    line_count = 0;    // $AEF0
 L_AEF1:
-    local8 = (local8 + 1);    // $AEF3
+    fief_list_ptr = (fief_list_ptr + 1);    // $AEF3
 L_AEF4:
-    if ((*(byte*)(local8) != 255)) goto L_AEC7;    // $AEFA
+    if ((*(byte*)(fief_list_ptr) != 255)) goto L_AEC7;    // $AEFA
     redraw_window(msg_has_passed_from);    // $AF00
     draw_message(msg_lord_s_to, daimyo_name_table[fief_owner(battle_winner_province_sel)]);    // $AF15
-    draw_message(msg_lord_s, daimyo_name_table[fief_owner(get_battle_side_province((local7 ^ 1)))]);    // $AF30
+    draw_message(msg_lord_s, daimyo_name_table[fief_owner(get_battle_side_province((winner_side ^ 1)))]);    // $AF30
     standard_delay();    // $AF34
     return repaint_screen();    // $AF3A
 }
