@@ -1975,34 +1975,34 @@ L_E1E6:
 // $E1E7 clear_fief_pair_matrix
 // (body @ $E1EC)
 
-word clear_fief_pair_matrix(word arg1) {
+word clear_fief_pair_matrix(word fief) {
     call_bank10_entry(29);    // $E1EE
     phi_val_e211 = 0;    // $E1F3
     goto L_E211;    // $E1F3
 L_E1F6:
-    relations_matrix[((local11 * 54) + arg1)] = 0;    // $E20D
-    relations_matrix[((arg1 * 54) + local11)] = 0;    // $E20E
-    phi_val_e211 = (local11 + 1);    // $E210
+    relations_matrix[((other_fief * 54) + fief)] = 0;    // $E20D
+    relations_matrix[((fief * 54) + other_fief)] = 0;    // $E20E
+    phi_val_e211 = (other_fief + 1);    // $E210
 L_E211:
-    local11 = phi_val_e211;    // $E211
-    if (((unsigned)local11 < (unsigned)scenario_fief_count)) goto L_E1F6;    // $E217
-    return ((unsigned)local11 < (unsigned)scenario_fief_count);    // $E21A
+    other_fief = phi_val_e211;    // $E211
+    if (((unsigned)other_fief < (unsigned)scenario_fief_count)) goto L_E1F6;    // $E217
+    return ((unsigned)other_fief < (unsigned)scenario_fief_count);    // $E21A
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E21B
 // $E21B install_new_daimyo
 // (body @ $E220)
 
-word install_new_daimyo(word arg1) {
-    fief_to_daimyo_map[arg1] = pool_push_pop(255);    // $E22D
-    generate_daimyo_name(fief_owner(arg1));    // $E234
-    message_display(daimyo_name_table[fief_owner(arg1)]);    // $E244
-    draw_message(msg_is_now_fief_2d_s_daimyo, (arg1 + 1));    // $E24E
-    province_ai_state[arg1] = 0;    // $E259
-    fief_is_daimyo_capital[arg1] = 1;    // $E261
-    init_new_daimyo_province_stats(arg1);    // $E263
-    assign_unique_daimyo_face_code(arg1);    // $E268
-    redraw_fief_on_map(arg1);    // $E26D
+word install_new_daimyo(word fief) {
+    fief_to_daimyo_map[fief] = pool_push_pop(255);    // $E22D
+    generate_daimyo_name(fief_owner(fief));    // $E234
+    message_display(daimyo_name_table[fief_owner(fief)]);    // $E244
+    draw_message(msg_is_now_fief_2d_s_daimyo, (fief + 1));    // $E24E
+    province_ai_state[fief] = 0;    // $E259
+    fief_is_daimyo_capital[fief] = 1;    // $E261
+    init_new_daimyo_province_stats(fief);    // $E263
+    assign_unique_daimyo_face_code(fief);    // $E268
+    redraw_fief_on_map(fief);    // $E26D
     return confirm_prompt();    // $E274
 }
 
@@ -2024,31 +2024,31 @@ L_E2AB:
 // $E2AF copy_arms_record_5
 // (body @ $E2B4)
 
-word copy_arms_record_5(word arg1, word arg2) {
-    local10 = 0;    // $E2B5
-    local11 = province_unit_type_pct[arg1];    // $E2BD
+word copy_arms_record_5(word fief, word src_ptr) {
+    i = 0;    // $E2B5
+    dst_ptr = province_unit_type_pct[fief];    // $E2BD
     goto L_E2CF;    // $E2BE
 L_E2C1:
-    local11 = (local11 + 1);    // $E2C3
-    arg2 = (arg2 + 1);    // $E2C8
-    *(byte*)((local11 - 1)) = *(byte*)((arg2 - 1));    // $E2CB
-    local10 = (local10 + 1);    // $E2CE
+    dst_ptr = (dst_ptr + 1);    // $E2C3
+    src_ptr = (src_ptr + 1);    // $E2C8
+    *(byte*)((dst_ptr - 1)) = *(byte*)((src_ptr - 1));    // $E2CB
+    i = (i + 1);    // $E2CE
 L_E2CF:
-    if (((unsigned)local10 < (unsigned)5)) goto L_E2C1;    // $E2D2
-    return ((unsigned)local10 < (unsigned)5);    // $E2D5
+    if (((unsigned)i < (unsigned)5)) goto L_E2C1;    // $E2D2
+    return ((unsigned)i < (unsigned)5);    // $E2D5
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E2D6
 // $E2D6 draw_daimyo_name_menu
 // (body @ $E2DB)
 
-word draw_daimyo_name_menu(word arg1) {
+word draw_daimyo_name_menu(word pact_msg) {
     open_message_window();    // $E2DB
     message_display(draw_daimyo_name_menu_lord);    // $E2E1
     redraw_window(daimyo_name_table[fief_owner(battle_defending_province)]);    // $E2F3
     redraw_window(str_marriage_event_msgs);    // $E2FA
     redraw_window(daimyo_name_table[selected_province_owner()]);    // $E308
-    return draw_message(msg_wants_a_s, arg1);    // $E314
+    return draw_message(msg_wants_a_s, pact_msg);    // $E314
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $E315
@@ -2182,21 +2182,21 @@ L_E4C6:
 // $E4DC build_fiefs_excluding_daimyo
 // (body @ $E4E1)
 
-word build_fiefs_excluding_daimyo(word arg1) {
+word build_fiefs_excluding_daimyo(word excluded_daimyo) {
     build_owned_fief_list();    // $E4E1
-    local10 = 0x6F89;    // $E4E7
+    write_ptr = 0x6F89;    // $E4E7
     phi_val_e501 = 0x6F89;    // $E4E8
     goto L_E501;    // $E4E8
 L_E4EB:
-    if (!((fief_owner(*(byte*)(local11)) != arg1))) goto L_E4FF;    // $E4F4
-    local10 = (local10 + 1);    // $E4F9
-    *(byte*)((local10 - 1)) = *(byte*)(local11);    // $E4FE
+    if (!((fief_owner(*(byte*)(read_ptr)) != excluded_daimyo))) goto L_E4FF;    // $E4F4
+    write_ptr = (write_ptr + 1);    // $E4F9
+    *(byte*)((write_ptr - 1)) = *(byte*)(read_ptr);    // $E4FE
 L_E4FF:
-    phi_val_e501 = (local11 + 1);    // $E500
+    phi_val_e501 = (read_ptr + 1);    // $E500
 L_E501:
-    local11 = phi_val_e501;    // $E501
-    if ((*(byte*)(local11) != 255)) goto L_E4EB;    // $E508
-    *(byte*)(local10) = -1;    // $E50E
+    read_ptr = phi_val_e501;    // $E501
+    if ((*(byte*)(read_ptr) != 255)) goto L_E4EB;    // $E508
+    *(byte*)(write_ptr) = -1;    // $E50E
     return -1;    // $E50F
 }
 

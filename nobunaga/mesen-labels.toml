@@ -3050,3 +3050,31 @@ arg1 = { name = "fief_idx", comment = "[HIGH] LOADL_quick 12 *5 + $76AB / $76A9 
 arg2 = { name = "fief", comment = "[HIGH] LOADL_quick 13 + 22, DEREF @$E003-6 = ->arms: a province record pointer" }
 local11 = { name = "arms_cap", comment = "[HIGH] = arms SDIV 50 + 20 @$E00C; byte at idx*5+$76AB clamped to it, excess added to idx*5+$76A9 byte" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 11 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xE1E7"]
+# clear_fief_pair_matrix
+arg1 = { name = "fief", comment = "[HIGH] Fief index: LOADL_quick 12 *54 + local11 and local11*54 + LOADR_quick 12 into relations_matrix $6193; callers push their slot 12" }
+local11 = { name = "other_fief", comment = "[HIGH] Loop index 0..scenario_fief_count ($E211 STORE_quick 11, INC, UCMPLT $6D9D); paired fief whose relations with arg1 are zeroed" }
+
+[vars.bank15."0xE21B"]
+# install_new_daimyo
+arg1 = { name = "fief", comment = "[HIGH] Fief index: +$6E15/$6CF7/$6DA2 byte tables, fief_owner(arg1), INC'd for msg_is_now_fief_2d; callers push battle_defending_province" }
+
+[vars.bank15."0xE2AF"]
+# copy_arms_record_5
+arg1 = { name = "fief", comment = "[HIGH] Fief index: LOADL_quick 12 *5 + province_unit_type_pct $76A9 -> dst; last push before call is selected_province_idx / caller arg1" }
+arg2 = { name = "src_ptr", comment = "[HIGH] Source byte cursor: slot 13 post-inc then BYTE_DEREF ($E2C6..$E2CA); callers push LEAL_far $FFFB buffer or $77A3" }
+local10 = { name = "i", comment = "[HIGH] Loop counter: set 0 at $E2B5, INC per byte at $E2CC, UCMPLT 5 at $E2D1" }
+local11 = { name = "dst_ptr", comment = "[HIGH] Dest cursor: = arg1*5+$76A9 at $E2BD, post-inc and PUSHL'd as BYTE_POPSTORE target at $E2C1..$E2CB" }
+
+[vars.bank15."0xE2D6"]
+# draw_daimyo_name_menu
+arg1 = { name = "pact_msg", comment = "[HIGH] String ptr: PUSH_quick 12 as %s arg2 of draw_message(msg_wants_a_s) at $E30C; callers push msg_marriage_pact / msg_pact" }
+
+[vars.bank15."0xE4DC"]
+# build_fiefs_excluding_daimyo
+arg1 = { name = "excluded_daimyo", comment = "[HIGH] Daimyo id: fief_owner(*local11) CMPNE LOADR_quick 12 at $E4F2 gates the keep; callers push selected_province_owner() or $FF" }
+local10 = { name = "write_ptr", comment = "[HIGH] Output cursor: =$6F89 at $E4E7, post-inc + BYTE_POPSTORE of kept entry at $E4F7, gets $FF terminator at $E50B" }
+local11 = { name = "read_ptr", comment = "[HIGH] Input cursor: STORE_quick 11 at $E501 gets $6F89 (L kept from $E4E4), BYTE_DEREF each pass, INC until $FF terminator" }
+
