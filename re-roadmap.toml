@@ -22,8 +22,8 @@ evidence = ["nobunaga/01-boot-and-dispatch.md", "nobunaga/05-bytecode-vm.md", "n
 [phase.recon]
 status   = "done"
 gate     = "window_check na1: 16 banks of 16K, 0 problems. Every bytecode bank tiles: gates.roundtrip --game na1 re-encodes 499 subs, 45,711 code bytes in banks 0/1/2/10/14/15 byte-identical (ROUND-TRIP CLEAN). The shared toolchain's assumptions, re-derived on NA1's own handlers: operand lengths (tools/koei_isa_probe.py na1: 0 live opcodes disagree with the decoder), stack effects (gates.stack_audit: 187/208 gated opcodes confirmed, 21 never emitted in NA1), compare direction and signedness (gates.compare_probe: 10/10 16-bit and 10/10 32-bit ext-op names; new in this revisit, converted from the atticked NA1 probe; a planted C3/C5 swap fails it). One opcode table, emu-harness's, read through nobunaga_vm.OPCODES_PATH; the legacy nobunaga/vm-opcodes.toml is retired and the appendix regenerates from the shared table (it differs from the June appendix by the 4 lengths row F2 measured: $AD 2, $E0-$E2 2)."
-checked  = "2026-10-27"
-toolset  = "54be6fe"
+checked  = "2026-10-28"
+toolset  = "a0733f3"
 evidence = ["nobunaga/source/2-asm-vm/", "nobunaga/appendix-vm-opcodes.md", "nobunaga/tools/gen-opcode-appendix.py"]
 
 [phase.discover]
@@ -43,8 +43,8 @@ evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobun
 [phase.structure]
 status   = "done"
 gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). invert_condition parses the top level (emu-harness 3c3900e): the textual one flipped the comparison inside an already-negated !(...), so 3 NA1 sites inverted !(A || B) to A && !B ($82E9 is_cell_clear_of_bits, $89FD, $930A; the ROM sides with the goto form, $82DB(0, 5) = 1); 83 if-lines change on regen, 3 in meaning; cfg_gate stays CLEAN (it checks CFG shape, not rewritten polarity); the test checks each inversion by value and plants the textual one. gates.value_probe (emu-harness f556de3): the rendered C of 5 fixture subs (min_word, max_word, is_tile_in_bounds, unit_strength_ptr, is_cell_clear_of_bits) evaluated over 684 inputs equals titles.run_sub, a call running its callee on the ROM so argument order counts; planted, the textual inverter and reversed call arguments each fail it. The attic is read and retired (tools/RETIRED.md)."
-checked  = "2026-10-27"
-toolset  = "f556de3"
+checked  = "2026-10-28"
+toolset  = "a0733f3"
 evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
 
 [phase.naming]
@@ -103,10 +103,11 @@ status = "closed"
 closed = "2026-10-27: the premise was wrong. No code read nobunaga/vm-opcodes.toml (only stale permission strings in .claude/settings.local.json); it is removed. The real break was gen-opcode-appendix.py, which read na1dream/vm-opcodes-v2.toml, a data file the module alias does not carry: it now reads nobunaga_vm.OPCODES_PATH, and the regenerated appendix (and the site copy via build-site.py, 2 files changed) carries the 4 lengths row F2 measured. analyze-vm-opcodes never read a table. The $A8 text hand-edited into the generated appendix moved into the shared table (emu-harness 47e7f66). Found on the way: the compare-direction probe had been atticked and no longer imported; it is emu-harness gates.compare_probe now (9 titles, 90/90)."
 
 [[revisit]]
-item   = "148 fixed-region ($C000+) names are filed under [prg.bank0] (rng_mod $CA52, min_word, draw_message, cursor_nav_loop, nmi_off, ...), so bank 15's scoped view (its listing, its C, the family report) cannot see them. Move them to [prg.bank15]. CLOSED 2026-10-28 (877e934): 142 moved, 4 exact duplicates and 2 _alias copies dropped; guarded over every tier. It was the biggest naming gap: ~1,070 call sites in banks 1/2/14/15 printed sub_XXXX for a named routine, and 42 of bank 15's 135 subs had no name in their header. The one sub_XXXX left was a real miss (bank 2 $8003, native: tactical_hex_step, 330/330 on the ROM)."
+item   = "148 fixed-region ($C000+) names are filed under [prg.bank0] (rng_mod $CA52, min_word, draw_message, cursor_nav_loop, nmi_off, ...), so bank 15's scoped view (its listing, its C, the family report) cannot see them. Move them to [prg.bank15]."
 phase  = "naming"
 source = "emu-harness MIGRATION.md row E family FILLs"
 status = "closed"
+closed = "2026-10-28: 877e934: 142 moved, 4 exact duplicates and 2 _alias copies dropped; guarded over every tier. It was the biggest naming gap: ~1,070 call sites in banks 1/2/14/15 printed sub_XXXX for a named routine, and 42 of bank 15's 135 subs had no name in their header. The one sub_XXXX left was a real miss (bank 2 $8003, native: tactical_hex_step, 330/330 on the ROM)."
 
 [[revisit]]
 item   = "fill_bytes $CA97, memchr $CAF0 and 5 more bank-15 routines have no caller and no root (callgraph na1 --orphans --bank 15; 7 on 2026-10-27, incl. unnamed $F007 and $FFFF). Confirm dead, or find the computed call."
@@ -134,10 +135,11 @@ source = "emu-harness MIGRATION.md rows A gap, F1b (all KOEI NES titles)"
 status = "open"
 
 [[revisit]]
-item   = "All KOEI NES titles: cross-title name drift (match family proposes RENAME / READ / FILL across the family). For NA1, the root, read it the other way: where a descendant's independently walked name disagrees with NA1's, the lower artifact decides which is wrong. Apply, then regenerate .mlb / listings / C. CLOSED for NA1 2026-10-28 (f5b7819): match family has 44 twin clusters and one NA1 row (cutscene_delay -> busy_wait_delay, the vocabulary name; applied). The other 37 RENAME rows belong to the descendants' revisits."
+item   = "All KOEI NES titles: cross-title name drift (match family proposes RENAME / READ / FILL across the family). For NA1, the root, read it the other way: where a descendant's independently walked name disagrees with NA1's, the lower artifact decides which is wrong. Apply, then regenerate .mlb / listings / C."
 phase  = "naming"
 source = "emu-harness MIGRATION.md row E family (all KOEI NES titles)"
 status = "closed"
+closed = "2026-10-28: f5b7819: match family has 44 twin clusters and one NA1 row (cutscene_delay -> busy_wait_delay, the vocabulary name; applied). The other 37 RENAME rows belong to the descendants' revisits."
 
 # --- revisits: new, from filling this roadmap (2026-10-27) ------------------------------------
 
@@ -170,28 +172,32 @@ status = "closed"
 closed = "2026-10-27: measured, tools/native_discover.py: 2 conflicts both explained, 5 dispatch sites all the VM's own, 0 holes over 30.3 M traced steps; it found the missed syscall RTI continuation $F23C and the bytecode-only natives."
 
 [[revisit]]
-item   = "CONTEXT.md, the read-first file, routes to 6 tools that no longer exist (tools/cpu6502.py, nobunaga_vm.py, vm_decompile.py, decompile-all.py, decompile-merged.py, probe-math32.py: moved to emu-harness or attic). Re-point every quick-route at its emu-harness module or the NA1 shim, and check tools/README.md the same way. CLOSED 2026-10-27: every quick-route resolves (checked by script); it also stated the June ext-op formulas, now replaced by a pointer to the ROM-checked models. tools/README.md rebuilt against the disk (it listed ~20 engine rows that had moved, and 23 scripts on disk had no row); appendix-formulas, appendix-asset-extraction, commands/README and the root README re-pointed."
+item   = "CONTEXT.md, the read-first file, routes to 6 tools that no longer exist (tools/cpu6502.py, nobunaga_vm.py, vm_decompile.py, decompile-all.py, decompile-merged.py, probe-math32.py: moved to emu-harness or attic). Re-point every quick-route at its emu-harness module or the NA1 shim, and check tools/README.md the same way."
 phase  = "presentation"
 source = "recon revisit 2026-10-27"
 status = "closed"
+closed = "2026-10-27: every quick-route resolves (checked by script); it also stated the June ext-op formulas, now replaced by a pointer to the ROM-checked models. tools/README.md rebuilt against the disk (it listed ~20 engine rows that had moved, and 23 scripts on disk had no row); appendix-formulas, appendix-asset-extraction, commands/README and the root README re-pointed."
 
 [[revisit]]
-item   = "tools/attic holds other probes that may be guards rather than archaeology, as probe-compare-opcodes was (probe-primitives, probe-math32, ...). Read each: a probe that checks a primitive against the live handler belongs in emu-harness gates; the rest stay. CLOSED 2026-10-27: all 32 read; 2 were guard ideas (ternary-folds compared the ROM with hand-written Python, not with the C, so it guarded nothing; espionage Q1, the CALL argument order) and go to emu-harness gates.value_probe; compare-opcodes was converted, math32 is superseded by cfg_gate. The attic is deleted, with tools/RETIRED.md holding each verdict and its restore commit, and 7 broken or superseded tools/ scripts with it."
+item   = "tools/attic holds other probes that may be guards rather than archaeology, as probe-compare-opcodes was (probe-primitives, probe-math32, ...). Read each: a probe that checks a primitive against the live handler belongs in emu-harness gates; the rest stay."
 phase  = "structure"
 source = "recon revisit 2026-10-27"
 status = "closed"
+closed = "2026-10-27: all 32 read; 2 were guard ideas (ternary-folds compared the ROM with hand-written Python, not with the C, so it guarded nothing; espionage Q1, the CALL argument order) and go to emu-harness gates.value_probe; compare-opcodes was converted, math32 is superseded by cfg_gate. The attic is deleted, with tools/RETIRED.md holding each verdict and its restore commit, and 7 broken or superseded tools/ scripts with it."
 
 [[revisit]]
-item   = "Names from discover: $EF92 vm_op_trigger_syscall_shared is the illegal-opcode BRK trap (rename, e.g. vm_illegal_opcode_brk; $EF93 vm_op_FF likewise); label $F23C (syscall_return, the RTI continuation) and the syscall table entries; mark the 5 dead bytecode subs dead in their comments; drop any label at $F007 / $FFFF. CLOSED 2026-10-28 (9973016): vm_op_unused_brk / vm_op_FF_unused_brk (the 38 opcodes occur 0 times in 23,802 instructions), syscall_rti_return, 5 dead subs marked; the 23 syscall targets were already named; no label sat at $F007 / $FFFF."
+item   = "Names from discover: $EF92 vm_op_trigger_syscall_shared is the illegal-opcode BRK trap (rename, e.g. vm_illegal_opcode_brk; $EF93 vm_op_FF likewise); label $F23C (syscall_return, the RTI continuation) and the syscall table entries; mark the 5 dead bytecode subs dead in their comments; drop any label at $F007 / $FFFF."
 phase  = "naming"
 source = "discover 2026-10-27"
 status = "closed"
+closed = "2026-10-28: 9973016: vm_op_unused_brk / vm_op_FF_unused_brk (the 38 opcodes occur 0 times in 23,802 instructions), syscall_rti_return, 5 dead subs marked; the 23 syscall targets were already named; no label sat at $F007 / $FFFF."
 
 [[revisit]]
-item   = "vm_decompile.invert_condition is textual: it strips one paren layer and splits at the FIRST space-bounded comparison operator, falling back to !(...). Seen in the data phase: naming an operand changed `if (!((x == 6)))` into `if ((x != 6))` (equivalent, but the shape depends on a name). The risk: on a condition with a comparison nested in a call or a ternary, a first-match split inverts the wrong operator, a polarity bug no structural gate sees (the 323-site class). Scan NA1's C for inversions whose split is not at the top level, and make the inverter parse. CLOSED 2026-10-27 (emu-harness 3c3900e): every NA1 call instrumented (103), not a grep; the bug was a different shape than feared, the already-negated condition, and it hit 3 sites, all !(A || B)."
+item   = "vm_decompile.invert_condition is textual: it strips one paren layer and splits at the FIRST space-bounded comparison operator, falling back to !(...). Seen in the data phase: naming an operand changed `if (!((x == 6)))` into `if ((x != 6))` (equivalent, but the shape depends on a name). The risk: on a condition with a comparison nested in a call or a ternary, a first-match split inverts the wrong operator, a polarity bug no structural gate sees (the 323-site class). Scan NA1's C for inversions whose split is not at the top level, and make the inverter parse."
 phase  = "structure"
 source = "data phase 2026-10-27 (data-apply guard)"
 status = "closed"
+closed = "2026-10-27: emu-harness 3c3900e: every NA1 call instrumented (103), not a grep; the bug was a different shape than feared, the already-negated condition, and it hit 3 sites, all !(A || B)."
 
 [[revisit]]
 item   = "Naming from the data phase: two June comments flag a wrong name that was never applied ($A5E6 spawn_zealot_uprising_force_from_province, 'SHOULD BE RENAMED spawn_uprising_force_from_province'; $A0ED amount_div_force_factor, MISLABEL); and the 4 RAM names given by kind only (fief_index_list, province_candidate_list, battle_unit_byte_table, list_remove_matching_list) want their roles. 2026-10-28: $A5E6 renamed spawn_uprising_force_from_province (checked); $A0ED's MISLABEL was the old name, already corrected; min_word's comment corrected (signed). Still open: the 4 roles. Also min_word ($CB5E): its comment says unsigned, but value_probe's pass over $8000 / $FFFF shows a signed min (as vm_decompile's note says); it is one of the 148 fixed-region names filed under [prg.bank0], which is why bank 15's C prints sub_CB5E."
@@ -215,7 +221,8 @@ status = "open"
 item   = "Named data does not reach the C when it is an immediate: 32 [ram] addresses print as hex at 234 sites, e.g. (battle_defending_province * 26) + 0x7001 is province_table_live 100 times, daimyo_name_table ($77A8) 38, relations_matrix 8. Another 40 addresses (138 sites) are fields of those records at index 0 ($7013 = province_table_live + 18, $7011 + 16, $700D + 12, ...). The engine names loads and stores (name, name[i]) but not an address used in pointer arithmetic or passed as a pointer. A fix belongs in the emu-harness engine (every title) and must tell an address from a number: 0x7530 is 30000. Render idx * size + base as &name[idx] (and + field offset as ->field where a record schema exists), and a pushed labelled address as &name."
 phase  = "naming"
 source = "naming census 2026-10-28"
-status = "open"
+status = "closed"
+closed = "2026-10-28: emu-harness f44abee / na1 e35b8fd, for the province table: [fields] type / base / stride, rendered as a C array of structs (province_table_live[i].morale, &province_table_live[i], local5->men; struct province declared in each bank). 192 strided forms + 216 local accesses; un-rendering gives back the old C exactly. Left: the daimyo table ($752F stride 7, byte fields, 3 sites) and the other named RAM immediates that are not records (pushed table bases such as deduped_owner_list, fief_index_list: 12 + 11 sites, as &name)."
 
 [[revisit]]
 item   = "Var walk: [vars] sections cover 135 of 499 subs; the C has ~4,100 positional localN uses (bank 0 935, bank 1 1,262, bank 2 1,339, bank 15 533). The walk is PHASES.md section 5's var-walk.workflow.js with NA1's walk-context.json; it fans out agents, so it runs on Chris's go."
@@ -230,10 +237,11 @@ source = "naming census 2026-10-28"
 status = "open"
 
 [[revisit]]
-item   = "Discover walked only the fixed bank's natives. Bank 2 $8003 (tactical_hex_step) is native 6502 in a bytecode bank, reached by CALL {native}; it is the only native call target below $C000 in NA1's bytecode, but natives reached from 6502 code in the switchable banks (and the non-bytecode banks 3-9, 11-13) were never censused. CLOSED 2026-10-28: censused both ways. Traces: every switchable-window PC in the 14 Mesen traces matched to its bank by its instruction bytes (176 distinct, 0 from RAM); minus the bytecode stubs and the $8000 entry JMPs, the only native code executed is bank 2 $8003-$8085 (tactical_hex_step, 70 PCs). Static: the fixed bank's 7 direct JSR/JMP into $8000-$BFFF are 2 bank-entry calls (reset $C0D7, syscall_call_bank $C343), 3 inside bytecode bytes, 2 inside tables. The sound bank (10) holds one bytecode routine (play_audio_by_id), its stream table and the streams; the native music player (music_note_to_period, music_set_pitch, music_set_duration, syscall_audio_*) is in the fixed bank, already walked. The 5 bank entry JMPs are labelled (784dad9)."
+item   = "Discover walked only the fixed bank's natives. Bank 2 $8003 (tactical_hex_step) is native 6502 in a bytecode bank, reached by CALL {native}; it is the only native call target below $C000 in NA1's bytecode, but natives reached from 6502 code in the switchable banks (and the non-bytecode banks 3-9, 11-13) were never censused."
 phase  = "discover"
 source = "naming 2026-10-28"
 status = "closed"
+closed = "2026-10-28: censused both ways. Traces: every switchable-window PC in the 14 Mesen traces matched to its bank by its instruction bytes (176 distinct, 0 from RAM); minus the bytecode stubs and the $8000 entry JMPs, the only native code executed is bank 2 $8003-$8085 (tactical_hex_step, 70 PCs). Static: the fixed bank's 7 direct JSR/JMP into $8000-$BFFF are 2 bank-entry calls (reset $C0D7, syscall_call_bank $C343), 3 inside bytecode bytes, 2 inside tables. The sound bank (10) holds one bytecode routine (play_audio_by_id), its stream table and the streams; the native music player (music_note_to_period, music_set_pitch, music_set_duration, syscall_audio_*) is in the fixed bank, already walked. The 5 bank entry JMPs are labelled (784dad9)."
 
 [next]
 session = "naming, continued: decide the immediate-rendering fix (emu-harness engine, family-wide) and whether to run the var walk (agents); then the top-down verify pass. (The status tool starts at discover: the switchable-bank native census contests its gate.)"
