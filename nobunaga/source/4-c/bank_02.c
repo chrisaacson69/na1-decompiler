@@ -862,32 +862,32 @@ L_8B77:
 // $8B8A draw_side_resource_field
 // (body @ $8B8F)
 
-word draw_side_resource_field(word arg1, word arg2) {
+word draw_side_resource_field(word side, word resource_field) {
     phi_ret_8bd7 = (combat_unit_window_mode_flag == 2);    // $8B94
     if (!(phi_ret_8bd7)) goto L_8BD7;    // $8B94
-    local11 = ui_window_col;    // $8B9A
-    local10 = ui_cursor_row;    // $8B9E
-    set_cursor(6, ((arg1 ? 9 : 15) + arg2));    // $8BAC
-    switch (arg2) {    // $8BB1
+    saved_window_col = ui_window_col;    // $8B9A
+    saved_cursor_row = ui_cursor_row;    // $8B9E
+    set_cursor(6, ((side ? 9 : 15) + resource_field));    // $8BAC
+    switch (resource_field) {    // $8BB1
         case 0: goto L_8BC2;    // $8BB1
         case 1: goto L_8BD8;    // $8BB1
         case 2: goto L_8BE1;    // $8BB1
         default: goto L_8BC9;    // $8BB1
     }    // $8BB1
 L_8BC2:
-    phi_val_8bc7 = side_resource_ptr(arg1);    // $8BC3
+    phi_val_8bc7 = side_resource_ptr(side);    // $8BC3
 L_8BC7:
-    local9 = *(word*)(phi_val_8bc7);    // $8BC8
+    resource_value = *(word*)(phi_val_8bc7);    // $8BC8
 L_8BC9:
-    draw_message(draw_side_resource_field_fmt_4d, local9);    // $8BCD
-    phi_ret_8bd7 = set_cursor(local11, local10);    // $8BD3
+    draw_message(draw_side_resource_field_fmt_4d, resource_value);    // $8BCD
+    phi_ret_8bd7 = set_cursor(saved_window_col, saved_cursor_row);    // $8BD3
 L_8BD7:
     return phi_ret_8bd7;    // $8BD7
 L_8BD8:
-    phi_val_8bc7 = (side_resource_ptr(arg1) + 2);    // $8BDE
+    phi_val_8bc7 = (side_resource_ptr(side) + 2);    // $8BDE
     goto L_8BC7;    // $8BDE
 L_8BE1:
-    phi_val_8bc7 = (side_resource_ptr(arg1) + 4);    // $8BE7
+    phi_val_8bc7 = (side_resource_ptr(side) + 4);    // $8BE7
     goto L_8BC7;    // $8BE7
 }
 
@@ -898,9 +898,9 @@ L_8BE1:
 word combat_unit_window_refresh(void) {
     if ((combat_unit_window_mode_flag == 2)) return (combat_unit_window_mode_flag == 2);    // $8BF4
     clear_rect_left_upper();    // $8BF8
-    local11 = 1;    // $8BFC
+    side = 1;    // $8BFC
     do {    // $8BFD
-        if (local11) goto L_8C1D;    // $8BFE
+        if (side) goto L_8C1D;    // $8BFE
         set_cursor(2, 14);    // $8C03
         if (is_no_province_selected()) {    // $8C0A
         phi_push_8c30 = select_uprising_message(battle_defending_province);    // $8C14
@@ -914,9 +914,9 @@ L_8C2A:
         }
 L_8C30:
         redraw_window(phi_push_8c30);    // $8C31
-        draw_message(msg_gold_4d_rice_4d_men_4d, *(word*)(side_resource_ptr(local11)), *(word*)((side_resource_ptr(local11) + 2)), *(word*)((side_resource_ptr(local11) + 4)));    // $8C4F
-        local11 = (local11 - 1);    // $8C55
-    } while ((local11 >= 0));    // $8C59
+        draw_message(msg_gold_4d_rice_4d_men_4d, *(word*)(side_resource_ptr(side)), *(word*)((side_resource_ptr(side) + 2)), *(word*)((side_resource_ptr(side) + 4)));    // $8C4F
+        side = (side - 1);    // $8C55
+    } while ((side >= 0));    // $8C59
     combat_unit_window_mode_flag = 2;    // $8C5D
     return 2;    // $8C60
         }
@@ -926,13 +926,13 @@ L_8C30:
 // $8C61 draw_unit_roster_columns
 // (body @ $8C66)
 
-word draw_unit_roster_columns(word arg1) {
-    local10 = &province_table_live[get_battle_side_province(arg1)].morale;    // $8C72
-    local11 = fief_to_daimyo_record_addr(get_battle_side_province(arg1));    // $8C7D
-    local9 = side_resource_ptr(arg1);    // $8C83
+word draw_unit_roster_columns(word side) {
+    fief_stat_cursor = &province_table_live[get_battle_side_province(side)].morale;    // $8C72
+    daimyo_attr_cursor = fief_to_daimyo_record_addr(get_battle_side_province(side));    // $8C7D
+    side_resource_cursor = side_resource_ptr(side);    // $8C83
     ui_cursor_row = 6;    // $8C85
     do {    // $8C88
-        ui_window_col = ((arg1 + 1) * 12);    // $8C8C
+        ui_window_col = ((side + 1) * 12);    // $8C8C
         switch (ui_cursor_row) {    // $8C92
         case 6:
         case 7:
@@ -940,10 +940,10 @@ word draw_unit_roster_columns(word arg1) {
         case 9:
         case 10:
         case 11:
-            if (!((!(is_no_province_selected()) || arg1))) goto L_8CE1;    // $8CB8
-            local11 = (local11 + 1);    // $8CBD
+            if (!((!(is_no_province_selected()) || side))) goto L_8CE1;    // $8CB8
+            daimyo_attr_cursor = (daimyo_attr_cursor + 1);    // $8CBD
             phi_8cc4_0 = roster_fmt_4d_1;    // $8CC1
-            phi_8cc4_1 = *(byte*)((local11 - 1));    // $8CC1
+            phi_8cc4_1 = *(byte*)((daimyo_attr_cursor - 1));    // $8CC1
 L_8CC4:
             draw_message(phi_8cc4_0, phi_8cc4_1);    // $8CC4
             goto L_8D12;    // $8CC8
@@ -959,17 +959,17 @@ L_8CE1:
         case 12:
         case 13:
         case 14:
-            local9 = (local9 + 2);    // $8CE9
+            side_resource_cursor = (side_resource_cursor + 2);    // $8CE9
             phi_8cc4_0 = roster_fmt_4d_2;    // $8CF1
-            phi_8cc4_1 = *(word*)((local9 + -2));    // $8CF1
+            phi_8cc4_1 = *(word*)((side_resource_cursor + -2));    // $8CF1
             goto L_8CC4;    // $8CF1
         case 15:
         case 16:
         case 17:
-            if (!((!(is_no_province_selected()) || arg1))) goto L_8D0B;    // $8CFB
-            local10 = (local10 + 2);    // $8D00
+            if (!((!(is_no_province_selected()) || side))) goto L_8D0B;    // $8CFB
+            fief_stat_cursor = (fief_stat_cursor + 2);    // $8D00
             phi_8cc4_0 = roster_fmt_4d_3;    // $8D08
-            phi_8cc4_1 = *(word*)((local10 + -2));    // $8D08
+            phi_8cc4_1 = *(word*)((fief_stat_cursor + -2));    // $8D08
             goto L_8CC4;    // $8D08
 L_8D0B:
             phi_8d0e_0 = roster_dashes_2;    // $8D0B
@@ -980,7 +980,7 @@ L_8D12:
         redraw_window(phi_8d0e_0);    // $8D0E
         ui_cursor_row = (ui_cursor_row + 1);    // $8D16
     } while (((unsigned)ui_cursor_row < (unsigned)18));    // $8D1F
-    if (!(arg1)) goto L_8CCB;    // $8D23
+    if (!(side)) goto L_8CCB;    // $8D23
     active_province_idx_copy = fief_owner(battle_defending_province);    // $8D2D
     phi_ret_8d38 = draw_daimyo_portrait(24, 20);    // $8D34
 L_8D38:
@@ -1101,8 +1101,8 @@ word ai_attacker_outstrengths_defender(void) {
 // $8F11 is_tile_in_bounds
 // (body @ $8F16)
 
-word is_tile_in_bounds(word arg1, word arg2) {
-    return (((unsigned)arg1 <= (unsigned)10) && ((unsigned)arg2 <= (unsigned)4));    // $8F27
+word is_tile_in_bounds(word x, word y) {
+    return (((unsigned)x <= (unsigned)10) && ((unsigned)y <= (unsigned)4));    // $8F27
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $8F28

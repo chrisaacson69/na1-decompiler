@@ -3709,3 +3709,28 @@ local8 = { name = "feature_variant", comment = "[MED] set 1/2/3 by switch on ter
 local10 = { name = "screen_row", comment = "[HIGH] =row @$87C9, converted in place via LEAL $FFFC to calc_tactical_cell_coords; +2/+3 as row bounds in both rect draws" }
 local11 = { name = "screen_col", comment = "[HIGH] =col @$87C7, converted in place via LEAL $FFFE (arg1) to calc_tactical_cell_coords; +0..+3 as col bounds in both rect draws" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank2."0x8F11"]
+# is_tile_in_bounds
+arg1 = { name = "x", comment = "[MED] tile coord checked UCMPLE 10 (11-wide axis, presumed column); callers push coord from hex step/dir dispatch last" }
+arg2 = { name = "y", comment = "[MED] tile coord checked UCMPLE 4 (5-tall axis, presumed row); returns 1 only if both bounds hold" }
+
+[vars.bank2."0x8C61"]
+# draw_unit_roster_columns
+arg1 = { name = "side", comment = "[HIGH] side: PUSH_quick 12 -> get_battle_side_province/side_resource_ptr; col=(arg1+1)*12 into $7FCD; callers push 0 and 1" }
+local9 = { name = "side_resource_cursor", comment = "[HIGH] =side_resource_ptr(side); rows 12-14 post-increment +2 and DEREF word (gold/rice/men) for roster_fmt_4d_2" }
+local10 = { name = "fief_stat_cursor", comment = "[HIGH] =province*26+$7013 (&morale@+18); rows 15-17 post-increment +2, DEREF word morale/skill/arms for roster_fmt_4d_3" }
+local11 = { name = "daimyo_attr_cursor", comment = "[HIGH] =fief_to_daimyo_record_addr(province); rows 6-11 post-INC, BYTE_DEREF age..iq for roster_fmt_4d_1 $B591" }
+
+[vars.bank2."0x8BEA"]
+# combat_unit_window_refresh
+local11 = { name = "side", comment = "[HIGH] side loop 1 down to 0 (DEC, SCMPGE 0 -> $8BFD); PUSH_quick 11 -> side_resource_ptr x3; nonzero picks row 8 vs 14" }
+
+[vars.bank2."0x8B8A"]
+# draw_side_resource_field
+arg1 = { name = "side", comment = "[HIGH] side: PUSH_quick 12 -> side_resource_ptr($827E) x3; JUMPF picks row base 9/15; callers push local8/arg1/cur_combat_side($7BE8)/local7" }
+arg2 = { name = "resource_field", comment = "[HIGH] field selector: SWITCH 0/1/2 -> ptr+0/+2/+4 (gold/rice/men); LOADR_quick 13 adds to cursor row; callers push 0,1,2" }
+local9 = { name = "resource_value", comment = "[HIGH] word DEREF'd from side_resource_ptr(side)+field ($8BC7 STORE_quick 9), pushed to draw_message fmt_4d $B574" }
+local10 = { name = "saved_cursor_row", comment = "[HIGH] saves ui_cursor_row $7FCF on entry (STORE_quick 10); pushed as set_cursor arg2 (row) at $8BD1 to restore" }
+local11 = { name = "saved_window_col", comment = "[HIGH] saves ui_window_col $7FCD on entry (STORE_quick 11); pushed last = set_cursor arg1 (col) at $8BD2 to restore" }
+
