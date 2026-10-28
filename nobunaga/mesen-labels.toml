@@ -3975,3 +3975,66 @@ local9 = { name = "cell_col", comment = "[MED] unit_col_ptr deref @$89EB, bound 
 local10 = { name = "digit", comment = "[HIGH] Decimal digit: UDIV 1000/100/10 and final UMOD 10 @$8A5F/$8A86/$8AB3/$8AD9; written as digit+8 tile" }
 local11 = { name = "remaining_strength", comment = "[HIGH] min_word(strength, 9999) @$8A57, then UMOD 1000/100/10 reductions @$8A81/$8AAF" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (10 subs) ---
+[vars.bank2."0xA90E"]
+# player_move_unit_until_placed_loop
+local8 = { name = "row", comment = "[HIGH] = cur_unit_row_ptr byte @$A92B; &fp-8 to validate_dir_code_and_dispatch; arg2 (row) of is_tile_in_bounds/place_unit" }
+local9 = { name = "col", comment = "[HIGH] = cur_unit_col_ptr byte @$A926; &fp-6 to validate_dir_code_and_dispatch; arg1 (col) of is_tile_in_bounds/place_unit" }
+local10 = { name = "dir_code", comment = "[HIGH] = prompt_unit_move_direction_at_tile() @$A92F; ==48 exits; arg3 of validate_dir_code_and_dispatch @$A93B" }
+local11 = { name = "own_fief", comment = "[MED] = get_battle_side_province(cur_combat_side) @$A91A; only store, never read (dead)" }
+
+[vars.bank2."0xA0AD"]
+# is_enemy_unit_adjacent
+arg1 = { name = "enemy_unit_slot", comment = "[HIGH] unit_slot arg of is_unit_present @$A0B8 and find_adjacent_unit_around_tile @$A0C1, paired with enemy side" }
+local11 = { name = "enemy_side", comment = "[HIGH] = cur_combat_side XOR 1 @$A0B7; side arg of is_unit_present / find_adjacent_unit_around_tile" }
+
+[vars.bank2."0x9E73"]
+# resolve_attack_apply_casualties
+arg1 = { name = "target_slot", comment = "[HIGH] arg2 (unit_slot) of unit_strength_ptr/draw_unit_count_digits paired with enemy side local7 @$9EE9/$9F46" }
+# arg2 left positional — first gold amount subtracted from side gold(+0) @$9E78, then overwritten by SDIV with enemy strength @$9EF3: two roles
+local7 = { name = "enemy_side", comment = "[HIGH] = cur_combat_side XOR 1 @$9E9A; side arg of unit_strength_ptr/side_resource_ptr/draw_side_resource_field" }
+local8 = { name = "enemy_fief", comment = "[HIGH] = get_battle_side_province(enemy side) @$9EA0; idx*26+$7013 (morale), fief_to_daimyo_record_addr+4 (charisma)" }
+local9 = { name = "own_fief", comment = "[HIGH] = get_battle_side_province(cur_combat_side) @$9E94; morale/charisma lookups, get_province_ai_state arg" }
+local10 = { name = "enemy_score", comment = "[MED] = enemy morale + daimyo charisma + 2*const_two @$9EDC; compared with local11, subtrahend to math32_2arg @$9EFC" }
+# local11 left positional — own rng+morale+charisma score @$9EC1, then reassigned pct_op men transferred (cap 9999) @$9F10: reused scratch
+
+[vars.bank2."0x9D03"]
+# apply_pct_reduction_to_unit_strength
+arg1 = { name = "side", comment = "[HIGH] arg1 of unit_strength_ptr/side_resource_ptr/draw_side_resource_field/remove_unit; callers push cur_combat_side(^1)" }
+arg2 = { name = "unit_slot", comment = "[HIGH] arg2 of unit_strength_ptr/unit_col_ptr/unit_row_ptr/remove_unit @$9D08..$9D6D; caller pushes cur_combat_unit_slot" }
+arg3 = { name = "loss_pct", comment = "[HIGH] pct_op(strength, arg3) 2nd arg = percent @$9D1F; >=50 adds 1 (round) @$9D12; callers push x and 100-x" }
+local10 = { name = "casualties", comment = "[HIGH] = pct_op+round, clamped to strength @$9D29-$9D31; subtracted from side men(+4) and *strength_ptr; returned @$9D73" }
+local11 = { name = "strength_ptr", comment = "[HIGH] = unit_strength_ptr(side,unit_slot) @$9D0E; DEREF'd as word strength and POPSTORE target @$9D45" }
+
+[vars.bank2."0x98FE"]
+# seek_enemy_adjacent_cell_and_commit_move
+arg1 = { name = "dest_col", comment = "[HIGH] copied to local10 each dir @$9905; arg1 of commit_unit_dest_tile_if_valid @$9938" }
+arg2 = { name = "dest_row", comment = "[HIGH] copied to local9 each dir @$9907; arg2 of commit_unit_dest_tile_if_valid @$9937; caller pushes y-derived local8" }
+local9 = { name = "neighbor_row", comment = "[HIGH] = arg2 @$9908; &fp-6 is arg2 of tactical_hex_step @$990A; arg3 (row) of side_has_unit_at_cell @$9919" }
+local10 = { name = "neighbor_col", comment = "[HIGH] = arg1 @$9906; &fp-4 is arg1 of tactical_hex_step @$990E; arg2 (col) of side_has_unit_at_cell @$991A" }
+local11 = { name = "dir", comment = "[HIGH] loop 0..5 (UCMPLT 6 @$992B), arg3 of tactical_hex_step @$9909; >=6 after loop = no enemy neighbor @$9931" }
+
+[vars.bank2."0x97D9"]
+# commit_unit_move_and_redraw_count
+arg1 = { name = "dest_col", comment = "[HIGH] forwarded as arg1 of commit_unit_dest_tile_if_valid @$97DF; caller $9A05 passes rng_mod(11) (col range)" }
+arg2 = { name = "dest_row", comment = "[HIGH] forwarded as arg2 of commit_unit_dest_tile_if_valid @$97DE; caller $99FF passes rng_mod(5) (row range)" }
+
+[vars.bank2."0x95BE"]
+# erase_cursor_advance_phase
+arg1 = { name = "cell_col", comment = "[MED] compared >=8/>5/<=2 per tactical_battle_phase @$95DC-$9605; callers push cur_unit_col_ptr byte (@$AC19,$ACCE) or 0/5/10" }
+
+[vars.bank2."0x9058"]
+# place_unit_at_tile_if_free
+arg1 = { name = "col", comment = "[HIGH] arg1 of is_tile_in_bounds/is_any_unit_at_tile/is_map_cell_blocked; BYTE_POPSTORE to cur_unit_col_ptr @$908A; caller pushes col" }
+arg2 = { name = "row", comment = "[HIGH] arg2 of the same tile helpers; BYTE_POPSTORE to cur_unit_row_ptr @$9090; caller $A954 pushes row (local8)" }
+
+[vars.bank2."0x8B58"]
+# draw_unit_counts_in_valid_cells
+local9 = { name = "unit_slot", comment = "[HIGH] inner loop 0..4 (INC/UCMPLT 5 @$8B77); pushed first = arg2 of unit_col_ptr/draw_unit_count_digits (unit_slot) @$8B61/$8B71" }
+local10 = { name = "side", comment = "[HIGH] outer loop 0..1 (UCMPLT 2 @$8B83); pushed last = arg1 (side) of unit_col_ptr/draw_unit_count_digits @$8B62/$8B72" }
+local11 = { name = "unit_col", comment = "[MED] = BYTE_DEREF unit_col_ptr(side,unit_slot) @$8B67; sole use: arg to is_cell_valid_for_phase @$8B69" }
+
+[vars.bank2."0x8488"]
+# read_dpad_dir_code
+local11 = { name = "dir_code", comment = "[HIGH] stored 48/50/52/54/56 or 0 from poll_input SWITCH @$84BF, then LOADL and RETURN @$84C0" }
+
