@@ -80,7 +80,7 @@ L_811C:
     call_bank10_entry(6);    // $811D
     set_cursor(11, 26);    // $8124
     redraw_window(msg_game_over);    // $812B
-    local9 = 0;    // $8130
+    flash_cycle = 0;    // $8130
 L_8131:
     local11 = 0;    // $8132
 L_8133:
@@ -91,8 +91,8 @@ L_8133:
 L_814C:
     local11 = (local11 + 1);    // $814E
     if (((unsigned)local11 < (unsigned)64)) goto L_8133;    // $8153
-    local9 = (local9 + 1);    // $8158
-    if (((unsigned)local9 < (unsigned)6)) goto L_8131;    // $815C
+    flash_cycle = (flash_cycle + 1);    // $8158
+    if (((unsigned)flash_cycle < (unsigned)6)) goto L_8131;    // $815C
     if (!(audio_wait_gate)) goto L_816F;    // $8162
 L_8165:
     if (syscall_audio_control(1, 2)) goto L_8165;    // $816C
@@ -149,21 +149,21 @@ L_8235:
     chr_bank0_set_wrap(1);    // $8245
     if (strcmp(sram_save_signature, msg_koei)) goto L_8226;    // $8253
     chr_bank0_set_wrap(0);    // $8257
-    local8 = syscall_sram_block_with_checksum(1, 0, ai_per_fief_loop_index, 255);    // $8269
-    local11 = 0x6100;    // $826D
+    checksum = syscall_sram_block_with_checksum(1, 0, ai_per_fief_loop_index, 255);    // $8269
+    sram_addr = 0x6100;    // $826D
 L_826E:
-    local8 = (local8 + syscall_sram_block_with_checksum(1, 0, local11, 0x0100));    // $827D
-    local11 = (local11 + 0x0100);    // $8284
-    if (((unsigned)local11 < (unsigned)0x7000)) goto L_826E;    // $828A
-    local8 = (local8 + syscall_sram_block_with_checksum(1, 0, province_table_live, 255));    // $829E
-    local11 = 0x7100;    // $82A2
+    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // $827D
+    sram_addr = (sram_addr + 0x0100);    // $8284
+    if (((unsigned)sram_addr < (unsigned)0x7000)) goto L_826E;    // $828A
+    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, province_table_live, 255));    // $829E
+    sram_addr = 0x7100;    // $82A2
 L_82A3:
-    local8 = (local8 + syscall_sram_block_with_checksum(1, 0, local11, 0x0100));    // $82B2
-    local11 = (local11 + 0x0100);    // $82B9
-    if (((unsigned)local11 < (unsigned)0x7F00)) goto L_82A3;    // $82BF
-    local8 = (local8 + syscall_sram_block_with_checksum(1, 0, ui_transient_state, save_sram_81eb));    // $82D3
+    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // $82B2
+    sram_addr = (sram_addr + 0x0100);    // $82B9
+    if (((unsigned)sram_addr < (unsigned)0x7F00)) goto L_82A3;    // $82BF
+    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, ui_transient_state, save_sram_81eb));    // $82D3
     chr_bank0_set_wrap(1);    // $82D5
-    if ((sram_save_checksum == local8)) {    // $82DE
+    if ((sram_save_checksum == checksum)) {    // $82DE
     chr_bank0_set_wrap(0);    // $82E2
     ui_msg_col_shift_flag = 0;    // $82E7
     sram_save_pending_flag = 0;    // $82EB
@@ -174,11 +174,11 @@ L_82A3:
     palette_swap(1);    // $8303
     ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // $830F
     ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $831D
-    local9 = 0;    // $8322
+    i = 0;    // $8322
 L_8323:
-    palette_write_wrap(local9, data_screen_palette[local9]);    // $832B
-    local9 = (local9 + 1);    // $8331
-    if (((unsigned)local9 < (unsigned)8)) goto L_8323;    // $8335
+    palette_write_wrap(i, data_screen_palette[i]);    // $832B
+    i = (i + 1);    // $8331
+    if (((unsigned)i < (unsigned)8)) goto L_8323;    // $8335
     palette_swap(0);    // $8339
     ui_msg_col_shift_flag = 1;    // $833E
     return 1;    // $8342
@@ -201,11 +201,11 @@ L_8343:
 // $8377 transfer_arms_field_pct
 // (body @ $837C)
 
-word transfer_arms_field_pct(word arg1, word arg2, word arg3) {
-    amount = pct_op(*(byte*)(arg2), arg3);    // $8384
-    *(byte*)(arg1) = (*(byte*)(arg1) + amount);    // $838F
-    *(byte*)(arg2) = (*(byte*)(arg2) - amount);    // $8398
-    return *(byte*)(arg2);    // $8399
+word transfer_arms_field_pct(word dest_field, word src_field, word percent) {
+    amount = pct_op(*(byte*)(src_field), percent);    // $8384
+    *(byte*)(dest_field) = (*(byte*)(dest_field) + amount);    // $838F
+    *(byte*)(src_field) = (*(byte*)(src_field) - amount);    // $8398
+    return *(byte*)(src_field);    // $8399
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $839A
@@ -311,15 +311,15 @@ L_85F4:
 // (body @ $8601)
 
 word prompt_roll_stat_value(void) {
-    local11 = ui_window_col;    // $8604
+    saved_window_col = ui_window_col;    // $8604
     do {    // $8605
     } while (poll_input());    // $8608
     while (!(poll_input())) {    // $8612
-        ui_window_col = local11;    // $860F
-        local10 = (rng_mod(50) + 60);    // $861A
+        ui_window_col = saved_window_col;    // $860F
+        rolled_value = (rng_mod(50) + 60);    // $861A
         draw_message(msg_fmt__3d, (rng_mod(50) + 60));    // $861F
     }
-    return local10;    // $862A
+    return rolled_value;    // $862A
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $862B
@@ -329,9 +329,9 @@ word prompt_roll_stat_value(void) {
 word prompt_select_scenario_size(void) {
     do {    // $8630
         message_display(str_scenario_size_prompt);    // $8633
-        local10 = prompt_ab_window(msg_fiefs_50fiefs);    // $863E
-    } while ((local10 == 2));    // $8642
-    if ((local10 == 1)) {    // $8648
+        choice = prompt_ab_window(msg_fiefs_50fiefs);    // $863E
+    } while ((choice == 2));    // $8642
+    if ((choice == 1)) {    // $8648
     scenario_fief_count = 17;    // $864D
     phi_val_865e = scenario_select_gfx_a004;    // $8653
     } else {
@@ -339,8 +339,8 @@ word prompt_select_scenario_size(void) {
     phi_val_865e = scenario_select_gfx_8004;    // $865B
     }
 L_865E:
-    local11 = phi_val_865e;    // $865E
-    syscall16_sram_wrap(3, local11, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // $866D
+    scenario_src = phi_val_865e;    // $865E
+    syscall16_sram_wrap(3, scenario_src, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // $866D
     message_display(msg_watch_other_daimyos_battle);    // $8674
     ui_confirm_flag_6e7d = prompt_y_n();    // $867B
     return prompt_y_n();    // $867E
@@ -351,9 +351,9 @@ L_865E:
 // $867F prompt_player_choose_fief
 // (body @ $8684)
 
-word prompt_player_choose_fief(word arg1) {
+word prompt_player_choose_fief(word player_num) {
     message_display(msg_player);    // $8687
-    return draw_message(msg_d_which_fief_would_you_like_to, arg1);    // $8693
+    return draw_message(msg_d_which_fief_would_you_like_to, player_num);    // $8693
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8694
@@ -478,11 +478,11 @@ word render_boot_title_screens(void) {
     ppu_upload_block_wrap(0, msg_fmt_blank, 0x1000, 102);    // $88C3
     ppu_upload_block_wrap(0, boot_title_attr_fill, 0x23C0, 4);    // $88CF
     ppu_copy_rect_wrap(0, 0, 31, 29, boot_title_tile_table, 0);    // $88DD
-    local11 = 0;    // $88E2
+    i = 0;    // $88E2
     do {    // $88E3
-        palette_write_wrap(local11, msg_new_game_b862[local11]);    // $88EB
-        local11 = (local11 + 1);    // $88F1
-    } while (((unsigned)local11 < (unsigned)32));    // $88F6
+        palette_write_wrap(i, msg_new_game_b862[i]);    // $88EB
+        i = (i + 1);    // $88F1
+    } while (((unsigned)i < (unsigned)32));    // $88F6
     palette_swap(0);    // $88FA
     ui_input_sel_latch_7fdf = 255;    // $8901
     ui_input_mode = 0;    // $8905
@@ -503,11 +503,11 @@ L_892C:
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $8973
     set_cursor(21, 26);    // $897B
     redraw_window(msg_control_1);    // $8982
-    local11 = 0;    // $8987
+    i = 0;    // $8987
     do {    // $8988
-        palette_write_wrap(local11, msg_new_game[local11]);    // $8990
-        local11 = (local11 + 1);    // $8996
-    } while (((unsigned)local11 < (unsigned)8));    // $899A
+        palette_write_wrap(i, msg_new_game[i]);    // $8990
+        i = (i + 1);    // $8996
+    } while (((unsigned)i < (unsigned)8));    // $899A
     return palette_swap(0);    // $89A2
 }
 
@@ -614,13 +614,13 @@ L_8B44:
 // $8B70 select_rebellion_message
 // (body @ $8B75)
 
-word select_rebellion_message(word arg1) {
-    if ((fief_revolt_type[arg1] == 6)) {    // $8B7D
+word select_rebellion_message(word fief) {
+    if ((fief_revolt_type[fief] == 6)) {    // $8B7D
     } else {
     }
 L_8B9A:
-    local11 = ((fief_revolt_type[arg1] == 7) ? str_enemy_morale_falling : msg_rioters);    // $8B9A
-    return local11;    // $8B9C
+    msg = ((fief_revolt_type[fief] == 7) ? str_enemy_morale_falling : msg_rioters);    // $8B9A
+    return msg;    // $8B9C
     }
 }
 
@@ -655,12 +655,12 @@ L_8BD5:
 word find_first_enemy_owned_fief(void) {
     build_owned_fief_list();    // $8BEB
     phi_val_8c03 = 0x6F89;    // $8BF1
-    while ((*(byte*)(local11) != 255)) {    // $8C03
-        if ((is_enemy_owned(*(byte*)(local11)))) return *(byte*)(local11);    // $8BFB
-        phi_val_8c03 = (local11 + 1);    // $8C02
-        local11 = phi_val_8c03;    // $8C03
+    while ((*(byte*)(fief_list_ptr) != 255)) {    // $8C03
+        if ((is_enemy_owned(*(byte*)(fief_list_ptr)))) return *(byte*)(fief_list_ptr);    // $8BFB
+        phi_val_8c03 = (fief_list_ptr + 1);    // $8C02
+        fief_list_ptr = phi_val_8c03;    // $8C03
     }
-    return (*(byte*)(local11) != 255);    // $8C0D
+    return (*(byte*)(fief_list_ptr) != 255);    // $8C0D
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8C0E
@@ -692,19 +692,19 @@ word relations_matrix_cell_addr(word row_fief, word col_fief) {
 // (body @ $8C4A)
 
 word flag_turn_abort_if_no_state5_province(void) {
-    local11 = 0;    // $8C4B
+    found = 0;    // $8C4B
     phi_val_8c68 = scenario_fief_count;    // $8C4F
-    while (local10) {    // $8C68
-        selected_province_idx = *(byte*)((local10 + 0x6F1A));    // $8C58
+    while (idx) {    // $8C68
+        selected_province_idx = *(byte*)((idx + 0x6F1A));    // $8C58
         if (cur_flag_and_selected_ai_state5()) {    // $8C5E
-        local11 = 1;    // $8C62
+        found = 1;    // $8C62
         } else {
-        phi_val_8c68 = (local10 - 1);    // $8C67
-        local10 = phi_val_8c68;    // $8C68
+        phi_val_8c68 = (idx - 1);    // $8C67
+        idx = phi_val_8c68;    // $8C68
     }
         }
 L_8C6D:
-    phi_ret_8c74 = local11;    // $8C6E
+    phi_ret_8c74 = found;    // $8C6E
     if (phi_ret_8c74) goto L_8C74;    // $8C6E
     phi_ret_8c74 = set_6da1_bit7();    // $8C71
 L_8C74:

@@ -2556,6 +2556,11 @@ local5 = { name = "dedup_buf", comment = "[HIGH] base byte of local dedup scratc
 "fp-1" = { name = "amount", comment = "[HIGH] byte temp = pct_op(*arg2,arg3); added to *arg1 and subtracted from *arg2 — the transfer amount moved between fields" }
 
 # --- bank-01 var-walk far-frame batch (--merge, new sections) (2 subs) ---
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "dest_field", comment = "[HIGH] Byte ptr incremented by the amount (LOADL_quick 12, BYTE_DEREF, ADD, BYTE_POPSTORE @$838A); callers push local11 or local11+1 last" }
+arg2 = { name = "src_field", comment = "[HIGH] Byte ptr: *arg2 is pct_op base (@$837D) then reduced by the amount (SUB, BYTE_POPSTORE @$8397); callers pass local11+3/+4" }
+arg3 = { name = "percent", comment = "[HIGH] pct_op 2nd arg (PUSH_quick 14 @$837C, pushed before *arg2); callers pass 30 or rng_mod(20)+20" }
+
 [vars.bank1."0xB23E"]
 # driver_other
 "fp-7" = { name = "cmd_result", comment = "[HIGH] byte return code of dispatched submenu handler (call via jumptab_b9e8); tested !=1 at $B295 to re-loop the menu" }
@@ -4111,4 +4116,48 @@ arg1 = { name = "cursor_col", comment = "[HIGH] PUSH_quick 12 last before set_ta
 arg2 = { name = "cursor_row", comment = "[HIGH] PUSH_quick 13 as 2nd arg of set_tactical_cursor_pos @$8566; caller $9AD5 pushes its local9 (cursor row)" }
 local10 = { name = "tick", comment = "[HIGH] zeroed @$8572/$8590, INC + UCMPLT 100 loops @$857B/$859B: blink timer for each shown/hidden half" }
 local11 = { name = "dir_code", comment = "[HIGH] STORE_quick 11 of read_dpad_dir_code() @$8576/$8594; returned when nonzero @$858E/$8599; caller compares to 48" }
+
+# --- bank-00 var-walk far-frame batch (--merge, new sections) (9 subs) ---
+[vars.bank0."0x8C45"]
+# flag_turn_abort_if_no_state5_province
+local10 = { name = "idx", comment = "[HIGH] Countdown from scenario_fief_count (DEC @$8C67, loop while nonzero); byte list $6F1A[idx] -> selected_province_idx" }
+local11 = { name = "found", comment = "[HIGH] Flag 0 (@$8C4B), set 1 when cur_flag_and_selected_ai_state5 true (@$8C62); if still 0, set_6da1_bit7 called" }
+
+[vars.bank0."0x8BE6"]
+# find_first_enemy_owned_fief
+local11 = { name = "fief_list_ptr", comment = "[HIGH] Cursor from $6F89 fief_index_list, INC each step, stops at $FF (@$8C06); *ptr to is_enemy_owned, first hit returned" }
+
+[vars.bank0."0x8B70"]
+# select_rebellion_message
+arg1 = { name = "fief", comment = "[HIGH] Fief index into fief_revolt_type $7B79[arg1] (LOADL_quick 12 @$8B75/$8B86); type 6 pirates, 7 morale, else rioters" }
+local11 = { name = "msg", comment = "[HIGH] Chosen msg ptr (msg_pirates/str_enemy_morale_falling/msg_rioters) stored @$8B9A and returned" }
+
+[vars.bank0."0x88AC"]
+# render_boot_title_screens
+local11 = { name = "i", comment = "[HIGH] Palette index loop 0..31 (@$88F3) then 0..7 (@$8998); palette_write_wrap arg1 with tbl[local11] in both" }
+
+[vars.bank0."0x867F"]
+# prompt_player_choose_fief
+arg1 = { name = "player_num", comment = "[MED] Number printed by draw_message %d after 'Player' msg (PUSH_quick 12 @$868B); caller passes its own arg1 (@$86B2)" }
+
+[vars.bank0."0x862B"]
+# prompt_select_scenario_size
+local10 = { name = "choice", comment = "[HIGH] prompt_ab_window result (STORE 10 @$863E): 2 re-prompts, 1 -> 17 fiefs, else 50 fiefs into $6D9D" }
+local11 = { name = "scenario_src", comment = "[MED] $A004 or $8004 per size (STORE 11 @$865E); syscall16_sram_wrap arg2 (src), dest $6001 @$866B" }
+
+[vars.bank0."0x85FC"]
+# prompt_roll_stat_value
+local10 = { name = "rolled_value", comment = "[HIGH] rng_mod(50)+60 stored @$861A, drawn via draw_message msg_fmt__3d, rerolled until poll_input, returned (LOADL_quick 10 @$8629)" }
+local11 = { name = "saved_window_col", comment = "[HIGH] ui_window_col $7FCD saved on entry (@$8601) and restored each reroll pass (STORE_abs $7FCD @$860F)" }
+
+[vars.bank0."0x821E"]
+# verify_sram_save_integrity
+local8 = { name = "checksum", comment = "[HIGH] Sum of syscall 22 results: STORE_quick 8 @$8269, ADD+STORE 8 per block; LOADR_quick 8 CMPEQ $7FEB sram_save_checksum @$82DC" }
+local9 = { name = "i", comment = "[HIGH] Palette index 0..7 (UCMPLT 8 @$8334); pushed as palette_write_wrap arg1 with data_screen_palette[local9] @$8323-$832A" }
+local11 = { name = "sram_addr", comment = "[HIGH] SRAM block address $6100..$7000 then $7100..$7F00 step $100 (@$8284/$82B9); pushed as syscall 22 arg4 @$8271/$82A6" }
+
+[vars.bank0."0x8003"]
+# display_fullscreen_graphic_sequence
+local9 = { name = "flash_cycle", comment = "[HIGH] Game-over outer loop count: STORE_quick 9=0 @$8130, INC @$8157, UCMPLT 6 @$815B -> 6 passes of the 64-step palette-3 color loop" }
+# local11 left positional — Scratch: palette_write_wrap arg1 index (0..7/0..3 @$8059/$810B/$81A3) but arg2 color value in game-over loop (PUSH 11, P
 
