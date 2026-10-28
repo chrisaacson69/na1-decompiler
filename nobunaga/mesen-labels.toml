@@ -2545,6 +2545,11 @@ local10 = { name = "pass_marker", comment = "[MED] Init $FF @$A23E; ==$FF gates 
 [vars.bank0."0x8DE1"]
 # dedup_owners_to_6f4f
 local5 = { name = "dedup_buf", comment = "[HIGH] base byte of local dedup scratch buffer: seeded w/ arg1[0], appended unique owners (&dedup_buf+i), then bulk-copied to deduped_owner_list $6F4F. (Was far-key fp-14; that slot resolves to local5 now that frame_byte names standard slots, so the positional key keeps ALL its refs coherently named.)" }
+# far-frame slots (var-walk-apply --merge)
+arg1 = { name = "src_ptr", comment = "[HIGH] caller pushes $6F4F; post-inc walked, BYTE_DEREF'd, fief_owner compared, until $FF @$8E33" }
+local9 = { name = "is_dup", comment = "[HIGH] cleared @$8DF4, set 1 on fief_owner match @$8E13; nonzero skips append @$8E1F" }
+local10 = { name = "unique_count", comment = "[HIGH] init 1, post-inc on append @$8E26; loop bound for both loops; returned @$8E61" }
+local11 = { name = "i", comment = "[MED] index into $FFF2 buffer in compare loop (@$8E05) and copy-out loop to $6F4F[i] (@$8E40); terminator at [i]" }
 
 [vars.bank0."0x83E2"]
 # apply_scenario_starting_stat_boosts
@@ -4160,4 +4165,57 @@ local11 = { name = "sram_addr", comment = "[HIGH] SRAM block address $6100..$700
 # display_fullscreen_graphic_sequence
 local9 = { name = "flash_cycle", comment = "[HIGH] Game-over outer loop count: STORE_quick 9=0 @$8130, INC @$8157, UCMPLT 6 @$815B -> 6 passes of the 64-step palette-3 color loop" }
 # local11 left positional — Scratch: palette_write_wrap arg1 index (0..7/0..3 @$8059/$810B/$81A3) but arg2 color value in game-over loop (PUSH 11, P
+
+# --- bank-00 var-walk far-frame batch (--merge, new sections) (9 subs) ---
+[vars.bank0."0x90C6"]
+# reset_byte_if_ge_100
+arg1 = { name = "byte_ptr", comment = "[HIGH] BYTE_DEREF >= 100 test @$90CC, then PUSH_quick 12 / BYTE_POPSTORE 0 @$90D3; caller forwards deduct_byte_at target" }
+
+[vars.bank0."0x8FE0"]
+# stat_above_threshold_and_gap_predicate
+arg1 = { name = "baseline", comment = "[LOW] subtracted from arg2 @$8FED; true needs arg2-arg1 > 5. Caller pushes its local6" }
+arg2 = { name = "value", comment = "[MED] tested > 25 (SCMPGT @$8FE6) and gap over arg1 > 5; caller pushes word *local7. 'stat' not earned" }
+
+[vars.bank0."0x8EBC"]
+# compare_greater_with_coinflip_tiebreak
+arg1 = { name = "value_a", comment = "[MED] if arg1==arg2 returns rng_mod(2)==0; else returns arg2 < arg1 (SCMPLT @$8ECF), i.e. a > b" }
+arg2 = { name = "value_b", comment = "[MED] right operand: LOADL_quick 13 SCMPLT arg1 @$8ECF; caller forwards its arg2" }
+
+[vars.bank0."0x8E99"]
+# append_candidate_pair
+arg1 = { name = "fief", comment = "[MED] BYTE_POPSTORE into battle_defender_province_staging[arg2*2] @$8EA5; callers forward their arg1" }
+arg2 = { name = "idx", comment = "[HIGH] LSHIFT1 index into $6F67/$6F68 pair arrays; (idx+1)*2 gets $FF terminator @$8EB0" }
+arg3 = { name = "entry_flag", comment = "[MED] BYTE_POPSTORE into battle_staging_entry_flag_array[idx*2] @$8EAE; callers push 0 ($8FD8) or 1 ($9619)" }
+
+[vars.bank0."0x8C75"]
+# resolve_ownerless_province_succession
+arg1 = { name = "owner_count", comment = "[HIGH] caller pushes dedup_owners() return @$8E88; UCMPLT 2 @$8C80 short-circuits to install_new_daimyo" }
+local6 = { name = "ai_gold", comment = "[MED] AI branch: province_table_live[selected].gold (+0) @$8D15; if > local8, bid = rng_mod(local6) @$8D1C" }
+local7 = { name = "best_bid", comment = "[HIGH] init 0; set to local8 when local7 < local8 @$8D22 (with local10); nonzero gates award @$8D3F" }
+local8 = { name = "bid", comment = "[HIGH] bid from number_input @$8D03 or rng_mod @$8D21; subtracted from winner's gold @$8D7B (last bid, not local7)" }
+local9 = { name = "owner_ptr", comment = "[HIGH] =$6F4F deduped_owner_list @$8C8E; BYTE_DEREF -> selected_province_idx; post-inc until $FF @$8D36" }
+local10 = { name = "winner_fief", comment = "[HIGH] selected_province_idx of best bidder @$8D2D; fief_owner/gold deduct/get_province_ai_state on it" }
+local11 = { name = "i", comment = "[LOW] init 0 @$8C8D, post-inc each iter @$8D32 beside owner_ptr; never read otherwise (dead counter)" }
+
+[vars.bank0."0x8B9D"]
+# select_message_string_by_flags_and_arg
+arg1 = { name = "fief", comment = "[MED] SWITCH on LOADL_quick 12 @$8BBC (7/23 zealots, 13/30 monks), else passed to select_rebellion_message; caller pushes its arg3" }
+local11 = { name = "msg_ptr", comment = "[HIGH] join point @$8BD5: STORE_quick 11 of chosen message pointer, then LOADL_quick 11 RETURN" }
+
+[vars.bank0."0x8763"]
+# daimyo_creation_stat_roll_screen
+# local9 left positional — Reused: 1..5 index into fief_stat_name_ptrs (@$8832-$8859), then reset 0 @$8861 and accumulated as total for msg_total_4
+local10 = { name = "stat_idx", comment = "[HIGH] 1..5 loop counter (@$886E..$888C UCMPLE 5); set_cursor(23, stat_idx+11) for each rolled stat row" }
+local11 = { name = "daimyo_field_ptr", comment = "[MED] cursor into daimyo record: selected_province_daimyo_record() (age read @$87E7), later $7530+idx*7 (=&health), post-inc stores rolls" }
+
+[vars.bank0."0x8694"]
+# prompt_select_player_daimyo
+arg1 = { name = "player_num", comment = "[MED] PUSH_quick 12 -> prompt_player_choose_fief @$86B2; indexes byte $7FD4+arg1 set to selected_province_owner() @$8758" }
+local10 = { name = "fief", comment = "[HIGH] number_input(1,scenario_fief_count) @$86F9, DEC; indexes province_ai_state, daimyo_name_table*9; stored to selected_province_idx" }
+# local11 left positional — map page cycler 2..8/2..3 (render_map_section arg) and also 9 = exit sentinel (@$872F, CMPNE 9 @$873E); left positional
+
+[vars.bank0."0x839A"]
+# init_daimyo_arms_record
+arg1 = { name = "idx", comment = "[MED] Row index: LOADL_quick 12 *5 + $76A9 at $839F (5-byte rows). Caller pushes its local11 (unknown). Table is province-labelled, sub daimyo: kept generic" }
+local11 = { name = "arms_record_ptr", comment = "[MED] &$76A9[arg1*5] (STORE_quick 11 @$83A6); ptr, +1, +3, +4 passed as args to transfer_arms_field_pct 4 times" }
 
