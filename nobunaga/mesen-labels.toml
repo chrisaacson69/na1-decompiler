@@ -3318,3 +3318,26 @@ arg2 = { name = "amount", comment = "[HIGH] PUSH_quick 13 as min_word arg1 vs *a
 # play_result_jingle
 arg1 = { name = "failed", comment = "[MED] Bool, 1 = failure path: LOADL_quick 12/JUMPT picks sound 8 else 7. Bribe-fail branch $8DBF pushes 1; success $8D96, $9E72 push 0" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x9382"]
+# fief_men_if_provisioned
+arg1 = { name = "fief", comment = "[HIGH] LOADL_quick 12 *26 + $7001 (province_table_live) @$9387 -> local11; callers ($939D) push their fief args" }
+local11 = { name = "fief_rec", comment = "[HIGH] STORE_quick 11 = &province_table_live[arg1] @$938F; +6 DEREF (rice) zero test, +16 DEREF (men) returned" }
+
+[vars.bank1."0x9301"]
+# war_prep_clamp_depleted_field_notify
+arg1 = { name = "msg_ptr", comment = "[HIGH] PUSH_quick 12 -> message_display($D326) @$9318; callers' last push = msg_you_have_no_rice/soldiers/gold ($FDEB/$FDFD/$FDD9)" }
+arg2 = { name = "fief", comment = "[HIGH] PUSH_quick 13 -> get_province_ai_state($D98D) @$9310; callers push their fief idx (PUSH_quick 12) as 2nd-to-last" }
+arg3 = { name = "field_ptr", comment = "[HIGH] LOADL_quick 14 DEREF, SCMPLE 0 -> POPSTORE 0, returned; callers push $7007/$7011/$7001+fief*26 (rice/men/gold)" }
+
+[vars.bank1."0x9181"]
+# decrement_byte_at
+arg1 = { name = "stat_ptr", comment = "[MED] PUSH_quick 12 as last push -> deduct_byte_at($CA12) arg1, with arg2=1 (PUSH_qimm 1); callers push their local5 pointer" }
+
+[vars.bank1."0x8D02"]
+# bribe_success_check
+arg1 = { name = "briber_fief", comment = "[HIGH] Briber fief idx: PUSH_quick 12 -> fief_to_daimyo_record_addr+4, LOADL_quick 12*26+$700D (loyalty); caller's last push = selected_province_idx" }
+arg2 = { name = "target_fief", comment = "[HIGH] Target fief idx: PUSH_quick 13 -> fief_to_daimyo_record_addr+4, LOADL_quick 13*26+$700D (loyalty); caller pushes battle_defending_province" }
+local10 = { name = "target_resistance", comment = "[HIGH] Stored once @$8D3A: target daimyo byte+4 + target loyalty + rng_mod(10)*2; bar in SCMPGT local11>local10 @$8D3D" }
+local11 = { name = "briber_score", comment = "[HIGH] Stored once @$8D1A: briber daimyo byte+4 + loyalty ($700D+arg1*26); must SCMPGT local10 @$8D3D, then rng_mod(2) coin flip" }
+

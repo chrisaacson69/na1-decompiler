@@ -860,10 +860,10 @@ L_8CC8:
 // $8D02 bribe_success_check
 // (body @ $8D07)
 
-word bribe_success_check(word arg1, word arg2) {
-    local11 = (province_table_live[arg1].loyalty + fief_to_daimyo_record_addr(arg1)->charisma);    // $8D1A
-    local10 = (((rng_mod(10) * const_two) + province_table_live[arg2].loyalty) + fief_to_daimyo_record_addr(arg2)->charisma);    // $8D3A
-    if ((local11 <= local10)) goto L_8D4B;    // $8D3E
+word bribe_success_check(word briber_fief, word target_fief) {
+    briber_score = (province_table_live[briber_fief].loyalty + fief_to_daimyo_record_addr(briber_fief)->charisma);    // $8D1A
+    target_resistance = (((rng_mod(10) * const_two) + province_table_live[target_fief].loyalty) + fief_to_daimyo_record_addr(target_fief)->charisma);    // $8D3A
+    if ((briber_score <= target_resistance)) goto L_8D4B;    // $8D3E
     if (!(rng_mod(2))) goto L_8D4B;    // $8D46
     return 1;    // $8D4A
 L_8D4B:
@@ -1084,8 +1084,8 @@ L_917F:
 // $9181 decrement_byte_at
 // (body @ $9186)
 
-word decrement_byte_at(word arg1) {
-    return deduct_byte_at(arg1, 1);    // $918C
+word decrement_byte_at(word stat_ptr) {
+    return deduct_byte_at(stat_ptr, 1);    // $918C
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $918D
@@ -1162,14 +1162,14 @@ L_92F2:
 // $9301 war_prep_clamp_depleted_field_notify
 // (body @ $9306)
 
-word war_prep_clamp_depleted_field_notify(word arg1, word arg2, word arg3) {
-    if (!((*(word*)(arg3) <= 0))) goto L_9320;    // $930A
-    *(word*)(arg3) = 0;    // $930F
-    if (!(get_province_ai_state(arg2))) goto L_9320;    // $9315
-    message_display(arg1);    // $9319
+word war_prep_clamp_depleted_field_notify(word msg_ptr, word fief, word field_ptr) {
+    if (!((*(word*)(field_ptr) <= 0))) goto L_9320;    // $930A
+    *(word*)(field_ptr) = 0;    // $930F
+    if (!(get_province_ai_state(fief))) goto L_9320;    // $9315
+    message_display(msg_ptr);    // $9319
 L_9320:
     confirm_prompt();    // $931D
-    return *(word*)(arg3);    // $9322
+    return *(word*)(field_ptr);    // $9322
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $9323
@@ -1213,12 +1213,12 @@ L_9380:
 // $9382 fief_men_if_provisioned
 // (body @ $9387)
 
-word fief_men_if_provisioned(word arg1) {
-    local11 = &province_table_live[arg1];    // $938F
-    if (local11->rice) goto L_9398;    // $9393
+word fief_men_if_provisioned(word fief) {
+    fief_rec = &province_table_live[fief];    // $938F
+    if (fief_rec->rice) goto L_9398;    // $9393
     return 0;    // $9397
 L_9398:
-    return local11->men;    // $939C
+    return fief_rec->men;    // $939C
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $939D
