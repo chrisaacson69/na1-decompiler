@@ -48,11 +48,11 @@ toolset  = "f19a0f2"
 evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
 
 [phase.naming]
-status   = "partial"
-gate     = "Bottom-up walks done before emu-harness: bank 15 135/135 subs named, bank 1 57/57 (verifier corrected 29/50), bank 0 by /label-walk, the code+data naming epic; var-walk piloted. mesen-labels.toml: 1,377 entries, 106 carry an address suffix (mostly duplicate format strings, msg_fmt__3d_be5d). Not on the current toolset: the guard cannot run until source/ is regenerated (revisit), no top-down verify pass in the PHASES.md sense, the cross-title drift proposals (match family) not applied, and the 3 ext-op formulas above are wrong in the names' comments and docs."
-checked  = ""
-toolset  = ""
-evidence = ["nobunaga/mesen-labels.toml", "nobunaga/walk-context.json", "nobunaga/tools/na1_regen.py"]
+status   = "done"
+gate     = "Bottom-up then top-down done, proposals verified at the bytecode, the guard holds, no placeholder names. Bottom-up: label walk (all subs named), data walk, var walk over all five code banks (15, 14, 1, 2, 0; positional names left are verifier-refused two-role slots). Top-down (2026-10-28): the 73 non-leaf names below HIGH by call height, each with its callers' C and callees' notes, one reviewer + one bytecode verifier per batch: 37 of 72 renamed; the 25 widest-spread leaves checked against their call sites: 3 renamed; close-out: the last 3 address-named routines and the is_enemy_owned inversion in its callers' parameters (want_own). Every rename went through the guarded registry edit (regen + pure-rename diff). Drift: match family proposes 0 renames for NA1 (it is the names' source). The ext-op formulas were re-derived 2026-10-27 (closed revisit). Readability polish of the printed C moved to presentation; two data questions needing a capture moved to live."
+checked  = "2026-10-28"
+toolset  = "emu-harness 3e075f8 (DREAM canonical); na1-decompiler mesen-labels.toml"
+evidence = ["nobunaga/mesen-labels.toml", "nobunaga/walk-context.json", "nobunaga/tools/na1_regen.py", "re-roadmap.toml [[revisit]] naming entries"]
 
 [phase.presentation]
 status   = "partial"
@@ -236,7 +236,8 @@ progress = "2026-10-28: the regen path had applied NO [vars] names since the eng
 item   = "Not done on the current toolset: the top-down verify pass (PHASES.md: a routine's first ops lie about its role); 87 address-suffixed names (most duplicate format strings msg_fmt__3d_be5d, and kind names relation_sram_8300 / portrait_gfx_a604); the OPEN questions in 4 comments (is_ai_count_ge_8: what 8 caps; scaled_force_transfer's arg roles; defender_owner_is_keyed_daimyo: who daimyo 3 / 20 are; daimyo_record_addr's per-stat map); $796A, which select_message_string_by_flags_and_arg returns on ai_turn_flags & 16 where the other paths return a message, is zero in every SRAM dump (written only on that path)."
 phase  = "naming"
 source = "naming census 2026-10-28"
-status = "open"
+status = "closed"
+closed = "2026-10-28: the top-down pass ran (see progress); the address-suffixed names are the sanctioned blob provenance names and shared strings; the OPEN questions are answered but one. The two items left need a capture, not naming: $796A (the ai_turn_flags & 16 path) and daimyo_record_addr's per-stat map -> the live revisit (rules to verify)."
 progress = "2026-10-28: address-suffixed names 87 -> 32 (a9d5eab: 54 duplicate strings by reader; cursor_nav has four %d strings, not three; the 32 left are the sanctioned blob provenance names plus 3 shared strings). OPEN questions: 3 of 4 answered and renamed (e773572: defender_owner_is_honganji from 110 SRAM dumps, no_human_players_left, weighted_average_capped); daimyo_record_addr's per-stat map stays open (combat footprint). Daimyo records render as fields (emu-harness e6ba371; daimyo_table_17 -> daimyo_table, it holds both scenarios). Left here: the top-down verify pass (agents), $796A (needs a capture of the ai_turn_flags & 16 path), the per-stat map. TOP-DOWN PASS (2026-10-28, abea51b..bd37529): targeted, not exhaustive. Mid-level: the 73 non-leaf MED/LOW/untagged/address-named routines, highest call height first, each with its callers' C (+1) and its callees' notes (-1); one reviewer + one bytecode verifier per batch of 10. 72 checked, 37 renamed (+1 sibling inline), hit rate by height 6/10, 9/10, 6/10, 3/10, 4/10, 5/10, 4/12. Leaves: multi-caller leaves by caller spread, each with its call sites; 25 checked, 3 renamed; the other 40 (2-3 callers, one bank) not run. ~1.4M tokens vs ~6M for every routine. Examples: collect_high_loyalty_provinces -> resolve_riot_event_on_listed_fiefs, resolve_attack_apply_casualties -> resolve_bribe_enemy_unit, is_enemy_owned -> is_owned_by_selected_daimyo (inverted), call_bank10_entry -> play_audio."
 
 [[revisit]]
@@ -250,12 +251,13 @@ closed = "2026-10-28: censused both ways. Traces: every switchable-window PC in 
 item   = "Top-down list from the bank-15 var walk (routine names the slot evidence contradicts or under-describes): read_frame_timer was renamed set_cursor_sprite (done); cursor_nav_loop is a digit-entry spinner (returns value*10 + digits[i]); select_province_by_cursor is a general number-in-[min, max] prompt (callers pass max 99); count_6da2_set returns count == 1 over capitals / dead fiefs (a 'one daimyo left' check?); clamp_field_6d2d_to_30 likely clamps every fief_tax_rate to 30; draw_daimyo_name_menu draws a '%s wants a ...' pact prompt; $7FE7 ui_timer_gate_flag_7fe7 is the cursor sprite attribute and poll_input's skip-the-timeout value 2; ppu_fill_rect_wrap's axes (rect_start_a ...) become col / row if syscall_ppu_fill_rect reads its rectangle like render / copy. Each wants its body and callers read before a rename."
 phase  = "naming"
 source = "var walk, bank 15, 2026-10-28"
-status = "open"
+status = "closed"
+closed = "2026-10-28: resolved by the top-down pass (see progress); the four left (select_province_by_cursor, $7FE7, jumptab_b9dc / b9e8, ui_confirm_flag_6e7d) moved to the presentation readability revisit."
 progress = "2026-10-28 top-down pass: cursor_nav_loop -> input_number_digits, count_6da2_set -> is_unification_victory, clamp_field_6d2d_to_30 -> cap_honganji_fief_tax_rate_at_30, draw_daimyo_name_menu -> draw_diplomacy_proposal_message; ppu_fill_rect_wrap KEPT (axes still neutral). Left: select_province_by_cursor (number prompt), $7FE7, the jumptab_b9dc / b9e8 command tables, ui_confirm_flag_6e7d (watch battles)."
 
 [[revisit]]
 item   = "Rendering: a field ADDRESS through a record-pointer arg prints as pointer arithmetic, e.g. develop_gain(amount, (fief + 12), (fief + 8)) should read &fief->loyalty, &fief->output; annotate_field_access only rewrites word reads. Same reversal guard as the struct work."
-phase  = "naming"
+phase  = "presentation"
 source = "var walk, bank 15, 2026-10-28"
 status = "open"
 
@@ -267,16 +269,16 @@ status = "closed"
 closed = "2026-10-28: emu-harness 8657242 (coalesce_store_phis: 120 copy phis folded, phi lines 780 -> 394; V1 _fold_while and vm_reduce bail on header statements), 60e9779 (a stored call is read back by name; word, call-free destinations only), 3e075f8 (titles.decompile = DREAM primary, V2 fallback: gotos 1060 -> 261, loops 173 -> 341; DREAM owns 471/495, V2 19, overrides 5). Tests fail before each fix; 139 pass; all gates clean. NA1 regen 400513a, e4d8106, 24cd0d4."
 
 [[revisit]]
-item   = "Naming and rendering left after the top-down pass. Names: select_province_by_cursor (a general number prompt), want_enemy / match_enemy params and find_first_enemy_owned_fief (they carry is_enemy_owned's inversion), $7FE7, jumptab_b9dc / b9e8, ui_confirm_flag_6e7d; 'fief' on record pointers (repay_province_debt_from_gold arg1, decay_fief_list_wealth... local10) and col/row vs x/y (bank 2: x = col, y = row, from step_coord_from_dir_code's caller). Rendering: the province +0 field prints *(word*)(fief), not fief->gold; 2 double-call reprints the guard leaves (byte store $8761, call in the destination at bank 1 $ADD9: need a temp); 1 phi_push (effect_view_a); bank 14 run_cutscene's opcode switch loop falls back to gotos under DREAM (19 -> 33); empty `if (x) goto L; L:` kept for a call. Method: the top-down verifier only sees renames, so a KEEP with a wrong role passes (the leaf reviewer read get_province_ai_state as nonzero = AI; it is 0 = AI, nonzero = human, now in its note)."
-phase  = "naming"
+item   = "Readability of the printed C, left when naming closed. Names worth a pass (none misleading): select_province_by_cursor (a general number prompt), $7FE7, jumptab_b9dc / b9e8 (trade / settings command tables), ui_confirm_flag_6e7d (watch battles); 'fief' on record pointers (repay_province_debt_from_gold arg1, decay_fief_list_wealth... local10) and col/row vs x/y (bank 2: x = col, y = row, from step_coord_from_dir_code's caller). Rendering: the province +0 field prints *(word*)(fief), not fief->gold; 2 double-call reprints the guard leaves (byte store $8761, call in the destination at bank 1 $ADD9: need a temp); 1 phi_push (effect_view_a); bank 14 run_cutscene's opcode switch loop falls back to gotos under DREAM (19 -> 33); empty `if (x) goto L; L:` kept for a call. Method: the top-down verifier only sees renames, so a KEEP with a wrong role passes (the leaf reviewer read get_province_ai_state as nonzero = AI; it is 0 = AI, nonzero = human, now in its note)."
+phase  = "presentation"
 source = "top-down pass, 2026-10-28"
 status = "open"
 
 [[revisit]]
-item   = "Rules read during the var walk and top-down pass, to re-derive from the C into appendix-formulas.md and check live (snap protocol): the auction (auction_ownerless_fief_to_bidders) deducts the LAST bid, not best_bid (a possible game bug); drift_daimyo_luck adds rng_mod(11) - 5 to a byte with no clamp (luck 0-4 can wrap to ~250); per_turn_age_daimyo_decay... decays loyalty / wealth / men by rng_mod(2) on HUMAN fiefs (get_province_ai_state nonzero); upkeep = men / 2 from gold and rice, men -> 2 * min(gold, rice) when short; uprising_rebels_win_roll loyal% = min(morale,100)*3/10 + min(charisma,200)*3/20 + rng_mod(31) + 10; square_over_2025_probability_roll returns stat^2 < rng_mod(2025) (true = check failed); stat_cap (+24) caps every province stat; the bribe contest (resolve_bribe_enemy_unit). Each was read from the C or a verifier summary; the summaries got two wrong this session (a comparison direction, the AI/human encoding), so read the C before writing a formula down."
+item   = "Rules read during the var walk and top-down pass, to re-derive from the C into appendix-formulas.md and check live (snap protocol): the auction (auction_ownerless_fief_to_bidders) deducts the LAST bid, not best_bid (a possible game bug); drift_daimyo_luck adds rng_mod(11) - 5 to a byte with no clamp (luck 0-4 can wrap to ~250); per_turn_age_daimyo_decay... decays loyalty / wealth / men by rng_mod(2) on HUMAN fiefs (get_province_ai_state nonzero); upkeep = men / 2 from gold and rice, men -> 2 * min(gold, rice) when short; uprising_rebels_win_roll loyal% = min(morale,100)*3/10 + min(charisma,200)*3/20 + rng_mod(31) + 10; square_over_2025_probability_roll returns stat^2 < rng_mod(2025) (true = check failed); stat_cap (+24) caps every province stat; the bribe contest (resolve_bribe_enemy_unit). Also from naming: $796A (returned on the ai_turn_flags & 16 path, zero in every SRAM dump: needs a capture of that path) and daimyo_record_addr's per-stat map (combat footprint). Each was read from the C or a verifier summary; the summaries got two wrong this session (a comparison direction, the AI/human encoding), so read the C before writing a formula down."
 phase  = "live"
 source = "var walk + top-down, 2026-10-28"
 status = "open"
 
 [next]
-session = "naming, finishing: the inline suspects and consistency renames (the open naming revisit); then live: re-derive the session's rules from the C into appendix-formulas.md and check the auction / luck / decay findings with the snap protocol. Then presentation (regen the ladder, all_banks.c)."
+session = "naming is done. Next: live (re-derive this session's rules from the C into appendix-formulas.md, then check the auction / luck / human-fief decay findings and capture the $796A path with the snap protocol), or presentation (regen the ladder and all_banks.c; the readability revisit). Chris picks."

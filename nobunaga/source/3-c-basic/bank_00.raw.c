@@ -646,10 +646,10 @@ L_8BDE:
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8BE6
-// $8BE6 find_first_enemy_owned_fief
+// $8BE6 find_first_own_fief
 // (body @ $8BEB)
 
-word find_first_enemy_owned_fief(void) {
+word find_first_own_fief(void) {
     build_owned_fief_list();    // $8BEB
     fief_list_ptr = 0x6F89;    // $8BF1
     goto L_8C03;    // $8BF1
@@ -676,7 +676,7 @@ word is_selected_province_ai_state_5(void) {
 // (body @ $8C23)
 
 word cur_flag_and_selected_ai_state5(void) {
-    return (get_6da2_cur() && is_selected_province_ai_state_5());    // $8C34
+    return (selected_fief_is_capital() && is_selected_province_ai_state_5());    // $8C34
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8C35
@@ -707,7 +707,7 @@ L_8C68:
 L_8C6D:
     phi_ret_8c74 = found;    // $8C6E
     if (phi_ret_8c74) goto L_8C74;    // $8C6E
-    phi_ret_8c74 = set_6da1_bit7();    // $8C71
+    phi_ret_8c74 = set_game_over_flag();    // $8C71
 L_8C74:
     return phi_ret_8c74;    // $8C74
 }
@@ -727,7 +727,7 @@ L_8C8C:
     goto L_8D36;    // $8C92
 L_8C95:
     selected_province_idx = *(byte*)(owner_ptr);    // $8C97
-    selected_province_idx = find_first_enemy_owned_fief();    // $8C9D
+    selected_province_idx = find_first_own_fief();    // $8C9D
     if (!(get_province_ai_state(selected_province_idx))) goto L_8D0A;    // $8CA7
     if (rest_turns_remaining[selected_province_owner()]) goto L_8D22;    // $8CB2
     if (!((province_table_live[selected_province_idx].gold > 0))) goto L_8D22;    // $8CC2

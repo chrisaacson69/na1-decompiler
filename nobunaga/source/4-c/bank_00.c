@@ -677,10 +677,10 @@ word select_rebel_force_label(word fief) {
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8BE6
-// $8BE6 find_first_enemy_owned_fief
+// $8BE6 find_first_own_fief
 // (body @ $8BEB)
 
-word find_first_enemy_owned_fief(void) {
+word find_first_own_fief(void) {
     build_owned_fief_list();    // $8BEB
     fief_list_ptr = 0x6F89;    // $8BF1
     while (1) {    // $8C03
@@ -711,7 +711,7 @@ word is_selected_province_ai_state_5(void) {
 // (body @ $8C23)
 
 word cur_flag_and_selected_ai_state5(void) {
-    return (get_6da2_cur() && is_selected_province_ai_state_5());    // $8C34
+    return (selected_fief_is_capital() && is_selected_province_ai_state_5());    // $8C34
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8C35
@@ -743,7 +743,7 @@ word flag_turn_abort_if_no_state5_province(void) {
     }
     phi_ret_8c74 = found;    // $8C6E
     if (!(phi_ret_8c74)) {    // $8C6D
-        phi_ret_8c74 = set_6da1_bit7();    // $8C71
+        phi_ret_8c74 = set_game_over_flag();    // $8C71
     }
     return phi_ret_8c74;    // $8C74
 }
@@ -762,7 +762,7 @@ word auction_ownerless_fief_to_bidders(word owner_count) {
         owner_ptr = 0x6F4F;    // $8C91
         while ((*(byte*)(owner_ptr) != 255)) {    // $8D36
             selected_province_idx = *(byte*)(owner_ptr);    // $8C97
-            selected_province_idx = find_first_enemy_owned_fief();    // $8C9D
+            selected_province_idx = find_first_own_fief();    // $8C9D
             if (get_province_ai_state(selected_province_idx)) {    // $8C95
                 if (!(rest_turns_remaining[selected_province_owner()])) {    // $8CAA
                     if ((province_table_live[selected_province_idx].gold > 0)) {    // $8CB5

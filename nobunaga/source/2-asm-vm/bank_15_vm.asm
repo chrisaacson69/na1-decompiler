@@ -2539,7 +2539,7 @@ VM bytecode disassembly
   $DB3E  A8 09 6E                   STORE_abs              $6E09 (ai_player_count)
   $DB41  AC 82 D9                   CALL_abs               $D982 (no_human_players_left) {bytecode}
   $DB44  D8 4A DB                   JUMPF_abs              $DB4A
-  $DB47  AC 62 D9                   CALL_abs               $D962 (set_6da1_bit7) {bytecode}
+  $DB47  AC 62 D9                   CALL_abs               $D962 (set_game_over_flag) {bytecode}
  >$DB4A  CF                         RETURN
 
 ; ============================================================
@@ -3914,7 +3914,7 @@ VM bytecode disassembly
   $E4AE  2B                         STORE_quick   ; inline operand = 11
   $E4AF  40                         LOADL_qimm   ; inline operand = 0
   $E4B0  D6 C6 E4                   JUMP_abs               $E4C6
- >$E4B3  AC A9 D9                   CALL_abs               $D9A9 (get_6da2_cur) {bytecode}
+ >$E4B3  AC A9 D9                   CALL_abs               $D9A9 (selected_fief_is_capital) {bytecode}
   $E4B6  D8 C2 E4                   JUMPF_abs              $E4C2
   $E4B9  0B                         LOADL_quick   ; inline operand = 11
   $E4BA  D0                         INC

@@ -329,10 +329,10 @@ word reset_prompt_selection(void) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CCF9
-// $CCF9 get_6f5d_or_ff
+// $CCF9 clear_panel_take_pending_selection
 // (body @ $CCFE)
 
-word get_6f5d_or_ff(void) {
+word clear_panel_take_pending_selection(void) {
     ppu_fill_rect_wrap(0, 4, 31, 19, 1);    // $CD05
     phi_ret_cd1f = (selected_record_idx_9e3c != 255);    // $CD10
     if (phi_ret_cd1f) {    // $CCFE
@@ -1374,10 +1374,10 @@ word record_apply_two_grows(word fief, word amount) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D962
-// $D962 set_6da1_bit7
+// $D962 set_game_over_flag
 // (body @ $D967)
 
-word set_6da1_bit7(void) {
+word set_game_over_flag(void) {
     ai_turn_flags = (ai_turn_flags | -128);    // $D96E
     return ai_turn_flags;    // $D971
 }
@@ -1415,10 +1415,10 @@ word province_is_ownerless(word fief) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D9A9
-// $D9A9 get_6da2_cur
+// $D9A9 selected_fief_is_capital
 // (body @ $D9AE)
 
-word get_6da2_cur(void) {
+word selected_fief_is_capital(void) {
     return fief_is_daimyo_capital[selected_province_idx];    // $D9B6
 }
 
@@ -1541,7 +1541,7 @@ word retire_human_player_check_game_over(void) {
     ai_player_count = (ai_player_count + 1);    // $DB3E
     phi_ret_db4a = no_human_players_left();    // $DB44
     if (phi_ret_db4a) {    // $DB3A
-        phi_ret_db4a = set_6da1_bit7();    // $DB47
+        phi_ret_db4a = set_game_over_flag();    // $DB47
     }
     return phi_ret_db4a;    // $DB4A
 }
@@ -1691,11 +1691,11 @@ word generate_daimyo_name(word daimyo) {
 // $DD3A filter_province_list_by_owner
 // (body @ $DD3F)
 
-word filter_province_list_by_owner(word match_enemy, word out_list) {
+word filter_province_list_by_owner(word want_own, word out_list) {
     write_ptr = &buf;    // $DD42
     src_ptr = out_list;    // $DD44
     while ((*(byte*)(src_ptr) != 255)) {    // $DD67
-        if (!((is_owned_by_selected_daimyo(*(byte*)(src_ptr)) ^ match_enemy))) {    // $DD47
+        if (!((is_owned_by_selected_daimyo(*(byte*)(src_ptr)) ^ want_own))) {    // $DD47
             if (!(province_is_ownerless(*(byte*)(src_ptr)))) {    // $DD53
                 write_ptr = (write_ptr + 1);    // $DD5F
                 *(byte*)((write_ptr - 1)) = *(byte*)(src_ptr);    // $DD64
@@ -2145,7 +2145,7 @@ word build_owned_fief_list(void) {
     write_ptr = 0x6F89;    // $E4AE
     selected_province_idx = 0;    // $E4B0
     while (((unsigned)selected_province_idx < (unsigned)scenario_fief_count)) {    // $E4C6
-        if (get_6da2_cur()) {    // $E4B3
+        if (selected_fief_is_capital()) {    // $E4B3
             write_ptr = (write_ptr + 1);    // $E4BB
             *(byte*)((write_ptr - 1)) = selected_province_idx;    // $E4C1
         }
@@ -2179,13 +2179,13 @@ word build_fiefs_excluding_daimyo(word excluded_daimyo) {
 // $E510 build_eligible_province_list
 // (body @ $E515)
 
-word build_eligible_province_list(word want_enemy) {
+word build_eligible_province_list(word want_own) {
     list_ptr = 0x6F89;    // $E518
     count = 0;    // $E51A
     fief = 0;    // $E51C
     while (((unsigned)fief < (unsigned)scenario_fief_count)) {    // $E545
         if (!(province_is_ownerless(fief))) {    // $E51F
-            if (!((is_owned_by_selected_daimyo(fief) ^ want_enemy))) {    // $E527
+            if (!((is_owned_by_selected_daimyo(fief) ^ want_own))) {    // $E527
                 if ((selected_province_idx != fief)) {    // $E531
                     list_ptr = (list_ptr + 1);    // $E53B
                     *(byte*)((list_ptr - 1)) = fief;    // $E53F

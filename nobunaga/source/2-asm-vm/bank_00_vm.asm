@@ -1668,7 +1668,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $8C1E   (frame_off=+0, body @ $8C23)
 ; ============================================================
-  $8C23  AC A9 D9                   CALL_abs               $D9A9 (get_6da2_cur) {bytecode}
+  $8C23  AC A9 D9                   CALL_abs               $D9A9 (selected_fief_is_capital) {bytecode}
   $8C26  D8 2F 8C                   JUMPF_abs              $8C2F
   $8C29  AC 0E 8C                   CALL_abs               $8C0E (is_selected_province_ai_state_5) {bytecode}
   $8C2C  D7 33 8C                   JUMPT_abs              $8C33
@@ -1713,7 +1713,7 @@ VM bytecode disassembly
   $8C6A  D7 52 8C                   JUMPT_abs              $8C52
  >$8C6D  0B                         LOADL_quick   ; inline operand = 11
   $8C6E  D7 74 8C                   JUMPT_abs              $8C74
-  $8C71  AC 62 D9                   CALL_abs               $D962 (set_6da1_bit7) {bytecode}
+  $8C71  AC 62 D9                   CALL_abs               $D962 (set_game_over_flag) {bytecode}
  >$8C74  CF                         RETURN
 
 ; ============================================================
@@ -1738,7 +1738,7 @@ VM bytecode disassembly
  >$8C95  09                         LOADL_quick   ; inline operand = 9
   $8C96  D3                         BYTE_DEREF
   $8C97  A8 5F 6F                   STORE_abs              $6F5F (selected_province_idx)
-  $8C9A  AC E6 8B                   CALL_abs               $8BE6 (find_first_enemy_owned_fief) {bytecode}
+  $8C9A  AC E6 8B                   CALL_abs               $8BE6 (find_first_own_fief) {bytecode}
   $8C9D  A8 5F 6F                   STORE_abs              $6F5F (selected_province_idx)
   $8CA0  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
   $8CA3  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
