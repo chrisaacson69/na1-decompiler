@@ -3078,3 +3078,34 @@ arg1 = { name = "excluded_daimyo", comment = "[HIGH] Daimyo id: fief_owner(*loca
 local10 = { name = "write_ptr", comment = "[HIGH] Output cursor: =$6F89 at $E4E7, post-inc + BYTE_POPSTORE of kept entry at $E4F7, gets $FF terminator at $E50B" }
 local11 = { name = "read_ptr", comment = "[HIGH] Input cursor: STORE_quick 11 at $E501 gets $6F89 (L kept from $E4E4), BYTE_DEREF each pass, INC until $FF terminator" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 14 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xE03C"]
+# apply_conquest_outcome
+local6 = { name = "defender_fief", comment = "[HIGH] STORE_quick 6 = $6F63*26+$7001; POPSTORE gold@+0, rice@+6, men@+16, output@+8 cut by pct_op; arg2 to cap_arms_at_index" }
+local7 = { name = "apply_plunder", comment = "[MED] bool = local8 && !($6DA1&32) (E0A6-E0B8); if set (and !local9) zeroes $6F7D/7F/81 and cuts fief->output by rng 10-19%" }
+local8 = { name = "attacker_is_uprising", comment = "[MED] Coordinator amend: idx 50 is the uprising slot ($7001 + 50*26 = $7515, zealot_uprising_slot). = ($6F5F == 50) CMPEQ @E058; gates transfer_force_triplet, capital/owner branches, final cap_fief_stats($6F5F)" }
+local9 = { name = "defender_won", comment = "[HIGH] = ($6F57 == $6F63) CMPEQ @E060; picks daimyo_stat_transfer arg order, PUSH_quick 9 to test_6f65_bit7, gates owner updates" }
+local10 = { name = "defender_owner_ptr", comment = "[HIGH] = $6E15+$6F63 (fief_to_daimyo_map); BYTE_DEREF to pool_push_pop/list_remove_matching/owner cmp; BYTE_POPSTORE selected_province_owner()" }
+local11 = { name = "i", comment = "[HIGH] loop index: 0 @E141, INC @E164, UCMPLT $6D9D scenario_fief_count; PUSH_quick 11 to fief_owner and province_ai_state_addr" }
+
+[vars.bank15."0xE275"]
+# announce_daimyo_death
+arg1 = { name = "fief", comment = "[HIGH] PUSH_quick 12 to clear_fief_pair_matrix/fief_owner/get_province_ai_state; arg1+1 in 'in fief %d' msg; callers push fief idx/$6F5F/$6F57" }
+
+[vars.bank15."0xE315"]
+# marriage_pact_handler
+local9 = { name = "saved_input_mode", comment = "[HIGH] STORE_quick 9 = $7FD3 ui_input_mode before forcing it to 2 @E328; LOADL_quick 9 restores $7FD3 @E35B before return" }
+local10 = { name = "owner_gold", comment = "[HIGH] = DEREF $7001+$6F5F*26 (gold@+0) @E388; SCMPGT 200 test, then pct_op arg1 base (PUSH_quick 10) for AI demand +200" }
+local11 = { name = "demanded_gold", comment = "[HIGH] STORE_quick 11 = number_input(1,$270F) after msg_demand_gold, or 0 if prompt_y_n declined; LOADL_quick 11 returned @E35F" }
+
+[vars.bank15."0xE3A4"]
+# prompt_diplomacy_pact
+local9 = { name = "saved_input_mode", comment = "[HIGH] STORE_quick 9 = $7FD3 ui_input_mode before forcing it to 2 @E3B7; LOADL_quick 9 restores $7FD3 @E3D8 before return" }
+local10 = { name = "owner_gold", comment = "[HIGH] = DEREF $7001+$6F5F*26 (gold@+0) @E3FA; pct_op arg1 base in both calls (PUSH_quick 10 @E40D/E415) for AI demand" }
+local11 = { name = "demanded_gold", comment = "[HIGH] STORE_quick 11 = number_input(1,$270F) after msg_demand_gold @E3D1; LOADL_quick 11 returned @E3DC" }
+
+[vars.bank15."0xE454"]
+# neutralize_fief
+arg1 = { name = "fief", comment = "[HIGH] indexes $6CF7/$6DA2/$6D2D byte arrays; PUSH_quick 12 to copy_arms_record_5/redraw_fief_on_map; arg1+1 in msg; callers push fief idx" }
+
