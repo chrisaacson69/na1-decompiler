@@ -157,11 +157,11 @@ word is_lower(word ch) {
 // $CB30 to_upper
 // (body @ $CB35)
 
-word to_upper(word arg1) {
-    if (is_lower(*(byte*)&arg1)) {    // $CB3D
-    phi_ret_cb4b = (*(byte*)&arg1 + -32);    // $CB45
+word to_upper(word ch) {
+    if (is_lower(*(byte*)&ch)) {    // $CB3D
+    phi_ret_cb4b = (*(byte*)&ch + -32);    // $CB45
     } else {
-    phi_ret_cb4b = *(byte*)&arg1;    // $CB48
+    phi_ret_cb4b = *(byte*)&ch;    // $CB48
     }
 L_CB4B:
     return phi_ret_cb4b;    // $CB4B
@@ -172,24 +172,24 @@ L_CB4B:
 // $CB4C abs16
 // (body @ $CB51)
 
-word abs16(word arg1) {
-    return ((arg1 < 0) ? (-arg1) : arg1);    // $CB5D
+word abs16(word value) {
+    return ((value < 0) ? (-value) : value);    // $CB5D
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CB5E
 // $CB5E min_word
 // (body @ $CB63)
 
-word min_word(word arg1, word arg2) {
-    return ((arg1 < arg2) ? arg1 : arg2);    // $CB6E
+word min_word(word a, word b) {
+    return ((a < b) ? a : b);    // $CB6E
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CB6F
 // $CB6F max_word
 // (body @ $CB74)
 
-word max_word(word arg1, word arg2) {
-    return ((arg1 > arg2) ? arg1 : arg2);    // $CB7F
+word max_word(word a, word b) {
+    return ((a > b) ? a : b);    // $CB7F
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CB80
@@ -207,11 +207,11 @@ word swap_byte(word arg1, word arg2) {
 // $CB94 swap_word
 // (body @ $CB99)
 
-word swap_word(word arg1, word arg2) {
-    local11 = *(word*)(arg1);    // $CB9B
-    *(word*)(arg1) = *(word*)(arg2);    // $CB9F
-    *(word*)(arg2) = local11;    // $CBA2
-    return local11;    // $CBA3
+word swap_word(word word_a_ptr, word word_b_ptr) {
+    saved_a = *(word*)(word_a_ptr);    // $CB9B
+    *(word*)(word_a_ptr) = *(word*)(word_b_ptr);    // $CB9F
+    *(word*)(word_b_ptr) = saved_a;    // $CBA2
+    return saved_a;    // $CBA3
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CBA4

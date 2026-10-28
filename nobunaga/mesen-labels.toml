@@ -2657,3 +2657,29 @@ arg3 = { name = "count", comment = "[HIGH] Bytes left to scan: loop test JUMPT o
 # is_lower
 arg1 = { name = "ch", comment = "[HIGH] Character code: low byte range-tested 97..122 ('a'..'z'). Sole caller to_upper pushes its own arg1 low byte, adds -32 if true." }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 9 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xCB30"]
+# to_upper
+arg1 = { name = "ch", comment = "[HIGH] Char to upcase: BYTE_LOADL_far $000B pushed to is_lower $CB11, then -32 ($CB43) or returned as-is; caller $D07F pushes a deref'd string byte" }
+
+[vars.bank15."0xCB4C"]
+# abs16
+arg1 = { name = "value", comment = "[HIGH] Signed input: LOADL_quick 12 vs 0 SCMPLT @$CB53, MINUS @$CB58 if negative; callers push differences (SUB;PUSHL @$96CC/$96D5)" }
+
+[vars.bank15."0xCB5E"]
+# min_word
+arg1 = { name = "a", comment = "[HIGH] Signed-min operand 1: LOADL_q 12/LOADR_q 13/SCMPLT at $CB63, returned at $CB69 if a<b. Callers push a cap (100@$95D5, 200@$95C3) or a value." }
+arg2 = { name = "b", comment = "[HIGH] Signed-min operand 2: LOADR_q 13 at $CB64, returned via LOADL_q 13 at $CB6D when !(a<b). Holds morale/charisma ($95D3/$95C1) or a cap." }
+
+[vars.bank15."0xCB6F"]
+# max_word
+arg1 = { name = "a", comment = "[HIGH] Coordinator amend 2026-10-28: generic like min_word(a, b), not named from its one caller (verifier proposed 'value'). Value to clamp: LOADL_quick 12 @$CB74/$CB7A, SCMPGT vs arg2, returned if greater. Bank1 $A266 pushes pct_op(arg1,sqrt_int(arg2)) last." }
+arg2 = { name = "b", comment = "[MED] Coordinator amend 2026-10-28: generic like min_word(a, b), not named from its one caller (verifier proposed 'floor'). Lower bound: LOADR_quick 13 @$CB75, returned @$CB7E when arg1 is not greater. Its only caller pushes PUSH_qimm 1 @$A25A, so the result is never < 1." }
+
+[vars.bank15."0xCB94"]
+# swap_word
+arg1 = { name = "word_a_ptr", comment = "[HIGH] Word ptr: DEREF'd at $CB9A into local11, then written *arg2 via PUSH_quick 12/POPSTORE $CB9F. Callers push &$6F63 or LEAL_far $000B last" }
+arg2 = { name = "word_b_ptr", comment = "[HIGH] Word ptr: DEREF'd at $CB9E (stored into *arg1), then gets saved local11 via PUSH_quick 13/POPSTORE $CBA2. Callers push &$6F5F or &$6F63" }
+local11 = { name = "saved_a", comment = "[HIGH] Swap temp: STORE_quick 11 of *arg1 at $CB9B, LOADL_quick 11 at $CBA1 written to *arg2. One role; left in the accumulator at RETURN $CBA3" }
+

@@ -155,6 +155,76 @@ FAR_SEEDS = (
 )
 
 
+PACK_BANKS = (0, 1, 2, 10, 14, 15)
+PACK_SITES = 8                  # call sites per layer in a packet; the rest are counted, not dropped silently
+_KEYWORDS = {"if", "while", "for", "switch", "return", "sizeof", "do"}
+
+
+def _c_blocks(bank):
+    """{addr: (name, text)} for every sub in source/4-c/bank_NN.c."""
+    t = (ROOT / f"source/4-c/bank_{bank:02d}.c").read_text(encoding="utf-8")
+    cuts = [(m.start(), m.group(1)) for m in re.finditer(r"^// Decompiled from \S+ sub \$([0-9A-F]{4})$", t, re.M)]
+    out = {}
+    for k, (s, addr) in enumerate(cuts):
+        block = t[s:cuts[k + 1][0] if k + 1 < len(cuts) else len(t)].rstrip()
+        m = re.search(r"^word (\w+)\(", block, re.M)
+        out[addr] = (m.group(1) if m else "", block)
+    return out
+
+
+def _vm_blocks(bank):
+    """{addr: text} for every sub in source/2-asm-vm/bank_NN_vm.asm (from its '; sub $ADDR' marker)."""
+    t = (ROOT / f"source/2-asm-vm/bank_{bank:02d}_vm.asm").read_text(encoding="utf-8")
+    cuts = [(m.start(), m.group(1)) for m in re.finditer(r"^; sub \$([0-9A-F]{4})\b", t, re.M)]
+    return {a: t[s:cuts[k + 1][0] if k + 1 < len(cuts) else len(t)].rstrip() for k, (s, a) in enumerate(cuts)}
+
+
+def build_packets(bank, subs):
+    """Per sub, everything the walk's agents used to fetch with tools, extracted from the generated
+    layers: the proposer's packet (its C, every caller's C line, its callees' signatures) and the
+    verifier's packet (its VM asm, the VM asm before each call site, where the pushes are). A packet
+    is extraction only; a sub with more than PACK_SITES call sites says how many it left out."""
+    banks = PACK_BANKS
+    c = {b: _c_blocks(b) for b in banks}
+    vm = {b: _vm_blocks(b) for b in banks}
+    sigs = {}
+    for b in banks:
+        for _a, (n, blk) in c[b].items():
+            m = re.search(r"^word \w+\(.*\) \{$", blk, re.M)
+            if n and m:
+                sigs.setdefault(n, m.group(0)[:-2])
+    for s in subs:
+        addr, name = s["addr"], s["name"]
+        fixed = int(addr, 16) >= 0xC000
+        scope = banks if fixed else (bank,)
+        own_c = c[bank].get(addr, ("", ""))[1]
+        own_vm = vm[bank].get(addr, "")
+        c_sites, vm_sites = [], []
+        for b in scope:
+            for _a, (fn, blk) in c[b].items():
+                if fn == name:
+                    continue
+                for ln in blk.splitlines():
+                    if re.search(rf"\b{re.escape(name)}\(", ln):
+                        c_sites.append(f"[bank {b}, in {fn}] {ln.strip()}")
+            lines = (ROOT / f"source/2-asm-vm/bank_{b:02d}_vm.asm").read_text(encoding="utf-8").splitlines()
+            for i, ln in enumerate(lines):
+                if re.search(r"\bCALL", ln) and re.search(rf"\${addr}\b", ln):
+                    vm_sites.append(f"[bank {b}]\n" + "\n".join(lines[max(0, i - 8):i + 1]))
+        callees = sorted({m for m in re.findall(r"\b([a-z_]\w*)\(", own_c) if m not in _KEYWORDS and m != name})
+        def capped(items, what):
+            more = len(items) - PACK_SITES
+            return items[:PACK_SITES] + ([f"(+{more} more {what} not shown)"] if more > 0 else [])
+        s["packet"] = {
+            "c": own_c,
+            "caller_c": capped(c_sites, "call sites") or ["(no direct caller in the C: indirect, table dispatch or dead)"],
+            "callees": [sigs[n] for n in callees if n in sigs],
+            "vm": own_vm,
+            "caller_vm": capped(vm_sites, "call sites") or ["(no CALL to this address in the VM asm)"],
+        }
+    return subs
+
+
 def main():
     ap = argparse.ArgumentParser(description="Assemble the next var-walk batch's Workflow args.")
     ap.add_argument("bank", type=lambda x: int(x, 0))
@@ -171,6 +241,9 @@ def main():
                          "re-surface for their un-named far slots (pair with var-walk-apply --merge)")
     ap.add_argument("--landmarks", default="", help="bank-specific context prepended to seeds")
     ap.add_argument("--json", action="store_true", help="emit ONLY the {bank,subs,seeds} args object")
+    ap.add_argument("--pack", action="store_true",
+                    help="attach each sub's packet (its C + callers' C lines + callee signatures for the proposer; "
+                         "its VM asm + the VM asm before each call site for the verifier), so agents answer without tools")
     a = ap.parse_args()
 
     if a.far:
@@ -201,6 +274,8 @@ def main():
     by_addr = {s["addr"]: s for s in targets}
     ordered = [by_addr[f"{a_:04X}"] for a_ in ordered_addrs if f"{a_:04X}" in by_addr]
     batch = ordered[:a.batch]
+    if a.pack:
+        batch = build_packets(a.bank, batch)
 
     seeds = (a.landmarks.strip() + "\n\n" if a.landmarks else "") + DEFAULT_SEEDS + (FAR_SEEDS if a.far else "")
     args_obj = {"bank": a.bank, "subs": batch, "seeds": seeds, "far": a.far}
