@@ -1075,7 +1075,7 @@ L_D64B:
 L_D64E:
     if (((unsigned)local10 < (unsigned)scenario_fief_count)) goto L_D633;    // $D653
     if ((local11 != 1)) goto L_D66B;    // $D659
-    local11 = (local11 & (is_ai_count_ge_8() ? 0 : 1));    // $D66A
+    local11 = (local11 & (no_human_players_left() ? 0 : 1));    // $D66A
 L_D66B:
     return ((local11 != 1) ? 0 : 1);    // $D676
 }
@@ -1379,10 +1379,10 @@ word fief_owner_weakness(word arg1) {
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D982
-// $D982 is_ai_count_ge_8
+// $D982 no_human_players_left
 // (body @ $D987)
 
-word is_ai_count_ge_8(void) {
+word no_human_players_left(void) {
     return ((unsigned)ai_player_count >= (unsigned)8);    // $D98C
 }
 
@@ -1456,10 +1456,10 @@ L_DA21:
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DA24
-// $DA24 scaled_force_transfer
+// $DA24 weighted_average_capped
 // (body @ $DA29)
 
-word scaled_force_transfer(word arg1, word arg2, word arg3, word arg4, word arg5) {
+word weighted_average_capped(word arg1, word arg2, word arg3, word arg4, word arg5) {
     return min_word((pct_op(arg1, math32_2arg(arg4, arg3)) + pct_op((arg2 | 1), math32_2arg(arg3, arg4))), arg5);    // $DA4E
 }
 
@@ -1516,10 +1516,10 @@ L_DB04:
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $DB12
-// $DB12 defender_owner_is_keyed_daimyo
+// $DB12 defender_owner_is_honganji
 // (body @ $DB17)
 
-word defender_owner_is_keyed_daimyo(void) {
+word defender_owner_is_honganji(void) {
     if ((scenario_fief_count != 17)) goto L_DB2A;    // $DB1D
     return (fief_owner(battle_defending_province) == 3);    // $DB29
 L_DB2A:
@@ -1532,7 +1532,7 @@ L_DB2A:
 
 word increment_ai_player_count(void) {
     ai_player_count = (ai_player_count + 1);    // $DB3E
-    phi_ret_db4a = is_ai_count_ge_8();    // $DB44
+    phi_ret_db4a = no_human_players_left();    // $DB44
     if (!(phi_ret_db4a)) goto L_DB4A;    // $DB44
     phi_ret_db4a = set_6da1_bit7();    // $DB47
 L_DB4A:
@@ -1837,7 +1837,7 @@ word transfer_force_triplet(void) {
     local11 = *(word*)((local10 + 6));    // $DF91
     local8 = 0;    // $DF93
 L_DF94:
-    *(word*)(local10) = scaled_force_transfer(*(word*)(local10), *(word*)(local9), war_attacker_men, war_defender_men, local11);    // $DFA6
+    *(word*)(local10) = weighted_average_capped(*(word*)(local10), *(word*)(local9), war_attacker_men, war_defender_men, local11);    // $DFA6
     local8 = (local8 + 1);    // $DFA9
     local10 = (local10 + 2);    // $DFAD
     local9 = (local9 + 2);    // $DFB2
@@ -1854,7 +1854,7 @@ word clamp_field_6d2d_to_30(void) {
     phi_val_dfec = 0;    // $DFC6
     goto L_DFEC;    // $DFC6
 L_DFC9:
-    if (!(defender_owner_is_keyed_daimyo())) goto L_DFE8;    // $DFCC
+    if (!(defender_owner_is_honganji())) goto L_DFE8;    // $DFCC
     if ((fief_tax_rate[battle_defending_province] <= 30)) goto L_DFE8;    // $DFDA
     fief_tax_rate[battle_defending_province] = 30;    // $DFE7
 L_DFE8:

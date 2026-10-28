@@ -1731,7 +1731,7 @@ VM bytecode disassembly
   $D657  51                         LOADR_qimm   ; inline operand = 1
   $D658  C0                         CMPEQ
   $D659  D8 6B D6                   JUMPF_abs              $D66B
-  $D65C  AC 82 D9                   CALL_abs               $D982 (is_ai_count_ge_8) {bytecode}
+  $D65C  AC 82 D9                   CALL_abs               $D982 (no_human_players_left) {bytecode}
   $D65F  D8 66 D6                   JUMPF_abs              $D666
   $D662  40                         LOADL_qimm   ; inline operand = 0
   $D663  D6 67 D6                   JUMP_abs               $D667
@@ -2537,7 +2537,7 @@ VM bytecode disassembly
   $DB3A  A4 09 6E                   LOADL_abs              $6E09 (ai_player_count)
   $DB3D  D0                         INC
   $DB3E  A8 09 6E                   STORE_abs              $6E09 (ai_player_count)
-  $DB41  AC 82 D9                   CALL_abs               $D982 (is_ai_count_ge_8) {bytecode}
+  $DB41  AC 82 D9                   CALL_abs               $D982 (no_human_players_left) {bytecode}
   $DB44  D8 4A DB                   JUMPF_abs              $DB4A
   $DB47  AC 62 D9                   CALL_abs               $D962 (set_6da1_bit7) {bytecode}
  >$DB4A  CF                         RETURN
@@ -3229,7 +3229,7 @@ VM bytecode disassembly
   $DF9F  0A                         LOADL_quick   ; inline operand = 10
   $DFA0  B0                         DEREF
   $DFA1  B3                         PUSHL
-  $DFA2  E9 24 DA 0A                CALL_abs_imm1          $DA24 (scaled_force_transfer) {bytecode}, $0A
+  $DFA2  E9 24 DA 0A                CALL_abs_imm1          $DA24 (weighted_average_capped) {bytecode}, $0A
   $DFA6  B1                         POPSTORE
   $DFA7  08                         LOADL_quick   ; inline operand = 8
   $DFA8  D0                         INC
@@ -3256,7 +3256,7 @@ VM bytecode disassembly
   $DFC4  2B                         STORE_quick   ; inline operand = 11
   $DFC5  40                         LOADL_qimm   ; inline operand = 0
   $DFC6  D6 EC DF                   JUMP_abs               $DFEC
- >$DFC9  AC 12 DB                   CALL_abs               $DB12 (defender_owner_is_keyed_daimyo) {bytecode}
+ >$DFC9  AC 12 DB                   CALL_abs               $DB12 (defender_owner_is_honganji) {bytecode}
   $DFCC  D8 E8 DF                   JUMPF_abs              $DFE8
   $DFCF  A4 63 6F                   LOADL_abs              $6F63 (battle_defending_province)
   $DFD2  8C 2D 6D                   LOADR_imm2             $6D2D (fief_tax_rate)

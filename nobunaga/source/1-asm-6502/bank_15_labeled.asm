@@ -3703,7 +3703,7 @@ b15_d97c:   sty daimyo_weakness_flag                   ; 3D97C:  8c d4 6d
 b15_d97f:   .db $bb                     ; 3D97F:  bb
 b15_d980:   .db $d3                     ; 3D980:  d3
 b15_d981:   .db $cf                     ; 3D981:  cf
-is_ai_count_ge_8:   jsr $e823                   ; 3D982:  20 23 e8
+no_human_players_left:   jsr $e823                   ; 3D982:  20 23 e8
 b15_d985:   brk                         ; 3D985:  00
 b15_d986:   brk                         ; 3D986:  00
 b15_d987:   ldy $09                     ; 3D987:  a4 09
@@ -3799,7 +3799,7 @@ b15_da1e:   txa                         ; 3DA1E:  8a
 b15_da1f:   inc $2bf6,x                 ; 3DA1F:  fe f6 2b
 b15_da22:   .db $0b                     ; 3DA22:  0b
 b15_da23:   .db $cf                     ; 3DA23:  cf
-scaled_force_transfer:   jsr $e823                   ; 3DA24:  20 23 e8
+weighted_average_capped:   jsr $e823                   ; 3DA24:  20 23 e8
 b15_da27:   brk                         ; 3DA27:  00
 b15_da28:   brk                         ; 3DA28:  00
 b15_da29:   .db $87                     ; 3DA29:  87
@@ -3966,7 +3966,7 @@ b15_db0e:   .db skip_wallclock                     ; 3DB0E:  89
 b15_db0f:   .db $ff                     ; 3DB0F:  ff
 b15_db10:   .db $d4                     ; 3DB10:  d4
 b15_db11:   .db $cf                     ; 3DB11:  cf
-defender_owner_is_keyed_daimyo:   jsr $e823                   ; 3DB12:  20 23 e8
+defender_owner_is_honganji:   jsr $e823                   ; 3DB12:  20 23 e8
 b15_db15:   brk                         ; 3DB15:  00
 b15_db16:   brk                         ; 3DB16:  00
 b15_db17:   ldy $9d                     ; 3DB17:  a4 9d

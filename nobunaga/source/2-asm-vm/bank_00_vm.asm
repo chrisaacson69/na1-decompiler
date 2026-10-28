@@ -4233,7 +4233,7 @@ VM bytecode disassembly
   $9E00  52                         LOADR_qimm   ; inline operand = 2
   $9E01  C4                         SCMPGT
   $9E02  D8 1B 9E                   JUMPF_abs              $9E1B
-  $9E05  AC 12 DB                   CALL_abs               $DB12 (defender_owner_is_keyed_daimyo) {bytecode}
+  $9E05  AC 12 DB                   CALL_abs               $DB12 (defender_owner_is_honganji) {bytecode}
   $9E08  D7 1B 9E                   JUMPT_abs              $9E1B
   $9E0B  3C                         PUSH_quick   ; inline operand = 12
   $9E0C  E9 99 D9 02                CALL_abs_imm1          $D999 (province_state_is_FF) {bytecode}, $02
@@ -4267,7 +4267,7 @@ VM bytecode disassembly
   $9E42  B3                         PUSHL
   $9E43  E9 86 9D 02                CALL_abs_imm1          $9D86 (square_over_2025_probability_roll) {bytecode}, $02
   $9E47  D7 60 9E                   JUMPT_abs              $9E60
-  $9E4A  AC 12 DB                   CALL_abs               $DB12 (defender_owner_is_keyed_daimyo) {bytecode}
+  $9E4A  AC 12 DB                   CALL_abs               $DB12 (defender_owner_is_honganji) {bytecode}
   $9E4D  D8 55 9E                   JUMPF_abs              $9E55
   $9E50  89 14                      BYTE_LOADL_imm1        +20
   $9E52  D6 58 9E                   JUMP_abs               $9E58

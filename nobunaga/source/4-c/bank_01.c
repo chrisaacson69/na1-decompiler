@@ -813,9 +813,9 @@ word effect_send(word arg1, word arg2, word arg3) {
 // (body @ $8BF9)
 
 word apply_hire_unit_stats(word arg1, word arg2) {
-    arg1->morale = scaled_force_transfer(arg1->morale, (rng_mod(20) + 40), arg2, arg1->men, arg1->header);    // $8C1A
-    arg1->skill = scaled_force_transfer(arg1->skill, (rng_mod(20) + 60), arg2, arg1->men, arg1->header);    // $8C3C
-    arg1->arms = scaled_force_transfer(arg1->arms, (rng_mod(10) + 50), arg2, arg1->arms, arg1->header);    // $8C5D
+    arg1->morale = weighted_average_capped(arg1->morale, (rng_mod(20) + 40), arg2, arg1->men, arg1->header);    // $8C1A
+    arg1->skill = weighted_average_capped(arg1->skill, (rng_mod(20) + 60), arg2, arg1->men, arg1->header);    // $8C3C
+    arg1->arms = weighted_average_capped(arg1->arms, (rng_mod(10) + 50), arg2, arg1->arms, arg1->header);    // $8C5D
     arg1->men = (arg1->men + arg2);    // $8C66
     return arg1->men;    // $8C67
 }
@@ -848,7 +848,7 @@ word effect_move(word arg1) {
     local11 = 0;    // $8CC7
     do {    // $8CC8
         local8 = (local8 + 2);    // $8CD3
-        *(word*)(local7) = scaled_force_transfer(*(word*)(local7), *(word*)((local8 + -2)), arg1, *(word*)(local9), *(word*)((local9 + 8)));    // $8CDF
+        *(word*)(local7) = weighted_average_capped(*(word*)(local7), *(word*)((local8 + -2)), arg1, *(word*)(local9), *(word*)((local9 + 8)));    // $8CDF
         local7 = (local7 + 2);    // $8CE2
         local11 = (local11 + 1);    // $8CE5
     } while (((unsigned)local11 < (unsigned)3));    // $8CE9
@@ -1591,8 +1591,8 @@ word driver_tax(void) {
     message_display(str_is_this_ok);    // $99B8
     draw_message(msg_tax_is_d_enter_new_tax, *(byte*)(local6));    // $99C2
     battle_defending_province = selected_province_idx;    // $99C9
-    local5 = number_input(1, (defender_owner_is_keyed_daimyo() ? 30 : 100));    // $99DF
-    if (number_input(1, (defender_owner_is_keyed_daimyo() ? 30 : 100))) {    // $99E0
+    local5 = number_input(1, (defender_owner_is_honganji() ? 30 : 100));    // $99DF
+    if (number_input(1, (defender_owner_is_honganji() ? 30 : 100))) {    // $99E0
     if ((*(byte*)(local6) != local5)) {    // $99E7
     if ((local5 > *(byte*)(local6))) {    // $99F0
     phi_9a08_0 = msg_the_peasants_are_protesting;    // $99FC
@@ -3267,7 +3267,7 @@ word driver_pass(void) {
 
 word ai_seed_fief_tax_rate(word arg1) {
     swap_word(&arg1, battle_defending_province);    // $B2BE
-    if (defender_owner_is_keyed_daimyo()) {    // $B2CD
+    if (defender_owner_is_honganji()) {    // $B2CD
     } else {
     }
 L_B2E2:
@@ -3620,7 +3620,7 @@ word ai_per_fief_command_driver(void) {
         }
 L_B8EE:
         if (count_6da2_set()) goto L_B8FA;    // $B8F1
-        if (is_ai_count_ge_8()) {    // $B8F7
+        if (no_human_players_left()) {    // $B8F7
 L_B8FA:
         ai_turn_flags = (ai_turn_flags | -128);    // $B901
         phi_ret_b90d = count_6da2_set();    // $B907
