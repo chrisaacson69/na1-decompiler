@@ -4038,3 +4038,77 @@ local11 = { name = "unit_col", comment = "[MED] = BYTE_DEREF unit_col_ptr(side,u
 # read_dpad_dir_code
 local11 = { name = "dir_code", comment = "[HIGH] stored 48/50/52/54/56 or 0 from poll_input SWITCH @$84BF, then LOADL and RETURN @$84C0" }
 
+# --- bank-02 var-walk far-frame batch (--merge, new sections) (11 subs) ---
+[vars.bank2."0xA96C"]
+# player_move_unit_with_occupancy_check_loop
+local6 = { name = "target_row", comment = "[HIGH] cur_unit_row_ptr byte @$A98F; &local6 (LEAL $FFF4) stepped by validate_dir_code_and_dispatch; CMPEQ vs enemy row @$A9CD" }
+local7 = { name = "target_col", comment = "[HIGH] cur_unit_col_ptr byte @$A98A; &local7 (LEAL $FFF6) stepped; is_tile_in_bounds col @$A9B0; CMPEQ vs enemy col @$A9C1" }
+local8 = { name = "dir_code", comment = "[HIGH] STORE 8 of prompt_unit_move_direction_at_tile() @$A993; CMPEQ 48 returns 1 (cancel); dir arg3 to validate_dir_code @$A99F" }
+local9 = { name = "side_province", comment = "[MED] STORE 9 of get_battle_side_province(cur_combat_side) @$A978; never read afterwards in this sub (dead store)" }
+local10 = { name = "enemy_unit_slot", comment = "[HIGH] search idx 0..5 @$A9B9-$A9D8 into unit_col/row_ptr(enemy_side); if <5 pushed as the attacked slot to resolve_attack @$A9E1" }
+local11 = { name = "enemy_side", comment = "[HIGH] cur_combat_side XOR 1 -> STORE 11 @$A97E; pushed last (side) to unit_col_ptr/unit_row_ptr @$A9BB/$A9C7" }
+
+[vars.bank2."0xA0DA"]
+# eval_and_announce_battle_strength_parity_if_enemy_present
+arg1 = { name = "enemy_unit_slot", comment = "[HIGH] PUSH 12 to is_enemy_unit_adjacent @$A0DF, resolve_attack (enemy slot) @$A0E8, announce arg2 @$A0E7; callers pass a unit idx <5" }
+
+[vars.bank2."0x9E20"]
+# resolve_attack_apply_mutual_casualties
+arg1 = { name = "enemy_unit_slot", comment = "[HIGH] indexes battle_unit_byte_table @$9E2A; slot arg of apply_pct_reduction(cur_side^1, arg1, pct) @$9E3B; reduce_..._chaos arg2" }
+local11 = { name = "strength_pct", comment = "[HIGH] calc_battle_strength_pct_one_side() @$9E38; enemy cut by local11 %, attacker by 100-local11 @$9E49; CMP 50 picks return 0/1/2" }
+
+[vars.bank2."0x9B4A"]
+# validate_phase_unit_cells_draw_cursor
+arg1 = { name = "enemy_unit_slot", comment = "[HIGH] PUSH_quick 12 as unit_slot (arg2) of unit_col_ptr/unit_row_ptr with side=cur_side^1 @$9B63/$9B6B; caller $9E25 forwards its arg1" }
+local8 = { name = "enemy_side", comment = "[HIGH] cur_combat_side XOR 1 -> STORE 8 @$9B62; pushed last (side arg) to unit_col_ptr/unit_row_ptr @$9B64/$9B6C" }
+local9 = { name = "target_row", comment = "[HIGH] BYTE_DEREF of unit_row_ptr(enemy_side, slot) -> STORE 9 @$9B72; pushed as row to set_tactical_cursor_pos @$9B9A" }
+local10 = { name = "target_col", comment = "[HIGH] BYTE_DEREF of unit_col_ptr(enemy_side, slot) -> STORE 10 @$9B6A; is_cell_valid_for_phase arg @$9B73; cursor col @$9B9B" }
+local11 = { name = "blink_count", comment = "[HIGH] zeroed @$9B81, INC + UCMPLT 3 loop @$9BAA-$9BB0 over the attacker/target cursor blink pair" }
+
+[vars.bank2."0x9B08"]
+# deploy_both_sides_units_loop
+local10 = { name = "arena_rect", comment = "[MED] STORE 10 of set_combat_arena_rect_by_approach() @$9B15 each pass; pushed to ai_place_combat_units_random_or_smart @$9B2C" }
+local11 = { name = "side_count", comment = "[HIGH] zeroed @$9B11, INC + UCMPLT 2 loop @$9B40-$9B46 while cur_combat_side is XOR-toggled @$9B3D: one pass per side" }
+
+[vars.bank2."0x9A18"]
+# player_interactive_unit_move_loop
+local7 = { name = "last_valid_row", comment = "[HIGH] local9 copied in @$9A98/$9AB8 after placement or valid step; restored into local9 @$9AC6 when the step is rejected" }
+local8 = { name = "last_valid_col", comment = "[HIGH] local10 copied in @$9A96/$9AB6 after placement or valid step; restored into local10 @$9AC4 when the step is rejected" }
+local9 = { name = "cursor_row", comment = "[HIGH] scanned y_min..y_max @$9A69-$9A92 for a clear cell, then &local9 (LEAL $FFFA) stepped by step_coord; row arg to wait/commit" }
+local10 = { name = "cursor_col", comment = "[HIGH] scanned x_min..x_max @$9A6F-$9A87, then &local10 (LEAL $FFFC) stepped; pushed last as col to wait/commit @$9AD6/$9AE3" }
+local11 = { name = "dir_code", comment = "[HIGH] STORE 11 of wait_button_press_debounced() @$9ADB; CMPNE 48 (confirm); pushed as dir arg3 to step_coord_from_dir_code @$9A9C" }
+
+[vars.bank2."0x86F9"]
+# select_menu_entry_by_cursor
+arg1 = { name = "cursor_col", comment = "[HIGH] PUSH_quick 12 last to poll_cursor_input_until_button @$871A; caller $90B5 pushes cur_unit_col_ptr byte last" }
+arg2 = { name = "cursor_row", comment = "[HIGH] PUSH_quick 13 to poll_cursor_input_until_button @$8719; caller $90B0 pushes cur_unit_row_ptr byte" }
+local10 = { name = "menu_idx", comment = "[HIGH] zeroed @$870B; DEC/INC wrap 5/0 @$875C/$876C; set 6 on key 2 @$8734; indexes byte table $B52F for the return @$8712" }
+local11 = { name = "done", comment = "[HIGH] zeroed @$870D; set 1 on keys 1/2 @$873C; loop test JUMPF @$870F exits when set" }
+
+[vars.bank2."0x8669"]
+# combat_command_menu_input_loop
+arg1 = { name = "cursor_col", comment = "[HIGH] PUSH_quick 12 last to poll_cursor_input_until_button @$8684; caller $AD02 pushes cur_unit_col_ptr byte last" }
+arg2 = { name = "cursor_row", comment = "[HIGH] PUSH_quick 13 to poll_cursor_input_until_button @$8683; caller $ACFD pushes cur_unit_row_ptr byte" }
+local10 = { name = "menu_idx", comment = "[HIGH] zeroed @$867A; DEC/INC with wrap to 5/0 @$86C4/$86D3; set 4 on key 2 @$869E; returned @$8681" }
+local11 = { name = "done", comment = "[HIGH] zeroed @$867C; set 1 on keys 1/2 @$86A6; loop test JUMPF @$867E exits when set" }
+
+[vars.bank2."0x8623"]
+# poll_cursor_input_until_button
+arg1 = { name = "cursor_col", comment = "[HIGH] PUSH_quick 12 last before set_tactical_cursor_pos @$8629; callers $8684/$871A forward their arg1 (cur unit col byte)" }
+arg2 = { name = "cursor_row", comment = "[HIGH] PUSH_quick 13 as 2nd arg of set_tactical_cursor_pos @$8628; callers forward their arg2 (cur unit row byte)" }
+local10 = { name = "tick", comment = "[HIGH] zeroed @$8634/$8652, INC + UCMPLT 100 loops @$863D/$865D: blink timer for each half of the cursor blink" }
+local11 = { name = "input_code", comment = "[HIGH] STORE 11 of tactical_cursor_input_validate_redraw() @$8638/$8656; returned when nonzero @$8650/$865B; callers SWITCH on it" }
+
+[vars.bank2."0x85A7"]
+# tactical_cursor_input_validate_redraw
+local9 = { name = "saved_cursor_row", comment = "[HIGH] LOADL_abs ui_cursor_row -> STORE 9 @$85E1/$8616 before erase_cursor_advance_phase; pushed as set_cursor arg2 (row) @$85F3" }
+local10 = { name = "saved_cursor_col", comment = "[HIGH] LOADL_abs ui_window_col -> STORE 10 @$85DD/$8612; pushed last as set_cursor arg1 (col) @$85F4 to restore the cursor" }
+local11 = { name = "input_code", comment = "[HIGH] STORE 11 of poll_input() @$85AF, SWITCHed on; zeroed @$85FF on default/handled keys; returned @$8600" }
+
+[vars.bank2."0x8561"]
+# wait_button_press_debounced
+arg1 = { name = "cursor_col", comment = "[HIGH] PUSH_quick 12 last before set_tactical_cursor_pos @$8567; caller $9AD6 pushes its local10 (cursor col) last" }
+arg2 = { name = "cursor_row", comment = "[HIGH] PUSH_quick 13 as 2nd arg of set_tactical_cursor_pos @$8566; caller $9AD5 pushes its local9 (cursor row)" }
+local10 = { name = "tick", comment = "[HIGH] zeroed @$8572/$8590, INC + UCMPLT 100 loops @$857B/$859B: blink timer for each shown/hidden half" }
+local11 = { name = "dir_code", comment = "[HIGH] STORE_quick 11 of read_dpad_dir_code() @$8576/$8594; returned when nonzero @$858E/$8599; caller compares to 48" }
+
