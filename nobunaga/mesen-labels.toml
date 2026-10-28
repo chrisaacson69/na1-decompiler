@@ -3299,3 +3299,22 @@ local9 = { name = "stat_ptr", comment = "[HIGH] STORE_quick 9 @$850E = &province
 local10 = { name = "daimyo_stat_ptr", comment = "[HIGH] STORE_quick 10 @$8504 = fief_to_daimyo_record_addr(arg1); post-inc byte deref @$853C to draw_province_stat3_or_dashes" }
 local11 = { name = "stat_idx", comment = "[HIGH] Loop 0..17 (UCMPLT 18 @$855F); <6 picks column/draw fn, indexes fief_stat_name_ptrs @$8526, sets cursor row" }
 
+# --- bank-01 var-walk far-frame batch (--merge, new sections) (4 subs) ---
+[vars.bank1."0x8C68"]
+# random_daimyo_stat_increment
+local11 = { name = "daimyo_record", comment = "[HIGH] STORE_quick 11 @$8C82 from selected_province_daimyo_record; base for byte +1..+5 += 2, byte +1 capped at 200 ($8C91..$8CA0)" }
+
+[vars.bank1."0x8BF4"]
+# apply_hire_unit_stats
+arg1 = { name = "fief", comment = "[HIGH] Province rec ptr: LOADL_quick 12 +16 men,+18 morale,+20 skill,+22 arms (POPSTORE), +24 header read; callers push own slot last" }
+arg2 = { name = "hired_men", comment = "[HIGH] PUSH_quick 13 as weight in 3 weighted_average_capped calls (morale/skill/arms), then fief+16 men += arg2 at $8C5E..$8C66" }
+
+[vars.bank1."0x8BC1"]
+# compute_bribe_effect_value
+arg1 = { name = "stat_ptr", comment = "[MED] Word pointer: LOADL_quick 12;DEREF to min_word, PUSH_quick 12 at $8BDF is word_sub_saturating target; 'loyalty' not provable here" }
+arg2 = { name = "amount", comment = "[HIGH] PUSH_quick 13 as min_word arg1 vs *arg1, +1 is pct_op base (pct rng 30..54); caller $8D82 pushes sqrt_int(its arg1)" }
+
+[vars.bank1."0x8B8F"]
+# play_result_jingle
+arg1 = { name = "failed", comment = "[MED] Bool, 1 = failure path: LOADL_quick 12/JUMPT picks sound 8 else 7. Bribe-fail branch $8DBF pushes 1; success $8D96, $9E72 push 0" }
+

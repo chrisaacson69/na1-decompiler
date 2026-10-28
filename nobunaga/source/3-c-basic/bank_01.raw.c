@@ -782,9 +782,9 @@ L_8B7A:
 // $8B8F play_result_jingle
 // (body @ $8B94)
 
-word play_result_jingle(word arg1) {
+word play_result_jingle(word failed) {
     syscall_audio_control(0, 0);    // $8B97
-    call_bank10_entry((arg1 ? 8 : 7));    // $8BA5
+    call_bank10_entry((failed ? 8 : 7));    // $8BA5
     if ((audio_wait_gate != 1)) goto L_8BBB;    // $8BAE
 L_8BB1:
     if (syscall_audio_control(1, 2)) goto L_8BB1;    // $8BB8
@@ -796,8 +796,8 @@ L_8BBB:
 // $8BC1 compute_bribe_effect_value
 // (body @ $8BC6)
 
-word compute_bribe_effect_value(word arg1, word arg2) {
-    return word_sub_saturating(arg1, (pct_op((min_word(arg2, *(word*)(arg1)) + 1), (rng_mod(25) + 30)) + 1));    // $8BE4
+word compute_bribe_effect_value(word stat_ptr, word amount) {
+    return word_sub_saturating(stat_ptr, (pct_op((min_word(amount, *(word*)(stat_ptr)) + 1), (rng_mod(25) + 30)) + 1));    // $8BE4
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8BE5
@@ -812,12 +812,12 @@ word effect_send(word ceiling, word current, word budget) {
 // $8BF4 apply_hire_unit_stats
 // (body @ $8BF9)
 
-word apply_hire_unit_stats(word arg1, word arg2) {
-    arg1->morale = weighted_average_capped(arg1->morale, (rng_mod(20) + 40), arg2, arg1->men, arg1->header);    // $8C1A
-    arg1->skill = weighted_average_capped(arg1->skill, (rng_mod(20) + 60), arg2, arg1->men, arg1->header);    // $8C3C
-    arg1->arms = weighted_average_capped(arg1->arms, (rng_mod(10) + 50), arg2, arg1->arms, arg1->header);    // $8C5D
-    arg1->men = (arg1->men + arg2);    // $8C66
-    return arg1->men;    // $8C67
+word apply_hire_unit_stats(word fief, word hired_men) {
+    fief->morale = weighted_average_capped(fief->morale, (rng_mod(20) + 40), hired_men, fief->men, fief->header);    // $8C1A
+    fief->skill = weighted_average_capped(fief->skill, (rng_mod(20) + 60), hired_men, fief->men, fief->header);    // $8C3C
+    fief->arms = weighted_average_capped(fief->arms, (rng_mod(10) + 50), hired_men, fief->arms, fief->header);    // $8C5D
+    fief->men = (fief->men + hired_men);    // $8C66
+    return fief->men;    // $8C67
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8C68
@@ -827,10 +827,10 @@ word apply_hire_unit_stats(word arg1, word arg2) {
 word random_daimyo_stat_increment(void) {
     if (get_province_ai_state(selected_province_idx)) goto L_8CA1;    // $8C74
     if (rng_mod(10)) goto L_8CA1;    // $8C7C
-    local11 = selected_province_daimyo_record();    // $8C82
-    *(byte*)(((rng_mod(5) + local11) + 1)) = (*(byte*)(((rng_mod(5) + local11) + 1)) + 2);    // $8C90
-    if (!((*(byte*)((local11 + 1)) >= 200))) goto L_8CA1;    // $8C98
-    *(byte*)((local11 + 1)) = -56;    // $8CA0
+    daimyo_record = selected_province_daimyo_record();    // $8C82
+    *(byte*)(((rng_mod(5) + daimyo_record) + 1)) = (*(byte*)(((rng_mod(5) + daimyo_record) + 1)) + 2);    // $8C90
+    if (!((*(byte*)((daimyo_record + 1)) >= 200))) goto L_8CA1;    // $8C98
+    *(byte*)((daimyo_record + 1)) = -56;    // $8CA0
 L_8CA1:
     return 255;    // $8CA4
 }
