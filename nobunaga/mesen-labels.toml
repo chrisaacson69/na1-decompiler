@@ -2795,3 +2795,28 @@ arg3 = { name = "divisor", comment = "[HIGH] Divisor c: zero test LOADL_quick 14
 arg1 = { name = "part", comment = "[HIGH] Numerator share: 100*arg1/(arg1+arg2) (LOADL_quick 12 @$D6F2,$D6FB, LONG $19 100, $01, $02); 0 if both args zero" }
 arg2 = { name = "other_part", comment = "[HIGH] Complement added to arg1 for denominator: LOADL_quick 13 @$D6ED, LONG $03 add with arg1; zero-check @$D6E7" }
 
+# --- bank-15 var-walk batch via var-walk-apply.py (5 subs / 8 slots) ---
+# propose@C (role + caller-propagation) -> independent verify@bytecode; names are the verifier's.
+[vars.bank15."0xD70D"]
+# pct_op
+arg1 = { name = "base", comment = "[HIGH] Value scaled: LOADL_quick 12 returned as-is when arg2==100 ($D719); else split /10,%10 and multiplied by arg2. Callers push deref'd stats last" }
+arg2 = { name = "percent", comment = "[HIGH] Percent: CMPEQ vs 100 at $D715; result ~ base*arg2/100 computed piecewise. Callers push rng_mod(n)+k (e.g. $85A3 +80) or const 70 first" }
+
+[vars.bank15."0xD73E"]
+# delay_loop
+arg1 = { name = "count", comment = "[HIGH] Outer pass count: LOADL 12/DEC/STORE 12/INC/JUMPT $D755 runs arg1 passes; callers push 2, 50, 98" }
+local11 = { name = "spin", comment = "[HIGH] Inner busy-wait counter: set to $00F0 at $D746, DEC/STORE_quick 11 until zero ($D74A-$D74E)" }
+
+[vars.bank15."0xD772"]
+# fief_owner
+arg1 = { name = "fief", comment = "[HIGH] Fief index: LOADL_quick 12 + $6E15 fief_to_daimyo_map, BYTE_DEREF returned; callers push fief loop locals / fief args" }
+
+[vars.bank15."0xD7CD"]
+# daimyo_record_addr
+arg1 = { name = "daimyo", comment = "[HIGH] Daimyo index: LOADL_quick 12 *7 + $752F daimyo_table returned; $D7DA caller pushes fief_owner() result" }
+
+[vars.bank15."0xD7F7"]
+# clear_econ_stats_if_no_output
+arg1 = { name = "fief", comment = "[HIGH] Fief index: LOADL_quick 12 *26 + $7001 province_table_live; callers push battle_defending_province / own fief arg" }
+local11 = { name = "fief_rec", comment = "[HIGH] Province record ptr (STORE_quick 11 $D804): +8 output read ($D807), +12 loyalty and +14 wealth zeroed via POPSTORE" }
+

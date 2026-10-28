@@ -1140,28 +1140,28 @@ word math32_2arg(word part, word other_part) {
 // $D70D pct_op
 // (body @ $D712)
 
-word pct_op(word arg1, word arg2) {
-    if ((arg2 != 100)) goto L_D71B;    // $D716
-    return arg1;    // $D71A
+word pct_op(word base, word percent) {
+    if ((percent != 100)) goto L_D71B;    // $D716
+    return base;    // $D71A
 L_D71B:
-    return (((((arg2 % 10) * (arg1 / 10)) / 10) + (((arg1 % 10) * arg2) / 100)) + ((arg2 / 10) * (arg1 / 10)));    // $D73D
+    return (((((percent % 10) * (base / 10)) / 10) + (((base % 10) * percent) / 100)) + ((percent / 10) * (base / 10)));    // $D73D
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D73E
 // $D73E delay_loop
 // (body @ $D743)
 
-word delay_loop(word arg1) {
+word delay_loop(word count) {
     goto L_D751;    // $D743
 L_D746:
-    local11 = 240;    // $D749
+    spin = 240;    // $D749
 L_D74A:
-    local11 = (local11 - 1);    // $D74C
-    if (local11) goto L_D74A;    // $D74E
+    spin = (spin - 1);    // $D74C
+    if (spin) goto L_D74A;    // $D74E
 L_D751:
-    arg1 = (arg1 - 1);    // $D753
-    if ((arg1 + 1)) goto L_D746;    // $D755
-    return (arg1 + 1);    // $D758
+    count = (count - 1);    // $D753
+    if ((count + 1)) goto L_D746;    // $D755
+    return (count + 1);    // $D758
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D759
@@ -1185,8 +1185,8 @@ word confirm_prompt(void) {
 // $D772 fief_owner
 // (body @ $D777)
 
-word fief_owner(word arg1) {
-    return fief_to_daimyo_map[arg1];    // $D77D
+word fief_owner(word fief) {
+    return fief_to_daimyo_map[fief];    // $D77D
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D77E
@@ -1222,8 +1222,8 @@ word draw_daimyo_name(word arg1) {
 // $D7CD daimyo_record_addr
 // (body @ $D7D2)
 
-word daimyo_record_addr(word arg1) {
-    return &daimyo_table[arg1];    // $D7D9
+word daimyo_record_addr(word daimyo) {
+    return &daimyo_table[daimyo];    // $D7D9
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $D7DA
@@ -1246,12 +1246,12 @@ word selected_province_daimyo_record(void) {
 // $D7F7 clear_econ_stats_if_no_output
 // (body @ $D7FC)
 
-word clear_econ_stats_if_no_output(word arg1) {
-    local11 = &province_table_live[arg1];    // $D804
-    phi_ret_d814 = local11->output;    // $D808
+word clear_econ_stats_if_no_output(word fief) {
+    fief_rec = &province_table_live[fief];    // $D804
+    phi_ret_d814 = fief_rec->output;    // $D808
     if (phi_ret_d814) goto L_D814;    // $D808
-    local11->wealth = 0;    // $D812
-    local11->loyalty = 0;    // $D813
+    fief_rec->wealth = 0;    // $D812
+    fief_rec->loyalty = 0;    // $D813
     phi_ret_d814 = 0;    // $D813
 L_D814:
     return phi_ret_d814;    // $D814
