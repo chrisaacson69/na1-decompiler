@@ -258,7 +258,7 @@ VM bytecode disassembly
   $81C1  D1                         DEC
   $81C2  D3                         BYTE_DEREF
   $81C3  B3                         PUSHL
-  $81C4  E9 03 80 02                CALL_abs_imm1          $8003 (cutscene_delay) {bytecode}, $02
+  $81C4  E9 03 80 02                CALL_abs_imm1          $8003 (busy_wait_delay) {bytecode}, $02
   $81C8  D6 1A 81                   JUMP_abs               $811A
  >$81CB  81 DD                      LOADL_near             $DD
   $81CD  D0                         INC

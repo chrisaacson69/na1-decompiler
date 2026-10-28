@@ -5,10 +5,10 @@
 // Pipeline: titles disasm -> vm_decompile  (--raw: direct goto/label form, the structurer baseline)
 // ============================================================
 // Decompiled from source/2-asm-vm/bank_14_vm.asm sub $8003
-// $8003 cutscene_delay
+// $8003 busy_wait_delay
 // (body @ $8008)
 
-word cutscene_delay(word arg1) {
+word busy_wait_delay(word arg1) {
     goto L_8018;    // $8008
 L_800B:
     local11 = 50;    // $800D
@@ -130,7 +130,7 @@ L_8195:
 L_81BC:
     draw_sprite_grid(local7, local10, local9, *(word*)(((*(byte*)((*(word*)(fp - 35) - 1)) << 1) + (fp - 53))));    // $81B8
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81BF
-    cutscene_delay(*(byte*)((*(word*)(fp - 35) - 1)));    // $81C4
+    busy_wait_delay(*(byte*)((*(word*)(fp - 35) - 1)));    // $81C4
     goto L_811A;    // $81C8
 L_81CB:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $81CE
