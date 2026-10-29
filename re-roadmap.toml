@@ -23,7 +23,7 @@ evidence = ["nobunaga/01-boot-and-dispatch.md", "nobunaga/05-bytecode-vm.md", "n
 status   = "done"
 gate     = "window_check na1: 16 banks of 16K, 0 problems. Every bytecode bank tiles: gates.roundtrip --game na1 re-encodes 499 subs, 45,711 code bytes in banks 0/1/2/10/14/15 byte-identical (ROUND-TRIP CLEAN). The shared toolchain's assumptions, re-derived on NA1's own handlers: operand lengths (tools/koei_isa_probe.py na1: 0 live opcodes disagree with the decoder), stack effects (gates.stack_audit: 187/208 gated opcodes confirmed, 21 never emitted in NA1), compare direction and signedness (gates.compare_probe: 10/10 16-bit and 10/10 32-bit ext-op names; new in this revisit, converted from the atticked NA1 probe; a planted C3/C5 swap fails it). One opcode table, emu-harness's, read through nobunaga_vm.OPCODES_PATH; the legacy nobunaga/vm-opcodes.toml is retired and the appendix regenerates from the shared table (it differs from the June appendix by the 4 lengths row F2 measured: $AD 2, $E0-$E2 2). Re-checked on emu-harness 04abd4d after the 2026-10-28 decompiler commits (8657242, 3e075f8, 04abd4d): window_check 0 problems, round-trip 499 subs byte-identical, stack audit 187, compare probe 10/10 + 10/10, koei_isa_probe 0 live opcodes disagree."
 checked  = "2026-10-28"
-toolset  = "04abd4d"
+toolset  = "4678989"
 evidence = ["nobunaga/source/2-asm-vm/", "nobunaga/appendix-vm-opcodes.md", "nobunaga/tools/gen-opcode-appendix.py"]
 
 [phase.discover]
@@ -44,7 +44,7 @@ evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobun
 status   = "done"
 gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). invert_condition parses the top level (emu-harness 3c3900e): the textual one flipped the comparison inside an already-negated !(...), so 3 NA1 sites inverted !(A || B) to A && !B ($82E9 is_cell_clear_of_bits, $89FD, $930A; the ROM sides with the goto form, $82DB(0, 5) = 1); 83 if-lines change on regen, 3 in meaning; cfg_gate stays CLEAN (it checks CFG shape, not rewritten polarity); the test checks each inversion by value and plants the textual one. gates.value_probe (emu-harness f556de3): the rendered C of 5 fixture subs (min_word, max_word, is_tile_in_bounds, unit_strength_ptr, is_cell_clear_of_bits) evaluated over 684 inputs equals titles.run_sub, a call running its callee on the ROM so argument order counts; planted, the textual inverter and reversed call arguments each fail it. The attic is read and retired (tools/RETIRED.md)."
 checked  = "2026-10-28"
-toolset  = "04abd4d"
+toolset  = "4678989"
 evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
 
 [phase.naming]
@@ -88,10 +88,11 @@ closed = "2026-10-29: regenerated from the discover walk instead of relabelling 
 item   = "Regenerate 4-c / 3-c-basic: the engine restores 19 asset-enum names (trigger_cutscene(CUTSCENE_...), call_bank10_entry(AUDIO_...)). source/README.md says decompile_all no longer runs: it does again. v2-corpus.py still loads the long-gone decompile-all.py."
 phase  = "presentation"
 source = "emu-harness MIGRATION.md row F1b"
-status = "open"
+status = "closed"
+closed = "2026-10-29: done by the 10-28 / 10-29 regenerations (play_audio(AUDIO_...), trigger_cutscene(CUTSCENE_...) render); source/README.md's regen section rewritten for na1_regen.py; v2-corpus.py no longer exists."
 
 [[revisit]]
-item   = "Before the next walk batch: regenerate source/ (py -3.14 tools/na1_regen.py), since the committed C predates the engine's enum names / banner / F2 fixes (18 files change) and every batch's guard would refuse the non-rename diff. Since 3c3900e the committed C is also wrong in meaning at 3 sites ($82E9, $89FD, $930A inverted an || to an &&). source/4-c/all_banks.c: emu-harness has cli/decompile_merged.py (found 2026-10-27), never run on NA1 since the move; run it or retire all_banks.c."
+item   = "source/4-c/all_banks.c (the regeneration this item first asked for is done, the 3 inverted || sites included): emu-harness has cli/decompile_merged.py (found 2026-10-27), never run on NA1 since the move; run it or retire all_banks.c."
 phase  = "presentation"
 source = "emu-harness MIGRATION.md row J"
 status = "open"
@@ -133,7 +134,8 @@ status = "open"
 item   = "All KOEI NES titles: committed .mlb added 2026-10-23; regenerate after registry edits. Committed 2-asm-vm listings say 'labels: 0 CPU addresses named'; a regeneration shows the real count."
 phase  = "presentation"
 source = "emu-harness MIGRATION.md rows A gap, F1b (all KOEI NES titles)"
-status = "open"
+status = "closed"
+closed = "2026-10-29 (NA1's part): the .mlb regenerated after the top-down renames (mesen-labels.py --mlb: 1,262 PRG + 97 SRAM labels); the 2-asm-vm listings already print the real count (1,373 CPU addresses named). The other titles' .mlb are their own repos'."
 
 [[revisit]]
 item   = "All KOEI NES titles: cross-title name drift (match family proposes RENAME / READ / FILL across the family). For NA1, the root, read it the other way: where a descendant's independently walked name disagrees with NA1's, the lower artifact decides which is wrong. Apply, then regenerate .mlb / listings / C."
