@@ -15,8 +15,8 @@ created: 2026-06-11
 |---|---|---|---|
 | `animations/` | the 21 lord-command + cutscene animations (GIFs) — **canonical, command-named** | `run-animation.py` → promoted | `<command>.gif` (e.g. `grow.gif`); cutscene-only ids as `anim-<id>.gif` |
 | `animations/frames/` | per-animation frame-sheet PNGs (debug/reference, build artifacts) | `run-animation.py` | `<command>-frames.png` / `anim-<id>-frames.png` |
-| `maps/fiefs/` | the 17 per-fief tactical maps (sram/ppu/full-map renders + the `fief-NN-name` grid set) | `render-atlas.py`, `render-fief-from-ppu.py`, `render-from-sram.py` | `fief-NN-name.png`, `<fief>-{ppu,sram}-render.png` |
-| `maps/strategic/` | world / strategic-overview maps + the overview atlases | `render-strategic-map.py`, `render-strategic-atlas.py`, `render-atlas.py` | `strategic-*.png`, `atlas-overview*.png` |
+| `maps/fiefs/` | the per-fief tactical maps from ROM, both scenarios, + the daimyo banners | `batch-render-fief-maps.py` (`render-fief-truecolor.py`), `render-daimyo-banners.py` | `{17,50}/fief-NN.png`, `daimyo-banners-{17,50}.png` |
+| `maps/strategic/` | the illustrated strategic map (contact sheets, stitched whole map + hotspot coords, sections) and the 50-fief adjacency graph | `render-strategic-map.py`, `render-strategic-50.py` | `strategic-*.png`, `*.coords.json` |
 | `portraits/` | daimyo portraits (anthologies, composites) | `render-portrait.py` | `daimyo-*.png`, `portrait-*.png` |
 | `screens/` | title / boot / UI / font / turn-loop renders | `render-text.py`, misc | `title*.png`, `text.png`, `font-*.png` |
 | `rom/` | raw ROM asset extractions (per-scenario terrain etc.) | `render-rom-atlas.py` | `rom-NN/`, `rom-*.png` |

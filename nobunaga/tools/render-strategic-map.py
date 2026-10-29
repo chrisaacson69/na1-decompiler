@@ -3,7 +3,7 @@
 straight from ROM bytes — no PPU/emulation needed.
 
 This is the *art* map (terrain tiles drawn by the cartridge), NOT the schematic
-adjacency graphs that render-strategic-atlas.py / render-strategic-50.py draw,
+adjacency graph that render-strategic-50.py draws,
 and NOT the tactical battle grid that render-rom-to-map.py builds.
 
 How it works (decoded 2026-06-02, see ROADMAP "PULL THE REAL STRATEGIC MAP"):

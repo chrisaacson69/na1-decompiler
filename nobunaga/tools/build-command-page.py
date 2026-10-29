@@ -1069,12 +1069,11 @@ COMMANDS = {
     "callout": (
       "<b>Why it’s a one-paragraph page.</b> Map touches nothing — no province field, no daimyo "
       "record, no relations matrix — and unlike every other entry on the menu it doesn’t end your "
-      "turn. Two different map artifacts exist in this project: the <i>schematic</i> node-link "
-      "adjacency atlases (<code>tools/render-strategic-atlas.py</code> / "
-      "<code>render-strategic-50.py</code>, built from the adjacency table + fief coordinates) — "
-      "useful, but <b>not</b> the game’s art — and the actual <b>illustrated</b> map this command "
-      "blits from bank 4, a separate from-ROM render still to be pulled (tracked in the ROADMAP) for "
-      "both the 17- and 50-fief layouts."),
+      "turn. Two different map artifacts exist in this project: the <i>schematic</i> 50-fief "
+      "adjacency graph (<code>tools/render-strategic-50.py</code>, built from the adjacency table + "
+      "fief coordinates) — useful, but <b>not</b> the game’s art — and the actual <b>illustrated</b> "
+      "map this command blits from bank 4, rendered from ROM by "
+      "<code>tools/render-strategic-map.py</code> for both the 17- and 50-fief layouts."),
   },
 
   # ---- Other: the system / options menu (settings + Save) ----

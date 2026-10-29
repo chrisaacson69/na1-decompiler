@@ -108,3 +108,12 @@ verdict.
 | `verify-50fief-align.py` | `c020647` | Checked the 50-fief name and stats tables are index-aligned: they are (name[24] = Owari = stats[24]). |
 | `zp-harvest.py` | `82a20fd` | Zero-page usage counts from nes-disasm6 listings (needed them in its cwd); the data phase named the zero page. |
 | `vm_assemble.py`, `vm-roundtrip.py` | `c621c0f` | 10-line shims into emu-harness. Run the modules: `py -3.14 -m emu_harness.vm.koei.nes.vm_assemble <bank>`, `... .gates.roundtrip`. |
+
+## Failed map experiments (retired 2026-10-29, the assets phase)
+
+Chris: a fief map shows an interesting part of a territory, not the territory, so stitching fief maps into one map was a failed experiment. The whole map is the cartridge's own, `render-strategic-map.py`.
+
+| Script | Last commit | What it did, and why it went |
+|---|---|---|
+| `render-atlas.py` | `a3b4d31` | Drew the 17 fief maps from bank-4 `$A57E` as a static cell table, plus `atlas-overview*.png` / `atlas-summary.txt`. The hypothesis was disproven 2026-05-21 (its Mino is `{town:18, forest:35}`, the game's 15 clear / 26 forest / 12 mountain): the maps are emitted by bytecode at battle init. The fief maps now come from `batch-render-fief-maps.py`. Its outputs went with it. |
+| `render-strategic-atlas.py` | `a3b4d31` | Composited the 17 fief maps at geographic positions with an adjacency overlay (`strategic-atlas-with-adjacencies*.png`). Its inputs, capture renders, were removed in `27c16cb`, so it could not rebuild its own output; and the stitch was the failed experiment above. Its outputs went with it. |
