@@ -11,7 +11,7 @@ The toml is authoritative; this tool NEVER writes back to it. Targets:
                  defects and labels Mesen would drop are printed.
 
   --asm          Regenerate source/1-asm-6502/bank_NN_labeled.asm (code banks
-                 0/1/2/15) from each raw bank_NN.asm, rewriting code labels
+                 0/1/2/10/14/15) via tools/labeled_6502.py, rewriting code labels
                  (b{NN}_{addr} definitions + jsr/jmp/branch operands) and RAM/SaveRAM
                  operands ($0000-$07FF / $6000-$7FFF) to their toml names. These files
                  are COMMITTED and must stay in sync with the toml -- see --verify.
@@ -174,56 +174,38 @@ def emit_mlb(out_path):
 # raw disasm uses symbolic b15_ operands so code-label propagation is full; banks
 # 0/1/2 use raw $XXXX operands (their code reads better as decompiled/*.c), so
 # they mainly gain RAM-operand labels here.
-CODE_BANKS = (0, 1, 2, 15)
+CODE_BANKS = (0, 1, 2, 10, 14, 15)      # every bank with bytecode (the VM listings' set)
 FIXED_BANK = 15
 
 
-def _asm_maps():
-    from emu_harness.passes import listing
-    code, ram = listing.disasm6_maps(TOML, FIXED_BANK)
-    return listing, code, ram, listing.fixed_anchors(code, FIXED_BANK, BANK_SIZE)
-
-
-def _regen_one(bank, listing, code, ram, anchors):
-    """Return (raw_path, labeled_path, regenerated_text, nc, nr, inserted) or None."""
-    raw = DISASM / f"bank_{bank:02d}.asm"
-    if not raw.exists():
-        return None
-    text = raw.read_text(encoding="utf-8")
-    # Anchor insertion is fixed-bank only -> bank 15's file.
-    bank_anchors = anchors if bank == FIXED_BANK else None
-    labeled, nc, nr, inserted = listing.relabel_disasm6(text, code, ram, bank_anchors)
-    out = raw.with_name(raw.stem + "_labeled.asm")
-    return raw, out, labeled, nc, nr, inserted
+def _regen_one(bank):
+    """Return (labeled_path, regenerated_text). The view comes from tools/labeled_6502.py: the discover
+    walk's native code, bytecode subs as a pointer to the VM listing, data as rows. (Until 2026-10-29 this
+    relabelled nes-disasm6's force-decoded bank_NN.asm: every line labelled b15_xxxx, bytecode decoded as
+    6502; passes.listing.relabel_disasm6 still exists for titles that keep that dialect.)"""
+    import labeled_6502
+    return DISASM / f"bank_{bank:02d}_labeled.asm", labeled_6502.render_bank(bank)
 
 
 def emit_labeled_asm(labels, dry_run=False):
-    listing, code, ram, anchors = _asm_maps()
     results = []
     for bank in CODE_BANKS:
-        r = _regen_one(bank, listing, code, ram, anchors)
-        if r is None:
-            continue
-        _, out, labeled, nc, nr, inserted = r
+        out, text = _regen_one(bank)
         if not dry_run:
-            out.write_text(labeled, encoding="utf-8")
-        results.append((out.name, nc, nr, inserted))
+            out.write_text(text, encoding="utf-8")
+        results.append((out.name, len(text.splitlines()), 0, []))
     return results
 
 
 def verify_labeled_asm(labels):
     """Compare each committed *_labeled.asm against a fresh in-memory regen.
     Returns list of (filename, status) where status is 'ok' | 'STALE' | 'missing'."""
-    listing, code, ram, anchors = _asm_maps()
     results = []
     for bank in CODE_BANKS:
-        r = _regen_one(bank, listing, code, ram, anchors)
-        if r is None:
-            continue
-        _, out, labeled, _, _, _ = r
+        out, text = _regen_one(bank)
         if not out.exists():
             results.append((out.name, "missing"))
-        elif out.read_text(encoding="utf-8") == labeled:
+        elif out.read_text(encoding="utf-8") == text:
             results.append((out.name, "ok"))
         else:
             results.append((out.name, "STALE"))
@@ -285,8 +267,7 @@ def main():
     if args.asm or args.dry_run:
         verb = "Would write" if args.dry_run else "Wrote"
         for name, nc, nr, inserted in emit_labeled_asm(labels, dry_run=args.dry_run):
-            tail = f", {len(inserted)} anchors inserted" if inserted else ""
-            print(f"{verb} {name}: {nc} code labels, {nr} RAM operands applied{tail}")
+            print(f"{verb} {name}: {nc} lines")
             for off, nm in inserted:
                 print(f"    + anchor @file ${off:05X} (cpu ${0xC000 + (off & 0x3FFF):04X}): {nm}")
 
