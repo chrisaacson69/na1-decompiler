@@ -95,7 +95,8 @@ closed = "2026-10-29: done by the 10-28 / 10-29 regenerations (play_audio(AUDIO_
 item   = "source/4-c/all_banks.c (the regeneration this item first asked for is done, the 3 inverted || sites included): emu-harness has cli/decompile_merged.py (found 2026-10-27), never run on NA1 since the move; run it or retire all_banks.c."
 phase  = "presentation"
 source = "emu-harness MIGRATION.md row J"
-status = "open"
+status = "closed"
+closed = "2026-10-29: kept and regenerated. emu-harness decompile_merged now builds it from the committed per-bank C (it had re-decompiled with DREAM off: 349 of 499 subs in V1 form), writes the declarations once, and finds the trampolines by address. na1_regen writes source/4-c/all_banks.c and source/3-c-basic/all_banks.raw.c after the per-bank files: 499 subs each, every body equal to its bank file's."
 
 [[revisit]]
 item   = "nobunaga/vm-opcodes.toml is a legacy opcode table (the old spec's lengths) still read by analyze-vm-opcodes / gen-opcode-appendix; point them at the shared table and retire it."

@@ -57,6 +57,14 @@ def regen(banks=BANKS):
                 body = f.read_text(encoding="utf-8")
                 head = BANNER.format(rel=o.split("source/", 1)[1], bank=b, raw="  (--raw: direct goto/label form, the structurer baseline)" if x else " -> DREAM structurer (V2 fallback)")
                 f.write_text(head + body, encoding="utf-8")
+    # the merged one-file views, re-keyed from the per-bank C just written (never decompiled separately)
+    if set(banks) == set(BANKS):
+        for out, src, pat in (("source/4-c/all_banks.c", "source/4-c", "bank_{bank:02d}.c"),
+                              ("source/3-c-basic/all_banks.raw.c", "source/3-c-basic", "bank_{bank:02d}.raw.c")):
+            r = subprocess.run([sys.executable, "-m", "emu_harness.vm.koei.nes.cli.decompile_merged",
+                                "--out", out, "--source", src, "--pattern", pat], cwd=ROOT, capture_output=True, text=True)
+            if r.returncode != 0:
+                errs.append(f"decompile_merged {out}: {r.stdout[-400:]}{r.stderr[-400:]}")
     return errs
 
 
