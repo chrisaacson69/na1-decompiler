@@ -111,7 +111,7 @@ verdict.
 
 ## Failed map experiments (retired 2026-10-29, the assets phase)
 
-Chris: a fief map shows an interesting part of a territory, not the territory, so stitching fief maps into one map was a failed experiment. The whole map is the cartridge's own, `render-strategic-map.py`.
+Chris: a fief map shows an interesting part of a territory, not the territory, so stitching fief maps into one map was a failed experiment. (Stitching the overworld is different and still live: the strategic map's section pages overlap, and merging them into one map is `render-strategic-map.py --faithful`.) The whole map is the cartridge's own, `render-strategic-map.py`.
 
 | Script | Last commit | What it did, and why it went |
 |---|---|---|
