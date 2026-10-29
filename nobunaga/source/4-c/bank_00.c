@@ -265,12 +265,12 @@ word apply_scenario_starting_stat_boosts(void) {
                 j = (j + 1);    // $8422
             }
             field_ptr = &province_table_live[local11];    // $8432
-            field_ptr = (field_ptr + 2);    // $843B
+            field_ptr = &field_ptr->debt;    // $843B
             *(word*)((field_ptr + -2)) = (*(word*)((field_ptr + -2)) + (const_two * 10));    // $8442
             j = 0;    // $8444
             do {    // $8445
-                field_ptr = (field_ptr + 2);    // $844D
-                *(word*)(field_ptr) = (*(word*)(field_ptr) + (const_two * 5));    // $8452
+                field_ptr = &field_ptr->debt;    // $844D
+                field_ptr->gold = (field_ptr->gold + (const_two * 5));    // $8452
                 j = (j + 1);    // $8455
             } while (((unsigned)j < (unsigned)10));
             if ((scenario_fief_count == 50)) {    // $845C
@@ -301,7 +301,7 @@ word apply_scenario_starting_stat_boosts(void) {
             init_daimyo_arms_record(local11);    // $858F
         }
         field_ptr = &province_table_live[local11].stat_cap;    // $859B
-        *(word*)(field_ptr) = pct_op((*(word*)(field_ptr) + 1000), (rng_mod(20) + 80));    // $85B0
+        field_ptr->gold = pct_op((field_ptr->gold + 1000), (rng_mod(20) + 80));    // $85B0
         local11 = (local11 + 1);    // $85B3
     }
     local11 = 0;    // $85BD
@@ -1175,8 +1175,8 @@ word repay_province_debt_from_gold(word fief, word repay_amount) {
     if (!(fief->debt)) {    // $92AE
         return 1;    // $92B5
     } else {
-        repay_amount = min_word(repay_amount, min_word(*(word*)(fief), fief->debt));    // $92C7
-        *(word*)(fief) = (*(word*)(fief) - repay_amount);    // $92CE
+        repay_amount = min_word(repay_amount, min_word(fief->gold, fief->debt));    // $92C7
+        fief->gold = (fief->gold - repay_amount);    // $92CE
         fief->debt = (fief->debt - repay_amount);    // $92D6
         return 0;    // $92D8
     }
@@ -2162,7 +2162,7 @@ word update_province_highwater_marks(word fief_idx) {
 
 word event_boost_province_gold_output(word fief_idx, word fief) {
     charisma_bonus = (get_fief_daimyo_charisma(fief_idx) / 10);    // $A134
-    *(word*)(fief) = (*(word*)(fief) + (rng_mod(10) + charisma_bonus));    // $A142
+    fief->gold = (fief->gold + (rng_mod(10) + charisma_bonus));    // $A142
     phi_ret_a15a = rng_mod(2);    // $A148
     if (phi_ret_a15a) {    // $A12D
         fief->output = (fief->output + (rng_mod(10) + charisma_bonus));    // $A159
@@ -2177,12 +2177,12 @@ word event_boost_province_gold_output(word fief_idx, word fief) {
 
 word consume_province_army_upkeep(word fief) {
     upkeep = (fief->men / 2);    // $A166
-    affordable = min_word(*(word*)(fief), fief->rice);    // $A172
+    affordable = min_word(fief->gold, fief->rice);    // $A172
     if ((affordable < upkeep)) {    // $A160
         upkeep = affordable;    // $A179
         fief->men = (affordable << 1);    // $A180
     }
-    *(word*)(fief) = (*(word*)(fief) - upkeep);    // $A187
+    fief->gold = (fief->gold - upkeep);    // $A187
     fief->rice = (fief->rice - upkeep);    // $A18F
     return fief->rice;    // $A190
 }

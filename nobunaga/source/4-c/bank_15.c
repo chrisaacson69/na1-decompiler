@@ -1345,7 +1345,7 @@ word develop_gain(word amount, word stat_ptr, word companion_ptr) {
 // (body @ $D8F7)
 
 word develop_gain_capped_loyalty(word fief, word amount) {
-    gain = develop_gain(amount, (fief + 12), (fief + 8));    // $D902
+    gain = develop_gain(amount, &fief->loyalty, &fief->output);    // $D902
     headroom = (fief->stat_cap - fief->loyalty);    // $D90D
     if ((gain > (fief->stat_cap - fief->loyalty))) {    // $D8F7
         return headroom;    // $D916
@@ -1359,7 +1359,7 @@ word develop_gain_capped_loyalty(word fief, word amount) {
 // (body @ $D91E)
 
 word develop_gain_capped_wealth(word fief, word amount) {
-    gain = develop_gain(amount, (fief + 14), (fief + 4));    // $D929
+    gain = develop_gain(amount, &fief->wealth, &fief->town);    // $D929
     headroom = (fief->stat_cap - fief->wealth);    // $D934
     if ((gain > (fief->stat_cap - fief->wealth))) {    // $D91E
         return headroom;    // $D93D
@@ -1729,8 +1729,8 @@ word init_new_daimyo_province_stats(word fief) {
     field_ptr = &province_table_live[fief];    // $DDDB
     while (((unsigned)field_ptr < (unsigned)&fief_rec->stat_cap)) {    // $DE45
         if ((&province_table_live[fief].arms == field_ptr)) {    // $DDDE
-            *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), (rng_mod(31) + 50));    // $DDFC
-            if ((*(word*)(field_ptr) < 50)) {    // $DDEB
+            field_ptr->gold = pct_op(field_ptr->gold, (rng_mod(31) + 50));    // $DDFC
+            if ((field_ptr->gold < 50)) {    // $DDEB
                 phi_push_de3c = 50;    // $DE07
             } else {
                 phi_push_de3c = 0;    // $DE3B
@@ -1741,15 +1741,15 @@ word init_new_daimyo_province_stats(word fief) {
             } else {
                 phi_push_de27 = (rng_mod(30) + 30);    // $DE25
             }
-            *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), phi_push_de27);    // $DE2F
-            if ((*(word*)(field_ptr) < 10)) {    // $DE27
+            field_ptr->gold = pct_op(field_ptr->gold, phi_push_de27);    // $DE2F
+            if ((field_ptr->gold < 10)) {    // $DE27
                 phi_push_de3c = 10;    // $DE38
             } else {
                 phi_push_de3c = 0;    // $DE3B
             }
         }
-        *(word*)(field_ptr) = (*(word*)(field_ptr) + phi_push_de3c);    // $DE42
-        field_ptr = (field_ptr + 2);    // $DE44
+        field_ptr->gold = (field_ptr->gold + phi_push_de3c);    // $DE42
+        field_ptr = &field_ptr->debt;    // $DE44
     }
     province_table_live[fief].loyalty = (province_table_live[fief].loyalty + 50);    // $DE5E
     province_table_live[fief].morale = (province_table_live[fief].morale + 50);    // $DE6D

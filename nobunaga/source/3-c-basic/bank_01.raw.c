@@ -359,7 +359,7 @@ L_8522:
     goto L_855B;    // $8547
 L_854A:
     ui_window_col = 16;    // $854C
-    stat_ptr = (stat_ptr + 2);    // $8551
+    stat_ptr = &stat_ptr->debt;    // $8551
 L_855B:
     draw_province_stat_or_dashes(fief, *(word*)((stat_ptr + -2)));    // $8557
     stat_idx = (stat_idx + 1);    // $855D
@@ -446,13 +446,13 @@ L_8664:
     stat_ptr = &province_table_live[*(byte*)(fief_list_ptr)];    // $868B
     ui_window_col = (col_x - 1);    // $868E
     ui_cursor_row = (ui_cursor_row + 2);    // $8695
-    stat_ptr = (stat_ptr + 2);    // $869A
+    stat_ptr = &stat_ptr->debt;    // $869A
     draw_message(effect_view_b_fmt_4d_1, *(word*)((stat_ptr + -2)));    // $86A2
     local8 = 0;    // $86A7
 L_86A8:
     ui_window_col = (col_x - 1);    // $86AA
-    stat_ptr = (stat_ptr + 2);    // $86AF
-    draw_message(effect_view_b_fmt_4d_2, *(word*)(stat_ptr));    // $86B5
+    stat_ptr = &stat_ptr->debt;    // $86AF
+    draw_message(effect_view_b_fmt_4d_2, stat_ptr->gold);    // $86B5
     local8 = (local8 + 1);    // $86BB
     if ((local8 < 10)) goto L_86A8;    // $86BF
     ui_window_col = (col_x - 1);    // $86C4
@@ -604,7 +604,7 @@ L_88F3:
     local10 = math32_2arg(gain, fief->town);    // $88F8
 L_88FC:
     fief->wealth = (fief->wealth - pct_op(fief->wealth, (local10 / 2)));    // $8910
-    add_effect_gain_clamped((gain << 1), (fief + 4));    // $8917
+    add_effect_gain_clamped((gain << 1), &fief->town);    // $8917
     return gain;    // $891C
 }
 
@@ -1022,7 +1022,7 @@ L_906F:
     war_side_state_flag = 0;    // $906F
 L_9070:
     local11 = &province_table_live[selected_province_idx];    // $907D
-    attack_budget = min_word((*(word*)((local11 + 6)) << 1), min_word(*(word*)((local11 + 16)), *(word*)(local11)));    // $9094
+    attack_budget = min_word((local11->rice << 1), min_word(local11->men, local11->gold));    // $9094
     if ((attack_budget >= 5)) goto L_909D;    // $9098
     return 0;    // $909C
 L_909D:
@@ -1041,15 +1041,15 @@ L_90E8:
     spend_amount = pct_op(attack_budget, phi_push_90e8);    // $90EE
     war_attacker_men = spend_amount;    // $90F0
     war_attacker_gold = spend_amount;    // $90F3
-    *(word*)(local11) = (*(word*)(local11) - spend_amount);    // $90FC
-    *(word*)((local11 + 16)) = (*(word*)((local11 + 16)) - spend_amount);    // $9105
-    if (!(((unsigned)math32_2arg(*(word*)((local11 + 6)), spend_amount) > (unsigned)55))) goto L_9119;    // $9112
+    local11->gold = (local11->gold - spend_amount);    // $90FC
+    local11->men = (local11->men - spend_amount);    // $9105
+    if (!(((unsigned)math32_2arg(local11->rice, spend_amount) > (unsigned)55))) goto L_9119;    // $9112
     war_attacker_rice = spend_amount;    // $9116
     goto L_9130;    // $9116
 L_9119:
-    war_attacker_rice = min_word((*(word*)((local11 + 6)) - 1), pct_op(spend_amount, (rng_mod(10) + 50)));    // $912C
+    war_attacker_rice = min_word((local11->rice - 1), pct_op(spend_amount, (rng_mod(10) + 50)));    // $912C
 L_9130:
-    *(word*)((local11 + 6)) = (*(word*)((local11 + 6)) - war_attacker_rice);    // $913C
+    local11->rice = (local11->rice - war_attacker_rice);    // $913C
     if (ui_confirm_flag_6e7d) goto L_914F;    // $9140
     if (!((get_province_ai_state(battle_defending_province) == 5))) goto L_9159;    // $914C
 L_914F:
@@ -1059,8 +1059,8 @@ L_914F:
 L_9159:
     local11 = &province_table_live[battle_defending_province];    // $9163
     war_defender_gold = province_table_live[battle_defending_province].gold;    // $9165
-    war_defender_rice = *(word*)((local11 + 6));    // $916B
-    war_defender_men = *(word*)((local11 + 16));    // $9172
+    war_defender_rice = local11->rice;    // $916B
+    war_defender_men = local11->men;    // $9172
     ai_turn_loop_redispatch_flag = 0;    // $9176
     ai_attack_announce_prompt();    // $9179
 L_917F:
@@ -1610,7 +1610,7 @@ word driver_send(void) {
     open_message_window();    // $9A96
     local9 = effect_war_combat_prep_a(selected_province_idx);    // $9AA0
     if (!(local9)) goto L_9AE3;    // $9AA1
-    local9 = effect_send(target_ceiling, *(word*)((fief + 6)), local9);    // $9AAE
+    local9 = effect_send(target_ceiling, fief->rice, local9);    // $9AAE
     if (!(local9)) goto L_9AD9;    // $9AAF
     redraw_window(msg_rice);    // $9AB5
     ui_input_prompt_active_flag = 1;    // $9ABA
@@ -1626,7 +1626,7 @@ L_9AE3:
     confirm_prompt();    // $9AE0
     local9 = effect_war_combat_prep_c(selected_province_idx);    // $9AEA
     if (!(local9)) goto L_9B2C;    // $9AEB
-    local9 = effect_send(target_ceiling, *(word*)(fief), local9);    // $9AF7
+    local9 = effect_send(target_ceiling, fief->gold, local9);    // $9AF7
     if (!(local9)) goto L_9B22;    // $9AF8
     redraw_window(msg_gold);    // $9AFE
     ui_input_prompt_active_flag = 1;    // $9B03
@@ -1643,11 +1643,11 @@ L_9B2C:
     if (!((gold_amount || rice_amount))) goto L_9B7C;    // $9B31
     redraw_window(driver_send_is_this_ok);    // $9B37
     if (!(prompt_y_n())) goto L_9B7C;    // $9B3E
-    *(word*)(fief) = (*(word*)(fief) + gold_amount);    // $9B47
-    *(word*)((fief + 6)) = (*(word*)((fief + 6)) + rice_amount);    // $9B4F
+    fief->gold = (fief->gold + gold_amount);    // $9B47
+    fief->rice = (fief->rice + rice_amount);    // $9B4F
     fief = &province_table_live[selected_province_idx];    // $9B5A
-    *(word*)(fief) = (*(word*)(fief) - gold_amount);    // $9B61
-    *(word*)((fief + 6)) = (*(word*)((fief + 6)) - rice_amount);    // $9B69
+    fief->gold = (fief->gold - gold_amount);    // $9B61
+    fief->rice = (fief->rice - rice_amount);    // $9B69
     trigger_cutscene(CUTSCENE_SEND);    // $9B6C
     redraw_window(msg_the_supplies_have_arrived_safe);    // $9B73
     confirm_prompt();    // $9B77
@@ -1854,14 +1854,14 @@ L_9EFF:
 
 word effect_loan(word fief) {
     message_display(msg_loan_prompt);    // $9F0C
-    if (!((*(word*)(fief) >= fief->stat_cap))) goto L_9F2F;    // $9F19
+    if (!((fief->gold >= fief->stat_cap))) goto L_9F2F;    // $9F19
     draw_lord_name_salutation(selected_province_idx);    // $9F1F
     redraw_window(msg_the_treasure_room_is_already_f);    // $9F26
     confirm_prompt();    // $9F2A
     return 0;    // $9F2E
 L_9F2F:
     if ((fief->town <= fief->debt)) goto L_9FA3;    // $9F38
-    max_loan = ratio_times10_capped((fief->town - fief->debt), (loan_rate + 10), (fief->stat_cap - *(word*)(fief)));    // $9F58
+    max_loan = ratio_times10_capped((fief->town - fief->debt), (loan_rate + 10), (fief->stat_cap - fief->gold));    // $9F58
     if (!(max_loan)) goto L_9FA3;    // $9F59
     draw_message(msg_s_would_you_like_to_borrow, msg_how_much_f99d);    // $9F62
     loan_amount = number_input(1, max_loan);    // $9F6C
@@ -1870,7 +1870,7 @@ L_9F2F:
     clamp_amount_to_province_max(fief);    // $9F76
     cycle_economy_rate(0);    // $9F7B
     set_cursor(16, 7);    // $9F82
-    draw_selected_province_stat(*(word*)(fief));    // $9F89
+    draw_selected_province_stat(fief->gold);    // $9F89
     set_cursor(16, 8);    // $9F90
     draw_selected_province_stat(fief->debt);    // $9F98
     return 1;    // $9F9D
@@ -1890,10 +1890,10 @@ L_9FA3:
 word prompt_repay_debt(word fief) {
     message_display(msg_repay_debt);    // $9FB7
     if (!(fief->debt)) goto L_9FF7;    // $9FBE
-    if (!(*(word*)(fief))) goto L_9FF1;    // $9FC3
-    repay_amount = number_input(1, min_word(fief->debt, *(word*)(fief)));    // $9FD7
+    if (!(fief->gold)) goto L_9FF1;    // $9FC3
+    repay_amount = number_input(1, min_word(fief->debt, fief->gold));    // $9FD7
     if (!(repay_amount)) goto L_9FEC;    // $9FD8
-    *(word*)(fief) = (*(word*)(fief) - repay_amount);    // $9FE1
+    fief->gold = (fief->gold - repay_amount);    // $9FE1
     fief->debt = (fief->debt - repay_amount);    // $9FE9
     return 1;    // $9FEB
 L_9FEC:
@@ -1917,7 +1917,7 @@ L_9FFA:
 word effect_sell_rice(word fief) {
     message_display(msg_sell_rice_prompt);    // $A00B
     if (!(fief->rice)) goto L_A059;    // $A012
-    max_sell = ratio_times10_capped((fief->stat_cap - *(word*)(fief)), gold_rice_exchange_rate, fief->rice);    // $A02A
+    max_sell = ratio_times10_capped((fief->stat_cap - fief->gold), gold_rice_exchange_rate, fief->rice);    // $A02A
     if (!(max_sell)) goto L_A053;    // $A02B
     draw_message(msg_s_rice_will_you_sell, msg_how_much_f99d);    // $A034
     sell_amount = number_input(1, max_sell);    // $A03E
@@ -1946,15 +1946,15 @@ L_A063:
 word effect_buy_rice(word fief) {
     message_display(msg_buy_rice_prompt);    // $A070
     if (!(province_table_live[selected_province_idx].gold)) goto L_A0DE;    // $A07F
-    max_buyable = ratio_times10_capped(*(word*)(fief), gold_rice_exchange_rate, (fief->stat_cap - fief->rice));    // $A097
+    max_buyable = ratio_times10_capped(fief->gold, gold_rice_exchange_rate, (fief->stat_cap - fief->rice));    // $A097
     if (!(max_buyable)) goto L_A0D8;    // $A098
     redraw_window(msg_how_much_f99d);    // $A09E
     redraw_window(msg_rice_will_you_buy);    // $A0A5
     buy_amount = number_input(1, max_buyable);    // $A0AF
     if (!(buy_amount)) goto L_A0E8;    // $A0B0
-    *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_rice_exchange_rate, buy_amount));    // $A0C1
+    fief->gold = (fief->gold - math32_muladddiv(gold_rice_exchange_rate, buy_amount));    // $A0C1
     fief->rice = (fief->rice + buy_amount);    // $A0C9
-    clamp_amount_to_province_max((fief + 6));    // $A0CD
+    clamp_amount_to_province_max(&fief->rice);    // $A0CD
     cycle_economy_rate(2);    // $A0D2
     return 1;    // $A0D7
 L_A0D8:
@@ -1994,15 +1994,15 @@ word effect_buy_arms(word fief) {
 L_A12D:
     message_display(msg_buy_arms_prompt);    // $A130
     local11 = ((arms_buy_price_rate + 9) / 10);    // $A13A
-    if (!((*(word*)(fief) >= local11))) goto L_A1A0;    // $A13F
-    local11 = ratio_times10_capped(*(word*)(fief), arms_buy_price_rate, (fief->stat_cap - fief->arms));    // $A158
+    if (!((fief->gold >= local11))) goto L_A1A0;    // $A13F
+    local11 = ratio_times10_capped(fief->gold, arms_buy_price_rate, (fief->stat_cap - fief->arms));    // $A158
     if (!(local11)) goto L_A19A;    // $A159
     redraw_window(msg_how_many);    // $A15F
     buy_amount = number_input(1, local11);    // $A169
     if (!(buy_amount)) goto L_A1AA;    // $A16A
-    *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(arms_buy_price_rate, buy_amount));    // $A17B
+    fief->gold = (fief->gold - math32_muladddiv(arms_buy_price_rate, buy_amount));    // $A17B
     fief->arms = (fief->arms + amount_div_force_factor(fief, buy_amount));    // $A18A
-    clamp_amount_to_province_max((fief + 22));    // $A18F
+    clamp_amount_to_province_max(&fief->arms);    // $A18F
     cycle_economy_rate(3);    // $A194
     return 1;    // $A199
 L_A19A:
@@ -2102,7 +2102,7 @@ word effect_ninja_failed(word arg1, word arg2) {
 // (body @ $A2D7)
 
 word effect_ninja_sabotage(word arg1) {
-    max_affordable_count = ratio_times10_capped(*(word*)(arg1), hire_gold_rate, arg1->stat_cap);    // $A2E6
+    max_affordable_count = ratio_times10_capped(arg1->gold, hire_gold_rate, arg1->stat_cap);    // $A2E6
     if (!(max_affordable_count)) goto L_A360;    // $A2E7
     message_display(msg_how_many);    // $A2ED
     unit_count = number_input(1, max_affordable_count);    // $A2F7
@@ -2232,16 +2232,16 @@ L_A551:
 
 word effect_hire_men(word fief) {
     headroom = (fief->stat_cap - fief->men);    // $A563
-    max_affordable = ratio_times10_capped(*(word*)(fief), gold_men_hire_rate, (fief->stat_cap - fief->men));    // $A56F
+    max_affordable = ratio_times10_capped(fief->gold, gold_men_hire_rate, (fief->stat_cap - fief->men));    // $A56F
     if (!(max_affordable)) goto L_A5DD;    // $A570
     message_display(msg_how_many);    // $A576
     amount = number_input(1, max_affordable);    // $A580
     if (!(amount)) goto L_A5F2;    // $A581
-    *(word*)(fief) = (*(word*)(fief) - math32_muladddiv(gold_men_hire_rate, amount));    // $A592
+    fief->gold = (fief->gold - math32_muladddiv(gold_men_hire_rate, amount));    // $A592
     apply_hire_unit_stats(fief, amount);    // $A595
     cap_arms_at_index(selected_province_idx, fief);    // $A59D
     cycle_economy_rate(4);    // $A5A2
-    clamp_amount_to_province_max((fief + 16));    // $A5AA
+    clamp_amount_to_province_max(&fief->men);    // $A5AA
     trigger_cutscene(CUTSCENE_HIRE);    // $A5B0
     message_display(msg_men_or_ninja);    // $A5B7
     draw_message(msg_lord_s_we_now_have_d_men, daimyo_name_table[selected_province_owner()], province_table_live[selected_province_idx].men);    // $A5D4
@@ -2478,7 +2478,7 @@ word effect_give_a(word fief) {
 // (body @ $A952)
 
 word give_rice_gold_eligibility(word fief) {
-    return give_eligibility_flags(*(word*)(fief), fief->rice);    // $A95D
+    return give_eligibility_flags(fief->gold, fief->rice);    // $A95D
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $A95E
@@ -3468,7 +3468,7 @@ L_B839:
     goto L_B86A;    // $B852
 L_B855:
     set_cursor(16, (i + 1));    // $B85A
-    fief_word_ptr = (fief_word_ptr + 2);    // $B860
+    fief_word_ptr = &fief_word_ptr->debt;    // $B860
 L_B86A:
     draw_province_stat_or_dashes(fief, *(word*)((fief_word_ptr + -2)));    // $B866
     i = (i + 1);    // $B86C

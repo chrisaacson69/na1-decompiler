@@ -1322,7 +1322,7 @@ L_D8F0:
 // (body @ $D8F7)
 
 word develop_gain_capped_loyalty(word fief, word amount) {
-    gain = develop_gain(amount, (fief + 12), (fief + 8));    // $D902
+    gain = develop_gain(amount, &fief->loyalty, &fief->output);    // $D902
     headroom = (fief->stat_cap - fief->loyalty);    // $D90D
     if (!((gain > (fief->stat_cap - fief->loyalty)))) goto L_D917;    // $D912
     return headroom;    // $D916
@@ -1335,7 +1335,7 @@ L_D917:
 // (body @ $D91E)
 
 word develop_gain_capped_wealth(word fief, word amount) {
-    gain = develop_gain(amount, (fief + 14), (fief + 4));    // $D929
+    gain = develop_gain(amount, &fief->wealth, &fief->town);    // $D929
     headroom = (fief->stat_cap - fief->wealth);    // $D934
     if (!((gain > (fief->stat_cap - fief->wealth)))) goto L_D93E;    // $D939
     return headroom;    // $D93D
@@ -1713,8 +1713,8 @@ L_DDC8:
     goto L_DE45;    // $DDDB
 L_DDDE:
     if (!((&province_table_live[fief].arms == field_ptr))) goto L_DE0A;    // $DDE8
-    *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), (rng_mod(31) + 50));    // $DDFC
-    if (!((*(word*)(field_ptr) < 50))) goto L_DE3B;    // $DE02
+    field_ptr->gold = pct_op(field_ptr->gold, (rng_mod(31) + 50));    // $DDFC
+    if (!((field_ptr->gold < 50))) goto L_DE3B;    // $DE02
     phi_push_de3c = 50;    // $DE07
     goto L_DE3C;    // $DE07
 L_DE0A:
@@ -1724,15 +1724,15 @@ L_DE0A:
 L_DE1F:
     phi_push_de27 = (rng_mod(30) + 30);    // $DE25
 L_DE27:
-    *(word*)(field_ptr) = pct_op(*(word*)(field_ptr), phi_push_de27);    // $DE2F
-    if (!((*(word*)(field_ptr) < 10))) goto L_DE3B;    // $DE34
+    field_ptr->gold = pct_op(field_ptr->gold, phi_push_de27);    // $DE2F
+    if (!((field_ptr->gold < 10))) goto L_DE3B;    // $DE34
     phi_push_de3c = 10;    // $DE38
     goto L_DE3C;    // $DE38
 L_DE3B:
     phi_push_de3c = 0;    // $DE3B
 L_DE3C:
-    *(word*)(field_ptr) = (*(word*)(field_ptr) + phi_push_de3c);    // $DE42
-    field_ptr = (field_ptr + 2);    // $DE44
+    field_ptr->gold = (field_ptr->gold + phi_push_de3c);    // $DE42
+    field_ptr = &field_ptr->debt;    // $DE44
 L_DE45:
     if (((unsigned)field_ptr < (unsigned)&fief_rec->stat_cap)) goto L_DDDE;    // $DE4D
     province_table_live[fief].loyalty = (province_table_live[fief].loyalty + 50);    // $DE5E
