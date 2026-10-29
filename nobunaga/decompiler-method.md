@@ -7,7 +7,7 @@ created: 2026-06-05
 > place, and a dedicated working section to break apart the one wall that's left: the
 > **emit-order gate** (address-inverted layouts). Companion to [decompiler-bottom-up-thesis](./decompiler-bottom-up-thesis.md)
 > (the *why* — a finite inverse-lowering table), [decompiler-atom-log](./decompiler-atom-log.md)
-> (the running case ledger), and [../lowering-atlas/atom-table.md](../lowering-atlas/atom-table.md)
+> (the running case ledger), and [https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md](https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md)
 > (the forward catalog).
 
 ---

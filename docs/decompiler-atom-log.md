@@ -11,7 +11,7 @@ title: "Decompiler Atom Log \u2014 the running case ledger"
 > atom that only ever clears its discovery sub is a smell — it means we pattern-matched a shape
 > instead of inverting a compiler lowering.
 
-**Links:** [decompiler-bottom-up-thesis](./decompiler-bottom-up-thesis.md) · [decompiler-method](./decompiler-method.md) (push/pull + atlas grounding, the lessons, and the **emit-order working section** — the next lever) · [ROADMAP](./ROADMAP.md) (CFG epic) · **forward atom table → [lowering-atlas/atom-table.md](../lowering-atlas/atom-table.md)** (compile-and-catalog PoC: which inversions exist, sourced forward) · tools: `vm_reduce.py` · `v2-corpus.py` · `probe-cfg-reducibility.py`
+**Links:** [decompiler-bottom-up-thesis](./decompiler-bottom-up-thesis.md) · [decompiler-method](./decompiler-method.md) (push/pull + atlas grounding, the lessons, and the **emit-order working section** — the next lever) · [ROADMAP](./ROADMAP.md) (CFG epic) · **forward atom table → [lowering-atlas/atom-table.md](https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md)** (compile-and-catalog PoC: which inversions exist, sourced forward) · tools: `vm_reduce.py` · `v2-corpus.py` · `probe-cfg-reducibility.py`
 
 ## How to read this
 
@@ -139,7 +139,7 @@ tier-2's decomposition fights the switch's territory. **You cannot fix B without
 merge (A).** Confirms A is the principled root; B was a symptom. → defer to the principled A plan.
 
 ## Residue-cause experiment (2026-06-05) — the EXPERIMENT decides atom-4 vs atom-5, and corrects both
-> Chris's call: trust the [lowering-atlas](../lowering-atlas/atom-table.md) experiment over the atom-4
+> Chris's call: trust the [lowering-atlas](https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md) experiment over the atom-4
 > theory. `tools/probe-residue-cause.py` classifies all **220 recoverable gotos** (the 57 behind-V1
 > subs) by which atom OWNS each, from CFG shape (independent of the flat-bail, so a self_gate sub's
 > cause is read from structure not its raw goto dump). Result:
@@ -195,7 +195,7 @@ AND chips at the real majority. → **Recommend option 1 (evolve the gate).** To
 `$AD38`. `$AD38`'s tiny +1 hid that it belongs to the hard family (2).
 
 ## Compiler reproduction (2026-06-05) — $AD38 is an UNDONE OPTIMIZATION, and the gate fix is NARROW
-> Chris's question: can the two atoms be reproduced in [lowering-atlas](../lowering-atlas/atom-table.md)?
+> Chris's question: can the two atoms be reproduced in [lowering-atlas](https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md)?
 > Yes — and it reframes atom-5. `corpus/07_terminal_merge.c` + `tools/probe-opt-levels.py` compile the
 > `$AD38` shape (two arms, common multi-stmt tail ending in `return`) at -O0 AND -O2:
 > - **-O0 DUPLICATES the tail** (one copy per arm, address-ordered, 0 goto) — *this is the decompiler's target.*
@@ -320,7 +320,7 @@ condition tweak — deferred. **Net code change from the audit: none to the fold
 the lessons above + `tools/probe-bail-audit.py` to re-run them.
 
 ## Cross-jump forward-experiment (2026-06-05) — the optimization is PINNED + its reversibility MAPPED
-> Chris's call: the cross-jump feels like the big culprit; the [lowering-atlas](../lowering-atlas/atom-table.md)
+> Chris's call: the cross-jump feels like the big culprit; the [lowering-atlas](https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md)
 > tests confirmed NA1's compiler optimizes, so go deconstruct the optimization at different `-O` levels
 > and decide if it's reversible. Done in the compiler sub-project (`corpus/08_crossjump_reversibility.c`
 > + `tools/probe-crossjump.py`). Result is sharper than "build the emit-order gate."

@@ -30,7 +30,7 @@ honest `goto`). Progress is measured by residual goto count: lower = more struct
 |---|---|
 | [`nobunaga/`](./nobunaga/) | The decompiler + analysis: VM disassembler, opcode-keyed C emitter, the equivalence gate (the engine itself now lives in [emu-harness](https://github.com/chrisaacson69/emu-harness), `emu_harness.vm.koei.nes`), the decompiled banks, and the chapter/appendix markdown. |
 | [`docs/`](./docs/) | **Generated** Pages site (by `tools/build-site.py`) — do not hand-edit; edit sources in `nobunaga/` and rebuild. |
-| [`lowering-atlas/`](./lowering-atlas/) | The **forward** catalog — compile C, observe which CFG shapes the compiler emits, and source the decompiler's inverse-lowering "atom table" forward rather than guessing it. |
+| [`lowering-atlas/`](https://github.com/chrisaacson69/emu-harness/tree/master/tools/lowering-atlas) | The **forward** catalog — compile C, observe which CFG shapes the compiler emits, and source the decompiler's inverse-lowering "atom table" forward rather than guessing it. |
 
 ## The atom log
 

@@ -23,7 +23,7 @@ V2 (`vm_reduce.py`) works and is canonical (829 gotos). But its convergence path
 |---|---|---|
 | Core idea | Match CFG subgraphs against ~7 base rules + an atom table; reduce to a fixpoint | Compute a reaching condition per node; refine formulas into if/else/switch/loops |
 | Completeness | Incomplete by construction — each new shape is a missing atom | Goto-free by construction (Böhm–Jacopini); no catalog gap |
-| Compiler dependence | Needs the [[lowering-atlas]] as a **reference** (what shapes this compiler emits) | **Compiler-independent** — derives structure from boolean logic; atlas is a *pure readability oracle*, not a correctness crutch |
+| Compiler dependence | Needs the [lowering-atlas](https://github.com/chrisaacson69/emu-harness/tree/master/tools/lowering-atlas) as a **reference** (what shapes this compiler emits) | **Compiler-independent** — derives structure from boolean logic; atlas is a *pure readability oracle*, not a correctness crutch |
 | Failure mode | Long tail of rare per-shape atoms (V2's residue) | Condition formulas can blow up / read worse than a clean pattern match |
 | Control of failure | Add more atoms | Semantics-preserving simplification transforms + the readability oracle |
 
