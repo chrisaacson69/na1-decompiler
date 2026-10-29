@@ -55,7 +55,7 @@ The blit is `ppu_copy_rect` (ch.18): a byte-stream copy of `width*height` tiles 
 ## Tiles, CHR, and palette
 
 - **Cell value semantics:** a tilemap byte `V` ≤ 80 is a **font glyph** (the fief-number labels, digits 0–9 overlaid on the map); `V` ≥ 81 is a **terrain tile**.
-- **CHR:** the bank-4 map tileset is uploaded to pattern table 1 starting at tile `$5B` (= 91). Cell `V` indexes `CHR-RAM[$1000 + V*16]`; the uploaded block begins at bank-4 `$845C` for tile 91, so a terrain cell reads `$845C + (V-91)*16`.
+- **CHR:** the bank-4 map tileset is uploaded to pattern table 1 starting at tile `$51` (= 81): `ppu_upload_block_wrap(4, $83BC, $1510, 154)`, 154 tiles = the block `$83BC`–`$8D5C`, tiles 81–234. It runs wherever the map screen is rebuilt (`prompt_new_game_or_load_save` `$831D`, `init_new_game_state` `$8A6D`, and after a battle at bank 2 `$93F4` / `$AFCC`). Cell `V` indexes `CHR-RAM[$1000 + V*16]`, so a terrain cell reads `$83BC + (V-81)*16`. `repaint_screen` (`$CD76`) re-uploads only a slice, 36 tiles from `$845C` to tile 91 (`$15B0`); this page used to give that slice as the tileset's start (corrected 2026-10-29; the cell mapping is the same either way, `$845C - $83BC` = 10 tiles).
 - **Palette:** bank-15 `$F67A`, 4 colors per sub-palette (stored as words with a zero high byte). BG palette 0 ≈ `[$3E,$12,$29,$30]` — backdrop / sea / land / coast.
 
 ## ROM-only extraction

@@ -25,18 +25,19 @@ created: 2026-05-29
 | `rule_probe.py` | ✅ | NA1's rules read from the C, checked against the ROM's own routines over every SRAM dump, with a planted wrong model per rule (`py -3.14 tools/rule_probe.py`). |
 | `gen-opcode-appendix.py` | ✅ | Generate nobunaga/appendix-vm-opcodes.md — the canonical VM opcode reference. |
 
-## Not yet reviewed (sort in the Assets / Presentation phases)
-Registered 2026-10-27 from each script's own docstring. The non-rendering ones were sorted 2026-10-29 (kept rows moved to their sections, the rest in [RETIRED.md](RETIRED.md)); these are the rendering / site tools, sorted by the assets phase.
+## Assets phase, the extraction tools (sorted 2026-10-29)
+Each was run from `nobunaga/` (the working directory the defaults assume) and its output compared with the committed copy. Every difference was traced to one of two library changes from `12b14f2` (2026-10-23): the animation backdrop is black (checked against Mesen's PPU), and the RGB table is the library's `MASTER`. A scratch copy with the old table reproduced the committed banners and all 67 fief maps byte for byte, and the pre-library strategic-map tool reproduces today's output in every mode. Py -3.14 throughout.
 
-| Script | Status | Purpose (from its docstring) |
+| Script | Status | Purpose |
 |---|---|---|
-| `batch-render-anims.py` | 🔎 | Batch-render every lord-command animation (clipped) into the canonical assets/animations/<command>.{gif, frames/<command>-frames.png}, then rebuild all command pages. |
-| `batch-render-fief-maps.py` | 🔎 | Batch-render every fief's tactical map (17-fief and 50-fief scenarios) to gitignored, canonical, per-scenario folders. |
-| `build-site.py` | 🔎 | assemble the GitHub Pages site (repo-root /docs) from nobunaga/. |
-| `build-wiki.py` | 🔎 | generate the GitHub Wiki (the game concept/formula reference) from nobunaga/commands/*.md, then commit & push it. |
-| `render-daimyo-banners.py` | 🔎 | Daimyo banner (crest / 家紋) chart, decoded from ROM. |
-| `render-fief-truecolor.py` | 🔎 | True full-color tactical fief map, rendered from the DECODED ROM path (no capture). |
-| `title-render.py`, `title-nametable.py` | 🔎 | Title-screen reconstruction: nametable + ROM CHR (`$AC4A`) -> grayscale PPM. Restored 2026-10-28 (retired the day before on a wrong reason): they open `nametable_bytes.txt` next to themselves, and it is at `nobunaga/`, so they need their path fixed. Assets phase decides. |
+| `batch-render-anims.py` | ✅ | Every lord-command animation into `assets/animations/<command>.{gif, frames/…}`, then rebuilds the command pages. 18 regenerated (backdrop only: in all 157 frames, old grey → black reproduces the new frame). |
+| `batch-render-fief-maps.py` | ✅ | Every fief's tactical map, `assets/maps/fiefs/{17,50}/fief-NN.png` (67, RGB table only). Run from `tools/`. |
+| `render-daimyo-banners.py` | ✅ | Daimyo banner (crest / 家紋) chart, from ROM (RGB table only). |
+| `render-fief-truecolor.py` | ✅ | True full-color tactical fief map from the decoded ROM path; the banners and the batch run on it. |
+| `title-render.py` | ✅ | **The title screen from ROM alone** (2026-10-29): nametable `$A88A`, attributes `$A84A`, CHR `$AC4A`, palette `$B862`, drawn by the library. The nametable used to come from `nametable_bytes.txt` (a trace extract); ROM `$A88A` equals it on all 960 bytes. Writes `assets/screens/title-screen{,-2x}.png` and `title-screen-ascii.txt`. |
+| `title-nametable.py` | 🧪 | Prints the trace extract's nametable rows; superseded by `title-render`'s ROM read. |
+| `build-site.py` | ✅ | Assembles the GitHub Pages site (repo-root `/docs`) from `nobunaga/`. The companion track (mechanics, play tools, site) is sorted separately from extraction. Note: the site lagged its source until this run (the 2026-10-27 `math32_3arg` correction had not reached `docs/`). |
+| `build-wiki.py` | 🔎 | Generates the GitHub Wiki from `commands/*.md`, **then commits and pushes it**: not run in the sort (outward-facing). Companion track. |
 
 ## Command / effect testing
 | Script | Status | Purpose |
@@ -81,11 +82,11 @@ Registered 2026-10-27 from each script's own docstring. The non-rendering ones w
 | `render-rom-atlas.py` | ✅ | **Whole 50-fief (or 17-fief) tactical atlas from ROM in one pass** (2026-05-30). Loops every province through `render-rom-to-map`'s pipeline → PNG per fief in `atlas/rom-50/` + a terrain-distribution table + anomaly flags. `--scenario 17\|50`, `--count N`. **Cross-validates:** every ROM-rendered map reproduces the matching hand-captured fief's terrain counts exactly. |
 | `render-rom-to-map.py <province>` | ✅ | **Tactical map straight from ROM — NO capture needed** (2026-05-30). Seeds province `$6F63` + scenario `$6D9D` into a blank SRAM, runs the populate sub `$8903`, hands the populated `$7BFD` to `render-from-sram`'s decoder. Verified byte-identical to the captured Mino render. `--scenario 17\|50`, `--sram <dump>` (read province/scenario from a dump, render from ROM = validation mode). Warns if a TODO syscall fires (likely a new 50-fief path). |
 | `render-strategic-map.py` | ✅ | **The ILLUSTRATED strategic map — the cartridge's own art, from-ROM, no emulation (2026-06-02).** Decodes bank-4 section tilemaps (`$8D5C`, 28×16 tiles = 448 B/section × 9), per-quad attributes (`$9D1C`, 32 B/section), map CHR (tile 91 → bank4 `$845C`), and palette (bank-15 `$F67A`); fief-number labels (tilemap cells ≤ 80) render via the game font (`render-text.py`). The Map command flips between sections as **pages** (`map_helper_af10`: "Arrows: other sections"). **17-fief = 2 overlapping sections** (verified offset −16,+3) → `--stitch` auto-aligns them into one continuous map (`strategic-map-17-stitched.png`); **50-fief = 9 pages** (all fiefs 1–50) → contact sheet (`strategic-map-50.png`). Usage: `--scenario 17\|50`, `--stitch`, `--section N`, `--scale K`. **This is the game's actual map art** — distinct from the schematic adjacency atlases below. |
-| `render-strategic-atlas.py` | ✅ | 17-fief: composites the 17 tactical-map PNGs at geographic positions + adjacency overlay. *Not a `-50` twin — see note below. Note: this is the SCHEMATIC analytical graph, not the game art — that's `render-strategic-map.py` above.* |
-| `render-strategic-50.py` | ✅ | 50-fief: node-link graph of the `$8004` adjacency table at approx-Japan positions (for eyeball verification). **Different render, different artifact** from the 17 atlas — `--variant` merge rejected 2026-05-29 (pure churn; both are fixed-output references). |
+| `render-strategic-atlas.py` | ⚠️ | **Cannot rebuild its committed output (2026-10-29):** its 17 inputs, `fief-NN-*-sram-render.png` (capture renders), were removed in `27c16cb`, and it reads them from `tools/assets/…`. Converting it to compose the ROM fief maps (`maps/fiefs/17/`) is the open choice. 17-fief: composites the 17 tactical-map PNGs at geographic positions + adjacency overlay. *Not a `-50` twin — see note below. Note: this is the SCHEMATIC analytical graph, not the game art — that's `render-strategic-map.py` above.* |
+| `render-strategic-50.py` | ✅ | 50-fief: node-link graph of the `$8004` adjacency table at approx-Japan positions (for eyeball verification). **Different render, different artifact** from the 17 atlas — `--variant` merge rejected 2026-05-29 (pure churn; both are fixed-output references). Default output fixed 2026-10-29 from the retired `../atlas/` to `assets/maps/strategic/strategic-50-adjacency.png`; it reproduces the committed PNG pixel for pixel. |
 | `render-fief-from-ppu.py <fief>` | ✅ | Parameterized fief PPU renderer (`--list` shows available dumps). **Replaced the 16 per-fief `render-<fief>-from-ppu.py` copies, 2026-05-29.** |
 | `render-mino-full.py`, `render-iga-full.py` | 🔁 | Full-map-from-SRAM variants → generalize (still pending). |
-| ~~`title-nametable.py`~~ (retired), `title-tiles-extract.py`, ~~`find-title-assets.py`~~ (retired), `extract-chr-from-trace.py` | 🧪 | Title-screen one-shots (asset located + rendered; keep for provenance). `title-nametable` / `title-render` need `nametable_bytes.txt`, which is not in the repo. `extract-chr-from-trace` runs on emu-harness's register-level PPU rebuild (py -3.14; identical output). |
+| `title-tiles-extract.py`, ~~`find-title-assets.py`~~ (retired), `extract-chr-from-trace.py` | 🧪 | Title-screen one-shots (asset located + rendered; keep for provenance). `title-render` / `title-nametable` are in the assets-phase table above. `extract-chr-from-trace` runs on emu-harness's register-level PPU rebuild (py -3.14; identical output). |
 
 ## Strategic / scenario analysis
 | Script | Status | Purpose |

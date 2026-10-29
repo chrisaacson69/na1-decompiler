@@ -7,14 +7,15 @@ drawn straight from the ROM adjacency table. A correct table yields short,
 local, mostly non-crossing edges (a planar map). Long crossing edges flag
 suspect entries.
 
-Usage:  py render-strategic-50.py [rom] [out.png]
+Usage:  py -3.14 tools/render-strategic-50.py [rom] [out.png]
+        (default out: assets/maps/strategic/strategic-50-adjacency.png)
 """
 import os, sys
 from PIL import Image, ImageDraw, ImageFont
 
 here = os.path.dirname(os.path.abspath(__file__))
 rom_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(here, "Nobunaga's Ambition (USA).nes")
-out_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(here, '..', 'atlas', 'strategic-50-adjacency.png')
+out_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(here, '..', 'assets', 'maps', 'strategic', 'strategic-50-adjacency.png')
 
 rom = open(rom_path, 'rb').read()
 if rom[:4] == b'NES\x1a':

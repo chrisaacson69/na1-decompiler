@@ -123,13 +123,15 @@ closed = "2026-10-27: 5 are dead bytecode library subs (fill_bytes, memchr, clea
 item   = "The strategic-map notes / memory name $845C -> PT1 tile 91 ($15B0) as the tileset upload; the live capture shows it starts at tile 81 ($83BC). Find the upload call and correct the memory."
 phase  = "assets"
 source = "emu-harness MIGRATION.md row O2"
-status = "open"
+status = "closed"
+closed = "2026-10-29: settled from the code, not the capture. The tileset upload is ppu_upload_block_wrap(4, $83BC, $1510, 154) = tiles 81-234, block $83BC-$8D5C, called wherever the map screen is rebuilt (bank 0 $831D / $8A6D, bank 2 $93F4 / $AFCC). $845C -> tile 91 ($15B0) is repaint_screen's 36-tile slice ($CD76). The cell mapping is the same either way ($845C - $83BC = 10 tiles), so no render was wrong. Chapter 20 and memory project_nobunaga_visual_extraction corrected."
 
 [[revisit]]
 item   = "Regenerate the committed render outputs after the tools went thin: animation GIFs / frame sheets, the fief PPU renders and truecolor maps, the strategic contact sheets (stale since 06-17). batch-render-anims / batch-render-fief-maps must run under py -3.14."
 phase  = "assets"
 source = "emu-harness MIGRATION.md row O close"
-status = "open"
+status = "closed"
+closed = "2026-10-29: regenerated and every difference explained by the two library changes of 12b14f2. Animations (18 + frame sheets): backdrop only, old grey -> black reproduces all 157 frames. Banners, 67 fief maps, title, strategic 17 / 50 / section: the RGB table only; a scratch copy with the old table reproduced the committed banners and fief maps byte for byte, and the pre-library strategic tool equals today's in every mode (hotspot coords unchanged). Portraits, stitched maps, atlas-overview and the 50-fief adjacency graph were already pixel-identical and are left as committed. build-site re-run: docs/ had lagged its source (the 2026-10-27 math32_3arg correction)."
 
 [[revisit]]
 item   = "All KOEI NES titles: committed .mlb added 2026-10-23; regenerate after registry edits. Committed 2-asm-vm listings say 'labels: 0 CPU addresses named'; a regeneration shows the real count."
@@ -222,6 +224,7 @@ item   = "The render tools (~17 render-*, the batch-render-* wrappers, build-sit
 phase  = "assets"
 source = "attic review 2026-10-27"
 status = "open"
+progress = "2026-10-29: the extraction tools are sorted (tools/README.md, assets-phase table). title-render reads the nametable from ROM $A88A (equal to the trace extract on 960 bytes) and draws through the library; render-strategic-50 writes to assets/maps/strategic/. Left: render-strategic-atlas cannot rebuild its committed output (its 17 capture-render inputs were removed in 27c16cb; convert it to the ROM fief maps, or retire it); render-atlas is INVALIDATED (wrong maps) yet atlas-overview*.png / atlas-summary.txt are committed, unused by the site; RENDER-TOOLS-TRIAGE.md is still the June draft. The companion track (mechanics / play tools / site: econ_sim, viability-map, fief-analysis-50, build-*) is a separate sort."
 
 [[revisit]]
 item   = "Named data does not reach the C when it is an immediate: 32 [ram] addresses print as hex at 234 sites, e.g. (battle_defending_province * 26) + 0x7001 is province_table_live 100 times, daimyo_name_table ($77A8) 38, relations_matrix 8. Another 40 addresses (138 sites) are fields of those records at index 0 ($7013 = province_table_live + 18, $7011 + 16, $700D + 12, ...). The engine names loads and stores (name, name[i]) but not an address used in pointer arithmetic or passed as a pointer. A fix belongs in the emu-harness engine (every title) and must tell an address from a number: 0x7530 is 30000. Render idx * size + base as &name[idx] (and + field offset as ->field where a record schema exists), and a pushed labelled address as &name."
