@@ -50,7 +50,8 @@ with open(os.path.join(root, 'assets', 'data', '50Diamyo.txt')) as f:
                        charisma=int(t[6]), iq=int(t[7]))
 
 # ---- adjacency from ROM bank 4 $8004 ----
-rom = open(os.path.join(root, "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+rom = open(game_cfg("na1")["_rom"], 'rb').read()[16:]
 def prg(cpu, bank): return bank*0x4000 + (cpu & 0x3FFF)
 ADJ = []
 for i in range(COUNT):

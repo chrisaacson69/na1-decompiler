@@ -4,8 +4,8 @@ named address) onto its consumers. One label edit -> propagates everywhere.
 
 The toml is authoritative; this tool NEVER writes back to it. Targets:
 
-  --mlb [PATH]   Emit a Mesen 2 .mlb label file. Default PATH is beside the ROM
-                 with the ROM's basename, so Mesen 2 auto-loads it on launch.
+  --mlb [PATH]   Emit a Mesen 2 .mlb label file. Default: the committed one at the project root,
+                 copied beside the ROM (the ROM store) so Mesen 2 auto-loads it on launch.
                  Delegates to emu-harness (shared reader, NES locator, Mesen writer;
                  needs `py -3.14` + `pip install -e ../../emu-harness`). Registry
                  defects and labels Mesen would drop are printed.
@@ -36,7 +36,9 @@ from pathlib import Path
 
 PROJ = Path(__file__).resolve().parent.parent
 TOML = PROJ / "mesen-labels.toml"
-ROM = PROJ / "Nobunaga's Ambition (USA).nes"
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+ROM = game_cfg("na1")["_rom"]
+MLB = PROJ / Path(ROM).with_suffix(".mlb").name   # the committed label file; Mesen also gets a copy beside the ROM
 DISASM = PROJ / "source" / "1-asm-6502"   # native 6502 disassembly (pipeline stage 1)
 
 BANK_SIZE = 0x4000
@@ -255,10 +257,14 @@ def main():
 
     if args.mlb:
         if args.mlb == "__default__":
-            out = ROM.with_suffix(".mlb")
+            out = MLB
         else:
             out = Path(args.mlb)
         by_type, dropped = emit_mlb(out)
+        if args.mlb == "__default__" and Path(ROM).parent.resolve() != PROJ.resolve() and Path(ROM).exists():
+            import shutil                                   # Mesen 2 auto-loads a .mlb beside the ROM it opens
+            shutil.copyfile(out, Path(ROM).with_suffix(".mlb"))
+            print(f"copied -> {Path(ROM).with_suffix('.mlb')} (beside the ROM, for Mesen)")
         total = sum(by_type.values()) - dropped
         print(f"Wrote {total} labels -> {out}")
         for t, n in sorted(by_type.items()):

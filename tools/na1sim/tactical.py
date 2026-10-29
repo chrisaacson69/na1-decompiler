@@ -58,8 +58,8 @@ def _load_map_pool():
     global _ROM_MAP_POOL
     if _ROM_MAP_POOL is not None:
         return _ROM_MAP_POOL
-    repo = Path(__file__).resolve().parent.parent.parent
-    rom = (repo / "Nobunaga's Ambition (USA).nes").read_bytes()
+    from emu_harness.vm.koei.nes.titles import game_cfg
+    rom = game_cfg("na1")["_rom"].read_bytes()             # the ROM store, via the [na1] profile
     base = 16 + 4 * 0x4000 + (M.MAP_CELL_POOL - 0x8000)        # 0x1258E
     _ROM_MAP_POOL = rom[base:base + 64 * 55]                    # plenty for any mapid
     return _ROM_MAP_POOL
@@ -91,8 +91,8 @@ def _strat_xy(mapid):
     """strategic_map_fief_x/_y[mapid] -- per-fief strategic-map coords (bank-2 ROM)."""
     global _STRAT_X, _STRAT_Y
     if _STRAT_X is None:
-        repo = Path(__file__).resolve().parent.parent.parent
-        rom = (repo / "Nobunaga's Ambition (USA).nes").read_bytes()
+        from emu_harness.vm.koei.nes.titles import game_cfg
+        rom = game_cfg("na1")["_rom"].read_bytes()
         bx = 16 + 2 * 0x4000 + (0xB0BA - 0x8000)
         _STRAT_X = rom[bx:bx + 50]
         _STRAT_Y = rom[bx + (0xB0EC - 0xB0BA):bx + (0xB0EC - 0xB0BA) + 50]

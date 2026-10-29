@@ -18,7 +18,8 @@ import os
 from collections import deque
 
 here = os.path.dirname(os.path.abspath(__file__))
-rom = open(os.path.join(here, "..", "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+rom = open(game_cfg("na1")["_rom"], 'rb').read()[16:]
 
 def prg(cpu, bank): return bank * 0x4000 + (cpu & 0x3FFF)
 def read_table(cpu, bank, count):

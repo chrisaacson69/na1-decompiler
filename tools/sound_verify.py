@@ -31,7 +31,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sound_engine import AUDIO_WAIT_GATE, MUSIC_DRIVER, PRG_BANK_SHADOW, SOUND_REQUEST_ID, Engine  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-ROM = HERE.parent / "Nobunaga's Ambition (USA).nes"
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+ROM = game_cfg("na1")["_rom"]
 DRIVER = (0xC7A5, 0xCA05)          # Mesen's PC is after the store: allow the last store's length
 ENGINE_RAM = (0x0720, 0x0760)
 

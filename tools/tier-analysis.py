@@ -1,6 +1,7 @@
 """Score and tier the 17-fief starting positions from ROM defaults."""
 from pathlib import Path
-rom = open(Path(__file__).resolve().parent.parent / "Nobunaga's Ambition (USA).nes", "rb").read()[16:]
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+rom = open(game_cfg("na1")["_rom"], "rb").read()[16:]
 def c2p(cpu): return (cpu - 0x8000) + 3 * 0x4000
 def rd16le(cpu):
     o = c2p(cpu)

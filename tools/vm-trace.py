@@ -22,7 +22,8 @@ from emu_harness.machines.nes import NES
 from emu_harness.machines.nes.live import run
 
 HERE = Path(__file__).resolve().parent
-ROM = HERE.parent / "Nobunaga's Ambition (USA).nes"
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+ROM = game_cfg("na1")["_rom"]
 PROBE = HERE / "lua" / "vm-trace.lua"
 DISPATCHER = 0xE867
 CALL_OPS, RETURN_OP, MAX_LOG = {0xAC, 0xDD, 0xE9, 0xEA}, 0xCF, 5000

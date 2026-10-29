@@ -22,7 +22,8 @@ from emu_harness.machines.nes import ppu as NR
 from emu_harness.vm.koei.nes.assets import MASTER
 
 NOB = Path(__file__).resolve().parent.parent
-ROM = (NOB / "Nobunaga's Ambition (USA).nes").read_bytes()[16:]
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+ROM = game_cfg("na1")["_rom"].read_bytes()[16:]
 OUT = NOB / "assets" / "screens"
 
 TITLE_ATTR_CPU = 0xA84A

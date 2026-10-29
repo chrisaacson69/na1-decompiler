@@ -37,7 +37,8 @@ rfs = importlib.util.module_from_spec(_rfs); _rfs.loader.exec_module(rfs)
 # forest=green(1), plains/field=pale-yellow(2), mountain=grey/green(1), '.'=plain.
 TERRAIN_SUBPAL = {'E': 3, 'B': 1, 'A': 2, 'D': 0, 'C': 1, 'F': 0, '.': 2, '?': 2}
 
-ROM = (HERE / "Nobunaga's Ambition (USA).nes").read_bytes()
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+ROM = game_cfg("na1")["_rom"].read_bytes()
 
 def prg(bank, addr):          # CPU addr -> .nes file offset (MMC1: $C000+ = fixed bank 15)
     if addr >= 0xC000:

@@ -57,5 +57,6 @@ py tools/build-wiki.py    # regenerate + push the wiki reference
 ```
 
 > Reverse-engineering notes for interoperability and preservation. **The game ROM is not
-> included** (it is gitignored); derived material — disassembly listings, Mesen labels, and a
+> included**: the tools find it in the machine's ROM store (emu-harness `config.toml` `roms`) and check
+> its SHA-1 (`1f7d4400…9b978c07`, whole file); derived material — disassembly listings, Mesen labels, and a
 > handful of reference screen/SRAM renders — is kept for analysis.

@@ -29,7 +29,8 @@ with open(os.path.join(root, 'assets', 'data', '50Diamyo.txt')) as f:
         daim[i] = dict(clan=t[1], age=int(t[2]), health=int(t[3]), drive=int(t[4]),
                        luck=int(t[5]), charisma=int(t[6]), iq=int(t[7]))
 
-rom = open(os.path.join(root, "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+rom = open(game_cfg("na1")["_rom"], 'rb').read()[16:]
 def prg(c,b): return b*0x4000+(c&0x3FFF)
 ADJ=[]
 for i in range(COUNT):

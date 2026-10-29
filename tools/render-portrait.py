@@ -47,7 +47,8 @@ from emu_harness.vm.koei.nes.assets import MASTER
 from emu_harness.vm.koei.nes.assets import portrait as KP
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")   # defaults resolve from here, not the cwd
-ROM = open(os.path.join(ROOT, "Nobunaga's Ambition (USA).nes"), "rb").read()
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+ROM = open(game_cfg("na1")["_rom"], "rb").read()
 if ROM[:4] == b"NES\x1a":
     ROM = ROM[16:]
 

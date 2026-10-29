@@ -9,7 +9,8 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 here = os.path.dirname(os.path.abspath(__file__))
-rom_path = os.path.join(here, "..", "Nobunaga's Ambition (USA).nes")
+from emu_harness.vm.koei.nes.titles import game_cfg   # the ROM: the machine's ROM store, via the [na1] profile
+rom_path = str(game_cfg("na1")["_rom"])
 with open(rom_path, 'rb') as f:
     data = f.read()[16:]
 
