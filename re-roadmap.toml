@@ -51,7 +51,7 @@ evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "n
 status   = "done"
 gate     = "Bottom-up then top-down done, proposals verified at the bytecode, the guard holds, no placeholder names. Bottom-up: label walk (all subs named), data walk, var walk over all five code banks (15, 14, 1, 2, 0; positional names left are verifier-refused two-role slots). Top-down (2026-10-28): the 73 non-leaf names below HIGH by call height, each with its callers' C and callees' notes, one reviewer + one bytecode verifier per batch: 37 of 72 renamed; the 25 widest-spread leaves checked against their call sites: 3 renamed; close-out: the last 3 address-named routines and the is_enemy_owned inversion in its callers' parameters (want_own). Every rename went through the guarded registry edit (regen + pure-rename diff). Drift: match family proposes 0 renames for NA1 (it is the names' source). The ext-op formulas were re-derived 2026-10-27 (closed revisit). Readability polish of the printed C moved to presentation; two data questions needing a capture moved to live."
 checked  = "2026-10-28"
-toolset  = "04abd4d"
+toolset  = "4678989"
 evidence = ["nobunaga/mesen-labels.toml", "nobunaga/walk-context.json", "nobunaga/tools/na1_regen.py", "re-roadmap.toml [[revisit]] naming entries"]
 
 [phase.presentation]
