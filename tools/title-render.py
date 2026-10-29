@@ -7,12 +7,12 @@
   $AC4A   4 KB  CHR (256 tiles)    -> PPU $1000
   $B862   16 B  BG palette         -> PPU $3F00 (via the $0700 shadow)
 
-The nametable used to come from a trace extract (nobunaga/nametable_bytes.txt); the ROM's
+The nametable used to come from a trace extract (assets/data/nametable_bytes.txt); the ROM's
 $A88A block equals it on all 960 bytes, so no capture is needed. The pixels are emu-harness's
 (machines.nes.ppu, the KOEI asset layer's MASTER); this tool keeps the layout and the outputs.
 
 Usage:  py -3.14 tools/title-render.py
-Writes  assets/screens/title-screen.png, title-screen-2x.png and nobunaga/title-screen-ascii.txt.
+Writes  assets/screens/title-screen.png, title-screen-2x.png and assets/data/title-screen-ascii.txt.
 """
 from pathlib import Path
 
@@ -51,7 +51,7 @@ def main():
     for y in range(img.height):
         row = "".join(chars[min(sum(px[x, y]) // 3 // 64, 3)] for x in range(img.width))
         lines.append(row if row.strip() else "")
-    (NOB / "title-screen-ascii.txt").write_text("\n".join(lines) + "\n")
+    (NOB / "assets" / "data" / "title-screen-ascii.txt").write_text("\n".join(lines) + "\n")
     print(f"wrote {OUT / 'title-screen.png'} (+ -2x) and title-screen-ascii.txt from ROM "
           f"(nametable ${TITLE_NT_CPU:04X}, CHR ${TITLE_CHR_CPU:04X})")
 

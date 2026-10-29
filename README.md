@@ -12,9 +12,9 @@ its turn loop, combat math, economy, and AI.
 | 📚 **[Game Wiki](https://github.com/chrisaacson69/na1-decompiler/wiki)** | concepts &amp; formulas reference — per-command pages, cross-linked | *GitHub Wiki* |
 | 🔧 **This repo** | the decompiler, tools, disassembly, and decompiled banks | *source* |
 
-The analysis site and wiki are generated from the markdown and tools in [`nobunaga/`](./nobunaga/);
-the site by [`nobunaga/tools/build-site.py`](./nobunaga/tools/build-site.py) (→ `docs/`, served by
-GitHub Pages with Jekyll), the wiki reference by `nobunaga/tools/build-wiki.py`.
+The analysis site and wiki are generated from the pages in [`docs/`](./docs/) and the tools in [`tools/`](./tools/):
+the site by [`tools/build-site.py`](./tools/build-site.py), built and deployed by GitHub Actions
+([`.github/workflows/pages.yml`](./.github/workflows/pages.yml), Jekyll), the wiki reference by `tools/build-wiki.py`.
 
 ## How the decompiler works
 
@@ -28,13 +28,16 @@ honest `goto`). Progress is measured by residual goto count: lower = more struct
 
 | Dir | What |
 |---|---|
-| [`nobunaga/`](./nobunaga/) | The decompiler + analysis: VM disassembler, opcode-keyed C emitter, the equivalence gate (the engine itself now lives in [emu-harness](https://github.com/chrisaacson69/emu-harness), `emu_harness.vm.koei.nes`), the decompiled banks, and the chapter/appendix markdown. |
-| [`docs/`](./docs/) | **Generated** Pages site (by `tools/build-site.py`) — do not hand-edit; edit sources in `nobunaga/` and rebuild. |
+| [`source/`](./source/) | The generated ladder: 6502 asm, labelled asm, VM listing, raw C, structured C (the engine itself lives in [emu-harness](https://github.com/chrisaacson69/emu-harness), `emu_harness.vm.koei.nes`). |
+| [`docs/`](./docs/) | Hand-written pages: the chapters, appendices, decompiler papers, and the command pages ([`docs/commands/`](./docs/commands/)). The site is built from them; it is not committed. |
+| [`assets/`](./assets/) | Committed renders from the ROM, and the game-data captures ([`assets/data/`](./assets/data/)). |
+| [`tools/`](./tools/) | NA1's tools and adapters; the catalog is [`tools/README.md`](./tools/README.md). |
+| [`CONTEXT.md`](./CONTEXT.md) · [`ROADMAP.md`](./ROADMAP.md) · [`re-roadmap.toml`](./re-roadmap.toml) | Where to start, the frontier, and every phase gate's state. `mesen-labels.toml` is the symbol registry. |
 | [`lowering-atlas/`](https://github.com/chrisaacson69/emu-harness/tree/master/tools/lowering-atlas) | The **forward** catalog — compile C, observe which CFG shapes the compiler emits, and source the decompiler's inverse-lowering "atom table" forward rather than guessing it. |
 
 ## The atom log
 
-The heart of the decompiler is [`nobunaga/decompiler-atom-log.md`](./nobunaga/decompiler-atom-log.md):
+The heart of the decompiler is [`docs/decompiler-atom-log.md`](./docs/decompiler-atom-log.md):
 a running ledger where each **atom** is the inverse of one compiler lowering. The discipline is
 *fix as we go, but log each case* — so a fix that generalizes (clears many subs) is distinguished
 from a one-off pattern-match. Current state: **V2 = 929 gotos, 222 ahead of the V1 reference.**
@@ -42,15 +45,15 @@ from a one-off pattern-match. Current state: **V2 = 929 gotos, 222 ahead of the 
 ## Build
 
 ```sh
-# decompiler (run from nobunaga/; the engine is emu-harness)
+# decompiler (paths resolve from each tool's file; the engine is emu-harness)
 py -3.14 tools/na1_regen.py                                    # regenerate source/ (all tiers)
 py -3.14 -m emu_harness.vm.koei.nes.gates.cfg_gate             # the hard CFG-equivalence gate
 py -3.14 -m emu_harness.vm.koei.nes.gates.test_vm_cfg          # structuring test suite
 py -3.14 -m emu_harness status na1-decompiler                  # every phase gate's last result
 
 # publishing
-py nobunaga/tools/build-site.py    # regenerate docs/ (the Pages site)
-py nobunaga/tools/build-wiki.py    # regenerate + push the wiki reference
+py tools/build-site.py    # build the Pages site into _build/site/ (Actions does this on push)
+py tools/build-wiki.py    # regenerate + push the wiki reference
 ```
 
 > Reverse-engineering notes for interoperability and preservation. **The game ROM is not

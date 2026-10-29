@@ -20,7 +20,7 @@ from pathlib import Path
 
 PROJ = Path(__file__).resolve().parent.parent      # project root (works from any CWD)
 DUMP = PROJ / "source" / "2-asm-vm" / "bank_01_vm.asm"
-TABLE = PROJ / "command-table.txt"
+TABLE = PROJ / "assets" / "data" / "command-table.txt"
 
 SUB_HEADER_RE = re.compile(r"; sub \$([0-9A-F]{4})")
 INSN_RE = re.compile(r"^ [> ]\$([0-9A-F]{4})  ")

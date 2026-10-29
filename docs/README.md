@@ -7,7 +7,7 @@ created: 2026-05-10
 
 **Links:** [Game Annotation Series](../README.md) · [Adventure](../adventure/README.md) · [Mappy](../mappy/README.md) · [Utopia](../utopia/README.md) · [M.U.L.E.](../mule/README.md) · [NES mappers reference](../../../research/nes/mappers-reference.md) · [LLM Grounding Problem](../../../research/llm-grounding-problem.md) · [Dominance-frontier game-analysis lens](../../../research/gaming/master-of-magic/com-counter-graph.md)
 
-> **🧭 Working here? Start with [CONTEXT.md](./CONTEXT.md)** — the hot layer (vocabulary + canonical-artifact index + quick-routes). Then the registries: [tools/README.md](./tools/README.md) (what tools exist) · [traces/README.md](./traces/README.md) (where data lives) · [ROADMAP.md](./ROADMAP.md) (frontier) · [commands/README.md](./commands/README.md) (command-test protocol). This README is the *narrative*; those are the *working registries* that keep the project from drifting.
+> **🧭 Working here? Start with [CONTEXT.md](../CONTEXT.md)** — the hot layer (vocabulary + canonical-artifact index + quick-routes). Then the registries: [tools/README.md](../tools/README.md) (what tools exist) · [traces/README.md](../traces/README.md) (where data lives) · [ROADMAP.md](../ROADMAP.md) (frontier) · [commands/README.md](./commands/README.md) (command-test protocol). This README is the *narrative*; those are the *working registries* that keep the project from drifting.
 
 ## Why this game
 

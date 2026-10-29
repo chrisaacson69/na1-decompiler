@@ -19,7 +19,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent.parent  # repo .../nobunaga
+ROOT = Path(__file__).resolve().parent.parent.parent  # the project root
 
 SCENARIOS = (17, 50)
 
@@ -73,8 +73,8 @@ class Scenario:
 def load_scenario(scenario: int) -> Scenario:
     if scenario not in SCENARIOS:
         raise ValueError(f"scenario must be one of {SCENARIOS}, got {scenario}")
-    fiefs = _parse_table(ROOT / _FIEF_FILE[scenario])
-    daimyo = _parse_table(ROOT / _DAIMYO_FILE[scenario])
+    fiefs = _parse_table(ROOT / "assets" / "data" / _FIEF_FILE[scenario])
+    daimyo = _parse_table(ROOT / "assets" / "data" / _DAIMYO_FILE[scenario])
     if len(fiefs) != len(daimyo) != scenario:
         raise ValueError(f"{scenario}-fief: {len(fiefs)} fiefs, {len(daimyo)} daimyo "
                          f"(expected {scenario} each)")

@@ -27,7 +27,7 @@ COUNT = 50
 # ---- province stats from 50Fief.txt ----
 # idx name header gold debt town rice output dams loyalty wealth men morale skill arms
 prov = {}
-with open(os.path.join(root, '50Fief.txt')) as f:
+with open(os.path.join(root, 'assets', 'data', '50Fief.txt')) as f:
     next(f)
     for line in f:
         t = line.split()
@@ -40,7 +40,7 @@ with open(os.path.join(root, '50Fief.txt')) as f:
 
 # ---- daimyo stats from 50Diamyo.txt (shared index) ----
 daim = {}
-with open(os.path.join(root, '50Diamyo.txt')) as f:
+with open(os.path.join(root, 'assets', 'data', '50Diamyo.txt')) as f:
     next(f)
     for line in f:
         t = line.split()
@@ -123,7 +123,7 @@ ignition = {i: 100*(W['power']*nP[i]+W['room']*nRoom[i]+W['safe']*nSafe[i]+W['de
 ir = ranks(ignition)
 
 # ---- TSV ----
-out = os.path.join(root, 'analysis-50fief.tsv')
+out = os.path.join(root, 'assets', 'data', 'analysis-50fief.tsv')
 cols = ["id","name","clan","deg","neighbors",
         "Econ","EconRank","Army","ArmyRank","Daimyo","DaimyoRank",
         "EconRankDelta","ArmyRankDelta","EconValGap","ArmyValGap",

@@ -23,7 +23,7 @@ created: 2026-05-29
 | `native_discover.py` | ✅ | the discover gate for NA1's fixed-bank 6502 (emu-harness PHASES.md section 2). |
 | `labeled_6502.py` | ✅ | the labeled 6502 view of a code bank (behind `mesen-labels.py --asm`). |
 | `rule_probe.py` | ✅ | NA1's rules read from the C, checked against the ROM's own routines over every SRAM dump, with a planted wrong model per rule (`py -3.14 tools/rule_probe.py`). |
-| `gen-opcode-appendix.py` | ✅ | Generate nobunaga/appendix-vm-opcodes.md — the canonical VM opcode reference. |
+| `gen-opcode-appendix.py` | ✅ | Generate docs/appendix-vm-opcodes.md — the canonical VM opcode reference. |
 
 ## Assets phase, the extraction tools (sorted 2026-10-29)
 Each was run from `nobunaga/` (the working directory the defaults assume) and its output compared with the committed copy. Every difference was traced to one of two library changes from `12b14f2` (2026-10-23): the animation backdrop is black (checked against Mesen's PPU), and the RGB table is the library's `MASTER`. A scratch copy with the old table reproduced the committed banners and all 67 fief maps byte for byte, and the pre-library strategic-map tool reproduces today's output in every mode. Py -3.14 throughout.
@@ -38,13 +38,13 @@ Each was run from `nobunaga/` (the working directory the defaults assume) and it
 | `sound_engine.py` | ✅ | **NA1's sound adapter (2026-10-29)** for the emu-harness sound lane: a request is `sound_request_id` + bank 10's `play_audio_by_id` on the VM, with the audio syscalls run by the ROM's kernel; the tick is `music_driver` ($C7A5). 16 events: songs 0-2 loop (1,025 frames each), jingles 3-8, effects 27-33. `py -3.14 -m emu_harness.machines.nes.sound tools/sound_engine.py [--wav assets/sound]`. |
 | `sound_verify.py` | ✅ | The sound gate: Mesen's watches (the game's writes into the engine RAM, `music_driver` entries, the APU, the requests) replayed headless. Power-on, `wait*600,start,wait*240,start,wait*240,a,…`: 846 APU writes identical, request 0 reproduces its 15 engine bytes; from `NAsave1.mss` idle, 1,176 identical. Planted: no MMC1 serial → diverges at write 2; Python audio syscalls → the request check fails. |
 | `title-nametable.py` | 🧪 | Prints the trace extract's nametable rows; superseded by `title-render`'s ROM read. |
-| `build-site.py` | ✅ | Assembles the GitHub Pages site (repo-root `/docs`) from `nobunaga/`. The companion track (mechanics, play tools, site) is sorted separately from extraction. Note: the site lagged its source until this run (the 2026-10-27 `math32_3arg` correction had not reached `docs/`). |
+| `build-site.py` | ✅ | Assembles the GitHub Pages site into `_build/site/` from `docs/`, `assets/` and the page generators; `.github/workflows/pages.yml` runs it and deploys. The companion track (mechanics, play tools, site) is sorted separately from extraction. Note: the site lagged its source until this run (the 2026-10-27 `math32_3arg` correction had not reached `docs/`). |
 | `build-wiki.py` | 🔎 | Generates the GitHub Wiki from `commands/*.md`, **then commits and pushes it**: not run in the sort (outward-facing). Companion track. |
 
 ## Command / effect testing
 | Script | Status | Purpose |
 |---|---|---|
-| `capture-test.py` | ✅ | PRE/POST snapshot manager (py -3.14: Mesen's Debugger folder from emu-harness) (the snap protocol in [commands/README](../commands/README.md)). Auto-registers each snap via `data-index.py`; pass `--note` for provenance. *(moved from root → tools/, 2026-05-29)* |
+| `capture-test.py` | ✅ | PRE/POST snapshot manager (py -3.14: Mesen's Debugger folder from emu-harness) (the snap protocol in [commands/README](../docs/commands/README.md)). Auto-registers each snap via `data-index.py`; pass `--note` for provenance. *(moved from root → tools/, 2026-05-29)* |
 | `data-index.py` | ✅ | Provenance index for empirical captures (`add`/`scan`/`show`) → `traces/INDEX.tsv`. The fix for "what is this dump?" — see [traces/README](../traces/README.md). |
 | `mesen-dump.py` | ✅ | Resolve/fetch Mesen Debugger output by convention (2026-05-30; folder from emu-harness since 2026-10-26, py -3.14). `list` · `path [name] [--trace]` · `get [name] [--trace]` (copies to `traces/` + auto-registers via `data-index`). `.dmp`=SRAM, `.txt`=tracelog; no name → newest by mtime; `name` = case-insensitive substring. Removes the manual hunt for a freshly-saved battle dump. |
 | `vm-trace.py` | ✅ | Headless VM trace (2026-10-26, emu-harness row P2): an emu-harness `watch` on the dispatcher + `lua/vm-trace.lua`'s trigger/depth logic in Python, from any savestate + input script. `--check` runs the Lua probe in the same session and diffs (NAsave1.mss, trigger $858D: 240/240 identical). py -3.14. |

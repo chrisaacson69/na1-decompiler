@@ -82,7 +82,7 @@ def main():
         for x, n, s, d in targets[:a.batch_clusters * a.size]:
             print(f"  ${x:04X}  {d:>5}{s:>7}  {n}")
         print(f"\n(showing top {min(len(targets), a.batch_clusters * a.size)}; ground a depth-0 "
-              f"root — highest sites first — per nobunaga/grounding.md, regenerate, repeat.)")
+              f"root — highest sites first — per docs/grounding.md, regenerate, repeat.)")
         return
 
     addrs = _cluster.anon_addrs(a.bank)

@@ -5,7 +5,7 @@ created: 2026-06-01
 # Appendix — True-Color ROM Asset Extraction
 > How to pull any graphic out of the ROM and render it in the game's real NES colors, by following the game's own data path. Proven on the daimyo portraits (2026-06-01, `tools/render-portrait.py anthology`); this is the reusable recipe + the candidate-asset inventory.
 
-**Links:** [tools/README](./tools/README.md) · [16-tactical-map-render](./16-tactical-map-render.md) · [project_nobunaga_visual_extraction] · [project_nobunaga_daimyo_portraits]
+**Links:** [tools/README](../tools/README.md) · [16-tactical-map-render](./16-tactical-map-render.md) · [project_nobunaga_visual_extraction] · [project_nobunaga_daimyo_portraits]
 
 ## Why this works
 

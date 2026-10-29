@@ -22,7 +22,7 @@ import importlib.util
 import os
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent.parent  # .../nobunaga
+ROOT = Path(__file__).resolve().parent.parent.parent  # the project root
 TOOLS = ROOT / "tools"
 
 PORTRAIT_SCALE = 4   # 48px native -> 192px asset (integer, pixel-crisp)
@@ -31,7 +31,7 @@ BANNER_SCALE = 6     # 24x8 native -> 144x48 asset
 
 @contextlib.contextmanager
 def _in_root():
-    """The legacy render tools resolve the ROM relative to cwd; run them from nobunaga/."""
+    """The legacy render tools resolve the ROM relative to cwd; run them from the project root."""
     prev = os.getcwd()
     os.chdir(ROOT)
     try:

@@ -15,10 +15,10 @@ from typing import List, Optional
 from .state import Province, Daimyo, World, AI_HOME, AI_DIRECT
 
 HERE = Path(__file__).resolve().parent          # .../tools/na1sim
-REPO = HERE.parent.parent                        # .../nobunaga
-PROV_FILE = REPO / "17fief.txt"
-ADJ_FILE = REPO / "adjacency.txt"
-DAIMYO_FILE = REPO / "17Diamyo.txt"
+REPO = HERE.parent.parent                        # the project root
+PROV_FILE = REPO / "assets" / "data" / "17fief.txt"
+ADJ_FILE = REPO / "assets" / "data" / "adjacency.txt"
+DAIMYO_FILE = REPO / "assets" / "data" / "17Diamyo.txt"
 
 # 17fief.txt column order after idx/name:
 # header gold debt town rice output dams loyalty wealth men morale skill arms

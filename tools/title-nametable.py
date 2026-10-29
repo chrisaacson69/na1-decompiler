@@ -3,7 +3,7 @@
 
 import os
 here = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(here, '..', 'nametable_bytes.txt')) as f:
+with open(os.path.join(here, '..', 'assets', 'data', 'nametable_bytes.txt')) as f:
     bytes_hex = [b.strip() for b in f if b.strip()]
 
 print(f"Total bytes: {len(bytes_hex)}")

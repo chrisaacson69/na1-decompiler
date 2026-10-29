@@ -22,7 +22,7 @@ tools/
 
 ```
 py -3.14 -m emu_harness.vm.koei.nes.titles <disasm|decompile|emulate> na1 ...
-py -3.14 tools/na1_regen.py                                   # regenerate source/ (from nobunaga/)
+py -3.14 tools/na1_regen.py                                   # regenerate source/
 py -3.14 -m emu_harness.vm.koei.nes.gates.<roundtrip|stack_audit|compare_probe|cfg_gate|test_vm_cfg>
 py -3.14 -m emu_harness status na1-decompiler                 # where each phase gate stands
 ```
@@ -49,7 +49,7 @@ catch-all output dir is the same smell as a flat `tools/`.
 
 | Class | What | Where | Versioned? |
 |---|---|---|---|
-| **Source** | hand-authored input/knowledge | `nobunaga/*.md` chapters, the ROM, `mesen-labels.toml`, `.xlsx` data | yes — it's input, not output |
+| **Source** | hand-authored input/knowledge | `docs/*.md` chapters, the ROM, `mesen-labels.toml`, `.xlsx` data | yes — it's input, not output |
 | **Oracle** | committed, deterministic, read-like-source deliverables | **`source/`** — the recovered game source as a pipeline ladder | yes — the project's payoff; regenerate only when a tool improves |
 | **Render / scratch** | regenerable from the ROM (graphics, traces, reports, dumps) | a gitignored renders tree, **in a kind subdir** | no — gitignored |
 

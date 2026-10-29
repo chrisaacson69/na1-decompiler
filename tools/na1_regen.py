@@ -34,7 +34,7 @@ BANNER = """// ============================================================
 def regen(banks=BANKS):
     """Regenerate every tier of `banks`; -> [] or the failing steps' messages.
 
-    Paths go to the engine project-relative (run from nobunaga/): it prints the path it is given on
+    Paths go to the engine project-relative (run from the project root): it prints the path it is given on
     every sub's `// Decompiled from` line, so an absolute path would put this machine's layout into
     committed files and make the output differ per machine. The banner is ours; the engine writes none."""
     errs = []

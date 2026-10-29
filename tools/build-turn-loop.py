@@ -774,14 +774,20 @@ def render():
         f"<style>{_bcp.CSS}</style>", f"<style>{HUB_CSS}</style>")
 
 
-def _write_phase(pid):
-    out = ROOT / f"turn-loop-{pid}.html"
+# The site build (build-site.py) writes these into the site; run alone, they land here (gitignored).
+OUT_DIR = ROOT / "_build" / "pages"
+
+
+def _write_phase(pid, out_dir=OUT_DIR):
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / f"turn-loop-{pid}.html"
     out.write_text(render_phase_page(pid), encoding="utf-8")
     print(f"  wrote {out.relative_to(ROOT)}  ({out.stat().st_size} bytes, phase '{pid}')")
 
 
-def _write_hub():
-    out = ROOT / "turn-loop.html"
+def _write_hub(out_dir=OUT_DIR):
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / "turn-loop.html"
     out.write_text(render(), encoding="utf-8")
     print(f"  wrote {out.relative_to(ROOT)}  ({out.stat().st_size} bytes, {len(NODES)} phases)")
 
@@ -802,9 +808,15 @@ def main():
     elif args.target == "hub":
         _write_hub()
     else:                                    # 'all'
-        for pid in PHASE_PAGES:
-            _write_phase(pid)
-        _write_hub()
+        write_all()
+
+
+def write_all(out_dir=OUT_DIR):
+    """The hub and every phase page into out_dir; -> the paths written."""
+    for pid in PHASE_PAGES:
+        _write_phase(pid, out_dir)
+    _write_hub(out_dir)
+    return [out_dir / f"turn-loop-{pid}.html" for pid in PHASE_PAGES] + [out_dir / "turn-loop.html"]
 
 
 if __name__ == "__main__":

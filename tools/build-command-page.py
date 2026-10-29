@@ -35,7 +35,7 @@ except Exception:
     pass
 
 ROOT = Path(__file__).resolve().parent.parent
-CMD_DIR = ROOT / "commands"
+CMD_DIR = ROOT / "docs" / "commands"
 ASSETS = ROOT / "assets" / "animations"   # canonical command animations (asset reorg 2026-06-11)
 
 # ---- effects that carry a self-contained, bytecode-validated formula ----

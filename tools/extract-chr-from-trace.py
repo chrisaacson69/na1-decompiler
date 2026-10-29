@@ -21,7 +21,7 @@ chr_data = PPUWrites().feed_all(read_tracelog(TRACE)).vram
 
 # Save to a file the renderer can read
 here = os.path.dirname(os.path.abspath(__file__))
-out = os.path.join(here, 'title-chr.bin')
+out = os.path.join(here, '..', 'assets', 'data', 'title-chr.bin')
 with open(out, 'wb') as f:
     # Save the PPU $1000-$1FFF range (4 KB)
     f.write(chr_data[0x1000:0x2000])

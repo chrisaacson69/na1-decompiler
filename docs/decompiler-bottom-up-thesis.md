@@ -5,7 +5,7 @@ created: 2026-06-04
 # The Decompiler is a Reverse Compiler — Bottom-Up Atom Inversion
 > NA1's engine is **100% reducible**: there is no irreducible control flow anywhere. The V2 region-reducer's "irreducible residue" was a phantom of the top-down framing. The right model is bottom-up — invert a *finite* table of compiler lowering patterns ("atoms"), substituting each matched subgraph with a token, until the procedure collapses to structured C.
 
-**Links:** [ROADMAP](./ROADMAP.md) (CFG epic V2, sessions 7a–7g) · [05-bytecode-vm](./05-bytecode-vm.md) · [06-vm-disassembler](./06-vm-disassembler.md) · tool: `tools/probe-cfg-reducibility.py`
+**Links:** [ROADMAP](../ROADMAP.md) (CFG epic V2, sessions 7a–7g) · [05-bytecode-vm](./05-bytecode-vm.md) · [06-vm-disassembler](./06-vm-disassembler.md) · tool: `tools/probe-cfg-reducibility.py`
 
 ---
 

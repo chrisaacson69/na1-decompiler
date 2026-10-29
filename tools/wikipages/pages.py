@@ -24,7 +24,7 @@ from pathlib import Path
 
 from .data import load_scenario
 
-ROOT = Path(__file__).resolve().parent.parent.parent  # .../nobunaga
+ROOT = Path(__file__).resolve().parent.parent.parent  # the project root
 DEFAULT_OUT = ROOT / "wikipages-out"
 
 # Asset paths relative to a page in the (flat) output dir.

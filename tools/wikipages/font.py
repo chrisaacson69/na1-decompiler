@@ -19,7 +19,7 @@ from pathlib import Path
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 
-ROOT = Path(__file__).resolve().parent.parent.parent  # .../nobunaga
+ROOT = Path(__file__).resolve().parent.parent.parent  # the project root
 TOOLS = ROOT / "tools"
 
 PIXEL = 128                 # font units per source pixel

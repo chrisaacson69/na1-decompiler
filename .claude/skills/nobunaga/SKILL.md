@@ -9,12 +9,12 @@ allowed-tools: Bash, Read, Grep, Edit
 
 **This one is deliberately instance-scoped.** The naming walks (label, data, var) are disassembly
 *method* and live in emu-harness (PHASES.md §5, `workflows/`; NA1's facts for them are
-`nobunaga/walk-context.json`). This skill dispatches NA1's **specific tool surface** (fief renderers,
+`walk-context.json`). This skill dispatches NA1's **specific tool surface** (fief renderers,
 the econ sim, the combat-trace decoder). It is correctly bound to one project; do not generalize it.
 If a tool here proves useful on another target, that's the signal to **promote the tool** into
 emu-harness, not to widen this dispatcher.
 
-**Project root (`PROJ`)** is `nobunaga/` in this repo. (Moved here from the vault's skills on
+**Project root (`PROJ`)** is the repo root (it was `nobunaga/` until the 2026-10-29 layout move; the chapters are in `docs/`, the command pages in `docs/commands/`, the game-data captures in `assets/data/`). (Moved here from the vault's skills on
 2026-10-26; the vault's pointer page is `projects/game-annotation/nes/na1/README.md`.)
 
 **Rule 0 — anti-drift (this is why the skill exists):** before running OR building anything, the source of truth is the registries, not your memory:
@@ -33,7 +33,7 @@ Then route the request.
 | **Render the WHOLE atlas from ROM** | `render-rom-atlas.py` | `py tools/render-rom-atlas.py [--scenario 17\|50]` — all 50 (or 17) fiefs → `atlas/rom-50/` + terrain-distribution table + anomaly flags. All 50 verified clean; reproduces every hand-captured fief's terrain counts. |
 | Render the strategic map (the cartridge's art) | `render-strategic-map.py` | `py -3.14 tools/render-strategic-map.py [--scenario 17] [--faithful]`  (contact sheet, or the stitched whole map) |
 | Render the 50-fief adjacency graph | `render-strategic-50.py` | `py tools/render-strategic-50.py [rom] [out.png]`  (*separate tool — there is no `--variant`*) |
-| Test a command's effect | snap protocol | `py -3.14 tools/capture-test.py <tag> pre` → make the move → `… <tag> post` → `… <tag> diff [--fief N]` (py -3.14: the Mesen Debugger folder comes from emu-harness); `--note "..."` on pre/post for provenance. See `commands/README.md`. |
+| Test a command's effect | snap protocol | `py -3.14 tools/capture-test.py <tag> pre` → make the move → `… <tag> post` → `… <tag> diff [--fief N]` (py -3.14: the Mesen Debugger folder comes from emu-harness); `--note "..."` on pre/post for provenance. See `docs/commands/README.md`. |
 | Run an effect handler in the emulator | `run-effect.py` | `py tools/run-effect.py <grow\|build\|dam\|give…> <sram_pre.dmp> [amount]` |
 | Analyze the VM opcode table | emu-harness | `py -3.14 tools/koei_isa_probe.py na1` (lengths, from emu-harness/), `py -3.14 -m emu_harness.vm.koei.nes.gates.stack_audit` (stack effects) |
 | Decompile a bytecode sub → C | emu-harness `vm.koei.nes.vm_decompile` | `py -3.14 -m emu_harness.vm.koei.nes.vm_decompile source/2-asm-vm/bank_NN_vm.asm <addr_hex>` (the engine graduated to emu-harness; the read-ready output is `source/4-c/bank_NN.c`, see `source/README.md`) |

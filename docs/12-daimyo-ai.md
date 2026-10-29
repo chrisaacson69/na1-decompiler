@@ -6,7 +6,7 @@ created: 2026-05-14
 
 > Chapter 11 mapped the 21 commands — the player's verbs. This chapter finds the engine that picks among them for the *other* daimyo. The static walk leads from the AI's effect-call sites up through a six-way command switch, a probabilistic decision primitive, and a decision-flag byte — and the model that emerges is strikingly simple: the daimyo AI is not a planner or a utility-maximiser. It is a **cascade of weighted coin-flips** — `RNG() mod 100` against thresholds computed from game state and tunable constants — accumulating into a flag byte that selects the action. For a 1986 strategy engine running in a bytecode VM, that is exactly the right amount of AI, and it fits the pattern this project keeps finding (Utopia's score-driven rebels, M.U.L.E.'s rubber-banded RNG).
 
-**Links:** [Chapter 11 — The Strategic Engine](./11-strategic-engine-complete.md) · [Chapter 9 — Command System](./09-command-system-and-grow.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [How the AI Plays](./ai.html) · [Command-pass deep dive](./turn-loop-command.html) · [Nobunaga README](./README.md)
+**Links:** [Chapter 11 — The Strategic Engine](./11-strategic-engine-complete.md) · [Chapter 9 — Command System](./09-command-system-and-grow.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [How the AI Plays](../ai.html) · [Command-pass deep dive](../turn-loop-command.html) · [Nobunaga README](./README.md)
 
 ## The AI turn, top to bottom
 

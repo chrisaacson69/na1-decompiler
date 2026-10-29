@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent          # the project root: defau
 rom = open(sys.argv[1], "rb").read()
 if rom[:4] == b"NES\x1a":
     rom = rom[16:]
-out_path = sys.argv[2] if len(sys.argv) > 2 else ROOT / "adjacency-50.txt"
+out_path = sys.argv[2] if len(sys.argv) > 2 else ROOT / "assets" / "data" / "adjacency-50.txt"
 
 TABLE_BANK = 4
 TABLE_CPU = 0x8004

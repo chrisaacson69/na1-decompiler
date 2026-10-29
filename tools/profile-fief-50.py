@@ -10,7 +10,7 @@ import os, sys
 here = os.path.dirname(os.path.abspath(__file__)); root = os.path.join(here, '..'); COUNT = 50
 
 prov = {}
-with open(os.path.join(root, '50Fief.txt')) as f:
+with open(os.path.join(root, 'assets', 'data', '50Fief.txt')) as f:
     next(f)
     for line in f:
         t = line.split()
@@ -20,7 +20,7 @@ with open(os.path.join(root, '50Fief.txt')) as f:
                        loyalty=int(t[9]), wealth=int(t[10]), men=int(t[11]), morale=int(t[12]),
                        skill=int(t[13]), arms=int(t[14]))
 daim = {}
-with open(os.path.join(root, '50Diamyo.txt')) as f:
+with open(os.path.join(root, 'assets', 'data', '50Diamyo.txt')) as f:
     next(f)
     for line in f:
         t = line.split()

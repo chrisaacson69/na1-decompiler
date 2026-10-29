@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate nobunaga/appendix-vm-opcodes.md — the canonical VM opcode reference.
+"""Generate docs/appendix-vm-opcodes.md — the canonical VM opcode reference.
 
 Fuses two authoritative sources (run from tools/):
   - na1dream.nobunaga_vm.OPCODE_INFO  -> per-opcode (mnemonic, operand byte length),
@@ -142,6 +142,6 @@ n_verified = sum(1 for r in rows if r["verified"])
 out.append(f"\n---\n*256 opcodes · {n_verified} verified against the ROM · "
            "2 illegal ($80, $CE). Regenerate with `py -3 tools/gen-opcode-appendix.py`.*")
 
-DEST = Path(__file__).resolve().parent.parent / "appendix-vm-opcodes.md"
+DEST = Path(__file__).resolve().parent.parent / "docs" / "appendix-vm-opcodes.md"
 DEST.write_text("\n".join(out) + "\n", encoding="utf-8")
 print(f"wrote {DEST}  ({len(groups)} rows over 256 opcodes, {n_verified} verified)")

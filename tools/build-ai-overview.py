@@ -178,8 +178,13 @@ def render():
         f"<style>{_bcp.CSS}</style>", f"<style>{HUB_CSS}</style>")
 
 
-def main():
-    out = ROOT / "ai.html"
+# The site build (build-site.py) writes this into the site; run alone, it lands here (gitignored).
+OUT_DIR = ROOT / "_build" / "pages"
+
+
+def main(out_dir=OUT_DIR):
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / "ai.html"
     out.write_text(render(), encoding="utf-8")
     print(f"  wrote {out.relative_to(ROOT)}  ({out.stat().st_size} bytes, {len(SECTIONS)} acts)")
 

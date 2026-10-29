@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-build-site.py — assemble the GitHub Pages site (repo-root /docs) from nobunaga/.
+build-site.py — assemble the GitHub Pages site (_build/site/) from the project.
 
 Division of labor (see README): **Pages** hosts the AI-co-authored analysis &
 stories (markdown, Jekyll-rendered) plus the generated standalone HTML pages
 (served as-is); the **Wiki** holds the markdown command/concept reference.
 
-docs/ is fully generated and owned by this script — edit sources in nobunaga/,
-then re-run. Jekyll renders the .md (front matter injected here); the
+_build/site/ is fully generated and owned by this script (gitignored; .github/workflows/pages.yml
+runs it and deploys) — edit the sources (docs/, assets/, the generators), then re-run. Jekyll renders the .md (front matter injected here); the
 jekyll-relative-links plugin rewrites .md cross-links to .html.
 
-Run from anywhere:  py nobunaga/tools/build-site.py
+Run from anywhere:  py tools/build-site.py
 """
 import json
 import re
@@ -18,9 +18,9 @@ import shutil
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve()
-SRC = SCRIPT.parent.parent              # nobunaga/
-ROOT = SRC.parent                       # repo root
-OUT = ROOT / "docs"
+SRC = SCRIPT.parent.parent              # the project root
+DOCS = SRC / "docs"                     # the hand-written pages
+OUT = SRC / "_build" / "site"
 
 BASEURL = "/na1-decompiler"
 
@@ -40,9 +40,7 @@ defaults:
       layout: default
 """.format(baseurl=BASEURL)
 
-# generated standalone HTML served as-is (no front matter -> Jekyll static copy)
-HTML_PAGES = sorted(SRC.glob("turn-loop*.html")) + [SRC / "ai.html"]
-# fonts + banners added for the fief/daimyo atlas (docs/atlas/, generated below).
+# fonts + banners added for the fief/daimyo atlas (atlas/, generated below).
 ASSET_DIRS = ["maps", "portraits", "screens", "animations", "fonts", "banners"]
 
 
@@ -58,7 +56,7 @@ def meta(md_text):
 
 
 def emit_md(path, title):
-    """Copy a chapter into docs/, ensuring front matter has layout + title."""
+    """Copy a chapter into the site, ensuring front matter has layout + title."""
     text = path.read_text(encoding="utf-8")
     m = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n", text, re.DOTALL)
     fm = m.group(1) if m else ""
@@ -90,9 +88,9 @@ def main():
     (OUT / "_layouts").mkdir(parents=True, exist_ok=True)
     (OUT / "_layouts" / "default.html").write_text(JEKYLL_LAYOUT, encoding="utf-8")
 
-    chapters = sorted(SRC.glob("[0-9]*.md"))
-    appendices = sorted(SRC.glob("appendix-*.md"))
-    decompiler = sorted(SRC.glob("decompiler-*.md"))
+    chapters = sorted(DOCS.glob("[0-9]*.md"))
+    appendices = sorted(DOCS.glob("appendix-*.md"))
+    decompiler = sorted(DOCS.glob("decompiler-*.md"))
 
     sections = {"chapters": [], "appendices": [], "decompiler": []}
     for group, files in (("chapters", chapters), ("appendices", appendices), ("decompiler", decompiler)):
@@ -101,14 +99,21 @@ def main():
             emit_md(f, title)
             sections[group].append((f.stem + ".html", title, summary))
 
-    # generated standalone HTML (commands/, turn-loop*, ai)
-    cmd_src = SRC / "commands"
+    # generated standalone HTML, served as-is (no front matter -> Jekyll static copy): commands/ is
+    # committed (its index draws the ROM's font); turn-loop* and ai are rendered here (ROM-free)
+    cmd_src = DOCS / "commands"
     if cmd_src.exists():
         shutil.copytree(cmd_src, OUT / "commands",
                         ignore=shutil.ignore_patterns("*.md", "README*"))
-    for h in HTML_PAGES:
-        if h.exists():
-            shutil.copy2(h, OUT / h.name)
+    import importlib.util
+    gen = {}
+    for name in ("build-turn-loop", "build-ai-overview"):
+        spec = importlib.util.spec_from_file_location(name.replace("-", "_"), SCRIPT.parent / f"{name}.py")
+        gen[name] = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gen[name])
+    html_pages = gen["build-turn-loop"].write_all(OUT)
+    gen["build-ai-overview"].main(OUT)
+    html_pages.append(OUT / "ai.html")
 
     # assets (presentational subset; skip Saves and _-prefixed diagnostics)
     for d in ASSET_DIRS:
@@ -118,15 +123,14 @@ def main():
                             ignore=shutil.ignore_patterns("_*", "*.coords.json"))
 
     # generated data pages (#5) — viability map, emitted by viability-map.py
-    import importlib.util
     spec = importlib.util.spec_from_file_location("viability_map", SCRIPT.parent / "viability-map.py")
     vm = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(vm)
     (OUT / "data").mkdir(parents=True, exist_ok=True)
     (OUT / "data" / "viability.html").write_text(vm.build_html(SRC), encoding="utf-8")
 
-    # interactive fief & daimyo atlas (wikipages package) -> docs/atlas/.
-    # Its pages reference ../assets/... which, one level deep, resolves to docs/assets/.
+    # interactive fief & daimyo atlas (wikipages package) -> atlas/.
+    # Its pages reference ../assets/... which, one level deep, resolves to the site's assets/.
     import sys as _sys
     if str(SCRIPT.parent) not in _sys.path:
         _sys.path.insert(0, str(SCRIPT.parent))
@@ -147,9 +151,9 @@ def main():
         inject_nav(h, "../", "Atlas")
 
     n_html = len(list((OUT / "commands").glob("*.html"))) if (OUT / "commands").exists() else 0
-    print(f"Built docs/ : {len(chapters)} chapters, {len(appendices)} appendices, "
+    print(f"Built {OUT.relative_to(SRC).as_posix()}/ : {len(chapters)} chapters, {len(appendices)} appendices, "
           f"{len(decompiler)} decompiler pages, {n_html} command HTML, "
-          f"{len(HTML_PAGES)} turn-loop/ai pages, {n_atlas} atlas pages.")
+          f"{len(html_pages)} turn-loop/ai pages, {n_atlas} atlas pages.")
 
 
 NAV_LINKS = [("Home", "index.html"), ("Atlas", "atlas/"), ("Reference", "reference.html"),
@@ -168,7 +172,7 @@ def nav_css(prefix=""):
     """Self-contained nav-bar CSS, for injecting into pages made by OTHER generators
     (command/turn-loop/ai/viability/atlas) that don't share SITE_CSS. Scoped to .topbar
     so it won't fight a page's own styles. `prefix` ('../' one level deep) points the
-    font at docs/assets/fonts/."""
+    font at the site's assets/fonts/."""
     return ("@font-face{font-family:'NA';src:url('" + prefix + "assets/fonts/nobunaga.ttf') format('truetype')}"
             ".topbar{background:#0a0a12;display:flex;justify-content:center;gap:4px;flex-wrap:wrap;"
             "padding:9px 12px;position:sticky;top:0;z-index:9999;border-bottom:2px solid #45e082}"

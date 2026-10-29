@@ -71,7 +71,7 @@ Two cautions this exercise surfaced, both worth keeping in mind when reading any
 ### Reproduce
 
 ```
-cd nobunaga/tools
+cd tools
 py -3 label-walk-prep.py 15 --grounding        # walk the layer-4 bytecode band, leaves-first (now 0 suspects)
 py -3 native-call-index.py callers $ADDR        # who calls a sub (kind = jsr / branch / host_call)
 ```

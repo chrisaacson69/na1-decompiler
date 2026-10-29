@@ -14,7 +14,7 @@ kept as code) along with the VM's own tables. Then:
   4. holes    every fixed-bank PC in the Mesen traces (traces/*.txt[.gz]) must be an instruction
               start of the walk or a bytecode stub; anything else is a hole, by definition.
 
-Usage (from nobunaga/):  py -3.14 tools/native_discover.py [--no-traces]
+Usage (from the repo root):  py -3.14 tools/native_discover.py [--no-traces]
 Exit 1 on an unexplained conflict or a hole.
 """
 import argparse

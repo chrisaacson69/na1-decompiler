@@ -10,70 +10,70 @@ name    = "Nobunaga's Ambition (USA)"
 track   = "vm"
 machine = "nes"
 profile = "na1"
-entry   = ["nobunaga/CONTEXT.md", "nobunaga/ROADMAP.md", "nobunaga/README.md", "nobunaga/source/README.md"]
+entry   = ["CONTEXT.md", "ROADMAP.md", "docs/README.md", "source/README.md"]
 
 [phase.classify]
 status   = "done"
 gate     = "VM track, turn-based: the 6502 hosts the Sea-16 bytecode VM (fetch-decode at the dispatcher, 256-entry handler table, per-routine vm_entry stubs) and the game logic is bytecode in banks 0, 1, 2, 10, 14, 15; MMC1, 16 x 16K PRG, battery SRAM. The static-runtime join is cheap (bank switches are explicit syscalls). NA1 is the family's root: no sibling fingerprint applies (games.toml: 'NA1 is the oracle, never a native_floor target')."
 checked  = "2026-10-27"
 toolset  = "4ed0685"
-evidence = ["nobunaga/01-boot-and-dispatch.md", "nobunaga/05-bytecode-vm.md", "nobunaga/08-vm-instruction-set.md"]
+evidence = ["docs/01-boot-and-dispatch.md", "docs/05-bytecode-vm.md", "docs/08-vm-instruction-set.md"]
 
 [phase.recon]
 status   = "done"
 gate     = "window_check na1: 16 banks of 16K, 0 problems. Every bytecode bank tiles: gates.roundtrip --game na1 re-encodes 499 subs, 45,711 code bytes in banks 0/1/2/10/14/15 byte-identical (ROUND-TRIP CLEAN). The shared toolchain's assumptions, re-derived on NA1's own handlers: operand lengths (tools/koei_isa_probe.py na1: 0 live opcodes disagree with the decoder), stack effects (gates.stack_audit: 187/208 gated opcodes confirmed, 21 never emitted in NA1), compare direction and signedness (gates.compare_probe: 10/10 16-bit and 10/10 32-bit ext-op names; new in this revisit, converted from the atticked NA1 probe; a planted C3/C5 swap fails it). One opcode table, emu-harness's, read through nobunaga_vm.OPCODES_PATH; the legacy nobunaga/vm-opcodes.toml is retired and the appendix regenerates from the shared table (it differs from the June appendix by the 4 lengths row F2 measured: $AD 2, $E0-$E2 2). Re-checked on emu-harness 04abd4d after the 2026-10-28 decompiler commits (8657242, 3e075f8, 04abd4d): window_check 0 problems, round-trip 499 subs byte-identical, stack audit 187, compare probe 10/10 + 10/10, koei_isa_probe 0 live opcodes disagree."
 checked  = "2026-10-28"
 toolset  = "4678989"
-evidence = ["nobunaga/source/2-asm-vm/", "nobunaga/appendix-vm-opcodes.md", "nobunaga/tools/gen-opcode-appendix.py"]
+evidence = ["source/2-asm-vm/", "docs/appendix-vm-opcodes.md", "tools/gen-opcode-appendix.py"]
 
 [phase.discover]
 status   = "done"
 gate     = "tools/native_discover.py (PASS; exit 1 on an unexplained conflict or a hole). Fixed bank: the 135 bytecode subs' bodies masked as data (extents from the round-trip encoder) with the VM tables, then NativeMap.reach from native_floor's seeds and subs plus what they missed: 2 natives only bytecode calls (syscall_dispatch $F226, sqrt_int $CBCD), the 23 syscall-table JMP entries ($C173), and $F23C, the syscall RTI continuation (syscall_dispatch pushes $F23C, PHP, JMP ($FFFE); only RTI reaches it). 335 native routines, 5,539 code bytes. Conflicts 2, both explained: $EF92/$EF93, the illegal-opcode BRK traps. Phantoms dropped: $F007 (JSR-census hit from the operand bytes of lda $0720 / beq), $FFFF (data 20 FF FF). Dispatch: 5 JMP (ind) sites, all the VM's and kernel's own (vm_dispatch via the split handler tables, ext_op_dispatch, vm_return, syscall_dispatch via the IRQ vector, irq_handler into the syscall table). Holes: 14 Mesen traces, 30.3 M fixed-bank steps, 1,928 distinct PCs = 1,856 walk instruction starts + 72 bytecode stubs, 0 holes. Planted fault (no $F23C seed): 6 holes at $F23C-$F245, 3,133 executions each. Graded: native_floor na1 --oracle ro3k (63 'differs', nearly all the fuzzy matcher collapsing short handlers); against the bytes, 157/157 vm_op_XX labels sit at their opcode's handler and 10/10 cmp32 names measure right on the live handler (gates.compare_probe); one NA1 name is wrong ($EF92)."
 checked  = "2026-10-27"
 toolset  = "4ed0685"
-evidence = ["nobunaga/tools/native_discover.py", "nobunaga/traces/README.md"]
+evidence = ["tools/native_discover.py", "traces/README.md"]
 
 [phase.data]
 status   = "done"
 gate     = "Oracle lanes, deterministic (dataxref na1 strings / tables / hot): strings 21 -> 0, tables 4 -> 0, hot unlabeled 20 -> 10, the 10 left being fields of labelled records, not gaps (province_table_live +6/8/12/14/16/18, fief_history_table +2/4/6, province_unit_type_pct +2). 35 labels written through tools/data-apply.py (refuses an existing address or name; regen; walk.guard name mapping, every C / listing file equal once each new name maps back to its literal; a planted label on a code address fails it; the registry restores byte-identical). ROM text named from its decoded string and its one reader (the duplicate %3d / %4d / %d format strings by reader and order, no address keys); the tables lane had read 3 short strings ('----', ' ') as binary. RAM by kind from its readers: player_daimyo ($7FD5; poll_input compares it with fief_owner where it prints 'Control %d'), sram_save_signature ($7FED; strcmp with 'KOEI'), fief_revolt_type, unit_count_digit_tiles, input_mode3_latch, relations_matrix ($6193; the 50 x 8 offset from fief_history_table was a coincidence), and 4 provenance / kind names (fief_index_list, province_candidate_list, battle_unit_byte_table, list_remove_matching_list) whose roles are naming work. Manual lane: no manual on this machine; the record fields' meanings were proven live by the snap protocol (commands/README.md). The .mlb regenerated (+35, and row A's 4 settled conflicts reached it)."
 checked  = "2026-10-27"
 toolset  = "ca94e34"
-evidence = ["nobunaga/tools/data-apply.py", "nobunaga/mesen-labels.toml", "nobunaga/commands/README.md"]
+evidence = ["tools/data-apply.py", "mesen-labels.toml", "docs/commands/README.md"]
 
 [phase.structure]
 status   = "done"
 gate     = "On emu-harness 54be6fe: round-trip 499 subs byte-identical; stack audit 187 opcodes; compare probe 10/10 + 10/10 ext; cfg_gate CLEAN: 494/494 bodies CFG-faithful and both structuring checks pass, and the 5 formula overrides equal the ROM by value (15,317 edge inputs incl. $8000 / $FFFF and zero divisors; a planted June model fails). The 5 ext-op formulas re-derived from their bytecode (sign-extend, mul32, KOEI's sdiv32, which divides by |d| - 1 for a negative divisor in every title that has it). The decompiler's $8B parse dropped a sign (5 NA1 sites printed != 1 for != -1; ~370 across the family); fixed, with a test from the ROM. titles emulate runs a sub (run_sub). na1sim points at the ROM-checked models; its 19/19 routines still match the ROM (oracle_vm). invert_condition parses the top level (emu-harness 3c3900e): the textual one flipped the comparison inside an already-negated !(...), so 3 NA1 sites inverted !(A || B) to A && !B ($82E9 is_cell_clear_of_bits, $89FD, $930A; the ROM sides with the goto form, $82DB(0, 5) = 1); 83 if-lines change on regen, 3 in meaning; cfg_gate stays CLEAN (it checks CFG shape, not rewritten polarity); the test checks each inversion by value and plants the textual one. gates.value_probe (emu-harness f556de3): the rendered C of 5 fixture subs (min_word, max_word, is_tile_in_bounds, unit_strength_ptr, is_cell_clear_of_bits) evaluated over 684 inputs equals titles.run_sub, a call running its callee on the ROM so argument order counts; planted, the textual inverter and reversed call arguments each fail it. The attic is read and retired (tools/RETIRED.md)."
 checked  = "2026-10-28"
 toolset  = "4678989"
-evidence = ["nobunaga/source/4-c/bank_01.c", "nobunaga/source/4-c/bank_15.c", "nobunaga/tools/na1sim/vmprims.py", "nobunaga/tools/value-oracle.py"]
+evidence = ["source/4-c/bank_01.c", "source/4-c/bank_15.c", "tools/na1sim/vmprims.py", "tools/value-oracle.py"]
 
 [phase.naming]
 status   = "done"
 gate     = "Bottom-up then top-down done, proposals verified at the bytecode, the guard holds, no placeholder names. Bottom-up: label walk (all subs named), data walk, var walk over all five code banks (15, 14, 1, 2, 0; positional names left are verifier-refused two-role slots). Top-down (2026-10-28): the 73 non-leaf names below HIGH by call height, each with its callers' C and callees' notes, one reviewer + one bytecode verifier per batch: 37 of 72 renamed; the 25 widest-spread leaves checked against their call sites: 3 renamed; close-out: the last 3 address-named routines and the is_enemy_owned inversion in its callers' parameters (want_own). Every rename went through the guarded registry edit (regen + pure-rename diff). Drift: match family proposes 0 renames for NA1 (it is the names' source). The ext-op formulas were re-derived 2026-10-27 (closed revisit). Readability polish of the printed C moved to presentation; two data questions needing a capture moved to live."
 checked  = "2026-10-28"
 toolset  = "4678989"
-evidence = ["nobunaga/mesen-labels.toml", "nobunaga/walk-context.json", "nobunaga/tools/na1_regen.py", "re-roadmap.toml [[revisit]] naming entries"]
+evidence = ["mesen-labels.toml", "walk-context.json", "tools/na1_regen.py", "re-roadmap.toml [[revisit]] naming entries"]
 
 [phase.presentation]
 status   = "partial"
 gate     = "The full vm ladder exists: 1-asm-6502 (16 banks + 4 labeled), 2-asm-vm, 3-c-basic, 4-c (DREAM), plus all_banks.c. Stale against the shared engine: the committed C predates the asset-enum names, banner and F2 fixes (18 files change on regen); the 4 *_labeled.asm are untracked; all_banks.c has no generator since decompile-merged.py went; 2-asm-vm banners say 0 CPU addresses named."
 checked  = ""
 toolset  = ""
-evidence = ["nobunaga/source/README.md", "nobunaga/tools/na1_regen.py", "nobunaga/tools/mesen-labels.py"]
+evidence = ["source/README.md", "tools/na1_regen.py", "tools/mesen-labels.py"]
 
 [phase.assets]
 status   = "partial"
 gate     = "Render tools are thin over the library (rows O1-O3): portraits (two systems), strategic map, fief tactical maps from ROM (byte-exact Mino 17, Tanba 55/55), the animation VM against Mesen's own PPU (O3), text; the committed outputs regenerated and every difference explained (2026-10-29). Sound (2026-10-29, emu-harness 38e24a9): the first title on the library's sound lane (tools/sound_engine.py); tools/sound_verify.py replays Mesen's watches headless: from power-on 846 APU writes identical and request 0's 15 engine bytes identical, from NAsave1.mss idle 1,176 identical; planted faults (no MMC1 serial, Python audio syscalls) fail it. Not done: a live-PPU match for each render family as Mappy's assets gate does, and the sound gate over requests beyond song 0 (jingles, effects: needs a play script that issues commands)."
 checked  = "2026-10-29"
 toolset  = "38e24a9"
-evidence = ["nobunaga/assets/README.md", "nobunaga/appendix-asset-extraction.md", "nobunaga/tools/sound_engine.py", "nobunaga/tools/sound_verify.py"]
+evidence = ["assets/README.md", "docs/appendix-asset-extraction.md", "tools/sound_engine.py", "tools/sound_verify.py"]
 
 [phase.live]
 status   = "partial"
 gate     = "The snap protocol (capture-test.py PRE/POST over SRAM) verified the 21 roster commands and the economy formulas against the running game; run-effect.py runs a handler over loaded SRAM; econ_sim.py validated end to end (May 2026). Not in the gate's form: the game's own routine over live RAM for every input, with a planted fault that fails it."
 checked  = ""
 toolset  = ""
-evidence = ["nobunaga/commands/README.md", "nobunaga/tools/capture-test.py", "nobunaga/tools/run-effect.py", "nobunaga/tools/econ_sim.py"]
+evidence = ["docs/commands/README.md", "tools/capture-test.py", "tools/run-effect.py", "tools/econ_sim.py"]
 
 # --- revisits: from emu-harness MIGRATION.md (per-project table) ------------------------------
 

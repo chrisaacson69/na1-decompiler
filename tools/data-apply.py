@@ -12,7 +12,7 @@ Input: a TOML file with the registry's own sections ([ram], [prg.bankN]) and ent
 section) and a name already used. On a guard failure the registry is restored and the source
 regenerated back.
 
-Usage (from nobunaga/):  py -3.14 tools/data-apply.py <entries.toml> [--dry-run]
+Usage (from the repo root):  py -3.14 tools/data-apply.py <entries.toml> [--dry-run]
 """
 import argparse
 import re

@@ -51,7 +51,7 @@ job from "name the blank" to "ground-truth it, lowest layer first."
   record, `$6193` relations matrix, the combat unit table, etc.) are well-known and reliable. This pass
   grounds *code behavior*, not data layout — use the established field map; only flag a field if the code
   actively contradicts it. Do NOT spend the pass re-deriving data structures.
-- **Tech debt + quirks live in `nobunaga/tech-debt.md`** (the canonical map). Log decompiler-bug detail in
+- **Tech debt + quirks live in `docs/tech-debt.md`** (the canonical map). Log decompiler-bug detail in
   the §"Decompiler 3% backlog" below AND the corresponding tech-debt.md row.
 
 ### Layer ID (do this first — you cannot tell from the address)

@@ -16,8 +16,8 @@ At game start every fief is its own daimyo, so every adjacency is hostile (no
 possession check). Revolt (low morale -> MEN/2, appendix-events) can drop a
 "safe" fief below its threshold -> the event system feeds the war system.
 
-Run:  py nobunaga/tools/viability-map.py            # text report
-      py nobunaga/tools/viability-map.py --html out.html   # write the data page
+Run:  py tools/viability-map.py            # text report
+      py tools/viability-map.py --html out.html   # write the data page
 """
 import re
 import sys
@@ -237,7 +237,7 @@ def html_table(title, fiefs, adj):
 
 
 def build_html(src):
-    parts = [html_table(name, load_fiefs(src / ff), load_adj(src / af))
+    parts = [html_table(name, load_fiefs(src / "assets" / "data" / ff), load_adj(src / "assets" / "data" / af))
              for name, ff, af in SCENARIOS]
     return PAGE_TMPL.format(body="\n".join(parts))
 
@@ -318,7 +318,7 @@ def main():
     if "--why" in sys.argv:
         name = sys.argv[sys.argv.index("--why") + 1]
         for sc, ff, af in SCENARIOS[:1]:
-            why(name, load_fiefs(SRC / ff), load_adj(SRC / af))
+            why(name, load_fiefs(SRC / "assets" / "data" / ff), load_adj(SRC / "assets" / "data" / af))
         return
     if "--html" in sys.argv:
         out = Path(sys.argv[sys.argv.index("--html") + 1])
@@ -327,7 +327,7 @@ def main():
         print(f"wrote {out}")
         return
     for name, ff, af in SCENARIOS:
-        text_report(name, load_fiefs(SRC / ff), load_adj(SRC / af))
+        text_report(name, load_fiefs(SRC / "assets" / "data" / ff), load_adj(SRC / "assets" / "data" / af))
 
 
 if __name__ == "__main__":
