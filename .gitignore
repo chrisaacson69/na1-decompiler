@@ -11,6 +11,9 @@ NAsave*
 *.pyc
 .DS_Store
 
+# === Rendered game audio: Koei's music, regenerated from the ROM (tools/sound_engine.py --wav) ===
+nobunaga/assets/sound/
+
 # === Big binary renders — re-extractable from the ROM via the atlas tools ===
 nobunaga/atlas/
 

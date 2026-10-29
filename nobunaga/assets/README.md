@@ -20,6 +20,7 @@ created: 2026-06-11
 | `portraits/` | daimyo portraits (anthologies, composites) | `render-portrait.py` | `daimyo-*.png`, `portrait-*.png` |
 | `screens/` | title / boot / UI / font / turn-loop renders | `render-text.py`, misc | `title*.png`, `text.png`, `font-*.png` |
 | `rom/` | raw ROM asset extractions (per-scenario terrain etc.) | `render-rom-atlas.py` | `rom-NN/`, `rom-*.png` |
+| `sound/` | **gitignored** (Koei's music): one WAV per sound the game requests, rendered from the ROM's own engine | `py -3.14 -m emu_harness.machines.nes.sound tools/sound_engine.py --wav assets/sound` | `sNN_*.wav` songs and jingles, `eNN_*.wav` effects |
 
 ## Rules (anti-duplication)
 
