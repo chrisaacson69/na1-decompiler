@@ -42,7 +42,10 @@ def regen(banks=BANKS):
         bb = f"{b:02d}"
         asm = f"source/2-asm-vm/bank_{bb}_vm.asm"
         outs = {f"source/4-c/bank_{bb}.c": [], f"source/3-c-basic/bank_{bb}.raw.c": ["--raw"]}
-        steps = [["disasm", "na1", str(b), asm]] + [["decompile", "na1", str(b), asm, o, *x] for o, x in outs.items()]
+        # bank_NN_vm.asm is the decompiler's input (parse_listing reads it); bank_NN_vm_labeled.asm is the
+        # reading view of the same walk (routine names, branch labels, address in the right margin)
+        steps = ([["disasm", "na1", str(b), asm], ["disasm", "na1", str(b), f"source/2-asm-vm/bank_{bb}_vm_labeled.asm", "--labeled"]]
+                 + [["decompile", "na1", str(b), asm, o, *x] for o, x in outs.items()])
         for args in steps:
             r = subprocess.run([sys.executable, "-m", "emu_harness.vm.koei.nes.titles", *args],
                                cwd=ROOT, capture_output=True, text=True)
