@@ -35,7 +35,7 @@ Then route the request.
 | Render the 50-fief adjacency graph | `render-strategic-50.py` | `py tools/render-strategic-50.py [rom] [out.png]`  (*separate tool — there is no `--variant`*) |
 | Test a command's effect | snap protocol | `py -3.14 tools/capture-test.py <tag> pre` → make the move → `… <tag> post` → `… <tag> diff [--fief N]` (py -3.14: the Mesen Debugger folder comes from emu-harness); `--note "..."` on pre/post for provenance. See `commands/README.md`. |
 | Run an effect handler in the emulator | `run-effect.py` | `py tools/run-effect.py <grow\|build\|dam\|give…> <sram_pre.dmp> [amount]` |
-| Analyze the VM opcode table | `analyze-vm-opcodes.py` | `py tools/analyze-vm-opcodes.py <survey\|dispatch\|classify>` |
+| Analyze the VM opcode table | emu-harness | `py -3.14 tools/koei_isa_probe.py na1` (lengths, from emu-harness/), `py -3.14 -m emu_harness.vm.koei.nes.gates.stack_audit` (stack effects) |
 | Decompile a bytecode sub → C | emu-harness `vm.koei.nes.vm_decompile` | `py -3.14 -m emu_harness.vm.koei.nes.vm_decompile source/2-asm-vm/bank_NN_vm.asm <addr_hex>` (the engine graduated to emu-harness; the read-ready output is `source/4-c/bank_NN.c`, see `source/README.md`) |
 | Analyze an SRAM dump (landscape) | `analyze-sram.py` | `py tools/analyze-sram.py <structure\|detail> <dump.dmp>` |
 | Decode the live province table | `sram-decode-province.py` | `py tools/sram-decode-province.py <dump.dmp> [--diff <other.dmp>]` |

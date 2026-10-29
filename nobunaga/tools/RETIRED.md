@@ -87,3 +87,24 @@ Corrected 2026-10-28: the input was not gone. It sits at `traces/sram_dump.txt`;
 | `test-cpu6502.py` | `fa8fc6e` | Smoke test: run the $E9F6 setA_imm4 handler directly from ROM and verify it sets regA correctly. The handler is `setA = opcode & 0x0F`. Test with opco |
 | `test-dispatcher.py` | `fa8fc6e` | Test the full VM dispatcher cycle. Place a real VM bytecode in RAM, point VM PC at it, jump CPU to the dispatcher at $E867, and verify the opcode exec |
 | `test-loadl-quick.py` | `fa8fc6e` | Verify LOADL_quick #12 (opcode $0C) reads from FP+11. |
+
+## Presentation cherry-pick (2026-10-29)
+
+The registry's "Not yet reviewed" scripts outside rendering (that triage is the assets phase's), the three
+VM-opcode tools that kept their own copies after the engine moved, and two shims. Each was run before the
+verdict.
+
+| Script | Last commit | What it did, and why it went |
+|---|---|---|
+| `analyze-vm-opcodes.py` | `38387b5` | Opcode dispatch-table survey / handler byte dumps / operand-fetch classification. Superseded: operand lengths are measured on the live handlers by emu-harness `tools/koei_isa_probe.py` (0 live disagreements), stack effects by `gates.stack_audit` (187 opcodes), handler names graded by `native_floor --oracle` (157/157). |
+| `classify-handlers.py` | `c020647` | Classified each VM opcode from its handler's 6502. Superseded as above. |
+| `vm-opcode-labels.py` | `1437815` | Wrote the 158 `vm_op_XX_<mnem>` handler labels (June); re-run proposes 0. Done; the names are in the registry and `native_floor --oracle` grades them. |
+| `value-oracle.py` | `b237a5f` | Ran a sub on the ROM for a ground-truth value (oracle_run; certify-extop). Converted into emu-harness `titles.run_sub`; `gates.value_probe` and cfg_gate's ext-op override check do its two jobs; `tools/rule_probe.py` runs rules on it. It also timed out on a no-argument run. |
+| `detect-prop-clobber.py` | `9252108` | Flagged a value stored twice whose second store re-printed the clobbered source. That form is gone (the stored-name rebind); its confirm rule now flags the correct C (`turn_idx = turn_idx + 1; ai_per_fief_loop_index = turn_idx;` at bank 1 \$B996). |
+| `debug-trace.py` | `fa8fc6e` | Step trace of one selector run (debugging one-off). |
+| `paste-analyze.py`, `paste-full.py` | `c020647` | Analyzed SRAM pasted into a chat (pre-capture era); `analyze-sram.py` and the `.dmp` captures replace them. |
+| `ui-strings.py` | `c020647` | Dumped the master UI string table; crashed (IndexError). The strings are named by `rom-xref.py strings` (297) and read by reader. |
+| `secondary-tables.py` | `c020647` | Dumped the 33-record table at \$B1D6 (between the 17-fief province and daimyo defaults; field 0 markers 2500 / 3000 / 4500 / 7000). **The table has no registry name** (a data-phase gap, recorded in the roadmap). |
+| `verify-50fief-align.py` | `c020647` | Checked the 50-fief name and stats tables are index-aligned: they are (name[24] = Owari = stats[24]). |
+| `zp-harvest.py` | `82a20fd` | Zero-page usage counts from nes-disasm6 listings (needed them in its cwd); the data phase named the zero page. |
+| `vm_assemble.py`, `vm-roundtrip.py` | `c621c0f` | 10-line shims into emu-harness. Run the modules: `py -3.14 -m emu_harness.vm.koei.nes.vm_assemble <bank>`, `... .gates.roundtrip`. |
