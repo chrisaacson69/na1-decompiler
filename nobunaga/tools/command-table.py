@@ -16,9 +16,12 @@ per-command decode work (chapter 9).
 Usage:  python command-table.py <rom> [out.txt]
 """
 import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent          # the project root: defaults resolve from here, not the cwd
 
 rom = open(sys.argv[1], "rb").read()[16:]
-out_path = sys.argv[2] if len(sys.argv) > 2 else "command-table.txt"
+out_path = sys.argv[2] if len(sys.argv) > 2 else ROOT / "command-table.txt"
 
 TABLE_CPU = 0xB9B2          # bank 1
 TABLE_BANK = 1

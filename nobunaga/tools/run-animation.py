@@ -76,8 +76,8 @@ def run(aid, sram, pt_base, sprite_h, scale, trace, out_prefix):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("id", nargs="?", type=int)
-    ap.add_argument("--sram", default="traces/exp-fall-1560-start.dmp")
-    ap.add_argument("--out", default="assets/animations/anim")
+    ap.add_argument("--sram", default=str(Path(__file__).resolve().parent.parent / "traces" / "exp-fall-1560-start.dmp"))
+    ap.add_argument("--out", default=str(Path(__file__).resolve().parent.parent / "assets" / "animations" / "anim"))
     ap.add_argument("--pt", type=int, default=0, choices=(0, 1))
     ap.add_argument("--h", type=int, default=8, choices=(8, 16))
     ap.add_argument("--scale", type=int, default=3)

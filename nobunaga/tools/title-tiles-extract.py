@@ -9,7 +9,7 @@ For each row, combine plane0 and plane1 bit-by-bit to get a pixel value 0-3.
 import os
 
 here = os.path.dirname(os.path.abspath(__file__))
-rom_path = os.path.join(here, "Nobunaga's Ambition (USA).nes")
+rom_path = os.path.join(here, "..", "Nobunaga's Ambition (USA).nes")
 with open(rom_path, 'rb') as f:
     data = f.read()[16:]   # skip iNES header
 

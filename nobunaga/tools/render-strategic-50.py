@@ -14,7 +14,7 @@ import os, sys
 from PIL import Image, ImageDraw, ImageFont
 
 here = os.path.dirname(os.path.abspath(__file__))
-rom_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(here, "Nobunaga's Ambition (USA).nes")
+rom_path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(here, "..", "Nobunaga's Ambition (USA).nes")
 out_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(here, '..', 'assets', 'maps', 'strategic', 'strategic-50-adjacency.png')
 
 rom = open(rom_path, 'rb').read()

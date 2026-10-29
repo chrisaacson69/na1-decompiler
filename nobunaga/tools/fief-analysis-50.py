@@ -50,7 +50,7 @@ with open(os.path.join(root, '50Diamyo.txt')) as f:
                        charisma=int(t[6]), iq=int(t[7]))
 
 # ---- adjacency from ROM bank 4 $8004 ----
-rom = open(os.path.join(here, "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
+rom = open(os.path.join(root, "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
 def prg(cpu, bank): return bank*0x4000 + (cpu & 0x3FFF)
 ADJ = []
 for i in range(COUNT):

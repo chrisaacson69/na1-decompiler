@@ -12,7 +12,7 @@ Usage:  py combat-check.py <log.txt>
 import sys
 from pathlib import Path
 
-ROM = (Path(__file__).parent / "Nobunaga's Ambition (USA).nes").read_bytes()[16:]
+ROM = (Path(__file__).resolve().parent.parent / "Nobunaga's Ambition (USA).nes").read_bytes()[16:]
 def _b(bank, addr): return bank*0x4000 + (addr - 0x8000)
 def _b15(addr): return 15*0x4000 + (addr - 0xC000)
 STAT_W = [5,10,10,5,20, 10,25,15]

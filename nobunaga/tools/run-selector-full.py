@@ -14,7 +14,7 @@ def stub_returning(value):
 
 def main():
     vm = NobunagaVM()
-    vm.load_sram("traces/b2-startbattle.dmp")
+    vm.load_sram(str(Path(__file__).resolve().parent.parent / "traces" / "b2-startbattle.dmp"))
     vm.switch_bank(2)
     vm.vm_pc = 0x967A
     vm.cpu.pc = vm.DISPATCHER_ADDR

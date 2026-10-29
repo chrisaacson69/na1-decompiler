@@ -130,7 +130,7 @@ def main():
         ap.error("provide TEXT or --atlas")
     img = render_text(a.text, scale=a.scale, fg=_hexcolor(a.fg),
                       bg=_hexcolor(a.bg) if a.bg else None, tracking=a.tracking)
-    out = a.out or "assets/screens/text.png"
+    out = a.out or ROOT / "assets/screens/text.png"
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
     print(f"wrote {out}  ({img.width}x{img.height})")

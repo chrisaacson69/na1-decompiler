@@ -8,11 +8,14 @@ Located 2026-05-29 at bank 4 $8004 via symmetry-constrained ROM scan
 Usage:  py adjacency-50.py <rom> [out.txt]
 """
 import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent          # the project root: defaults resolve from here, not the cwd
 
 rom = open(sys.argv[1], "rb").read()
 if rom[:4] == b"NES\x1a":
     rom = rom[16:]
-out_path = sys.argv[2] if len(sys.argv) > 2 else "adjacency-50.txt"
+out_path = sys.argv[2] if len(sys.argv) > 2 else ROOT / "adjacency-50.txt"
 
 TABLE_BANK = 4
 TABLE_CPU = 0x8004

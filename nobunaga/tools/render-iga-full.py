@@ -9,7 +9,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 here = os.path.dirname(os.path.abspath(__file__))
-rom_path = os.path.join(here, "Nobunaga's Ambition (USA).nes")
+rom_path = os.path.join(here, "..", "Nobunaga's Ambition (USA).nes")
 with open(rom_path, 'rb') as f:
     data = f.read()[16:]
 

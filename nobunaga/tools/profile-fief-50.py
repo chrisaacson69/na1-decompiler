@@ -29,7 +29,7 @@ with open(os.path.join(root, '50Diamyo.txt')) as f:
         daim[i] = dict(clan=t[1], age=int(t[2]), health=int(t[3]), drive=int(t[4]),
                        luck=int(t[5]), charisma=int(t[6]), iq=int(t[7]))
 
-rom = open(os.path.join(here, "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
+rom = open(os.path.join(root, "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
 def prg(c,b): return b*0x4000+(c&0x3FFF)
 ADJ=[]
 for i in range(COUNT):

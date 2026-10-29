@@ -492,20 +492,20 @@ def main():
     if "--section" in args:
         sec = int(args[args.index("--section") + 1])
         img = render_section(vm, sec, pals, scale)
-        out = out or f"assets/maps/strategic/strategic-section-{sec}.png"
+        out = out or HERE.parent / f"assets/maps/strategic/strategic-section-{sec}.png"
     elif "--faithful" in args:
         shear = "--shear" in args                       # default: constant offset (canonical)
         print(f"Record-aligned faithful stitch, scenario-{scenario} sections {sections} "
               f"({'shear' if shear else 'constant'})...")
         img, fief_px = render_faithful_stitch(vm, pals, sections, scale=scale, shear=shear)
-        out = out or f"assets/maps/strategic/strategic-map-{scenario}-stitched.png"
+        out = out or HERE.parent / f"assets/maps/strategic/strategic-map-{scenario}-stitched.png"
     elif "--stitch" in args:
         print(f"Auto-stitching scenario-{scenario} sections {sections}...")
         img = render_stitch(vm, pals, sections, scale=scale)
-        out = out or f"assets/maps/strategic/strategic-map-{scenario}-stitched.png"
+        out = out or HERE.parent / f"assets/maps/strategic/strategic-map-{scenario}-stitched.png"
     else:
         img = contact_sheet(vm, pals, sections, cols=(2 if scenario == 17 else 3), scale=scale)
-        out = out or f"assets/maps/strategic/strategic-map-{scenario}.png"
+        out = out or HERE.parent / f"assets/maps/strategic/strategic-map-{scenario}.png"
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
     print(f"wrote {out}  ({img.width}x{img.height})")

@@ -13,9 +13,12 @@ as a matrix.
 Usage:  python adjacency.py <rom> [out.txt]
 """
 import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent          # the project root: defaults resolve from here, not the cwd
 
 rom = open(sys.argv[1], "rb").read()[16:]
-out_path = sys.argv[2] if len(sys.argv) > 2 else "adjacency.txt"
+out_path = sys.argv[2] if len(sys.argv) > 2 else ROOT / "adjacency.txt"
 
 TABLE_BANK = 4
 TABLE_CPU = 0x8300          # 17-fief province adjacency, 8-byte slots

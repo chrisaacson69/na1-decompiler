@@ -18,7 +18,7 @@ import os
 from collections import deque
 
 here = os.path.dirname(os.path.abspath(__file__))
-rom = open(os.path.join(here, "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
+rom = open(os.path.join(here, "..", "Nobunaga's Ambition (USA).nes"), 'rb').read()[16:]
 
 def prg(cpu, bank): return bank * 0x4000 + (cpu & 0x3FFF)
 def read_table(cpu, bank, count):

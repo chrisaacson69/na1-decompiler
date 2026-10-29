@@ -46,8 +46,8 @@ from emu_harness.machines.nes import ppu as NR
 from emu_harness.vm.koei.nes.assets import MASTER
 from emu_harness.vm.koei.nes.assets import portrait as KP
 
-ROM = open(glob.glob("*.nes")[0] if glob.glob("*.nes") else
-           glob.glob("**/*.nes", recursive=True)[0], "rb").read()
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")   # defaults resolve from here, not the cwd
+ROM = open(os.path.join(ROOT, "Nobunaga's Ambition (USA).nes"), "rb").read()
 if ROM[:4] == b"NES\x1a":
     ROM = ROM[16:]
 
@@ -275,10 +275,10 @@ if __name__ == "__main__":
         arg = sys.argv[2] if len(sys.argv) > 2 else None
         scenarios = [int(arg)] if arg in ("17", "50") else [17, 50]
         for sc in scenarios:
-            anthology(sc, f"assets/portraits/daimyo-anthology-{sc}.png")
+            anthology(sc, os.path.join(ROOT, f"assets/portraits/daimyo-anthology-{sc}.png"))
     elif cmd == "random":
         seed = int(sys.argv[2]) if len(sys.argv) > 2 else 1573
-        random_faces("assets/portraits/daimyo-random-36.png", n=36, cols=9, seed=seed)
+        random_faces(os.path.join(ROOT, "assets/portraits/daimyo-random-36.png"), n=36, cols=9, seed=seed)
     else:
-        out = sys.argv[2] if len(sys.argv) > 2 else f"assets/portraits/portrait-{cmd}.png"
+        out = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ROOT, f"assets/portraits/portrait-{cmd}.png")
         {"sheet": sheet, "faces": faces}[cmd](out)
