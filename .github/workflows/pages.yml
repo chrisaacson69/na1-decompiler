@@ -1,0 +1,58 @@
+# The analysis site: built by Actions, never committed (emu-harness PHASES.md, Project layout).
+# tools/build-site.py assembles _build/site/ (chapters as Jekyll markdown, the generated HTML, the
+# atlas, the presentational assets); Jekyll renders it, as the legacy main:/docs Pages build did.
+# The build needs neither the ROM nor emu-harness: what does (the command pages) is committed.
+# Every branch builds (a check); only main deploys.
+name: Pages
+
+on:
+  push:
+  workflow_dispatch:
+
+# Required by actions/deploy-pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Serialize deployments, don't cancel in-progress runs
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble the site
+        run: python -I tools/build-site.py
+
+      - uses: actions/configure-pages@v5
+        if: github.ref == 'refs/heads/main'
+
+      - name: Render with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./_build/site
+          destination: ./_site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
