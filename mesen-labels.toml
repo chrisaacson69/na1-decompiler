@@ -245,29 +245,12 @@ prg_bank_count = 16        # 256 KB total
 
 [prg.bank15]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
-"0x8004" = { name = "relation_sram_base", comment = "[SRAM-ADDR 2026-06-10] SRAM base of the relations region (syscall16_sram_wrap, relation_base_6f4f)." }
-"0x8300" = { name = "relation_sram_8300", comment = "[SRAM-ADDR 2026-06-10] SRAM relations region address (syscall16_sram_wrap, relation_base_6f4f)." }
-"0x845C" = { name = "strategic_map_chr_tiles", comment = "[MAP] Strategic-map CHR (bank 4), uploaded to PT1 $15B0 by repaint_screen. Tilemap cell V>=91 -> CHR $845C+(V-91)*16; terrain block runs to $8D5C (tiles 91-234). Cells <=80 are the shared game font (fief-number labels). See render-strategic-map.py." }
-"0x8D5A" = { name = "window_tile_gfx_8d5a_alias", comment = "[GFX-TILES 2026-06-10] Alias of window_tile_gfx_8d5a ($8D5A), read by find_record (ppu_copy_rect_wrap)." }
-"0x8D5C" = { name = "strategic_map_section_tilemaps", comment = "[MAP] 9 strategic-map section tilemaps (bank 4), 0x1C0=448 B each = 28x16 tiles, blitted to the nametable by render_map_section(section). 17-fief uses sections 0-1, 50-fief uses 0-8 (discrete pages, not a scroll). Cells <=80 = font glyphs, >=81 = terrain. See render-strategic-map.py." }
-"0x9D1C" = { name = "strategic_map_section_attributes", comment = "[MAP] 9 strategic-map section attribute tables (bank 4), 0x20=32 B each (BG sub-palette per 16x16 quad), uploaded to nametable attrs $23C8 by render_map_section." }
-"0x9E3C" = { name = "record_sram_9e3c_alias", comment = "[SRAM-ADDR 2026-06-10] Alias of record_sram_9e3c ($9E3C), read by find_record." }
-"0xA57E" = { name = "map_cell_sram_a57e", comment = "[SRAM-ADDR 2026-06-10] SRAM map-cell pool address (syscall16_sram_wrap, read_map_cell)." }
-"0xA604" = { name = "portrait_gfx_a604", comment = "[GFX-TILES 2026-06-10] Portrait/record tile-upload source (ppu_upload_block_wrap in unpack_record_to_sram). Type confirmed from C usage; exact image = viewing-deferred." }
-"0xABA4" = { name = "portrait_gfx_eyes", comment = "[GFX-TILES 2026-06-10] Portrait eyes tile set (uploaded at part_eyes*96 by unpack_record_to_sram)." }
-"0xAD84" = { name = "portrait_gfx_ad84", comment = "[GFX-TILES 2026-06-10] Portrait tile-upload source (ppu_upload_block_wrap, unpack_record_to_sram)." }
-"0xAE34" = { name = "portrait_sram_ae34", comment = "[SRAM-ADDR 2026-06-10] SRAM work region for unpack_record_to_sram (syscall16_sram_wrap)." }
-"0xAE70" = { name = "portrait_sram_ae70", comment = "[SRAM-ADDR 2026-06-10] SRAM work region for unpack_record_to_sram." }
-"0xAE8E" = { name = "portrait_sram_ae8e", comment = "[SRAM-ADDR 2026-06-10] SRAM work region for unpack_record_to_sram." }
-"0xAEAC" = { name = "portrait_sram_aeac", comment = "[SRAM-ADDR 2026-06-10] SRAM work region for unpack_record_to_sram." }
-"0xB144" = { name = "jumptab_b144", comment = "[ROM-DATA] pointer/dispatch table; read by draw_daimyo_portrait via imm-word ptr; bytes: e9 e9 e9 e9 e9 e9 e9 e9 e9 e9 e9 e9" }
 "0xF67A" = { name = "strategic_map_bg_palette", comment = "[MAP] Strategic-map/UI BG palette table (read by repaint_screen), colors stored as words w/ 0 high byte: sub-pal0 $3E/$12/$29/$30 = backdrop/sea/land/coast, sub-pal1 $3E/$16/$38/$30 = volcanic red/yellow/white (mountain peaks)." }
 "0xF77D" = { name = "str_marriage_event_msgs", comment = "[ROM-STR 2026-06-10] '...wants a %s','Demand gold','marriage pact','accept'" }
 "0xF7CC" = { name = "marry_palette", comment = "[GFX-PALETTE 2026-06-10] Marriage-scene palette words (palette_write_wrap, marry_helper)." }
 "0xFEA6" = { name = "province_to_map_section_50", comment = "[MAP] 50-fief scenario: province index -> strategic-map section (values 0-8, 50 entries). Indexed by selected_province_idx in driver_map/render_section_for_selected_province; the scenario_fief_count==50 branch selects this table (vs province_to_map_section_17 $FED8)." }
 "0xFED8" = { name = "province_to_map_section_17", comment = "[MAP] 17-fief scenario: province index -> strategic-map section (values 0/1, 17 entries). 50-fief uses province_to_map_section_50 $FEA6." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
-"0xBBD0" = { name = "msg_ng_to_pieces", comment = "[ROM-STR] \"ng to pieces!\"" }
 "0xF695" = { name = "prompt_y_n_msg", comment = "[ROM-STR] \"\n(Y/N)? \" Read by prompt_y_n. Renamed 2026-10-28 from msg_y_n_f695 (the duplicate-string convention: by reader, not address)." }
 "0xF69E" = { name = "cursor_nav_fmt_d_1", comment = "[ROM-STR] \"%d\" (cursor_nav_loop, 1 of 4; renumbered 2026-10-28: the data phase counted 3, missing $F69E at $D412)" }
 "0xF6AC" = { name = "number_input_d_d", comment = "[ROM-STR] \"\n(%d-%d)? \" Read by number_input. Renamed 2026-10-28 from msg_d_d_f6ac (the duplicate-string convention: by reader, not address)." }
@@ -873,16 +856,8 @@ prg_bank_count = 16        # 256 KB total
 
 [prg.bank0]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
-"0x8004" = { name = "scenario_select_gfx_8004", comment = "[GFX-TILES 2026-06-10] Scenario-select screen tile source (assigned then ppu_copy_rect_wrap, init_new_game_state)." }
-"0x81EB" = { name = "save_sram_81eb", comment = "[SRAM-ADDR 2026-06-10] SRAM save-block address (syscall_sram_block_with_checksum, verify_sram_save_integrity)." }
-"0x8264" = { name = "boot_title_gfx_8264", comment = "[GFX-TILES 2026-06-10] Boot-title tile-upload source (ppu_upload_block_wrap, render_boot_title_screens)." }
-"0x9B24" = { name = "jumptab_9b24", comment = "[ROM-DATA] pointer/dispatch table; read by display_fullscreen_graphic_sequence via imm-word ptr; bytes: 6d 9b aa 5f 6f e9 8d d9 02 d7 6d 9b" }
-"0x9D04" = { name = "cinematic_gfx_9d04", comment = "[GFX-TILES 2026-06-10] Fullscreen cinematic graphic source (ppu_upload_block_wrap, display_fullscreen_graphic_sequence)." }
-"0xA004" = { name = "scenario_select_gfx_a004", comment = "[GFX-TILES 2026-06-10] Scenario-select screen tile source (ppu_copy_rect_wrap, prompt_select_scenario_size)." }
 "0xA84A" = { name = "boot_title_attr_fill", comment = "[ROM-DATA 2026-06-10] 0x55 PPU attribute-table fill for the boot title (render_boot_title_screens)." }
 "0xA88A" = { name = "boot_title_tile_table", comment = "[ROM-DATA 2026-06-10] Tile/attr table for the boot title screen (render_boot_title_screens)." }
-"0xACE4" = { name = "cinematic_gfx_ace4", comment = "[GFX-TILES 2026-06-10] Fullscreen cinematic graphic source (ppu_copy_rect_wrap, display_fullscreen_graphic_sequence)." }
-"0xAF64" = { name = "cinematic_gfx_af64", comment = "[GFX-TILES 2026-06-10] Fullscreen cinematic graphic source (display_fullscreen_graphic_sequence)." }
 "0xB2BA" = { name = "cinematic_gfx_b2ba", comment = "[GFX-TILES 2026-06-10] Fullscreen cinematic graphic source (display_fullscreen_graphic_sequence)." }
 "0xB78A" = { name = "data_screen_gfx_b78a", comment = "[GFX-TILES 2026-06-10] Data-load screen tile source (ppu_upload_block_wrap, verify_sram_save_integrity flow)." }
 "0xB852" = { name = "data_screen_palette", comment = "[GFX-PALETTE 2026-06-10] Data-load screen palette (palette_write_wrap, verify_sram flow)." }
@@ -1137,8 +1112,6 @@ prg_bank_count = 16        # 256 KB total
 
 [prg.bank1]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
-"0x8D5A" = { name = "window_tile_gfx_8d5a", comment = "[GFX-TILES 2026-06-10] Window/menu tile source (ppu_copy_rect_wrap, fief_select_input_loop); shared $8D5A blob." }
-"0x9E3C" = { name = "record_sram_9e3c", comment = "[SRAM-ADDR 2026-06-10] SRAM record-area address (syscall16_sram_wrap, fief_select_input_loop)." }
 "0xB9DC" = { name = "jumptab_b9dc", comment = "[ROM-DATA] pointer/dispatch table; read by driver_trade via imm-word ptr; bytes: 04 9f af 9f 03 a0 68 a0 13 a1 af a1" }
 "0xB9E8" = { name = "jumptab_b9e8", comment = "[ROM-DATA] pointer/dispatch table; read by driver_other via imm-word ptr; bytes: 66 b0 9d b0 d2 b0 09 b1 2b b1 4b b1" }
 "0xBA10" = { name = "str_market_panel_nl2", comment = "[ROM-STR 2026-06-10] market panel pad-alias of $BA12" }
@@ -1327,7 +1300,6 @@ prg_bank_count = 16        # 256 KB total
 # --- AI/player target-selection chain (read 2026-05-31; ALL eligibility-filtering, NO men-scoring) ---
 "0x8172" = { name = "count_eligible_targets", comment = "[HIGH CONFIRMED 2026-06-10] Counts (arg3=0) or draws+counts (arg3=1) the eligible target fiefs for command arg1: walks the 0xFF-terminated candidate list (arg2), keeping each that passes target_eligible_by_cmd AND has province_state ($6CF7[cand]) != 0xFF; returns the count (page-limited to 18 when drawing)." }
 "0x812F" = { name = "target_eligible_by_cmd", comment = "[HIGH CONFIRMED 2026-06-10] Per-command target-fief validity: switch(cmd) -> cmds 1/4/19 (war-type) return is_enemy_owned(fief); cmds 2/6/8/15/255 apply their own enemy/own-owned test; default ineligible. Returns 1/0." }
-"0x8DE1" = { name = "dedup_owners",  comment = "[HIGH CONFIRMED 2026-06-10] Reads the 0xFF-terminated fief list arg1 and builds a de-duplicated-by-OWNER list into the $6F4F dedup buffer (skips a fief whose fief_owner already appears). (was dedup_owners_to_6f4f.)" }
 "0x9323" = { name = "effect_war_combat_prep_a", comment = "[HIGH CONFIRMED 2026-06-10] War-prep rice check: war_prep_clamp_depleted_field_notify(msg_you_have_no_rice, fief, fief*26 + $7007) — zero-clamps the fief's rice ($7001+6) and notifies if depleted. (Bank-1 $9323; a different bank's $9323 is ravage_defender_field_off10 — cross-bank pair.)" }
 "0x933A" = { name = "effect_war_combat_prep_b", comment = "[HIGH CONFIRMED 2026-06-10] War-prep men check: war_prep_clamp_depleted_field_notify(msg_you_have_no_soldiers, fief, fief*26 + $7011) -> zero-clamps the fief's men ($7001+16) and notifies if depleted. (Sibling of prep_a=rice $7007 / prep_c=gold $7001.)" }
 "0x9351" = { name = "effect_war_combat_prep_c", comment = "[HIGH CONFIRMED 2026-06-10] War-prep gold check: war_prep_clamp_depleted_field_notify(msg_you_have_no_gold, fief, fief*26 + $7001) -> zero-clamps the fief's gold ($7001+0) and notifies if depleted. (Sibling of prep_a=rice / prep_b=men.)" }
@@ -1433,16 +1405,9 @@ prg_bank_count = 16        # 256 KB total
 
 [prg.bank2]
 # --- ROM table labels (rom-xref provenance-named, B1 data-walk) ---
-"0x8004" = { name = "map_tile_gfx_8004", comment = "[GFX-TILES 2026-06-10] Strategic-map tile-upload source (ppu_upload_block_wrap, map_render_driver)." }
-"0x9C25" = { name = "daimyo_banner_chr", comment = "[ROM-DATA; RECLASSIFIED 2026-06-12] DAIMYO BANNER (家紋/crest) CHR — NOT map terrain tiles. 3 tiles (48 B) per daimyo, stride 49 (the preceding byte $9C24+idx*49 = the banner's attribute/palette byte). upload_map_cell_tiles($882A) blits the owning daimyo's banner to PT1 $1510 (per side) for the battlefield unit display; drawn next to the O/X leader marker (tile 178 daimyo-led / 179 general-led) + the men-count digits in each unit cell's lower half. Index = fief_to_mapid(owner) ($DC66): 17-fief -> province_to_mapid_table[daimyo], 50-fief -> daimyo index directly. Decoded + rendered to a labeled chart per scenario by tools/render-daimyo-banners.py (the crests are shared across scenarios; only the index arithmetic differs). Was the misleading 'map_cell_tile_source'." }
-"0xA604" = { name = "digit_gfx_a604", comment = "[GFX-TILES 2026-06-10] Number-digit tile source (ppu_upload_block_wrap, unpack_base5_digits_upload)." }
-"0xA9C4" = { name = "digit_gfx_a9c4", comment = "[GFX-TILES 2026-06-10] Number-digit tile source (unpack_base5_digits_upload)." }
-"0xAD84" = { name = "digit_gfx_ad84", comment = "[GFX-TILES 2026-06-10] Number-digit tile source (unpack_base5_digits_upload)." }
-"0xAEAC" = { name = "digit_sram_aeac", comment = "[SRAM-ADDR 2026-06-10] SRAM work region for unpack_base5_digits_upload." }
 "0xB0BA" = { name = "strategic_map_fief_x", comment = "[HIGH CONFIRMED] 50-byte table: strategic-map X coordinate per fief (indexed by fief_to_mapid). Read by select_quadrant_damage_by_direction to compute attack bearing dx = X[att]-X[def]. X spans 3..77 (W->E). VERIFIED 2026-06-01: adjacency neighbors (bank4 $8004) are spatially nearest, mean dist-rank 2.8 / median 2." }
 "0xB0EC" = { name = "strategic_map_fief_y", comment = "[HIGH CONFIRMED] 50-byte table: strategic-map Y coordinate per fief (indexed by fief_to_mapid). Read by select_quadrant_damage_by_direction; dy = Y[att]-Y[def]; |dx|<|dy| picks vertical axis else horizontal, sign picks the entry edge. Y spans 3..31 (N->S). Ends at $B11E. VERIFIED 2026-06-01 vs adjacency." }
 "0xB11E" = { name = "terrain_attr_table", comment = "[ROM-DATA 2026-06-10; type map confirmed 2026-06-17] 6 terrain-attribute records, 16 bytes each = a 4x4 metatile tile-block per terrain type, indexed by terrain type 0..5 (lookup_terrain_attr_record $83C6: cell&$FE bit->type; 32->0,16->1,8->2,128->3,4->4,64/none->5). Types: 0=castle(tiles 63-72), 1=forest(A2-B1), 2=town(73-81), 3=mountain(92-A1), 4=clear(82-91), 5=river/sea(57-66). Types 0/1/2 carry the +270/+60/+30% combat bonus (ai_terrain_strength_term $9BB4 / terrain_strength_mult_table $B9C2); 3/4/5 give 0. Immediately preceded by strategic_map_fief_y ($B0EC, ends at $B11E). first bytes: 63 64 67 68 65 66 69 6a 6b 6c 6f 70. (was 'lookup_terrain_attr_reco_data_b11e'.)" }
-"0xB144" = { name = "fief_tile_block_tiles", comment = "[ROM-DATA 2026-06-10] Tile IDs for the fief graphic block (build_blit_fief_tile_block); 36-byte 6x6 cell." }
 "0xB196" = { name = "combat_message_table", comment = "[ROM-DATA HIGH 2026-06-10] Word-ptr table of >=10 combat announcement strings (bank 2), read by announce_combat_side_daimyo_and_status, draw_combat_message ($936A), redraw_combat_side_window. Verified entries: [0] blank, [1] '..men have deserted to our..', [2] 'Some of our men have des..', [3] 'You can`t move there!', [4] 'we seem to have the upper..', [5] 'Enemy unit %d has been..', [6] 'they`ve counter-attacked', [7] 'Unit %d has been wiped out', [8] 'we have taken an enemy a..', [9] 'Which unit shall we go a..'. (was 'jumptab_b196'.)" }
 "0xB4F0" = { name = "combat_command_menu_str_ptrs", comment = "[ROM-DATA 2026-06-10] Word-ptrs to combat-command menu items: Move/Attack/Bribe/Flee/Pass/View (combat_command_dispatch_loop_per_unit)." }
 "0xB51E" = { name = "str_keypad_yn_prompt", comment = "[ROM-STR 2026-06-10] '8 9 ( 0  (Y/N)?','8932170 (%d-%d)' direction keypad" }
@@ -1468,7 +1433,6 @@ prg_bank_count = 16        # 256 KB total
 "0xBA31" = { name = "str_enemy_morale_falling", comment = "[ROM-STR 2026-06-10] 'enemy','morale is falling','Fief %2d'" }
 "0xBA57" = { name = "str_passed_from_lord", comment = "[ROM-STR 2026-06-10] 'has passed from Lord %s to Lord %s'" }
 "0xBA7F" = { name = "battle_select_palette", comment = "[GFX-PALETTE 2026-06-10] Battle-setup screen palette (palette_write_wrap, battle_setup_select_province)." }
-"0xBBD0" = { name = "fief_tile_descriptor_table", comment = "[ROM-DATA 2026-06-10] Per-fief tile-upload descriptors (build_blit_fief_tile_block, mapid*4)." }
 # --- ROM string labels (rom-xref auto-decode, B1 data-walk) ---
 "0xB526" = { name = "prompt_yes_no_y_n", comment = "[ROM-STR] \"\n(Y/N)? \" Read by prompt_yes_no. Renamed 2026-10-28 from msg_y_n_b526 (the duplicate-string convention: by reader, not address)." }
 "0xB52F" = { name = "msg_d_d", comment = "[ROM-STR] \"8932170\n(%d-%d)\n\"" }
@@ -1689,6 +1653,15 @@ prg_bank_count = 16        # 256 KB total
 "0x8000" = { name = "bank14_entry", comment = "[HIGH 2026-10-28] Bank 14 entry point: 3 bytes, JMP $80AD (run_cutscene), the target call_bank_wrap(14) reaches. Read from the ROM bytes; labelled like bank0_entry." }
 
 [prg.bank4]
+"0x8004" = { name = "fief_adjacency_50", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] 50-fief adjacency: 8 bytes per fief (neighbour fief ids), read fief*8 + base by copy_from_bank(4, ...) in bank 15 $DACF. The vault's '50-fief adjacency, bank 4 $8004'. Was relation_sram_base." }
+"0x8300" = { name = "fief_adjacency_17", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] 17-fief adjacency, 8 bytes per fief; the 17-fief arm of the same read ($DACF). Was relation_sram_8300." }
+"0x83BC" = { name = "strategic_map_tileset", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] The bank-4 map tileset: 154 tiles to PPU $1510 (tile $51 = 81), the block $83BC-$8D5C = tiles 81-234; a cell V reads $83BC + (V-81)*16. Uploaded wherever the map screen is rebuilt: prompt_new_game_or_load_save $831D, init_new_game_state $8A6D, after a battle bank 2 $93F4 / $AFCC. strategic_map_chr_tiles ($845C) is its slice from tile 91. docs/20-strategic-map-render.md." }
+"0x845C" = { name = "strategic_map_chr_tiles", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Strategic-map CHR (bank 4), uploaded to PT1 $15B0 by repaint_screen. Tilemap cell V>=91 -> CHR $845C+(V-91)*16; terrain block runs to $8D5C (tiles 91-234). Cells <=80 are the shared game font (fief-number labels). See render-strategic-map.py." }
+"0x8D5A" = { name = "strategic_map_tilemaps_by_screen_col", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] strategic_map_section_tilemaps - 2: the same table addressed by screen column (the tilemap is blitted from column 2), read by the fief-select window redraw in banks 1 and 15. Was window_tile_gfx_8d5a / _alias." }
+"0x8D5C" = { name = "strategic_map_section_tilemaps", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] 9 strategic-map section tilemaps (bank 4), 0x1C0=448 B each = 28x16 tiles, blitted to the nametable by render_map_section(section). 17-fief uses sections 0-1, 50-fief uses 0-8 (discrete pages, not a scroll). Cells <=80 = font glyphs, >=81 = terrain. See render-strategic-map.py." }
+"0x9D1C" = { name = "strategic_map_section_attributes", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] 9 strategic-map section attribute tables (bank 4), 0x20=32 B each (BG sub-palette per 16x16 quad), uploaded to nametable attrs $23C8 by render_map_section." }
+"0x9E3C" = { name = "strategic_map_section_records", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] 9 records of 34 bytes, one per strategic-map section (copy_from_bank(4, section*34 + base) in banks 1 and 15, into fief_cell_buf / record_buf). Ends at $9F6E. Role of the fields: open. Was record_sram_9e3c (not SRAM)." }
+"0x9F6E" = { name = "combat_map_chr", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] CHR, 97 tiles to PPU $1570, uploaded by render_combat_map_screen (bank 2)." }
 
 "0xA57E" = { name = "tactical_map_cell_pool", comment = "Per-fief tactical-map cell data, ~33+ maps of 55 bytes each. The live per-cell metatile source map_populate ($8903) reads one byte at a time, indexed as $A57E + province_to_mapid_table[province]*55. NOT a directly-renderable flat table (that older interpretation, in render-atlas.py, was the disproven dead-end) — correct path is to RUN $8903, not read this flat. Session 2026-05-30." }
 
@@ -1703,6 +1676,33 @@ prg_bank_count = 16        # 256 KB total
 "0xA9C4" = { name = "portrait_feature1_eyes_tiles", comment = "[HIGH VISUAL] Portrait feature 1 (eyes): 5 variants x 6 tiles (96-byte stride), 2bpp. block = $A9C4 + digit*96 -> CHR $18B0. Row 3 of the face (visibly distinct eyes per variant)." }
 "0xABA4" = { name = "portrait_feature2_nose_tiles", comment = "[HIGH VISUAL] Portrait feature 2 (nose/mid-face): 5 variants x 6 tiles (96-byte stride), 2bpp. block = $ABA4 + digit*96 -> CHR $1910. Row 4 of the face." }
 "0xAD84" = { name = "portrait_feature3_mouth_tiles", comment = "[HIGH VISUAL] Portrait feature 3 (mouth/chin/collar): 5 variants x 12 tiles (192-byte stride $C0), 2bpp. block = $AD84 + digit*192 -> CHR $1970. Bottom 2 rows of the face." }
+"0xB144" = { name = "daimyo_portrait_tilemaps", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Preset portraits' 6x6 tile maps, 36 bytes per map id (draw_daimyo_portrait in bank 15, build_blit_fief_tile_block in bank 2; ppu_copy_rect_wrap(..., 8)). Was jumptab_b144 / fief_tile_block_tiles." }
+"0xBBD0" = { name = "daimyo_portrait_descriptors", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Preset portraits' upload descriptors, 4 bytes per map id (bank, count, CHR pointer), copy_from_bank(8, ...) in banks 2 and 15. Was msg_ng_to_pieces (a string decode of the wrong bank) / fief_tile_descriptor_table." }
+
+[prg.bank3]
+"0x8004" = { name = "scenario_sram_image_50", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] 50-fief scenario's starting SRAM image, $1FD0 bytes: prompt_select_scenario_size copy_from_bank(3, ...) when the player picks 50 fiefs." }
+"0xA004" = { name = "scenario_sram_image_17", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] 17-fief scenario's starting SRAM image, $1FD0 bytes: prompt_select_scenario_size copy_from_bank(3, ...) when the player picks 17 fiefs." }
+
+[prg.bank5]
+"0x8004" = { name = "tactical_map_attribute_tables", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Nametable attributes for the tactical maps: 48 bytes per (map, battle phase), 144 per map, to PPU $23C8 (bank 2 $88AC). Was map_tile_gfx_8004." }
+"0x9C24" = { name = "daimyo_banner_attr", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] The byte before each banner's CHR: map_id*49 + base, copied to $6FE4 + slot*9 (bank 2 $8842)." }
+"0x9C25" = { name = "daimyo_banner_chr", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] DAIMYO BANNER (家紋/crest) CHR — NOT map terrain tiles. 3 tiles (48 B) per daimyo, stride 49 (the preceding byte $9C24+idx*49 = the banner's attribute/palette byte). upload_map_cell_tiles($882A) blits the owning daimyo's banner to PT1 $1510 (per side) for the battlefield unit display; drawn next to the O/X leader marker (tile 178 daimyo-led / 179 general-led) + the men-count digits in each unit cell's lower half. Index = fief_to_mapid(owner) ($DC66): 17-fief -> province_to_mapid_table[daimyo], 50-fief -> daimyo index directly. Decoded + rendered to a labeled chart per scenario by tools/render-daimyo-banners.py (the crests are shared across scenarios; only the index arithmetic differs). Was the misleading 'map_cell_tile_source'." }
+
+[prg.bank6]
+"0x8004" = { name = "scenario_select_screen_tilemap", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Tilemap blitted to (0,3)-(31,21) of the scenario-select screen (bank 0 $895C, $8B09). Was scenario_select_gfx_8004." }
+"0x8264" = { name = "boot_title_chr", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Boot title CHR, 177 tiles to PPU $14D0 (bank 0 $8948, $8AFB). Was boot_title_gfx_8264." }
+"0x8D74" = { name = "ending_screen_tilemap", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] The unification-victory ending screen's tilemap, (0,0)-(31,22); ends at $9054, its CHR (show_game_ending_and_play_again_prompt)." }
+"0x9054" = { name = "ending_screen_chr", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] The ending screen's CHR, 174 tiles to PPU $1510 (show_game_ending_and_play_again_prompt)." }
+"0x9B24" = { name = "cinematic_tilemap_9b24", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Fullscreen cinematic tilemap, (0,5)-(31,19) (display_fullscreen_graphic_sequence). Was jumptab_9b24 (it is not a jump table)." }
+"0x9D04" = { name = "cinematic_gfx_9d04", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Fullscreen cinematic graphic source (ppu_upload_block_wrap, display_fullscreen_graphic_sequence)." }
+"0xACE4" = { name = "cinematic_gfx_ace4", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Fullscreen cinematic graphic source (ppu_copy_rect_wrap, display_fullscreen_graphic_sequence)." }
+"0xAF64" = { name = "cinematic_gfx_af64", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Fullscreen cinematic graphic source (display_fullscreen_graphic_sequence)." }
+
+[prg.bank9]
+"0xAE34" = { name = "portrait_feature0_tile_ids", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Composite portrait, feature 0 (head): 12 tile ids per variant (copy_from_bank(9, ...) in banks 2 and 15). Pairs with bank 8 portrait_feature0_head_tiles. Was portrait_sram_ae34 (not SRAM)." }
+"0xAE70" = { name = "portrait_feature1_tile_ids", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Composite portrait, feature 1 (eyes): 6 tile ids per variant. Was portrait_sram_ae70." }
+"0xAE8E" = { name = "portrait_feature2_tile_ids", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Composite portrait, feature 2 (nose): 6 tile ids per variant. Was portrait_sram_ae8e." }
+"0xAEAC" = { name = "portrait_feature3_tile_ids", comment = "[REFILED 2026-10-29: bank from the reader's bank argument] Composite portrait, feature 3 (mouth): 12 tile ids per variant. Was portrait_sram_aeac / digit_sram_aeac." }
 
 # ============================================================================
 # VAR-WALK (M4, 2026-06-03) — per-(sub, slot) semantic names for frame args/locals

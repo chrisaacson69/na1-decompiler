@@ -817,11 +817,8 @@ msg_your_ninja_failed:
     BBC2: .db $64, $00                                                                          ; d.
 
 msg_that_fief_can_t_hold_more_men:
-    BBC4: .db $54, $68, $61, $74, $20, $66, $69, $65, $66, $20, $63, $61                        ; That fief ca
-
-msg_ng_to_pieces:
-    BBD0: .db $6E, $60, $74, $0A, $68, $6F, $6C, $64, $20, $6D, $6F, $72, $65, $20, $6D, $65    ; n`t.hold more me
-    BBE0: .db $6E, $00                                                                          ; n.
+    BBC4: .db $54, $68, $61, $74, $20, $66, $69, $65, $66, $20, $63, $61, $6E, $60, $74, $0A    ; That fief can`t.
+    BBD4: .db $68, $6F, $6C, $64, $20, $6D, $6F, $72, $65, $20, $6D, $65, $6E, $00              ; hold more men.
 
 str_is_this_ok:
     BBE2: .db $00                                                                               ; .

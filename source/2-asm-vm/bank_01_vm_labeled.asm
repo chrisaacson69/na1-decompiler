@@ -6867,7 +6867,7 @@ fief_select_input_loop:                         ; sub $ADF6, frame_off -45
     AE05: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
     AE08: 8B 22                BYTE_LOADR_imm1        +34
     AE0A: B5                   MULT
-    AE0B: 8C 3C 9E             LOADR_imm2             $9E3C (record_sram_9e3c)
+    AE0B: 8C 3C 9E             LOADR_imm2             $9E3C
     AE0E: BB                   ADD
     AE0F: B3                   PUSHL
     AE10: 64                   PUSH_qimm                                   ; inline operand = 4
@@ -6897,7 +6897,7 @@ L_AE2A:
     AE3A: BB                   ADD
     AE3B: 1B                   LOADR_quick                                 ; inline operand = 11
     AE3C: BB                   ADD
-    AE3D: 8C 5A 8D             LOADR_imm2             $8D5A (window_tile_gfx_8d5a)
+    AE3D: 8C 5A 8D             LOADR_imm2             $8D5A
     AE40: BB                   ADD
     AE41: B3                   PUSHL
     AE42: 3A                   PUSH_quick                                  ; inline operand = 10

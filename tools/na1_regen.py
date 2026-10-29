@@ -11,7 +11,8 @@ guard also sees a name that leaks into ANOTHER bank:
 
 One process per step: the decompiler keeps its structuring switches in module globals, so a raw run
 would leave later banks unstructured. Needs py -3.14 with emu-harness installed.
-(all_banks.c, the merged view, has no generator any more; see emu-harness MIGRATION.md revisits.)
+A full regen also re-keys the merged views (4-c/all_banks.c, 3-c-basic/all_banks.raw.c) from the
+per-bank C just written, through emu-harness cli/decompile_merged.
 """
 import subprocess
 import sys

@@ -2883,7 +2883,7 @@ word driver_rest(void) {
 
 word fief_select_input_loop(word map_section) {
     fief_anchor = map_section;    // $ADFC
-    copy_from_bank(4, ((selected_record_idx_9e3c * 34) + record_sram_9e3c), &fief_cell_buf, 34);    // $AE11
+    copy_from_bank(4, ((selected_record_idx_9e3c * 34) + strategic_map_section_records), &fief_cell_buf, 34);    // $AE11
     cell_ptr = &fief_cell_buf;    // $AE18
     found_flag = 0;    // $AE1B
 L_AE1D:
@@ -2899,7 +2899,7 @@ L_AE56:
     found_flag = 1;    // $AE75
     goto L_AE78;    // $AE75
 L_AE2A:
-    ppu_copy_rect_wrap(cell_col, cell_row, min_word((cell_col + 8), 29), cell_row, ((((selected_record_idx_9e3c * 0x01C0) + ((cell_row + -4) * 28)) + cell_col) + window_tile_gfx_8d5a), 4);    // $AE4F
+    ppu_copy_rect_wrap(cell_col, cell_row, min_word((cell_col + 8), 29), cell_row, ((((selected_record_idx_9e3c * 0x01C0) + ((cell_row + -4) * 28)) + cell_col) + strategic_map_tilemaps_by_screen_col), 4);    // $AE4F
     goto L_AEA2;    // $AE53
 L_AE78:
     blink_phase = 0;    // $AE78

@@ -34,8 +34,8 @@ word show_game_ending_and_play_again_prompt(void) {
     repaint_screen();    // $800F
     if (!(is_unification_victory())) goto L_811C;    // $8015
     palette_swap(1);    // $8019
-    ppu_upload_block_wrap(6, 0x9054, 0x1510, 174);    // $8027
-    ppu_copy_rect_wrap(0, 0, 31, 22, 0x8D74, 6);    // $8035
+    ppu_upload_block_wrap(6, ending_screen_chr, 0x1510, 174);    // $8027
+    ppu_copy_rect_wrap(0, 0, 31, 22, ending_screen_tilemap, 6);    // $8035
     ppu_render_rect_wrap(16, 8, 17, 13, 1);    // $8040
     ppu_render_rect_wrap(2, 24, 31, 26, 1);    // $804C
     local11 = 0;    // $8051
@@ -69,7 +69,7 @@ L_80D7:
     ppu_upload_block_wrap(6, cinematic_gfx_9d04, 0x1000, 254);    // $80E6
     syscall_fill_nametable(0, 0);    // $80ED
     fill_attr_wrap();    // $80F1
-    ppu_copy_rect_wrap(0, 5, 31, 19, jumptab_9b24, 6);    // $80FE
+    ppu_copy_rect_wrap(0, 5, 31, 19, cinematic_tilemap_9b24, 6);    // $80FE
     local11 = 0;    // $8103
 L_8104:
     palette_write_wrap(local11, show_game_ending_and_play_again_prompt_congratulations_my_lord_1[local11]);    // $810C
@@ -163,7 +163,7 @@ L_82A3:
     checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // $82B2
     sram_addr = (sram_addr + 0x0100);    // $82B9
     if (((unsigned)sram_addr < (unsigned)0x7F00)) goto L_82A3;    // $82BF
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, ui_transient_state, save_sram_81eb));    // $82D3
+    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, ui_transient_state, 0x81EB));    // $82D3
     chr_bank0_set_wrap(1);    // $82D5
     if ((sram_save_checksum != checksum)) goto L_8343;    // $82DE
     chr_bank0_set_wrap(0);    // $82E2
@@ -175,7 +175,7 @@ L_82A3:
     repaint_screen();    // $82FF
     palette_swap(1);    // $8303
     ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // $830F
-    ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $831D
+    ppu_upload_block_wrap(4, strategic_map_tileset, 0x1510, 154);    // $831D
     i = 0;    // $8322
 L_8323:
     palette_write_wrap(i, data_screen_palette[i]);    // $832B
@@ -328,11 +328,11 @@ L_8630:
     if ((choice == 2)) goto L_8630;    // $8642
     if ((choice != 1)) goto L_8656;    // $8648
     scenario_fief_count = 17;    // $864D
-    scenario_src = scenario_select_gfx_a004;    // $8653
+    scenario_src = scenario_sram_image_17;    // $8653
     goto L_865E;    // $8653
 L_8656:
     scenario_fief_count = 50;    // $8658
-    scenario_src = scenario_select_gfx_8004;    // $865B
+    scenario_src = scenario_sram_image_50;    // $865B
 L_865E:
     copy_from_bank(3, scenario_src, ai_per_fief_loop_index, ((0x7FCF - 0x6001) + 2));    // $866D
     message_display(msg_watch_other_daimyos_battle);    // $8674
@@ -488,10 +488,10 @@ L_891A:
 L_892C:
     palette_swap(1);    // $892D
     ppu_upload_block_wrap(0, cinematic_gfx_b2ba, 0x1000, 81);    // $893A
-    ppu_upload_block_wrap(6, boot_title_gfx_8264, 0x14D0, 177);    // $8948
+    ppu_upload_block_wrap(6, boot_title_chr, 0x14D0, 177);    // $8948
     fill_nametable_wrap();    // $894C
     fill_attr_wrap();    // $894F
-    ppu_copy_rect_wrap(0, 3, 31, 21, scenario_select_gfx_8004, 6);    // $895C
+    ppu_copy_rect_wrap(0, 3, 31, 21, scenario_select_screen_tilemap, 6);    // $895C
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // $8966
     ppu_render_rect_wrap(20, 26, 29, 26, 1);    // $8973
     set_cursor(21, 26);    // $897B
@@ -554,7 +554,7 @@ L_8A34:
     ui_msg_col_shift_flag = 1;    // $8A4F
     palette_swap(1);    // $8A53
     ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // $8A5F
-    ppu_upload_block_wrap(4, 0x83BC, 0x1510, 154);    // $8A6D
+    ppu_upload_block_wrap(4, strategic_map_tileset, 0x1510, 154);    // $8A6D
     i = 0;    // $8A72
 L_8A73:
     palette_write_wrap(i, data_screen_palette[i]);    // $8A7B
@@ -582,8 +582,8 @@ L_8AC9:
     if (prompt_y_n()) goto L_8B44;    // $8AE6
     repaint_screen();    // $8AE9
     palette_swap(1);    // $8AED
-    ppu_upload_block_wrap(6, boot_title_gfx_8264, 0x14D0, 177);    // $8AFB
-    ppu_copy_rect_wrap(0, 3, 31, 21, scenario_select_gfx_8004, 6);    // $8B09
+    ppu_upload_block_wrap(6, boot_title_chr, 0x14D0, 177);    // $8AFB
+    ppu_copy_rect_wrap(0, 3, 31, 21, scenario_select_screen_tilemap, 6);    // $8B09
     ppu_render_rect_wrap(0, 3, 17, 7, 1);    // $8B13
     i = 0;    // $8B18
 L_8B19:
@@ -2310,7 +2310,7 @@ L_A3FB:
     checksum = (checksum + syscall_sram_block_with_checksum(0, save_pending_flag, block_addr, 0x0100));    // $A40A
     block_addr = (block_addr + 0x0100);    // $A411
     if (((unsigned)block_addr < (unsigned)0x7F00)) goto L_A3FB;    // $A417
-    checksum = (checksum + syscall_sram_block_with_checksum(0, save_pending_flag, ui_transient_state, save_sram_81eb));    // $A42B
+    checksum = (checksum + syscall_sram_block_with_checksum(0, save_pending_flag, ui_transient_state, 0x81EB));    // $A42B
     sram_save_checksum = checksum;    // $A42D
     strcpy(sram_save_signature, write_sram_save_checksum_and_signature_koei);    // $A436
     chr_bank0_set_wrap(0);    // $A43B

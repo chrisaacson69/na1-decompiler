@@ -2,7 +2,7 @@ VM bytecode disassembly
   ROM:          Nobunaga's Ambition (USA).nes
   mode:         bulk dump of bank 2
   opcode spec:  vm-opcodes-v2.toml via nobunaga_vm.OPCODE_INFO (execution-validated lengths)
-  labels:       1373 CPU addresses named
+  labels:       1377 CPU addresses named
 
   bank 2: found 131 bytecode-subroutine stubs
 
@@ -44,7 +44,7 @@ VM bytecode disassembly
   $80B1  0A                         LOADL_quick   ; inline operand = 10
   $80B2  8C C0 00                   LOADR_imm2             $00C0
   $80B5  B5                         MULT
-  $80B6  8C 04 A6                   LOADR_imm2             $A604 (digit_gfx_a604)
+  $80B6  8C 04 A6                   LOADR_imm2             $A604
   $80B9  BB                         ADD
   $80BA  B3                         PUSHL
   $80BB  68                         PUSH_qimm   ; inline operand = 8
@@ -54,7 +54,7 @@ VM bytecode disassembly
   $80C4  09                         LOADL_quick   ; inline operand = 9
   $80C5  8B 60                      BYTE_LOADR_imm1        +96
   $80C7  B5                         MULT
-  $80C8  8C C4 A9                   LOADR_imm2             $A9C4 (digit_gfx_a9c4)
+  $80C8  8C C4 A9                   LOADR_imm2             $A9C4
   $80CB  BB                         ADD
   $80CC  B3                         PUSHL
   $80CD  68                         PUSH_qimm   ; inline operand = 8
@@ -64,7 +64,7 @@ VM bytecode disassembly
   $80D6  08                         LOADL_quick   ; inline operand = 8
   $80D7  8B 60                      BYTE_LOADR_imm1        +96
   $80D9  B5                         MULT
-  $80DA  8C A4 AB                   LOADR_imm2             $ABA4 (portrait_gfx_eyes)
+  $80DA  8C A4 AB                   LOADR_imm2             $ABA4
   $80DD  BB                         ADD
   $80DE  B3                         PUSHL
   $80DF  68                         PUSH_qimm   ; inline operand = 8
@@ -74,7 +74,7 @@ VM bytecode disassembly
   $80E8  07                         LOADL_quick   ; inline operand = 7
   $80E9  8C C0 00                   LOADR_imm2             $00C0
   $80EC  B5                         MULT
-  $80ED  8C 84 AD                   LOADR_imm2             $AD84 (digit_gfx_ad84)
+  $80ED  8C 84 AD                   LOADR_imm2             $AD84
   $80F0  BB                         ADD
   $80F1  B3                         PUSHL
   $80F2  68                         PUSH_qimm   ; inline operand = 8
@@ -84,7 +84,7 @@ VM bytecode disassembly
   $80F9  0A                         LOADL_quick   ; inline operand = 10
   $80FA  5C                         LOADR_qimm   ; inline operand = 12
   $80FB  B5                         MULT
-  $80FC  8C 34 AE                   LOADR_imm2             $AE34 (portrait_sram_ae34)
+  $80FC  8C 34 AE                   LOADR_imm2             $AE34
   $80FF  BB                         ADD
   $8100  B3                         PUSHL
   $8101  69                         PUSH_qimm   ; inline operand = 9
@@ -96,7 +96,7 @@ VM bytecode disassembly
   $810A  09                         LOADL_quick   ; inline operand = 9
   $810B  56                         LOADR_qimm   ; inline operand = 6
   $810C  B5                         MULT
-  $810D  8C 70 AE                   LOADR_imm2             $AE70 (portrait_sram_ae70)
+  $810D  8C 70 AE                   LOADR_imm2             $AE70
   $8110  BB                         ADD
   $8111  B3                         PUSHL
   $8112  69                         PUSH_qimm   ; inline operand = 9
@@ -108,7 +108,7 @@ VM bytecode disassembly
   $811C  08                         LOADL_quick   ; inline operand = 8
   $811D  56                         LOADR_qimm   ; inline operand = 6
   $811E  B5                         MULT
-  $811F  8C 8E AE                   LOADR_imm2             $AE8E (portrait_sram_ae8e)
+  $811F  8C 8E AE                   LOADR_imm2             $AE8E
   $8122  BB                         ADD
   $8123  B3                         PUSHL
   $8124  69                         PUSH_qimm   ; inline operand = 9
@@ -120,7 +120,7 @@ VM bytecode disassembly
   $812E  07                         LOADL_quick   ; inline operand = 7
   $812F  5C                         LOADR_qimm   ; inline operand = 12
   $8130  B5                         MULT
-  $8131  8C AC AE                   LOADR_imm2             $AEAC (digit_sram_aeac)
+  $8131  8C AC AE                   LOADR_imm2             $AEAC
   $8134  BB                         ADD
   $8135  B3                         PUSHL
   $8136  69                         PUSH_qimm   ; inline operand = 9
@@ -156,7 +156,7 @@ VM bytecode disassembly
   $816E  E9 66 DC 02                CALL_abs_imm1          $DC66 (fief_to_mapid) {bytecode}, $02
   $8172  D2                         LSHIFT1
   $8173  D2                         LSHIFT1
-  $8174  8C D0 BB                   LOADR_imm2             $BBD0 (fief_tile_descriptor_table)
+  $8174  8C D0 BB                   LOADR_imm2             $BBD0
   $8177  BB                         ADD
   $8178  85 D5                      STORE_near             $D5
   $817A  64                         PUSH_qimm   ; inline operand = 4
@@ -186,7 +186,7 @@ VM bytecode disassembly
   $81A6  E9 66 DC 02                CALL_abs_imm1          $DC66 (fief_to_mapid) {bytecode}, $02
   $81AA  8B 24                      BYTE_LOADR_imm1        +36
   $81AC  B5                         MULT
-  $81AD  8C 44 B1                   LOADR_imm2             $B144 (fief_tile_block_tiles)
+  $81AD  8C 44 B1                   LOADR_imm2             $B144
   $81B0  BB                         ADD
   $81B1  85 DA                      STORE_near             $DA
   $81B3  D6 DD 81                   JUMP_abs               $81DD
@@ -1137,7 +1137,7 @@ VM bytecode disassembly
   $884F  0C                         LOADL_quick   ; inline operand = 12
   $8850  8B 31                      BYTE_LOADR_imm1        +49
   $8852  B5                         MULT
-  $8853  8C 25 9C                   LOADR_imm2             $9C25 (daimyo_banner_chr)
+  $8853  8C 25 9C                   LOADR_imm2             $9C25
   $8856  BB                         ADD
   $8857  B3                         PUSHL
   $8858  65                         PUSH_qimm   ; inline operand = 5
@@ -1191,7 +1191,7 @@ VM bytecode disassembly
   $88A3  B5                         MULT
   $88A4  B4                         POPR
   $88A5  BB                         ADD
-  $88A6  8C 04 80                   LOADR_imm2             $8004 (map_tile_gfx_8004)
+  $88A6  8C 04 80                   LOADR_imm2             $8004
   $88A9  BB                         ADD
   $88AA  B3                         PUSHL
   $88AB  65                         PUSH_qimm   ; inline operand = 5
@@ -5485,7 +5485,7 @@ VM bytecode disassembly
  >$A572  0B                         LOADL_quick   ; inline operand = 11
   $A573  55                         LOADR_qimm   ; inline operand = 5
   $A574  C6                         UCMPLT
-  $A575  D8 7E A5                   JUMPF_abs              $A57E (map_cell_sram_a57e)
+  $A575  D8 7E A5                   JUMPF_abs              $A57E
   $A578  3B                         PUSH_quick   ; inline operand = 11
   $A579  E9 DA A0 02                CALL_abs_imm1          $A0DA (eval_and_announce_battle_strength_parity_if_enemy_present) {bytecode}, $02
   $A57D  CF                         RETURN
@@ -6282,7 +6282,7 @@ VM bytecode disassembly
   $AB93  60                         PUSH_qimm   ; inline operand = 0
   $AB94  60                         PUSH_qimm   ; inline operand = 0
   $AB95  E9 79 8F 04                CALL_abs_imm1          $8F79 (is_unit_present) {bytecode}, $04
-  $AB99  D7 A4 AB                   JUMPT_abs              $ABA4 (portrait_gfx_eyes)
+  $AB99  D7 A4 AB                   JUMPT_abs              $ABA4
   $AB9C  A4 5F 6F                   LOADL_abs              $6F5F (selected_province_idx)
   $AB9F  A8 57 6F                   STORE_abs              $6F57 (battle_winner_province_sel)
   $ABA2  45                         LOADL_qimm   ; inline operand = 5
@@ -6638,7 +6638,7 @@ VM bytecode disassembly
   $AE63  D8 69 AE                   JUMPF_abs              $AE69
   $AE66  AC 35 DB                   CALL_abs               $DB35 (retire_human_player_check_game_over) {bytecode}
  >$AE69  AC FF 82                   CALL_abs               $82FF (is_no_province_selected) {bytecode}
-  $AE6C  D8 70 AE                   JUMPF_abs              $AE70 (portrait_sram_ae70)
+  $AE6C  D8 70 AE                   JUMPF_abs              $AE70
   $AE6F  CF                         RETURN
  >$AE70  8A 89 6F                   LOADL_imm2             $6F89 (fief_index_list)
   $AE73  28                         STORE_quick   ; inline operand = 8

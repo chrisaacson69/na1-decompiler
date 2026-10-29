@@ -105,7 +105,7 @@ L_80D7:
     80D8: E9 35 CC 02          CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
     80DC: 8E FE 00             PUSH_imm2              $00FE
     80DF: 8E 00 10             PUSH_imm2              $1000
-    80E2: 8E 04 9D             PUSH_imm2              $9D04 (cinematic_gfx_9d04)
+    80E2: 8E 04 9D             PUSH_imm2              $9D04
     80E5: 66                   PUSH_qimm                                   ; inline operand = 6
     80E6: E9 7C CF 08          CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
     80EA: 60                   PUSH_qimm                                   ; inline operand = 0
@@ -114,7 +114,7 @@ L_80D7:
     80ED: E9 26 F2 06          CALL_abs_imm1          $F226 (syscall_dispatch) {native}, $06
     80F1: AC 5D CF             CALL_abs               $CF5D (fill_attr_wrap) {bytecode}
     80F4: 66                   PUSH_qimm                                   ; inline operand = 6
-    80F5: 8E 24 9B             PUSH_imm2              $9B24 (jumptab_9b24)
+    80F5: 8E 24 9B             PUSH_imm2              $9B24
     80F8: 8D 13                BYTE_PUSH_imm1         +19
     80FA: 8D 1F                BYTE_PUSH_imm1         +31
     80FC: 65                   PUSH_qimm                                   ; inline operand = 5
@@ -196,7 +196,7 @@ L_816F:
     8170: E9 35 CC 02          CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
     8174: 8E F8 00             PUSH_imm2              $00F8
     8177: 8E 00 10             PUSH_imm2              $1000
-    817A: 8E 64 AF             PUSH_imm2              $AF64 (cinematic_gfx_af64)
+    817A: 8E 64 AF             PUSH_imm2              $AF64
     817D: 66                   PUSH_qimm                                   ; inline operand = 6
     817E: E9 7C CF 08          CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
     8182: 60                   PUSH_qimm                                   ; inline operand = 0
@@ -205,7 +205,7 @@ L_816F:
     8185: E9 26 F2 06          CALL_abs_imm1          $F226 (syscall_dispatch) {native}, $06
     8189: AC 5D CF             CALL_abs               $CF5D (fill_attr_wrap) {bytecode}
     818C: 66                   PUSH_qimm                                   ; inline operand = 6
-    818D: 8E E4 AC             PUSH_imm2              $ACE4 (cinematic_gfx_ace4)
+    818D: 8E E4 AC             PUSH_imm2              $ACE4
     8190: 8D 18                BYTE_PUSH_imm1         +24
     8192: 8D 1F                BYTE_PUSH_imm1         +31
     8194: 65                   PUSH_qimm                                   ; inline operand = 5
@@ -363,7 +363,7 @@ L_82A3:
     82BB: 8C 00 7F             LOADR_imm2             $7F00 (ui_transient_state)
     82BE: C6                   UCMPLT
     82BF: D7 A3 82             JUMPT_abs              L_82A3
-    82C2: 8E EB 81             PUSH_imm2              $81EB (save_sram_81eb)
+    82C2: 8E EB 81             PUSH_imm2              $81EB
     82C5: 8E 00 7F             PUSH_imm2              $7F00 (ui_transient_state)
     82C8: 60                   PUSH_qimm                                   ; inline operand = 0
     82C9: 61                   PUSH_qimm                                   ; inline operand = 1
@@ -929,12 +929,12 @@ L_8630:
     8648: D8 56 86             JUMPF_abs              L_8656
     864B: 89 11                BYTE_LOADL_imm1        +17
     864D: A8 9D 6D             STORE_abs              $6D9D (scenario_fief_count)
-    8650: 8A 04 A0             LOADL_imm2             $A004 (scenario_select_gfx_a004)
+    8650: 8A 04 A0             LOADL_imm2             $A004
     8653: D6 5E 86             JUMP_abs               L_865E
 L_8656:
     8656: 89 32                BYTE_LOADL_imm1        +50
     8658: A8 9D 6D             STORE_abs              $6D9D (scenario_fief_count)
-    865B: 8A 04 80             LOADL_imm2             $8004 (scenario_select_gfx_8004)
+    865B: 8A 04 80             LOADL_imm2             $8004
 L_865E:
     865E: 2B                   STORE_quick                                 ; inline operand = 11
     865F: 8A CF 7F             LOADL_imm2             $7FCF (ui_cursor_row)
@@ -1326,13 +1326,13 @@ L_892C:
     893A: E9 7C CF 08          CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
     893E: 8E B1 00             PUSH_imm2              $00B1
     8941: 8E D0 14             PUSH_imm2              $14D0
-    8944: 8E 64 82             PUSH_imm2              $8264 (boot_title_gfx_8264)
+    8944: 8E 64 82             PUSH_imm2              $8264
     8947: 66                   PUSH_qimm                                   ; inline operand = 6
     8948: E9 7C CF 08          CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
     894C: AC 50 CF             CALL_abs               $CF50 (fill_nametable_wrap) {bytecode}
     894F: AC 5D CF             CALL_abs               $CF5D (fill_attr_wrap) {bytecode}
     8952: 66                   PUSH_qimm                                   ; inline operand = 6
-    8953: 8E 04 80             PUSH_imm2              $8004 (scenario_select_gfx_8004)
+    8953: 8E 04 80             PUSH_imm2              $8004
     8956: 8D 15                BYTE_PUSH_imm1         +21
     8958: 8D 1F                BYTE_PUSH_imm1         +31
     895A: 63                   PUSH_qimm                                   ; inline operand = 3
@@ -1568,11 +1568,11 @@ L_8AC9:
     8AED: E9 35 CC 02          CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
     8AF1: 8E B1 00             PUSH_imm2              $00B1
     8AF4: 8E D0 14             PUSH_imm2              $14D0
-    8AF7: 8E 64 82             PUSH_imm2              $8264 (boot_title_gfx_8264)
+    8AF7: 8E 64 82             PUSH_imm2              $8264
     8AFA: 66                   PUSH_qimm                                   ; inline operand = 6
     8AFB: E9 7C CF 08          CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
     8AFF: 66                   PUSH_qimm                                   ; inline operand = 6
-    8B00: 8E 04 80             PUSH_imm2              $8004 (scenario_select_gfx_8004)
+    8B00: 8E 04 80             PUSH_imm2              $8004
     8B03: 8D 15                BYTE_PUSH_imm1         +21
     8B05: 8D 1F                BYTE_PUSH_imm1         +31
     8B07: 63                   PUSH_qimm                                   ; inline operand = 3
@@ -5325,7 +5325,7 @@ L_A3FB:
     A413: 8C 00 7F             LOADR_imm2             $7F00 (ui_transient_state)
     A416: C6                   UCMPLT
     A417: D7 FB A3             JUMPT_abs              L_A3FB
-    A41A: 8E EB 81             PUSH_imm2              $81EB (save_sram_81eb)
+    A41A: 8E EB 81             PUSH_imm2              $81EB
     A41D: 8E 00 7F             PUSH_imm2              $7F00 (ui_transient_state)
     A420: 39                   PUSH_quick                                  ; inline operand = 9
     A421: 60                   PUSH_qimm                                   ; inline operand = 0

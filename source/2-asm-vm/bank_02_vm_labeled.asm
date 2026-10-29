@@ -37,7 +37,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     80B1: 0A                   LOADL_quick                                 ; inline operand = 10
     80B2: 8C C0 00             LOADR_imm2             $00C0
     80B5: B5                   MULT
-    80B6: 8C 04 A6             LOADR_imm2             $A604 (digit_gfx_a604)
+    80B6: 8C 04 A6             LOADR_imm2             $A604
     80B9: BB                   ADD
     80BA: B3                   PUSHL
     80BB: 68                   PUSH_qimm                                   ; inline operand = 8
@@ -47,7 +47,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     80C4: 09                   LOADL_quick                                 ; inline operand = 9
     80C5: 8B 60                BYTE_LOADR_imm1        +96
     80C7: B5                   MULT
-    80C8: 8C C4 A9             LOADR_imm2             $A9C4 (digit_gfx_a9c4)
+    80C8: 8C C4 A9             LOADR_imm2             $A9C4
     80CB: BB                   ADD
     80CC: B3                   PUSHL
     80CD: 68                   PUSH_qimm                                   ; inline operand = 8
@@ -57,7 +57,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     80D6: 08                   LOADL_quick                                 ; inline operand = 8
     80D7: 8B 60                BYTE_LOADR_imm1        +96
     80D9: B5                   MULT
-    80DA: 8C A4 AB             LOADR_imm2             $ABA4 (portrait_gfx_eyes)
+    80DA: 8C A4 AB             LOADR_imm2             $ABA4
     80DD: BB                   ADD
     80DE: B3                   PUSHL
     80DF: 68                   PUSH_qimm                                   ; inline operand = 8
@@ -67,7 +67,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     80E8: 07                   LOADL_quick                                 ; inline operand = 7
     80E9: 8C C0 00             LOADR_imm2             $00C0
     80EC: B5                   MULT
-    80ED: 8C 84 AD             LOADR_imm2             $AD84 (digit_gfx_ad84)
+    80ED: 8C 84 AD             LOADR_imm2             $AD84
     80F0: BB                   ADD
     80F1: B3                   PUSHL
     80F2: 68                   PUSH_qimm                                   ; inline operand = 8
@@ -77,7 +77,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     80F9: 0A                   LOADL_quick                                 ; inline operand = 10
     80FA: 5C                   LOADR_qimm                                  ; inline operand = 12
     80FB: B5                   MULT
-    80FC: 8C 34 AE             LOADR_imm2             $AE34 (portrait_sram_ae34)
+    80FC: 8C 34 AE             LOADR_imm2             $AE34
     80FF: BB                   ADD
     8100: B3                   PUSHL
     8101: 69                   PUSH_qimm                                   ; inline operand = 9
@@ -89,7 +89,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     810A: 09                   LOADL_quick                                 ; inline operand = 9
     810B: 56                   LOADR_qimm                                  ; inline operand = 6
     810C: B5                   MULT
-    810D: 8C 70 AE             LOADR_imm2             $AE70 (portrait_sram_ae70)
+    810D: 8C 70 AE             LOADR_imm2             $AE70
     8110: BB                   ADD
     8111: B3                   PUSHL
     8112: 69                   PUSH_qimm                                   ; inline operand = 9
@@ -101,7 +101,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     811C: 08                   LOADL_quick                                 ; inline operand = 8
     811D: 56                   LOADR_qimm                                  ; inline operand = 6
     811E: B5                   MULT
-    811F: 8C 8E AE             LOADR_imm2             $AE8E (portrait_sram_ae8e)
+    811F: 8C 8E AE             LOADR_imm2             $AE8E
     8122: BB                   ADD
     8123: B3                   PUSHL
     8124: 69                   PUSH_qimm                                   ; inline operand = 9
@@ -113,7 +113,7 @@ compose_upload_daimyo_portrait:                 ; sub $8086, frame_off -10
     812E: 07                   LOADL_quick                                 ; inline operand = 7
     812F: 5C                   LOADR_qimm                                  ; inline operand = 12
     8130: B5                   MULT
-    8131: 8C AC AE             LOADR_imm2             $AEAC (digit_sram_aeac)
+    8131: 8C AC AE             LOADR_imm2             $AEAC
     8134: BB                   ADD
     8135: B3                   PUSHL
     8136: 69                   PUSH_qimm                                   ; inline operand = 9
@@ -148,7 +148,7 @@ L_8144:
     816E: E9 66 DC 02          CALL_abs_imm1          $DC66 (fief_to_mapid) {bytecode}, $02
     8172: D2                   LSHIFT1
     8173: D2                   LSHIFT1
-    8174: 8C D0 BB             LOADR_imm2             $BBD0 (fief_tile_descriptor_table)
+    8174: 8C D0 BB             LOADR_imm2             $BBD0
     8177: BB                   ADD
     8178: 85 D5                STORE_near             $D5
     817A: 64                   PUSH_qimm                                   ; inline operand = 4
@@ -178,7 +178,7 @@ L_8144:
     81A6: E9 66 DC 02          CALL_abs_imm1          $DC66 (fief_to_mapid) {bytecode}, $02
     81AA: 8B 24                BYTE_LOADR_imm1        +36
     81AC: B5                   MULT
-    81AD: 8C 44 B1             LOADR_imm2             $B144 (fief_tile_block_tiles)
+    81AD: 8C 44 B1             LOADR_imm2             $B144
     81B0: BB                   ADD
     81B1: 85 DA                STORE_near             $DA
     81B3: D6 DD 81             JUMP_abs               L_81DD
@@ -1172,7 +1172,7 @@ upload_map_cell_tiles:                          ; sub $882A, frame_off +0
     884F: 0C                   LOADL_quick                                 ; inline operand = 12
     8850: 8B 31                BYTE_LOADR_imm1        +49
     8852: B5                   MULT
-    8853: 8C 25 9C             LOADR_imm2             $9C25 (daimyo_banner_chr)
+    8853: 8C 25 9C             LOADR_imm2             $9C25
     8856: BB                   ADD
     8857: B3                   PUSHL
     8858: 65                   PUSH_qimm                                   ; inline operand = 5
@@ -1225,7 +1225,7 @@ L_8865:
     88A3: B5                   MULT
     88A4: B4                   POPR
     88A5: BB                   ADD
-    88A6: 8C 04 80             LOADR_imm2             $8004 (map_tile_gfx_8004)
+    88A6: 8C 04 80             LOADR_imm2             $8004
     88A9: BB                   ADD
     88AA: B3                   PUSHL
     88AB: 65                   PUSH_qimm                                   ; inline operand = 5
