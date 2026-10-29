@@ -782,10 +782,13 @@ word draw_unit_count_digits(word side, word unit_slot) {
             remaining_strength = min_word(*(word*)(unit_strength_ptr(side, unit_slot)), 0x270F);    // $8A57
             digit_shown = 0;    // $8A59
             digit = ((unsigned)remaining_strength / (unsigned)0x03E8);    // $8A5F
-            if (((unsigned)remaining_strength / (unsigned)0x03E8)) {    // $8A47
+            if (!(((unsigned)remaining_strength / (unsigned)0x03E8))) {    // $8A47
+                phi_val_8a7b = 1;    // $8A6C
+            } else {
                 digit_shown = 1;    // $8A70
+                phi_val_8a7b = (digit + 8);    // $8A7A
             }
-            *(byte*)(((side * 9) + 0x6FE9)) = (digit + 8);    // $8A7B
+            *(byte*)(((side * 9) + 0x6FE9)) = phi_val_8a7b;    // $8A7B
             remaining_strength = ((unsigned)remaining_strength % (unsigned)0x03E8);    // $8A81
             digit = ((unsigned)remaining_strength / (unsigned)100);    // $8A86
             if (((unsigned)remaining_strength / (unsigned)100)) {    // $8A7B
@@ -796,7 +799,12 @@ word draw_unit_count_digits(word side, word unit_slot) {
             digit = ((unsigned)remaining_strength / (unsigned)10);    // $8AB3
             *(byte*)(((side * 9) + 0x6FEB)) = (digit_shown ? (digit + 8) : 1);    // $8AD5
             digit = ((unsigned)remaining_strength % (unsigned)10);    // $8AD9
-            *(byte*)(((side * 9) + 0x6FEC)) = (digit + 8);    // $8AF3
+            if (!(((unsigned)remaining_strength % (unsigned)10))) {    // $8AD5
+                phi_val_8af3 = 8;    // $8AE6
+            } else {
+                phi_val_8af3 = (digit + 8);    // $8AF2
+            }
+            *(byte*)(((side * 9) + 0x6FEC)) = phi_val_8af3;    // $8AF3
             ppu_render_rect_wrap((cell_col + 1), (cell_row + 2), (cell_col + 2), (cell_row + 2), *(byte*)(((side * 9) + 0x6FE4)));    // $8B09
             phi_ret_8b24 = ppu_copy_rect_wrap(cell_col, (cell_row + 2), (cell_col + 3), (cell_row + 3), unit_count_digit_tiles[side], 2);    // $8B20
         }

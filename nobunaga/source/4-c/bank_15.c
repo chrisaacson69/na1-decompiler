@@ -31,8 +31,13 @@ word play_audio(word sound_id) {
 // (body @ $CA17)
 
 word deduct_byte_at(word stat_ptr, word amount) {
-    *(byte*)(stat_ptr) = (*(byte*)(stat_ptr) - *(byte*)&amount);    // $CA2F
-    return *(byte*)(stat_ptr);    // $CA30
+    if ((*(byte*)(stat_ptr) < *(byte*)&amount)) {    // $CA17
+        phi_val_ca2f = 0;    // $CA24
+    } else {
+        phi_val_ca2f = (*(byte*)(stat_ptr) - *(byte*)&amount);    // $CA2E
+    }
+    *(byte*)(stat_ptr) = phi_val_ca2f;    // $CA2F
+    return phi_val_ca2f;    // $CA30
 }
 
 // Decompiled from source/2-asm-vm/bank_15_vm.asm sub $CA31

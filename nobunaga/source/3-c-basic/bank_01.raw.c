@@ -1478,10 +1478,12 @@ word effect_war_e(word relation_flags_out) {
 L_9820:
     if (relations_roll_vs_owner(*(byte*)(owner_cursor), 1)) goto L_983B;    // $9829
     if (relations_roll_vs_owner(*(byte*)(owner_cursor), 0)) goto L_983B;    // $9834
+    phi_val_983c = 0;    // $9838
     goto L_983C;    // $9838
 L_983B:
+    phi_val_983c = 1;    // $983B
 L_983C:
-    *(word*)(relation_flags_out) = 1;    // $983C
+    *(word*)(relation_flags_out) = phi_val_983c;    // $983C
     owner_cursor = (owner_cursor + 1);    // $983F
     relation_flags_out = (relation_flags_out + 2);    // $9843
 L_9846:
@@ -3167,10 +3169,12 @@ word driver_pass(void) {
 word ai_seed_fief_tax_rate(word province_idx) {
     swap_word(&province_idx, battle_defending_province);    // $B2BE
     if (!(defender_owner_is_honganji())) goto L_B2DA;    // $B2CD
+    phi_val_b2e2 = (rng_mod(15) + 16);    // $B2D7
     goto L_B2E2;    // $B2D7
 L_B2DA:
+    phi_val_b2e2 = (rng_mod(30) + 35);    // $B2E0
 L_B2E2:
-    fief_tax_rate[battle_defending_province] = (rng_mod(30) + 35);    // $B2E2
+    fief_tax_rate[battle_defending_province] = phi_val_b2e2;    // $B2E2
     return swap_word(&province_idx, battle_defending_province);    // $B2EE
 }
 
