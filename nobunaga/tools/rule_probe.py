@@ -36,12 +36,27 @@ def labels_by_name():
     return out
 
 
-def run(sub, bank, args, sram, max_ops=200000):
-    """titles.run_sub, returning the VM so RAM can be read back."""
+def run(sub, bank, args, sram, max_ops=200000, poke=None):
+    """titles.run_sub, returning the VM so RAM can be read back. `poke` = {addr: byte} written after the
+    dump loads (an input the saved states never hold, such as luck 0)."""
     vm, cfg = titles.make_vm("na1")
     if bank is not None and sub < 0xC000:
         vm.switch_bank(bank)
     vm.load_sram(sram)
+    for a, v in (poke or {}).items():
+        vm.mem.write(a, v)
+    fp = 0x05FF
+    vm.vm_fp, vm.vm_sp = fp, (fp - 16) & 0xFFFF
+    for i, x in enumerate(args):
+        vm.mem.write_word(fp + 11 + 2 * i, x & 0xFFFF)
+    vm.vm_pc = sub + 5
+    vm.cpu.pc = vm.DISPATCHER_ADDR
+    vm.run_until_outermost_return(max_ops=max_ops)
+    return vm
+
+
+def run_more(vm, sub, args, max_ops=200000):
+    """Run another sub on the same VM (RAM carries over), as the turn planner runs them in sequence."""
     fp = 0x05FF
     vm.vm_fp, vm.vm_sp = fp, (fp - 16) & 0xFFFF
     for i, x in enumerate(args):
@@ -166,8 +181,85 @@ def check_cap_fief_stats(L, dumps):
     return cases, bad, planted
 
 
+def rng_draw(L, d, n):
+    """The value rng_mod(n) returns from dump d's state: the ROM's own rng_mod, run first."""
+    sub, _b = L["rng_mod"]
+    return run(sub, None, (n,), d).regL
+
+
+def check_probability_roll(L, dumps):
+    """C (bank 0 square_over_2025_probability_roll): if (stat > 50) stat = 50; return stat * stat < rng_mod(2025).
+    The rng draw is the ROM's: rng_mod(2025) from the same dump state (the RNG is deterministic in RAM)."""
+    sub, bank = L["square_over_2025_probability_roll"]
+    cases, bad, planted = 0, [], 0
+    for d in dumps:
+        r = rng_draw(L, d, 2025)
+        for stat in (0, 10, 30, 44, 45, 50, 80, 200):
+            got = run(sub, 0, (stat,), d).regL & 0xFFFF
+            s = min(stat, 50)
+            want = int(s * s < r)
+            cases += 1
+            if got != want:
+                bad.append(f"{d.name} stat={stat} rng={r}: ROM {got}, model {want}")
+            planted += got != int(s * s >= r)                  # planted: the direction I first wrote (10-28)
+    return cases, bad, planted
+
+
+def check_luck_drift(L, dumps):
+    """C (bank 0 drift_daimyo_luck): *(byte*)luck += rng_mod(11); *(byte*)luck -= 5 (no clamp here; cap_fief_stats
+    repairs an underflow afterwards). luck_ptr = daimyo_record_addr(d) + 3."""
+    sub, bank = L["drift_daimyo_luck"]
+    cases, bad, planted = 0, [], 0
+    for d in dumps:
+        base = fresh(d)
+        r = rng_draw(L, d, 11)
+        for dm, forced in ((0, None), (3, None), (9, None), (16, None), (1, 0), (2, 3), (4, 208)):
+            p = DAIMYO + 7 * dm + 3
+            before = base.mem.read(p) if forced is None else forced      # forced: the under/overflow edges
+            vm = run(sub, 0, (dm,), d, poke=None if forced is None else {p: forced})
+            got = vm.mem.read(p)
+            want = (before + r - 5) & 0xFF
+            cases += 1
+            if got != want:
+                bad.append(f"{d.name} daimyo {dm} luck {before} rng {r}: ROM {got}, model {want}")
+            planted += got != max(0, min(255, before + r - 5))  # planted: a clamped drift (it is not clamped here)
+    return cases, bad, planted
+
+
+def check_luck_underflow_repaired(L, dumps):
+    """The turn planner runs the luck drift (per_period_fief_daimyo_update_driver, $A498) and then
+    cap_fief_stats over every fief ($A4A0). So a drift below 0 wraps to 251..255 and the cap resets it
+    (> 235 -> 0). Composed on one VM: luck forced to 0..4, drift, then cap_fief_stats on a fief the daimyo
+    owns; luck must end at max(0, luck + r - 5)."""
+    drift, _ = L["drift_daimyo_luck"]
+    cap, _ = L["cap_fief_stats"]
+    cases, bad, planted = 0, [], 0
+    for d in dumps:
+        base = fresh(d)
+        r = rng_draw(L, d, 11)
+        for f in range(fief_count(base)):
+            dm = base.mem.read(0x6E15 + f)                       # fief_to_daimyo_map[f]
+            if dm >= 60:
+                continue
+            for luck in (0, 2, 4):
+                p = DAIMYO + 7 * dm + 3
+                vm = run(drift, 0, (dm,), d, poke={p: luck})
+                mid = vm.mem.read(p)
+                run_more(vm, cap, (f,))
+                got = vm.mem.read(p)
+                want = max(0, luck + r - 5)
+                cases += 1
+                if got != want:
+                    bad.append(f"{d.name} fief {f} daimyo {dm} luck {luck} rng {r}: after drift {mid}, after cap {got}, model {want}")
+                planted += got != ((luck + r - 5) & 0xFF)          # planted: the wrap with no repair
+            break                                                # one owned fief per dump is enough
+    return cases, bad, planted
+
+
 CHECKS = [("deduct_byte_at", check_deduct_byte_at), ("word_sub_saturating", check_word_sub_saturating),
-          ("consume_army_upkeep", check_consume_army_upkeep), ("cap_fief_stats", check_cap_fief_stats)]
+          ("consume_army_upkeep", check_consume_army_upkeep), ("cap_fief_stats", check_cap_fief_stats),
+          ("probability_roll", check_probability_roll), ("luck_drift", check_luck_drift),
+          ("luck_underflow_repaired", check_luck_underflow_repaired)]
 
 
 def main(argv=None):
