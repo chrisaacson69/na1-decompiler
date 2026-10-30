@@ -6,7 +6,7 @@ created: 2026-05-11
 
 > Every 1/60s the NMI handler runs five subsystems in a strict order, bracketed by NMI-disable/enable, with all PPU register access funneled through a shadow-state API. First chapter with runtime correlation: a 1-2 second Mesen trace (912k lines) confirmed the architecture and decoded the music driver completely.
 
-**Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Nobunaga README](./README.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
+**Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Nobunaga README](./README.md) · [NES PPU reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/ppu-reference.md) · [NES APU reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/apu-reference.md)
 
 ## The frame
 
@@ -77,7 +77,7 @@ The composite `$C693` is the canonical "I'm about to do a long PPU update from f
 2. Wait for VBlank (`$C537`) so the PPU is in a writable state.
 3. Disable rendering so reads through PPUDATA don't drift.
 
-That's the standard NES pattern (see [NES PPU reference](../../../research/nes/ppu-reference.md) — VBlank window discipline), here factored into named routines instead of inlined everywhere. **The codebase never reads $2000 or $2001 directly.** Discipline is strict and project-wide.
+That's the standard NES pattern (see [NES PPU reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/ppu-reference.md) — VBlank window discipline), here factored into named routines instead of inlined everywhere. **The codebase never reads $2000 or $2001 directly.** Discipline is strict and project-wide.
 
 ### `wait_vblank` ($C537) — and the audio-during-spin trick
 
@@ -130,7 +130,7 @@ Three named ZP locations:
 
 Note the `$3E` reset fill: 32 grey-grey-grey palette entries. The game boots with a neutral palette until the title screen overwrites it.
 
-The parallel reset fill of `$0090-$00AF` with `$3E` is the second palette buffer, **`palette_alt`** — the swap target that `palette_swap` ($C36C, syscall $12) atomically exchanges with `palette_shadow` for fade/transition effects (ch.2).
+The parallel reset fill of `$0090-$00AF` with `$3E` is the second palette buffer, **`palette_alt`** — the swap target that `syscall_palette_swap` ($C36C, syscall $12; bytecode reaches it through `palette_swap` $CC35) atomically exchanges with `palette_shadow` for fade/transition effects (ch.2).
 
 ## OAM DMA
 
@@ -346,10 +346,10 @@ Two paired 16-bit counters, each += 2 per frame, gated by `$0089`. Reset-initial
 ## What chapter 3 establishes
 
 - The NMI handler runs **5 named subsystems** in fixed order, bracketed by `nmi_off`/`nmi_on`.
-- A **PPU register shadow API** at `ppuctrl_shadow`/`ppumask_shadow` ($0071/$0072) with 7 helpers — strictly enforced, never bypassed.
+- A **PPU register shadow API** at `ppuctrl_shadow` ($0071) / `ppumask_shadow` ($0072) with 7 helpers — strictly enforced, never bypassed.
 - The **palette pipeline**: `palette_dirty` ($0074), `palette_shadow` ($0700-$071F), the `palette_upload` ($C6D4) uploader, and `palette_alt` ($0090-$00AF) the fade swap-target.
 - The **OAM DMA** ships `oam_shadow` ($0600), with sprite Y/X both pre-set to $F8 for off-screen idle.
-- The **controller poll** (`controller_poll` $C628) stores held state in `p1_buttons`/`p2_buttons` ($006E/$006F).
+- The **controller poll** (`controller_poll` $C628) stores held state in `p1_buttons` ($006E) / `p2_buttons` ($006F).
 - The **music driver** runs **two passes per frame** (`music_trigger_pass` + `music_sequencer_pass`) over the 5 voice records at `v0_trigger` ($0734), each 9 bytes with the runtime-confirmed layout above.
 - `$0720-$0724` is `voice_playing[0..4]` (songs on 1-3, pulse-2 effects on 0 and they duck the song's pulse 2, noise effects on 4); `$0725-$0733` is the 5×3-byte per-voice config array (`v0..v4_config`).
 
@@ -360,4 +360,4 @@ Two paired 16-bit counters, each += 2 per frame, gated by `$0089`. Reset-initial
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [mmc1](../../../tags/mmc1.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [mmc1](https://github.com/chrisaacson69/Vault/blob/master/tags/mmc1.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

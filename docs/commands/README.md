@@ -20,7 +20,7 @@ created: 2026-05-24
 | 5 | [Dam](./dam.md) | driver $9B7E (inline) + √output $87D8 + apply $887D | **VERIFIED — formula DERIVED 2026-06-02; gain=⌊2·amt/√output⌋, dams capped 0–100; [dam.html](./dam.html)** |
 | 7 | [Grow](./grow.md) | `effect_grow` ($87F0) | **VERIFIED — bytecode + 5/5 ROM tests; [grow.html](./grow.html)** |
 | 11 | [Train](./train.md) | `effect_train` ($9586) | **VERIFIED — bytecode + 9/9 tests; gain 40–116 (was mislabeled 40–80); [train.html](./train.html)** |
-| 13 | [Build](./build.md) | `effect_build` ($88A6) + `helper_dam_rounding` ($887D) | **VERIFIED — bytecode + 5/5 ROM tests; pct live (not 20), single 2g add; [build.html](./build.html)** |
+| 13 | [Build](./build.md) | `effect_build` ($88A6) + `add_effect_gain_clamped` ($887D) | **VERIFIED — bytecode + 5/5 ROM tests; pct live (not 20), single 2g add; [build.html](./build.html)** |
 | 14 | [Give](./give.md) | `effect_give_a/b/c` ($A93A / $A95E / $A9D5) → `give_transfer_apply` ($A8D3) → `$891D`/`$896F`/`$89C1` | **VERIFIED — bytecode + in-game test; pure benefit (no drain), +1 charisma; [give.html](./give.html)** |
 | 6 | Pact | `driver_pact` ($9C4F) | **FUNCTIONAL — diplomacy: pay gold (set by relations state) for an alliance; gated by acceptance; anim 3; [pact.html](./pact.html)** |
 | 8 | Marry | `driver_marry` ($9DC4) | **FUNCTIONAL — political marriage: pay a dowry, rolled bride portrait, marriage alliance; refusal drains daimyo +2/+3/+4; anim 16; [marry.html](./marry.html)** |

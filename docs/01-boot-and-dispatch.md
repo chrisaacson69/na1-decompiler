@@ -5,7 +5,7 @@ created: 2026-05-10
 # Chapter 1 — Boot, Vectors, and the Syscall Dispatcher
 > First architectural cut into a 256 KB cartridge: decode the iNES header, find the reset code, trace the interrupt handlers, and discover that the IRQ vector doubles as an OS-style **syscall dispatcher** over 23 kernel primitives. Every routine and variable below carries its grounded name from `mesen-labels.toml`; the bare-address forms are in the `_labeled.asm` listings.
 
-**Links:** [Nobunaga README](./README.md) · [NES mappers reference](../../../research/nes/mappers-reference.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
+**Links:** [Nobunaga README](./README.md) · [NES mappers reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/mappers-reference.md) · [NES PPU reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/ppu-reference.md) · [NES APU reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/apu-reference.md)
 
 ## iNES header (file offset 0–15)
 
@@ -110,7 +110,7 @@ JMP $8000                           ; → bank0_entry
 Two pieces of this clear loop are worth naming, because both were easy to mis-guess and both are now grounded:
 
 - **The 5×9-byte records at `v0_trigger` ($0734–$0760) are the music engine's per-voice state**: 5 voices × 9 bytes (trigger / vol-duty / sweep / timer-lo / timer-hi / tempo-div / ptr-lo / ptr-hi / countdown), advanced by `music_driver` each NMI and configured by `syscall_audio_load_voice` (ID 9). The adjacent `$0725–$0733` is the 5×3-byte voice **config** array.
-- **`clock_a` ($0083/$0084) and `clock_b` ($0085/$0086) are two wall-clocks**, both seeded to `$04D2 = 1234`. The NMI bumps each by 2 every frame, gated by `skip_wallclock`. This is the game-time/RNG clock that **freezes while the player holds a button** (ch.2/3).
+- **`clock_a` (`clock_a_hi` $0083, `clock_a_lo` $0084) and `clock_b` (`clock_b_hi` $0085, `clock_b_lo` $0086) are two wall-clocks**, both seeded to `$04D2 = 1234`. The NMI bumps each by 2 every frame, gated by `skip_wallclock`. This is the game-time/RNG clock that **freezes while the player holds a button** (ch.2/3).
 
 ## NMI handler (`nmi_handler` $C0DA–$C138)
 
@@ -210,4 +210,4 @@ A one-instruction shim: `bank0_entry` jumps straight to `$A778`, which is **Sea-
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [mmc1](../../../tags/mmc1.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [mmc1](https://github.com/chrisaacson69/Vault/blob/master/tags/mmc1.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

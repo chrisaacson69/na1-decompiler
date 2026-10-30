@@ -6,7 +6,7 @@ created: 2026-05-14
 
 > Chapter 11 mapped the 21 commands — the player's verbs. This chapter finds the engine that picks among them for the *other* daimyo. The static walk leads from the AI's effect-call sites up through a six-way command switch, a probabilistic decision primitive, and a decision-flag byte — and the model that emerges is strikingly simple: the daimyo AI is not a planner or a utility-maximiser. It is a **cascade of weighted coin-flips** — `RNG() mod 100` against thresholds computed from game state and tunable constants — accumulating into a flag byte that selects the action. For a 1986 strategy engine running in a bytecode VM, that is exactly the right amount of AI, and it fits the pattern this project keeps finding (Utopia's score-driven rebels, M.U.L.E.'s rubber-banded RNG).
 
-**Links:** [Chapter 11 — The Strategic Engine](./11-strategic-engine-complete.md) · [Chapter 9 — Command System](./09-command-system-and-grow.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [How the AI Plays](../ai.html) · [Command-pass deep dive](../turn-loop-command.html) · [Nobunaga README](./README.md)
+**Links:** [Chapter 11 — The Strategic Engine](./11-strategic-engine-complete.md) · [Chapter 9 — Command System](./09-command-system-and-grow.md) · [Chapter 6 — VM Disassembler](./06-vm-disassembler.md) · [How the AI Plays](./ai.html) · [Command-pass deep dive](./turn-loop-command.html) · [Nobunaga README](./README.md)
 
 ## The AI turn, top to bottom
 
@@ -93,7 +93,7 @@ The ninja sweep is the **"Someone has sent ninja against you"** attack. It picks
 
 Pass 2 walked the AI in the grounded C. The confirmed model:
 
-**The AI is monomorphic.** Every AI fief sits permanently at `province_ai_state == 0` (Home) — the six-way `$B94C` switch is the *player's* Grant policy, not an AI choice (ch.11 / ledger #22; census `probe-ai-policy-distribution.py`). So the AI always runs case 0 → `ai_econ_action_state0 $B875` → **`ai_econ_command_dispatch $B64B`**, the single brain it uses for every fief, every turn.
+**The AI is monomorphic.** Every AI fief sits permanently at `province_ai_state == 0` (Home) — the six-way `$B94C` switch is the *player's* Grant policy, not an AI choice (ch.11 / ledger #22; census `probe-ai-policy-distribution.py`, retired; [tools/RETIRED.md](../tools/RETIRED.md)). So the AI always runs case 0 → `ai_econ_action_state0 $B875` → **`ai_econ_command_dispatch $B64B`**, the single brain it uses for every fief, every turn.
 
 **The brain (`ai_econ_command_dispatch`) is a short, military-biased cascade of `rng(10)` gates:**
 ```
@@ -143,4 +143,4 @@ With the decision engine characterised, the project has *both* halves of the str
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [mmc1](../../../tags/mmc1.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [bytecode-vm](../../../tags/bytecode-vm.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [mmc1](https://github.com/chrisaacson69/Vault/blob/master/tags/mmc1.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · bytecode-vm · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

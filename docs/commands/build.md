@@ -13,7 +13,7 @@ helper: $887D (helper_dam_rounding)
 > - Same sqrt + 32-bit math + flat-100 + headroom-clamp shape
 > - Operates on **TOWN** (record+4) instead of OUTPUT
 > - Drains **WEALTH** (record+14) instead of LOYALTY+DAMS
-> - Has a **secondary TOWN bump** via `helper_dam_rounding` ($887D) on top of the main gain
+> - Has a **secondary TOWN bump** via `add_effect_gain_clamped` ($887D) on top of the main gain
 
 **Links:** [commands README](./README.md) · [Chapter 10 — command families](../10-command-families.md) · [Chapter 11](../11-strategic-engine-complete.md) · [Grow analysis (the reference)](./grow.md) · disasm/bank_01_vm.asm (`effect_build` at $88A6)
 

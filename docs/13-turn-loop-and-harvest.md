@@ -61,4 +61,4 @@ Inside an AI fief, the decode aligns with ch.12: `$B875` (`ai_econ_action_state0
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [mmc1](../../../tags/mmc1.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [bytecode-vm](../../../tags/bytecode-vm.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [mmc1](https://github.com/chrisaacson69/Vault/blob/master/tags/mmc1.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · bytecode-vm · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

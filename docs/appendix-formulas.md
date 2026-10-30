@@ -12,7 +12,7 @@ updated: 2026-06-17
 ## Notation
 
 - `⌊x⌋` = floor (truncate-toward-zero integer division — what 6502/VM does natively)
-- `√x` = `cbcd_sqrt` ($CBCD) — integer square root, truncated
+- `√x` = `sqrt_int` ($CBCD) — integer square root, truncated
 - `header` = fief's max-economy ceiling (column at province record offset +24, e.g. 1640 for Mikawa)
 - `pct_op(b, p) = ⌊b × p ÷ 100⌋` — split-by-10 to avoid 16-bit overflow ($D70D)
 - `math32_3arg(a, b, c) = ⌊(a × b) ÷ c⌋` — 32-bit signed ($D6B8); **`c = 0` returns `$FFFF`**, and a **negative `c` divides by |c|−1** (KOEI's `sdiv32` one's-complements a negative divisor: a ROM bug, in every KOEI NES title that has it)
@@ -54,7 +54,7 @@ gold   -= amount                                       ; debited by the driver
 
 **Only ONE drain** (wealth), vs Grow's TWO drains (loyalty + dams). Same `pct_op` primitive. From the bytecode walk of `$88AB-$891C` (+ 5 ROM re-executions):
 - **`pct` is computed live**, like Grow — from the gain-to-town ratio (`math32_2arg(g, town)` halved), capped at 50%.
-- **Build does ONE town write of `2g`**, routed through `helper_dam_rounding` ($887D) — which adds the full `2g` in peacetime, halves it only when `war_helper_d972(province)` is true, then calls `helper_82AC` to cap `town` at `header`. (There is no separate "secondary" town add — it's that single routed write.)
+- **Build does ONE town write of `2g`**, routed through `add_effect_gain_clamped` ($887D) — which adds the full `2g` in peacetime, halves it only when `war_helper_d972(province)` is true, then calls `helper_82AC` to cap `town` at `header`. (There is no separate "secondary" town add — it's that single routed write.)
 - **`g` is the UN-doubled gain** (math32_3arg result, stored without `<<1`); the `×2` is applied at the town write (`gain << 1` passed to the helper), and `effect_build` returns `g` for the confirm screen. (Grow doubles early; Build doubles late — same magnitude, slightly different `pct` ratio input.)
 
 - **K = 5** — same `6 − const_two` multiplier as Grow/Give. Develop-family universal constant.
@@ -352,7 +352,7 @@ new_stat = min(cap, (current_stat × current_men + recruit_stat × new_men) / (c
 
 ## Dam ($9B7E driver; √output helper $87D8; apply $887D)
 
-> The last open economic formula. It is **not** in `$87D8` (that sub, mislabeled "effect_dam", is just `sqrt(output)` — returns 10000 if output==0). The dam math is computed **inline in the driver $9B7E** and applied through `helper_dam_rounding` ($887D, shared with Build).
+> The last open economic formula. It is **not** in `$87D8` (that sub, mislabeled "effect_dam", is just `sqrt(output)` — returns 10000 if output==0). The dam math is computed **inline in the driver $9B7E** and applied through `add_effect_gain_clamped` ($887D, shared with Build).
 
 ```
 ; preconditions
@@ -388,6 +388,6 @@ The disaster / uprising / illness / death catalogue — with each event's season
 
 ## All atomic economic formulas are verified
 
-Every atomic/economic command is bytecode-verified — the develop family (Grow/Build/Give/Dam), Train, Send, Hire, Trade, Move, Pact, Marry, View, and the Fall harvest are all closed above or in their command pages. **Give-Men** = `give_morale` ($89C1): `morale += 2 × ⌊amount × (6−const_two) ÷ √((men+morale)/2 + amount)⌋` — the develop-family template on the morale↔men pair.
+Every atomic/economic command is bytecode-verified — the develop family (Grow/Build/Give/Dam), Train, Send, Hire, Trade, Move, Pact, Marry, View, and the Fall harvest are all closed above or in their command pages. **Give-Men** = `develop_morale` ($89C1): `morale += 2 × ⌊amount × (6−const_two) ÷ √((men+morale)/2 + amount)⌋` — the develop-family template on the morale↔men pair.
 
 The per-command HTML walkthroughs (driver flow + bytecode-validated formula + embedded from-ROM animation) live in [commands/](./commands/) — `grow` `build` `give` `train` `tax` `send` `hire` `dam`.

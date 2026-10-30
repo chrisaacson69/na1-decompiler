@@ -83,7 +83,7 @@ The "single uploader" above is no longer a black box. The grounding pass walked 
 
 Both walk the same inclusive tile rectangle `[left,top]..[right,bottom]` into a nametable; the entry point sets the mode flag (`$0082`) that decides what each cell receives:
 
-| | `ppu_fill_rect` ($C437, syscall 12) | `ppu_copy_rect` ($C428, syscall 20) |
+| | `syscall_ppu_fill_rect` ($C437, syscall 12) | `syscall_ppu_copy_rect` ($C428, syscall 20) |
 |---|---|---|
 | mode `$0082` | 0 | 1 |
 | each cell ← | a **constant tile** (`$5C`) | next byte of a **source stream** (`$5C/$5D` ptr, post-incremented) |
@@ -233,4 +233,4 @@ The pattern recurs in every Koei strategy game of the era — *Romance of the Th
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [mmc1](../../../tags/mmc1.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [bytecode-vm](../../../tags/bytecode-vm.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [mmc1](https://github.com/chrisaacson69/Vault/blob/master/tags/mmc1.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · bytecode-vm · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

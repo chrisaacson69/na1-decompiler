@@ -5,13 +5,13 @@ created: 2026-05-10
 # Nobunaga's Ambition (NES, USA, 1989)
 > Solo deep-dive on a 256 KB MMC1 strategy cartridge — 64× the size of Adventure, and the test case for whether the annotation method scales to data-heavy hidden-mechanics engines.
 
-**Links:** [Game Annotation Series](../README.md) · [Adventure](../adventure/README.md) · [Mappy](../mappy/README.md) · [Utopia](../utopia/README.md) · [M.U.L.E.](../mule/README.md) · [NES mappers reference](../../../research/nes/mappers-reference.md) · [LLM Grounding Problem](../../../research/llm-grounding-problem.md) · [Dominance-frontier game-analysis lens](../../../research/gaming/master-of-magic/com-counter-graph.md)
+**Links:** [Game Annotation Series](../README.md) · [Adventure](../adventure/README.md) · [Mappy](https://github.com/chrisaacson69/game-annotation/blob/master/mappy/README.md) · [Utopia](../utopia/README.md) · [M.U.L.E.](../mule/README.md) · [NES mappers reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/mappers-reference.md) · [LLM Grounding Problem](https://github.com/chrisaacson69/Vault/blob/master/research/llm-grounding-problem.md) · [Dominance-frontier game-analysis lens](https://github.com/chrisaacson69/Vault/blob/master/research/gaming/master-of-magic/com-counter-graph.md)
 
 > **🧭 Working here? Start with [CONTEXT.md](../CONTEXT.md)** — the hot layer (vocabulary + canonical-artifact index + quick-routes). Then the registries: [tools/README.md](../tools/README.md) (what tools exist) · [traces/README.md](../traces/README.md) (where data lives) · [ROADMAP.md](../ROADMAP.md) (frontier) · [commands/README.md](./commands/README.md) (command-test protocol). This README is the *narrative*; those are the *working registries* that keep the project from drifting.
 
 ## Why this game
 
-Koei's *Nobunaga's Ambition* is the canonical case of **hidden mechanics so opaque the dominant strategy degenerates to "pick the high-luck leader and assassinate everyone."** TAS speedruns confirm: the game's visible interface gives the player no honest signal about the engine underneath, so play collapses onto a few exploitable stats. Source-level transparency is the antidote — turn the hidden engine into a mappable counter-graph. Same lens we applied to [Master of Magic spell counters](../../../research/gaming/master-of-magic/com-counter-graph.md), now against an opaque 1980s strategy engine.
+Koei's *Nobunaga's Ambition* is the canonical case of **hidden mechanics so opaque the dominant strategy degenerates to "pick the high-luck leader and assassinate everyone."** TAS speedruns confirm: the game's visible interface gives the player no honest signal about the engine underneath, so play collapses onto a few exploitable stats. Source-level transparency is the antidote — turn the hidden engine into a mappable counter-graph. Same lens we applied to [Master of Magic spell counters](https://github.com/chrisaacson69/Vault/blob/master/research/gaming/master-of-magic/com-counter-graph.md), now against an opaque 1980s strategy engine.
 
 This is also the first of the series **without an external annotated disassembly** as a starting point. Adventure, Mappy, Utopia, and M.U.L.E. all had prior community work. NA is raw bytes only — the method now has to carry its own weight.
 
@@ -83,4 +83,4 @@ If the method holds here, it scales. If it doesn't, the failure mode is the less
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [games](../../../tags/games.md) · [strategy](../../../tags/strategy.md) · [llm-limitations](../../../tags/llm-limitations.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · [games](https://github.com/chrisaacson69/Vault/blob/master/tags/games.md) · [strategy](https://github.com/chrisaacson69/Vault/blob/master/tags/strategy.md) · [llm-limitations](https://github.com/chrisaacson69/Vault/blob/master/tags/llm-limitations.md)

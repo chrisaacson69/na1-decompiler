@@ -21,7 +21,7 @@
 
 ## The transfer (`effect_bribe $8D4D` → `compute_bribe_effect_value $8BC1`)
 - Success: `defender.output(+8) -= value; your.output(+8) += value`. "Peasants" = the output/agricultural base.
-- **`value = loyalty − (⌊(30 + rng%25) × (min(loyalty, √gold) + 1) ÷ 100⌋ + 1)`** — EMULATOR-CONFIRMED via `probe-espionage.py` (closed form reproduces every observed band: loy 80→63-76, loy 40→23-30, loy 10→4-6). Op-by-op trace: `T=30+rng%25`, `min(loyalty, √gold)`, `+1`, `pct_op(T, ·)`, `+1`, `word_sub_saturating(loyalty, ·)`. `√gold` = `sqrt_int` of the "Gold for spy?" amount (effect_bribe arg, confirmed from `driver_bribe $AB0F`). **NOT a % of output** (an earlier draft said ~30–55% — wrong).
+- **`value = loyalty − (⌊(30 + rng%25) × (min(loyalty, √gold) + 1) ÷ 100⌋ + 1)`** — EMULATOR-CONFIRMED via `probe-espionage.py` (retired; [tools/RETIRED.md](../../tools/RETIRED.md); closed form reproduces every observed band: loy 80→63-76, loy 40→23-30, loy 10→4-6). Op-by-op trace: `T=30+rng%25`, `min(loyalty, √gold)`, `+1`, `pct_op(T, ·)`, `+1`, `word_sub_saturating(loyalty, ·)`. `√gold` = `sqrt_int` of the "Gold for spy?" amount (effect_bribe arg, confirmed from `driver_bribe $AB0F`). **NOT a % of output** (an earlier draft said ~30–55% — wrong).
 - Failure: `your_daimyo[+4] -= 1` (charisma); part of the stake forfeit.
 - Anim id **26**.
 

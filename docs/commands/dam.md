@@ -9,7 +9,7 @@ helper: $887D (helper_dam_rounding)
 ---
 # 5. Dam — Build Flood-control Infrastructure
 
-> Two-effect command — driver calls `effect_dam` ($87D8) AND `helper_dam_rounding` ($887D). Chapter 11 characterized it as "raises output (+debt), drains others."
+> Two-effect command — driver calls `effect_dam` ($87D8) AND `add_effect_gain_clamped` ($887D). Chapter 11 characterized it as "raises output (+debt), drains others."
 
 **Links:** [commands README](./README.md) · [Build (shares the helper)](./build.md) · disasm/bank_01_vm.asm
 

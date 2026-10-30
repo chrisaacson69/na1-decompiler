@@ -141,4 +141,4 @@ eligible  ⇔  men > 2  AND  [ square_roll(morale) OR square_roll(charisma) OR r
 - **Rename** `spawn_zealot_uprising_force_from_province` → `spawn_uprising_force_from_province` in the labels.
 
 ## Tags
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

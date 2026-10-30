@@ -6,7 +6,7 @@ created: 2026-05-12
 
 > The 23-entry dispatch table is a syscall surface, not a subsystem state machine. Every dispatch goes through a single callable wrapper at $F226 that copies a parameter block from a caller-supplied struct into ZP, then fakes a BRK via PHP + JMP($FFFE). These are OS-style primitives (`read_controller`, `palette_write`, `set_sprite`), not game subsystems.
 
-**Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Chapter 3 — NMI Pipeline](./03-nmi-pipeline.md) · [Nobunaga README](./README.md) · [NES PPU reference](../../../research/nes/ppu-reference.md) · [NES APU reference](../../../research/nes/apu-reference.md)
+**Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 2 — Zero-Page Map](./02-zero-page-map.md) · [Chapter 3 — NMI Pipeline](./03-nmi-pipeline.md) · [Nobunaga README](./README.md) · [NES PPU reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/ppu-reference.md) · [NES APU reference](https://github.com/chrisaacson69/Vault/blob/master/research/nes/apu-reference.md)
 
 ## The syscall surface
 
@@ -135,4 +135,4 @@ While walking the handlers, several internal helpers were identified:
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [mmc1](../../../tags/mmc1.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [mmc1](https://github.com/chrisaacson69/Vault/blob/master/tags/mmc1.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

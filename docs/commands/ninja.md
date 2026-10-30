@@ -51,4 +51,4 @@ A multiple of 5, scaling with **the target field's current value** and **√(uni
 - **"Tokugawa's mystery health loss"** is the counterattack: a high-Charisma defender repels the ninja, the role flips at `$91FB`, and the **attacker's** daimyo health/charisma takes the hit — i.e. *your* assassins can get your own lord hurt.
 
 ## Test log
-_TBD — needs an in-game PRE/POST capture per mission (snap protocol in [README](./README.md)). The drain formula's emulator confirmation (probe-espionage.py) stands; an in-game capture per mission would close the loop._
+_TBD — needs an in-game PRE/POST capture per mission (snap protocol in [README](./README.md)). The drain formula's emulator confirmation (probe-espionage.py, retired; [tools/RETIRED.md](../../tools/RETIRED.md)) stands; an in-game capture per mission would close the loop._

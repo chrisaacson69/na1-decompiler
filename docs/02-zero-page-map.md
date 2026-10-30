@@ -5,7 +5,7 @@ created: 2026-05-11
 # Chapter 2 — Zero-Page Memory Map
 > 256 bytes of fast RAM, every byte counts. The grounded zero-page map: the shared scratch pointer, the bytecode VM's register file, the kernel's flags and wall-clocks, and the first concrete instances of **byte-meaning-by-context**. Names below are the labels in `mesen-labels.toml`.
 
-**Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 5 — Bytecode VM](./05-bytecode-vm.md) · [Mappy Ch 2 — Object records & states](../mappy/02-object-records-and-states.md) (the byte-meaning-by-context precedent) · [Nobunaga README](./README.md)
+**Links:** [Chapter 1 — Boot & Dispatch](./01-boot-and-dispatch.md) · [Chapter 5 — Bytecode VM](./05-bytecode-vm.md) · [Mappy Ch 2 — Object records & states](https://github.com/chrisaacson69/game-annotation/blob/master/mappy/02-object-records-and-states.md) (the byte-meaning-by-context precedent) · [Nobunaga README](./README.md)
 
 ## The constraint
 
@@ -84,4 +84,4 @@ Most ZP outside the kernel block is per-subsystem scratch, named in the chapter 
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

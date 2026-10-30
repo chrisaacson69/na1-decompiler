@@ -23,6 +23,7 @@ DOCS = SRC / "docs"                     # the hand-written pages
 OUT = SRC / "_build" / "site"
 
 BASEURL = "/na1-decompiler"
+REPO_BLOB = "https://github.com/chrisaacson69/na1-decompiler/blob/master"   # repo files the site does not carry
 
 CONFIG_YML = """\
 title: "Nobunaga's Ambition (NES) — Decompiled & Analyzed"
@@ -67,8 +68,31 @@ def emit_md(path, title):
         lines.append("layout: default")
     if "title" not in keys:
         lines.append("title: " + json.dumps(title))
+    body = re.sub(r"\]\(([^)\s#]+)(#[^)\s]*)?\)",
+                  lambda m: "](" + site_link(path, m.group(1)) + (m.group(2) or "") + ")", body)
     out = "---\n" + "\n".join(lines) + "\n---\n" + body
     (OUT / path.name).write_text(out, encoding="utf-8")
+
+
+def site_link(page, target):
+    """A chapter's relative link as the site needs it. Published pages keep theirs (jekyll-relative-links
+    turns .md into .html); docs/README.md is the site's index; a command's .md companion goes to its
+    generated .html when there is one; any other repo file goes to GitHub, since the site does not carry it."""
+    if re.match(r"^[a-z]+:|^/", target):
+        return target
+    dest = (page.parent / target).resolve()
+    if dest.parent == DOCS and re.match(r"(\d|appendix-|decompiler-)", dest.name):
+        return target
+    if dest == DOCS / "README.md":
+        return "index.html"
+    if dest == DOCS / "commands":
+        return "commands/index.html"
+    if dest.parent == DOCS / "commands" and dest.with_suffix(".html").exists():
+        return "commands/" + dest.with_suffix(".html").name
+    if dest.exists() and SRC in dest.parents:
+        kind = "tree" if dest.is_dir() else "blob"
+        return f"{REPO_BLOB.replace('/blob/', f'/{kind}/')}/{dest.relative_to(SRC).as_posix()}"
+    return target
 
 
 def card(items):

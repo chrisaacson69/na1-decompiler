@@ -258,7 +258,7 @@ PAGE_TMPL = """\
  .key{{font-size:.9em;color:#5a534a;}} code{{background:#eee;padding:1px 4px;border-radius:3px;}}
  .footer{{margin-top:40px;border-top:1px solid #ddd6c8;padding-top:14px;font-size:.85em;color:#5a534a;}}
 </style></head><body>
-<p><a href="index.html">&larr; Home</a></p>
+<p><a href="../index.html">&larr; Home</a></p>
 <h1>Starting-Fief Viability — who survives the opening</h1>
 <p class="lead">Which clans are doomed from turn one? The engine's <b>invade decision is a pure men-count
 ratio</b> (<code>fief_men_ratio_pct = 100&middot;men(atk)/(men(atk)+men(def))</code>, <code>$949A</code>) &mdash;

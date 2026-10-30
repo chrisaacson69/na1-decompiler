@@ -78,7 +78,7 @@ py -3 native-call-index.py callers $ADDR        # who calls a sub (kind = jsr / 
 
 ## Done
 
-Every layer of Bank 15 is ground-truthed. The native floor — firmware, BIOS, kernel helpers, music, interpreter, ALU — was settled by the boundary measurement above; **layer 4, the bytecode band `$CA03–$E80C`, closed out on 2026-06-10** when the final 7 leaves were named (the last batch: `$CA97 fill_bytes`, `$CCBA clear_rect_lower_right`, `$D7F7 clear_econ_stats_if_no_output`, `$D815 clear_military_stats_if_no_men`, `$DA24 scaled_force_transfer`, `$DE78 select_uprising_message`, `$E4DC build_fiefs_excluding_daimyo`). All 135 subs read-verified and behavior-named — **0 todo, 0 suspects, 0 address-tagged stubs** (confirmed by both the cursor and a direct `^word *_XXXX(` definition count of zero in `source/4-c/bank_15.c`). With Bank 15 closed, there is no un-grounded layer left in the fixed bank.
+Every layer of Bank 15 is ground-truthed. The native floor — firmware, BIOS, kernel helpers, music, interpreter, ALU — was settled by the boundary measurement above; **layer 4, the bytecode band `$CA03–$E80C`, closed out on 2026-06-10** when the final 7 leaves were named (the last batch: `$CA97 fill_bytes`, `$CCBA clear_rect_lower_right`, `$D7F7 clear_econ_stats_if_no_output`, `$D815 clear_military_stats_if_no_men`, `$DA24 weighted_average_capped`, `$DE78 select_uprising_message`, `$E4DC build_fiefs_excluding_daimyo`). All 135 subs read-verified and behavior-named — **0 todo, 0 suspects, 0 address-tagged stubs** (confirmed by both the cursor and a direct `^word *_XXXX(` definition count of zero in `source/4-c/bank_15.c`). With Bank 15 closed, there is no un-grounded layer left in the fixed bank.
 
 ### The cross-bank inventory (what runs where)
 
@@ -96,4 +96,4 @@ So the code-bearing banks are **0, 1, 2, 10, 14** (bytecode) **+ 15** (native) �
 
 ## Tags
 
-[6502](../../../tags/6502.md) · [nes](../../../tags/nes.md) · [mmc1](../../../tags/mmc1.md) · [assembly](../../../tags/assembly.md) · [reverse-engineering](../../../tags/reverse-engineering.md) · [bytecode-vm](../../../tags/bytecode-vm.md) · [nobunagas-ambition](../../../tags/nobunagas-ambition.md)
+[6502](https://github.com/chrisaacson69/Vault/blob/master/tags/6502.md) · [nes](https://github.com/chrisaacson69/Vault/blob/master/tags/nes.md) · [mmc1](https://github.com/chrisaacson69/Vault/blob/master/tags/mmc1.md) · [assembly](https://github.com/chrisaacson69/Vault/blob/master/tags/assembly.md) · [reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md) · bytecode-vm · [nobunagas-ambition](https://github.com/chrisaacson69/Vault/blob/master/tags/nobunagas-ambition.md)

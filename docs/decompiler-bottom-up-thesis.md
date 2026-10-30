@@ -140,4 +140,4 @@ constructs; reproduced atom-4's shared-switch-exit shape (`M=post-dom(S)` broken
 lives there — point at it, don't re-derive the lowering shapes here.**
 
 ## Tags
-[reverse-engineering](../../../tags/reverse-engineering.md)
+[reverse-engineering](https://github.com/chrisaacson69/Vault/blob/master/tags/reverse-engineering.md)
