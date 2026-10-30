@@ -28,21 +28,21 @@ The pan is **section-switching, not scrolling**: there is no smooth scroll: an a
 |---|---|---|---|
 | **tilemap** | `$8D5C` `strategic_map_section_tilemaps` | `0x1C0` (= 448 = 28×16) | one tile index per nametable cell |
 | **attributes** | `$9D1C` `strategic_map_section_attributes` | `0x20` (32) | one BG sub-palette per 16×16 quad |
-| **fief records** | `find_record_data_9e3c` | 34 | `(col, row, fief_id)` triples, `$FF`-terminated |
+| **fief records** | `$9E3C` `strategic_map_section_records` | 34 | up to 11 `(col, row, fief_id)` triples, `$FF`-terminated, `$00`-padded (11×3 + 1 = 34) |
 
-**9 sections** total. **The 17-fief scenario uses sections 0–1; the 50-fief scenario uses 0–8.** They are discrete pages, not a scrolling field — the section index *is* the "which part of Japan" selector.
+**9 sections** total. **The 17-fief scenario uses sections 0–1; the 50-fief scenario uses 2–8** (`province_to_map_section_17` holds only 0/1, `province_to_map_section_50` only 2–8; checked against the ROM bytes 2026-10-30: every fief appears in its home section's record list, and fiefs on an edge also appear on the neighbouring section). They are discrete pages, not a scrolling field — the section index *is* the "which part of Japan" selector.
 
 ## What `render_map_section(section)` does ($E5F2)
 
 ```c
-if (section == selected_record_idx_9e3c) return;     // already showing it — no-op
+if (section == shown_map_section) return;            // already showing it — no-op
 palette_swap(1);                                      // swap to the working palette (ch. on palette_swap)
 ppu_fill_rect_wrap(30, 4, 31, 19, 1);                 // blank the right margin (cols 30-31)
 ppu_copy_rect_wrap(2, 4, 29, 19,                      // blit the 28×16 tilemap into cols 2-29 / rows 4-19
                    strategic_map_section_tilemaps + section*0x1C0, 4);
 ppu_upload_block_wrap(4,                              // upload the 32-byte attribute table to $23C8
                    strategic_map_section_attributes + section*0x20, 0x23C8, 2);
-selected_record_idx_9e3c = section;                   // mark this section current
+shown_map_section = section;                          // mark this section current
 for each (col,row,id) in this section's 34-byte record list:   // label every fief
     set cursor; draw_province_lord_name(id);
 palette_swap(0);                                      // swap back

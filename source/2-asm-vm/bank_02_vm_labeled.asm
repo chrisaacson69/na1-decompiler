@@ -7091,7 +7091,7 @@ L_AF80:
     AF91: 8C 80 00             LOADR_imm2             $0080 (skip_vblank_wait)
     AF94: DA                   AND
     AF95: D7 E0 AF             JUMPT_abs              L_AFE0
-    AF98: AA E6 7B             PUSH_abs               $7BE6 (latched_selected_record_idx)
+    AF98: AA E6 7B             PUSH_abs               $7BE6 (latched_map_section)
     AF9B: E9 F2 E5 02          CALL_abs_imm1          $E5F2 (render_map_section) {bytecode}, $02
     AF9F: D6 E0 AF             JUMP_abs               L_AFE0
 L_AFA2:
@@ -7157,7 +7157,7 @@ L_B01B:
 L_B021:
     B021: BB                   ADD
     B022: D3                   BYTE_DEREF
-    B023: A8 E6 7B             STORE_abs              $7BE6 (latched_selected_record_idx)
+    B023: A8 E6 7B             STORE_abs              $7BE6 (latched_map_section)
     B026: 06                   LOADL_quick                                 ; inline operand = 6
     B027: D8 30 B0             JUMPF_abs              L_B030
     B02A: 36                   PUSH_quick                                  ; inline operand = 6

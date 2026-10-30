@@ -48,7 +48,7 @@ play_audio = { 0 = "audio_cue" }
 # bank-10 audio cue IDs (play_audio) — id -> readable constant.
 # Audio is "play and listen" to confirm; only the high-confidence ones named, rest left numeric. [P] throughout.
 [audio_cue]
-1  = "AUDIO_UI_CONFIRM"               # [P] common: after init, sound-toggle, result jingle, vm_bootstrap
+1  = "AUDIO_SONG_STRATEGY"            # [2026-10-30] the strategic-turn song, looping (tools/sound_engine.py: loops, pulse1/2 + triangle): vm_bootstrap after init_new_game_state, after every battle in the turn loop, resumed by play_result_jingle, restarted by sound on. Was AUDIO_UI_CONFIRM.
 2  = "AUDIO_BATTLE_START"             # [P] battle_init_driver
 7  = "AUDIO_JINGLE_FAIL"              # [P] play_result_jingle(arg!=0 -> 8 else 7)
 8  = "AUDIO_JINGLE_OK"                # [P]

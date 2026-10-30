@@ -424,14 +424,14 @@ clear_panel_take_pending_selection:             ; sub $CCF9, frame_off +0
     CD03: 64                   PUSH_qimm                                   ; inline operand = 4
     CD04: 60                   PUSH_qimm                                   ; inline operand = 0
     CD05: E9 42 CC 0A          CALL_abs_imm1          $CC42 (ppu_fill_rect_wrap) {bytecode}, $0A
-    CD09: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
+    CD09: A4 5D 6F             LOADL_abs              $6F5D (shown_map_section)
     CD0C: 8C FF 00             LOADR_imm2             $00FF
     CD0F: C1                   CMPNE
     CD10: D8 1F CD             JUMPF_abs              L_CD1F
-    CD13: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
-    CD16: A8 E6 7B             STORE_abs              $7BE6 (latched_selected_record_idx)
+    CD13: A4 5D 6F             LOADL_abs              $6F5D (shown_map_section)
+    CD16: A8 E6 7B             STORE_abs              $7BE6 (latched_map_section)
     CD19: 8A FF 00             LOADL_imm2             $00FF
-    CD1C: A8 5D 6F             STORE_abs              $6F5D (selected_record_idx_9e3c)
+    CD1C: A8 5D 6F             STORE_abs              $6F5D (shown_map_section)
 L_CD1F:
     CD1F: CF                   RETURN
 
@@ -484,14 +484,14 @@ L_CD57:
 L_CD7E:
     CD7E: 60                   PUSH_qimm                                   ; inline operand = 0
     CD7F: E9 35 CC 02          CALL_abs_imm1          $CC35 (palette_swap) {bytecode}, $02
-    CD83: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
+    CD83: A4 5D 6F             LOADL_abs              $6F5D (shown_map_section)
     CD86: 8C FF 00             LOADR_imm2             $00FF
     CD89: C1                   CMPNE
     CD8A: D8 99 CD             JUMPF_abs              L_CD99
-    CD8D: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
-    CD90: A8 E6 7B             STORE_abs              $7BE6 (latched_selected_record_idx)
+    CD8D: A4 5D 6F             LOADL_abs              $6F5D (shown_map_section)
+    CD90: A8 E6 7B             STORE_abs              $7BE6 (latched_map_section)
     CD93: 8A FF 00             LOADL_imm2             $00FF
-    CD96: A8 5D 6F             STORE_abs              $6F5D (selected_record_idx_9e3c)
+    CD96: A8 5D 6F             STORE_abs              $6F5D (shown_map_section)
 L_CD99:
     CD99: 8A FF 00             LOADL_imm2             $00FF
     CD9C: A8 DF 7F             STORE_abs              $7FDF (ui_input_sel_latch_7fdf)
@@ -4054,7 +4054,7 @@ L_E545:
     E553: CF                   RETURN
 
 redraw_fief_on_map:                             ; sub $E554, frame_off -40
-    E559: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
+    E559: A4 5D 6F             LOADL_abs              $6F5D (shown_map_section)
     E55C: 58                   LOADR_qimm                                  ; inline operand = 8
     E55D: C7                   UCMPLE
     E55E: D8 94 E5             JUMPF_abs              L_E594
@@ -4065,7 +4065,7 @@ redraw_fief_on_map:                             ; sub $E554, frame_off -40
     E569: 8D 22                BYTE_PUSH_imm1         +34
     E56B: DE DA FF             LEAL_far               $FFDA
     E56E: B3                   PUSHL
-    E56F: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
+    E56F: A4 5D 6F             LOADL_abs              $6F5D (shown_map_section)
     E572: 8B 22                BYTE_LOADR_imm1        +34
     E574: B5                   MULT
     E575: 8C 3C 9E             LOADR_imm2             $9E3C
@@ -4114,7 +4114,7 @@ L_E595:
     E5BB: 8B 1C                BYTE_LOADR_imm1        +28
     E5BD: B5                   MULT
     E5BE: B3                   PUSHL
-    E5BF: A4 5D 6F             LOADL_abs              $6F5D (selected_record_idx_9e3c)
+    E5BF: A4 5D 6F             LOADL_abs              $6F5D (shown_map_section)
     E5C2: 8C C0 01             LOADR_imm2             $01C0
     E5C5: B5                   MULT
     E5C6: B4                   POPR
@@ -4140,7 +4140,7 @@ L_E595:
 
 render_map_section:                             ; sub $E5F2, frame_off -40
     E5F7: 0C                   LOADL_quick                                 ; inline operand = 12
-    E5F8: A6 5D 6F             LOADR_abs              $6F5D (selected_record_idx_9e3c)
+    E5F8: A6 5D 6F             LOADR_abs              $6F5D (shown_map_section)
     E5FB: C1                   CMPNE
     E5FC: D8 93 E6             JUMPF_abs              L_E693
     E5FF: 61                   PUSH_qimm                                   ; inline operand = 1
@@ -4174,7 +4174,7 @@ render_map_section:                             ; sub $E5F2, frame_off -40
     E631: 64                   PUSH_qimm                                   ; inline operand = 4
     E632: E9 7C CF 08          CALL_abs_imm1          $CF7C (ppu_upload_block_wrap) {bytecode}, $08
     E636: 0C                   LOADL_quick                                 ; inline operand = 12
-    E637: A8 5D 6F             STORE_abs              $6F5D (selected_record_idx_9e3c)
+    E637: A8 5D 6F             STORE_abs              $6F5D (shown_map_section)
     E63A: A4 CD 7F             LOADL_abs              $7FCD (ui_window_col)
     E63D: 2B                   STORE_quick                                 ; inline operand = 11
     E63E: A4 CF 7F             LOADL_abs              $7FCF (ui_cursor_row)

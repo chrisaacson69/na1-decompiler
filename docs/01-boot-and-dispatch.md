@@ -90,7 +90,7 @@ LDA #$C0 / STA $4017                ; frame counter: 5-step mode, no frame IRQ
 
 ; --- clear audio + music state ---
 LDX #$00 / LDA #$00
-.loop: STA audio_mute_triangle,x    ; clear $0720–$0724 (5 bytes)
+.loop: STA voice_playing,x          ; clear $0720–$0724 (5 bytes)
        INX / CPX #$05 / BNE .loop
 LDX #$00
 .loop: STA v0_trigger,x ($0734)     ; 5 music voices × 9-byte stride → $0734–$0760

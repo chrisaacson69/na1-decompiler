@@ -205,7 +205,7 @@ $C7AB: RTS
 Five 9-byte voice **state** records at `$0734-$0760`, preceded by the 5×3-byte per-voice **config** array `$0725-$0733`:
 
 ```
-$0721-$0724: audio_active_v0..v3       (per-voice enable flags)
+$0720-$0724: voice_playing[0..4]       (per-voice playing flags, nonzero = playing)
 $0725-$0733: v0..v4_config             — 5 × (tempo_div, song_ptr_lo, song_ptr_hi), written by audio_load_voice $C3AD
 $0734-$073C: Voice 0 state  (9 bytes)
 $073D-$0745: Voice 1
@@ -262,7 +262,7 @@ $C7EF:      tax / dex / txa                  ; A = byte0 - 1
             clc / adc #$05                   ; A = byte0 + 4
             ldy #$00 / sta ($7A),y           ; one-shot: byte0 ← byte0+4
             txa / asl / asl / tax            ; X = (byte0-1) × 4
-            ; ($0720 mute-group check — see below)
+            ; (voice-0 duck check on $0720 — see below)
             ldy #$01
 write_loop: lda ($7A),y / sta $4000,x        ; write bytes 1-4 → APU $4000+X..$4003+X
             inx / iny / cpy #$05 / bne write_loop
@@ -298,22 +298,24 @@ The trace caught a complete "countdown → load" sequence at frame 39653, voice 
 
 Then frames 39654/39655 show byte 8 of all three active voices decrementing in lockstep ($20 → $1F → ...). Voices tick independently — each has its own countdown.
 
-### The $0720 mute-group flag
+### `voice_playing` ($0720-$0724) and the pulse-2 duck
 
-Pass 1's APU write has a gating check on `$0720`:
+*Corrected 2026-10-30; this section used to call `$0720` a triangle-mute flag.*
+
+`$0720-$0724` is one 5-entry array, `voice_playing[x]`, nonzero while voice x plays: Pass 2 (`$C82A`) steps a voice only when its entry is nonzero, `audio_control` mode 1 sets it, mode 2 returns it (how `play_result_jingle` waits for its jingle), and mode 0, reset, and the end of a voice's stream (`$C8FF`) clear it. Pass 1's APU write also reads entry 0 alone:
 
 ```asm
 lda $0720
 beq do_write           ; if $0720 = 0, normal write
 lda $0079
 cmp #$02
-beq skip               ; if voice index = 2 (Triangle), skip the write
+beq skip               ; if voice index = 2, skip the write
 do_write: ...
 ```
 
-`$0720` is a **triangle-mute flag**. When set, voice 2 (Triangle)'s APU register write is suppressed — the music driver still advances its song pointer and countdown internally (so the song stays in sync), but the triangle channel goes silent. This is how the engine ducks the triangle to play a sound effect through it without losing the music's continuation.
+Which voice carries what, measured by running the ROM's own engine (`tools/sound_engine.py`, request then 3 driver ticks): a **song** plays on voices 1-3 (pulse 1, pulse 2, triangle); a **pulse-2 effect** (27, 31) plays on voice 0; a **noise effect** (29) on voice 4. So while an effect plays on voice 0, voice 2's register writes, the song's **pulse 2**, are skipped: the song keeps advancing (pointer and countdown) and pulse 2 is left to the effect. The noise effects need no duck; the song has no noise voice.
 
-The trace showed `$0720` toggling 0↔1 during gameplay, while `$0721-$0724` stayed at $01 — confirming `$0720` is the mute toggle and `$0721-$0724` are "always-active" voice flags (probably enable-bits set at song start and cleared at song end).
+That is also what the June trace saw: `$0720` toggling 0↔1 as effects played, `$0721-$0723` at 1 for the song's three voices.
 
 ### What the song data looks like
 
@@ -349,7 +351,7 @@ Two paired 16-bit counters, each += 2 per frame, gated by `$0089`. Reset-initial
 - The **OAM DMA** ships `oam_shadow` ($0600), with sprite Y/X both pre-set to $F8 for off-screen idle.
 - The **controller poll** (`controller_poll` $C628) stores held state in `p1_buttons`/`p2_buttons` ($006E/$006F).
 - The **music driver** runs **two passes per frame** (`music_trigger_pass` + `music_sequencer_pass`) over the 5 voice records at `v0_trigger` ($0734), each 9 bytes with the runtime-confirmed layout above.
-- `$0720` is the **triangle-mute flag**; `$0721-$0724` are per-voice always-active flags; `$0725-$0733` is the 5×3-byte per-voice config array (`v0..v4_config`).
+- `$0720-$0724` is `voice_playing[0..4]` (songs on 1-3, pulse-2 effects on 0 and they duck the song's pulse 2, noise effects on 4); `$0725-$0733` is the 5×3-byte per-voice config array (`v0..v4_config`).
 
 ## Open
 

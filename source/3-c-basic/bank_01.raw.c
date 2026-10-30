@@ -781,7 +781,7 @@ word play_result_jingle(word failed) {
 L_8BB1:
     if (syscall_audio_control(1, 2)) goto L_8BB1;    // $8BB8
 L_8BBB:
-    return play_audio(AUDIO_UI_CONFIRM);    // $8BC0
+    return play_audio(AUDIO_SONG_STRATEGY);    // $8BC0
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $8BC1
@@ -2808,14 +2808,14 @@ L_ADF4:
 
 word fief_select_input_loop(word map_section) {
     fief_anchor = map_section;    // $ADFC
-    copy_from_bank(4, ((selected_record_idx_9e3c * 34) + strategic_map_section_records), &fief_cell_buf, 34);    // $AE11
+    copy_from_bank(4, ((shown_map_section * 34) + strategic_map_section_records), &fief_cell_buf, 34);    // $AE11
     cell_ptr = &fief_cell_buf;    // $AE18
     found_flag = 0;    // $AE1B
 L_AE1D:
     if ((*(byte*)(cell_ptr) != 255)) goto L_AE56;    // $AE24
     goto L_AE77;    // $AE27
 L_AE2A:
-    ppu_copy_rect_wrap(cell_col, cell_row, min_word((cell_col + 8), 29), cell_row, ((((selected_record_idx_9e3c * 0x01C0) + ((cell_row + -4) * 28)) + cell_col) + strategic_map_tilemaps_by_screen_col), 4);    // $AE4F
+    ppu_copy_rect_wrap(cell_col, cell_row, min_word((cell_col + 8), 29), cell_row, ((((shown_map_section * 0x01C0) + ((cell_row + -4) * 28)) + cell_col) + strategic_map_tilemaps_by_screen_col), 4);    // $AE4F
     goto L_AEA2;    // $AE53
 L_AE56:
     cell_ptr = (cell_ptr + 1);    // $AE59
@@ -2975,7 +2975,7 @@ L_B082:
     goto L_B09B;    // $B093
 L_B096:
 L_B09B:
-    play_audio(AUDIO_UI_CONFIRM);    // $B097
+    play_audio(AUDIO_SONG_STRATEGY);    // $B097
     return 0;    // $B09C
 }
 

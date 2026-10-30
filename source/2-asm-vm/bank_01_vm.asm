@@ -6677,7 +6677,7 @@ VM bytecode disassembly
   $ADFF  8D 22                      BYTE_PUSH_imm1         +34
   $AE01  DE DA FF                   LEAL_far               $FFDA
   $AE04  B3                         PUSHL
-  $AE05  A4 5D 6F                   LOADL_abs              $6F5D (selected_record_idx_9e3c)
+  $AE05  A4 5D 6F                   LOADL_abs              $6F5D (shown_map_section)
   $AE08  8B 22                      BYTE_LOADR_imm1        +34
   $AE0A  B5                         MULT
   $AE0B  8C 3C 9E                   LOADR_imm2             $9E3C
@@ -6701,7 +6701,7 @@ VM bytecode disassembly
   $AE2E  8B 1C                      BYTE_LOADR_imm1        +28
   $AE30  B5                         MULT
   $AE31  B3                         PUSHL
-  $AE32  A4 5D 6F                   LOADL_abs              $6F5D (selected_record_idx_9e3c)
+  $AE32  A4 5D 6F                   LOADL_abs              $6F5D (shown_map_section)
   $AE35  8C C0 01                   LOADR_imm2             $01C0
   $AE38  B5                         MULT
   $AE39  B4                         POPR

@@ -19,7 +19,7 @@ expressions = [
     "[song_tempo]",
     "[song_base_lo]",
     "[song_base_hi]",
-    "[audio_mute_triangle]",
+    "[voice_playing]",
     "[v0_trigger]",
     "[v1_trigger]",
     "[v2_trigger]",

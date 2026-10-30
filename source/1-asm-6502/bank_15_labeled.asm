@@ -79,7 +79,7 @@ L_C072:
     C0A0: A2 00     ldx #$00
     C0A2: A9 00     lda #$00
 L_C0A4:
-    C0A4: 9D 20 07  sta audio_mute_triangle,x
+    C0A4: 9D 20 07  sta voice_playing,x
     C0A7: E8        inx
     C0A8: E0 05     cpx #$05
     C0AA: D0 F8     bne L_C0A4
@@ -500,14 +500,14 @@ syscall_audio_control:
     C3D9: F0 15     beq L_C3F0
     C3DB: 20 4F C5  jsr nmi_off
     C3DE: A9 01     lda #$01
-    C3E0: 9D 20 07  sta audio_mute_triangle,x
+    C3E0: 9D 20 07  sta voice_playing,x
     C3E3: A0 09     ldy #$09
     C3E5: 20 AD C6  jsr mul_xy_by_3
     C3E8: A9 00     lda #$00
     C3EA: 99 34 07  sta v0_trigger,y
     C3ED: 4C 23 C4  jmp L_C423
 L_C3F0:
-    C3F0: BD 20 07  lda audio_mute_triangle,x
+    C3F0: BD 20 07  lda voice_playing,x
     C3F3: 8D 66 00  sta brk_scratch_lo
     C3F6: 4C 26 C4  jmp L_C426
 L_C3F9:
@@ -515,7 +515,7 @@ L_C3F9:
     C3FC: A2 00     ldx #$00
     C3FE: A9 00     lda #$00
 L_C400:
-    C400: 9D 20 07  sta audio_mute_triangle,x
+    C400: 9D 20 07  sta voice_playing,x
     C403: E8        inx
     C404: E0 05     cpx #$05
     C406: D0 F8     bne L_C400
@@ -1038,7 +1038,7 @@ music_voice_play:
     C7FA: 0A        asl a
     C7FB: 0A        asl a
     C7FC: AA        tax
-    C7FD: AD 20 07  lda audio_mute_triangle
+    C7FD: AD 20 07  lda voice_playing
     C800: F0 07     beq L_C809
     C802: AD 79 00  lda music_voice_idx
     C805: C9 02     cmp #$02
@@ -1065,7 +1065,7 @@ music_sequencer_pass:
 L_C826:
     C826: AD 79 00  lda music_voice_idx
     C829: AA        tax
-    C82A: BD 20 07  lda audio_mute_triangle,x
+    C82A: BD 20 07  lda voice_playing,x
     C82D: F0 03     beq L_C832
     C82F: 20 3D C8  jsr music_voice_step
 L_C832:
@@ -1187,7 +1187,7 @@ L_C8EB:
     C8F7: 9D 00 40  sta $4000,x
     C8FA: AE 79 00  ldx music_voice_idx
     C8FD: A9 00     lda #$00
-    C8FF: 9D 20 07  sta audio_mute_triangle,x
+    C8FF: 9D 20 07  sta voice_playing,x
     C902: 91 7A     sta (music_ptr_lo),y
     C904: 38        sec
     C905: 60        rts

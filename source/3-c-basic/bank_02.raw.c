@@ -25,19 +25,19 @@ extern byte war_side_state_flag[];
 word compose_upload_daimyo_portrait(word out_buf) {
     packed_portrait_code = daimyo_face_code_table[active_province_idx_copy];    // $8094
     local9 = ((unsigned)packed_portrait_code / (unsigned)5);    // $8098
-    part0_digit = ((unsigned)packed_portrait_code % (unsigned)5);    // $809C
+    part_head = ((unsigned)packed_portrait_code % (unsigned)5);    // $809C
     local8 = ((unsigned)local9 / (unsigned)5);    // $80A0
     local9 = ((unsigned)local9 % (unsigned)5);    // $80A4
-    part3_digit = ((unsigned)local8 / (unsigned)5);    // $80A8
+    part_mouth = ((unsigned)local8 / (unsigned)5);    // $80A8
     local8 = ((unsigned)local8 % (unsigned)5);    // $80AC
-    ppu_upload_block_wrap(8, ((part0_digit * 192) + portrait_feature0_head_tiles), 0x17F0, 12);    // $80BC
+    ppu_upload_block_wrap(8, ((part_head * 192) + portrait_feature0_head_tiles), 0x17F0, 12);    // $80BC
     ppu_upload_block_wrap(8, ((local9 * 96) + portrait_feature1_eyes_tiles), 0x18B0, 6);    // $80CE
     ppu_upload_block_wrap(8, ((local8 * 96) + portrait_feature2_nose_tiles), 0x1910, 6);    // $80E0
-    ppu_upload_block_wrap(8, ((part3_digit * 192) + portrait_feature3_mouth_tiles), 0x1970, 12);    // $80F3
-    copy_from_bank(9, ((part0_digit * 12) + portrait_feature0_tile_ids), out_buf, 12);    // $8102
+    ppu_upload_block_wrap(8, ((part_mouth * 192) + portrait_feature3_mouth_tiles), 0x1970, 12);    // $80F3
+    copy_from_bank(9, ((part_head * 12) + portrait_feature0_tile_ids), out_buf, 12);    // $8102
     copy_from_bank(9, ((local9 * 6) + portrait_feature1_tile_ids), (out_buf + 12), 6);    // $8113
     copy_from_bank(9, ((local8 * 6) + portrait_feature2_tile_ids), (out_buf + 18), 6);    // $8125
-    return copy_from_bank(9, ((part3_digit * 12) + portrait_feature3_tile_ids), (out_buf + 24), 12);    // $813B
+    return copy_from_bank(9, ((part_mouth * 12) + portrait_feature3_tile_ids), (out_buf + 24), 12);    // $813B
 }
 
 // Decompiled from source/2-asm-vm/bank_02_vm.asm sub $813C
@@ -3288,7 +3288,7 @@ L_AF80:
     apply_conquest_outcome();    // $AF8B
     phi_ret_afe0 = (ai_turn_flags & 128);    // $AF95
     if (phi_ret_afe0) goto L_AFE0;    // $AF95
-    phi_ret_afe0 = render_map_section(latched_selected_record_idx);    // $AF9F
+    phi_ret_afe0 = render_map_section(latched_map_section);    // $AF9F
     goto L_AFE0;    // $AF9F
 L_AFA2:
     repaint_screen();    // $AFA2
@@ -3319,7 +3319,7 @@ word battle_init_driver(void) {
     render_combat_map_screen();    // $AFFF
     result = battle_init_defender();    // $B005
     draw_combat_fief_day_header();    // $B006
-    latched_selected_record_idx = *(byte*)((battle_defending_province + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // $B023
+    latched_map_section = *(byte*)((battle_defending_province + ((scenario_fief_count == 50) ? province_to_map_section_50 : province_to_map_section_17)));    // $B023
     if (!(result)) goto L_B030;    // $B027
     return dispatch_battle_resolution(result);    // $B02F
 L_B030:

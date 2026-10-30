@@ -12,7 +12,10 @@ guard also sees a name that leaks into ANOTHER bank:
 One process per step: the decompiler keeps its structuring switches in module globals, so a raw run
 would leave later banks unstructured. Needs py -3.14 with emu-harness installed.
 A full regen also re-keys the merged views (4-c/all_banks.c, 3-c-basic/all_banks.raw.c) from the
-per-bank C just written, through emu-harness cli/decompile_merged.
+per-bank C just written, through emu-harness cli/decompile_merged, and rewrites the raw 6502 rung,
+1-asm-6502/bank_NN.asm for all 16 banks: the linear force-decode of emu-harness cpu.m6502.disasm.render
+(bank 15 at $C000, the others at $8000), which reproduced the committed files byte for byte (2026-10-30).
+The labeled 6502 listings are mesen-labels.py --asm's.
 """
 import subprocess
 import sys
@@ -66,7 +69,19 @@ def regen(banks=BANKS):
                                 "--out", out, "--source", src, "--pattern", pat], cwd=ROOT, capture_output=True, text=True)
             if r.returncode != 0:
                 errs.append(f"decompile_merged {out}: {r.stdout[-400:]}{r.stderr[-400:]}")
+        raw_6502()
     return errs
+
+
+def raw_6502():
+    """The force-decoded 6502 rung: every byte of every bank read as an instruction (the bytecode and
+    data banks decode as garbage, which is the point). The ROM comes through the [na1] profile."""
+    from emu_harness.cpu.m6502.disasm import render
+    from emu_harness.vm.koei.nes import titles
+    rom = Path(titles.game_cfg("na1")["_rom"]).read_bytes()
+    for b in range(rom[4]):
+        (SRC / "1-asm-6502" / f"bank_{b:02d}.asm").write_text(
+            render(rom, b, base=0xC000 if b == rom[4] - 1 else 0x8000), encoding="utf-8")
 
 
 if __name__ == "__main__":

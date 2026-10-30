@@ -307,7 +307,8 @@ session = "The data revisit is closed (2026-10-29: banked-pointer naming in emu-
 item   = "The sound engine's registry names are inverted / off by one: $0720-$0724 is ONE 5-entry per-voice playing flag (music_sequencer_pass steps voice x only when $0720+x != 0; audio_control mode 1 sets it), not audio_mute_triangle ('non-zero = triangle suppressed'); audio_active_v0..v3 at $0721-$0724 are voices 1-4 of that array; music_trigger_pass / music_sequencer_pass comments repeat the inversion. syscall_audio_load_voice's comment says struct[6]=lo, struct[8]=hi: the handler reads one word at $56/$57. asset-enums audio_cue 1 = AUDIO_UI_CONFIRM is a looping song (1,025 frames), the music play_result_jingle resumes after a cue. Rename through the guarded registry edit; regen."
 phase  = "naming"
 source = "sound lane PoC, 2026-10-29"
-status = "open"
+status = "closed"
+closed = "2026-10-30: renamed through the registry: $0720 voice_playing (the 5-entry array; was audio_mute_triangle), $0721-$0724 voice_playing_1..4 (were audio_active_v0..v3), audio_cue 1 AUDIO_SONG_STRATEGY (was AUDIO_UI_CONFIRM; tools/sound_engine.py measures it looping on pulse 1 / pulse 2 / triangle, requested after init, after every battle, after a jingle and on sound-on). Comments corrected: audio_control's modes, the sequencer pass's condition, audio_load_voice's one-word pointer. New from re-reading $C7FD and measuring the voices on the engine: songs play on voices 1-3, pulse-2 effects on voice 0, noise effects on voice 4, and music_voice_play skips voice 2 (the song's pulse 2) while voice 0 plays: a pulse-2 duck, not the triangle mute ch.3 described (ch.3 rewritten). Regen: 17 files, 0 non-rename differences (simultaneous substitution); cfg_gate CLEAN; sound_verify identical write for write (606 APU writes, request 0's 15 engine bytes)."
 
 [[revisit]]
 item   = "Mis-banked data labels in the .mlb: other banks' data labels sit at fixed-bank / bank-0 PRG offsets inside code (strategic_map_section_tilemaps, bank 4 $8D5C, is filed at PRG $3CD5C = bank 15 inside repaint_screen; window_tile_gfx_8d5a_alias likewise; boot_title_gfx_8264 inside prompt_new_game_or_load_save). Census every data label whose PRG offset lands inside a code routine; fix the section in mesen-labels.toml; regen the .mlb."
@@ -320,13 +321,15 @@ closed = "2026-10-29: the cause was the decompiler, not the filing. vm_decompile
 item   = "unpack_record_to_sram (bank 15 $E6xx) var names contradict bank 8's visually verified feature order: its slots read part_face / part_nose / part_eyes / part_hair against features 0 head, 1 eyes ($A9C4), 2 nose ($ABA4), 3 mouth; the C now prints part_nose * 96 + portrait_feature1_eyes_tiles. Bank 2's twin (compose_upload_daimyo_portrait) uses part0_digit / local9 / local8 / part3_digit. Rename the bank-15 slots by feature through the guarded var edit."
 phase  = "naming"
 source = "banked-pointer census, 2026-10-29"
-status = "open"
+status = "closed"
+closed = "2026-10-30: the sub is unpack_composite_face_record ($E6B9). Slots renamed by feature digit: local10 part_head (code % 5), local9 part_eyes, local8 part_nose, local7 part_mouth; bank 2's twin compose_upload_daimyo_portrait got part_head / part_mouth on its two single-role slots (its local8 / local9 stay positional, as its var walk left them). Regen diff checked by simultaneous substitution (the swap part_eyes <-> part_nose defeats a name->token map): 14 files, 0 non-rename differences; with one half of the swap left out it reports 20. cfg_gate CLEAN."
 
 [[revisit]]
 item   = "Two data questions left by the refile: (1) $81EB, the 4th (length) argument of syscall_sram_block_with_checksum at bank 0 $82D3 / $A42B, where the other calls pass 255 / $100; not ui_transient_state ($7F00) + length to $8000. Read the handler: bit 15 as a flag? (2) strategic_map_section_records (bank 4 $9E3C, 9 x 34 bytes): what the fields are (read into fief_cell_buf / record_buf by the fief-select window)."
 phase  = "data"
 source = "banked-pointer census, 2026-10-29"
-status = "open"
+status = "closed"
+closed = "2026-10-30: (1) syscall_sram_block_with_checksum ($C5AA) compares Y with $58 only, the low byte of the 4th argument, so 0x81EB copies $EB = 235 bytes ($7F00-$7FEA) and the $81 is never read; 0 means 256. A length, not an address: no label. (2) strategic_map_section_records: up to 11 (col, row, fief) triples, $FF-terminated, $00-padded to 34, where each fief's lord name is drawn (render_map_section, redraw_fief_on_map, fief_select_input_loop). Checked on the ROM bytes: sections 0-1 hold fiefs 0-16, 2-8 fiefs 0-49, every fief is on its home section from province_to_map_section_17 / _50, edge fiefs repeat on the neighbour. Ch.20 had the triples since June (the question was a re-ask); it said the 50-fief map uses sections 0-8, corrected to 2-8. $6F5D renamed shown_map_section (was selected_record_idx_9e3c), $7BE6 latched_map_section."
 
 [[revisit]]
 item   = "build-site copies nobunaga/ into docs/ but never prunes, so a retired asset stays published until removed by hand (found retiring the atlas stitch, 84db0ce). Make it prune what it no longer emits."

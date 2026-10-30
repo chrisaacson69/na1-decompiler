@@ -2546,7 +2546,7 @@ word shuffle_fief_turn_order_array(void) {
 word vm_bootstrap(void) {
     while (1) {    // $A77D
         init_new_game_state();    // $A77D
-        play_audio(AUDIO_UI_CONFIRM);    // $A781
+        play_audio(AUDIO_SONG_STRATEGY);    // $A781
         while (1) {    // $A785
             ai_turn_loop_redispatch_flag = 0;    // $A786
             ai_strategic_turn_planner();    // $A789
@@ -2554,7 +2554,7 @@ word vm_bootstrap(void) {
                 battle_defender_province_staging = -1;    // $A796
                 call_bank_wrap(2);    // $A79A
                 if (!((ai_turn_flags & 128))) {    // $A7A5
-                    play_audio(AUDIO_UI_CONFIRM);    // $A7A9
+                    play_audio(AUDIO_SONG_STRATEGY);    // $A7A9
                 }
                 ai_strategic_turn_planner();    // $A7AD
             }
@@ -2568,7 +2568,7 @@ word vm_bootstrap(void) {
                 spawn_uprising_force_from_province((battle_staging_entry_flag_array ? 0 : 1));    // $A7E5
                 call_bank_wrap(2);    // $A7EA
                 if (!((ai_turn_flags & 128))) {    // $A7F5
-                    play_audio(AUDIO_UI_CONFIRM);    // $A7F9
+                    play_audio(AUDIO_SONG_STRATEGY);    // $A7F9
                 }
             }
             if (ai_turn_loop_redispatch_flag) continue;    // $A800
@@ -2579,7 +2579,7 @@ word vm_bootstrap(void) {
                 if (!(ai_turn_loop_redispatch_flag)) break;    // $A818
                 call_bank_wrap(2);    // $A81C
                 if (!((ai_turn_flags & 128))) {    // $A827
-                    play_audio(AUDIO_UI_CONFIRM);    // $A82B
+                    play_audio(AUDIO_SONG_STRATEGY);    // $A82B
                 }
                 ai_turn_loop_redispatch_flag = 0;    // $A830
             }

@@ -2511,7 +2511,7 @@ word vm_bootstrap(void) {
 L_A77D:
     init_new_game_state();    // $A77D
 L_A785:
-    play_audio(AUDIO_UI_CONFIRM);    // $A781
+    play_audio(AUDIO_SONG_STRATEGY);    // $A781
     ai_turn_loop_redispatch_flag = 0;    // $A786
     ai_strategic_turn_planner();    // $A789
     if ((ai_turn_planner_resume_flag != 1)) goto L_A7B0;    // $A791
@@ -2519,7 +2519,7 @@ L_A785:
     call_bank_wrap(2);    // $A79A
     if ((ai_turn_flags & 128)) goto L_A7AD;    // $A7A5
 L_A7AD:
-    play_audio(AUDIO_UI_CONFIRM);    // $A7A9
+    play_audio(AUDIO_SONG_STRATEGY);    // $A7A9
 L_A7B0:
     ai_strategic_turn_planner();    // $A7AD
     if ((ai_turn_flags & 128)) goto L_A843;    // $A7B7
@@ -2533,7 +2533,7 @@ L_A7D9:
     call_bank_wrap(2);    // $A7EA
     if ((ai_turn_flags & 128)) goto L_A7FD;    // $A7F5
 L_A7FD:
-    play_audio(AUDIO_UI_CONFIRM);    // $A7F9
+    play_audio(AUDIO_SONG_STRATEGY);    // $A7F9
     if (ai_turn_loop_redispatch_flag) goto L_A785;    // $A800
 L_A806:
     shuffle_fief_turn_order_array();    // $A803
@@ -2543,7 +2543,7 @@ L_A806:
     call_bank_wrap(2);    // $A81C
     if ((ai_turn_flags & 128)) goto L_A82F;    // $A827
 L_A82F:
-    play_audio(AUDIO_UI_CONFIRM);    // $A82B
+    play_audio(AUDIO_SONG_STRATEGY);    // $A82B
     ai_turn_loop_redispatch_flag = 0;    // $A830
     goto L_A806;    // $A833
     goto L_A806;    // $A836
