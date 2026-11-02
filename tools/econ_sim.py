@@ -62,7 +62,7 @@ def pct_op(b: int, p: int) -> int:
 # Commands — verified formulas
 # ============================================================================
 
-# SKILL LEVEL / difficulty (const_two $6D63, 1-5; game default 2). The 5 develop
+# SKILL LEVEL / difficulty (skill_level $6D63, 1-5; game default 2). The 5 develop
 # commands scale their gain by (6 - SKILL): skill 1 -> x5 (the long-mistaken "x5"
 # was just skill-1), skill 5 -> x1 — a ~5x swing. Set econ_sim.SKILL before calling
 # to model a difficulty. (Discovered 2026-06-02; this tool was hardcoded at *5 until 2026-06-11.)

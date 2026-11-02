@@ -1,6 +1,6 @@
 """Faithful NA1 diplomacy commands.
 
-Player-initiated (cost gold + 1 drive, ~1/const_two success, persists until a war
+Player-initiated (cost gold + 1 drive, ~1/skill_level success, persists until a war
 resets the relation):
   - try_pact     driver_pact $9C4F + prompt_diplomacy_pact $E3A4 -> relations 70
   - try_marriage marry driver + marriage_pact_handler $E315      -> relations 90
@@ -38,10 +38,10 @@ def _is_weak(m, idx):
 
 
 def _ai_willing(m, idx, rng):
-    """prompt_diplomacy_pact / marriage AI branch gate: ~1/const_two, and a WEAK asker
+    """prompt_diplomacy_pact / marriage AI branch gate: ~1/skill_level, and a WEAK asker
     only clears the extra !weak||1/3 gate a third of the time (the AI is least willing
     to pact the weakling who needs it most)."""
-    ct = max(1, m.r16(M.CONST_TWO))
+    ct = max(1, m.r16(M.SKILL_LEVEL))
     if rng.randrange(ct) != 0:
         return False
     if _is_weak(m, idx) and rng.randrange(3) != 0:
@@ -107,7 +107,7 @@ def ai_offer_pact(m, ai_idx, rng):
             continue
         # offer amount = prompt_diplomacy_pact(target=AI) on the PLAYER's gold
         pgold = m.r16(m.fief(j) + M.F_GOLD)
-        if rng.randrange(max(1, m.r16(M.CONST_TWO))) != 0:
+        if rng.randrange(max(1, m.r16(M.SKILL_LEVEL))) != 0:
             continue                                   # AI not in the mood this scan
         offer = P.pct_op(pgold, 50) + P.pct_op(pgold, rng.randrange(50)) + 20
         m.w16(m.fief(j) + M.F_GOLD, pgold + offer)      # player GAINS gold

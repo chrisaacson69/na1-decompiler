@@ -35,9 +35,9 @@ effect: $87F0
 if amount < 1:  return 0
 sqrt_val   = sqrt(output + amount)                  ; CBCD = integer sqrt (truncated)
 math_arg1  = amount                                  ; gold spent
-math_arg2  = 6 − const_two                           ; $8808: LOADL 6 / SUB const_two($6D63); = 5 when const_two=1
+math_arg2  = 6 − skill_level                           ; $8808: LOADL 6 / SUB skill_level($6D63); = 5 when skill_level=1
 math_arg3  = sqrt_val
-math_ret   = (amount × (6−const_two)) ÷ sqrt_val     ; math32_3arg, signed int divide
+math_ret   = (amount × (6−skill_level)) ÷ sqrt_val     ; math32_3arg, signed int divide
 gain       = math_ret << 1                           ; aslA — doubled
 if gain == 0: gain = 1                               ; min gain 1
 if gain > (header - output): gain = header - output  ; headroom clamp (rarely fires)
@@ -57,7 +57,7 @@ return gain / 2                                      ; driver displays this
 Where:
 - `math32_3arg(a, b, c) = (a × b) ÷ c` (32-bit signed; verified by walking the 47 extended opcodes 2026-05-25)
 - `pct_op(b, p)` = `b × p ÷ 100` (split-by-10 to avoid 16-bit overflow)
-- The multiplier is `6 − const_two` (`$6D63`), computed at $8808 — **not** a literal 5. It equals 5 only because `const_two` is normally 1; `apply_two_grows_const1_override` proves it's mutable. Same template `(amount × (6−const_two)) ÷ sqrt` applies to Build/Give (verified) with the same `const_two`.
+- The multiplier is `6 − skill_level` (`$6D63`), computed at $8808 — **not** a literal 5. It equals 5 only because `skill_level` is normally 1; `apply_two_grows_const1_override` proves it's mutable. Same template `(amount × (6−skill_level)) ÷ sqrt` applies to Build/Give (verified) with the same `skill_level`.
 
 ## Test runs
 
@@ -72,7 +72,7 @@ Where:
 | wealth | 77 | 47 | −30 | **all from tax** (Grow doesn't touch wealth) |
 | header | 1640 | 1640 | 0 | unchanged as expected |
 | rice | 75 | 130 | +55 | fall harvest from new output=136 |
-| const_two ($6D63) | 1 | 1 | 0 | watched |
+| skill_level ($6D63) | 1 | 1 | 0 | watched |
 
 **Confounders**: tax raised to 60% in Summer, and snapshot is at start of Fall (after harvest).
 

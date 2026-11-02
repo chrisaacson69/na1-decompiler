@@ -2141,7 +2141,7 @@ VM bytecode disassembly
   $D8DC  BB                         ADD
   $D8DD  B3                         PUSHL
   $D8DE  46                         LOADL_qimm   ; inline operand = 6
-  $D8DF  A6 63 6D                   LOADR_abs              $6D63 (const_two)
+  $D8DF  A6 63 6D                   LOADR_abs              $6D63 (skill_level)
   $D8E2  BC                         SUB
   $D8E3  B3                         PUSHL
   $D8E4  3C                         PUSH_quick   ; inline operand = 12
@@ -3748,7 +3748,7 @@ VM bytecode disassembly
   $E35C  A8 D3 7F                   STORE_abs              $7FD3 (ui_input_mode)
   $E35F  0B                         LOADL_quick   ; inline operand = 11
   $E360  CF                         RETURN
- >$E361  AA 63 6D                   PUSH_abs               $6D63 (const_two)
+ >$E361  AA 63 6D                   PUSH_abs               $6D63 (skill_level)
   $E364  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
   $E368  D7 A2 E3                   JUMPT_abs              $E3A2
   $E36B  AA 5F 6F                   PUSH_abs               $6F5F (selected_province_idx)
@@ -3815,7 +3815,7 @@ VM bytecode disassembly
   $E3F9  BB                         ADD
   $E3FA  B0                         DEREF
   $E3FB  2A                         STORE_quick   ; inline operand = 10
-  $E3FC  AA 63 6D                   PUSH_abs               $6D63 (const_two)
+  $E3FC  AA 63 6D                   PUSH_abs               $6D63 (skill_level)
   $E3FF  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
   $E403  D7 21 E4                   JUMPT_abs              $E421
   $E406  8D 32                      BYTE_PUSH_imm1         +50

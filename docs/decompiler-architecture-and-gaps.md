@@ -4,6 +4,8 @@ created: 2026-06-11
 ---
 # Decompiler — components laid out, vs the paper, and where the gaps are
 
+> **History (June 2026).** This page records how the structurer was built. Its V1 is the template structurer (removed 2026-11-02) and its V2 the region reducer (now DREAM's per-sub fallback). Where it stands now: [The Structurer — Where It Stands](./decompiler-structure.md).
+
 Companion to [decompiler-dream-thesis](./decompiler-dream-thesis.md) (the paper) and [tech-debt](./tech-debt.md)
 (bug ledger). Written to answer one question while deep-diving bug 1.2: **lay out every component, compare to the
 paper, and classify each gap as theory / architecture / implementation** — so we know whether the residue ("the 3%")

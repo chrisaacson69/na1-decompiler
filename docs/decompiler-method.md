@@ -10,6 +10,8 @@ created: 2026-06-05
 > (the running case ledger), and [https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md](https://github.com/chrisaacson69/emu-harness/blob/master/tools/lowering-atlas/atom-table.md)
 > (the forward catalog).
 
+> **History (June 2026).** This page records how the structurer was built. Its V1 is the template structurer (removed 2026-11-02) and its V2 the region reducer (now DREAM's per-sub fallback). Where it stands now: [The Structurer — Where It Stands](./decompiler-structure.md).
+
 ---
 
 ## 1. The method — layered grounding + push/pull

@@ -44,9 +44,9 @@ Every season also runs, per fief: **`drift_daimyo_luck`** and a **natural-death 
 ### The Spring AI-boon / player-decay (the rubber-band)
 In the Spring aging pass, fiefs split by `province_ai_state` (gates confirmed in the `$9F8C` bytecode):
 - **state 0 (Home = AI-run)** → `event_boost_province_wealth_loyalty`: 50% chance, **wealth += rng(10)+Cha/10, loyalty += rng(40)+Cha/10**. (Boost is gated `ai_state == 0` — `$9FD8` JUMPT skips it otherwise.) The AI economy is handed free loyalty and wealth.
-- **state ≠ 0 (the player's Direct capital + any Granted fiefs)** → at difficulty `const_two > 1`, **three province stats each drain by `rng(const_two)`** per year. (Gated `ai_state != 0` *and* `const_two != 1` — `$9FF7` JUMPF + `$9FFF` CMPNE/JUMPF.) The three stats sit in the loyalty(+12)–skill(+20) block; the decompiler renders them wealth/men/skill via a `(p+2)−2` pointer idiom, but a hand-trace of the stack ops reads loyalty/wealth/morale — **the exact trio wants an emulator diff** (run a difficulty-2 Spring, diff a player fief). All three readings agree it drains **wealth (+14)**; the structural finding does not depend on the trio.
+- **state ≠ 0 (the player's Direct capital + any Granted fiefs)** → at difficulty `skill_level > 1`, **three province stats each drain by `rng(skill_level)`** per year. (Gated `ai_state != 0` *and* `skill_level != 1` — `$9FF7` JUMPF + `$9FFF` CMPNE/JUMPF.) The three stats sit in the loyalty(+12)–skill(+20) block; the decompiler renders them wealth/men/skill via a `(p+2)−2` pointer idiom, but a hand-trace of the stack ops reads loyalty/wealth/morale — **the exact trio wants an emulator diff** (run a difficulty-2 Spring, diff a player fief). All three readings agree it drains **wealth (+14)**; the structural finding does not depend on the trio.
 
-This is a structural anti-player bias (extends the `const_two` difficulty-dial, appendix A / ledger #11):
+This is a structural anti-player bias (extends the `skill_level` difficulty-dial, appendix A / ledger #11):
 the AI is *subsidized*, the player is *taxed*, scaled by difficulty — and note **Granting a fief away from
 Home (0) exposes it to the decay**, a hidden cost of delegation that leaving a conquered fief at Home (0,
 which instead earns the boon) avoids.
@@ -78,7 +78,7 @@ The 75% branch. It builds a candidate list under one of two eligibility variants
 
 ### Synthesis — the tax ceiling (why ~55 is the cap)
 The uprising eligibility ties tax directly to revolt risk, and revolt is **non-marginal**:
-- The **per-season loyalty decay** fires at **high tax** (`tax ≥ 90 − const_two`; ledger #24), bleeding 10%
+- The **per-season loyalty decay** fires at **high tax** (`tax ≥ 90 − skill_level`; ledger #24), bleeding 10%
   loyalty each season.
 - The **Riot eligibility** rolls `square_over_2025_probability_roll(100 − tax)` — **higher tax → lower
   `100−tax` → more likely eligible** for a peasant riot.
@@ -87,7 +87,7 @@ The uprising eligibility ties tax directly to revolt risk, and revolt is **non-m
   marginal extra income a higher rate buys.
 - **Playtested result (Chris, 2026-06-12):** the practical optimum sits around **tax 55** — past it the
   rising revolt chance outweighs the marginal gain — and at tax 55 you stay under the loyalty-decay
-  threshold as long as your difficulty constant is low (`55 < 90 − const_two`, always true for `const_two`
+  threshold as long as your difficulty constant is low (`55 < 90 − skill_level`, always true for `skill_level`
   1–5). *(Quantifying the exact EV-optimal rate vs. the riot-probability curve is a clean emulator follow-up;
   the cross-stat oddity — tax/loyalty are peasant-side while the morale-variant keys on the army stat — is
   noted in the uprising table above.)*
@@ -135,7 +135,7 @@ eligible  ⇔  men > 2  AND  [ square_roll(morale) OR square_roll(charisma) OR r
 **Illness** (per daimyo, every season): `rng(400) < 100 − health` → **P = (100 − health)/400** (health 80 → 5%/season, 50 → 12.5%); flags the daimyo *weak* / *"taken ill."*
 
 ## Open follow-ups
-- **⚠verify the Spring player-decay offsets** (which three province stats; the `const_two>1` gate) against bytecode.
+- **⚠verify the Spring player-decay offsets** (which three province stats; the `skill_level>1` gate) against bytecode.
 - **The uprising→combat staging path** (`battle_defender_province_staging` / `append_candidate_priority1`) into bank 2.
 - **The AI-initiated `random_event_type_dispatch` payloads** (marry / diplomacy eligibility + effects).
 - **Rename** `spawn_zealot_uprising_force_from_province` → `spawn_uprising_force_from_province` in the labels.

@@ -22,7 +22,7 @@ from typing import Tuple
 
 from .state import Province, Daimyo, AI_HOME
 
-# const_two / skill-level difficulty dial ($6D63); 1-5, game default 2.
+# skill_level / skill-level difficulty dial ($6D63); 1-5, game default 2.
 # The develop family scales gain by (6 - SKILL).
 SKILL = 2
 
@@ -78,11 +78,20 @@ def give_peasants(p: Province, amount: int) -> Province:
     if amount < 1 or p.rice < amount:
         return p
     p.rice -= amount
-    loy_gain = 2 * ((amount * _dev_mult()) // isqrt((p.output + p.loyalty) // 2 + amount))
-    wlt_gain = 2 * ((amount * _dev_mult()) // isqrt((p.town + p.wealth) // 2 + amount))
-    p.loyalty = min(100, p.loyalty + loy_gain)
-    p.wealth = min(100, p.wealth + wlt_gain)
+    p.loyalty = _develop(p.loyalty, p.output, amount, p.header, double=True)   # develop_loyalty $891D
+    p.wealth = _develop(p.wealth, p.town, amount, p.header, double=True)       # develop_wealth  $896F
     return p
+
+
+def _develop(stat: int, partner: int, amount: int, cap: int, double: bool) -> int:
+    """The develop-family kernel as the ROM runs it (develop_loyalty / _wealth / _morale):
+    gain = max(1, amount*(6-skill) / isqrt((stat+partner)/2 + amount)), clamped to the headroom
+    cap - stat (stat_cap = header, record +24) BEFORE the write, which doubles it for loyalty and
+    wealth (gain << 1) and not for morale. So a doubled stat can pass the cap by up to the headroom.
+    Only dams caps at 100."""
+    gain = max(1, (amount * _dev_mult()) // isqrt((stat + partner) // 2 + amount))
+    gain = min(gain, cap - stat)
+    return stat + (gain << 1 if double else gain)
 
 
 def dam(p: Province, amount_gold: int) -> Province:
@@ -107,8 +116,7 @@ def give_men(p: Province, amount: int) -> Province:
     if amount < 1 or p.rice < amount:
         return p
     p.rice -= amount
-    gain = 2 * ((amount * _dev_mult()) // isqrt((p.men + p.morale) // 2 + amount))
-    p.morale = min(100, p.morale + gain)
+    p.morale = _develop(p.morale, p.men, amount, p.header, double=False)       # develop_morale $89C1
     return p
 
 
@@ -129,13 +137,20 @@ def hire(p: Province, gold_spend: int, price: int = 5) -> Province:
     return p
 
 
+def tax_effect(stat: int, delta: int) -> int:
+    """effect_tax $82D6 with delta = old_tax - new_tax (the driver's order, $9A41): raising the tax
+    (delta < 0) takes pct_op(stat, |delta|) away; LOWERING it adds pct_op(stat, delta)."""
+    return stat - pct_op(stat, -delta) if delta < 0 else stat + pct_op(stat, delta)
+
+
 def set_tax(p: Province, new_tax: int, daimyo: Daimyo = None) -> Province:
-    """Set tax; drains loyalty & wealth by |delta|%; costs 1 Charisma. (Tax §)"""
+    """Set tax: loyalty & wealth move by |delta|% -- down when the tax rises, UP when it falls
+    (effect_tax, ROM-checked 2026-11-02); costs 1 Charisma. (Tax §)"""
     if new_tax == p.tax or new_tax < 0 or new_tax > 100:
         return p
-    delta = abs(new_tax - p.tax)
-    p.loyalty -= pct_op(p.loyalty, delta)
-    p.wealth -= pct_op(p.wealth, delta)
+    delta = p.tax - new_tax
+    p.loyalty = tax_effect(p.loyalty, delta)
+    p.wealth = tax_effect(p.wealth, delta)
     p.tax = new_tax
     if daimyo is not None:
         daimyo.charisma -= 1

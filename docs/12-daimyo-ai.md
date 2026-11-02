@@ -57,7 +57,7 @@ So a typical AI fief **does a little of everything every turn** — recruit, arm
 Every spend is sized against `ai_calc_men_surplus_over_gold_and_rice`: **`gold_surplus = gold − men`, `rice_surplus = rice − men`** (clamped ≥0) — the AI keeps a cash/food reserve **equal to its army size** and spends only what's above it. Because the **military pass runs first and eats that surplus** (recruit spends `gold_surplus/2`, then arms), the develop pass that follows gets only the scraps. Combined with the reserve floor, this is a genuine trap: **a fief with a big army has little gold over `men`, so it can barely develop** — military daimyo stay economically stunted, exactly as observed. Develop caps also scale with the **game year** (`(year−1559)·k`), so what little the AI does build trends upward late.
 
 ### What an AI fief actually does on a non-war turn — by question
-- **Recruit men?** Only when under-strength for the year (`men < min((year−1559)·40, header)`), then with probability **`(const_two+3)/10`** (50% at skill 2, higher at higher difficulty), spending half the gold surplus. New men get random morale/skill/arms (`apply_hire_unit_stats`, the Hire dilution). *Early game the year-cap is tiny, so the AI barely recruits; it builds armies as the campaign ages.*
+- **Recruit men?** Only when under-strength for the year (`men < min((year−1559)·40, header)`), then with probability **`(skill_level+3)/10`** (50% at skill 2, higher at higher difficulty), spending half the gold surplus. New men get random morale/skill/arms (`apply_hire_unit_stats`, the Hire dilution). *Early game the year-cap is tiny, so the AI barely recruits; it builds armies as the campaign ages.*
 - **Train (skill)?** A flat **50% (`rng(2)`)** every military-prep turn (`effect_train`), after recruiting. Plus a 1% rare reinforce.
 - **Change its tax?** It doesn't *strategize* tax — every develop turn calls `ai_seed_fief_tax_rate`, which **re-randomizes the rate to `rng(30)+35` = 35–64**. Since develop runs most turns, AI tax simply **wanders in the 35–64 band** turn to turn (never the 90s that would trigger its own riots — see Appendix D).
 - **Re-mix its army (Assign)?** **Never.** `effect_assign` has exactly one caller — the player's `driver_assign`. The AI sets unit composition *only at hire time* and can't redistribute it. The army-composition lever is **player-only**.
@@ -70,13 +70,13 @@ Every spend is sized against `ai_calc_men_surplus_over_gold_and_rice`: **`gold_s
 ### The war decision (`ai_try_war_attack`) — the only place targeting happens
 1. **Preconditions:** the fief must not be weak, and must have **both men and rice** — *no supply, no war* (rice = provisions).
 2. **Target = the weakest enemy by *provisioned* men** (`pick_weakest_men_fief`; `fief_men_ratio_pct = a_men·100/(a_men+b_men)`, where a fief with **no rice counts as 0 men**). A starved or tiny neighbour is the magnet. An adjacency/men-minority target (`$6E7F`) can override.
-3. **Commit gate:** attack only with a men-ratio advantage — `ratio − 10 − rng(const_two·3) > 60` — or a 1/100 "attack anyway". Risk-averse; it picks on the weak.
+3. **Commit gate:** attack only with a men-ratio advantage — `ratio − 10 − rng(skill_level·3) > 60` — or a 1/100 "attack anyway". Risk-averse; it picks on the weak.
 4. **Resolve:** deduct men/rice → `effect_war_a` → **bank 2 (combat)**. *(The same bank-2 resolver handles uprisings — see the tie-back note below; the battle math itself is the combat chapters, ch.14–17.)*
 
 **Why so few wars fire despite the ~90% military pass (Chris's #1):** entering the military pass is *not* attacking. A war only launches when **all** of these line up: the fief isn't weak, it has men *and* rice, a neighbour is genuinely weaker (the **men-ratio advantage** gate, `ratio−10−rng(skill·3) > 60`), and — for a liked target — the daimyo is bold enough (Drive≥50) to ignore relations. Most fiefs, most turns, have no neighbour soft enough to clear the ratio gate, so they fall through to recruit/develop instead. There is **no per-year attack counter**; the limiter is purely *opportunity*. The flip side is what you observed: **once a fief becomes weak (especially starved — no rice ⇒ 0 provisioned men), it is reliably attacked** — every adjacent stronger daimyo's ratio gate now passes, so it gets piled on. Weakness, not a timer, is what summons the wars.
 
 ### Do daimyo stats alter the odds? — **only Drive**
-The econ/military cascade is driven by **difficulty (`const_two`)**, the **game year**, the **market rates**, and **province stats** (gold/rice/men/output/loyalty) — *not* the daimyo's personal stats. The single exception is **Drive (record +2)**, the AI's **aggression dial**:
+The econ/military cascade is driven by **difficulty (`skill_level`)**, the **game year**, the **market rates**, and **province stats** (gold/rice/men/output/loyalty) — *not* the daimyo's personal stats. The single exception is **Drive (record +2)**, the AI's **aggression dial**:
 - **`ai_relations_and_low_drive_skip_gate`** — the target selector skips a candidate when relations are good **and** the daimyo's `Drive < 50`. So a **timid (Drive<50) daimyo respects pacts/marriages** (won't attack fiefs it likes), while a **bold (Drive≥50) daimyo ignores relations** and attacks the weakest target regardless.
 - **The monk fief (30)** is attacked only by a high-Drive daimyo (`drive < rng(80)+90` → skip) — historical reluctance to assault the warrior-monks.
 
@@ -104,13 +104,13 @@ else:                                                       ; the develop fallba
     if rng(10):  ai_develop_town_handler()                 ; ~90%: grow the town
     ai_develop_dam_and_grow()                               ; always: dam + grow
 ```
-`ai_state2_recruit_arm_train` opens with `ai_try_war_attack`, so the AI is **attack-first**: ~90% of fiefs each turn look for a war before falling back to building. Its **war target is the weakest adjacent enemy** (`pick_weakest_men_fief`, keyed on *provisioned* men), taken only past a strength gate at commit — emergent weakest-neighbour aggression, no board evaluation. The thresholds scale with the `const_two`/skill difficulty dial; the "intelligence" is entirely in those constants, exactly as the model below argues.
+`ai_state2_recruit_arm_train` opens with `ai_try_war_attack`, so the AI is **attack-first**: ~90% of fiefs each turn look for a war before falling back to building. Its **war target is the weakest adjacent enemy** (`pick_weakest_men_fief`, keyed on *provisioned* men), taken only past a strength gate at commit — emergent weakest-neighbour aggression, no board evaluation. The thresholds scale with the `skill_level`/skill difficulty dial; the "intelligence" is entirely in those constants, exactly as the model below argues.
 
 **The AI is structurally exploitable — the dominance thesis's other half.** The asymmetries are all in the engine, not in any one weak heuristic:
 - **It never specializes.** The Grant policies (Industrial/Military/Farming/Balanced) that let the *player* automate an empire are never used by the AI — it runs the one generic loop on every fief (ledger #22).
 - **Its command cascade never bribes, assassinates, or plays diplomacy.** Those verbs surface *only* on the rare random-event path above — a ninja economic ravage, a Pact, or a marriage proposal aimed at the human — never the Charisma-contest Bribe (#19) and **never an assassination** (`$918D`, ledger #1, is unreachable from the AI). So the cheapest faction-ending move — killing a lord — has *no AI counter*, and the AI never sues for peace to block one.
 - **It defends its seat only reflexively** (the `men=2` token garrison) — there is no logic that anticipates a decapitation strike or relocates the capital (the mobile-seat defence, ledger #19) the way a player can.
-- **It is subsidized, not skilled.** The difficulty comes from the `const_two` dial (slower player development, bigger AI stat boosts, ledger #11) and the harvest's AI-only `event_boost_province_gold_output` bonus (ledger #24) — the engine props the AI up economically rather than making it play better.
+- **It is subsidized, not skilled.** The difficulty comes from the `skill_level` dial (slower player development, bigger AI stat boosts, ledger #11) and the harvest's AI-only `event_boost_province_gold_output` bonus (ledger #24) — the engine props the AI up economically rather than making it play better.
 
 So the README thesis closes here: a high-Luck/Charisma lord who rolls max stats, relocates his seat out of reach, Grants his rear to auto-develop, and assassinates the weakest neighbours faces an opponent that can only do attack-first weighted coin-flips and was never given the verbs to punish any of it.
 
@@ -136,7 +136,7 @@ This is the third time the project has found this shape. Utopia (1981) drove its
 
 ## What's open
 
-- **The threshold catalogue** — each `$CA52` site has its own `score`/`divisor`, and the constants behind them (`$6D63 const_two`, the `$6D9D` year/fief bound, the market rates) *are* the AI's personality. Cataloguing them belongs in the effect-formula **appendix**.
+- **The threshold catalogue** — each `$CA52` site has its own `score`/`divisor`, and the constants behind them (`$6D63 skill_level`, the `$6D9D` year/fief bound, the market rates) *are* the AI's personality. Cataloguing them belongs in the effect-formula **appendix**.
 - **`$6DA1` (`ai_turn_flags`) bit semantics** — the pre-switch rolls in `ai_per_fief_command_driver` set bits 0/7/… of this byte; which accumulated bit gates which branch is the one piece still un-walked. A short focused trace finishes it.
 
 With the decision engine characterised, the project has *both* halves of the strategic layer — the player's 21 commands (ch 9–11) and the AI that picks among the same verbs (ch 12). The turn loop (ch 13) stitches them together; combat and the synthesis counter-graph follow.

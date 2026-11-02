@@ -1310,7 +1310,7 @@ word develop_gain(word amount, word stat_ptr, word companion_ptr) {
     if ((amount >= 1)) goto L_D8C7;    // $D8C2
     return 0;    // $D8C6
 L_D8C7:
-    gain = math32_3arg(amount, (6 - const_two), (sqrt_int(((*(word*)(stat_ptr) + *(word*)(companion_ptr)) / 2)) + sqrt_int(amount)));    // $D8E9
+    gain = math32_3arg(amount, (6 - skill_level), (sqrt_int(((*(word*)(stat_ptr) + *(word*)(companion_ptr)) / 2)) + sqrt_int(amount)));    // $D8E9
     if (gain) goto L_D8F0;    // $D8EB
     return 1;    // $D8EF
 L_D8F0:
@@ -2054,7 +2054,7 @@ L_E35B:
     ui_input_mode = saved_input_mode;    // $E35C
     return demanded_gold;    // $E360
 L_E361:
-    if (rng_mod(const_two)) goto L_E3A2;    // $E368
+    if (rng_mod(skill_level)) goto L_E3A2;    // $E368
     if (!(fief_owner_weakness(selected_province_idx))) goto L_E37D;    // $E372
     if (rng_mod(3)) goto L_E3A2;    // $E37A
 L_E37D:
@@ -2086,7 +2086,7 @@ L_E3DE:
     if (rng_mod(3)) goto L_E423;    // $E3ED
 L_E3F0:
     owner_gold = province_table_live[selected_province_idx].gold;    // $E3FB
-    if (rng_mod(const_two)) goto L_E421;    // $E403
+    if (rng_mod(skill_level)) goto L_E421;    // $E403
     phi_ret_e422 = ((pct_op(owner_gold, 50) + pct_op(owner_gold, rng_mod(50))) + 20);    // $E41E
     goto L_E422;    // $E41E
 L_E421:

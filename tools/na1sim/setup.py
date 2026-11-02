@@ -9,7 +9,7 @@ scenario-size + "how many players" prompts, the daimyo-roll screens) — those a
 the runner's job (canned choices). We populate the base scenario records from the
 trusted txt data, seed the market, then let $83E2 do:
   - the random header roll   header = pct_op(data + 1000, rng(20)+80)  (~1700-1900)
-  - the difficulty stat boosts (+const_two*N to daimyo + fief stats)
+  - the difficulty stat boosts (+skill_level*N to daimyo + fief stats)
   - the 50%/boosted-fief rolls + marriages
   - the gold_rice_exchange_rate seed (rng(6)+20)
 
@@ -80,7 +80,7 @@ def build_board(skill: int = 2, seed: int = 0, player_fief=None,
     # Seed the AI's RNG (m.rng, used by rng_mod) DETERMINISTICALLY off the game seed --
     # else M.Memory() defaults to system entropy and the same seed gives different games.
     m = M.Memory(rng=random.Random(seed * 1000003 + 7))
-    m.w16(M.CONST_TWO, skill)
+    m.w16(M.SKILL_LEVEL, skill)
     m.w16(M.SCENARIO_FIEF_COUNT, len(provs))
     m.w16(M.CURRENT_GAME_YEAR, 1560)
     m.w8(M.UI_CONFIRM_FLAG, 1 if watch_battles else 0)   # the Watch-battles setting
@@ -146,7 +146,7 @@ def _smoke():
         lo, hi = (b + 1000) * 80 // 100, (b + 1000) * 99 // 100 + 2
         assert lo <= hdrs[i] <= hi, f"fief {i}: header {hdrs[i]} not in [{lo},{hi}] for base {b}"
 
-    # difficulty boost landed on stats (gold +const_two*10, etc.) and daimyo stats
+    # difficulty boost landed on stats (gold +skill_level*10, etc.) and daimyo stats
     h = 5  # Hida
     f = m.fief(h)
     print(f"  Hida: gold {base[h]['gold']}->{m.r16(f+M.F_GOLD)} "
@@ -156,7 +156,7 @@ def _smoke():
     print(f"  Hida lord (daimyo {m.fief_owner(h)}): drive(+2)={m.r8(d+M.D_DRIVE)} "
           f"charisma(+4)={m.r8(d+M.D_CHARISMA)}")
     # Hida isn't in the boosted-fief set {1,2,4,7,10,15,16}, so it gets only the
-    # general difficulty boost: gold += const_two*10, the rest += const_two*5.
+    # general difficulty boost: gold += skill_level*10, the rest += skill_level*5.
     assert m.r16(f + M.F_GOLD) == base[h]["gold"] + m.skill * 10, m.r16(f + M.F_GOLD)
     assert m.r16(f + M.F_MEN) == base[h]["men"] + m.skill * 5, m.r16(f + M.F_MEN)
 

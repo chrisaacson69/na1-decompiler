@@ -19,10 +19,11 @@ the site by [`tools/build-site.py`](./tools/build-site.py), built and deployed b
 ## How the decompiler works
 
 The decompiler lifts the game's stack VM bytecode to C, then **structures** it — recovering
-`if`/`while`/`switch` from raw goto/label form via a CFG region reducer. Every structuring fold
-is proven CFG-equivalent to the bytecode by a self-validation gate before it's kept, so the
-output is faithful by construction (a fold that can't be proven equivalent falls back to an
-honest `goto`). Progress is measured by residual goto count: lower = more structure recovered.
+`if`/`while`/`switch` from raw goto/label form with DREAM (reaching-condition structuring, *No
+More Gotos*, NDSS 2015), and a CFG region reducer for the subs DREAM cannot own. Every structured
+sub is proven CFG-equivalent to the bytecode before it's kept, so the output is faithful by
+construction (a sub neither can prove falls back to an honest `goto`); the printed C of sample subs
+is also evaluated against the ROM. Where it stands: [`docs/decompiler-structure.md`](./docs/decompiler-structure.md).
 
 ## Layout
 
@@ -40,7 +41,8 @@ honest `goto`). Progress is measured by residual goto count: lower = more struct
 The heart of the decompiler is [`docs/decompiler-atom-log.md`](./docs/decompiler-atom-log.md):
 a running ledger where each **atom** is the inverse of one compiler lowering. The discipline is
 *fix as we go, but log each case* — so a fix that generalizes (clears many subs) is distinguished
-from a one-off pattern-match. Current state: **V2 = 929 gotos, 222 ahead of the V1 reference.**
+from a one-off pattern-match. It is the June build log; on NA1 today DREAM owns 469 of 499 subs, the
+region reducer 25, and no sub is left as a goto fallback.
 
 ## Build
 

@@ -114,10 +114,12 @@ def main():
 
     chapters = sorted(DOCS.glob("[0-9]*.md"))
     appendices = sorted(DOCS.glob("appendix-*.md"))
-    decompiler = sorted(DOCS.glob("decompiler-*.md"))
+    current = [DOCS / "decompiler-structure.md"]          # the structurer as it stands; the rest is history
+    decompiler = sorted(f for f in DOCS.glob("decompiler-*.md") if f not in current)
 
-    sections = {"chapters": [], "appendices": [], "decompiler": []}
-    for group, files in (("chapters", chapters), ("appendices", appendices), ("decompiler", decompiler)):
+    sections = {"chapters": [], "appendices": [], "decompiler": [], "decompiler_now": []}
+    for group, files in (("chapters", chapters), ("appendices", appendices), ("decompiler", decompiler),
+                         ("decompiler_now", current)):
         for f in files:
             title, summary = meta(f.read_text(encoding="utf-8"))
             emit_md(f, title)
@@ -376,6 +378,7 @@ def write_sections(sections):
         '<p class="subtitle">How the game\'s logic was recovered: stack-VM bytecode lifted to readable C.</p>'
         '<p class="lead">The story of building the decompiler, the goto&rarr;structure engine (DREAM), and the '
         'toolchain that turned a cartridge into source you can read.</p>'
+        '<h2>Where It Stands</h2><ul class="linklist">' + card(sections["decompiler_now"]) + '</ul>'
         '<h2>How It Came About</h2><ul class="linklist">' + card(sections["decompiler"]) + '</ul>'
         '<div class="pillars">'
         '<div class="pillar"><h3><a href="https://github.com/chrisaacson69/na1-decompiler">🔧 The Code</a></h3>'

@@ -67,7 +67,7 @@ All three follow the EXACT shape of `effect_grow` but with `sqrt(target_pair_avg
 | `$896F` | $896F | `(TOWN + WEALTH) / 2 + amount` → sqrt → ... | **WEALTH** (record+14) |
 | `$89C1` | $89C1 | `(MEN + MORALE) / 2 + amount` → sqrt → ... | **MORALE** (record+18) |
 
-Each runs the standard pipeline: `sqrt(pair_avg + amount) − const_two → math32_3arg → << 1 → headroom-clamp → flat-100 → target_field += gain`.
+Each runs the standard pipeline: `sqrt(pair_avg + amount) − skill_level → math32_3arg → << 1 → headroom-clamp → flat-100 → target_field += gain`.
 
 **Thematic pairings**: each target is averaged with its "natural complement" before the sqrt — prevents runaway-pumping one stat. Loyalty (peasant satisfaction) ↔ output (peasant productivity); wealth (commerce) ↔ town (urban infra); morale (army spirit) ↔ men (army size).
 
@@ -114,7 +114,7 @@ The transfer scaling is probably a function of **men** (recipient population) an
 | skill | 74 | 74 | 0 | sanity ✓ |
 | arms | 73 | 73 | 0 | sanity ✓ |
 | header | 1640 | 1640 | 0 | sanity ✓ |
-| const_two ($6D63) | 1 | 1 | 0 | watched |
+| skill_level ($6D63) | 1 | 1 | 0 | watched |
 
 **Derived observations**:
 - `rice −= amount` is exactly 1:1 (no consumption-on-transit, no rounding).

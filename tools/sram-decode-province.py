@@ -32,7 +32,7 @@ RECORD_SIZE = 26
 NUM_RECORDS = 17
 
 CONFIG_BLOCK = 0x6D5F
-CONST_TWO    = 0x6D63
+SKILL_LEVEL    = 0x6D63
 TURN_ORDER   = 0x6F1B  # was $6F0B (zero refs); real array base per main-turn-loop walk 2026-06-02
 SELECTED_IDX = 0x6F5F
 
@@ -90,7 +90,7 @@ def dump_globals(data):
     print(f"\n--- globals ---")
     print(f"  config_block @ $6D5F   = {' '.join(f'{b:02X}' for b in cfg)}  "
           f"(expect '01 01 02 32 ?? ??')")
-    print(f"  const_two   @ $6D63   = word {read_word(data, cpu_to_file(CONST_TWO))}  "
+    print(f"  skill_level   @ $6D63   = word {read_word(data, cpu_to_file(SKILL_LEVEL))}  "
           f"(expect 2)")
     turn = data[cpu_to_file(TURN_ORDER):cpu_to_file(TURN_ORDER) + NUM_RECORDS]
     print(f"  daimyo_turn_order @ $6F1B = {list(turn)}")
@@ -123,7 +123,7 @@ def diff_table(pre, post):
         print("  (no province-table changes)")
 
     # also diff a handful of single-word globals
-    for label, addr in (("const_two", CONST_TWO),
+    for label, addr in (("skill_level", SKILL_LEVEL),
                         ("selected_province_idx", SELECTED_IDX)):
         a = read_word(pre, cpu_to_file(addr))
         b = read_word(post, cpu_to_file(addr))

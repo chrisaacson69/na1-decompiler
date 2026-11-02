@@ -111,7 +111,7 @@
 <p class="sub">Read straight from <code>$87F0</code> bytecode and execution-verified.</p>
 <pre><span class="c">// gain — inverse-sqrt diminishing returns</span>
 sqrt   = <span class="k">int_sqrt</span>(output + amount)
-gain   = 2 &times; &lfloor;amount &times; (6 &minus; skill) &divide; sqrt&rfloor;   <span class="c">// skill = const_two $6D63 = the DIFFICULTY level (1-5, default 2)</span>
+gain   = 2 &times; &lfloor;amount &times; (6 &minus; skill) &divide; sqrt&rfloor;   <span class="c">// skill = skill_level $6D63 = the DIFFICULTY level (1-5, default 2)</span>
 gain   = <span class="k">max</span>(gain, 1)
 gain   = <span class="k">min</span>(gain, header &minus; output)            <span class="c">// headroom clamp (rarely fires)</span>
 
@@ -122,7 +122,7 @@ dams    &minus;= <span class="k">pct_op</span>(dams,    pct)              <span 
 
 output &plus;= gain
 gold   &minus;= amount                            <span class="c">// debited by the driver</span></pre>
-<div class="callout"><b>The hidden SKILL-LEVEL dial.</b> The <code>(6&nbsp;&minus;&nbsp;skill)</code> multiplier is the game's <b>difficulty knob</b> (<code>const_two&nbsp;$6D63</code>, chosen 1–5 at “Please select skill level.”, default&nbsp;2) — and it scales your <i>entire</i> economy. On one province (output&nbsp;80, spend&nbsp;100) the gain is <b>76 / 60 / 46 / 30 / 14</b> for skill&nbsp;1 / 2 / 3 / 4 / 5 — a <b>5.4× swing</b> the UI never shows (emulator + <code>econ_sim</code> verified). Higher skill = slower development = harder. The long-mistaken literal “×5” was just skill-1’s 6−1; the validation table below was captured at skill&nbsp;1.<br><br><b>Drain correction (2026-06-02).</b> The secondary-drain percentage is <b>not a constant 20</b> — the bytecode at <code>$8833–$884E</code> computes it live from the gain-to-output ratio, capped at 50%. The “20” was a coincidence of the single drain-measured test (gain&nbsp;56, output&nbsp;80 → ⌊5600/136⌋/2&nbsp;=&nbsp;20).</div>
+<div class="callout"><b>The hidden SKILL-LEVEL dial.</b> The <code>(6&nbsp;&minus;&nbsp;skill)</code> multiplier is the game's <b>difficulty knob</b> (<code>skill_level&nbsp;$6D63</code>, chosen 1–5 at “Please select skill level.”, default&nbsp;2) — and it scales your <i>entire</i> economy. On one province (output&nbsp;80, spend&nbsp;100) the gain is <b>76 / 60 / 46 / 30 / 14</b> for skill&nbsp;1 / 2 / 3 / 4 / 5 — a <b>5.4× swing</b> the UI never shows (emulator + <code>econ_sim</code> verified). Higher skill = slower development = harder. The long-mistaken literal “×5” was just skill-1’s 6−1; the validation table below was captured at skill&nbsp;1.<br><br><b>Drain correction (2026-06-02).</b> The secondary-drain percentage is <b>not a constant 20</b> — the bytecode at <code>$8833–$884E</code> computes it live from the gain-to-output ratio, capped at 50%. The “20” was a coincidence of the single drain-measured test (gain&nbsp;56, output&nbsp;80 → ⌊5600/136⌋/2&nbsp;=&nbsp;20).</div>
 <h3>Validated against the ROM</h3>
 <p class="sub">Five controlled Grows on one province — predicted gain vs. observed, exact every time.</p>
 <table>

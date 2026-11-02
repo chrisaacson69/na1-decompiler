@@ -72,7 +72,7 @@ The `$7001` records are read **little-endian** (`loadA_ind_word` reads the low b
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | field | gold | debt | town | rice | output | dams | loyalty | wealth | men | morale | skill | arms | **header** (base koku) |
 
-The header (base koku) ceiling is the **last** field (+24). Two more variables the Grow handlers lean on: `$6D63` = **`const_two`, the skill-level / difficulty knob** (1–5, default 2, chosen at new-game — *not* a literal constant 2), and `$6F0B` = the daimyo turn-order permutation (17 elements, 0–16).
+The header (base koku) ceiling is the **last** field (+24). Two more variables the Grow handlers lean on: `$6D63` = **`skill_level`, the skill-level / difficulty knob** (1–5, default 2, chosen at new-game — *not* a literal constant 2), and `$6F0B` = the daimyo turn-order permutation (17 elements, 0–16).
 
 ## 5. Grow, fully traced
 
@@ -112,7 +112,7 @@ Two things the menu screen never states:
 if amount < 1:  return 0                                  ; guard
 
 gain = 2 · ⌊ amount · (6 − skill) / √(output + amount) ⌋  ; $CBCD = integer sqrt;
-                                                          ;   skill = const_two ($6D63)
+                                                          ;   skill = skill_level ($6D63)
 gain = clamp(gain, 1 .. header − output)                  ; capped by base-koku headroom
 
 pct  = ⌊ 100 · gain / (gain + output) ⌋ / 2               ; live drain %, ceiling 50
@@ -128,11 +128,11 @@ output  += gain
 Everything the in-game UI does *not* tell you about pressing "Grow":
 
 1. **It costs gold** from the province's own treasury (`gold`, +0). The prompt is capped at that gold; `gold == 0` blocks the command outright (precondition B).
-2. **The benefit is `output gain = 2·⌊amount·(6−skill)/√(output+amount)⌋`** (emulator-verified). Grow raises **output** on a square-root curve in the gold spent, scaled by the global **`(6−skill)` difficulty multiplier** (`skill = const_two`). Doubling the gold yields ≈`1.41×` (the √); the skill dial swings the whole gain **~5.4×** — skill 1 → ×5 … skill 5 → ×1, *higher skill = slower economy* — and none of it shows in the UI. Many small Grows beat one large one. The gain is clamped to `header − output` (min 1).
+2. **The benefit is `output gain = 2·⌊amount·(6−skill)/√(output+amount)⌋`** (emulator-verified). Grow raises **output** on a square-root curve in the gold spent, scaled by the global **`(6−skill)` difficulty multiplier** (`skill = skill_level`). Doubling the gold yields ≈`1.41×` (the √); the skill dial swings the whole gain **~5.4×** — skill 1 → ×5 … skill 5 → ×1, *higher skill = slower economy* — and none of it shows in the UI. Many small Grows beat one large one. The gain is clamped to `header − output` (min 1).
 3. **A development ceiling blocks it.** Precondition A refuses Grow when `header ≥ output` — base koku caps how far output can be pushed.
 4. **Grow silently drains `loyalty` and `dams`.** The effect's tail runs the `$D70D` percentage operator on both and **subtracts** the results — raising output costs those two stats. The drain % is **live-computed** (`pct = ⌊100·gain/(gain+output)⌋ / 2`, ceiling 50), not a flat constant.
 
-None of this is visible in the menu — exactly the class of opaque mechanic the project set out to surface, and the first concrete entry in the strategy counter-graph. `const_two` (the skill dial) is a pervasive anti-player knob beyond Grow: it also gates AI-only stat boosts, uprising magnitude `(skill+1)·10`, and combat casualties `rng(6−skill)`.
+None of this is visible in the menu — exactly the class of opaque mechanic the project set out to surface, and the first concrete entry in the strategy counter-graph. `skill_level` (the skill dial) is a pervasive anti-player knob beyond Grow: it also gates AI-only stat boosts, uprising magnitude `(skill+1)·10`, and combat casualties `rng(6−skill)`.
 
 ## 6. The extended instruction set — `$B7`
 

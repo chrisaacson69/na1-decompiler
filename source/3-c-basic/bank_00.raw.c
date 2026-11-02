@@ -237,17 +237,17 @@ L_83F7:
     goto L_8423;    // $840D
 L_8410:
     stat_ptr = (stat_ptr + 1);    // $8419
-    *(byte*)((stat_ptr - 1)) = (*(byte*)((stat_ptr - 1)) + (const_two * 5));    // $8420
+    *(byte*)((stat_ptr - 1)) = (*(byte*)((stat_ptr - 1)) + (skill_level * 5));    // $8420
     j = (j + 1);    // $8422
 L_8423:
     if (((unsigned)j < (unsigned)5)) goto L_8410;    // $8427
     field_ptr = &province_table_live[local11];    // $8432
     field_ptr = &field_ptr->debt;    // $843B
-    *(word*)((field_ptr + -2)) = (*(word*)((field_ptr + -2)) + (const_two * 10));    // $8442
+    *(word*)((field_ptr + -2)) = (*(word*)((field_ptr + -2)) + (skill_level * 10));    // $8442
     j = 0;    // $8444
 L_8445:
     field_ptr = &field_ptr->debt;    // $844D
-    field_ptr->gold = (field_ptr->gold + (const_two * 5));    // $8452
+    field_ptr->gold = (field_ptr->gold + (skill_level * 5));    // $8452
     j = (j + 1);    // $8455
     if (((unsigned)j < (unsigned)10)) goto L_8445;    // $8459
     if ((scenario_fief_count != 50)) goto L_8507;    // $8462
@@ -576,8 +576,8 @@ L_8ABC:
     ui_input_mode = 0;    // $8AC6
 L_8AC9:
     message_display(msg_please_select_skill_level);    // $8ACC
-    const_two = number_input(1, 5);    // $8AD6
-    if (!(const_two)) goto L_8AC9;    // $8AD9
+    skill_level = number_input(1, 5);    // $8AD6
+    if (!(skill_level)) goto L_8AC9;    // $8AD9
     message_display(msg_is_everything_ok_so_far);    // $8ADF
     if (prompt_y_n()) goto L_8B44;    // $8AE6
     repaint_screen();    // $8AE9
@@ -2044,8 +2044,8 @@ L_9FE9:
     event_boost_province_wealth_loyalty(i, &province_table_live[i]);    // $9FE5
     stat_ptr = &province_table_live[i].loyalty;    // $9FF1
     if (!(get_province_ai_state(i))) goto L_A029;    // $9FF7
-    if ((const_two == 1)) goto L_A029;    // $9FFF
-    decay_amount = rng_mod(const_two);    // $A009
+    if ((skill_level == 1)) goto L_A029;    // $9FFF
+    decay_amount = rng_mod(skill_level);    // $A009
     stat_ptr = (stat_ptr + 2);    // $A00D
     *(word*)((stat_ptr + -2)) = (*(word*)((stat_ptr + -2)) - decay_amount);    // $A014
     stat_ptr = (stat_ptr + 2);    // $A018
@@ -2251,7 +2251,7 @@ word per_period_fief_daimyo_update_driver(void) {
     goto L_A349;    // $A313
 L_A316:
     drift_daimyo_luck(fief_idx);    // $A317
-    if (!(((unsigned)fief_tax_rate[fief_idx] >= (unsigned)(90 - const_two)))) goto L_A347;    // $A32A
+    if (!(((unsigned)fief_tax_rate[fief_idx] >= (unsigned)(90 - skill_level)))) goto L_A347;    // $A32A
     province_table_live[fief_idx].loyalty = pct_op(province_table_live[fief_idx].loyalty, 90);    // $A346
 L_A347:
     fief_idx = (fief_idx + 1);    // $A348
@@ -2421,7 +2421,7 @@ L_A5D4:
 // (body @ $A5DA)
 
 word rng_mod_30(void) {
-    return rng_mod(((const_two + 1) * 10));    // $A5E5
+    return rng_mod(((skill_level + 1) * 10));    // $A5E5
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $A5E6
@@ -2441,7 +2441,7 @@ L_A616:
     *(word*)(local9) = (*(word*)(output_ptr) / 2);    // $A622
     *(word*)(output_ptr) = (*(word*)(output_ptr) - *(word*)(local9));    // $A62B
 L_A62C:
-    if (!((fief_to_daimyo_record_addr(battle_defending_province)->charisma < (rng_mod(const_two) + 70)))) goto L_A661;    // $A641
+    if (!((fief_to_daimyo_record_addr(battle_defending_province)->charisma < (rng_mod(skill_level) + 70)))) goto L_A661;    // $A641
     men_transfer = pct_op(*(word*)(local9), rng_mod(50));    // $A652
     *(word*)(output_ptr) = (*(word*)(output_ptr) + men_transfer);    // $A659
     *(word*)(local9) = (*(word*)(local9) - men_transfer);    // $A660

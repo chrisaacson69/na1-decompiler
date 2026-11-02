@@ -473,7 +473,7 @@ def war_hook(resolve=_no_resolve):
 # ===========================================================================
 def _smoke():
     m = M.Memory()
-    m.w16(M.CONST_TWO, 2)
+    m.w16(M.SKILL_LEVEL, 2)
     m.w16(M.CURRENT_GAME_YEAR, 1570)
     # market rates (mid-game-ish)
     m.w16(M.GOLD_RICE_EXCHANGE, 15)

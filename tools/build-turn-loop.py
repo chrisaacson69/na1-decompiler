@@ -82,7 +82,7 @@ NODES = [
        detail="Runs once before the loop proper: boot/title, save check, scenario size, board seeding "
               "(<code>daimyo_turn_order[i]=i</code>, all fiefs manual, market rates randomized), the "
               "how-many-players / character-creation wizard, and the skill-level pick. "
-              "<b>Notable:</b> the skill level lands in <code>const_two</code> — the same value the Grow/Build "
+              "<b>Notable:</b> the skill level lands in <code>skill_level</code> — the same value the Grow/Build "
               "gain formula subtracts — so difficulty is partly an economy knob (full writeup on the page)."),
   dict(id="planner", no="1", title="ai_strategic_turn_planner", addr=0xA455, bank=0, status="page",
        page="turn-loop-planner.html",
@@ -197,7 +197,7 @@ PHASE_PAGES = {
                "house; <code>daimyo_creation_stat_roll_screen</code> rolls its stats and <b>marks that fief "
                "<code>province_ai_state = 5</code> (Direct / player-controlled)</b> — the flag that later excludes "
                "it from the AI starting boost."),
-      (0x8AD6, "<b>Skill level.</b> “Please select skill level.” → <code>const_two = number_input(1..5)</code>. "
+      (0x8AD6, "<b>Skill level.</b> “Please select skill level.” → <code>skill_level = number_input(1..5)</code>. "
                "This one input is the whole difficulty system (see below)."),
       (0x8ADF, "<b>Confirm.</b> “Is everything OK so far?” — yes proceeds; no loops all the way back to the "
                "scenario step and starts the selection over."),
@@ -207,7 +207,7 @@ PHASE_PAGES = {
     sections=[
       ("What skill level actually does",
        "<p>The skill level isn’t a separate difficulty system — it’s written straight into "
-       "<code>const_two ($6D63)</code>, a single value the engine reads in <b>~35 places across all four "
+       "<code>skill_level ($6D63)</code>, a single value the engine reads in <b>~35 places across all four "
        "banks</b>. The headline: all five development commands use <code>(6 − skill)</code> as the gain "
        "multiplier, so:</p>"
        "<pre>Grow gain = 2 · <span class='k'>floor</span>( amount · (6 − skill) / sqrt(output + amount) )</pre>"
@@ -234,8 +234,8 @@ PHASE_PAGES = {
        "sets your own fief to state 5, so the buff lands on every AI house but never on you.</p>"),
     ],
     finds=[
-      ("Skill level = const_two, the economy throttle.",
-       "“Please select skill level.” writes 1–5 to <code>const_two</code> — the very value the development "
+      ("Skill level = skill_level, the economy throttle.",
+       "“Please select skill level.” writes 1–5 to <code>skill_level</code> — the very value the development "
        "formulas divide the field-root into. Difficulty is, first and foremost, an economy dial."),
       ("The starting boost targets the AI, confirmed.",
        "<code>apply_scenario_starting_stat_boosts</code> only buffs fiefs with <code>province_ai_state == 0</code>; "
@@ -243,7 +243,7 @@ PHASE_PAGES = {
        "head start, never a player one."),
     ],
     sources="<code>decompiled/bank_00.c</code> ($89A3, $83E2) · <code>tools/probe-skill-impact.py</code> · "
-            "memory <code>project_nobunaga_main_turn_loop</code> · label <code>const_two $6D63</code>.",
+            "memory <code>project_nobunaga_main_turn_loop</code> · label <code>skill_level $6D63</code>.",
   ),
   "gameover": dict(
     no="6", title="Game Over", sub="display_fullscreen_graphic_sequence $8003 — the win / lose sequence and restart.",
@@ -396,7 +396,7 @@ PHASE_PAGES = {
        "  <tr><td>Luck</td><td>+3</td><td>—</td><td>10</td></tr>\n"
        "  <tr><td><b>Charisma</b></td><td>+4</td><td><b>decisive — the capture contest</b></td><td>5</td></tr>\n"
        "  <tr><td>IQ</td><td>+5</td><td>—</td><td><b>20 — top daimyo stat</b></td></tr>\n"
-       "  <tr><td>skill (<code>const_two</code>)</td><td>—</td><td>rng(6−skill), +2·skill</td><td>(province) 25</td></tr>\n"
+       "  <tr><td>skill (<code>skill_level</code>)</td><td>—</td><td>rng(6−skill), +2·skill</td><td>(province) 25</td></tr>\n"
        "  <tr><td>morale</td><td>prov +18</td><td>contest term</td><td>10</td></tr>\n</table>\n"
        "<p class='sub'>So <b>IQ</b> most influences <i>whether</i> the AI attacks, while <b>charisma</b> decides "
        "<i>how the battle goes</i> once joined — and province <b>skill</b> (weight 25) is the single biggest term.</p>"),

@@ -523,7 +523,7 @@ VM bytecode disassembly
   $840A  85 D8                      STORE_near             $D8
   $840C  40                         LOADL_qimm   ; inline operand = 0
   $840D  D6 23 84                   JUMP_abs               $8423
- >$8410  A4 63 6D                   LOADL_abs              $6D63 (const_two)
+ >$8410  A4 63 6D                   LOADL_abs              $6D63 (skill_level)
   $8413  55                         LOADR_qimm   ; inline operand = 5
   $8414  B5                         MULT
   $8415  B3                         PUSHL
@@ -549,7 +549,7 @@ VM bytecode disassembly
   $842E  8C 01 70                   LOADR_imm2             $7001 (province_table_live)
   $8431  BB                         ADD
   $8432  28                         STORE_quick   ; inline operand = 8
-  $8433  A4 63 6D                   LOADL_abs              $6D63 (const_two)
+  $8433  A4 63 6D                   LOADL_abs              $6D63 (skill_level)
   $8436  5A                         LOADR_qimm   ; inline operand = 10
   $8437  B5                         MULT
   $8438  B3                         PUSHL
@@ -564,7 +564,7 @@ VM bytecode disassembly
   $8442  B1                         POPSTORE
   $8443  40                         LOADL_qimm   ; inline operand = 0
   $8444  2A                         STORE_quick   ; inline operand = 10
- >$8445  A4 63 6D                   LOADL_abs              $6D63 (const_two)
+ >$8445  A4 63 6D                   LOADL_abs              $6D63 (skill_level)
   $8448  55                         LOADR_qimm   ; inline operand = 5
   $8449  B5                         MULT
   $844A  B3                         PUSHL
@@ -1503,7 +1503,7 @@ VM bytecode disassembly
   $8AD0  65                         PUSH_qimm   ; inline operand = 5
   $8AD1  61                         PUSH_qimm   ; inline operand = 1
   $8AD2  E9 E9 D5 04                CALL_abs_imm1          $D5E9 (number_input) {bytecode}, $04
-  $8AD6  A8 63 6D                   STORE_abs              $6D63 (const_two)
+  $8AD6  A8 63 6D                   STORE_abs              $6D63 (skill_level)
   $8AD9  D8 C9 8A                   JUMPF_abs              $8AC9
   $8ADC  8E F8 B9                   PUSH_imm2              $B9F8 (msg_is_everything_ok_so_far)
   $8ADF  E9 26 D3 02                CALL_abs_imm1          $D326 (message_display) {bytecode}, $02
@@ -4511,11 +4511,11 @@ VM bytecode disassembly
   $9FF2  3B                         PUSH_quick   ; inline operand = 11
   $9FF3  E9 8D D9 02                CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
   $9FF7  D8 29 A0                   JUMPF_abs              $A029
-  $9FFA  A4 63 6D                   LOADL_abs              $6D63 (const_two)
+  $9FFA  A4 63 6D                   LOADL_abs              $6D63 (skill_level)
   $9FFD  51                         LOADR_qimm   ; inline operand = 1
   $9FFE  C1                         CMPNE
   $9FFF  D8 29 A0                   JUMPF_abs              $A029
-  $A002  AA 63 6D                   PUSH_abs               $6D63 (const_two)
+  $A002  AA 63 6D                   PUSH_abs               $6D63 (skill_level)
   $A005  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
   $A009  28                         STORE_quick   ; inline operand = 8
   $A00A  38                         PUSH_quick   ; inline operand = 8
@@ -5064,7 +5064,7 @@ VM bytecode disassembly
  >$A316  3B                         PUSH_quick   ; inline operand = 11
   $A317  E9 ED A2 02                CALL_abs_imm1          $A2ED (drift_daimyo_luck) {bytecode}, $02
   $A31B  89 5A                      BYTE_LOADL_imm1        +90
-  $A31D  A6 63 6D                   LOADR_abs              $6D63 (const_two)
+  $A31D  A6 63 6D                   LOADR_abs              $6D63 (skill_level)
   $A320  BC                         SUB
   $A321  B3                         PUSHL
   $A322  0B                         LOADL_quick   ; inline operand = 11
@@ -5422,7 +5422,7 @@ VM bytecode disassembly
 ; ============================================================
 ; sub $A5D5   (frame_off=+0, body @ $A5DA)
 ; ============================================================
-  $A5DA  A4 63 6D                   LOADL_abs              $6D63 (const_two)
+  $A5DA  A4 63 6D                   LOADL_abs              $6D63 (skill_level)
   $A5DD  D0                         INC
   $A5DE  5A                         LOADR_qimm   ; inline operand = 10
   $A5DF  B5                         MULT
@@ -5486,7 +5486,7 @@ VM bytecode disassembly
   $A629  B0                         DEREF
   $A62A  BC                         SUB
   $A62B  B1                         POPSTORE
- >$A62C  AA 63 6D                   PUSH_abs               $6D63 (const_two)
+ >$A62C  AA 63 6D                   PUSH_abs               $6D63 (skill_level)
   $A62F  E9 52 CA 02                CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
   $A633  8F 46                      BYTE_ADD_imm1          +70
   $A635  B3                         PUSHL

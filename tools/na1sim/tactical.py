@@ -205,7 +205,7 @@ def ai_eval_battle_strength_total(m: "M.Memory", side: int, unit_slot: int,
            + rank_term(unit_slot vs other_unit_slot)      # +men if higher rank
            + (base + pct_op(pct_op(base,40), W[side]))    # 8-stat term (re-adds base)
            + pct_op(base, $7BEE[other_unit_slot] * 20)    # +20%/prior-exchange momentum
-        scale = AI-home(state0) ? 100 : (115 - const_two*15)
+        scale = AI-home(state0) ? 100 : (115 - skill_level*15)
         return pct_op(base + S0, scale)"""
     ai_sum_battle_strength(m)
     base = m.r16(m.unit_strength_ptr(side, unit_slot))
@@ -317,10 +317,10 @@ def resolve_attack_apply_casualties(m: "M.Memory", enemy_slot: int, gold: int) -
     the AI's own attack). Pay `gold` (always); if the cur side wins a
     morale+Charisma contest AND paid >=1 gold/enemy-man, a fraction of the enemy
     unit DEFECTS into the cur side's commander (slot 0). Else, if underpaid, the
-    enemy fief's morale drops instead. RNG: rng_mod(6-const_two), once.
+    enemy fief's morale drops instead. RNG: rng_mod(6-skill_level), once.
 
-        att = rng(6-const_two) + own_fief.morale + own_daimyo.Charisma
-        def = enemy_fief.morale + enemy_daimyo.Charisma + 2*const_two
+        att = rng(6-skill_level) + own_fief.morale + own_daimyo.Charisma
+        def = enemy_fief.morale + enemy_daimyo.Charisma + 2*skill_level
         win = !skip_flag && att > def
         defectors = pct_op(enemy_men, math32_2arg(att-def, att))   (capped to 9999 total)
     """
@@ -1081,7 +1081,7 @@ def ai_choose_combat_action_by_battle_strength(m, unit_type) -> int:
 
 
 def ai_rng_resolve_combat_apply_casualties(m) -> int:
-    """ai_rng_resolve_combat_apply_casualties $A721: with prob (const_two/(const_two
+    """ai_rng_resolve_combat_apply_casualties $A721: with prob (skill_level/(skill_level
     +1)) the commander may BRIBE -- but ONLY when the enemy is the PLAYER and the
     own army is small vs the enemy. For all-AI battles every guard after the rng
     roll fails, so this just consumes one rng draw and returns. (RNG order matters

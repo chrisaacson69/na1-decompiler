@@ -28,7 +28,7 @@ The SRAM is a set of **parallel index-keyed arrays**; naming each array's **base
 |---|---|---|---|
 | **$6003** | `fief_history_table` | 17 × 8 bytes | Per-fief HIGH-WATER MARKS (output/dams/loyalty/wealth maxima) — income harvests off the *peak*, not current. |
 | **$6D2D** | `fief_tax_rate` | 17 × 1 byte (flat) | Per-fief tax % (0-100); NOT in the 26-byte record. |
-| **$6D5F** | `current_season` + config | 4-byte block | Season 0-3; `$6D63 = const_two` (Grow's √ subtrahend). |
+| **$6D5F** | `current_season` + config | 4-byte block | Season 0-3; `$6D63 = skill_level` (Grow's √ subtrahend). |
 | **$6E15** | `fief_to_daimyo_map` | 17 × 1 byte | **The explicit owner array**: position i = owner-daimyo of fief i+1. Starts identity; changes on conquest. |
 | **$7001** | `province_table_live` | 17 × 26 bytes | The live province records (see below). Record N at `$7001 + N*26`. |
 | **$7515** | `zealot_uprising_slot` | 26 bytes (idx 50) | Ikko-Ikki uprising force in province-record format (header=9999 = `0F 27` marks it). |

@@ -95,7 +95,7 @@ COMMANDS = {
 '<span class="c">// gain — inverse-sqrt diminishing returns</span>\n'
 'sqrt   = <span class="k">int_sqrt</span>(output + amount)\n'
 'gain   = 2 &times; &lfloor;amount &times; (6 &minus; skill) &divide; sqrt&rfloor;   '
-'<span class="c">// skill = const_two $6D63 = the DIFFICULTY level (1-5, default 2)</span>\n'
+'<span class="c">// skill = skill_level $6D63 = the DIFFICULTY level (1-5, default 2)</span>\n'
 'gain   = <span class="k">max</span>(gain, 1)\n'
 'gain   = <span class="k">min</span>(gain, header &minus; output)            '
 '<span class="c">// headroom clamp (rarely fires)</span>\n\n'
@@ -110,7 +110,7 @@ COMMANDS = {
            "low; returns fall off sharply past output ≈ 300.",
     "callout": (
 "<b>The hidden SKILL-LEVEL dial.</b> The <code>(6&nbsp;&minus;&nbsp;skill)</code> multiplier is the game's "
-"<b>difficulty knob</b> (<code>const_two&nbsp;$6D63</code>, chosen 1–5 at “Please select skill level.”, "
+"<b>difficulty knob</b> (<code>skill_level&nbsp;$6D63</code>, chosen 1–5 at “Please select skill level.”, "
 "default&nbsp;2) — and it scales your <i>entire</i> economy. On one province (output&nbsp;80, spend&nbsp;100) "
 "the gain is <b>76 / 60 / 46 / 30 / 14</b> for skill&nbsp;1 / 2 / 3 / 4 / 5 — a <b>5.4× swing</b> the UI "
 "never shows (emulator + <code>econ_sim</code> verified). Higher skill = slower development = harder. The "
@@ -162,7 +162,7 @@ COMMANDS = {
 '<span class="c">// gain — inverse-sqrt diminishing returns (Grow’s kernel, on TOWN)</span>\n'
 'sqrt = <span class="k">int_sqrt</span>(town + amount)\n'
 'g    = &lfloor;amount &times; (6 &minus; skill) &divide; sqrt&rfloor;       '
-'<span class="c">// skill = const_two $6D63 = the DIFFICULTY level (1-5, default 2)</span>\n'
+'<span class="c">// skill = skill_level $6D63 = the DIFFICULTY level (1-5, default 2)</span>\n'
 'g    = <span class="k">max</span>(g, 1)\n'
 'g    = <span class="k">min</span>(g, header &minus; town)             '
 '<span class="c">// headroom clamp (rarely fires)</span>\n\n'
@@ -180,7 +180,7 @@ COMMANDS = {
            "Front-load Build while town is low.",
     "callout": (
 "<b>The hidden SKILL-LEVEL dial.</b> The <code>(6&nbsp;&minus;&nbsp;skill)</code> term is the game's "
-"difficulty knob (<code>const_two&nbsp;$6D63</code>, 1–5, default 2): on one province (town&nbsp;66, "
+"difficulty knob (<code>skill_level&nbsp;$6D63</code>, 1–5, default 2): on one province (town&nbsp;66, "
 "spend&nbsp;100) the town gain is <b>82 / 66 / 50 / 32 / 16</b> for skill&nbsp;1–5 — the same ~5.4× swing "
 "as Grow, invisible in the UI (emulator + <code>econ_sim</code> verified). Higher skill = slower "
 "development = harder.<br><br>"
@@ -253,16 +253,17 @@ COMMANDS = {
 '<span class="c">// give_morale  $89C1</span>\n\n'
 '<span class="k">where</span> give(pair):\n'
 '   g     = &lfloor;amount &times; (6 &minus; skill) &divide; &radic;(pair + amount)&rfloor;   '
-'<span class="c">// skill = const_two $6D63 = difficulty (1-5, default 2)</span>\n'
+'<span class="c">// skill = skill_level $6D63 = difficulty (1-5, default 2)</span>\n'
 '   g     = <span class="k">max</span>(g, 1);  g = <span class="k">min</span>(g, header &minus; field)\n'
 '   field &plus;= 2 &times; g                            '
-'<span class="c">// NO drain — pure benefit</span>'),
+'<span class="c">// NO drain — pure benefit</span>\n'
+'   <span class="c">// except morale: give_morale writes g, not 2&times;g (ROM-checked 2026-11-02)</span>'),
     "roi": "Best loyalty/morale ROI when the partner stat is high and the target is low (the "
            "<code>pair + amount</code> denominator stays small). Rice→Peasants is the staple loyalty "
            "pump — pair it with <b>Send</b> to convert a maxed fief’s rice surplus into frontier loyalty.",
     "callout": (
 "<b>The hidden SKILL-LEVEL dial.</b> Like Grow/Build, the <code>(6&nbsp;&minus;&nbsp;skill)</code> term is "
-"the difficulty knob (<code>const_two&nbsp;$6D63</code>, 1–5, default 2): Rice→Peasants (rice&nbsp;50) gives "
+"the difficulty knob (<code>skill_level&nbsp;$6D63</code>, 1–5, default 2): Rice→Peasants (rice&nbsp;50) gives "
 "loyalty/wealth <b>+50 / +40 / +30 / +20 / +10</b> for skill&nbsp;1–5 — the same ~5× swing (<code>econ_sim</code> "
 "verified). Higher skill = weaker gifts.<br><br>"
 "<b>The widest command.</b> Peasants mode raises <b>two</b> fields (loyalty <i>and</i> wealth); Men mode "

@@ -108,7 +108,7 @@ class World:
     year: int = 1560
     season: int = 0                  # 0 spring,1 summer,2 fall,3 winter (per appendix)
     watch_battles: bool = False      # OFF -> AI wars use the off-screen resolver
-    skill: int = 2                   # const_two difficulty (1 easiest..5 hardest);
+    skill: int = 2                   # skill_level difficulty (1 easiest..5 hardest);
                                      #   develop x(6-skill); AI recruit prob (skill+3)/10
     men_price: int = 5               # gold per recruited man (market rate ~5 -> ~15;
                                      #   ROM: men = gold_spent*10/hire_rate, rate stored x10)

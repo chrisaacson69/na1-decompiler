@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-26
-updated: 2026-06-17
+updated: 2026-11-02
 ---
 # Appendix A — Verified Game Formulas
 
@@ -14,16 +14,16 @@ updated: 2026-06-17
 - `⌊x⌋` = floor (truncate-toward-zero integer division — what 6502/VM does natively)
 - `√x` = `sqrt_int` ($CBCD) — integer square root, truncated
 - `header` = fief's max-economy ceiling (column at province record offset +24, e.g. 1640 for Mikawa)
-- `pct_op(b, p) = ⌊b × p ÷ 100⌋` — split-by-10 to avoid 16-bit overflow ($D70D)
+- `pct_op(b, p)` ≈ `⌊b × p ÷ 100⌋`, computed split-by-10 to stay in 16 bits ($D70D), and so up to 1 short (§pct_op)
 - `math32_3arg(a, b, c) = ⌊(a × b) ÷ c⌋` — 32-bit signed ($D6B8); **`c = 0` returns `$FFFF`**, and a **negative `c` divides by |c|−1** (KOEI's `sdiv32` one's-complements a negative divisor: a ROM bug, in every KOEI NES title that has it)
 - `math32_2arg(a, b) = ⌊100 × a ÷ (a + b)⌋` — `a`'s share of the total `(a+b)` as a percent ($D6DE; `(0,0)→0` guard)
 
-> **Re-checked against the ROM 2026-10-27** (15,317 inputs incl. `$8000` / `$FFFF` / zero divisors; the May probe's test vectors missed the edges). The checked models are emu-harness `vm_decompile.na1_extop_model`, which `cfg_gate` runs against the ROM on every gate run; cite those, not a copy. The underlying `B7` extended-opcode table was never decoded and is not needed: these three composite helpers are the interface every formula calls. ⚠️ `run-effect.py` *reverses* captured arg order for display — true frame order is arg1@fp+0x0B, arg2@+0x0D, arg3@+0x0F.
+> **Re-checked against the ROM 2026-10-27** (15,317 inputs incl. `$8000` / `$FFFF` / zero divisors; the May probe's test vectors missed the edges). The checked models are emu-harness `vm_decompile.na1_extop_model`, which `cfg_gate` runs against the ROM on every gate run; cite those, not a copy. The underlying extended-opcode table (`ext_op_table` $F263, 47 handlers) is decoded and named in `mesen-labels.toml`, but these three composite helpers are the interface every formula calls. ⚠️ `run-effect.py` *reverses* captured arg order for display — true frame order is arg1@fp+0x0B, arg2@+0x0D, arg3@+0x0F.
 
 ## 1. Grow ($87F0) — develop output
 
 ```
-gain = 2 × ⌊amount × (6 − const_two) ÷ √(output + amount)⌋   ; const_two=$6D63, normally 1 → ×5
+gain = 2 × ⌊amount × (6 − skill_level) ÷ √(output + amount)⌋   ; skill_level=$6D63, normally 1 → ×5
                                   ; headroom clamp: gain = min(gain, header − output); min gain 1
 pct  = (gain/2 > output) ? 50 : ⌊100 × gain ÷ (gain + output)⌋ ÷ 2   ; computed LIVE — not a constant
 loyalty -= pct_op(loyalty, pct)   ; ⌊loyalty × pct ÷ 100⌋
@@ -34,7 +34,7 @@ gold    -= amount                 ; debited by driver before effect runs
 
 **Drain sequence verified from bytecode** ($8859-$8870): two `host_call $D70D (pct_op)` invocations, one for loyalty (record+12), one for dams (record+10). Both use the SAME pct computed once at $884D.
 
-**The drain percentage is computed live** ($8833-$884E), not a constant: `math32_2arg(gain, output) = ⌊100·gain/(gain+output)⌋` is halved to give `pct`, with a flat `pct = 50` ceiling when `gain > 2·output`. The same `6−const_two` multiplier and live-pct drain apply to Build and Give.
+**The drain percentage is computed live** ($8833-$884E), not a constant: `math32_2arg(gain, output) = ⌊100·gain/(gain+output)⌋` is halved to give `pct`, with a flat `pct = 50` ceiling when `gain > 2·output`. The same `6−skill_level` multiplier and live-pct drain apply to Build and Give.
 
 - **ROI**: `gain / amount ≈ 10 / √(output + amount)` — pure inverse-sqrt diminishing returns
 - **Strategic implication**: front-load Grow when output is low; ROI drops sharply past output ~300
@@ -44,7 +44,7 @@ gold    -= amount                 ; debited by driver before effect runs
 ## 2. Build ($88A6) — develop town
 
 ```
-g    = ⌊amount × (6 − const_two) ÷ √(town + amount)⌋   ; const_two=$6D63, normally 1 → ×5
+g    = ⌊amount × (6 − skill_level) ÷ √(town + amount)⌋   ; skill_level=$6D63, normally 1 → ×5
 g    = max(g, 1); g = min(g, header − town)            ; headroom clamp (rarely fires)
 pct  = (g > town) ? 50 : ⌊100 × g ÷ (g + town)⌋ ÷ 2    ; computed LIVE — not a constant
 wealth -= pct_op(wealth, pct)
@@ -57,7 +57,7 @@ gold   -= amount                                       ; debited by the driver
 - **Build does ONE town write of `2g`**, routed through `add_effect_gain_clamped` ($887D) — which adds the full `2g` in peacetime, halves it only when `war_helper_d972(province)` is true, then calls `helper_82AC` to cap `town` at `header`. (There is no separate "secondary" town add — it's that single routed write.)
 - **`g` is the UN-doubled gain** (math32_3arg result, stored without `<<1`); the `×2` is applied at the town write (`gain << 1` passed to the helper), and `effect_build` returns `g` for the confirm screen. (Grow doubles early; Build doubles late — same magnitude, slightly different `pct` ratio input.)
 
-- **K = 5** — same `6 − const_two` multiplier as Grow/Give. Develop-family universal constant.
+- **K = 5** — same `6 − skill_level` multiplier as Grow/Give. Develop-family universal constant.
 - **Verified**: bytecode + 5/5 ROM-executed tests (town=176, wealth=235; amounts 30/50/80/120/200 all exact) + in-game Test 1 (amount=170, town 320→396 = +76, √490=22, g=⌊850/22⌋=38, 2g=76). See [build.html](./commands/build.html).
 - **Source bytecode**: $88A6 (+ $887D helper); math at $D6B8
 
@@ -65,8 +65,8 @@ gold   -= amount                                       ; debited by the driver
 
 ```
 rice -= amount                               ; or gold if gold-mode (1:1 source drain)
-loyalty_gain = 2 × ⌊amount × 5 ÷ √(⌊(output + loyalty)/2⌋ + amount)⌋
-wealth_gain  = 2 × ⌊amount × 5 ÷ √(⌊(town   + wealth )/2⌋ + amount)⌋
+loyalty_gain = 2 × ⌊amount × (6 − skill_level) ÷ √(⌊(output + loyalty)/2⌋ + amount)⌋   ; develop_loyalty $891D
+wealth_gain  = 2 × ⌊amount × (6 − skill_level) ÷ √(⌊(town   + wealth )/2⌋ + amount)⌋   ; develop_wealth $896F
 loyalty += loyalty_gain
 wealth  += wealth_gain
 ```
@@ -104,7 +104,7 @@ pct_op(b, p) = ⌊b ÷ 10⌋ × ⌊p ÷ 10⌋
              + ⌊(p mod 10) × (b ÷ 10) ÷ 10⌋
 ```
 
-This is just `⌊b × p ÷ 100⌋` computed in three pieces to keep all intermediates in 16-bit. Pixel-perfect on 8+ observed drain calls.
+Three pieces keep every intermediate in 16 bits, and each piece floors on its own, so the sum is **not** `⌊b × p ÷ 100⌋`: it is never more and is exactly 1 less for about a third of in-range inputs (e.g. `pct_op(11, 19) = 1`, not 2). Checked against the ROM 2026-11-02 (`na1sim.oracle` case `pct_op`, 110/110 for the three-piece form; the plain `⌊b × p ÷ 100⌋` model fails 10 of them). The 8+ observed drain calls of May fit both forms.
 
 ## 4. Harvest income ($A26F sweep → $A1E2 gold + $A21F rice)
 
@@ -192,7 +192,7 @@ return ⌊(arg1 × arg2) ÷ arg3⌋
 32-bit signed multiply then signed divide. Used by Grow, Build, Give, Dam — the "develop-family" math kernel. Each caller pushes (arg1, arg2, arg3) at frame offsets +0xB, +0xD, +0xF before `host_call $D6B8`.
 
 - **Verified**: by trace of Test 5 Grow (2026-05-26)
-- **Underlying ALU**: 47 extended opcodes (B7-prefix dispatch table at $F261); 32-bit shift-add multiply at $F2C1, 64-bit/32-bit restoring divide at $F2FE
+- **Underlying ALU**: 47 extended opcodes (`ext_op_table` $F263, via `ext_op_dispatch` $F246); 32-bit shift-add multiply at $F2C1, 64-bit/32-bit restoring divide at $F2FE
 
 ## Send ($9A5D driver + $8BE5 capacity helper)
 
@@ -321,7 +321,7 @@ elif rng(3) != 0:                                  clean look          ; 2/3 fal
 elif target is owned (ai_state != 0xFF):           "Our spy was caught"
 else:                                              clean look          ; neutral target never catches
 ```
-- **High Luck + IQ → reliable espionage.** The `rng(skill)` term makes the auto-success leg rarer at higher difficulty (another `const_two` dial).
+- **High Luck + IQ → reliable espionage.** The `rng(skill)` term makes the auto-success leg rarer at higher difficulty (another `skill_level` dial).
 - Adds spying to the IQ and Luck stat-effect rows (synthesis stat table).
 
 ## 7. Hire ($A5F4 driver → Men:$A553 / Ninja:$A2D2; dilution $8BF4)
@@ -373,6 +373,20 @@ dams     += gain                                  ; helper_dam_rounding: war-hal
 - **Verified**: bytecode + `dam-mikawa` capture (Tokugawa output=254 → √=15, spent all 424 gold → dams 39 → 95 = +56; `⌊848/15⌋ = 56` exact). See [dam.html](./commands/dam.html).
 - **Source bytecode**: driver $9B7E; helpers $87D8 (√output), $887D (apply+cap), animation id 21.
 
+## Tax ($999A driver; `effect_tax` $82D6)
+
+```
+delta    = old_tax − new_tax                        ; the driver's order ($9A41)
+loyalty  = effect_tax(loyalty, delta)
+wealth   = effect_tax(wealth,  delta)
+
+effect_tax(stat, d) = d < 0 ? stat − pct_op(stat, |d|)  ; RAISING the tax drains
+                            : stat + pct_op(stat, d)    ; CUTTING it adds the same amount
+```
+
+- **Symmetric, not a penalty both ways.** A raise of |Δ| points takes ⌊stat·|Δ|/100⌋ from loyalty and wealth; a cut of Δ points gives ⌊stat·Δ/100⌋ back. Charisma moves the other way (−1 on a raise, +1 on a cut; see [tax.html](./commands/tax.html)).
+- **Checked against the ROM** 2026-11-02 (`na1sim.oracle` case `tax_drain`, 48/48, raises and cuts; the planted drain-both-ways model fails it). The May capture was a single raise (20 → 50), which a drain-both-ways formula also fits; that was the formula na1sim and the notes carried until this check.
+
 ## 8. Daimyo passive aging
 
 Daimyo records ($752F+, 7 bytes each: age, H, D, L, Ch, IQ, status) — daimyo stats DRIFT UP each season turnover, independent of Train command:
@@ -386,8 +400,24 @@ So Train command ACCELERATES what would happen anyway. The drift might be condit
 
 The disaster / uprising / illness / death catalogue — with each event's season, trigger, exact probability, and result — is **[Appendix D — The Event System](./appendix-events.md)** (bytecode-walked). The economic hooks those events touch (the harvest, the AI subsidy, army upkeep) are §4 above.
 
+## How these formulas are checked
+
+`py -3.14 -m na1sim.oracle` (from `tools/`) runs na1sim's models (this appendix as code) against the ROM's own routines on a real save image, over a grid that crosses each input with its edges: the stat at and past `stat_cap`, a partner stat far from the stat, amounts from 1 up, every `skill_level`, tax raises and cuts. Grow, Build and Dam run as the player issues them (the driver and its guards, `number_input` answering within its own range); Give runs its effect handlers. `--plant NAME` swaps in a known-wrong model, and each must fail.
+
+| Case | ROM routine | 2026-11-02 | Planted wrong model |
+|---|---|---|---|
+| grow | `driver_grow` $9D3D | 480/480 | — |
+| build | `driver_build` $A853 | 480/480 | — |
+| give_peasants | `develop_loyalty` $891D + `develop_wealth` $896F | 480/480 | no partner averaging: fails |
+| give_men | `develop_morale` $89C1 | 480/480 | doubled gain: fails 480/480 |
+| dam | `driver_dam` $9B7E | 240/240 | no 100 cap: fails |
+| pct_op | $D70D | 110/110 | plain ⌊b·p/100⌋: fails |
+| tax_drain | `effect_tax` $82D6 | 48/48 | drain both ways: fails |
+
+This check found three formulas that had each passed an in-game capture: Give-Men (the capture's men ≈ morale hid the averaging, and a `2×` had crept in), the tax direction (the capture was a raise), and `pct_op` (the observed drains fit the plain percentage too). A capture checks one point. Not yet covered: Train and Hire (their RNG needs the lockstep `na1sim.oracle_vm` uses), Send, Trade, and the harvest, which `oracle_vm`'s harvest check covers at the routine level.
+
 ## All atomic economic formulas are verified
 
-Every atomic/economic command is bytecode-verified — the develop family (Grow/Build/Give/Dam), Train, Send, Hire, Trade, Move, Pact, Marry, View, and the Fall harvest are all closed above or in their command pages. **Give-Men** = `develop_morale` ($89C1): `morale += 2 × ⌊amount × (6−const_two) ÷ √((men+morale)/2 + amount)⌋` — the develop-family template on the morale↔men pair.
+Every atomic/economic command is bytecode-verified — the develop family (Grow/Build/Give/Dam), Train, Send, Hire, Trade, Move, Pact, Marry, View, and the Fall harvest are all closed above or in their command pages. **Give-Men** = `develop_morale` ($89C1): `morale += ⌊amount × (6−skill_level) ÷ √(⌊(men+morale)/2⌋ + amount)⌋` (min 1, clamped to `stat_cap`): the develop-family template on the morale↔men pair, **not doubled** (`develop_loyalty` / `develop_wealth` write `gain << 1`; `develop_morale` writes `gain`). Checked 2026-11-02 by running the ROM's `$89C1` with men varied (men 200 / morale 66 / amount 50 → +19; men 500 / morale 10 / amount 40 → +11), which the 2026-05-27 capture could not separate (men 62 ≈ morale 66). The earlier `2 ×` here was wrong.
 
 The per-command HTML walkthroughs (driver flow + bytecode-validated formula + embedded from-ROM animation) live in [commands/](./commands/) — `grow` `build` `give` `train` `tax` `send` `hire` `dam`.

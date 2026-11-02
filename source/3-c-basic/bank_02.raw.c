@@ -2108,7 +2108,7 @@ word ai_eval_battle_strength_total(word side, word unit_slot, word other_unit_sl
     base_strength = *(word*)(unit_strength_ptr(side, unit_slot));    // $9C97
     strength_terms_total = ((((((side_led_by_daimyo(side) ? base_strength : 0) + ai_terrain_strength_term(side, unit_slot)) + ai_province_stat_diff_term(side, unit_slot)) + ai_strength_term_gated_table_word(side, unit_slot, other_unit_slot)) + ai_score_strength_term_40pct(base_strength, side)) + pct_op(base_strength, (battle_unit_byte_table[other_unit_slot] * 20)));    // $9CDC
     if (!(get_province_ai_state(get_battle_side_province(side)))) goto L_9CF7;    // $9CE7
-    phi_push_9cf9 = (115 - (const_two * 15));    // $9CF4
+    phi_push_9cf9 = (115 - (skill_level * 15));    // $9CF4
     goto L_9CF9;    // $9CF4
 L_9CF7:
     phi_push_9cf9 = 100;    // $9CF7
@@ -2202,8 +2202,8 @@ word resolve_bribe_enemy_unit(word target_slot, word arg2) {
     own_fief = get_battle_side_province(cur_combat_side);    // $9E94
     enemy_side = (cur_combat_side ^ 1);    // $9E9A
     enemy_fief = get_battle_side_province((cur_combat_side ^ 1));    // $9EA0
-    local11 = ((rng_mod((6 - const_two)) + province_table_live[own_fief].morale) + fief_to_daimyo_record_addr(own_fief)->charisma);    // $9EC1
-    enemy_score = ((province_table_live[enemy_fief].morale + fief_to_daimyo_record_addr(enemy_fief)->charisma) + (const_two << 1));    // $9EDC
+    local11 = ((rng_mod((6 - skill_level)) + province_table_live[own_fief].morale) + fief_to_daimyo_record_addr(own_fief)->charisma);    // $9EC1
+    enemy_score = ((province_table_live[enemy_fief].morale + fief_to_daimyo_record_addr(enemy_fief)->charisma) + (skill_level << 1));    // $9EDC
     if (combat_casualty_skip_flag_7bf3) goto L_9F37;    // $9EE0
     if ((local11 <= enemy_score)) goto L_9F37;    // $9EE6
     arg2 = (arg2 / *(word*)(unit_strength_ptr(enemy_side, target_slot)));    // $9EF3
@@ -2238,7 +2238,7 @@ L_9FC7:
     combat_casualty_skip_flag_7bf3 = 1;    // $9FC8
     goto L_9F46;    // $9FCB
 L_9FCE:
-    province_table_live[enemy_fief].morale = (province_table_live[enemy_fief].morale - (get_province_ai_state(own_fief) ? (6 - const_two) : const_two));    // $9FEE
+    province_table_live[enemy_fief].morale = (province_table_live[enemy_fief].morale - (get_province_ai_state(own_fief) ? (6 - skill_level) : skill_level));    // $9FEE
     if (!((province_table_live[enemy_fief].morale <= 0))) goto L_A008;    // $9FFA
     province_table_live[enemy_fief].morale = 0;    // $A007
 L_A008:
@@ -2748,15 +2748,15 @@ L_A720:
 
 word ai_try_bribe_strongest_enemy_unit(void) {
     enemy_side = (cur_combat_side ^ 1);    // $A72B
-    if (!(rng_mod((const_two + 1)))) goto L_A799;    // $A735
+    if (!(rng_mod((skill_level + 1)))) goto L_A799;    // $A735
     if ((*(word*)(side_resource_ptr(cur_combat_side)) <= *(word*)((side_resource_ptr(cur_combat_side) + 4)))) goto L_A799;    // $A74C
     if (is_no_province_selected()) goto L_A799;    // $A752
     if (!(get_province_ai_state(get_battle_side_province(enemy_side)))) goto L_A799;    // $A75F
     if (cur_combat_unit_slot) goto L_A799;    // $A765
     if ((*(word*)((side_resource_ptr(cur_combat_side) + 4)) > (*(word*)((side_resource_ptr(enemy_side) + 4)) / 2))) goto L_A799;    // $A77D
-    if (!(((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(const_two * 100)))) goto L_A79A;    // $A796
+    if (!(((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(skill_level * 100)))) goto L_A79A;    // $A796
 L_A799:
-    return ((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(const_two * 100));    // $A799
+    return ((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(skill_level * 100));    // $A799
 L_A79A:
     unit_type = 0;    // $A79B
     max_strength = 0;    // $A79C

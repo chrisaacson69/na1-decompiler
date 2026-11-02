@@ -14,7 +14,7 @@
 
 ## The contest (`bribe_success_check $8D02`, bytecode-derived) — INTUITIVE direction
 - `local11` (from the LAST-pushed call arg = **YOUR** fief) = `your_loyalty(+12) + your_daimyo_charisma(+4)`
-- `local10` (from the first-pushed arg = **TARGET**) = `target_loyalty + target_charisma + rng%10 × const_two`
+- `local10` (from the first-pushed arg = **TARGET**) = `target_loyalty + target_charisma + rng%10 × skill_level`
 - `$8D3D SCMPGT` / `$8D3E JUMPF`: **success requires `local11 > local10`** = `YOUR(loy+cha) > TARGET(loy+cha) + rng%10`, *then* a 50% coin flip (`$8D41 rng%2`). Otherwise → fail.
 
 **You bribe fiefs WEAKER (lower loy+cha) than you** — a loyal/charismatic lord peels away a disloyal enemy's peasants. (An earlier draft had this backwards: the VM passes call args into frame slots in **reverse** push order — the `$8BD0 DEREF` of the same slot, which only works on the pointer arg, independently confirms the reverse mapping. Field ids: loyalty@+12, daimyo charisma@+4.)

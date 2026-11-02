@@ -19,7 +19,7 @@ CONVENTIONS
   and let Memory.w16 truncate on write.
 - Effect leaves take the machine `m` (memmap.Memory) and operate on record
   ADDRESSES exactly as the C does: `m.r16(fief + F_OUTPUT)`, etc.
-- `const_two` (the skill dial) is a live global at memmap.CONST_TWO; routines
+- `skill_level` (the skill dial) is a live global at memmap.SKILL_LEVEL; routines
   read it via `m.skill`, and apply_two_grows_const1_override mutates it in place
   (and restores) just like the ROM.
 - Signed `< 0` clamps in the C become explicit `max(0, ...)`; word-subtraction
@@ -169,7 +169,7 @@ def effect_build(m: "M.Memory", fief: int, amount: int) -> int:
 
 def develop_gain(m: "M.Memory", amount: int, stat_ptr: int, companion_ptr: int) -> int:
     """develop_gain $D8BA -- the paired-stat grow magnitude (give-peasants shape):
-        gain = (amount*(6-const_two)) / ( sqrt((stat+companion)/2) + sqrt(amount) )
+        gain = (amount*(6-skill_level)) / ( sqrt((stat+companion)/2) + sqrt(amount) )
     min 1 when amount>=1. Used by the loyalty/wealth caps below."""
     if amount < 1:
         return 0
@@ -204,14 +204,14 @@ def record_apply_two_grows(m: "M.Memory", fief: int, amount: int) -> int:
 
 
 def apply_two_grows_const1_override(m: "M.Memory", fief: int, amount: int) -> int:
-    """apply_two_grows_const1_override $8379: force const_two=1 (max 6-const_two
+    """apply_two_grows_const1_override $8379: force skill_level=1 (max 6-skill_level
     multiplier) for two grows (loyalty+wealth), THEN debit `amount` gold (clamped
-    >=0), restore const_two. This is the AI's gold-sink + loy/wealth pump."""
-    saved = m.skill                      # local11 = const_two
-    m.w16(M.CONST_TWO, 1)                # const_two = 1
+    >=0), restore skill_level. This is the AI's gold-sink + loy/wealth pump."""
+    saved = m.skill                      # local11 = skill_level
+    m.w16(M.SKILL_LEVEL, 1)                # skill_level = 1
     record_apply_two_grows(m, fief, amount)
     m.w16(fief + M.F_GOLD, max(0, m.s16(fief + M.F_GOLD) - amount))   # gold -= amount; if(<0)=0
-    m.w16(M.CONST_TWO, saved)            # restore
+    m.w16(M.SKILL_LEVEL, saved)            # restore
     return saved
 
 
@@ -381,7 +381,7 @@ def _smoke():
     m = M.Memory()
     f = m.fief(5)
     m.selected = 5
-    m.w16(M.CONST_TWO, 2)
+    m.w16(M.SKILL_LEVEL, 2)
     m.w16(f + M.F_OUTPUT, 100)
     m.w16(f + M.F_HEADER, 1900)
     m.w16(f + M.F_LOYALTY, 80)
@@ -400,13 +400,13 @@ def _smoke():
     assert effect_send(1900, 100, 500) == 500         # budget-limited
     assert effect_send(150, 100, 500) == 50           # headroom-limited
 
-    # apply_two_grows_const1_override drains gold by `amount`, restores const_two
+    # apply_two_grows_const1_override drains gold by `amount`, restores skill_level
     m.w16(f + M.F_GOLD, 200)
     apply_two_grows_const1_override(m, f, 120)
     assert m.r16(f + M.F_GOLD) == 80                   # 200 - 120
-    assert m.skill == 2                                # const_two restored
+    assert m.skill == 2                                # skill_level restored
     print("vmprims smoke: PASS  (pct_op/math32 certified; effect_grow gold-neutral; "
-          "override drains gold + restores const_two)")
+          "override drains gold + restores skill_level)")
 
 
 if __name__ == "__main__":

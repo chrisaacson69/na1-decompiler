@@ -5,6 +5,8 @@ created: 2026-06-04
 # The Decompiler is a Reverse Compiler — Bottom-Up Atom Inversion
 > NA1's engine is **100% reducible**: there is no irreducible control flow anywhere. The V2 region-reducer's "irreducible residue" was a phantom of the top-down framing. The right model is bottom-up — invert a *finite* table of compiler lowering patterns ("atoms"), substituting each matched subgraph with a token, until the procedure collapses to structured C.
 
+> **History (June 2026).** This page records how the structurer was built. Its V1 is the template structurer (removed 2026-11-02) and its V2 the region reducer (now DREAM's per-sub fallback). Where it stands now: [The Structurer — Where It Stands](./decompiler-structure.md).
+
 **Links:** [ROADMAP](../ROADMAP.md) (CFG epic V2, sessions 7a–7g) · [05-bytecode-vm](./05-bytecode-vm.md) · [06-vm-disassembler](./06-vm-disassembler.md) · tool: `tools/probe-cfg-reducibility.py`
 
 ---

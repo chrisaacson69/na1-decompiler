@@ -4292,7 +4292,7 @@ L_9CD2:
     9CE2: B3                   PUSHL
     9CE3: E9 8D D9 02          CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
     9CE7: D8 F7 9C             JUMPF_abs              L_9CF7
-    9CEA: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    9CEA: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     9CED: 5F                   LOADR_qimm                                  ; inline operand = 15
     9CEE: B5                   MULT
     9CEF: B3                   PUSHL
@@ -4572,7 +4572,7 @@ resolve_bribe_enemy_unit:                       ; sub $9E73, frame_off -10
     9EB1: B0                   DEREF
     9EB2: B3                   PUSHL
     9EB3: 46                   LOADL_qimm                                  ; inline operand = 6
-    9EB4: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    9EB4: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     9EB7: BC                   SUB
     9EB8: B3                   PUSHL
     9EB9: E9 52 CA 02          CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
@@ -4581,7 +4581,7 @@ resolve_bribe_enemy_unit:                       ; sub $9E73, frame_off -10
     9EBF: B4                   POPR
     9EC0: BB                   ADD
     9EC1: 2B                   STORE_quick                                 ; inline operand = 11
-    9EC2: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    9EC2: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     9EC5: D2                   LSHIFT1
     9EC6: B3                   PUSHL
     9EC7: 38                   PUSH_quick                                  ; inline operand = 8
@@ -4736,11 +4736,11 @@ L_9FCE:
     9FCF: E9 8D D9 02          CALL_abs_imm1          $D98D (get_province_ai_state) {bytecode}, $02
     9FD3: D8 DE 9F             JUMPF_abs              L_9FDE
     9FD6: 46                   LOADL_qimm                                  ; inline operand = 6
-    9FD7: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    9FD7: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     9FDA: BC                   SUB
     9FDB: D6 E1 9F             JUMP_abs               L_9FE1
 L_9FDE:
-    9FDE: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    9FDE: A4 63 6D             LOADL_abs              $6D63 (skill_level)
 L_9FE1:
     9FE1: B3                   PUSHL
     9FE2: 08                   LOADL_quick                                 ; inline operand = 8
@@ -5968,7 +5968,7 @@ ai_try_bribe_strongest_enemy_unit:              ; sub $A721, frame_off -8
     A729: 51                   LOADR_qimm                                  ; inline operand = 1
     A72A: DC                   XOR
     A72B: 28                   STORE_quick                                 ; inline operand = 8
-    A72C: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    A72C: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     A72F: D0                   INC
     A730: B3                   PUSHL
     A731: E9 52 CA 02          CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
@@ -6007,7 +6007,7 @@ ai_try_bribe_strongest_enemy_unit:              ; sub $A721, frame_off -8
     A77B: B4                   POPR
     A77C: C4                   SCMPGT
     A77D: D7 99 A7             JUMPT_abs              L_A799
-    A780: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    A780: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     A783: 8B 64                BYTE_LOADR_imm1        +100
     A785: B5                   MULT
     A786: B3                   PUSHL

@@ -786,16 +786,16 @@ word apply_scenario_starting_stat_boosts(void) {
             j = 0;    // PRG $0040D
             while (((unsigned)j < (unsigned)5)) {    // PRG $00423
                 stat_ptr = (stat_ptr + 1);    // PRG $00419
-                *(byte*)((stat_ptr - 1)) = (*(byte*)((stat_ptr - 1)) + (const_two * 5));    // PRG $00420
+                *(byte*)((stat_ptr - 1)) = (*(byte*)((stat_ptr - 1)) + (skill_level * 5));    // PRG $00420
                 j = (j + 1);    // PRG $00422
             }
             field_ptr = &province_table_live[local11];    // PRG $00432
             field_ptr = &field_ptr->debt;    // PRG $0043B
-            *(word*)((field_ptr + -2)) = (*(word*)((field_ptr + -2)) + (const_two * 10));    // PRG $00442
+            *(word*)((field_ptr + -2)) = (*(word*)((field_ptr + -2)) + (skill_level * 10));    // PRG $00442
             j = 0;    // PRG $00444
             do {    // PRG $00445
                 field_ptr = &field_ptr->debt;    // PRG $0044D
-                field_ptr->gold = (field_ptr->gold + (const_two * 5));    // PRG $00452
+                field_ptr->gold = (field_ptr->gold + (skill_level * 5));    // PRG $00452
                 j = (j + 1);    // PRG $00455
             } while (((unsigned)j < (unsigned)10));
             if ((scenario_fief_count == 50)) {    // PRG $0045C
@@ -1138,8 +1138,8 @@ word init_new_game_state(void) {
             ui_input_mode = 0;    // PRG $00AC6
             do {    // PRG $00AC9
                 message_display(msg_please_select_skill_level);    // PRG $00ACC -> bank15 $D326
-                const_two = number_input(1, 5);    // PRG $00AD6 -> bank15 $D5E9
-            } while (!(const_two));
+                skill_level = number_input(1, 5);    // PRG $00AD6 -> bank15 $D5E9
+            } while (!(skill_level));
             message_display(msg_is_everything_ok_so_far);    // PRG $00ADF -> bank15 $D326
             if (!(prompt_y_n())) {    // PRG $00ADC -> bank15 $D3A7
                 repaint_screen();    // PRG $00AE9 -> bank15 $CD20
@@ -2676,8 +2676,8 @@ word per_turn_age_daimyo_decay_health_and_province_stats(void) {
             }
             stat_ptr = &province_table_live[i].loyalty;    // PRG $01FF1
             if (get_province_ai_state(i)) {    // PRG $01FF7 -> bank15 $D98D
-                if ((const_two != 1)) {    // PRG $01FFF
-                    decay_amount = rng_mod(const_two);    // PRG $02009 -> bank15 $CA52
+                if ((skill_level != 1)) {    // PRG $01FFF
+                    decay_amount = rng_mod(skill_level);    // PRG $02009 -> bank15 $CA52
                     stat_ptr = (stat_ptr + 2);    // PRG $0200D
                     *(word*)((stat_ptr + -2)) = (*(word*)((stat_ptr + -2)) - decay_amount);    // PRG $02014
                     stat_ptr = (stat_ptr + 2);    // PRG $02018
@@ -2892,7 +2892,7 @@ word per_period_fief_daimyo_update_driver(void) {
     fief_idx = 0;    // PRG $02313
     while (((unsigned)fief_idx < (unsigned)scenario_fief_count)) {    // PRG $02349
         drift_daimyo_luck(fief_idx);    // PRG $02317 -> bank0 $A2ED
-        if (((unsigned)fief_tax_rate[fief_idx] >= (unsigned)(90 - const_two))) {    // PRG $02316
+        if (((unsigned)fief_tax_rate[fief_idx] >= (unsigned)(90 - skill_level))) {    // PRG $02316
             province_table_live[fief_idx].loyalty = pct_op(province_table_live[fief_idx].loyalty, 90);    // PRG $02346 -> bank15 $D70D
         }
         fief_idx = (fief_idx + 1);    // PRG $02348
@@ -3075,7 +3075,7 @@ word ai_strategic_turn_planner(void) {
 // (body @ PRG $025DA)
 
 word rng_mod_30(void) {
-    return rng_mod(((const_two + 1) * 10));    // PRG $025E5 -> bank15 $CA52
+    return rng_mod(((skill_level + 1) * 10));    // PRG $025E5 -> bank15 $CA52
 }
 
 // ===== bank0 $A5E6  (PRG $025E6) =====
@@ -3096,7 +3096,7 @@ word spawn_uprising_force_from_province(word is_uprising) {
             *(word*)(local9) = (*(word*)(output_ptr) / 2);    // PRG $02622
             *(word*)(output_ptr) = (*(word*)(output_ptr) - *(word*)(local9));    // PRG $0262B
         }
-        if ((fief_to_daimyo_record_addr(battle_defending_province)->charisma < (rng_mod(const_two) + 70))) {    // PRG $0262C -> bank15 $D7DA
+        if ((fief_to_daimyo_record_addr(battle_defending_province)->charisma < (rng_mod(skill_level) + 70))) {    // PRG $0262C -> bank15 $D7DA
             men_transfer = pct_op(*(word*)(local9), rng_mod(50));    // PRG $02652 -> bank15 $D70D
             *(word*)(output_ptr) = (*(word*)(output_ptr) + men_transfer);    // PRG $02659
             *(word*)(local9) = (*(word*)(local9) - men_transfer);    // PRG $02660
@@ -3467,15 +3467,15 @@ word ratio_times10_capped(word amount, word rate, word cap) {
 // (body @ PRG $0437E)
 
 word apply_two_grows_const1_override(word fief, word amount) {
-    saved_const_two = const_two;    // PRG $04381
-    const_two = 1;    // PRG $04383
+    saved_skill_level = skill_level;    // PRG $04381
+    skill_level = 1;    // PRG $04383
     record_apply_two_grows(fief, amount);    // PRG $04388 -> bank15 $D940
     *(word*)(fief) = (*(word*)(fief) - amount);    // PRG $04392
     if ((*(word*)(fief) < 0)) {    // PRG $0437E
         *(word*)(fief) = 0;    // PRG $0439C
     }
-    const_two = saved_const_two;    // PRG $0439E
-    return saved_const_two;    // PRG $043A1
+    skill_level = saved_skill_level;    // PRG $0439E
+    return saved_skill_level;    // PRG $043A1
 }
 
 // ===== bank1 $83A2  (PRG $043A2) =====
@@ -3784,7 +3784,7 @@ word effect_grow(word fief, word amount) {
     if ((amount < 1)) {    // PRG $047F5
         return 0;    // PRG $047FC
     } else {
-        gain = (math32_3arg(amount, (6 - const_two), sqrt_int((fief->output + amount))) << 1);    // PRG $04814 -> bank15 $D6B8
+        gain = (math32_3arg(amount, (6 - skill_level), sqrt_int((fief->output + amount))) << 1);    // PRG $04814 -> bank15 $D6B8
         if (!(gain)) {    // PRG $047FD
             gain = 1;    // PRG $0481A
         }
@@ -3831,7 +3831,7 @@ word effect_build(word fief, word amount) {
     if ((amount < 1)) {    // PRG $048AB
         return 0;    // PRG $048B2
     } else {
-        gain = math32_3arg(amount, (6 - const_two), sqrt_int((fief->town + amount)));    // PRG $048C9 -> bank15 $D6B8
+        gain = math32_3arg(amount, (6 - skill_level), sqrt_int((fief->town + amount)));    // PRG $048C9 -> bank15 $D6B8
         if (!(gain)) {    // PRG $048B3
             gain = 1;    // PRG $048CF
         }
@@ -3859,7 +3859,7 @@ word develop_loyalty(word fief, word amount) {
     if ((amount < 1)) {    // PRG $04922
         return 0;    // PRG $04929
     } else {
-        gain = math32_3arg(amount, (6 - const_two), sqrt_int((((fief->loyalty + fief->output) / 2) + amount)));    // PRG $04948 -> bank15 $D6B8
+        gain = math32_3arg(amount, (6 - skill_level), sqrt_int((((fief->loyalty + fief->output) / 2) + amount)));    // PRG $04948 -> bank15 $D6B8
         if (!(gain)) {    // PRG $0492A
             gain = 1;    // PRG $0494E
         }
@@ -3881,7 +3881,7 @@ word develop_wealth(word fief, word amount) {
     if ((amount < 1)) {    // PRG $04974
         return 0;    // PRG $0497B
     } else {
-        gain = math32_3arg(amount, (6 - const_two), sqrt_int((((fief->wealth + fief->town) / 2) + amount)));    // PRG $0499A -> bank15 $D6B8
+        gain = math32_3arg(amount, (6 - skill_level), sqrt_int((((fief->wealth + fief->town) / 2) + amount)));    // PRG $0499A -> bank15 $D6B8
         if (!(gain)) {    // PRG $0497C
             gain = 1;    // PRG $049A0
         }
@@ -3903,7 +3903,7 @@ word develop_morale(word fief, word amount) {
     if ((amount < 1)) {    // PRG $049C6
         return 0;    // PRG $049CD
     } else {
-        gain = math32_3arg(amount, (6 - const_two), sqrt_int((((fief->morale + fief->men) / 2) + amount)));    // PRG $049EE -> bank15 $D6B8
+        gain = math32_3arg(amount, (6 - skill_level), sqrt_int((((fief->morale + fief->men) / 2) + amount)));    // PRG $049EE -> bank15 $D6B8
         if (!(gain)) {    // PRG $049CE
             gain = 1;    // PRG $049F4
         }
@@ -4106,7 +4106,7 @@ word effect_move(word amount) {
 
 word bribe_success_check(word briber_fief, word target_fief) {
     briber_score = (province_table_live[briber_fief].loyalty + fief_to_daimyo_record_addr(briber_fief)->charisma);    // PRG $04D1A -> bank15 $D7DA
-    target_resistance = (((rng_mod(10) * const_two) + province_table_live[target_fief].loyalty) + fief_to_daimyo_record_addr(target_fief)->charisma);    // PRG $04D3A -> bank15 $CA52
+    target_resistance = (((rng_mod(10) * skill_level) + province_table_live[target_fief].loyalty) + fief_to_daimyo_record_addr(target_fief)->charisma);    // PRG $04D3A -> bank15 $CA52
     if (!(((briber_score <= target_resistance) || !(rng_mod(2))))) {    // PRG $04D07 -> bank15 $CA52
         return 1;    // PRG $04D4A
     } else {
@@ -4342,7 +4342,7 @@ word ninja_mission_resolve_vs_defender(word ninja_units) {
         victim_luck_ptr = (victim_health_ptr + 2);    // PRG $051BB
         victim_charisma_ptr = (victim_luck_ptr + 1);    // PRG $051BE
         if (((*(byte*)(victim_charisma_ptr) + *(byte*)((defender_daimyo + 5))) <= (*(byte*)(attacker_charisma_ptr) + *(byte*)((attacker_daimyo + 5))))) {    // PRG $051A2
-            if (((*(byte*)(victim_charisma_ptr) - rng_mod((const_two * 10))) > (*(byte*)(attacker_charisma_ptr) - rng_mod((const_two * 10))))) {    // PRG $051D5 -> bank15 $CA52
+            if (((*(byte*)(victim_charisma_ptr) - rng_mod((skill_level * 10))) > (*(byte*)(attacker_charisma_ptr) - rng_mod((skill_level * 10))))) {    // PRG $051D5 -> bank15 $CA52
                 victim_health_ptr = (attacker_daimyo + 1);    // PRG $051FB
                 victim_charisma_ptr = attacker_charisma_ptr;    // PRG $051FD
                 victim_men_ptr = &province_table_live[selected_province_idx].men;    // PRG $05208
@@ -4587,7 +4587,7 @@ word ai_try_war_attack(void) {
             if ((minority_target_idx != 255)) {    // PRG $054E2
                 target_idx = minority_target_idx;    // PRG $05504
             }
-            if (!((((unsigned)((fief_men_ratio_pct(attacker_idx, target_idx) + -10) - rng_mod((const_two * 3))) > (unsigned)60) || !(rng_mod(100))))) {    // PRG $05505 -> bank1 $939D
+            if (!((((unsigned)((fief_men_ratio_pct(attacker_idx, target_idx) + -10) - rng_mod((skill_level * 3))) > (unsigned)60) || !(rng_mod(100))))) {    // PRG $05505 -> bank1 $939D
                 do_attack = 0;    // PRG $0552A
             } else {
                 do_attack = 1;    // PRG $0552D
@@ -4651,7 +4651,7 @@ word ai_develop_spend_gold_surplus_over_men(void) {
 // (body @ PRG $05611)
 
 word ai_reinforce_province_arms_and_econ_10pct(void) {
-    selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive + rng_mod((const_two + 1)));    // PRG $05623 -> bank15 $D7EA
+    selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive + rng_mod((skill_level + 1)));    // PRG $05623 -> bank15 $D7EA
     fief = &province_table_live[selected_province_idx];    // PRG $0562E
     if ((province_table_live[selected_province_idx].men > 8)) {    // PRG $05611
         arms_buf = 50;    // PRG $0563A
@@ -5733,7 +5733,7 @@ L_p067C6:
     draw_selected_province_stat(province_table_live[selected_province_idx].gold);    // PRG $067F1 -> bank1 $83C7
 L_p067F5:
     if (!((view_spy_roll(selected_province_daimyo_record()) > view_spy_roll(fief_to_daimyo_record_addr(target_fief))))) goto L_p06817;    // PRG $0680A -> bank1 $A6B3
-    if (!(rng_mod(const_two))) goto L_p0682B;    // PRG $06814 -> bank15 $CA52
+    if (!(rng_mod(skill_level))) goto L_p0682B;    // PRG $06814 -> bank15 $CA52
 L_p06817:
     if (rng_mod(3)) goto L_p0682B;    // PRG $0681C -> bank15 $CA52
     if (!((get_province_ai_state(target_fief) == 255))) goto L_p06843;    // PRG $06828 -> bank15 $D98D
@@ -6683,7 +6683,7 @@ word ai_state2_recruit_arm_train(void) {
         fief = &province_table_live[selected_province_idx];    // PRG $074FB
         if ((min_word(((current_game_year - 1559) * 40), fief->stat_cap) > fief->men)) {    // PRG $074E2 -> bank15 $CB5E
             local8 = ratio_times10_capped((men_over_gold / 2), gold_men_hire_rate, (min_word(((current_game_year - 1559) * 100), fief->stat_cap) - fief->men));    // PRG $0753F -> bank1 $8357
-            if (!(((local8 <= 0) || !(((unsigned)rng_mod(10) < (unsigned)(const_two + 3)))))) {    // PRG $07519 -> bank15 $CA52
+            if (!(((local8 <= 0) || !(((unsigned)rng_mod(10) < (unsigned)(skill_level + 3)))))) {    // PRG $07519 -> bank15 $CA52
                 fief->gold = (fief->gold - (men_over_gold / 2));    // PRG $0755E
                 apply_hire_unit_stats(fief, local8);    // PRG $07561 -> bank1 $8BF4
                 ai_calc_men_surplus_over_gold_and_rice(&men_over_gold, &men_over_rice);    // PRG $0756D -> bank1 $B2EF
@@ -6904,7 +6904,7 @@ word ai_per_fief_command_driver(void) {
     goto L_p0799E;    // PRG $078A7
 L_p078AA:
     ai_turn_flags = (ai_turn_flags & -2);    // PRG $078B1
-    ai_turn_flags = (ai_turn_flags | ((unsigned)rng_mod(100) < (unsigned)(55 - (const_two * 5))));    // PRG $078CC -> bank15 $CA52
+    ai_turn_flags = (ai_turn_flags | ((unsigned)rng_mod(100) < (unsigned)(55 - (skill_level * 5))));    // PRG $078CC -> bank15 $CA52
     if (!(fief_owner_weakness(selected_province_idx))) goto L_p078EE;    // PRG $078D6 -> bank15 $D972
     ai_turn_flags = (ai_turn_flags | (rng_mod(4) ? 0 : 1));    // PRG $078EB -> bank15 $CA52
 L_p078EE:
@@ -9204,7 +9204,7 @@ word ai_eval_battle_strength_total(word side, word unit_slot, word other_unit_sl
     base_strength = *(word*)(unit_strength_ptr(side, unit_slot));    // PRG $09C97 -> bank2 $82C9
     strength_terms_total = ((((((side_led_by_daimyo(side) ? base_strength : 0) + ai_terrain_strength_term(side, unit_slot)) + ai_province_stat_diff_term(side, unit_slot)) + ai_strength_term_gated_table_word(side, unit_slot, other_unit_slot)) + ai_score_strength_term_40pct(base_strength, side)) + pct_op(base_strength, (battle_unit_byte_table[other_unit_slot] * 20)));    // PRG $09CDC -> bank15 $D9E5
     if (get_province_ai_state(get_battle_side_province(side))) {    // PRG $09CD2 -> bank15 $D98D
-        phi_push_9cf9 = (115 - (const_two * 15));    // PRG $09CF4
+        phi_push_9cf9 = (115 - (skill_level * 15));    // PRG $09CF4
     } else {
         phi_push_9cf9 = 100;    // PRG $09CF7
     }
@@ -9302,8 +9302,8 @@ word resolve_bribe_enemy_unit(word target_slot, word arg2) {
     own_fief = get_battle_side_province(cur_combat_side);    // PRG $09E94 -> bank2 $838F
     enemy_side = (cur_combat_side ^ 1);    // PRG $09E9A
     enemy_fief = get_battle_side_province((cur_combat_side ^ 1));    // PRG $09EA0 -> bank2 $838F
-    local11 = ((rng_mod((6 - const_two)) + province_table_live[own_fief].morale) + fief_to_daimyo_record_addr(own_fief)->charisma);    // PRG $09EC1 -> bank15 $CA52
-    enemy_score = ((province_table_live[enemy_fief].morale + fief_to_daimyo_record_addr(enemy_fief)->charisma) + (const_two << 1));    // PRG $09EDC -> bank15 $D7DA
+    local11 = ((rng_mod((6 - skill_level)) + province_table_live[own_fief].morale) + fief_to_daimyo_record_addr(own_fief)->charisma);    // PRG $09EC1 -> bank15 $CA52
+    enemy_score = ((province_table_live[enemy_fief].morale + fief_to_daimyo_record_addr(enemy_fief)->charisma) + (skill_level << 1));    // PRG $09EDC -> bank15 $D7DA
     if (!((combat_casualty_skip_flag_7bf3 || (local11 <= enemy_score)))) {    // PRG $09E78
         arg2 = (arg2 / *(word*)(unit_strength_ptr(enemy_side, target_slot)));    // PRG $09EF3 -> bank2 $82C9
         if ((arg2 > 0)) {    // PRG $09EE9
@@ -9333,7 +9333,7 @@ word resolve_bribe_enemy_unit(word target_slot, word arg2) {
                 combat_casualty_skip_flag_7bf3 = 1;    // PRG $09FC8
             }
         } else {
-            province_table_live[enemy_fief].morale = (province_table_live[enemy_fief].morale - (get_province_ai_state(own_fief) ? (6 - const_two) : const_two));    // PRG $09FEE -> bank15 $D98D
+            province_table_live[enemy_fief].morale = (province_table_live[enemy_fief].morale - (get_province_ai_state(own_fief) ? (6 - skill_level) : skill_level));    // PRG $09FEE -> bank15 $D98D
             if ((province_table_live[enemy_fief].morale <= 0)) {    // PRG $09FE1
                 province_table_live[enemy_fief].morale = 0;    // PRG $0A007
             }
@@ -9869,13 +9869,13 @@ word ai_choose_combat_action_by_battle_strength(word unit_type) {
 
 word ai_try_bribe_strongest_enemy_unit(void) {
     enemy_side = (cur_combat_side ^ 1);    // PRG $0A72B
-    if (rng_mod((const_two + 1))) {    // PRG $0A726 -> bank15 $CA52
+    if (rng_mod((skill_level + 1))) {    // PRG $0A726 -> bank15 $CA52
         if (!((*(word*)(side_resource_ptr(cur_combat_side)) <= *(word*)((side_resource_ptr(cur_combat_side) + 4))))) {    // PRG $0A738 -> bank2 $827E
             if (!(is_no_province_selected())) {    // PRG $0A74F -> bank2 $82FF
                 if (get_province_ai_state(get_battle_side_province(enemy_side))) {    // PRG $0A755 -> bank15 $D98D
                     if (!(cur_combat_unit_slot)) {    // PRG $0A762
                         if (!((*(word*)((side_resource_ptr(cur_combat_side) + 4)) > (*(word*)((side_resource_ptr(enemy_side) + 4)) / 2)))) {    // PRG $0A768 -> bank2 $827E
-                            if (!(((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(const_two * 100)))) {    // PRG $0A780 -> bank2 $838F
+                            if (!(((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(skill_level * 100)))) {    // PRG $0A780 -> bank2 $838F
                                 unit_type = 0;    // PRG $0A79B
                                 max_strength = 0;    // PRG $0A79C
                                 while (((unsigned)unit_type < (unsigned)5)) {    // PRG $0A7C4
@@ -9895,7 +9895,7 @@ word ai_try_bribe_strongest_enemy_unit(void) {
             }
         }
     }
-    return ((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(const_two * 100));    // PRG $0A799 -> bank2 $838F
+    return ((unsigned)province_table_live[get_battle_side_province(enemy_side)].morale > (unsigned)(skill_level * 100));    // PRG $0A799 -> bank2 $838F
 }
 
 // ===== bank2 $A7E5  (PRG $0A7E5) =====
@@ -12160,7 +12160,7 @@ word develop_gain(word amount, word stat_ptr, word companion_ptr) {
     if ((amount < 1)) {    // PRG $3D8BF
         return 0;    // PRG $3D8C6
     } else {
-        gain = math32_3arg(amount, (6 - const_two), (sqrt_int(((*(word*)(stat_ptr) + *(word*)(companion_ptr)) / 2)) + sqrt_int(amount)));    // PRG $3D8E9 -> bank15 $D6B8
+        gain = math32_3arg(amount, (6 - skill_level), (sqrt_int(((*(word*)(stat_ptr) + *(word*)(companion_ptr)) / 2)) + sqrt_int(amount)));    // PRG $3D8E9 -> bank15 $D6B8
         if (!(gain)) {    // PRG $3D8C7
             return 1;    // PRG $3D8EF
         } else {
@@ -12935,7 +12935,7 @@ word marriage_pact_handler(void) {
         ui_input_mode = saved_input_mode;    // PRG $3E35C
         return demanded_gold;    // PRG $3E360
     } else {
-        if (!(rng_mod(const_two))) {    // PRG $3E361 -> bank15 $CA52
+        if (!(rng_mod(skill_level))) {    // PRG $3E361 -> bank15 $CA52
             if ((!(fief_owner_weakness(selected_province_idx)) || !(rng_mod(3)))) {    // PRG $3E36B -> bank15 $D972
                 owner_gold = province_table_live[selected_province_idx].gold;    // PRG $3E388
                 if ((province_table_live[selected_province_idx].gold > 200)) {    // PRG $3E37D
@@ -12967,7 +12967,7 @@ word prompt_diplomacy_pact(void) {
     } else {
         if ((!(fief_owner_weakness(selected_province_idx)) || !(rng_mod(3)))) {    // PRG $3E3DE -> bank15 $D972
             owner_gold = province_table_live[selected_province_idx].gold;    // PRG $3E3FB
-            if (!(rng_mod(const_two))) {    // PRG $3E3F0 -> bank15 $CA52
+            if (!(rng_mod(skill_level))) {    // PRG $3E3F0 -> bank15 $CA52
                 phi_ret_e422 = ((pct_op(owner_gold, 50) + pct_op(owner_gold, rng_mod(50))) + 20);    // PRG $3E41E -> bank15 $D70D
             } else {
                 phi_ret_e422 = 0;    // PRG $3E421

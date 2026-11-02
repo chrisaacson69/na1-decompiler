@@ -131,8 +131,9 @@ for the patterns as the backstop). Fixing now would mean investing blind to the 
   `test_unit_type_present_flag` (now `is_unit_present`). ~30 renames in bank 2 + growing in bank 1 mean prose drifts.
   The toml *keys* (`0xADDR`) are authoritative so nothing breaks, but a periodic find-and-update of chapter/prose
   references keeps the docs trustworthy. Do a sweep after each bank completes.
-- **3.2 `const_two` → `skill_level`/`game_difficulty`** — the var IS the new-game skill level (1-5), but the rename is
-  parked because it has a huge doc blast-radius (~35 read sites across all banks). Ticketed, not urgent.
+- ~~**3.2 `const_two` → `skill_level`/`game_difficulty`**~~ **Done 2026-11-02** → `skill_level` ($6D63), the game's own
+  "Please select skill level." prompt: registry, regenerated ladder (pure-rename guard over 18 files), the current-state
+  docs and the tools (`M.SKILL_LEVEL`). Logs keep the old name as history.
 - **3.3 Cross-bank same-address pairs are FINE** (not debt, noted to prevent re-alarming): `$83A2`, `$93AA`, `$85A7`
   legitimately name different subs in different banks (shared CPU window). Verify each is right for its bank; don't
   "fix" them.

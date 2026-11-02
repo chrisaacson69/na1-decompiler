@@ -236,15 +236,15 @@ word ratio_times10_capped(word amount, word rate, word cap) {
 // (body @ $837E)
 
 word apply_two_grows_const1_override(word fief, word amount) {
-    saved_const_two = const_two;    // $8381
-    const_two = 1;    // $8383
+    saved_skill_level = skill_level;    // $8381
+    skill_level = 1;    // $8383
     record_apply_two_grows(fief, amount);    // $8388
     *(word*)(fief) = (*(word*)(fief) - amount);    // $8392
     if (!((*(word*)(fief) < 0))) goto L_839D;    // $8397
     *(word*)(fief) = 0;    // $839C
 L_839D:
-    const_two = saved_const_two;    // $839E
-    return saved_const_two;    // $83A1
+    skill_level = saved_skill_level;    // $839E
+    return saved_skill_level;    // $83A1
 }
 
 // Decompiled from source/2-asm-vm/bank_01_vm.asm sub $83A2
@@ -545,7 +545,7 @@ word effect_grow(word fief, word amount) {
     if ((amount >= 1)) goto L_87FD;    // $87F8
     return 0;    // $87FC
 L_87FD:
-    gain = (math32_3arg(amount, (6 - const_two), sqrt_int((fief->output + amount))) << 1);    // $8814
+    gain = (math32_3arg(amount, (6 - skill_level), sqrt_int((fief->output + amount))) << 1);    // $8814
     if (gain) goto L_881B;    // $8816
     gain = 1;    // $881A
 L_881B:
@@ -589,7 +589,7 @@ word effect_build(word fief, word amount) {
     if ((amount >= 1)) goto L_88B3;    // $88AE
     return 0;    // $88B2
 L_88B3:
-    gain = math32_3arg(amount, (6 - const_two), sqrt_int((fief->town + amount)));    // $88C9
+    gain = math32_3arg(amount, (6 - skill_level), sqrt_int((fief->town + amount)));    // $88C9
     if (gain) goto L_88D0;    // $88CB
     gain = 1;    // $88CF
 L_88D0:
@@ -616,7 +616,7 @@ word develop_loyalty(word fief, word amount) {
     if ((amount >= 1)) goto L_892A;    // $8925
     return 0;    // $8929
 L_892A:
-    gain = math32_3arg(amount, (6 - const_two), sqrt_int((((fief->loyalty + fief->output) / 2) + amount)));    // $8948
+    gain = math32_3arg(amount, (6 - skill_level), sqrt_int((((fief->loyalty + fief->output) / 2) + amount)));    // $8948
     if (gain) goto L_894F;    // $894A
     gain = 1;    // $894E
 L_894F:
@@ -636,7 +636,7 @@ word develop_wealth(word fief, word amount) {
     if ((amount >= 1)) goto L_897C;    // $8977
     return 0;    // $897B
 L_897C:
-    gain = math32_3arg(amount, (6 - const_two), sqrt_int((((fief->wealth + fief->town) / 2) + amount)));    // $899A
+    gain = math32_3arg(amount, (6 - skill_level), sqrt_int((((fief->wealth + fief->town) / 2) + amount)));    // $899A
     if (gain) goto L_89A1;    // $899C
     gain = 1;    // $89A0
 L_89A1:
@@ -656,7 +656,7 @@ word develop_morale(word fief, word amount) {
     if ((amount >= 1)) goto L_89CE;    // $89C9
     return 0;    // $89CD
 L_89CE:
-    gain = math32_3arg(amount, (6 - const_two), sqrt_int((((fief->morale + fief->men) / 2) + amount)));    // $89EE
+    gain = math32_3arg(amount, (6 - skill_level), sqrt_int((((fief->morale + fief->men) / 2) + amount)));    // $89EE
     if (gain) goto L_89F5;    // $89F0
     gain = 1;    // $89F4
 L_89F5:
@@ -854,7 +854,7 @@ L_8CC8:
 
 word bribe_success_check(word briber_fief, word target_fief) {
     briber_score = (province_table_live[briber_fief].loyalty + fief_to_daimyo_record_addr(briber_fief)->charisma);    // $8D1A
-    target_resistance = (((rng_mod(10) * const_two) + province_table_live[target_fief].loyalty) + fief_to_daimyo_record_addr(target_fief)->charisma);    // $8D3A
+    target_resistance = (((rng_mod(10) * skill_level) + province_table_live[target_fief].loyalty) + fief_to_daimyo_record_addr(target_fief)->charisma);    // $8D3A
     if ((briber_score <= target_resistance)) goto L_8D4B;    // $8D3E
     if (!(rng_mod(2))) goto L_8D4B;    // $8D46
     return 1;    // $8D4A
@@ -1091,7 +1091,7 @@ word ninja_mission_resolve_vs_defender(word ninja_units) {
     victim_luck_ptr = (victim_health_ptr + 2);    // $91BB
     victim_charisma_ptr = (victim_luck_ptr + 1);    // $91BE
     if (!(((*(byte*)(victim_charisma_ptr) + *(byte*)((defender_daimyo + 5))) <= (*(byte*)(attacker_charisma_ptr) + *(byte*)((attacker_daimyo + 5)))))) goto L_92E3;    // $91D2
-    if (!(((*(byte*)(victim_charisma_ptr) - rng_mod((const_two * 10))) > (*(byte*)(attacker_charisma_ptr) - rng_mod((const_two * 10)))))) goto L_9213;    // $91F6
+    if (!(((*(byte*)(victim_charisma_ptr) - rng_mod((skill_level * 10))) > (*(byte*)(attacker_charisma_ptr) - rng_mod((skill_level * 10)))))) goto L_9213;    // $91F6
     victim_health_ptr = (attacker_daimyo + 1);    // $91FB
     victim_charisma_ptr = attacker_charisma_ptr;    // $91FD
     victim_men_ptr = &province_table_live[selected_province_idx].men;    // $9208
@@ -1302,7 +1302,7 @@ L_94E2:
     if ((minority_target_idx == 255)) goto L_9505;    // $9500
     target_idx = minority_target_idx;    // $9504
 L_9505:
-    if (((unsigned)((fief_men_ratio_pct(attacker_idx, target_idx) + -10) - rng_mod((const_two * 3))) > (unsigned)60)) goto L_952D;    // $951D
+    if (((unsigned)((fief_men_ratio_pct(attacker_idx, target_idx) + -10) - rng_mod((skill_level * 3))) > (unsigned)60)) goto L_952D;    // $951D
     if (!(rng_mod(100))) goto L_952D;    // $9526
     do_attack = 0;    // $952A
     goto L_952E;    // $952A
@@ -1365,7 +1365,7 @@ L_960A:
 // (body @ $9611)
 
 word ai_reinforce_province_arms_and_econ_10pct(void) {
-    selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive + rng_mod((const_two + 1)));    // $9623
+    selected_province_daimyo_record()->drive = (selected_province_daimyo_record()->drive + rng_mod((skill_level + 1)));    // $9623
     fief = &province_table_live[selected_province_idx];    // $962E
     if (!((province_table_live[selected_province_idx].men > 8))) goto L_9693;    // $9635
     arms_buf = 50;    // $963A
@@ -2379,7 +2379,7 @@ L_A7C6:
 L_A7F5:
     draw_selected_province_stat(province_table_live[selected_province_idx].gold);    // $A7F1
     if (!((view_spy_roll(selected_province_daimyo_record()) > view_spy_roll(fief_to_daimyo_record_addr(target_fief))))) goto L_A817;    // $A80A
-    if (!(rng_mod(const_two))) goto L_A82B;    // $A814
+    if (!(rng_mod(skill_level))) goto L_A82B;    // $A814
 L_A817:
     if (rng_mod(3)) goto L_A82B;    // $A81C
     if (!((get_province_ai_state(target_fief) == 255))) goto L_A843;    // $A828
@@ -3293,7 +3293,7 @@ L_B4E2:
     if (!((min_word(((current_game_year - 1559) * 40), fief->stat_cap) > fief->men))) goto L_B571;    // $B516
     local8 = ratio_times10_capped((men_over_gold / 2), gold_men_hire_rate, (min_word(((current_game_year - 1559) * 100), fief->stat_cap) - fief->men));    // $B53F
     if ((local8 <= 0)) goto L_B571;    // $B543
-    if (!(((unsigned)rng_mod(10) < (unsigned)(const_two + 3)))) goto L_B571;    // $B552
+    if (!(((unsigned)rng_mod(10) < (unsigned)(skill_level + 3)))) goto L_B571;    // $B552
     fief->gold = (fief->gold - (men_over_gold / 2));    // $B55E
     apply_hire_unit_stats(fief, local8);    // $B561
 L_B571:
@@ -3503,7 +3503,7 @@ word ai_per_fief_command_driver(void) {
     goto L_B99E;    // $B8A7
 L_B8AA:
     ai_turn_flags = (ai_turn_flags & -2);    // $B8B1
-    ai_turn_flags = (ai_turn_flags | ((unsigned)rng_mod(100) < (unsigned)(55 - (const_two * 5))));    // $B8CC
+    ai_turn_flags = (ai_turn_flags | ((unsigned)rng_mod(100) < (unsigned)(55 - (skill_level * 5))));    // $B8CC
     if (!(fief_owner_weakness(selected_province_idx))) goto L_B8EE;    // $B8D6
     ai_turn_flags = (ai_turn_flags | (rng_mod(4) ? 0 : 1));    // $B8EB
 L_B8EE:

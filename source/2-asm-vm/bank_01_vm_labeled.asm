@@ -495,10 +495,10 @@ ratio_times10_capped:                           ; sub $8357, frame_off +0
     8378: CF                   RETURN
 
 apply_two_grows_const1_override:                ; sub $8379, frame_off -2
-    837E: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    837E: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     8381: 2B                   STORE_quick                                 ; inline operand = 11
     8382: 41                   LOADL_qimm                                  ; inline operand = 1
-    8383: A8 63 6D             STORE_abs              $6D63 (const_two)
+    8383: A8 63 6D             STORE_abs              $6D63 (skill_level)
     8386: 3D                   PUSH_quick                                  ; inline operand = 13
     8387: 3C                   PUSH_quick                                  ; inline operand = 12
     8388: E9 40 D9 04          CALL_abs_imm1          $D940 (record_apply_two_grows) {bytecode}, $04
@@ -519,7 +519,7 @@ apply_two_grows_const1_override:                ; sub $8379, frame_off -2
     839C: B1                   POPSTORE
 L_839D:
     839D: 0B                   LOADL_quick                                 ; inline operand = 11
-    839E: A8 63 6D             STORE_abs              $6D63 (const_two)
+    839E: A8 63 6D             STORE_abs              $6D63 (skill_level)
     83A1: CF                   RETURN
 
 draw_province_stat_or_dashes:                   ; sub $83A2, frame_off +0
@@ -1148,7 +1148,7 @@ L_87FD:
     8803: E9 CD CB 02          CALL_abs_imm1          $CBCD (sqrt_int) {native}, $02
     8807: B3                   PUSHL
     8808: 46                   LOADL_qimm                                  ; inline operand = 6
-    8809: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    8809: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     880C: BC                   SUB
     880D: B3                   PUSHL
     880E: 3D                   PUSH_quick                                  ; inline operand = 13
@@ -1289,7 +1289,7 @@ L_88B3:
     88B9: E9 CD CB 02          CALL_abs_imm1          $CBCD (sqrt_int) {native}, $02
     88BD: B3                   PUSHL
     88BE: 46                   LOADL_qimm                                  ; inline operand = 6
-    88BF: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    88BF: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     88C2: BC                   SUB
     88C3: B3                   PUSHL
     88C4: 3D                   PUSH_quick                                  ; inline operand = 13
@@ -1389,7 +1389,7 @@ L_892A:
     8938: E9 CD CB 02          CALL_abs_imm1          $CBCD (sqrt_int) {native}, $02
     893C: B3                   PUSHL
     893D: 46                   LOADL_qimm                                  ; inline operand = 6
-    893E: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    893E: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     8941: BC                   SUB
     8942: B3                   PUSHL
     8943: 3D                   PUSH_quick                                  ; inline operand = 13
@@ -1456,7 +1456,7 @@ L_897C:
     898A: E9 CD CB 02          CALL_abs_imm1          $CBCD (sqrt_int) {native}, $02
     898E: B3                   PUSHL
     898F: 46                   LOADL_qimm                                  ; inline operand = 6
-    8990: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    8990: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     8993: BC                   SUB
     8994: B3                   PUSHL
     8995: 3D                   PUSH_quick                                  ; inline operand = 13
@@ -1523,7 +1523,7 @@ L_89CE:
     89DE: E9 CD CB 02          CALL_abs_imm1          $CBCD (sqrt_int) {native}, $02
     89E2: B3                   PUSHL
     89E3: 46                   LOADL_qimm                                  ; inline operand = 6
-    89E4: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    89E4: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     89E7: BC                   SUB
     89E8: B3                   PUSHL
     89E9: 3D                   PUSH_quick                                  ; inline operand = 13
@@ -2050,7 +2050,7 @@ bribe_success_check:                            ; sub $8D02, frame_off -4
     8D2C: B3                   PUSHL
     8D2D: 6A                   PUSH_qimm                                   ; inline operand = 10
     8D2E: E9 52 CA 02          CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
-    8D32: A6 63 6D             LOADR_abs              $6D63 (const_two)
+    8D32: A6 63 6D             LOADR_abs              $6D63 (skill_level)
     8D35: B5                   MULT
     8D36: B4                   POPR
     8D37: BB                   ADD
@@ -2746,7 +2746,7 @@ ninja_mission_resolve_vs_defender:              ; sub $918D, frame_off -20
     91D0: B4                   POPR
     91D1: C3                   SCMPLE
     91D2: D8 E3 92             JUMPF_abs              L_92E3
-    91D5: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    91D5: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     91D8: 5A                   LOADR_qimm                                  ; inline operand = 10
     91D9: B5                   MULT
     91DA: B3                   PUSHL
@@ -2757,7 +2757,7 @@ ninja_mission_resolve_vs_defender:              ; sub $918D, frame_off -20
     91E2: B4                   POPR
     91E3: BC                   SUB
     91E4: B3                   PUSHL
-    91E5: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    91E5: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     91E8: 5A                   LOADR_qimm                                  ; inline operand = 10
     91E9: B5                   MULT
     91EA: B3                   PUSHL
@@ -3218,7 +3218,7 @@ L_94E2:
     9503: 08                   LOADL_quick                                 ; inline operand = 8
     9504: 2A                   STORE_quick                                 ; inline operand = 10
 L_9505:
-    9505: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    9505: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     9508: 53                   LOADR_qimm                                  ; inline operand = 3
     9509: B5                   MULT
     950A: B3                   PUSHL
@@ -3387,7 +3387,7 @@ L_960A:
     960B: CF                   RETURN
 
 ai_reinforce_province_arms_and_econ_10pct:      ; sub $960C, frame_off -9
-    9611: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    9611: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     9614: D0                   INC
     9615: B3                   PUSHL
     9616: E9 52 CA 02          CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
@@ -5979,7 +5979,7 @@ L_A7F5:
     A808: B4                   POPR
     A809: C4                   SCMPGT
     A80A: D8 17 A8             JUMPF_abs              L_A817
-    A80D: AA 63 6D             PUSH_abs               $6D63 (const_two)
+    A80D: AA 63 6D             PUSH_abs               $6D63 (skill_level)
     A810: E9 52 CA 02          CALL_abs_imm1          $CA52 (rng_mod) {bytecode}, $02
     A814: D8 2B A8             JUMPF_abs              L_A82B
 L_A817:
@@ -7904,7 +7904,7 @@ L_B4E2:
     B541: 50                   LOADR_qimm                                  ; inline operand = 0
     B542: C4                   SCMPGT
     B543: D8 71 B5             JUMPF_abs              L_B571
-    B546: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    B546: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     B549: 73                   ADD_qimm                                    ; inline operand = 3
     B54A: B3                   PUSHL
     B54B: 6A                   PUSH_qimm                                   ; inline operand = 10
@@ -8420,7 +8420,7 @@ L_B8AA:
     B8AD: A5 A1 6D             BYTE_LOADL_abs         $6DA1 (ai_turn_flags)
     B8B0: DA                   AND
     B8B1: A9 A1 6D             BYTE_STORE_abs         $6DA1 (ai_turn_flags)
-    B8B4: A4 63 6D             LOADL_abs              $6D63 (const_two)
+    B8B4: A4 63 6D             LOADL_abs              $6D63 (skill_level)
     B8B7: 55                   LOADR_qimm                                  ; inline operand = 5
     B8B8: B5                   MULT
     B8B9: B3                   PUSHL

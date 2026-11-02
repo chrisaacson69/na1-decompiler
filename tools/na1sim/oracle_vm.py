@@ -293,10 +293,10 @@ def _combat_battle_setup(m, atk, deff, *, atk_men=10, def_men=8,
                          atk_col=3, def_col=5, row=2, def_home=True,
                          ai_state=0, momentum=0):
     """A minimal 2-unit (slot 0 each) tactical melee on the DEFENDER's real map.
-    Sets scenario/const_two, ownership+daimyo, fief stats, unit men/positions,
+    Sets scenario/skill_level, ownership+daimyo, fief stats, unit men/positions,
     presence flags (defender bit7 = home), and the cur_combat cursors."""
     m.w16(M.SCENARIO_FIEF_COUNT, 17)
-    m.w16(M.CONST_TWO, 2)
+    m.w16(M.SKILL_LEVEL, 2)
     m.selected = atk
     m.defending = deff
     m.w8(M.FIEF_TO_DAIMYO_MAP + atk, 1)

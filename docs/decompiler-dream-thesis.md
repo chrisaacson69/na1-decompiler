@@ -5,6 +5,8 @@ created: 2026-06-07
 # DREAM — Pattern-Independent Structuring (a parallel route to readable C)
 > Same goal as the V2 region reducer — readable, goto-minimal C — by a **fundamentally different method**. Instead of matching CFG subgraphs against a catalog of shapes (V2), DREAM computes a **reaching condition** (a boolean formula over branch predicates) for every node and refines those formulas directly into `if/else/switch/loops`. Goto-free by construction, compiler-independent, no shape catalog to be incomplete.
 
+> **History (June 2026).** This page records how the structurer was built. Its V1 is the template structurer (removed 2026-11-02) and its V2 the region reducer (now DREAM's per-sub fallback). Where it stands now: [The Structurer — Where It Stands](./decompiler-structure.md).
+
 **Links:** [ROADMAP](../ROADMAP.md) (EPIC: DREAM STRUCTURER) · [decompiler-method](./decompiler-method.md) · [decompiler-bottom-up-thesis](./decompiler-bottom-up-thesis.md) (the V2 atom theory this departs from) · [decompiler-atom-log](./decompiler-atom-log.md) · [05-bytecode-vm](./05-bytecode-vm.md) · tool: `tools/dream.py`
 
 **Source:** Yakdan, Eschweiler, Gerhards-Padilla, Smith. *"No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations."* NDSS 2015. (The DREAM decompiler.)

@@ -32,8 +32,13 @@ SKILL_CAP = 200
 # ---------------------------------------------------------------------------
 # player command primitives (flat; the driver debits the resource, runs effect)
 # ---------------------------------------------------------------------------
-def _dev_gain(m, amount, stat, comp):
-    return 2 * ((amount * (6 - m.skill)) // P.sqrt_int((stat + comp) // 2 + amount))
+def _develop(m, f, field, partner_field, amount, double):
+    """develop_loyalty / _wealth / _morale as the ROM runs them (see econ._develop): the gain is
+    clamped to the headroom stat_cap - stat (header, +24) before the write doubles it."""
+    stat, partner, cap = m.r16(f + field), m.r16(f + partner_field), m.r16(f + M.F_HEADER)
+    gain = max(1, (amount * (6 - m.skill)) // P.sqrt_int((stat + partner) // 2 + amount))
+    gain = min(gain, cap - stat)
+    m.w16(f + field, stat + (gain << 1 if double else gain))
 
 
 def give_men(m, idx, amount):              # rice -> morale (develop-family pair)
@@ -41,8 +46,7 @@ def give_men(m, idx, amount):              # rice -> morale (develop-family pair
     if amount < 1 or m.r16(f + M.F_RICE) < amount:
         return
     m.w16(f + M.F_RICE, m.r16(f + M.F_RICE) - amount)
-    g = _dev_gain(m, amount, m.r16(f + M.F_MEN), m.r16(f + M.F_MORALE))
-    m.w16(f + M.F_MORALE, min(100, m.r16(f + M.F_MORALE) + g))
+    _develop(m, f, M.F_MORALE, M.F_MEN, amount, double=False)        # develop_morale $89C1
 
 
 def give_peasants(m, idx, amount):         # rice -> loyalty + wealth
@@ -50,10 +54,8 @@ def give_peasants(m, idx, amount):         # rice -> loyalty + wealth
     if amount < 1 or m.r16(f + M.F_RICE) < amount:
         return
     m.w16(f + M.F_RICE, m.r16(f + M.F_RICE) - amount)
-    lg = _dev_gain(m, amount, m.r16(f + M.F_OUTPUT), m.r16(f + M.F_LOYALTY))
-    wg = _dev_gain(m, amount, m.r16(f + M.F_TOWN), m.r16(f + M.F_WEALTH))
-    m.w16(f + M.F_LOYALTY, min(100, m.r16(f + M.F_LOYALTY) + lg))
-    m.w16(f + M.F_WEALTH, min(100, m.r16(f + M.F_WEALTH) + wg))
+    _develop(m, f, M.F_LOYALTY, M.F_OUTPUT, amount, double=True)     # develop_loyalty $891D
+    _develop(m, f, M.F_WEALTH, M.F_TOWN, amount, double=True)        # develop_wealth  $896F
 
 
 def set_tax(m, idx, new_tax):              # drains loyalty + wealth by |dtax|%

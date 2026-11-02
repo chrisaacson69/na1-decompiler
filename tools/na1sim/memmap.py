@@ -107,8 +107,8 @@ FIEF_TO_DAIMYO_MAP = 0x6E15   # byte/fief -> owning daimyo id
 DAIMYO_WEAKNESS_FLAG = 0x6DD4  # byte/daimyo (fief_owner_weakness reads this)
 
 # --- scalar globals ------------------------------------------------------
-CONST_TWO           = 0x6D63   # skill/difficulty dial (1..5, default 2);
-                               # used as const_two+3, const_two*3, 6-const_two
+SKILL_LEVEL           = 0x6D63   # skill/difficulty dial (1..5, default 2);
+                               # used as skill_level+3, skill_level*3, 6-skill_level
 SCENARIO_FIEF_COUNT = 0x6D9D   # word: 17 or 50
 CURRENT_GAME_YEAR   = 0x6D9F   # word, base 1560 ($0618); AI caps use year-1559
 AI_TURN_FLAGS       = 0x6DA1   # byte bitfield
@@ -360,8 +360,8 @@ class Memory:
 
     @property
     def skill(self) -> int:
-        """const_two -- the difficulty dial the develop/recruit/war gates scale on."""
-        return self.r16(CONST_TWO)
+        """skill_level -- the difficulty dial the develop/recruit/war gates scale on."""
+        return self.r16(SKILL_LEVEL)
 
 
 # ---------------------------------------------------------------------------

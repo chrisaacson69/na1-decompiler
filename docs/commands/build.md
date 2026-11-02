@@ -44,7 +44,7 @@ Structurally identical to `effect_grow` from `$87F0` through the flat-100 / `mat
 ```
 if amount < 1:  return 0
 sqrt_val = sqrt(town + amount)                      ; field+4 now
-gain_raw = math32_3arg(-const_two, sqrt_val, ???)
+gain_raw = math32_3arg(-skill_level, sqrt_val, ???)
 gain     = gain_raw << 1
 if gain > (header - town): gain = header - town
 if gain/2 > town: base = 100
@@ -64,7 +64,7 @@ return gain (NOT gain/2 — Build returns the unscaled gain to the driver)
 
 Prediction shape:
 - `sqrt(66 + 70) = sqrt(136) = 11` (integer)
-- `−const_two`: `11 − 1 = 10` (assuming const_two still reads as 1)
+- `−skill_level`: `11 − 1 = 10` (assuming skill_level still reads as 1)
 - `gain_raw = math32_3arg(-1, 11, ???)` — unknown until measured
 - `gain = gain_raw << 1`
 - gain/2 = gain_raw. If `gain_raw ≤ town = 66`, takes `math32_2arg` branch
@@ -93,7 +93,7 @@ py capture-test.py build-all-gold diff --fief 8
 | dams | | | | (sanity: 0) |
 | loyalty | | | | (sanity: 0; if not 0, tax/drift confound) |
 | header | | | | (sanity: 0) |
-| const_two ($6D63) | | | | watching |
+| skill_level ($6D63) | | | | watching |
 
 ### Test 2: (planned — smaller amount, to factor out secondary helper)
 

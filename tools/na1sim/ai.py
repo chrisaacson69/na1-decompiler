@@ -13,12 +13,12 @@ DECISION STRUCTURE is ported EXACTLY (the part that defines the threat model):
 
   military_pass (ai_state2_recruit_arm_train):
     war-attack FIRST (returns 1 only if a war launches)
-    recruit if men < min((year-1559)*40, header), prob rng(10) < const_two+3,
+    recruit if men < min((year-1559)*40, header), prob rng(10) < skill_level+3,
             spending gold_surplus/2
     buy arms; sell/convert; 50% train; 1% rare reinforce
 
   war commit gate (ai_try_war_attack): target = weakest provisioned-men enemy;
-    attack iff (ratio(att,tgt) - 10 - rng(const_two*3) > 60) OR rng(100)==0
+    attack iff (ratio(att,tgt) - 10 - rng(skill_level*3) > 60) OR rng(100)==0
     where ratio = att_men*100/(att_men+tgt_men); a no-rice fief counts as 0 men.
 
 GROUNDING FLAGS (see ROADMAP):
@@ -93,7 +93,7 @@ def _try_war(world: World, idx: int, rng: random.Random,
     if target is None:
         return False
 
-    # commit gate (deterministic majority OR 1/100), const_two*3 noise
+    # commit gate (deterministic majority OR 1/100), skill_level*3 noise
     ratio = men_ratio_pct(p, target)
     do_attack = ((ratio - 10) - rng.randrange(max(1, world.skill * 3)) > 60) \
         or (rng.randrange(100) == 0)
@@ -122,7 +122,7 @@ def _military_pass(world: World, idx: int, rng: random.Random,
     p = world.provinces[idx]
     gold_surplus, _ = men_surplus(p)
 
-    # recruit: under year-strength, prob rng(10) < const_two+3, spend gold_surplus/2.
+    # recruit: under year-strength, prob rng(10) < skill_level+3, spend gold_surplus/2.
     # ROM: men_gained = (spend*10)/hire_rate = spend/men_price (rate stored x10).
     year_men_cap = min((world.year - 1559) * 40, p.header)
     if p.men < year_men_cap and rng.randrange(10) < (world.skill + 3):

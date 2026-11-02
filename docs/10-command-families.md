@@ -37,7 +37,7 @@ result = <effect handler>(record, amount)
 display result ; redraw ; return
 ```
 
-And the effect skeleton (the same one Grow uses, ch.9 §5b) is equally fixed: `amount < 1` guard → `$CBCD` integer square root of `field + amount` (the divisor) → the **`(6−skill)` skill-level multiplier** (`word[$6D63]` = `const_two`, difficulty 1–5) → `$D6B8` 32-bit math → clamp against `header@24` → a **live-computed** drain pct (flat-50 ceiling) → `$D70D` percentage redistribution out of other fields. The verified develop gain is `2·⌊amount·(6−skill)/√(field+amount)⌋`.
+And the effect skeleton (the same one Grow uses, ch.9 §5b) is equally fixed: `amount < 1` guard → `$CBCD` integer square root of `field + amount` (the divisor) → the **`(6−skill)` skill-level multiplier** (`word[$6D63]` = `skill_level`, difficulty 1–5) → `$D6B8` 32-bit math → clamp against `header@24` → a **live-computed** drain pct (flat-50 ceiling) → `$D70D` percentage redistribution out of other fields. The verified develop gain is `2·⌊amount·(6−skill)/√(field+amount)⌋`.
 
 What varies — the entire content of the diff (command names confirmed from the in-game menu, item N = table index N+1):
 
