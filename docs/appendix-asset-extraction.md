@@ -30,7 +30,7 @@ Render = decode each referenced CHR tile (2bpp → 4 palette slots) → place it
 5. **Validate against a real screenshot.** Render one known asset and diff against an emulator/game capture. The portrait crack's *final* bug (per-id map) survived a plausible-looking first render and was only caught by comparing Miyoshi to a real screenshot. **Always ground the last mile on a capture.**
 
 ### Worked example — daimyo portraits (preset path)
-`draw_daimyo_portrait` ($E76F): palette ← `$F7CC` (4 idx `0x3E/0x38/0x28/0x30`); CHR ← descriptor table **bank 8 `$BBD0`** (4 B/entry `{bank, count, src}`, indexed by `fief_to_mapid(fief)`), portraits packed in **banks 7-8**, uploaded to `$15B0` = PT1 tile `0x5B`; layout ← **per-portrait** 6×6 map at **bank 8 `$B144` + mapid*36**; map cell `v` → tile `v-0x5B`. Output: `tools/render-portrait.py anthology` → `assets/portraits/daimyo-anthology-{17,50}.png`, validated vs a game Miyoshi screenshot. Full detail: [[project_nobunaga_daimyo_portraits]].
+`draw_daimyo_portrait` ($E76F): palette ← `$F7CC` (4 idx `0x3E/0x38/0x28/0x30`); CHR ← descriptor table **bank 8 `$BBD0`** (4 B/entry `{bank, count, src}`, indexed by `fief_to_mapid(fief)`), portraits packed in **banks 7-8**, uploaded to `$15B0` = PT1 tile `0x5B`; layout ← **per-portrait** 6×6 map at **bank 8 `$B144` + mapid*36**; map cell `v` → tile `v-0x5B`. Output: `tools/render-portrait.py anthology` → `assets/portraits/daimyo-anthology-{17,50}.png`, validated vs a game Miyoshi screenshot. Labels: `0xBBD0`, `0xB144`, `0xF7CC`, `0xE6B9` in `mesen-labels.toml`.
 
 ## Candidate assets (the graphics entry points)
 

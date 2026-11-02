@@ -81,7 +81,7 @@ Where:
 - `headroom = header − output = 1640 − 80 = 1560` — not clamped (vast)
 - `gain/2 = 28 ≤ output = 80` → **flat-100 ceiling NOT hit**; took the `math32_2arg` branch
 - Assuming dams Δ is purely Grow: `pct_op(80, P) = 16` → **P = 20** *(in THIS test)*
-- ⚠️ **CORRECTED 2026-06-02 (bytecode validation):** `pct` is **NOT** a constant 20. The bytecode at `$8833-$884E` computes it live: `pct = (gain/2 > output) ? 50 : ⌊100·gain/(gain+output)⌋/2`. For Test 1 (gain=56, output=80): `⌊5600/136⌋/2 = 41/2 = 20` — so the "20" was a **coincidence of this single test** (the only one where drains were captured). The drain scales with how aggressive the grow is relative to output, capped at 50%. The old "`pct=20` is a real game constant" claim (and its Train cross-check, which happened to land on 20 too) is withdrawn — see [[project_nobunaga_grow_formula_corrected]]. Validated against `$87F0` bytecode + reproduced by `run-effect.py`.
+- ⚠️ **CORRECTED 2026-06-02 (bytecode validation):** `pct` is **NOT** a constant 20. The bytecode at `$8833-$884E` computes it live: `pct = (gain/2 > output) ? 50 : ⌊100·gain/(gain+output)⌋/2`. For Test 1 (gain=56, output=80): `⌊5600/136⌋/2 = 41/2 = 20` — so the "20" was a **coincidence of this single test** (the only one where drains were captured). The drain scales with how aggressive the grow is relative to output, capped at 50%. The old "`pct=20` is a real game constant" claim (and its Train cross-check, which happened to land on 20 too) is withdrawn — see [appendix-formulas §1](../appendix-formulas.md). Validated against `$87F0` bytecode + reproduced by `run-effect.py`.
 
 Files: `traces/grow-test1-tokugawa-PRE.dmp` (Spring start), `traces/grow-test1-tokugawa-POST-fall-start.dmp` (Fall start).
 

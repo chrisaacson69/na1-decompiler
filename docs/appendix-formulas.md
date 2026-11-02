@@ -369,7 +369,7 @@ dams     += gain                                  ; helper_dam_rounding: war-hal
 ```
 
 - **Gain is inversely proportional to √output** — a developed fief pays far more gold per dam point. The spend cap is exactly the amount that lifts dams to 100.
-- **Why dams matter**: the rice harvest multiplies `output × dams` (§4 rice formula), so Dam is a rice-yield multiplier; ROI rises with output. Dam beats Grow for rice once `output² > ~38 × dams`. [[project_nobunaga_dam_doctrine]]
+- **Why dams matter**: the rice harvest multiplies `output × dams` (§4 rice formula), so Dam is a rice-yield multiplier; ROI rises with output. Dam beats Grow for rice once `output² > ~38 × dams` (an early estimate; synthesis-frontier #17 has the (6−skill)·dams crossover, an open reconcile).
 - **Verified**: bytecode + `dam-mikawa` capture (Tokugawa output=254 → √=15, spent all 424 gold → dams 39 → 95 = +56; `⌊848/15⌋ = 56` exact). See [dam.html](./commands/dam.html).
 - **Source bytecode**: driver $9B7E; helpers $87D8 (√output), $887D (apply+cap), animation id 21.
 
