@@ -13,35 +13,34 @@
 // title's regen): same text, re-keyed. Deterministic; regenerate after those change.
 // ============================================================
 
-// ---- declarations (the union of the per-bank files') ----
+// ---- memory map: fixed RAM and ROM tables, by address ----
 struct province { word gold; word debt; word town; word rice; word output; word dams; word loyalty; word wealth; word men; word morale; word skill; word arms; word stat_cap; };    /* 26 bytes */
-extern struct province province_table_live[];    /* at $7001 */
 struct daimyo { byte age; byte health; byte drive; byte luck; byte charisma; byte iq; byte status; };    /* 7 bytes */
-extern struct daimyo daimyo_table[];    /* at $752F */
-extern word battle_defender_province_staging[];
-extern word battle_staging_entry_flag_array[];
-extern byte daimyo_name_table[][9];
-extern byte daimyo_turn_order[];
-extern byte daimyo_weakness_flag[];
-extern byte event_affected_fief_list[];
-extern byte fief_history_table[];
-extern byte fief_is_daimyo_capital[];
-extern byte fief_to_daimyo_map[];
-extern byte list_remove_matching_list[];
-extern word loan_rate[];
-extern byte province_ai_state[];
-extern byte province_name_table[][10];
-extern byte province_unit_type_pct[][5];
-extern byte relations_matrix[];
-extern byte fief_tax_rate[];
-extern byte province_unit_type_pct[];
-extern byte rest_turns_remaining[];
-extern word battle_side_strength_mod[];
-extern byte battle_unit_byte_table[];
-extern word daimyo_face_code_table[];
-extern byte unit_count_digit_tiles[][9];
-extern byte war_attacker_gold[][6];
-extern byte war_side_state_flag[];
+byte fief_history_table[];                  // $6003
+byte relations_matrix[];                    // $6193
+byte province_ai_state[];                   // $6CF7
+byte fief_tax_rate[];                       // $6D2D
+byte rest_turns_remaining[];                // $6D67
+byte fief_is_daimyo_capital[];              // $6DA2
+byte daimyo_weakness_flag[];                // $6DD4
+word loan_rate[];                           // $6E0B
+byte fief_to_daimyo_map[];                  // $6E15
+byte list_remove_matching_list[];           // $6E7F
+word daimyo_face_code_table[];              // $6EB1
+byte daimyo_turn_order[];                   // $6F1B
+byte war_side_state_flag[];                 // $6F65
+word battle_defender_province_staging[];    // $6F67
+word battle_staging_entry_flag_array[];     // $6F68
+byte war_attacker_gold[][6];                // $6F7D
+byte unit_count_digit_tiles[][9];           // $6FE5
+struct province province_table_live[];      // $7001
+struct daimyo daimyo_table[];               // $752F
+byte province_unit_type_pct[][5];           // $76A9
+byte daimyo_name_table[][9];                // $77A8
+byte province_name_table[][10];             // $7985
+byte event_affected_fief_list[];            // $7BAD
+word battle_side_strength_mod[];            // $7BEA
+byte battle_unit_byte_table[];              // $7BEE
 
 // ---- index (PRG-sorted) ----
 //   PRG $00003  bank0  $8003  show_game_ending_and_play_again_prompt
