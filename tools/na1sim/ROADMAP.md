@@ -117,6 +117,10 @@ C directly** against a flat memory model, validated against the na1dream bytecod
   = not weakest in any BORDER's eyes, develop+train rotation). game.player_ab()
   A/B. **Hida tuned-player 45% vs 35% dumb-AI baseline -- the human out-survives
   autopilot. Bottom-trap thesis ANSWERED.**
+  (2026-11-04, 600 seeds per cell: AI 45.0% -> player 55.3% at skill 2, 35.3 -> 69.2 at skill 1,
+  60.0 -> 0.0 at skill 5, SE ~2.8. The thesis holds at skills 1-2. A 40-seed run swings a clan by
+  30+ points on its own, so read the per-clan figures in this file as rough. re-roadmap.toml has
+  the ablation.)
 - OPEN: the men-fix OVERSHOT. Strong fiefs under-perform as players (Uesugi 15%
   vs 82% AI) because the AI now UNDER-recruits (~130 men) + skill SNOWBALLS to
   ~1100+ (header-capped, ROM-confirmed; trains ~45%/turns, rarely hires -> undiluted)
