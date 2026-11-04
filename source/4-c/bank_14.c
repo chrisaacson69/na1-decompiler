@@ -74,8 +74,9 @@ word run_cutscene(void) {
         palette_idx = (palette_idx + 1);    // $80F7
     }
     ppu_upload_block_wrap(cutscene_bank, *(word*)((*(word*)(fp - 33) + 17)), 0x0100, *(byte*)((*(word*)(fp - 33) + 16)));    // $8110
+    phi_val_8118 = *(word*)((*(word*)(fp - 41) + 3));    // $8117
 L_8118:
-    *(word*)(fp - 35) = *(word*)((*(word*)(fp - 41) + 3));    // $8118
+    *(word*)(fp - 35) = phi_val_8118;    // $8118
 L_811A:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // $811D
     switch (*(byte*)((*(word*)(fp - 35) - 1))) {    // $8121
@@ -136,6 +137,7 @@ L_81CB:
 L_81DC:
     *(byte*)(fp - 39) = (*(byte*)(fp - 39) - 1);    // $81E0
     if (!((*(byte*)(fp - 39) + 1))) goto L_811A;    // $81E4
+    phi_val_8118 = *(word*)(fp - 38);    // $81E9
     goto L_8118;    // $81E9
 L_81EC:
     delay_loop(50);    // $81EE

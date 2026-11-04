@@ -584,7 +584,7 @@ def driver_give(m: "M.Memory", to_peasants: bool, gold: bool, amount: int) -> in
     if m.s16(f + (M.F_OUTPUT if to_peasants else M.F_MEN)) <= 0:
         return 0
     level = ((m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 if to_peasants
-             else m.r16(f + M.F_MORALE))         # the bytecode ($AA5C-$AA79); the C prints morale alone
+             else m.r16(f + M.F_MORALE))
     if level >= m.r16(f + M.F_HEADER):
         return 0
     source = f + (M.F_GOLD if gold else M.F_RICE)

@@ -402,18 +402,22 @@ L_CDC9:
 word char_classify(word ch) {
     if (!((*(byte*)&ch >= 95))) goto L_CDF4;    // $CDD5
     if (!((*(byte*)&ch <= 122))) goto L_CDF4;    // $CDDE
+    phi_val_ce11 = 47;    // $CDE3
     goto L_CE11;    // $CDE3
 L_CDE6:
     if (!((*(byte*)&ch <= 90))) goto L_CDFD;    // $CDEC
+    phi_val_ce11 = 43;    // $CDF1
     goto L_CE11;    // $CDF1
 L_CDF4:
     if ((*(byte*)&ch >= 65)) goto L_CDE6;    // $CDFA
 L_CDFD:
     if (!((*(byte*)&ch >= 45))) goto L_CE1D;    // $CE03
     if (!((*(byte*)&ch <= 58))) goto L_CE1D;    // $CE0C
+    phi_val_ce11 = 40;    // $CE0F
 L_CE11:
+    phi_val_ce16 = (*(byte*)&ch - phi_val_ce11);    // $CE15
 L_CE16:
-    *(byte*)&ch = (*(byte*)&ch - 40);    // $CE16
+    *(byte*)&ch = phi_val_ce16;    // $CE16
     return *(byte*)&ch;    // $CE1C
 L_CE1D:
     switch (*(byte*)&ch) {    // $CE20
@@ -432,20 +436,28 @@ L_CE1D:
         default: goto L_CE7D;    // $CE20
     }    // $CE20
 L_CE55:
+    phi_val_ce11 = 31;    // $CE57
     goto L_CE11;    // $CE57
 L_CE5A:
+    phi_val_ce16 = 76;    // $CE5C
     goto L_CE16;    // $CE5C
 L_CE5F:
+    phi_val_ce16 = 77;    // $CE61
     goto L_CE16;    // $CE61
 L_CE64:
+    phi_val_ce11 = 37;    // $CE66
     goto L_CE11;    // $CE66
 L_CE69:
+    phi_val_ce16 = (*(byte*)&ch + 36);    // $CE70
     goto L_CE16;    // $CE70
 L_CE73:
+    phi_val_ce16 = 19;    // $CE75
     goto L_CE16;    // $CE75
 L_CE78:
+    phi_val_ce11 = 42;    // $CE7A
     goto L_CE11;    // $CE7A
 L_CE7D:
+    phi_val_ce16 = 0;    // $CE7E
     goto L_CE16;    // $CE7E
 }
 
@@ -593,11 +605,12 @@ L_D018:
     has_precision = 0;    // $D037
     ch = *(byte*)(fmt_cursor);    // $D03C
     if (!(is_digit(ch))) goto L_D055;    // $D047
-    atoi_decimal(&fmt_cursor);    // $D04E
+    phi_val_d056 = atoi_decimal(&fmt_cursor);    // $D052
     goto L_D056;    // $D052
 L_D055:
+    phi_val_d056 = 0;    // $D055
 L_D056:
-    pad = 0;    // $D056
+    pad = phi_val_d056;    // $D056
     fmt_cursor = (fmt_cursor + 1);    // $D05B
     ch = *(byte*)((fmt_cursor - 1));    // $D05F
     if (!((*(byte*)((fmt_cursor - 1)) == 46))) goto L_D07F;    // $D065

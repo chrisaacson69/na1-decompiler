@@ -2396,6 +2396,8 @@ L_A6DD:
     confirm_prompt();    // $A6F8
     return 0;    // $A6FC
 L_A6FD:
+    phi_val_a753 = viewed_fief;    // $A701
+    phi_valb_a753 = province_to_map_section_17;    // $A701
     goto L_A753;    // $A701
 L_A704:
     if ((target_fief != 99)) goto L_A76C;    // $A708
@@ -2414,9 +2416,11 @@ L_A72C:
     if ((target_fief != -1)) goto L_A768;    // $A740
     repaint_screen();    // $A743
     if ((scenario_fief_count != 50)) goto L_A6FD;    // $A74C
+    phi_val_a753 = viewed_fief;    // $A750
+    phi_valb_a753 = province_to_map_section_50;    // $A750
 L_A753:
-    map_section = province_to_map_section_50[viewed_fief];    // $A755
-    render_map_section(province_to_map_section_50[viewed_fief]);    // $A757
+    map_section = *(byte*)((phi_val_a753 + phi_valb_a753));    // $A755
+    render_map_section(*(byte*)((phi_val_a753 + phi_valb_a753)));    // $A757
     browse_map_sections(map_section);    // $A75C
     effect_view_a(viewed_fief);    // $A761
     goto L_A6D0;    // $A765
@@ -2644,7 +2648,12 @@ word driver_give(void) {
             confirm_prompt();    // $AA57
             return 0;    // $AA5B
         } else {
-            if ((fief->morale >= fief->stat_cap)) {    // $AA79
+            if ((give_type == 1)) {    // $AA5C
+                phi_val_aa79 = ((fief->loyalty + fief->wealth) / 2);    // $AA72
+            } else {
+                phi_val_aa79 = fief->morale;    // $AA78
+            }
+            if ((phi_val_aa79 >= fief->stat_cap)) {    // $AA79
                 message_display(msg_we_re_at_our_limit);    // $AA81
                 confirm_prompt();    // $AA85
                 return 0;    // $AA89
@@ -2897,12 +2906,14 @@ L_AE56:
     cell_ptr = (cell_ptr + 1);    // $AE69
     if (!((*(byte*)((cell_ptr - 1)) == selected_province_idx))) goto L_AE1D;    // $AE71
     found_flag = 1;    // $AE75
-    goto L_AE78;    // $AE75
+L_AE77:
+    phi_val_ae78 = 0;    // $AE77
+    goto L_AE78;    // $AE77
 L_AE2A:
     ppu_copy_rect_wrap(cell_col, cell_row, min_word((cell_col + 8), 29), cell_row, ((((shown_map_section * 0x01C0) + ((cell_row + -4) * 28)) + cell_col) + strategic_map_tilemaps_by_screen_col), 4);    // $AE4F
     goto L_AEA2;    // $AE53
 L_AE78:
-    blink_phase = 0;    // $AE78
+    blink_phase = phi_val_ae78;    // $AE78
     if (!((found_flag == 1))) goto L_AEA2;    // $AE7E
     if ((blink_phase == 100)) goto L_AE2A;    // $AE86
     if (!((blink_phase == 200))) goto L_AEA2;    // $AE8F
@@ -2924,6 +2935,7 @@ L_AECC:
 L_AECE:
         default:
             if ((fief_anchor != map_section)) goto L_AEC0;    // $AED4
+            phi_val_ae78 = (blink_phase + 1);    // $AEDA
             goto L_AE78;    // $AEDA
         case 16:
         case 128:
@@ -3177,8 +3189,11 @@ word submenu_prompt(word item_count) {
                 ui_cursor_row = (ui_cursor_row - 1);    // $B1F5
                 if ((ui_cursor_row == 6)) {    // $B1EC
                     set_cursor(21, (item_count + 6));    // $B202
+                    phi_val_b20b = item_count;    // $B207
+                } else {
+                    phi_val_b20b = selected_idx;    // $B20A
                 }
-                selected_idx = (selected_idx - 1);    // $B20B
+                selected_idx = (phi_val_b20b - 1);    // $B20B
                 set_cursor_sprite(2);    // $B20E
                 delay_loop(2);    // $B213
                 break;

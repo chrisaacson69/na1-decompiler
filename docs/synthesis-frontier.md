@@ -101,6 +101,13 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 **A further step, not modelled:** sell rice and give the gold when a rice fetches more than 1 gold, or buy rice when it fetches less. It costs a turn, the merchant is not always there, and caps bite when large.
 
+**Expansion is a graph problem, not an odds problem** (Chris, 2026-11-04). Taking a fief is the small part; it takes enough left over to hold it. Three ways to pay less for that:
+- **Decapitation.** Corner and capture the daimyo and all his fiefs come with him, so a lord who cannot run is worth more than his fief.
+- **Pump fiefs.** Capture enough that some fiefs have no enemy neighbour. Those cost nothing to hold and only feed the economy, so making one often beats an easier battle: the hold cost goes to 0.
+- **Backfield attacks.** Attack out of a fief that a win would leave behind your front, and you need leave nobody home.
+
+The sim's player picks the weakest neighbour it can take. None of the three is modelled; each needs the adjacency graph (a fief's enemy-neighbour count before and after a capture), not a strength comparison. A good battle AI is a project of its own.
+
 **The ring at Echigo (fief 2, one-based).** The map is a doughnut with the castle set like a diamond in the ring. The AI splits and deploys on both sides, so the defender goes straight for the general and ends the battle with more men than it began. If the AI sets up on one side, run the opposite way and reach the general at its tail; if it splits to counter, take the weaker half. The ring lets the defender control the engagement: circle to time them out, or strike the weak side. The sim's human fights with AI logic, so none of this is in its numbers.
 
 ### #35 — Player doctrine from the May 2026 playthroughs, promoted from memory — 2026-11-02

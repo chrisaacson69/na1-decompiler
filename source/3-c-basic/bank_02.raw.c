@@ -915,12 +915,13 @@ L_8BFD:
     phi_push_8c30 = select_uprising_message(battle_defending_province);    // $8C14
     goto L_8C30;    // $8C14
 L_8C17:
-    selected_province_owner();    // $8C17
+    phi_val_8c2a = selected_province_owner();    // $8C1A
     goto L_8C2A;    // $8C1A
 L_8C1D:
     set_cursor(2, 8);    // $8C1F
+    phi_val_8c2a = fief_owner(battle_defending_province);    // $8C26
 L_8C2A:
-    phi_push_8c30 = daimyo_name_table[fief_owner(battle_defending_province)];    // $8C2F
+    phi_push_8c30 = daimyo_name_table[phi_val_8c2a];    // $8C2F
 L_8C30:
     redraw_window(phi_push_8c30);    // $8C31
     draw_message(msg_gold_4d_rice_4d_men_4d, *(word*)(side_resource_ptr(side)), *(word*)((side_resource_ptr(side) + 2)), *(word*)((side_resource_ptr(side) + 4)));    // $8C4F
@@ -1496,6 +1497,8 @@ L_9419:
 L_942E:
 L_942F:
     outcome = (outcome - 1);    // $9431
+    phi_val_9451 = (outcome << 1);    // $9436
+    phi_valb_9451 = jumptab_b632;    // $9436
     goto L_9451;    // $9436
 L_9439:
     if ((outcome != 1)) goto L_944A;    // $943C
@@ -1503,8 +1506,10 @@ L_9439:
     outcome = (outcome + 1);    // $9449
 L_944A:
     outcome = (outcome - 1);    // $944C
+    phi_val_9451 = (outcome << 1);    // $944E
+    phi_valb_9451 = battle_conclusion_msgs_loser;    // $944E
 L_9451:
-    conclusion_msg = *(word*)(((outcome << 1) + battle_conclusion_msgs_loser));    // $9453
+    conclusion_msg = *(word*)((phi_val_9451 + phi_valb_9451));    // $9453
     draw_lord_name_salutation(fief);    // $9455
     redraw_window(str_battle_outcome_msgs);    // $945C
     redraw_window(conclusion_msg);    // $9461
@@ -2358,10 +2363,14 @@ word find_flagged_present_unit_type(word list_ptr) {
 L_A156:
     if (!((*(byte*)(list_ptr) < 5))) goto L_A184;    // $A15A
     if (!(((unsigned)best_target < (unsigned)5))) goto L_A175;    // $A160
+    phi_val_a17d = battle_unit_byte_table[*(byte*)(list_ptr)];    // $A172
+    phi_valb_a17d = battle_unit_byte_table[best_target];    // $A172
     goto L_A17D;    // $A172
 L_A175:
+    phi_val_a17d = battle_unit_byte_table[*(byte*)(list_ptr)];    // $A17C
+    phi_valb_a17d = 0;    // $A17C
 L_A17D:
-    if (!((battle_unit_byte_table[*(byte*)(list_ptr)] > 0))) goto L_A184;    // $A17E
+    if ((phi_val_a17d <= phi_valb_a17d)) goto L_A184;    // $A17E
     best_target = *(byte*)(list_ptr);    // $A183
 L_A184:
     list_ptr = (list_ptr + 1);    // $A186

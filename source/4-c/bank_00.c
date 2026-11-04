@@ -1612,13 +1612,15 @@ word assign_fiefs_to_owner_51_keep_ai_state(word target_count, word fief_list_pt
         count = (count + 1);    // $9903
     }
     if (!(((unsigned)count < (unsigned)target_count))) goto L_994B;    // $9911
+    phi_val_992a = (target_count - count);    // $9918
     goto L_992A;    // $9918
 L_991B:
     list_buf_cursor = (list_buf_cursor + 1);    // $991D
     *(byte*)((list_buf_cursor - 1)) = *(byte*)(fief_list_ptr);    // $9922
     *(byte*)(fief_list_ptr) = -56;    // $9926
+    phi_val_992a = (remaining - 1);    // $9929
 L_992A:
-    remaining = (remaining - 1);    // $992A
+    remaining = phi_val_992a;    // $992A
     goto L_9944;    // $992C
 L_992F:
     if ((*(byte*)(fief_list_ptr) != 200)) goto L_991B;    // $9935

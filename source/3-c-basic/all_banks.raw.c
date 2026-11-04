@@ -2161,13 +2161,15 @@ L_p01906:
     if (((unsigned)count < (unsigned)target_count)) goto L_p018E4;    // PRG $0190A
 L_p0190D:
     if (!(((unsigned)count < (unsigned)target_count))) goto L_p0194B;    // PRG $01911
+    phi_val_992a = (target_count - count);    // PRG $01918
     goto L_p0192A;    // PRG $01918
 L_p0191B:
     list_buf_cursor = (list_buf_cursor + 1);    // PRG $0191D
     *(byte*)((list_buf_cursor - 1)) = *(byte*)(fief_list_ptr);    // PRG $01922
     *(byte*)(fief_list_ptr) = -56;    // PRG $01926
+    phi_val_992a = (remaining - 1);    // PRG $01929
 L_p0192A:
-    remaining = (remaining - 1);    // PRG $0192A
+    remaining = phi_val_992a;    // PRG $0192A
     goto L_p01944;    // PRG $0192C
 L_p0192F:
     if ((*(byte*)(fief_list_ptr) != 200)) goto L_p0191B;    // PRG $01935
@@ -5574,6 +5576,8 @@ L_p066DD:
     confirm_prompt();    // PRG $066F8 -> bank15 $D766
     return 0;    // PRG $066FC
 L_p066FD:
+    phi_val_a753 = viewed_fief;    // PRG $06701
+    phi_valb_a753 = province_to_map_section_17;    // PRG $06701
     goto L_p06753;    // PRG $06701
 L_p06704:
     if ((target_fief != 99)) goto L_p0676C;    // PRG $06708
@@ -5592,9 +5596,11 @@ L_p0672C:
     if ((target_fief != -1)) goto L_p06768;    // PRG $06740
     repaint_screen();    // PRG $06743 -> bank15 $CD20
     if ((scenario_fief_count != 50)) goto L_p066FD;    // PRG $0674C
+    phi_val_a753 = viewed_fief;    // PRG $06750
+    phi_valb_a753 = province_to_map_section_50;    // PRG $06750
 L_p06753:
-    map_section = province_to_map_section_50[viewed_fief];    // PRG $06755
-    render_map_section(province_to_map_section_50[viewed_fief]);    // PRG $06757 -> bank15 $E5F2
+    map_section = *(byte*)((phi_val_a753 + phi_valb_a753));    // PRG $06755
+    render_map_section(*(byte*)((phi_val_a753 + phi_valb_a753)));    // PRG $06757 -> bank15 $E5F2
     browse_map_sections(map_section);    // PRG $0675C -> bank1 $AF10
     effect_view_a(viewed_fief);    // PRG $06761 -> bank1 $83FA
     goto L_p066D0;    // PRG $06765
@@ -5827,10 +5833,12 @@ L_p06A53:
     return 0;    // PRG $06A5B
 L_p06A5C:
     if ((give_type != 1)) goto L_p06A75;    // PRG $06A64
+    phi_val_aa79 = ((fief->loyalty + fief->wealth) / 2);    // PRG $06A72
     goto L_p06A79;    // PRG $06A72
 L_p06A75:
+    phi_val_aa79 = fief->morale;    // PRG $06A78
 L_p06A79:
-    if (!((fief->morale >= fief->stat_cap))) goto L_p06A8A;    // PRG $06A7B
+    if (!((phi_val_aa79 >= fief->stat_cap))) goto L_p06A8A;    // PRG $06A7B
     message_display(msg_we_re_at_our_limit);    // PRG $06A81 -> bank15 $D326
     confirm_prompt();    // PRG $06A85 -> bank15 $D766
     return 0;    // PRG $06A89
@@ -6089,8 +6097,9 @@ L_p06E56:
     if (!((*(byte*)((cell_ptr - 1)) == selected_province_idx))) goto L_p06E1D;    // PRG $06E71
     found_flag = 1;    // PRG $06E75
 L_p06E77:
+    phi_val_ae78 = 0;    // PRG $06E77
 L_p06E78:
-    blink_phase = 0;    // PRG $06E78
+    blink_phase = phi_val_ae78;    // PRG $06E78
     if (!((found_flag == 1))) goto L_p06EA2;    // PRG $06E7E
     if ((blink_phase == 100)) goto L_p06E2A;    // PRG $06E86
     if (!((blink_phase == 200))) goto L_p06EA2;    // PRG $06E8F
@@ -6119,6 +6128,7 @@ L_p06ECC:
 L_p06ECE:
 L_p06ECF:
     if ((fief_anchor != map_section)) goto L_p06EC0;    // PRG $06ED4
+    phi_val_ae78 = (blink_phase + 1);    // PRG $06EDA
     goto L_p06E78;    // PRG $06EDA
 L_p06EDD:
     if ((scenario_fief_count == 50)) goto L_p06EC2;    // PRG $06EE3
@@ -6380,10 +6390,12 @@ L_p071EC:
     ui_cursor_row = (ui_cursor_row - 1);    // PRG $071F5
     if ((ui_cursor_row != 6)) goto L_p0720A;    // PRG $071FA
     set_cursor(21, (item_count + 6));    // PRG $07202 -> bank15 $CC7B
+    phi_val_b20b = item_count;    // PRG $07207
     goto L_p0720B;    // PRG $07207
 L_p0720A:
+    phi_val_b20b = selected_idx;    // PRG $0720A
 L_p0720B:
-    selected_idx = (selected_idx - 1);    // PRG $0720B
+    selected_idx = (phi_val_b20b - 1);    // PRG $0720B
 L_p0720C:
     set_cursor_sprite(2);    // PRG $0720E -> bank15 $D29D
     delay_loop(2);    // PRG $07213 -> bank15 $D73E
@@ -7794,12 +7806,13 @@ L_p08BFD:
     phi_push_8c30 = select_uprising_message(battle_defending_province);    // PRG $08C14 -> bank15 $DE78
     goto L_p08C30;    // PRG $08C14
 L_p08C17:
-    selected_province_owner();    // PRG $08C17 -> bank15 $D77E
+    phi_val_8c2a = selected_province_owner();    // PRG $08C1A -> bank15 $D77E
     goto L_p08C2A;    // PRG $08C1A
 L_p08C1D:
     set_cursor(2, 8);    // PRG $08C1F -> bank15 $CC7B
+    phi_val_8c2a = fief_owner(battle_defending_province);    // PRG $08C26 -> bank15 $D772
 L_p08C2A:
-    phi_push_8c30 = daimyo_name_table[fief_owner(battle_defending_province)];    // PRG $08C2F -> bank15 $D772
+    phi_push_8c30 = daimyo_name_table[phi_val_8c2a];    // PRG $08C2F
 L_p08C30:
     redraw_window(phi_push_8c30);    // PRG $08C31 -> bank15 $CEC4
     draw_message(msg_gold_4d_rice_4d_men_4d, *(word*)(side_resource_ptr(side)), *(word*)((side_resource_ptr(side) + 2)), *(word*)((side_resource_ptr(side) + 4)));    // PRG $08C4F -> bank15 $D134
@@ -8403,6 +8416,8 @@ L_p09419:
 L_p0942E:
 L_p0942F:
     outcome = (outcome - 1);    // PRG $09431
+    phi_val_9451 = (outcome << 1);    // PRG $09436
+    phi_valb_9451 = jumptab_b632;    // PRG $09436
     goto L_p09451;    // PRG $09436
 L_p09439:
     if ((outcome != 1)) goto L_p0944A;    // PRG $0943C
@@ -8410,8 +8425,10 @@ L_p09439:
     outcome = (outcome + 1);    // PRG $09449
 L_p0944A:
     outcome = (outcome - 1);    // PRG $0944C
+    phi_val_9451 = (outcome << 1);    // PRG $0944E
+    phi_valb_9451 = battle_conclusion_msgs_loser;    // PRG $0944E
 L_p09451:
-    conclusion_msg = *(word*)(((outcome << 1) + battle_conclusion_msgs_loser));    // PRG $09453
+    conclusion_msg = *(word*)((phi_val_9451 + phi_valb_9451));    // PRG $09453
     draw_lord_name_salutation(fief);    // PRG $09455 -> bank15 $D78B
     redraw_window(str_battle_outcome_msgs);    // PRG $0945C -> bank15 $CEC4
     redraw_window(conclusion_msg);    // PRG $09461 -> bank15 $CEC4
@@ -9300,10 +9317,14 @@ word find_flagged_present_unit_type(word list_ptr) {
 L_p0A156:
     if (!((*(byte*)(list_ptr) < 5))) goto L_p0A184;    // PRG $0A15A
     if (!(((unsigned)best_target < (unsigned)5))) goto L_p0A175;    // PRG $0A160
+    phi_val_a17d = battle_unit_byte_table[*(byte*)(list_ptr)];    // PRG $0A172
+    phi_valb_a17d = battle_unit_byte_table[best_target];    // PRG $0A172
     goto L_p0A17D;    // PRG $0A172
 L_p0A175:
+    phi_val_a17d = battle_unit_byte_table[*(byte*)(list_ptr)];    // PRG $0A17C
+    phi_valb_a17d = 0;    // PRG $0A17C
 L_p0A17D:
-    if (!((battle_unit_byte_table[*(byte*)(list_ptr)] > 0))) goto L_p0A184;    // PRG $0A17E
+    if ((phi_val_a17d <= phi_valb_a17d)) goto L_p0A184;    // PRG $0A17E
     best_target = *(byte*)(list_ptr);    // PRG $0A183
 L_p0A184:
     list_ptr = (list_ptr + 1);    // PRG $0A186
@@ -10429,8 +10450,9 @@ L_p380DC:
 L_p380F8:
     if ((palette_idx < 32)) goto L_p380DC;    // PRG $380FD
     ppu_upload_block_wrap(cutscene_bank, *(word*)((*(word*)(fp - 33) + 17)), 0x0100, *(byte*)((*(word*)(fp - 33) + 16)));    // PRG $38110 -> bank15 $CF7C
+    phi_val_8118 = *(word*)((*(word*)(fp - 41) + 3));    // PRG $38117
 L_p38118:
-    *(word*)(fp - 35) = *(word*)((*(word*)(fp - 41) + 3));    // PRG $38118
+    *(word*)(fp - 35) = phi_val_8118;    // PRG $38118
 L_p3811A:
     *(word*)(fp - 35) = (*(word*)(fp - 35) + 1);    // PRG $3811D
     switch (*(byte*)((*(word*)(fp - 35) - 1))) {    // PRG $38121
@@ -10491,6 +10513,7 @@ L_p381CB:
 L_p381DC:
     *(byte*)(fp - 39) = (*(byte*)(fp - 39) - 1);    // PRG $381E0
     if (!((*(byte*)(fp - 39) + 1))) goto L_p3811A;    // PRG $381E4
+    phi_val_8118 = *(word*)(fp - 38);    // PRG $381E9
     goto L_p38118;    // PRG $381E9
 L_p381EC:
 L_p381F2:
@@ -10929,18 +10952,22 @@ L_p3CDC9:
 word char_classify(word ch) {
     if (!((*(byte*)&ch >= 95))) goto L_p3CDF4;    // PRG $3CDD5
     if (!((*(byte*)&ch <= 122))) goto L_p3CDF4;    // PRG $3CDDE
+    phi_val_ce11 = 47;    // PRG $3CDE3
     goto L_p3CE11;    // PRG $3CDE3
 L_p3CDE6:
     if (!((*(byte*)&ch <= 90))) goto L_p3CDFD;    // PRG $3CDEC
+    phi_val_ce11 = 43;    // PRG $3CDF1
     goto L_p3CE11;    // PRG $3CDF1
 L_p3CDF4:
     if ((*(byte*)&ch >= 65)) goto L_p3CDE6;    // PRG $3CDFA
 L_p3CDFD:
     if (!((*(byte*)&ch >= 45))) goto L_p3CE1D;    // PRG $3CE03
     if (!((*(byte*)&ch <= 58))) goto L_p3CE1D;    // PRG $3CE0C
+    phi_val_ce11 = 40;    // PRG $3CE0F
 L_p3CE11:
+    phi_val_ce16 = (*(byte*)&ch - phi_val_ce11);    // PRG $3CE15
 L_p3CE16:
-    *(byte*)&ch = (*(byte*)&ch - 40);    // PRG $3CE16
+    *(byte*)&ch = phi_val_ce16;    // PRG $3CE16
     return *(byte*)&ch;    // PRG $3CE1C
 L_p3CE1D:
     switch (*(byte*)&ch) {    // PRG $3CE20
@@ -10959,20 +10986,28 @@ L_p3CE1D:
         default: goto L_p3CE7D;    // PRG $3CE20
     }    // PRG $3CE20
 L_p3CE55:
+    phi_val_ce11 = 31;    // PRG $3CE57
     goto L_p3CE11;    // PRG $3CE57
 L_p3CE5A:
+    phi_val_ce16 = 76;    // PRG $3CE5C
     goto L_p3CE16;    // PRG $3CE5C
 L_p3CE5F:
+    phi_val_ce16 = 77;    // PRG $3CE61
     goto L_p3CE16;    // PRG $3CE61
 L_p3CE64:
+    phi_val_ce11 = 37;    // PRG $3CE66
     goto L_p3CE11;    // PRG $3CE66
 L_p3CE69:
+    phi_val_ce16 = (*(byte*)&ch + 36);    // PRG $3CE70
     goto L_p3CE16;    // PRG $3CE70
 L_p3CE73:
+    phi_val_ce16 = 19;    // PRG $3CE75
     goto L_p3CE16;    // PRG $3CE75
 L_p3CE78:
+    phi_val_ce11 = 42;    // PRG $3CE7A
     goto L_p3CE11;    // PRG $3CE7A
 L_p3CE7D:
+    phi_val_ce16 = 0;    // PRG $3CE7E
     goto L_p3CE16;    // PRG $3CE7E
 }
 
@@ -11130,11 +11165,12 @@ L_p3D018:
     has_precision = 0;    // PRG $3D037
     ch = *(byte*)(fmt_cursor);    // PRG $3D03C
     if (!(is_digit(ch))) goto L_p3D055;    // PRG $3D047 -> bank15 $CA65
-    atoi_decimal(&fmt_cursor);    // PRG $3D04E -> bank15 $CFD4
+    phi_val_d056 = atoi_decimal(&fmt_cursor);    // PRG $3D052 -> bank15 $CFD4
     goto L_p3D056;    // PRG $3D052
 L_p3D055:
+    phi_val_d056 = 0;    // PRG $3D055
 L_p3D056:
-    pad = 0;    // PRG $3D056
+    pad = phi_val_d056;    // PRG $3D056
     fmt_cursor = (fmt_cursor + 1);    // PRG $3D05B
     ch = *(byte*)((fmt_cursor - 1));    // PRG $3D05F
     if (!((*(byte*)((fmt_cursor - 1)) == 46))) goto L_p3D07F;    // PRG $3D065
