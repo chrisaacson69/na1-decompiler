@@ -1164,15 +1164,18 @@ word pct_op(word base, word percent) {
 // (body @ $D743)
 
 word delay_loop(word count) {
-    goto L_D751;    // $D743
-L_D746:
-    spin = 240;    // $D749
-L_D74A:
-    spin = (spin - 1);    // $D74C
-    if (spin) goto L_D74A;    // $D74E
-L_D751:
-    count = (count - 1);    // $D753
-    if ((count + 1)) goto L_D746;    // $D755
+    while (1) {    // $D751
+        count = (count - 1);    // $D753
+        if ((count + 1)) {    // $D751
+            spin = 240;    // $D749
+            do {    // $D74A
+                spin = (spin - 1);    // $D74C
+            } while (spin);
+            continue;
+        } else {
+            break;
+        }
+    }
     return (count + 1);    // $D758
 }
 

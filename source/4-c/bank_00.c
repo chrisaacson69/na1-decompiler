@@ -65,32 +65,32 @@ word show_game_ending_and_play_again_prompt(void) {
         while (1) {    // $80A3
             if (!(syscall_read_controller(0))) {    // $80A3
                 if (!(syscall_read_controller(1))) {    // $80AC
+                    while (1) {    // $80C5
+                        if (!(syscall_read_controller(0))) {    // $80C5
+                            if (syscall_read_controller(1)) {    // $80CE
+                                break;
+                            } else {
+                                continue;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    palette_swap(1);    // $80D8
+                    ppu_upload_block_wrap(6, cinematic_gfx_9d04, 0x1000, 254);    // $80E6
+                    syscall_fill_nametable(0, 0);    // $80ED
+                    fill_attr_wrap();    // $80F1
+                    ppu_copy_rect_wrap(0, 5, 31, 19, cinematic_tilemap_9b24, 6);    // $80FE
+                    local11 = 0;    // $8103
+                    do {    // $8104
+                        palette_write_wrap(local11, show_game_ending_and_play_again_prompt_congratulations_my_lord_1[local11]);    // $810C
+                        local11 = (local11 + 1);    // $8112
+                    } while (((unsigned)local11 < (unsigned)4));
                     break;
                 }
             }
             continue;
         }
-        while (1) {    // $80C5
-            if (!(syscall_read_controller(0))) {    // $80C5
-                if (syscall_read_controller(1)) {    // $80CE
-                    break;
-                } else {
-                    continue;
-                }
-            } else {
-                break;
-            }
-        }
-        palette_swap(1);    // $80D8
-        ppu_upload_block_wrap(6, cinematic_gfx_9d04, 0x1000, 254);    // $80E6
-        syscall_fill_nametable(0, 0);    // $80ED
-        fill_attr_wrap();    // $80F1
-        ppu_copy_rect_wrap(0, 5, 31, 19, cinematic_tilemap_9b24, 6);    // $80FE
-        local11 = 0;    // $8103
-        do {    // $8104
-            palette_write_wrap(local11, show_game_ending_and_play_again_prompt_congratulations_my_lord_1[local11]);    // $810C
-            local11 = (local11 + 1);    // $8112
-        } while (((unsigned)local11 < (unsigned)4));
     } else {
         play_audio(6);    // $811D
         set_cursor(11, 26);    // $8124
@@ -164,64 +164,68 @@ word show_game_ending_and_play_again_prompt(void) {
 // (body @ $8223)
 
 word prompt_new_game_or_load_save(void) {
-    goto L_8235;    // $8223
-L_8226:
-    chr_bank0_set_wrap(0);    // $8227
-    message_display(msg_no_saved_data);    // $822E
-    confirm_prompt();    // $8232
-L_8235:
-    message_display(prompt_new_game_or_load_save_new_game);    // $8238
-    if (!(prompt_y_n())) goto L_8244;    // $823F
+    while (1) {    // $8235
+        message_display(prompt_new_game_or_load_save_new_game);    // $8238
+        if (!(prompt_y_n())) {    // $8235
+            chr_bank0_set_wrap(1);    // $8245
+            if (strcmp(sram_save_signature, msg_koei)) {    // $8244
+                chr_bank0_set_wrap(0);    // $8227
+                message_display(msg_no_saved_data);    // $822E
+                confirm_prompt();    // $8232
+            } else {
+                chr_bank0_set_wrap(0);    // $8257
+                checksum = syscall_sram_block_with_checksum(1, 0, ai_per_fief_loop_index, 255);    // $8269
+                sram_addr = 0x6100;    // $826D
+                do {    // $826E
+                    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // $827D
+                    sram_addr = (sram_addr + 0x0100);    // $8284
+                } while (((unsigned)sram_addr < (unsigned)0x7000));
+                checksum = (checksum + syscall_sram_block_with_checksum(1, 0, province_table_live, 255));    // $829E
+                sram_addr = 0x7100;    // $82A2
+                do {    // $82A3
+                    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // $82B2
+                    sram_addr = (sram_addr + 0x0100);    // $82B9
+                } while (((unsigned)sram_addr < (unsigned)0x7F00));
+                checksum = (checksum + syscall_sram_block_with_checksum(1, 0, ui_transient_state, 0x81EB));    // $82D3
+                chr_bank0_set_wrap(1);    // $82D5
+                if ((sram_save_checksum == checksum)) {    // $82C2
+                    chr_bank0_set_wrap(0);    // $82E2
+                    ui_msg_col_shift_flag = 0;    // $82E7
+                    sram_save_pending_flag = 0;    // $82EB
+                    message_display(str_load_status_msgs);    // $82F1
+                    redraw_window(msg_data_loaded);    // $82F8
+                    standard_delay();    // $82FC
+                    repaint_screen();    // $82FF
+                    palette_swap(1);    // $8303
+                    ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // $830F
+                    ppu_upload_block_wrap(4, strategic_map_tileset, 0x1510, 154);    // $831D
+                    i = 0;    // $8322
+                    do {    // $8323
+                        palette_write_wrap(i, data_screen_palette[i]);    // $832B
+                        i = (i + 1);    // $8331
+                    } while (((unsigned)i < (unsigned)8));
+                    palette_swap(0);    // $8339
+                    ui_msg_col_shift_flag = 1;    // $833E
+                    return 1;    // $8342
+                } else {
+                    strcpy(sram_save_signature, str_data_cant_be_used);    // $8349
+                    chr_bank0_set_wrap(0);    // $834E
+                    delay_loop_count = 50;    // $8354
+                    audio_wait_gate = 1;    // $8358
+                    ui_pending_flag_7fc7 = 0;    // $835C
+                    ui_input_mode = 0;    // $8360
+                    ui_msg_col_shift_flag = 0;    // $8364
+                    open_message_window();    // $8367
+                    message_display(msg_data_can_t_be_used);    // $836D
+                    wait_hit_any_key();    // $8371
+                }
+            }
+            continue;
+        } else {
+            break;
+        }
+    }
     return 0;    // $8243
-L_8244:
-    chr_bank0_set_wrap(1);    // $8245
-    if (strcmp(sram_save_signature, msg_koei)) goto L_8226;    // $8253
-    chr_bank0_set_wrap(0);    // $8257
-    checksum = syscall_sram_block_with_checksum(1, 0, ai_per_fief_loop_index, 255);    // $8269
-    sram_addr = 0x6100;    // $826D
-L_826E:
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // $827D
-    sram_addr = (sram_addr + 0x0100);    // $8284
-    if (((unsigned)sram_addr < (unsigned)0x7000)) goto L_826E;    // $828A
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, province_table_live, 255));    // $829E
-    sram_addr = 0x7100;    // $82A2
-L_82A3:
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // $82B2
-    sram_addr = (sram_addr + 0x0100);    // $82B9
-    if (((unsigned)sram_addr < (unsigned)0x7F00)) goto L_82A3;    // $82BF
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, ui_transient_state, 0x81EB));    // $82D3
-    chr_bank0_set_wrap(1);    // $82D5
-    if ((sram_save_checksum != checksum)) goto L_8343;    // $82DE
-    chr_bank0_set_wrap(0);    // $82E2
-    ui_msg_col_shift_flag = 0;    // $82E7
-    sram_save_pending_flag = 0;    // $82EB
-    message_display(str_load_status_msgs);    // $82F1
-    redraw_window(msg_data_loaded);    // $82F8
-    standard_delay();    // $82FC
-    repaint_screen();    // $82FF
-    palette_swap(1);    // $8303
-    ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // $830F
-    ppu_upload_block_wrap(4, strategic_map_tileset, 0x1510, 154);    // $831D
-    i = 0;    // $8322
-L_8323:
-    palette_write_wrap(i, data_screen_palette[i]);    // $832B
-    i = (i + 1);    // $8331
-    if (((unsigned)i < (unsigned)8)) goto L_8323;    // $8335
-    palette_swap(0);    // $8339
-    ui_msg_col_shift_flag = 1;    // $833E
-    return 1;    // $8342
-L_8343:
-    strcpy(sram_save_signature, str_data_cant_be_used);    // $8349
-    chr_bank0_set_wrap(0);    // $834E
-    delay_loop_count = 50;    // $8354
-    audio_wait_gate = 1;    // $8358
-    ui_pending_flag_7fc7 = 0;    // $835C
-    ui_input_mode = 0;    // $8360
-    ui_msg_col_shift_flag = 0;    // $8364
-    open_message_window();    // $8367
-    message_display(msg_data_can_t_be_used);    // $836D
-    wait_hit_any_key();    // $8371
-    goto L_8235;    // $8374
 }
 
 // Decompiled from source/2-asm-vm/bank_00_vm.asm sub $8377

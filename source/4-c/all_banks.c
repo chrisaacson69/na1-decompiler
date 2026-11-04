@@ -585,32 +585,32 @@ word show_game_ending_and_play_again_prompt(void) {
         while (1) {    // PRG $000A3
             if (!(syscall_read_controller(0))) {    // PRG $000A3 -> bank15 $C39E
                 if (!(syscall_read_controller(1))) {    // PRG $000AC -> bank15 $C39E
+                    while (1) {    // PRG $000C5
+                        if (!(syscall_read_controller(0))) {    // PRG $000C5 -> bank15 $C39E
+                            if (syscall_read_controller(1)) {    // PRG $000CE -> bank15 $C39E
+                                break;
+                            } else {
+                                continue;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    palette_swap(1);    // PRG $000D8 -> bank15 $CC35
+                    ppu_upload_block_wrap(6, cinematic_gfx_9d04, 0x1000, 254);    // PRG $000E6 -> bank15 $CF7C
+                    syscall_fill_nametable(0, 0);    // PRG $000ED -> bank15 $C312
+                    fill_attr_wrap();    // PRG $000F1 -> bank15 $CF5D
+                    ppu_copy_rect_wrap(0, 5, 31, 19, cinematic_tilemap_9b24, 6);    // PRG $000FE -> bank15 $CC54
+                    local11 = 0;    // PRG $00103
+                    do {    // PRG $00104
+                        palette_write_wrap(local11, show_game_ending_and_play_again_prompt_congratulations_my_lord_1[local11]);    // PRG $0010C -> bank15 $CF8B
+                        local11 = (local11 + 1);    // PRG $00112
+                    } while (((unsigned)local11 < (unsigned)4));
                     break;
                 }
             }
             continue;
         }
-        while (1) {    // PRG $000C5
-            if (!(syscall_read_controller(0))) {    // PRG $000C5 -> bank15 $C39E
-                if (syscall_read_controller(1)) {    // PRG $000CE -> bank15 $C39E
-                    break;
-                } else {
-                    continue;
-                }
-            } else {
-                break;
-            }
-        }
-        palette_swap(1);    // PRG $000D8 -> bank15 $CC35
-        ppu_upload_block_wrap(6, cinematic_gfx_9d04, 0x1000, 254);    // PRG $000E6 -> bank15 $CF7C
-        syscall_fill_nametable(0, 0);    // PRG $000ED -> bank15 $C312
-        fill_attr_wrap();    // PRG $000F1 -> bank15 $CF5D
-        ppu_copy_rect_wrap(0, 5, 31, 19, cinematic_tilemap_9b24, 6);    // PRG $000FE -> bank15 $CC54
-        local11 = 0;    // PRG $00103
-        do {    // PRG $00104
-            palette_write_wrap(local11, show_game_ending_and_play_again_prompt_congratulations_my_lord_1[local11]);    // PRG $0010C -> bank15 $CF8B
-            local11 = (local11 + 1);    // PRG $00112
-        } while (((unsigned)local11 < (unsigned)4));
     } else {
         play_audio(6);    // PRG $0011D -> bank10 audio entry $8003 (cue 6)
         set_cursor(11, 26);    // PRG $00124 -> bank15 $CC7B
@@ -685,64 +685,68 @@ word show_game_ending_and_play_again_prompt(void) {
 // (body @ PRG $00223)
 
 word prompt_new_game_or_load_save(void) {
-    goto L_p00235;    // PRG $00223
-L_p00226:
-    chr_bank0_set_wrap(0);    // PRG $00227 -> bank15 $CBA4
-    message_display(msg_no_saved_data);    // PRG $0022E -> bank15 $D326
-    confirm_prompt();    // PRG $00232 -> bank15 $D766
-L_p00235:
-    message_display(prompt_new_game_or_load_save_new_game);    // PRG $00238 -> bank15 $D326
-    if (!(prompt_y_n())) goto L_p00244;    // PRG $0023F -> bank15 $D3A7
+    while (1) {    // PRG $00235
+        message_display(prompt_new_game_or_load_save_new_game);    // PRG $00238 -> bank15 $D326
+        if (!(prompt_y_n())) {    // PRG $00235 -> bank15 $D3A7
+            chr_bank0_set_wrap(1);    // PRG $00245 -> bank15 $CBA4
+            if (strcmp(sram_save_signature, msg_koei)) {    // PRG $00244 -> bank15 $CAB0
+                chr_bank0_set_wrap(0);    // PRG $00227 -> bank15 $CBA4
+                message_display(msg_no_saved_data);    // PRG $0022E -> bank15 $D326
+                confirm_prompt();    // PRG $00232 -> bank15 $D766
+            } else {
+                chr_bank0_set_wrap(0);    // PRG $00257 -> bank15 $CBA4
+                checksum = syscall_sram_block_with_checksum(1, 0, ai_per_fief_loop_index, 255);    // PRG $00269 -> bank15 $C5AA
+                sram_addr = 0x6100;    // PRG $0026D
+                do {    // PRG $0026E
+                    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // PRG $0027D -> bank15 $C5AA
+                    sram_addr = (sram_addr + 0x0100);    // PRG $00284
+                } while (((unsigned)sram_addr < (unsigned)0x7000));
+                checksum = (checksum + syscall_sram_block_with_checksum(1, 0, province_table_live, 255));    // PRG $0029E -> bank15 $C5AA
+                sram_addr = 0x7100;    // PRG $002A2
+                do {    // PRG $002A3
+                    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // PRG $002B2 -> bank15 $C5AA
+                    sram_addr = (sram_addr + 0x0100);    // PRG $002B9
+                } while (((unsigned)sram_addr < (unsigned)0x7F00));
+                checksum = (checksum + syscall_sram_block_with_checksum(1, 0, ui_transient_state, 0x81EB));    // PRG $002D3 -> bank15 $C5AA
+                chr_bank0_set_wrap(1);    // PRG $002D5 -> bank15 $CBA4
+                if ((sram_save_checksum == checksum)) {    // PRG $002C2
+                    chr_bank0_set_wrap(0);    // PRG $002E2 -> bank15 $CBA4
+                    ui_msg_col_shift_flag = 0;    // PRG $002E7
+                    sram_save_pending_flag = 0;    // PRG $002EB
+                    message_display(str_load_status_msgs);    // PRG $002F1 -> bank15 $D326
+                    redraw_window(msg_data_loaded);    // PRG $002F8 -> bank15 $CEC4
+                    standard_delay();    // PRG $002FC -> bank15 $D759
+                    repaint_screen();    // PRG $002FF -> bank15 $CD20
+                    palette_swap(1);    // PRG $00303 -> bank15 $CC35
+                    ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // PRG $0030F -> bank15 $CF7C
+                    ppu_upload_block_wrap(4, strategic_map_tileset, 0x1510, 154);    // PRG $0031D -> bank15 $CF7C
+                    i = 0;    // PRG $00322
+                    do {    // PRG $00323
+                        palette_write_wrap(i, data_screen_palette[i]);    // PRG $0032B -> bank15 $CF8B
+                        i = (i + 1);    // PRG $00331
+                    } while (((unsigned)i < (unsigned)8));
+                    palette_swap(0);    // PRG $00339 -> bank15 $CC35
+                    ui_msg_col_shift_flag = 1;    // PRG $0033E
+                    return 1;    // PRG $00342
+                } else {
+                    strcpy(sram_save_signature, str_data_cant_be_used);    // PRG $00349 -> bank15 $CAD9
+                    chr_bank0_set_wrap(0);    // PRG $0034E -> bank15 $CBA4
+                    delay_loop_count = 50;    // PRG $00354
+                    audio_wait_gate = 1;    // PRG $00358
+                    ui_pending_flag_7fc7 = 0;    // PRG $0035C
+                    ui_input_mode = 0;    // PRG $00360
+                    ui_msg_col_shift_flag = 0;    // PRG $00364
+                    open_message_window();    // PRG $00367 -> bank15 $CC89
+                    message_display(msg_data_can_t_be_used);    // PRG $0036D -> bank15 $D326
+                    wait_hit_any_key();    // PRG $00371 -> bank15 $D609
+                }
+            }
+            continue;
+        } else {
+            break;
+        }
+    }
     return 0;    // PRG $00243
-L_p00244:
-    chr_bank0_set_wrap(1);    // PRG $00245 -> bank15 $CBA4
-    if (strcmp(sram_save_signature, msg_koei)) goto L_p00226;    // PRG $00253 -> bank15 $CAB0
-    chr_bank0_set_wrap(0);    // PRG $00257 -> bank15 $CBA4
-    checksum = syscall_sram_block_with_checksum(1, 0, ai_per_fief_loop_index, 255);    // PRG $00269 -> bank15 $C5AA
-    sram_addr = 0x6100;    // PRG $0026D
-L_p0026E:
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // PRG $0027D -> bank15 $C5AA
-    sram_addr = (sram_addr + 0x0100);    // PRG $00284
-    if (((unsigned)sram_addr < (unsigned)0x7000)) goto L_p0026E;    // PRG $0028A
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, province_table_live, 255));    // PRG $0029E -> bank15 $C5AA
-    sram_addr = 0x7100;    // PRG $002A2
-L_p002A3:
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, sram_addr, 0x0100));    // PRG $002B2 -> bank15 $C5AA
-    sram_addr = (sram_addr + 0x0100);    // PRG $002B9
-    if (((unsigned)sram_addr < (unsigned)0x7F00)) goto L_p002A3;    // PRG $002BF
-    checksum = (checksum + syscall_sram_block_with_checksum(1, 0, ui_transient_state, 0x81EB));    // PRG $002D3 -> bank15 $C5AA
-    chr_bank0_set_wrap(1);    // PRG $002D5 -> bank15 $CBA4
-    if ((sram_save_checksum != checksum)) goto L_p00343;    // PRG $002DE
-    chr_bank0_set_wrap(0);    // PRG $002E2 -> bank15 $CBA4
-    ui_msg_col_shift_flag = 0;    // PRG $002E7
-    sram_save_pending_flag = 0;    // PRG $002EB
-    message_display(str_load_status_msgs);    // PRG $002F1 -> bank15 $D326
-    redraw_window(msg_data_loaded);    // PRG $002F8 -> bank15 $CEC4
-    standard_delay();    // PRG $002FC -> bank15 $D759
-    repaint_screen();    // PRG $002FF -> bank15 $CD20
-    palette_swap(1);    // PRG $00303 -> bank15 $CC35
-    ppu_upload_block_wrap(0, data_screen_gfx_b78a, 0x14D0, 4);    // PRG $0030F -> bank15 $CF7C
-    ppu_upload_block_wrap(4, strategic_map_tileset, 0x1510, 154);    // PRG $0031D -> bank15 $CF7C
-    i = 0;    // PRG $00322
-L_p00323:
-    palette_write_wrap(i, data_screen_palette[i]);    // PRG $0032B -> bank15 $CF8B
-    i = (i + 1);    // PRG $00331
-    if (((unsigned)i < (unsigned)8)) goto L_p00323;    // PRG $00335
-    palette_swap(0);    // PRG $00339 -> bank15 $CC35
-    ui_msg_col_shift_flag = 1;    // PRG $0033E
-    return 1;    // PRG $00342
-L_p00343:
-    strcpy(sram_save_signature, str_data_cant_be_used);    // PRG $00349 -> bank15 $CAD9
-    chr_bank0_set_wrap(0);    // PRG $0034E -> bank15 $CBA4
-    delay_loop_count = 50;    // PRG $00354
-    audio_wait_gate = 1;    // PRG $00358
-    ui_pending_flag_7fc7 = 0;    // PRG $0035C
-    ui_input_mode = 0;    // PRG $00360
-    ui_msg_col_shift_flag = 0;    // PRG $00364
-    open_message_window();    // PRG $00367 -> bank15 $CC89
-    message_display(msg_data_can_t_be_used);    // PRG $0036D -> bank15 $D326
-    wait_hit_any_key();    // PRG $00371 -> bank15 $D609
-    goto L_p00235;    // PRG $00374
 }
 
 // ===== bank0 $8377  (PRG $00377) =====
@@ -12010,15 +12014,18 @@ word pct_op(word base, word percent) {
 // (body @ PRG $3D743)
 
 word delay_loop(word count) {
-    goto L_p3D751;    // PRG $3D743
-L_p3D746:
-    spin = 240;    // PRG $3D749
-L_p3D74A:
-    spin = (spin - 1);    // PRG $3D74C
-    if (spin) goto L_p3D74A;    // PRG $3D74E
-L_p3D751:
-    count = (count - 1);    // PRG $3D753
-    if ((count + 1)) goto L_p3D746;    // PRG $3D755
+    while (1) {    // PRG $3D751
+        count = (count - 1);    // PRG $3D753
+        if ((count + 1)) {    // PRG $3D751
+            spin = 240;    // PRG $3D749
+            do {    // PRG $3D74A
+                spin = (spin - 1);    // PRG $3D74C
+            } while (spin);
+            continue;
+        } else {
+            break;
+        }
+    }
     return (count + 1);    // PRG $3D758
 }
 

@@ -91,6 +91,10 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #37 — Save RAM is the game's memory (Chris, 2026-11-04)
+
+The memory map at the top of `source/4-c/all_banks.c` shows a design shape of the bytecode titles: every table it lists sits in `$6000-$7FFF`, the battery save RAM. The game keeps its state there and treats NES RAM as the machine's: the VM's stack and frames (about `$05xx`), the syscalls and the kernel. Logic passes data as parameters rather than through globals, and the syscalls take care of the hardware. So the save file is close to a dump of the live game, which is why one table reads so well, and why the snap protocol works. It reads like a program written for a machine with a heap, ported to a NES.
+
 ### #36 — The peasant shortcut and the ring at Echigo (Chris, 2026-11-04)
 
 **The shortcut.** Leave town and output alone, and give gold and rice to the peasants. The harvest's base term holds wealth and loyalty and feeds *both* gold and rice, where town feeds only gold and output only rice. One Give raises two stats, each doubled, costs no other stat, and adds 1 charisma; Grow and Build each cut a stat, and their price climbs with the stat. Two seasons do what took three. Year-10 income on Hida at skill 2: 1,539 against 443 for the June rotation (600 seeds).
