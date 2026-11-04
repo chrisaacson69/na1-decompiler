@@ -109,6 +109,15 @@ verdict.
 | `zp-harvest.py` | `82a20fd` | Zero-page usage counts from nes-disasm6 listings (needed them in its cwd); the data phase named the zero page. |
 | `vm_assemble.py`, `vm-roundtrip.py` | `c621c0f` | 10-line shims into emu-harness. Run the modules: `py -3.14 -m emu_harness.vm.koei.nes.vm_assemble <bank>`, `... .gates.roundtrip`. |
 
+## Superseded map one-shots (retired 2026-11-04, the assets triage)
+
+Both ran, and both wrote PNGs next to themselves. Neither had a reader. `RENDER-TOOLS-TRIAGE.md` (the June draft) went with them: its verdicts are in [README.md](README.md), and its three-layer target (`koei-nes`, `nes-render`) has since moved into emu-harness.
+
+| Script | Last commit | What it did, and why it went |
+|---|---|---|
+| `render-mino-full.py` | `5635a2d` | Mino's whole battlefield from a hand-entered letter grid plus the bank-2 metatile dictionary (2026-05-20). The proof that a map is recoverable; `render-fief-truecolor` now does every fief from ROM. |
+| `render-iga-full.py` | `5635a2d` | Iga from the bank-4 `$A57E` cell table, the hypothesis disproven 2026-05-21 and retired with `render-atlas` below. Its map is wrong for the same reason. |
+
 ## Failed map experiments (retired 2026-10-29, the assets phase)
 
 Chris: a fief map shows an interesting part of a territory, not the territory, so stitching fief maps into one map was a failed experiment. (Stitching the overworld is different and still live: the strategic map's section pages overlap, and merging them into one map is `render-strategic-map.py --faithful`.) The whole map is the cartridge's own, `render-strategic-map.py`.

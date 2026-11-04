@@ -191,7 +191,7 @@ Doable but a chapter-worth of analysis per scene.
 
 ### Erratum (2026-05-20): tactical maps are fully ROM-extractable
 
-For **tactical maps specifically**, no PPU dump is needed — the full 11×5 battlefield reconstructs cleanly from ROM. Demonstrated 2026-05-20 by rendering Mino's complete 44×22 NES-tile isometric map (`render-mino-full.py`) using only:
+For **tactical maps specifically**, no PPU dump is needed — the full 11×5 battlefield reconstructs cleanly from ROM. Demonstrated 2026-05-20 by rendering Mino's complete 44×22 NES-tile isometric map (a one-shot since retired; `render-fief-truecolor.py` now does every fief) using only:
 - The 55-byte cell array (per-fief in some bank, locatable)
 - The metatile dictionary at bank-2 `$B100` (ROM)
 - The terrain dictionary (decoded in chapter 17: A/B/C/D/F)

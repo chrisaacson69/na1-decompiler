@@ -12,7 +12,7 @@ content the engine renders.
 import os, sys, re
 from PIL import Image, ImageDraw, ImageFont
 
-here = os.path.dirname(os.path.abspath(__file__))
+here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root
 
 # Metatile dictionary at bank-2 $B100, 6 entries of 16 bytes each
 METATILE_DICT = {
@@ -135,7 +135,8 @@ def render(sram_path, out_name, label, dump_base=0x7B40):
     for boundary in [5 * CELL_PX, 8 * CELL_PX]:
         draw.line([boundary, 24, boundary, HEIGHT + 24], fill=(80, 80, 100), width=1)
 
-    out_path = os.path.join(here, 'atlas', out_name)
+    out_path = os.path.join(here, 'assets', 'rom', out_name)      # an absolute out_name stands
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
     img.save(out_path)
     img.resize((WIDTH*2, (HEIGHT+24)*2), Image.NEAREST).save(out_path.replace('.png', '-2x.png'))
     print(f"Wrote {out_path}")
@@ -162,11 +163,17 @@ def _render_all():
     ('traces/noto-save-ram.dmp',           'noto-sram-render.png',     'Noto (fief 1) — Hatakeya home, FINAL FIEF',        0x6000),
     ('traces/final-battle-sram.dmp',       'settsu-sram-render.png',   'Settsu (fief 15) — Osaka Bay, FINAL CONQUEST',    0x6000),
   ]
+  missing = 0
   for path, out, label, base in captures:
     full = os.path.join(here, path) if not os.path.isabs(path) else path
     if os.path.exists(full):
         render(full, out, label, dump_base=base)
         print()
+    else:
+        missing += 1
+        print(f"no capture: {path}")
+  if missing == len(captures):
+    sys.exit("none of the captures was found")
 
 
 if __name__ == '__main__':

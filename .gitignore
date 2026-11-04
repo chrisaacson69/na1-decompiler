@@ -17,6 +17,9 @@ assets/sound/
 # === Big binary renders — re-extractable from the ROM via the atlas tools ===
 atlas/
 
+# === ROM map renders (render-rom-to-map, render-rom-atlas, render-from-sram): re-extractable ===
+assets/rom/
+
 # === Fief/daimyo atlas staging ===
 wikipages-out/
 

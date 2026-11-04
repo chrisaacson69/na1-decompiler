@@ -10,7 +10,7 @@ Usage:
     py -3.14 render-fief-from-ppu.py --list          # list available PPU dumps
 
 Input : traces/<fief>-ppu-memory.dmp   (16 KB PPU memory dump from Mesen)
-Output: assets/maps/fiefs/<fief>-ppu-render.png  +  assets/maps/fiefs/<fief>-ppu-render-2x.png
+Output: assets/maps/fiefs/ppu-render/<fief>-ppu-render.png  +  <fief>-ppu-render-2x.png (gitignored)
 
 PPU memory layout (16 KB = 4x $1000):
   $0000-$0FFF : pattern table 0 (BG, unused in NA1 combat)
@@ -34,7 +34,7 @@ from emu_harness.vm.koei.nes.assets import MASTER
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJ = os.path.dirname(HERE)
 TRACES = os.path.join(PROJ, 'traces')
-ATLAS = os.path.join(PROJ, 'atlas')
+ATLAS = os.path.join(PROJ, 'assets', 'maps', 'fiefs', 'ppu-render')   # gitignored: captures
 
 # The NES master palette (index -> RGB): the KOEI asset layer's one table (render-fief-truecolor
 # imports it from here). Was nes-render's cool default until 2026-10-23.

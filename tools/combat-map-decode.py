@@ -6,8 +6,10 @@ Each $C480 call paints one 4-tile row of one cell from SRAM $7BFD+.
 """
 import os, re
 
+from emu_harness.backends.mesen import debugger_dir
+
 here = os.path.dirname(os.path.abspath(__file__))
-TRACE = r"C:\Users\Chris.Isaacson\AppData\Local\Microsoft\WinGet\Packages\SourMesen.Mesen2_Microsoft.Winget.Source_8wekyb3d8bbwe\Debugger\Nobunaga's Ambition (USA).txt"
+TRACE = debugger_dir() / "Nobunaga's Ambition (USA).txt"
 
 PC_RE   = re.compile(r"^([0-9A-F]{4}) ")
 A_RE    = re.compile(r"\bA:([0-9A-F]{2})")

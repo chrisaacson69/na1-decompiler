@@ -6,7 +6,12 @@ row Q it follows the PPU registers themselves (machines/nes/trace: $2006 address
 so a CHR byte written by any routine counts. On the Debugger trace of 2026-05-27 the result is
 identical to the old routine-based extraction (4096/4096 bytes). py -3.14.
 
-  py -3.14 extract-chr-from-trace.py [trace.txt[.gz]]
+  py -3.14 extract-chr-from-trace.py [trace.txt[.gz]] [out.bin]
+
+The default trace is whatever Mesen last wrote, so the default output is traces/chr-from-trace.bin
+(gitignored). Until 2026-11-04 it overwrote the committed assets/data/title-chr.bin, the title
+capture of 2026-05-27, with the state of any later recording (3,331 of 4,096 bytes). To replace that
+file on purpose, name it.
 """
 import os
 import sys
@@ -21,7 +26,7 @@ chr_data = PPUWrites().feed_all(read_tracelog(TRACE)).vram
 
 # Save to a file the renderer can read
 here = os.path.dirname(os.path.abspath(__file__))
-out = os.path.join(here, '..', 'assets', 'data', 'title-chr.bin')
+out = sys.argv[2] if len(sys.argv) > 2 else os.path.join(here, '..', 'traces', 'chr-from-trace.bin')
 with open(out, 'wb') as f:
     # Save the PPU $1000-$1FFF range (4 KB)
     f.write(chr_data[0x1000:0x2000])

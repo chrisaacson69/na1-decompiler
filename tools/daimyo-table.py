@@ -1,33 +1,24 @@
-"""Extract daimyo records from $7500-$77FF region; find all records starting with marker."""
+#!/usr/bin/env python3
+"""The daimyo records of an 8 KB SRAM dump: 7 bytes each at daimyo_table $752F (age, health, drive,
+luck, charisma, IQ, generated-face flag), with the fiefs each holds. Until 2026-11-04 this was the May
+stride hunt (10 and 16 bytes from $7560), which printed plausible rows of the wrong shape.
+
+    py -3.14 tools/daimyo-table.py traces/aftertax.dmp
+"""
 import sys
+from pathlib import Path
 
-data = open(sys.argv[1], "rb").read()
-BASE = 0x6000
+BASE, TABLE, STRIDE = 0x6000, 0x752F, 7
+FIEF_COUNT, OWNER, CAPITAL = 0x6D9D, 0x6E15, 0x6DA2
 
-# Tokugawa was found at offset $1560 (= CPU $7560) starting with $12
-# Let's see the surrounding region and find all $12-marker records
-region_start = 0x1500  # $7500
-region_end = 0x1800    # $7800
+data = Path(sys.argv[1]).read_bytes()
+fiefs = data[FIEF_COUNT - BASE]
+held = {}
+for f in range(fiefs):
+    held.setdefault(data[OWNER - BASE + f], []).append(f"{f}*" if data[CAPITAL - BASE + f] else str(f))
 
-print(f"=== Region $7500-$77FF (256-byte rows) ===")
-for row in range(region_start, region_end, 16):
-    bytes_str = " ".join(f"{b:02X}" for b in data[row:row+16])
-    ascii_str = "".join(chr(b) if 0x20 <= b <= 0x7E else "." for b in data[row:row+16])
-    print(f"  ${BASE+row:04X}: {bytes_str}  | {ascii_str}")
-
-# Look for the daimyo record at $7560 and try stride 10 (since we see "12 .. .. .. .. .. 00 .. .. ..")
-print("\n=== Trying 10-byte stride from $7560 (records of (marker, 5 stats, 4 more bytes)) ===")
-for i in range(20):
-    offset = 0x1560 + i * 10
-    if offset + 10 > len(data): break
-    rec = data[offset:offset+10]
-    bytes_str = " ".join(f"{b:02X}" for b in rec)
-    print(f"  rec {i:2d} @${BASE+offset:04X}:  {bytes_str}")
-
-print("\n=== Trying 16-byte stride from $7560 ===")
-for i in range(20):
-    offset = 0x1560 + i * 16
-    if offset + 16 > len(data): break
-    rec = data[offset:offset+16]
-    bytes_str = " ".join(f"{b:02X}" for b in rec)
-    print(f"  rec {i:2d} @${BASE+offset:04X}:  {bytes_str}")
+print(f"{fiefs} fiefs; * = capital")
+print(" id  age  hlth drive luck  char   iq  face  fiefs")
+for d in range(fiefs + 3):                       # the per-turn ageing runs over fief_count + 3 records
+    r = data[TABLE - BASE + d * STRIDE:][:STRIDE]
+    print(f"{d:3}" + "".join(f"{b:5}" for b in r) + "  " + " ".join(held.get(d, ["-"])))
