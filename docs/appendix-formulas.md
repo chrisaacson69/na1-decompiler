@@ -421,6 +421,10 @@ Read from the C, then run against the ROM with every draw scripted (table below)
 
 **The bribe in battle** (`resolve_bribe_enemy_unit` $9E73; not the strategic Bribe command): the gold is spent first, win or lose. `score = rng(6 − skill_level) + own morale + own charisma`, against `enemy = enemy morale + enemy charisma + 2·skill_level`. A loss, or a bribe already made this turn (`combat_casualty_skip_flag`), ends it there. On a win, if the gold covers a man each (`amount / unit ≥ 1`), `pct_op(unit, 100·(s−e) / (2s−e))` men cross to the briber's slot 0, the briber's total held to 9999. If it does not, the enemy loses morale instead: `6 − skill_level` from a human briber, `skill_level` from the AI, floored at 0. Both set the flag.
 
+**Give** (`driver_give` $AA1F, `give_transfer_apply`): gold and rice give alike. To peasants, the whole amount goes into loyalty **and** wealth (§ the develop family), each doubled; to men, into morale. Nothing else pays for it, where Grow cuts loyalty and dams and Build cuts wealth. Every Give adds 1 charisma. It is refused with no output (peasants) or no men, with nothing to give, and at the limit: `(wealth + loyalty) / 2 ≥ stat_cap` for peasants, `morale ≥ stat_cap` for men. **The printed C shows `fief->morale` for both; the bytecode at $AA5C-$AA79 is the authority** (a dropped value arm, see re-roadmap.toml).
+
+**The harvest order** (`harvest_income_sweep_all_fiefs` $A26F): it runs in the season driver, before Fall's command, so Fall spends it. The marks are set at the start of Summer and only lowered, so a gift pays this year only if it lands before Summer; one given in Summer pays from next year. The AI-only boost is gated on `province_ai_state == 0`. Every fief starts at tax 20.
+
 ## How these formulas are checked
 
 `py -3.14 -m na1sim.oracle` (from `tools/`) runs na1sim's models (this appendix as code) against the ROM's own routines on a real save image, over a grid that crosses each input with its edges: the stat at and past `stat_cap`, a partner stat far from the stat, amounts from 1 up, every `skill_level`, tax raises and cuts. Grow, Build and Dam run as the player issues them (the driver and its guards, `number_input` answering within its own range); Give runs its effect handlers. `--plant NAME` swaps in a known-wrong model, and each must fail.
@@ -449,6 +453,8 @@ Added 2026-11-04, the sim's own functions (`vmprims`, which the strategic loop c
 | spring | the Spring routine | 68/68 | decay on men, or `rng(2)`: each fails 16 |
 | auction | `dedup_owners` + the auction | 341/341 | the winner pays its own bid: fails 76 |
 | bribe | `resolve_bribe_enemy_unit` $9E73 | 385/385 | skill_level as the morale cost for both: fails 72 |
+| give | `driver_give` $AA1F | 578/578 | no +1 charisma: fails 253 |
+| harvest | `harvest_income_sweep_all_fiefs` $A26F | 648/648 | the AI's boost given to the player: fails 324 |
 
 Two notes this check overturned: the human decay is `rng(skill_level)` on morale, not `rng(2)` on men (a summary of the C, wrong on both). And the printed C is not evaluation order: `pct_op(morale, rng_mod(10) + 30) + rng_mod(30) + 30` draws the `rng_mod(30)` first.
 

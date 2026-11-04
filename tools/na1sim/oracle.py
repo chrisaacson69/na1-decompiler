@@ -35,6 +35,7 @@ from math import isqrt
 from pathlib import Path
 
 from . import econ
+from . import game
 from . import memmap as M
 from . import oracle_vm as O
 from . import vmprims as P
@@ -252,7 +253,8 @@ REGIONS = (("fief", 0x7001, 51 * 26), ("daimyo", M.DAIMYO_TABLE, 53 * 7), ("ai_s
            ("capital", M.FIEF_IS_CAPITAL, 51), ("owner", M.FIEF_TO_DAIMYO_MAP, 51),
            ("market", M.MARKET_RATE_TABLE, 10), ("unit_pct", M.PROVINCE_UNIT_TYPE_PCT, 51 * 5),
            ("units", M.UNIT_STRENGTH_BASE, 20), ("sides", M.SIDE_RESOURCE_BASE, 12),
-           ("bribe_gate", M.COMBAT_CASUALTY_SKIP, 1), ("owners", M.DEDUPED_OWNER_LIST, 6))
+           ("bribe_gate", M.COMBAT_CASUALTY_SKIP, 1), ("owners", M.DEDUPED_OWNER_LIST, 6),
+           ("marks", M.MARKS_TABLE, 51 * 8))
 
 
 def rule_image(pt):
@@ -295,6 +297,39 @@ def hire_grid():
         yield dict(fields={"men": men, "header": cap, "gold": gold, "morale": stats[0],
                            "skill": stats[1], "arms": stats[2]},
                    draws=draws, amount=amount, set=setup)
+
+
+def give_grid():
+    for peasants, gold, stat, partner, amount, skill, cap in itertools.product(
+            (True, False), (True, False), (0, 40, 250, 1630), (0, 200), (1, 50, 900), (1, 2, 5), (120, 1640)):
+        yield dict(skill=skill, peasants=peasants, gold=gold, amount=amount,
+                   fields={"loyalty": stat, "wealth": stat, "morale": min(stat, 100), "output": partner,
+                           "town": partner, "men": partner, "gold": 700, "rice": 300, "header": cap})
+    yield dict(peasants=True, gold=True, amount=9, fields={"morale": 200, "header": 120, "gold": 50})
+    yield dict(peasants=True, gold=True, amount=9, fields={"gold": 0, "output": 50, "morale": 40})
+
+
+def give_stubs(pt):
+    answers = iter((1 if pt["peasants"] else 0, 1 if pt["gold"] else 0))
+    return [(labels()["prompt_ab_window"][1], lambda vm: next(answers)), (NUMBER_INPUT, prompt(pt["amount"]))]
+
+
+def harvest_grid():
+    for loyalty, wealth, debt, men, tax, human, seq in itertools.product(
+            (0, 60, 900), (0, 70, 1600), (0, 50), (0, 40, 500), (20, 55), (0, 5), ((0,), (1, 3, 7), (9, 1, 5, 2))):
+        def setup(m, tax=tax, human=human, loyalty=loyalty, wealth=wealth):
+            m.w8(M.FIEF_TAX_RATE + FIEF, tax)
+            m.w8(M.PROVINCE_AI_STATE + FIEF, human)
+            mk = m.mark(FIEF)
+            m.w16(mk + M.MK_LOYALTY, loyalty // 2)  # the mark below live: income reads the mark
+            m.w16(mk + M.MK_WEALTH, wealth + 5)     # above live: the ratchet pulls it down
+        yield dict(draws=seq, set=setup,
+                   fields={"loyalty": loyalty, "wealth": wealth, "debt": debt, "men": men, "gold": 300, "rice": 200})
+
+
+def harvest_model(m, pt):
+    for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
+        game.harvest_fief(m, i, m.rng)
 
 
 def upkeep_grid():
@@ -432,6 +467,10 @@ RULES = {
     "hire": dict(calls=lambda pt: [("effect_hire_men", (REC,))], ret=True, grid=hire_grid,
                  stubs=lambda pt: [(NUMBER_INPUT, prompt(pt["amount"]))],
                  model=lambda m, pt: P.effect_hire_men(m, m.fief(FIEF), pt["amount"])),
+    "give": dict(calls=lambda pt: [("driver_give", ())], ret=True, grid=give_grid, stubs=give_stubs,
+                 model=lambda m, pt: P.driver_give(m, pt["peasants"], pt["gold"], pt["amount"])),
+    "harvest": dict(calls=lambda pt: [("harvest_income_sweep_all_fiefs", ())], grid=harvest_grid,
+                    stubs=lambda pt: stub_of("decay_relations_matrix_upper"), model=harvest_model),
     "upkeep": dict(calls=lambda pt: [("consume_province_army_upkeep", (REC,))], grid=upkeep_grid,
                    model=fief_call(P.consume_province_army_upkeep)),
     "luck_then_cap": dict(calls=lambda pt: [("drift_daimyo_luck", (FIEF,)), ("cap_fief_stats", (FIEF,))],
@@ -547,6 +586,21 @@ def _bribe_ai_penalty_always(m, pt):                # the morale cost read as sk
     m.w8(M.PROVINCE_AI_STATE + own, state)
 
 
+def _give_no_charisma(m, pt):                       # the old sim: the +1 charisma was missing
+    d = m.fief_daimyo(m.selected) + M.D_CHARISMA
+    before = m.r8(d)
+    out = P.driver_give(m, pt["peasants"], pt["gold"], pt["amount"])
+    m.w8(d, before)
+    return out
+
+
+def _harvest_boost_all(m, pt):                      # the old sim: the player took the AI's boost
+    state = m.province_ai_state(FIEF)
+    m.w8(M.PROVINCE_AI_STATE + FIEF, 0)
+    harvest_model(m, pt)
+    m.w8(M.PROVINCE_AI_STATE + FIEF, state)
+
+
 def _spring_decay_two(m, pt):                       # the revisit note: rng_mod(2) at every skill
     real = m.rng_mod
     m.rng_mod = lambda n: real(2 if n == m.skill else n)
@@ -556,6 +610,8 @@ def _spring_decay_two(m, pt):                       # the revisit note: rng_mod(
 RULE_PLANTS = {
     "hire_arms_by_men": ("hire", lambda: patched("hire", "apply_hire_unit_stats", _hire_arms_by_men)),
     "train_no_bonus": ("train", lambda: patched("train", "effect_train", _train_no_bonus)),
+    "give_no_charisma": ("give", lambda: _give_no_charisma),
+    "harvest_boost_all": ("harvest", lambda: _harvest_boost_all),
     "upkeep_no_cull": ("upkeep", lambda: lambda m, pt: _upkeep_no_cull(m, m.fief(FIEF))),
     "luck_no_cap": ("luck_then_cap", lambda: lambda m, pt: P.drift_daimyo_luck(m, FIEF)),
     "uprising_old_split": ("uprising", lambda: _uprising_old_split),

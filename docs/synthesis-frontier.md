@@ -91,6 +91,18 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #36 — The peasant shortcut and the ring at Echigo (Chris, 2026-11-04)
+
+**The shortcut.** Leave town and output alone, and give gold and rice to the peasants. The harvest's base term holds wealth and loyalty and feeds *both* gold and rice, where town feeds only gold and output only rice. One Give raises two stats, each doubled, costs no other stat, and adds 1 charisma; Grow and Build each cut a stat, and their price climbs with the stat. Two seasons do what took three. Year-10 income on Hida at skill 2: 1,539 against 443 for the June rotation (600 seeds).
+
+**The sequence.** Gold in Spring, rice in Summer (the army keeps its rice for battle every season but the one before the harvest), Fall and Winter train. If a neighbour is in reach, Fall is men, not peasants: a large army deters. When the economy tops out, that is the signal to buy men and expand. Measured over all 17 starts at skill 2: Spring beats Fall; slack over the grudge line costs growth and buys no survival; one big buy and a yearly top-up come out even. Bad fiefs do not recover (six starts survive 0-2% in the sim, where the human defends with AI logic, so that is a floor).
+
+**The grudge path** (`$952E`) is why: an AI attacks a human neighbour past a 47% share of provisioned men, skipping its usual coin, and it counts men alone. Skill deters nobody; soldiers do. A strong economy has to become soldiers.
+
+**A further step, not modelled:** sell rice and give the gold when a rice fetches more than 1 gold, or buy rice when it fetches less. It costs a turn, the merchant is not always there, and caps bite when large.
+
+**The ring at Echigo (fief 2, one-based).** The map is a doughnut with the castle set like a diamond in the ring. The AI splits and deploys on both sides, so the defender goes straight for the general and ends the battle with more men than it began. If the AI sets up on one side, run the opposite way and reach the general at its tail; if it splits to counter, take the weaker half. The ring lets the defender control the engagement: circle to time them out, or strike the weak side. The sim's human fights with AI logic, so none of this is in its numbers.
+
 ### #35 — Player doctrine from the May 2026 playthroughs, promoted from memory — 2026-11-02
 > Chris's strategy, worked out playing Tokugawa in Mikawa (May 2026), held until now only in session memory. It is **play-observed doctrine, not ROM-certified**; where the bytecode has since corrected a premise, the correction is inline. The general theses it rests on (the turn economy, the Winning-Position Theorem, the Economic Index, ~10% CAGR) are the vault's [NA1 Turn Economy](https://github.com/chrisaacson69/Vault/blob/master/research/gaming/na1-turn-economy.md).
 

@@ -564,6 +564,45 @@ def resolve_bribe_enemy_unit(m: "M.Memory", slot: int, amount: int) -> None:
     m.w8(M.COMBAT_CASUALTY_SKIP, 1)
 
 
+def develop_stat(m: "M.Memory", f: int, field: int, partner: int, amount: int, double: bool) -> None:
+    """develop_loyalty $891D / develop_wealth $896F / develop_morale $89C1: the gain is
+    amount*(6-skill)/sqrt((stat+partner)/2 + amount), at least 1, held to stat_cap - stat before
+    the write doubles it (loyalty and wealth) or not (morale). No other field pays for it."""
+    stat, cap = m.r16(f + field), m.r16(f + M.F_HEADER)
+    gain = max(1, (amount * (6 - m.skill)) // sqrt_int((stat + m.r16(f + partner)) // 2 + amount))
+    gain = min(gain, cap - stat)
+    m.w16(f + field, stat + (gain << 1 if double else gain))
+
+
+def driver_give(m: "M.Memory", to_peasants: bool, gold: bool, amount: int) -> int:
+    """driver_give $AA1F, the player answering the two prompts and typing `amount` (held to
+    1..what the fief has). Gold and rice give alike. Peasants take the whole amount twice over,
+    into loyalty AND wealth; men take it into morale. Every Give adds 1 charisma. Refused with no
+    output (peasants) or no men, with nothing to give, and at the limit: (wealth + loyalty) / 2 >=
+    cap for peasants, morale >= cap for men."""
+    f = m.cur_fief()
+    if m.s16(f + (M.F_OUTPUT if to_peasants else M.F_MEN)) <= 0:
+        return 0
+    level = ((m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 if to_peasants
+             else m.r16(f + M.F_MORALE))         # the bytecode ($AA5C-$AA79); the C prints morale alone
+    if level >= m.r16(f + M.F_HEADER):
+        return 0
+    source = f + (M.F_GOLD if gold else M.F_RICE)
+    have = m.s16(source)
+    if have <= 0:
+        return 0
+    amount = max(1, min(amount, have))
+    m.w16(source, have - amount)
+    if to_peasants:
+        develop_stat(m, f, M.F_LOYALTY, M.F_OUTPUT, amount, True)
+        develop_stat(m, f, M.F_WEALTH, M.F_TOWN, amount, True)
+    else:
+        develop_stat(m, f, M.F_MORALE, M.F_MEN, amount, False)
+    d = m.fief_daimyo(m.selected) + M.D_CHARISMA
+    m.w8(d, (m.r8(d) + 1) & 0xFF)
+    return 1
+
+
 def driver_train(m: "M.Memory") -> int:
     """driver_train $A637: refused at stat_cap; with no men the military stats clear; else
     effect_train, skill held to stat_cap."""

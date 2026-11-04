@@ -32,30 +32,16 @@ SKILL_CAP = 200
 # ---------------------------------------------------------------------------
 # player command primitives (flat; the driver debits the resource, runs effect)
 # ---------------------------------------------------------------------------
-def _develop(m, f, field, partner_field, amount, double):
-    """develop_loyalty / _wealth / _morale as the ROM runs them (see econ._develop): the gain is
-    clamped to the headroom stat_cap - stat (header, +24) before the write doubles it."""
-    stat, partner, cap = m.r16(f + field), m.r16(f + partner_field), m.r16(f + M.F_HEADER)
-    gain = max(1, (amount * (6 - m.skill)) // P.sqrt_int((stat + partner) // 2 + amount))
-    gain = min(gain, cap - stat)
-    m.w16(f + field, stat + (gain << 1 if double else gain))
+def give_men(m, idx, amount, gold=False):  # rice (or gold) -> morale
+    m.selected = idx
+    if amount >= 1:
+        P.driver_give(m, False, gold, amount)
 
 
-def give_men(m, idx, amount):              # rice -> morale (develop-family pair)
-    f = m.fief(idx)
-    if amount < 1 or m.r16(f + M.F_RICE) < amount:
-        return
-    m.w16(f + M.F_RICE, m.r16(f + M.F_RICE) - amount)
-    _develop(m, f, M.F_MORALE, M.F_MEN, amount, double=False)        # develop_morale $89C1
-
-
-def give_peasants(m, idx, amount):         # rice -> loyalty + wealth
-    f = m.fief(idx)
-    if amount < 1 or m.r16(f + M.F_RICE) < amount:
-        return
-    m.w16(f + M.F_RICE, m.r16(f + M.F_RICE) - amount)
-    _develop(m, f, M.F_LOYALTY, M.F_OUTPUT, amount, double=True)     # develop_loyalty $891D
-    _develop(m, f, M.F_WEALTH, M.F_TOWN, amount, double=True)        # develop_wealth  $896F
+def give_peasants(m, idx, amount, gold=False):   # rice (or gold) -> loyalty AND wealth
+    m.selected = idx
+    if amount >= 1:
+        P.driver_give(m, True, gold, amount)
 
 
 def set_tax(m, idx, new_tax):              # drains loyalty + wealth by |dtax|%
@@ -202,9 +188,10 @@ def _player_war(m, idx, tgt, rng):
 # ---------------------------------------------------------------------------
 # the tuned Hida policy
 # ---------------------------------------------------------------------------
-def hida_policy(m, idx, rng):
+def _guards(m, idx):
+    """Steps 1-3 of every policy: morale / loyalty cliffs, not being a border's weakest, and the
+    tax opening. -> True if one of them took the season's action."""
     f = m.fief(idx)
-    season = getattr(m, "season", 0)
     gold, men, rice = m.r16(f + M.F_GOLD), m.r16(f + M.F_MEN), m.r16(f + M.F_RICE)
     morale, loyalty = m.r16(f + M.F_MORALE), m.r16(f + M.F_LOYALTY)
     output, dams = m.r16(f + M.F_OUTPUT), m.r16(f + M.F_DAMS)
@@ -220,9 +207,9 @@ def hida_policy(m, idx, rng):
     #    Both preempt everything -- fixing loyalty is broadly worth more than a turn
     #    of hiring (the harvest gates on loyalty; riots compound).
     if morale < CLIFF and rice_free > 0:
-        give_men(m, idx, min(60, rice_free)); return
+        give_men(m, idx, min(60, rice_free)); return True
     if loyalty < CLIFF and rice_free > 0:
-        give_peasants(m, idx, min(60, rice_free)); return
+        give_peasants(m, idx, min(60, rice_free)); return True
 
     # 2. DON'T BE ANY BORDER'S WEAKEST PREY (the opening hire). A fief like Uesugi
     #    STARTS as a border's weakest, and the human is attacked via the pick_ai_
@@ -234,7 +221,7 @@ def hida_policy(m, idx, rng):
     target = _safe_men_target(m, idx)
     target += target // 5 + 6
     if men < target and gold > 12:
-        hire_men(m, idx, gold - 6); return
+        hire_men(m, idx, gold - 6); return True
 
     # 3. OPENING (year 1-2): raise tax toward 55 -- only when loyalty can absorb the
     #    |dtax|% drain; else restore the lower of loyalty/morale first. Worse fiefs
@@ -242,9 +229,21 @@ def hida_policy(m, idx, rng):
     if tax < 55:
         step = min(15, 55 - tax)
         if loyalty - P.pct_op(loyalty, step) >= CLIFF + 6:
-            set_tax(m, idx, tax + step); return
+            set_tax(m, idx, tax + step); return True
         if rice_free > 0:                   # WEALTH is the prize -> give_peasants by default
-            (give_men if morale < CLIFF + 12 else give_peasants)(m, idx, min(60, rice_free)); return
+            (give_men if morale < CLIFF + 12 else give_peasants)(m, idx, min(60, rice_free)); return True
+    return False
+
+
+def hida_policy(m, idx, rng):
+    """The June rotation: develop town and output with gold, give rice in Summer."""
+    if _guards(m, idx):
+        return
+    f = m.fief(idx)
+    season = getattr(m, "season", 0)
+    gold, rice, morale = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MORALE)
+    output, dams = m.r16(f + M.F_OUTPUT), m.r16(f + M.F_DAMS)
+    rice_free = max(0, rice - 1)
 
     # 4. DAM FLOOR (not chase): keep dams above ~80 for rice income, but DON'T
     #    re-dam 95->100 after every grow nicks it -- that wastes actions for almost
@@ -264,3 +263,110 @@ def hida_policy(m, idx, rng):
     else:                                   # SUMMER: dump rice (refilled Fall). WEALTH is the
         if rice_free > 0:                   # prize -> give_peasants; give_men only if morale soft.
             (give_men if morale < CLIFF + 12 else give_peasants)(m, idx, rice_free)
+
+
+def peasant_policy(m, idx, rng):
+    """Chris's shortcut (2026-11-04): leave town and output alone and give gold and rice to the
+    peasants. The harvest's base term holds wealth and loyalty and feeds BOTH gold and rice, where
+    town feeds only gold and output only rice. One Give raises loyalty and wealth together, twice
+    the gain each, at no cost to any other stat and +1 charisma; Grow and Build each cut a stat, and
+    their price rises with the stat itself.
+
+    Timing: the harvest reads the marks, set at the START of Summer and only ever lowered, so a gift
+    pays this year only if it lands before that. The harvest is at the start of Fall, before Fall's
+    command. So Fall gives the gold, Winter the rice, and Spring and Summer are free: two seasons
+    for what took three, and the rest train."""
+    if _guards(m, idx):
+        return
+    f = m.fief(idx)
+    season = getattr(m, "season", 0)
+    gold, rice = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE)
+    if season == 2 and gold > 1:                # FALL: the harvest has just landed
+        give_peasants(m, idx, gold - 1, gold=True)
+    elif season == 3 and rice > 1:              # WINTER: keep the 1 rice
+        give_peasants(m, idx, rice - 1)
+    else:
+        train(m, idx)
+
+
+def _grudge_line(m, idx):
+    """The men that keep this fief off the AI's grudge path ($952E): it attacks a human neighbour
+    when its share of the two fiefs' provisioned men passes 47%, and men are all it counts. So stay
+    above 53/47 of the strongest neighbour."""
+    enemies = [m.fief_men_if_provisioned(j) for j in _enemy_neighbors(m, idx)]
+    return (max(enemies) * 53) // 47 + 1 if enemies else 0
+
+
+def _hire_up_to(m, idx, line, budget=None):
+    """Hire toward `line`, spending only what it costs, and no more than `budget` gold if given.
+    -> True if it hired."""
+    f = m.fief(idx)
+    gold = m.r16(f + M.F_GOLD)
+    rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+    need = min(line, m.r16(f + M.F_HEADER)) - m.r16(f + M.F_MEN)
+    if budget is not None:
+        need = min(need, budget * 10 // rate)
+    if need < 1 or gold < rate:
+        return False
+    m.selected = idx
+    return bool(P.effect_hire_men(m, f, need))
+
+
+def _season_plan(m, idx, rng, expand=False, slack=0, big_buy=False, gold_season=0):
+    """One season for one fief. The knobs (Chris, 2026-11-04): `slack` is the percent held over the
+    grudge line, because a neighbour hires after you do; `big_buy` spends all the gold on men once
+    under the line, against buying just enough each year; `gold_season` is when the gold is given.
+    Over all 17 starts at skill 2 (100 seeds each): Spring beat Fall (survival 40.7% against 36.2%,
+    1.33 fiefs at year 30 against 0.99); slack cost growth for no survival; big buy was a wash."""
+    if _guards(m, idx):
+        return
+    f = m.fief(idx)
+    season = getattr(m, "season", 0)
+    gold, rice, morale = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MORALE)
+    men, cap = m.r16(f + M.F_MEN), m.r16(f + M.F_HEADER)
+    capped = (m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 >= cap
+    enemies = _enemy_neighbors(m, idx)
+
+    if expand and capped and enemies:
+        if season in (3, 0):                    # a war needs gold, men and rice in hand
+            targets = [j for j in enemies if _can_take(m, idx, j)]
+            if targets:
+                _player_war(m, idx, min(targets, key=lambda j: m.fief_men_if_provisioned(j)), rng)
+                return
+        if season == 2:                         # a capital defends at 3x: out-buy the weakest,
+            weakest = min(m.fief_men_if_provisioned(j) for j in enemies)   # half the gold, no more
+            if _hire_up_to(m, idx, weakest * 4, budget=gold // 2):
+                return
+    line = _grudge_line(m, idx) * (100 + slack) // 100
+    if season == 2 and men < line:              # FALL: a neighbour in reach means men first
+        if big_buy and gold > 12:
+            hire_men(m, idx, gold - 6)
+            return
+        if _hire_up_to(m, idx, line):
+            return
+    if season == gold_season and not capped and gold > 1:
+        give_peasants(m, idx, gold - 1, gold=True)
+    elif season == 1 and rice > 1:              # SUMMER: rice out, and the harvest is next
+        (give_men if capped else give_peasants)(m, idx, rice - 1)
+    elif season == 0 and morale < 100 and rice > 2:
+        give_men(m, idx, rice // 2)             # SPRING: morale, as the old sequence did
+    else:
+        train(m, idx)
+
+
+def make_policy(**knobs):
+    return lambda m, idx, rng: _season_plan(m, idx, rng, **knobs)
+
+
+def summer_policy(m, idx, rng):
+    """Chris's sequence (2026-11-04): Fall hires to the grudge line, Spring gives the gold to the
+    peasants, Summer gives the rice, so the army keeps its rice through every season but the one
+    before the harvest; a Summer gift pays from next year, which costs one year once. Fall and
+    Winter otherwise train."""
+    _season_plan(m, idx, rng)
+
+
+def expand_policy(m, idx, rng):
+    """summer_policy until the peasants top out, then the signal is Chris's: buy men and expand. A
+    war's budget is min(2*rice, men, gold), so the gold has to last: half buys men, the rest fights."""
+    _season_plan(m, idx, rng, expand=True)

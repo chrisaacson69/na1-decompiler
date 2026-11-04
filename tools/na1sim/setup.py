@@ -92,6 +92,7 @@ def build_board(skill: int = 2, seed: int = 0, player_fief=None,
         m.w8(M.FIEF_TO_DAIMYO_MAP + p.idx, p.idx)     # each fief owned by its own clan
         m.w8(M.FIEF_IS_CAPITAL + p.idx, 1)
         m.w8(M.PROVINCE_AI_STATE + p.idx, M.AI_HOME)
+        m.w8(M.FIEF_TAX_RATE + p.idx, 20)             # every fief starts at 20 (battle-start.dmp)
         m.neighbor_rows[p.idx] = list(adj.get(p.idx, []))
         for k, v in enumerate((50, 5, 5, 5, 5)):       # the AI base unit-type split
             m.w8(M.PROVINCE_UNIT_TYPE_PCT + p.idx * 5 + k, v)   # ai_reinforce $960C re-rolls it

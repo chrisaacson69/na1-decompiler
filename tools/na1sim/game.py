@@ -44,12 +44,12 @@ def harvest_fief(m: "M.Memory", idx: int, rng: random.Random):
     m.w16(mk + M.MK_LOYALTY, min(m.r16(mk + M.MK_LOYALTY), m.r16(f + M.F_LOYALTY)))
     m.w16(mk + M.MK_WEALTH, min(m.r16(mk + M.MK_WEALTH), m.r16(f + M.F_WEALTH)))
 
-    # event_boost_province_gold_output $A128 -- UNCONDITIONAL (the if-goto is a
-    # no-op; ALL fiefs, not AI-only): gold += rng(10)+cha/10; 50% output too.
-    boost = cha // 10
-    m.w16(f + M.F_GOLD, m.r16(f + M.F_GOLD) + rng.randrange(10) + boost)
-    if rng.randrange(2):                           # rng_mod(2) truthy -> output boost
-        m.w16(f + M.F_OUTPUT, m.r16(f + M.F_OUTPUT) + rng.randrange(10) + boost)
+    # event_boost_province_gold_output $A128, AI fiefs only: gold += rng(10)+cha/10; 50% output too.
+    if not m.province_ai_state(idx):
+        boost = cha // 10
+        m.w16(f + M.F_GOLD, m.r16(f + M.F_GOLD) + rng.randrange(10) + boost)
+        if rng.randrange(2):                       # rng_mod(2) truthy -> output boost
+            m.w16(f + M.F_OUTPUT, m.r16(f + M.F_OUTPUT) + rng.randrange(10) + boost)
 
     # income, gated on LIVE loyalty>0; the base reads the MARKS (low-water income)
     tax = m.r8(M.FIEF_TAX_RATE + idx)
@@ -376,16 +376,15 @@ def step_season(m: "M.Memory", season: int, rng: random.Random, player_policy=No
         P.spring_age_and_decay(m)
     if season == 1:                                    # Summer: reset low-water marks
         reset_marks(m)
+    if season == 2:                                    # Fall harvest: in the driver, BEFORE the
+        for idx in range(m.r16(M.SCENARIO_FIEF_COUNT)):  # season's commands, so Fall spends it
+            if m.province_ai_state(idx) != M.EMPTY:
+                harvest_fief(m, idx, rng)
     for idx in range(m.r16(M.SCENARIO_FIEF_COUNT)):    # the planner's cap: repairs the wraps above
         if m.province_ai_state(idx) != M.EMPTY:
             P.cap_fief_stats(m, idx)
     events(m, season, rng)
     command_pass(m, rng, player_policy)
-    if season == 2:                                    # Fall harvest (reads marks)
-        n = m.r16(M.SCENARIO_FIEF_COUNT)
-        for idx in range(n):
-            if m.province_ai_state(idx) != M.EMPTY:
-                harvest_fief(m, idx, rng)
     natural_death(m, rng)
     process_ownerless(m, rng)                          # reseat every vacated fief
 
