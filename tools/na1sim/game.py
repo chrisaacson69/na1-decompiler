@@ -15,8 +15,9 @@ FIDELITY FLAGS:
   [H-marks] harvest uses LIVE fief fields, not the Summer high-water marks
             (update_province_highwater_marks $A0A9 + calc_fief_*_income). Close
             but slightly hot; the marks subsystem is a later pass.
-  [no-events] uprisings/typhoon/plague + the Spring boon/aging are NOT run yet --
-            this is command-pass + harvest only, to read the men/econ trajectory.
+  [rules] upkeep, the luck drift, the high-tax penalty, Spring, the revolt roll and the auction are
+            vmprims functions that na1sim.oracle checks against the ROM. Not ROM yet: the revolt's
+            rebel-win arm, the relations decays.
 """
 
 import random
@@ -71,15 +72,7 @@ def harvest_fief(m: "M.Memory", idx: int, rng: random.Random):
     m.w16(f + M.F_GOLD, m.r16(f + M.F_GOLD) - pay)
     m.w16(f + M.F_DEBT, m.r16(f + M.F_DEBT) - pay)
 
-    # MEN/2 upkeep from gold AND rice; starvation culls men
-    men = m.r16(f + M.F_MEN)
-    upkeep = men // 2
-    afford = min(m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE))
-    if afford < upkeep:
-        m.w16(f + M.F_MEN, afford * 2)
-        upkeep = afford
-    m.w16(f + M.F_GOLD, m.r16(f + M.F_GOLD) - upkeep)
-    m.w16(f + M.F_RICE, m.r16(f + M.F_RICE) - upkeep)
+    P.consume_province_army_upkeep(m, f)
 
     P.cap_fief_stats(m, idx)             # the ROM closes every harvest with this
     return gy, ry
@@ -178,51 +171,23 @@ def square_roll(x: int, rng: random.Random) -> bool:
     return min(x, 50) ** 2 < rng.randrange(2025)
 
 
-def spring_boon(m: "M.Memory", rng: random.Random):
-    """Spring: the AI-only wealth/loyalty boon (rubber-band); player fiefs decay
-    at skill>1. [aging/health -> illness/death deferred: age isn't in the 7-byte
-    daimyo record; needs the $A30D update driver traced.]"""
-    n = m.r16(M.SCENARIO_FIEF_COUNT)
-    for i in range(n):
-        st = m.province_ai_state(i)
-        if st == M.EMPTY:
-            continue
-        f = m.fief(i)
-        cha = m.r8(m.fief_daimyo(i) + M.D_CHARISMA)
-        if st == M.AI_HOME:
-            if rng.randrange(2) == 0:
-                m.w16(f + M.F_WEALTH, min(100, m.r16(f + M.F_WEALTH) + rng.randrange(10) + cha // 10))
-                m.w16(f + M.F_LOYALTY, min(100, m.r16(f + M.F_LOYALTY) + rng.randrange(40) + cha // 10))
-        elif m.skill > 1:                              # player decay
-            for off in (M.F_WEALTH, M.F_LOYALTY, M.F_MORALE):
-                m.w16(f + off, max(0, m.r16(f + off) - rng.randrange(m.skill)))
-
-
 def resolve_uprising(m: "M.Memory", idx: int, rng: random.Random) -> bool:
-    """A revolt: half the garrison rebels vs the rest. Rebels win -> the lord
-    loses the fief (capital -> whole faction collapses). [U-empty: a lost fief is
-    marked EMPTY here; the ROM's rebel-holding re-conquest churn is a later pass.]"""
-    f = m.fief(idx)
-    men = m.r16(f + M.F_MEN)
-    if men <= 2:
+    """A revolt: the ROM's roll (P.uprising_rebels_win_roll) and its loyal arm
+    (P.revolt_loyal_men_won), both checked by na1sim.oracle. Rebels win -> the lord loses the fief
+    (capital -> the whole faction collapses). [U-empty: a lost fief is marked EMPTY here for
+    process_ownerless; the ROM installs a new daimyo on it at once, the rest of
+    resolve_revolt_event_on_listed_fiefs, not transcribed.]"""
+    if not P.uprising_rebels_win_roll(m, idx):
+        P.revolt_loyal_men_won(m, idx)
         return False
-    rebels, garrison = men // 2, men - men // 2
-    q = _quality(m.r16(f + M.F_ARMS), m.r16(f + M.F_SKILL))
-    mor = m.r16(f + M.F_MORALE)
-    rebel_str = rebels * 2 + q + mor
-    garr_str = garrison * (2 + (1 if m.is_capital(idx) else 0)) + q + mor
-    if rebel_str > garr_str:
-        if m.is_capital(idx):                          # faction collapse
-            owner = m.fief_owner(idx)
-            for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
-                if m.fief_owner(i) == owner:
-                    m.w8(M.PROVINCE_AI_STATE + i, M.EMPTY)
-        else:
-            m.w8(M.PROVINCE_AI_STATE + idx, M.EMPTY)
-        return True
-    m.w16(f + M.F_MEN, garrison)                       # crushed: lose the rebels + loyalty
-    m.w16(f + M.F_LOYALTY, m.r16(f + M.F_LOYALTY) - P.pct_op(m.r16(f + M.F_LOYALTY), rng.randrange(10) + 10))
-    return False
+    if m.is_capital(idx):                              # faction collapse
+        owner = m.fief_owner(idx)
+        for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
+            if m.fief_owner(i) == owner:
+                m.w8(M.PROVINCE_AI_STATE + i, M.EMPTY)
+    else:
+        m.w8(M.PROVINCE_AI_STATE + idx, M.EMPTY)
+    return True
 
 
 def events(m: "M.Memory", season: int, rng: random.Random):
@@ -365,45 +330,23 @@ def install_new_daimyo(m, idx, rng):
 
 
 def process_ownerless(m, rng):
-    """resolve_ownerless_province_succession $8C75: the strongest neighbour
-    bids rng(its gold) and annexes; no bidder -> a fresh daimyo. No empty fiefs."""
+    """resolve_ownerless_fiefs_by_auction $8E63 over P.auction_ownerless_fief_to_bidders, the
+    routine na1sim.oracle checks. Fewer than 2 owners around the fief, or no bid: a fresh daimyo.
+    The sim's player has no bid policy; a human bidder offers a random amount as before."""
     n = m.r16(M.SCENARIO_FIEF_COUNT)
     for idx in range(n):
         if m.province_ai_state(idx) != M.EMPTY:
             continue
-        best_bid, winner = 0, None
-        for j in m.neighbor_rows.get(idx, []):
-            if j >= n or m.province_ai_state(j) == M.EMPTY:
-                continue
-            gold = m.r16(m.fief(j) + M.F_GOLD)
-            bid = rng.randrange(gold) if gold > 1 else 0
-            if bid > best_bid:
-                best_bid, winner = bid, j
-        if winner is not None:
-            m.w8(M.FIEF_TO_DAIMYO_MAP + idx, m.fief_owner(winner))
-            m.w8(M.PROVINCE_AI_STATE + idx, m.province_ai_state(winner))
-            m.w8(M.FIEF_IS_CAPITAL + idx, 0)
-            m.w16(m.fief(winner) + M.F_GOLD, max(0, m.r16(m.fief(winner) + M.F_GOLD) - best_bid))
-        else:
+        m.selected = idx
+        m.w16(M.BATTLE_DEFENDING, idx)
+        around = [j for j in m.neighbor_rows.get(idx, [])
+                  if j < n and m.province_ai_state(j) != M.EMPTY]
+        count = P.dedup_owners(m, around) if around else 0
+        if P.auction_ownerless_fief_to_bidders(m, count, lambda m, gold: max(1, m.rng_mod(gold))) is None:
             install_new_daimyo(m, idx, rng)
 
 
-# --- aging + natural death (per_turn_age $9F8C + $9194) --------------------
-def aging(m):
-    """per_turn_age_daimyo_decay $9F8C: age +1, health -1 (skips year 1560).
-    [rate: per-YEAR -- the ROM driver runs per-season but the scenario ages are
-    low (11-41) and death is age>=70, so per-season (+4/yr) wrongly kills every
-    lord by ~1570; per-year keeps natural death rare in a 25yr window, as data
-    + play imply. Flagged: confirm the driver's true call cadence.]"""
-    if m.year == 1560:
-        return
-    n = m.r16(M.SCENARIO_FIEF_COUNT)
-    for did in {m.fief_owner(i) for i in range(n) if m.province_ai_state(i) != M.EMPTY}:
-        d = m.daimyo(did)
-        m.w8(d + M.D_AGE, min(255, m.r8(d + M.D_AGE) + 1))
-        m.w8(d + M.D_HEALTH, max(0, m.r8(d + M.D_HEALTH) - 1))
-
-
+# --- natural death ($9194); aging is P.spring_age_and_decay ---------------
 def natural_death(m, rng):
     """check_daimyo_natural_death $9154: die if health==0; else only at age>=70,
     with rng(300) < age-10-health/4. The lord's fiefs vacate -> succession."""
@@ -426,12 +369,16 @@ def natural_death(m, rng):
 
 def step_season(m: "M.Memory", season: int, rng: random.Random, player_policy=None):
     m.season = season
-    if season == 0:                                    # new year: market, age, boon
+    if season == 0:                                    # new year: market
         roll_period_market_rates(m, rng)
-        aging(m)                                        # per-YEAR (not per-season!)
-        spring_boon(m, rng)
+    P.per_period_fief_update(m)                        # every season: luck drift, the high-tax penalty
+    if season == 0:                                    # once a year: age, boon, player decay
+        P.spring_age_and_decay(m)
     if season == 1:                                    # Summer: reset low-water marks
         reset_marks(m)
+    for idx in range(m.r16(M.SCENARIO_FIEF_COUNT)):    # the planner's cap: repairs the wraps above
+        if m.province_ai_state(idx) != M.EMPTY:
+            P.cap_fief_stats(m, idx)
     events(m, season, rng)
     command_pass(m, rng, player_policy)
     if season == 2:                                    # Fall harvest (reads marks)

@@ -79,8 +79,7 @@ def hire_men(m, idx, spend):               # gold -> men at the market rate
     gained = (spend * 10) // rate
     if spend < 1 or gained < 1:
         return
-    m.w16(f + M.F_GOLD, m.r16(f + M.F_GOLD) - spend)
-    P.apply_hire_unit_stats(m, f, gained)
+    P.effect_hire_men(m, f, gained)
 
 
 def grow_output(m, idx, amount):
@@ -119,8 +118,7 @@ def build_dam(m, idx, amount_gold):
 
 def train(m, idx):
     m.selected = idx
-    if m.r16(m.fief(idx) + M.F_MEN) > 0:
-        P.effect_train(m)
+    P.driver_train(m)
 
 
 def _enemy_neighbors(m, idx):

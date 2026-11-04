@@ -361,6 +361,251 @@ def cap_fief_stats(m: "M.Memory", idx: int) -> None:
 
 
 # ===========================================================================
+# The rules of the live revisit, line for line from source/4-c. na1sim.oracle runs each against
+# the ROM's routine with the same scripted draws, moduli included.
+# ===========================================================================
+SPRING_DECAY_FIELDS = (M.F_LOYALTY, M.F_WEALTH, M.F_MORALE)
+
+
+def consume_province_army_upkeep(m: "M.Memory", fief: int) -> None:
+    """consume_province_army_upkeep $A15B: men/2 from gold and rice; if min(gold, rice) cannot
+    cover it, upkeep is that minimum and men fall to twice it."""
+    upkeep = m.r16(fief + M.F_MEN) // 2
+    affordable = min_word(m.r16(fief + M.F_GOLD), m.r16(fief + M.F_RICE))
+    if affordable < upkeep:
+        upkeep = affordable
+        m.w16(fief + M.F_MEN, affordable << 1)
+    m.w16(fief + M.F_GOLD, m.r16(fief + M.F_GOLD) - upkeep)
+    m.w16(fief + M.F_RICE, m.r16(fief + M.F_RICE) - upkeep)
+
+
+def drift_daimyo_luck(m: "M.Memory", daimyo: int) -> None:
+    """drift_daimyo_luck: luck + rng_mod(11) - 5 on a byte, unclamped; cap_fief_stats repairs an
+    underflow in the same turn."""
+    p = m.daimyo(daimyo) + M.D_LUCK
+    m.w8(p, (m.r8(p) + m.rng_mod(11) - 5) & 0xFF)
+
+
+def per_period_fief_update(m: "M.Memory") -> None:
+    """The head of per_period_fief_daimyo_update_driver $A30D, every season: each index's luck
+    drifts, and a tax rate of 90 - skill_level or more loses a tenth of that fief's loyalty."""
+    for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
+        drift_daimyo_luck(m, i)
+        if m.r8(M.FIEF_TAX_RATE + i) >= 90 - m.skill:
+            f = m.fief(i)
+            m.w16(f + M.F_LOYALTY, pct_op(m.r16(f + M.F_LOYALTY), 90))
+
+
+def uprising_rebels_win_roll(m: "M.Memory", idx: int) -> bool:
+    """uprising_rebels_win_roll $9595: the loyal share of the men is
+    min(morale, 100)*3/10 + min(charisma, 200)*3/20 + rng_mod(31) + 10 percent; the larger side
+    wins, a tie goes to the rebels on rng_mod(2) == 0."""
+    f = m.fief(idx)
+    men = m.r16(f + M.F_MEN)
+    share = (min_word(100, m.r16(f + M.F_MORALE)) * 3 // 10
+             + min_word(200, m.r8(m.fief_daimyo(idx) + M.D_CHARISMA)) * 3 // 20
+             + m.rng_mod(31) + 10)
+    loyal = pct_op(men, share)
+    rebels = men - loyal
+    if loyal == rebels:
+        return m.rng_mod(2) == 0
+    return loyal < rebels
+
+
+def revolt_loyal_men_won(m: "M.Memory", idx: int) -> None:
+    """The loyal-win arm of resolve_revolt_event_on_listed_fiefs ($981C-$9868): morale rises by
+    pct_op(morale, rng_mod(10) + 30) + rng_mod(30) + 30, men fall by pct_op(men, rng_mod(20) + 10).
+    The ROM draws the rng_mod(30) first: the C prints operands in place, not in evaluation order."""
+    f = m.fief(idx)
+    morale = m.r16(f + M.F_MORALE)
+    flat = m.rng_mod(30)
+    m.w16(f + M.F_MORALE, morale + pct_op(morale, m.rng_mod(10) + 30) + flat + 30)
+    men = m.r16(f + M.F_MEN)
+    m.w16(f + M.F_MEN, men - pct_op(men, m.rng_mod(20) + 10))
+
+
+def event_boost_province_wealth_loyalty(m: "M.Memory", idx: int) -> None:
+    """event_boost_province_wealth_loyalty $9F57 (AI fiefs, each Spring): on rng_mod(2) != 0,
+    wealth += rng_mod(10) + charisma/10 and loyalty += rng_mod(40) + charisma/10. No cap here."""
+    bonus = m.r8(m.fief_daimyo(idx) + M.D_CHARISMA) // 10
+    if m.rng_mod(2):
+        f = m.fief(idx)
+        m.w16(f + M.F_WEALTH, m.r16(f + M.F_WEALTH) + m.rng_mod(10) + bonus)
+        m.w16(f + M.F_LOYALTY, m.r16(f + M.F_LOYALTY) + m.rng_mod(40) + bonus)
+
+
+def spring_age_and_decay(m: "M.Memory") -> None:
+    """per_turn_age_daimyo_decay_health_and_province_stats, less its two relations decays (the sim
+    does not run them). It runs once a year, on season 0 of the driver's switch. Every record ages,
+    not only the living lords'. An AI fief takes the boon; a human fief, past skill_level 1, loses
+    ONE rng_mod(skill_level) from loyalty, wealth and morale alike. Words and bytes wrap here;
+    cap_fief_stats repairs them in the same turn. In 1560 none of that runs: a human on fief 24
+    (50 fiefs) or fief 16 (17 fiefs) has that fief's gold set to 100 ($7271 / $71A1)."""
+    n = m.r16(M.SCENARIO_FIEF_COUNT)
+    if m.year == 1560:
+        for fief, count in ((24, 50), (16, 17)):
+            if m.province_ai_state(fief) and n == count:
+                m.w16(m.fief(fief) + M.F_GOLD, 100)
+        return
+    for i in range(n + 3):
+        d = m.daimyo(i)
+        m.w8(d + M.D_AGE, (m.r8(d + M.D_AGE) + 1) & 0xFF)
+        m.w8(d + M.D_HEALTH, (m.r8(d + M.D_HEALTH) - 1) & 0xFF)
+    for i in range(n):
+        if not m.province_ai_state(i):
+            event_boost_province_wealth_loyalty(m, i)
+        elif m.skill != 1:
+            decay = m.rng_mod(m.skill)
+            f = m.fief(i)
+            for off in SPRING_DECAY_FIELDS:
+                m.w16(f + off, m.r16(f + off) - decay)
+
+
+def dedup_owners(m: "M.Memory", fiefs) -> int:
+    """dedup_owners $8DE1: one fief per owner, first seen kept, into deduped_owner_list ($FF
+    ended). -> the count. (The ROM reads past the terminator on an empty list: a caller's guard.)"""
+    kept = []
+    for j in fiefs:
+        if all(m.fief_owner(k) != m.fief_owner(j) for k in kept):
+            kept.append(j)
+    for i, j in enumerate(kept):
+        m.w8(M.DEDUPED_OWNER_LIST + i, j)
+    m.w8(M.DEDUPED_OWNER_LIST + len(kept), 0xFF)
+    return len(kept)
+
+
+def find_first_own_fief(m: "M.Memory") -> int:
+    """find_first_own_fief $8BE6: the first CAPITAL held by the selected fief's owner, by index;
+    0 when that owner has none (the ROM returns the loop's false, not a fief)."""
+    owner = m.selected_province_owner()
+    for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
+        if m.is_capital(i) and m.fief_owner(i) == owner:
+            return i
+    return 0
+
+
+def auction_ownerless_fief_to_bidders(m: "M.Memory", owner_count: int, human_bid):
+    """auction_ownerless_fief_to_bidders $8C75 over deduped_owner_list, for the fief in
+    battle_defending_province. -> None when the fief goes to a new daimyo (fewer than 2 owners
+    around it, or no bid), else (winner_fief, best_bid, price).
+
+    Each bidder acts from its owner's capital. An AI bids rng_mod(gold), but only if its gold
+    beats the last bid. A human (not resting, gold > 0) answers human_bid(m, gold): the amount, or
+    None to pass. `bid` is one variable across the whole loop and is never reset, so a passing
+    bidder leaves it standing, and the winner pays that LAST bid: a later, lower bid sets the
+    price, which can never exceed best_bid."""
+    if owner_count < 2:
+        return None
+    best_bid = bid = 0
+    winner = None
+    p = M.DEDUPED_OWNER_LIST
+    while m.r8(p) != 0xFF:
+        m.selected = m.r8(p)
+        m.selected = find_first_own_fief(m)
+        sel = m.selected
+        gold = m.s16(m.fief(sel) + M.F_GOLD)
+        if m.province_ai_state(sel):
+            if not m.r8(M.REST_TURNS + m.selected_province_owner()) and gold > 0:
+                answer = human_bid(m, gold)
+                if answer is not None:
+                    bid = answer
+        elif gold > bid:
+            bid = m.rng_mod(gold)
+        if best_bid < bid:
+            best_bid, winner = bid, sel
+        p += 1
+    if not best_bid:
+        return None
+    target = m.r16(M.BATTLE_DEFENDING)
+    m.w8(M.PROVINCE_AI_STATE + target, 5 if m.province_ai_state(winner) else 0)
+    m.w8(M.FIEF_IS_CAPITAL + target, 0)
+    m.w8(M.FIEF_TO_DAIMYO_MAP + target, m.fief_owner(winner))
+    f = m.fief(winner)
+    m.w16(f + M.F_GOLD, m.r16(f + M.F_GOLD) - bid)
+    return winner, best_bid, bid
+
+
+def resolve_bribe_enemy_unit(m: "M.Memory", slot: int, amount: int) -> None:
+    """resolve_bribe_enemy_unit $9E73 (bank 2). The briber pays first, win or lose. Score =
+    rng_mod(6 - skill_level) + own morale + own charisma, against enemy morale + charisma +
+    2 * skill_level. A win with amount / unit >= 1 turns pct_op(unit, 100*(s-e)/(2s-e)) men to the
+    briber's slot 0, the briber's total held to 9999; a win that cannot pay one gold a man costs
+    the enemy morale instead (6 - skill_level from a human briber, skill_level from the AI).
+    combat_casualty_skip gates the contest and both outcomes set it."""
+    side = m.cur_combat_side
+    own_res, enemy_side = m.side_resource_ptr(side), side ^ 1
+    enemy_res = m.side_resource_ptr(enemy_side)
+    m.w16(own_res + M.SR_GOLD, m.r16(own_res + M.SR_GOLD) - amount)
+    own = m.r16(M.BATTLE_DEFENDING if side else M.SELECTED_PROVINCE)
+    enemy = m.r16(M.BATTLE_DEFENDING if enemy_side else M.SELECTED_PROVINCE)
+    score = (m.rng_mod(6 - m.skill) + m.r16(m.fief(own) + M.F_MORALE)
+             + m.r8(m.fief_daimyo(own) + M.D_CHARISMA))
+    enemy_score = (m.r16(m.fief(enemy) + M.F_MORALE) + m.r8(m.fief_daimyo(enemy) + M.D_CHARISMA)
+                   + (m.skill << 1))
+    if m.r8(M.COMBAT_CASUALTY_SKIP) or score <= enemy_score:
+        return
+    unit = m.unit_strength_ptr(enemy_side, slot)
+    if amount // m.r16(unit) > 0:
+        turned = pct_op(m.r16(unit), math32_2arg(score - enemy_score, score))
+        if m.r16(own_res + M.SR_MEN) + turned > 9999:
+            turned = 9999 - m.r16(own_res + M.SR_MEN)
+        if not turned:
+            return
+        m.w16(unit, m.r16(unit) - turned)
+        m.w16(enemy_res + M.SR_MEN, m.r16(enemy_res + M.SR_MEN) - turned)
+        slot0 = m.unit_strength_ptr(side, 0)
+        m.w16(slot0, m.r16(slot0) + turned)
+        m.w16(own_res + M.SR_MEN, m.r16(own_res + M.SR_MEN) + turned)
+    else:
+        f = m.fief(enemy) + M.F_MORALE
+        m.w16(f, m.r16(f) - ((6 - m.skill) if m.province_ai_state(own) else m.skill))
+        if m.s16(f) <= 0:
+            m.w16(f, 0)
+    m.w8(M.COMBAT_CASUALTY_SKIP, 1)
+
+
+def driver_train(m: "M.Memory") -> int:
+    """driver_train $A637: refused at stat_cap; with no men the military stats clear; else
+    effect_train, skill held to stat_cap."""
+    f = m.cur_fief()
+    if m.r16(f + M.F_SKILL) >= m.r16(f + M.F_HEADER):
+        return 0
+    if m.s16(f + M.F_MEN) <= 0:
+        clear_military_stats_if_no_men(m, m.selected)
+        return 0
+    effect_train(m)
+    m.w16(f + M.F_SKILL, min(m.r16(f + M.F_SKILL), m.r16(f + M.F_HEADER)))
+    return 1
+
+
+def cap_arms_at_index(m: "M.Memory", idx: int, fief: int) -> None:
+    """cap_arms_at_index $DFFE: the unit-type share in slot 2 of the fief's five is held to
+    arms/50 + 20; the excess moves to slot 0."""
+    cap = m.r16(fief + M.F_ARMS) // 50 + 20
+    base = M.PROVINCE_UNIT_TYPE_PCT + idx * 5
+    if m.r8(base + 2) > cap:
+        m.w8(base, m.r8(base) + m.r8(base + 2) - cap)
+        m.w8(base + 2, cap)
+
+
+def effect_hire_men(m: "M.Memory", fief: int, amount: int) -> int:
+    """effect_hire_men $A553, the player typing `amount` (held to the prompt's 1..max). Costs
+    (rate*amount + 9)/10 gold, blends the recruits in, and nudges the hire rate up one."""
+    cap, men = m.r16(fief + M.F_HEADER), m.r16(fief + M.F_MEN)
+    rate = m.r16(M.GOLD_MEN_HIRE_RATE)
+    most = ratio_times10_capped(m.r16(fief + M.F_GOLD), rate, cap - men)
+    if most <= 0:
+        return 0
+    amount = max(1, min(amount, most))
+    m.w16(fief + M.F_GOLD, m.r16(fief + M.F_GOLD) - math32_muladddiv(rate, amount))
+    apply_hire_unit_stats(m, fief, amount)
+    cap_arms_at_index(m, m.selected, fief)
+    cycle_economy_rate(m, 4)
+    clamp_amount_to_province_max(m, fief + M.F_MEN)
+    return 1
+
+
+# ===========================================================================
 # smoke: certified pure-math values + an effect_grow that does NOT touch gold
 # ===========================================================================
 def _smoke():

@@ -500,8 +500,9 @@ COMMANDS = {
 'morale_base = <span class="k">rng</span>%20 + 40                    <span class="c">// 40 .. 59</span>\n'
 'skill_base  = <span class="k">rng</span>%20 + 60                    <span class="c">// 60 .. 79</span>\n'
 'arms_base   = <span class="k">rng</span>%10 + 50                    <span class="c">// 50 .. 59</span>\n\n'
-'<span class="c">// DILUTION — men-weighted average, capped at header (morale, skill, arms)</span>\n'
-'new_stat = <span class="k">min</span>( header, (stat &times; men + base &times; amount) &divide; (men + amount) )\n'
+'<span class="c">// DILUTION — weighted_average_capped $DA24, percentages through pct_op, capped at header</span>\n'
+'new_stat = <span class="k">min</span>( header, pct_op(stat, 100&times;w &divide; (w + amount)) &plus; pct_op(base|1, 100&times;amount &divide; (w + amount)) )\n'
+'<span class="c">// w = men for morale and skill; w = the fief\'s ARMS for arms</span>\n'
 'men &plus;= amount'),
     "roi": "Hire when current stats are low (recruits don’t drag much) or to refill after combat losses. "
            "<b>Never</b> hire into a small high-skill army — you’ll wreck its average. Watch the per-turn "
@@ -516,19 +517,22 @@ COMMANDS = {
 "<b>dilution</b>: "
 "fresh recruits (morale 40–59, skill 60–79, arms 50–59) are blended in by a men-weighted average, so "
 "hiring into a small elite garrison drags its skill <b>down</b>. That is exactly why elite armies are "
-"<b>trained</b> (no dilution — see train.html) and Hire is for restoring body-count or staffing a new fief."),
+"<b>trained</b> (no dilution — see train.html) and Hire is for restoring body-count or staffing a new fief. "
+"<b>Arms is the exception:</b> the ROM weights it by the arms value itself, not by men, so high arms barely "
+"dilute (arms 300 taking 100 recruits ends near 238, not 177) and a fief at arms 0 jumps to 51–59 on one recruit."),
     "validation": {
-      "caption": "In-game (Fall 1566, fief 6 hired 30 men into 55) — the post-state matches the "
-                 "men-weighted dilution of the recruit bases.",
+      "caption": "In-game (Fall 1566, fief 6 hired 30 men into 55) — the post-state fits the ROM's "
+                 "dilution with every recruit base inside its band.",
       "headers": ["stat", "pre (55 men)", "recruit base", "post (85 men)", "implied base"],
       "rows": [
-        ["morale","111","40–59","88","46 ✓"],
-        ["skill","590","60–79","401","55 ✓*"],
-        ["arms","70","50–59","66","59 ✓"],
+        ["morale","111","40–59","88","52–55 ✓"],
+        ["skill","590","60–79","401","68–71 ✓"],
+        ["arms","70","50–59","66","56–59 ✓"],
       ],
-      "note": "Dilution: <code>new = (stat×55 + base×30) / 85</code>. E.g. arms "
-              "<code>(70×55 + 59×30)/85 = 66</code> ✓. *Skill’s implied 55 sits just below the 60–79 band — "
-              "consistent with the session being multiple batched hires. men: 55 → 85 (+30).",
+      "note": "Fitted through <code>pct_op</code>, the ROM's arithmetic. A men weight for arms cannot reach "
+              "66 here (it tops out at 64): the arms weight is the arms value, 70. An earlier fit by plain "
+              "division gave a skill base of 55, outside its band, and blamed batched hires; it was the arithmetic. "
+              "men: 55 → 85 (+30). Checked by <code>na1sim.oracle</code>, case hire, 432/432.",
     },
     "fields": "<code>men</code>&nbsp;+amount · <code>morale</code>/<code>skill</code>/<code>arms</code> "
               "diluted toward recruit bases · <code>gold</code>&nbsp;−(amount × hire rate)",

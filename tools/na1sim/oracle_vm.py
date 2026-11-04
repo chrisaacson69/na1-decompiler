@@ -90,10 +90,13 @@ def run_rom(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=200000, 
     return bytes(vm.mem.read(a) for a in range(0x6000, 0x8000))
 
 
-def run_rom_ret(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=200000, stubs=()):
+def run_rom_ret(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=200000, stubs=(),
+                strict=False):
     """Like run_rom but ALSO returns the routine's return value (regL/$08 at the
     outermost RETURN) -- for the pure combat strength functions that return a
-    number rather than mutating the fief region. Returns (post_image, regL)."""
+    number rather than mutating the fief region. Returns (post_image, regL).
+    strict: a run that traps or never reaches its RETURN raises, rather than handing
+    back a half-run image."""
     vm = NobunagaVM()
     vm.mem.sram[:] = bytes(m_state.m[0x6000:0x8000])
     for addr, fn in stubs:
@@ -105,10 +108,14 @@ def run_rom_ret(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=2000
         vm.mem.write_word(fp + 11 + i * 2, a)
     vm.vm_pc = body
     vm.cpu.pc = vm.DISPATCHER_ADDR
+    reached = False
     try:
-        vm.run_until_outermost_return(max_ops=max_ops)
+        reached = vm.run_until_outermost_return(max_ops=max_ops)
     except Exception:
-        pass
+        if strict:
+            raise
+    if strict and not reached:
+        raise RuntimeError(f"${body:04X} did not reach its RETURN in {max_ops} ops (pc ${vm.vm_pc:04X})")
     post = bytes(vm.mem.read(a) for a in range(0x6000, 0x8000))
     return post, vm.regL
 

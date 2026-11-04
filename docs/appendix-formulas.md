@@ -337,13 +337,16 @@ arms_base   = rng(0..9)  + 50    ; range 50-59
 
 ### Dilution (weighted average)
 ```
-new_stat = min(cap, (current_stat × current_men + recruit_stat × new_men) / (current_men + new_men))
+new_stat = min(cap, pct_op(stat, 100·w / (w + new_men)) + pct_op(recruit_stat | 1, 100·new_men / (w + new_men)))
+; w = current men for morale and skill; w = the fief's current ARMS value for arms
 ```
+
+`apply_hire_unit_stats` passes `fief->arms` as the weight of the arms blend. So arms follow their own value, not the head count: arms 300 taking 100 recruits ends at 238 (a men weight of 100 would give 177), and a fief at arms 0 goes straight to the recruit's 51-59 on one man. The two percentages truncate, so they can sum to 99.
 
 ### Verified empirically (Fall 1566, fief 6 hired 30 men):
 - Pre: men=55, morale=111, skill=590, arms=70
 - Post: men=85, morale=88, skill=401, arms=66
-- Back-fit recruit averages: morale 45.8, skill 54.5, arms 58.7 — all consistent with predicted ranges (skill slightly low suggests multiple batched hires)
+- Fitted through `pct_op`: recruit morale 52-55, skill 68-71, arms 56-59, all inside their bands. A men weight for arms tops out at 64 here, so this capture rules it out. (The fit by plain division gave skill 54.5, outside its band, and blamed batched hires. It was the arithmetic.)
 
 ### Strategic note
 - **Train > Hire for elite armies** (no dilution)
@@ -396,9 +399,27 @@ Daimyo records ($752F+, 7 bytes each: age, H, D, L, Ch, IQ, status) — daimyo s
 
 So Train command ACCELERATES what would happen anyway. The drift might be conditional on age/health (younger daimyos grow faster?).
 
+**These May observations are not explained by the aging routine.** That routine (§10) raises age and lowers health by 1 a year and changes no other daimyo byte, and luck drifts by §10's rule. A rise in Drive or Health comes from elsewhere, or the observation was wrong; it has not been traced.
+
 ## 9. Event system
 
 The disaster / uprising / illness / death catalogue — with each event's season, trigger, exact probability, and result — is **[Appendix D — The Event System](./appendix-events.md)** (bytecode-walked). The economic hooks those events touch (the harvest, the AI subsidy, army upkeep) are §4 above.
+
+## 10. Upkeep, luck, the Spring pass, revolts, the auction, the battle bribe
+
+Read from the C, then run against the ROM with every draw scripted (table below). `rng(n)` is `rng_mod(n)`, 0..n-1.
+
+**Army upkeep** (`consume_province_army_upkeep` $A15B): `upkeep = men/2`, taken from gold and rice. If `min(gold, rice) < upkeep`, upkeep is that minimum and `men = 2 × min(gold, rice)`.
+
+**Every season** (`per_period_fief_daimyo_update_driver` $A30D), for each index: `luck += rng(11) − 5` on a byte with no clamp, and a fief taxed at `90 − skill_level` or more loses a tenth of its loyalty (`pct_op(loyalty, 90)`). The turn planner then runs `cap_fief_stats` over every fief, which resets a wrapped luck (above 235 → 0) and holds it to 210.
+
+**Spring, once a year** (`per_turn_age_daimyo_decay_health_and_province_stats`, season 0 of that driver): age +1 and health −1 on every record up to `fief_count + 3`, living or not. An AI fief takes the boon (Appendix D). A human fief, past skill level 1, loses **one** `rng(skill_level)` from **loyalty, wealth and morale** alike. In 1560 none of this runs; instead a human on fief 16 (17 fiefs) or fief 24 (50 fiefs) has that fief's gold set to 100.
+
+**A revolt** (`uprising_rebels_win_roll` $9595): the loyal share of the men is `min(morale, 100)·3/10 + min(charisma, 200)·3/20 + rng(31) + 10` percent, by `pct_op`. The larger side wins; a tie goes to the rebels on `rng(2) = 0`. So at morale 100 and charisma 200 the loyal share is 70-100%, and at 0 and 0 it is 10-40%, so the rebels always win there. If the loyal men win, morale rises by `pct_op(morale, rng(10) + 30) + rng(30) + 30` and men fall by `pct_op(men, rng(20) + 10)`.
+
+**The auction of an ownerless fief** (`auction_ownerless_fief_to_bidders` $8C75): the bidders are the neighbours, one per owner. Fewer than 2 owners around it, or no bid, and a new daimyo takes the fief. Each bidder acts from its owner's first capital. An AI bids `rng(gold)`, but only if its gold beats the current bid. A human who is not resting and has gold is asked, and types 1..gold. The highest bid wins, **but the winner pays the last bid made, not its own**: `bid` is one variable that nothing resets, so a later, lower bid sets the price, and a bidder who passes leaves it standing. The price never exceeds the winning bid. A human late in the order can therefore bid 1 and cut the price a rival pays. A human winner's new fief starts at state 5, an AI's at 0, never a capital.
+
+**The bribe in battle** (`resolve_bribe_enemy_unit` $9E73; not the strategic Bribe command): the gold is spent first, win or lose. `score = rng(6 − skill_level) + own morale + own charisma`, against `enemy = enemy morale + enemy charisma + 2·skill_level`. A loss, or a bribe already made this turn (`combat_casualty_skip_flag`), ends it there. On a win, if the gold covers a man each (`amount / unit ≥ 1`), `pct_op(unit, 100·(s−e) / (2s−e))` men cross to the briber's slot 0, the briber's total held to 9999. If it does not, the enemy loses morale instead: `6 − skill_level` from a human briber, `skill_level` from the AI, floored at 0. Both set the flag.
 
 ## How these formulas are checked
 
@@ -413,6 +434,23 @@ The disaster / uprising / illness / death catalogue — with each event's season
 | dam | `driver_dam` $9B7E | 240/240 | no 100 cap: fails |
 | pct_op | $D70D | 110/110 | plain ⌊b·p/100⌋: fails |
 | tax_drain | `effect_tax` $82D6 | 48/48 | drain both ways: fails |
+
+Added 2026-11-04, the sim's own functions (`vmprims`, which the strategic loop calls) against the ROM. `rng_mod` is scripted on both sides, so a draw's edges are on the grid, and the moduli asked for are compared too: a wrong `rng(n)` or a reordered draw fails even when the values agree. Every state table is compared, not chosen fields.
+
+| Case | ROM routine | 2026-11-04 | Planted wrong model |
+|---|---|---|---|
+| train | `driver_train` $A637 | 160/160 | no Luck+IQ bonus: fails 64 |
+| hire | `effect_hire_men` $A553 | 432/432 | arms weighted by men: fails 352 |
+| upkeep | `consume_province_army_upkeep` $A15B | 252/252 | no desertion: fails 104 |
+| luck_then_cap | `drift_daimyo_luck` + `cap_fief_stats` | 35/35 | no cap: fails 6 |
+| period_driver | `per_period_fief_daimyo_update_driver` $A30D | 63/63 | — |
+| uprising | `uprising_rebels_win_roll` $9595 | 650/650 | the sim's old split: fails 283 |
+| revolt_loyal | `resolve_revolt_event_on_listed_fiefs` $9778 | 27/27 | — |
+| spring | the Spring routine | 68/68 | decay on men, or `rng(2)`: each fails 16 |
+| auction | `dedup_owners` + the auction | 341/341 | the winner pays its own bid: fails 76 |
+| bribe | `resolve_bribe_enemy_unit` $9E73 | 385/385 | skill_level as the morale cost for both: fails 72 |
+
+Two notes this check overturned: the human decay is `rng(skill_level)` on morale, not `rng(2)` on men (a summary of the C, wrong on both). And the printed C is not evaluation order: `pct_op(morale, rng_mod(10) + 30) + rng_mod(30) + 30` draws the `rng_mod(30)` first.
 
 This check found three formulas that had each passed an in-game capture: Give-Men (the capture's men ≈ morale hid the averaging, and a `2×` had crept in), the tax direction (the capture was a raise), and `pct_op` (the observed drains fit the plain percentage too). A capture checks one point. Not yet covered: Train and Hire (their RNG needs the lockstep `na1sim.oracle_vm` uses), Send, Trade, and the harvest, which `oracle_vm`'s harvest check covers at the routine level.
 

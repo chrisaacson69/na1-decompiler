@@ -109,6 +109,7 @@ DAIMYO_WEAKNESS_FLAG = 0x6DD4  # byte/daimyo (fief_owner_weakness reads this)
 # --- scalar globals ------------------------------------------------------
 SKILL_LEVEL           = 0x6D63   # skill/difficulty dial (1..5, default 2);
                                # used as skill_level+3, skill_level*3, 6-skill_level
+CURRENT_SEASON      = 0x6D5F   # word: 0-3
 SCENARIO_FIEF_COUNT = 0x6D9D   # word: 17 or 50
 CURRENT_GAME_YEAR   = 0x6D9F   # word, base 1560 ($0618); AI caps use year-1559
 AI_TURN_FLAGS       = 0x6DA1   # byte bitfield
@@ -165,6 +166,7 @@ COMBAT_ARENA_X_MAX   = 0x6FFA
 COMBAT_ARENA_Y_MAX   = 0x6FFC
 BATTLE_WINNER_PROV   = 0x6F57   # winner/survivor province selector ($DEC6 reassign)
 BATTLE_DEFENDER_STATUS = 0x6F66 # bit7 = defending fief's capital flag (snapshot)
+EVENT_AFFECTED_FIEF_LIST = 0x7BAD  # $FF-ended: the fiefs a seasonal event hits
 CUR_COMBAT_UNIT_SLOT = 0x7BE4   # word: current unit slot 0..4
 CUR_COMBAT_SIDE      = 0x7BE8   # word: current side (0=attacker / 1=defender)
 BATTLE_SIDE_STR_MOD  = 0x7BEA   # word[2]: per-side 8-stat weight sum (ai_sum_battle_strength)

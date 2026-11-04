@@ -120,23 +120,6 @@ def give_men(p: Province, amount: int) -> Province:
     return p
 
 
-# Recruit men for gold at the market rate (gold_men_hire_rate $6E11, ~5->15).
-# Quality dilutes toward recruit baselines (morale 50, skill 70, arms 55).
-def hire(p: Province, gold_spend: int, price: int = 5) -> Province:
-    if gold_spend < 1 or p.gold < gold_spend:
-        return p
-    n = gold_spend // price
-    if n < 1:
-        return p
-    p.gold -= n * price
-    tot = p.men + n
-    p.morale = (p.morale * p.men + 50 * n) // tot
-    p.skill = (p.skill * p.men + 70 * n) // tot
-    p.arms = (p.arms * p.men + 55 * n) // tot
-    p.men = tot
-    return p
-
-
 def tax_effect(stat: int, delta: int) -> int:
     """effect_tax $82D6 with delta = old_tax - new_tax (the driver's order, $9A41): raising the tax
     (delta < 0) takes pct_op(stat, |delta|) away; LOWERING it adds pct_op(stat, delta)."""
