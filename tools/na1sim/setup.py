@@ -65,8 +65,23 @@ def _run_boost(m: "M.Memory", rng_state: int) -> None:
         m.m[a] = vm.mem.read(a)
 
 
+def roll_player_daimyo(m: "M.Memory", fief: int, seed: int, min_total: int = 450) -> None:
+    """daimyo_creation_stat_roll_screen $8763: a human rolls health, drive, luck, charisma and IQ,
+    each rng_mod(50) + 60 (prompt_roll_stat_value), and may refuse the set as often as they like at
+    "Is this OK?". Age stays historical. min_total is how far a player re-rolls: the convention in
+    state.py. Its own stream, so a board's AI draws do not depend on it."""
+    r = random.Random(seed * 7919 + fief)
+    while True:
+        stats = [r.randrange(50) + 60 for _ in range(5)]
+        if sum(stats) >= min_total:
+            break
+    d = m.daimyo(m.fief_owner(fief))
+    for off, v in zip((M.D_HEALTH, M.D_DRIVE, M.D_LUCK, M.D_CHARISMA, M.D_IQ), stats):
+        m.w8(d + off, v)
+
+
 def build_board(skill: int = 2, seed: int = 0, player_fief=None,
-                watch_battles: bool = False) -> "M.Memory":
+                watch_battles: bool = False, roll_player: bool = True) -> "M.Memory":
     """Build a faithful flat-memory board. player_fief=None -> all-AI (player==0).
     watch_battles mirrors init_new_game_state's "Watch other daimyos battle"
     setting (ui_confirm_flag_6e7d $6E7D): True routes every AI-vs-AI battle through
@@ -104,6 +119,9 @@ def build_board(skill: int = 2, seed: int = 0, player_fief=None,
         dr = m.daimyo(d.id)
         for off, attr in _DAIMYO_STATS:
             m.w8(dr + off, getattr(d, attr) & 0xFF)
+
+    if player_fief is not None and roll_player:
+        roll_player_daimyo(m, player_fief, seed)
 
     # market seed: init_new_game_state writes $6E0B[0..4] = rng(10)+8; $83E2 then
     # overwrites the exchange rate ($6E0D). (Per-season roll_period_market_rates

@@ -26,6 +26,11 @@ from . import vmprims as P
 from . import ai_vm
 
 CLIFF = 46          # keep morale/loyalty >= 45 (revolt/riot eligibility is 0 at >=45)
+# The opening's two choices. Each fief has its own best opening (Chris, 2026-11-04), so these are
+# switches: the tax in one move or in steps of 15, emergency gifts from gold or from rice.
+# The picker is a tool for now, not the default: it reads who would attack today, and over 150 fresh
+# seeds it lost to the older men target (54.7% alive at year 6 against 57.1%).
+OPENING = {"tax_jump": True, "gold_gift": True, "picker": False, "picker_slack": 0}
 SKILL_CAP = 200
 
 
@@ -163,6 +168,57 @@ def _safe_men_target(m, idx):
     return target
 
 
+def hunted_by(m, idx):
+    """The AI neighbours that would pick this fief, by the ROM's own selection (ai_try_war_attack):
+    the grudge path (it is the list's refined target and their share of men passes 47) or the normal
+    one (it is their weakest and their share clears the commit gate at its most generous). A
+    second-order question: it turns on who else each neighbour could hit. The 1-in-100 attack is left
+    out. RAM and the RNG are put back: asking must not change the game."""
+    n = m.r16(M.SCENARIO_FIEF_COUNT)
+    sel, state = m.r16(M.SELECTED_PROVINCE), m.rng.getstate()
+    keep = bytes(m.m[M.DEDUPED_OWNER_LIST:M.DEDUPED_OWNER_LIST + 16])
+    me, out = m.fief_owner(idx), []
+    for nb in m.neighbor_rows.get(idx, []):
+        if nb >= n or m.province_ai_state(nb) != 0 or m.fief_owner(nb) == me:
+            continue
+        m.selected = nb
+        ai_vm.compact_relation_list(m)
+        ai_vm.filter_province_list_by_owner(m, 0)
+        weakest = ai_vm.pick_weakest_men_fief(m, M.DEDUPED_OWNER_LIST)
+        if weakest == 0xFF:
+            continue
+        alt = ai_vm.pick_ai_attack_target_fief(m, M.DEDUPED_OWNER_LIST)
+        if alt == idx and ai_vm.fief_men_ratio_pct(m, nb, alt) > 47:
+            out.append(nb)
+        elif weakest == idx and ai_vm.fief_men_ratio_pct(m, nb, idx) > 70:
+            out.append(nb)
+    m.m[M.DEDUPED_OWNER_LIST:M.DEDUPED_OWNER_LIST + 16] = keep
+    m.w16(M.SELECTED_PROVINCE, sel)
+    m.rng.setstate(state)
+    return out
+
+
+def picker_line(m, idx):
+    """Chris's rule: you need not be the strongest, you just cannot be the weakest (grudged). The
+    fewest men at which no neighbour would pick this fief, among what the fief can pay for at the
+    market's live rate; if none, what it can pay for, since fewer hunters beat more. Rechecked every
+    turn: the answer moves when a neighbour's neighbour does."""
+    f = m.fief(idx)
+    men = m.r16(f + M.F_MEN)
+    if not hunted_by(m, idx):
+        return men
+    rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+    most = men + min(m.r16(f + M.F_GOLD) * 10 // rate, m.r16(f + M.F_HEADER) - men)
+    line = most
+    for v in range(men + 2, most + 1, 2):
+        m.w16(f + M.F_MEN, v)
+        if not hunted_by(m, idx):
+            line = v
+            break
+    m.w16(f + M.F_MEN, men)
+    return line
+
+
 def _can_take(m, idx, tgt):
     """Would our ~60%-budget commit win the off-screen battle vs tgt (with margin)?
     Mirrors resolve_siege's strength formula."""
@@ -206,10 +262,18 @@ def _guards(m, idx):
     #    (lose the fief); loyalty<45 risks a peasant riot (income dock, recoverable).
     #    Both preempt everything -- fixing loyalty is broadly worth more than a turn
     #    of hiring (the harvest gates on loyalty; riots compound).
-    if morale < CLIFF and rice_free > 0:
-        give_men(m, idx, min(60, rice_free)); return True
-    if loyalty < CLIFF and rice_free > 0:
-        give_peasants(m, idx, min(60, rice_free)); return True
+    # An emergency gift must not starve the army: Gold gives like rice, and rice below a season of
+    # upkeep (men/2) costs men at the harvest (Hatakeyama: rice 40 to 1, then men 56 to 28).
+    spare_rice = max(0, rice - men // 2 - 1)
+    use_gold = OPENING["gold_gift"] and gold > 1
+    if not OPENING["gold_gift"]:
+        spare_rice = rice_free                  # the June form: the rice goes, down to 1
+    gift = (lambda give, amount: give(m, idx, min(60, gold - 1), gold=True) if use_gold
+            else give(m, idx, min(60, amount)))
+    if morale < CLIFF and (use_gold or spare_rice > 0):
+        gift(give_men, spare_rice); return True
+    if loyalty < CLIFF and (use_gold or spare_rice > 0):
+        gift(give_peasants, spare_rice); return True
 
     # 2. DON'T BE ANY BORDER'S WEAKEST PREY (the opening hire). A fief like Uesugi
     #    STARTS as a border's weakest, and the human is attacked via the pick_ai_
@@ -218,17 +282,28 @@ def _guards(m, idx):
     #    selector routes the attacker elsewhere. When morale/loyalty are fine (the
     #    common turn-1 case) this fires first anyway. [Turn-ORDER deaths -- attacked
     #    before our action runs -- are irreducible; factor them out of the metric.]
-    target = _safe_men_target(m, idx)
-    target += target // 5 + 6
-    if men < target and gold > 12:
-        hire_men(m, idx, gold - 6); return True
+    if OPENING["picker"]:
+        line = picker_line(m, idx)
+        if line > men or hunted_by(m, idx):    # a neighbour hires after you: margin above the line
+            line = line * (100 + OPENING["picker_slack"]) // 100
+        if men < line and _hire_up_to(m, idx, line):
+            return True
+    else:
+        target = _safe_men_target(m, idx)
+        target += target // 5 + 6
+        if men < target and gold > 12:
+            hire_men(m, idx, gold - 6); return True
 
     # 3. OPENING (year 1-2): raise tax toward 55 -- only when loyalty can absorb the
     #    |dtax|% drain; else restore the lower of loyalty/morale first. Worse fiefs
     #    spend year 1-2 fixing this before they can go on autopilot.
     if tax < 55:
-        step = min(15, 55 - tax)
-        if loyalty - P.pct_op(loyalty, step) >= CLIFF + 6:
+        # The Tax command takes any rate in one turn: the most this fief's loyalty can bear, up to 55.
+        most = 55 - tax if OPENING["tax_jump"] else min(15, 55 - tax)
+        step = next((s for s in range(most, 0, -1)
+                     if loyalty - P.pct_op(loyalty, s) >= CLIFF - 1), 0)   # 45: the roll cannot fail
+        step = step if OPENING["tax_jump"] or step == most else 0
+        if step:
             set_tax(m, idx, tax + step); return True
         if rice_free > 0:                   # WEALTH is the prize -> give_peasants by default
             (give_men if morale < CLIFF + 12 else give_peasants)(m, idx, min(60, rice_free)); return True
@@ -370,3 +445,48 @@ def expand_policy(m, idx, rng):
     """summer_policy until the peasants top out, then the signal is Chris's: buy men and expand. A
     war's budget is min(2*rice, men, gold), so the gold has to last: half buys men, the rest fights."""
     _season_plan(m, idx, rng, expand=True)
+
+
+# ---------------------------------------------------------------------------
+# Opening plans: the first turns as a script, then a policy (Chris, 2026-11-04: each fief has its
+# own best opening, fixing its own weakness first).
+# ---------------------------------------------------------------------------
+def _tax_max(m, idx):                       # the Tax command, one move (Honganji is held to 30)
+    set_tax(m, idx, 30 if m.fief_owner(idx) == 3 else 55)
+
+
+def _all_but_one(give, gold):
+    def act(m, idx):
+        f = m.fief(idx)
+        give(m, idx, m.r16(f + (M.F_GOLD if gold else M.F_RICE)) - 1, gold=gold)
+    return act
+
+
+OPENING_ACTIONS = {
+    "auto": None,                           # the tail policy decides
+    "tax": _tax_max,
+    "gold>peasants": _all_but_one(give_peasants, True),
+    "rice>peasants": _all_but_one(give_peasants, False),
+    "gold>men": _all_but_one(give_men, True),
+    "rice>men": _all_but_one(give_men, False),
+    "hire": lambda m, idx: hire_men(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1),
+    "train": train,
+}
+
+
+def plan_policy(fief, plan, tail=expand_policy):
+    """Play `plan` (names from OPENING_ACTIONS) on the fief's first turns, then `tail`. One per game:
+    it counts the fief's turns."""
+    turn = [0]
+
+    def play(m, idx, rng):
+        act = None
+        if idx == fief and turn[0] < len(plan):
+            act = OPENING_ACTIONS[plan[turn[0]]]
+            turn[0] += 1
+        if act is None:
+            tail(m, idx, rng)
+        else:
+            m.selected = idx
+            act(m, idx)
+    return play

@@ -91,6 +91,52 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #38 — Openings: fix the weakness, tax by turn 2, and the picker (Chris, 2026-11-04)
+
+The goal is not a high win rate; it is the best chance of getting to play. Most of a game is decided by year 2. Numbers are the sim, skill 2, 17 fiefs, its human defending with AI logic, so a bottom-tier fief's figure is a floor. Riots in the sim are still too soft, so low-loyalty figures are provisional.
+
+**The tax line.** The revolt roll is `min(stat, 50)^2 < rng(2025)`: 45 or more cannot fail, and it runs on loyalty and on `100 - tax`, so 55% is the highest rate that adds no risk of its own. Raising 20 to 55 takes 35% off loyalty and wealth, so **loyalty 70 is the no-risk line** (70 x 0.65 = 45.5). Below it, tax then give: a gift after the tax is not cut by the 35%, and the lower stat makes each unit buy more, about half the cost of give then tax. The exposure is one event roll. Income is linear in tax, so 55% against the opening 20% is 2.75x on the 1560 Fall harvest. Tax takes any rate in one turn.
+
+**Give.** `gain = amount x (6 - skill) / sqrt((stat + partner) / 2 + amount)`; peasants take 2 x gain into loyalty and wealth alike, men take gain into morale, and gold and rice are the same (Appendix A section 10).
+
+**A riot** fires at the start of any season, and a human is asked for gold: yes gives all of it to the peasants, which may settle it; no, or no gold, or a failure, is a battle with the rebels.
+
+**The market.** Rates are rolled before turn 1. Men cost `70% of ((year - 1560) / 2 + 2) x 10 + rng(51)`, in tenths of a gold: 1.4 to 4.9 gold a man in 1560, averaging 3.2, about +0.35 a year after (29 captured 1560 saves span 14-47). Each purchase adds 1, whatever its size. A build order can branch on the roll.
+
+**Creation.** A human rolls five abilities at `rng(50) + 60`, refusing the set at will; age stays. It barely moved survival (40.1% either way), and Imagawa at health 109 did no better than at 52: his trouble was never his lord.
+
+**Alive at year 6, 150 fresh seeds.** Default = tax to the 45 line, gold for emergency gifts. The search tried all 64 two-turn plans over tax, gold or rice to peasants or men, hire, train and default, with a 6-turn beam for the troubled fiefs, and confirmed the leaders on seeds it had not seen.
+
+| Fief | Default | Best plan | Plan |
+|---|---|---|---|
+| Hatakeyama | 0% | 7% | hire / tax / rice to peasants |
+| Uesugi | 81% | 81% | default |
+| Hojo | 37% | 41% | hire |
+| Honganji | 1% | 1% | none helps |
+| Asakura | 79% | 87% | hire / tax |
+| Hida | 79% | 79% | default |
+| Imagawa | 68% | 69% | hire / tax |
+| Tokugawa | 79% | 81% | default / tax |
+| Saito | 0% | 3% | gold to peasants |
+| Tsutsui | 0% | 0% | none helps |
+| Asai | 96% | 97% | hire |
+| Rokkaku | 0% | 0% | none helps |
+| Kitabata | 92% | 95% | default / tax |
+| Ashikaga | 74% | 83% | tax / rice to men |
+| Miyoshi | 99% | 99% | default |
+| Takeda | 87% | 87% | default |
+| Oda | 99% | 99% | default |
+
+Mean 57.1% for the default, 59.3% for each fief's best plan, from about 45% before these rules. Beyond turn 2 the beam added little, though it was narrow (30 seeds).
+
+**The picker.** You need not be the strongest, you just cannot be the weakest, and the grudge tilts it. An AI's choice depends on who else it could hit, so it is a second-order question on the adjacency graph, and the order of a neighbour's list counts (the sim's lists match the ROM on all 17). `policy.hunted_by` and `picker_line` run the real selection. At the start, 10 fiefs are hunted by nobody. Men short of the line, and the cost at an average market: Hatakeyama 8 (26 gold of 33), Uesugi 13 (42 of 63), Hojo 18 (58 of 53), Saito 17 (55 of 29), Honganji 25 (80 of 42), Tsutsui 28 (90 of 42), Rokkaku 32 (103 of 36). Uesugi is hunted by Hojo, Hojo by Imagawa, Tsutsui by Miyoshi, Hatakeyama by Honganji.
+
+As a standing rule it lost: 54.7% against the default's 57.1%, and margins of 25% and 50% barely moved it (55.2, 55.3), so "no margin" is not the reason. The fiefs that lost most (Asakura, Imagawa, Hida) start unhunted, so it bought nothing. Leading guess, not traced: it answers who is a target today, and they become one later. The open question is Chris's: how to stay ahead of being the weakest, at the least cost, which the largest in an area get for free and the rest must skate between army and economy. Uesugi is the sharp case: too much army and he cannot boom, too little and Hojo comes. Two things have moved since that was first tried: the shortcut's income loosens the trade, and the AI's army may be forecast, since `ai_state2_recruit_arm_train` recruits only under `min((year - 1559) x 40, stat_cap)`. Untested: ask who will be weakest next year on that schedule, not who is now. Measure the real curve first; a dice gate, gold and wars hold it below the schedule.
+
+**A human turns it round.** Chris survives Uesugi by taking Hojo's men in combat: being hunted can pay. The sim scores that as danger.
+
+**Challenge runs.** Hatakeyama: every problem has a price (43 rice for morale, 26 gold for men, separate purses), one way in, one hunter; but morale-first and men-first lines without tax both went 0 of 700, while hire / tax / rice to peasants reached 7%. Saito needs men at 1.7 gold or less and the luck to move first: 0 of 1,500 in the sim, which cannot fight for him. Tsutsui's way out is a cheap market and one hunter. Rokkaku has none.
+
 ### #37 — Save RAM is the game's memory (Chris, 2026-11-04)
 
 The memory map at the top of `source/4-c/all_banks.c` shows a design shape of the bytecode titles: every table it lists sits in `$6000-$7FFF`, the battery save RAM. The game keeps its state there and treats NES RAM as the machine's: the VM's stack and frames (about `$05xx`), the syscalls and the kernel. Logic passes data as parameters rather than through globals, and the syscalls take care of the hardware. So the save file is close to a dump of the live game, which is why one table reads so well, and why the snap protocol works. It reads like a program written for a machine with a heap, ported to a NES.
@@ -109,6 +155,7 @@ The memory map at the top of `source/4-c/all_banks.c` shows a design shape of th
 - **Decapitation.** Corner and capture the daimyo and all his fiefs come with him, so a lord who cannot run is worth more than his fief.
 - **Pump fiefs.** Capture enough that some fiefs have no enemy neighbour. Those cost nothing to hold and only feed the economy, so making one often beats an easier battle: the hold cost goes to 0.
 - **Backfield attacks.** Attack out of a fief that a win would leave behind your front, and you need leave nobody home.
+- **Cascades.** The picker turned round: hit a third party until it falls below a neighbour's attack line, and that war may tip the next, so the AIs fight each other while the player develops. Hard to pull off and maybe too dear: AI against AI needs a share past about 70% and a coin, where a human draws an attack at 47% with none.
 
 The sim's player picks the weakest neighbour it can take. None of the three is modelled; each needs the adjacency graph (a fief's enemy-neighbour count before and after a capture), not a strength comparison. A good battle AI is a project of its own.
 
