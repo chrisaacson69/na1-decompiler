@@ -461,6 +461,134 @@ def spring_age_and_decay(m: "M.Memory") -> None:
                 m.w16(f + off, m.r16(f + off) - decay)
 
 
+def _roll_failed(m: "M.Memory", stat: int) -> bool:
+    """square_over_2025_probability_roll: min(stat, 50)^2 < rng_mod(2025). 45 or more cannot fail."""
+    s = 50 if stat > 50 else stat
+    return s * s < m.rng_mod(2025)
+
+
+def _is_honganji(m: "M.Memory", fief: int) -> bool:
+    return m.fief_owner(fief) == (3 if m.r16(M.SCENARIO_FIEF_COUNT) == 17 else 20)
+
+
+def riot_eligible(m: "M.Memory", fief: int) -> bool:
+    """ai_event_eligibility_check_loyalty_variant $9DA3: the first failed roll of loyalty, 100 - tax
+    and charisma, or a 1-in-1000, then a 1-in-4 with output, more than 2 men, not Honganji, owned."""
+    f = m.fief(fief)
+    m.w16(M.BATTLE_DEFENDING, fief)
+
+    def gate():
+        return (m.s16(f + M.F_OUTPUT) > 0 and m.s16(f + M.F_MEN) > 2 and not _is_honganji(m, fief)
+                and m.province_ai_state(fief) != M.EMPTY and not m.rng_mod(4))
+    if _roll_failed(m, m.s16(f + M.F_LOYALTY)):
+        return gate()
+    if _roll_failed(m, 100 - m.r8(M.FIEF_TAX_RATE + fief)):
+        return gate()
+    if _roll_failed(m, m.r8(m.fief_daimyo(fief) + M.D_CHARISMA)):
+        return gate()
+    return False if m.rng_mod(1000) else gate()
+
+
+def revolt_eligible(m: "M.Memory", fief: int) -> bool:
+    """ai_event_eligibility_check_morale_variant $9E21: a failed roll of morale or charisma, or a
+    1-in-1000 (1-in-20 for Honganji), with more than 2 men, owned."""
+    f = m.fief(fief)
+    m.w16(M.BATTLE_DEFENDING, fief)
+    if (_roll_failed(m, m.s16(f + M.F_MORALE))
+            or _roll_failed(m, m.r8(m.fief_daimyo(fief) + M.D_CHARISMA))
+            or not m.rng_mod(20 if _is_honganji(m, fief) else 1000)):
+        return m.s16(f + M.F_MEN) > 2 and m.province_ai_state(fief) != M.EMPTY
+    return False
+
+
+def riot_contest(m: "M.Memory", fief: int) -> bool:
+    """resolve_riot_uprising_contest: an AI or non-capital fief. sqrt(output) + sqrt(wealth) +
+    rng_mod(20) + 10 rioters against the men, a tie on a coin. -> True if the rioters won; else men
+    and output each lose rng_mod(50) + 10 percent. (The fief's fall is the caller's.)"""
+    f = m.fief(fief)
+    rioters = sqrt_int(m.r16(f + M.F_OUTPUT)) + sqrt_int(m.r16(f + M.F_WEALTH)) + m.rng_mod(20) + 10
+    men = m.r16(f + M.F_MEN)
+    won = (m.rng_mod(2) == 0) if rioters == men else men < rioters
+    if won:
+        return True
+    m.w16(f + M.F_MEN, men - pct_op(men, m.rng_mod(50) + 10))
+    m.w16(f + M.F_OUTPUT, m.r16(f + M.F_OUTPUT) - pct_op(m.r16(f + M.F_OUTPUT), m.rng_mod(50) + 10))
+    return False
+
+
+def _gift_gain(stat: int, partner: int, amount: int, skill: int, cap: int) -> int:
+    """develop_gain_capped: amount*(6-skill) / (sqrt((stat+partner)/2) + sqrt(amount)), at least 1.
+    The riot payment's form: a sum of roots, and not doubled, unlike a Give."""
+    g = math32_3arg(amount, 6 - skill, sqrt_int((stat + partner) // 2) + sqrt_int(amount)) if amount >= 1 else 0
+    g = g or (1 if amount >= 1 else 0)
+    return min(g, cap - stat)
+
+
+def human_riot(m: "M.Memory", fief: int, pay: bool) -> bool:
+    """The human capital's arm of resolve_riot_event_on_listed_fiefs. With gold, and not resting, the
+    player is asked: paying gives ALL the gold to the peasants, and it settles the riot only if
+    loyalty ends above 25 and rose by more than 5. -> True if settled; False stages the battle."""
+    f = m.fief(fief)
+    gold = m.r16(f + M.F_GOLD)
+    if not gold or m.r8(M.REST_TURNS + m.selected_province_owner()) or not pay:
+        return False
+    before, cap, sk = m.r16(f + M.F_LOYALTY), m.r16(f + M.F_HEADER), m.skill
+    m.w16(f + M.F_LOYALTY, before + _gift_gain(before, m.r16(f + M.F_OUTPUT), gold, sk, cap))
+    w = m.r16(f + M.F_WEALTH)
+    m.w16(f + M.F_WEALTH, w + _gift_gain(w, m.r16(f + M.F_TOWN), gold, sk, cap))
+    m.w16(f + M.F_GOLD, 0)
+    after = m.s16(f + M.F_LOYALTY)
+    return not (after <= 25 or not (after - before > 5))
+
+
+def spawn_uprising_force(m: "M.Memory", is_uprising: bool) -> None:
+    """spawn_uprising_force_from_province, on battle_defending_province. A riot (is_uprising) raises
+    the fief's OUTPUT as the rebel army, and if charisma is under rng_mod(skill) + 70, up to half the
+    men join it. A revolt takes 20-89% of the men, or 25-34 from nowhere with 20 men or fewer. Either
+    takes 50-80% of the rice. The force goes in slot 50, stats at 40-59% of the fief."""
+    fief = m.r16(M.BATTLE_DEFENDING)
+    f = m.fief(fief)
+    out, men, rice = f + M.F_OUTPUT, f + M.F_MEN, f + M.F_RICE
+    if is_uprising:
+        if m.s16(out) <= 0:
+            m.w16(out, m.r16(men) // 2)
+            m.w16(men, m.r16(men) - m.r16(out))
+        if m.s16(men) <= 0:
+            m.w16(men, m.r16(out) // 2)
+            m.w16(out, m.r16(out) - m.r16(men))
+        if m.r8(m.fief_daimyo(fief) + M.D_CHARISMA) < m.rng_mod(m.skill) + 70:
+            moved = pct_op(m.r16(men), m.rng_mod(50))
+            m.w16(out, m.r16(out) + moved)
+            m.w16(men, m.r16(men) - moved)
+        m.w16(M.WAR_ATTACKER_MEN, m.r16(out))
+        taken = pct_op(m.r16(rice), m.rng_mod(31) + 50)
+        m.w16(M.WAR_ATTACKER_RICE, taken)
+        m.w16(rice, m.r16(rice) - taken)
+    elif m.s16(men) > 20:
+        force = pct_op(m.r16(men), m.rng_mod(70) + 20)
+        m.w16(M.WAR_ATTACKER_MEN, force)
+        m.w16(men, m.r16(men) - force)
+        taken = pct_op(m.r16(rice), m.rng_mod(31) + 50)
+        m.w16(M.WAR_ATTACKER_RICE, taken)
+        m.w16(rice, m.r16(rice) - taken)
+    else:
+        force = m.rng_mod(10) + 25
+        m.w16(M.WAR_ATTACKER_MEN, force)
+        m.w16(M.WAR_ATTACKER_RICE, force)
+    m.w16(M.WAR_ATTACKER_GOLD, 0)
+    m.w8(M.AI_TURN_FLAGS, m.r8(M.AI_TURN_FLAGS) | (64 if is_uprising else 32))
+    m.w8(M.WAR_SIDE_STATE_FLAG, 0)
+    dst = m.fief(50)
+    for i in range(8):
+        m.w16(dst + 2 * i, pct_op(m.r16(f + 2 * i), m.rng_mod(20) + 40))
+    m.w16(dst + 16, m.r16(M.WAR_ATTACKER_MEN))
+    m.w16(dst + 18, m.r16(f + M.F_HEADER) - m.r16(f + M.F_MORALE))
+    m.w16(dst + 20, m.rng_mod((m.skill + 1) * 10))
+    m.w16(dst + 22, m.rng_mod((m.skill + 1) * 10))
+    m.w16(dst + 12, m.r16(f + M.F_HEADER) - m.r16(f + M.F_LOYALTY))
+    m.selected = 50
+
+
 def dedup_owners(m: "M.Memory", fiefs) -> int:
     """dedup_owners $8DE1: one fief per owner, first seen kept, into deduped_owner_list ($FF
     ended). -> the count. (The ROM reads past the terminator on an empty list: a caller's guard.)"""

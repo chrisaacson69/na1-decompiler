@@ -1328,12 +1328,13 @@ def _reassign_faction(m: "M.Memory", loser_owner: int, winner_owner: int, winner
 
 
 def apply_conquest_outcome(m: "M.Memory", rng) -> None:
-    """apply_conquest_outcome $E03C (core, non-uprising path): the survivors of both
-    armies (war_attacker_* + war_defender_*) garrison the defending fief; if the
-    attacker conquered (battle_winner_province_sel == defending) ownership flips to
-    the attacker (whole faction if the capital fell, via the bit7 flag), stats blend,
-    and the lords' Drive/Charisma/IQ shift. [Uprising/install_new_daimyo edge cases
-    deferred -- oracle-validation of this resolution is a follow-up.]"""
+    """apply_conquest_outcome $E03C: the survivors of both armies (war_attacker_* +
+    war_defender_*) garrison the defending fief; if the attacker conquered
+    (battle_winner_province_sel == defending) ownership flips to the attacker (whole faction if
+    the capital fell, via the bit7 flag), stats blend, and the lords' Drive/Charisma/IQ shift.
+    Against rebels (attacker 50): a beaten riot (flag 64, not 32) leaves nothing and output loses
+    10-19%; a beaten revolt's survivors rejoin; if the rebels win a new daimyo takes the fief, and
+    a capital's other fiefs go ownerless."""
     P.cap_fief_stats(m, m.defending)
     sp, dp = m.selected, m.defending
     uprising = (sp == 50)
@@ -1347,10 +1348,26 @@ def apply_conquest_outcome(m: "M.Memory", rng) -> None:
             _daimyo_stat_transfer(m, sp, dp)
         else:
             _daimyo_stat_transfer(m, dp, sp)
+    plunder = uprising and not (m.r8(M.AI_TURN_FLAGS) & 32)
+    if plunder and not atk_won:
+        m.w16(M.WAR_ATTACKER_MEN, 0)
+        m.w16(M.WAR_ATTACKER_RICE, 0)
+        m.w16(M.WAR_ATTACKER_GOLD, 0)
     fd = m.fief(dp)
     m.w16(fd + M.F_GOLD, m.r16(M.WAR_ATTACKER_GOLD) + m.r16(M.WAR_DEFENDER_GOLD))
     m.w16(fd + M.F_RICE, m.r16(M.WAR_ATTACKER_RICE) + m.r16(M.WAR_DEFENDER_RICE))
     m.w16(fd + M.F_MEN, m.r16(M.WAR_ATTACKER_MEN) + m.r16(M.WAR_DEFENDER_MEN))
+    if plunder:
+        m.w16(fd + M.F_OUTPUT, m.r16(fd + M.F_OUTPUT) - P.pct_op(m.r16(fd + M.F_OUTPUT), m.rng_mod(10) + 10))
+    if uprising and atk_won:
+        from . import game
+        if m.is_capital(dp):
+            owner = m.fief_owner(dp)
+            for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
+                if m.fief_owner(i) == owner and i != dp:
+                    m.w8(M.PROVINCE_AI_STATE + i, M.EMPTY)
+        game.install_new_daimyo(m, dp, rng)
+    m.w8(M.AI_TURN_FLAGS, m.r8(M.AI_TURN_FLAGS) & 0x8F)
     if not uprising:
         winner_state = 5 if m.province_ai_state(sp) else 0
         if m.test_6f65_bit7(1 if atk_won else 0):        # capital fell -> whole faction

@@ -165,12 +165,6 @@ def resolve_siege(m: "M.Memory", rng: random.Random = None):
 # ===========================================================================
 # Spring boon + the seasonal event pass (ported from loop.py to flat memory)
 # ===========================================================================
-def square_roll(x: int, rng: random.Random) -> bool:
-    """square_over_2025_probability_roll: min(x,50)^2 < rng(2025). Fires when a
-    stat is LOW (zero at x>=45) -- how bad events home in on weak fiefs."""
-    return min(x, 50) ** 2 < rng.randrange(2025)
-
-
 def resolve_uprising(m: "M.Memory", idx: int, rng: random.Random) -> bool:
     """A revolt: the ROM's roll (P.uprising_rebels_win_roll) and its loyal arm
     (P.revolt_loyal_men_won), both checked by na1sim.oracle. Rebels win -> the lord loses the fief
@@ -180,14 +174,19 @@ def resolve_uprising(m: "M.Memory", idx: int, rng: random.Random) -> bool:
     if not P.uprising_rebels_win_roll(m, idx):
         P.revolt_loyal_men_won(m, idx)
         return False
-    if m.is_capital(idx):                              # faction collapse
+    _lose_fief(m, idx)
+    return True
+
+
+def _lose_fief(m, idx):
+    """A fief falls to rebels: a capital takes the faction down, any other goes ownerless."""
+    if m.is_capital(idx):
         owner = m.fief_owner(idx)
         for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
             if m.fief_owner(i) == owner:
                 m.w8(M.PROVINCE_AI_STATE + i, M.EMPTY)
     else:
         m.w8(M.PROVINCE_AI_STATE + idx, M.EMPTY)
-    return True
 
 
 def events(m: "M.Memory", season: int, rng: random.Random):
@@ -213,23 +212,63 @@ def events(m: "M.Memory", season: int, rng: random.Random):
                     d = m.fief_daimyo(i)
                     m.w8(d + M.D_HEALTH, max(0, m.r8(d + M.D_HEALTH) - (rng.randrange(9) + 1)))
         return
-    # Uprising -- only morale/loyalty<45 fiefs qualify (square_roll)
-    is_revolt = rng.randrange(2) == 0
-    for i in live:
+    # Uprising: the planner rolls each fief at 3%, and only if one passes does the dispatcher run
+    # (ai_strategic_turn_planner, ai_event_build_two_batches_dispatch_or_announce).
+    if not any([rng.randrange(100) < 3 for _i in live]):
+        return
+    variant = rng.randrange(2)                         # 0 riot, 1 revolt; the other if none qualify
+    hit = []
+    for _try in range(2):
+        check = P.riot_eligible if variant == 0 else P.revolt_eligible
+        hit = [i for i in live if check(m, i)]
+        if hit:
+            break
+        variant ^= 1
+    if hit:
+        (_riots if variant == 0 else _revolts)(m, hit, rng)
+
+
+RIOT_PAY = True      # a human facing a riot gives all the gold rather than fight at once
+
+
+def _human(m, i):
+    return m.is_capital(i) and m.province_ai_state(i) == M.PLAYER_DIRECT
+
+
+def _rebel_battle(m, i, is_uprising, rng):
+    """The staged battle: spawn_uprising_force_from_province, then bank 2, on the tactical engine."""
+    from . import tactical as T
+    m.w16(M.BATTLE_DEFENDING, i)
+    P.spawn_uprising_force(m, is_uprising)
+    T.run_tactical_battle(m, rng)
+
+
+def _riots(m, hit, rng):
+    """resolve_riot_event_on_listed_fiefs: a staged battle ends the list."""
+    for i in hit:
+        m.selected = i
+        if _human(m, i):
+            if P.human_riot(m, i, RIOT_PAY):
+                continue
+            _rebel_battle(m, i, True, rng)
+            return
+        if P.riot_contest(m, i):
+            _lose_fief(m, i)
         f = m.fief(i)
-        men = m.r16(f + M.F_MEN)
-        cha = m.r8(m.fief_daimyo(i) + M.D_CHARISMA)
-        if is_revolt:                                  # morale variant -> ownership flip
-            if men > 2 and (square_roll(m.r16(f + M.F_MORALE), rng) or square_roll(cha, rng)
-                            or rng.randrange(1000) == 0):
-                resolve_uprising(m, i, rng)
-        else:                                          # loyalty variant -> loyalty dock
-            tax = m.r8(M.FIEF_TAX_RATE + i)
-            if men > 2 and m.r16(f + M.F_OUTPUT) > 0 and (
-                    square_roll(m.r16(f + M.F_LOYALTY), rng) or square_roll(100 - tax, rng)
-                    or square_roll(cha, rng) or rng.randrange(1000) == 0):
-                m.w16(f + M.F_LOYALTY,
-                      m.r16(f + M.F_LOYALTY) - P.pct_op(m.r16(f + M.F_LOYALTY), rng.randrange(10) + 10))
+        m.w16(f + M.F_LOYALTY, m.r16(f + M.F_LOYALTY) + m.rng_mod(30) + 50)
+
+
+def _revolts(m, hit, rng):
+    """resolve_revolt_event_on_listed_fiefs: a human capital stages a battle; the rest roll."""
+    staged = []
+    for i in hit:
+        m.selected = i
+        if _human(m, i):
+            staged.append(i)
+        else:
+            resolve_uprising(m, i, rng)
+    if staged:
+        _rebel_battle(m, staged[0], False, rng)
 
 
 # ===========================================================================

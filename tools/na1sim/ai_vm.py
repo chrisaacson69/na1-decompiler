@@ -453,7 +453,7 @@ def ai_try_war_attack(m: "M.Memory", idx: int, resolve=_no_resolve) -> int:
         target = alt
 
     drive = m.r8(m.fief_daimyo(idx) + M.D_DRIVE)
-    if (target != 30) or (not (drive < m.rng_mod(80) + 90)):        # monk-fief 30 reluctance
+    if (target != 30) or (not (drive < m.rng_mod(80) + 90)):        # fief 30 (50-fief Kyoto): only high Drive dares
         if m.province_ai_state(target) or m.rng_mod(2):            # AI(0) needs a coin; human(5) bypasses
             if do_attack:
                 m.defending = target

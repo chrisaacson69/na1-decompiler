@@ -455,6 +455,10 @@ Added 2026-11-04, the sim's own functions (`vmprims`, which the strategic loop c
 | bribe | `resolve_bribe_enemy_unit` $9E73 | 385/385 | skill_level as the morale cost for both: fails 72 |
 | give | `driver_give` $AA1F | 578/578 | no +1 charisma: fails 253 |
 | harvest | `harvest_income_sweep_all_fiefs` $A26F | 648/648 | the AI's boost given to the player: fails 324 |
+| riot_eligible, revolt_eligible | `ai_event_eligibility_check_*` | 3840/3840 each | no 1-in-4 gate: fails 3456 |
+| riot_contest | `resolve_riot_uprising_contest` | 90/90 | — |
+| riot_human | `resolve_riot_event_on_listed_fiefs` | 384/384 | the payment read as a Give: fails 72 |
+| rebel_spawn | `spawn_uprising_force_from_province` | 720/720 | half the men: fails all |
 
 Two notes this check overturned: the human decay is `rng(skill_level)` on morale, not `rng(2)` on men (a summary of the C, wrong on both). And the printed C is not evaluation order: `pct_op(morale, rng_mod(10) + 30) + rng_mod(30) + 30` draws the `rng_mod(30)` first.
 

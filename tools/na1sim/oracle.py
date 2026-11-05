@@ -254,7 +254,7 @@ REGIONS = (("fief", 0x7001, 51 * 26), ("daimyo", M.DAIMYO_TABLE, 53 * 7), ("ai_s
            ("market", M.MARKET_RATE_TABLE, 10), ("unit_pct", M.PROVINCE_UNIT_TYPE_PCT, 51 * 5),
            ("units", M.UNIT_STRENGTH_BASE, 20), ("sides", M.SIDE_RESOURCE_BASE, 12),
            ("bribe_gate", M.COMBAT_CASUALTY_SKIP, 1), ("owners", M.DEDUPED_OWNER_LIST, 6),
-           ("marks", M.MARKS_TABLE, 51 * 8))
+           ("marks", M.MARKS_TABLE, 51 * 8), ("flags", M.AI_TURN_FLAGS, 1), ("war_side", M.WAR_SIDE_STATE_FLAG, 1))
 
 
 def rule_image(pt):
@@ -330,6 +330,65 @@ def harvest_grid():
 def harvest_model(m, pt):
     for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):
         game.harvest_fief(m, i, m.rng)
+
+
+def unrest_grid():
+    for fief, lo, tax, cha, men, out, seq in itertools.product(
+            (FIEF, 3), (0, 30, 44, 45, 60), (20, 55, 56, 80), (30, 44, 45, 90), (2, 3, 60), (0, 40),
+            ((0,), (2024, 0), (1, 2024, 1), (2024, 2024, 2024, 0, 0))):
+        def setup(m, fief=fief, lo=lo, tax=tax, cha=cha, men=men, out=out):
+            q = m.fief(fief)
+            m.w16(q + M.F_LOYALTY, lo)
+            m.w16(q + M.F_MORALE, lo)
+            m.w16(q + M.F_MEN, men)
+            m.w16(q + M.F_OUTPUT, out)
+            m.w8(M.FIEF_TAX_RATE + fief, tax)
+            m.w16(M.SCENARIO_FIEF_COUNT, 17)
+            daimyo_stats(m, fief, charisma=cha)
+        yield dict(draws=seq, set=setup, fief=fief)
+
+
+def contest_grid():
+    for men, out, wealth, seq in itertools.product((5, 20, 34, 60, 200), (0, 16, 100), (9, 100), ((0, 0, 0), (19, 49, 49), (5, 1, 7))):
+        yield dict(fields={"men": men, "output": out, "wealth": wealth}, draws=seq, lost=[])
+
+
+def contest_stubs(pt):
+    def fell(vm):
+        pt["lost"].append(1)
+        return 0
+    return [(labels()[n][1], fell) for n in ("neutralize_fief", "install_new_daimyo")] + stub_of(
+        "play_audio", "announce_daimyo_death", "pool_push_pop", "list_remove_matching", "find_fiefs_of_owner")
+
+
+def riot_grid():
+    for gold, lo, out, rest, pay_ok, skill in itertools.product(
+            (0, 1, 30, 300), (5, 20, 26, 60), (30, 200), (0, 1), (1, 0), (1, 2, 5)):
+        def setup(m, rest=rest):
+            m.w8(M.REST_TURNS + m.fief_owner(FIEF), rest)
+            m.w8(M.FIEF_IS_CAPITAL + FIEF, 1)
+            m.w8(M.PROVINCE_AI_STATE + FIEF, 5)
+            m.w8(M.EVENT_AFFECTED_FIEF_LIST, FIEF)
+            m.w8(M.EVENT_AFFECTED_FIEF_LIST + 1, 0xFF)
+        yield dict(skill=skill, fields={"gold": gold, "loyalty": lo, "wealth": lo, "output": out, "town": out},
+                   set=setup, pay=pay_ok, staged=[])
+
+
+def riot_stubs(pt):
+    def staged(vm):
+        pt["staged"].append(1)
+        return 0
+    return [(labels()["append_candidate_zero_priority"][1], staged), *stub_of("prompt_y_n", value=pt["pay"]),
+            *stub_of("draw_lord_name_salutation")]
+
+
+def spawn_grid():
+    for up, men, out, rice, cha, skill, seq in itertools.product(
+            (1, 0), (0, 15, 20, 21, 90), (0, 40), (0, 100), (30, 69, 90), (1, 5), ((0,), (3, 19, 7), (49, 30, 69, 11))):
+        def setup(m, cha=cha):
+            m.w16(M.BATTLE_DEFENDING, FIEF)
+            daimyo_stats(m, FIEF, charisma=cha)
+        yield dict(skill=skill, fields={"men": men, "output": out, "rice": rice}, draws=seq, set=setup, up=up)
 
 
 def upkeep_grid():
@@ -471,6 +530,18 @@ RULES = {
                  model=lambda m, pt: P.driver_give(m, pt["peasants"], pt["gold"], pt["amount"])),
     "harvest": dict(calls=lambda pt: [("harvest_income_sweep_all_fiefs", ())], grid=harvest_grid,
                     stubs=lambda pt: stub_of("decay_relations_matrix_upper"), model=harvest_model),
+    "riot_eligible": dict(calls=lambda pt: [("ai_event_eligibility_check_loyalty_variant", (pt["fief"],))], ret=True,
+                          grid=unrest_grid, model=lambda m, pt: P.riot_eligible(m, pt["fief"])),
+    "revolt_eligible": dict(calls=lambda pt: [("ai_event_eligibility_check_morale_variant", (pt["fief"],))], ret=True,
+                            grid=unrest_grid, model=lambda m, pt: P.revolt_eligible(m, pt["fief"])),
+    "riot_contest": dict(calls=lambda pt: [("resolve_riot_uprising_contest", (FIEF,))], grid=contest_grid,
+                         stubs=contest_stubs, model=lambda m, pt: P.riot_contest(m, FIEF),
+                         agree=lambda pt, out: bool(pt["lost"]) == bool(out)),
+    "riot_human": dict(calls=lambda pt: [("resolve_riot_event_on_listed_fiefs", ())], grid=riot_grid, stubs=riot_stubs,
+                       model=lambda m, pt: P.human_riot(m, FIEF, bool(pt["pay"])),
+                       agree=lambda pt, out: bool(pt["staged"]) != bool(out)),
+    "rebel_spawn": dict(calls=lambda pt: [("spawn_uprising_force_from_province", (pt["up"],))], grid=spawn_grid,
+                        model=lambda m, pt: P.spawn_uprising_force(m, bool(pt["up"]))),
     "upkeep": dict(calls=lambda pt: [("consume_province_army_upkeep", (REC,))], grid=upkeep_grid,
                    model=fief_call(P.consume_province_army_upkeep)),
     "luck_then_cap": dict(calls=lambda pt: [("drift_daimyo_luck", (FIEF,)), ("cap_fief_stats", (FIEF,))],
@@ -523,7 +594,7 @@ def run_rule(name, spec, verbose):
         if spec.get("ret") and (ret & 0xFFFF) != int(out):
             why.append(f"return: ROM {ret} model {int(out)}")
         if not spec.get("agree", lambda p, o: True)(pt, out):
-            why.append(f"outcome: ROM installed={pt['installed']} model {out}")
+            why.append(f"outcome differs: model {out}")
         if why:
             bad += 1
             if verbose or bad <= 3:
@@ -607,7 +678,28 @@ def _spring_decay_two(m, pt):                       # the revisit note: rng_mod(
     P.spring_age_and_decay(m)
 
 
+def _riot_no_gate(m, pt):                           # the old sim: no 1-in-4, no Honganji exemption
+    f = m.fief(pt["fief"])
+    return (P._roll_failed(m, m.s16(f + M.F_LOYALTY)) or P._roll_failed(m, 100 - m.r8(M.FIEF_TAX_RATE + pt["fief"]))
+            or P._roll_failed(m, m.r8(m.fief_daimyo(pt["fief"]) + M.D_CHARISMA)) or not m.rng_mod(1000))
+
+
+def _gift_like_give(stat, partner, amount, skill, cap):   # the payment read as a Give: doubled
+    g = max(1, amount * (6 - skill) // P.sqrt_int((stat + partner) // 2 + amount))
+    return 2 * min(g, cap - stat)
+
+
+def _spawn_half(m, pt):                             # the old sim: half the men, whatever the kind
+    fief = m.r16(M.BATTLE_DEFENDING)
+    q = m.fief(fief)
+    m.w16(M.WAR_ATTACKER_MEN, m.r16(q + M.F_MEN) // 2)
+    m.w16(q + M.F_MEN, m.r16(q + M.F_MEN) - m.r16(q + M.F_MEN) // 2)
+
+
 RULE_PLANTS = {
+    "riot_no_gate": ("riot_eligible", lambda: _riot_no_gate),
+    "riot_paid_like_give": ("riot_human", lambda: patched("riot_human", "_gift_gain", _gift_like_give)),
+    "rebels_half_the_men": ("rebel_spawn", lambda: _spawn_half),
     "hire_arms_by_men": ("hire", lambda: patched("hire", "apply_hire_unit_stats", _hire_arms_by_men)),
     "train_no_bonus": ("train", lambda: patched("train", "effect_train", _train_no_bonus)),
     "give_no_charisma": ("give", lambda: _give_no_charisma),
