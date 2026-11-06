@@ -91,9 +91,41 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #39 — What kills a start, and reading the board (Chris, 2026-11-06)
+
+**The sim's boards were wrong until now.** `apply_scenario_starting_stat_boosts` flips a coin for each listed AI fief (17 fiefs: 1, 2, 4, 7, 10, 15, 16; 50 fiefs: 5, 9, 13, 14, 19, 21, 23, 24, 26, 38, 42, 49). A win doubles gold, loyalty, morale and men and multiplies rice by 3 (4 at 50 fiefs), after the skill bonus, so Takeda is (72 + 10) x 2 = 164. The sim runs that routine on the VM, whose stand-in generator is a 16-bit LCG with an alternating low bit, so `rng_mod(2)` was no coin: 40 of 40 boards had all of them doubled or none. Chris caught it by doubting a 164-man Takeda. The VM now has the ROM's generator (`syscall_rng_next $C1C3`, 500 of 500 states against the 6502) and setup uses it; `oracle_vm` stays on the stand-in, whose sequence it depends on. **Every survival figure before this section came from those boards**, #38's tables included. The mean barely moved (60.7% to 61.5%, different seeds); individual fiefs did.
+
+**Who sets the starting relations:** the same routine. Every pair of coin winners is married (relation 90). Saves agree: Uesugi, Hojo, Asai married and all three doubled; the 50-fief save has 6 winners and all 15 pairs. The sim had each board's winners all allied or none, so AI-against-AI war was off as well.
+
+**An AI needs two things to attack a human.** Share: its men past 47% of the two armies (the grudge). Budget: `min(2 x rice, men, gold)` at least the defender's shield, `min(rice, men)` (`ai_commit_attack_deduct_resources`). The coin matters because it doubles the gold: plain Hojo already has a 51% share of Uesugi but a budget of 73 against a shield of 74, shut by one; doubled, 146. Chris's "coin flips create new grudges". At skill 3 plain Hojo reaches 83 and opens it with no coin.
+
+**How the game ends** (`na1sim/deaths.py`; 17 fiefs, 300 seeds, skill 2, 1,964 deaths). Invasion 96%, revolt 78, riot 8. The last blow is usually overwhelming (71%+), but 61% of invasion deaths *began* with a grudge-band hit: Hojo, 70 men against Uesugi's 84, wins the first fight, falls to about 27, and the next attacker finishes it. 44% of deaths come before the player's first turn (Uesugi 23 of 39, Honganji 211, Rokkaku 203), out of any opening's reach.
+
+| Skill | Mean | Hojo | Tsutsui | Hatakeyama | Saito | Rokkaku |
+|---|---|---|---|---|---|---|
+| 1 | 66.3% | 63.7% | 12.0% | 11.3% | 0.7% | 0% |
+| 2 | 61.5% | 36.3% | 1.0% | 0% | 0.3% | 0% |
+
+**Tested, paired by seed, skill 2 unless noted.** No men on turn 1: Uesugi 87.0% to 58.7%, Hojo 36.3% to 14.7%; the default already opens that way, which is why a men-first plan seemed to do nothing. Men then tax: Hojo +6, Hatakeyama 0 to 5% (21% at skill 1, from the tax), Uesugi +4 at skill 1 only, Ashikaga -10, because it starts at morale 36 and loyalty 38 and breaks from inside (revolt deaths 9 to 22). Keep rice at or above men: Takeda 90.3% to 95.3%, nothing else moves. Buy rice first: Imagawa 84.7% to 54.0%, Hida 92.3% to 80.0%. Forecast picker (+30 on every AI army): Hojo +8, Takeda -8, measured on the old boards.
+
+**The read** (`na1sim/reaction.py`). At the start of a game, each neighbour that would pick this fief by the ROM's own choice and can pay. The row predicts the game with no game played (default player, alive at year 6):
+
+| Turn-1 row | Skill 2 | Skill 1 |
+|---|---|---|
+| Clear | 3,166 games, 92% | 3,166, 94% |
+| Shut: gold can close it | 651, 31% | 1,012, 39% |
+| Repel: only a fight | 214, 15% | 0 |
+| Can't | 1,069, 0% | 922, 3% |
+
+Repel and can't together rise from 18% of boards to 25%, Chris's point that skill adds unplayable starts. A first version that counted every neighbour able to attack failed: it had Hatakeyama playable and Takeda not. An AI hits one target, chosen by who else it could hit. Blind spots: revolts (Ashikaga reads clear at 82%), 21 clear Saito boards that all die, later turns, turn order; Uesugi at skill 1 inverts slightly.
+
+**The matrix** (`reaction_policy`), first row that applies: fix morale and loyalty; if a gate is open, all the gold into men; hold rice if a gate may open at harvest; else play on. **The read decides whether to buy, not how much.** Buying exactly to the line lost (Uesugi 87.0% to 79.3%, Hojo at skill 1 63.7% to 56.3%), as the picker did: the line is read before the neighbours move. All the gold, on the seven fiefs tried: Hojo 42.0% (18 saved, 1 lost), Uesugi at skill 1 94.3% (16 saved, 2 lost), Tsutsui at skill 1 15.0%, nothing significantly worse. Chris: it saves a turn and adds padding. Not yet run on all 17; Hatakeyama's tax jump is a missing row.
+
+**Method** (Chris). Monte Carlo finds principles, not plans: a plan answers a board. Some boards are dead, so the measure is how many playable ones a player wins, and what you do depends on the position, not a rail. Averages over a fief hide the board, and a "best" describes the player that found it.
+
 ### #38 — Openings: fix the weakness, tax by turn 2, and the picker (Chris, 2026-11-04)
 
-The goal is not a high win rate; it is the best chance of getting to play. Most of a game is decided by year 2. Numbers are the sim, skill 2, 17 fiefs, its human defending with AI logic, so a bottom-tier fief's figure is a floor. The table below was measured before the real riot went in; rerun with it, the default moved from 57.1% to 57.8% and no low-loyalty fief moved much (Ashikaga 74 to 72, Asakura 79 to 81, Asai 96 to 94; Hojo 37 to 30, the largest fall, about two standard errors at 150 seeds).
+**Measured on boards with a broken coin: see #39.** The goal is not a high win rate; it is the best chance of getting to play. Most of a game is decided by year 2. Numbers are the sim, skill 2, 17 fiefs, its human defending with AI logic, so a bottom-tier fief's figure is a floor. The table below was measured before the real riot went in; rerun with it, the default moved from 57.1% to 57.8% and no low-loyalty fief moved much (Ashikaga 74 to 72, Asakura 79 to 81, Asai 96 to 94; Hojo 37 to 30, the largest fall, about two standard errors at 150 seeds).
 
 **The tax line.** The revolt roll is `min(stat, 50)^2 < rng(2025)`: 45 or more cannot fail, and it runs on loyalty and on `100 - tax`, so 55% is the highest rate that adds no risk of its own. Raising 20 to 55 takes 35% off loyalty and wealth, so **loyalty 70 is the no-risk line** (70 x 0.65 = 45.5). Below it, tax then give: a gift after the tax is not cut by the 35%, and the lower stat makes each unit buy more, about half the cost of give then tax. The exposure is one event roll. Income is linear in tax, so 55% against the opening 20% is 2.75x on the 1560 Fall harvest. Tax takes any rate in one turn.
 
@@ -191,7 +223,7 @@ Chasing Chris's playthrough reads ("Kaga's tax is capped at 30%"; "Shinano isn't
 - **WEAKEST-TARGET fix (Chris's structural catch, applied):** the AI's `pick_weakest_men_fief $93B3` targets only its **weakest** neighbour, so a neighbour `n` threatens fief `F` **only if F is n's weakest** — a strong fief that isn't anyone's weakest is ignored regardless of the men/logistics gates. The viability map's `human_threats` now requires that, and it snaps to play: **Mikawa → PLAYABLE** ("never invaded"), **Shinano → hard(1)** ("rarely"), Suruga/Echigo/Musashi/Iseshima → PLAYABLE; **only Iga(4) and Mino(5) stay UNPLAYABLE** — the weakest-of-many. **Reconciles Mino:** safe in the all-AI map (no single 2.3× neighbour) yet unplayable as a human (the weakest of its neighbours (7 in the ROM adjacency table, bank 4 $8300; corrected 2026-11-02 from 5) pile on at the 47% grudge line) — Chris's "central = patsy" intuition was right, *for the human*, via weakest-of-many. The revolt overlay uses the same gate with men/2 (a revolt can make F *become* a neighbour's weakest). (Residual: the grudge override `$952E` and a gold-rich start buying rice turn-1 are secondary effects; relations gate moot at t=0.)
 **Open:** confirm the `$6193` t=0 init is really zero (vs a ROM/SRAM seed via `load_daimyo_relation_row $DAAB`); model realized-vs-potential (a light turn simulation) if we want true invasion rates.
 
-**Honganji, complete (2026-11-05).** Every use of the flag: tax ceiling 30 on each fief he owns, re-applied after any war, so what he conquers is capped too (`cap_honganji_fief_tax_rate_at_30`); AI tax 16-30 against 35-64; a revolt floor of 1-in-20 against 1-in-1000; and **riots cannot happen** on his land, since every riot branch requires not-Honganji. It keys on the owner, so Kaga taken from him taxes normally. No diplomatic penalty found: no 17-fief save from 1560 has a relation touching him. Relations do not always start at zero, though (0-6 cells by game), so the "moot at turn 1" above wants a recheck.
+**Honganji, complete (2026-11-05).** Every use of the flag: tax ceiling 30 on each fief he owns, re-applied after any war, so what he conquers is capped too (`cap_honganji_fief_tax_rate_at_30`); AI tax 16-30 against 35-64; a revolt floor of 1-in-20 against 1-in-1000; and **riots cannot happen** on his land, since every riot branch requires not-Honganji. It keys on the owner, so Kaga taken from him taxes normally. No diplomatic penalty found: no 17-fief save from 1560 has a relation touching him. Relations do not always start at zero, though (0-6 cells by game), so the "moot at turn 1" above wanted a recheck: answered in #39, they are the setup coin's marriages.
 
 **Kyoto, not Honganji.** Chris recalled that only high-Drive lords will attack Honganji. The rule is real, but `ai_try_war_attack` keys it on fief 30: an AI attacks only if its Drive beats rng(80) + 90, so under 90 never, 100 about 14%, 115 about a third. Fief 30 at 50 fiefs is Yamashiro, Ashikaga's Kyoto. At 17 fiefs Yamashiro is 13, and the check does not cover it, though the label table covers both: likely an oversight.
 

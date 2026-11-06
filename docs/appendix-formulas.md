@@ -425,6 +425,12 @@ Read from the C, then run against the ROM with every draw scripted (table below)
 
 **The harvest order** (`harvest_income_sweep_all_fiefs` $A26F): it runs in the season driver, before Fall's command, so Fall spends it. The marks are set at the start of Summer and only lowered, so a gift pays this year only if it lands before Summer; one given in Summer pays from next year. The AI-only boost is gated on `province_ai_state == 0`. Every fief starts at tax 20.
 
+## 11. The starting boost and the attack gates
+
+`apply_scenario_starting_stat_boosts` $83E2, AI fiefs only: the daimyo's five stats +skill x 5, gold +skill x 10, the ten fields from town to arms +skill x 5. Then, for the listed fiefs (17: 1, 2, 4, 7, 10, 15, 16; 50: 5, 9, 13, 14, 19, 21, 23, 24, 26, 38, 42, 49), a coin each: gold, loyalty, morale, men x 2, rice x 3 (x 4 at 50). Winners marry each other (relation 90). Every fief, human too, rolls its cap: `pct_op(header + 1000, rng(20) + 80)`.
+
+An attack (`ai_commit_attack_deduct_resources` $9040) is refused if `min(defender rice, defender men) > min(2 x rice, men, gold)` of the attacker, or that budget is under 5. Against a human, a share of men above 47 skips the usual gate and coin (`ai_try_war_attack`).
+
 ## How these formulas are checked
 
 `py -3.14 -m na1sim.oracle` (from `tools/`) runs na1sim's models (this appendix as code) against the ROM's own routines on a real save image, over a grid that crosses each input with its edges: the stat at and past `stat_cap`, a partner stat far from the stat, amounts from 1 up, every `skill_level`, tax raises and cuts. Grow, Build and Dam run as the player issues them (the driver and its guards, `number_input` answering within its own range); Give runs its effect handlers. `--plant NAME` swaps in a known-wrong model, and each must fail.
@@ -459,6 +465,8 @@ Added 2026-11-04, the sim's own functions (`vmprims`, which the strategic loop c
 | riot_contest | `resolve_riot_uprising_contest` | 90/90 | — |
 | riot_human | `resolve_riot_event_on_listed_fiefs` | 384/384 | the payment read as a Give: fails 72 |
 | rebel_spawn | `spawn_uprising_force_from_province` | 720/720 | half the men: fails all |
+| ai_state0 | `ai_econ_action_state0` | 200/200 | no arms bump: fails 100 |
+| buy_rice | `effect_buy_rice` $A068 | 180/180 | no rate nudge: fails 135 |
 
 Two notes this check overturned: the human decay is `rng(skill_level)` on morale, not `rng(2)` on men (a summary of the C, wrong on both). And the printed C is not evaluation order: `pct_op(morale, rng_mod(10) + 30) + rng_mod(30) + 30` draws the `rng_mod(30)` first.
 

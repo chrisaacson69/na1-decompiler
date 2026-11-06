@@ -28,9 +28,10 @@ from . import ai_vm
 CLIFF = 46          # keep morale/loyalty >= 45 (revolt/riot eligibility is 0 at >=45)
 # The opening's two choices. Each fief has its own best opening (Chris, 2026-11-04), so these are
 # switches: the tax in one move or in steps of 15, emergency gifts from gold or from rice.
-# The picker is a tool for now, not the default: it reads who would attack today, and over 150 fresh
-# seeds it lost to the older men target (54.7% alive at year 6 against 57.1%).
-OPENING = {"tax_jump": True, "gold_gift": True, "picker": False, "picker_slack": 0}
+# The picker is a tool for now, not the default: buying to a computed line loses to spending the gold
+# (na1sim.reaction). `forecast` and `baseline` are its variants, `keep_rice` holds rice at the men.
+OPENING = {"tax_jump": True, "gold_gift": True, "picker": False, "picker_slack": 0,
+           "forecast": 0, "baseline": False, "keep_rice": False}
 SKILL_CAP = 200
 
 
@@ -71,6 +72,12 @@ def hire_men(m, idx, spend):               # gold -> men at the market rate
     if spend < 1 or gained < 1:
         return
     P.effect_hire_men(m, f, gained)
+
+
+def buy_rice(m, idx, spend):                # effect_buy_rice $A068: gold -> rice at the exchange rate
+    m.selected = idx
+    if spend >= 1:
+        P.effect_buy_rice(m, m.fief(idx), spend * 10 // m.r16(M.GOLD_RICE_EXCHANGE))
 
 
 def grow_output(m, idx, amount):
@@ -198,11 +205,23 @@ def hunted_by(m, idx):
     return out
 
 
-def picker_line(m, idx):
+def picker_line(m, idx, forecast=0):
     """Chris's rule: you need not be the strongest, you just cannot be the weakest (grudged). The
     fewest men at which no neighbour would pick this fief, among what the fief can pay for at the
     market's live rate; if none, what it can pay for, since fewer hunters beat more. Rechecked every
-    turn: the answer moves when a neighbour's neighbour does."""
+    turn: the answer moves when a neighbour's neighbour does. `forecast` asks it of next year: every
+    AI fief with that many more men (their high-end yearly drift is about 30)."""
+    if forecast:
+        n = m.r16(M.SCENARIO_FIEF_COUNT)
+        ais = [i for i in range(n) if m.province_ai_state(i) == 0]
+        kept = [m.r16(m.fief(i) + M.F_MEN) for i in ais]
+        for i, v in zip(ais, kept):
+            m.w16(m.fief(i) + M.F_MEN, v + forecast)
+        try:
+            return picker_line(m, idx)
+        finally:
+            for i, v in zip(ais, kept):
+                m.w16(m.fief(i) + M.F_MEN, v)
     f = m.fief(idx)
     men = m.r16(f + M.F_MEN)
     if not hunted_by(m, idx):
@@ -283,9 +302,12 @@ def _guards(m, idx):
     #    common turn-1 case) this fires first anyway. [Turn-ORDER deaths -- attacked
     #    before our action runs -- are irreducible; factor them out of the metric.]
     if OPENING["picker"]:
-        line = picker_line(m, idx)
+        line = picker_line(m, idx, OPENING["forecast"])
         if line > men or hunted_by(m, idx):    # a neighbour hires after you: margin above the line
             line = line * (100 + OPENING["picker_slack"]) // 100
+        if OPENING["baseline"]:                # the older target as a floor, hunted or not
+            old = _safe_men_target(m, idx)
+            line = max(line, old + old // 5 + 6)
         if men < line and _hire_up_to(m, idx, line):
             return True
     else:
@@ -401,6 +423,7 @@ def _season_plan(m, idx, rng, expand=False, slack=0, big_buy=False, gold_season=
     men, cap = m.r16(f + M.F_MEN), m.r16(f + M.F_HEADER)
     capped = (m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 >= cap
     enemies = _enemy_neighbors(m, idx)
+    keep = men if OPENING["keep_rice"] else 0   # the attack gate reads min(rice, men): hold the shield
 
     if expand and capped and enemies:
         if season in (3, 0):                    # a war needs gold, men and rice in hand
@@ -421,10 +444,10 @@ def _season_plan(m, idx, rng, expand=False, slack=0, big_buy=False, gold_season=
             return
     if season == gold_season and not capped and gold > 1:
         give_peasants(m, idx, gold - 1, gold=True)
-    elif season == 1 and rice > 1:              # SUMMER: rice out, and the harvest is next
-        (give_men if capped else give_peasants)(m, idx, rice - 1)
-    elif season == 0 and morale < 100 and rice > 2:
-        give_men(m, idx, rice // 2)             # SPRING: morale, as the old sequence did
+    elif season == 1 and rice > keep + 1:       # SUMMER: rice out, and the harvest is next
+        (give_men if capped else give_peasants)(m, idx, rice - keep - 1)
+    elif season == 0 and morale < 100 and rice > keep + 2:
+        give_men(m, idx, min(rice // 2, rice - keep - 1))   # SPRING: morale, as the old sequence did
     else:
         train(m, idx)
 
@@ -470,6 +493,7 @@ OPENING_ACTIONS = {
     "gold>men": _all_but_one(give_men, True),
     "rice>men": _all_but_one(give_men, False),
     "hire": lambda m, idx: hire_men(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1),
+    "rice": lambda m, idx: buy_rice(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1),
     "train": train,
 }
 

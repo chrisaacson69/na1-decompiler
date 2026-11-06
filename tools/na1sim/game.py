@@ -298,7 +298,7 @@ def command_pass(m: "M.Memory", rng: random.Random, player_policy=None):
         if st == M.EMPTY:
             continue
         if st == M.AI_HOME:
-            ai_vm.econ_command_dispatch(m, idx, war)
+            ai_vm.econ_action_state0(m, idx, war)
         elif st == M.PLAYER_DIRECT and player_policy is not None:
             player_policy(m, idx, rng)
 

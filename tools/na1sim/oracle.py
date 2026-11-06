@@ -299,6 +299,15 @@ def hire_grid():
                    draws=draws, amount=amount, set=setup)
 
 
+def buy_rice_grid():
+    for rice, cap, gold, rate, amount in itertools.product(
+            (0, 40, 1630), (120, 1640), (0, 5, 100, 9999), (9, 20, 37), (1, 50, 5000)):
+        if rice > cap:                              # not a position: stats are capped every season
+            continue
+        yield dict(fields={"rice": rice, "header": cap, "gold": gold}, amount=amount,
+                   set=lambda m, r=rate: m.w16(M.GOLD_RICE_EXCHANGE, r))
+
+
 def give_grid():
     for peasants, gold, stat, partner, amount, skill, cap in itertools.product(
             (True, False), (True, False), (0, 40, 250, 1630), (0, 200), (1, 50, 900), (1, 2, 5), (120, 1640)):
@@ -389,6 +398,20 @@ def spawn_grid():
             m.w16(M.BATTLE_DEFENDING, FIEF)
             daimyo_stats(m, FIEF, charisma=cha)
         yield dict(skill=skill, fields={"men": men, "output": out, "rice": rice}, draws=seq, set=setup, up=up)
+
+
+def state0_grid():
+    for human, health, luck, arms, seq in itertools.product(
+            (0, 5), (10, 196, 198, 199, 200), (10, 255), (0, 70), ((0, 0, 0), (0, 4, 1), (1, 0, 0), (0, 1, 3), (3, 2, 0))):
+        yield dict(fields={"arms": arms}, draws=seq,
+                   set=lambda m, h=human, x=health, l=luck: (m.w8(M.PROVINCE_AI_STATE + FIEF, h),
+                                                             daimyo_stats(m, health=x, luck=l)))
+
+
+def state0_model(m, pt):
+    P.random_daimyo_stat_increment(m)
+    if not m.rng_mod(4):
+        m.w16(m.fief(FIEF) + M.F_ARMS, m.r16(m.fief(FIEF) + M.F_ARMS) + 1)
 
 
 def upkeep_grid():
@@ -526,6 +549,9 @@ RULES = {
     "hire": dict(calls=lambda pt: [("effect_hire_men", (REC,))], ret=True, grid=hire_grid,
                  stubs=lambda pt: [(NUMBER_INPUT, prompt(pt["amount"]))],
                  model=lambda m, pt: P.effect_hire_men(m, m.fief(FIEF), pt["amount"])),
+    "buy_rice": dict(calls=lambda pt: [("effect_buy_rice", (REC,))], ret=True, grid=buy_rice_grid,
+                     stubs=lambda pt: [(NUMBER_INPUT, prompt(pt["amount"]))],
+                     model=lambda m, pt: P.effect_buy_rice(m, m.fief(FIEF), pt["amount"])),
     "give": dict(calls=lambda pt: [("driver_give", ())], ret=True, grid=give_grid, stubs=give_stubs,
                  model=lambda m, pt: P.driver_give(m, pt["peasants"], pt["gold"], pt["amount"])),
     "harvest": dict(calls=lambda pt: [("harvest_income_sweep_all_fiefs", ())], grid=harvest_grid,
@@ -542,6 +568,8 @@ RULES = {
                        agree=lambda pt, out: bool(pt["staged"]) != bool(out)),
     "rebel_spawn": dict(calls=lambda pt: [("spawn_uprising_force_from_province", (pt["up"],))], grid=spawn_grid,
                         model=lambda m, pt: P.spawn_uprising_force(m, bool(pt["up"]))),
+    "ai_state0": dict(calls=lambda pt: [("ai_econ_action_state0", ())], grid=state0_grid, model=state0_model,
+                      stubs=lambda pt: stub_of("ai_econ_command_dispatch")),
     "upkeep": dict(calls=lambda pt: [("consume_province_army_upkeep", (REC,))], grid=upkeep_grid,
                    model=fief_call(P.consume_province_army_upkeep)),
     "luck_then_cap": dict(calls=lambda pt: [("drift_daimyo_luck", (FIEF,)), ("cap_fief_stats", (FIEF,))],
@@ -696,7 +724,14 @@ def _spawn_half(m, pt):                             # the old sim: half the men,
     m.w16(q + M.F_MEN, m.r16(q + M.F_MEN) - m.r16(q + M.F_MEN) // 2)
 
 
+def _state0_no_arms(m, pt):                         # the 1-in-4 arms bump left out
+    P.random_daimyo_stat_increment(m)
+    m.rng_mod(4)
+
+
 RULE_PLANTS = {
+    "state0_no_arms": ("ai_state0", lambda: _state0_no_arms),
+    "buy_rice_no_nudge": ("buy_rice", lambda: patched("buy_rice", "cycle_economy_rate", lambda m, w: None)),
     "riot_no_gate": ("riot_eligible", lambda: _riot_no_gate),
     "riot_paid_like_give": ("riot_human", lambda: patched("riot_human", "_gift_gain", _gift_like_give)),
     "rebels_half_the_men": ("rebel_spawn", lambda: _spawn_half),

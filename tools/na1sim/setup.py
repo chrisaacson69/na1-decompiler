@@ -47,9 +47,10 @@ _DAIMYO_STATS = [(M.D_AGE, "age"), (M.D_HEALTH, "health"), (M.D_DRIVE, "drive"),
 
 def _run_boost(m: "M.Memory", rng_state: int) -> None:
     """Drive apply_scenario_starting_stat_boosts on m's $6000-$7FFF image, in
-    place. rng_state seeds na1dream's LCG so each game seed gets a distinct board."""
+    place, on the ROM's own generator: the stand-in LCG's low bit alternates, which made all seven
+    of the setup's coins land alike, every board all doubled or none."""
     vm = NobunagaVM()
-    vm._rng = rng_state & 0xFFFF
+    vm.rom_rng = rng_state & 0xFFFFFFFFFFFF
     vm.mem.sram[:] = bytes(m.m[0x6000:0x8000])
     vm.switch_bank(BOOST_BANK)
     fp = 0x05FF
@@ -81,12 +82,13 @@ def roll_player_daimyo(m: "M.Memory", fief: int, seed: int, min_total: int = 450
 
 
 def build_board(skill: int = 2, seed: int = 0, player_fief=None,
-                watch_battles: bool = False, roll_player: bool = True) -> "M.Memory":
+                watch_battles: bool = True, roll_player: bool = True) -> "M.Memory":
     """Build a faithful flat-memory board. player_fief=None -> all-AI (player==0).
     watch_battles mirrors init_new_game_state's "Watch other daimyos battle"
     setting (ui_confirm_flag_6e7d $6E7D): True routes every AI-vs-AI battle through
     the on-screen tactical engine (ACCURACY), False uses the off-screen $8DFD
-    auto-resolve (SPEED). The A/B switch for terrain/defensibility experiments."""
+    auto-resolve (SPEED). On by default (Chris, 2026-11-05): the more dynamic game, and captured
+    saves with it on show AI armies about 30% smaller, which the watched sim matches."""
     provs = loader.load_provinces()                   # base stats incl. BASE header (1000/500/0)
     daimyos = loader.load_daimyos()
     adj = loader.load_adjacency()
@@ -129,9 +131,8 @@ def build_board(skill: int = 2, seed: int = 0, player_fief=None,
     for k in range(5):
         m.w16(M.MARKET_RATE_TABLE + k * 2, rng.randrange(10) + 8)
 
-    # ROM deterministic setup core -> headers / boosts / exchange. Seed na1dream's
-    # LCG off the game seed so boards vary by seed.
-    _run_boost(m, rng_state=0x1234 ^ ((seed * 2654435761) & 0xFFFF))
+    # ROM deterministic setup core -> headers / boosts / exchange, seeded off the game seed.
+    _run_boost(m, rng_state=rng.getrandbits(48))
 
     # init the low-water marks from the boosted records (init_province_highwater
     # _from_records $A066): mark = live output/dams/loyalty/wealth.

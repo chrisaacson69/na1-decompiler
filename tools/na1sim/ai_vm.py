@@ -240,6 +240,17 @@ def econ_command_dispatch(m: "M.Memory", idx: int, try_war=_no_war) -> None:
     develop_dam_and_grow(m, idx)
 
 
+def econ_action_state0(m: "M.Memory", idx: int, try_war=_no_war) -> None:
+    """ai_econ_action_state0: what the driver runs for an AI fief: the dispatch, then a chance at a
+    lord's ability and, 1 in 4, one more arms."""
+    econ_command_dispatch(m, idx, try_war)
+    m.selected = idx
+    P.random_daimyo_stat_increment(m)
+    if not m.rng_mod(4):
+        f = m.fief(idx)
+        m.w16(f + M.F_ARMS, m.r16(f + M.F_ARMS) + 1)
+
+
 # Back-compat alias for callers expecting the old entry-point name.
 def decide_ai_fief(m: "M.Memory", idx: int, try_war=_no_war) -> None:
     econ_command_dispatch(m, idx, try_war)

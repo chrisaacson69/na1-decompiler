@@ -589,6 +589,17 @@ def spawn_uprising_force(m: "M.Memory", is_uprising: bool) -> None:
     m.selected = 50
 
 
+def random_daimyo_stat_increment(m: "M.Memory") -> None:
+    """random_daimyo_stat_increment: an AI fief, 1 in 10, adds 2 to one of the lord's five abilities
+    at random; health is held to 200."""
+    if not m.province_ai_state(m.selected) and not m.rng_mod(10):
+        d = m.fief_daimyo(m.selected)
+        k = d + 1 + m.rng_mod(5)
+        m.w8(k, (m.r8(k) + 2) & 0xFF)
+        if m.r8(d + 1) >= 200:
+            m.w8(d + 1, 200)
+
+
 def dedup_owners(m: "M.Memory", fiefs) -> int:
     """dedup_owners $8DE1: one fief per owner, first seen kept, into deduped_owner_list ($FF
     ended). -> the count. (The ROM reads past the terminator on an empty list: a caller's guard.)"""
@@ -769,6 +780,23 @@ def effect_hire_men(m: "M.Memory", fief: int, amount: int) -> int:
     cap_arms_at_index(m, m.selected, fief)
     cycle_economy_rate(m, 4)
     clamp_amount_to_province_max(m, fief + M.F_MEN)
+    return 1
+
+
+def effect_buy_rice(m: "M.Memory", fief: int, amount: int) -> int:
+    """effect_buy_rice $A068, the player typing `amount` (held to the prompt's 1..max). Costs
+    (exchange*amount + 9)/10 gold and nudges the exchange rate."""
+    if not m.r16(m.cur_fief() + M.F_GOLD):
+        return 0
+    rate = m.r16(M.GOLD_RICE_EXCHANGE)
+    most = ratio_times10_capped(m.r16(fief + M.F_GOLD), rate, m.r16(fief + M.F_HEADER) - m.r16(fief + M.F_RICE))
+    if most <= 0:
+        return 0
+    amount = max(1, min(amount, most))
+    m.w16(fief + M.F_GOLD, m.r16(fief + M.F_GOLD) - math32_muladddiv(rate, amount))
+    m.w16(fief + M.F_RICE, m.r16(fief + M.F_RICE) + amount)
+    clamp_amount_to_province_max(m, fief + M.F_RICE)
+    cycle_economy_rate(m, 2)
     return 1
 
 
