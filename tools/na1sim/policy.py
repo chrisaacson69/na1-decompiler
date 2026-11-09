@@ -50,17 +50,22 @@ def give_peasants(m, idx, amount, gold=False):   # rice (or gold) -> loyalty AND
         P.driver_give(m, True, gold, amount)
 
 
-def set_tax(m, idx, new_tax):              # drains loyalty + wealth by |dtax|%
+def set_tax(m, idx, new_tax):              # driver_tax $999A: a raise drains, a cut gives back
+    """loyalty and wealth through effect_tax (econ.tax_effect, the oracle's tax_drain case); charisma
+    +1 on a cut, -1 on a raise unless already 0 ($9A1B). The prompt takes 1-100 (30 for Honganji)."""
+    from . import econ
     f = m.fief(idx)
     cur = m.r8(M.FIEF_TAX_RATE + idx)
-    if new_tax == cur or new_tax < 0 or new_tax > 100:
+    if new_tax == cur or new_tax < 1 or new_tax > 100:
         return
-    delta = abs(new_tax - cur)
-    m.w16(f + M.F_LOYALTY, m.r16(f + M.F_LOYALTY) - P.pct_op(m.r16(f + M.F_LOYALTY), delta))
-    m.w16(f + M.F_WEALTH, m.r16(f + M.F_WEALTH) - P.pct_op(m.r16(f + M.F_WEALTH), delta))
+    delta = cur - new_tax
+    m.w16(f + M.F_LOYALTY, econ.tax_effect(m.r16(f + M.F_LOYALTY), delta))
+    m.w16(f + M.F_WEALTH, econ.tax_effect(m.r16(f + M.F_WEALTH), delta))
     m.w8(M.FIEF_TAX_RATE + idx, new_tax)
     d = m.fief_daimyo(idx)
-    m.w8(d + M.D_CHARISMA, max(0, m.r8(d + M.D_CHARISMA) - 1))
+    cha = m.r8(d + M.D_CHARISMA)
+    if delta > 0 or cha >= 1:
+        m.w8(d + M.D_CHARISMA, cha + (1 if delta > 0 else -1))
 
 
 def hire_men(m, idx, spend):               # gold -> men at the market rate
@@ -512,5 +517,6 @@ def plan_policy(fief, plan, tail=expand_policy):
             tail(m, idx, rng)
         else:
             m.selected = idx
+            m.turn_rng = rng                # for an action that falls back to a policy
             act(m, idx)
     return play

@@ -128,15 +128,15 @@ def tax_effect(stat: int, delta: int) -> int:
 
 def set_tax(p: Province, new_tax: int, daimyo: Daimyo = None) -> Province:
     """Set tax: loyalty & wealth move by |delta|% -- down when the tax rises, UP when it falls
-    (effect_tax, ROM-checked 2026-11-02); costs 1 Charisma. (Tax §)"""
-    if new_tax == p.tax or new_tax < 0 or new_tax > 100:
+    (effect_tax, ROM-checked 2026-11-02); Charisma -1 on a raise, +1 on a cut. (Tax §)"""
+    if new_tax == p.tax or new_tax < 1 or new_tax > 100:
         return p
     delta = p.tax - new_tax
     p.loyalty = tax_effect(p.loyalty, delta)
     p.wealth = tax_effect(p.wealth, delta)
     p.tax = new_tax
-    if daimyo is not None:
-        daimyo.charisma -= 1
+    if daimyo is not None and (delta > 0 or daimyo.charisma >= 1):   # driver_tax $9A1B
+        daimyo.charisma += 1 if delta > 0 else -1
     return p
 
 

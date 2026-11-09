@@ -91,6 +91,51 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #40 — Picked, then paid: the two gates, the Summer window, and Hatakeyama (Chris, 2026-11-09)
+
+**One rice is as good as a thousand, but only for being picked.** The June doctrine (keep 1 rice, give the rest) read only half of an attack. An AI attack passes two gates, and they read rice differently:
+
+1. **Pick.** Every targeting comparison (the weakest-prey scans, the usual ratio gate, the grudge past 47) goes through `fief_men_ratio_pct` → `fief_men_if_provisioned` ($9382): your men if you hold any rice, else 0. Here 1 rice is a full army and 0 is none, which makes you the softest target on the map.
+2. **Pay.** Once picked, `ai_commit_attack_deduct_resources` attacks only if its budget `min(2 × rice, men, gold)` reaches your shield `min(rice, men)` (#39). Here rice counts unit for unit: at 1 rice any picker with a budget of 5 gets through.
+
+So the order of play (Chris): ideally nobody picks you, and then rice past 1 does nothing, so spend it. When someone does pick you, which you often cannot prevent, rice and men must both stand above that attacker's budget, since the shield is the lower of the two. **Men work on both gates, rice only on the second**, and on the fight that follows. The matrix already reads both gates (`reaction.threats` is `hunted_by` filtered by budget ≥ shield); the default's Summer rice gift ignores the second.
+
+**The Summer window (Chris).** The gates are read only when the attacker moves. `shuffle_fief_turn_order_array` ($A742) reshuffles `daimyo_turn_order` every round, between the planner and the command phase, and the player sees who has moved. The harvest runs before Fall's command. So in a Summer where every hunter has already moved, the shield can drop to 1 and the harvest refills it before anyone looks again. In any other season, rice spent after the hunters move is still missing at their next turn. The sim now records who has moved (`m.acted`; it shuffles uniformly, while the ROM makes n random swaps, close but not uniform). Measured on Hatakeyama: below.
+
+**The matrix on all 17 fiefs** (`reaction_policy` against the default tail, 300 seeds each, paired by seed). It never costs anything: no fief falls significantly at either skill. It gains where a hunter's gate can be closed with gold:
+
+| Skill | Default | Matrix | Significant (paired \|z\| ≥ 2) |
+|---|---|---|---|
+| 1 | 66.3% | 67.0% | Uesugi +4.7 (16 saved, 2 lost), Tsutsui +3.0, Honganji +1.7 |
+| 2 | 61.5% | 62.1% | Hojo +5.7 (18 saved, 1 lost) |
+
+The other twelve fiefs do not move: either nobody picks them or nothing saves them. As expected of a board read (Chris): it helps only where it can, and marginal gains are the kind there are.
+
+**Hatakeyama: what to fix first.** Noto starts at morale 23 and loyalty 24, both under 45; it has one neighbour, Honganji, whose grudge picks it. The menu, priced on its turn-1 board (skill 2):
+
+| Turn 1 | Effect | Revolt roll fails | Riot roll fails | Shield |
+|---|---|---|---|---|
+| (start) | | 74% | 72% | 44 |
+| gold → peasants | loyalty 24 → 60, wealth +36 | 74% | 0% | 44 |
+| rice → men | morale 23 → 44 | 4% | 72% | 1 |
+| gold → men | morale → 39 | 25% | 72% | 44 |
+| rice → men, half | morale → 35 | 40% | 72% | 23 |
+| hire, all gold | men +21 at 1.5 a man | 64% | 72% | 44 |
+| tax to 55 / to 40 | loyalty −8 / −4 | 74% | 87% / 80% | 44 |
+
+An uprising season comes about 30% of the time (15% in Summer), half of them revolts, so morale 23 costs about an 11% chance a season of a rebel battle; a riot is about 3% and gold in hand settles it. Gold and rice are separate purses and each fixes one cliff, but the rice fix drops the shield. Taxing after the peasant gift undoes it (60 less 35% is 39); tax to 40 keeps 51.
+
+Where Noto's games end (default tail, 300 seeds):
+
+| Skill | Before his first turn | Year 1, after moving | Year 2 | Later | Alive at year 6 |
+|---|---|---|---|---|---|
+| 1 | 10% | 55% | 22% | 2% | 11% |
+| 2 | 11% | 76% | 12% | 1% | 0% |
+
+Year 1 is the game, and invasion ends most of them: in a traced sample, Honganji hits in Spring, Noto survives at 13-29 men, and Honganji finishes it in Fall once the harvest has refilled his budget too. The Summer move fired as designed (Honganji had moved first in 5 of 6 Summers) and changed nothing, because Fall comes anyway. The search over the first three turns (`na1sim/hatakeyama.py`, 14 moves including half gifts, tax 40 and the Summer rice move, scored at year 3) is running; its results go here.
+
+**Fixed on the way:** the player's Tax command (`policy.set_tax`, and `econ.set_tax`) still drained loyalty and wealth on a cut, the June model the oracle had retired for `econ.tax_effect`. Now as `driver_tax`: a cut gives back, charisma +1 on a cut and −1 on a raise (not below 0), the rate 1-100. No policy cuts the tax, so no earlier figure moves.
+
 ### #39 — What kills a start, and reading the board (Chris, 2026-11-06)
 
 **The sim's boards were wrong until now.** `apply_scenario_starting_stat_boosts` flips a coin for each listed AI fief (17 fiefs: 1, 2, 4, 7, 10, 15, 16; 50 fiefs: 5, 9, 13, 14, 19, 21, 23, 24, 26, 38, 42, 49). A win doubles gold, loyalty, morale and men and multiplies rice by 3 (4 at 50 fiefs), after the skill bonus, so Takeda is (72 + 10) x 2 = 164. The sim runs that routine on the VM, whose stand-in generator is a 16-bit LCG with an alternating low bit, so `rng_mod(2)` was no coin: 40 of 40 boards had all of them doubled or none. Chris caught it by doubting a 164-man Takeda. The VM now has the ROM's generator (`syscall_rng_next $C1C3`, 500 of 500 states against the 6502) and setup uses it; `oracle_vm` stays on the stand-in, whose sequence it depends on. **Every survival figure before this section came from those boards**, #38's tables included. The mean barely moved (60.7% to 61.5%, different seeds); individual fiefs did.

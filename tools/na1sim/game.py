@@ -293,10 +293,12 @@ def command_pass(m: "M.Memory", rng: random.Random, player_policy=None):
     order = list(range(n))
     rng.shuffle(order)
     war = ai_vm.war_hook(lambda mm: resolve_battle(mm, rng))
+    m.acted = set()             # who has moved this season: the player sees it (the ROM reshuffles each round)
     for idx in order:
         st = m.province_ai_state(idx)
         if st == M.EMPTY:
             continue
+        m.acted.add(idx)
         if st == M.AI_HOME:
             ai_vm.econ_action_state0(m, idx, war)
         elif st == M.PLAYER_DIRECT and player_policy is not None:
