@@ -179,11 +179,20 @@ def reaction_policy(m, idx, rng):
     (Uesugi 87% to 79%, Hojo at skill 1 64% to 56%), all the gold did not."""
     from . import memmap as M, policy
     f = m.fief(idx)
-    if min(m.r16(f + M.F_MORALE), m.r16(f + M.F_LOYALTY)) >= policy.CLIFF and threats(m, idx):
+    morale, loyalty = m.r16(f + M.F_MORALE), m.r16(f + M.F_LOYALTY)
+    # `tax_first`: take the first harvest at the full rate, loyalty or not, once morale is safe.
+    early = (policy.OPENING.get("tax_first") and m.r16(M.CURRENT_GAME_YEAR) == 1560
+             and getattr(m, "season", 0) in ((1,) if policy.OPENING["tax_first"] == 2 else (0, 1))
+             and morale >= policy.CLIFF)
+    if morale >= policy.CLIFF and (loyalty >= policy.CLIFF or early) and threats(m, idx):
         if m.r16(f + M.F_GOLD) > 1:         # all of it: the neighbours move after this, so an exact
             ROWS["shut" if men_line(m, idx) is not None else "absorb"] += 1     # fit goes stale
             policy.hire_men(m, idx, m.r16(f + M.F_GOLD) - 1)
             return
+    if early and m.r8(M.FIEF_TAX_RATE + idx) < (30 if m.fief_owner(idx) == 3 else 55):
+        ROWS["tax"] += 1
+        policy._tax_max(m, idx)
+        return
     keep = policy.OPENING["keep_rice"]
     policy.OPENING["keep_rice"] = keep or opens_after_harvest(m, idx)
     try:

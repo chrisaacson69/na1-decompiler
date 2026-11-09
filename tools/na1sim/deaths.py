@@ -39,6 +39,7 @@ class Log:
         self.fatal = None
         self.attacks = []       # every AI attack on the player: (year, season, share, committed, won)
         self.riots = self.riots_paid = self.rebel_battles = 0
+        self.years = []         # at each year's end: tax, loyalty, wealth, gold, rice, men
 
     def alive(self):
         m = self.m
@@ -130,8 +131,11 @@ def play(fief, seed, years=6, plan=("auto",), tail=policy.expand_policy, skill=2
         m.w16(M.CURRENT_GAME_YEAR, 1560 + yr)
         if log.fatal:
             break
+        q = m.fief(fief)
+        log.years.append([m.r8(M.FIEF_TAX_RATE + fief)] + [m.r16(q + k) for k in (
+            M.F_LOYALTY, M.F_WEALTH, M.F_GOLD, M.F_RICE, M.F_MEN)])
     LOG = None
-    return dict(seed=seed, boosted=boosted, near=near, fatal=log.fatal, attacks=log.attacks, riots=log.riots, paid=log.riots_paid,
+    return dict(seed=seed, boosted=boosted, near=near, fatal=log.fatal, attacks=log.attacks, riots=log.riots, paid=log.riots_paid, years=log.years,
                 rebels=log.rebel_battles)
 
 
