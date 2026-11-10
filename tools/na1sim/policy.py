@@ -31,7 +31,8 @@ CLIFF = 46          # keep morale/loyalty >= 45 (revolt/riot eligibility is 0 at
 # The picker is a tool for now, not the default: buying to a computed line loses to spending the gold
 # (na1sim.reaction). `forecast` and `baseline` are its variants, `keep_rice` holds rice at the men.
 OPENING = {"tax_jump": True, "gold_gift": True, "picker": False, "picker_slack": 0,
-           "forecast": 0, "baseline": False, "keep_rice": False, "upkeep_rice": False}
+           "forecast": 0, "baseline": False, "keep_rice": False, "upkeep_rice": False,
+           "extend_x": 0, "extend_stop": 1, "extend_floor": 1}   # tactical._extend_won_defence
 UPKEEP_MARGIN = 5
 
 

@@ -1394,8 +1394,78 @@ def dispatch_battle_resolution(m: "M.Memory", outcome: int, rng) -> int:
         winner_is_def = 1 if (m.r16(M.BATTLE_WINNER_PROV) == m.defending) else 0
         if not (m.r8(M.WAR_SIDE_STATE_FLAG + winner_is_def) & 31):
             outcome += 1
+    _extend_won_defence(m)
     apply_conquest_outcome(m, rng)
     return outcome
+
+
+def _write_garrison(m, cut=0):
+    """Write the garrison apply_conquest_outcome would (both sides' survivors, rice and gold) into
+    the defending fief, `cut` men fewer on each side. The caller restores memory."""
+    f = m.fief(m.defending)
+    for k, w in ((M.F_GOLD, M.SR_GOLD), (M.F_RICE, M.SR_RICE), (M.F_MEN, M.SR_MEN)):
+        v = sum(max(0, m.r16(m.side_resource_ptr(s) + w) - (cut if w == M.SR_MEN else 0)) for s in (0, 1))
+        m.w16(f + k, v)
+
+
+def _garrison_slack(m, sustain):
+    """That garrison run through the Fall harvest (policy.harvest_after, income at its floor).
+    -> post-harvest rice over the line: above 0 (survive the Fall), or also next year's upkeep
+    (sustain). Memory restored."""
+    from . import policy
+    snap = bytes(m.m)
+    try:
+        _write_garrison(m)
+        _, _, rice, men = policy.harvest_after(m, m.defending)
+    finally:
+        m.m[:] = snap
+    return rice - (men // 2 if sustain else 0) - 1
+
+
+def _garrison_hunted(m, cut):
+    """Would a neighbour pick the fief (policy.hunted_by, the ROM's own choice) with the garrison
+    `cut` men smaller on each side? The men floor (Chris, 2026-11-10): his path was being bigger,
+    so never fight below the size that keeps him off the hunt list. Memory and RNG restored."""
+    from . import policy
+    snap, state, sel = bytes(m.m), m.rng.getstate(), m.selected
+    try:
+        _write_garrison(m, cut)
+        return bool(policy.hunted_by(m, m.defending))
+    finally:
+        m.m[:] = snap
+        m.rng.setstate(state)
+        m.selected = sel
+
+
+def _extend_won_defence(m):
+    """Chris, 2026-11-10: a human defender who is winning chooses when the battle ends. The survivors
+    of both armies garrison his fief (apply_conquest_outcome), so a big win can leave an army the
+    harvest cannot feed: rice 0 after the upkeep reads as 0 provisioned men, and every neighbour
+    attacks at share 100. So he fights on: each day both sides lose half of `extend_x` men and burn
+    their men/30 rice (consume_daily_battle_rice), until the garrison passes the feed line
+    (`extend_stop` 1: post-harvest rice above 0; 2: it also covers next year's upkeep). An
+    abstraction of the tactical days, not the engine: the loss rate is a guess, swept. Never lets
+    his own rice run out (a loss), needs an attacker left to fight, and (`extend_floor`) never cuts
+    below the size that keeps him off the hunt list. Without the floor, Saito (300 seeds, X=40)
+    went 2.0% -> 0.0%: cut to 0-22 men, a second neighbour took him the same Spring."""
+    from . import policy
+    x, stop = policy.OPENING.get("extend_x", 0), policy.OPENING.get("extend_stop", 1)
+    dp = m.defending
+    if (not x or m.selected == 50 or m.r16(M.BATTLE_WINNER_PROV) == dp
+            or m.province_ai_state(dp) != M.PLAYER_DIRECT):
+        return
+    atk, dfn = m.side_resource_ptr(0), m.side_resource_ptr(1)
+    for _day in range(30):
+        if m.r16(atk + M.SR_MEN) == 0 or _garrison_slack(m, stop == 2) >= 0:
+            break
+        if m.r16(dfn + M.SR_RICE) <= m.r16(dfn + M.SR_MEN) // 30 + 1:
+            break
+        if policy.OPENING.get("extend_floor", 1) and _garrison_hunted(m, x // 2):
+            break
+        for p in (atk, dfn):
+            m.w16(p + M.SR_MEN, max(0, m.r16(p + M.SR_MEN) - x // 2))
+        consume_daily_battle_rice(m)
+        m.extended_days = getattr(m, "extended_days", 0) + 1
 
 
 def _ensure_unit_split(m: "M.Memory", prov: int) -> None:
