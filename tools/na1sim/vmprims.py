@@ -766,6 +766,43 @@ def cap_arms_at_index(m: "M.Memory", idx: int, fief: int) -> None:
         m.w8(base + 2, cap)
 
 
+def commit_arms_record(m: "M.Memory", idx: int, buf, cancel: int) -> int:
+    """commit_arms_record_from_buffer bank 1 $ABBD: Assign's commit. Writes the editor's five rows
+    into the fief's unit-type split ($76A9 + idx*5) only if the pool is empty (`cancel` is the
+    leftover units_delta) and some row changed; returns 1 then, else 0. (The cutscene is UI.)"""
+    base = M.PROVINCE_UNIT_TYPE_PCT + idx * 5
+    changed = any(m.r8(base + i) != buf[i] for i in range(5))
+    if cancel or not changed:
+        return 0
+    for i in range(5):
+        m.w8(base + i, buf[i] & 0xFF)
+    return 1
+
+
+def assign_reachable(m: "M.Memory", idx: int, split) -> bool:
+    """The rows effect_assign bank 1 $AC11 lets the player reach: points only move between rows (the
+    pool starts at 0, and a non-empty pool cancels the commit), a row goes down only while above
+    its floor (row 0: 1, the rest: 0), and row 2 goes up only while under arms/50 + 20."""
+    base = M.PROVINCE_UNIT_TYPE_PCT + idx * 5
+    cur = [m.r8(base + i) for i in range(5)]
+    cap = m.r16(m.fief(idx) + M.F_ARMS) // 50 + 20
+    return (len(split) == 5 and sum(split) == sum(cur) and split[0] >= 1 and min(split) >= 0
+            and split[2] <= max(cur[2], cap))
+
+
+def driver_assign(m: "M.Memory", idx: int, split) -> int:
+    """driver_assign bank 1 $AD67, the player entering `split` in the editor and pressing A: needs
+    soldiers and 30 gold; debits the 30 only if the commit happens. Returns 1 if it did (the
+    command spent the turn), 0 if refused (unreachable split, no change, no men, no gold)."""
+    f = m.fief(idx)
+    if m.s16(f + M.F_MEN) <= 0 or m.r16(f + M.F_GOLD) < 30 or not assign_reachable(m, idx, split):
+        return 0
+    if commit_arms_record(m, idx, list(split), 0):
+        m.w16(f + M.F_GOLD, m.r16(f + M.F_GOLD) - 30)
+        return 1
+    return 0
+
+
 def effect_hire_men(m: "M.Memory", fief: int, amount: int) -> int:
     """effect_hire_men $A553, the player typing `amount` (held to the prompt's 1..max). Costs
     (rate*amount + 9)/10 gold, blends the recruits in, and nudges the hire rate up one."""

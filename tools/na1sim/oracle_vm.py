@@ -91,7 +91,7 @@ def run_rom(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=200000, 
 
 
 def run_rom_ret(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=200000, stubs=(),
-                strict=False):
+                strict=False, pre=None):
     """Like run_rom but ALSO returns the routine's return value (regL/$08 at the
     outermost RETURN) -- for the pure combat strength functions that return a
     number rather than mutating the fief region. Returns (post_image, regL).
@@ -106,6 +106,8 @@ def run_rom_ret(m_state, body, frame_off, bank, args=(), fp=0x05FF, max_ops=2000
     vm.vm_sp = fp + frame_off
     for i, a in enumerate(args):
         vm.mem.write_word(fp + 11 + i * 2, a)
+    if pre:
+        pre(vm)                                    # e.g. a caller-side buffer in work RAM
     vm.vm_pc = body
     vm.cpu.pc = vm.DISPATCHER_ADDR
     reached = False
@@ -676,8 +678,11 @@ def combat_conquest_check():
     the defending fief record + ownership/capital + both lords' stat bytes."""
     from . import tactical as T
 
-    def setup(m, atk_won, cap_fell):
+    def setup(m, atk_won, cap_fell, splits=None):
         _combat_battle_setup(m, 5, 8)
+        for prov, row in (splits or {}).items():       # unit-type splits ($76A9 + prov*5)
+            for i, v in enumerate(row):
+                m.w8(M.PROVINCE_UNIT_TYPE_PCT + prov * 5 + i, v)
         m.w16(M.BATTLE_WINNER_PROV, 8 if atk_won else 5)
         m.w16(M.WAR_ATTACKER_GOLD, 70); m.w16(M.WAR_ATTACKER_RICE, 40); m.w16(M.WAR_ATTACKER_MEN, 55)
         m.w16(M.WAR_DEFENDER_GOLD, 20); m.w16(M.WAR_DEFENDER_RICE, 15); m.w16(M.WAR_DEFENDER_MEN, 18)
@@ -689,17 +694,22 @@ def combat_conquest_check():
             m.w16(fd + off, v)
 
     ok = True
-    for label, atk_won, cap_fell in [("atk-won", True, False), ("atk-lost", False, False),
-                                     ("capital-fell", True, True)]:
-        mr = M.Memory(rng=DreamRNG()); setup(mr, atk_won, cap_fell)
+    # musket row over the cap (arms 55 -> cap 21): cap_arms_at_index $DFFE moves the excess to row 0
+    musket = {5: (20, 20, 40, 10, 10), 8: (30, 20, 30, 10, 10)}
+    for label, atk_won, cap_fell, sp in [("atk-won", True, False, None), ("atk-lost", False, False, None),
+                                         ("capital-fell", True, True, None),
+                                         ("atk-won-musket", True, False, musket),
+                                         ("atk-lost-musket", False, False, musket)]:
+        mr = M.Memory(rng=DreamRNG()); setup(mr, atk_won, cap_fell, sp)
         rom_post, _ = run_rom_ret(mr, 0xE041, -12, 15, fp=0x0480)
-        mp = M.Memory(rng=DreamRNG()); setup(mp, atk_won, cap_fell)
+        mp = M.Memory(rng=DreamRNG()); setup(mp, atk_won, cap_fell, sp)
         T.apply_conquest_outcome(mp, mp.rng)
         fd = mp.fief(8)
         addrs = [(fd + off, 2, n) for off, n in [(M.F_GOLD, "gold"), (M.F_RICE, "rice"),
                  (M.F_MEN, "men"), (M.F_MORALE, "mor"), (M.F_SKILL, "skl"), (M.F_ARMS, "arm")]]
         addrs += [(M.FIEF_TO_DAIMYO_MAP + 8, 1, "owner8"), (M.FIEF_IS_CAPITAL + 8, 1, "cap8"),
                   (M.FIEF_IS_CAPITAL + 5, 1, "cap5")]
+        addrs += [(M.PROVINCE_UNIT_TYPE_PCT + 8 * 5 + i, 1, f"split8[{i}]") for i in range(5)]
         for off, n in [(M.D_DRIVE, "Dwin"), (M.D_CHARISMA, "Chwin"), (M.D_IQ, "IQwin")]:
             addrs.append((mp.daimyo(1) + off, 1, n))
             addrs.append((mp.daimyo(2) + off, 1, n + "L"))
@@ -707,6 +717,36 @@ def combat_conquest_check():
                  if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
         ok = ok and not diffs
         print(f"--- conquest[{label}]: {'MATCH' if not diffs else 'MISMATCH ' + ','.join(diffs)}")
+    return ok
+
+
+def assign_commit_check():
+    """Validate commit_arms_record_from_buffer ($ABBD, bank 1) vs na1dream: the Assign editor's
+    commit writes the buffer into $76A9 + fief*5 only when the pool is empty (`cancel` = 0) and a
+    row changed, and returns 1 (driver_assign debits the 30 gold on a 1)."""
+    BUF = 0x0300                                     # a caller-side word buffer in work RAM
+    ok = True
+    for label, cur, new, cancel in [("commit", (20, 20, 20, 20, 20), (10, 30, 20, 20, 20), 0),
+                                    ("pool-left", (20, 20, 20, 20, 20), (10, 25, 20, 20, 20), 5),
+                                    ("unchanged", (20, 20, 20, 20, 20), (20, 20, 20, 20, 20), 0),
+                                    ("ai-split", (32, 27, 20, 10, 11), (1, 40, 20, 30, 9), 0)]:
+        def setup(m):
+            m.w16(M.SELECTED_PROVINCE, 8)
+            for i, v in enumerate(cur):
+                m.w8(M.PROVINCE_UNIT_TYPE_PCT + 40 + i, v)
+
+        def pre(vm, _new=new):
+            for i, v in enumerate(_new):
+                vm.mem.write_word(BUF + 2 * i, v)
+        mr = M.Memory(rng=DreamRNG()); setup(mr)
+        rom_post, ret = run_rom_ret(mr, 0xABC2, -6, 1, args=(BUF, cancel), fp=0x0480, pre=pre)
+        mp = M.Memory(rng=DreamRNG()); setup(mp)
+        pret = P.commit_arms_record(mp, 8, list(new), cancel)
+        rom_row = tuple(_read_buf(rom_post, M.PROVINCE_UNIT_TYPE_PCT + 40 + i, 1) for i in range(5))
+        py_row = tuple(mp.r8(M.PROVINCE_UNIT_TYPE_PCT + 40 + i) for i in range(5))
+        good = rom_row == py_row and (ret & 0xFF) == pret
+        ok = ok and good
+        print(f"--- assign_commit[{label}]: {'MATCH' if good else 'MISMATCH'} rom {rom_row} ret {ret} | py {py_row} ret {pret}")
     return ok
 
 
@@ -814,6 +854,7 @@ def main():
     results.append(combat_deploy_check())
     print("\n  --- TACTICAL: conquest resolution (apply_conquest_outcome $E041) ---")
     results.append(combat_conquest_check())
+    results.append(assign_commit_check())
 
     print(f"\n=== {sum(results)}/{len(results)} routines MATCH ===")
 

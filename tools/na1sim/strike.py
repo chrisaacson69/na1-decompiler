@@ -225,6 +225,7 @@ class Player:
 
     def deploy(self, m):
         side = m.cur_combat_side
+        self.strikers = set(range(1, 5))
         if self.arm == "control":
             edge = T.set_combat_arena_rect_by_approach(m)
             T.ai_place_combat_units_random_or_smart(m, edge)
@@ -274,6 +275,32 @@ class Player:
         return None
 
 
+class Doctrine(Player):
+    """The combat doctrine for whole games (#43): read the attacker's days of food (his rice over
+    men/30, `consume_daily_battle_rice` $830B) and pick the arm. Short-fed: `short` (default control:
+    hold the castle, strike only what comes next to you, win on his clock). Long-fed: `long`
+    (default contact, the best at the 20x5 a player has until he spends an Assign; after an Assign
+    to a heavy commander, single is best). Rebels and the player's own attacks: control (the
+    planner assumes a defended castle against an entry strip). Set it as tactical.HUMAN with
+    OPENING no_retreat=1 (deaths.py --combat doctrine)."""
+
+    def __init__(self, short="control", long="contact", gate=20):
+        super().__init__(short)
+        self.short, self.long, self.gate = short, long, gate
+
+    def deploy(self, m):
+        side = m.cur_combat_side
+        a = m.side_resource_ptr(side ^ 1)
+        men, rice = m.r16(a + M.SR_MEN), m.s16(a + M.SR_RICE)
+        days = rice * 30 // men if men else 99
+        if side == 0 or m.selected == 50:
+            self.arm = "control"
+        else:
+            self.arm = self.short if days < self.gate else self.long
+        super().deploy(m)
+        self.log[-1].update(arm=self.arm, days=days)
+
+
 def _distances(m, src):
     """Hex distance from src over unblocked cells (units ignored)."""
     dist, frontier = {src: 0}, [src]
@@ -295,14 +322,13 @@ def assign(split):
     points between rows, so the total is conserved (the commit is cancelled unless the pool is 0);
     row 0 (commander) keeps at least 1; row 2 (musket) is capped at arms/50 + 20. -> prepare(m)
     for battles.replay, or None if the split is not one the editor can make on this fief."""
+    from . import vmprims as P
+
     def prepare(m):
-        base = M.PROVINCE_UNIT_TYPE_PCT + m.defending * 5
-        cur = [m.r8(base + i) for i in range(5)]
-        cap = m.r16(m.fief(m.defending) + M.F_ARMS) // 50 + 20
-        if sum(split) != sum(cur) or split[0] < 1 or split[2] > max(cap, cur[2]):
-            raise ValueError(f"Assign cannot make {split} from {cur} (row-2 cap {cap})")
-        for i, v in enumerate(split):
-            m.w8(base + i, v)
+        if not P.assign_reachable(m, m.defending, split):
+            base = M.PROVINCE_UNIT_TYPE_PCT + m.defending * 5
+            raise ValueError(f"Assign cannot make {split} from {[m.r8(base + i) for i in range(5)]}")
+        P.commit_arms_record(m, m.defending, list(split), 0)
     return prepare
 
 

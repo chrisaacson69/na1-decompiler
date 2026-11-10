@@ -1400,6 +1400,7 @@ def apply_conquest_outcome(m: "M.Memory", rng) -> None:
             m.w8(M.PROVINCE_UNIT_TYPE_PCT + dp * 5 + i, m.r8(M.PROVINCE_UNIT_TYPE_PCT + sp * 5 + i))
     if not uprising:
         _transfer_force_triplet(m)
+        P.cap_arms_at_index(m, dp, m.fief(dp))           # $E08B: the musket row held to arms/50 + 20
         if atk_won:
             _daimyo_stat_transfer(m, sp, dp)
         else:

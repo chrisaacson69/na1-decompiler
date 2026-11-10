@@ -112,9 +112,25 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 **How far decapitation reaches** (long-fed attackers, doctrine vs AI, by attacker:defender men): under 1:1, 6 / 9 vs 4; 1-1.5, 7 / 20 vs 3; 1.5-2, 6 / 38 vs 0; 2-3, 6 / 163 vs 0; 3 and up, 0 / 35. Even or better wins most, the defender's edge stretches it to about 2:1, and past 3:1 starvation is the only hope (Chris's expectation for big armies).
 
-**Assign** (grounded): `effect_assign` (bank 1 $AC11) edits $76A9 + fief*5, the split the battle deals men by; the editor conserves the total (the commit is cancelled unless the pool is 0), keeps row 0 at 1 or more, caps row 2 at arms/50 + 20. `strike.py --split` applies one at battle entry. Swept only on the wrong (sum-70) board; to redo from 20x5.
+**Assign is the big lever** (Chris: a player has 20x5 until he spends a turn on it; the AI reshapes for free). Grounded and oracle-checked: `effect_assign` (bank 1 $AC11) edits $76A9 + fief*5, the split the battle deals men by; the editor moves points between rows (the commit, `commit_arms_record_from_buffer` $ABBD, is cancelled unless the pool is 0), keeps row 0 at 1 or more, and lets row 2 rise only under arms/50 + 20. Now in the sim as `vmprims.driver_assign` (men > 0, 30 gold debited on a commit), `assign_reachable`, `commit_arms_record` (`oracle_vm.assign_commit_check`: 4 / 4 MATCH vs the bytecode). The same audit found the sim's `apply_conquest_outcome` missing the musket cap the ROM applies after merging the forces (`cap_arms_at_index` $E08B; also after Move and Hire, which the sim had): fixed, and `combat_conquest_check` now diffs the split (5 / 5 MATCH, 20 / 20 routines). **The AI's free reshapes:** `init_daimyo_arms_record` at setup (AI fiefs only, about 32/27/20/10/11) and `ai_reinforce` $960C's reseed (50/5/5/5/5 plus six +5s, 1% a turn); the player gets neither.
 
-**Open.** Wire the doctrine into whole games (the sim's human still fights with the AI logic, retreat and all). Bribe (`resolve_attack_apply_casualties`: morale + Charisma + rng vs morale + Charisma + 2·skill, defectors join the commander; it re-prompts, so possibly once per turn at no action cost), limited by Saito's poor troops and gold (Chris). The landing model ignores his random slots 3-4. The setup RNG is less predictable than #42 read (Chris): worth its own dive. And Chris's headless battles: a generator sweeping army ratio, fief and entry without games.
+The sweep (`strike.py --split`, the 299 starts, held):
+
+| split | AI, no retreat | control | single | contact | pocket |
+|---|---|---|---|---|---|
+| 20/20/20/20/20 (start) | 31 | 51 | 24 | 28 | 27 |
+| 40/15/15/15/15 | 35 | 63 | 47 | 36 | 29 |
+| 60/10/10/10/10 | 50 | 76 | 61 | 49 | 43 |
+| 80/5/5/5/5 | 61 | 85 | 79 | 79 | 64 |
+| **96/1/1/1/1** | 78 | 83 | **96** | 80 | 77 |
+| 70/10/20/0/0 | 69 | 68 | 83 | 64 | 61 |
+| 1/40/20/20/19 | 25 | 36 | 21 | 26 | 38 |
+
+Everything in the commander on the castle seat wins most: 96/1/1/1/1 with one one-man striker holds **96 of 299, five times the AI's 18** (66 of the 265 long-fed). The castle commander is the piece the battle turns on (Chris: the castle is a big defence piece). The pocket is best only when the men are in the strikers (1/40/20/20/19: pocket vs single +25 / -8 on long food, Chris's multi-unit resilience), but an empty commander loses more than the pocket saves. The catch is the turn: an Assign costs an action and 30 gold, and Saito is attacked before his first action in about half his games.
+
+**Wired into whole games:** `strike.Doctrine` (short-fed `control`, long-fed `contact` by default; rebels and the player's own attacks `control`) as `tactical.HUMAN`, with the human never retreating: `deaths.py --combat doctrine` (or `--combat SHORT,LONG`). Smoke-tested only (Chris: no reruns needed; he expects little from no-retreat alone: a retreat is an instant loss, but fighting on often ends to the man, or so small the fief falls that turn or the next).
+
+**Open.** A policy that spends the Assign (when, and to what: 96/1/1/1/1 against a wait-and-see 20x5). Bribe (`resolve_attack_apply_casualties`: morale + Charisma + rng vs morale + Charisma + 2·skill, defectors join the commander; it re-prompts, so possibly once per turn at no action cost): parked (Chris: little hope for Saito's poor troops and gold, probably worse; worth knowing exactly). The landing model ignores his random slots 3-4. **Next: the setup RNG** (Chris): less predictable than #42 read, and how far it can be abused. Then the headless battles: a generator sweeping army ratio, split, fief and entry without games.
 
 ### #42 — The battle is chess: deployment, the AI retreat, and decapitation (Chris, 2026-11-10)
 

@@ -140,8 +140,13 @@ def play(fief, seed, years=6, plan=("auto",), tail=policy.expand_policy, skill=2
 
 
 def _chunk(job):
-    fief, s0, s1, years, plan, skill, opening, tail = job
+    fief, s0, s1, years, plan, skill, opening, tail, combat = job
     policy.OPENING.update(opening)
+    if combat:                                  # the human fights his battles (strike.Doctrine, #43)
+        from . import strike, tactical
+        short, long_ = (combat.split(",") + ["contact"])[:2] if combat != "doctrine" else ("control", "contact")
+        tactical.HUMAN = strike.Doctrine(short, long_)
+        policy.OPENING["no_retreat"] = 1
     from . import reaction
     pol = {"reaction": reaction.reaction_policy, "reader": reaction.reader_policy}.get(tail, policy.expand_policy)
     return fief, [play(fief, s, years, plan, tail=pol, skill=skill) for s in range(s0, s1)]
@@ -197,11 +202,12 @@ def main():
     ap.add_argument("--skill", type=int, default=2)
     ap.add_argument("--tail", default="expand", help="expand, reaction or reader")
     ap.add_argument("--opening", default="", help="policy.OPENING overrides: keep_rice=1,picker=1")
+    ap.add_argument("--combat", default="", help="doctrine, or SHORT,LONG arms (strike.py): the human fights his battles")
     ap.add_argument("--out")
     a = ap.parse_args()
     plan = tuple(a.plan.split(","))
     opening = {k: int(v) for k, v in (kv.split("=") for kv in a.opening.split(",") if kv)}
-    jobs = [(int(f), s, min(s + 50, a.first + a.seeds), a.years, plan, a.skill, opening, a.tail) for f in a.fiefs.split(",")
+    jobs = [(int(f), s, min(s + 50, a.first + a.seeds), a.years, plan, a.skill, opening, a.tail, a.combat) for f in a.fiefs.split(",")
             for s in range(a.first, a.first + a.seeds, 50)]
     res = collections.defaultdict(list)
     with ProcessPoolExecutor(6) as ex:
