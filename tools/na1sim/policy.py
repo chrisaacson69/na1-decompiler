@@ -78,14 +78,34 @@ def harvest_after(m, idx, spend=0):
         m.rng.setstate(state)
 
 
-def _rice_slack(m, idx, targeted, spend=0):
+def _rice_slack(m, idx, targeted, spend=0, sustain=False):
     """How much rice could go and still pass the check (negative: short). Chris, 2026-11-10: a target
     holds rice >= men before AND after the harvest, so the shield min(rice, men) is the men; anyone
-    else only needs the upkeep, read after the harvest, not to zero the rice."""
+    else only needs the upkeep, read after the harvest, not to zero the rice (`sustain`: and to cover
+    next year's upkeep too, since an army fed for one Fall starves at the next)."""
     now, _, rice, men = harvest_after(m, idx, spend)
     if targeted:
         return min(now - m.r16(m.fief(idx) + M.F_MEN), rice - men)
-    return rice - 1
+    return rice - (men // 2 if sustain else 0) - 1
+
+
+def buy_rice_to(m, idx, slack):
+    """Buy the least rice that makes `slack(spend) >= 0`, all the gold if none does; nothing if it
+    already passes. Buying moves gold to rice, so when gold is then the short one the upkeep cuts
+    the army to what it can pay: the dismissal (Chris, #40). -> True if it bought."""
+    gold = m.r16(m.fief(idx) + M.F_GOLD)
+    if gold <= 1 or slack(0) >= 0:
+        return False
+    lo, hi = 1, gold - 1
+    if slack(hi) >= 0:
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if slack(mid) >= 0:
+                hi = mid
+            else:
+                lo = mid + 1
+    buy_rice(m, idx, hi)
+    return True
 
 
 def _gate_rice(m, idx):
@@ -94,20 +114,8 @@ def _gate_rice(m, idx):
     whose men did not lift it out of range buys rice to the men, to shut the gate, and sees to the
     economy after the harvest. The least gold that passes; all of it if none does.
     -> True if it took the season's action."""
-    gold = m.r16(m.fief(idx) + M.F_GOLD)
     targeted = bool(hunted_by(m, idx))
-    if gold <= 1 or _rice_slack(m, idx, targeted) >= 0:
-        return False
-    lo, hi = 1, gold - 1
-    if _rice_slack(m, idx, targeted, hi) >= 0:
-        while lo < hi:
-            mid = (lo + hi) // 2
-            if _rice_slack(m, idx, targeted, mid) >= 0:
-                hi = mid
-            else:
-                lo = mid + 1
-    buy_rice(m, idx, hi)
-    return True
+    return buy_rice_to(m, idx, lambda s: _rice_slack(m, idx, targeted, s))
 SKILL_CAP = 200
 
 

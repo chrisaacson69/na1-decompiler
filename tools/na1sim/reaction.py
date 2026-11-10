@@ -201,6 +201,61 @@ def reaction_policy(m, idx, rng):
         policy.OPENING["keep_rice"] = keep
 
 
+def reader_policy(m, idx, rng):
+    """A player who reads the position each turn instead of following a script (Chris, 2026-11-10:
+    treat Saito as a new player). Saito's T1 battle can come before or after his first command, so
+    a turn-numbered opening cannot tell a fief that just won a big garrison from one that did not.
+    In order, the first that applies takes the season:
+      1. cliffs: morale, then loyalty, under 45 (gold first, else rice above the upkeep);
+      2. the runt: a neighbour would pick me and can pay -> hire to the fewest men that stop it
+         (men_line; all the gold if out of reach), and no further;
+      3. Summer, the last command before the harvest: if the army cannot be fed through this upkeep
+         and the next, buy the least rice that can; when gold is then short, the upkeep dismisses
+         the men it cannot pay;
+      4. the economy: tax to 55 as loyalty bears it; Summer gives the rice above what step 3 keeps
+         (above the men while hunted), Spring gives the gold, else train."""
+    from . import memmap as M, policy
+    f = m.fief(idx)
+    gold, rice, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
+    morale, loyalty = m.r16(f + M.F_MORALE), m.r16(f + M.F_LOYALTY)
+    season = getattr(m, "season", 0)
+    for low, give in ((morale, policy.give_men), (loyalty, policy.give_peasants)):     # 1
+        if low < policy.CLIFF:
+            if gold > 1:
+                give(m, idx, min(60, gold - 1), gold=True)
+                return
+            if rice - men // 2 - 1 > 0:
+                give(m, idx, min(60, rice - men // 2 - 1))
+                return
+    if threats(m, idx) and gold > 1:                                                    # 2
+        line = men_line(m, idx)
+        if line is None:
+            policy.hire_men(m, idx, gold - 1)
+            return
+        if policy._hire_up_to(m, idx, line):
+            return
+    if season == 1 and policy.buy_rice_to(                                              # 3
+            m, idx, lambda s: policy._rice_slack(m, idx, False, s, sustain=True)):
+        return
+    tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)       # 4
+    step = next((s for s in range(cap - tax, 0, -1)
+                 if loyalty - policy.P.pct_op(loyalty, s) >= policy.CLIFF - 1), 0)
+    if step:
+        policy.set_tax(m, idx, tax + step)
+        return
+    capped = (m.r16(f + M.F_WEALTH) + loyalty) // 2 >= m.r16(f + M.F_HEADER)
+    if season == 1:
+        keep = men if policy.hunted_by(m, idx) else 0
+        keep = max(keep, rice - max(0, policy._rice_slack(m, idx, False, sustain=True)))
+        if rice > keep + 1:
+            (policy.give_men if capped else policy.give_peasants)(m, idx, rice - keep - 1)
+            return
+    if season == 0 and gold > 1 and not capped:
+        policy.give_peasants(m, idx, gold - 1, gold=True)
+        return
+    policy.train(m, idx)
+
+
 def _rows(job):
     import random
     from . import game, setup

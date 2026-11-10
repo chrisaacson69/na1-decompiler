@@ -143,7 +143,7 @@ def _chunk(job):
     fief, s0, s1, years, plan, skill, opening, tail = job
     policy.OPENING.update(opening)
     from . import reaction
-    pol = reaction.reaction_policy if tail == "reaction" else policy.expand_policy
+    pol = {"reaction": reaction.reaction_policy, "reader": reaction.reader_policy}.get(tail, policy.expand_policy)
     return fief, [play(fief, s, years, plan, tail=pol, skill=skill) for s in range(s0, s1)]
 
 
@@ -195,7 +195,7 @@ def main():
     ap.add_argument("--fiefs", default=",".join(map(str, range(17))))
     ap.add_argument("--plan", default="auto")
     ap.add_argument("--skill", type=int, default=2)
-    ap.add_argument("--tail", default="expand", help="expand or reaction")
+    ap.add_argument("--tail", default="expand", help="expand, reaction or reader")
     ap.add_argument("--opening", default="", help="policy.OPENING overrides: keep_rice=1,picker=1")
     ap.add_argument("--out")
     a = ap.parse_args()
