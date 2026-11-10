@@ -79,10 +79,13 @@ def _capturing(m, rng):
     return rec["outcome"]
 
 
-def replay(rec, opening=None):
+def replay(rec, opening=None, prepare=None):
     """Run a saved start again -> (outcome, defender won, fingerprint, the Memory afterwards).
-    `opening` overrides policy.OPENING knobs on top of the captured ones (restored after)."""
+    `opening` overrides policy.OPENING knobs on top of the captured ones (restored after);
+    `prepare(m)` edits the start before the battle (e.g. strike.assign, an Assign made beforehand)."""
     m, rng = pickle.loads(rec["start"])
+    if prepare:
+        prepare(m)
     saved = dict(policy.OPENING)
     policy.OPENING.update(rec["opening"])
     policy.OPENING.update(opening or {})

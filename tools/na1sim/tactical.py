@@ -853,13 +853,60 @@ def ai_place_combat_units_random_or_smart(m, arena_rect) -> int:
     return 0
 
 
+# The human combat player (strike.py). None = the headless default: both sides run the AI logic.
+# When set, the side the ROM hands to the player (battleside_not_state5_or_resting false, and not the
+# rebels' side) deploys through HUMAN.deploy and fights through human_command_loop(HUMAN.act).
+HUMAN = None
+
+
+def _human_side(m) -> bool:
+    """The ROM's player gate in deploy_both_sides_units_loop $9B08 / run_both_sides_combat_turn $ADD1."""
+    return (HUMAN is not None and (m.selected != 50 or m.cur_combat_side)
+            and not battleside_not_state5_or_resting(m, m.cur_combat_side))
+
+
 def deploy_both_sides_units_loop(m) -> None:
-    """deploy_both_sides_units_loop $9B07: deploy both sides (AI placement for the
-    headless path), flipping cur_combat_side between them."""
+    """deploy_both_sides_units_loop $9B08: deploy both sides, flipping cur_combat_side between them.
+    The player's side takes player_interactive_unit_move_loop $9A18 (HUMAN.deploy: one free,
+    unblocked cell per present slot, in slot order, via commit_unit_dest_tile_if_valid)."""
     for _ in range(2):
         edge = set_combat_arena_rect_by_approach(m)
-        ai_place_combat_units_random_or_smart(m, edge)
+        if _human_side(m):
+            HUMAN.deploy(m)
+        else:
+            ai_place_combat_units_random_or_smart(m, edge)
         m.cur_combat_side = m.cur_combat_side ^ 1
+
+
+def human_command_loop(m, day) -> int:
+    """combat_command_dispatch_loop_per_unit $AC7F: each present unit, in slot order, takes one
+    verb. HUMAN.act(m, day, slot) returns ("move", x, y) (player_move_unit_until_placed_loop $A90E:
+    one step to a free in-bounds neighbour), ("attack", enemy_slot) (player_move_unit_with_occupancy
+    _check_loop $A96C: one exchange with an adjacent enemy), ("pass",) ($AB37), or None: this unit
+    runs the AI logic instead (a sim extension; the ROM has no such verb). Battle over: a commander
+    gone (check_commander_alive_both_sides) or an AI claim."""
+    m.cur_combat_unit_slot = 0
+    unit_iter = 0
+    while m.cur_combat_unit_slot < 5:
+        slot = m.cur_combat_unit_slot
+        if m.is_unit_present(m.cur_combat_side, slot):
+            unit_iter += 1
+            act = HUMAN.act(m, day, slot)
+            if act is None:
+                if ai_select_unit_combat_action(m, day, unit_iter - 1):
+                    return 1
+            elif act[0] == "move":
+                ux, uy = m.r8(m.unit_col_ptr(m.cur_combat_side, slot)), m.r8(m.unit_row_ptr(m.cur_combat_side, slot))
+                assert any(step_coord_by_direction(ux, uy, d) == (1, act[1], act[2]) for d in range(6)), act
+                assert place_unit_at_tile_if_free(m, act[1], act[2]), act
+            elif act[0] == "attack":
+                assert is_enemy_unit_adjacent(m, act[1]), act
+                resolve_attack_apply_mutual_casualties(m, act[1])
+            r = check_commander_alive_both_sides(m)
+            if r:
+                return r
+        m.cur_combat_unit_slot = m.cur_combat_unit_slot + 1
+    return 0
 
 
 def ai_attacker_outstrengths_defender(m) -> int:
@@ -1293,8 +1340,8 @@ def run_both_sides_combat_turn(m, day) -> int:
         m.w8(M.COMBAT_CASUALTY_SKIP, 0)
         for u in range(5):
             m.w8(M.UNIT_EXCHANGE_COUNT + u, 0)
-        # AI path for the headless sim (player branch is interactive)
-        result = ai_run_all_units_combat_actions(m, day)
+        # the player's side takes the command menu when a HUMAN is set; else the AI logic
+        result = human_command_loop(m, day) if _human_side(m) else ai_run_all_units_combat_actions(m, day)
         if result:
             break
         m.cur_combat_side = m.cur_combat_side ^ 1
