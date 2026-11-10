@@ -1147,6 +1147,15 @@ def ai_claim_province_when_strong_enough(m, fief) -> int:
     Needs the candidate owner list ($6F4F); returns 0 when none is available."""
     if m.cur_combat_unit_slot or not m.test_6f65_bit7(m.cur_combat_side) or m.selected == 50:
         return 0
+    # The weak branch is the AI daimyo RETREATING (own strength doubled under the enemy's, or no
+    # rice): it hands the fief over. The ROM runs it only for an AI side; a human's units take the
+    # interactive branch (player_interactive_unit_move_loop) and retreat only by choosing Flee.
+    # `no_retreat` (Chris, 2026-11-10): the sim's human fights on (Saito: 83 of 100 seeds' battles
+    # ended by his own commander's retreat under the AI logic).
+    from . import policy
+    if (policy.OPENING.get("no_retreat") and m.province_ai_state(
+            m.get_battle_side_province(m.cur_combat_side)) == M.PLAYER_DIRECT):
+        return 0
     strong = not (ai_own_double_lt_enemy_total(m) or not side_has_rice_for_day(m, m.cur_combat_side))
     branch = strong and not (m.cur_combat_side or not (fief > 29))
     if strong and not branch:

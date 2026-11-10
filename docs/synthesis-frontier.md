@@ -91,6 +91,18 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #42 — The battle is chess: deployment, the AI retreat, and decapitation (Chris, 2026-11-10)
+
+**Deployment, from the ROM.** The defender sets up first (`battle_init_defender` ends `cur_combat_side = 1`, $935C; `deploy_both_sides_units_loop` $9B07 starts from it), and since each day's loop flips the side twice, the defender also acts first every day. A human side places interactively (`player_interactive_unit_move_loop` $9A18); an AI side runs `ai_place_combat_units_random_or_smart` $99D2:
+- **AI defender:** the commander (slot 0) on the castle seat (`find_free_tactical_placement_cell`, the first castle-bit cell). If the attacker out-strengths it, the rest ring the seat; otherwise they drop on random cells.
+- **AI attacker:** confined to an entry strip set by the compass bearing between the fiefs (`set_combat_arena_rect_by_approach`: 3-4 columns or 2-3 rows), and barred from the six cells around the seat (`tile_blocked_for_placement`). Its commander takes the **first cell with no defender unit adjacent**, scanning the strip from a corner chosen by two coin flips, one of them fixed by the approach edge; up to two units fan out around it, the rest drop at random inside the strip.
+
+So against an AI attacker, a human defender knows the strip, knows the commander lands at one of two scan corners, can push that landing cell along the scan with his own placement, and moves first.
+
+**The AI retreat.** `ai_claim_province_when_strong_enough` $A84D is not a conquest trigger: when a daimyo-led side's strength doubled is under the enemy's total, or it has no rice, the commander relocates the capital and gives the battle up. The ROM runs it only for an AI side; the sim fought the human's battles with the AI logic, so Saito's battles were mostly ended by his own retreat (83 of 100 seeds, days 6-26). Knob `no_retreat` (tactical.py; off by default). It saves nothing: 2.0% → 2.3% (1 / 0) at skill 1, 0.3% → 0.3% at skill 2, because without it 75 of those 83 battles end with **his commander killed** instead, and the wins stay at about 27 in 100. The retreat was pre-empting a decapitation. The battle is decided by the commanders, in both directions.
+
+**Open, for a combat player:** movement per day (Move re-prompts on a truthy handler), what it takes to kill a commander that holds most of the army (the base split is 50/5/5/5/5, so about 70% of the men; Assign can change it), and whether steering the attacker's commander to a known cell and striking first turns the 27 wins into more. A battle harness that replays the captured start of every player-defended battle would measure a placement policy far faster than whole games.
+
 ### #41 — Rice for targets only, Saito is decided at T1, and search on one seed set (Chris, 2026-11-10)
 
 **#40's upkeep rule on all 17** (`upkeep_rice=1`, default tail, 300 seeds paired, 6 years). The mean did not move (skill 1 66.3% → 66.6%, skill 2 61.5% → 60.4%) because it was two effects cancelling. Split by whether the seed was attacked with the rule off: attacked games 97 saved / 6 lost (skill 1), 66 / 6 (skill 2); never-attacked games 3 / 72 and 5 / 121. Imagawa fell 90.7% → 77.0% and 84.7% → 69.0%, Hida and Kitabatake fell too, all by invasion in years 1-2 with fewer men at death (Imagawa 52 → 41): spending Summer on rice left them under the grudge line and **made them targets**. Chris's reading: off target, tax/give is the standard and sets up the harvest; a target hires first (Men, then Tax if that lifts it out of range); only a target still in range buys rice, to rice = men before and after the harvest, and sees to the economy after.
