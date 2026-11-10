@@ -83,20 +83,23 @@ EXTRA.update({"hire-line": _hire_line(0), "hire-line+25": _hire_line(25), "hire-
 policy.OPENING_ACTIONS.update(EXTRA)
 MENU = ("auto", "tax", "tax40", "hire", "hire/2", "gold>men", "gold>men/2", "rice>men", "rice>men/2",
         "gold>peasants", "gold>peasants/2", "rice>peasants", "rice>peasants/2", "train")
+# --fief other than Hatakeyama (Chris, 2026-11-10, Saito): the rice purchase and the line hires join
+# the menu, and the board split counts the fief's own doubled neighbours.
+MENU_ANY = MENU + ("rice", "hire-line", "hire-line+25")
 
 
 def _job(args):
-    plan, s0, s1, skill, years = args
+    plan, s0, s1, skill, years, fief = args
     out = []
     for seed in range(s0, s1):
-        g = deaths.play(FIEF, seed, years, plan, skill=skill)
+        g = deaths.play(fief, seed, years, plan, skill=skill)
         fat = g["fatal"]
-        out.append((seed, fat["year"] if fat else 0, fat["cause"] if fat else None,
-                    sum(1 for i in g["boosted"] if i in HONGANJI_NEAR)))
+        near = (sum(1 for i in g["boosted"] if i in HONGANJI_NEAR) if fief == 0 else len(g["near"]))
+        out.append((seed, fat["year"] if fat else 0, fat["cause"] if fat else None, near))
     return plan, out
 
 
-def run(plans, seeds, first, skill, years, workers, out=None, label="run"):
+def run(plans, seeds, first, skill, years, workers, out=None, label="run", fief=FIEF):
     """Play every plan over the seeds in chunks of 25. With `out`, each finished chunk is appended to
     that JSONL file and chunks already in it are skipped, so a stopped run resumes. (Not
     max_tasks_per_child: on Windows the pool hung once every worker had retired; a worker peaks
@@ -106,10 +109,10 @@ def run(plans, seeds, first, skill, years, workers, out=None, label="run"):
     if out and os.path.exists(out):
         for line in open(out):
             r = json.loads(line)
-            if (r["skill"], r["years"]) == (skill, years):
+            if (r["skill"], r["years"], r.get("fief", 0)) == (skill, years, fief):
                 res[tuple(r["plan"])].extend(map(tuple, r["rows"]))
                 done.add((tuple(r["plan"]), r["s0"]))
-    jobs = [(p, s, min(s + 25, first + seeds), skill, years) for p in plans
+    jobs = [(p, s, min(s + 25, first + seeds), skill, years, fief) for p in plans
             for s in range(first, first + seeds, 25) if (p, s) not in done]
     print(f"[{label}] {len(plans)} plans x {seeds} seeds, skill {skill}, year {years}: "
           f"{len(jobs)} chunks to play, {len(done)} resumed, {workers} workers", flush=True)
@@ -121,7 +124,8 @@ def run(plans, seeds, first, skill, years, workers, out=None, label="run"):
             res[p].extend(rows)
             if out:
                 with open(out, "a") as fh:
-                    fh.write(json.dumps(dict(plan=p, s0=futs[fut][1], skill=skill, years=years, rows=rows)) + "\n")
+                    fh.write(json.dumps(dict(plan=p, s0=futs[fut][1], skill=skill, years=years, fief=fief,
+                                             rows=rows)) + "\n")
             if n % 10 == 0 or n == len(jobs):
                 el = time.time() - t0
                 left = el / n * (len(jobs) - n)
@@ -139,7 +143,7 @@ def score(rows, year):
 
 
 def show(res, years, top=12):
-    print(f"{'plan':52}{'y2':>6}{'y' + str(years):>6}  y{years} by Honganji neighbours doubled 0/1/2+  | deaths by cause")
+    print(f"{'plan':52}{'y2':>6}{'y' + str(years):>6}  y{years} by board, doubled 0/1/2+ (Hatakeyama: Honganji's neighbours)  | deaths by cause")
     for p, rows in sorted(res.items(), key=lambda kv: (-score(kv[1], years), -score(kv[1], 2)))[:top]:
         c = collections.Counter(cause for _s, y, cause, _b in rows if y)
         split = "/".join(f"{score(b, years):.0%}({len(b)})" if b else "-" for b in
@@ -159,19 +163,24 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--out", help="JSONL of finished chunks: appended to, and resumed from")
     ap.add_argument("--plans", help="score only these, ';'-separated, actions ','-separated")
+    ap.add_argument("--fief", type=int, default=FIEF, help="the starting fief (deaths.NAMES order)")
+    ap.add_argument("--first-menu", help="turn 1's moves only, ','-separated (e.g. men moves in Spring)")
     a = ap.parse_args()
-    go = lambda plans, label="plans": run(plans, a.seeds, a.first, a.skill, a.years, a.workers, a.out, label)
+    go = lambda plans, label="plans": run(plans, a.seeds, a.first, a.skill, a.years, a.workers, a.out, label,
+                                          a.fief)
     if a.plans:
         res = go([tuple(p.split(",")) for p in a.plans.split(";")])
         show(res, a.years, top=len(res))
         return
-    plans = list(product(MENU, repeat=2))
+    menu = MENU if a.fief == 0 else MENU_ANY
+    first = tuple(a.first_menu.split(",")) if a.first_menu else menu
+    plans = list(product(first, menu))
     res = go(plans, f"s{a.skill} depth 2")
     print(f"depth 2, {len(plans)} plans, {a.seeds} seeds, skill {a.skill}, scored at year {a.years}")
     show(res, a.years)
     for d in range(3, a.depth + 1):
         best = sorted(res, key=lambda p: -score(res[p], a.years))[:a.beam]
-        plans = [p + (x,) for p in best for x in MENU if p[-1] != "auto" or x == "auto"]
+        plans = [p + (x,) for p in best for x in menu if p[-1] != "auto" or x == "auto"]
         res = go(plans, f"s{a.skill} depth {d}")
         print(f"\ndepth {d}, beam {a.beam}, {len(plans)} plans")
         show(res, a.years)

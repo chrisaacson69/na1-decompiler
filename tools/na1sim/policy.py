@@ -51,6 +51,62 @@ def _upkeep_rice(m, idx):
     spend = min(-(-(need - rice) * m.r16(M.GOLD_RICE_EXCHANGE) // 10) + 1, gold - 1)
     buy_rice(m, idx, spend)
     return True
+
+
+class _Floor:                               # the harvest's income rolls at their lowest
+    def randrange(self, n):
+        return 0
+
+
+def harvest_after(m, idx, spend=0):
+    """Buy rice with `spend` gold now, then run the Fall harvest itself (`game.harvest_fief`: income,
+    debt, upkeep, cap) with every income roll at 0. -> (rice now, gold, rice, men after the harvest).
+    Memory and the RNG are put back: asking must not change the game. Rough: the season's drift and
+    the high-tax penalty between Summer's command and the harvest are not in it."""
+    from . import game
+    snap, state = bytes(m.m), m.rng.getstate()
+    try:
+        if spend:
+            buy_rice(m, idx, spend)
+        f = m.fief(idx)
+        now = m.r16(f + M.F_RICE)
+        game.harvest_fief(m, idx, _Floor())
+        return now, m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
+    finally:
+        m.m[:] = snap
+        m.rng.setstate(state)
+
+
+def _rice_slack(m, idx, targeted, spend=0):
+    """How much rice could go and still pass the check (negative: short). Chris, 2026-11-10: a target
+    holds rice >= men before AND after the harvest, so the shield min(rice, men) is the men; anyone
+    else only needs the upkeep, read after the harvest, not to zero the rice."""
+    now, _, rice, men = harvest_after(m, idx, spend)
+    if targeted:
+        return min(now - m.r16(m.fief(idx) + M.F_MEN), rice - men)
+    return rice - 1
+
+
+def _gate_rice(m, idx):
+    """upkeep_rice=2, Summer, the last command before the harvest. Chris, 2026-11-10: off target,
+    tax/give is the standard and this does nothing unless the upkeep would starve the army; a target
+    whose men did not lift it out of range buys rice to the men, to shut the gate, and sees to the
+    economy after the harvest. The least gold that passes; all of it if none does.
+    -> True if it took the season's action."""
+    gold = m.r16(m.fief(idx) + M.F_GOLD)
+    targeted = bool(hunted_by(m, idx))
+    if gold <= 1 or _rice_slack(m, idx, targeted) >= 0:
+        return False
+    lo, hi = 1, gold - 1
+    if _rice_slack(m, idx, targeted, hi) >= 0:
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if _rice_slack(m, idx, targeted, mid) >= 0:
+                hi = mid
+            else:
+                lo = mid + 1
+    buy_rice(m, idx, hi)
+    return True
 SKILL_CAP = 200
 
 
@@ -440,8 +496,9 @@ def _season_plan(m, idx, rng, expand=False, slack=0, big_buy=False, gold_season=
     Over all 17 starts at skill 2 (100 seeds each): Spring beat Fall (survival 40.7% against 36.2%,
     1.33 fiefs at year 30 against 0.99); slack cost growth for no survival; big buy was a wash."""
     season = getattr(m, "season", 0)
-    if OPENING["upkeep_rice"] and season == 1 and _upkeep_rice(m, idx):   # before the guards: an
-        return                                  # emergency gift would spend the gold the harvest needs
+    rule = _gate_rice if OPENING["upkeep_rice"] == 2 else _upkeep_rice
+    if OPENING["upkeep_rice"] and season == 1 and rule(m, idx):   # before the guards: an emergency
+        return                                  # gift would spend the gold the harvest needs
     if _guards(m, idx):
         return
     f = m.fief(idx)
@@ -450,7 +507,13 @@ def _season_plan(m, idx, rng, expand=False, slack=0, big_buy=False, gold_season=
     capped = (m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 >= cap
     enemies = _enemy_neighbors(m, idx)
     keep = men if OPENING["keep_rice"] else 0   # the attack gate reads min(rice, men): hold the shield
-    if OPENING["upkeep_rice"]:                  # and never give away what the harvest's upkeep needs
+    if OPENING["upkeep_rice"] == 2:             # a target holds the shield; Summer's gift keeps
+        targeted = bool(hunted_by(m, idx))      # the harvest check passing
+        if targeted:
+            keep = max(keep, men)
+        if season == 1:
+            keep = max(keep, rice - max(0, _rice_slack(m, idx, targeted)))
+    elif OPENING["upkeep_rice"]:                # and never give away what the harvest's upkeep needs
         keep = max(keep, men // 2 + UPKEEP_MARGIN)
 
     if expand and capped and enemies:
