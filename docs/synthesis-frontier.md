@@ -132,7 +132,36 @@ Where Noto's games end (default tail, 300 seeds):
 | 1 | 10% | 55% | 22% | 2% | 11% |
 | 2 | 11% | 76% | 12% | 1% | 0% |
 
-Year 1 is the game, and invasion ends most of them: in a traced sample, Honganji hits in Spring, Noto survives at 13-29 men, and Honganji finishes it in Fall once the harvest has refilled his budget too. The Summer move fired as designed (Honganji had moved first in 5 of 6 Summers) and changed nothing, because Fall comes anyway. The search over the first three turns (`na1sim/hatakeyama.py`, 14 moves including half gifts, tax 40 and the Summer rice move, scored at year 3) is running; its results go here.
+Year 1 is the game, and invasion ends most of them: in a traced sample, Honganji hits in Spring, Noto survives at 13-29 men, and Honganji finishes it in Fall once the harvest has refilled his budget too. The Summer move fired as designed (Honganji had moved first in 5 of 6 Summers) and changed nothing, because Fall comes anyway.
+
+**The search** (`na1sim/hatakeyama.py`: every two-move opening over 14 moves, full and half gifts, tax 40, the Summer rice move, then the best six extended to a third; skill 1, 100 seeds a plan, alive at year 3; default 10%). Morale first is close to suicide: rice to men 1%, gold then rice to men 2%, because the shield drops to 1 and invasions rise to 90 of 100, while revolt deaths barely fall (8 against 8-17). The leaders all open hire, tax: men first, then the tax that pays for them at the harvest. Hire alone, without the tax, is 8%, below the default. **The best risk is the revolt** (Chris: keep rolling the dice): hire / tax doubles revolt deaths (8 to 17) and cuts invasions from 81 to 57.
+
+**Hire raises morale.** Recruits arrive at morale `rng(20) + 40` (skill `rng(20) + 60`, arms `rng(10) + 50`), blended by headcount (`apply_hire_unit_stats` $8BF4), so Noto's full opening hire takes morale 23 to 30-33 with no rice spent and the shield whole. It works on the revolt cliff and the gate at once.
+
+**How much to hire** (Chris: an undershoot is fatal, an overshoot pays upkeep). At skill 1 the line is about 50 men, 2 over the start (`reaction.men_line`). Confirmed on 300 fresh seeds, skill 1, alive at year 3, paired by seed:
+
+| Spring / Summer / Fall | Alive y3 | Riot deaths |
+|---|---|---|
+| default | 12.7% | 7 |
+| hire to the line / tax | 25.0% | 2 |
+| a quarter of the gold / tax | 24.7% | 2 |
+| hire half / tax | 23.0% | 3 |
+| hire all / tax | 22.0% | 10 |
+| hire all / tax / **rice → peasants** | **30.7%** | 4 |
+| hire all / tax / gold → peasants | 30.0% | 4 |
+| hire half / tax / rice → peasants, half | 25.0% | 0 |
+
+On two moves the size barely matters (small hires edge it, z about 1), and the overshoot's cost shows in one column: riots, 2 against 10, since an empty purse cannot pay one off. The third move settles it: **hire all, tax, then give the harvest to the peasants** beats the default by 73 games saved to 19 lost (z +5.6), the same plan without the gift by 47 to 21 (z +3.2), the hire to the line by 43 to 26 (z +2.0), and the half version by 39 to 22 (z +2.2). Rice or gold for the gift is a wash (z 0.3); gold keeps the shield. **The overshoot pays when loyalty is mended right after the harvest**: the big hire buys a margin over Honganji and 8 points of morale, and the Fall gift covers the purse it emptied.
+
+**Hatakeyama's opening, skill 1:** Spring, hire with all the gold; Summer, tax to 55; Fall, give the harvest to the peasants. 12.7% → 30.7% alive at year 3. What is left is mostly invasion, and it is the board: with 0 / 1 / 2+ of Honganji's coin neighbours doubled (Uesugi, Asakura, Takeda), 39% / 34% / 25%. A doubled neighbour leaves Noto as Honganji's only soft target, so the coin hurts him rather than helps (Chris's guess was the reverse). Skill 2 and year 6 are not yet run.
+
+**Saito's clear boards, answered** (the #39 blind spot). Of the 21 boards that read clear and died: 9 had a revolt first (morale 21; five died before his first turn, gold untouched), 6 had spent rice to 0-1, and 6 were snapshots gone stale as neighbours' shares crossed the line. Holding rice (`keep_rice`) saved none: his shield of about 25 is under any budget that kills him. 56% of Saito's games end before his first turn, and the mean killing blow is 144 men against 37. Chris's chain for avoiding every attack (move first, men at 1.7 gold or less, dodge the revolts and the coins) prices near 1 in 3,500 just to reach Fall.
+
+**But the sim's survivors did not avoid the attack: every one was hit in Spring of year 1 and won the castle fight.** `apply_conquest_outcome` ($E03C) garrisons the defender's fief with the survivors of both armies, their gold and their rice, and `transfer_force_triplet` ($DF73) blends morale, skill and arms by surviving men on a win or a loss, so a doubled attacker's army brings its morale too (Chris guessed it; the session first said otherwise, wrongly). Seed 3032 survives in every run: 38 men, a 123-man attack beaten, 122 men at the year's end.
+
+Most such wins then died in Fall at a 100% share with rice 0 and gold in hand (all 37 such blows, both skills): the upkeep (`consume_province_army_upkeep` $A15B) takes men/2 from gold and rice, and when the smaller cannot cover it, takes all of it and cuts men to twice it. A 120-man army on Mino's harvest ends at rice exactly 0, which opens both gates at once. The fix: in Summer, buy rice with all the gold it takes. Gold is in neither gate, so if gold is then the short one, the upkeep zeroes the gold and trims men, and the rice survives (a first version that kept gold for the upkeep fixed nothing). Saito, 300 seeds paired: skill 1, alive at year 6, 2 → 12 (10 saved, 0 lost); skill 2, 1 → 5 (4 / 0). It is `policy.OPENING["upkeep_rice"]`, off until it is measured on all 17. **Saito has no economic way through; his one way is the defensive battle, then feeding the army.** The battle is a human's to win: the sim defends with AI logic.
+
+**Firing men (Chris).** There is no dismiss command, but the upkeep is one: spend gold down before the harvest until gold plus the harvest's gold is about the army you want over 2, keep the rice high, and the harvest dismisses the rest. That keeps a won battle's morale and rice without its payroll. A longer battle to thin the attackers costs rice (each side burns about men/30 a day, `consume_daily_battle_rice` $830B, and a side out of rice loses) and morale blend (fewer survivors), so thin them, then end it. Not yet measured: a post-battle trim to the line plus a margin is the sim's stand-in, optimistic by the days of rice.
 
 **Fixed on the way:** the player's Tax command (`policy.set_tax`, and `econ.set_tax`) still drained loyalty and wealth on a cut, the June model the oracle had retired for `econ.tax_effect`. Now as `driver_tax`: a cut gives back, charisma +1 on a cut and −1 on a raise (not below 0), the rate 1-100. No policy cuts the tax, so no earlier figure moves.
 

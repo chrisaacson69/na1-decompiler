@@ -60,7 +60,7 @@ Different sub-mode. The "ninja" stat may not be visible in the 26-byte province 
 
 ## Open questions
 
-- **Per-man cost** — does it scale with anything (current men, output, header)? Or flat-rate?
-- **Does Hire raise morale?** — fresh recruits' morale could average down the current force's morale, or be neutral.
+- ~~**Per-man cost** — does it scale with anything (current men, output, header)? Or flat-rate?~~ **Resolved 2026-11-09** → flat per purchase at the period's market rate (`roll_period_market_rates` $924A: 70% of `((year − 1560)/2 + 2) × 10 + rng(51)`, in tenths of a gold), costing `(rate × amount + 9)/10`, and each purchase nudges the rate up 1 (`effect_hire_men` $A553, `cycle_economy_rate`); see [synthesis-frontier #38](../synthesis-frontier.md), The market.
+- ~~**Does Hire raise morale?** — fresh recruits' morale could average down the current force's morale, or be neutral.~~ **Resolved 2026-11-09** → it blends: recruits arrive at morale `rng(20) + 40`, skill `rng(20) + 60`, arms `rng(10) + 50`, weighted by headcount against the fief's own (`apply_hire_unit_stats` $8BF4 → `scaled_force_transfer` $DA1F). So Hire raises morale below about 40 and lowers it above about 59; Hatakeyama's full opening hire takes morale 23 to about 30-33 ([synthesis-frontier #40](../synthesis-frontier.md)).
 - **Where does Ninja count live?** Province record has no obvious "ninja" field. Likely in daimyo table or a separate SRAM region.
-- **Does the in-game "How many"** prompt cap at `gold / per_man_cost`? (Same pattern as Grow's cap-at-gold.)
+- ~~**Does the in-game "How many"** prompt cap at `gold / per_man_cost`? (Same pattern as Grow's cap-at-gold.)~~ **Resolved 2026-11-09** → yes, and at the header: `most = ratio_times10_capped(gold, rate, header − men)` (`effect_hire_men` $A553).

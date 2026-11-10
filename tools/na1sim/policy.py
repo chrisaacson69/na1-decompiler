@@ -31,7 +31,26 @@ CLIFF = 46          # keep morale/loyalty >= 45 (revolt/riot eligibility is 0 at
 # The picker is a tool for now, not the default: buying to a computed line loses to spending the gold
 # (na1sim.reaction). `forecast` and `baseline` are its variants, `keep_rice` holds rice at the men.
 OPENING = {"tax_jump": True, "gold_gift": True, "picker": False, "picker_slack": 0,
-           "forecast": 0, "baseline": False, "keep_rice": False}
+           "forecast": 0, "baseline": False, "keep_rice": False, "upkeep_rice": False}
+UPKEEP_MARGIN = 5
+
+
+def _upkeep_rice(m, idx):
+    """Summer, before the harvest (Chris, 2026-11-09): the upkeep takes men/2 from gold AND rice, and
+    when the smaller cannot cover it, it takes all of that one and men fall to twice it
+    (consume_province_army_upkeep $A15B). Rice at 0 opens both gates (picked: provisioned men 0;
+    paid: shield 0). Gold is in neither, so buy rice with all the gold it takes: if gold is then the
+    short one, the upkeep zeroes the gold and trims men, and the rice survives. Saito, 300 seeds
+    paired: skill 1 alive at year 6 2 -> 13 (11 saved, 0 lost), skill 2 1 -> 5 (4 / 0).
+    -> True if it took the season's action."""
+    f = m.fief(idx)
+    need = m.r16(f + M.F_MEN) // 2 + UPKEEP_MARGIN
+    rice, gold = m.r16(f + M.F_RICE), m.r16(f + M.F_GOLD)
+    if rice >= need or gold <= 1:
+        return False
+    spend = min(-(-(need - rice) * m.r16(M.GOLD_RICE_EXCHANGE) // 10) + 1, gold - 1)
+    buy_rice(m, idx, spend)
+    return True
 SKILL_CAP = 200
 
 
@@ -420,15 +439,19 @@ def _season_plan(m, idx, rng, expand=False, slack=0, big_buy=False, gold_season=
     under the line, against buying just enough each year; `gold_season` is when the gold is given.
     Over all 17 starts at skill 2 (100 seeds each): Spring beat Fall (survival 40.7% against 36.2%,
     1.33 fiefs at year 30 against 0.99); slack cost growth for no survival; big buy was a wash."""
+    season = getattr(m, "season", 0)
+    if OPENING["upkeep_rice"] and season == 1 and _upkeep_rice(m, idx):   # before the guards: an
+        return                                  # emergency gift would spend the gold the harvest needs
     if _guards(m, idx):
         return
     f = m.fief(idx)
-    season = getattr(m, "season", 0)
     gold, rice, morale = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MORALE)
     men, cap = m.r16(f + M.F_MEN), m.r16(f + M.F_HEADER)
     capped = (m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 >= cap
     enemies = _enemy_neighbors(m, idx)
     keep = men if OPENING["keep_rice"] else 0   # the attack gate reads min(rice, men): hold the shield
+    if OPENING["upkeep_rice"]:                  # and never give away what the harvest's upkeep needs
+        keep = max(keep, men // 2 + UPKEEP_MARGIN)
 
     if expand and capped and enemies:
         if season in (3, 0):                    # a war needs gold, men and rice in hand

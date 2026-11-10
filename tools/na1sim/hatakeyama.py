@@ -13,6 +13,7 @@ import argparse
 import collections
 import json
 import os
+import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from itertools import product
 
@@ -53,7 +54,32 @@ def _summer_rice(m, idx):
         policy.expand_policy(m, idx, m.turn_rng)
 
 
+def _hire_line(pad):
+    """Hire to the fewest men that leave no threat (reaction.men_line), plus `pad` percent; all the
+    gold if the line is out of reach. Chris (2026-11-09): an undershoot is fatal, but an overshoot
+    pays upkeep in gold and rice at every harvest."""
+    def act(m, idx):
+        from . import reaction
+        f = m.fief(idx)
+        men, gold = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD)
+        line = reaction.men_line(m, idx)
+        if line is None:
+            policy.hire_men(m, idx, gold - 1)
+            return
+        want = line * (100 + pad) // 100 - men
+        rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+        if want > 0:
+            policy.hire_men(m, idx, min(gold - 1, -(-want * rate // 10)))
+    return act
+
+
+def _hire_part(share):
+    return lambda m, idx: policy.hire_men(m, idx, (m.r16(m.fief(idx) + M.F_GOLD) - 1) * share // 100)
+
+
 EXTRA["summer-rice"] = _summer_rice
+EXTRA.update({"hire-line": _hire_line(0), "hire-line+25": _hire_line(25), "hire-line+50": _hire_line(50),
+              "hire/4": _hire_part(25), "hire3/4": _hire_part(75)})
 policy.OPENING_ACTIONS.update(EXTRA)
 MENU = ("auto", "tax", "tax40", "hire", "hire/2", "gold>men", "gold>men/2", "rice>men", "rice>men/2",
         "gold>peasants", "gold>peasants/2", "rice>peasants", "rice>peasants/2", "train")
@@ -70,10 +96,11 @@ def _job(args):
     return plan, out
 
 
-def run(plans, seeds, first, skill, years, workers, out=None):
+def run(plans, seeds, first, skill, years, workers, out=None, label="run"):
     """Play every plan over the seeds in chunks of 25. With `out`, each finished chunk is appended to
-    that JSONL file and chunks already in it are skipped, so a stopped run resumes. Workers are
-    recycled every few chunks to keep memory flat."""
+    that JSONL file and chunks already in it are skipped, so a stopped run resumes. (Not
+    max_tasks_per_child: on Windows the pool hung once every worker had retired; a worker peaks
+    near 35 MB, so there is nothing to recycle.)"""
     res = collections.defaultdict(list)
     done = set()
     if out and os.path.exists(out):
@@ -84,8 +111,10 @@ def run(plans, seeds, first, skill, years, workers, out=None):
                 done.add((tuple(r["plan"]), r["s0"]))
     jobs = [(p, s, min(s + 25, first + seeds), skill, years) for p in plans
             for s in range(first, first + seeds, 25) if (p, s) not in done]
-    print(f"{len(jobs)} chunks to play ({len(done)} resumed)", flush=True)
-    with ProcessPoolExecutor(workers, max_tasks_per_child=4) as ex:
+    print(f"[{label}] {len(plans)} plans x {seeds} seeds, skill {skill}, year {years}: "
+          f"{len(jobs)} chunks to play, {len(done)} resumed, {workers} workers", flush=True)
+    t0 = time.time()
+    with ProcessPoolExecutor(workers) as ex:
         futs = {ex.submit(_job, j): j for j in jobs}
         for n, fut in enumerate(as_completed(futs), 1):
             p, rows = fut.result()
@@ -93,8 +122,14 @@ def run(plans, seeds, first, skill, years, workers, out=None):
             if out:
                 with open(out, "a") as fh:
                     fh.write(json.dumps(dict(plan=p, s0=futs[fut][1], skill=skill, years=years, rows=rows)) + "\n")
-            if n % 50 == 0:
-                print(f"  {n}/{len(jobs)}", flush=True)
+            if n % 10 == 0 or n == len(jobs):
+                el = time.time() - t0
+                left = el / n * (len(jobs) - n)
+                ready = [(score(r, years), q) for q, r in res.items() if q in plans and len(r) >= 50]
+                lead = max(ready) if ready else None
+                tail = f" | leader {' / '.join(lead[1])} {lead[0]:.0%} at y{years}" if lead else ""
+                print(f"[{label}] {n}/{len(jobs)} chunks ({n / len(jobs):.0%}), {sum(len(r) for r in res.values())} games, "
+                      f"{el / 60:.0f}m in, ~{left / 60:.0f}m left{tail}", flush=True)
     seedset = set(range(first, first + seeds))
     return {p: [r for r in res[p] if r[0] in seedset] for p in plans}
 
@@ -125,19 +160,19 @@ def main():
     ap.add_argument("--out", help="JSONL of finished chunks: appended to, and resumed from")
     ap.add_argument("--plans", help="score only these, ';'-separated, actions ','-separated")
     a = ap.parse_args()
-    go = lambda plans: run(plans, a.seeds, a.first, a.skill, a.years, a.workers, a.out)
+    go = lambda plans, label="plans": run(plans, a.seeds, a.first, a.skill, a.years, a.workers, a.out, label)
     if a.plans:
         res = go([tuple(p.split(",")) for p in a.plans.split(";")])
         show(res, a.years, top=len(res))
         return
     plans = list(product(MENU, repeat=2))
-    res = go(plans)
+    res = go(plans, f"s{a.skill} depth 2")
     print(f"depth 2, {len(plans)} plans, {a.seeds} seeds, skill {a.skill}, scored at year {a.years}")
     show(res, a.years)
     for d in range(3, a.depth + 1):
         best = sorted(res, key=lambda p: -score(res[p], a.years))[:a.beam]
         plans = [p + (x,) for p in best for x in MENU if p[-1] != "auto" or x == "auto"]
-        res = go(plans)
+        res = go(plans, f"s{a.skill} depth {d}")
         print(f"\ndepth {d}, beam {a.beam}, {len(plans)} plans")
         show(res, a.years)
 
