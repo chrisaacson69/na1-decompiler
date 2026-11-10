@@ -39,3 +39,6 @@ traces/
 # === Binary spreadsheets / scratch ===
 *.xlsx
 *TEMPatomlog_diff.txt
+
+# === na1sim battle-harness captures (regenerable: py -3.14 -m na1sim.battles capture) ===
+tools/_battles/
