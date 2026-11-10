@@ -111,8 +111,11 @@ def build_board(skill: int = 2, seed: int = 0, player_fief=None,
         m.w8(M.PROVINCE_AI_STATE + p.idx, M.AI_HOME)
         m.w8(M.FIEF_TAX_RATE + p.idx, 20)             # every fief starts at 20 (battle-start.dmp)
         m.neighbor_rows[p.idx] = list(adj.get(p.idx, []))
-        for k, v in enumerate((50, 5, 5, 5, 5)):       # the AI base unit-type split
-            m.w8(M.PROVINCE_UNIT_TYPE_PCT + p.idx * 5 + k, v)   # ai_reinforce $960C re-rolls it
+        for k in range(5):                             # the scenario's unit-type split, 20/20/20/20/20:
+            m.w8(M.PROVINCE_UNIT_TYPE_PCT + p.idx * 5 + k, 20)   # $83E2's init_daimyo_arms_record $839A
+            # then reshapes the AI fiefs (rows 3-4 into 0-1, about 32/27/20/10/11); the player's stays
+            # 20x5 until an Assign. Every SRAM dump shows it (traces/*.dmp, 1560-1562). Was 50/5/5/5/5
+            # (sum 70) until 2026-11-10: half of ai_reinforce $960C's rare reseed, which sums to 100.
 
     if player_fief is not None:
         m.w8(M.PROVINCE_AI_STATE + player_fief, M.PLAYER_DIRECT)

@@ -1527,11 +1527,11 @@ def _extend_won_defence(m):
 def _ensure_unit_split(m: "M.Memory", prov: int) -> None:
     """Guard the AI base unit-type split ($76A9 + prov*5) for a province that never
     got one (e.g. created mid-game): without it distribute_men would funnel every
-    man into slot 0. setup.build_board seeds [50,5,5,5,5] and ai_reinforce ($960C)
+    man into slot 0. setup.build_board seeds the scenario's 20x5 and ai_reinforce ($960C)
     re-rolls it; this just backstops an unseeded fief."""
     base = M.PROVINCE_UNIT_TYPE_PCT + prov * 5
     if not any(m.r8(base + i) for i in range(5)):
-        for i, v in enumerate((50, 5, 5, 5, 5)):
+        for i, v in enumerate((20, 20, 20, 20, 20)):     # the scenario's record (setup.build_board)
             m.w8(base + i, v)
 
 
