@@ -21,7 +21,7 @@ only when it prices higher by EPS (the reader carries the economy the score cann
 import json
 from pathlib import Path
 
-from . import memmap as M, policy, reaction, vmprims as P
+from . import forecast, memmap as M, policy, reaction, vmprims as P
 
 P_ATTACK = 0.65          # per threatening neighbour per season (1 threat .65, 2 .89, 3+ 1.0 observed)
 REVOLT_LOSS = ((24, .24), (38, .36), (58, .42))   # staged revolt battle lost, by his men (#45)
@@ -100,73 +100,29 @@ def invasion_risk(m, idx):
     return 1 - alive
 
 
-class _Mean:             # the harvest's income rolls at their mean (policy._Floor is the lowest)
-    def randrange(self, n):
-        return n // 2
-
-
-def _snapshot(m):
-    return bytes(m.m), m.rng.getstate(), m.r16(M.SELECTED_PROVINCE), getattr(m, "selected", None)
-
-
-def _restore(m, snap):
-    mem, rng, sel, selected = snap
-    m.m[:] = mem
-    m.rng.setstate(rng)
-    if selected is not None:
-        m.selected = selected
-
-
-def _grow_ai(m):
-    """One projected season of AI recruiting, in expectation (ai_vm.recruit_arm_train): ~90% of
-    AI fiefs take the military pass (rng(10) != 0); one under min((year-1559)*40, cap) men recruits with
-    probability (skill+3)/10, min(half its gold surplus x10 / rate, room to (year-1559)*100) men, paying
-    the half-surplus whatever it hires. Its wars and its building are not modelled."""
-    year, rate, n = m.year, m.r16(M.GOLD_MEN_HIRE_RATE) or 50, m.r16(M.SCENARIO_FIEF_COUNT)
-    p = 0.9 * (m.skill + 3) / 10
-    for i in range(n):
-        if m.province_ai_state(i) != 0:
-            continue
-        f = m.fief(i)
-        men, gold, header = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD), m.r16(f + M.F_HEADER)
-        if min((year - 1559) * 40, header) <= men:
-            continue
-        half = max(0, gold - men) // 2
-        cnt = min(half * 10 // rate, min((year - 1559) * 100, header) - men)
-        if cnt > 0:
-            m.w16(f + M.F_MEN, men + round(p * cnt))
-            m.w16(f + M.F_GOLD, gold - round(p * half))
+# the projection plumbing lives in forecast.py (shared); these names stay for callers of ev
+_Mean, _snapshot, _restore, _grow_ai = forecast.Mean, forecast.snapshot, forecast.restore, forecast.grow_ai
 
 
 def survival(m, idx):
     """P(alive over the next HORIZON seasons) from the memory as it stands (after the candidate move).
     Season 0 is this one: its events have rolled, about half the neighbours are still to move."""
-    from . import game
     s0 = getattr(m, "season", 0)
-    snap = _snapshot(m)
-    try:
+    with forecast.held(m):
         alive = 1.0
         for k in range(HORIZON):
             t = (s0 + k) % 4
-            if k and t == 2:             # the Fall harvest, before that season's events and commands
-                if k > 1:                # a Summer command still to come buys the least rice it needs
-                    policy.buy_rice_to(m, idx, lambda s: policy._rice_slack(m, idx, False, s))
-                for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):    # everyone harvests: the
-                    if m.province_ai_state(i) != M.EMPTY and (ALL_HARVEST or i == idx):
-                        game.harvest_fief(m, i, _Mean())
-                        P.cap_fief_stats(m, i)
-                if m.r16(m.fief(idx) + M.F_RICE) == 0:
+            if k:
+                forecast.step(m, t, growth=GROWTH, harvest_only=None if ALL_HARVEST else (idx,),
+                              before_harvest=(lambda mm: policy.buy_rice_to(           # a Summer command
+                                  mm, idx, lambda s: policy._rice_slack(mm, idx, False, s)))  # still to come
+                              if k > 1 else None)
+                if t == 2 and m.r16(m.fief(idx) + M.F_RICE) == 0:
                     return 0.0
-            if k and GROWTH:
-                if t == 0:
-                    m.w16(M.CURRENT_GAME_YEAR, m.year + 1)
-                _grow_ai(m)
             if k:
                 alive *= 1 - revolt_risk(m, idx, t)
             alive *= 1 - (0.5 if k == 0 else 1.0) * invasion_risk(m, idx)
         return alive
-    finally:
-        _restore(m, snap)
 
 
 def candidates(m, idx):
