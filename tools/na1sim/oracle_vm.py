@@ -300,7 +300,7 @@ def combat_check():
 
 def _combat_battle_setup(m, atk, deff, *, atk_men=10, def_men=8,
                          atk_col=3, def_col=5, row=2, def_home=True,
-                         ai_state=0, momentum=0):
+                         ai_state=0, momentum=0, atk_led=False):
     """A minimal 2-unit (slot 0 each) tactical melee on the DEFENDER's real map.
     Sets scenario/skill_level, ownership+daimyo, fief stats, unit men/positions,
     presence flags (defender bit7 = home), and the cur_combat cursors."""
@@ -331,7 +331,7 @@ def _combat_battle_setup(m, atk, deff, *, atk_men=10, def_men=8,
     # side resource men totals (+4) -- used by the casualty path
     m.w16(m.side_resource_ptr(0) + M.SR_MEN, atk_men)
     m.w16(m.side_resource_ptr(1) + M.SR_MEN, def_men)
-    m.w8(M.WAR_SIDE_STATE_FLAG + 0, 0x01)                 # attacker slot0 present
+    m.w8(M.WAR_SIDE_STATE_FLAG + 0, 0x81 if atk_led else 0x01)  # slot0 present (+bit7: daimyo-led)
     m.w8(M.WAR_SIDE_STATE_FLAG + 1, 0x81 if def_home else 0x01)  # +home bit7
     m.w8(M.UNIT_EXCHANGE_COUNT + 0, momentum)
     m.cur_combat_side = 0
@@ -351,6 +351,8 @@ def combat_tactical_check():
         dict(label="no home, player(scale85)", atk_men=12, def_men=12, def_home=False, ai_state=5),
         dict(label="momentum=2", atk_men=9, def_men=6, momentum=2),
         dict(label="big attacker", atk_men=40, def_men=10, ai_state=0),
+        dict(label="daimyo-led attacker", atk_men=10, def_men=10, ai_state=0, atk_led=True),
+        dict(label="daimyo-led attacker, no home", atk_men=10, def_men=10, def_home=False, ai_state=5, atk_led=True),
     ]
     ok = True
     for c in cases:

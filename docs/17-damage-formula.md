@@ -42,7 +42,7 @@ Each unit's effective strength, for `m` = its men:
 
 ```
 S = ( m                                            base men
-    + (your side is the DEFENDER ? m : 0)          +100% HOME bonus  (war_side_state_flag bit7 = defender)
+    + (your side's bit7 ? m : 0)                   +100% DAIMYO-PRESENT bonus (war_side_state_flag[side] bit7)
     # NOTE: terrain is NOT in the attacker's S — it is a DEFENSIVE term applied to the
     # unit BEING ATTACKED (boosts its S in the casualty calc -> it takes fewer losses). See below.
     + province_stat_diff                           small: fief skill/arms edge over the enemy
@@ -55,7 +55,7 @@ difficulty_scale = (your fief is AI-Home state0) ? 100% : (115 − 15·skill)%
 
 Two structural surprises, both confirmed:
 
-1. **bit7 is the *defender's* bit, not the attacker's** — so the `+base` doubling is a **home-ground bonus**. **Combat favors the defender.** An attacker must bring overwhelming force (more men, better stats, or the higher-rank unit) to overcome it.
+1. **bit7 is per side, and it means "the daimyo is in this battle"** (corrected 2026-11-11; this line used to say it was the defender's bit only). The defender's (`$6F66`) is set when the defending fief is a capital (`battle_init_defender $92CA`); the attacker's (`$6F65`) is the daimyo-led bit, which the AI sets on a coin, `rng_mod(2)`, when it attacks from a capital (`ai_commit_attack_deduct_resources`). Every unit of that side adds its men once more. Oracle `combat_tactical_check`: a 10-man attacker unit is 29 without the bit, **39 with it** (ROM = sim). So a capital's defence is doubled, a non-capital defence is not, and a daimyo-led attack cancels the capital's doubling. Measured on Saito's real starts (synthesis #45): at even men a general-led attack is held 89-100% of the time and a daimyo-led one about 50%, and clearing the attacker's bit alone (same men and stats) takes his close-odds holds from 56% to 92%. The price of bringing the daimyo is the kill/flight risk (chapter 21), which sets a floor of about 12% held however large his army.
 2. **The "AI weakness scorer" *is* the engine.** `ai_sum_battle_strength` — which the AI uses to decide *whether* to attack (chapter 12) — is the very routine that builds `W` inside the real resolver. The decision math and the combat math are one core, and that core pulls in **all five daimyo personal stats**, not just the fief's military ones.
 
 ### `W` — the 8-stat weighted contest
@@ -149,7 +149,7 @@ A memory-write trace on `$6FBC–$6FCF` across three battles shows the casualty 
 | 5 | 5 | defender | 5 → 2 | |
 | 6 | 2 | attacker | 7 → 4 | |
 
-Damage is gradual (0–3/exchange), units die at 0, and the casualty *ratio* varies by battle because it falls straight out of `p` — there is no hardcoded attacker multiplier. (What asymmetry exists favors the **defender**, via the home bonus.)
+Damage is gradual (0–3/exchange), units die at 0, and the casualty *ratio* varies by battle because it falls straight out of `p` — there is no hardcoded attacker multiplier. (What asymmetry exists comes from the daimyo bonus: it favors a capital's defender, unless the attack is daimyo-led.)
 
 ## Terrain is a DEFENSIVE bonus — confirmed
 
@@ -203,7 +203,7 @@ The attacker must be able to **evade contact** for the full clock — a doughnut
 
 ## How combat sits in the dominance frontier
 
-- **Attacking is expensive** (the defender's home doubling) — so the dominant play is to *bait* the AI into attacking you (where you hold the home bonus), or to win battles before they start (assassinate the capital, ch. ninja).
+- **Attacking a capital is expensive** (the defender's daimyo doubling, which only a daimyo-led attack cancels) — so the dominant play is to *bait* the AI into attacking your capital (where you hold the daimyo bonus), or to win battles before they start (assassinate the capital, ch. ninja).
 - **The exploit gap**: the AI decides to attack on the 8-stat *look* (`ai_sum_battle_strength`), but you win battles by maximizing what the *same core* rewards — men, the higher-rank unit, training, and IQ — while the AI never optimizes composition. Look weak, be strong.
 - **Charisma's two faces**: useless in the sword-fight, decisive in the bribe — pump it and *buy* armies instead of grinding them.
 - **The rice clock** turns the map graph into the real win condition: who borders whom, and which fiefs can run the doughnut.
