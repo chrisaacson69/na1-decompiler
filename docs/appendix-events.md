@@ -128,7 +128,7 @@ eligible  ⇔  men > 2  AND  [ square_roll(morale) OR square_roll(charisma) OR r
   - uprising branch = **75%** of non-summer seasons (Summer: 50% typhoon first → 37.5%);
   - planner gate = "≥1 fief clears the **3%** inclusion roll" (`roll_3pct_event_chance = rng(100)<3`);
   - the dispatcher (`$9ED9`) picks **revolt vs riot 50/50** (`rng(2)`, retrying the other variant if the first finds nobody).
-  - ⇒ a low-morale fief's turn-1 revolt ≈ eligibility × ~0.3 (so **~10–25%** for morale 20–35) — common over a full game.
+  - ⇒ with 17 live fiefs the gate passes 1 − 0.97¹⁷ ≈ 40%, so a fief's revolt chance per season ≈ 0.75 × 0.40 × ½ × eligibility ≈ **0.15 × eligibility** (Summer half that): **~12%** at morale 21, 8% at 31, 2.6% at 41 (corrected 2026-11-11; the earlier "× ~0.3" left out the revolt-or-riot coin). For a human capital the revolt is a staged battle (`spawn_uprising_force`: 20–89% of his men, stats 40–59% of his), which he loses about a third of the time (24% at 24 men, 36% at 38, 42% at 58, measured on the tactical engine over 200 fights each) **whatever his morale**: morale sets only whether the revolt fires.
 
 **Riot** is the loyalty twin (`ai_event_eligibility_check_loyalty_variant $9DA3`): `square_roll(loyalty) OR square_roll(100−tax) OR square_roll(charisma) OR rng(1000)`, gated `men>2 & output>0`. So **high tax** (low `100−tax`) and **low loyalty** drive riots (recoverable) — vs **morale** driving revolts (ownership flip). Confirms the tax-ceiling synthesis above.
 
