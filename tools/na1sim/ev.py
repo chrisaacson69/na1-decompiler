@@ -25,7 +25,8 @@ from . import memmap as M, policy, reaction, vmprims as P
 
 P_ATTACK = 0.65          # per threatening neighbour per season (1 threat .65, 2 .89, 3+ 1.0 observed)
 REVOLT_LOSS = ((24, .24), (38, .36), (58, .42))   # staged revolt battle lost, by his men (#45)
-HORIZON = 4              # seasons; 8 reaches the second harvest (the income loyalty and wealth buy)
+HORIZON = 8              # seasons; 8 reaches the second harvest (the income loyalty and wealth buy)
+GROWTH = True            # the AI fiefs recruit on the ROM's schedule in the projection (expected values)
 PEASANTS = False         # give the gold to the peasants as a candidate (worth pricing only with HORIZON 8)
 EPS = 0.003
 ALL_HARVEST = True       # project every fief's harvest, not only his
@@ -116,6 +117,27 @@ def _restore(m, snap):
         m.selected = selected
 
 
+def _grow_ai(m):
+    """One projected season of AI recruiting, in expectation (ai_vm.recruit_arm_train): ~90% of
+    AI fiefs take the military pass (rng(10) != 0); one under min((year-1559)*40, cap) men recruits with
+    probability (skill+3)/10, min(half its gold surplus x10 / rate, room to (year-1559)*100) men, paying
+    the half-surplus whatever it hires. Its wars and its building are not modelled."""
+    year, rate, n = m.year, m.r16(M.GOLD_MEN_HIRE_RATE) or 50, m.r16(M.SCENARIO_FIEF_COUNT)
+    p = 0.9 * (m.skill + 3) / 10
+    for i in range(n):
+        if m.province_ai_state(i) != 0:
+            continue
+        f = m.fief(i)
+        men, gold, header = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD), m.r16(f + M.F_HEADER)
+        if min((year - 1559) * 40, header) <= men:
+            continue
+        half = max(0, gold - men) // 2
+        cnt = min(half * 10 // rate, min((year - 1559) * 100, header) - men)
+        if cnt > 0:
+            m.w16(f + M.F_MEN, men + round(p * cnt))
+            m.w16(f + M.F_GOLD, gold - round(p * half))
+
+
 def survival(m, idx):
     """P(alive over the next HORIZON seasons) from the memory as it stands (after the candidate move).
     Season 0 is this one: its events have rolled, about half the neighbours are still to move."""
@@ -135,6 +157,10 @@ def survival(m, idx):
                         P.cap_fief_stats(m, i)
                 if m.r16(m.fief(idx) + M.F_RICE) == 0:
                     return 0.0
+            if k and GROWTH:
+                if t == 0:
+                    m.w16(M.CURRENT_GAME_YEAR, m.year + 1)
+                _grow_ai(m)
             if k:
                 alive *= 1 - revolt_risk(m, idx, t)
             alive *= 1 - (0.5 if k == 0 else 1.0) * invasion_risk(m, idx)
