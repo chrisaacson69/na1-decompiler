@@ -57,6 +57,9 @@ def tile_pixels(chr16):       # 16-byte 2bpp NES tile -> 8x8 of 0..3
 def build_pattern_table(map_id):
     """256 tiles (each 8x8 of 0..3 values), filled exactly as render_combat_map_screen uploads."""
     pt = [[[0]*8 for _ in range(8)] for _ in range(256)]
+    font = prg(0, 0xB2BA)                      # the boot font, tiles 0..80 (digits at 8..17, blank 1):
+    for i in range(81):                        # render_boot_title_screens $88AC, ppu_upload_block_wrap(81, $1000, $B2BA)
+        pt[i] = tile_pixels(ROM[font+i*16: font+i*16+16])
     base = prg(4, 0x9F6E)
     for i in range(97):
         pt[0x57+i] = tile_pixels(ROM[base+i*16: base+i*16+16])
@@ -106,7 +109,9 @@ def map_id_for(province, scenario):
         return ROM[prg(15, 0xF70E) + province]
     return ROM[prg(3, 0x8E18) + province]
 
-def render(province, scenario=17, sub=None, label=None, out=None, out_path=None):
+def render(province, scenario=17, sub=None, label=None, out=None, out_path=None, overlay=None, scale=3):
+    """overlay: {(col, row): (8 tile indices, sub-palette)} stamped on a cell's bottom half, as
+    draw_unit_count_digits $89DF does for a unit (render-battle-setup.py builds it)."""
     sram = rrm.populate_from_rom(province, scenario)[0]        # (sram, ok, todo) -> full $6000-$7FFF
     nt   = sram[0x1BFD:]                                       # $7BFD onward (11 cols x 88)
     mid  = map_id_for(province, scenario)
@@ -129,14 +134,19 @@ def render(province, scenario=17, sub=None, label=None, out=None, out_path=None)
             for row in range(rows):
                 cell = nt[col_base + stagger + row*16: col_base + stagger + row*16 + 16]
                 if len(cell) < 16: continue
+                unit = (overlay or {}).get((col, row))
                 for ty in range(4):
                     for tx in range(4):
                         idx = cell[ty*4+tx]
+                        if unit and ty >= 2:
+                            idx = unit[0][(ty-2)*4 + tx]
                         tp  = pt[idx]
                         # screen-tile position (handles the +10 offset + half-cell stagger)
                         stx = 10 + l*4 + tx
                         sty = 4 + row*4 + (2 if (col & 1) else 0) + ty
                         cidx = sp if sp is not None else attr_subpal(phases, col, stx, sty)
+                        if unit and ty >= 2:
+                            cidx = unit[1]
                         palette = pal16[cidx*4: cidx*4+4]
                         ox = col*CELL + tx*8
                         oy = row*CELL + ypx_off + ty*8
@@ -145,7 +155,7 @@ def render(province, scenario=17, sub=None, label=None, out=None, out_path=None)
                                 v = tp[py][px]
                                 nesc = bg if v == 0 else palette[v]
                                 img.putpixel((ox+px, oy+py), NES[nesc & 0x3F])
-        panels.append((sp, img.resize((W*3, H*3), Image.NEAREST)))
+        panels.append((sp, img.resize((W*scale, H*scale), Image.NEAREST)))
 
     if len(panels) == 1:
         final = panels[0][1]

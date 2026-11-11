@@ -1,0 +1,2334 @@
+[
+ {
+  "fief": 0,
+  "name": "Noto",
+  "edge": "west",
+  "attackers": [
+   "Kaga"
+  ],
+  "outcomes": [
+   {
+    "png": "00-noto-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      4
+     ]
+    ],
+    "seat": [
+     9,
+     1
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   },
+   {
+    "png": "00-noto-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      1,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ]
+    ],
+    "seat": [
+     9,
+     1
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   }
+  ]
+ },
+ {
+  "fief": 1,
+  "name": "Echigo",
+  "edge": "south",
+  "attackers": [
+   "Musashi"
+  ],
+  "outcomes": [
+   {
+    "png": "01-echigo-south-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      2
+     ],
+     [
+      10,
+      3
+     ]
+    ],
+    "seat": [
+     5,
+     2
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 15,
+    "banned_cells": 18
+   },
+   {
+    "png": "01-echigo-south-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     5,
+     2
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 15,
+    "banned_cells": 18
+   }
+  ]
+ },
+ {
+  "fief": 1,
+  "name": "Echigo",
+  "edge": "west",
+  "attackers": [
+   "Kaga",
+   "Shinano"
+  ],
+  "outcomes": [
+   {
+    "png": "01-echigo-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     5,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   },
+   {
+    "png": "01-echigo-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "seat": [
+     5,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   }
+  ]
+ },
+ {
+  "fief": 2,
+  "name": "Musashi",
+  "edge": "north",
+  "attackers": [
+   "Echigo"
+  ],
+  "outcomes": [
+   {
+    "png": "02-musashi-north-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      0
+     ],
+     [
+      9,
+      0
+     ],
+     [
+      10,
+      1
+     ]
+    ],
+    "seat": [
+     6,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 22,
+    "banned_cells": 11
+   },
+   {
+    "png": "02-musashi-north-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     6,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 22,
+    "banned_cells": 11
+   }
+  ]
+ },
+ {
+  "fief": 2,
+  "name": "Musashi",
+  "edge": "west",
+  "attackers": [
+   "Suruga",
+   "Shinano"
+  ],
+  "outcomes": [
+   {
+    "png": "02-musashi-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ]
+    ],
+    "seat": [
+     6,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 11,
+    "banned_cells": 9
+   },
+   {
+    "png": "02-musashi-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     6,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 11,
+    "banned_cells": 9
+   }
+  ]
+ },
+ {
+  "fief": 3,
+  "name": "Kaga",
+  "edge": "west",
+  "attackers": [
+   "Echizen"
+  ],
+  "outcomes": [
+   {
+    "png": "03-kaga-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   },
+   {
+    "png": "03-kaga-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   }
+  ]
+ },
+ {
+  "fief": 3,
+  "name": "Kaga",
+  "edge": "east",
+  "attackers": [
+   "Noto",
+   "Echigo",
+   "Hida",
+   "Shinano"
+  ],
+  "outcomes": [
+   {
+    "png": "03-kaga-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 20,
+    "banned_cells": 0
+   }
+  ]
+ },
+ {
+  "fief": 4,
+  "name": "Echizen",
+  "edge": "south",
+  "attackers": [
+   "Mino",
+   "Omi"
+  ],
+  "outcomes": [
+   {
+    "png": "04-echizen-south-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      2
+     ],
+     [
+      9,
+      2
+     ],
+     [
+      10,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     0
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 31,
+    "banned_cells": 2
+   },
+   {
+    "png": "04-echizen-south-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      1,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     0
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 31,
+    "banned_cells": 2
+   }
+  ]
+ },
+ {
+  "fief": 4,
+  "name": "Echizen",
+  "edge": "east",
+  "attackers": [
+   "Kaga",
+   "Hida"
+  ],
+  "outcomes": [
+   {
+    "png": "04-echizen-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     0
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 20,
+    "banned_cells": 0
+   }
+  ]
+ },
+ {
+  "fief": 5,
+  "name": "Hida",
+  "edge": "west",
+  "attackers": [
+   "Kaga",
+   "Echizen",
+   "Mino"
+  ],
+  "outcomes": [
+   {
+    "png": "05-hida-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 15,
+    "banned_cells": 5
+   },
+   {
+    "png": "05-hida-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     4,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 15,
+    "banned_cells": 5
+   }
+  ]
+ },
+ {
+  "fief": 5,
+  "name": "Hida",
+  "edge": "east",
+  "attackers": [
+   "Shinano"
+  ],
+  "outcomes": [
+   {
+    "png": "05-hida-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     3
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 17,
+    "banned_cells": 3
+   }
+  ]
+ },
+ {
+  "fief": 6,
+  "name": "Suruga",
+  "edge": "north",
+  "attackers": [
+   "Shinano"
+  ],
+  "outcomes": [
+   {
+    "png": "06-suruga-north-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      0
+     ],
+     [
+      9,
+      0
+     ],
+     [
+      10,
+      1
+     ]
+    ],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 24,
+    "banned_cells": 9
+   },
+   {
+    "png": "06-suruga-north-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 24,
+    "banned_cells": 9
+   }
+  ]
+ },
+ {
+  "fief": 6,
+  "name": "Suruga",
+  "edge": "west",
+  "attackers": [
+   "Mikawa"
+  ],
+  "outcomes": [
+   {
+    "png": "06-suruga-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   },
+   {
+    "png": "06-suruga-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   }
+  ]
+ },
+ {
+  "fief": 6,
+  "name": "Suruga",
+  "edge": "east",
+  "attackers": [
+   "Musashi"
+  ],
+  "outcomes": [
+   {
+    "png": "06-suruga-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 13,
+    "banned_cells": 7
+   }
+  ]
+ },
+ {
+  "fief": 7,
+  "name": "Mikawa",
+  "edge": "north",
+  "attackers": [
+   "Mino"
+  ],
+  "outcomes": [
+   {
+    "png": "07-mikawa-north-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      1
+     ],
+     [
+      9,
+      1
+     ],
+     [
+      10,
+      2
+     ]
+    ],
+    "seat": [
+     0,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 29,
+    "banned_cells": 4
+   },
+   {
+    "png": "07-mikawa-north-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     0,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 29,
+    "banned_cells": 4
+   }
+  ]
+ },
+ {
+  "fief": 7,
+  "name": "Mikawa",
+  "edge": "west",
+  "attackers": [
+   "Owari"
+  ],
+  "outcomes": [
+   {
+    "png": "07-mikawa-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "seat": [
+     0,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 13,
+    "banned_cells": 7
+   },
+   {
+    "png": "07-mikawa-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     0,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 13,
+    "banned_cells": 7
+   }
+  ]
+ },
+ {
+  "fief": 7,
+  "name": "Mikawa",
+  "edge": "east",
+  "attackers": [
+   "Suruga",
+   "Shinano"
+  ],
+  "outcomes": [
+   {
+    "png": "07-mikawa-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     0,
+     4
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 12,
+    "banned_cells": 8
+   }
+  ]
+ },
+ {
+  "fief": 8,
+  "name": "Mino",
+  "edge": "north",
+  "attackers": [
+   "Echizen"
+  ],
+  "outcomes": [
+   {
+    "png": "08-mino-north-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      0
+     ],
+     [
+      9,
+      0
+     ],
+     [
+      10,
+      1
+     ]
+    ],
+    "seat": [
+     6,
+     1
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 18,
+    "banned_cells": 15
+   },
+   {
+    "png": "08-mino-north-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     6,
+     1
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 18,
+    "banned_cells": 15
+   }
+  ]
+ },
+ {
+  "fief": 8,
+  "name": "Mino",
+  "edge": "south",
+  "attackers": [
+   "Mikawa"
+  ],
+  "outcomes": [
+   {
+    "png": "08-mino-south-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      2
+     ],
+     [
+      10,
+      3
+     ]
+    ],
+    "seat": [
+     6,
+     1
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 25,
+    "banned_cells": 8
+   },
+   {
+    "png": "08-mino-south-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     6,
+     1
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 25,
+    "banned_cells": 8
+   }
+  ]
+ },
+ {
+  "fief": 8,
+  "name": "Mino",
+  "edge": "west",
+  "attackers": [
+   "Omi",
+   "Iseshima",
+   "Owari"
+  ],
+  "outcomes": [
+   {
+    "png": "08-mino-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     6,
+     1
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 17,
+    "banned_cells": 3
+   },
+   {
+    "png": "08-mino-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     6,
+     1
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 17,
+    "banned_cells": 3
+   }
+  ]
+ },
+ {
+  "fief": 8,
+  "name": "Mino",
+  "edge": "east",
+  "attackers": [
+   "Hida",
+   "Shinano"
+  ],
+  "outcomes": [
+   {
+    "png": "08-mino-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     6,
+     1
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 14,
+    "banned_cells": 6
+   }
+  ]
+ },
+ {
+  "fief": 9,
+  "name": "Yamato",
+  "edge": "north",
+  "attackers": [
+   "Yamashir",
+   "Settsu"
+  ],
+  "outcomes": [
+   {
+    "png": "09-yamato-north-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      0
+     ],
+     [
+      9,
+      0
+     ],
+     [
+      10,
+      1
+     ]
+    ],
+    "seat": [
+     2,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 21,
+    "banned_cells": 12
+   },
+   {
+    "png": "09-yamato-north-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     2,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 21,
+    "banned_cells": 12
+   }
+  ]
+ },
+ {
+  "fief": 9,
+  "name": "Yamato",
+  "edge": "east",
+  "attackers": [
+   "Iga",
+   "Iseshima"
+  ],
+  "outcomes": [
+   {
+    "png": "09-yamato-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     2,
+     3
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 14,
+    "banned_cells": 6
+   }
+  ]
+ },
+ {
+  "fief": 10,
+  "name": "Omi",
+  "edge": "north",
+  "attackers": [
+   "Echizen"
+  ],
+  "outcomes": [
+   {
+    "png": "10-omi-north-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      0
+     ],
+     [
+      9,
+      0
+     ],
+     [
+      10,
+      1
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 23,
+    "banned_cells": 10
+   },
+   {
+    "png": "10-omi-north-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 23,
+    "banned_cells": 10
+   }
+  ]
+ },
+ {
+  "fief": 10,
+  "name": "Omi",
+  "edge": "south",
+  "attackers": [
+   "Iseshima"
+  ],
+  "outcomes": [
+   {
+    "png": "10-omi-south-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      2
+     ],
+     [
+      9,
+      2
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 11,
+    "banned_cells": 22
+   },
+   {
+    "png": "10-omi-south-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 11,
+    "banned_cells": 22
+   }
+  ]
+ },
+ {
+  "fief": 10,
+  "name": "Omi",
+  "edge": "west",
+  "attackers": [
+   "Iga",
+   "Yamashir"
+  ],
+  "outcomes": [
+   {
+    "png": "10-omi-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 13,
+    "banned_cells": 7
+   },
+   {
+    "png": "10-omi-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 13,
+    "banned_cells": 7
+   }
+  ]
+ },
+ {
+  "fief": 10,
+  "name": "Omi",
+  "edge": "east",
+  "attackers": [
+   "Mino"
+  ],
+  "outcomes": [
+   {
+    "png": "10-omi-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 11,
+    "banned_cells": 9
+   }
+  ]
+ },
+ {
+  "fief": 11,
+  "name": "Iga",
+  "edge": "west",
+  "attackers": [
+   "Yamato",
+   "Yamashir"
+  ],
+  "outcomes": [
+   {
+    "png": "11-iga-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 18,
+    "banned_cells": 2
+   },
+   {
+    "png": "11-iga-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 18,
+    "banned_cells": 2
+   }
+  ]
+ },
+ {
+  "fief": 11,
+  "name": "Iga",
+  "edge": "east",
+  "attackers": [
+   "Omi",
+   "Iseshima"
+  ],
+  "outcomes": [
+   {
+    "png": "11-iga-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 20,
+    "banned_cells": 0
+   }
+  ]
+ },
+ {
+  "fief": 12,
+  "name": "Iseshima",
+  "edge": "north",
+  "attackers": [
+   "Omi"
+  ],
+  "outcomes": [
+   {
+    "png": "12-iseshima-north-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      9,
+      0
+     ],
+     [
+      8,
+      1
+     ],
+     [
+      8,
+      0
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 10,
+    "banned_cells": 23
+   },
+   {
+    "png": "12-iseshima-north-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     10,
+     2
+    ],
+    "open_cells": 10,
+    "banned_cells": 23
+   }
+  ]
+ },
+ {
+  "fief": 12,
+  "name": "Iseshima",
+  "edge": "west",
+  "attackers": [
+   "Yamato",
+   "Iga"
+  ],
+  "outcomes": [
+   {
+    "png": "12-iseshima-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   },
+   {
+    "png": "12-iseshima-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 10,
+    "banned_cells": 10
+   }
+  ]
+ },
+ {
+  "fief": 12,
+  "name": "Iseshima",
+  "edge": "east",
+  "attackers": [
+   "Mino",
+   "Owari"
+  ],
+  "outcomes": [
+   {
+    "png": "12-iseshima-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 12,
+    "banned_cells": 8
+   }
+  ]
+ },
+ {
+  "fief": 13,
+  "name": "Yamashir",
+  "edge": "south",
+  "attackers": [
+   "Yamato"
+  ],
+  "outcomes": [
+   {
+    "png": "13-yamashir-south-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      2
+     ],
+     [
+      9,
+      2
+     ],
+     [
+      10,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 27,
+    "banned_cells": 6
+   },
+   {
+    "png": "13-yamashir-south-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 27,
+    "banned_cells": 6
+   }
+  ]
+ },
+ {
+  "fief": 13,
+  "name": "Yamashir",
+  "edge": "west",
+  "attackers": [
+   "Settsu"
+  ],
+  "outcomes": [
+   {
+    "png": "13-yamashir-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 14,
+    "banned_cells": 6
+   },
+   {
+    "png": "13-yamashir-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 14,
+    "banned_cells": 6
+   }
+  ]
+ },
+ {
+  "fief": 13,
+  "name": "Yamashir",
+  "edge": "east",
+  "attackers": [
+   "Omi",
+   "Iga"
+  ],
+  "outcomes": [
+   {
+    "png": "13-yamashir-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     2
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 13,
+    "banned_cells": 7
+   }
+  ]
+ },
+ {
+  "fief": 14,
+  "name": "Settsu",
+  "edge": "south",
+  "attackers": [
+   "Yamato"
+  ],
+  "outcomes": [
+   {
+    "png": "14-settsu-south-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      2
+     ],
+     [
+      9,
+      2
+     ],
+     [
+      10,
+      3
+     ]
+    ],
+    "seat": [
+     7,
+     2
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 16,
+    "banned_cells": 17
+   },
+   {
+    "png": "14-settsu-south-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      9,
+      2
+     ],
+     [
+      9,
+      3
+     ],
+     [
+      10,
+      3
+     ]
+    ],
+    "seat": [
+     7,
+     2
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 16,
+    "banned_cells": 17
+   }
+  ]
+ },
+ {
+  "fief": 14,
+  "name": "Settsu",
+  "edge": "east",
+  "attackers": [
+   "Yamashir"
+  ],
+  "outcomes": [
+   {
+    "png": "14-settsu-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     7,
+     2
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 15,
+    "banned_cells": 5
+   }
+  ]
+ },
+ {
+  "fief": 15,
+  "name": "Shinano",
+  "edge": "south",
+  "attackers": [
+   "Suruga"
+  ],
+  "outcomes": [
+   {
+    "png": "15-shinano-south-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      10,
+      2
+     ],
+     [
+      10,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 18,
+    "banned_cells": 15
+   },
+   {
+    "png": "15-shinano-south-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      2
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     2,
+     10,
+     4
+    ],
+    "open_cells": 18,
+    "banned_cells": 15
+   }
+  ]
+ },
+ {
+  "fief": 15,
+  "name": "Shinano",
+  "edge": "west",
+  "attackers": [
+   "Kaga",
+   "Hida",
+   "Mikawa",
+   "Mino"
+  ],
+  "outcomes": [
+   {
+    "png": "15-shinano-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      4
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 14,
+    "banned_cells": 6
+   },
+   {
+    "png": "15-shinano-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 14,
+    "banned_cells": 6
+   }
+  ]
+ },
+ {
+  "fief": 15,
+  "name": "Shinano",
+  "edge": "east",
+  "attackers": [
+   "Echigo",
+   "Musashi"
+  ],
+  "outcomes": [
+   {
+    "png": "15-shinano-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     4,
+     4
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 14,
+    "banned_cells": 6
+   }
+  ]
+ },
+ {
+  "fief": 16,
+  "name": "Owari",
+  "edge": "west",
+  "attackers": [
+   "Iseshima"
+  ],
+  "outcomes": [
+   {
+    "png": "16-owari-west-0.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 11,
+    "banned_cells": 9
+   },
+   {
+    "png": "16-owari-west-1.png",
+    "chance": "2/4",
+    "placed": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     0,
+     0,
+     3,
+     4
+    ],
+    "open_cells": 11,
+    "banned_cells": 9
+   }
+  ]
+ },
+ {
+  "fief": 16,
+  "name": "Owari",
+  "edge": "east",
+  "attackers": [
+   "Mikawa",
+   "Mino"
+  ],
+  "outcomes": [
+   {
+    "png": "16-owari-east-0.png",
+    "chance": "4/4",
+    "placed": [],
+    "seat": [
+     5,
+     3
+    ],
+    "rect": [
+     7,
+     0,
+     10,
+     4
+    ],
+    "open_cells": 19,
+    "banned_cells": 1
+   }
+  ]
+ }
+]
