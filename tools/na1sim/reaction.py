@@ -220,6 +220,13 @@ def reader_policy(m, idx, rng):
     morale, loyalty = m.r16(f + M.F_MORALE), m.r16(f + M.F_LOYALTY)
     season = getattr(m, "season", 0)
     rice_first = policy.OPENING.get("summer_rice_first")
+    # line_first (Chris, 2026-11-11): when the gold reaches the picker line (men_line runs the real
+    # selection), hiring to it outranks the morale fix: nobody picks him, so the battle never comes.
+    # Hiring also lifts morale a little (recruits arrive at 40-59, apply_hire_unit_stats $8BF4).
+    if policy.OPENING.get("line_first") and threats(m, idx) and gold > 1:
+        line = men_line(m, idx)
+        if line is not None and policy._hire_up_to(m, idx, line):
+            return
     for low, give in ((morale, policy.give_men), (loyalty, policy.give_peasants)):     # 1
         # summer_rice_first (Chris, 2026-11-11: T2 is rice): in Summer the rice for the upkeep
         # outranks the loyalty cliff (a won T1 garrison has the morale; loyalty only risks a riot)
