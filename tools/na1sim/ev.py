@@ -25,7 +25,8 @@ from . import memmap as M, policy, reaction, vmprims as P
 
 P_ATTACK = 0.65          # per threatening neighbour per season (1 threat .65, 2 .89, 3+ 1.0 observed)
 REVOLT_LOSS = ((24, .24), (38, .36), (58, .42))   # staged revolt battle lost, by his men (#45)
-HORIZON = 4
+HORIZON = 4              # seasons; 8 reaches the second harvest (the income loyalty and wealth buy)
+PEASANTS = False         # give the gold to the peasants as a candidate (worth pricing only with HORIZON 8)
 EPS = 0.003
 ALL_HARVEST = True       # project every fief's harvest, not only his
 READER_DEFAULT = False   # tried 2026-11-11: 41 alive of 600 against 48 without; the reader's move is a candidate and the fallback (else reaction.economy)
@@ -126,7 +127,7 @@ def survival(m, idx):
         for k in range(HORIZON):
             t = (s0 + k) % 4
             if k and t == 2:             # the Fall harvest, before that season's events and commands
-                if s0 != 1:              # a Summer command still to come buys the least rice it needs
+                if k > 1:                # a Summer command still to come buys the least rice it needs
                     policy.buy_rice_to(m, idx, lambda s: policy._rice_slack(m, idx, False, s))
                 for i in range(m.r16(M.SCENARIO_FIEF_COUNT)):    # everyone harvests: the
                     if m.province_ai_state(i) != M.EMPTY and (ALL_HARVEST or i == idx):
@@ -155,6 +156,8 @@ def candidates(m, idx):
         line = reaction.men_line(m, idx)
         if line is not None:
             out.append(("line", lambda: policy._hire_up_to(m, idx, line)))
+    if PEASANTS:
+        out.append(("peasants", lambda: policy.give_peasants(m, idx, gold - 1, gold=True)))
     out.append(("rice", lambda: policy.buy_rice_to(
         m, idx, lambda s: policy._rice_slack(m, idx, False, s, sustain=True))))
     return out
@@ -181,10 +184,11 @@ def ev_policy(m, idx, rng):
             _restore(m, snap)
     base = "reader" if READER_DEFAULT else "none"
     top = max(scores.values())
-    if scores[base] >= top - EPS:
+    tol = EPS                        # absolute; relative (EPS * top) tried 2026-11-11: 46 of 600 against 50
+    if scores[base] >= top - tol:
         best = base
-    else:                            # of the moves within EPS of the best, the one that keeps most
-        best = max((k for k in scores if scores[k] >= top - EPS), key=lambda k: (left[k], scores[k]))
+    else:                            # of the moves within tol of the best, the one that keeps most
+        best = max((k for k in scores if scores[k] >= top - tol), key=lambda k: (left[k], scores[k]))
     if TRACE:
         LOG.append((getattr(m, "season", 0), scores, best))
     if best == "reader":
