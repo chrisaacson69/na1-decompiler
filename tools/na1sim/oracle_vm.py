@@ -698,6 +698,7 @@ def combat_conquest_check():
     musket = {5: (20, 20, 40, 10, 10), 8: (30, 20, 30, 10, 10)}
     for label, atk_won, cap_fell, sp in [("atk-won", True, False, None), ("atk-lost", False, False, None),
                                          ("capital-fell", True, True, None),
+                                         ("atk-lost-daimyo-led", False, True, None),   # the leading daimyo's faction
                                          ("atk-won-musket", True, False, musket),
                                          ("atk-lost-musket", False, False, musket)]:
         mr = M.Memory(rng=DreamRNG()); setup(mr, atk_won, cap_fell, sp)
@@ -710,6 +711,9 @@ def combat_conquest_check():
         addrs += [(M.FIEF_TO_DAIMYO_MAP + 8, 1, "owner8"), (M.FIEF_IS_CAPITAL + 8, 1, "cap8"),
                   (M.FIEF_IS_CAPITAL + 5, 1, "cap5")]
         addrs += [(M.PROVINCE_UNIT_TYPE_PCT + 8 * 5 + i, 1, f"split8[{i}]") for i in range(5)]
+        addrs += [(M.FIEF_TO_DAIMYO_MAP + i, 1, f"owner{i}") for i in range(17)]     # every fief: faction transfers
+        addrs += [(M.PROVINCE_AI_STATE + i, 1, f"state{i}") for i in range(17)]
+        addrs += [(M.FIEF_IS_CAPITAL + i, 1, f"cap{i}") for i in range(17)]
         for off, n in [(M.D_DRIVE, "Dwin"), (M.D_CHARISMA, "Chwin"), (M.D_IQ, "IQwin")]:
             addrs.append((mp.daimyo(1) + off, 1, n))
             addrs.append((mp.daimyo(2) + off, 1, n + "L"))
@@ -717,6 +721,49 @@ def combat_conquest_check():
                  if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
         ok = ok and not diffs
         print(f"--- conquest[{label}]: {'MATCH' if not diffs else 'MISMATCH ' + ','.join(diffs)}")
+    return ok
+
+
+def combat_flee_check():
+    """Validate ai_claim_province_when_strong_enough ($A84D, bank 2) vs na1dream: a daimyo-led
+    commander whose own men doubled are under the enemy men NEXT TO HIM (build_reachable_enemy_
+    target_list $A0F3: the six adjacent cells) gives the battle up and relocates his capital to a
+    fief of his bordering the battle fief (load_fief_neighbor_list $DAAB of the DEFENDING province
+    into $6F4F, then build_daimyo_province_list $90BB). The candidate buffer starts stale here (all
+    $FF), as the ROM never trusts it: it loads the list itself."""
+    from . import tactical as T
+
+    def setup(m, cmd_men, adj_men, led):
+        _combat_battle_setup(m, 5, 8, atk_men=cmd_men, def_men=adj_men[0], atk_col=4, def_col=5, row=2)
+        m.w8(M.WAR_SIDE_STATE_FLAG + 0, 0x81 if led else 0x01)          # attacker: slot 0, daimyo-led?
+        m.w8(M.WAR_SIDE_STATE_FLAG + 1, 0x01 | (0x02 if len(adj_men) > 1 else 0))
+        if len(adj_men) > 1:                                             # a second defender next to him
+            m.w16(m.unit_strength_ptr(1, 1), adj_men[1])
+            m.w8(m.unit_col_ptr(1, 1), 4); m.w8(m.unit_row_ptr(1, 1), 1)
+        for side in (0, 1):
+            m.w16(m.side_resource_ptr(side) + M.SR_RICE, 200)
+        m.w8(M.FIEF_IS_CAPITAL + 5, 1)
+        for i in range(8):
+            m.w8(M.DEDUPED_OWNER_LIST + i, 0xFF)                         # stale candidate buffer
+        m.cur_combat_side = 0
+        m.cur_combat_unit_slot = 0
+
+    ok = True
+    for label, cmd_men, adj, led in [("weak-led", 10, (15, 12), True), ("strong-led", 30, (15, 12), True),
+                                     ("weak-general", 10, (15, 12), False), ("weak-one-adjacent", 10, (25,), True)]:
+        mr = M.Memory(rng=DreamRNG()); setup(mr, cmd_men, adj, led)
+        rom_post, rom_ret = run_rom_ret(mr, 0xA852, -4, 2, args=(1,), fp=0x0480)
+        mp = M.Memory(rng=DreamRNG()); setup(mp, cmd_men, adj, led)
+        from . import loader
+        mp.neighbor_rows = loader.load_adjacency()                       # setup.build_board's rows
+        py_ret = T.ai_claim_province_when_strong_enough(mp, 1)
+        addrs = [(M.WAR_SIDE_STATE_FLAG, 1, "flag0"), (M.BATTLE_WINNER_PROV, 2, "winner"),
+                 (M.FIEF_IS_CAPITAL + 5, 1, "cap5")] + [(M.FIEF_IS_CAPITAL + i, 1, f"cap{i}") for i in range(17)]
+        diffs = [n for a, s, n in addrs if _read_buf(rom_post, a, s) != (mp.r16(a) if s == 2 else mp.r8(a))]
+        if bool(rom_ret) != bool(py_ret):
+            diffs.append(f"ret rom {rom_ret} py {py_ret}")
+        ok = ok and not diffs
+        print(f"--- flee[{label}]: rom ret {rom_ret} py ret {py_ret} => {'MATCH' if not diffs else 'MISMATCH ' + ','.join(diffs)}")
     return ok
 
 
@@ -854,6 +901,7 @@ def main():
     results.append(combat_deploy_check())
     print("\n  --- TACTICAL: conquest resolution (apply_conquest_outcome $E041) ---")
     results.append(combat_conquest_check())
+    results.append(combat_flee_check())
     results.append(assign_commit_check())
 
     print(f"\n=== {sum(results)}/{len(results)} routines MATCH ===")

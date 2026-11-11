@@ -1212,6 +1212,11 @@ def ai_claim_province_when_strong_enough(m, fief) -> int:
     if strong or True:
         # both the strong-and-eligible and the not-strong paths run the same claim body
         side_fief = m.get_battle_side_province(m.cur_combat_side)
+        # load_fief_neighbor_list $DAAB (battle_defending_province) -> $6F4F first: the ROM never
+        # trusts the buffer. The sim read it stale, so no AI daimyo ever fled a battle
+        # (oracle flee[weak-led], 2026-11-11).
+        from . import ai_vm
+        ai_vm.load_daimyo_relation_row(m, m.defending)
         owner = _build_daimyo_province_list_first(m, m.defending, side_fief)
         if owner != 0xFF:
             m.w16(M.BATTLE_WINNER_PROV, side_fief)
@@ -1427,9 +1432,14 @@ def apply_conquest_outcome(m: "M.Memory", rng) -> None:
     m.w8(M.AI_TURN_FLAGS, m.r8(M.AI_TURN_FLAGS) & 0x8F)
     if not uprising:
         winner_state = 5 if m.province_ai_state(sp) else 0
-        if m.test_6f65_bit7(1 if atk_won else 0):        # capital fell -> whole faction
-            if atk_won:
-                _reassign_faction(m, m.fief_owner(dp), m.selected_province_owner(), winner_state)
+        if m.test_6f65_bit7(1 if atk_won else 0):        # the LOSING side was daimyo-led -> whole faction
+            # reassign_fiefs_to_conqueror $DED4 works both ways ($E117 tests the loser's bit7): a
+            # daimyo-led attacker that loses (killed, starved, day 30) hands every fief to the
+            # defender; a flight does not, since end_war_relocate_capital clears the bit first.
+            # (The sim had only the attacker-won half; oracle conquest[atk-lost-daimyo-led].)
+            conq = sp if atk_won else dp
+            loser = m.fief_owner(m.r16(M.BATTLE_WINNER_PROV))
+            _reassign_faction(m, loser, m.fief_owner(conq), 5 if m.province_ai_state(conq) else 0)
         elif atk_won:
             m.w8(M.FIEF_TO_DAIMYO_MAP + dp, m.selected_province_owner())
             m.w8(M.PROVINCE_AI_STATE + dp, winner_state)
