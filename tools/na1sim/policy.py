@@ -595,6 +595,9 @@ OPENING_ACTIONS = {
     "hire": lambda m, idx: hire_men(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1),
     "rice": lambda m, idx: buy_rice(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1),
     "train": train,
+    # Assign 96/1/1/1/1 (#44: one-man units steer the scan, the commander holds the army); refused
+    # (under 30 gold, no men) -> returns False and the tail plays the turn
+    "assign96": lambda m, idx: bool(P.driver_assign(m, idx, (96, 1, 1, 1, 1))),
 }
 
 
@@ -613,5 +616,6 @@ def plan_policy(fief, plan, tail=expand_policy):
         else:
             m.selected = idx
             m.turn_rng = rng                # for an action that falls back to a policy
-            act(m, idx)
+            if act(m, idx) is False:        # refused: the tail plays the turn
+                tail(m, idx, rng)
     return play

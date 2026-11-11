@@ -142,13 +142,23 @@ def play(fief, seed, years=6, plan=("auto",), tail=policy.expand_policy, skill=2
 def _chunk(job):
     fief, s0, s1, years, plan, skill, opening, tail, combat = job
     policy.OPENING.update(opening)
-    if combat:                                  # the human fights his battles (strike.Doctrine, #43)
+    if combat.startswith("plan"):               # a fixed plan for one fief (plans.py, #44): plan8:hold
+        from . import plans, tactical
+        where, mode = combat[4:].split(":")[:2]
+        cells, stations = {1: (plans.ECHIGO, None), 8: (plans.MINO, plans.MINO_GATE)}[int(where)]
+        tactical.HUMAN = plans.PlanPlayer(int(where), cells, mode, stations=stations)
+        if combat.endswith(":bysplit"):        # the plan only once the split is heavy, else the doctrine
+            from . import strike
+            tactical.HUMAN = plans.BySplit(tactical.HUMAN, strike.Doctrine())
+        policy.OPENING["no_retreat"] = 1
+    elif combat:                                # the human fights his battles (strike.Doctrine, #43)
         from . import strike, tactical
         short, long_ = (combat.split(",") + ["contact"])[:2] if combat != "doctrine" else ("control", "contact")
         tactical.HUMAN = strike.Doctrine(short, long_)
         policy.OPENING["no_retreat"] = 1
     from . import reaction
-    pol = {"reaction": reaction.reaction_policy, "reader": reaction.reader_policy}.get(tail, policy.expand_policy)
+    pol = {"reaction": reaction.reaction_policy, "reader": reaction.reader_policy,
+           "reader_assign": reaction.reader_assign_policy}.get(tail, policy.expand_policy)
     return fief, [play(fief, s, years, plan, tail=pol, skill=skill) for s in range(s0, s1)]
 
 
@@ -200,9 +210,9 @@ def main():
     ap.add_argument("--fiefs", default=",".join(map(str, range(17))))
     ap.add_argument("--plan", default="auto")
     ap.add_argument("--skill", type=int, default=2)
-    ap.add_argument("--tail", default="expand", help="expand, reaction or reader")
+    ap.add_argument("--tail", default="expand", help="expand, reaction, reader or reader_assign")
     ap.add_argument("--opening", default="", help="policy.OPENING overrides: keep_rice=1,picker=1")
-    ap.add_argument("--combat", default="", help="doctrine, or SHORT,LONG arms (strike.py): the human fights his battles")
+    ap.add_argument("--combat", default="", help="doctrine, SHORT,LONG arms (strike.py), or planF:MODE (plans.py, e.g. plan8:hold): the human fights his battles")
     ap.add_argument("--out")
     a = ap.parse_args()
     plan = tuple(a.plan.split(","))

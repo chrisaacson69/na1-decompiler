@@ -301,3 +301,16 @@ if __name__ == "__main__":
         validate(sys.argv[1], int(sys.argv[2]))
     else:
         table()
+
+
+ASSIGN_SPLIT = (96, 1, 1, 1, 1)
+
+
+def reader_assign_policy(m, idx, rng):
+    """reader_policy, but the first command with 30 gold spends the Assign to ASSIGN_SPLIT (#44: the
+    commander holds the army on the castle, one-man units steer the attacker's landing), once."""
+    from . import memmap as M, vmprims as P
+    base = M.PROVINCE_UNIT_TYPE_PCT + idx * 5
+    if tuple(m.r8(base + i) for i in range(5)) != ASSIGN_SPLIT and P.driver_assign(m, idx, ASSIGN_SPLIT):
+        return
+    reader_policy(m, idx, rng)

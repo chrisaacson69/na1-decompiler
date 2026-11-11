@@ -161,3 +161,21 @@ class PlanPlayer(Player):
         if best and best[0] > gap(here):
             return ("move",) + best[1]
         return ("pass",)
+
+
+class BySplit:
+    """Pick the battle player by the defender's unit split at deployment: `heavy` (e.g. the far-push
+    hold plan) once the commander's row holds `line`% or more (after a 96/1/1/1/1 Assign), else
+    `light` (the doctrine). The split is $76A9 + fief*5, the one the battle deals men by."""
+
+    def __init__(self, heavy, light, line=90):
+        self.heavy, self.light, self.line, self.cur = heavy, light, line, light
+        self.log = []
+
+    def deploy(self, m):
+        heavy = m.r8(M.PROVINCE_UNIT_TYPE_PCT + m.defending * 5) >= self.line
+        self.cur = self.heavy if heavy else self.light
+        self.cur.deploy(m)
+
+    def act(self, m, day, slot):
+        return self.cur.act(m, day, slot)
