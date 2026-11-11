@@ -219,7 +219,13 @@ def reader_policy(m, idx, rng):
     gold, rice, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
     morale, loyalty = m.r16(f + M.F_MORALE), m.r16(f + M.F_LOYALTY)
     season = getattr(m, "season", 0)
+    rice_first = policy.OPENING.get("summer_rice_first")
     for low, give in ((morale, policy.give_men), (loyalty, policy.give_peasants)):     # 1
+        # summer_rice_first (Chris, 2026-11-11: T2 is rice): in Summer the rice for the upkeep
+        # outranks the loyalty cliff (a won T1 garrison has the morale; loyalty only risks a riot)
+        if rice_first and give is policy.give_peasants and season == 1 and policy.buy_rice_to(
+                m, idx, lambda s: policy._rice_slack(m, idx, False, s, sustain=True)):
+            return
         if low < policy.CLIFF:
             if gold > 1:
                 give(m, idx, min(60, gold - 1), gold=True)
