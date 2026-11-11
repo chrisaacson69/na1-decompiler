@@ -21,6 +21,8 @@ Day scripts (`mode`):
           total stays at or under 2x his men, and waits two hexes off otherwise; units already next to
           him attack together (each exchange on him this turn gives the next +20%, `$7BEE`). Against
           a general (no flight) it is plain strike.
+  gate    walk each unit to its station (`stations`, slots 1-4) and hold it, fighting only his
+          commander when he comes next to us: the starve plan for a fief with a gate (Mino (3,0)).
   run     our commander holds the seat (fighting only what is next to it); every other unit steps to
           the free neighbour farthest from the nearest enemy unit and never attacks: circle the castle,
           play for his rice and the day-30 clock.
@@ -29,6 +31,15 @@ Another fief, an entry side without a plan (rebels, the odd east attack) falls b
 """
 from . import memmap as M, tactical as T
 from .strike import NB, Doctrine, Player, _cell, _distances
+
+MINO = {                                                  # fief 8, the spiral (#44): push him far
+    1: [(6, 1), (3, 0), (0, 1), (2, 2), (6, 3)],          # north: both coins -> (10,0)/(9,0), 20 days
+    2: [(6, 1), (0, 0), (0, 1), (2, 2), (6, 3)],          # south: both coins -> (10,2), 18 days
+    3: [(6, 1), (0, 1), (0, 4), (2, 0), (2, 3)],          # west: both coins -> (3,4), 10 days (the most)
+    4: [(6, 1), (3, 0), (4, 0), (4, 1), (5, 0)],          # east: a random drop anyway; start on station
+}
+MINO_GATE = [(3, 0), (4, 0), (4, 1), (5, 0)]              # slots 1-4: (3,0) is the castle's one gate
+                                                          # (its only outside neighbour is (2,0))
 
 ECHIGO = {
     2: [(5, 2), (8, 1), (7, 1), (2, 1), (3, 1)],          # south: slot order 0..4
@@ -41,9 +52,10 @@ def _free(m, c):
 
 
 class PlanPlayer(Player):
-    def __init__(self, fief, cells_by_edge, mode="strike", k=2):
+    def __init__(self, fief, cells_by_edge, mode="strike", k=2, stations=None):
         super().__init__("plan")
         self.fief, self.cells, self.mode, self.k = fief, cells_by_edge, mode, k
+        self.stations = stations
         self.fallback = None
 
     # ------------------------------------------------------------------ deployment
@@ -81,6 +93,8 @@ class PlanPlayer(Player):
             return ("pass",)
         if slot == 0:
             return self._home(m, here, es)
+        if self.mode == "gate":
+            return self._gate(m, here, es, slot)
         if self.mode == "run":
             return self._run(m, here, enemies)
         if not m.is_unit_present(es, 0):
@@ -114,6 +128,18 @@ class PlanPlayer(Player):
                    default=None)
         if best and best[0] < dist.get(here, 99):
             return ("move",) + best[1]
+        return ("pass",)
+
+    def _gate(self, m, here, es, slot):
+        """Walk to this slot's station; there, fight only his commander if he comes next to us."""
+        target = self.stations[slot - 1]
+        if here != target:
+            dist = _distances(m, target)
+            best = min(((dist.get(n, 99), n) for n in NB[here] if _free(m, n)), default=None)
+            if best and best[0] < dist.get(here, 99):
+                return ("move",) + best[1]
+        if m.is_unit_present(es, 0) and _cell(m, es, 0) in NB[here]:
+            return ("attack", 0)
         return ("pass",)
 
     def _home(self, m, here, es):

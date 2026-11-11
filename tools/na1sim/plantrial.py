@@ -12,6 +12,9 @@ import pickle
 from . import memmap as M, tactical as T, battles as B, strike as S, plans as P
 
 ARMS = ("ai_nr", "doctrine", "strike", "hold", "run")
+FIEF = 1
+PLANS = {1: (P.ECHIGO, None, ("ai_nr", "doctrine", "strike", "hold", "run")),
+         8: (P.MINO, P.MINO_GATE, ("ai_nr", "control", "gate", "hold"))}
 
 
 def _owned(m, owner):
@@ -22,12 +25,16 @@ def _owned(m, owner):
 def _player(arm):
     if arm == "doctrine":
         return S.Doctrine()
-    if arm in ("strike", "hold", "run"):
-        return P.PlanPlayer(1, P.ECHIGO, arm)
+    if arm == "control":
+        return S.Player("control")
+    if arm in ("strike", "hold", "run", "gate"):
+        cells, stations, _ = PLANS[FIEF]
+        return P.PlanPlayer(FIEF, cells, arm, stations=stations)
     return None
 
 
 SCALE = 1.0
+SPLIT = None          # an Assign before the battle (strike.assign), e.g. (96, 1, 1, 1, 1)
 
 
 def _scale(m):
@@ -38,15 +45,25 @@ def _scale(m):
         m.w16(a + k, min(0xFFFF, round(m.r16(a + k) * SCALE)))
 
 
-def _init(scale):
-    global SCALE
-    SCALE = scale
+def _prep(m):
+    if SCALE != 1.0:
+        _scale(m)
+    if SPLIT:
+        S.assign(SPLIT)(m)
+
+
+def _init(scale, fief=1, split=None):
+    global SCALE, FIEF, ARMS, SPLIT
+    SCALE, FIEF, SPLIT = scale, fief, split
+    ARMS = PLANS[fief][2]
 
 
 def _one(rec):
     m0, _ = pickle.loads(rec["start"])
-    if SCALE != 1.0:
-        _scale(m0)
+    try:
+        _prep(m0)
+    except ValueError:
+        return None
     m0.cur_combat_side = 0
     edge = T.set_combat_arena_rect_by_approach(m0)
     led = bool(m0.r8(M.WAR_SIDE_STATE_FLAG) & 0x80)
@@ -58,7 +75,7 @@ def _one(rec):
     for arm in ARMS:
         T.HUMAN = _player(arm)
         try:
-            code, held, _, m = B.replay(rec, {"no_retreat": 1}, _scale if SCALE != 1.0 else None)
+            code, held, _, m = B.replay(rec, {"no_retreat": 1}, _prep)
         finally:
             T.HUMAN = None
         row[arm] = held
@@ -69,8 +86,9 @@ def _one(rec):
 
 def trial(recs, scale=1.0, procs=6):
     from concurrent.futures import ProcessPoolExecutor
-    with ProcessPoolExecutor(procs, initializer=_init, initargs=(scale,)) as ex:
-        return list(ex.map(_one, recs, chunksize=4))
+    _init(scale, FIEF, SPLIT)
+    with ProcessPoolExecutor(procs, initializer=_init, initargs=(scale, FIEF, SPLIT)) as ex:
+        return [r for r in ex.map(_one, recs, chunksize=4) if r is not None]
 
 
 def report(rows):
@@ -83,9 +101,9 @@ def report(rows):
         print(f"{name:26}{len(rs):4} |{held} |{gain}")
     print(f"{'held / fiefs gained':26}{'n':>4} |" + "".join(f"{c:>7}" for c in cols) + " |" + "".join(f"{c:>7}" for c in ARMS))
     line("all invasions", rows)
-    rows = [r for r in rows if r["fief"] == 1]
-    line("Echigo itself", rows)
-    for e, nm in ((2, "south"), (3, "west"), (4, "east")):
+    rows = [r for r in rows if r["fief"] == FIEF]
+    line("the fief itself", rows)
+    for e, nm in ((1, "north"), (2, "south"), (3, "west"), (4, "east")):
         line(f"  from the {nm}", [r for r in rows if r["edge"] == e])
     line("  daimyo-led", [r for r in rows if r["led"]])
     line("  a general", [r for r in rows if not r["led"]])
@@ -101,8 +119,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("path")
     ap.add_argument("--out")
+    ap.add_argument("--fief", type=int, default=1, help="the planned fief (1 Echigo, 8 Mino)")
+    ap.add_argument("--split", help="an Assign before each battle, e.g. 96,1,1,1,1")
     ap.add_argument("--scale", default="1", help="attacker men and rice multipliers, e.g. 1,1.5,2,3")
     a = ap.parse_args()
+    global FIEF, SPLIT
+    FIEF = a.fief
+    SPLIT = tuple(int(v) for v in a.split.split(",")) if a.split else None
     recs = [r for r in B.load(Path(a.path)) if r["kind"] == "invasion"]
     rows = []
     for sc in (float(v) for v in a.scale.split(",")):
