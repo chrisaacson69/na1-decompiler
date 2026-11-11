@@ -159,6 +159,9 @@ def _chunk(job):
     from . import reaction
     pol = {"reaction": reaction.reaction_policy, "reader": reaction.reader_policy,
            "reader_assign": reaction.reader_assign_policy}.get(tail, policy.expand_policy)
+    if tail == "ev":
+        from . import ev
+        pol = ev.ev_policy
     return fief, [play(fief, s, years, plan, tail=pol, skill=skill) for s in range(s0, s1)]
 
 
@@ -210,7 +213,7 @@ def main():
     ap.add_argument("--fiefs", default=",".join(map(str, range(17))))
     ap.add_argument("--plan", default="auto")
     ap.add_argument("--skill", type=int, default=2)
-    ap.add_argument("--tail", default="expand", help="expand, reaction, reader or reader_assign")
+    ap.add_argument("--tail", default="expand", help="expand, reaction, reader, reader_assign or ev")
     ap.add_argument("--opening", default="", help="policy.OPENING overrides: keep_rice=1,picker=1")
     ap.add_argument("--combat", default="", help="doctrine, SHORT,LONG arms (strike.py), or planF:MODE (plans.py, e.g. plan8:hold): the human fights his battles")
     ap.add_argument("--out")

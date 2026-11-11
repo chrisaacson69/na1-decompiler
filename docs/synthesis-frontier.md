@@ -91,6 +91,20 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #46 — The EV player: Saito's commands priced, not ordered (Chris, 2026-11-11)
+
+**`na1sim/ev.py`, `deaths.py --tail ev`.** Each command is chosen by the survival it buys over the next four seasons, from #45's parts: revolt by the formula, invasion by `reaction.threats` (the ROM's own pick), with each threatening neighbour attacking **65% of seasons** (measured: 1 threat .65, 2 .89, 3+ 1.00), committing its budget × 60-89% (daimyo-led, a coin from a capital) or 50-69%, against the odds table (`na1sim/odds.py` → `odds_f8.json`). A horizon that crosses a Fall runs every fief's real harvest at mean income. A future Summer command buys the least rice; rice 0 after it scores 0. The candidates are morale, hire all, hire to the picker line, Summer rice, or nothing (then the reader's economy step, `reaction.economy`, factored out of `reader_policy` with no change to it). Ties within 0.003 go to the move that keeps the most gold and rice.
+
+Saito, skill 1, 3 years, doctrine battles, against `reader` with `summer_rice_first` + `line_first`:
+
+| | tuning 3000-3299 | fresh 4000-4299 | total |
+|---|---|---|---|
+| reader | 22 | 18 | 40 (6.7%) |
+| **ev** | **26** | **24** | **50 (8.3%)** |
+| ev, the reader's move as candidate and fallback | 21 | 20 | 41 |
+
+Nothing was fitted. The parts are formulas or one-off measurements, and the fresh seeds gain as much as the tuning ones. **What the scorer sees that the rule order did not:** spending all the Spring gold (on morale *or* men) leaves nothing for the Fall upkeep (men/2 from gold), so the upkeep dismisses men and more neighbours pick him (seed 3093: 3 threats become 6); hiring just to the line kept 22 gold and left no threat. **What it still misses:** 4-5 revolt deaths against the reader's 0-3. Morale lasts beyond a four-season horizon, so the morale fix is undervalued, and the income that loyalty and wealth buy is not in the score at all (4240, 4275: morale on turn 1, then the economy never grew and the year-2 upkeep cut him to 12 men). The 157-172 games decided before his first command are untouched.
+
 ### #45 — Saito's choices priced from the formulas: revolt, rice 0, battle odds, and the daimyo's doubling (Chris, 2026-11-11)
 
 **Chris: every early choice is an expected value on the current state; derive it, and use the sim to check.** These are the parts. Saito at start: 38 men, morale 21, 29 gold, 25 rice, charisma 102 (so morale alone sets his revolt eligibility).

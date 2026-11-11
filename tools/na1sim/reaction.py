@@ -250,7 +250,18 @@ def reader_policy(m, idx, rng):
     if season == 1 and policy.buy_rice_to(                                              # 3
             m, idx, lambda s: policy._rice_slack(m, idx, False, s, sustain=True)):
         return
-    tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)       # 4
+    economy(m, idx)                                                                     # 4
+
+
+def economy(m, idx):
+    """reader_policy's step 4, shared with ev.ev_policy: tax to 55 as loyalty bears it; Summer gives
+    the rice above what the upkeep keeps (above the men while hunted), Spring gives the gold, else train."""
+    from . import memmap as M, policy
+    f = m.fief(idx)
+    gold, rice, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
+    loyalty = m.r16(f + M.F_LOYALTY)
+    season = getattr(m, "season", 0)
+    tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)
     step = next((s for s in range(cap - tax, 0, -1)
                  if loyalty - policy.P.pct_op(loyalty, s) >= policy.CLIFF - 1), 0)
     if step:
