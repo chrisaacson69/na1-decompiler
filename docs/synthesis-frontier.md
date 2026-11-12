@@ -158,6 +158,21 @@ Expansion costs no survival (equal or better on every start) and speeds up once 
 
 Every start, 70 years, 20 seeds each: **188 of 340 unify** (119 before depots). The median unification comes in about year 20 (25-35 before), so old age is almost gone as a failure (3 lords of 340, all Oda); what is left is invasion, nearly all of it in the starts that never clear the opening. Per start, unified /20 before -> after: Tokugawa 15 -> 19, Asakura 15 -> 18, Kitabatake 11 -> 18, Miyoshi 5 -> 18, Takeda 9 -> 17, Asai 13 -> 16, Oda 10 -> 15, Hida 12 -> 15, Uesugi 6 -> 12, Imagawa 4 -> 12, Hojo 9 -> 11, Ashikaga 7 -> 9, Honganji 0 -> 3 (despite its tax cap), Tsutsui 2 -> 3, Hatakeyama 1 -> 2, Saito and Rokkaku 0.
 
+**The shape of an empire: its army bill** (`expand.army_bill`; Chris: 5 fiefs with 4 on the front beats 5 all exposed). For the owned set: the men every owned fief needs to stay SAFE by share against its enemy neighbours (`share_line`), the capital against every enemy two steps out. Charted over 50 depot games (Oda, Tokugawa, Asakura, Hojo, Imagawa, 10 seeds, 30 years), by fiefs held before unification:
+
+| held | exposed / held | army bill | men held | bill per fief |
+|---|---|---|---|---|
+| 2 | 1.00 | 201 | 384 | 101 |
+| 4 | 0.98 | 590 | 1337 | 148 |
+| 6 | 0.92 | 855 | 2250 | 142 |
+| 8 | 0.89 | 1011 | 2895 | 126 |
+| 10 | 0.62 | 935 | 2808 | 93 |
+| 12 | 0.47 | 762 | 2715 | 64 |
+| 14 | 0.34 | 482 | 2933 | 34 |
+| 16 | 0.18 | 421 | 3233 | 26 |
+
+Two readings. Up to eight fiefs the greedy empire is nearly all frontier, and its bill per fief climbs; interior appears only once the map is mostly eaten. And the men held run two to four times the bill: the army is there, but spread over many front fiefs, each attacking alone with its own men (the War command sends from one fief). So the planner's work is shape early (conquests that make interior sooner) and concentration (the depots marching to the fief that will attack, not merely the nearest front).
+
 **Next (Chris, 2026-11-12), by expected gain:**
 1. ~~**The other verbs: interior fiefs as depots.**~~ **Done (above).** A fief with no enemy neighbour needs no army, and today it spends its command training. `driver_move $96D1` moves men only, to an adjacent owned fief, up to min(men, the destination's header room), blending morale/skill/arms; led by the daimyo it moves the capital too (the king can retreat inward). `driver_send $9A62` moves rice and gold to an owned fief, capped by the receiver's header (eligibility `build_eligible_province_list(1)`, not yet read). So the interior marches its men one step toward the front each season and sends its surplus forward; the front hires and attacks with what gathers.
 2. **Faction collapse.** A fallen capital hands over the whole faction on a 1-in-(drive/10) roll (`game._conquest`, the calculated battle). Cornering the daimyo is the hard part: in a fought battle the lord usually flees if he can, so this term is worth less once battles are fought.

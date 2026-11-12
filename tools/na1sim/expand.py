@@ -151,6 +151,28 @@ def after(m, idx, tgt, men, rice, led=False):
         return won, empire(m, owner)
 
 
+# --- the shape of an empire: its army bill --------------------------------------------------
+def share_line(m, i):
+    """The fewest men keeping every enemy neighbour of fief i at or under the share line (0 if none)."""
+    return max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in reaction.enemy_neighbours(m, i)] or [0])
+
+
+def army_bill(m, owner):
+    """What a shape costs to hold (Chris: an empire of 5 with 4 on the front beats 5 all exposed):
+    -> (bill, exposed, held). bill = the men every owned fief needs to stay SAFE by share against its
+    enemy neighbours, the capital against every enemy two steps out; exposed = owned fiefs with an
+    enemy neighbour."""
+    mine = owned(m, owner)
+    bill = exposed = 0
+    for i in mine:
+        need = share_line(m, i)
+        exposed += need > 0
+        if m.is_capital(i) and len(mine) > 1:
+            need = max(need, capital_line(m, i))
+        bill += need
+    return bill, exposed, len(mine)
+
+
 # --- the other verbs: Move and Send ---------------------------------------------------------
 def move_men(m, src, dst, men, lead=False):
     """The Move command (driver_move $96D1 + effect_move $8CA5): men to an adjacent owned fief, at
