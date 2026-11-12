@@ -113,7 +113,7 @@ The middle column is waiting on a record layer: emu-harness has no `passes/recor
 | Script | Status | Purpose |
 |---|---|---|
 | `dispatch-logger.lua` | ✅ | Log bytecode dispatch at `$E867` (console v1 / CSV v2). |
-| `dashboard.lua` | ✅ | Live econ/army overlay during play. |
+| `dashboard.lua` | ✅ | Live overlay during play (rebuilt 2026-11-12 on #45-#47): the Fall harvest range, each neighbour's share, budget and move order, SAFE / HUNTABLE / COMING, the men that make you safe, and the Summer rice you can give (shield_rice mode 4). D logs the full report. Its arithmetic is checked against the sim (harvest, shares, huntable, the gift room). |
 | `ai-war-logger.lua` | ✅ | Empirical AI war-target measurement (hooks `$B79B`). |
 | `vm-trace.lua` | 🔁 | Lower-level VM trace; overlaps `dispatch-logger`. Headless twin: `vm-trace.py` (identical output; keep this one for the GUI). |
 | `test-overlay.lua` | 🧪 | Diagnostic overlay. |
