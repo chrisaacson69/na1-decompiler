@@ -151,6 +151,107 @@ def after(m, idx, tgt, men, rice, led=False):
         return won, empire(m, owner)
 
 
+# --- the other verbs: Move and Send ---------------------------------------------------------
+def move_men(m, src, dst, men, lead=False):
+    """The Move command (driver_move $96D1 + effect_move $8CA5): men to an adjacent owned fief, at
+    most min(men, the destination's header room); morale/skill/arms blend into the destination by
+    men (weighted_average_capped); an emptied source loses its military stats; led by the lord
+    from the capital, the capital moves with him. -> men moved."""
+    from . import vmprims as P
+    if dst not in m.neighbor_rows.get(src, []) or m.fief_owner(dst) != m.fief_owner(src):
+        return 0
+    fs, fd = m.fief(src), m.fief(dst)
+    hdr = m.r16(fd + M.F_HEADER)
+    men = min(men, m.r16(fs + M.F_MEN), hdr - m.r16(fd + M.F_MEN))
+    if men < 1:
+        return 0
+    for off in (M.F_MORALE, M.F_SKILL, M.F_ARMS):
+        m.w16(fd + off, P.scaled_force_transfer(m.r16(fd + off), m.r16(fs + off), men, m.r16(fd + M.F_MEN), hdr))
+    m.w16(fd + M.F_MEN, m.r16(fd + M.F_MEN) + men)
+    m.w16(fs + M.F_MEN, m.r16(fs + M.F_MEN) - men)
+    P.clear_military_stats_if_no_men(m, src)
+    if lead and m.is_capital(src) and not m.r8(M.DAIMYO_WEAKNESS_FLAG + m.fief_owner(src)):
+        m.w8(M.FIEF_IS_CAPITAL + src, 0)
+        m.w8(M.FIEF_IS_CAPITAL + dst, 1)
+        m.w8(M.PROVINCE_AI_STATE + dst, 5)
+    return men
+
+
+def send(m, src, dst, rice, gold):
+    """The Send command (driver_send $9A62, effect_send $8BE5): rice and gold to any owned fief,
+    each at most min(the receiver's header room, what the sender has). -> (rice, gold) sent."""
+    if dst == src or m.fief_owner(dst) != m.fief_owner(src):
+        return 0, 0
+    fs, fd = m.fief(src), m.fief(dst)
+    hdr = m.r16(fd + M.F_HEADER)
+    rice = max(0, min(rice, m.r16(fs + M.F_RICE), hdr - m.r16(fd + M.F_RICE)))
+    gold = max(0, min(gold, m.r16(fs + M.F_GOLD), hdr - m.r16(fd + M.F_GOLD)))
+    for off, v in ((M.F_RICE, rice), (M.F_GOLD, gold)):
+        m.w16(fd + off, m.r16(fd + off) + v)
+        m.w16(fs + off, m.r16(fs + off) - v)
+    return rice, gold
+
+
+# --- depots: interior fiefs feed the front --------------------------------------------------
+GARRISON = 0                            # revolts and riots need more than 2 men (revolt_eligible $9E21,
+                                        # riot_eligible $9DA3): an empty interior fief cannot rise (Chris)
+MARCH_MIN = 10                          # fewer movable men than this is not worth a command
+SEND_MIN = 20
+
+
+def front_distance(m, owner):
+    """{owned fief: steps to the nearest owned fief with an enemy neighbour} (front = 0)."""
+    mine = set(owned(m, owner))
+    dist = {i: 0 for i in mine if reaction.enemy_neighbours(m, i)}
+    frontier = list(dist)
+    while frontier:
+        nxt = []
+        for a in frontier:
+            for b in m.neighbor_rows.get(a, []):
+                if b in mine and b not in dist:
+                    dist[b] = dist[a] + 1
+                    nxt.append(b)
+        frontier = nxt
+    return dist
+
+
+def depot_move(m, idx):
+    """An interior fief's command, or None: march its spare men a step toward the front, else send
+    its spare gold and rice to the front fief least able to field its army."""
+    owner = m.fief_owner(idx)
+    dist = front_distance(m, owner)
+    d = dist.get(idx)
+    if not d:                                       # on the front, or cut off from it
+        return None
+    f = m.fief(idx)
+    keep = max(GARRISON, capital_line(m, idx) if m.is_capital(idx) else 0)
+    spare = m.r16(f + M.F_MEN) - keep
+    if spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= reaction_cliff():
+        steps = [b for b in m.neighbor_rows.get(idx, []) if dist.get(b) == d - 1]
+        if steps:
+            dst = max(steps, key=lambda b: m.r16(m.fief(b) + M.F_HEADER) - m.r16(m.fief(b) + M.F_MEN))
+            if m.r16(m.fief(dst) + M.F_HEADER) - m.r16(m.fief(dst) + M.F_MEN) >= MARCH_MIN:
+                return ("move", dst, spare)
+    front = [i for i, k in dist.items() if k == 0]
+    if not front:
+        return None
+    def short(i):                                   # what it lacks to send its whole army
+        g = m.fief(i)
+        return max(0, m.r16(g + M.F_MEN) - m.r16(g + M.F_GOLD)) + max(0, m.r16(g + M.F_MEN) - m.r16(g + M.F_RICE))
+    dst = max(front, key=short)
+    if short(dst) <= 0:
+        return None
+    spare_gold = m.r16(f + M.F_GOLD) - 20
+    spare_rice = m.r16(f + M.F_RICE) - 2 * (m.r16(f + M.F_MEN) // 2 + 1)    # this year's and next upkeep
+    g = m.fief(dst)
+    want_g = max(0, m.r16(g + M.F_MEN) - m.r16(g + M.F_GOLD))
+    want_r = max(0, m.r16(g + M.F_MEN) - m.r16(g + M.F_RICE))
+    rice, gold = min(max(0, spare_rice), want_r), min(max(0, spare_gold), want_g)
+    if rice + gold >= SEND_MIN:
+        return ("send", dst, rice, gold)
+    return None
+
+
 # --- the decision ---------------------------------------------------------------------------
 MEN_STEPS, RICE_STEPS = 12, 6
 SEASONS = (2, 3, 0)                     # after the harvest, while the rice lasts; never Summer
@@ -237,6 +338,16 @@ def expand_policy(m, idx, rng):
         player_war(m, idx, *mv, rng=rng)
         return
     f = m.fief(idx)
+    if DEPOTS:
+        dm = depot_move(m, idx)
+        if dm and dm[0] == "move":
+            DEPOT_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *dm))
+            move_men(m, idx, dm[1], dm[2])
+            return
+        if dm and dm[0] == "send":
+            DEPOT_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *dm))
+            send(m, idx, dm[1], dm[2], dm[3])
+            return
     if (m.is_capital(idx) and len(owned(m, m.fief_owner(idx))) > 1 and m.r16(f + M.F_GOLD) > 1
             and m.r16(f + M.F_MORALE) >= reaction_cliff()):
         short = capital_line(m, idx) - m.r16(f + M.F_MEN)
@@ -258,6 +369,8 @@ def expand_policy(m, idx, rng):
 
 
 HIRES = []
+DEPOTS = True
+DEPOT_LOG = []
 
 
 def reaction_cliff():
