@@ -34,6 +34,9 @@ RIOT_SETTLE = False      # price a riot by its settle rule and an output-sized b
 PLANS = False            # two-move plans: this season's move, then a give or a tax next season
 ECON = False             # second objective: among moves within EPS of the best survival, the most
                          # harvest income at the horizon's end; the economy step is scored as applied
+HUNT_GATE = None         # seasons: when no neighbour picks him now or within that many projected
+                         # seasons, the reader plays the season (Chris: past being hunted, max econ is
+                         # straightforward); the scorer only decides when he is hunted, or soon will be
 PEASANTS = False         # give the gold to the peasants as a candidate (worth pricing only with HORIZON 8)
 EPS = 0.003
 ALL_HARVEST = True       # project every fief's harvest, not only his
@@ -235,6 +238,11 @@ def ev_policy(m, idx, rng):
     """Price the reader's own move and each gold move by survival(); a gold move replaces the
     reader's only when it beats it by EPS (the reader carries what the score cannot see: loyalty,
     wealth, the tax, so the income)."""
+    if HUNT_GATE is not None and not reaction.threats(m, idx) and not forecast.threats_in(m, idx, HUNT_GATE):
+        if TRACE:
+            LOG.append((getattr(m, "season", 0), {"reader": 1.0}, "reader"))
+        reaction.reader_policy(m, idx, rng)
+        return
     scores, left, value = {}, {}, {}
     first = [("reader", lambda: reaction.reader_policy(m, idx, rng))] if READER_DEFAULT else []
     cands = candidates(m, idx)
