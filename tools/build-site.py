@@ -154,6 +154,11 @@ def main():
     spec.loader.exec_module(vm)
     (OUT / "data").mkdir(parents=True, exist_ok=True)
     (OUT / "data" / "viability.html").write_text(vm.build_html(SRC), encoding="utf-8")
+    # the battle-entry atlas, laid out by battle-entry-page.py from battle-entry-atlas.py's pictures
+    spec = importlib.util.spec_from_file_location("battle_entry_page", SCRIPT.parent / "battle-entry-page.py")
+    bep = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bep)
+    (OUT / "data" / "battle-entries.html").write_text(bep.build_html(SRC), encoding="utf-8")
 
     # interactive fief & daimyo atlas (wikipages package) -> atlas/.
     # Its pages reference ../assets/... which, one level deep, resolves to the site's assets/.
@@ -173,6 +178,7 @@ def main():
     for h in (OUT / "commands").glob("*.html"):
         inject_nav(h, "../", "Reference")
     inject_nav(OUT / "data" / "viability.html", "../", "Synthesis")
+    inject_nav(OUT / "data" / "battle-entries.html", "../", "Synthesis")
     for h in (OUT / "atlas").glob("*.html"):
         inject_nav(h, "../", "Atlas")
 
@@ -399,7 +405,9 @@ def write_sections(sections):
         'and the dominance frontier. Much of this is woven through the chapters; this page gathers it.</p>'
         '<h2>Generated Strategy Data</h2><ul class="linklist">'
         f'<li><a href="data/viability.html">Starting-Fief Viability</a> &mdash; which clans survive the '
-        'opening (both scenarios; AI-vs-AI map + human playability, straight from the bytecode invade predicate)</li></ul>'
+        'opening (both scenarios; AI-vs-AI map + human playability, straight from the bytecode invade predicate)</li>'
+        f'<li><a href="data/battle-entries.html">Battle Entry Atlas</a> &mdash; where an AI invader deploys on '
+        'every fief and side, and where its commander and guards land, drawn with the game&rsquo;s own tiles</li></ul>'
         '<h2>Strategy Threads</h2><ul class="linklist">'
         f'<li><a href="ai.html">The AI is monomorphic</a> &mdash; the dominance thesis: every AI fief runs '
         'one brain, every turn; the player\'s whole edge is choosing the single move per fief that matters most.</li>'
