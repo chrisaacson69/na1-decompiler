@@ -393,6 +393,149 @@ def staging_move(m, idx):
     return None
 
 
+# --- the planner: targets matched to sources within the free army ----------------------------
+# Chris: count the free army (the men owned and buyable, less every fief's gate line), price each
+# attack, and distribute: the number of targets falls out of the math, each from its own source (one
+# command per fief a season), and a hole the empire nearly surrounds is worth the front it removes.
+# Measured before building: 70-89% of the free army idled through the middle game, and two to three
+# enemy holes stayed open four to eight years.
+PLANNER = False                         # measured neutral (185 vs 186 unified, #48); kept as the foundation
+MAX_TARGETS = 8
+
+
+def send_needed(m, src, t):
+    """(men, led) to send from src so the attack wins the calculated battle and the new fief, holding
+    the survivors plus the half of the garrison that defects, clears its own share line; None if the
+    source's header could never hold that many."""
+    best = None
+    for led in ((False, True) if m.is_capital(src) else (False,)):
+        a, d = game.siege_strengths(m, src, t, 0, led)
+        win = max(1, (d - a) // (3 if led else 2) + 1)
+        defect = m.r16(m.fief(t) + M.F_MEN) // 2
+        line = max([m.fief_men_if_provisioned(e) * 52 // 48 + 1
+                    for e in reaction.enemy_neighbours(m, t) if m.fief_owner(e) != m.fief_owner(src)] or [0])
+        men = max(win, line - defect)
+        if best is None or men < best[0]:
+            best = (men, led)
+    if best and best[0] > m.r16(m.fief(src) + M.F_HEADER):
+        return None
+    return best
+
+
+def target_gain(m, owner, src, t, men):
+    """What taking t from src is worth: the army bill it removes (the holes), its harvest, a capital."""
+    from . import ev
+    before = army_bill(m, owner)[0]
+    capital = m.is_capital(t)
+    with forecast.held(m):
+        ft, fs = m.fief(t), m.fief(src)
+        m.w8(M.FIEF_TO_DAIMYO_MAP + t, owner)
+        m.w8(M.FIEF_IS_CAPITAL + t, 0)
+        m.w16(ft + M.F_MEN, men + m.r16(ft + M.F_MEN) // 2)
+        m.w16(fs + M.F_MEN, max(0, m.r16(fs + M.F_MEN) - men))
+        after = army_bill(m, owner)[0]
+        inc = ev.income_capacity(m, t)
+    return (before - after) + inc // 4 + (300 if capital else 0)
+
+
+def plan(m, owner):
+    """{source: (target, men, led)} for this season: distinct sources, total men within the free
+    army, the most total gain. Cached per season."""
+    key = (m.r16(M.CURRENT_GAME_YEAR), getattr(m, "season", 0), owner)
+    if _PLAN.get("key") == key:
+        return _PLAN["val"]
+    free = free_army(m, owner)[0]
+    options = {}                                    # target -> [(gain, men, src, led)]
+    for src in owned(m, owner):
+        for t in reaction.enemy_neighbours(m, src):
+            sn = send_needed(m, src, t)
+            if sn is None or sn[0] > free:
+                continue
+            g = target_gain(m, owner, src, t, sn[0])
+            options.setdefault(t, []).append((g, sn[0], src, sn[1]))
+    targets = sorted(options, key=lambda t: -max(o[0] for o in options[t]))[:MAX_TARGETS]
+    best = [0, {}]
+
+    def search(k, used, budget, value, chosen):
+        if value > best[0]:
+            best[0], best[1] = value, dict(chosen)
+        if k == len(targets):
+            return
+        t = targets[k]
+        for g, men, src, led in options[t]:
+            if src not in used and men <= budget and g > 0:
+                chosen[src] = (t, men, led)
+                search(k + 1, used | {src}, budget - men, value + g, chosen)
+                del chosen[src]
+        search(k + 1, used, budget, value, chosen)
+    search(0, frozenset(), free, 0, {})
+    _PLAN.update(key=key, val=best[1])
+    return best[1]
+
+
+_PLAN = {}
+
+
+def plan_move(m, idx, rng):
+    """This fief's part in the plan, or None. A source attacks once loaded and the all-SAFE check
+    passes, else hires toward the men it needs; any other fief marches its men above its own need
+    toward the nearest source, or (topped out) sends gold and rice to the source furthest from loaded."""
+    owner = m.fief_owner(idx)
+    p = plan(m, owner)
+    if not p:
+        return None
+    f = m.fief(idx)
+    if idx in p:
+        t, men, led = p[idx]
+        if t not in reaction.enemy_neighbours(m, idx):
+            return None
+        if getattr(m, "season", 0) in SEASONS and war_cap(m, idx) >= men:
+            ok = []
+            for mv in candidates(m, idx):
+                if mv[0] == t and mv[1] >= men:
+                    good, v = score(m, idx, mv)
+                    if good:
+                        ok.append((v, mv))
+            if ok:
+                return ("attack", max(ok)[1])
+        mv = best_attack(m, idx)                    # the plan's target is not ready: take what is
+        if mv:
+            return ("attack", mv)
+        need = men + own_need(m, idx)
+        if (capped(m, idx) and m.r16(f + M.F_MEN) < need and m.r16(f + M.F_GOLD) > men
+                and m.r16(f + M.F_MORALE) >= MORALE_FLOOR):    # the economy grows first
+            return ("hire", need)
+        return None
+    sources = list(p)
+    dist = {}
+    for s_ in sources:
+        for k, v in distance_to(m, owner, s_).items():
+            dist[k] = min(dist.get(k, 99), v)
+    d = dist.get(idx)
+    spare = m.r16(f + M.F_MEN) - own_need(m, idx)
+    if d and spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= reaction_cliff():
+        room = lambda b: m.r16(m.fief(b) + M.F_HEADER) - m.r16(m.fief(b) + M.F_MEN)
+        steps = [b for b in m.neighbor_rows.get(idx, []) if dist.get(b) == d - 1 and room(b) >= MARCH_MIN]
+        if steps:
+            return ("move", max(steps, key=room), spare)
+    if capped(m, idx):
+        def lack(s_):
+            g = m.fief(s_)
+            men_s = p[s_][1]
+            return max(0, men_s - m.r16(g + M.F_GOLD)) + max(0, men_s - m.r16(g + M.F_RICE))
+        dst = max(sources, key=lack)
+        g = m.fief(dst)
+        men_s = p[dst][1]
+        want_g = max(0, men_s + 50 - m.r16(g + M.F_GOLD))
+        want_r = max(0, men_s - m.r16(g + M.F_RICE))
+        spare_gold = m.r16(f + M.F_GOLD) - 20
+        spare_rice = m.r16(f + M.F_RICE) - max(m.r16(f + M.F_MEN), 2 * (m.r16(f + M.F_MEN) // 2 + 1))
+        rice, gold = min(max(0, spare_rice), want_r), min(max(0, spare_gold), want_g)
+        if rice + gold >= SEND_MIN:
+            return ("send", dst, rice, gold)
+    return None
+
+
 # --- the decision ---------------------------------------------------------------------------
 MEN_STEPS, RICE_STEPS = 12, 6
 SEASONS = (2, 3, 0)                     # after the harvest, while the rice lasts; never Summer
@@ -522,6 +665,20 @@ def expand_policy(m, idx, rng):
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
     per man sent); else play the reader's season."""
     from . import policy
+    if PLANNER:
+        pm = plan_move(m, idx, rng)
+        if pm:
+            PLAN_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, pm[0]))
+            if pm[0] == "attack":
+                LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *pm[1]))
+                player_war(m, idx, *pm[1], rng=rng)
+            elif pm[0] == "hire":
+                policy._hire_up_to(m, idx, pm[1])
+            elif pm[0] == "move":
+                move_men(m, idx, pm[1], pm[2])
+            elif pm[0] == "send":
+                send(m, idx, pm[1], pm[2], pm[3])
+            return
     mv = best_attack(m, idx)
     if mv:
         LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *mv))
@@ -560,6 +717,7 @@ def expand_policy(m, idx, rng):
 
 
 HIRES = []
+PLAN_LOG = []
 DEPOTS = True
 DEPOT_LOG = []
 
