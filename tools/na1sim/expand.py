@@ -383,10 +383,18 @@ def capped(m, idx):
     topped out, and the treasury is next (cap_fief_stats clamps gold at the header, so a harvest
     into a full treasury is thrown away)."""
     f = m.fief(idx)
-    return (m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 >= m.r16(f + M.F_HEADER)
+    if WAR_AT:                                  # half the map held: the economy is bigger than every
+        n = m.r16(M.SCENARIO_FIEF_COUNT)        # rival's combined, so growth stops mattering (Chris)
+        live = sum(1 for i in range(n) if m.province_ai_state(i) != M.EMPTY)
+        if live and len(owned(m, m.fief_owner(idx))) * 100 >= live * WAR_AT:
+            return True
+    return (m.r16(f + M.F_WEALTH) + m.r16(f + M.F_LOYALTY)) // 2 >= m.r16(f + M.F_HEADER) * TOPPED // 100
 
 
 ARMY_SHARE = 50                         # percent of the gold a topped-out fief turns into men
+TOPPED = 100                            # percent of the header at which the economy counts as topped out
+WAR_AT = 0                              # percent of the live fiefs held at which every fief goes to war footing
+                                        # (Chris: past about half way there is little more need to grow)
 MORALE_FLOOR = 55                       # under it, that gold raises morale instead (revolts start under 45)
 
 
