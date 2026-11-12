@@ -315,6 +315,89 @@ def _distances(m, src):
     return dist
 
 
+class Charge:
+    """The attack doctrine (Chris, 2026-11-12). The AI defender puts its commander on the castle seat
+    and its other units around him, and it places first, so his cell is known when we place. Our
+    commander goes on the strip cell farthest from him; units 1-4 on the strip cells nearest him, in
+    slot order (the army moves in slot order, so the column marches in naturally, through a
+    chokepoint too). Each day our commander holds back; units 1-4 strike the enemy commander when
+    next to him, else step along the shortest path toward him, attack an enemy unit that blocks that
+    path, and side-step to a free cell no farther from him when one of ours blocks it (so a unit
+    behind can come up beside the lead and both strike). His cell is read each day, so a commander
+    who flees is pursued. Terrain choice is not modelled yet."""
+
+    def __init__(self):
+        self.log = []
+
+    def deploy(self, m):
+        side = m.cur_combat_side
+        es = side ^ 1
+        T.set_combat_arena_rect_by_approach(m)
+        strip = [c for c in CELLS if T.is_coord_in_combat_rect(m, *c) and not T.is_map_cell_blocked(m, *c)
+                 and not T.tile_blocked_for_placement(m, *c) and not T.is_any_unit_at_tile(m, *c)]
+        target = _cell(m, es, 0) if m.is_unit_present(es, 0) else None
+        if not strip or target is None:
+            T.ai_place_combat_units_random_or_smart(m, T.set_combat_arena_rect_by_approach(m))
+            return
+        dist = _distances(m, target)
+        near = sorted(strip, key=lambda c: (dist.get(c, 99), c))
+        far = max(strip, key=lambda c: (dist.get(c, -1), c))
+        plan = {}
+        if m.is_unit_present(side, 0):
+            plan[0] = far
+        rest = [c for c in near if c != far]
+        for slot in range(1, 5):
+            if m.is_unit_present(side, slot) and rest:
+                plan[slot] = rest.pop(0)
+        for slot in range(5):
+            if slot not in plan:
+                continue
+            m.cur_combat_unit_slot = slot
+            if not T.commit_unit_dest_tile_if_valid(m, *plan[slot]):
+                for c in rest:                        # the planned cell was refused: the next nearest
+                    if T.commit_unit_dest_tile_if_valid(m, *c):
+                        rest.remove(c)
+                        break
+        self.log.append(dict(target=target))
+
+    def act(self, m, day, slot):
+        side = m.cur_combat_side
+        es = side ^ 1
+        if not m.is_unit_present(es, 0):
+            return None
+        if slot == 0:
+            return ("pass",)                          # the commander stays out of the fighting
+        target = _cell(m, es, 0)
+        here = _cell(m, side, slot)
+        if here in NB[target]:
+            return ("attack", 0)
+        dist = _distances(m, target)
+        d0 = dist.get(here, 99)
+        enemy_at = {_cell(m, es, s): s for s in range(5) if m.is_unit_present(es, s)}
+        ours = [_cell(m, side, s) for s in range(5) if m.is_unit_present(side, s)]
+        # kill what stands in the way, focused: an adjacent enemy on the path or guarding the
+        # commander, the one with the most of our units already beside it (each extra attacker on a
+        # unit in one turn adds 20%, the $7BEE momentum: the AI's spread wins by it, a lone column not)
+        blockers = [n for n in NB[here] if n in enemy_at and (dist.get(n, 99) < d0 or n in NB[target])]
+        if blockers:
+            n = max(blockers, key=lambda c: (sum(1 for o in ours if o in NB[c]), -dist.get(c, 99)))
+            return ("attack", enemy_at[n])
+        closer = sorted((dist.get(n, 99), -sum(1 for e in enemy_at if e in NB[n]), n)
+                        for n in NB[here] if dist.get(n, 99) < d0)
+        for _, _, n in closer:
+            if not T.is_any_unit_at_tile(m, *n):
+                return ("move",) + n
+        side_steps = sorted((dist.get(n, 99), n) for n in NB[here]
+                            if dist.get(n, 99) <= d0 and not T.is_any_unit_at_tile(m, *n)
+                            and not T.is_map_cell_blocked(m, *n))
+        if side_steps:
+            return ("move",) + side_steps[0][1]
+        for n in NB[here]:
+            if n in enemy_at:
+                return ("attack", enemy_at[n])
+        return ("pass",)
+
+
 # ---------------------------------------------------------------------------- Assign
 def assign(split):
     """An Assign made before the battle (effect_assign bank 1 $AC11 -> commit_arms_record_from_buffer
