@@ -128,7 +128,31 @@ Expansion costs no survival (equal or better on every start) and speeds up once 
 
 **63 of 100 unify (9 before), and no game is lost to a revolt.** The clock is the lord's age now: 22 of the 37 failures are a lord dying of old age mid-conquest (Miyoshi's lord starts old: 10 of 20), the other 15 invasions. Speed is the next lever, which is what the graph terms below are for.
 
-**Open:** the value has no "biggest neighbour removed" or faction-collapse term yet (speed); fought-battle odds for the attacker (an attack doctrine); the 70-year runs use calculated battles throughout.
+**The invasions that remained were two holes, not the gates.** (1) An interior capital passes SAFE with no men; an AI took a neighbouring owned fief, the capital became a border with 0-8 men, and its fall handed over the faction (late empires of 6-14 fiefs). Now, holding two fiefs or more, the capital answers to every enemy within two steps through owned ground (`expand.capital_line`): the attack check requires it and the capital hires to it on its own turn. Invasion deaths on the strong five fell 15 to 8 (64/100 unified). (2) The rice preference let an attack carry the home fief's rice away: Tokugawa's capital sat at rice 1 beside 276 men and a 6-man attack at 4% share took the faction (a fief at rice 1 is depleted before the battle; the AI's rare off-gate attack found it). Now the fief the army left keeps rice >= men.
+
+**Every start, 70 years** (20 seeds each, the current player):
+
+| start | unified /20 | median years | median lord's age | failed |
+|---|---|---|---|---|
+| Asakura | 15 | 30 | 57 | lord 2, invaded 2, revolt 1 |
+| Tokugawa | 15 | 28 | 46 | lord 3, invaded 2 |
+| Asai | 13 | 27 | 42 | invaded 3, lord 3, revolt 1 |
+| Hida | 12 | 35.5 | 55.5 | invaded 6, lord 2 |
+| Kitabatake | 11 | 25 | 57 | lord 6, invaded 2, revolt 1 |
+| Oda | 10 | 24.5 | 50.5 | lord 8, invaded 2 |
+| Hojo | 9 | 25 | 47 | invaded 8, lord 3 |
+| Takeda | 9 | 25 | 64 | lord 8, invaded 3 |
+| Ashikaga | 7 | 35 | 58 | invaded 9, lord 2, revolt 1, riot 1 |
+| Uesugi | 6 | 28 | 58 | invaded 7, lord 7 |
+| Miyoshi | 5 | 24 | 62 | lord 15 |
+| Imagawa | 4 | 26 | 67 | invaded 8, lord 8 |
+| Tsutsui | 2 | 44 | 55 | invaded 18 |
+| Hatakeyama | 1 | 31 | 52 | invaded 12, lord 5, revolt 2 |
+| Saito, Honganji, Rokkaku | 0 | | | invaded 19 / 15 / 20 |
+
+**119 of 340 unify.** Fourteen of the seventeen starts can win; the three that cannot are the ones that never get past being hunted (#45-#47). The outcome is bimodal: a start either clears the opening and then usually conquers everything (median peak 16-17 fiefs), or dies in it (median peak 1). The strong five read 56/100 here against 64 before the rice rule: the full home shield makes the attacks fewer and later, and Miyoshi's old lord (15 of 20 lost to old age) feels it most. Speed is the lever now.
+
+**Open:** the value has no "biggest neighbour removed" or faction-collapse term yet (speed); the rice rule could keep the shield at the budget line rather than the men (mode 2's idea) to win the speed back; fought-battle odds for the attacker (an attack doctrine); the 70-year runs use calculated battles throughout.
 
 ### #47 — A second objective: survival first, then income (Chris, 2026-11-11)
 

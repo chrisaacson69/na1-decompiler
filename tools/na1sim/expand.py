@@ -108,6 +108,41 @@ def interior(m, i):
     return not reaction.enemy_neighbours(m, i)
 
 
+# --- the capital: the king piece ------------------------------------------------------------
+# An interior capital passes SAFE with no men, and the late empires died that way: an AI took a
+# neighbouring owned fief, the capital became a border with 0-8 men, and its fall handed over the
+# whole faction (8 of 15 invasion deaths over 70 years, at 6-14 fiefs). So the capital answers to
+# every enemy within two steps, as if it were already on the border.
+def enemies_within(m, i, steps=2):
+    n, me = m.r16(M.SCENARIO_FIEF_COUNT), m.fief_owner(i)
+    seen, frontier, out = {i}, [i], set()
+    for _ in range(steps):
+        nxt = []
+        for a in frontier:
+            for b in m.neighbor_rows.get(a, []):
+                if b < n and b not in seen:
+                    seen.add(b)
+                    if m.province_ai_state(b) != M.EMPTY and m.fief_owner(b) != me:
+                        out.add(b)              # an enemy: counted, but not walked through
+                    else:
+                        nxt.append(b)           # our own (or empty) ground: the next step goes on
+        frontier = nxt
+    return out
+
+
+def capital_line(m, i):
+    """The fewest men that keep every enemy within two steps under the share line (0: none)."""
+    return max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in enemies_within(m, i)] or [0])
+
+
+def capital_ok(m, owner):
+    mine = owned(m, owner)
+    if len(mine) < 2:
+        return True
+    caps = [i for i in mine if m.is_capital(i)]
+    return all(m.fief_men_if_provisioned(c) >= capital_line(m, c) for c in caps)
+
+
 def after(m, idx, tgt, men, rice, led=False):
     """The map after the attack, without changing the game: (won, {fief: state})."""
     owner = m.fief_owner(idx)
@@ -153,7 +188,12 @@ def score(m, idx, move):
         if not player_war(m, idx, t, men, rice, led):
             return False, None
         states = empire(m, owner)
-        if any(s != SAFE for s in states.values()):
+        if any(s != SAFE for s in states.values()) or not capital_ok(m, owner):
+            return False, None
+        # the fief the army left keeps a full shield (rice >= men): carrying its rice away left
+        # Tokugawa's capital at rice 1 beside 276 men, and a 6-man attack took the faction
+        fh = m.fief(idx)
+        if m.r16(fh + M.F_RICE) < m.r16(fh + M.F_MEN):
             return False, None
         inner = sum(1 for i in states if interior(m, i))
         return True, (inner, ev.income_capacity(m, t), rice, -men)
@@ -197,6 +237,11 @@ def expand_policy(m, idx, rng):
         player_war(m, idx, *mv, rng=rng)
         return
     f = m.fief(idx)
+    if (m.is_capital(idx) and len(owned(m, m.fief_owner(idx))) > 1 and m.r16(f + M.F_GOLD) > 1
+            and m.r16(f + M.F_MORALE) >= reaction_cliff()):
+        short = capital_line(m, idx) - m.r16(f + M.F_MEN)
+        if short > 0 and policy._hire_up_to(m, idx, capital_line(m, idx)):
+            return
     if capped(m, idx) and m.r16(f + M.F_MEN) < m.r16(f + M.F_HEADER) and m.r16(f + M.F_GOLD) > 20:
         gold = m.r16(f + M.F_GOLD)
         if fief_state(m, idx) == SAFE or not reaction.threats(m, idx):
@@ -213,6 +258,11 @@ def expand_policy(m, idx, rng):
 
 
 HIRES = []
+
+
+def reaction_cliff():
+    from . import policy
+    return policy.CLIFF
 
 
 LOG = []
