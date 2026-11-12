@@ -274,6 +274,99 @@ def depot_move(m, idx):
     return None
 
 
+# --- staging: one campaign at a time ---------------------------------------------------------
+# Chris: the economy is only a means to an overwhelming army, and that army must be focused on the
+# front so the momentum keeps rolling. The greedy empire spread its men over every front fief (two to
+# four times the army bill) while each attack came from one fief alone, and its new fiefs, the gateways
+# to what was left, were the ones left weak. So the empire picks one target, and the fief that will
+# launch it draws the spare men and gold of every other owned fief.
+STAGING = False                         # one campaign at a time: measured worse (#48), kept for the planner
+MARGIN = 115                            # percent of its own line a fief keeps before it gives men away
+
+
+def own_need(m, i):
+    """The men fief i keeps for itself: its share line (with margin) if exposed, the capital's line."""
+    mine = owned(m, m.fief_owner(i))
+    need = share_line(m, i) * MARGIN // 100
+    if m.is_capital(i) and len(mine) > 1:
+        need = max(need, capital_line(m, i))
+    return need
+
+
+def campaign(m, owner):
+    """(target, stager) for the empire, or None: among the enemy fiefs the empire borders, the one
+    the bordering owned fief is closest to taking (men it lacks to win, as if it could send them
+    all), the stager being that owned fief. Cached per season."""
+    key = (m.r16(M.CURRENT_GAME_YEAR), getattr(m, "season", 0), owner, tuple(owned(m, owner)))
+    if _CAMPAIGN.get("key") == key:
+        return _CAMPAIGN["val"]
+    best = None
+    for i in owned(m, owner):
+        for t in reaction.enemy_neighbours(m, i):
+            led = m.is_capital(i)
+            a, d = game.siege_strengths(m, i, t, 0, led)
+            per_man = 3 if led else 2
+            need = max(0, (d - a) // per_man + 1)               # men that win the calculated battle
+            lack = need + own_need(m, i) - m.r16(m.fief(i) + M.F_MEN)
+            cand = (lack, -m.r16(m.fief(i) + M.F_MEN), t, i)
+            if best is None or cand < best:
+                best = cand
+    val = (best[2], best[3]) if best else None
+    _CAMPAIGN.update(key=key, val=val)
+    return val
+
+
+_CAMPAIGN = {}
+
+
+def distance_to(m, owner, goal):
+    """{owned fief: steps to goal through owned fiefs}."""
+    mine = set(owned(m, owner))
+    dist, frontier = {goal: 0}, [goal]
+    while frontier:
+        nxt = []
+        for a in frontier:
+            for b in m.neighbor_rows.get(a, []):
+                if b in mine and b not in dist:
+                    dist[b] = dist[a] + 1
+                    nxt.append(b)
+        frontier = nxt
+    return dist
+
+
+def staging_move(m, idx):
+    """A non-stager fief's command toward the campaign, or None: march men above its own need a step
+    toward the stager, else send spare gold and rice to the stager when it lacks them."""
+    owner = m.fief_owner(idx)
+    c = campaign(m, owner)
+    if not c or c[1] == idx:
+        return None
+    target, stager = c
+    dist = distance_to(m, owner, stager)
+    d = dist.get(idx)
+    if d is None:
+        return None
+    f = m.fief(idx)
+    spare = m.r16(f + M.F_MEN) - own_need(m, idx)
+    if spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= reaction_cliff():
+        steps = [b for b in m.neighbor_rows.get(idx, []) if dist.get(b) == d - 1]
+        room = lambda b: m.r16(m.fief(b) + M.F_HEADER) - m.r16(m.fief(b) + M.F_MEN)
+        steps = [b for b in steps if room(b) >= MARCH_MIN]
+        if steps:
+            return ("move", max(steps, key=room), spare)
+    if not capped(m, idx):                      # the economy grows first, then feeds the army
+        return None
+    g = m.fief(stager)
+    want_g = max(0, m.r16(g + M.F_MEN) + 50 - m.r16(g + M.F_GOLD))     # a gold per man sent, and a hire
+    want_r = max(0, m.r16(g + M.F_MEN) - m.r16(g + M.F_RICE))
+    spare_gold = m.r16(f + M.F_GOLD) - 20
+    spare_rice = m.r16(f + M.F_RICE) - max(m.r16(f + M.F_MEN), 2 * (m.r16(f + M.F_MEN) // 2 + 1))
+    rice, gold = min(max(0, spare_rice), want_r), min(max(0, spare_gold), want_g)
+    if rice + gold >= SEND_MIN:
+        return ("send", stager, rice, gold)
+    return None
+
+
 # --- the decision ---------------------------------------------------------------------------
 MEN_STEPS, RICE_STEPS = 12, 6
 SEASONS = (2, 3, 0)                     # after the harvest, while the rice lasts; never Summer
@@ -410,7 +503,8 @@ def expand_policy(m, idx, rng):
         return
     f = m.fief(idx)
     if DEPOTS:
-        dm = depot_move(m, idx)
+        dm = staging_move(m, idx) if STAGING else None
+        dm = dm or depot_move(m, idx)
         if dm and dm[0] == "move":
             DEPOT_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *dm))
             move_men(m, idx, dm[1], dm[2])
