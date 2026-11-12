@@ -114,6 +114,14 @@ def live_side(m, i):
     return Side(*(m.r16(f + k) for k in (M.F_GOLD, M.F_RICE, M.F_MEN, M.F_MORALE, M.F_ARMS, M.F_SKILL)))
 
 
+def enemy_neighbours(m, idx):
+    """The AI-held neighbours of a fief."""
+    from . import memmap as M
+    n, me = m.r16(M.SCENARIO_FIEF_COUNT), m.fief_owner(idx)
+    return [nb for nb in m.neighbor_rows.get(idx, [])
+            if nb < n and m.province_ai_state(nb) == 0 and m.fief_owner(nb) != me]
+
+
 def threats(m, idx):
     """The neighbours that would pick this fief, by the ROM's own choice, and can pay to attack it."""
     from . import policy
@@ -237,8 +245,9 @@ def reader_policy(m, idx, rng):
             if gold > 1:
                 give(m, idx, min(60, gold - 1), gold=True)
                 return
-            if rice - men // 2 - 1 > 0:
-                give(m, idx, min(60, rice - men // 2 - 1))
+            floor = men if policy.OPENING.get("shield_rice") else men // 2
+            if rice - floor - 1 > 0:
+                give(m, idx, min(60, rice - floor - 1))
                 return
     if threats(m, idx) and gold > 1:                                                    # 2
         line = men_line(m, idx)
@@ -262,6 +271,14 @@ def economy(m, idx):
     loyalty = m.r16(f + M.F_LOYALTY)
     season = getattr(m, "season", 0)
     tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)
+    guard = policy.OPENING.get("shield_rice")
+    # shield_rice (Chris, 2026-11-12): the gate reads min(rice, men), so rice under the men is a shield
+    # given away. Summer's gift left Tokugawa 1 rice beside 71 men, unhunted when it gave; an AI moved
+    # later that season, passed the gate on 1 rice and won (3 deaths every player shared on the bench).
+    # Hunted and short: buy back to the men (rice >= men now and after the harvest) before anything.
+    if guard and season == 1 and rice < men and policy.hunted_by(m, idx) and policy.buy_rice_to(
+            m, idx, lambda s: policy._rice_slack(m, idx, True, s)):
+        return
     step = next((s for s in range(cap - tax, 0, -1)
                  if loyalty - policy.P.pct_op(loyalty, s) >= policy.CLIFF - 1), 0)
     if step:
@@ -269,7 +286,9 @@ def economy(m, idx):
         return
     capped = (m.r16(f + M.F_WEALTH) + loyalty) // 2 >= m.r16(f + M.F_HEADER)
     if season == 1:
-        keep = men if policy.hunted_by(m, idx) else 0
+        keep = men if guard == 1 or policy.hunted_by(m, idx) else 0
+        if guard == 2:          # only as much as shuts the budget gate: past every neighbour's budget
+            keep = max(keep, min(men, max([budget(live_side(m, n)) + 1 for n in enemy_neighbours(m, idx)] or [0])))
         keep = max(keep, rice - max(0, policy._rice_slack(m, idx, False, sustain=True)))
         if rice > keep + 1:
             (policy.give_men if capped else policy.give_peasants)(m, idx, rice - keep - 1)

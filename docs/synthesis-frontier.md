@@ -126,6 +126,19 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 The warning horizon is a dial between survival and income. Strong fiefs pay almost nothing either way (Oda keeps the reader's income at every setting). The mid fiefs buy survivors with income, more dearly at each step: N=2 gives +7 for about 5%, N=4 +5 more for about 10% more, pure survival +2 more for about 30%. N=4 ties ev-econ on both axes, so ev-econ acted on warnings it did not need. **N=2 is the efficient point:** most of the survival gain at almost the reader's income. Which point is best depends on what income buys later; with expansion, income becomes conquest.
 
+**What is left is the opening, and one self-inflicted gate** (2026-11-12). Every death on the bench, under every player, is an invasion. Of the reader's 49, 31 come in year 1 and 18 later; the scorers cut the later ones to 7-9 but year 1 only to 28, and 12 of those 28 fall before the player's first command. Three deaths every player shared were rice 1 beside a full army (Tokugawa Summer 1560 twice, Oda Summer 1562): the Summer gift gave the rice above the upkeep to the peasants (75 -> 1), the fief was not hunted when it gave, and an AI moving later that season passed the budget gate (min(rice, men) = 1) and won against an army with a day of rice. The gift opened the gate it was outside of.
+
+`policy.OPENING["shield_rice"]` (reaction.economy and the reader's cliff gift, Chris): the gift never takes the shield down; hunted and short, buy rice back to the men first (`_rice_slack(targeted=True)`). Mode 1 keeps rice at the men; **mode 2** keeps only past every enemy neighbour's budget (capped at the men). Paired, same 200 games:
+
+| player | alive | saves/losses | income y1 (Oda/Toku/Hojo/Imag) | y6 |
+|---|---|---|---|---|
+| reader -> reader + shield 2 | 151 -> 155 | 5/1 | -35/-27/0/0% | -2/-3/-6/-7% |
+| gate N=2 -> + shield 2 | 158 -> 161 | 4/1 | -35/-27/-1/0% | -2/-7/-12/-7% |
+| gate N=4 -> + shield 1 | 163 -> 164 | 3/2 | | -4/-12/-22/-14% |
+| ev-survival -> + shield 1 | 165 -> **169** | 4/0 | | -4/-23/-28/-20% |
+
+Mode 2 against mode 1: same survivors, 1-2% more income. The year-1 cost is the strong fiefs' first gift, which was feeding their first harvest; by year 6 it is mostly paid back. Against the reader, gate N=2 + shield 2 saves 11 and loses 1.
+
 ### #46 — The EV player: Saito's commands priced, not ordered (Chris, 2026-11-11)
 
 **`na1sim/ev.py`, `deaths.py --tail ev`.** Each command is chosen by the survival it buys over the next four seasons, from #45's parts: revolt by the formula, invasion by `reaction.threats` (the ROM's own pick), with each threatening neighbour attacking **65% of seasons** (measured: 1 threat .65, 2 .89, 3+ 1.00), committing its budget × 60-89% (daimyo-led, a coin from a capital) or 50-69%, against the odds table (`na1sim/odds.py` → `odds_f8.json`). A horizon that crosses a Fall runs every fief's real harvest at mean income. A future Summer command buys the least rice; rice 0 after it scores 0. The candidates are morale, hire all, hire to the picker line, Summer rice, or nothing (then the reader's economy step, `reaction.economy`, factored out of `reader_policy` with no change to it). Ties within 0.003 go to the move that keeps the most gold and rice.
