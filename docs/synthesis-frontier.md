@@ -234,6 +234,16 @@ Under 1x, essentially never. Leading (the daimyo-present bit counts the men agai
 
 The charge keeps more men when it wins and never lost its commander, but wins far less: its losses are 30-day timeouts. Traces: the column breaks on the castle commander one unit at a time (home bonus 3x, each exchange costs the attacker 100-p%), and the pathing sometimes marches the wrong way (a detour, or chasing guards; not yet resolved). The AI's own logic wins the same battles by killing the commander too, so it gets there differently: possibly clearing the guards and striking together (the +20% per extra attacker momentum, `$7BEE`) rather than in single file. Open, with Chris.
 
+**Why the charge lost: the unit split.** A battle lab (one attacker against one fief, fixed men, 16-20 seeds, both arms; Chris: study specific fiefs) showed the charge winning where the harvest said it lost: at 2.5x across 33 attacker/target pairs, 633 wins of 660 against the AI logic's 581 (Musashi -> Echigo 19 to 0; Mikawa, the slog Chris described, hard for both). The difference was the army: the lab's attacker had the scenario's 20x5 split, and in real games a conquered fief inherits the defender's (`province_unit_type_pct` $76A9): of 38 real attacks the commander held 20% of the men in 8, 30-33% in 21, 50% in 7, 55-65% in 2. "The commander holds back" then sits out half the army. With the Assign command (`effect_assign` $AC11, 30 gold and the fief's command: the commander row down to 1, row 2 up to arms/50 + 20) the commander becomes a token and the strikers carry the army. Wins of 16 at 2.5x, ten battles:
+
+| our split | AI logic | charge |
+|---|---|---|
+| 20x5 | 106 | 140 |
+| inherited 50/15/10/15/10 | 114 | **22** |
+| Assign 1 / strikers | 101 | **158** |
+
+**Assign + charge wins 158 of 160** (the AI logic 101-114 whatever the split). The doctrine is the pair: assign the commander down to a token before a fief's first campaign, then charge (Musashi -> Echigo 16/16, Owari -> Mikawa 14/16). Next: re-measure the fought odds under Assign + charge (the ratio needed should fall), then the expander assigns each source once before its first attack and fights with the charge.
+
 **Next (Chris, 2026-11-12), by expected gain:**
 1. ~~**The other verbs: interior fiefs as depots.**~~ **Done (above).** A fief with no enemy neighbour needs no army, and today it spends its command training. `driver_move $96D1` moves men only, to an adjacent owned fief, up to min(men, the destination's header room), blending morale/skill/arms; led by the daimyo it moves the capital too (the king can retreat inward). `driver_send $9A62` moves rice and gold to an owned fief, capped by the receiver's header (eligibility `build_eligible_province_list(1)`, not yet read). So the interior marches its men one step toward the front each season and sends its surplus forward; the front hires and attacks with what gathers.
 2. **Faction collapse.** A fallen capital hands over the whole faction on a 1-in-(drive/10) roll (`game._conquest`, the calculated battle). Cornering the daimyo is the hard part: in a fought battle the lord usually flees if he can, so this term is worth less once battles are fought.
