@@ -116,7 +116,19 @@ Bench, skill 1, 10 years, 20 seeds, both players shield 4 (fiefs and income are 
 
 Expansion costs no survival (equal or better on every start) and speeds up once the economy tops out: most first attacks come in 1565-1568, and the holdings nearly double between years 7 and 10. Without the topped-out rule the same player reached only 1.6-1.9 fiefs. Saito never gets past being hunted, so it never attacks. The reader sometimes ends with 2-3 fiefs without attacking: something hands it territory (a faction collapsing into it, not yet traced).
 
-**Open:** the attack carries 1 rice (rice is not in the value, so the first candidate wins the tie; carried rice should count toward the new fief's upkeep and shield); the value has no "biggest neighbour removed" or faction-collapse term yet; fought-battle odds for the attacker (an attack doctrine); longer games.
+**Can they win? Out to 70 years** (Chris). The five strongest starts, 20 seeds each, skill 1, until the player holds every live fief or the lord dies. The first run unified 9 of 100 and lost 79 to revolts, most in years 10-20: the topped-out hires pulled the capital's morale down season after season (recruits arrive low; Oda 77 to 31) until a revolt fired, and a human capital's revolt is a staged battle that ends the faction. The fix: a topped-out fief under 55 morale gives the gold to the men instead of hiring (`expand.MORALE_FLOOR`). The carried rice now counts too (the value prefers the most rice that keeps everything SAFE; gold is fixed at one per man).
+
+| start | unified /20 | years to unify (median) | lord's age then (median) | failed |
+|---|---|---|---|---|
+| Miyoshi | 9 (2 before) | 29 | 67 | lord died 10, invaded 1 |
+| Oda | 14 (1) | 25.5 | 51.5 | invaded 3, lord died 3 |
+| Asakura | 12 (2) | 26.5 | 53.5 | invaded 5, lord died 3 |
+| Kitabatake | 12 (1) | 22.5 | 55 | invaded 3, lord died 5 |
+| Tokugawa | 16 (3) | 26 | 44.5 | invaded 3, lord died 1 |
+
+**63 of 100 unify (9 before), and no game is lost to a revolt.** The clock is the lord's age now: 22 of the 37 failures are a lord dying of old age mid-conquest (Miyoshi's lord starts old: 10 of 20), the other 15 invasions. Speed is the next lever, which is what the graph terms below are for.
+
+**Open:** the value has no "biggest neighbour removed" or faction-collapse term yet (speed); fought-battle odds for the attacker (an attack doctrine); the 70-year runs use calculated battles throughout.
 
 ### #47 — A second objective: survival first, then income (Chris, 2026-11-11)
 

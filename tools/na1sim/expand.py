@@ -144,7 +144,8 @@ def candidates(m, idx):
 
 def score(m, idx, move):
     """(ok, value) of a move. ok: it wins and every owned fief is SAFE after it. value, in order:
-    the owned fiefs left with no enemy neighbour, the target's harvest, then fewer men sent."""
+    the owned fiefs left with no enemy neighbour, the target's harvest, the rice carried (it lands
+    in the new fief: its upkeep and its shield; gold is fixed at one per man), then fewer men."""
     from . import ev
     t, men, rice, led = move
     owner = m.fief_owner(idx)
@@ -155,7 +156,7 @@ def score(m, idx, move):
         if any(s != SAFE for s in states.values()):
             return False, None
         inner = sum(1 for i in states if interior(m, i))
-        return True, (inner, ev.income_capacity(m, t), -men)
+        return True, (inner, ev.income_capacity(m, t), rice, -men)
 
 
 def best_attack(m, idx):
@@ -182,6 +183,7 @@ def capped(m, idx):
 
 
 ARMY_SHARE = 50                         # percent of the gold a topped-out fief turns into men
+MORALE_FLOOR = 55                       # under it, that gold raises morale instead (revolts start under 45)
 
 
 def expand_policy(m, idx, rng):
@@ -198,6 +200,12 @@ def expand_policy(m, idx, rng):
     if capped(m, idx) and m.r16(f + M.F_MEN) < m.r16(f + M.F_HEADER) and m.r16(f + M.F_GOLD) > 20:
         gold = m.r16(f + M.F_GOLD)
         if fief_state(m, idx) == SAFE or not reaction.threats(m, idx):
+            # Recruits arrive with low morale and dilute the army's: hired season after season, a
+            # capital's morale ran 77 -> 31 and the revolt took it (15 of 20 Oda empires died that
+            # way, 79 of 100 strong starts). Under the floor, the gold goes to the men instead.
+            if m.r16(f + M.F_MORALE) < MORALE_FLOOR:
+                policy.give_men(m, idx, gold * ARMY_SHARE // 100, gold=True)
+                return
             HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, gold * ARMY_SHARE // 100))
             policy.hire_men(m, idx, gold * ARMY_SHARE // 100)
             return
