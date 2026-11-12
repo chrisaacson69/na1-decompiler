@@ -136,6 +136,24 @@ def _conquest(m, atk, deff, c_men, c_gold, c_rice, a_arms, a_skill, a_mor, rng):
             _reassign_faction(m, dl, al, winner_state)
 
 
+def siege_strengths(m: "M.Memory", atk: int, deff: int, c_men: int, led: bool):
+    """The calculated battle's two strengths (resolve_siege_assault_outcome $8DFD): (2, +1 with the
+    daimyo-present/siege bit) x committed men + quality + morale against (2, +1 at a capital) x men +
+    quality + morale; the side whose lord has the higher Drive adds 10% of its morale (ties to the
+    attacker). The attacker wins on a strictly greater strength."""
+    fa, fd = m.fief(atk), m.fief(deff)
+    a_arms, a_skill, a_mor = m.r16(fa + M.F_ARMS), m.r16(fa + M.F_SKILL), m.r16(fa + M.F_MORALE)
+    d_men, d_arms, d_skill, d_mor = (m.r16(fd + M.F_MEN), m.r16(fd + M.F_ARMS),
+                                     m.r16(fd + M.F_SKILL), m.r16(fd + M.F_MORALE))
+    a_str = (2 + (1 if led else 0)) * c_men + _quality(a_arms, a_skill) + a_mor
+    d_str = (2 + (1 if m.is_capital(deff) else 0)) * d_men + _quality(d_arms, d_skill) + d_mor
+    if m.r8(m.fief_daimyo(atk) + M.D_DRIVE) < m.r8(m.fief_daimyo(deff) + M.D_DRIVE):
+        d_str += P.pct_op(d_mor, 10)                  # +10% morale to higher Drive
+    else:
+        a_str += P.pct_op(a_mor, 10)
+    return a_str, d_str
+
+
 def resolve_siege(m: "M.Memory", rng: random.Random = None):
     """Injected at the $8DFD boundary. Reads the committed force ai_vm already
     deducted (war_attacker_*), resolves strength, conquers or repels."""
@@ -146,15 +164,8 @@ def resolve_siege(m: "M.Memory", rng: random.Random = None):
     c_gold = m.r16(M.WAR_ATTACKER_GOLD)
     c_rice = m.r16(M.WAR_ATTACKER_RICE)
     a_arms, a_skill, a_mor = m.r16(fa + M.F_ARMS), m.r16(fa + M.F_SKILL), m.r16(fa + M.F_MORALE)
-    d_men, d_arms, d_skill, d_mor = (m.r16(fd + M.F_MEN), m.r16(fd + M.F_ARMS),
-                                     m.r16(fd + M.F_SKILL), m.r16(fd + M.F_MORALE))
-    atk_cap = 1 if (m.r8(M.WAR_SIDE_STATE_FLAG) & 0x80) else 0      # siege flag (already rolled)
-    a_str = (2 + atk_cap) * c_men + _quality(a_arms, a_skill) + a_mor
-    d_str = (2 + (1 if m.is_capital(deff) else 0)) * d_men + _quality(d_arms, d_skill) + d_mor
-    if m.r8(m.fief_daimyo(atk) + M.D_DRIVE) < m.r8(m.fief_daimyo(deff) + M.D_DRIVE):
-        d_str += P.pct_op(d_mor, 10)                  # +10% morale to higher Drive
-    else:
-        a_str += P.pct_op(a_mor, 10)
+    d_men = m.r16(fd + M.F_MEN)
+    a_str, d_str = siege_strengths(m, atk, deff, c_men, bool(m.r8(M.WAR_SIDE_STATE_FLAG) & 0x80))
     if a_str > d_str:
         _conquest(m, atk, deff, c_men, c_gold, c_rice, a_arms, a_skill, a_mor, rng)
     else:
