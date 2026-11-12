@@ -322,19 +322,60 @@ def score(m, idx, move):
         return True, (inner, ev.income_capacity(m, t), rice, -men)
 
 
+LOOKAHEAD = True
+
+
+def _next_conquest(m, owner):
+    """Every second conquest the empire could make now: (src, target, men, rice, led), each from the
+    owned neighbour with the most men to send, at the fewest men that win."""
+    mine = owned(m, owner)
+    out = []
+    for t in {e for i in mine for e in reaction.enemy_neighbours(m, i)}:
+        srcs = [i for i in mine if t in m.neighbor_rows.get(i, []) and war_cap(m, i)]
+        if not srcs:
+            continue
+        src = max(srcs, key=lambda i: war_cap(m, i))
+        for led in ((False, True) if m.is_capital(src) else (False,)):
+            k = min_men(m, src, t, led)
+            if k is not None:
+                out.append((src, t, k, min(k, m.r16(m.fief(src) + M.F_RICE)), led))
+                break
+    return out
+
+
+def plan_value(m, idx, mv):
+    """Two conquests deep (Chris: plan the shape): after this move, the best follow-up the empire
+    could make, scored by fiefs gained then by the smaller army bill. -> (conquests, -bill)."""
+    owner = m.fief_owner(idx)
+    with forecast.held(m):
+        if not player_war(m, idx, *mv):
+            return (0, 0)
+        best = (1, -army_bill(m, owner)[0])
+        for src, t, men, rice, led in _next_conquest(m, owner):
+            with forecast.held(m):
+                if player_war(m, src, t, men, rice, led):
+                    best = max(best, (2, -army_bill(m, owner)[0]))
+        return best
+
+
 def best_attack(m, idx):
     """The best move from this fief, or None. Only from a position where everything owned is SAFE:
-    a player who cannot hold one fief will not hold two."""
+    a player who cannot hold one fief will not hold two. With LOOKAHEAD the target is the one whose
+    best two-conquest outcome leaves the smallest army bill; its split is the greedy best."""
     if getattr(m, "season", 0) not in SEASONS or not war_cap(m, idx):
         return None
     if any(s != SAFE for s in empire(m, m.fief_owner(idx)).values()):
         return None
-    best, best_v = None, None
+    per_target = {}
     for mv in candidates(m, idx):
         ok, v = score(m, idx, mv)
-        if ok and (best_v is None or v > best_v):
-            best, best_v = mv, v
-    return best
+        if ok and (mv[0] not in per_target or v > per_target[mv[0]][1]):
+            per_target[mv[0]] = (mv, v)
+    if not per_target:
+        return None
+    if not LOOKAHEAD or len(per_target) == 1:
+        return max(per_target.values(), key=lambda x: x[1])[0]
+    return max(per_target.values(), key=lambda x: (plan_value(m, idx, x[0]), x[1]))[0]
 
 
 def capped(m, idx):
