@@ -3,6 +3,7 @@ when I look up?"). Shared plumbing for any player that weighs the future: the EV
 
 A projected season is the season driver's slow parts, in expectation:
   * the year rolls at Spring (Dz.play writes CURRENT_GAME_YEAR after Winter);
+  * Summer re-seeds the income marks from the live stats (game.reset_marks);
   * Fall: every live fief harvests (game.harvest_fief: income, debt, upkeep, the starvation clause)
     with the income rolls at their mean, then cap_fief_stats;
   * every season: the AI fiefs recruit on the ROM's schedule (grow_ai, ai_vm.recruit_arm_train).
@@ -73,9 +74,14 @@ def harvest_all(m, only=None):
             P.cap_fief_stats(m, i)
 
 
-def step(m, season, *, growth=True, harvest_only=None, before_harvest=None):
+def step(m, season, *, growth=True, harvest_only=None, before_harvest=None, marks=True):
     """Advance the memory through one projected `season` (0 Spring .. 3 Winter), in place.
-    `before_harvest(m)` runs first in a Fall (a command the caller assumes, such as a rice buy)."""
+    `before_harvest(m)` runs first in a Fall (a command the caller assumes, such as a rice buy).
+    Summer re-seeds the income marks from the live stats (game.reset_marks, $A066), as step_season
+    does: without it a loyalty or wealth investment never pays in the projection (found 2026-11-11)."""
+    if season == 1 and marks:
+        from . import game
+        game.reset_marks(m)
     if season == 2:
         if before_harvest:
             before_harvest(m)

@@ -27,6 +27,11 @@ P_ATTACK = 0.65          # per threatening neighbour per season (1 threat .65, 2
 REVOLT_LOSS = ((24, .24), (38, .36), (58, .42))   # staged revolt battle lost, by his men (#45)
 HORIZON = 8              # seasons; 8 reaches the second harvest (the income loyalty and wealth buy)
 GROWTH = True            # the AI fiefs recruit on the ROM's schedule in the projection (expected values)
+MARKS = True             # the Summer income re-seed in the projection (False = the pre-fix projection)
+RIOTS = False            # price riots (all the gold paid, RIOT_PAY) and offer the tax moves
+RIOT_DEATH = 0.01        # a riot battle lost, measured (gold 0: 99-100% won)
+RIOT_SETTLE = False      # price a riot by its settle rule and an output-sized battle (else RIOT_DEATH flat)
+PLANS = False            # two-move plans: this season's move, then a give or a tax next season
 PEASANTS = False         # give the gold to the peasants as a candidate (worth pricing only with HORIZON 8)
 EPS = 0.003
 ALL_HARVEST = True       # project every fief's harvest, not only his
@@ -85,6 +90,43 @@ def revolt_risk(m, idx, season):
     return branch * (1 - 0.97 ** live) * 0.5 * elig * lose
 
 
+def riot_risk(m, idx, season):
+    """P(a riot lands on him) this season: the uprising branch x the planner gate x the riot-or-revolt
+    coin (1/2) x riot eligibility (ai_event_eligibility_check_loyalty_variant: a failed roll of loyalty,
+    100 - tax or charisma, or 1 in 1000, then a 1 in 4, with output and more than 2 men)."""
+    f = m.fief(idx)
+    if m.r16(f + M.F_MEN) <= 2 or m.s16(f + M.F_OUTPUT) <= 0:
+        return 0.0
+    live = sum(1 for i in range(m.r16(M.SCENARIO_FIEF_COUNT)) if m.province_ai_state(i) != M.EMPTY)
+    cha = m.r8(m.fief_daimyo(idx) + M.D_CHARISMA)
+    tax = m.r8(M.FIEF_TAX_RATE + idx)
+    fail = 1 - (1 - _fail(m.s16(f + M.F_LOYALTY))) * (1 - _fail(100 - tax)) * (1 - _fail(cha)) * (1 - 1 / 1000)
+    branch = 0.375 if season == 1 else 0.75
+    return branch * (1 - 0.97 ** live) * 0.5 * fail / 4
+
+
+def riot_death(m, idx):
+    """P(the fief falls) given a riot on a human capital (game._riots, human_riot, RIOT_PAY): all the
+    gold goes to the peasants and settles it only if loyalty ends above 25 having risen more than 5
+    (the riot payment's gain, vmprims._gift_gain); otherwise the staged riot battle. The riot army is
+    the fief's output, plus up to half the men (rng(50)%) when charisma < rng(skill) + 70
+    (spawn_uprising_force); it is general-led, priced on the odds table."""
+    f = m.fief(idx)
+    gold, loy, out = m.r16(f + M.F_GOLD), m.r16(f + M.F_LOYALTY), m.r16(f + M.F_OUTPUT)
+    if gold:
+        gain = P._gift_gain(loy, out, gold, m.skill, m.r16(f + M.F_HEADER))
+        if loy + gain > 25 and gain > 5:
+            return 0.0
+    men = m.r16(f + M.F_MEN)
+    cha, sk = m.r8(m.fief_daimyo(idx) + M.D_CHARISMA), max(1, m.skill)
+    join = sum(1 for r in range(sk) if cha < r + 70) / sk
+    moved = join * 0.245 * men
+    army, left = out + moved, men - moved
+    if left <= 0:
+        return 1.0
+    return max(RIOT_DEATH, 1 - p_held(idx, left, army, False))
+
+
 def invasion_risk(m, idx):
     f = m.fief(idx)
     men, rice = m.r16(f + M.F_MEN), m.r16(f + M.F_RICE)
@@ -104,7 +146,7 @@ def invasion_risk(m, idx):
 _Mean, _snapshot, _restore, _grow_ai = forecast.Mean, forecast.snapshot, forecast.restore, forecast.grow_ai
 
 
-def survival(m, idx):
+def survival(m, idx, then=None):
     """P(alive over the next HORIZON seasons) from the memory as it stands (after the candidate move).
     Season 0 is this one: its events have rolled, about half the neighbours are still to move."""
     s0 = getattr(m, "season", 0)
@@ -113,14 +155,21 @@ def survival(m, idx):
         for k in range(HORIZON):
             t = (s0 + k) % 4
             if k:
-                forecast.step(m, t, growth=GROWTH, harvest_only=None if ALL_HARVEST else (idx,),
+                forecast.step(m, t, growth=GROWTH, harvest_only=None if ALL_HARVEST else (idx,), marks=MARKS,
                               before_harvest=(lambda mm: policy.buy_rice_to(           # a Summer command
                                   mm, idx, lambda s: policy._rice_slack(mm, idx, False, s)))  # still to come
                               if k > 1 else None)
                 if t == 2 and m.r16(m.fief(idx) + M.F_RICE) == 0:
                     return 0.0
+                if k == 1 and then:          # the plan's second move, next season
+                    then()
             if k:
                 alive *= 1 - revolt_risk(m, idx, t)
+            if k and RIOTS:                  # a riot takes all the gold (expected), rarely the fief
+                r = riot_risk(m, idx, t)
+                alive *= 1 - r * (riot_death(m, idx) if RIOT_SETTLE else RIOT_DEATH)
+                g = m.fief(idx) + M.F_GOLD
+                m.w16(g, round(m.r16(g) * (1 - r)))
             alive *= 1 - (0.5 if k == 0 else 1.0) * invasion_risk(m, idx)
         return alive
 
@@ -130,6 +179,23 @@ def candidates(m, idx):
     f = m.fief(idx)
     gold = m.r16(f + M.F_GOLD)
     out = [("none", lambda: None)]
+    if RIOTS:
+        tax, loy = m.r8(M.FIEF_TAX_RATE + idx), m.r16(f + M.F_LOYALTY)
+        cap = 30 if m.fief_owner(idx) == 3 else 55
+        keep = next((t for t in range(cap - tax, 0, -1)
+                     if loy - P.pct_op(loy, t) >= policy.CLIFF - 1), 0)
+        if keep:
+            out.append(("tax_keep", lambda: policy.set_tax(m, idx, tax + keep)))
+        if tax < cap:
+            out.append(("tax_cap", lambda: policy.set_tax(m, idx, cap)))
+    if PLANS:                        # tax now, give next season (Chris: the gift lands on a lower base)
+        tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)
+        if tax < cap:
+            out.append(("tax_cap>give", lambda: policy.set_tax(m, idx, cap),
+                        lambda: policy.give_peasants(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1, gold=True)))
+            if gold > 1:
+                out.append(("give>tax_cap", lambda: policy.give_peasants(m, idx, gold - 1, gold=True),
+                            lambda: policy.set_tax(m, idx, cap)))
     if gold <= 1:
         return out
     out.append(("morale", lambda: policy.give_men(m, idx, min(60, gold - 1), gold=True)))
@@ -155,11 +221,11 @@ def ev_policy(m, idx, rng):
     wealth, the tax, so the income)."""
     scores, left = {}, {}
     first = [("reader", lambda: reaction.reader_policy(m, idx, rng))] if READER_DEFAULT else []
-    for name, move in first + candidates(m, idx):
+    for name, move, *then in first + candidates(m, idx):
         snap = _snapshot(m)
         try:
             move()
-            scores[name] = survival(m, idx)
+            scores[name] = survival(m, idx, then[0] if then else None)
             f = m.fief(idx)
             left[name] = m.r16(f + M.F_GOLD) + m.r16(f + M.F_RICE)
         finally:
@@ -178,4 +244,4 @@ def ev_policy(m, idx, rng):
     elif best == "none":
         reaction.economy(m, idx)
     else:
-        dict(candidates(m, idx))[best]()
+        next(c[1] for c in candidates(m, idx) if c[0] == best)()
