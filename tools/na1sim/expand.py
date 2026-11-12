@@ -23,6 +23,29 @@ from . import memmap as M, game, reaction, forecast, ai_vm
 SHARE = reaction.GRUDGE                 # 47: past it a neighbour can pick you
 SAFE, HUNTABLE, COMING = "SAFE", "HUNTABLE", "COMING"
 RANK = {SAFE: 0, HUNTABLE: 1, COMING: 2}
+FOUGHT = False                          # True: the player's attacks are fought on the battle map
+
+# Fought attacks (#48, the attack-odds harvest: 22,792 replays of the expander's real attacks fought
+# on the battle map, 7 starts x 6 seeds). A fought battle is decided by men, not by the quality and
+# morale that dominate the calculated one: a general wins an ordinary fief 9% at 1-1.25x the
+# defender's men, 22% at 1.25-1.5, 71% at 1.5-2, 89% at 2-2.5; a capital (home bonus) 1 / 12 / 32 /
+# 82%, 88% at 2.5-3. A daimyo-led attack shifts the curve about half a step, but a led loss hands the
+# whole faction to the defender ($DED4), so the fought player does not lead.
+FOUGHT_NEED = {False: 2.25, True: 2.75}     # men sent / defender's men for ~90%, by target is capital
+# the conquered fief's men after a win, as a share of the men sent, by that ratio (both sides' survivors)
+FOUGHT_KEEP = ((1.5, .40), (2.0, .49), (2.5, .61), (3.0, .67), (4.0, .77), (6.0, .87))
+
+
+def fought_need(m, tgt):
+    return int(m.r16(m.fief(tgt) + M.F_MEN) * FOUGHT_NEED[bool(m.is_capital(tgt))]) + 1
+
+
+def fought_keep(ratio):
+    keep = FOUGHT_KEEP[0][1]
+    for r, k in FOUGHT_KEEP:
+        if ratio >= r:
+            keep = k
+    return keep
 
 
 # --- the War command ------------------------------------------------------------------------
@@ -42,9 +65,10 @@ def targets(m, idx):
     return reaction.enemy_neighbours(m, idx)
 
 
-def player_war(m, idx, tgt, men, rice, led=False, rng=None):
+def player_war(m, idx, tgt, men, rice, led=False, rng=None, fought=None):
     """Fight it: commit as driver_war does, resolve with the calculated battle. -> True if won."""
     f = m.fief(idx)
+    me = m.fief_owner(idx)
     men = max(1, min(men, war_cap(m, idx)))
     rice = max(1, min(rice, m.r16(f + M.F_RICE), men))
     led = bool(led and m.is_capital(idx))
@@ -56,11 +80,30 @@ def player_war(m, idx, tgt, men, rice, led=False, rng=None):
     m.w16(f + M.F_MEN, m.r16(f + M.F_MEN) - men)
     m.w8(M.WAR_SIDE_STATE_FLAG, 0x80 if led else 0)
     m.selected, m.defending = idx, tgt
-    game.resolve_siege(m, rng or random.Random(0))
-    return m.fief_owner(tgt) == m.fief_owner(idx)
+    if (fought if fought is not None else FOUGHT) and rng is None:
+        # a what-if (the planner's checks): no battle, the measured outcome. A win leaves the fief
+        # with the measured share of the men sent; a loss leaves half of them to the defender.
+        ft = m.fief(tgt)
+        dmen = m.r16(ft + M.F_MEN)
+        if men >= fought_need(m, tgt):
+            left = int(men * fought_keep(men / max(1, dmen)))
+            game._conquest(m, idx, tgt, max(0, left - dmen // 2), men, rice,
+                           m.r16(f + M.F_ARMS), m.r16(f + M.F_SKILL), m.r16(f + M.F_MORALE), random.Random(0))
+        else:
+            m.w16(ft + M.F_MEN, dmen + men // 2)
+    elif fought if fought is not None else FOUGHT:  # the cartridge fights every human attack on the map
+        from . import tactical
+        tactical.run_tactical_battle(m, rng)
+    else:
+        game.resolve_siege(m, rng or random.Random(0))
+    # against the attacker's owner before the battle: a daimyo-led attack that loses hands the whole
+    # faction to the defender ($DED4), after which source and target share an owner that is not ours
+    return m.fief_owner(tgt) == me and m.province_ai_state(tgt) != M.EMPTY
 
 
 def wins(m, idx, tgt, men, led=False):
+    if FOUGHT:
+        return not led and men >= fought_need(m, tgt)
     a, d = game.siege_strengths(m, idx, tgt, men, bool(led and m.is_capital(idx)))
     return a > d
 
@@ -553,7 +596,7 @@ def candidates(m, idx):
     f = m.fief(idx)
     rice_have = m.r16(f + M.F_RICE)
     for t in targets(m, idx):
-        for led in ((False, True) if m.is_capital(idx) else (False,)):
+        for led in ((False, True) if m.is_capital(idx) and not FOUGHT else (False,)):
             k = min_men(m, idx, t, led)
             if k is None:
                 continue
