@@ -185,6 +185,27 @@ Two readings. Up to eight fiefs the greedy empire is nearly all frontier, and it
 - concentrate only as far as the targets need: a stager holds at most its header in men and a target needs only enough to win and stay SAFE, so the number of campaigns should follow the surplus;
 - a likely shape: a flow on the owned graph (sources with spare men or gold, sinks at the chosen stagers, capacities at the headers, men a step a season against gold in one Send), with the set of campaigns chosen together for winnability, map-opening value (the army bill) and capitals; re-planned each season.
 
+**The planner, as math** (Chris: graph theory; design recorded 2026-11-12, not built). Each season:
+1. *Free army* = the men owned + what the topped-out fiefs' gold would buy - the army bill (every fief's gate line; the back line needs 0). `expand.free_army`.
+2. *Price each attackable fief t*: need(t) = the fewest men that win from its best bordering source + what the new fief needs to stay SAFE; gain(t) = the army bill it removes + its income + a capital's chance of collapsing a faction. The bill term is the "holes" effect: an enemy fief the empire nearly surrounds turns several owned front fiefs interior when taken, so its gain counts them; a greedy picker that grabs easy edge fiefs leaves those holes and pays for a longer front.
+3. *Choose the attacks*: targets matched to distinct sources (one command per fief a season: a source bordering two chosen targets launches one, the other is reassigned or waits), maximising total gain with total need <= the free army, each source holding gold >= the men it sends and rice up to them. A max-weight matching under a budget; at most about ten targets by ten sources, so exact enumeration is cheap.
+4. *Logistics*: free men a step a season through owned ground and gold and rice in one Send, to the assigned sources; a loaded source attacks, the rest keep gathering.
+5. *Re-plan* the next season. The number of campaigns falls out of the free army.
+
+**Measured first: the greedy player leaves the army idle and the holes open.** The current player (depots + lookahead), 10 starts x 10 seeds, 40 years, each year before unification, by fiefs held: the free army (`expand.free_army`), the men actually sent to war that year, and the holes (`expand.holes`: enemy fiefs with two or more neighbours, at least half of them owned) with how long each has stayed enemy.
+
+| held | men | buyable | bill | free army | sent / year | free unused | open holes | hole age (years) |
+|---|---|---|---|---|---|---|---|---|
+| 2 | 409 | 47 | 192 | 264 | 52 | 72% | 0.6 | 2.6 |
+| 4 | 1121 | 70 | 466 | 724 | 119 | 77% | 2.1 | 3.7 |
+| 6 | 3364 | 211 | 943 | 2632 | 157 | 87% | 3.1 | 8.4 |
+| 7 | 3781 | 263 | 819 | 3226 | 145 | 89% | 3.3 | 7.5 |
+| 9 | 3108 | 203 | 1017 | 2295 | 376 | 82% | 2.6 | 5.8 |
+| 11 | 3215 | 312 | 925 | 2603 | 642 | 72% | 3.2 | 3.7 |
+| 13+ | 3225 | 449 | 528 | 3146 | 1807 | 51% | 1.8 | 4.0 |
+
+Both halves of the hypothesis hold. Through the middle game the free army runs 2,000-3,000 men while 150-650 a year go to war: 70-89% of it idles. And the empire carries two to three enemy holes at a time, which stay enemy four to eight years (longest at six to seven fiefs, the stall zone). The matcher has room: the men exist, the targets exist, the attacks do not happen because each is priced from one fief alone and the holes are never chosen.
+
 **Next (Chris, 2026-11-12), by expected gain:**
 1. ~~**The other verbs: interior fiefs as depots.**~~ **Done (above).** A fief with no enemy neighbour needs no army, and today it spends its command training. `driver_move $96D1` moves men only, to an adjacent owned fief, up to min(men, the destination's header room), blending morale/skill/arms; led by the daimyo it moves the capital too (the king can retreat inward). `driver_send $9A62` moves rice and gold to an owned fief, capped by the receiver's header (eligibility `build_eligible_province_list(1)`, not yet read). So the interior marches its men one step toward the front each season and sends its surplus forward; the front hires and attacks with what gathers.
 2. **Faction collapse.** A fallen capital hands over the whole faction on a 1-in-(drive/10) roll (`game._conquest`, the calculated battle). Cornering the daimyo is the hard part: in a fought battle the lord usually flees if he can, so this term is worth less once battles are fought.

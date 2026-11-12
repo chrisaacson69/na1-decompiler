@@ -173,6 +173,32 @@ def army_bill(m, owner):
     return bill, exposed, len(mine)
 
 
+def free_army(m, owner):
+    """Chris's attackable army: the men owned, plus what the topped-out fiefs' gold would buy, less
+    the army bill (every fief's gate line; the back line needs 0). -> (free, men, buyable, bill)."""
+    rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+    mine = owned(m, owner)
+    men = sum(m.r16(m.fief(i) + M.F_MEN) for i in mine)
+    buy = sum(m.r16(m.fief(i) + M.F_GOLD) * 10 // rate for i in mine if capped(m, i))
+    bill = army_bill(m, owner)[0]
+    return men + buy - bill, men, buy, bill
+
+
+def holes(m, owner):
+    """Enemy fiefs the empire nearly surrounds: at least two neighbours and at least half of them
+    owned. Taking one turns owned front fiefs into interior (Chris)."""
+    n = m.r16(M.SCENARIO_FIEF_COUNT)
+    out = []
+    for t in range(n):
+        if m.province_ai_state(t) == M.EMPTY or m.fief_owner(t) == owner:
+            continue
+        nb = [b for b in m.neighbor_rows.get(t, []) if b < n and m.province_ai_state(b) != M.EMPTY]
+        mine = sum(1 for b in nb if m.fief_owner(b) == owner)
+        if mine >= 2 and mine * 2 >= len(nb):
+            out.append(t)
+    return out
+
+
 # --- the other verbs: Move and Send ---------------------------------------------------------
 def move_men(m, src, dst, men, lead=False):
     """The Move command (driver_move $96D1 + effect_move $8CA5): men to an adjacent owned fief, at
