@@ -139,6 +139,17 @@ The warning horizon is a dial between survival and income. Strong fiefs pay almo
 
 Mode 2 against mode 1: same survivors, 1-2% more income. The year-1 cost is the strong fiefs' first gift, which was feeding their first harvest; by year 6 it is mostly paid back. Against the reader, gate N=2 + shield 2 saves 11 and loses 1.
 
+**Mode 3: three states, not two** (Chris). *Safe*: no enemy neighbour's share of men passes 47, nobody can pick him, give freely. *Huntable*: some neighbour passes it, picked today or not; the gift stops at the budget gate, and short rice is bought back. *Hunted*: the threat rows. `hunted_by` (picked now) was the wrong test for the gift: Tokugawa was nobody's pick when it gave, Imagawa's share was 52. Paired:
+
+| | alive | saves/losses | y1 income | y6 income |
+|---|---|---|---|---|
+| reader -> reader + shield 3 | 151 -> 156 | 6/1 | -35/-26/0/0% | -1/-3/-5/-6% |
+| reader + shield 2 -> 3 | 155 -> 156 | 1/0 | 0/+1/0/0% | +1% each |
+| gate N=2 + shield 2 -> 3 | 161 -> **162** | 1/0 | ~0 | -1..+3% |
+| ev-survival + shield 1 -> 3 | 169 -> 166 | 1/4 | ~0 | +3/+12/+35/+5% |
+
+The year-1 cost does not move: the strong fiefs start huntable (Oda and Tokugawa within the share line of each other), so their first gift really was the risk, not caution. Mode 3 is the rule for the reader and the gate; ev-survival keeps mode 1 if survival is all that counts (3 games is inside the noise either way). Against the reader: gate N=2 + shield 3 saves 12, loses 1 (162/200).
+
 ### #46 — The EV player: Saito's commands priced, not ordered (Chris, 2026-11-11)
 
 **`na1sim/ev.py`, `deaths.py --tail ev`.** Each command is chosen by the survival it buys over the next four seasons, from #45's parts: revolt by the formula, invasion by `reaction.threats` (the ROM's own pick), with each threatening neighbour attacking **65% of seasons** (measured: 1 threat .65, 2 .89, 3+ 1.00), committing its budget × 60-89% (daimyo-led, a coin from a capital) or 50-69%, against the odds table (`na1sim/odds.py` → `odds_f8.json`). A horizon that crosses a Fall runs every fief's real harvest at mean income. A future Summer command buys the least rice; rice 0 after it scores 0. The candidates are morale, hire all, hire to the picker line, Summer rice, or nothing (then the reader's economy step, `reaction.economy`, factored out of `reader_policy` with no change to it). Ties within 0.003 go to the move that keeps the most gold and rice.

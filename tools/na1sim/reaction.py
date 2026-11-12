@@ -122,6 +122,13 @@ def enemy_neighbours(m, idx):
             if nb < n and m.province_ai_state(nb) == 0 and m.fief_owner(nb) != me]
 
 
+def huntable(m, idx):
+    """Some enemy neighbour is past the share gate (its men / both > 47%): it could pick this fief,
+    whether or not it does today."""
+    from . import ai_vm
+    return any(ai_vm.fief_men_ratio_pct(m, nb, idx) > GRUDGE for nb in enemy_neighbours(m, idx))
+
+
 def threats(m, idx):
     """The neighbours that would pick this fief, by the ROM's own choice, and can pay to attack it."""
     from . import policy
@@ -276,7 +283,12 @@ def economy(m, idx):
     # given away. Summer's gift left Tokugawa 1 rice beside 71 men, unhunted when it gave; an AI moved
     # later that season, passed the gate on 1 rice and won (3 deaths every player shared on the bench).
     # Hunted and short: buy back to the men (rice >= men now and after the harvest) before anything.
-    if guard and season == 1 and rice < men and policy.hunted_by(m, idx) and policy.buy_rice_to(
+    # Mode 3 (Chris, 2026-11-12), three states, not two: past the share gate nobody can pick him and
+    # the rice is free to give; huntable (some neighbour's share of men > 47, picked or not) the gift
+    # stops at the budget gate; hunted (threats) is the rows above. hunted_by alone missed the gift:
+    # Tokugawa was nobody's pick when it gave, and Imagawa came at 52% later that season.
+    hunt = huntable(m, idx) if guard == 3 else guard and policy.hunted_by(m, idx)
+    if guard and season == 1 and rice < men and hunt and policy.buy_rice_to(
             m, idx, lambda s: policy._rice_slack(m, idx, True, s)):
         return
     step = next((s for s in range(cap - tax, 0, -1)
@@ -287,7 +299,7 @@ def economy(m, idx):
     capped = (m.r16(f + M.F_WEALTH) + loyalty) // 2 >= m.r16(f + M.F_HEADER)
     if season == 1:
         keep = men if guard == 1 or policy.hunted_by(m, idx) else 0
-        if guard == 2:          # only as much as shuts the budget gate: past every neighbour's budget
+        if guard == 2 or guard == 3 and hunt:   # only as much as shuts the budget gate
             keep = max(keep, min(men, max([budget(live_side(m, n)) + 1 for n in enemy_neighbours(m, idx)] or [0])))
         keep = max(keep, rice - max(0, policy._rice_slack(m, idx, False, sustain=True)))
         if rice > keep + 1:
