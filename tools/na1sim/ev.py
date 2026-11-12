@@ -32,6 +32,8 @@ RIOTS = False            # price riots (all the gold paid, RIOT_PAY) and offer t
 RIOT_DEATH = 0.01        # a riot battle lost, measured (gold 0: 99-100% won)
 RIOT_SETTLE = False      # price a riot by its settle rule and an output-sized battle (else RIOT_DEATH flat)
 PLANS = False            # two-move plans: this season's move, then a give or a tax next season
+ECON = False             # second objective: among moves within EPS of the best survival, the most
+                         # harvest income at the horizon's end; the economy step is scored as applied
 PEASANTS = False         # give the gold to the peasants as a candidate (worth pricing only with HORIZON 8)
 EPS = 0.003
 ALL_HARVEST = True       # project every fief's harvest, not only his
@@ -146,7 +148,21 @@ def invasion_risk(m, idx):
 _Mean, _snapshot, _restore, _grow_ai = forecast.Mean, forecast.snapshot, forecast.restore, forecast.grow_ai
 
 
-def survival(m, idx, then=None):
+def income_capacity(m, idx):
+    """Gold + rice a harvest would bring in from the memory as it stands, before upkeep: the marks
+    re-seeded from the live stats (Summer), every roll at its mean, the army set aside. The vault's
+    Economic Index measures balance, not income (synthesis #36), so this is the harvest formula itself."""
+    from . import game
+    with forecast.held(m):
+        game.reset_marks(m)
+        f = m.fief(idx)
+        m.w16(f + M.F_MEN, 0)
+        g, r = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE)
+        game.harvest_fief(m, idx, forecast.Mean())
+        return m.r16(f + M.F_GOLD) - g + m.r16(f + M.F_RICE) - r
+
+
+def survival(m, idx, then=None, value=False):
     """P(alive over the next HORIZON seasons) from the memory as it stands (after the candidate move).
     Season 0 is this one: its events have rolled, about half the neighbours are still to move."""
     s0 = getattr(m, "season", 0)
@@ -160,7 +176,7 @@ def survival(m, idx, then=None):
                                   mm, idx, lambda s: policy._rice_slack(mm, idx, False, s)))  # still to come
                               if k > 1 else None)
                 if t == 2 and m.r16(m.fief(idx) + M.F_RICE) == 0:
-                    return 0.0
+                    return (0.0, 0) if value else 0.0
                 if k == 1 and then:          # the plan's second move, next season
                     then()
             if k:
@@ -171,7 +187,7 @@ def survival(m, idx, then=None):
                 g = m.fief(idx) + M.F_GOLD
                 m.w16(g, round(m.r16(g) * (1 - r)))
             alive *= 1 - (0.5 if k == 0 else 1.0) * invasion_risk(m, idx)
-        return alive
+        return (alive, income_capacity(m, idx)) if value else alive
 
 
 def candidates(m, idx):
@@ -219,20 +235,35 @@ def ev_policy(m, idx, rng):
     """Price the reader's own move and each gold move by survival(); a gold move replaces the
     reader's only when it beats it by EPS (the reader carries what the score cannot see: loyalty,
     wealth, the tax, so the income)."""
-    scores, left = {}, {}
+    scores, left, value = {}, {}, {}
     first = [("reader", lambda: reaction.reader_policy(m, idx, rng))] if READER_DEFAULT else []
-    for name, move, *then in first + candidates(m, idx):
+    cands = candidates(m, idx)
+    if ECON:                         # "none" hands the season to the economy step: score it applied
+        cands = [("none", lambda: reaction.economy(m, idx))] + [c for c in cands if c[0] != "none"]
+    for name, move, *then in first + cands:
         snap = _snapshot(m)
         try:
             move()
-            scores[name] = survival(m, idx, then[0] if then else None)
+            if ECON:
+                scores[name], value[name] = survival(m, idx, then[0] if then else None, value=True)
+            else:
+                scores[name] = survival(m, idx, then[0] if then else None)
             f = m.fief(idx)
             left[name] = m.r16(f + M.F_GOLD) + m.r16(f + M.F_RICE)
         finally:
             _restore(m, snap)
     base = "reader" if READER_DEFAULT else "none"
     top = max(scores.values())
-    tol = EPS                        # absolute; relative (EPS * top) tried 2026-11-11: 46 of 600 against 50
+    tol = EPS
+    if ECON:                         # survival first; then the richer future; then keep the most
+        best = max((k for k in scores if scores[k] >= top - tol), key=lambda k: (value[k], left[k], scores[k]))
+        if TRACE:
+            LOG.append((getattr(m, "season", 0), scores, best))
+        if best == "none":
+            reaction.economy(m, idx)
+        else:
+            next(c[1] for c in cands if c[0] == best)()
+        return                        # absolute; relative (EPS * top) tried 2026-11-11: 46 of 600 against 50
     if scores[base] >= top - tol:
         best = base
     else:                            # of the moves within tol of the best, the one that keeps most

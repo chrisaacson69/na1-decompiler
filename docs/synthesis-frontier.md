@@ -91,6 +91,29 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #47 — A second objective: survival first, then income (Chris, 2026-11-11)
+
+**`ev.ECON`.** Among moves within EPS of the best survival, take the most harvest income at the horizon's end (`ev.income_capacity`: gold + rice a harvest brings in before upkeep, the marks re-seeded, mean rolls), then the most gold and rice kept. The economy step is scored applied, so tax-then-give plans compete with it. The measure is income, not the Economic Index: the vault records that the index rewards balance and misses the peasant shortcut (#36). Bench (Chris: strong fiefs, longer games; no expansion, so not full games): skill 1, 6 years, 50 seeds, doctrine battles; `evS` = survival only with riots and tax moves, `evE` = + plans, peasants and ECON. Income is the mean over the living.
+
+| fief | player | alive | income y1 | y2 | y3 | y4 | y6 |
+|---|---|---|---|---|---|---|---|
+| Oda | reader | 47 | 257 | 455 | 726 | 1075 | 1833 |
+| | evS | 48 | 257 | 455 | 726 | 1068 | 1817 |
+| | evE | 49 | 341 | 580 | 863 | 1258 | 1758 |
+| Tokugawa | reader | 41 | 255 | 450 | 709 | 1028 | 1801 |
+| | evS | 42 | 246 | 381 | 571 | 837 | 1539 |
+| | evE | 41 | 340 | 520 | 790 | 1091 | 1691 |
+| Hojo | reader | 29 | 233 | 359 | 546 | 828 | 1628 |
+| | evS | 33 | 154 | 273 | 381 | 549 | 1097 |
+| | evE | 33 | 178 | 335 | 489 | 721 | 1368 |
+| Imagawa | reader | 34 | 210 | 344 | 540 | 823 | 1688 |
+| | evS | 42 | 137 | 284 | 400 | 572 | 1131 |
+| | evE | 39 | 247 | 407 | 583 | 848 | 1468 |
+
+- **The margin thesis holds** (vault: *The Margin Sets the Intelligence*): on the strong fiefs survival does not depend on the player (47-49, 41-42); on the mid fiefs the EV players keep 4-8 more.
+- **The second objective works for four years**: ev-econ leads on income through year 4 on every fief (Oda +33% in year 1, +17% in year 4), and on the mid fiefs it wins back most of what survival-only spends on men. Imagawa: more survivors than the reader (39 against 34) and more income through year 4.
+- **The reader overtakes by year 6 everywhere.** Not yet traced. The likely cause is that the projection never reinvests (no future command but the Summer rice), so it cannot see the compounding of a give every Spring, and it ranks a one-off boost above the habit. The next step is to compare the choices in years 4-6, then give the projection the reader's economy step as its assumed future command.
+
 ### #46 — The EV player: Saito's commands priced, not ordered (Chris, 2026-11-11)
 
 **`na1sim/ev.py`, `deaths.py --tail ev`.** Each command is chosen by the survival it buys over the next four seasons, from #45's parts: revolt by the formula, invasion by `reaction.threats` (the ROM's own pick), with each threatening neighbour attacking **65% of seasons** (measured: 1 threat .65, 2 .89, 3+ 1.00), committing its budget × 60-89% (daimyo-led, a coin from a capital) or 50-69%, against the odds table (`na1sim/odds.py` → `odds_f8.json`). A horizon that crosses a Fall runs every fief's real harvest at mean income. A future Summer command buys the least rice; rice 0 after it scores 0. The candidates are morale, hire all, hire to the picker line, Summer rice, or nothing (then the reader's economy step, `reaction.economy`, factored out of `reader_policy` with no change to it). Ties within 0.003 go to the move that keeps the most gold and rice.
