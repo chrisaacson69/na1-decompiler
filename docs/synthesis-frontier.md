@@ -91,6 +91,33 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #48 — Expansion: attack only when everything owned stays past its gates (Chris, 2026-11-12)
+
+**The rule** (Chris): if you cannot keep your first fief past its gates, you will not keep two. An attack is worth making only if, afterwards, every owned fief, the one the army left and the one it took, is still SAFE. A fief with no enemy neighbours needs no army, and taking the biggest neighbour lowers the gates of every owned fief beside it, so the choice is a graph question as much as a battle one. Start simple: the calculated battle prices the attack (a fought-battle attack player comes later and only moves the odds).
+
+**The War command as the cartridge runs it for a human** (`driver_war $9850`): men up to min(men, gold), a weak lord a quarter of that and never from his capital; one gold per man sent, carried; rice up to min(rice, men sent); lead only from the capital (the daimyo-present bit, 3x men). On a win half the defender's men join the survivors, the carried gold and rice add to the fief's, tax drops to 30; on a loss the defender absorbs half the attackers; a fallen capital can hand over its whole faction (1 in drive/10). The strengths are `game.siege_strengths` (factored out of `resolve_siege`, outcomes unchanged).
+
+**The player** (`na1sim.expand`): from a position where every owned fief is SAFE, in Fall, Winter or Spring, price every target x men (the fewest that win up to the cap) x rice x lead; keep the moves that win and leave every owned fief SAFE; prefer more interior fiefs, then the target's harvest, then fewer men. Else, once the peasants are full ((wealth + loyalty) / 2 >= header), buy men with half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold per man). Else the reader's season.
+
+**Why the topped-out rule matters.** The reader's income "fell" after year 6 (Oda 1840 to 702 by year 10). It did not: loyalty and wealth hit the header (1660), the gold followed, and `cap_fief_stats` clamps gold at the header, so every harvest into a full treasury is thrown away. A full treasury makes men free.
+
+Bench, skill 1, 10 years, 20 seeds, both players shield 4 (fiefs and income are means over the living; income = what the harvest adds, `ev.income_capacity` summed over the owned fiefs):
+
+| fief | player | alive | fiefs y6 | y10 | income y6 | y10 | attacks/game |
+|---|---|---|---|---|---|---|---|
+| Oda | reader | 18 | 1.1 | 1.3 | 1840 | 702 | 0 |
+| Oda | expand | 18 | 1.6 | **2.8** | 2095 | **2983** | 1.50 |
+| Tokugawa | reader | 19 | 1.1 | 1.1 | 1905 | 517 | 0 |
+| Tokugawa | expand | 19 | 1.4 | **3.0** | 2050 | **3246** | 1.75 |
+| Hojo | reader | 11 | 1.0 | 1.1 | 1579 | 450 | 0 |
+| Hojo | expand | 12 | 1.3 | **2.8** | 1803 | **2876** | 1.00 |
+| Imagawa | reader | 10 | 1.0 | 1.3 | 1685 | 812 | 0 |
+| Imagawa | expand | 12 | 1.5 | **2.9** | 1921 | **3096** | 1.15 |
+
+Expansion costs no survival (equal or better on every start) and speeds up once the economy tops out: most first attacks come in 1565-1568, and the holdings nearly double between years 7 and 10. Without the topped-out rule the same player reached only 1.6-1.9 fiefs. Saito never gets past being hunted, so it never attacks. The reader sometimes ends with 2-3 fiefs without attacking: something hands it territory (a faction collapsing into it, not yet traced).
+
+**Open:** the attack carries 1 rice (rice is not in the value, so the first candidate wins the tie; carried rice should count toward the new fief's upkeep and shield); the value has no "biggest neighbour removed" or faction-collapse term yet; fought-battle odds for the attacker (an attack doctrine); longer games.
+
 ### #47 — A second objective: survival first, then income (Chris, 2026-11-11)
 
 **`ev.ECON`.** Among moves within EPS of the best survival, take the most harvest income at the horizon's end (`ev.income_capacity`: gold + rice a harvest brings in before upkeep, the marks re-seeded, mean rolls), then the most gold and rice kept. The economy step is scored applied, so tax-then-give plans compete with it. The measure is income, not the Economic Index: the vault records that the index rewards balance and misses the peasant shortcut (#36). Bench (Chris: strong fiefs, longer games; no expansion, so not full games): skill 1, 6 years, 50 seeds, doctrine battles; `evS` = survival only with riots and tax moves, `evE` = + plans, peasants and ECON. Income is the mean over the living.
