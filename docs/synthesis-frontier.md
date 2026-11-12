@@ -152,7 +152,14 @@ Expansion costs no survival (equal or better on every start) and speeds up once 
 
 **119 of 340 unify.** Fourteen of the seventeen starts can win; the three that cannot are the ones that never get past being hunted (#45-#47). The outcome is bimodal: a start either clears the opening and then usually conquers everything (median peak 16-17 fiefs), or dies in it (median peak 1). The strong five read 56/100 here against 64 before the rice rule: the full home shield makes the attacks fewer and later, and Miyoshi's old lord (15 of 20 lost to old age) feels it most. Speed is the lever now.
 
-**Open:** the value has no "biggest neighbour removed" or faction-collapse term yet (speed); the rice rule could keep the shield at the budget line rather than the men (mode 2's idea) to win the speed back; fought-battle odds for the attacker (an attack doctrine); the 70-year runs use calculated battles throughout.
+**The three that never win** never clear the opening under the reader's: Saito and Rokkaku die in year 1 in 19 and 20 of 20 games, Honganji in 12. Honganji's survivors expand to 9-13 fiefs and stall: the Tax command caps every Honganji-owned fief at 30 (`number_input(1, defender_owner_is_honganji() ? 30 : 100)`, the owner, not the fief), so conquest does not lift it. Hatakeyama's third that clears the opening goes the distance (one unified, six lasted to year 50-51).
+
+**Next (Chris, 2026-11-12), by expected gain:**
+1. **The other verbs: interior fiefs as depots.** A fief with no enemy neighbour needs no army, and today it spends its command training. `driver_move $96D1` moves men only, to an adjacent owned fief, up to min(men, the destination's header room), blending morale/skill/arms; led by the daimyo it moves the capital too (the king can retreat inward). `driver_send $9A62` moves rice and gold to an owned fief, capped by the receiver's header (eligibility `build_eligible_province_list(1)`, not yet read). So the interior marches its men one step toward the front each season and sends its surplus forward; the front hires and attacks with what gathers.
+2. **Faction collapse.** A fallen capital hands over the whole faction on a 1-in-(drive/10) roll (`game._conquest`, the calculated battle). Cornering the daimyo is the hard part: in a fought battle the lord usually flees if he can, so this term is worth less once battles are fought.
+3. **The weak starts' openings, baked in:** Saito-type fiefs need their special opening (#45-#47, ev) to reach the expansion phase at all.
+4. Speed knobs: the home shield at the budget line rather than the men; "biggest neighbour removed" in the value. Check plague's share of the invasion deaths.
+5. Fought-battle odds for the attacker (an attack doctrine); the 70-year runs use calculated battles throughout.
 
 ### #47 — A second objective: survival first, then income (Chris, 2026-11-11)
 
