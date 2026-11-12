@@ -150,6 +150,19 @@ Mode 2 against mode 1: same survivors, 1-2% more income. The year-1 cost is the 
 
 The year-1 cost does not move: the strong fiefs start huntable (Oda and Tokugawa within the share line of each other), so their first gift really was the risk, not caution. Mode 3 is the rule for the reader and the gate; ev-survival keeps mode 1 if survival is all that counts (3 games is inside the noise either way). Against the reader: gate N=2 + shield 3 saves 12, loses 1 (162/200).
 
+**What the gate leaves after mode 3, by cause** (gate N=2 + shield 3: 38 deaths; 12 before the first command). At the player's last turn before each of the other 26, the attacker had the same men in 25 of them: the rival does not hire then strike (once). The player's men fell instead: **16 pile-ons** (an attack held, the battle bled men, a second attack the same or next season finished him), **7 plague** (events, before anyone moves: men to 50-99%; a huntable neighbour passes the share line and comes that season), 3 straight losses at 67-86% share. Chris: neither is a policy problem. A pile-on is decided at the gate (do not get gated) or in the battle (win men); plague insurance is a doubled army at a 50% hit, and the 1-in-50 baked in adds 0.6-2% that does not save you when it hits. Variance, left as it is. The EV scorer misses both by design: it counts only neighbours picking him now, a held battle costs no men in its forecast, and plague is not in it, so a longer horizon could not have helped.
+
+**Mode 4: turn order** (Chris). The player sees who has moved (`m.acted`). Huntable, but every neighbour past the share line has already moved this Summer: the next move that can punish the gift comes after the Fall harvest, so the gift goes as low as the harvest (every roll at its floor) still lifts the rice back to the men (`after_harvest_room`). Paired:
+
+| | alive | saves/losses | income y1 | y2 | y6 |
+|---|---|---|---|---|---|
+| reader + shield 3 -> 4 | 156 -> 157 | 1/0 | +12/+6/0/0% | +6/+4/+7/+9% | +1/+2/+2/+2% |
+| gate N=2 + shield 3 -> 4 | 162 -> 162 | 0/0 | +12/+5/0/0% | +6/+4/+6/+8% | +1/+2/+3/+1% |
+| reader -> reader + shield 4 | 151 -> **157** | 6/0 | -27/-22/0/0% | | -0/-1/-3/-4% |
+| reader -> gate N=2 + shield 4 | 151 -> **162** | 12/1 | -27/-21/-8/0% | | -1/-7/-11/-11% |
+
+Free income, no survivors lost. **Shield 4 is the rule.** The reader with it keeps 6 more alive at the old reader's year-6 income.
+
 ### #46 — The EV player: Saito's commands priced, not ordered (Chris, 2026-11-11)
 
 **`na1sim/ev.py`, `deaths.py --tail ev`.** Each command is chosen by the survival it buys over the next four seasons, from #45's parts: revolt by the formula, invasion by `reaction.threats` (the ROM's own pick), with each threatening neighbour attacking **65% of seasons** (measured: 1 threat .65, 2 .89, 3+ 1.00), committing its budget × 60-89% (daimyo-led, a coin from a capital) or 50-69%, against the odds table (`na1sim/odds.py` → `odds_f8.json`). A horizon that crosses a Fall runs every fief's real harvest at mean income. A future Summer command buys the least rice; rice 0 after it scores 0. The candidates are morale, hire all, hire to the picker line, Summer rice, or nothing (then the reader's economy step, `reaction.economy`, factored out of `reader_policy` with no change to it). Ties within 0.003 go to the move that keeps the most gold and rice.

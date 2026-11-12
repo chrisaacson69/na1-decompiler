@@ -122,6 +122,37 @@ def enemy_neighbours(m, idx):
             if nb < n and m.province_ai_state(nb) == 0 and m.fief_owner(nb) != me]
 
 
+def ai_vm_share(m, n, idx):
+    from . import ai_vm
+    return ai_vm.fief_men_ratio_pct(m, n, idx)
+
+
+def after_harvest_room(m, idx):
+    """The most rice that can go now with the Fall harvest (every roll at its floor) still leaving
+    rice >= men. Memory is put back."""
+    from . import memmap as M, policy
+    f = m.fief(idx)
+    rice = m.r16(f + M.F_RICE)
+
+    def ok(g):
+        m.w16(f + M.F_RICE, rice - g)
+        try:
+            _, _, r, men = policy.harvest_after(m, idx)
+            return r >= men
+        finally:
+            m.w16(f + M.F_RICE, rice)
+    if not ok(0):
+        return 0
+    lo, hi = 0, rice - 1
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if ok(mid):
+            lo = mid
+        else:
+            hi = mid - 1
+    return lo
+
+
 def huntable(m, idx):
     """Some enemy neighbour is past the share gate (its men / both > 47%): it could pick this fief,
     whether or not it does today."""
@@ -287,7 +318,7 @@ def economy(m, idx):
     # the rice is free to give; huntable (some neighbour's share of men > 47, picked or not) the gift
     # stops at the budget gate; hunted (threats) is the rows above. hunted_by alone missed the gift:
     # Tokugawa was nobody's pick when it gave, and Imagawa came at 52% later that season.
-    hunt = huntable(m, idx) if guard == 3 else guard and policy.hunted_by(m, idx)
+    hunt = huntable(m, idx) if guard >= 3 else guard and policy.hunted_by(m, idx)
     if guard and season == 1 and rice < men and hunt and policy.buy_rice_to(
             m, idx, lambda s: policy._rice_slack(m, idx, True, s)):
         return
@@ -299,8 +330,14 @@ def economy(m, idx):
     capped = (m.r16(f + M.F_WEALTH) + loyalty) // 2 >= m.r16(f + M.F_HEADER)
     if season == 1:
         keep = men if guard == 1 or policy.hunted_by(m, idx) else 0
-        if guard == 2 or guard == 3 and hunt:   # only as much as shuts the budget gate
+        # Mode 4 (Chris, 2026-11-12): turn order. When every neighbour past the share line has moved
+        # this Summer, the next move that could punish the gift comes after the Fall harvest, so the
+        # gift may go as low as the harvest (every roll at its floor) still lifts the rice back to the men.
+        if guard == 2 or guard >= 3 and hunt:   # only as much as shuts the budget gate
             keep = max(keep, min(men, max([budget(live_side(m, n)) + 1 for n in enemy_neighbours(m, idx)] or [0])))
+        if guard == 4 and keep and all(n in getattr(m, "acted", ()) for n in enemy_neighbours(m, idx)
+                                       if ai_vm_share(m, n, idx) > GRUDGE):
+            keep = min(keep, rice - after_harvest_room(m, idx))
         keep = max(keep, rice - max(0, policy._rice_slack(m, idx, False, sustain=True)))
         if rice > keep + 1:
             (policy.give_men if capped else policy.give_peasants)(m, idx, rice - keep - 1)
