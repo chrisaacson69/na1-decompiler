@@ -74,16 +74,27 @@ CHARGE_NEED = {False: 2.0, True: 2.0}
 CHARGE_KEEP = ((1.5, .38), (2.0, .51), (2.5, .62), (3.0, .68), (4.0, .77), (6.0, .85))
 
 
+# The tables above were measured at skill 1. The battle map scales every human unit's strength by
+# (115 - 15·skill)% ($9CF4; AI units 100%), so at skill 3 a man fights as 0.7 of one (#58: at 2.0x the
+# charge wins 100% at skill 1, 76% at 2, 21% at 3). SKILL_AWARE prices the attack at the effective
+# ratio: the need grows by 100/(115 - 15·skill) and the keep is read at the effective ratio.
+SKILL_AWARE = True
+
+
+def skill_scale(m):
+    return 100 / (115 - 15 * m.skill) if SKILL_AWARE else 1.0
+
+
 def fought_need(m, tgt):
     need = CHARGE_NEED if CHARGE else FOUGHT_NEED
-    return int(m.r16(m.fief(tgt) + M.F_MEN) * need[bool(m.is_capital(tgt))]) + 1
+    return int(m.r16(m.fief(tgt) + M.F_MEN) * need[bool(m.is_capital(tgt))] * skill_scale(m)) + 1
 
 
-def fought_keep(ratio):
+def fought_keep(ratio, scale=1.0):
     table = CHARGE_KEEP if CHARGE else FOUGHT_KEEP
     keep = table[0][1]
     for r, k in table:
-        if ratio >= r:
+        if ratio / scale >= r:
             keep = k
     return keep
 
@@ -126,7 +137,7 @@ def player_war(m, idx, tgt, men, rice, led=False, rng=None, fought=None):
         ft = m.fief(tgt)
         dmen = m.r16(ft + M.F_MEN)
         if men >= fought_need(m, tgt):
-            left = int(men * fought_keep(men / max(1, dmen)))
+            left = int(men * fought_keep(men / max(1, dmen), skill_scale(m)))
             game._conquest(m, idx, tgt, max(0, left - dmen // 2), men, rice,
                            m.r16(f + M.F_ARMS), m.r16(f + M.F_SKILL), m.r16(f + M.F_MORALE), random.Random(0))
         else:

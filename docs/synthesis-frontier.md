@@ -91,6 +91,40 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #58 — Skill 3, the predictors checked: the attack odds were skill-blind, and the hire rule waits a decade (Chris, 2026-11-13)
+
+Chris: look whether any gates change at skill 3 (*they should still move*), whether the predictors miss something that can be avoided, and whether the attack choice can be tuned so the game does not stall.
+
+**Every `skill_level` read in the ROM**, against the sim. About 25 sites; the battle engine (`tactical.py`) and the AI (VM) carry them all. The ones that move expansion:
+- **`$9CF4`: every human unit's battle strength × (115 − 15·skill)%** (AI units 100%): 100, 85, 70, 55, 40% at skills 1-5. The largest, and the one the predictor missed.
+- `$9FEE`, the morale hit per exchange: a human side 6 − skill, an AI side skill (5 vs 1 at skill 1, 3 vs 3 at skill 3).
+- Develop gains × (6 − skill) (`$8814`-`$89EE`, `$D8E9`): your economy builds at 3/5 of the skill-1 rate. The AI recruits on (skill + 3)/10 of turns (`$B519`), 60% at skill 3.
+- **The gates do not move against you.** The AI's commit (`$9505`) is ratio − 10 − rng(3·skill) > 60 (higher skill, slightly *less* eager) and the pick line (`$952E`) is a men share over 47 with no skill term, as `reaction.GRUDGE` has it. "Past its gates" means the same at every skill.
+
+**The miss: the expander's attack odds.** It prices a fought attack as a win at `CHARGE_NEED` 2.0× the defender's men ("~90%") and keeps `CHARGE_KEEP` of the men, from #48's replays at skill 1. `na1sim.skill_lab` fights the same attacks (7 attacker/target pairs, 20 seeds, the doctrine's Assign and charge) at each skill:
+
+| ratio | skill 1 win / kept | skill 2 | skill 3 |
+|---|---|---|---|
+| 1.5× | 44% / .18 | 4% / .08 | 0% |
+| **2.0×** | **100%** / .44 | 76% / .18 | **21%** / .20 |
+| 2.5× | 100% / .53 | 100% / .42 | 97% / .19 |
+| 3.0× | 100% / .66 | 100% / .51 | 100% / .42 |
+| 4.0× | 100% / .72 | 100% / .68 | 100% / .58 |
+
+At skill 3 the expander attacked at 2.0× believing 90% and lost four in five. **Fix** (`expand.SKILL_AWARE`, on; a no-op at skill 1): the need × 100/(115 − 15·skill), from the ROM site, not a fit (2.0, 2.35, 2.86×), and the keep read at the effective ratio. It moved little: 1 of 340 unified (Asai), 286 attacks instead of 352, 62 expanded instead of 63.
+
+**The stall: the hire rule.** The survivors' armies sit at 74-78 men for 8-10 years while the men their gates need climb from about 100 to 200+. The expander buys men only once a fief is topped ((wealth + loyalty)/2 ≥ header, `expand.capped`), and at 3/5 the gift gain that takes about a decade. Topping earlier (`--topped`):
+
+| skill 3, 340 games | expanded | peak ≥ 10 fiefs | attacks | median men at year 8 | unified |
+|---|---|---|---|---|---|
+| skill-aware, topped 100% | 62 | 4 | 286 | 78 | 1 |
+| topped 70% | 74 | 10 | 467 | 78 | 0 |
+| topped 50% | 85 | 7 | 428 | 168 | 0 |
+
+More expand and the armies double, but no one finishes: the lords still die of age (33-56 years) part way. **Alive at 3 and 6 years is 173 and 133 in all four runs:** the opening (the reader's policy) decides every early death and none of these knobs reach it, so the five weak starts stay at zero.
+
+**Open:** an opening tuned for skill 3 (it was tuned at skill 1, #45-#47); a skill-aware hire rule (buy men by the gate's need, not by a topped economy); and the late war's gold, since War costs a gold per man sent and 2.86× the AI's year-20 garrisons is more gold than a fief holds. Defence costs more too (your garrison fights at 70%), but the gates keep you from being picked, so that is the ev odds table's problem (`odds_f8.json`, measured at skill 1), not the expander's.
+
 ### #57 — Skill 3, where assassination stops working: the game is playable, but no one finishes it (Chris, 2026-11-13)
 
 Chris: skill 3 is where assassinate does not work (#56: the chain collapses to at most 5 fiefs). *Can one actually play the game at this point, or has the difficulty spiked so nothing is possible?* And Saito's ev player, which he guessed is dead at this level.
