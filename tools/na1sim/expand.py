@@ -36,13 +36,52 @@ FOUGHT_NEED = {False: 2.25, True: 2.75}     # men sent / defender's men for ~90%
 FOUGHT_KEEP = ((1.5, .40), (2.0, .49), (2.5, .61), (3.0, .67), (4.0, .77), (6.0, .87))
 
 
+# The attack doctrine (#48, Chris): the commander holds back and units 1-4 charge the enemy commander
+# (strike.Charge), on an army Assigned for it before the campaign. A conquered fief keeps the old
+# defender's split (commander 30-65% of the men), so it is reshaped first: heavy (1/99/0/0/0, one
+# striker) through a one-lane approach, spread (4 and the rest even, row 2 under its arms cap) where
+# the castle can be surrounded. SPLIT_FOR: per target fief, from the battle lab.
+CHARGE = True
+# From the battle lab: each fief attacked by the charge from every neighbour, at 2x and 2.5x its men,
+# 12 seeds, heavy against spread (wins). Heavy for Mikawa 95/96 vs 45, Owari 62/72 vs 53, Echigo,
+# Musashi, Echizen, Omi (narrowly); spread for Noto 0/24 vs 24, Hida 24/96 vs 96, Iga 48/96 vs 96,
+# Iseshima 72/120 vs 117, Settsu; the rest tie (spread).
+SPLIT_FOR = {1: "heavy", 2: "heavy", 4: "heavy", 7: "heavy", 10: "heavy", 16: "heavy"}
+
+
+def desired_split(m, src, tgt):
+    base = M.PROVINCE_UNIT_TYPE_PCT + src * 5
+    cur = [m.r8(base + i) for i in range(5)]
+    total = sum(cur)
+    if SPLIT_FOR.get(tgt) == "heavy":
+        return [1, total - 1, 0, 0, 0]
+    cap2 = max(cur[2], m.r16(m.fief(src) + M.F_ARMS) // 50 + 20)
+    r2 = min(cap2, (total - 4) // 4)
+    rest = total - 4 - r2
+    return [4, rest - 2 * (rest // 3), r2, rest // 3, rest // 3]
+
+
+def split_ready(m, src, tgt):
+    base = M.PROVINCE_UNIT_TYPE_PCT + src * 5
+    return [m.r8(base + i) for i in range(5)] == desired_split(m, src, tgt)
+
+
+# Under the doctrine (assigned army + charge; 12,708 replays of the expander's real attacks): a fief
+# 46% at 1.25-1.5x, 82% at 1.5-2, 93% at 2-2.5; a capital 22 / 54 / 91%, 96% at 2.5-3. ~2x buys ~90%
+# for both (it was 2.25x and 2.75x on the AI's own logic).
+CHARGE_NEED = {False: 2.0, True: 2.0}
+CHARGE_KEEP = ((1.5, .38), (2.0, .51), (2.5, .62), (3.0, .68), (4.0, .77), (6.0, .85))
+
+
 def fought_need(m, tgt):
-    return int(m.r16(m.fief(tgt) + M.F_MEN) * FOUGHT_NEED[bool(m.is_capital(tgt))]) + 1
+    need = CHARGE_NEED if CHARGE else FOUGHT_NEED
+    return int(m.r16(m.fief(tgt) + M.F_MEN) * need[bool(m.is_capital(tgt))]) + 1
 
 
 def fought_keep(ratio):
-    keep = FOUGHT_KEEP[0][1]
-    for r, k in FOUGHT_KEEP:
+    table = CHARGE_KEEP if CHARGE else FOUGHT_KEEP
+    keep = table[0][1]
+    for r, k in table:
         if ratio >= r:
             keep = k
     return keep
@@ -92,8 +131,14 @@ def player_war(m, idx, tgt, men, rice, led=False, rng=None, fought=None):
         else:
             m.w16(ft + M.F_MEN, dmen + men // 2)
     elif fought if fought is not None else FOUGHT:  # the cartridge fights every human attack on the map
-        from . import tactical
-        tactical.run_tactical_battle(m, rng)
+        from . import tactical, strike
+        keep_human = tactical.HUMAN
+        if CHARGE:
+            tactical.HUMAN = strike.Charge()
+        try:
+            tactical.run_tactical_battle(m, rng)
+        finally:
+            tactical.HUMAN = keep_human
     else:
         game.resolve_siege(m, rng or random.Random(0))
     # against the attacker's owner before the battle: a daimyo-led attack that loses hands the whole
@@ -724,6 +769,11 @@ def expand_policy(m, idx, rng):
             return
     mv = best_attack(m, idx)
     if mv:
+        if FOUGHT and CHARGE and not split_ready(m, idx, mv[0]):
+            from . import vmprims
+            if vmprims.driver_assign(m, idx, desired_split(m, idx, mv[0])):    # this season: reshape
+                ASSIGNS.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0]))
+                return
         LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *mv))
         player_war(m, idx, *mv, rng=rng)
         return
@@ -760,6 +810,7 @@ def expand_policy(m, idx, rng):
 
 
 HIRES = []
+ASSIGNS = []
 PLAN_LOG = []
 DEPOTS = True
 DEPOT_LOG = []
