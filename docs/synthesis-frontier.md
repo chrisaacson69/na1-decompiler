@@ -99,11 +99,13 @@ Chris: skill 3 is where assassinate does not work (#56: the chain collapses to a
 
 **Every start, skill 3** (20 seeds, 3000-3019, 70 years, all battles fought, merchant rolled; skill 1 on the same seeds: 155 of 340 unified):
 
-| | skill 1 (#48) | skill 3 |
+| | skill 1 | skill 3 |
 |---|---|---|
-| never hold a second fief | 137 | 277 |
-| expanded | 203 | 63 |
-| unified | 155 (186 of the 203 that expand, merchant always present) | **0** |
+| never hold a second fief | 137* | 277 |
+| expanded | 203* | 63 |
+| unified | 155 (#53, these seeds and settings) | **0** |
+
+\* from #48's planner study on 340 games, a different run (186 of its 203 expanders unified); not rerun here.
 
 - **Playable, not winnable.** Half the starts are alive at year 3 (173 of 340) and 133 at year 6. Miyoshi (20 / 17), Oda (18 / 17), Kitabatake, Takeda and Asai survive the opening as well as at skill 1. But 49 of the 63 expanders end with **the lord dying of age** (years 33-56), holding a median of 4 fiefs. The best reached 16 of 17 (Asai, seed 3000, invaded at year 48), then 12, 11 and 10. The difficulty does not shut the game; it slows conquest until the clock (the lord's life) runs out.
 - **The weak starts are gone.** Hatakeyama, Honganji, Saito, Tsutsui and Rokkaku: 0 alive at year 3 in 100 games.
