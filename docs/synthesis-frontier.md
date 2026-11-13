@@ -250,6 +250,15 @@ The charge keeps more men when it wins and never lost its commander, but wins fa
 
 **Fought by default** (Chris: a human cannot auto-resolve; the calculated battle gave free wins): `expand.FOUGHT = True`. The ratio the doctrine prices at hardly matters: every start, 70 years, paired against 2.0x (150): 2.5x 150 (29 saved, 29 lost; shared wins 0.7 years sooner), 1.75x 154 (30 / 26). More men per attack fails less and garrisons more; fewer men attacks more often; it nets out. Echizen per direction (Chris): heavy holds from both edges, clearly from the south (Mino at 2x 13/16 vs 8, Omi at 1.5x 11 vs 0). Saito's ~8-9% stands: the AI's attacks on a human are always fought (the commit sets the redispatch flag for a player defender), and that work was all defence.
 
+**Saito can unify** (Chris: run the tuned start with the expander). `expand.BASE` takes the season's policy when the expander has nothing to do; for Saito it is the ev player (8-season horizon, growth, marks, riots) while he holds one fief, then the reader. All battles fought, the doctrine on, skill 1, 300 seeds, 40 years, against the reader's opening on the same seeds:
+
+| opening | alive at 3 years | at 6 | expanded | unified | years to unify |
+|---|---|---|---|---|---|
+| reader | 16 | 15 | 12 | 6 | 23-31 |
+| ev (tuned) | 29 | 27 | 23 | **13** | **14**-31, median 23 |
+
+The opening is the whole game for Saito: 9% get past it (the #46 figure, unchanged with fought battles), and of those 27, 23 expand and 13 take all of Japan, against a lord who dies in about year 38 (the "lord died" deaths at 38-40 come after unification). **4.3% of Saito games unify**, with every battle fought.
+
 **Next (Chris, 2026-11-12), by expected gain:**
 1. ~~**The other verbs: interior fiefs as depots.**~~ **Done (above).** A fief with no enemy neighbour needs no army, and today it spends its command training. `driver_move $96D1` moves men only, to an adjacent owned fief, up to min(men, the destination's header room), blending morale/skill/arms; led by the daimyo it moves the capital too (the king can retreat inward). `driver_send $9A62` moves rice and gold to an owned fief, capped by the receiver's header (eligibility `build_eligible_province_list(1)`, not yet read). So the interior marches its men one step toward the front each season and sends its surplus forward; the front hires and attacks with what gathers.
 2. **Faction collapse.** A fallen capital hands over the whole faction on a 1-in-(drive/10) roll (`game._conquest`, the calculated battle). Cornering the daimyo is the hard part: in a fought battle the lord usually flees if he can, so this term is worth less once battles are fought.

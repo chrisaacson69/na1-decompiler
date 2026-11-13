@@ -807,9 +807,11 @@ def expand_policy(m, idx, rng):
             HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, gold * ARMY_SHARE // 100))
             policy.hire_men(m, idx, gold * ARMY_SHARE // 100)
             return
-    reaction.reader_policy(m, idx, rng)
+    (BASE or reaction.reader_policy)(m, idx, rng)
 
 
+BASE = None                             # the season's policy when the expander has nothing to do
+                                        # (default the reader; a weak start passes its tuned opening)
 HIRES = []
 ASSIGNS = []
 PLAN_LOG = []
