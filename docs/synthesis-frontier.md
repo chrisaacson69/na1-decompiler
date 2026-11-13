@@ -91,6 +91,25 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #59 — Gate hire at skill 3: it saves openings and costs the economy, and the economy is the wall (Chris, 2026-11-13)
+
+Chris: hire before the economy tops out, but *top-out is probably too long, and ASAP might be too short*; and *be conscious that our economy does not stall: if your economy recovers slower than your enemy, this stalls too*. (On the late war's gold: a capped fief cannot even be sent gold, so the answer is attacking from several fiefs or over several turns; you do not have to win on the first try. Not built yet.)
+
+**The rule** (`expand.GATE_HIRE`, off by default; `long_game --gate-hire 1`): a fief that is not topped and is under its gate line (`own_need`: the share line with margin, the capital's line) hires toward that line with at most `ARMY_SHARE` (half) of its gold, and otherwise develops as before. The attack army still waits for the topped economy. **The instrument:** `long_game`'s yearly rows now carry Chris's Economic Index, ∛(town·output·wealth), per own fief and per AI fief.
+
+| 340 games (every start, 20 seeds, 70 years) | alive at 6 | expanded | peak ≥ 10 | unified | men at year 8 | economy, yours / AI's per fief, years 5 / 10 / 20 |
+|---|---|---|---|---|---|---|
+| skill 1, the #48 player | 216 | 205 | 184 | 155 | 291 | 1.10 / 0.86 / 0.76 |
+| skill 3, skill-aware attacks (#58) | 133 | 62 | 4 | 1 | 78 | 0.71 / 0.59 / 0.46 |
+| skill 3 + gate hire | **172** | **116** | 10 | 0 | 109 | 0.58 / 0.51 / **0.37** |
+| skill 3 + gate hire, topped at 70% | 172 | 116 | 4 | 0 | 109 | 0.58 / 0.51 / 0.34 |
+
+- **Gate hire saves 39 openings** and nearly doubles expansion. It runs before the reader's fallback, so it does reach the opening (#58's "none of these knobs reach it" was true of the attack and topping knobs only).
+- **It costs the economy**, as Chris warned: by year 20 your fiefs are at 0.37 of the AI's, from 0.46. The gold that holds the gates did not develop.
+- **The economy is the wall at skill 3.** Without gate hire you start at 0.71 of the AI's per fief and slide to 0.46; at skill 1 you start ahead (1.10) and drift to 0.76. Every develop gain is × (6 − skill) on the player's √ curve (`$8814`-`$89EE`), and the AI's cascade does not pay it. Neither topping earlier nor holding the gates sooner can close a gap that opens from year 5.
+
+The skill-1 control reproduces 155 exactly. **Open:** a way to grow the economy that does not pay the × (6 − skill), for example Grant (delegated fiefs run their own auto-actions, ch.11; whether those develop on the AI's formula or the player's is the question to read first); then the multi-fief, multi-turn attack for the late war.
+
 ### #58 — Skill 3, the predictors checked: the attack odds were skill-blind, and the hire rule waits a decade (Chris, 2026-11-13)
 
 Chris: look whether any gates change at skill 3 (*they should still move*), whether the predictors miss something that can be avoided, and whether the attack choice can be tuned so the game does not stall.

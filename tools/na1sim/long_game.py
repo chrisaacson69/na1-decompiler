@@ -12,6 +12,8 @@ point of this file. Keep them here and change them by flag, not by copy.
 
 From tools/:  py -3.14 -m na1sim.long_game FIEFS SEEDS YEARS [OUT.json] [--first 3000]
   e.g.  py -3.14 -m na1sim.long_game 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 20 70 long70.json
+Yearly rows: (year, held, live, owners, age, exposed, bill, men, econ index per own fief, per AI fief).
+`--gate-hire 1` hires to the gate line before the economy tops out (#59).
 `--skill N` plays at another difficulty (#57: skill 3). `--ev` is #48's tuned weak-start opening:
 while the player holds one fief, the season's policy (expand.BASE) is the ev player (8-season
 horizon, growth, marks, riots priced), then the reader; #48 ran Saito with it (13 of 300 unified,
@@ -29,6 +31,12 @@ from . import deaths as Dz, ev, policy, reaction, tactical, strike, expand as X,
 
 OPENING = dict(no_retreat=1, summer_rice_first=1, line_first=1, shield_rice=4)
 SKILL = 1
+
+
+def econ_index(m, i):
+    """Chris's Economic Index for one fief: the cube root of town x output x wealth."""
+    f = m.fief(i)
+    return (max(0, m.r16(f + M.F_TOWN)) * max(0, m.r16(f + M.F_OUTPUT)) * max(0, m.r16(f + M.F_WEALTH))) ** (1 / 3)
 
 
 def ev_base(m, idx, rng):
@@ -58,6 +66,8 @@ def one(job):
     if len(job) > 9 and job[9]:
         ev.RIOTS = True
         X.BASE = ev_base
+    if len(job) > 10 and job[10] is not None:
+        X.GATE_HIRE = bool(job[10])
     policy.OPENING.update(OPENING)
     tactical.HUMAN = strike.Doctrine("control", "contact")
     X.LOG.clear()
@@ -77,8 +87,12 @@ def one(job):
             age = m.r8(m.fief_daimyo(fief) + M.D_AGE) if m.fief_owner(fief) == owner[0] else None
             bill, exposed, held = X.army_bill(m, owner[0])
             men = sum(m.r16(m.fief(i) + M.F_MEN) for i in X.owned(m, owner[0]))
+            mine = X.owned(m, owner[0])
+            ai = [i for i in live if m.fief_owner(i) != owner[0]]
             yearly.append((m.r16(M.CURRENT_GAME_YEAR), held, len(live), len({m.fief_owner(i) for i in live}),
-                           age, exposed, bill, men))
+                           age, exposed, bill, men,
+                           round(sum(econ_index(m, i) for i in mine) / max(1, len(mine)), 1),
+                           round(sum(econ_index(m, i) for i in ai) / max(1, len(ai)), 1)))
     rec = Dz.play(fief, seed, years, ("auto",), tail=pol, skill=skill)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0)
 
@@ -102,9 +116,10 @@ def main():
     ap.add_argument("--merchant", type=int, help="1: Trade only when the merchant is here (#53)")
     ap.add_argument("--skill", type=int, default=SKILL)
     ap.add_argument("--ev", action="store_true", help="#48's tuned ev opening while holding one fief")
+    ap.add_argument("--gate-hire", type=int, help="1: hire to the gate line before topping out (#59)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
-    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev)
+    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

@@ -757,6 +757,7 @@ ARMY_SHARE = 50                         # percent of the gold a topped-out fief 
 TOPPED = 100                            # percent of the header at which the economy counts as topped out
 WAR_AT = 0                              # percent of the live fiefs held at which every fief goes to war footing
                                         # (Chris: past about half way there is little more need to grow)
+GATE_HIRE = False                       # #59: hire to the gate line before the economy tops out
 MORALE_FLOOR = 55                       # under it, that gold raises morale instead (revolts start under 45)
 
 
@@ -805,6 +806,13 @@ def expand_policy(m, idx, rng):
             and m.r16(f + M.F_MORALE) >= reaction_cliff()):
         short = capital_line(m, idx) - m.r16(f + M.F_MEN)
         if short > 0 and policy._hire_up_to(m, idx, capital_line(m, idx)):
+            return
+    if (GATE_HIRE and not capped(m, idx) and m.r16(f + M.F_GOLD) > 20
+            and m.r16(f + M.F_MORALE) >= MORALE_FLOOR and m.r16(f + M.F_MEN) < own_need(m, idx)):
+        # #59: under its gate line and not topped: hire toward the line with at most ARMY_SHARE of
+        # the gold, and keep developing otherwise (between "topped" and "as soon as possible").
+        if policy._hire_up_to(m, idx, own_need(m, idx), m.r16(f + M.F_GOLD) * ARMY_SHARE // 100):
+            HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "gate"))
             return
     if capped(m, idx) and m.r16(f + M.F_MEN) < m.r16(f + M.F_HEADER) and m.r16(f + M.F_GOLD) > 20:
         gold = m.r16(f + M.F_GOLD)
