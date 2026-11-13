@@ -91,6 +91,30 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #54 — Loans priced: an advance on the next harvest, and the turn it costs is the price (Chris, 2026-11-13)
+
+Chris: *the same investment problem any CAPM planner would do: is the rate of growth from the extra gold higher than the interest?* And: *the √ is the killer here again.*
+
+**The rules** (bank 1): `effect_loan` $9F04 refuses with the treasury full (gold ≥ header) or debt at the town; the most it lends is min((town − debt)·10/(loan_rate + 10), header − gold). `effect_take_loan` $8B40 adds ⌈(loan_rate + 10)·N/10⌉ to debt, a **one-time fee of 10-100%** (loan_rate rolled 1-10 a year, nudged +2 per loan; no running interest). The harvest (`$A2C5`) takes **all the gold up to the debt before the upkeep**. It is a Trade service, so it needs the merchant (#53). At the most it lends, the debt lands at about the town whatever the rate; a bad rate only lends less against it. On the opening boards (skill 1, seed 3000): 15-75 gold, 12-62 men at that year's 1.2 gold.
+
+**As an investment** (the opening board, borrow the most and give it to the peasants, the first Fall's extra harvest at rice 1.8): 6-10× the fee at rate 1, about 1× at rate 10, before two corrections that both cut it. (1) The √: a gift's gain is amount·(6 − skill)/√((stat + partner)/2 + amount), so borrowed gold added to one's own lands at the top of the curve (Hatakeyama: his 43 gold about 0.6 a point a gold, the loan's 27 on top about 0.37). (2) The timing: the Summer marks are copied before the Summer command (below), so only a Spring gift pays this Fall; the opening's loan takes Spring, its gift lands in Summer and pays a year later, while the debt is collected at the first Fall.
+
+**As men** (`policy.take_loan` and the opening steps `loan` / `loan_cheap`, merchant rolled; `deaths`, skill 1, 300 seeds, the reader tail with the #48 flags, alive at year 3):
+
+| start | best opening | loan first | loan at rate 1-3 only |
+|---|---|---|---|
+| Hatakeyama (hire, tax, rice → peasants) | 48.3% | 8.0% | 13.3% |
+| Rokkaku (hire) | 1.0% | 0.0% | |
+| Saito (hire) | 1.0% | 2.0% | |
+| Tsutsui (hire) | 11.0% | 7.3% | |
+| Honganji (hire) | 14.0% | 9.7% | |
+
+Hatakeyama, separated: a wasted Spring (train, then the opening) 17.0%, so the command is most of it (the hire lands after Honganji's Spring); a Summer loan 11.0%, worse than wasting the turn, because the tax moves back and the first Fall collects the debt from all his gold before the upkeep of the army he just hired; a Fall loan 46.0%, neutral, its debt due a year later. **Verdict:** not in the player. The return beats the fee on paper; the turn, the √ and the first-Fall collection take it back. Rokkaku stays moveless.
+
+Also: `policy.OPENING` had no `shield_rice` default, so `deaths --tail reader` crashed unless the flag was passed (`reaction.economy`); the default is now 0 (off, what a missing key meant).
+
+**The marks, timed** (Chris: the watermark has been misunderstood; real play seems to show a Summer gift helps). `ai_strategic_turn_planner` advances the season ($A483), then runs `per_period_fief_daimyo_update_driver` ($A498), whose banner `draw_current_season` names season 1 "Summer" ($D6A9) and which copies live → marks there ($A066) and harvests in Fall ($A26F, min(mark, live) at $A0A9); the fiefs' commands come after. So Fall income reads loyalty and wealth as min(entering Summer, entering Fall): a Spring gift pays this Fall; a Summer gift does not raise this Fall's marks but pays in full next year, protects against riots now (rolled on live loyalty) and adds 1 Charisma; a Summer dip (a tax raise) does cost this Fall. If play shows a Summer gift raising *this* Fall's harvest, it contradicts this reading and needs a check in the running game (save at Summer, gift vs pass, compare the Fall gold); the sim repeats the same code and cannot settle it.
+
 ### #53 — Rice: the merchant is there half the time, the price hardly moves, and the player rarely needs either (Chris, 2026-11-13)
 
 Chris: *the runner assumes it can always buy rice when it needs it, and this is untrue; it will probably sink games when rice is needed after a successful defence brings in lots of troops.* And: buy cheap and sell dear makes sense, but it costs a turn, a gift is √, not 1:1, and the caps bind once the economy is large.

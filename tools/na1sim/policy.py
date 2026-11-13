@@ -32,7 +32,8 @@ CLIFF = 46          # keep morale/loyalty >= 45 (revolt/riot eligibility is 0 at
 # (na1sim.reaction). `forecast` and `baseline` are its variants, `keep_rice` holds rice at the men.
 OPENING = {"tax_jump": True, "gold_gift": True, "picker": False, "picker_slack": 0,
            "forecast": 0, "baseline": False, "keep_rice": False, "upkeep_rice": False,
-           "extend_x": 0, "extend_stop": 1, "extend_floor": 1}   # tactical._extend_won_defence
+           "extend_x": 0, "extend_stop": 1, "extend_floor": 1,   # tactical._extend_won_defence
+           "shield_rice": 0}                                      # reaction.economy (off; #48 runs 4)
 UPKEEP_MARGIN = 5
 
 
@@ -181,6 +182,33 @@ def buy_rice(m, idx, spend):                # effect_buy_rice $A068: gold -> ric
     m.selected = idx
     if spend >= 1:
         P.effect_buy_rice(m, m.fief(idx), spend * 10 // m.r16(M.GOLD_RICE_EXCHANGE))
+    return True
+
+
+def take_loan(m, idx, amount=None):
+    """Trade > Loan (effect_loan $9F04 + effect_take_loan $8B40): refused with no merchant, with the
+    treasury full (gold >= header) or with debt at the town; else borrow `amount` (default the most:
+    min((town - debt) * 10 / (loan_rate + 10), header - gold)), debt += ceil((loan_rate + 10) *
+    amount / 10), and the loan rate nudges up twice (cycle_economy_rate(0) in both). The harvest
+    takes all the gold up to the debt before the upkeep ($A2C5). -> True if it borrowed (the turn)."""
+    if not merchant_here(m, idx):
+        return False
+    m.selected = idx
+    f = m.fief(idx)
+    gold, hdr = m.r16(f + M.F_GOLD), m.r16(f + M.F_HEADER)
+    town, debt = m.r16(f + M.F_TOWN), m.r16(f + M.F_DEBT)
+    if gold >= hdr or town <= debt:
+        return False
+    rate = m.r16(M.LOAN_RATE) + 10
+    most = P.ratio_times10_capped(town - debt, rate, hdr - gold)
+    if most <= 0:
+        return False
+    amount = most if amount is None else max(1, min(amount, most))
+    m.w16(f + M.F_DEBT, debt + P.math32_muladddiv(rate, amount))
+    m.w16(f + M.F_GOLD, gold + amount)
+    P.clamp_amount_to_province_max(m, f + M.F_GOLD)
+    P.cycle_economy_rate(m, 0)
+    P.cycle_economy_rate(m, 0)
     return True
 
 
@@ -610,6 +638,8 @@ OPENING_ACTIONS = {
     "hire": lambda m, idx: hire_men(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1),
     "rice": lambda m, idx: buy_rice(m, idx, m.r16(m.fief(idx) + M.F_GOLD) - 1),
     "train": train,
+    "loan": lambda m, idx: take_loan(m, idx),          # the most it lends (#54); no merchant -> the tail
+    "loan_cheap": lambda m, idx: m.r16(M.LOAN_RATE) <= 3 and take_loan(m, idx),   # only at rate 1-3
     # Assign 96/1/1/1/1 (#44: one-man units steer the scan, the commander holds the army); refused
     # (under 30 gold, no men) -> returns False and the tail plays the turn
     "assign96": lambda m, idx: bool(P.driver_assign(m, idx, (96, 1, 1, 1, 1))),
