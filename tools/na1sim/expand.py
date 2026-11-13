@@ -23,7 +23,8 @@ from . import memmap as M, game, reaction, forecast, ai_vm
 SHARE = reaction.GRUDGE                 # 47: past it a neighbour can pick you
 SAFE, HUNTABLE, COMING = "SAFE", "HUNTABLE", "COMING"
 RANK = {SAFE: 0, HUNTABLE: 1, COMING: 2}
-FOUGHT = False                          # True: the player's attacks are fought on the battle map
+FOUGHT = True                           # the player's attacks are fought on the battle map, as the cartridge does
+                                        # (Chris: no auto-resolve for a human; the calculated battle gave free wins)
 
 # Fought attacks (#48, the attack-odds harvest: 22,792 replays of the expander's real attacks fought
 # on the battle map, 7 starts x 6 seeds). A fought battle is decided by men, not by the quality and
