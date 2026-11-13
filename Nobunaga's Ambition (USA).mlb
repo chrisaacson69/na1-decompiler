@@ -32,7 +32,7 @@ NesInternalRam:0083:clock_a_hi:16-bit wall-clock A high byte; NMI adds +2 every 
 NesInternalRam:0084:clock_a_lo:Wall-clock A low byte; reset = $D2
 NesInternalRam:0085:clock_b_hi:16-bit wall-clock B high byte; reset = $04
 NesInternalRam:0086:clock_b_lo:Wall-clock B low byte; reset = $D2
-NesInternalRam:0089:skip_wallclock:Non-zero = NMI does OAM/audio/input but skips the wall-clock tick
+NesInternalRam:0089:skip_wallclock:Non-zero = NMI does OAM/audio/input but skips the wall-clock tick. Written only by reset ($C0CE, 0) and syscall_read_controller ($C3A9, the non-zero button byte): the first press stops the clock for the rest of the session, so the RNG is seeded by the frame of that press (checked in the cartridge 2026-11-13).
 NesInternalRam:00B0:nmi_skip_all:Non-zero = NMI bails after OAM DMA (skips controller/palette/audio/clock)
 NesInternalRam:0720:voice_playing:[2026-10-30, from the handlers: music_sequencer_pass $C82A, syscall_audio_control $C3E0 / $C3F0, music_voice_step end of stream $C8FF, reset $C0A4] 5-entry per-voice playing flag, voice x at $0720+x; this byte is voice 0. Nonzero = playing: music_sequencer_pass steps voice x only when it is nonzero; audio_control mode 1 sets it, mode 2 returns it, mode 0 and the end of a voice's stream clear it. One ducking rule reads it unindexed: music_voice_play skips voice 2's APU writes while voice 0 plays ($C7FD). Measured with tools/sound_engine.py: songs play on voices 1-3 (pulse 1, pulse 2, triangle), pulse-2 effects on voice 0, noise effects on voice 4, so the rule hands the song's pulse 2 to the effect. Was audio_mute_triangle (inverted).
 NesInternalRam:0721:voice_playing_1:voice_playing[1] (2026-10-30; was audio_active_v0, one voice off)

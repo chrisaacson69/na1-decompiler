@@ -64,7 +64,7 @@ Deferred tile/palette/nametable bytes staged here are drained to the PPU on the 
 | $81 | `nmi_busy` | the "wait for VBlank" handshake — foreground sets it to 1 and spin-waits for the NMI to clear it |
 | $83/$84 | `clock_a` | 16-bit wall-clock A (hi/lo); NMI adds +2 every frame, gated by `skip_wallclock`. Reset = `$04D2` (1234) |
 | $85/$86 | `clock_b` | 16-bit wall-clock B; same cadence and seed |
-| $89 | `skip_wallclock` | non-zero ⇒ NMI runs OAM/audio/input but freezes game-time |
+| $89 | `skip_wallclock` | non-zero ⇒ NMI runs OAM/audio/input but freezes game-time. Set from the button byte at the first press (`syscall_read_controller` $C3A9), cleared only at reset: the clock runs on the title screen only |
 | $B0 | `nmi_skip_all` | non-zero ⇒ NMI bails right after OAM DMA (still pushes sprites; skips controller/palette/audio/clock) |
 
 ## $90–$AF — `palette_alt`

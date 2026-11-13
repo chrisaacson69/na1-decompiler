@@ -22,7 +22,7 @@ Nobunaga's NMI uses exactly **5 of those ~9000 cycles' worth of routines** in a 
 6. **Wall-clock tick** (gated by $0089)
 7. **Re-enable NMI** (`$C68A`)
 
-The two gating flags `$00B0` and `$0089` let the engine selectively skip work — `$B0` skips everything after OAM, `$89` skips just the clock. Useful for menu transitions and pause states.
+The two gating flags `$00B0` and `$0089` let the engine selectively skip work — `$B0` skips everything after OAM, `$89` skips just the clock. `$89` is set by the first button press and never cleared (only reset writes 0), so the clock, and with it the RNG's seed, runs only until the player first touches the controller.
 
 ## How the audio engine was grounded
 

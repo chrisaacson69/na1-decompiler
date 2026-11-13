@@ -64,7 +64,7 @@ prg_bank_count = 16        # 256 KB total
 "0x0084" = { name = "clock_a_lo",         comment = "Wall-clock A low byte; reset = $D2" }
 "0x0085" = { name = "clock_b_hi",         comment = "16-bit wall-clock B high byte; reset = $04" }
 "0x0086" = { name = "clock_b_lo",         comment = "Wall-clock B low byte; reset = $D2" }
-"0x0089" = { name = "skip_wallclock",     comment = "Non-zero = NMI does OAM/audio/input but skips the wall-clock tick" }
+"0x0089" = { name = "skip_wallclock",     comment = "Non-zero = NMI does OAM/audio/input but skips the wall-clock tick. Written only by reset ($C0CE, 0) and syscall_read_controller ($C3A9, the non-zero button byte): the first press stops the clock for the rest of the session, so the RNG is seeded by the frame of that press (checked in the cartridge 2026-11-13)." }
 "0x00B0" = { name = "nmi_skip_all",       comment = "Non-zero = NMI bails after OAM DMA (skips controller/palette/audio/clock)" }
 
 # --- Music driver state ($0720-$0760, chapter 3 + runtime trace) ---
