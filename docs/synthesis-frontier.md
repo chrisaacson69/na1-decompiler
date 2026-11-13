@@ -259,6 +259,17 @@ The charge keeps more men when it wins and never lost its commander, but wins fa
 
 The opening is the whole game for Saito: 9% get past it (the #46 figure, unchanged with fought battles), and of those 27, 23 expand and 13 take all of Japan, against a lord who dies in about year 38 (the "lord died" deaths at 38-40 come after unification). **4.3% of Saito games unify**, with every battle fought.
 
+**Honganji and Rokkaku, same test** (300 seeds, 40 years, all fought):
+
+| start | opening | alive at 3 years | at 6 | expanded | unified | deaths |
+|---|---|---|---|---|---|---|
+| Honganji | reader | 83 | 72 | 55 | 9 (21-39 years) | invasion 236, revolt 47 |
+| Honganji | ev | 105 | 92 | 59 | 5 (18-37) | invasion 214, revolt 64 |
+| Rokkaku | reader | 8 | 8 | 7 | 4 (18-29) | invasion 295 |
+| Rokkaku | ev | 14 | 13 | 13 | 1 (32) | invasion 290 |
+
+**Every start can now unify**, Rokkaku included (Chris had no hope for it; 4 of 300 under the reader). The ev opening keeps more of both alive (Honganji 92 vs 72 at six years, Rokkaku 13 vs 8) but unifies fewer, inside the noise at these counts. Honganji is the different case: it expands as often as anyone (55-59 of 300), and few of those finish, because revolts end them (47-64): its fiefs revolt on a 1-in-20 roll where every other lord's is 1 in 1000 (`revolt_eligible`). Out-expanding beats its 30% tax cap; the revolt rate is what stops it (Chris: Honganji wins by out-expanding).
+
 **Next (Chris, 2026-11-12), by expected gain:**
 1. ~~**The other verbs: interior fiefs as depots.**~~ **Done (above).** A fief with no enemy neighbour needs no army, and today it spends its command training. `driver_move $96D1` moves men only, to an adjacent owned fief, up to min(men, the destination's header room), blending morale/skill/arms; led by the daimyo it moves the capital too (the king can retreat inward). `driver_send $9A62` moves rice and gold to an owned fief, capped by the receiver's header (eligibility `build_eligible_province_list(1)`, not yet read). So the interior marches its men one step toward the front each season and sends its surplus forward; the front hires and attacks with what gathers.
 2. **Faction collapse.** A fallen capital hands over the whole faction on a 1-in-(drive/10) roll (`game._conquest`, the calculated battle). Cornering the daimyo is the hard part: in a fought battle the lord usually flees if he can, so this term is worth less once battles are fought.
