@@ -108,6 +108,7 @@ The middle column is waiting on a record layer: emu-harness has no `passes/recor
 | `viability-map.py` | ✅ | Starting-fief invasion viability ("who survives the opening"), computed from the scenario's starting stats; `--html out.html` writes the site's data page (build-site uses it). |
 | `bank-ground-order.py` | ✅ | A bank's full leaves-first verification worklist (`py -3.14 tools/bank-ground-order.py <bank>`); grounding.md's method. |
 | `tier-analysis.py` | ✅ | Fief tier heuristic. |
+| `na1sim/long_game.py` | ✅ | **The whole-game runner** behind the unification counts (#48: 150 of 340; the control of #51/#52: 154): the expand player, every battle fought, out to N years or until he holds every live fief. Its settings (skill 1, the four `policy.OPENING` flags, `Doctrine("control","contact")` defending) are the point; use it, do not rebuild it from `deaths.play`'s defaults (that gave 27 of 340). `py -3.14 -m na1sim.long_game 0,1,...,16 20 70 out.json` from `tools/`. |
 
 ## Lua (Mesen 2 runtime)
 | Script | Status | Purpose |
