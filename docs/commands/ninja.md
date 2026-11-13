@@ -6,12 +6,12 @@
 Reached from **Hire** (`driver_hire $A5F4`) via the `(Men/Ninja)?` prompt → **Ninja** = `effect_ninja_sabotage` (`$A2D2`, was mislabeled `effect_hire`). Recruit-men is the sibling `effect_hire_men $A553`.
 
 ## Flow (from `$A2D2` bytecode)
-1. `"How many"` — gold-gated hire; `unit_count = number_input(1, max_affordable)`, where `max_affordable = ratio_times10_capped(gold, hire_gold_rate, header)`. `hire_gold_rate $6E13` re-rolls every turn (`pct_op(year_scaled_random, 70)`), so per-ninja price drifts season to season.
+1. `"How many"` — gold-gated hire; `unit_count = number_input(1, max_affordable)`, where `max_affordable = ratio_times10_capped(gold, hire_gold_rate, header)`. `hire_gold_rate $6E13` = `(rng_mod(101) + (year−1560)·10 + 4) / 4`, rolled once a year (`roll_period_market_rates` $92A5) and nudged by each mission (`cycle_economy_rate(5)`). *(Corrected 2026-11-13, ledger #50: this page had the men price, `gold_men_hire_rate = pct_op(year_scaled, 70)`, and said it re-rolls every turn.)*
 2. `"Send where?"` — target fief (`$A31B`).
 3. `"What mission"` → menu `$BD8F` `"1-Uprisng 2-Revolt 3-Dams 4-Assassin 5-Arson"`.
 4. **Assassination pre-gate** (`$A349`, mission 4 only): the target fief must be the **daimyo's capital** (`fief_is_daimyo_capital`); otherwise `"The daimyo is out."` and the command aborts (no charge).
 5. `trigger_cutscene(CUTSCENE_NINJA_ASSASSIN)` — mission-launch animation (`$A36D`).
-6. **Luck attempt-gate** (`$A36C`, ALL five missions): proceeds only if `target_daimyo.Luck < attacker_daimyo.Luck + 30` (record **+3 = Luck**; the `+30` is the attacker's edge). Fail → `"Your ninja failed!"`, **gold spent anyway** (`effect_ninja_failed $A29B`).
+6. **Luck attempt-gate** (`$A36C`, ALL five missions): proceeds only if `target_daimyo.Luck < attacker_daimyo.Luck + 30` (record **+3 = Luck**; the `+30` is the attacker's edge). Fail → `"Your ninja failed!"`, **gold spent anyway, and your daimyo loses 1 Charisma** (`effect_ninja_failed $A29B`: `deduct_byte_at(charisma, 1)`). The gate has no roll, so against a lord with Luck ≥ yours + 30 every attempt fails.
 7. `switch` at `$A39A` → per-mission effect.
 
 ## The five missions (switch `$A39A`)
@@ -42,6 +42,9 @@ A multiple of 5, scaling with **the target field's current value** and **√(uni
   - **Dams** (dams+rice) — sabotages flood control and **food**; rice supply drives the combat day-loop → starvation pressure.
   - **Arson** (town) — cuts the commercial/tax base.
 - Most effective against **already-high** fields (drain ∝ field) and best deployed in **small doses before a war**, not as a standalone economy play.
+
+## Priced (ledger #50, 2026-11-13)
+Only Revolt changes outcomes (through the morale-45 cliff), and only at 25-100 ninjas every season: about 33-130 gold a season in 1560 and every command, for a 27-62% chance over six years of toppling a strong lord by revolt, without gaining the fief. Uprising, Dams and Arson cut their fields and change nothing. Not part of the player. Full table in [synthesis-frontier.md](../synthesis-frontier.md) §ledger #50.
 
 ## Assassination (mission 4) — summary
 `ninja_mission_resolve_vs_defender $918D`. Capital-only (step 4). Resolution is a **Charisma+IQ** contest (`attacker(Cha+IQ) ≥ target(Cha+IQ)`), with a Charisma **counterattack** that can repel the ninja and **damage the attacker's own daimyo**. On success it **deducts `rng(1 … health/(1+counter))` from the target daimyo's `health` (record +1)**; the daimyo **dies when health reaches 0** (≈2 un-countered hits on average — attrition, not a one-shot). If the dead daimyo's fief was a capital, `find_fiefs_of_owner` **neutralizes every fief they owned** (faction collapse). **Garrison does not protect** — a target with men > ~`rng(1-10)` skips the only defensive roll (`$9213`). Cost is paid win or lose. Full trace + the TAS/RNG framing: [synthesis-frontier.md](../synthesis-frontier.md) §ledger #1.

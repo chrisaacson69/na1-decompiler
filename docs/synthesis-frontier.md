@@ -91,6 +91,36 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #50 — Sabotage priced: one opponent tied up costs more than making yourself better against all of them (Chris, 2026-11-13)
+
+Chris: the four non-lethal ninja missions are probably overpriced; price them. Assassination is left out on purpose: a single roll that removes a lord, priced separately as expected cost by circumstance (sometimes too dear, sometimes impossible).
+
+**The rules** (`effect_ninja_sabotage` $A2D2, `source/4-c/bank_01.c`):
+- **Price per ninja:** `hire_gold_rate` = (rng(101) + (year − 1560)·10 + 4) / 4, rolled once a year (`roll_period_market_rates` $92A5), nudged by each mission (`cycle_economy_rate(5)`). The cost of n ninjas is (rate·n + 9)/10: on average 1.8 gold a ninja in 1560, 4.2 in 1570, 9.2 in 1590. It is paid win or lose.
+- **Gate:** the mission runs only if target Luck < your Luck + 30 ($A36C). There is no roll, so each pair of lords is always open or never. Of the 17, Imagawa (Luck 31) and Anekoji (46) are blocked by 14 lords each, Rokkaku (52) by 13, Saito (77) by Tokugawa and Oda, Hatakeyama and Ashikaga by Tokugawa; the other eleven reach everyone.
+- **Failure costs your lord 1 Charisma** (`effect_ninja_failed` $A29B: `deduct_byte_at(charisma, 1)`) as well as the gold. A mission fails at the gate, or when its field is already 0. So a mission against a lord who blocks you is a certain loss of gold and Charisma. This was not in #1/#2 or `ninja.md`.
+- **Drain:** (rng(max(1, pct_op(field, isqrt(n)))) + 1) × 5, clamped to the field. Because of the integer square root, only square counts pay. For a field of 100 or less (morale, loyalty, dams) anything under about 16 ninjas drains a flat 5. Only town and large rice stocks drain well per ninja. Missions: 1 loyalty and wealth, 2 morale, 3 dams and rice, 5 town.
+- **Each mission is the season's command**, the same price as a pact (#49).
+
+**What the drains buy.** All-AI games, skill 2, 200 paired seeds, 6 years. One AI capital is drained every season after the command pass (Luck gate assumed passed, cost not charged to anyone). Faction dead by year 6, and dead by a revolt at that capital:
+
+| Target | control | Revolt n=1 | Revolt n=25 | Revolt n=100 | Dams n=100 | Uprising n=25 | Arson n=25 |
+|---|---|---|---|---|---|---|---|
+| Honganji (Kaga) | 76% (1.5%) | 80% (7%) | 93% (21%) | 99% (32%) | 80% | 76% | 76% |
+| Uesugi (Echigo) | 5.5% (0%) | 6% (0%) | 32.5% (27%) | 67% (62%) | 14.5% | 6.5% | 3% |
+| Takeda (Shinano) | 25% (0%) | 24% (0%) | 43.5% (19.5%) | 64.5% (43.5%) | 36.5% | 27% | 25% |
+| Saito (Mino) | 98.5% (20%) | 99.5% (25%) | 99.5% (26%) | 100% (29.5%) | 99.5% | 99.5% | 98% |
+
+- **Only Revolt moves outcomes**, through the morale-45 cliff: a capital with morale ≥ 45 and Charisma ≥ 45 is never revolt-eligible (eligibility fails both min(x,50)² < rng(2025) rolls). Even at morale 0 the ceiling is about 12-15% a non-Summer season (the uprising branch × the 3%-per-fief planner gate × the revolt coin × the rebels' win roll). The AI feeds morale back every military pass, so one ninja is repaired (Summer morale 153 → 111 on Uesugi, never under the cliff). 25 a season gets Uesugi's capital to 70 and topples him in a third of games. 100 gets it to 55 and two thirds.
+- **The price of that:** 25 ninjas cost about 33 gold a season in 1560 and 64 by 1565; 100 cost about 130 and 256. Every command for six years goes to one capital, and a revolt does not give you the fief: the ROM installs a new daimyo there (`install_new_daimyo`). Chris: 130 a season is 520 a year in 1560, an economy nobody has, and it takes every turn, *all for a chance to revolt one fief*. Men bought with the same gold and commands work against every neighbour.
+- **Uprising, Dams, Arson** cut their fields hard (Uesugi's loyalty 206 → 80, town 113 → 36) and change nothing that matters within six years. The AI's income has slack, and its Spring boon refills loyalty and wealth.
+- **Saito, the low-Charisma test:** he is revolt-eligible about half the time at any morale (Charisma 31 fails its own roll), but he is already dead in 98.5% of AI games, so there is nothing to snipe. Low Charisma helps sabotage only against a lord who would otherwise live.
+- **Dams as defence** (a hunter at rice 0 cannot start an attack, and its men count as 0 to its neighbours): 100 ninjas a season held Uesugi's Summer rice at 46 against 106, nowhere near 0, and his death rate rose only 5.5% → 14.5%. Not a lever.
+
+**Verdict (Chris):** not baked into the player. Tying up one opponent costs more than making yourself better against all of them. At best a cheap Revolt snipes a lord who is already failing; the experiment found no case where that changes the game.
+
+Caveats: the drain hits every season including Summer, with no cost to the attacker, so these are upper bounds on the effect; the Summer means are over games where the target still held the capital. The experiment was a scratch script, not a tool.
+
 ### #49 — Diplomacy priced from the formulas: a pact is a stall, a marriage is an army you could have bought (Chris, 2026-11-13)
 
 Chris: *does it really even affect anything? Can a pact or marry deal with a hard gate; isn't it easier to just buy men?* Priced from the rules, no full runs. First of the unused verbs to price (Pact/Marry, Bribe, Trade, sabotage, then Assassinate, the OP one that "decides games on a die roll").
