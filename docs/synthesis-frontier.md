@@ -91,6 +91,26 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #57 — Skill 3, where assassination stops working: the game is playable, but no one finishes it (Chris, 2026-11-13)
+
+Chris: skill 3 is where assassinate does not work (#56: the chain collapses to at most 5 fiefs). *Can one actually play the game at this point, or has the difficulty spiked so nothing is possible?* And Saito's ev player, which he guessed is dead at this level.
+
+**Setup.** `long_game` gained `--skill` and `--ev` (#48's tuned weak-start opening as `expand.BASE`: the ev player with riots priced while holding one fief, then the reader; it had not been committed). Checked first at skill 1 on Saito, 300 seeds, 40 years: ev 11 unified, alive 27 / 24 at 3 / 6 years, 22 expanded; reader 5, 17 / 16, 13. #48 had 13, 29 / 27, 23 and 6, 16 / 15, 12, so the setup reproduces. The #48 player is not retuned for skill 3.
+
+**Every start, skill 3** (20 seeds, 3000-3019, 70 years, all battles fought, merchant rolled; skill 1 on the same seeds: 155 of 340 unified):
+
+| | skill 1 (#48) | skill 3 |
+|---|---|---|
+| never hold a second fief | 137 | 277 |
+| expanded | 203 | 63 |
+| unified | 155 (186 of the 203 that expand, merchant always present) | **0** |
+
+- **Playable, not winnable.** Half the starts are alive at year 3 (173 of 340) and 133 at year 6. Miyoshi (20 / 17), Oda (18 / 17), Kitabatake, Takeda and Asai survive the opening as well as at skill 1. But 49 of the 63 expanders end with **the lord dying of age** (years 33-56), holding a median of 4 fiefs. The best reached 16 of 17 (Asai, seed 3000, invaded at year 48), then 12, 11 and 10. The difficulty does not shut the game; it slows conquest until the clock (the lord's life) runs out.
+- **The weak starts are gone.** Hatakeyama, Honganji, Saito, Tsutsui and Rokkaku: 0 alive at year 3 in 100 games.
+- **Saito with the ev opening, skill 3** (300 seeds, 40 years): 7 alive at 3 years, 5 at 6, **none expands**; invasion 273, revolt 27. Chris guessed it: dead.
+
+Read with #56: skill 1 is where the exploit takes the map and the honest player unifies in about half the games; skill 3 is where neither works and the strong starts can only hold on. A retuned player (earlier attacks, a faster economy) is the open question: whether the limit at skill 3 is the policy or the game.
+
 ### #56 — The assassinate-and-buy chain: who sits nearest the vulnerable fiefs (Chris, 2026-11-13)
 
 Chris: *if you win the fief, you can then chain it to another connected fief, so it is about finding all the vulnerable ones, and who sits near them, more than actual play.* A static read of the map (`py -3.14 -m na1sim.chain`), not a game. The AI's own wars are left out, so this is the upper bound of the pure line.

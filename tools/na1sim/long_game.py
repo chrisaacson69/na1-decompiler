@@ -12,6 +12,10 @@ point of this file. Keep them here and change them by flag, not by copy.
 
 From tools/:  py -3.14 -m na1sim.long_game FIEFS SEEDS YEARS [OUT.json] [--first 3000]
   e.g.  py -3.14 -m na1sim.long_game 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 20 70 long70.json
+`--skill N` plays at another difficulty (#57: skill 3). `--ev` is #48's tuned weak-start opening:
+while the player holds one fief, the season's policy (expand.BASE) is the ev player (8-season
+horizon, growth, marks, riots priced), then the reader; #48 ran Saito with it (13 of 300 unified,
+40 years, skill 1).
 A game counts as unified when, at a Winter, the player's owner holds every live fief.
 #48's 150 was run with the merchant always present; `--merchant 0` reproduces it (the default
 rolls him, as the cartridge does: 155 on the same seeds, #53).
@@ -21,10 +25,18 @@ import json
 import time
 from concurrent.futures import ProcessPoolExecutor
 
-from . import deaths as Dz, policy, reaction, tactical, strike, expand as X, memmap as M
+from . import deaths as Dz, ev, policy, reaction, tactical, strike, expand as X, memmap as M
 
 OPENING = dict(no_retreat=1, summer_rice_first=1, line_first=1, shield_rice=4)
 SKILL = 1
+
+
+def ev_base(m, idx, rng):
+    """#48's Saito opening: the ev player while he holds one fief, then the reader."""
+    if len(X.owned(m, m.fief_owner(idx))) == 1:
+        ev.ev_policy(m, idx, rng)
+    else:
+        reaction.reader_policy(m, idx, rng)
 
 
 def one(job):
@@ -42,6 +54,10 @@ def one(job):
         X.CHARGE_NEED = {False: job[6], True: job[6]}
     if len(job) > 7 and job[7] is not None:
         policy.MERCHANT = bool(job[7])
+    skill = job[8] if len(job) > 8 and job[8] else SKILL
+    if len(job) > 9 and job[9]:
+        ev.RIOTS = True
+        X.BASE = ev_base
     policy.OPENING.update(OPENING)
     tactical.HUMAN = strike.Doctrine("control", "contact")
     X.LOG.clear()
@@ -63,7 +79,7 @@ def one(job):
             men = sum(m.r16(m.fief(i) + M.F_MEN) for i in X.owned(m, owner[0]))
             yearly.append((m.r16(M.CURRENT_GAME_YEAR), held, len(live), len({m.fief_owner(i) for i in live}),
                            age, exposed, bill, men))
-    rec = Dz.play(fief, seed, years, ("auto",), tail=pol, skill=SKILL)
+    rec = Dz.play(fief, seed, years, ("auto",), tail=pol, skill=skill)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0)
 
 
@@ -84,9 +100,11 @@ def main():
     ap.add_argument("--fought", type=int)
     ap.add_argument("--need", type=float, default=0)
     ap.add_argument("--merchant", type=int, help="1: Trade only when the merchant is here (#53)")
+    ap.add_argument("--skill", type=int, default=SKILL)
+    ap.add_argument("--ev", action="store_true", help="#48's tuned ev opening while holding one fief")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
-    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant)
+    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))
