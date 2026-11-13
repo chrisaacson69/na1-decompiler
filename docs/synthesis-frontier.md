@@ -91,6 +91,21 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #52 — Morale over 100 against more men: the AI's bribes stop, the outcome does not move (Chris, 2026-11-13)
+
+Chris: *push your morale 100+ and it stops* (the AI's battle bribe, #51); *is morale under 100 losing too many battles? Maybe a morale bump beats more men, then again maybe not.*
+
+**The gate, from the ROM** (`ai_try_bribe_strongest_enemy_unit` $A721): the AI's commander bribes only when rng_mod(skill + 1) ≠ 0, its battle gold exceeds its men, it has at most half the human's men, and the human fief's morale is at most skill × 100 (`$A780`, unsigned). At skill 1, morale 101 closes it, as Chris plays it.
+
+**Tested:** `expand.MORALE_FLOOR`, under which the expander's topped-out gold goes to the men's morale instead of hiring, at 101 against the default 55. The #48 player and harness of #51 (bribes off), every start, seeds 3000-3019, 70 years, paired:
+
+| | unified | saved / lost | unified in both: mean year | AI-bribed men | AI attacks survived |
+|---|---|---|---|---|---|
+| floor 55 | 154 | | 24.7 | 13,540 | 89.5% of 1,586 |
+| floor 101 | 150 | 27 / 31 (z −0.5) | 23.6 (67 sooner, 48 later; t −1.9) | 2,163 | 88.2% of 1,387 |
+
+**The bribe drain stops** (84% fewer men taken), and the games that unify in both finish about a year sooner, borderline. **The count does not move**, nor does defence: the gold that buys morale is gold not spent on men, and the two come out even. Deaths stay invasions (167 / 164). Floor 101 is a defensible style, not a stronger player; the default stays 55.
+
 ### #51 — Bribe priced: cheap men when the gate is open, and it almost never is (Chris, 2026-11-13)
 
 Chris: *an efficient way to spend your gold and kill an army, or overpriced?* The battle Bribe (#29: commander only, once a side a day, `resolve_attack_apply_casualties` $9E73, oracle-checked) is priced here; the strategic Bribe command (#19) is not.
