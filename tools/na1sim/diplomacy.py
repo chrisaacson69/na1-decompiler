@@ -9,10 +9,21 @@ AI-initiated (the idle-AI offers a neighbouring PLAYER a pact and PAYS them gold
   - ai_offer_pact  ai_scan_idle_fiefs_run_diplomacy_action $9B12 /
                    driver_diplomacy_gold_transfer $9AAC
 
-Relations are NEVER decayed -- only set (70/90) or reset to 0 by a war commit. So a
-landed pact is a lasting investment.  The war commit bails on relations_rng_predicate
-($8271): rng(100) < relations  ->  a 70/90 relation blocks ~70/90% of that neighbour's
-attacks.
+The war commit bails on relations_rng_predicate ($8271): rng(100) < owner relation OR
+rng(100) < fief relation -> the attack is called off for that season.
+
+KNOWN WRONG, unwired (no callers; nothing measured with it). Do not use until fixed and
+checked against the ROM -- ledger #49 (docs/synthesis-frontier.md):
+  * Relations DO decay. decay_relations_matrix_upper (the fief cells, where a pact
+    lives) runs every season, 4 in season 0 and 2 in the others = 10 a year;
+    decay_relations_matrix_lower (the daimyo cells, where a marriage lives) runs in
+    season 0 only, 2 a year (bank 0 $9F9C/$9FA1/$A06C/$A275/$A392). The old claim here
+    ("never decayed, a lasting investment") was false.
+  * try_marriage writes the FIEF cell; set_marriage_relation $DA7D writes the OWNER cell
+    (lower triangle), so it covers every fief of both lords and decays at 2 a year.
+  * A refused marriage costs -1 Drive, Luck and Charisma (ledger #20); not modelled.
+  * A daimyo's death clears his fief's whole row and column (announce_daimyo_death ->
+    clear_fief_pair_matrix $E1E7); not modelled.
 """
 from . import memmap as M, vmprims as P
 
