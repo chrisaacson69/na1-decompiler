@@ -902,6 +902,13 @@ def human_command_loop(m, day) -> int:
             elif act[0] == "attack":
                 assert is_enemy_unit_adjacent(m, act[1]), act
                 resolve_attack_apply_mutual_casualties(m, act[1])
+            elif act[0] == "bribe":
+                # Bribe [2] (combat_command_select_target_resolve_attack $A9FB, #29): commander only,
+                # any present enemy unit, 1..(side gold - side men) gold, paid win or lose.
+                sr = m.side_resource_ptr(m.cur_combat_side)
+                assert slot == 0 and m.is_unit_present(m.cur_combat_side ^ 1, act[1]), act
+                assert 1 <= act[2] <= m.r16(sr + M.SR_GOLD) - m.r16(sr + M.SR_MEN), act
+                resolve_attack_apply_casualties(m, act[1], act[2])
             r = check_commander_alive_both_sides(m)
             if r:
                 return r

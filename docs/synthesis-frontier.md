@@ -91,6 +91,27 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #51 — Bribe priced: cheap men when the gate is open, and it almost never is (Chris, 2026-11-13)
+
+Chris: *an efficient way to spend your gold and kill an army, or overpriced?* The battle Bribe (#29: commander only, once a side a day, `resolve_attack_apply_casualties` $9E73, oracle-checked) is priced here; the strategic Bribe command (#19) is not.
+
+**The price, from the formula.** The contest is nearly a stat check: your fief morale + your Charisma + rng(0..5 − skill) against theirs + 2·skill, gold paid win or lose. The best payment is exactly the target unit's men, and it turns pct_op(unit, 100(s − e)/(2s − e)), at most half. A 100-man unit at skill 1: Oda at morale 100 turns 29 of Saito's (3.4 gold a man) and 9 of Honganji's (11.6); against Uesugi or Takeda (morale about 150, Charisma 101-113) he never wins. Each turned man is a swing of two, and the price is one gold per target man in any year while men climb from about 3 to 10-20 gold, so where it works it is the cheapest army in the game. It costs no season command, only the commander's day, which the Charge holds back anyway.
+
+**Chris: how much gold can you bring?** `driver_war` sets the army's gold to exactly the men sent (`war_attacker_gold = war_attacker_men`, $995C), and the bribe budget is gold − men, so **an attacker starts every battle with no bribe budget**; it grows only as his own men die, and each turned man uses it up again. The defender's purse is the whole treasury (`battle_init_defender` $92CA). After the battle both purses go to the fief with the winner (#48's garrison write); bribe gold is simply gone, the enemy does not receive it.
+
+**Tested in whole games.** The ROM verb is now in `tactical.human_command_loop` (`("bribe", slot, gold)`, budget-checked). A scratch harness wrapped the #48 player (skill 1, `no_retreat`, `summer_rice_first`, `line_first`, `shield_rice=4`; Charge attacking, `Doctrine("control", "contact")` defending; the 11-12 `long_game.py` settings): each day the commander bribes the largest affordable enemy unit with exactly its men when the contest wins even at rng 0 and a man would turn. Every start, seeds 3000-3019, 70 years, paired:
+
+| | unified | saved / lost | gate open, attacking | defending | gold → men turned |
+|---|---|---|---|---|---|
+| bribes off | 154 (#48: 150) | | | | |
+| bribes on | 152 | 9 / 11 | 389 of 27,787 days (1%) | 484 of 10,185 (5%) | 16,870 → 2,169 (7.8 gold a man) |
+
+**No effect.** Chris: *the trouble is you need to win the gate first.* The player's fiefs rarely out-score the AI's morale + Charisma: the AI feeds morale every military pass and sits near 150, and the attacker's budget is zero until he bleeds. Where it opened the price was about 8 gold a man turned (4 a man of swing), above the table's best cases because real margins are thin. An earlier run on a weaker reconstruction (skill 2, the AI's own defence; 27 unified) gave 27 → 36 (24 saved, 15 lost, z ≈ 1.4) with the gate open 9-11% of days: the bribe helps a little where the player is weak and the gate is open more, and nothing on the real player.
+
+**The other side of the verb.** The AI bribes the human whenever its commander's roll passes (`ai_rng_resolve_combat_apply_casualties` $A721): with probability skill/(skill + 1), when its gold is over its men, it is under half the human's men, and the human fief's morale is at most 100·skill. It turned **13,540 of the player's men** in the 340 control games, about 40 a game, a cost every #48 game already paid. At skill 1 a player fief with morale over 100 shuts that gate entirely (per the sim's port of $A721; worth a direct check against the bytecode before acting on it).
+
+Verdict: not in the player. The verb is priced right; its gate makes it a defender's tool against weak, low-morale attackers, and the AI rarely is one.
+
 ### #50 — Sabotage priced: one opponent tied up costs more than making yourself better against all of them (Chris, 2026-11-13)
 
 Chris: the four non-lethal ninja missions are probably overpriced; price them. Assassination is left out on purpose: a single roll that removes a lord, priced separately as expected cost by circumstance (sometimes too dear, sometimes impossible).
