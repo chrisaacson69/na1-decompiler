@@ -36,6 +36,17 @@ OPENING = {"tax_jump": True, "gold_gift": True, "picker": False, "picker_slack":
 UPKEEP_MARGIN = 5
 
 
+MERCHANT = True      # Trade needs the merchant game.roll_merchant found this turn ($B8CC; 50% of turns at
+                     # skill 1, always at fiefs 13/14), as the cartridge does (#53). False: always there,
+                     # the sim before 2026-11-13 (#48's 150 of 340; 155 with the roll).
+
+
+def merchant_here(m, idx):
+    """Can the player Trade in this fief this turn? Absent, the Trade command answers "no merchant
+    in the area" and the turn is not spent, so the caller plays something else."""
+    return not MERCHANT or getattr(m, "merchant", {}).get(idx, True)
+
+
 def _upkeep_rice(m, idx):
     """Summer, before the harvest (Chris, 2026-11-09): the upkeep takes men/2 from gold AND rice, and
     when the smaller cannot cover it, it takes all of that one and men fall to twice it
@@ -47,7 +58,7 @@ def _upkeep_rice(m, idx):
     f = m.fief(idx)
     need = m.r16(f + M.F_MEN) // 2 + UPKEEP_MARGIN
     rice, gold = m.r16(f + M.F_RICE), m.r16(f + M.F_GOLD)
-    if rice >= need or gold <= 1:
+    if rice >= need or gold <= 1 or not merchant_here(m, idx):
         return False
     spend = min(-(-(need - rice) * m.r16(M.GOLD_RICE_EXCHANGE) // 10) + 1, gold - 1)
     buy_rice(m, idx, spend)
@@ -94,7 +105,7 @@ def buy_rice_to(m, idx, slack):
     already passes. Buying moves gold to rice, so when gold is then the short one the upkeep cuts
     the army to what it can pay: the dismissal (Chris, #40). -> True if it bought."""
     gold = m.r16(m.fief(idx) + M.F_GOLD)
-    if gold <= 1 or slack(0) >= 0:
+    if gold <= 1 or not merchant_here(m, idx) or slack(0) >= 0:
         return False
     lo, hi = 1, gold - 1
     if slack(hi) >= 0:
@@ -164,9 +175,13 @@ def hire_men(m, idx, spend):               # gold -> men at the market rate
 
 
 def buy_rice(m, idx, spend):                # effect_buy_rice $A068: gold -> rice at the exchange rate
+    """-> False when no merchant is here (the turn is not spent), else True."""
+    if not merchant_here(m, idx):
+        return False
     m.selected = idx
     if spend >= 1:
         P.effect_buy_rice(m, m.fief(idx), spend * 10 // m.r16(M.GOLD_RICE_EXCHANGE))
+    return True
 
 
 def grow_output(m, idx, amount):

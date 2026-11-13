@@ -91,6 +91,16 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #53 — Rice: the merchant is there half the time, the price hardly moves, and the player rarely needs either (Chris, 2026-11-13)
+
+Chris: *the runner assumes it can always buy rice when it needs it, and this is untrue; it will probably sink games when rice is needed after a successful defence brings in lots of troops.* And: buy cheap and sell dear makes sense, but it costs a turn, a gift is √, not 1:1, and the caps bind once the economy is large.
+
+**The merchant** (`ai_per_fief_command_driver` $B8B1-$B8EB): at every fief's turn, present when rng_mod(100) < 55 − 5·skill (50% at skill 1), plus 1 in 4 when the lord carries the weakness mark; `effect_trade` $8A15 admits Trade where he is, and always at fiefs 13/14 (Yamashiro, Settsu). Only the player's Trade reads the flag; the AI trades in its own develop handler. The sim never rolled him. Now `game.roll_merchant` does, for the player's turns, from a separate stream seeded off the game's (so every other roll is unchanged), and `policy.MERCHANT` (default on) gates the player's rice buys; absent, Trade does not spend the turn and the policy plays something else.
+
+**Measured** (`na1sim.long_game`, every start, seeds 3000-3019, 70 years): merchant always there **150** (#48's figure exactly), rolled **155** (8 saved, 3 lost, z +1.5, noise). It cannot matter much: in 85 of those games the player bought rice **25 times in 1,448 player-years**, all in Summer (the shield and upkeep rules). And after a successful defence the attacker's surviving men come with their own rice and gold (`apply_conquest_outcome` $E03C writes both armies' rice into the fief), so the influx is fed through its first Fall; after that the upkeep trims the men it cannot pay, which costs men, not the game.
+
+**The price in games, not in the roll.** The yearly roll alone (80% drift ±5 within 10-30, 20% a jump to 5-10 or 30-39) puts 27% of years at 1.0 gold or less and 28% at 3.0 or more. Chris: the AI buys and sells every turn, so prices are steadier. In all-AI games (skill 1, 60 × 30 years, every season): **1.1-1.9 gold 83% of seasons, 2.0-2.9 17%, 3.0+ 0.1%, never under 1.0; mean 1.77.** Each AI trade nudges the rate by 1 (`cycle_economy_rate`), and the trading pulls it back to the middle within the year. Buy-low, sell-high has no spread to work with; with the turn, the √ on gifts and the header cap on top, it is not a strategy. Rice is a steady ~1.8 gold that the player seldom has to buy.
+
 ### #52 — Morale over 100 against more men: the AI's bribes stop, the outcome does not move (Chris, 2026-11-13)
 
 Chris: *push your morale 100+ and it stops* (the AI's battle bribe, #51); *is morale under 100 losing too many battles? Maybe a morale bump beats more men, then again maybe not.*

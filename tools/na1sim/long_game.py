@@ -13,6 +13,8 @@ point of this file. Keep them here and change them by flag, not by copy.
 From tools/:  py -3.14 -m na1sim.long_game FIEFS SEEDS YEARS [OUT.json] [--first 3000]
   e.g.  py -3.14 -m na1sim.long_game 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 20 70 long70.json
 A game counts as unified when, at a Winter, the player's owner holds every live fief.
+#48's 150 was run with the merchant always present; `--merchant 0` reproduces it (the default
+rolls him, as the cartridge does: 155 on the same seeds, #53).
 """
 import argparse
 import json
@@ -26,8 +28,9 @@ SKILL = 1
 
 
 def one(job):
-    """One game. job = (fief, seed, years[, topped, war_at, fought, need]); the optional knobs are
-    expand.TOPPED, WAR_AT, FOUGHT and a flat CHARGE_NEED, as #48 swept them."""
+    """One game. job = (fief, seed, years[, topped, war_at, fought, need, merchant]); the optional
+    knobs are expand.TOPPED, WAR_AT, FOUGHT and a flat CHARGE_NEED, as #48 swept them, and
+    policy.MERCHANT (Trade only when game.roll_merchant found one, #53)."""
     fief, seed, years = job[:3]
     if len(job) > 3 and job[3] is not None:
         X.TOPPED = job[3]
@@ -37,6 +40,8 @@ def one(job):
         X.FOUGHT = bool(job[5])
     if len(job) > 6 and job[6]:
         X.CHARGE_NEED = {False: job[6], True: job[6]}
+    if len(job) > 7 and job[7] is not None:
+        policy.MERCHANT = bool(job[7])
     policy.OPENING.update(OPENING)
     tactical.HUMAN = strike.Doctrine("control", "contact")
     X.LOG.clear()
@@ -78,9 +83,10 @@ def main():
     ap.add_argument("--war-at", type=int)
     ap.add_argument("--fought", type=int)
     ap.add_argument("--need", type=float, default=0)
+    ap.add_argument("--merchant", type=int, help="1: Trade only when the merchant is here (#53)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
-    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need)
+    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

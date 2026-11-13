@@ -313,7 +313,26 @@ def command_pass(m: "M.Memory", rng: random.Random, player_policy=None):
         if st == M.AI_HOME:
             ai_vm.econ_action_state0(m, idx, war)
         elif st == M.PLAYER_DIRECT and player_policy is not None:
+            roll_merchant(m, idx, rng)
             player_policy(m, idx, rng)
+
+
+def roll_merchant(m: "M.Memory", idx: int, rng: random.Random):
+    """Is a merchant in the player's fief this turn? ai_per_fief_command_driver $B8B1-$B8EB rolls it
+    at every fief's turn: rng_mod(100) < 55 - 5*skill_level, or also 1 in 4 when the lord carries
+    the weakness mark; effect_trade $8A15 then admits Trade where it is set, and always in the two
+    commercial fiefs (13/14, or 30/32 at 50 fiefs). Only the player's Trade reads it. Rolled from a
+    separate stream seeded off the game's (never drawing from it), so switching policy.MERCHANT
+    leaves every other roll of the game the same; m.merchant[idx] is read by policy.merchant_here."""
+    if not hasattr(m, "merchant_rng"):
+        m.merchant_rng = random.Random(hash(rng.getstate()))
+        m.merchant = {}
+    r = m.merchant_rng
+    here = r.randrange(100) < 55 - 5 * m.skill
+    if m.r8(M.DAIMYO_WEAKNESS_FLAG + m.fief_owner(idx)) and r.randrange(4) == 0:
+        here = True
+    big = (30, 32) if m.r16(M.SCENARIO_FIEF_COUNT) == 50 else (13, 14)
+    m.merchant[idx] = here or idx in big
 
 
 def reset_marks(m: "M.Memory"):
