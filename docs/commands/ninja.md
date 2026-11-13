@@ -20,7 +20,7 @@ Reached from **Hire** (`driver_hire $A5F4`) via the `(Men/Ninja)?` prompt → **
 | 1 | Uprising | loyalty + wealth | 28 | `$A3AB` |
 | 2 | Revolt | morale | 27 | `$A45A` |
 | 3 | Dams | dams + rice | 30 | `$A497` |
-| 4 | Assassin | grinds the daimyo's **health** to 0 (attrition) via `ninja_mission_resolve_vs_defender $918D` — see below | 1 | `$A508` |
+| 4 | Assassin | kills the daimyo outright on a landed, un-countered hit (#55) via `ninja_mission_resolve_vs_defender $918D` — see below | 1 | `$A508` |
 | 5 | Arson | town | 29 | `$A510` |
 
 Each non-assassination mission short-circuits to `"Your ninja failed!"` if its target field(s) are already 0; a non-zero drain is clamped to the field (`drain = min(drain, field)`).
@@ -46,8 +46,11 @@ A multiple of 5, scaling with **the target field's current value** and **√(uni
 ## Priced (ledger #50, 2026-11-13)
 Only Revolt changes outcomes (through the morale-45 cliff), and only at 25-100 ninjas every season: about 33-130 gold a season in 1560 and every command, for a 27-62% chance over six years of toppling a strong lord by revolt, without gaining the fief. Uprising, Dams and Arson cut their fields and change nothing. Not part of the player. Full table in [synthesis-frontier.md](../synthesis-frontier.md) §ledger #50.
 
+## Priced (ledger #55, 2026-11-13)
+Three fixed gates (capital, Luck < yours + 30, their Cha+IQ ≤ yours) and one Charisma roll, `rng(10·skill)` each side; one ninja, 1-2 gold, one command. AI lords carry the ROM stats + 5·skill. A perfect roll (109/109) certainly kills 12 of 16 lords at skill 1 and 6 at skill 3; Uesugi, Tokugawa and Takeda are beyond any roll. Table and cartridge checks: [synthesis-frontier.md](../synthesis-frontier.md) §ledger #55; calculator `py -3.14 -m na1sim.assassin`.
+
 ## Assassination (mission 4) — summary
-`ninja_mission_resolve_vs_defender $918D`. Capital-only (step 4). Resolution is a **Charisma+IQ** contest (`attacker(Cha+IQ) ≥ target(Cha+IQ)`), with a Charisma **counterattack** that can repel the ninja and **damage the attacker's own daimyo**. On success it **deducts `rng(1 … health/(1+counter))` from the target daimyo's `health` (record +1)**; the daimyo **dies when health reaches 0** (≈2 un-countered hits on average — attrition, not a one-shot). If the dead daimyo's fief was a capital, `find_fiefs_of_owner` **neutralizes every fief they owned** (faction collapse). **Garrison does not protect** — a target with men > ~`rng(1-10)` skips the only defensive roll (`$9213`). Cost is paid win or lose. Full trace + the TAS/RNG framing: [synthesis-frontier.md](../synthesis-frontier.md) §ledger #1.
+`ninja_mission_resolve_vs_defender $918D`. Capital-only (step 4). Resolution is a **Charisma+IQ** contest (`attacker(Cha+IQ) ≥ target(Cha+IQ)`), with a Charisma **counterattack** that can repel the ninja and **damage the attacker's own daimyo**. **A landed, un-countered hit kills at once** (`$9293` is `230 > health`; checked in the cartridge, #55). The `rng(1 … health/(1+counter))` deduction only matters on a counter, where it hits *your* lord. (The earlier "≈2 hits, attrition" read was wrong.) If the dead daimyo's fief was a capital, `find_fiefs_of_owner` **neutralizes every fief they owned** (faction collapse). **Garrison does not protect** — a target with men > ~`rng(1-10)` skips the only defensive roll (`$9213`). The empty-fief roll never blocks either (needs Luck ≥ 200), so one ninja is enough. Cost is paid win or lose. Full trace + the TAS/RNG framing: [synthesis-frontier.md](../synthesis-frontier.md) §ledger #1.
 
 ## Resolved (was "Open")
 - **Assassination gate = the capital** (`fief_is_daimyo_capital`), not a generic "`$6DA2` present" check.

@@ -91,6 +91,67 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #55 — Assassination priced: three fixed gates and one Charisma roll, and a landed hit always kills (Chris, 2026-11-13)
+
+Chris: assassination is the one that is OP and decides games on a die roll; price it as expected cost by circumstance (sometimes too dear, sometimes impossible). The last of the unused verbs (#49-#54).
+
+**The rules** (`effect_ninja_sabotage` $A2D2 → `ninja_mission_resolve_vs_defender` $918D), in order:
+1. The target fief must be a daimyo's **capital** ($A349: else "The daimyo is out", nothing spent) and run by the AI ($9192: `ai_state` 0, so a human's fiefs are immune; the AI never assassinates anyway, #1).
+2. **Luck gate** ($A36C): target Luck < your Luck + 30. A fixed compare, as in #50.
+3. **Contest** ($91A2): target Cha + IQ ≤ your Cha + IQ. Also fixed.
+4. **Counterattack** ($91D5): target Cha − rng(10·skill) > your Cha − rng(10·skill). Your lord loses rng(health/2)+1 health and 1 Charisma. The target is untouched.
+5. Otherwise the hit lands and **kills**. At $9293 the test is `230 > health` (`cmp_sgt` is regA > regB, ch.8), so any landed hit that is not a counter sets health to 0, and `find_fiefs_of_owner` empties the faction. The `rng(health)+1` deduction before it only matters on a counter.
+- The empty-fief defensive roll ($9213, men ≤ rng(10)+1) blocks only if rng(Luck/100) ≠ 0, which needs Luck ≥ 200. It never blocks, so **the ninja count never matters**: one ninja does it, at (rate + 9)/10 gold, 1-2 in 1560. A failure at gate 2 or 3 costs 1 Charisma, as in #50.
+
+**The cost of a success, every variable** (`na1sim.assassin.cost_of_success`). Inputs: your Cha *C*, IQ *I*, Luck *L*, health *H*; the target's Cha *c*, IQ *i*, Luck *l* (ROM table + 5·skill, below); the difficulty *s*; the year *y*.
+
+- **Gates** (no die): *l* < *L* + 30, and *c* + *i* ≤ *C* + *I*. Shut, and every try costs a try's gold and 1 Cha for nothing.
+- **Kill chance per try:** *p* = 1 − *P*<sub>counter</sub>, with *n* = 10·*s* and *d* = *C* − *c*:
+
+  | *d* | *P*<sub>counter</sub> |
+  |---|---|
+  | *d* ≥ *n* − 1 | 0 (a certain kill) |
+  | 0 ≤ *d* < *n* − 1 | (*n* − *d* − 1)(*n* − *d*) / 2*n*² |
+  | −*n* < *d* < 0 | 1 − (*n* + *d*)(*n* + *d* + 1) / 2*n*² |
+  | *d* ≤ −*n* | 1 (never) |
+
+  (Checked against enumeration for skills 1-5 and every *d*.) At equal Charisma the kill is (*n* + 1)/2*n*: 55% at skill 1, 52.5% at 2, 51.7% at 3. Each point of Charisma moves it most near *d* = 0, and a lead of *n* − 1 makes it certain.
+- **What a try costs:** one season command, and one ninja's gold, (rate + 9) // 10 with rate = (rng(101) + 10(*y* − 1560) + 4) // 4: on average 1.8 gold in 1560, 3.0 in 1565, 4.2 in 1570, 6.8 in 1580, 9.2 in 1590.
+- **What a counter costs** (probability 1 − *p*): rng(*H*/2) + 1 of your lord's health, on average (*H*//2 + 1)/2, about 23 for *H* = 90, and 1 Charisma. The lost point lowers *d* for the next try and can shut the contest (*C* + *I* − 1 < *c* + *i*).
+- **The campaign** (try each season until the kill or the contest shuts): P(kill ever), expected tries, gold, health and Charisma lost follow from the recursion on (*C*, *H*). Without the Charisma loss it would be geometric: 1/*p* tries, (1 − *p*)/*p* counters.
+
+Examples (your 109/109, health 90, skill 2, 1560): Saito, Hatakeyama, Honganji 1 try, 1.8 gold, nothing lost; Hojo 1.1 tries, 2 gold, 2 health; Miyoshi 43% a try, 96% ever, 3 tries, 5.4 gold, 26 health, 2 Cha; Anekoji 14% a try, 23% ever (the contest shuts after about two counters), 33 health. At 90/90, skill 3, 1570: Honganji 36% a try, 88% ever, 11.5 gold and 28 health; nine lords shut.
+
+**This overturns #1's "attrition, about two hits"**: there is no attrition. Checked in the cartridge (`tools/na1_play.py`, Oda 1560, the player's stats written into his record, one ninja, mission 4, seeded at the mission prompt):
+
+| case | prediction | cartridge |
+|---|---|---|
+| you 109/109 vs Saito (Cha 36, skill 1), a counter impossible | kill every time, in one hit | 30/30 dead, health 101 → 0, "Fief 9 lost its leader" |
+| you Cha 36 vs Saito, d = 0 | 55% kill | 14/30 kill, 16 counter (your health −2..−30, Cha −1, Saito untouched) |
+| you 109/109 vs Miyoshi (Cha 112), skill 2 | 38% kill | 27/60 (z ≈ 1.1) |
+| you 109/109 vs Anekoji (Cha 115), skill 1 | 10% kill | 0/20 (P = 12%), all counters |
+| you 68+64 = 132 vs Saito 36+97 = 133 | contest lost | 20/20 "Your ninja failed", Cha −1, 1 gold |
+| you 218 vs Uesugi 235 | contest lost | 20/20 failed |
+
+**The AI's lords are stronger than `17Diamyo.txt` by 5·skill.** In the cartridge their health, Drive, Luck, Charisma and IQ are the ROM table ($D5xx, which the file matches) + 5 at skill 1, + 15 at 3, + 25 at 5 (`apply_scenario_starting_stat_boosts` $83E2, AI fiefs only; the sim already runs it on the VM). Luck then drifts rng(11) − 5 every season (`drift_daimyo_luck` $A2ED). The player's lord gets no boost: each of his five stats is rolled rng(50)+60, re-rollable without limit ($85FC).
+
+**The price by circumstance** (`py -3.14 -m na1sim.assassin`; your Cha/IQ/Luck as rolled, AI at ROM + 5·skill, Oda left out):
+
+| you (Cha/IQ/Luck) | skill | contest lost | certain (100% first try) | a die roll |
+|---|---|---|---|---|
+| 109/109/109 | 1 | Uesugi, Tokugawa, Takeda | 12 lords | Miyoshi 79%, Anekoji 15% |
+| 109/109/109 | 2 | Uesugi, Tokugawa, Takeda | 8 | Hojo, Imagawa 91%, Asakura 98%, Kitabatake 96%, Miyoshi 43%, Anekoji 14% |
+| 109/109/109 | 3 | + Hojo, Anekoji | 6 | Honganji 87%, Asai 85%, Asakura 79%, Kitabatake 77%, Imagawa 69%, Miyoshi 31% |
+| 95/95/95 | 1 | 8 lords | 6 | Kitabatake 90%, Imagawa 72% |
+| 85/85/85 | 2 | 10 lords | 4 (Hatakeyama, Saito, Tsutsui, Ashikaga) | Rokkaku 98%, Honganji 30% |
+
+- **The cost is one command and a gold or two.** No men, no rice, no risk to your fief. The only real price is in a counter: your lord's health (rng(health/2)+1, which raises his death roll, `rng(300) < age − 10 − health/4`) and a Charisma point, which can close the contest for the next try.
+- **"Impossible" is the contest, and the roll screen decides it.** Uesugi, Tokugawa and Takeda carry Cha + IQ of 233-245 at skill 1, above any roll (218 at most), so they can never be assassinated. Everyone else is reachable by a lord who re-rolls for Cha + IQ, and against most of them it is not a die roll at all: when your Cha is 10·skill or more above theirs, the counter is impossible and the kill is certain.
+- **Difficulty is the armour.** Every skill level adds 5 to the AI's Charisma and IQ and widens the counter roll, so the list of certain kills shrinks from 12 (skill 1) to 6 (skill 3) for a perfect roll, and to 4 by skill 2 for an 85s lord.
+- **What a kill buys:** the faction's fiefs go neutral and are auctioned to their neighbours (appendix-formulas §10: the winner pays the last bid made; fewer than two neighbouring owners and a new lord is seated). Land for gold, without a battle, and never a capital.
+
+**Verdict (Chris):** *yup, OP*. Not in the player: he is not comfortable playing with it. The formula above is what he wanted priced. Left open, as a curiosity: how fast a game goes with it (the #48 player with an assassinate-first policy on `long_game`; the sim has no assassination verb, and its `natural_death` empties fiefs without the auction). Caveat: the Luck column assumes the gate at its mean; with the ±5 seasonal drift a lord within 10 of your Luck + 30 is open some seasons and shut in others.
+
 ### #54 — Loans priced: an advance on the next harvest, and the turn it costs is the price (Chris, 2026-11-13)
 
 Chris: *the same investment problem any CAPM planner would do: is the rate of growth from the extra gold higher than the interest?* And: *the √ is the killer here again.*
@@ -1342,14 +1403,14 @@ read on every load-bearing point:
   confirmed). Distinct from the Luck attempt-gate. ("Cha+IQ seemed odd but is right.")
 - **Counterattack** (`$91D5`): a defender whose noisy Charisma beats the attacker's repels — attacker's
   own Charisma −1, the kill is blocked that turn, and the health damage is **halved** (divisor 1+counter).
-- **Kill = ATTRITION, not one-shot** (`$9264–$92B5`): on success, deduct `rng(1 .. health/(1+counter))`
+- ~~**Kill = ATTRITION, not one-shot**~~ **Overturned by #55 (cartridge-checked): any landed, un-countered hit kills; `$9293` is `230 > health` → kill.** Original read (`$9264–$92B5`): on success, deduct `rng(1 .. health/(1+counter))`
   from target `health (+1)`; the daimyo **dies when health reaches 0** (avg ~2 un-countered hits). At a
   capital, death → `find_fiefs_of_owner` neutralizes EVERY fief the daimyo owns (faction collapse). The
   `230 >` constant at `$9290` is vestigial (health ≤115).
 - **Garrison does NOT protect** (`$9213`, field = **men**, record +16): `if men ≤ rng(1-10)` an extra
   defensive roll runs (using target **Luck**/10 & /100 — the C's `local7` mislabeled IQ; bytecode `+3`=
   Luck); otherwise (men > ~5) it jumps **straight to the success path**. A defended capital gets *no*
-  defensive roll. Counterintuitive; flagged for an emulator sanity-check.
+  defensive roll. Counterintuitive; flagged for an emulator sanity-check. **#55:** the empty-fief roll never blocks either (it needs `rng(Luck/100) ≠ 0`, Luck ≥ 200), so the ninja count never matters.
 - **Cost paid win or lose** (`math32_muladddiv(hire_gold_rate, unit_count)`, `$A452`/`$A2CB`).
 
 **Synthesis takeaway:** the dominant pick is **high-Luck AND high-Charisma** (Luck gates the attempt +
@@ -1358,8 +1419,7 @@ only defense is the target's own probabilistic Luck/Cha/IQ. Cheap + repeatable +
 faction = the engine half of the README thesis, now grounded.
 
 **RNG surface of the kill path (the TAS exploit, measurable) — enumerated from the `$918D` bytecode:**
-7 `rng_mod` draws between attempt and kill; with a controlled stream the ~2-hit attrition becomes a
-**deterministic one-shot**.
+7 `rng_mod` draws between attempt and kill. **#55:** only the two counter draws matter; a landed hit is already a one-shot kill, with no RNG to force.
 
 | # | draw | addr | what the TAS forces |
 |---|------|------|---------------------|
@@ -1372,7 +1432,7 @@ faction = the engine half of the README thesis, now grounded.
 Plus the **character roll is RNG** (`prompt_roll_stat_value $85FC` = `rng_mod(50)+60`, 60-109) → the TAS
 rolls L/Ch/IQ ≈ max at creation; targeting *weaker* daimyo means their low Cha+IQ always loses the
 resolution contest. The exploit is a chain of gamed `rng_mod` calls. *UNVERIFIED as a runnable exploit —
-next step is to drive `$918D` from the ROM with a fixed RNG stream and demonstrate health→0 in one mission.*
+next step is to drive `$918D` from the ROM with a fixed RNG stream and demonstrate health→0 in one mission.* **Done in #55:** health → 0 in one mission, 30/30 against Saito.
 
 **Decompiler defect found (logged tech-debt §1.6):** the C renders `case 4` (assassinate) falling
 through into `case 5` (arson); bytecode `$A50D` is `JUMP $A41D` (shared tail) — a switch emit mis-render.
@@ -1386,7 +1446,7 @@ train) but those are PROBABLE until verified.
 
 | stat (offset) | confirmed effects | source |
 |---|---|---|
-| Health (+1) | the daimyo's **life pool**: assassination drains it; 0 = death | #1 |
+| Health (+1) | the daimyo's **life pool**: 0 = death. A landed assassination sets it to 0 at once; a counter costs the *attacker* rng(health/2)+1 | #1, #55 |
 | Luck (+3) | ninja **attempt-gate** (`target.Luck < attacker.Luck+30`, all 5 missions); empty-fief assassination kill-roll defense (`rng(Luck/10)`,`rng(Luck/100)`); **−1 on Marry refusal**; **View spying** (`rng(Luck)+IQ` contest) | #1, #2, #20, #21 |
 | Charisma (+4) | assassination **resolution** (Cha+IQ contest); **counterattack** duel; kill sub-roll factor (`rng(Cha)+50`); **bribe success** (`your(loy+Cha) > target(loy+Cha)+rng·skill`); **−1 on Marry refusal** | #1, #19, #20 |
 | IQ (+5) | assassination **resolution** (Cha+IQ contest); **View spying** (`rng(Luck)+IQ` contest vs target) | #1, #21 |
