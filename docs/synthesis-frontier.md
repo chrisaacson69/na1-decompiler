@@ -91,6 +91,19 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #56 — The assassinate-and-buy chain: who sits nearest the vulnerable fiefs (Chris, 2026-11-13)
+
+Chris: *if you win the fief, you can then chain it to another connected fief, so it is about finding all the vulnerable ones, and who sits near them, more than actual play.* A static read of the map (`py -3.14 -m na1sim.chain`), not a game. The AI's own wars are left out, so this is the upper bound of the pure line.
+
+**The rules it chains:** the kill is not limited by the map ("Send where" takes any fief), but the purchase is: only the owners bordering a dead fief bid, and with fewer than two of them a new lord is seated (#55). Each fief you hold gets its own command every season, and the ninja carries your lord's stats from any of them, so every fief bought is another assassin next season. Order matters: a fief must be bought while someone else still borders it. Noto borders only Kaga, so only a Noto start can ever buy it. The chain buys what is about to close first, then the bigger garrison, and never kills what it cannot buy.
+
+**Results** (killable = a certain kill on the first try, Luck gate open at its mean):
+- **Perfect roll (109/109/109), skill 1:** from Echigo, Mikawa or Shinano, **11 of 17 fiefs and 577 men in 5-6 seasons** (about 18 gold of ninjas plus the bids). The best starts are the three lords no roll can kill. Playing one of them removes an untouchable rival, and the other two, Miyoshi (79%), Anekoji (15%) and Noto are all that is left. Every central start (Owari, Settsu, Hida, Noto) reaches 9 fiefs, the rest 8. Musashi and Suruga are boxed in by Uesugi and Takeda and reach 2.
+- **Skill 2, the same roll:** at most **5 fiefs** (Omi or Iseshima: Yamashiro, Iga, Yamato, Mino). Most starts reach 1-3. Skill 3 is the same shape. The +5·skill on the AI's Cha and IQ is what breaks the chain.
+- **A 95s roll at skill 1, kill at ≥ 90%:** 8 fiefs from Echizen, Hida or Shinano in 3-5 seasons.
+
+So the exploit is a skill-1 game: roll high, sit next to the soft middle (Mino, Omi, Iseshima, Yamato, Yamashiro, Iga, Echizen, Kaga, Saito's and Asai's lands), and in about a year and a half own two thirds of the map, garrisons included, without a battle. Chris: *out of the spirit of good play*. This is a map of the exploit, not a policy for the player.
+
 ### #55 — Assassination priced: three fixed gates and one Charisma roll, and a landed hit always kills (Chris, 2026-11-13)
 
 Chris: assassination is the one that is OP and decides games on a die roll; price it as expected cost by circumstance (sometimes too dear, sometimes impossible). The last of the unused verbs (#49-#54).
