@@ -91,6 +91,46 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #60 — The pocket planner: the map has pockets, the greedy expander already finds them, and the opening is the wall (Chris, 2026-11-16)
+
+Chris: a planner that looks far enough ahead to see whether conquest can make **pockets** of fiefs with no enemy neighbour, so the army can focus on one front (#59's open thread).
+
+**The map, read statically** (`py -3.14 -m na1sim.pockets table | walks | trace`). Every start can reach back line, but it takes 3-5 conquests. Best case is the Kinki corner: Settsu, Yamato, Yamashiro, Iga, then Omi or Iseshima gives 4 interior fiefs behind a 2-fief front facing 3 rivals. Noto/Kaga and the east get there in 4-5. The adjacency matrix A has no zero entry from **A⁵** (the diameter is 5; triangles such as Mino-Omi-Iseshima make the map non-bipartite). Its row sums and its top eigenvector (λ ≈ 4.59) rank exposure: Mino 1.00 and Shinano 0.88 at the top, Settsu 0.15 and Noto 0.13 at the bottom. The unique 5-walk Noto ↔ Settsu is the one 1 in A⁵.
+
+**Chris's correction: hubs are strong owned, weak alone.** Holding Kaga, Shinano and Echigo, then taking Musashi, Suruga, Mikawa and Noto, adds a back fief with every conquest while the front stays at 3 fiefs (Kaga, Shinano, Mikawa) and the enemies faced fall from 7 to 4. It works because `share_line` charges a fief the men for its **largest** enemy neighbour, not the sum: a hub facing three rivals pays one garrison and covers the borders of everything behind it. Degree is a liability for a one-fief start (the opening) and an asset inside an empire. Centrality ranks how hard a fief is to hold alone, not what it is worth to own.
+
+**The planner** (`expand.POCKET`, off; `long_game --pocket N`). Each season it lists every connected empire within N conquests and prices each in men per back-line fief gained: the men to take it (`fought_need`, skill-aware) plus the change in the army bill, over the interior fiefs gained. The cheapest is the goal, sticky unless a new one is 25% cheaper (`POCKET_KEEP`). `best_attack` attacks only goal fiefs (`--pocket-strict 0`: the greedy pick while none is ready), and `campaign` stages toward it. `--line` forces an opening line (nothing else is attacked until it is done or broken). `long_game` now sets `POCKET` on every job: the process pool reuses workers, so a setting could leak between jobs (no earlier run was affected).
+
+**Skill 3** (340 games, 20 seeds, 70 years, all with gate hire; the control reproduces #59's row exactly):
+
+| | expanded | peak ≥ 10 | unified | economy, yours / AI's per fief, years 5 / 10 / 20 |
+|---|---|---|---|---|
+| gate hire (#59) | 116 | 10 | 0 | 0.58 / 0.51 / 0.37 |
+| + pocket 4, strict | 109 | 6 | 1 | 0.58 / 0.51 / 0.34 |
+| + pocket 4, greedy fallback | 116 | 14 | 1 | 0.58 / 0.51 / 0.36 |
+| + pocket 4 + staging | 109 | 9 | 0 | 0.58 / 0.51 / 0.34 |
+
+Neutral, because there is nothing to plan with: **only 4 of 340 games hold a second fief by year 10**, the median first conquest is year 19 (quartiles 17 / 19 / 23), and no game has an interior fief before year 20. The one-fief player sits under its own army bill until about year 13 (median men vs bill: 96 / 116 at year 3, 120 / 165 at year 9, 162 / 199 at year 12) while the AI's garrisons grow. Opening lines raced from Echigo, Shinano and Kaga (60 seeds) change nothing before the first conquest (year 17-24 in every line); Honganji is dead whatever the line (1 of 60 alive at year 6).
+
+**Skill 2, where the first conquest comes at year 13** (`pockets race 2`). On seeds 3000-3059, Chris's trio line Echigo → Kaga → Shinano led with 11 unified against greedy's 6. **On 200 fresh seeds (3060-3259) it did not hold:**
+
+| Echigo, unless noted | peak ≥ 10 | unified | back line at year 30 | invasion deaths |
+|---|---|---|---|---|
+| greedy | 87 | 48 | 3.9 | 83 |
+| pocket planner | 89 | 46 | 4.0 | 83 |
+| Shinano only | 85 | 50 | 3.4 | 84 |
+| Kaga → Shinano | 82 | 39 | 3.6 | 103 |
+| Shinano → Kaga (hub first) | 75 | 38 | 2.9 | 97 |
+| Shinano start, greedy | 53 | 16 | 2.3 | 59 |
+| Shinano start, pocket planner | 58 | 17 | 2.8 | 64 |
+
+- **The planner ties the greedy expander** (46 vs 48, 17 vs 16). The greedy expander was never blind to shape: `score` ranks a move by the interior fiefs it creates first, and `LOOKAHEAD` adds a second conquest priced by the army bill. On a 17-fief map with diameter 5, 1-2 conquests of shape plus "attack whatever is ready and SAFE" catch what 4 conquests do.
+- **A forced two-step line costs about 10 unifications in 200,** mostly through invasion: waiting on one target while the neighbours grow. Hub first was worst in both samples (Chris doubted "hub first" too), but weakly against the noise; at about 50 unified in 200, lines within ±10 are not separated.
+
+So the planner's horizon is not the bottleneck. What separates outcomes is tempo: being able to strike as soon as something is takeable. At skill 3 that is the one-fief opening, the same wall as #58-#59.
+
+**Open:** the opening tempo (what lets a one-fief player strike before year ~10 at skills 2-3: hire to the attack and accept being huntable for a few seasons?); the multi-fief, multi-turn late war (#59).
+
 ### #59 — Gate hire at skill 3: it saves openings and costs the economy, and the economy is the wall (Chris, 2026-11-13)
 
 Chris: hire before the economy tops out, but *top-out is probably too long, and ASAP might be too short*; and *be conscious that our economy does not stall: if your economy recovers slower than your enemy, this stalls too*. (On the late war's gold: a capped fief cannot even be sent gold, so the answer is attacking from several fiefs or over several turns; you do not have to win on the first try. Not built yet.)

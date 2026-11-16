@@ -14,6 +14,11 @@ From tools/:  py -3.14 -m na1sim.long_game FIEFS SEEDS YEARS [OUT.json] [--first
   e.g.  py -3.14 -m na1sim.long_game 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 20 70 long70.json
 Yearly rows: (year, held, live, owners, age, exposed, bill, men, econ index per own fief, per AI fief).
 `--gate-hire 1` hires to the gate line before the economy tops out (#59).
+`--pocket N` plans the shape N conquests out (#60: the goal empire with the fewest men per back-line
+fief gained); `--pocket-strict 0` lets a fief take a greedy pick while no goal target is ready;
+`--staging 1` stages one campaign at a time, toward the goal when --pocket is on.
+`--line 3,0` forces an opening line (Kaga, then Noto: nothing else is attacked until the line is
+done or broken), then plays on as configured.
 `--skill N` plays at another difficulty (#57: skill 3). `--ev` is #48's tuned weak-start opening:
 while the player holds one fief, the season's policy (expand.BASE) is the ev player (8-season
 horizon, growth, marks, riots priced), then the reader; #48 ran Saito with it (13 of 300 unified,
@@ -68,10 +73,20 @@ def one(job):
         X.BASE = ev_base
     if len(job) > 10 and job[10] is not None:
         X.GATE_HIRE = bool(job[10])
+    X.POCKET = bool(len(job) > 11 and job[11])          # set every job: the pool reuses its workers
+    if X.POCKET:
+        X.POCKET_DEPTH = job[11]
+    if len(job) > 12 and job[12] is not None:
+        X.POCKET_STRICT = bool(job[12])
+    if len(job) > 13 and job[13] is not None:
+        X.STAGING = bool(job[13])
+    X.LINE = tuple(job[14]) if len(job) > 14 and job[14] else ()
     policy.OPENING.update(OPENING)
     tactical.HUMAN = strike.Doctrine("control", "contact")
     X.LOG.clear()
     X.HIRES.clear()
+    X.POCKET_LOG.clear()
+    X._POCKET.clear()
     owner, yearly, t0 = [], [], time.time()
 
     def pol(m, idx, rng):
@@ -117,9 +132,15 @@ def main():
     ap.add_argument("--skill", type=int, default=SKILL)
     ap.add_argument("--ev", action="store_true", help="#48's tuned ev opening while holding one fief")
     ap.add_argument("--gate-hire", type=int, help="1: hire to the gate line before topping out (#59)")
+    ap.add_argument("--pocket", type=int, default=0, help="N: the pocket planner, N conquests deep (#60)")
+    ap.add_argument("--pocket-strict", type=int, help="0: no goal target ready, take the greedy pick")
+    ap.add_argument("--line", default="", help="an opening line, e.g. 3,0: take Kaga then Noto, nothing else first (#60)")
+    ap.add_argument("--staging", type=int, help="1: one campaign at a time (with --pocket: toward the goal)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
-    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire)
+    jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
+             a.pocket, a.pocket_strict, a.staging,
+             [int(x) for x in a.line.split(',') if x])
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

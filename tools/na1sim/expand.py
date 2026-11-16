@@ -427,8 +427,11 @@ def campaign(m, owner):
     if _CAMPAIGN.get("key") == key:
         return _CAMPAIGN["val"]
     best = None
+    goal = pocket_targets(m, owner)[0]                  # #60: stage toward the line's / pocket's next fief
     for i in owned(m, owner):
         for t in reaction.enemy_neighbours(m, i):
+            if goal and t not in goal:
+                continue
             led = m.is_capital(i)
             a, d = game.siege_strengths(m, i, t, 0, led)
             per_man = 3 if led else 2
@@ -636,6 +639,116 @@ def plan_move(m, idx, rng):
     return None
 
 
+# --- the pocket planner: plan the shape several conquests out (#60) --------------------------
+# Chris: look ahead far enough to see whether conquest can make pockets of fiefs with no enemy
+# neighbour, so the army focuses on one front and the back line develops. On the 17-fief map a pocket
+# takes 3-5 conquests to appear (Kinki: Settsu, Yamato, Yamashiro, Iga + Omi or Iseshima is 4 interior
+# behind a 2-fief front), so LOOKAHEAD's two conquests never see one. The goal is the reachable empire
+# with the fewest men per back-line fief gained: men to take it (fought_need, skill-aware) plus the
+# change in the army bill, over the interior fiefs gained. Only the goal's targets are attacked.
+POCKET = False
+POCKET_DEPTH = 4
+POCKET_STRICT = True                    # no goal target ready: wait (False: take the greedy pick)
+POCKET_KEEP = 125                       # keep the standing goal unless the new best is this much cheaper (%)
+
+
+def _foe(m, j, me):
+    """An AI-held fief (enemy_neighbours' test, for any fief)."""
+    return j < m.r16(M.SCENARIO_FIEF_COUNT) and m.province_ai_state(j) == 0 and m.fief_owner(j) != me
+
+
+def shape_bill(m, me, T):
+    """army_bill of a hypothetical empire T (every fief outside T as it stands) -> (bill, interior)."""
+    bill = inner = 0
+    for i in T:
+        foes = [e for e in m.neighbor_rows.get(i, []) if e not in T and _foe(m, e, me)]
+        inner += not foes
+        need = max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in foes] or [0])
+        if m.is_capital(i) and m.fief_owner(i) == me and len(T) > 1:
+            seen, frontier, far = {i}, [i], set()      # capital_line: every enemy two steps out through T
+            for _ in range(2):
+                nxt = []
+                for a in frontier:
+                    for b in m.neighbor_rows.get(a, []):
+                        if b not in seen:
+                            seen.add(b)
+                            if b in T:
+                                nxt.append(b)
+                            elif _foe(m, b, me):
+                                far.add(b)
+                frontier = nxt
+            need = max([need] + [m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in far])
+        bill += need
+    return bill, inner
+
+
+def _pocket_price(m, owner, E, T, base):
+    """Men per back-line fief gained by going from E to T, or None if T gains none."""
+    bill, inner = shape_bill(m, owner, T)
+    gain = inner - base[1]
+    if gain <= 0:
+        return None
+    cost = sum(fought_need(m, t) for t in T - E)
+    return (cost + max(0, bill - base[0])) / gain
+
+
+def pocket(m, owner):
+    """The goal empire (frozenset) or None: of every connected empire within POCKET_DEPTH conquests,
+    the cheapest in men per back-line fief gained. Sticky (POCKET_KEEP) so the army does not turn."""
+    E = frozenset(owned(m, owner))
+    key = (m.r16(M.CURRENT_GAME_YEAR), getattr(m, "season", 0), owner, E)
+    if _POCKET.get("key") == key:
+        return _POCKET["goal"]
+    base = shape_bill(m, owner, E)
+    best, lvl = None, {E}
+    for k in range(1, POCKET_DEPTH + 1):
+        nxt = set()
+        for S in lvl:
+            for i in S:
+                for j in m.neighbor_rows.get(i, []):
+                    if j not in S and _foe(m, j, owner):
+                        nxt.add(S | {j})
+        lvl = nxt
+        for T in lvl:
+            p = _pocket_price(m, owner, E, T, base)
+            if p is not None and (best is None or (p, k) < best[:2]):
+                best = (p, k, T)
+    goal = best[2] if best else None
+    old = _POCKET.get("goal")
+    if old and old > E and all(_foe(m, t, owner) for t in old - E):
+        p_old = _pocket_price(m, owner, E, old, base)
+        if p_old is not None and (best is None or p_old * 100 <= best[0] * POCKET_KEEP):
+            goal = old
+    if goal != old:
+        POCKET_LOG.append((m.r16(M.CURRENT_GAME_YEAR), getattr(m, "season", 0), owner,
+                           sorted(goal - E) if goal else None))
+    _POCKET.update(key=key, goal=goal)
+    return goal
+
+
+_POCKET = {}
+POCKET_LOG = []
+
+
+LINE = ()                               # an opening line (Chris: Echigo -> Kaga -> Noto): fiefs to take in order
+
+
+def pocket_targets(m, owner):
+    """The fiefs the empire may attack now: the next fief of the opening LINE until the line is done,
+    then the pocket goal's fiefs it borders -> (targets or None, strict). A line fief the empire
+    does not border breaks the line (the map moved on)."""
+    mine = set(owned(m, owner))
+    for t in LINE:
+        if _foe(m, t, owner):
+            if any(b in mine for b in m.neighbor_rows.get(t, [])):
+                return {t}, True
+            break
+    goal = pocket(m, owner) if POCKET else None
+    if not goal:
+        return None, False
+    return {t for t in goal - mine if any(b in mine for b in m.neighbor_rows.get(t, []))}, POCKET_STRICT
+
+
 # --- the decision ---------------------------------------------------------------------------
 MEN_STEPS, RICE_STEPS = 12, 6
 SEASONS = (2, 3, 0)                     # after the harvest, while the rice lasts; never Summer
@@ -729,12 +842,17 @@ def best_attack(m, idx):
     if any(s != SAFE for s in empire(m, m.fief_owner(idx)).values()):
         return None
     per_target = {}
+    goal, strict = pocket_targets(m, m.fief_owner(idx))
     for mv in candidates(m, idx):
+        if goal is not None and strict and mv[0] not in goal:
+            continue
         ok, v = score(m, idx, mv)
         if ok and (mv[0] not in per_target or v > per_target[mv[0]][1]):
             per_target[mv[0]] = (mv, v)
     if not per_target:
         return None
+    if goal and not strict and goal & set(per_target):
+        per_target = {t: v for t, v in per_target.items() if t in goal}
     if not LOOKAHEAD or len(per_target) == 1:
         return max(per_target.values(), key=lambda x: x[1])[0]
     return max(per_target.values(), key=lambda x: (plan_value(m, idx, x[0]), x[1]))[0]
