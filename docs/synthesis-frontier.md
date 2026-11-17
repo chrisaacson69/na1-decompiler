@@ -193,7 +193,33 @@ The old forecast was wrong twice at skill 2: the tail is wide, and even its mean
 - **Win rate does not follow.** Skill 1 does not separate (164-175). At skill 2 every honest pricing loses (24-37 against 40): the first conquest moves from year 9 to 11 in the fast quartile, 16-19 fewer starts ever expand, and 13-23 more are invaded. An attack sized to hold through a bad battle is one the opening cannot afford yet.
 - **So the optimistic forecast was a risk tolerance, and a good one.** Chris's reading, measured: a low-odds conquest still pays, because a fief lost a year later costs the rebalancing of everyone around it too, while a year of waiting costs tempo the opponents use to grow. Across #61 one quantity tracks the outcome: when the first conquest comes earlier (topped down to 30%, the planner), the win rate rises; when it comes later (topped 0%, banking, honest sizing), it falls. Holding what you take is second-order while the opening is open. `KEEP_Q` stays off; the table stays as the instrument.
 
-**Open:** test the tempo reading directly (win rate against the year of the first conquest, per start, across these runs); size by quantile only after the opening (the late game, where Chris expects holding to matter); count the targets with no X at skill 3 (how often the race is lost before it starts); and the general fix for skill 3, raising our side of the race: men from several fiefs into one attack, the multi-turn war (#59), the back-line economy (#60).
+**The tempo reading, tested: it is a deadline, and the deadline is the lord's life.** Every #61 run (25 configs × 340 games at skill 1, 12 at skill 2; the same starts and seeds), three cuts, each controlling more:
+
+- **Pooled, P(win | first conquest year), skill 1:** ≤5 years 74%, 6-7 77%, 8-9 76%, 10-12 72%, **13-16 44%, 17+ 24%**, never 0% (3,158 of 8,500 games never expand). Flat, then a cliff.
+- **Within each start** (first conquest at or before that start's median vs after): skill 1, 76% vs 65%, early ahead on 12 of 15 starts; skill 2, 27% vs 15%, 10 of 12.
+- **Paired** (the same start and seed under two configs whose first conquests differ by 2+ years):
+
+| | pairs | earlier won | later won |
+|---|---|---|---|
+| skill 1, both by year 12 | 20,996 | 75% | 76% |
+| skill 1, the later one after year 12 | 8,352 | 72% | **34%** |
+| skill 1, both after 12 | 610 | 49% | 15% |
+| skill 2, both by year 12 | 1,710 | 29% | 34% |
+| skill 2, the later one after year 12 | 1,537 | 22% | **13%** |
+| skill 2, both after 12 | 177 | 16% | 2% |
+
+**Earlier buys nothing before about year 12 (at skill 2 rushing costs a little); missing it halves the win rate or worse.** How the expanders lose:
+
+| | games | won | lord died | invaded | losers' median peak / end year |
+|---|---|---|---|---|---|
+| skill 1, first conquest by year 12 | 4,807 | 75% | 8% | 15% | 10 fiefs / year 28 |
+| skill 1, after year 12 | 535 | 35% | **38%** | 20% | 7 / 37 |
+| skill 2, by year 12 | 1,353 | 28% | **43%** | 27% | 9 / 35 |
+| skill 2, after year 12 | 546 | 12% | 59% | 27% | 9 / 37 |
+
+Invasion barely moves; **the lord dying of age is what a late opening buys** (8% → 38% at skill 1). The clock is the lord's life, not the opponents' growth: a late start leaves too few years to finish. At skill 2 the clock binds even on time, 43% of the punctual expanders dying of age at a median 9 fiefs, so skill 2's lever is the conquest rate after the first, not the opening. (Year 12 is the average across starts; the daimyo's starting age should set each start's own deadline: untested.)
+
+**Open:** each start's deadline from its daimyo's age; the conquest rate after the first at skill 2 (the multi-fief, multi-turn war, #59); size by quantile only after the opening (the late game, where Chris expects holding to matter); count the targets with no X at skill 3 (how often the race is lost before it starts); and the general fix for skill 3, raising our side of the race: men from several fiefs into one attack, the multi-turn war (#59), the back-line economy (#60).
 
 ### #60 — The pocket planner: the map has pockets, the greedy expander already finds them, and the opening is the wall (Chris, 2026-11-16)
 
