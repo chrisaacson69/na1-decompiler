@@ -786,7 +786,9 @@ def score(m, idx, move):
         if not player_war(m, idx, t, men, rice, led):
             return False, None
         states = empire(m, owner)
-        if any(s != SAFE for s in states.values()) or not capital_ok(m, owner):
+        tol = RANK[tolerance(m, owner)]                # the prize may be left up to the tolerance; the rest SAFE
+        if (any(RANK[st] > (tol if i == t else 0) for i, st in states.items())
+                or not capital_ok(m, owner)):
             return False, None
         # the fief the army left keeps a full shield (rice >= men): carrying its rice away left
         # Tokugawa's capital at rice 1 beside 276 men, and a 6-man attack took the faction
@@ -878,12 +880,171 @@ WAR_AT = 0                              # percent of the live fiefs held at whic
 GATE_HIRE = False                       # #59: hire to the gate line before the economy tops out
 MORALE_FLOOR = 55                       # under it, that gold raises morale instead (revolts start under 45)
 
+# Strike hire (Chris, 2026-11-16): expand sooner by forgoing growth, where a neighbour is soft enough.
+# A fief that is not topped prices every enemy neighbour: the men to take it (fought_need, skill-aware)
+# plus the men it keeps at home (own_need), the hire for the difference, plus the War command's gold
+# per man sent. If that cost is within STRIKE years of income, it stops developing and saves/hires for
+# the cheapest such target; best_attack strikes once the move scores SAFE. STRIKE = 0 is the old player
+# (develop until topped). Context sensitivity is the price itself: a weak neighbour is cheap.
+STRIKE = 0                              # horizon in seasons (0: off)
+STRIKE_SHARE = 100                      # percent of the gold a season may put into men toward the strike
+STRIKES = []
+
+# Earliest-X (Chris, 2026-11-16): "we know the growth rate of all neighbours and what we can afford;
+# compare how quickly we could hire enough to invade by time X, and decide grow vs hire by whatever
+# makes X smallest. The targets are moving, but we can calculate lead." Each season a fief prices two
+# plans for every enemy neighbour over STRIKE seasons: SAVE (keep the gold; it is hired into men) and
+# GROW (give this season's gold to the peasants, then save). The gift pays from the first Fall after the
+# next Summer mark reset (the marks, #13: a Spring gift pays this Fall, any later one next Fall). X is
+# the first season the banked gold covers the hire to the line plus the War gold, the line being the
+# men sent (fought_need on the target's projected men; with HOLD, enough that the survivors stand at
+# the new fief's share line) plus the fief's own gate (own_need, grown with its largest neighbour).
+HOLD = True                             # the strike also pays for holding the prize (SAFE tolerance only)
+MEN_HIST = {}                           # fief -> [(season index, men)], cleared per game
+GROWTH_SPAN = 4                         # seasons of history the growth slope is read over
+
+
+def _tick(m):
+    return m.r16(M.CURRENT_GAME_YEAR) * 4 + m.season
+
+
+def record_men(m):
+    """Once per season: every live fief's men, for the growth slopes."""
+    t, n = _tick(m), m.r16(M.SCENARIO_FIEF_COUNT)
+    if MEN_HIST.get("_t") == t:
+        return
+    MEN_HIST["_t"] = t
+    for i in range(n):
+        if m.province_ai_state(i) != M.EMPTY:
+            h = MEN_HIST.setdefault(i, [])
+            h.append((t, m.r16(m.fief(i) + M.F_MEN)))
+            del h[:-GROWTH_SPAN - 1]
+
+
+def growth(m, i):
+    """Men per season, read off the history (0 while there is none; never negative)."""
+    h = MEN_HIST.get(i) or []
+    if len(h) < 2 or h[-1][0] == h[0][0]:
+        return 0.0
+    return max(0.0, (h[-1][1] - h[0][1]) / (h[-1][0] - h[0][0]))
+
+
+def gold_income(m, idx, gift=0, reset=True):
+    """The gold a harvest would bring in. reset: from the live stats (a harvest after the next Summer
+    reset); else from the marks as they stand (this Fall). gift: gold given to the peasants first."""
+    from . import policy
+    with forecast.held(m):
+        f = m.fief(idx)
+        if gift:
+            policy.give_peasants(m, idx, gift, gold=True)
+        if reset:
+            game.reset_marks(m)
+        m.w16(f + M.F_MEN, 0)
+        g = m.r16(f + M.F_GOLD)
+        game.harvest_fief(m, idx, forecast.Mean())
+        return max(0, m.r16(f + M.F_GOLD) - g)
+
+
+def _harvests(season, horizon, first, later, switch_at):
+    """Banked income by each season ahead (0..horizon): `first` for the harvests before number
+    switch_at, `later` from it on. Season 2 is the Fall harvest."""
+    out, bank, k = [], 0, 0
+    for s in range(horizon + 1):
+        if s and (season + s) % 4 == 2:
+            bank += first if k < switch_at else later
+            k += 1
+        out.append(bank)
+    return out
+
+
+def hold_line(m, t, me):
+    """The men the conquered fief needs against its other neighbours (share line), now."""
+    return max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in reaction.enemy_neighbours(m, t)
+                if m.fief_owner(e) != me] or [0])
+
+
+def strike_plan(m, idx):
+    """-> (target, line, X, plan) for the earliest strike within STRIKE seasons, plan "save"/"grow";
+    or None. The fief itself need not be SAFE (its line includes its own gate); every other owned
+    fief must be."""
+    me = m.fief_owner(idx)
+    if any(s != SAFE for i, s in empire(m, me).items() if i != idx):
+        return None
+    f = m.fief(idx)
+    men, gold, header = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD), m.r16(f + M.F_HEADER)
+    rate = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10
+    season = m.season
+    keep0 = own_need(m, idx)
+    g_keep = max([growth(m, e) for e in targets(m, idx)] or [0])
+    tol_safe = tolerance(m, me) == SAFE
+    now, live = gold_income(m, idx, reset=False), gold_income(m, idx)
+    spend = max(0, gold - 1)
+    grown = gold_income(m, idx, gift=spend) if spend else live
+    plans = {"save": (gold, _harvests(season, STRIKE, now, live, 1)),
+             # a Spring gift is in this Fall's marks; any later one waits for next Fall
+             "grow": (1, _harvests(season, STRIKE, grown if season == 0 else now, grown,
+                                   0 if season == 0 else 1))}
+    best = {}
+    for t in targets(m, idx):
+        m_t, g_t = m.r16(m.fief(t) + M.F_MEN), growth(m, t)
+        ratio = fought_need(m, t) / max(1, m_t)                # the need ratio, skill-aware
+        h0 = hold_line(m, t, me) if HOLD and tol_safe else 0
+        for name, (bank0, inc) in plans.items():
+            for s in range(STRIKE + 1):
+                proj = m_t + g_t * s
+                send = int(proj * ratio) + 1
+                if h0:
+                    kr = fought_keep(send / max(1, proj), skill_scale(m))
+                    send = max(send, int((h0 + g_t * s) / kr) + 1)
+                line = send + int(keep0 + g_keep * s * 52 / 48)
+                if line > header:
+                    break
+                cost = max(0, line - men) * rate + send
+                if bank0 + inc[s] >= cost:
+                    # ties go to grow: the same X with a bigger economy
+                    k = (s, name != "grow")
+                    if t not in best or k < best[t][0]:
+                        best[t] = (k, (t, line, s, name))
+                    break
+    # the soonest strike that best_attack would make: score's own verdict (the prize within the
+    # tolerance, everything else SAFE, the capital's line, the rice shield), on today's map with the
+    # line's men in hand (Chris: the safety check belongs with no banking)
+    for _, plan in sorted(best.values()):
+        if strike_ok(m, idx, plan[0], plan[1]):
+            return plan
+    return None
+
+
+def strike_ok(m, idx, t, line):
+    """Would some attack on t score ok if the fief held `line` men and the gold to send them?"""
+    f = m.fief(idx)
+    with forecast.held(m):
+        m.w16(f + M.F_MEN, max(m.r16(f + M.F_MEN), line))
+        m.w16(f + M.F_GOLD, max(m.r16(f + M.F_GOLD), line))
+        for mv in candidates(m, idx):
+            if mv[0] == t and score(m, idx, mv)[0]:
+                return True
+    return False
+
+
+TOL_EARLY = SAFE                        # the state the conquered fief may be left in, early in the game
+TOL_LATE = SAFE                         # ... and late (Chris: risky plans pay early, late you must hold)
+TOL_SWITCH = 0                          # fiefs held at which early turns late (0: always late). Keyed on
+                                        # fiefs, not years (Chris: losing a fief is fatal only while you
+                                        # hold one; plague, #46), so the risk sits at the one -> two step
+
+
+def tolerance(m, owner):
+    return TOL_EARLY if TOL_SWITCH and len(owned(m, owner)) < TOL_SWITCH else TOL_LATE
+
 
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
     per man sent); else play the reader's season."""
     from . import policy
+    if STRIKE:
+        record_men(m)
     if PLANNER:
         pm = plan_move(m, idx, rng)
         if pm:
@@ -906,7 +1067,9 @@ def expand_policy(m, idx, rng):
                 ASSIGNS.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0]))
                 return
         LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *mv))
-        player_war(m, idx, *mv, rng=rng)
+        won = player_war(m, idx, *mv, rng=rng)
+        CONQ.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0], mv[1], bool(won),
+                     fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
         return
     f = m.fief(idx)
     if DEPOTS:
@@ -925,6 +1088,23 @@ def expand_policy(m, idx, rng):
         short = capital_line(m, idx) - m.r16(f + M.F_MEN)
         if short > 0 and policy._hire_up_to(m, idx, capital_line(m, idx)):
             return
+    if STRIKE and not capped(m, idx):
+        sp = strike_plan(m, idx)
+        if sp:
+            t, line, x, plan = sp
+            STRIKES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, t, line, x, plan))
+            if plan == "save":
+                gold, rate = m.r16(f + M.F_GOLD), m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+                war_gold = fought_need(m, t)            # War costs a gold per man sent: keep it
+                budget = min(gold - war_gold, gold * STRIKE_SHARE // 100)
+                if (m.r16(f + M.F_MEN) < line and budget * 10 // rate >= 1
+                        and m.r16(f + M.F_MORALE) >= MORALE_FLOOR
+                        and policy._hire_up_to(m, idx, line, budget)):
+                    HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "strike", t))
+                    return
+                # no banking (Chris, 2026-11-16): gold that cannot hire this season develops instead.
+                # Banking deadlocked: the plan called a strike ready that best_attack never approved,
+                # and the fief sat 30-55 seasons on its gold (#61: 107-123 unified against 155).
     if (GATE_HIRE and not capped(m, idx) and m.r16(f + M.F_GOLD) > 20
             and m.r16(f + M.F_MORALE) >= MORALE_FLOOR and m.r16(f + M.F_MEN) < own_need(m, idx)):
         # #59: under its gate line and not topped: hire toward the line with at most ARMY_SHARE of
@@ -948,6 +1128,7 @@ def expand_policy(m, idx, rng):
 
 
 BASE = None                             # the season's policy when the expander has nothing to do
+CONQ = []                               # every real attack: (year, season, src, tgt, men, won, prize state, held after)
                                         # (default the reader; a weak start passes its tuned opening)
 HIRES = []
 ASSIGNS = []

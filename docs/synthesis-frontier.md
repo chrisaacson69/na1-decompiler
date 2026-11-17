@@ -91,6 +91,84 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #61 — Grow or strike: the economy has a floor, and a targeted strike beats a lower threshold (Chris, 2026-11-16)
+
+Chris: at skill 3 the opponents outgrow us and we stagnate, so expand sooner by forgoing growth. *How much econ can we give up without putting us at risk?* Nail the principles at skill 1 first. It is context-sensitive: some fiefs can strike sooner because their neighbours are weak.
+
+**The uniform dial: `--topped`** (hire the attack army before the economy is full; #58 swept it at skill 3 only). Skill 1, 340 games, 70 years; econ = the Economic Index per own fief over the AI's, median:
+
+| topped at | unified | alive at 6 | first conquest, year quartiles | econ, years 5 / 10 / 20 |
+|---|---|---|---|---|
+| 100% (#48's player) | 155 | 216 | 9 / 9 / 10 | 1.11 / 0.86 / 0.76 |
+| 70% | 168 | 216 | 8 / 9 / 9 | 1.11 / 0.81 / 0.71 |
+| 50% | 172 | 219 | 7 / 8 / 8 | 1.11 / 0.85 / 0.66 |
+| 30% | **178** | 227 | 6 / 7 / 8 | 1.05 / 0.79 / 0.61 |
+| 15% | 117 | 232 | 5 / 7 / 10 | 0.85 / 0.65 / 0.52 |
+| 0% | 86 | 236 | 7 / 9 / 14 | 0.76 / 0.54 / 0.48 |
+
+- **Tempo pays until a floor, then falls off a cliff.** About 8 unifications per year of earlier first conquest, down to roughly 0.6 of the AI's economy at year 20; then 178 → 117 in one step. At 0% even the first conquest comes later: an army without an economy cannot fund the War gold, and the men sit.
+- **Survival and winning separate.** Alive at 6 rises all the way down (216 → 236); unification does not. Hiring everything makes you hard to kill and unable to win.
+- **The metric is P(win), and the safe choice is the plateau, not the peak** (Chris: even with the fastest unification found by EV, % win argues for a safer approach). 168 / 172 / 178 are within noise at 340 games; the cliff at 15% is not. The edge moves with skill, the start, and shocks: plague halves a fief's men before anyone moves (#46: 7 of 38 one-fief deaths), and losing a fief is only fatal while you hold one. So the risky window belongs to the one-fief → two-fief step, and holding one fief longer is itself the exposure.
+
+**The targeted dial: earliest-X strike hire** (`expand.STRIKE`, seasons; `long_game --strike 8`). Chris: *we know the growth rate of all neighbours and what we can afford; compare how quickly we could hire men to invade by time X, and decide grow vs hire by whatever makes X smallest. The targets are moving, but we can calculate lead.* Each season a fief that is not topped prices every enemy neighbour over N seasons, the neighbour's men growing at its observed slope (`record_men`, `growth`: the last 4 seasons), under two plans: **save** (hire the gold into men) and **grow** (give it to the peasants first; the gift pays from the first Fall after the next Summer mark reset). X is the first season the gold covers the hire to the line plus the War gold, the line being the men sent (fought_need on the projected garrison; with `HOLD`, enough that the survivors stand at the prize's share line) plus the fief's own gate. The fief follows whichever plan strikes sooner, ties to grow. The attacking fief need not be SAFE before (at skill 1 the opening sits COMING for about 9 years, under its own line, while every gold goes to the peasants; the line includes its gate, so hiring to it is how it gets SAFE). `--tol EARLY,LATE,YEARS` lets the conquered fief be left HUNTABLE or COMING (the rest stay SAFE) early.
+
+**Banking deadlocked, and is gone** (Chris: *the player should not be banking at all; enough buys at max econ should either max his army or put it to a tolerable attack*). The first version let a short fief pass its season to bank gold. All five variants (SAFE with or without hold, HUNTABLE or COMING for 10 years, HUNTABLE always) unified only **107-123**, and the lord's death by age rose from 11 to 35-53. Traced on 8 games: the plan called a strike ready now for 30-55 seasons that `best_attack` never approved (the prize or the home left unsafe), and the fief sat on its gold. Those five rows measured the deadlock, not the tolerance. Now gold that cannot hire this season develops.
+
+| 340 games, 70 years | unified | expanded | invaded | lord died | first conquest | econ, years 5 / 10 / 20 |
+|---|---|---|---|---|---|---|
+| skill 1, control | 155 | 205 | 163 | 11 | 9 / 9 / 10 | 1.11 / 0.86 / 0.76 |
+| skill 1, strike 8 | **167** | 215 | 144 | 15 | 6 / 8 / 10 | 1.06 / 0.85 / **0.77** |
+| skill 1, strike 8 + topped 30% | 161 | 219 | 150 | 18 | 6 / 7 / 8 | 1.04 / 0.78 / 0.62 |
+| skill 1, tolerance only (HUNTABLE 10 years) | 154 | 205 | 162 | 13 | 9 / 9 / 10 | 1.11 / 0.87 / 0.78 |
+| skill 2, control | 32 | 140 | 231 | 69 | 11 / 12 / 13 | 0.93 / 0.79 / 0.73 |
+| skill 2, strike 8 | **47** | 163 | 209 | 76 | 9 / 12 / 13 | 0.92 / 0.82 / 0.73 |
+| skill 3, control (#58's row: 1, 62) | 1 | 62 | 284 | 49 | 15 / 17 / 19 | 0.73 / 0.62 / 0.42 |
+| skill 3, strike 8 | 0 | 79 | 271 | 62 | 14 / 16 / 19 | 0.73 / 0.62 / 0.52 |
+
+- **Skill 1: the targeted strike matches the threshold and keeps the economy.** 167 against topped 30%'s 178 (not separated), but at 0.77 of the AI's economy at year 20 against 0.61: the same win rate, far from the cliff. It spends the economy only where a neighbour is soft. The two do not stack (161).
+- **Skill 2: +15 unified (32 → 47), 23 more expanders, 22 fewer invasions,** economy unchanged. The fast quartile's first conquest comes two years sooner; the median does not move.
+- **Skill 3: 17 more expanders and a better economy at year 20 (0.52 against 0.42), still no one finishes.** The median first conquest is still year 16. The race is lost by construction where a target's garrison grows faster than the gold can hire: no X exists inside the horizon.
+- **Tolerance alone is neutral at skill 1** (154): the control rarely attacks before topping, so the window never binds.
+
+**The safety check, and tolerance by fiefs held.** The planner now returns the soonest strike that `score` itself would pass (`strike_ok`: on today's map with the line's men and gold in hand; the prize within the tolerance, the rest SAFE, the capital's line, the rice shield), so a planned strike is one `best_attack` makes. `--tol EARLY,LATE,N` now keys on fiefs held (EARLY while fewer than N), not years (Chris: losing a fief is fatal only while you hold one). Chris's question: *do the games just take longer, or do we lose more?* Win year is years from the start, quartiles:
+
+| strike 8, 340 games | skill 1 won | win year | invaded | lord died | skill 2 won | win year | invaded | lord died |
+|---|---|---|---|---|---|---|---|---|
+| control (no planner) | 155 | 21 / 24 / 27 | 163 | 11 | 32 | 28 / 33 / 37 | 231 | 69 |
+| planner, no safety check | 167 | 18 / 20 / 25 | 144 | 15 | 47 | 26 / 30 / 34 | 209 | 76 |
+| a: + safety check, SAFE | 164 | 18 / 21 / 24 | 147 | 17 | 40 | 25 / 28 / 34 | 211 | 80 |
+| b: HUNTABLE at 1 fief | 167 | 19 / 21 / 24 | 150 | 10 | 37 | 28 / 31 / 37 | 212 | 80 |
+| c: HUNTABLE at 1-2 fiefs | **179** | 19 / 22 / 25 | 139 | 10 | 38 | 27 / 31 / 35 | 216 | 78 |
+| d: COMING at 1 fief | 167 | 19 / 21 / 24 | 150 | 10 | 37 | 28 / 31 / 37 | 212 | 80 |
+| e: COMING at 1-2 fiefs | 175 | 18 / 21 / 25 | 142 | 11 | 41 | 28 / 30 / 36 | 212 | 76 |
+| f: HUNTABLE always | 172 | 18 / 21 / 25 | 144 | 15 | 34 | 25 / 28 / 32 | 218 | 77 |
+
+- **Neither.** No tolerance setting makes games longer (win years within a year of each other) or loses more (invasions 139-150 at skill 1, 211-218 at skill 2). As Chris had found before: above a minimum, the chance to win barely moves. Skill 1's best, HUNTABLE through the second fief, is +15 over SAFE, at the edge of the noise (about ±10 on paired seeds); skill 2 does not separate at all (34-41).
+- **At the first step, COMING and HUNTABLE are the same game** (b = d, row for row, at both skills): the first prize is never left COMING when it is not already HUNTABLE.
+- **The safety check costs nothing measurable** (164 vs 167, 40 vs 47, both inside the noise) and removes the class of plan that deadlocked; it stays.
+- **Skill 2's losses are the clock and the invasion, not the risk setting**: about 80 lords die of age and the median win is year 28-31. Tolerance does not reach that.
+
+**Why tolerance does not move outcomes: walking one start through the skills** (Chris: *the data shows it does not impact win % or game length, but why? Do we trade a fief over and over because we cannot hold, or are we missing a mechanism? Aggregates do not tell the whole story; tally key metrics so we can dig in*). `long_game` now returns a per-game tally: every real attack (`expand.CONQ`: won, the prize's state right after, fiefs held) and every owned fief lost (checked on each of our turns). Owari (Oda), 50 seeds, 70 years; churn = a conquest lost again within 4 seasons:
+
+| Owari | won | attacks / game | fiefs lost / game | conquests left SAFE (churned) | left HUNTABLE or COMING (churned) | lord died |
+|---|---|---|---|---|---|---|
+| skill 1, control | 40 | 16.8 | 3.3 | 717 (2%) | 46 (9%) | 2 |
+| skill 1, planner | 42 | 16.0 | 2.6 | 701 (1%) | 51 (16%) | 1 |
+| skill 1, planner + HUNTABLE to 2 fiefs | 41 | 16.7 | 3.2 | 747 (2%) | 49 (8%) | 2 |
+| skill 2, control | 11 | 14.2 | 5.2 | 523 (4%) | 95 (16%) | 16 |
+| skill 2, planner | 18 | 15.2 | 5.2 | 566 (3%) | 93 (14%) | 15 |
+| skill 2, planner + HUNTABLE to 2 fiefs | 15 | 13.9 | 4.3 | 522 (2%) | 90 (14%) | 22 |
+| skill 3, control | 0 | 3.7 | 1.7 | 138 (4%) | 30 (10%) | 30 |
+| skill 3, planner | 0 | 3.8 | 1.4 | 129 (1%) | 47 (13%) | 31 |
+| skill 3, planner + HUNTABLE to 2 fiefs | 0 | 4.5 | 2.1 | 155 (4%) | 36 (31%) | 35 |
+
+- **Not trading fiefs.** A SAFE conquest is lost again within a year 1-4% of the time; fiefs lost run 1.4-5.2 a game against 4-17 attacks.
+- **The dial covers one or two attacks a game.** About 45 conquests in 50 games leave the player holding 2 fiefs and 50 holding 3; everything after (500-700) is at 4 or more, where "to 2 fiefs" has expired. The risky window is the opening step, a small share of a game's decisions.
+- **The missing mechanism: the battle sets its own tolerance.** Conquests end HUNTABLE or COMING under every setting, the SAFE-only control included: 6% of them at skill 1, 15% at skill 2, 18% at skill 3, and those churn 8-31%. `score` forecasts the survivors from the keep table's mean; the battle map has a long low tail. Traced (Owari, skill 2, seed 3012): Mino → Omi 1580, 280 men against 112 (2.5×), forecast 142 survivors and SAFE, the battle left **55** and COMING, and the fief was gone the next season. The same game in 1572: 115 forecast, 111 left, HUNTABLE (a line-edge case). The dial being tuned is smaller than the risk the battle hands out uncontrolled, and the share rises with skill as the keep falls (#58's battle lab: 0.42 at 2.5× on skill 2, 0.19 on skill 3).
+- **Skill 3 is not a risk problem.** 4 attacks a game against 16 at skill 1, and the lord dies of age in 30-35 of 50. The tempo wall again.
+
+**Open:** size the strike on a low quantile of the survivors, not the mean (the battle lab gives means; it needs the spread by ratio and skill), so a bad battle still holds the prize; count the targets with no X at skill 3 (how often the race is lost before it starts); and the general fix for skill 3, raising our side of the race: men from several fiefs into one attack, the multi-turn war (#59), the back-line economy (#60).
+
 ### #60 — The pocket planner: the map has pockets, the greedy expander already finds them, and the opening is the wall (Chris, 2026-11-16)
 
 Chris: a planner that looks far enough ahead to see whether conquest can make **pockets** of fiefs with no enemy neighbour, so the army can focus on one front (#59's open thread).
