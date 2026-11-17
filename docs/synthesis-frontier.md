@@ -91,6 +91,21 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #64 — Stepping through a game: the trace, and a capital that gave its gold away (Chris, 2026-11-17)
+
+Chris: aggregates do not show the bottleneck; step through games fief by fief, season by season. `na1sim.trace FIEF SEED out.json` reuses `long_game.one` unchanged and records, at every player turn, the board (every fief's owner, men, gold, rice, wealth, loyalty, town, output, header, morale) and, for the fief moving, its state, own line, topped-out flag, the command and the rule that took it, its cheapest target (hold-sized send, shortfall, gold), and, when the empire is all SAFE, each target's blocker. A swimlane viewer (fiefs × seasons, coloured by command) was published as a private artifact from the session.
+
+**The first game traced found a bug.** Owari s3001, skill 2: from 1577 to 1587 five fiefs, all SAFE, 1,400 → 4,755 men (Mikawa 1,920, short 0 against Shinano and Suruga), no attack, lost to a revolt. Every target's blocker was `capital`: the depot rule ran before the capital's own hire in `expand_policy`, so the interior capital (147 men, line 229-310, morale 204) sent its gold to the front every season and never hired, and `capital_ok` vetoed every attack. `expand.CAPITAL_FIRST` (`long_game --capital-first 1`, off so earlier results reproduce) hires to the capital line first. In the traced game the attacks resume (11 fiefs by 1581), then the capital is emptied to 0 and the empire falls apart by 1583 (not yet traced).
+
+| 340 games, strike 8 | skill 1 | skill 2 | skill 3 |
+|---|---|---|---|
+| as committed | 164 | 40 | 0 |
+| capital first | 166 (saved 7, lost 5) | 45 (12 / 7, z +1.1) | 0 |
+
+A real fault, and a rare one: it decides about one game in thirty, so it is not the general mid-game stall.
+
+**Open:** trace more stalled games (with the fix) to classify the stalls; the emptied capital in the fixed game; Chris's rush/boom frame, a per-fief return-on-investment choice each season between developing, closing the cheapest target's shortfall (with the back fiefs it creates), and sending the surplus to a growing fief, keyed on whether the empire is ahead of the largest rival.
+
 ### #63 — Staging toward a hold-sized strike works, and the gate is the whole empire's SAFE (Chris, 2026-11-17)
 
 Chris: *mid to late game is generally where AIs stall, because the coordination to do large campaigns is harder; we can try staging.* #62 found the men beside the striker too few in 37% of stalled pairs, while the empire held hundreds over its lines.

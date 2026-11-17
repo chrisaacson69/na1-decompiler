@@ -100,6 +100,7 @@ def one(job):
     X.KEEP_Q = job[19] if len(job) > 19 and job[19] is not None else None
     X.COMBINE = bool(len(job) > 20 and job[20])          # set every job: the pool reuses workers
     X.COMBINE_HOLD = not (len(job) > 20 and job[20] == 2)   # --combine 2: pool to the win line only
+    X.CAPITAL_FIRST = bool(len(job) > 22 and job[22])    # set every job: the pool reuses workers
     X.STAGE = bool(len(job) > 21 and job[21])            # set every job: the pool reuses workers
     if X.STAGE:
         X.STAGE_MAX = int(job[21])
@@ -184,12 +185,13 @@ def main():
     ap.add_argument("--keep-q", type=float, help="q: price the survivors at the battle lab's q-quantile (#61)")
     ap.add_argument("--combine", type=int, help="1: several fiefs pool their spare men into one striker, sized to hold the prize; 2: sized to win only (#62)")
     ap.add_argument("--stage", type=int, help="N: the whole empire stages toward one hold-sized strike, dropped after N seasons (#63)")
+    ap.add_argument("--capital-first", type=int, help="1: the capital hires to its line before the depots send its gold away (#64)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

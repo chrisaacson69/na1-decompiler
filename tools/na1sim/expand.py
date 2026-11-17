@@ -1278,6 +1278,24 @@ def stage_move(m, idx):
     return None
 
 
+# The capital's line before the depots (found stepping through a game, 2026-11-17, `trace`): the depot
+# rule ran first, so an interior capital under its line sent its gold to the front every season and
+# never hired; capital_ok then vetoed every attack in the empire (Owari s3001 skill 2: five fiefs, all
+# SAFE, 1,400 -> 4,755 men over ten years, no attack, lost to a revolt).
+CAPITAL_FIRST = False
+
+
+def capital_hire(m, idx):
+    """The capital under its line hires to it (the War gate capital_ok asks it of every attack)."""
+    from . import policy
+    f = m.fief(idx)
+    if (m.is_capital(idx) and len(owned(m, m.fief_owner(idx))) > 1 and m.r16(f + M.F_GOLD) > 1
+            and m.r16(f + M.F_MORALE) >= reaction_cliff()
+            and capital_line(m, idx) > m.r16(f + M.F_MEN)):
+        return policy._hire_up_to(m, idx, capital_line(m, idx))
+    return False
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -1310,6 +1328,8 @@ def expand_policy(m, idx, rng):
         won = player_war(m, idx, *mv, rng=rng)
         CONQ.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0], mv[1], bool(won),
                      fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
+        return
+    if CAPITAL_FIRST and capital_hire(m, idx):
         return
     if STAGE:
         sp = _STAGE.get(m.fief_owner(idx), {}).get("plan")
@@ -1349,11 +1369,8 @@ def expand_policy(m, idx, rng):
             DEPOT_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *dm))
             send(m, idx, dm[1], dm[2], dm[3])
             return
-    if (m.is_capital(idx) and len(owned(m, m.fief_owner(idx))) > 1 and m.r16(f + M.F_GOLD) > 1
-            and m.r16(f + M.F_MORALE) >= reaction_cliff()):
-        short = capital_line(m, idx) - m.r16(f + M.F_MEN)
-        if short > 0 and policy._hire_up_to(m, idx, capital_line(m, idx)):
-            return
+    if not CAPITAL_FIRST and capital_hire(m, idx):
+        return
     if STRIKE and not capped(m, idx):
         sp = strike_plan(m, idx)
         if sp:
