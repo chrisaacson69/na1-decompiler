@@ -193,7 +193,7 @@ The old forecast was wrong twice at skill 2: the tail is wide, and even its mean
 - **Win rate does not follow.** Skill 1 does not separate (164-175). At skill 2 every honest pricing loses (24-37 against 40): the first conquest moves from year 9 to 11 in the fast quartile, 16-19 fewer starts ever expand, and 13-23 more are invaded. An attack sized to hold through a bad battle is one the opening cannot afford yet.
 - **So the optimistic forecast was a risk tolerance, and a good one.** Chris's reading, measured: a low-odds conquest still pays, because a fief lost a year later costs the rebalancing of everyone around it too, while a year of waiting costs tempo the opponents use to grow. Across #61 one quantity tracks the outcome: when the first conquest comes earlier (topped down to 30%, the planner), the win rate rises; when it comes later (topped 0%, banking, honest sizing), it falls. Holding what you take is second-order while the opening is open. `KEEP_Q` stays off; the table stays as the instrument.
 
-**The tempo reading, tested: it is a deadline, and the deadline is the lord's life.** Every #61 run (25 configs × 340 games at skill 1, 12 at skill 2; the same starts and seeds), three cuts, each controlling more:
+**The tempo reading, tested: it is a deadline, and missing it leads to a mid-game stall** (first written as "the deadline is the lord's life"; corrected below). Every #61 run (25 configs × 340 games at skill 1, 12 at skill 2; the same starts and seeds), three cuts, each controlling more:
 
 - **Pooled, P(win | first conquest year), skill 1:** ≤5 years 74%, 6-7 77%, 8-9 76%, 10-12 72%, **13-16 44%, 17+ 24%**, never 0% (3,158 of 8,500 games never expand). Flat, then a cliff.
 - **Within each start** (first conquest at or before that start's median vs after): skill 1, 76% vs 65%, early ahead on 12 of 15 starts; skill 2, 27% vs 15%, 10 of 12.
@@ -217,9 +217,18 @@ The old forecast was wrong twice at skill 2: the tail is wide, and even its mean
 | skill 2, by year 12 | 1,353 | 28% | **43%** | 27% | 9 / 35 |
 | skill 2, after year 12 | 546 | 12% | 59% | 27% | 9 / 37 |
 
-Invasion barely moves; **the lord dying of age is what a late opening buys** (8% → 38% at skill 1). The clock is the lord's life, not the opponents' growth: a late start leaves too few years to finish. At skill 2 the clock binds even on time, 43% of the punctual expanders dying of age at a median 9 fiefs, so skill 2's lever is the conquest rate after the first, not the opening. (Year 12 is the average across starts; the daimyo's starting age should set each start's own deadline: untested.)
+Invasion barely moves; the lord dying of age is what a late opening buys (8% → 38% at skill 1), and at skill 2 even punctual expanders die of age 43% of the time.
 
-**Open:** each start's deadline from its daimyo's age; the conquest rate after the first at skill 2 (the multi-fief, multi-turn war, #59); size by quantile only after the opening (the late game, where Chris expects holding to matter); count the targets with no X at skill 3 (how often the race is lost before it starts); and the general fix for skill 3, raising our side of the race: men from several fiefs into one attack, the multi-turn war (#59), the back-line economy (#60).
+**Age ends those games; it does not decide them (Chris: age is a hard cap, but it cannot force an earlier start. The cliff caps how early anyone can strike, and if a 41-year-old can start early, so can a 20-year-old. A time clock might justify more risk, but we already know the minimum).** Checked: these are old-age deaths (`natural_death`: health 0, or the roll from age 70; starting health is 65-109 and falls about 1.35 a year with the capital's plague, so health never runs out first; Fief 5, starting at age 20, dies in years 51-54). Young lords die of age too (skill 2: 33% of age-15 expanders, 51% of age-20), so these are games that ran 40-50 years without finishing. The expanders lost to the lord's death:
+
+| | games | peak, reached in | held at death | rivals left | death year |
+|---|---|---|---|---|---|
+| skill 1 | 604 | 9 fiefs, year 29 | 7 of 17 | 3 | 40 |
+| skill 2 | 905 | 9 fiefs, year 32 | 7 of 17 | 4 | 40 |
+
+They reach half the map, stall against three or four consolidated rivals, slide back, and the clock ends it. The year-12 deadline predicts who stalls (a late opening meets bigger rivals); it is not a lifespan race, so the opening's policy stays "as early as the economy floor allows" at every age. What is missing is the mid-game: the expander attacks one fief from one fief, and that stops working against a few large neighbours. This is the original complaint (*the opponents grow faster than us, so we stagnate*), placed: it is the mid-game, not the opening.
+
+**Open:** the multi-fief, multi-turn war against consolidated rivals (#59), measured on the stalled games (peak about 9 fiefs, 3-4 rivals left); a time-clock risk dial only after that; size by quantile only after the opening (the late game, where Chris expects holding to matter); count the targets with no X at skill 3 (how often the race is lost before it starts); and the general fix for skill 3, raising our side of the race: men from several fiefs into one attack, the multi-turn war (#59), the back-line economy (#60).
 
 ### #60 — The pocket planner: the map has pockets, the greedy expander already finds them, and the opening is the wall (Chris, 2026-11-16)
 
