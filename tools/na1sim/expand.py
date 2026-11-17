@@ -90,7 +90,30 @@ def fought_need(m, tgt):
     return int(m.r16(m.fief(tgt) + M.F_MEN) * need[bool(m.is_capital(tgt))] * skill_scale(m)) + 1
 
 
-def fought_keep(ratio, scale=1.0):
+# The keep's low tail (#61): conquests ended HUNTABLE or COMING under SAFE-only rules 6 / 15 / 18% of the
+# time at skills 1 / 2 / 3, because the forecast used the mean keep and a battle can leave far fewer
+# (Owari -> Omi, skill 2: 142 forecast, 55 left). KEEP_Q = q prices the survivors at the battle lab's
+# q-quantile for the game's skill (skill_lab --out keep_q.json: every won battle's kept share by skill
+# and ratio), so a bad battle still holds the prize. None: the mean table, as before.
+KEEP_Q = None
+_KEEP_TABLE = {}
+
+
+def _keep_table():
+    if not _KEEP_TABLE:
+        import json, os
+        raw = json.load(open(os.path.join(os.path.dirname(__file__), "keep_q.json")))
+        _KEEP_TABLE.update({int(s): sorted((float(r), ks) for r, ks in rows.items()) for s, rows in raw.items()})
+    return _KEEP_TABLE
+
+
+def fought_keep(ratio, scale=1.0, skill=None):
+    if KEEP_Q is not None and skill in _keep_table():
+        keep = 0.0                              # under the lab's lowest ratio: no measured keep, none assumed
+        for r, ks in _keep_table()[skill]:      # measured at the game's skill: no scale on the ratio
+            if ratio >= r and ks:
+                keep = ks[min(len(ks) - 1, int(KEEP_Q * len(ks)))]
+        return keep
     table = CHARGE_KEEP if CHARGE else FOUGHT_KEEP
     keep = table[0][1]
     for r, k in table:
@@ -137,7 +160,7 @@ def player_war(m, idx, tgt, men, rice, led=False, rng=None, fought=None):
         ft = m.fief(tgt)
         dmen = m.r16(ft + M.F_MEN)
         if men >= fought_need(m, tgt):
-            left = int(men * fought_keep(men / max(1, dmen), skill_scale(m)))
+            left = int(men * fought_keep(men / max(1, dmen), skill_scale(m), m.skill))
             game._conquest(m, idx, tgt, max(0, left - dmen // 2), men, rice,
                            m.r16(f + M.F_ARMS), m.r16(f + M.F_SKILL), m.r16(f + M.F_MORALE), random.Random(0))
         else:
@@ -994,7 +1017,7 @@ def strike_plan(m, idx):
                 proj = m_t + g_t * s
                 send = int(proj * ratio) + 1
                 if h0:
-                    kr = fought_keep(send / max(1, proj), skill_scale(m))
+                    kr = max(.05, fought_keep(send / max(1, proj), skill_scale(m), m.skill))
                     send = max(send, int((h0 + g_t * s) / kr) + 1)
                 line = send + int(keep0 + g_keep * s * 52 / 48)
                 if line > header:

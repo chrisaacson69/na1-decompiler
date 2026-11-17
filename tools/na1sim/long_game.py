@@ -13,6 +13,7 @@ point of this file. Keep them here and change them by flag, not by copy.
 From tools/:  py -3.14 -m na1sim.long_game FIEFS SEEDS YEARS [OUT.json] [--first 3000]
   e.g.  py -3.14 -m na1sim.long_game 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 20 70 long70.json
 Yearly rows: (year, held, live, owners, age, exposed, bill, men, econ index per own fief, per AI fief).
+`--keep-q 0.25` sizes conquests on the battle lab's q-quantile of survivors, not the mean (#61).
 Each result also carries a tally (#61): conq = every real attack (year, season, src, tgt, men, won,
 the prize's state right after, fiefs held); losses = every owned fief lost (year, season, fief, new owner).
 `--gate-hire 1` hires to the gate line before the economy tops out (#59).
@@ -91,6 +92,7 @@ def one(job):
     X.STRIKE = int(job[15]) if len(job) > 15 and job[15] else 0          # set every job: the pool reuses workers
     X.STRIKE_SHARE = job[16] if len(job) > 16 and job[16] else 100
     X.HOLD = not (len(job) > 17 and job[17] == 0)
+    X.KEEP_Q = job[19] if len(job) > 19 and job[19] is not None else None
     tol = job[18] if len(job) > 18 and job[18] else ("SAFE", "SAFE", 0)
     X.TOL_EARLY, X.TOL_LATE, X.TOL_SWITCH = tol[0], tol[1], int(tol[2])
     policy.OPENING.update(OPENING)
@@ -164,12 +166,13 @@ def main():
     ap.add_argument("--hold", type=int, default=1, help="0: the strike does not pay for holding the prize")
     ap.add_argument("--tol", default="", help="EARLY,LATE,N: the state a conquered fief may be left in while fewer than N "
                     "fiefs are held, then LATE, e.g. HUNTABLE,SAFE,3 (default SAFE everywhere)")
+    ap.add_argument("--keep-q", type=float, help="q: price the survivors at the battle lab's q-quantile (#61)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

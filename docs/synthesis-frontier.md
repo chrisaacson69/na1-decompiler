@@ -167,7 +167,33 @@ Chris: at skill 3 the opponents outgrow us and we stagnate, so expand sooner by 
 - **The missing mechanism: the battle sets its own tolerance.** Conquests end HUNTABLE or COMING under every setting, the SAFE-only control included: 6% of them at skill 1, 15% at skill 2, 18% at skill 3, and those churn 8-31%. `score` forecasts the survivors from the keep table's mean; the battle map has a long low tail. Traced (Owari, skill 2, seed 3012): Mino → Omi 1580, 280 men against 112 (2.5×), forecast 142 survivors and SAFE, the battle left **55** and COMING, and the fief was gone the next season. The same game in 1572: 115 forecast, 111 left, HUNTABLE (a line-edge case). The dial being tuned is smaller than the risk the battle hands out uncontrolled, and the share rises with skill as the keep falls (#58's battle lab: 0.42 at 2.5× on skill 2, 0.19 on skill 3).
 - **Skill 3 is not a risk problem.** 4 attacks a game against 16 at skill 1, and the lord dies of age in 30-35 of 50. The tempo wall again.
 
-**Open:** size the strike on a low quantile of the survivors, not the mean (the battle lab gives means; it needs the spread by ratio and skill), so a bad battle still holds the prize; count the targets with no X at skill 3 (how often the race is lost before it starts); and the general fix for skill 3, raising our side of the race: men from several fiefs into one attack, the multi-turn war (#59), the back-line economy (#60).
+**Sizing for a bad battle: it fixes the churn and costs the tempo.** `skill_lab --quantiles --out keep_q.json` (30 seeds × 7 pairs, every won battle's kept share; the means reproduce #58's). Kept per man sent, q10 / q25 / median:
+
+| ratio | skill 1 | skill 2 | skill 3 |
+|---|---|---|---|
+| 2.0× | 0.24 / 0.37 / 0.44 | 0.10 / 0.11 / 0.15 | 0.05 / 0.12 / 0.19 |
+| 2.5× | 0.38 / 0.50 / 0.52 | 0.23 / 0.31 / 0.42 | 0.09 / 0.13 / 0.20 |
+| 3.0× | 0.47 / 0.57 / 0.68 | 0.35 / 0.47 / 0.51 | 0.22 / 0.33 / 0.40 |
+| 4.0× | 0.59 / 0.68 / 0.71 | 0.50 / 0.60 / 0.70 | 0.40 / 0.51 / 0.60 |
+
+The old forecast was wrong twice at skill 2: the tail is wide, and even its mean was high (it divides the ratio by the skill scale and reads the skill-1 table: 0.51 at 2.5×, against a measured 0.41). `expand.KEEP_Q = q` (`long_game --keep-q`, off) prices the survivors, in `score`'s forecast and the planner's hold, at the lab's q-quantile for the game's skill. Every start, strike 8, SAFE:
+
+| 340 games | won | expanded | invaded | first conquest | attacks / game | fiefs lost / game | conquests left non-SAFE | of those, lost within a year |
+|---|---|---|---|---|---|---|---|---|
+| skill 1, mean (as before) | 164 | 215 | 147 | 6 / 8 / 10 | 10.5 | 2.3 | 253 of 3310 (8%) | 13% |
+| skill 1, median | 164 | 217 | 153 | 6 / 8 / 10 | 10.4 | 2.2 | 174 (5%) | 12% |
+| skill 1, q25 | 175 | 216 | 141 | 6 / 8 / 10 | 10.0 | 1.4 | 111 (3%) | 8% |
+| skill 1, q10 | 166 | 214 | 156 | 7 / 9 / 10 | 9.5 | 1.6 | 54 (2%) | 7% |
+| skill 2, mean (as before) | **40** | 162 | 211 | 9 / 12 / 13 | 7.1 | 2.6 | 293 of 2069 (14%) | 15% |
+| skill 2, median | 24 | 146 | 232 | 11 / 12 / 13 | 5.8 | 2.3 | 162 (9%) | 14% |
+| skill 2, q25 | 30 | 144 | 234 | 11 / 12 / 13 | 5.4 | 1.8 | 79 (5%) | 11% |
+| skill 2, q10 | 37 | 143 | 224 | 11 / 12 / 13 | 5.0 | 1.5 | 22 (1%) | 9% |
+
+- **The mechanism is real and the fix works on it**: non-SAFE conquests fall 8% → 2% at skill 1 and 14% → 1% at skill 2; fiefs lost fall by about 40%.
+- **Win rate does not follow.** Skill 1 does not separate (164-175). At skill 2 every honest pricing loses (24-37 against 40): the first conquest moves from year 9 to 11 in the fast quartile, 16-19 fewer starts ever expand, and 13-23 more are invaded. An attack sized to hold through a bad battle is one the opening cannot afford yet.
+- **So the optimistic forecast was a risk tolerance, and a good one.** Chris's reading, measured: a low-odds conquest still pays, because a fief lost a year later costs the rebalancing of everyone around it too, while a year of waiting costs tempo the opponents use to grow. Across #61 one quantity tracks the outcome: when the first conquest comes earlier (topped down to 30%, the planner), the win rate rises; when it comes later (topped 0%, banking, honest sizing), it falls. Holding what you take is second-order while the opening is open. `KEEP_Q` stays off; the table stays as the instrument.
+
+**Open:** test the tempo reading directly (win rate against the year of the first conquest, per start, across these runs); size by quantile only after the opening (the late game, where Chris expects holding to matter); count the targets with no X at skill 3 (how often the race is lost before it starts); and the general fix for skill 3, raising our side of the race: men from several fiefs into one attack, the multi-turn war (#59), the back-line economy (#60).
 
 ### #60 — The pocket planner: the map has pockets, the greedy expander already finds them, and the opening is the wall (Chris, 2026-11-16)
 

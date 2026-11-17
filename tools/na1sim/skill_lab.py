@@ -10,8 +10,15 @@ charge fought (expand.player_war with an rng), and counts the wins and the men l
 
   py -3.14 -m na1sim.skill_lab                     # the default pairs, skills 1 and 3
   py -3.14 -m na1sim.skill_lab --skills 1,2,3 --seeds 30 --ratios 1.5,2,2.5,3,4
+  py -3.14 -m na1sim.skill_lab --skills 1,2,3 --seeds 30 --ratios 2,2.5,3,4,6 --quantiles --out keep_q.json
+
+--quantiles (#61) adds the spread of the men kept: a won battle's survivors are not the mean; the
+low tail is what leaves a conquest HUNTABLE or COMING. --out saves every won battle's kept share by
+skill and ratio, the table expand.KEEP_Q reads.
 """
 from __future__ import annotations
+
+import json
 
 import argparse
 import random
@@ -48,6 +55,8 @@ def main():
     ap.add_argument("--ratios", default="1.5,2,2.5,3")
     ap.add_argument("--seeds", type=int, default=20)
     ap.add_argument("--first", type=int, default=5000)
+    ap.add_argument("--quantiles", action="store_true", help="the kept share's q10 / q25 / median too")
+    ap.add_argument("--out", help="save {skill: {ratio: [kept share of each won battle]}} as JSON")
     a = ap.parse_args()
     skills = [int(s) for s in a.skills.split(",")]
     ratios = [float(r) for r in a.ratios.split(",")]
@@ -66,6 +75,19 @@ def main():
             kept = sum(x[5] for x in w) / len(w) if w else 0
             line += f"|       {len(w) / len(rows):5.0%}  {kept:5.2f} "
         print(line)
+    if a.quantiles:
+        print("kept per man sent, won battles only: q10 / q25 / median / mean")
+        for r in ratios:
+            line = f"  {r:5.2f} "
+            for s in skills:
+                k = sorted(x[5] for x in res if x[0] == s and x[3] == r and x[4])
+                q = (lambda p: k[min(len(k) - 1, int(p * len(k)))]) if k else (lambda p: 0)
+                line += f"| s{s}: {q(.1):.2f} {q(.25):.2f} {q(.5):.2f} {sum(k) / max(1, len(k)):.2f} "
+            print(line)
+    if a.out:
+        table = {s: {r: sorted(round(x[5], 4) for x in res if x[0] == s and x[3] == r and x[4]) for r in ratios}
+                 for s in skills}
+        json.dump(table, open(a.out, "w"))
     print("by pair at 2.0x:")
     for src, tgt in PAIRS:
         print(f"  {src:2}->{tgt:2} " + "  ".join(
