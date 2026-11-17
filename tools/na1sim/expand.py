@@ -50,10 +50,17 @@ CHARGE = True
 SPLIT_FOR = {1: "heavy", 2: "heavy", 4: "heavy", 7: "heavy", 10: "heavy", 16: "heavy"}
 
 
+SPLIT_MODE = None                       # "solo": 100/0/0/0/0, the commander leads; "sacrifice": the
+                                        # usual split, the commander charges once the strikers are spent
+                                        # (#62: a loss should donate no men)
+
+
 def desired_split(m, src, tgt):
     base = M.PROVINCE_UNIT_TYPE_PCT + src * 5
     cur = [m.r8(base + i) for i in range(5)]
     total = sum(cur)
+    if SPLIT_MODE == "solo":
+        return [total, 0, 0, 0, 0]
     if SPLIT_FOR.get(tgt) == "heavy":
         return [1, total - 1, 0, 0, 0]
     cap2 = max(cur[2], m.r16(m.fief(src) + M.F_ARMS) // 50 + 20)
@@ -169,7 +176,7 @@ def player_war(m, idx, tgt, men, rice, led=False, rng=None, fought=None):
         from . import tactical, strike
         keep_human = tactical.HUMAN
         if CHARGE:
-            tactical.HUMAN = strike.Charge()
+            tactical.HUMAN = strike.Charge(solo=SPLIT_MODE == "solo", sacrifice=SPLIT_MODE == "sacrifice")
         try:
             tactical.run_tactical_battle(m, rng)
         finally:
@@ -1061,6 +1068,86 @@ def tolerance(m, owner):
     return TOL_EARLY if TOL_SWITCH and len(owned(m, owner)) < TOL_SWITCH else TOL_LATE
 
 
+# The combined attack (Chris, 2026-11-17): at about 9 fiefs the player stalls against 3-4 consolidated
+# rivals (#61), because each attack comes from one fief. Here several fiefs pool the men they hold over
+# their own line (own_need, with its margin) into one striker, which attacks with the sum. Two facts from
+# the cartridge shape it: a lost attack's survivors, rice and gold garrison the DEFENDER
+# (apply_conquest_outcome $E03C), so waves feed the target and the men must arrive together; and the
+# season's order is shuffled (m.acted shows who has moved), so a Move made before the striker's turn
+# lands in time for its attack the same season. A contributor moves only while the striker has not
+# acted (COMBINE_SAME_SEASON) and only when no single fief can attack. best_attack makes the strike.
+COMBINE = False
+COMBINE_SAME_SEASON = True              # False: also stage for next season when the striker has acted
+COMBINE_HOLD = True                     # pool to the prize's hold line, not just the win (#62)
+COMBINE_LOG = []                        # every contributing move: (year, season, src, striker, men, target)
+_COMBINE = {}
+
+
+def combine_plan(m, owner):
+    """-> {"striker": S, "target": T, "alloc": {contributor: men}} or None; one plan per season."""
+    key = (m.r16(M.CURRENT_GAME_YEAR), m.season, owner)
+    if key in _COMBINE:
+        return _COMBINE[key]
+    _COMBINE.clear()
+    plan = None
+    if m.season in SEASONS and all(s == SAFE for s in empire(m, owner).values()):
+        mine = set(owned(m, owner))
+        acted = getattr(m, "acted", set())
+        best = None
+        for S in mine:
+            if S in acted and COMBINE_SAME_SEASON:
+                continue
+            fs = m.fief(S)
+            men, gold, hdr = m.r16(fs + M.F_MEN), m.r16(fs + M.F_GOLD), m.r16(fs + M.F_HEADER)
+            if not m.r16(fs + M.F_RICE):
+                continue
+            surplus = {}
+            for C in m.neighbor_rows.get(S, []):
+                if C in mine and C != S and C not in acted:
+                    fc = m.fief(C)
+                    spare = m.r16(fc + M.F_MEN) - own_need(m, C)
+                    if spare >= MARCH_MIN and m.r16(fc + M.F_MORALE) >= reaction_cliff():
+                        surplus[C] = spare
+            if not surplus:
+                continue
+            for T in targets(m, S):
+                # the men to send: enough to win, and (#62's stall: 114 of 218 blocked fief-turns
+                # were a prize left COMING) enough that the survivors hold the prize's share line
+                need = send = fought_need(m, T)
+                if COMBINE_HOLD:
+                    h = hold_line(m, T, owner)
+                    for _ in range(3):              # the keep depends on the ratio sent
+                        kr = max(.05, fought_keep(send / max(1, m.r16(m.fief(T) + M.F_MEN)), skill_scale(m), m.skill))
+                        send = max(need, int(h / kr) + 1)
+                line = send + own_need(m, S)
+                short = line - men
+                if short <= 0 or line > hdr or gold < send or sum(surplus.values()) < short:
+                    continue                        # one fief can do it alone, or the pool cannot
+                alloc, left = {}, short
+                for C, spare in sorted(surplus.items(), key=lambda x: -x[1]):
+                    take = min(spare, left)
+                    alloc[C] = take
+                    left -= take
+                    if left <= 0:
+                        break
+                k = (len(alloc), short)             # the fewest contributors, then the fewest men moved
+                if (best is None or k < best[0]) and strike_ok(m, S, T, line):
+                    best = (k, {"striker": S, "target": T, "alloc": alloc})
+        plan = best[1] if best else None
+    _COMBINE[key] = plan
+    return plan
+
+
+def combine_move(m, idx):
+    """This fief's part in the season's combined attack -> (striker, men, target) or None."""
+    plan = combine_plan(m, m.fief_owner(idx))
+    if not plan or idx not in plan["alloc"]:
+        return None
+    if COMBINE_SAME_SEASON and plan["striker"] in getattr(m, "acted", set()):
+        return None
+    return plan["striker"], plan["alloc"][idx], plan["target"]
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -1094,6 +1181,12 @@ def expand_policy(m, idx, rng):
         CONQ.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0], mv[1], bool(won),
                      fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
         return
+    if COMBINE:
+        cm = combine_move(m, idx)
+        if cm:
+            COMBINE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *cm))
+            move_men(m, idx, cm[0], cm[1])
+            return
     f = m.fief(idx)
     if DEPOTS:
         dm = staging_move(m, idx) if STAGING else None

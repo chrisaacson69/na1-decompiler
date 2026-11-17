@@ -14,8 +14,11 @@ From tools/:  py -3.14 -m na1sim.long_game FIEFS SEEDS YEARS [OUT.json] [--first
   e.g.  py -3.14 -m na1sim.long_game 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 20 70 long70.json
 Yearly rows: (year, held, live, owners, age, exposed, bill, men, econ index per own fief, per AI fief).
 `--keep-q 0.25` sizes conquests on the battle lab's q-quantile of survivors, not the mean (#61).
+`--combine 1` (#62): when no fief can attack alone, the fiefs beside a striker Move it the men they hold
+over their own line, before its turn in the season's order, and it attacks with the sum.
 Each result also carries a tally (#61): conq = every real attack (year, season, src, tgt, men, won,
-the prize's state right after, fiefs held); losses = every owned fief lost (year, season, fief, new owner).
+the prize's state right after, fiefs held); losses = every owned fief lost (year, season, fief, new owner); combine = every contributing move
+(year, season, src, striker, men, target).
 `--gate-hire 1` hires to the gate line before the economy tops out (#59).
 `--pocket N` plans the shape N conquests out (#60: the goal empire with the fewest men per back-line
 fief gained); `--pocket-strict 0` lets a fief take a greedy pick while no goal target is ready;
@@ -93,6 +96,8 @@ def one(job):
     X.STRIKE_SHARE = job[16] if len(job) > 16 and job[16] else 100
     X.HOLD = not (len(job) > 17 and job[17] == 0)
     X.KEEP_Q = job[19] if len(job) > 19 and job[19] is not None else None
+    X.COMBINE = bool(len(job) > 20 and job[20])          # set every job: the pool reuses workers
+    X.COMBINE_HOLD = not (len(job) > 20 and job[20] == 2)   # --combine 2: pool to the win line only
     tol = job[18] if len(job) > 18 and job[18] else ("SAFE", "SAFE", 0)
     X.TOL_EARLY, X.TOL_LATE, X.TOL_SWITCH = tol[0], tol[1], int(tol[2])
     policy.OPENING.update(OPENING)
@@ -102,6 +107,8 @@ def one(job):
     X.POCKET_LOG.clear()
     X.STRIKES.clear()
     X.CONQ.clear()
+    X.COMBINE_LOG.clear()
+    X._COMBINE.clear()
     X.MEN_HIST.clear()
     X._POCKET.clear()
     owner, yearly, t0 = [], [], time.time()
@@ -133,7 +140,7 @@ def one(job):
                            round(sum(econ_index(m, i) for i in mine) / max(1, len(mine)), 1),
                            round(sum(econ_index(m, i) for i in ai) / max(1, len(ai)), 1)))
     rec = Dz.play(fief, seed, years, ("auto",), tail=pol, skill=skill)
-    tally = dict(conq=[list(c) for c in X.CONQ], losses=losses)    # per-game events (#61's walk)
+    tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG])    # per-game events (#61's walk)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0), tally
 
 
@@ -167,12 +174,13 @@ def main():
     ap.add_argument("--tol", default="", help="EARLY,LATE,N: the state a conquered fief may be left in while fewer than N "
                     "fiefs are held, then LATE, e.g. HUNTABLE,SAFE,3 (default SAFE everywhere)")
     ap.add_argument("--keep-q", type=float, help="q: price the survivors at the battle lab's q-quantile (#61)")
+    ap.add_argument("--combine", type=int, help="1: several fiefs pool their spare men into one striker, sized to hold the prize; 2: sized to win only (#62)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

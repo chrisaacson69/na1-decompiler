@@ -326,7 +326,15 @@ class Charge:
     behind can come up beside the lead and both strike). His cell is read each day, so a commander
     who flees is pursued. Terrain choice is not modelled yet."""
 
-    def __init__(self):
+    def __init__(self, solo=False, sacrifice=False):
+        # solo (Chris, 2026-11-17): the whole army in the commander (100/0/0/0/0), who leads the strike.
+        # A lost battle ends with his unit's death (check_commander_alive_both_sides $AB87; a unit goes
+        # at 0 men, $9D03), so no men are left to garrison the defender (apply_conquest_outcome $E03C).
+        self.solo = solo
+        # sacrifice (Chris): keep the 1/99 split (the cavalry striker has bonuses the commander lacks),
+        # and once every striker is spent send the 1% commander in, so the battle ends with almost
+        # no men left to garrison the defender.
+        self.sacrifice = sacrifice
         self.log = []
 
     def deploy(self, m):
@@ -344,8 +352,8 @@ class Charge:
         far = max(strip, key=lambda c: (dist.get(c, -1), c))
         plan = {}
         if m.is_unit_present(side, 0):
-            plan[0] = far
-        rest = [c for c in near if c != far]
+            plan[0] = near[0] if self.solo else far
+        rest = [c for c in near if c != plan.get(0)]
         for slot in range(1, 5):
             if m.is_unit_present(side, slot) and rest:
                 plan[slot] = rest.pop(0)
@@ -365,7 +373,8 @@ class Charge:
         es = side ^ 1
         if not m.is_unit_present(es, 0):
             return None
-        if slot == 0:
+        if slot == 0 and not self.solo and not (
+                self.sacrifice and not any(m.is_unit_present(side, s) for s in range(1, 5))):
             return ("pass",)                          # the commander stays out of the fighting
         target = _cell(m, es, 0)
         here = _cell(m, side, slot)

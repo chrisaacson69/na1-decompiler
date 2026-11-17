@@ -32,7 +32,8 @@ PAIRS = ((16, 8), (16, 7), (10, 13), (4, 3), (14, 9), (8, 10), (12, 11))
 
 
 def one(job):
-    skill, src, tgt, ratio, seed = job
+    skill, src, tgt, ratio, seed = job[:5]
+    X.SPLIT_MODE = job[5] if len(job) > 5 else None     # set every job: the pool reuses workers
     m = setup.build_board(skill=skill, seed=seed, player_fief=src)
     f, t = m.fief(src), m.fief(tgt)
     dmen = m.r16(t + M.F_MEN)
@@ -44,9 +45,12 @@ def one(job):
     split = X.desired_split(m, src, tgt)
     if P.assign_reachable(m, src, split):
         P.commit_arms_record(m, src, split, 0)
+    elif X.SPLIT_MODE == "solo":
+        return skill, src, tgt, ratio, None, 0, 0           # the editor cannot make it here
     won = X.player_war(m, src, tgt, men, men * 2, rng=random.Random(seed), fought=True)
     left = m.r16(t + M.F_MEN) if won else 0
-    return skill, src, tgt, ratio, bool(won), left / men
+    after = m.r16(t + M.F_MEN) if not won else 0            # a loss: the garrison against its men before
+    return skill, src, tgt, ratio, bool(won), left / men, (after - dmen) / max(1, men) if not won else 0
 
 
 def main():
@@ -55,12 +59,13 @@ def main():
     ap.add_argument("--ratios", default="1.5,2,2.5,3")
     ap.add_argument("--seeds", type=int, default=20)
     ap.add_argument("--first", type=int, default=5000)
+    ap.add_argument("--split", help="solo: 100/0/0/0/0, the commander leading; sacrifice: the usual split, the commander charges once the strikers are spent (#62)")
     ap.add_argument("--quantiles", action="store_true", help="the kept share's q10 / q25 / median too")
     ap.add_argument("--out", help="save {skill: {ratio: [kept share of each won battle]}} as JSON")
     a = ap.parse_args()
     skills = [int(s) for s in a.skills.split(",")]
     ratios = [float(r) for r in a.ratios.split(",")]
-    jobs = [(s, src, tgt, r, seed) for s in skills for src, tgt in PAIRS for r in ratios
+    jobs = [(s, src, tgt, r, seed, a.split) for s in skills for src, tgt in PAIRS for r in ratios
             for seed in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs, chunksize=4))
@@ -70,7 +75,7 @@ def main():
     for r in ratios:
         line = f"  {r:5.2f} "
         for s in skills:
-            rows = [x for x in res if x[0] == s and x[3] == r]
+            rows = [x for x in res if x[0] == s and x[3] == r and x[4] is not None]
             w = [x for x in rows if x[4]]
             kept = sum(x[5] for x in w) / len(w) if w else 0
             line += f"|       {len(w) / len(rows):5.0%}  {kept:5.2f} "
@@ -88,6 +93,17 @@ def main():
         table = {s: {r: sorted(round(x[5], 4) for x in res if x[0] == s and x[3] == r and x[4]) for r in ratios}
                  for s in skills}
         json.dump(table, open(a.out, "w"))
+    lost = [x for x in res if x[4] is False]
+    if lost:
+        print("lost battles: the defender's garrison change per man sent (> 0: the attack fed him)")
+        for r in ratios:
+            for s in skills:
+                ls = [x[6] for x in lost if x[0] == s and x[3] == r]
+                if ls:
+                    print(f"  {r:5.2f} skill {s}: {len(ls)} lost, mean {sum(ls) / len(ls):+.2f}, fed {sum(1 for v in ls if v > 0)}")
+    skipped = sum(1 for x in res if x[4] is None)
+    if skipped:
+        print(f"{skipped} jobs skipped: the split is not reachable by Assign on that fief")
     print("by pair at 2.0x:")
     for src, tgt in PAIRS:
         print(f"  {src:2}->{tgt:2} " + "  ".join(

@@ -91,6 +91,38 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #62 — The mid-game stall: lost attacks do not feed the defender, the stall is the hold, and the adjacent pool is too small (Chris, 2026-11-17)
+
+Chris: at 9 fiefs, back-line chances are target selection; the interesting lever is **2+ fiefs coordinating one attack**, where the men each holds above its hold line combine to reach the odds. And two kinds of combined attack: several fiefs on the same turn (turn order matters), or the same fief over several years (the enemy may recover faster).
+
+**The season's mechanics** (sim, from the ROM): the command order is shuffled every season and the player sees who has acted (`game.command_pass`, `m.acted`); a Move lands at once (`expand.move_men`, effect_move $8CA5), so men moved into a fief that has not acted yet fight in its attack that season.
+
+**The combined attack** (`expand.COMBINE`, `long_game --combine 1`; off). Only when no fief can attack alone: the owned fiefs beside a striker Move it the men they hold over their own line (`own_need`, with margin), before its turn, and `best_attack` makes the strike. `--combine 2` pools to the win line; `1` (`COMBINE_HOLD`) to the prize's hold line (survivors at its share line, by the keep table).
+
+**Do lost attacks feed the defender?** `apply_conquest_outcome` ($E03C) garrisons the defender with both armies' survivors, win or lose, so the plan first assumed waves feed the target. Chris: *not if done right*: go in 100/0/0/0/0 so the battle ends with the commander's death and no men to capture (a unit goes at 0 men, $9D03; the battle ends when slot 0 is gone, $AB87); or keep the cavalry striker (it has bonuses the commander lacks) and *suicide the 1% leader after the cavalry is spent*. `skill_lab --split solo | sacrifice` (`strike.Charge(solo=, sacrifice=)`, `expand.SPLIT_MODE`) now also reports each lost battle's garrison change per man sent. 7 pairs × 10 seeds:
+
+| win % (kept on a win) | skill 1 heavy / solo | skill 2 | skill 3 |
+|---|---|---|---|
+| 1.5× | 46% / **66%** | 4% / **26%** | 0% / **13%** |
+| 2.0× | **100%** / 84% | 74% / 76% | 17% (0.24) / **43% (0.34)** |
+| 2.5× | 100% / 100% | **100%** / 89% | **94%** / 73% |
+| 3.0× | 100% / 100% | 100% / 100% | **100%** / 89% |
+
+- **No lost battle fed the defender, under any split**: over 400 losses, the garrison fell by 0.37-0.58 men per man sent. Under the heavy split the striker dies before the commander, so the 1% is all that is left; **sacrifice is identical to heavy** to the digit (the switch never fires). So waves wear a target down, and the same fief over several years (Chris's second kind) is open.
+- **Solo against heavy is a per-target, per-ratio choice**: solo wins far more under 2× (skill 3 at 2×: 43% against 17%), heavy is surer from 2.5×, and pairs split hard (Owari → Mikawa: solo 0/10 at every skill; Omi → Yamashiro, Settsu → Yamato, Iseshima → Iga: solo 10/10 at skill 3, where heavy wins 4, 0 and 3). Not yet traced why.
+
+**The stall, measured** (8 stalled skill-2 games, years 22-34, 6+ fiefs held): the empire holds **465-1,475 men over its own lines and 6,000-18,000 gold** while the cheapest target needs 95-311 men. Not a shortage. With everything SAFE (62% of those seasons), of 372 fief-turns: 154 have no winning move within that fief's own war cap, **114 would leave the prize COMING** (beside a large rival), 29 leave another fief unsafe, 13 the capital short, 61 attack. **The stall is the hold, not the win.**
+
+| 340 games, strike 8 | skill 1 | skill 2 | skill 3 | combined strikes (won), skill 1 / 2 / 3 |
+|---|---|---|---|---|
+| no combine | 164 | 40 | 0 | |
+| combine to the win line | 171 | 43 | 0 | 82 (75) / 125 (101) / 21 (14) |
+| combine to the hold line | 173 | 41 | 0 | 85 (81) / 138 (123) / 31 (21) |
+
+**Neutral: it fires about once in the games that use it**, and three in four contributing moves do not become a strike that season. In the stalled seasons, of 645 striker-target pairs: **the adjacent pool is too small for 37%** (the spare men sit elsewhere in the empire), the striker has already acted for 20%, the striker could go alone for 11%, its gold is under the men to send for 8%, the line exceeds its header for 3%; 22% are feasible, and of those `score` passes two in three (the rest: another fief left unsafe, or the prize still COMING).
+
+**Open:** bring the empire's spare men to the striker over several seasons (staging toward a hold-sized strike: #48's `STAGING` was measured worse at skill 1, before this objective existed) and its gold (a Send before the strike); why the striker so often reshapes first (`split_ready` → Assign spends its turn); solo or heavy chosen per target and ratio; the same fief over several years, now that a lost battle weakens the defender.
+
 ### #61 — Grow or strike: the economy has a floor, and a targeted strike beats a lower threshold (Chris, 2026-11-16)
 
 Chris: at skill 3 the opponents outgrow us and we stagnate, so expand sooner by forgoing growth. *How much econ can we give up without putting us at risk?* Nail the principles at skill 1 first. It is context-sensitive: some fiefs can strike sooner because their neighbours are weak.
