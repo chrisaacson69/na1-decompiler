@@ -91,6 +91,31 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #63 — Staging toward a hold-sized strike works, and the gate is the whole empire's SAFE (Chris, 2026-11-17)
+
+Chris: *mid to late game is generally where AIs stall, because the coordination to do large campaigns is harder; we can try staging.* #62 found the men beside the striker too few in 37% of stalled pairs, while the empire held hundreds over its lines.
+
+**Staging** (`expand.STAGE`, `long_game --stage N`; off). Each season with everything SAFE and no campaign on, the empire picks one striker and target that the striker cannot take alone. The strike is sized so the survivors hold the prize's share line (as `--combine 1`), the striker's own line on top. The pool is every connected owned fief's men over its own line, counted out to `STAGE_ETA` 4 steps. The choice is the nearest pool, then the smallest shortfall, and it must pass `strike_ok`. The campaign is kept until the target falls, the plan breaks, or N seasons pass, re-sized to the target's men each season. Every other fief marches its spare men a step toward the striker; one with none to march Sends gold if the striker lacks the War gold; the striker hires the rest, keeping the War gold. `best_attack` makes the strike. This differs from #48's `STAGING` (always on, sized to win, re-picked each season). The tally has `stage` events.
+
+| 340 games, strike 8, stage 8 | skill 1 | skill 2 | skill 3 |
+|---|---|---|---|
+| no staging (#62's base) | 164 | 40 | 0 |
+| staging | 168 (saved 31, lost 27) | 39 (23 / 24) | 1 (1 / 0) |
+| campaigns ended with the target taken | 1,041 of 1,325 (79%) | 761 of 1,145 (66%) | 141 of 244 (58%) |
+
+**The mechanism works and the count does not move.** In the games both sides lose (peak 5+ fiefs at skill 2, 87 games), staging makes the middle game slightly worse: 10.6 attacks after year 15 against 12.1, and 8.7 won against 10.0. At skill 1, campaigns that reached their line sat stuck at the striker's turn for 2,115 fief-turns: **1,031 because another owned fief was not SAFE**, 795 in Summer (waiting), 265 rejected by `score`, 24 short of gold.
+
+**The binding gate: the whole empire must be SAFE** (`best_attack`, `score`, `strike_plan`, `combine_plan`, `stage_plan` all ask it). The census (`safe_census.py` in the session scratchpad, 17 starts × 4 seeds, the strike-8 player, the first own turn of each attack season):
+
+| fiefs held | 1 | 2-3 | 4-6 | 7-9 | 10-13 | 14-15 | 16-17 |
+|---|---|---|---|---|---|---|---|
+| all SAFE, skill 1 | 52% | 60% | 36% | 51% | 44% | 71% | 99% |
+| all SAFE, skill 2 | 37% | 59% | 45% | 44% | 41% | ~70% | 92% |
+
+Through the middle game, from 4 to 13 fiefs, **one or more fiefs is short in more than half the attack seasons**, and any one of them vetoes every attack anywhere in the empire. Under staging the share falls (skill 2, 3-8 fiefs: 24-42%), and only 7-20% of the unsafe fiefs are ones it drained in the last four seasons. Concentrating men on one striker raises the odds that some other fief is short. The rule dates from #48 (*a player who cannot hold one fief will not hold two*), written when empires were small.
+
+**Open:** a local gate, where an attack must leave the fiefs it touches SAFE (the source, the prize, the fiefs whose borders change, the capital) and must not worsen any other fief, instead of requiring the whole empire SAFE; then staging and combining again under it; the rest of #62's open list.
+
 ### #62 — The mid-game stall: lost attacks do not feed the defender, the stall is the hold, and the adjacent pool is too small (Chris, 2026-11-17)
 
 Chris: at 9 fiefs, back-line chances are target selection; the interesting lever is **2+ fiefs coordinating one attack**, where the men each holds above its hold line combine to reach the odds. And two kinds of combined attack: several fiefs on the same turn (turn order matters), or the same fief over several years (the enemy may recover faster).

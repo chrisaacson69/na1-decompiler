@@ -1148,6 +1148,136 @@ def combine_move(m, idx):
     return plan["striker"], plan["alloc"][idx], plan["target"]
 
 
+# Staging toward a hold-sized strike (Chris, 2026-11-17: "mid to late game is generally where AIs
+# stall because the coordination to do large campaigns is harder"). #62's pool diagnostic: in the
+# stalled seasons the fiefs beside the striker held too few spare men for 37% of striker/target pairs,
+# while the empire held 465-1,475. So the whole empire stages, over several seasons, toward ONE strike
+# sized so the survivors hold the prize. Unlike #48's STAGING (always on, sized to win, re-picked each
+# season: 133 unified against 186), it plans only while no strike is on, keeps its striker and target
+# until the strike, STAGE_MAX seasons, or the plan breaks, and re-sizes the line to the target's men
+# each season. Every other owned fief marches the men over its own line (own_need, with its margin) a
+# step toward the striker; a fief with none to march Sends gold when the striker lacks the War gold.
+STAGE = False
+STAGE_MAX = 8                           # seasons a campaign may take before it is dropped
+STAGE_ETA = 4                           # the farthest contributor (steps) a plan may count on
+STAGE_LOG = []                          # (year, season, event, striker, target, line, short)
+_STAGE = {}
+
+
+def _stage_line(m, S, T, owner):
+    """(send, line) for S to take T and the survivors hold T's share line, S keeping its own."""
+    need = send = fought_need(m, T)
+    h = hold_line(m, T, owner)
+    for _ in range(3):                      # the keep depends on the ratio sent
+        kr = max(.05, fought_keep(send / max(1, m.r16(m.fief(T) + M.F_MEN)), skill_scale(m), m.skill))
+        send = max(need, int(h / kr) + 1)
+    return send, send + own_need(m, S)
+
+
+def _stage_pool(m, owner, S):
+    """{contributor: (spare, steps to S)} over the owned fiefs connected to S."""
+    dist = distance_to(m, owner, S)
+    out = {}
+    for C, d in dist.items():
+        if C == S:
+            continue
+        fc = m.fief(C)
+        spare = m.r16(fc + M.F_MEN) - own_need(m, C)
+        if spare >= MARCH_MIN and m.r16(fc + M.F_MORALE) >= reaction_cliff():
+            out[C] = (spare, d)
+    return out
+
+
+def stage_plan(m, owner):
+    """The campaign {"S", "T", "line", "send", "born"} or None; kept across seasons, checked once a season."""
+    tick = _tick(m)
+    st = _STAGE.get(owner)
+    if st and st.get("checked") == tick:
+        return st.get("plan")
+    plan = st.get("plan") if st else None
+    yr, se = m.r16(M.CURRENT_GAME_YEAR), m.season
+    if plan:
+        S, T = plan["S"], plan["T"]
+        why = None
+        if m.fief_owner(T) == owner:
+            why = "taken"
+        elif m.fief_owner(S) != owner or T not in targets(m, S):
+            why = "broken"
+        elif tick - plan["born"] > STAGE_MAX:
+            why = "expired"
+        else:
+            send, line = _stage_line(m, S, T, owner)
+            if line > m.r16(m.fief(S) + M.F_HEADER):
+                why = "outgrown"
+            else:
+                plan.update(send=send, line=line)
+        if why:
+            STAGE_LOG.append((yr, se, why, S, T, plan["line"], plan["line"] - m.r16(m.fief(S) + M.F_MEN)))
+            plan = None
+    if plan is None and m.season in SEASONS and all(s == SAFE for s in empire(m, owner).values()):
+        best = None
+        for S in owned(m, owner):
+            fs = m.fief(S)
+            men, hdr = m.r16(fs + M.F_MEN), m.r16(fs + M.F_HEADER)
+            pool = None
+            for T in targets(m, S):
+                send, line = _stage_line(m, S, T, owner)
+                short = line - men
+                if short <= 0 or line > hdr:
+                    continue                    # S can strike alone (best_attack's job), or never
+                if pool is None:
+                    pool = sorted(_stage_pool(m, owner, S).values(), key=lambda x: x[1])
+                got, eta = 0, 0
+                for spare, d in pool:
+                    if got >= short or d > STAGE_ETA:
+                        break
+                    got, eta = got + spare, d
+                if got < short:
+                    continue
+                k = (eta, short)
+                if (best is None or k < best[0]) and strike_ok(m, S, T, line):
+                    best = (k, dict(S=S, T=T, send=send, line=line, born=tick))
+        if best:
+            plan = best[1]
+            STAGE_LOG.append((yr, se, "plan", plan["S"], plan["T"], plan["line"], best[0][1]))
+    _STAGE[owner] = dict(checked=tick, plan=plan)
+    return plan
+
+
+def stage_move(m, idx):
+    """This fief's part in the campaign: ("move", dst, men), ("send", S, 0, gold), ("hire", line,
+    budget) for the striker, or None."""
+    owner = m.fief_owner(idx)
+    plan = stage_plan(m, owner)
+    if not plan:
+        return None
+    S, line, send_men = plan["S"], plan["line"], plan["send"]
+    fs, f = m.fief(S), m.fief(idx)
+    short = line - m.r16(fs + M.F_MEN)
+    if idx == S:                                # the striker hires the rest, keeping the War gold
+        budget = m.r16(f + M.F_GOLD) - send_men
+        if short > 0 and budget > 20 and m.r16(f + M.F_MORALE) >= MORALE_FLOOR:
+            return ("hire", line, budget)
+        return None
+    if short <= 0 and m.r16(fs + M.F_GOLD) >= send_men:
+        return None                             # ready: the striker's turn makes the strike
+    dist = distance_to(m, owner, S)
+    d = dist.get(idx)
+    if d is None:
+        return None
+    spare = m.r16(f + M.F_MEN) - own_need(m, idx)
+    if short > 0 and spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= reaction_cliff():
+        room = lambda b: m.r16(m.fief(b) + M.F_HEADER) - m.r16(m.fief(b) + M.F_MEN)
+        steps = [b for b in m.neighbor_rows.get(idx, []) if dist.get(b) == d - 1 and room(b) >= MARCH_MIN]
+        if steps:
+            return ("move", max(steps, key=room), min(spare, short) if d == 1 else spare)
+    lack = send_men - m.r16(fs + M.F_GOLD)
+    spare_gold = m.r16(f + M.F_GOLD) - 20
+    if lack > 0 and spare_gold >= SEND_MIN:
+        return ("send", S, 0, min(lack, spare_gold))
+    return None
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -1181,6 +1311,26 @@ def expand_policy(m, idx, rng):
         CONQ.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0], mv[1], bool(won),
                      fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
         return
+    if STAGE:
+        sp = _STAGE.get(m.fief_owner(idx), {}).get("plan")
+        if sp and sp["S"] == idx and m.r16(m.fief(idx) + M.F_MEN) >= sp["line"]:
+            # ready but no strike: why (the campaign's line reached, best_attack declined)
+            unsafe = [i for i, st in empire(m, m.fief_owner(idx)).items() if st != SAFE]
+            why = ("season" if m.season not in SEASONS else "unsafe" if unsafe
+                   else "gold" if war_cap(m, idx) < sp["send"] else "score")
+            STAGE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, "stuck", idx, sp["T"], why, None))
+        sm = stage_move(m, idx)
+        if sm:
+            yr = m.r16(M.CURRENT_GAME_YEAR)
+            if sm[0] == "move" and move_men(m, idx, sm[1], sm[2]):
+                STAGE_LOG.append((yr, m.season, "move", idx, sm[1], sm[2], None))
+                return
+            if sm[0] == "send" and send(m, idx, sm[1], 0, sm[3])[1]:
+                STAGE_LOG.append((yr, m.season, "send", idx, sm[1], sm[3], None))
+                return
+            if sm[0] == "hire" and policy._hire_up_to(m, idx, sm[1], sm[2]):
+                STAGE_LOG.append((yr, m.season, "hire", idx, None, sm[1], None))
+                return
     if COMBINE:
         cm = combine_move(m, idx)
         if cm:
