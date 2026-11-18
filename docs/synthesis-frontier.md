@@ -91,6 +91,32 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #68 — Attacks on the ledger, priced by ROI: gold is the wrong currency, the clock is (Chris, 2026-11-18)
+
+Chris: *see if we can add attacks and price their ROI, to see how they fit in the model.* `expand.EMPIRE_ATTACK` (`long_game --empire-attack 1`; off), on #67's ledger. For each owned S and enemy neighbour T: the hold-sized line (`_stage_line`); the **return** is T's harvest gold as ours (the conquest's writes in a `forecast.held` copy: owner, Direct, not a capital, tax at most 30, the survivors in it); the **cost** is the gold to hire the men S lacks, plus the men the battle uses up (`fought_keep`), less the men freed by the fiefs it turns interior (the army bill before and after, T's own need aside). ROI = return ÷ cost, the growth lines' scale (gold a year per gold). The best attack (kept unless beaten by 25%; `strike_ok` while the empire is all SAFE) is a rank-3 line beside the growth lines, taken in ROI order: S hires toward it keeping the War gold, its neighbours Move men in, farther fiefs march a step, topped fiefs Send the gold.
+
+**A valuation bug, which #67 carried.** The growth lines read exactly 1.0 every season. `gold_income(reset=False)` (start index 7, seed 3000, skill 2, years 12-20, a 100-gold gift):
+
+| fief | as the ledger read it | with the Summer reset | unclipped (the real gain) |
+|---|---|---|---|
+| peasants at 1959 of 1960 | 100 | 100 | 3 |
+| 16, Fall | 0 | 38 | 38 |
+| 6, Fall | 100 | 100 | 20 |
+
+A treasury near its header made the gift look like it paid back in full (it only made room under the clamp, `cap_fief_stats`), and in Fall and Winter the marks it read were the low ones (the next harvest follows a Summer reset). `year_gold` (reset, no upkeep, treasury emptied first) now prices both the gifts and the prize. #67's growth row ranked receivers by the artifact; it is rerun below. `strike_plan`'s grow plan uses `gold_income(gift=…)` with the reset and may carry the clip; not changed.
+
+| every start, seeds 3000-3019, 70 years, skill 2, strike 8 + capital first + ladder | won | invaded | age | y15 fiefs | y20 | y30 | econ y20 |
+|---|---|---|---|---|---|---|---|
+| ladder (#66) | **60** | 179 | 93 | 3.0 | 5.1 | 7.7 | 0.70 |
+| + safety transfers (#67, `--empire 2`) | 49 (z −1.4) | 170 | 114 | | 5.0 | 8.4 | 0.70 |
+| + growth, valued right (`--empire 1`) | 26 (saved 12, lost 46, z −4.5) | 180 | 126 | 2.4 | 3.9 | 6.8 | 0.70 |
+| + growth + attack lines (`--empire 1 --empire-attack 1`) | 34 (saved 20, lost 46, z −3.2) | 198 | 101 | 2.9 | 4.5 | 7.9 | 0.71 |
+
+Per game, the full model sent ~9,600 gold to growth (17.6 Sends) and ~5,000 to the attack (10.1 Sends), made 12 Moves and 6.4 marches into the striker, and the striker hired 16 times. Attack ROI quartiles 0.13 / 0.23 / 0.59, growth 0.20 / 0.24 / 0.29: the attack ranked higher in 53% of seasons. **The two do compete on one scale**, and the planner splits the gold between them about 2:1.
+
+- **The growth gifts do not grow the economy.** At the same fief count, econ per fief moves 0-7% (y20: 301 ladder, 322 growth, 312 full) while men per fief fall (281 → 242 in the full model) and conquest slows (5.1 → 3.9-4.5 fiefs at y20). The receiver's own turn already gives to its peasants (the reader); the donor's gold mostly replaces that gift, at falling returns, and was the gold that hired the army.
+- **Pricing in gold misses the objective.** A gold-a-year return is a perpetuity; the game has a deadline. At skill 2 the binding loss is the lord's age (93-126 of 340), and anything that moves the next conquest later loses the race no matter its yield: growth at 0.24 a year needs four years to repay, the lord rarely has the years. The attack's real return is not T's harvest but **the seasons it brings the following conquests forward** (T's men and gold join, fronts close, the next target is nearer).
+- So the ROI model is the right shape and the wrong unit. **Next:** price every line in time: how many seasons it moves the empire's next conquest (and the one after) forward, from the strike planner's own X (`strike_plan`'s earliest season); a growth gift is worth what it saves in X, which at these returns is usually nothing.
 ### #67 — The empire planner's transfers, built: safety transfers are neutral, growth transfers slow the conquest (Chris, 2026-11-18)
 
 #66's design made concrete (`expand.EMPIRE`, `long_game --empire 1`; `--empire 2` without the growth lines; off), on top of the ladder. Once a season, on the owner's first turn, a **ledger** of what each owned fief still lacks after spending its own gold (the projected year): COMING then HUNTABLE fiefs the gold for their cliffs plus the hire to their own line, and the rice to feed those men (`_feedable`); fiefs under a cliff the gold for the Give (costed at 60); from Fall to Spring, the fiefs still growing, ranked by the Fall gold a 100-gold gift returns (`gold_income`). On its turn a SAFE fief with men over its own line **Moves** them into an adjacent COMING fief (the emergency move); a SAFE, topped-out fief **Sends** to the top open line, receivers that have not yet acted this season first (Move and Send land at the command, #66). Each Send shrinks its line, so several donors fill one fief and a filled fief drops out; growth gold is **earmarked** and given to the receiver's peasants on its own turn ahead of anything else. Emptying outposts was already the depots' job.
@@ -100,6 +126,8 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 | ladder (#66) | **60** | 179 | 93 | 5.1 | 7.7 | 0.70 |
 | + safety transfers (`--empire 2`) | 49 (saved 26, lost 37, z −1.4) | 170 | 114 | 5.0 | 8.4 | 0.70 |
 | + growth transfers (`--empire 1`) | 44 (saved 22, lost 38, z −2.1) | 186 | 100 | 4.4 | 7.6 | 0.73 |
+
+**Corrected in #68:** the growth lines here were ranked by a valuation artifact (the header clip, and no Summer reset); valued right, growth transfers win 26, not 44.
 
 Per game the safety planner made ~3.6 emergency Moves (96 men each) and ~2.6 Sends (unsafe 530 gold, huntable 360); the growth planner added ~24 growth Sends (460 gold each), nearly all given away by the receivers.
 

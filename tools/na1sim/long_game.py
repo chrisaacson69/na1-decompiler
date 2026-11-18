@@ -106,6 +106,7 @@ def one(job):
     X.LADDER = bool(len(job) > 25 and job[25])
     X.EMPIRE = bool(len(job) > 26 and job[26])          # set every job: the pool reuses workers
     X.EMPIRE_GROW = not (len(job) > 26 and job[26] == 2)    # --empire 2: no growth lines
+    X.EMPIRE_ATTACK = bool(len(job) > 27 and job[27])
     X.STAGE = bool(len(job) > 21 and job[21])            # set every job: the pool reuses workers
     if X.STAGE:
         X.STAGE_MAX = int(job[21])
@@ -125,6 +126,7 @@ def one(job):
     X.LADDER_LOG.clear()
     X.EMPIRE_LOG.clear()
     X._EMPIRE.clear()
+    X.ROI_LOG.clear()
     X.MEN_HIST.clear()
     X._POCKET.clear()
     owner, yearly, t0 = [], [], time.time()
@@ -157,7 +159,8 @@ def one(job):
                            round(sum(econ_index(m, i) for i in ai) / max(1, len(ai)), 1)))
     rec = Dz.play(fief, seed, years, ("auto",), tail=pol, skill=skill)
     tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG],
-                 stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG])    # per-game events (#61's walk)
+                 stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG],
+                 roi=[list(c) for c in X.ROI_LOG])    # per-game events (#61's walk)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0), tally
 
 
@@ -198,12 +201,13 @@ def main():
     ap.add_argument("--secure", type=int, help="1: a fief not SAFE hires toward its own line first (#65)")
     ap.add_argument("--ladder", type=int, help="1: each fief's priority ladder (tax, morale, peasants, men while not SAFE as the rice feeds them) ahead of the depots (#66)")
     ap.add_argument("--empire", type=int, help="1: the empire planner's transfers (ledger, emergency Move, Sends, growth gifts) on top of the ladder; 2: without growth lines (#67)")
+    ap.add_argument("--empire-attack", type=int, help="1: the empire's best attack is a ledger line, priced by ROI against the growth lines (#68)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

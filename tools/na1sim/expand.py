@@ -1402,6 +1402,24 @@ _EMPIRE = {}                            # owner -> {"t": tick, "lines": [...]}, 
 CLIFF_GIVE = 60                         # gold a cliff's Give is costed at (the ladder gives up to 60)
 
 
+def year_gold(m, idx, gift=0):
+    """The gold fief idx's next harvest brings in, from the Fall-to-Spring seat the ledger plans in: the
+    marks reset first (the next harvest follows a Summer), no upkeep, and the treasury emptied so the
+    header's clamp (cap_fief_stats) cannot clip it. gold_income(reset=False) read 100 for a 100-gold gift
+    to a fief whose treasury sat near its header (the gift only made room under the clamp) and 0 in Fall
+    and Winter (the marks it read are the low ones); the real return was 1-38 (#68)."""
+    from . import policy
+    with forecast.held(m):
+        f = m.fief(idx)
+        if gift:
+            policy.give_peasants(m, idx, gift, gold=True)
+        game.reset_marks(m)
+        m.w16(f + M.F_MEN, 0)
+        m.w16(f + M.F_GOLD, 0)
+        game.harvest_fief(m, idx, forecast.Mean())
+        return m.r16(f + M.F_GOLD)
+
+
 def _hire_gold(m, men):
     rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
     return -(-max(0, men) * rate // 10)
@@ -1426,13 +1444,103 @@ def empire_ledger(m, owner):
         elif fixes > gold:
             lines.append(dict(rank=2, fief=i, kind="cliff", gold=fixes - gold, rice=0, men=0, roi=0))
         elif EMPIRE_GROW and m.season in SEASONS and not capped(m, i) and m.r16(f + M.F_OUTPUT) > 0:
-            base = gold_income(m, i, reset=False)
-            gain = gold_income(m, i, gift=EMPIRE_GIFT, reset=False) - base
+            gain = year_gold(m, i, EMPIRE_GIFT) - year_gold(m, i)
             room = m.r16(f + M.F_HEADER) - gold
             if gain > 0 and room > 0:
                 lines.append(dict(rank=3, fief=i, kind="grow", gold=room, rice=0, men=0, roi=gain / EMPIRE_GIFT))
+    if EMPIRE_ATTACK:
+        a = attack_line(m, owner, max([d["roi"] for d in lines if d["kind"] == "grow"] or [0]))
+        if a:
+            lines.append(a)
     lines.sort(key=lambda d: (d["rank"], -d["roi"]))
     return lines
+
+
+# The attack on the ledger (Chris, 2026-11-18, #68: "attacks have an ROI too"). #67's ledger ranked only
+# safety and growth, so every transfer came out of the next attack. Now the empire's best attack is a
+# line too, on the growth lines' scale (the gold a year one gold buys): for each owned S and enemy
+# neighbour T, the hold-sized line (_stage_line: S keeps its own, the survivors hold T's share line);
+# the return is T's harvest gold as ours (the conquest's writes: owner, Direct, not a capital, tax at
+# most 30, the survivors in it), the cost is the gold to hire the men S lacks plus the men the battle
+# uses up (fought_keep), less the men freed by the fiefs it turns interior (the army bill before and
+# after, T's own need aside). The best one (kept unless a new best beats it by EMPIRE_KEEP) wants the
+# hire's gold and the War gold (a gold per man sent, carried back into T on a win); men come by Move
+# from S's neighbours and march a step from farther fiefs, the gold by Send, and S hires on its own
+# turn keeping the War gold. Growth and attack lines share rank 3 and are taken in ROI order.
+EMPIRE_ATTACK = False
+EMPIRE_KEEP = 125                       # a new best attack replaces the standing one only this much better (%)
+ROI_LOG = []                            # per season: (year, season, S, T, roi, cost, prize, best growth roi)
+
+
+def attack_price(m, owner, S, T, bill0):
+    """-> dict(send, line, short, cost, prize, roi) or None if S's header cannot hold the line."""
+    fs, ft = m.fief(S), m.fief(T)
+    send, line = _stage_line(m, S, T, owner)
+    if line > m.r16(fs + M.F_HEADER):
+        return None
+    short = max(0, line - m.r16(fs + M.F_MEN))
+    kr = max(.05, fought_keep(send / max(1, m.r16(ft + M.F_MEN)), skill_scale(m), m.skill))
+    kept = int(send * kr)
+    with forecast.held(m):
+        m.w8(M.FIEF_TO_DAIMYO_MAP + T, owner)
+        m.w8(M.PROVINCE_AI_STATE + T, M.PLAYER_DIRECT)
+        m.w8(M.FIEF_IS_CAPITAL + T, 0)
+        m.w8(M.FIEF_TAX_RATE + T, min(m.r8(M.FIEF_TAX_RATE + T), 30))
+        m.w16(ft + M.F_MEN, kept)
+        prize = year_gold(m, T)
+        freed = bill0 - (army_bill(m, owner)[0] - share_line(m, T))
+    cost = max(1, _hire_gold(m, short) + _hire_gold(m, send - kept) - _hire_gold(m, freed)
+               + (_hire_gold(m, -freed) if freed < 0 else 0))
+    return dict(send=send, line=line, short=short, cost=cost, prize=prize, roi=prize / cost)
+
+
+def attack_line(m, owner, growth_roi=0.0):
+    """The ledger's attack line, or None."""
+    e = _EMPIRE.setdefault(owner, {"gift": {}})
+    bill0 = army_bill(m, owner)[0]
+    allsafe = all(s == SAFE for s in empire(m, owner).values())
+    priced = []
+    for S in owned(m, owner):
+        for T in targets(m, S):
+            p = attack_price(m, owner, S, T, bill0)
+            if p:
+                priced.append((p["roi"], S, T, p))
+    priced.sort(key=lambda x: -x[0])
+    best = None
+    for roi, S, T, p in priced:
+        # the safety verdict (strike_ok: score's own checks with the line's men in hand) can only be
+        # read while the empire is all SAFE; otherwise the line is built toward and checked later
+        if not allsafe or strike_ok(m, S, T, p["line"]):
+            best = (S, T, p)
+            break
+    old = e.get("attack")
+    if best and old and (old[0], old[1]) != best[:2]:
+        o = next((x for x in priced if (x[1], x[2]) == old), None)
+        if o and o[0] * EMPIRE_KEEP >= best[2]["roi"] * 100:
+            best = (o[1], o[2], o[3])
+    if not best:
+        e["attack"] = None
+        return None
+    S, T, p = best
+    e["attack"] = (S, T)
+    ROI_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, S, T, round(p["roi"], 4), p["cost"], p["prize"],
+                    round(growth_roi, 4)))
+    gold = m.r16(m.fief(S) + M.F_GOLD)
+    return dict(rank=3, fief=S, kind="attack", T=T, line=p["line"], send=p["send"],
+                gold=max(0, _hire_gold(m, p["short"]) + p["send"] - gold), rice=0, men=p["short"], roi=p["roi"])
+
+
+def striker_hire(m, idx, d):
+    """The attack line's striker hires toward its line, keeping the War gold. -> True if it hired."""
+    from . import policy
+    f = m.fief(idx)
+    budget = m.r16(f + M.F_GOLD) - d["send"]
+    if (m.r16(f + M.F_MEN) < d["line"] and budget > 20 and m.r16(f + M.F_MORALE) >= MORALE_FLOOR
+            and policy._hire_up_to(m, idx, d["line"], budget)):
+        HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "attack"))
+        EMPIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, "hire", idx, d["T"], 0, 0, 0))
+        return True
+    return False
 
 
 def _empire(m, owner):
@@ -1461,6 +1569,9 @@ def empire_move(m, idx):
     owner = m.fief_owner(idx)
     e = _empire(m, owner)
     f = m.fief(idx)
+    mine = next((d for d in e["lines"] if d["kind"] == "attack" and d["fief"] == idx), None)
+    if mine:                                    # the striker builds its own line and gives nothing away
+        return striker_hire(m, idx, mine)
     if fief_state(m, idx) != SAFE:
         return False
     yr, men = m.r16(M.CURRENT_GAME_YEAR), m.r16(f + M.F_MEN)
@@ -1471,20 +1582,32 @@ def empire_move(m, idx):
     if spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= policy.CLIFF:
         for d in e["lines"]:
             j = d["fief"]
-            if d["rank"] == 0 and d["men"] > 0 and j in m.neighbor_rows.get(idx, []):
-                moved = move_men(m, idx, j, min(spare, d["men"]))
-                if moved:
-                    d["men"] -= moved
-                    d["gold"] = max(0, d["gold"] - _hire_gold(m, moved))
-                    EMPIRE_LOG.append((yr, m.season, "move", idx, j, 0, 0, moved))
+            if d["men"] <= 0 or not (d["rank"] == 0 or d["kind"] == "attack"):
+                continue
+            if j not in m.neighbor_rows.get(idx, []):
+                if d["kind"] != "attack":
+                    continue
+                dist = distance_to(m, owner, j)    # farther fiefs march a step toward the striker
+                k = dist.get(idx)
+                steps = [b for b in m.neighbor_rows.get(idx, []) if k and k <= STAGE_ETA and dist.get(b) == k - 1]
+                if steps and move_men(m, idx, steps[0], spare):
+                    EMPIRE_LOG.append((yr, m.season, "march", idx, steps[0], 0, 0, spare))
                     return True
+                continue
+            moved = move_men(m, idx, j, min(spare, d["men"]))
+            if moved:
+                d["men"] -= moved
+                d["gold"] = max(0, d["gold"] - _hire_gold(m, moved))
+                EMPIRE_LOG.append((yr, m.season, "move", idx, j, 0, 0, moved))
+                return True
     if not capped(m, idx):
         return False
     gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
     rice_spare = m.r16(f + M.F_RICE) - 2 * (men // 2 + 1)
     open_ = [d for d in e["lines"] if d["fief"] != idx and (d["gold"] > 0 or d["rice"] > 0)
              and not (d["kind"] == "grow" and m.season == 0 and d["fief"] in m.acted)]
-    open_.sort(key=lambda d: (d["rank"], d["fief"] in m.acted, -d["roi"]))
+    open_.sort(key=(lambda d: (d["rank"], -d["roi"], d["fief"] in m.acted)) if EMPIRE_ATTACK
+               else (lambda d: (d["rank"], d["fief"] in m.acted, -d["roi"])))
     for d in open_:
         rice, gold = min(max(0, rice_spare), d["rice"]), min(max(0, gold_spare), d["gold"])
         if rice + gold < SEND_MIN:
