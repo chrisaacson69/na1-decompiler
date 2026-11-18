@@ -124,6 +124,8 @@ What is scarce is not transfers but **gold, which arrives once, and each fief's 
 
 **The ladder is the best skill-2 player of this line** (#61's base was 40): it keeps secure's cut in invasions (214 → 179) and gives back most of its economy (0.70 against 0.66), because men while not SAFE stop where the rice stops and the cliffs come first. The lord's age still takes 93. Skill 1 is unchanged.
 
+**Skill 3** (same harness): 1 unified against 0, but the shape changes: invaded 275 → 207, **starts that expand 77 → 141**, the lord's age 58 → 123, first conquest year 14 → 17, econ at year 20 0.50 → 0.32. The ladder keeps skill-3 starts alive and lets them expand; their economies then stall at a third of the AI's, which is the planner's job.
+
 **Next:** the planner's transfers on top of the ladder (the projected year, Send from the topped-out fiefs, the emergency Move); the Move/Send timing checked on the cartridge.
 
 ### #65 — Eight stalled games stepped through: the gate is local fiefs that never secure themselves, and the lord's empty capital (Chris, 2026-11-17)
