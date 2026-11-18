@@ -1430,6 +1430,7 @@ def empire_ledger(m, owner):
     gold and rice still wanted, men short, and for growth the return per gold."""
     from . import policy
     cliff, lines = policy.CLIFF, []
+    r = reinvest_rate(m, owner) if EMPIRE_MIRR else 0
     for i in owned(m, owner):
         f = m.fief(i)
         gold, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_MEN)
@@ -1444,12 +1445,13 @@ def empire_ledger(m, owner):
         elif fixes > gold:
             lines.append(dict(rank=2, fief=i, kind="cliff", gold=fixes - gold, rice=0, men=0, roi=0))
         elif EMPIRE_GROW and m.season in SEASONS and not capped(m, i) and m.r16(f + M.F_OUTPUT) > 0:
-            gain = year_gold(m, i, EMPIRE_GIFT) - year_gold(m, i)
+            gain = 1 if EMPIRE_MIRR else year_gold(m, i, EMPIRE_GIFT) - year_gold(m, i)
             room = m.r16(f + M.F_HEADER) - gold
             if gain > 0 and room > 0:
                 lines.append(dict(rank=3, fief=i, kind="grow", gold=room, rice=0, men=0, roi=gain / EMPIRE_GIFT))
     if EMPIRE_ATTACK:
-        a = attack_line(m, owner, max([d["roi"] for d in lines if d["kind"] == "grow"] or [0]))
+        a = (attack_line_mirr(m, owner, r) if EMPIRE_MIRR else
+             attack_line(m, owner, max([d["roi"] for d in lines if d["kind"] == "grow"] or [0])))
         if a:
             lines.append(a)
     lines.sort(key=lambda d: (d["rank"], -d["roi"]))
@@ -1543,6 +1545,247 @@ def striker_hire(m, idx, d):
     return False
 
 
+# MIRR (Chris, 2026-11-18, #69): #68 ranked a perpetuity yield (a year's gold / gold now), with no timing,
+# no upkeep, no terminal value and no reinvestment, and a transfer was priced as if the receiver gave
+# nothing of its own. Every option is now a stream of cash flows over MIRR_H seasons, from the formulas:
+# the gift's gain is develop_stat's (amount x (6 - skill) / sqrt(level + amount): the amount is under the
+# root, so one combined gift gains less than two separate ones), income is the harvest's with the Summer
+# reset (gold, and rice at the exchange rate), the army's upkeep is men/2 gold and men/2 rice at each Fall,
+# the target's men grow at growth(), the conquest keeps the defender's treasury (_conquest). At the
+# horizon the assets left (a lifted fief's extra income, a held prize's income, men at the hire rate)
+# are a terminal value. MIRR = (FV of the inflows at r / PV of the outflows at r)^(1/H) - 1 per season,
+# r the empire's reinvestment rate: the best IRR of a fief's own gift this season (what the gold would
+# earn anyway). A transfer is priced at the margin over the receiver's own gift: one combined gift if the
+# receiver has not acted yet, else a second, separate gift on its next turn. Donor gold goes to the
+# highest MIRR above r, attack or growth; none above r: the donor keeps it.
+EMPIRE_MIRR = False
+MIRR_H = 8
+MIRR_LOG = []                           # donor choices: (year, season, donor, kind, receiver, mirr, r, gold)
+R_LOG = []                              # per owner-season: (year, season, r, attack mirr or None)
+
+
+def _rice_price(m):
+    return (m.r16(M.GOLD_RICE_EXCHANGE) or 10) / 10
+
+
+def harvest_value(m, idx, gifts=()):
+    """The next harvest's gold plus rice (at the exchange rate) after the gifts, given one by one to the
+    peasants; marks reset (the next harvest follows a Summer), no men, empty stores (nothing clipped)."""
+    from . import policy
+    with forecast.held(m):
+        f = m.fief(idx)
+        for g in gifts:
+            if g >= 1:
+                m.w16(f + M.F_GOLD, max(m.r16(f + M.F_GOLD), g + 1))
+                policy.give_peasants(m, idx, g, gold=True)
+        game.reset_marks(m)
+        for off in (M.F_MEN, M.F_GOLD, M.F_RICE):
+            m.w16(f + off, 0)
+        game.harvest_fief(m, idx, forecast.Mean())
+        return m.r16(f + M.F_GOLD) + m.r16(f + M.F_RICE) * _rice_price(m)
+
+
+def _annuity(r):
+    """Value at the horizon of an income paid every Fall from then on."""
+    return 1 / max(1e-6, (1 + r) ** 4 - 1)
+
+
+def mirr(cf, tv, r, out=None):
+    """cf[0..H] per season, tv at H; finance and reinvestment rate r per season. With `out`, cf holds the
+    inflows and out the outflows (positive), kept gross: an attack that lands this season would net its
+    men against the treasury it takes and show no outflow at all (#69: 20% of attacks priced at the cap)."""
+    H = len(cf) - 1
+    if out is not None:
+        fv = sum(c * (1 + r) ** (H - k) for k, c in enumerate(cf)) + max(0, tv)
+        pv = sum(c / (1 + r) ** k for k, c in enumerate(out)) + max(0, -tv) / (1 + r) ** H
+        return 1.0 if pv <= 0 else -1.0 if fv <= 0 else (fv / pv) ** (1 / H) - 1
+    fv = sum(c * (1 + r) ** (H - k) for k, c in enumerate(cf) if c > 0) + max(0, tv)
+    pv = sum(-c / (1 + r) ** k for k, c in enumerate(cf) if c < 0) + max(0, -tv) / (1 + r) ** H
+    if pv <= 0:
+        return 1.0
+    if fv <= 0:
+        return -1.0
+    return (fv / pv) ** (1 / H) - 1
+
+
+def _gift_flows(m, s0, kg, g, delta, r):
+    """A gift of g at season offset kg that lifts each harvest by delta: (cf, tv)."""
+    cf = [0.0] * (MIRR_H + 1)
+    if kg > MIRR_H:
+        return cf, 0.0
+    cf[kg] -= g
+    skip = (s0 + kg) % 4 == 1                   # a Summer gift misses the Fall right after it
+    for k in range(kg + 1, MIRR_H + 1):
+        if (s0 + k) % 4 == 2:
+            if skip:
+                skip = False
+                continue
+            cf[k] += delta
+    return cf, delta * _annuity(r)
+
+
+def own_gift(m, idx):
+    """What fief idx gives its own peasants on its turn: its gold above this year's upkeep."""
+    f = m.fief(idx)
+    return max(0, m.r16(f + M.F_GOLD) - m.r16(f + M.F_MEN) // 2 - 1)
+
+
+def irr(flow_fn, lo=1e-5, hi=1.0):
+    """The rate at which flow_fn(r) -> (cf, tv) has zero present value (bisection; lo if none)."""
+    def npv(r):
+        cf, tv = flow_fn(r)
+        return sum(c / (1 + r) ** k for k, c in enumerate(cf)) + tv / (1 + r) ** (len(cf) - 1)
+    if npv(lo) <= 0:
+        return lo
+    if npv(hi) > 0:
+        return hi
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if npv(mid) > 0 else (lo, mid)
+    return lo
+
+
+def reinvest_rate(m, owner):
+    """r: the best IRR of an owned fief's own gift this season (the last one known if none can give)."""
+    e = _EMPIRE.setdefault(owner, {"gift": {}})
+    best = None
+    for i in owned(m, owner):
+        g = own_gift(m, i)
+        if g < SEND_MIN or capped(m, i) or m.r16(m.fief(i) + M.F_OUTPUT) <= 0:
+            continue
+        d = harvest_value(m, i, [g]) - harvest_value(m, i)
+        if d <= 0:
+            continue
+        x = irr(lambda r: _gift_flows(m, m.season, 0, g, d, r))
+        best = x if best is None else max(best, x)
+    if best is not None:
+        e["r"] = best
+    return e.get("r", 0.01)
+
+
+def transfer_mirr(m, R, g, r):
+    """The MIRR of Sending g to R for its peasants, over R's own gift: combined if R has not acted this
+    season, else separate on its next turn."""
+    own = own_gift(m, R)
+    base = harvest_value(m, R, [own])
+    if R in m.acted:
+        delta, kg = harvest_value(m, R, [own, g]) - base, 1
+    else:
+        delta, kg = harvest_value(m, R, [own + g]) - base, 0
+    if delta <= 0:
+        return -1.0
+    cf, tv = _gift_flows(m, m.season, kg, g, delta, r)
+    return mirr(cf, tv, r)
+
+
+def attack_mirr(m, owner, S, T, bill0, r):
+    """-> dict(send, line, short, mirr) for S taking T at its first war season, funded now; or None."""
+    fs, ft = m.fief(S), m.fief(T)
+    s0 = m.season
+    ka = next(k for k in range(8) if (s0 + k) % 4 in SEASONS and (k or S not in m.acted))
+    if ka > MIRR_H:
+        return None
+    with forecast.held(m):                      # the target's men when the strike lands
+        proj = int(m.r16(ft + M.F_MEN) + growth(m, T) * ka)
+        m.w16(ft + M.F_MEN, proj)
+        send, line = _stage_line(m, S, T, owner)
+    if line > m.r16(fs + M.F_HEADER):
+        return None
+    short = max(0, line - m.r16(fs + M.F_MEN))
+    kr = max(.05, fought_keep(send / max(1, proj), skill_scale(m), m.skill))
+    kept = int(send * kr)
+    lost = send - kept
+    rate, p = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10, _rice_price(m)
+    with forecast.held(m):                      # the prize as ours (the conquest's writes)
+        m.w8(M.FIEF_TO_DAIMYO_MAP + T, owner)
+        m.w8(M.PROVINCE_AI_STATE + T, M.PLAYER_DIRECT)
+        m.w8(M.FIEF_IS_CAPITAL + T, 0)
+        m.w8(M.FIEF_TAX_RATE + T, min(m.r8(M.FIEF_TAX_RATE + T), 30))
+        m.w16(ft + M.F_MEN, kept)
+        inc_t = harvest_value(m, T)
+        freed = bill0 - (army_bill(m, owner)[0] - share_line(m, T))
+    cin, cout = [0.0] * (MIRR_H + 1), [0.0] * (MIRR_H + 1)
+    # men are capital: the investment is every man sent at the hire rate (a hire only turns gold into
+    # men at that rate; the men already held are not free), and the survivors come back at the horizon
+    cout[0] += send * rate
+    cin[ka] += m.r16(ft + M.F_GOLD) + m.r16(ft + M.F_RICE) * p
+    (cin if freed > 0 else cout)[ka] += abs(freed) * rate
+    for k in range(1, MIRR_H + 1):
+        if (s0 + k) % 4 == 2:
+            dm = short if k <= ka else short - lost
+            (cout if dm > 0 else cin)[k] += abs(dm) / 2 * (1 + p)   # upkeep: men/2 gold and men/2 rice
+            if k > ka:
+                cin[k] += inc_t
+    tv = inc_t * _annuity(r) + kept * rate
+    return dict(send=send, line=line, short=short, mirr=mirr(cin, tv, r, cout))
+
+
+def attack_line_mirr(m, owner, r):
+    """The ledger's attack line by MIRR, or None if no attack beats r."""
+    e = _EMPIRE.setdefault(owner, {"gift": {}})
+    bill0 = army_bill(m, owner)[0]
+    allsafe = all(s == SAFE for s in empire(m, owner).values())
+    priced = []
+    for S in owned(m, owner):
+        for T in targets(m, S):
+            p = attack_mirr(m, owner, S, T, bill0, r)
+            if p and p["mirr"] > r:
+                priced.append((p["mirr"], S, T, p))
+    priced.sort(key=lambda x: -x[0])
+    best = next(((S, T, p) for x, S, T, p in priced if not allsafe or strike_ok(m, S, T, p["line"])), None)
+    old = e.get("attack")
+    if best and old and (old[0], old[1]) != best[:2]:
+        o = next((x for x in priced if (x[1], x[2]) == old), None)
+        if o and (1 + o[0]) ** MIRR_H * EMPIRE_KEEP >= (1 + best[2]["mirr"]) ** MIRR_H * 100:
+            best = (o[1], o[2], o[3])
+    R_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, round(r, 4), best and round(best[2]["mirr"], 4)))
+    if not best:
+        e["attack"] = None
+        return None
+    S, T, p = best
+    e["attack"] = (S, T)
+    gold = m.r16(m.fief(S) + M.F_GOLD)
+    rate = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10
+    return dict(rank=3, fief=S, kind="attack", T=T, line=p["line"], send=p["send"],
+                gold=max(0, int(p["short"] * rate) + 1 + p["send"] - gold), rice=0, men=p["short"], roi=p["mirr"])
+
+
+def _do_send(m, idx, e, d, rice, gold):
+    r, g = send(m, idx, d["fief"], rice, gold)
+    if r + g:
+        d["rice"] -= r
+        d["gold"] -= g
+        if d["kind"] == "grow" and g:
+            e["gift"][d["fief"]] = e["gift"].get(d["fief"], 0) + g
+        EMPIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, d["kind"], idx, d["fief"], r, g, 0))
+    return r + g
+
+
+def _mirr_send(m, idx, e, open_, gold_spare, rice_spare):
+    """The donor's Send with MIRR: a safety line if one is open, else the rank-3 line (attack or a
+    growth transfer, priced now at this donor's amount and the receiver's turn) with the best MIRR above r."""
+    for d in open_:
+        if d["rank"] < 3:
+            rice, gold = min(max(0, rice_spare), d["rice"]), min(max(0, gold_spare), d["gold"])
+            if rice + gold >= SEND_MIN and _do_send(m, idx, e, d, rice, gold):
+                return True
+    r, best = e.get("r", 0.01), None
+    for d in open_:
+        if d["rank"] < 3:
+            continue
+        gold = min(max(0, gold_spare), d["gold"])
+        if gold < SEND_MIN:
+            continue
+        v = d["roi"] if d["kind"] == "attack" else transfer_mirr(m, d["fief"], gold, r)
+        if v > r and (best is None or v > best[0]):
+            best = (v, d, gold)
+    if not best:
+        return False
+    v, d, gold = best
+    MIRR_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, d["kind"], d["fief"], round(v, 4), round(r, 4), gold))
+    return bool(_do_send(m, idx, e, d, 0, gold))
+
+
 def _empire(m, owner):
     e = _EMPIRE.setdefault(owner, {"gift": {}})
     if e.get("t") != _tick(m):
@@ -1558,6 +1801,8 @@ def empire_gift(m, idx):
     f = m.fief(idx)
     if not g or capped(m, idx) or m.r16(f + M.F_GOLD) <= 1:
         return False
+    if EMPIRE_MIRR:
+        g = max(g, own_gift(m, idx))
     policy.give_peasants(m, idx, min(g, m.r16(f + M.F_GOLD) - 1), gold=True)
     EMPIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, "gift", idx, idx, 0, g, 0))
     return True
@@ -1605,9 +1850,11 @@ def empire_move(m, idx):
     gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
     rice_spare = m.r16(f + M.F_RICE) - 2 * (men // 2 + 1)
     open_ = [d for d in e["lines"] if d["fief"] != idx and (d["gold"] > 0 or d["rice"] > 0)
-             and not (d["kind"] == "grow" and m.season == 0 and d["fief"] in m.acted)]
+             and (EMPIRE_MIRR or not (d["kind"] == "grow" and m.season == 0 and d["fief"] in m.acted))]
     open_.sort(key=(lambda d: (d["rank"], -d["roi"], d["fief"] in m.acted)) if EMPIRE_ATTACK
                else (lambda d: (d["rank"], d["fief"] in m.acted, -d["roi"])))
+    if EMPIRE_MIRR:
+        return _mirr_send(m, idx, e, open_, gold_spare, rice_spare)
     for d in open_:
         rice, gold = min(max(0, rice_spare), d["rice"]), min(max(0, gold_spare), d["gold"])
         if rice + gold < SEND_MIN:

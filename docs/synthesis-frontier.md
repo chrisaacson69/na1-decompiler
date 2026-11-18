@@ -91,6 +91,32 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #69 — The ledger priced by MIRR: the accounting is right, and it plays level with the ladder (Chris, 2026-11-18)
+
+Chris, on #68: *we are not calculating MIRR correctly. Everything into attack gets outgrown in the later half, so men → attack is not always better than development; it is better early, when the armies on the board are small, and the ROI of everything falls as the game ages. The gift's value was supposed to be marginal over the fief's own gifting, and priced by turn order (the donor first: one combined gift; the receiver first: two separate gifts). It is all calculable from the formulas, no empirical data. MIRR costs in time, so if the predictions are right it is the least time; if attack is better, MIRR shows it and does it anyway.* Old age is beyond control, not a thing to optimise.
+
+`expand.EMPIRE_MIRR` (`long_game --mirr 1`; off), on #68's ledger. Every option is a stream of cash flows over `MIRR_H` = 8 seasons, from the formulas:
+- **gift**: `develop_stat`'s gain, amount × (6 − skill) / √(level + amount), the amount under the root, so one gift of 1,000 at level 400 gains 26.7 per point of the factor where two of 500 gain 33.2; income is the harvest's (`harvest_value`: gold, and rice at the exchange rate; marks reset; stores emptied, so the header's clamp clips nothing); a Summer gift misses the Fall after it;
+- **transfer**: at the margin over the receiver's own gift (its gold above the year's upkeep): one combined gift if it has not yet acted this season, else a second, separate gift on its next turn; a receiver that would cap prices at −1;
+- **attack**: the target's men grown to the strike season (`growth()`), the hold-sized line; **men are capital**: every man sent is invested at the hire rate (a hire only turns gold into men) and the survivors return at the horizon; the defender's treasury is taken (`_conquest`), the men freed by the army bill (or the new front's cost) at the conquest, the upkeep (men/2 gold and men/2 rice at each Fall) on the men held, the prize's income from the Fall after;
+- **terminal value** at the horizon: an income stream from then on at r, men at the hire rate;
+- **MIRR** = (FV of the inflows at r ÷ PV of the outflows at r)^(1/8) − 1 a season, inflows and outflows kept **gross** in each season; **r**, the reinvestment rate, the best IRR of an owned fief's own gift that season (the last one known when none can give). Safety lines first; then the donor's gold goes to the highest MIRR above r, attack or growth; none above r, it keeps its gold. The attack line is the best MIRR above r (kept unless a new one compounds 25% more over the horizon).
+
+Two accounting errors on the way, each found in the numbers: with the men already held counted free (only new hires invested, the lost men netted at the horizon), a quarter of the attacks priced at the cap of 1.0; with men as capital but an attack that lands this season netting its men against the treasury it takes in the same season, 20% still did. Gross flows: 8 of 16,793.
+
+| every start, seeds 3000-3019, 70 years, skill 2, strike 8 + capital first + ladder | won | invaded | age | y20 fiefs | y30 | y45 | econ y20 |
+|---|---|---|---|---|---|---|---|
+| ladder (#66) | 60 | 179 | 93 | 5.1 | 7.7 | 7.4 | 0.70 |
+| ROI ledger (#68) | 34 | 198 | 101 | 4.5 | 7.9 | | 0.71 |
+| MIRR, the army's men free | 54 | 189 | 89 | 5.5 | 8.7 | | 0.66 |
+| MIRR, men as capital, netted | 62 | 180 | 87 | 5.3 | 9.4 | | 0.69 |
+| **MIRR, men as capital, gross** | **57** (saved 36, lost 39, z −0.3; against #68: saved 39, lost 16, z +3.1) | 182 | 90 | 5.2 | 9.2 | 9.5 | 0.67 |
+
+Per game (gross): the donors chose the attack 13.6 times and growth 4.9 (by gold, 5,500 to the attack and 2,200 to growth); the striker hired 13.7 times and drew 15 Moves and 8 marches. r's quartiles 0.08 / 0.11 / 0.15 a season; the attack line's MIRR 0.15 / 0.20 / 0.27; an attack line stood in 66% of seasons. In the probe game development beat every attack in 1566 (best 0.12 against r 0.13-0.17) and the attacks took over by 1570 (0.26 against 0.09): the switch Chris described, from the formulas, untuned.
+
+- **MIRR repairs the ledger** (34 → 54-62 across the three accountings, all within noise of each other) and plays **level with the ladder** (57-62 against 60). The empire it builds is larger (9.2-9.5 fiefs from year 30 on, against 7.4-8.3), at the same invasion count.
+- **The stall is still there, one fief further on.** Past year 30 the surviving empires sit at about 9 fiefs with 3.4 rivals left, in both players, and the lord's age (90) takes them. MIRR prices the next attack and the next gift correctly; it does not see past the horizon of one conquest, and the late conquests are the ones a single fief's line cannot reach.
+- **Open:** r jumps with whichever fief can give (1% in a season when only a poor fief could); the defender's men that join on a win (half the survivors) are not counted (a battle would have to be run); each fief's own command still follows the ladder and `strike_plan`, MIRR only directs the donors' gold and the attack line.
 ### #68 — Attacks on the ledger, priced by ROI: gold is the wrong currency, the clock is (Chris, 2026-11-18)
 
 Chris: *see if we can add attacks and price their ROI, to see how they fit in the model.* `expand.EMPIRE_ATTACK` (`long_game --empire-attack 1`; off), on #67's ledger. For each owned S and enemy neighbour T: the hold-sized line (`_stage_line`); the **return** is T's harvest gold as ours (the conquest's writes in a `forecast.held` copy: owner, Direct, not a capital, tax at most 30, the survivors in it); the **cost** is the gold to hire the men S lacks, plus the men the battle uses up (`fought_keep`), less the men freed by the fiefs it turns interior (the army bill before and after, T's own need aside). ROI = return ÷ cost, the growth lines' scale (gold a year per gold). The best attack (kept unless beaten by 25%; `strike_ok` while the empire is all SAFE) is a rank-3 line beside the growth lines, taken in ROI order: S hires toward it keeping the War gold, its neighbours Move men in, farther fiefs march a step, topped fiefs Send the gold.
