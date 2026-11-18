@@ -179,9 +179,10 @@ def main():
     ap.add_argument("--capital-first", type=int)
     ap.add_argument("--capital-guard", type=int)
     ap.add_argument("--secure", type=int)
+    ap.add_argument("--ladder", type=int)
     a = ap.parse_args()
     job = (a.fief, a.seed, a.years, None, None, None, 0, None, a.skill, False, None, 0, None, None, [],
-           a.strike, 100, 1, None, None, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure)
+           a.strike, 100, 1, None, None, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder)
     res, seasons = record(job)
     fief, seed, fatal, yearly = res[:4]
     provs = {p.idx: getattr(p, "name", str(p.idx)) for p in loader.load_provinces()}

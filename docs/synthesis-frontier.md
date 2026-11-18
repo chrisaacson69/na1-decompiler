@@ -91,6 +91,41 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #66 — The empire planner, designed: a fiscal year, a fief ladder, and transfers that solve several problems at once (Chris, 2026-11-18)
+
+Chris: *keep safety over dying of old age; the hope is that controlling many interior fiefs makes up for the slowness, if logistics get better.* Every fief keeps growing, which includes sending gold, rice and men to weak fiefs so they get up and running faster. Attacks have an ROI too, but are the hardest to price, and are left out of the first planner.
+
+**The cartridge's year** (appendix-formulas, cartridge-checked, #54). Gold and rice arrive once, at the Fall harvest, before Fall's commands, and the army's upkeep is paid there. Each Fall's income reads the lower of each stat's Summer snapshot and its Fall value, so a gift pays at the coming harvest only if it lands before Summer. One Give to the peasants lifts loyalty **and** wealth (`driver_give`); morale is a separate Give to the men. A Send is clamped to the receiver's header room. So:
+
+| Season | The year's job |
+|---|---|
+| Fall | the harvest in hand: transfers out of the rich fiefs, urgent fixes |
+| Winter | the receivers spend: gifts, hires; more transfers |
+| Spring | the last season a gift pays this harvest |
+| Summer | the upkeep: can each fief feed its men through Fall (buy rice or hire); no gifts (they pay a year late) |
+
+What is scarce is not transfers but **gold, which arrives once, and each fief's four commands a year**.
+
+**The fief ladder** (Chris; each fief alone, one command a season): tax to 55 as loyalty bears it; morale under 45 (an army revolt is worse than a riot); loyalty or wealth under 45 (one Give fixes both; the fief in trouble fixes one cliff a turn); men while not SAFE, only as many as its rice can feed (a non-SAFE fief whose economy cannot carry the army is taken anyway), buying rice if needed; the gift; then hire.
+
+**The planner** (Chris): rank on the **projected** year, not the current state. Each fief is first played alone through its ladder with what it holds; the transfers then fill the gaps that projection shows (unsafe first, then cliffs, then the best gift that can still land before Summer). A fief covered by a transfer drops out of the queue, so the weakest fief does not absorb everything. Re-planned every season (events, battles, the shuffled order).
+- **Send** reaches any owned fief; **Move** only an adjacent one. Gold is the general tool. Men still matter in two cases: an **emergency move** (a COMING fief, and a SAFE neighbour that acts before the attacker in the season's order, `m.acted`: better than waiting for the fief's own turn, especially if it comes after the attacker's), and **emptying an outpost** to put its army where it is used.
+- **Several donors, one receiver, one season**: X sends gold for the morale or peasants problem while Y moves men for the shortage, so the fief most in need gets several problems solved at once.
+- **Send/spend cycles** get past the header cap: send to the header, the receiver spends (a gift, a hire), send again. Turn order decides how fast: if Y moves after X for two seasons, the cycle completes in those two.
+- **Open fact**: the code applies Move and Send at the command (`effect_move` $8CA5, `effect_send` $8BE5 write at once); Chris recalls them landing at the end of the turn. Not cartridge-tested; it decides whether a donor acting before its receiver saves a season.
+
+**Step 1, the ladder alone** (`expand.LADDER`, `long_game --ladder 1`; off): the rungs above, ahead of the depots and the strike hire, after the attack and the capital's hire. Results below.
+
+| every start, seeds 3000-3019, 70 years, strike 8 + capital first | skill 1 | skill 2 |
+|---|---|---|
+| capital first (#64) | 166 (invaded 149, age 12; econ y20 0.75) | 45 (invaded 214, age 73; 0.72) |
+| + secure (#65) | 170 | 46 (invaded 183, age 99; 0.66) |
+| **+ ladder** | 171 (saved 44, lost 39) | **60** (saved 41, lost 26, z +1.8; invaded 179, age 93; 0.70) |
+
+**The ladder is the best skill-2 player of this line** (#61's base was 40): it keeps secure's cut in invasions (214 → 179) and gives back most of its economy (0.70 against 0.66), because men while not SAFE stop where the rice stops and the cliffs come first. The lord's age still takes 93. Skill 1 is unchanged.
+
+**Next:** the planner's transfers on top of the ladder (the projected year, Send from the topped-out fiefs, the emergency Move); the Move/Send timing checked on the cartridge.
+
 ### #65 — Eight stalled games stepped through: the gate is local fiefs that never secure themselves, and the lord's empty capital (Chris, 2026-11-17)
 
 Eight stalled games traced (`na1sim.trace`, capital-first player; skill 1: Omi s3010, Settsu s3001, Musashi s3005, Suruga s3001; skill 2: Iseshima s3009, Hida s3011, Mikawa s3016, Echizen s3001). Seasons with 2+ fiefs, by what held the player back: **some fief not SAFE, so no attack anywhere: 27-47%**, the largest cause in every game; Summer 25%; attacked 8-25%; an attack would have passed but the fief spent the turn on Assign 5-10% (all 85 cases: `split_ready`); blocked by no winning split, another fief or the prize 2-25%.

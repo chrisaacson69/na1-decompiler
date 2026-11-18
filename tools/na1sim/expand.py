@@ -1322,6 +1322,64 @@ def secure_hire(m, idx):
     return False
 
 
+# The fief ladder (Chris, 2026-11-18): each fief's command in priority order, ahead of the depots and the
+# strike hire: tax to 55 as loyalty bears it; morale under the cliff (an army revolt is the worse
+# cliff); loyalty or wealth under the cliff (one Give to the peasants lifts both, driver_give: the
+# wealth cliff is Chris's, the reader only watched loyalty); then, while not SAFE, men toward its own
+# line, but only as many as the rice can feed through the next harvest and the upkeep after it
+# (rice first, bought, when that is short). The gift and the topped-out hire follow as before. The
+# fiscal-year planner (transfers between fiefs) is the next step; this is each fief alone.
+LADDER = False
+
+
+def _feedable(m, idx):
+    """Extra men the rice carries: the rice left after the next harvest and its upkeep, less the
+    upkeep after that (each extra man costs about half a rice at each)."""
+    from . import policy
+    return max(0, policy._rice_slack(m, idx, False, sustain=True))
+
+
+def ladder(m, idx):
+    """-> True if a rung took the turn."""
+    from . import policy
+    f = m.fief(idx)
+    gold, rice, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
+    loyalty, wealth, morale = m.r16(f + M.F_LOYALTY), m.r16(f + M.F_WEALTH), m.r16(f + M.F_MORALE)
+    cliff = policy.CLIFF
+    tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)
+    step = next((s for s in range(cap - tax, 0, -1)
+                 if loyalty - policy.P.pct_op(loyalty, s) >= cliff - 1), 0)
+    if step:
+        policy.set_tax(m, idx, tax + step)
+        LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "tax"))
+        return True
+    for low, give, name in ((morale if men else 100, policy.give_men, "morale"),
+                            (min(loyalty, wealth), policy.give_peasants, "peasants")):
+        if low < cliff:
+            if gold > 1:
+                give(m, idx, min(60, gold - 1), gold=True)
+            elif rice - men // 2 - 1 > 0:
+                give(m, idx, min(60, rice - men // 2 - 1))
+            else:
+                continue
+            LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, name))
+            return True
+    if fief_state(m, idx) != SAFE and gold > 1 and men < own_need(m, idx):
+        room = _feedable(m, idx)
+        want = own_need(m, idx) - men
+        if room < want and policy.buy_rice_to(m, idx, lambda s: policy._rice_slack(m, idx, False, s, sustain=True) - want):
+            LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "rice"))
+            return True
+        if room >= 1 and (morale >= cliff or not men) and policy._hire_up_to(m, idx, men + min(want, room)):
+            HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "secure"))
+            LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "secure"))
+            return True
+    return False
+
+
+LADDER_LOG = []
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -1358,6 +1416,8 @@ def expand_policy(m, idx, rng):
     if CAPITAL_FIRST and capital_hire(m, idx):
         return
     if SECURE and secure_hire(m, idx):
+        return
+    if LADDER and ladder(m, idx):
         return
     if STAGE:
         sp = _STAGE.get(m.fief_owner(idx), {}).get("plan")

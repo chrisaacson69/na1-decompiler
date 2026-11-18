@@ -103,6 +103,7 @@ def one(job):
     X.CAPITAL_FIRST = bool(len(job) > 22 and job[22])    # set every job: the pool reuses workers
     X.CAPITAL_GUARD = bool(len(job) > 23 and job[23])
     X.SECURE = bool(len(job) > 24 and job[24])
+    X.LADDER = bool(len(job) > 25 and job[25])
     X.STAGE = bool(len(job) > 21 and job[21])            # set every job: the pool reuses workers
     if X.STAGE:
         X.STAGE_MAX = int(job[21])
@@ -119,6 +120,7 @@ def one(job):
     X._COMBINE.clear()
     X.STAGE_LOG.clear()
     X._STAGE.clear()
+    X.LADDER_LOG.clear()
     X.MEN_HIST.clear()
     X._POCKET.clear()
     owner, yearly, t0 = [], [], time.time()
@@ -190,12 +192,13 @@ def main():
     ap.add_argument("--capital-first", type=int, help="1: the capital hires to its line before the depots send its gold away (#64)")
     ap.add_argument("--capital-guard", type=int, help="1: the capital keeps a line out to three steps and hires when emptied (#65)")
     ap.add_argument("--secure", type=int, help="1: a fief not SAFE hires toward its own line first (#65)")
+    ap.add_argument("--ladder", type=int, help="1: each fief's priority ladder (tax, morale, peasants, men while not SAFE as the rice feeds them) ahead of the depots (#66)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))
