@@ -91,6 +91,37 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #70 — The stall, looked at: idle outposts, a hold line blind to the rival's own fiefs, and a rescue; all within noise (Chris, 2026-11-18)
+
+Chris, on #69's stall: *what do the investments look like when we stall? Are the fiefs maxed out, can we not field an army big enough, how many outposts?* Four of `mirr3`'s stalled games (lord died, short of 17: 4/3012, 5/3009, 7/3013, 10/3003), every owned fief and every attack, in Winter of years 30/35/40/45:
+
+| year 45 | fiefs | interior (all 0 men) | interior treasuries at the header | idle interior gold | men (need) |
+|---|---|---|---|---|---|
+| 4/3012 | 13 | 9 | 4 (8 at y35) | ~15,000 | 3,248 (1,833) |
+| 5/3009 | 11 | 4 | 2 | 5,965 | 2,102 (5,152) |
+| 7/3013 | 13 | 9 | 8 | 16,242 | 1,485 (1,202) |
+| 10/3003 | 11 | 7 | 7 | 12,140 | 2,645 (1,294) |
+
+- **The investment is idle gold in the outposts.** The depots empty the interior of men; its treasuries sit at the header (where the harvest is clamped away), 600-850 men's worth at the late hire rate (18-20 gold a man). Half to three quarters of the fiefs have peasants at 95% of the header or more; in 10/3003 five of seven interior fiefs sit near 50% with full treasuries, not giving (the ladder gives at most 60; `own_gift`, MIRR's model of a fief's own gift, assumes all its gold above the upkeep, and `harvest_value` empties the stores, so the clamp is not seen: not changed).
+- **Fielding an army: two blocks.** (1) The header caps a fief's men at 1,600-1,980; the last rival's big fief wants a line of 2,150-2,500 (4/3012 fief 1, 5/3009 fief 8, 7/3013 fief 0): no single fief can take it. (2) The targets that fit are refused by `score` because the prize would be left COMING (4/3012 6→2: 66 of 72 candidates; the 6 that pass send more than the line) or because an emptied interior capital fails `capital_ok` (10/3003). **The cause of (2):** `hold_line` read `enemy_neighbours(T)`, T's neighbours its owner does not hold, so it left out that owner's other fiefs, the very ones facing the prize once it is taken. With one rival left the hold line was 0, `_stage_line` sized the strike to win only, MIRR priced it as held, and the planner built toward an attack `score` refused every season.
+- **Not a stall but churn.** 5/3009 swung 7-12 fiefs; 10/3003 reached 16 of 17 at year 36 and lost 5 within two years; 5-7 failed attacks a game after year 30. In 5/3009 the hub (8, Mino: seven neighbours) sat COMING for several seasons while its men drained 263 → 97, then attacked 7 with 580 men and lost (a lost attack's survivors garrison the defender), and rival 2 took it with 644: 4, 5, 10, 12 went COMING at once (Echizen, Hida, Omi, Iseshima, Shinano, several of them backline before) and the army bill went from 2,025 at year 40 to 4,484 at year 45. Chris: *these big plays make or break games; our job is to make sure they happen on our side.*
+
+Built, each behind a flag (off): `HOLD_ALL` (`long_game --hold-all 1`): the hold line counts every AI-held neighbour of T not ours (also changes `strike_plan`'s hold). `EMPIRE_RESCUE` (`--rescue 1`): a SAFE fief's first command, ahead of its gift and ladder: Move its spare men (over its own line, the capital's line for the capital) into an adjacent owned fief that is COMING or HUNTABLE and short, receivers that have not acted first; and in Spring and Summer Send rice to a fief whose rice will not carry the Fall's upkeep and the next (the ledger's feed line, the reader's Summer purchase test), so it is spared a rice-buying turn.
+
+| every start, seeds 3000-3019, 70 years, skill 2, strike 8 + capital first + ladder | won | paired | invaded | age | fiefs y20 / y30 / y45 (mean over the games alive then) |
+|---|---|---|---|---|---|
+| ladder (#66) | 60 | | 179 | 93 | 4.7 / 7.7 / 7.4 |
+| ladder + hold-all | 66 | saved 31, lost 25, z +0.8 | 190 | 76 | 5.0 / 7.6 / 8.8 |
+| MIRR (#69) | 57 | | 182 | 90 | 4.8 / 8.8 / 9.2 |
+| MIRR + hold-all | 58 | saved 32, lost 31, z +0.1 | 190 | 82 | 5.1 / 8.8 / 9.4 |
+| MIRR + rescue | 64 | saved 34, lost 27, z +0.9 | 177 | 92 | 5.0 / 8.4 / 9.2 |
+| MIRR + both | 57 | saved 31, lost 31, z 0.0 | 174 | 103 | 5.2 / 9.1 / 9.6 |
+
+- **Nothing moves the win count past noise.** The hold line wins its games sooner (the games both versions win: 2.4 years earlier under MIRR) and loses more to invasion (182 → 190); the rescue made 5.2 Moves a game.
+- **The feed line never fired:** in three games over 40 years, 1,142 Spring/Summer fief-seasons, not one fief was short of the rice for the Fall and the next, and there was one Summer rice purchase. The ladder already hires only what the rice feeds (`_feedable`); there is no rice turn to save.
+- **The single games scramble:** under the four flag sets the four stalled games came out (won y32 / invaded / age at 9 …) with no pattern; one change reshuffles a whole game. Only the paired 340 counts.
+- **Next (Chris):** not more protection (*a SAFE fief is safe barring a disaster; extra is insurance*), but the big play in reverse in the battle picker: a target's value includes what its fall costs its owner, the jump in the owner's army bill as its other fiefs turn exposed, beside the harvest and the men it frees for us; and the losing branch of an attack (the men lost, given to the defender, and the source left short) priced into its MIRR.
+
 ### #69 — The ledger priced by MIRR: the accounting is right, and it plays level with the ladder (Chris, 2026-11-18)
 
 Chris, on #68: *we are not calculating MIRR correctly. Everything into attack gets outgrown in the later half, so men → attack is not always better than development; it is better early, when the armies on the board are small, and the ROI of everything falls as the game ages. The gift's value was supposed to be marginal over the fief's own gifting, and priced by turn order (the donor first: one combined gift; the receiver first: two separate gifts). It is all calculable from the formulas, no empirical data. MIRR costs in time, so if the predictions are right it is the least time; if attack is better, MIRR shows it and does it anyway.* Old age is beyond control, not a thing to optimise.

@@ -993,10 +993,22 @@ def _harvests(season, horizon, first, later, switch_at):
     return out
 
 
+HOLD_ALL = False                        # #70: the hold line counts the target's own owner's fiefs too
+
+
 def hold_line(m, t, me):
-    """The men the conquered fief needs against its other neighbours (share line), now."""
-    return max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in reaction.enemy_neighbours(m, t)
-                if m.fief_owner(e) != me] or [0])
+    """The men the conquered fief needs against its other neighbours (share line), now. enemy_neighbours(t)
+    lists t's neighbours its owner does not hold, so it leaves out that owner's other fiefs, the ones
+    that face the prize once it is taken: with one rival left the line came out 0, the strike was sized
+    to win only, and score refused the prize as COMING every season (5/3009, 4/3012 at year 45, #70).
+    With HOLD_ALL every AI-held neighbour that is not ours counts."""
+    if HOLD_ALL:
+        n = m.r16(M.SCENARIO_FIEF_COUNT)
+        nb = [e for e in m.neighbor_rows.get(t, []) if e < n and e != t and m.province_ai_state(e) == 0
+              and m.fief_owner(e) != me]
+    else:
+        nb = [e for e in reaction.enemy_neighbours(m, t) if m.fief_owner(e) != me]
+    return max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in nb] or [0])
 
 
 def strike_plan(m, idx):
@@ -1442,6 +1454,9 @@ def empire_ledger(m, owner):
             lines.append(dict(rank=0 if st == COMING else 1, fief=i, kind=st.lower(),
                               gold=max(0, fixes + _hire_gold(m, gap) - gold),
                               rice=max(0, gap - _feedable(m, i)), men=gap, roi=0))
+        elif EMPIRE_RESCUE and m.season in (0, 1) and policy._rice_slack(m, i, False, sustain=True) < 0:
+            lines.append(dict(rank=0, fief=i, kind="feed", gold=0, men=0, roi=0,
+                              rice=-policy._rice_slack(m, i, False, sustain=True)))
         elif fixes > gold:
             lines.append(dict(rank=2, fief=i, kind="cliff", gold=fixes - gold, rice=0, men=0, roi=0))
         elif EMPIRE_GROW and m.season in SEASONS and not capped(m, i) and m.r16(f + M.F_OUTPUT) > 0:
@@ -1871,6 +1886,53 @@ def empire_move(m, idx):
 
 
 
+# The rescue (Chris, 2026-11-18, #70): a SAFE fief's first duty, ahead of its own ladder, gifts and hires:
+# Move men into an adjacent owned fief that is not SAFE (COMING or HUNTABLE) and short of its line; then,
+# in Spring and Summer, Send rice to a fief whose rice will not carry the Fall's upkeep and the one after
+# (the ledger's feed line: the same test as the reader's Summer purchase), receivers that have not yet
+# acted first, so the Send lands before their turn and spares them a rice-buying command. A receiver that
+# acted already still gets it before the harvest; one no donor can reach still buys its own.
+EMPIRE_RESCUE = False
+
+
+def empire_rescue(m, idx):
+    from . import policy
+    owner = m.fief_owner(idx)
+    if fief_state(m, idx) != SAFE:
+        return False
+    e = _empire(m, owner)
+    f = m.fief(idx)
+    yr, men = m.r16(M.CURRENT_GAME_YEAR), m.r16(f + M.F_MEN)
+    keep = own_need(m, idx)
+    if m.is_capital(idx) and len(owned(m, owner)) > 1:
+        keep = max(keep, capital_line(m, idx))
+    spare = men - keep
+    if spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= policy.CLIFF:
+        nbrs = m.neighbor_rows.get(idx, [])
+        for d in sorted((d for d in e["lines"] if d["rank"] <= 1 and d["men"] > 0 and d["fief"] in nbrs),
+                        key=lambda d: (d["rank"], d["fief"] in m.acted)):
+            moved = move_men(m, idx, d["fief"], min(spare, d["men"]))
+            if moved:
+                d["men"] -= moved
+                d["gold"] = max(0, d["gold"] - _hire_gold(m, moved))
+                EMPIRE_LOG.append((yr, m.season, "rescue", idx, d["fief"], 0, 0, moved))
+                return True
+    if m.season in (0, 1):
+        rice_now = m.r16(f + M.F_RICE)
+        give = min(policy._rice_slack(m, idx, False, sustain=True), rice_now - men)
+        for d in sorted((d for d in e["lines"] if d["kind"] == "feed" and d["rice"] > 0 and d["fief"] != idx),
+                        key=lambda d: d["fief"] in m.acted):
+            r = min(give, d["rice"])
+            if r < SEND_MIN:
+                break
+            r, _ = send(m, idx, d["fief"], r, 0)
+            if r:
+                d["rice"] -= r
+                EMPIRE_LOG.append((yr, m.season, "feed", idx, d["fief"], r, 0, 0))
+                return True
+    return False
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -1907,6 +1969,8 @@ def expand_policy(m, idx, rng):
     if CAPITAL_FIRST and capital_hire(m, idx):
         return
     if SECURE and secure_hire(m, idx):
+        return
+    if EMPIRE and EMPIRE_RESCUE and empire_rescue(m, idx):
         return
     if EMPIRE and empire_gift(m, idx):
         return
