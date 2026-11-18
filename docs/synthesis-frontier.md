@@ -91,6 +91,21 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #67 — The empire planner's transfers, built: safety transfers are neutral, growth transfers slow the conquest (Chris, 2026-11-18)
+
+#66's design made concrete (`expand.EMPIRE`, `long_game --empire 1`; `--empire 2` without the growth lines; off), on top of the ladder. Once a season, on the owner's first turn, a **ledger** of what each owned fief still lacks after spending its own gold (the projected year): COMING then HUNTABLE fiefs the gold for their cliffs plus the hire to their own line, and the rice to feed those men (`_feedable`); fiefs under a cliff the gold for the Give (costed at 60); from Fall to Spring, the fiefs still growing, ranked by the Fall gold a 100-gold gift returns (`gold_income`). On its turn a SAFE fief with men over its own line **Moves** them into an adjacent COMING fief (the emergency move); a SAFE, topped-out fief **Sends** to the top open line, receivers that have not yet acted this season first (Move and Send land at the command, #66). Each Send shrinks its line, so several donors fill one fief and a filled fief drops out; growth gold is **earmarked** and given to the receiver's peasants on its own turn ahead of anything else. Emptying outposts was already the depots' job.
+
+| every start, seeds 3000-3019, 70 years, skill 2, strike 8 + capital first + ladder | won | invaded | age | y20 fiefs | y30 fiefs | econ y20 |
+|---|---|---|---|---|---|---|
+| ladder (#66) | **60** | 179 | 93 | 5.1 | 7.7 | 0.70 |
+| + safety transfers (`--empire 2`) | 49 (saved 26, lost 37, z −1.4) | 170 | 114 | 5.0 | 8.4 | 0.70 |
+| + growth transfers (`--empire 1`) | 44 (saved 22, lost 38, z −2.1) | 186 | 100 | 4.4 | 7.6 | 0.73 |
+
+Per game the safety planner made ~3.6 emergency Moves (96 men each) and ~2.6 Sends (unsafe 530 gold, huntable 360); the growth planner added ~24 growth Sends (460 gold each), nearly all given away by the receivers.
+
+- **Growth transfers work as an economy and lose as a strategy.** The economy rises (0.73, the highest of this line), but the gold is what the topped-out fiefs hired the striking army with: fiefs held at year 20 fall 5.1 → 4.4 and the lord's age takes the difference. Growing the weak fiefs is a real return; it is not a bigger one than the next conquest, which the ledger does not price.
+- **Safety transfers are neutral to slightly worse.** They cut invasions (179 → 170) and the empire is *larger* at year 30 (8.4 against 7.7), but the games it loses are late (29 of 37 to the lord's age, 11-16 fiefs at the peak): the emergency Move takes spare men from a SAFE fief, which is also the fief that would strike, and each Send spends a topped fief's hire. The ledger has no line for "the next attack".
+- So Chris's #66 caution holds: **attacks have an ROI too**, and a planner that ranks only growth and safety starves them. The next step is to put the attack on the ledger: the campaign's men and War gold (`_stage_line` / `strike_plan`) as a line competing with the others, ranked by return per gold, so a donor gives to whichever is worth more.
 ### #66 — The empire planner, designed: a fiscal year, a fief ladder, and transfers that solve several problems at once (Chris, 2026-11-18)
 
 Chris: *keep safety over dying of old age; the hope is that controlling many interior fiefs makes up for the slowness, if logistics get better.* Every fief keeps growing, which includes sending gold, rice and men to weak fiefs so they get up and running faster. Attacks have an ROI too, but are the hardest to price, and are left out of the first planner.

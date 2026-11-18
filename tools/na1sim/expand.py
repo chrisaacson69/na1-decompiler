@@ -1380,6 +1380,127 @@ def ladder(m, idx):
 LADDER_LOG = []
 
 
+# The empire planner (Chris, 2026-11-18, #67): the ladder is each fief alone; the planner moves the
+# year's gold, rice and men between fiefs. Once a season, on the owner's first turn, it writes a ledger
+# of what each owned fief still lacks after doing its best with what it holds (the projected year, not
+# the current state): unsafe fiefs (COMING, then HUNTABLE) the gold to hire to their own line after
+# their cliffs, and the rice to feed those men; fiefs under a cliff the gold for each Give; then, from
+# Fall to Spring (a gift pays at this harvest only before Summer's marks), the fiefs still growing,
+# ranked by the gold a nominal gift returns at the harvest (gold_income). Donors are SAFE, topped-out
+# fiefs; on its turn a donor takes the top line still open, preferring receivers that have not yet
+# acted this season (Move and Send land at the command, cartridge-checked, so they spend it now), and
+# the line shrinks by what was sent, so several donors can fill one receiver and a filled receiver
+# drops out. A growth Send is earmarked: on its own turn the receiver gives it to the peasants ahead of
+# anything else. Before any Send, a SAFE fief with men to spare Moves them into an adjacent owned fief
+# that is COMING (the emergency move: on the donor's turn, which may come before the attacker's).
+# Emptying outposts is the depots' job already (GARRISON 0). Attacks are not in the planner.
+EMPIRE = False
+EMPIRE_GROW = True                      # the growth lines (False: only unsafe fiefs and cliffs)
+EMPIRE_GIFT = 100                       # the nominal gift the growth lines are ranked by
+EMPIRE_LOG = []                         # (year, season, kind, donor, receiver, rice, gold, men)
+_EMPIRE = {}                            # owner -> {"t": tick, "lines": [...]}, gift earmarks under "gift"
+CLIFF_GIVE = 60                         # gold a cliff's Give is costed at (the ladder gives up to 60)
+
+
+def _hire_gold(m, men):
+    rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+    return -(-max(0, men) * rate // 10)
+
+
+def empire_ledger(m, owner):
+    """[line] for the season: dicts with rank (0 COMING, 1 HUNTABLE, 2 cliff, 3 growth), fief, kind,
+    gold and rice still wanted, men short, and for growth the return per gold."""
+    from . import policy
+    cliff, lines = policy.CLIFF, []
+    for i in owned(m, owner):
+        f = m.fief(i)
+        gold, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_MEN)
+        low = min(m.r16(f + M.F_LOYALTY), m.r16(f + M.F_WEALTH))
+        fixes = CLIFF_GIVE * ((men > 0 and m.r16(f + M.F_MORALE) < cliff) + (low < cliff))
+        st = fief_state(m, i)
+        if st != SAFE and men < own_need(m, i):
+            gap = own_need(m, i) - men
+            lines.append(dict(rank=0 if st == COMING else 1, fief=i, kind=st.lower(),
+                              gold=max(0, fixes + _hire_gold(m, gap) - gold),
+                              rice=max(0, gap - _feedable(m, i)), men=gap, roi=0))
+        elif fixes > gold:
+            lines.append(dict(rank=2, fief=i, kind="cliff", gold=fixes - gold, rice=0, men=0, roi=0))
+        elif EMPIRE_GROW and m.season in SEASONS and not capped(m, i) and m.r16(f + M.F_OUTPUT) > 0:
+            base = gold_income(m, i, reset=False)
+            gain = gold_income(m, i, gift=EMPIRE_GIFT, reset=False) - base
+            room = m.r16(f + M.F_HEADER) - gold
+            if gain > 0 and room > 0:
+                lines.append(dict(rank=3, fief=i, kind="grow", gold=room, rice=0, men=0, roi=gain / EMPIRE_GIFT))
+    lines.sort(key=lambda d: (d["rank"], -d["roi"]))
+    return lines
+
+
+def _empire(m, owner):
+    e = _EMPIRE.setdefault(owner, {"gift": {}})
+    if e.get("t") != _tick(m):
+        e["t"], e["lines"] = _tick(m), empire_ledger(m, owner)
+    return e
+
+
+def empire_gift(m, idx):
+    """A receiver's earmarked growth gold goes to its peasants on its own turn. -> True if it gave."""
+    from . import policy
+    e = _EMPIRE.get(m.fief_owner(idx))
+    g = e and e["gift"].pop(idx, 0)
+    f = m.fief(idx)
+    if not g or capped(m, idx) or m.r16(f + M.F_GOLD) <= 1:
+        return False
+    policy.give_peasants(m, idx, min(g, m.r16(f + M.F_GOLD) - 1), gold=True)
+    EMPIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, "gift", idx, idx, 0, g, 0))
+    return True
+
+
+def empire_move(m, idx):
+    """The donor's command, or False: the emergency Move, else a Send to the top open line."""
+    from . import policy
+    owner = m.fief_owner(idx)
+    e = _empire(m, owner)
+    f = m.fief(idx)
+    if fief_state(m, idx) != SAFE:
+        return False
+    yr, men = m.r16(M.CURRENT_GAME_YEAR), m.r16(f + M.F_MEN)
+    keep = own_need(m, idx)
+    if m.is_capital(idx) and len(owned(m, owner)) > 1:
+        keep = max(keep, capital_line(m, idx))
+    spare = men - keep
+    if spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= policy.CLIFF:
+        for d in e["lines"]:
+            j = d["fief"]
+            if d["rank"] == 0 and d["men"] > 0 and j in m.neighbor_rows.get(idx, []):
+                moved = move_men(m, idx, j, min(spare, d["men"]))
+                if moved:
+                    d["men"] -= moved
+                    d["gold"] = max(0, d["gold"] - _hire_gold(m, moved))
+                    EMPIRE_LOG.append((yr, m.season, "move", idx, j, 0, 0, moved))
+                    return True
+    if not capped(m, idx):
+        return False
+    gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
+    rice_spare = m.r16(f + M.F_RICE) - 2 * (men // 2 + 1)
+    open_ = [d for d in e["lines"] if d["fief"] != idx and (d["gold"] > 0 or d["rice"] > 0)
+             and not (d["kind"] == "grow" and m.season == 0 and d["fief"] in m.acted)]
+    open_.sort(key=lambda d: (d["rank"], d["fief"] in m.acted, -d["roi"]))
+    for d in open_:
+        rice, gold = min(max(0, rice_spare), d["rice"]), min(max(0, gold_spare), d["gold"])
+        if rice + gold < SEND_MIN:
+            continue
+        r, g = send(m, idx, d["fief"], rice, gold)
+        if r + g:
+            d["rice"] -= r
+            d["gold"] -= g
+            if d["kind"] == "grow" and g:
+                e["gift"][d["fief"]] = e["gift"].get(d["fief"], 0) + g
+            EMPIRE_LOG.append((yr, m.season, d["kind"], idx, d["fief"], r, g, 0))
+            return True
+    return False
+
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -1417,7 +1538,11 @@ def expand_policy(m, idx, rng):
         return
     if SECURE and secure_hire(m, idx):
         return
+    if EMPIRE and empire_gift(m, idx):
+        return
     if LADDER and ladder(m, idx):
+        return
+    if EMPIRE and empire_move(m, idx):
         return
     if STAGE:
         sp = _STAGE.get(m.fief_owner(idx), {}).get("plan")
