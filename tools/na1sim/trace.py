@@ -177,9 +177,11 @@ def main():
     ap.add_argument("--stage", type=int)
     ap.add_argument("--combine", type=int)
     ap.add_argument("--capital-first", type=int)
+    ap.add_argument("--capital-guard", type=int)
+    ap.add_argument("--secure", type=int)
     a = ap.parse_args()
     job = (a.fief, a.seed, a.years, None, None, None, 0, None, a.skill, False, None, 0, None, None, [],
-           a.strike, 100, 1, None, None, a.combine, a.stage, a.capital_first)
+           a.strike, 100, 1, None, None, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure)
     res, seasons = record(job)
     fief, seed, fatal, yearly = res[:4]
     provs = {p.idx: getattr(p, "name", str(p.idx)) for p in loader.load_provinces()}
@@ -187,7 +189,7 @@ def main():
     m = setup.build_board(skill=a.skill, seed=a.seed, player_fief=a.fief)
     n = m.r16(M.SCENARIO_FIEF_COUNT)
     m_nb = {i: [b for b in m.neighbor_rows.get(i, []) if b < n] for i in range(n)}
-    out = dict(fief=fief, seed=seed, skill=a.skill, flags=dict(strike=a.strike, stage=a.stage, combine=a.combine, capital_first=a.capital_first),
+    out = dict(fief=fief, seed=seed, skill=a.skill, flags=dict(strike=a.strike, stage=a.stage, combine=a.combine, capital_first=a.capital_first, capital_guard=a.capital_guard, secure=a.secure),
                fatal=fatal, unified=L.unified_year(yearly), player=m.fief_owner(a.fief),
                names=[provs.get(i, str(i)) for i in range(n)], clans=deaths.NAMES,
                neighbors=m_nb, fields=["owner", "men", "gold", "rice", "wealth", "loyalty", "town", "output",

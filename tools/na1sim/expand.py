@@ -261,8 +261,14 @@ def enemies_within(m, i, steps=2):
 
 
 def capital_line(m, i):
-    """The fewest men that keep every enemy within two steps under the share line (0: none)."""
-    return max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in enemies_within(m, i)] or [0])
+    """The fewest men that keep every enemy within two steps under the share line (0: none). With
+    CAPITAL_GUARD, a capital with no enemy within two steps still keeps the line for three (#65: an
+    interior capital's line fell to 0, the depots marched every man out, and a 15-man army took the
+    lord's empty fief)."""
+    e = enemies_within(m, i)
+    if not e and CAPITAL_GUARD:
+        e = enemies_within(m, i, 3)
+    return max([m.fief_men_if_provisioned(x) * 52 // 48 + 1 for x in e] or [0])
 
 
 def capital_ok(m, owner):
@@ -1283,16 +1289,36 @@ def stage_move(m, idx):
 # never hired; capital_ok then vetoed every attack in the empire (Owari s3001 skill 2: five fiefs, all
 # SAFE, 1,400 -> 4,755 men over ten years, no attack, lost to a revolt).
 CAPITAL_FIRST = False
+CAPITAL_GUARD = False                   # #65: the capital keeps a line out to three steps, and hires when emptied
+SECURE = False                          # #65: a fief that is not SAFE hires toward its own line before anything else
 
 
 def capital_hire(m, idx):
     """The capital under its line hires to it (the War gate capital_ok asks it of every attack)."""
     from . import policy
     f = m.fief(idx)
+    # an emptied fief's morale is cleared to 0 (clear_military_stats_if_no_men): with no men there is
+    # no army to dilute, so CAPITAL_GUARD lets it hire past the morale gate
+    empty = CAPITAL_GUARD and m.r16(f + M.F_MEN) == 0
     if (m.is_capital(idx) and len(owned(m, m.fief_owner(idx))) > 1 and m.r16(f + M.F_GOLD) > 1
-            and m.r16(f + M.F_MORALE) >= reaction_cliff()
+            and (empty or m.r16(f + M.F_MORALE) >= reaction_cliff())
             and capital_line(m, idx) > m.r16(f + M.F_MEN)):
         return policy._hire_up_to(m, idx, capital_line(m, idx))
+    return False
+
+
+def secure_hire(m, idx):
+    """#65 (stepping through stalled games): every attack in the empire waits on every fief being SAFE,
+    and the COMING fiefs did not fix themselves: median 73 men against a 113-man neighbour, 747 gold,
+    morale 72, and on their own turn the reader's economy or a gift (321 of 442), a hire 121. One
+    fief's local choice stopped every front. A fief not SAFE hires toward its own line (own_need)."""
+    from . import policy
+    f = m.fief(idx)
+    if (fief_state(m, idx) != SAFE and m.r16(f + M.F_GOLD) > 1
+            and m.r16(f + M.F_MORALE) >= reaction_cliff() and own_need(m, idx) > m.r16(f + M.F_MEN)
+            and policy._hire_up_to(m, idx, own_need(m, idx))):
+        HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "secure"))
+        return True
     return False
 
 
@@ -1330,6 +1356,8 @@ def expand_policy(m, idx, rng):
                      fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
         return
     if CAPITAL_FIRST and capital_hire(m, idx):
+        return
+    if SECURE and secure_hire(m, idx):
         return
     if STAGE:
         sp = _STAGE.get(m.fief_owner(idx), {}).get("plan")

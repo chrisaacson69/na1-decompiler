@@ -91,6 +91,26 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #65 — Eight stalled games stepped through: the gate is local fiefs that never secure themselves, and the lord's empty capital (Chris, 2026-11-17)
+
+Eight stalled games traced (`na1sim.trace`, capital-first player; skill 1: Omi s3010, Settsu s3001, Musashi s3005, Suruga s3001; skill 2: Iseshima s3009, Hida s3011, Mikawa s3016, Echizen s3001). Seasons with 2+ fiefs, by what held the player back: **some fief not SAFE, so no attack anywhere: 27-47%**, the largest cause in every game; Summer 25%; attacked 8-25%; an attack would have passed but the fief spent the turn on Assign 5-10% (all 85 cases: `split_ready`); blocked by no winning split, another fief or the prize 2-25%.
+
+- **COMING fiefs do not secure themselves.** Median 73 men against a 113-man neighbour, with 747 gold and morale 72; on their own turn the reader's economy or a gift 321 times of 442, a hire 121. The same 1-3 border fiefs each game. One fief's local choice freezes every front: its safety is priced locally and costs empire-wide.
+- **The empty capital.** Two of the four skill-1 invasions lost the lord's fief with 1 and 0 men (to 25 and 15). With no enemy within two steps `capital_line` is 0, the depots march every man out, `clear_military_stats_if_no_men` sets morale 0, and the capital hire needs morale at the cliff, so it never refills.
+- Topped-out fiefs hire in up to 46% of their turns while a neighbour stays COMING (Chris's frame: their surplus should jump-start the others).
+
+Switches (off): `--capital-guard 1` (`CAPITAL_GUARD`: the capital line reaches three steps when nothing is within two; an emptied capital hires past the morale gate); `--secure 1` (`SECURE`: a fief not SAFE hires toward `own_need` before anything else). Against the capital-first player, every start, seeds 3000-3019, 70 years:
+
+| | skill 1 | skill 2 |
+|---|---|---|
+| capital first (#64) | 166 (invaded 149, age 12) | 45 (invaded 214, age 73) |
+| + capital guard | **180** (saved 26, lost 12, z +2.3; invaded 127, age 20) | 37 (5 / 13, z -1.9; invaded 202, age 91) |
+| + secure | 170 (48 / 44; invaded 141) | 46 (35 / 34; invaded 183, age 99, expanded 199 vs 162, first conquest 12 vs 9) |
+
+The guard saves skill-1 empires from the walk-in and slows skill 2 (men held at home, the lord's life runs out). Secure trades invasions for age at skill 2: 31 fewer invaded, 37 more starts expand, three years later, and the clock takes them; the safe fief does not grow (econ at year 20 0.66 vs 0.72). The rush/boom trade in one switch. The runs of both together and skill 3 were stopped by the machine (memory) and not rerun.
+
+**Open:** both switches together, and skill 3; secure only after the opening (it delays the first conquest); a topped-out neighbour sending men or gold to the COMING fief instead of its own hire; the Assign turn.
+
 ### #64 — Stepping through a game: the trace, and a capital that gave its gold away (Chris, 2026-11-17)
 
 Chris: aggregates do not show the bottleneck; step through games fief by fief, season by season. `na1sim.trace FIEF SEED out.json` reuses `long_game.one` unchanged and records, at every player turn, the board (every fief's owner, men, gold, rice, wealth, loyalty, town, output, header, morale) and, for the fief moving, its state, own line, topped-out flag, the command and the rule that took it, its cheapest target (hold-sized send, shortfall, gold), and, when the empire is all SAFE, each target's blocker. A swimlane viewer (fiefs × seasons, coloured by command) was published as a private artifact from the session.
