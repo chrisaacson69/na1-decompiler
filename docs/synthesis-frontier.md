@@ -91,6 +91,31 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #75 — The stall audited: the striker holds its line and does not strike; the hold line and Assign-ahead do not fix it (Chris, 2026-11-19)
+
+Chris: *we know how to grow safely, but then we stall; we need an audit.* **`audit.py`** (in the session scratchpad, the #74 player, 17 starts × 6 seeds) classifies every owned fief's turn, from the season the empire first holds 9 fiefs to the end, by its effect on the board (men, gold, rice, wealth, loyalty, morale and tax before and after the turn, other fiefs' gains for Moves and Sends).
+- **Turns split the same way in won and stalled games:** front fiefs hire about 30% of the time and develop about 20%; interior fiefs Send and Move about 45%.
+- **The striker differs.** In the stalled games it attacks 16% of its turns (26% when won), hires 38%, and does nothing or gives to its peasants 36%.
+- **MIRR finds no attack line** in 29% of the attack seasons (19% when won). The rivals left: median 3 (2 when won).
+
+**`audit3.py`, the ready striker.** In the 15 games the lord's age ended, the striker held its full line in a War season 177 times and struck 49:
+
+| why the ready striker did not strike (128) | share |
+|---|---|
+| another fief unsafe (the whole-empire gate) | 36% |
+| the prize left COMING, or another fief unsafe after | 34% |
+| its turn spent reshaping the army for the target (Assign, `split_ready`) | 22% |
+| the capital's line, other | 8% |
+
+Two cheap fixes, on the #74 player (92):
+- **`--hold-all 1`** (#70): 90 (saved 30, lost 32, z −0.3). More conquests (attacks after 9 fiefs 1.45 → 1.55 a year, prizes left SAFE 1,075 → 1,238), fewer invasions (15 → 8 among the 9+ empires), more lost to age. Prizes left COMING unchanged (171).
+- **`--assign-ahead 1`** (`expand.ASSIGN_AHEAD`): the striker reshapes on any turn it holds 80% of its line. **70 (saved 21, lost 43, z −2.8)**, invaded 170 → 187. The split is also the fief's defence: a striker sitting in its attack shape (heavy: 1% on the commander) defends badly while it waits.
+- **`--assign-ahead 2`** (Chris: *only once, on a down turn*): only in Summer, at the full line. 81 (saved 16, lost 27, z −1.7), invaded 164. About 1 a game, and still worse; not yet traced why (the spread split's target reads the current one, `desired_split`, so a reshaped army may not stay ready).
+- Both fixes together: 88 (z −0.5).
+
+- **The Assign at the strike stays as it was.** Reshaping earlier costs more than the War turn it saves.
+- **Next (Chris):** the prize left COMING is a **double attack**. Either strike and then reinforce (SAFE fiefs adjacent to the prize that have not acted Move men in before the rivals' turns, so `score` may accept a COMING prize whose hold gap they can cover), or strike the threat first (a two-target plan priced as one MIRR).
+
 ### #74 — Safety donors: any SAFE fief funds the unsafe ones first. 92, and the local gate does not help (Chris, 2026-11-19)
 
 Chris: *a fief that is not SAFE is one that can be lost, and fixing it is usually just sending enough gold to make the hire. Nothing is wrong with one maxed fief sending to the unsafe fief while another sends to stage an attack, or with fixing several problems a year (Fall a hire after its transfers, Winter more transfers or more men). Late, an underdeveloped fief has 8 others to feed it and should be stood up very quickly.* **The unsafe census** (`unsafe_census.py` in the session scratchpad, the #73 player, 17 starts × 6 seeds): 340 unsafe fief-seasons at 9+ fiefs, gap median 92 men.

@@ -1980,6 +1980,14 @@ def _safety_send(m, idx, e, spare):
     return False
 
 
+# Assign ahead (#75): the doctrine reshapes the army for its target first, and that Assign spent the War
+# turn the strike was approved in (28 of 128 ready-but-idle striker turns in the stalled games). The
+# striker reshapes on any turn it holds ASSIGN_AT% of its line and the split is not yet the target's.
+ASSIGN_AHEAD = False
+ASSIGN_AT = 80
+ASSIGN_SUMMER = False                   # only in Summer (the down turn before Fall's War), at the full line
+
+
 def _hire_for_striker(m, idx, e, men, keep):
     """An adjacent SAFE donor hires the striker's shortfall with its own gold (its Move follows next turn,
     by empire_move's spare-men rule), when the attack line's MIRR beats the donor's own gift."""
@@ -2032,6 +2040,12 @@ def empire_move(m, idx):
     f = m.fief(idx)
     mine = next((d for d in e["lines"] if d["kind"] == "attack" and d["fief"] == idx), None)
     if mine:                                    # the striker builds its own line and gives nothing away
+        if ASSIGN_AHEAD and FOUGHT and CHARGE and m.r16(f + M.F_MEN) * 100 >= mine["line"] * ASSIGN_AT                 and not (ASSIGN_SUMMER and m.season != 1) and not split_ready(m, idx, mine["T"]):
+            from . import vmprims
+            if vmprims.driver_assign(m, idx, desired_split(m, idx, mine["T"])):
+                ASSIGNS.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mine["T"]))
+                EMPIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, "assign", idx, mine["T"], 0, 0, 0))
+                return True
         return striker_hire(m, idx, mine)
     if fief_state(m, idx) != SAFE:
         return False
