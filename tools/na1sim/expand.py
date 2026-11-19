@@ -811,6 +811,178 @@ def candidates(m, idx):
                     yield t, men, rice, led
 
 
+COORD = 0                               # #76: the coordinated attack (Chris: "result = unsafe might have to be
+                                        # solved with a double attack"). A winning move that leaves the prize or
+                                        # another fief past the gate is accepted if the owned fiefs that have not
+                                        # yet acted this season can mend it on their turns: Move their spare men
+                                        # in (1), or also attack the threat (2). Their commands are pledged.
+COORD_MAX = 4                           # most follow-up commands a plan may pledge
+COORD_MIN = 0                           # fiefs held before an attack may count on follow-ups (0: any)
+COORD_MARGIN = 100                      # percent of the forecast's kept men the prize is planned with
+COORD_WALL = False                      # (Chris) follow-ups only at the header wall: when no owned neighbour of
+                                        # the target can field the hold-sized line within its header. Below the
+                                        # wall a solo strike exists, and MIRR weighs it against growth as before.
+
+
+def past_wall(m, owner, T):
+    """Is T past the header wall: every owned neighbour's hold-sized line (_stage_line) over its header?"""
+    srcs = [S for S in m.neighbor_rows.get(T, []) if m.fief_owner(S) == owner
+            and m.province_ai_state(S) != M.EMPTY]
+    return bool(srcs) and all(_stage_line(m, S, T, owner)[1] > m.r16(m.fief(S) + M.F_HEADER) for S in srcs)
+
+
+def _coord_ok(m, owner, T):
+    """May an attack on T count on follow-ups (pre-attack map)?"""
+    if not COORD or len(owned(m, owner)) < COORD_MIN:
+        return False
+    return not COORD_WALL or past_wall(m, owner, T)
+
+
+def wall_help(m, owner, S, T):
+    """The spare men the prize's other SAFE owned neighbours could Move in after the strike."""
+    st = empire(m, owner)
+    out = 0
+    for b in m.neighbor_rows.get(T, []):
+        if b == S or st.get(b) != SAFE:
+            continue
+        keep = own_need(m, b)
+        if m.is_capital(b) and len(st) > 1:
+            keep = max(keep, capital_line(m, b))
+        out += max(0, m.r16(m.fief(b) + M.F_MEN) - keep)
+    return out
+COORD_LOG = []                          # (year, season, fief, dst, kind or plan, event)
+_PLEDGE = {}                            # owner -> {"key": (year, season), "do": {fief: (kind, dst, men)}}
+
+
+def _over(m, owner, allow):
+    return [i for i, st in empire(m, owner).items() if RANK[st] > allow(i)]
+
+
+def _coord_move(m, owner, bad, acted, used):
+    best = None
+    for v in bad:
+        for c in m.neighbor_rows.get(v, []):
+            if (c in acted or c in used or c == v or m.fief_owner(c) != owner
+                    or m.province_ai_state(c) == M.EMPTY or fief_state(m, c) != SAFE):
+                continue
+            fc = m.fief(c)
+            keep = own_need(m, c)
+            if m.is_capital(c):
+                keep = max(keep, capital_line(m, c))
+            spare = m.r16(fc + M.F_MEN) - keep
+            if spare < MARCH_MIN or m.r16(fc + M.F_MORALE) < reaction_cliff():
+                continue
+            if best is None or spare > best[3]:
+                best = (c, "move", v, spare)
+        if best:
+            return best
+    return None
+
+
+def _coord_attack(m, owner, bad, acted, used):
+    for v in bad:
+        for e in reaction.enemy_neighbours(m, v):
+            if ai_vm.fief_men_ratio_pct(m, e, v) <= SHARE:
+                continue
+            for h in m.neighbor_rows.get(e, []):
+                if (h in acted or h in used or h == v or m.fief_owner(h) != owner
+                        or m.province_ai_state(h) == M.EMPTY or fief_state(m, h) != SAFE):
+                    continue
+                k = min_men(m, h, e)
+                if k is None:
+                    continue
+                men = min(war_cap(m, h), max(k, m.r16(m.fief(h) + M.F_MEN) - own_need(m, h)))
+                if men >= k:
+                    return (h, "attack", e, men)
+    return None
+
+
+def coord_fix(m, owner, allow, prize=None):
+    """On the map as it stands (call inside forecast.held): pledged commands by owned fiefs that have not
+    acted this season that bring every owned fief within allow(i) -> [(fief, kind, dst, men)] or None.
+    Greedy, one step at a time, the map re-read after each: Moves of spare men (over each helper's own
+    line on this map) from unacted SAFE neighbours of a fief over the gate; with COORD >= 2, failing
+    that, a winning attack on one of its threats from an unacted SAFE neighbour of the threat."""
+    acted = getattr(m, "acted", set())
+    if prize is not None and COORD_MARGIN < 100:   # a battle that keeps fewer men than the forecast's mean
+        fp = m.fief(prize)
+        m.w16(fp + M.F_MEN, m.r16(fp + M.F_MEN) * COORD_MARGIN // 100)
+    plan, used = [], set()
+    for _ in range(COORD_MAX + 1):
+        bad = _over(m, owner, allow)
+        if not bad:
+            return plan if capital_ok(m, owner) else None
+        if len(plan) >= COORD_MAX:
+            return None
+        step = _coord_move(m, owner, bad, acted, used)
+        if step is None and COORD >= 2:
+            step = _coord_attack(m, owner, bad, acted, used)
+        if step is None:
+            return None
+        c, kind, dst, men = step
+        used.add(c)
+        if kind == "move":
+            men = move_men(m, c, dst, men)
+            if not men:
+                return None
+        else:
+            rice = min(men, m.r16(m.fief(c) + M.F_RICE))
+            if not player_war(m, c, dst, men, rice):
+                return None
+            allow = (lambda a, d: (lambda i: max(a(i), RANK[tolerance(m, owner)]) if i == d else a(i)))(allow, dst)
+        plan.append((c, kind, dst, men))
+    return None
+
+
+def coord_act(m, idx, rng):
+    """A pledged follow-up on this fief's turn -> True if it took the turn."""
+    owner = m.fief_owner(idx)
+    pl = _PLEDGE.get(owner)
+    key = (m.r16(M.CURRENT_GAME_YEAR), m.season)
+    if not pl or pl["key"] != key or idx not in pl["do"]:
+        return False
+    kind, dst, men = pl["do"].pop(idx)
+    yr = key[0]
+    if kind == "move":
+        if m.fief_owner(dst) != owner:
+            COORD_LOG.append((yr, m.season, idx, dst, kind, "lost before"))
+            return False
+        n = move_men(m, idx, dst, men)
+        COORD_LOG.append((yr, m.season, idx, dst, kind, "moved"))
+        return bool(n)
+    if m.fief_owner(dst) == owner or dst not in targets(m, idx):
+        return False
+    rice = min(men, m.r16(m.fief(idx) + M.F_RICE))
+    with forecast.held(m):
+        ok = player_war(m, idx, dst, men, rice)
+    if not ok:
+        COORD_LOG.append((yr, m.season, idx, dst, kind, "no longer wins"))
+        return False
+    LOG.append((yr, m.season, idx, dst, men, rice, False))
+    won = player_war(m, idx, dst, men, rice, rng=rng)
+    CONQ.append((yr, m.season, idx, dst, men, bool(won), fief_state(m, dst) if won else None,
+                 len(owned(m, owner))))
+    COORD_LOG.append((yr, m.season, idx, dst, kind, "won" if won else "lost"))
+    return True
+
+
+def coord_after_win(m, idx, t, may=True):
+    """After a real win: pledge the follow-ups the map now needs (the battle's men differ from the forecast)."""
+    owner = m.fief_owner(idx)
+    tol = RANK[tolerance(m, owner)]
+    allow = lambda i: tol if i == t else 0
+    if not may or (not _over(m, owner, allow) and capital_ok(m, owner)):
+        return
+    key = (m.r16(M.CURRENT_GAME_YEAR), m.season)
+    with forecast.held(m):
+        plan = coord_fix(m, owner, allow)
+    if plan:
+        _PLEDGE[owner] = {"key": key, "do": {c: (k, d, n) for c, k, d, n in plan}}
+        COORD_LOG.append((*key, idx, t, [tuple(p) for p in plan], "pledged"))
+    else:
+        COORD_LOG.append((*key, idx, t, None, "unmended"))
+
+
 def score(m, idx, move):
     """(ok, value) of a move. ok: it wins and every owned fief is SAFE after it. value, in order:
     the owned fiefs left with no enemy neighbour, the target's harvest, the rice carried (it lands
@@ -819,6 +991,7 @@ def score(m, idx, move):
     t, men, rice, led = move
     owner = m.fief_owner(idx)
     before = empire(m, owner) if LOCAL_GATE else {}
+    may = COORD and _coord_ok(m, owner, t)
     with forecast.held(m):
         if not player_war(m, idx, t, men, rice, led):
             return False, None
@@ -826,16 +999,19 @@ def score(m, idx, move):
         tol = RANK[tolerance(m, owner)]                # the prize may be left up to the tolerance; the rest SAFE
         # LOCAL_GATE (#74): the source and the prize as before; every other fief no worse than it was
         allow = (lambda i: tol if i == t else 0 if i == idx else RANK[before.get(i, SAFE)]) if LOCAL_GATE             else (lambda i: tol if i == t else 0)
+        clean = 1
         if (any(RANK[st] > allow(i) for i, st in states.items())
                 or not capital_ok(m, owner)):
-            return False, None
+            if not may or coord_fix(m, owner, allow, prize=t) is None:
+                return False, None
+            clean = 0                           # mended by pledged follow-ups (forecast; undone on exit)
         # the fief the army left keeps a full shield (rice >= men): carrying its rice away left
         # Tokugawa's capital at rice 1 beside 276 men, and a 6-man attack took the faction
         fh = m.fief(idx)
         if m.r16(fh + M.F_RICE) < m.r16(fh + M.F_MEN):
             return False, None
         inner = sum(1 for i in states if interior(m, i))
-        return True, (inner, ev.income_capacity(m, t), rice, -men)
+        return True, ((clean,) if COORD else ()) + (inner, ev.income_capacity(m, t), rice, -men)
 
 
 LOOKAHEAD = True
@@ -1792,6 +1968,16 @@ def attack_mirr(m, owner, S, T, bill0, r):
             proj = int(m.r16(ft + M.F_MEN) + growth(m, T) * ka)
             m.w16(ft + M.F_MEN, proj)
             send, line = _stage_line(m, S, T, owner)
+            if COORD and COORD_WALL and line > m.r16(fs + M.F_HEADER) and _coord_ok(m, owner, T):
+                # the header wall: S sends what its header allows over its own keep; the survivors
+                # and the neighbours' follow-up Moves must reach the prize's hold line
+                send = m.r16(fs + M.F_HEADER) - own_need(m, S)
+                if send < fought_need(m, T):
+                    return None
+                kr = max(.05, fought_keep(send / max(1, proj), skill_scale(m), m.skill))
+                if int(send * kr) * COORD_MARGIN // 100 + wall_help(m, owner, S, T) < hold_line(m, T, owner):
+                    return None
+                line = m.r16(fs + M.F_HEADER)
         if line > m.r16(fs + M.F_HEADER):
             return None
         if MIRR_TURNS:
@@ -2173,6 +2359,8 @@ def expand_policy(m, idx, rng):
             elif pm[0] == "send":
                 send(m, idx, pm[1], pm[2], pm[3])
             return
+    if COORD and coord_act(m, idx, rng):
+        return
     mv = best_attack(m, idx)
     if mv:
         if FOUGHT and CHARGE and not split_ready(m, idx, mv[0]):
@@ -2181,7 +2369,10 @@ def expand_policy(m, idx, rng):
                 ASSIGNS.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0]))
                 return
         LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, *mv))
+        may = COORD and _coord_ok(m, m.fief_owner(idx), mv[0])
         won = player_war(m, idx, *mv, rng=rng)
+        if COORD and won:
+            coord_after_win(m, idx, mv[0], may)
         CONQ.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0], mv[1], bool(won),
                      fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
         return

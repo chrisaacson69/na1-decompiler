@@ -91,6 +91,23 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #76 — The coordinated attack: follow-ups that mend the prize lose; past the header wall the wall is the win, not the hold (Chris, 2026-11-19)
+
+Chris, on #75 (34% of the ready striker's refusals were the prize left COMING or another fief unsafe after): *the result = unsafe might have to be solved with a double attack.* `expand.COORD` (`long_game --coord 1|2`; off): a winning move that `score` would refuse is accepted if the owned fiefs that have not yet acted this season (`m.acted`; the season order is shuffled) can mend the map on their turns, tested by playing their commands on the forecast: Moves of their spare men (over their own line on the post-conquest map) into the fief over the gate (1), and failing that a winning attack on the threat from a SAFE neighbour of it (2). `coord_fix` is greedy, at most `COORD_MAX` = 4 commands, the map re-read after each; a clean move outranks a mended one. After the real battle the plan is recomputed on the real map and the helpers' commands are pledged (`_PLEDGE`), executed first on their turns (`coord_act`). `--coord-min N`: only for an empire of N+ fiefs; `--coord-margin P`: the plan must hold with the prize at P% of the forecast's men; `--coord-wall 1` (Chris: *use it when you have to: when your capped men cannot beat the target; below that, growth, as the ROI of an unachievable invasion is 0*): only for a target past the header wall (every owned neighbour's hold-sized `_stage_line` over its header), and `attack_mirr` prices such a target at the striker's capped line when the survivors plus the neighbours' spare men reach the hold line.
+
+| on the 92 player (#74), 340 games | won | paired | invaded | follow-ups pledged / unmended | pledged prize lost within a year |
+|---|---|---|---|---|---|
+| safety donors (#74) | 92 | | 170 | | |
+| coord 1 (Moves), any size | 55 | saved 12, lost 49, z −4.7 | 227 | 673 / 427 | 11% |
+| coord 2 (+ attack the threat), any size | 54 | saved 15, lost 53, z −4.6 | 231 | 683 / 442 | 12% |
+| coord 2, 9+ fiefs | 67 | saved 11, lost 36, z −3.6 | 185 | 367 / 122 | 17% |
+| coord 2, 9+ fiefs, margin 75 | 74 | saved 13, lost 31, z −2.7 | 181 | 335 / 97 | 16% |
+| coord 1, 9+ fiefs, margin 75 | 70 | saved 12, lost 34, z −3.2 | 181 | | |
+
+- **Every variant loses.** At any size half the lost games died by invasion in years 8-24: under 6 fiefs the real battle kept fewer men than the forecast's mean and the plan could not mend the prize as often as it could (226 unmended, 217 pledged). Of 867 pledged Moves, 192 found the prize already taken (the threat's turn came first). Even the prizes left SAFE were lost more (3% within a year → 6-9%): the helpers' Moves thin their own lines. Gated at 9 fiefs and with a margin it costs less, and still costs. The follow-up attack itself wins (13-19 of 15-24) but rarely has the chance.
+- **The header wall, measured** (`wall_probe.py`, three stalled games): of 1,700-1,800 priced attacks a game, 0-186 had a hold-sized line over the striker's header; past the wall (every neighbour over), the header could not even **win** in 143 of 156 (header − own keep < `fought_need`), and the follow-up help fell short of the hold in the other 13. In 4/3012 no attack was over the header at all. So Chris's case (*capped men cannot beat the target*) is a win wall: Moves into the prize cannot help it. With the wall gate the follow-ups never fire in the smoke games and the game is the 92 player's.
+- **Next (Chris's double attack, literally):** two waves on one target in one season. #62: a lost battle shrinks the garrison (0.37-0.58 men per man sent), so a first wave from one fief wears the target down and a second from another fief wins and holds; priced as one MIRR with the first wave's men as the cost (Chris: two half-strength attacks likely take more than one full one; measure the sequence in the battle lab first).
+
 ### #75 — The stall audited: the striker holds its line and does not strike; the hold line and Assign-ahead do not fix it (Chris, 2026-11-19)
 
 Chris: *we know how to grow safely, but then we stall; we need an audit.* **`audit.py`** (in the session scratchpad, the #74 player, 17 starts × 6 seeds) classifies every owned fief's turn, from the season the empire first holds 9 fiefs to the end, by its effect on the board (men, gold, rice, wealth, loyalty, morale and tax before and after the turn, other fiefs' gains for Moves and Sends).

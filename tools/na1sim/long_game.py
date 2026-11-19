@@ -123,6 +123,12 @@ def one(job):
     X.ASSIGN_AHEAD = bool(len(job) > 39 and job[39])
     X.ASSIGN_SUMMER = bool(len(job) > 39 and job[39] == 2)
     X.ASSIGN_AT = 100 if X.ASSIGN_SUMMER else 80
+    X.COORD = int(job[40]) if len(job) > 40 and job[40] else 0
+    X.COORD_MIN = int(job[41]) if len(job) > 41 and job[41] else 0
+    X.COORD_MARGIN = int(job[42]) if len(job) > 42 and job[42] else 100
+    X.COORD_WALL = bool(len(job) > 43 and job[43])
+    X.COORD_LOG.clear()
+    X._PLEDGE.clear()
     X.STAGE = bool(len(job) > 21 and job[21])            # set every job: the pool reuses workers
     if X.STAGE:
         X.STAGE_MAX = int(job[21])
@@ -179,7 +185,7 @@ def one(job):
     tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG],
                  stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG],
                  roi=[list(c) for c in X.ROI_LOG], mirr=[list(c) for c in X.MIRR_LOG],
-                 rate=[list(c) for c in X.R_LOG])    # per-game events (#61's walk)
+                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG])    # per-game events (#61's walk)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0), tally
 
 
@@ -225,6 +231,10 @@ def main():
     ap.add_argument("--hold-all", type=int, help="1: the hold line counts the target's own owner's other fiefs (#70)")
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
+    ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--coord-wall", type=int, help="1: follow-ups only for a target past the header wall, and the planner prices such targets at the capped line (#76)")
+    ap.add_argument("--coord-min", type=int, help="N: follow-ups only for an empire of N+ fiefs (#76)")
+    ap.add_argument("--coord-margin", type=int, help="P: the follow-ups must mend the prize at P%% of its forecast men (#76)")
     ap.add_argument("--assign-ahead", type=int, help="1: the attack line's striker reshapes its army for the target on any turn it holds 80%% of its line; 2: only in Summer at the full line (#75)")
     ap.add_argument("--safety-donors", type=int, help="1: any SAFE fief Sends to the unsafe fiefs' lines first (#74)")
     ap.add_argument("--local-gate", type=int, help="1: an attack leaves the source and the prize as allowed and no other fief worse, instead of needing the whole empire SAFE (#74)")
@@ -238,7 +248,7 @@ def main():
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))
