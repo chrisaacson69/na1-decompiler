@@ -247,6 +247,9 @@ def reaction_policy(m, idx, rng):
         policy.OPENING["keep_rice"] = keep
 
 
+EMPTY_MORALE = False
+
+
 def reader_policy(m, idx, rng):
     """A player who reads the position each turn instead of following a script (Chris, 2026-11-10:
     treat Saito as a new player). Saito's T1 battle can come before or after his first command, so
@@ -273,6 +276,13 @@ def reader_policy(m, idx, rng):
         line = men_line(m, idx)
         if line is not None and policy._hire_up_to(m, idx, line):
             return
+    # EMPTY_MORALE (#71): with no men the cartridge clears morale to 0 (clear_military_stats_if_no_men),
+    # and driver_give refuses a Give to no men, so an outpost the depots emptied spent every turn on a
+    # refused morale Give and never reached its Spring gift (10/3003: peasants at 868-869 of 1800 for
+    # years, the treasury at the header). With the flag an empty army's morale is not a cliff (the
+    # ladder's own rule).
+    if EMPTY_MORALE and not men:
+        morale = 100
     for low, give in ((morale, policy.give_men), (loyalty, policy.give_peasants)):     # 1
         # summer_rice_first (Chris, 2026-11-11: T2 is rice): in Summer the rice for the upkeep
         # outranks the loyalty cliff (a won T1 garrison has the morale; loyalty only risks a riot)

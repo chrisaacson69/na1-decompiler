@@ -110,6 +110,11 @@ def one(job):
     X.EMPIRE_MIRR = bool(len(job) > 28 and job[28])
     X.HOLD_ALL = bool(len(job) > 29 and job[29])          # set every job: the pool reuses workers
     X.EMPIRE_RESCUE = bool(len(job) > 30 and job[30])
+    X.EMPIRE_LOSS = bool(len(job) > 31 and job[31])
+    X.EMPIRE_HUB = bool(len(job) > 32 and job[32])
+    if X.EMPIRE_HUB:
+        X.HUB_W = int(job[32])
+    reaction.EMPTY_MORALE = bool(len(job) > 33 and job[33])
     X.STAGE = bool(len(job) > 21 and job[21])            # set every job: the pool reuses workers
     if X.STAGE:
         X.STAGE_MAX = int(job[21])
@@ -210,13 +215,16 @@ def main():
     ap.add_argument("--empire-attack", type=int, help="1: the empire's best attack is a ledger line, priced by ROI against the growth lines (#68)")
     ap.add_argument("--mirr", type=int, help="1: the ledger's growth and attack lines priced by MIRR over 8 seasons, r = the best own-gift IRR (#69)")
     ap.add_argument("--hold-all", type=int, help="1: the hold line counts the target's own owner's other fiefs (#70)")
+    ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
+    ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
+    ap.add_argument("--empty-morale", type=int, help="1: the reader does not spend a turn on a Give to an empty army's morale (#71)")
     ap.add_argument("--rescue", type=int, help="1: a SAFE fief first moves men into a non-SAFE neighbour, and sends rice to a fief that would buy it for the upkeep (#70)")
     a = ap.parse_args()
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

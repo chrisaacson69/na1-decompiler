@@ -1693,6 +1693,48 @@ def transfer_mirr(m, R, g, r):
     return mirr(cf, tv, r)
 
 
+# The battle picker, both branches (Chris, 2026-11-18, #71). EMPIRE_LOSS: an attack is a lottery, so its
+# cash flows are the win's and the loss's weighted by the battle lab's odds (keep_q.json: every won
+# battle of 7 pairs x 30 seeds per skill and raw ratio, so P(win) = wins / 210; under the lab's lowest
+# ratio, 2.0, the odds fall linearly to 0 at 1.0, an assumption). A loss keeps the hire's cost and the
+# upkeep until the battle, and loses every man sent: no treasury, no men freed, no prize, nothing left at
+# the horizon. EMPIRE_HUB: the big play in reverse. When T falls its owner's other fiefs face T's new
+# garrison and lose T as a buffer; the rise in every AI fief's share line (the rival army bill, ai_bill)
+# is men they must hire or be exposed, counted as our inflow at the battle at the hire rate times
+# HUB_W% (a relative value: their cost is our gain, a modelling choice, not a cartridge formula).
+EMPIRE_LOSS = False
+EMPIRE_HUB = False
+HUB_W = 100
+_PWIN = {}
+
+
+def p_win(skill, ratio):
+    if not _PWIN:
+        for s, rows in _keep_table().items():
+            _PWIN[s] = sorted((r, len(ks) / 210) for r, ks in rows)
+    pts = _PWIN.get(skill)
+    if not pts:
+        return 1.0
+    if ratio <= pts[0][0]:
+        return max(0.0, pts[0][1] * (ratio - 1) / (pts[0][0] - 1))
+    for (r0, p0), (r1, p1) in zip(pts, pts[1:]):
+        if ratio <= r1:
+            return p0 + (p1 - p0) * (ratio - r0) / (r1 - r0)
+    return pts[-1][1]
+
+
+def ai_bill(m, me):
+    """The men every AI-held fief needs to keep each non-own neighbour (ours included) under the share line."""
+    n, bill = m.r16(M.SCENARIO_FIEF_COUNT), 0
+    for i in range(n):
+        if m.province_ai_state(i) != 0 or m.fief_owner(i) == me:
+            continue
+        o = m.fief_owner(i)
+        bill += max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in m.neighbor_rows.get(i, [])
+                     if e < n and m.province_ai_state(e) != M.EMPTY and m.fief_owner(e) != o] or [0])
+    return bill
+
+
 def attack_mirr(m, owner, S, T, bill0, r):
     """-> dict(send, line, short, mirr) for S taking T at its first war season, funded now; or None."""
     fs, ft = m.fief(S), m.fief(T)
@@ -1719,6 +1761,15 @@ def attack_mirr(m, owner, S, T, bill0, r):
         m.w16(ft + M.F_MEN, kept)
         inc_t = harvest_value(m, T)
         freed = bill0 - (army_bill(m, owner)[0] - share_line(m, T))
+        hub = 0
+        if EMPIRE_HUB:
+            m.w16(fs + M.F_MEN, max(0, line - send))
+            hub = ai_bill(m, owner)
+    if EMPIRE_HUB:
+        with forecast.held(m):                  # the moment before the battle: T grown, S at its line
+            m.w16(ft + M.F_MEN, proj)
+            m.w16(fs + M.F_MEN, line)
+            hub -= ai_bill(m, owner) - share_line_ai(m, T, owner)
     cin, cout = [0.0] * (MIRR_H + 1), [0.0] * (MIRR_H + 1)
     # men are capital: the investment is every man sent at the hire rate (a hire only turns gold into
     # men at that rate; the men already held are not free), and the survivors come back at the horizon
@@ -1732,7 +1783,27 @@ def attack_mirr(m, owner, S, T, bill0, r):
             if k > ka:
                 cin[k] += inc_t
     tv = inc_t * _annuity(r) + kept * rate
+    if EMPIRE_HUB and hub > 0:
+        cin[ka] += hub * rate * HUB_W / 100
+    if EMPIRE_LOSS:
+        pw = p_win(m.skill, send / max(1, proj))
+        lin, lout = [0.0] * (MIRR_H + 1), [0.0] * (MIRR_H + 1)
+        lout[0] += send * rate
+        for k in range(1, MIRR_H + 1):
+            if (s0 + k) % 4 == 2:
+                dm = short if k <= ka else short - send
+                (lout if dm > 0 else lin)[k] += abs(dm) / 2 * (1 + p)
+        cin = [pw * a + (1 - pw) * b for a, b in zip(cin, lin)]
+        cout = [pw * a + (1 - pw) * b for a, b in zip(cout, lout)]
+        tv = pw * tv
     return dict(send=send, line=line, short=short, mirr=mirr(cin, tv, r, cout))
+
+
+def share_line_ai(m, T, me):
+    """T's own term in ai_bill (its owner's share line against its non-own neighbours)."""
+    n, o = m.r16(M.SCENARIO_FIEF_COUNT), m.fief_owner(T)
+    return max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in m.neighbor_rows.get(T, [])
+                if e < n and m.province_ai_state(e) != M.EMPTY and m.fief_owner(e) != o] or [0])
 
 
 def attack_line_mirr(m, owner, r):
