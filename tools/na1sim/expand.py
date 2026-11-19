@@ -1735,6 +1735,46 @@ def ai_bill(m, me):
     return bill
 
 
+# The striker's turns (Chris, 2026-11-19, #73): attack_mirr assumed the line's men stood at the first war
+# season. They are hired, one command a season, at most a treasury (the header) of gold per hire, and the
+# attack is another command; Summer has no War. In the 9+ fief census (#72) the shortfall cost more than
+# the striker's header in 129 of 235 not-ready seasons. MIRR_TURNS: the strike season is played out a
+# season at a time. Before the striker's turn its SAFE neighbours Move in their spare men (they act
+# before it about half the time; counted in the first season). With HIRE_MOVE each adjacent SAFE donor
+# also hires toward the striker with its gold (one command) and Moves the men the season after (another),
+# so the striker's own turns are spared. The striker hires a header's worth on each turn it is still
+# short; it attacks on the first War season it holds the line without having spent that turn.
+MIRR_TURNS = False
+HIRE_MOVE = False
+
+
+def strike_season(m, owner, S, line):
+    """The season offset at which S can strike holding `line` men, or None within MIRR_H."""
+    fs = m.fief(S)
+    rate = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10
+    men, hdr = m.r16(fs + M.F_MEN), m.r16(fs + M.F_HEADER)
+    st = empire(m, owner)
+    nb = [b for b in m.neighbor_rows.get(S, []) if st.get(b) == SAFE and b != S]
+    for b in nb:
+        keep = own_need(m, b)
+        if m.is_capital(b) and len(st) > 1:
+            keep = max(keep, capital_line(m, b))
+        men += max(0, m.r16(m.fief(b) + M.F_MEN) - keep)
+    donor = sum(max(0, min(m.r16(m.fief(b) + M.F_GOLD) - 20, m.r16(m.fief(b) + M.F_HEADER)) / rate)
+                for b in nb) if HIRE_MOVE else 0
+    per_hire = hdr / rate
+    first = 1 if S in m.acted else 0
+    for k in range(first, MIRR_H + 1):
+        if HIRE_MOVE and k >= first + 1:
+            men += donor / 2                    # a hire and a Move: half a donor's treasury a season
+        if men >= line:
+            if (m.season + k) % 4 in SEASONS:
+                return k
+            continue
+        men += per_hire                         # the striker's turn goes to a hire
+    return None
+
+
 def attack_mirr(m, owner, S, T, bill0, r):
     """-> dict(send, line, short, mirr) for S taking T at its first war season, funded now; or None."""
     fs, ft = m.fief(S), m.fief(T)
@@ -1742,12 +1782,20 @@ def attack_mirr(m, owner, S, T, bill0, r):
     ka = next(k for k in range(8) if (s0 + k) % 4 in SEASONS and (k or S not in m.acted))
     if ka > MIRR_H:
         return None
-    with forecast.held(m):                      # the target's men when the strike lands
-        proj = int(m.r16(ft + M.F_MEN) + growth(m, T) * ka)
-        m.w16(ft + M.F_MEN, proj)
-        send, line = _stage_line(m, S, T, owner)
-    if line > m.r16(fs + M.F_HEADER):
-        return None
+    for _ in range(2 if MIRR_TURNS else 1):
+        with forecast.held(m):                  # the target's men when the strike lands
+            proj = int(m.r16(ft + M.F_MEN) + growth(m, T) * ka)
+            m.w16(ft + M.F_MEN, proj)
+            send, line = _stage_line(m, S, T, owner)
+        if line > m.r16(fs + M.F_HEADER):
+            return None
+        if MIRR_TURNS:
+            k2 = strike_season(m, owner, S, line)
+            if k2 is None:
+                return None
+            if k2 == ka:
+                break
+            ka = max(ka, k2)
     short = max(0, line - m.r16(fs + M.F_MEN))
     kr = max(.05, fought_keep(send / max(1, proj), skill_scale(m), m.skill))
     kept = int(send * kr)
@@ -1905,6 +1953,28 @@ def _mirr_donor(m, idx, e, spare):
     return bool(_do_send(m, idx, e, d, 0, gold))
 
 
+def _hire_for_striker(m, idx, e, men, keep):
+    """An adjacent SAFE donor hires the striker's shortfall with its own gold (its Move follows next turn,
+    by empire_move's spare-men rule), when the attack line's MIRR beats the donor's own gift."""
+    from . import policy
+    f = m.fief(idx)
+    d = next((d for d in e["lines"] if d["kind"] == "attack" and d["men"] > 0
+              and d["fief"] in m.neighbor_rows.get(idx, []) and d["fief"] != idx), None)
+    if not d or men - keep >= MARCH_MIN or m.r16(f + M.F_MORALE) < MORALE_FLOOR:
+        return False
+    gold = m.r16(f + M.F_GOLD) - 20
+    rate = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10
+    if gold < rate * MARCH_MIN or d["roi"] <= max(own_irr(m, idx), e.get("r", 0.01)):
+        return False
+    want = min(d["men"], int(gold / rate))
+    if policy._hire_up_to(m, idx, men + want, gold):
+        d["men"] -= want                        # pledged: other donors hire only the rest this season
+        HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "hire-move"))
+        EMPIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, "hire-move", idx, d["fief"], 0, 0, want))
+        return True
+    return False
+
+
 def _empire(m, owner):
     e = _EMPIRE.setdefault(owner, {"gift": {}})
     if e.get("t") != _tick(m):
@@ -1964,6 +2034,8 @@ def empire_move(m, idx):
                 d["gold"] = max(0, d["gold"] - _hire_gold(m, moved))
                 EMPIRE_LOG.append((yr, m.season, "move", idx, j, 0, 0, moved))
                 return True
+    if HIRE_MOVE and EMPIRE_MIRR and _hire_for_striker(m, idx, e, men, keep):
+        return True
     if not capped(m, idx):
         return EMPIRE_MIRR and DONOR_MIRR and _mirr_donor(m, idx, e, spare)
     gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)

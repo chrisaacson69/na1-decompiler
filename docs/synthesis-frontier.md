@@ -91,6 +91,30 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #73 — The striker's turns priced, and the hire-and-Move: honest timing alone costs games, the capacity wins them back (Chris, 2026-11-19)
+
+Chris, on #72's not-ready strikers: *it is usually quicker to send gold and rice and let the front fief hire. But donors near the front can hire and Move, which saves the front fief's turns. A new fief must not get more men than it can feed past the harvest. MIRR should have been the signal for what to do in any situation; maybe the pricing is bad.* **The logistics census** (`logi_census.py` in the session scratchpad, 17 starts × 6 seeds, the donor-gate player):
+- Feeding is not a problem: about 20 men a game were lost to unpaid upkeep, and none at 9+ fiefs.
+- In 129 of 235 not-ready seasons the striker's shortfall (median 163 men, about 2,100 gold) cost more than its header (median 1,780). Its gold sat at the header in 105 of them.
+- Its SAFE neighbours' spare men covered the shortfall in only 69 (median 60 men).
+
+The striker is short of **turns**, not gold: one hire per command, a treasury per hire, the attack another command, no War in Summer. **The pricing was wrong in that way.** `attack_mirr` struck at the first War season as if the men already stood there. And a turn has no price, so hire-in-place and send-gold could not be compared.
+
+- **`--mirr-turns 1`** (`expand.MIRR_TURNS`, `strike_season`): the strike season is played out a season at a time. SAFE neighbours Move their spare men in before the striker's turn. The striker hires a header's worth on each turn it is still short. It strikes on the first War season it holds the line without having spent that turn. The target's growth and the line are re-sized to that season, and a strike that cannot be built within the horizon is dropped.
+- **`--hire-move 1`** (`HIRE_MOVE`, `_hire_for_striker`): a SAFE donor adjacent to the striker, with no spare men, hires toward the striker's shortfall with its own gold when the attack line's MIRR beats its own gift (the donor-gate test). The hire is pledged against the line, and the donor Moves the men on its next turn (`empire_move`'s spare-men rule). In the pricing, each adjacent donor adds half its treasury in men a season (two commands).
+
+| every start, seeds 3000-3019, 70 years, skill 2, MIRR + empty-morale + donor gate | won | paired | invaded | age | attacks/yr after 9 fiefs |
+|---|---|---|---|---|---|
+| donor gate (#72) | 79 | | 169 | 84 | 1.42 |
+| + turns | 71 | saved 36, lost 44, z −0.9 | 179 | 80 | 1.38 |
+| + turns + hire-move | **82** | against #72: saved 42, lost 39, z +0.3; against turns: z +1.5 | 168 | 80 | 1.43 |
+
+Against the ladder (#66) 82 is saved 53, lost 31, z +2.4; against MIRR (#69) z +2.9.
+
+- **Honest timing alone costs games (−8):** an attack that needs hiring is now priced at its real, later season, so fewer lines beat r. Attack-line Sends fell from 20.5 a game to 15.3, and hires from 13.0 to 9.7.
+- **The capacity wins them back (+11 over turns alone):** 6.4 hire-and-Moves a game. The best count of the line, but within noise of the donor gate.
+- **The picture is unchanged after 9 fiefs:** 1.4 attacks a year in all three, and the lord's age still takes 52-59. The corrected price moves *which* attacks are chosen, not how many the empire can mount.
+
 ### #72 — Why 9+ fief empires stall, and the empty army's last turn: 76, the first significant gain of the line (Chris, 2026-11-19)
 
 Chris: *once a player has 9+ fiefs they should be able to force a win; only age stops them. Why we stall and stay alive is strange.* Across the races, 129-141 of 340 games reach 9 fiefs and about 45% of those win. The rest peak at 13 (median), make 0.8-1.0 attacks a year, win 75-80% of them, and lose about 0.45 fiefs a year: about +0.2 fiefs a year with four left. **The census** (`big_census.py` in the session scratchpad, MIRR + empty-morale, 17 starts × 6 seeds): at the first player turn of every attack season with 9+ fiefs, how far the attack pairs get.
