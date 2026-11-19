@@ -93,7 +93,7 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ### #72 — Why 9+ fief empires stall, and the empty army's last turn: 76, the first significant gain of the line (Chris, 2026-11-19)
 
-Chris: *once a player has 9+ fiefs they should be able to force a win; only age stops them. Why we stall and stay alive is strange.* Across the races, 129-141 of 340 games reach 9 fiefs and about 45% of those win. The rest peak at 13 (median), make 0.8-1.0 attacks a year, win 75-80% of them, and lose about 0.45 fiefs a year: about +0.2 fiefs a year with four left. **The census** (`big_census.py`, MIRR + empty-morale, 17 starts × 6 seeds): at the first player turn of every attack season with 9+ fiefs, how far the attack pairs get.
+Chris: *once a player has 9+ fiefs they should be able to force a win; only age stops them. Why we stall and stay alive is strange.* Across the races, 129-141 of 340 games reach 9 fiefs and about 45% of those win. The rest peak at 13 (median), make 0.8-1.0 attacks a year, win 75-80% of them, and lose about 0.45 fiefs a year: about +0.2 fiefs a year with four left. **The census** (`big_census.py` in the session scratchpad, MIRR + empty-morale, 17 starts × 6 seeds): at the first player turn of every attack season with 9+ fiefs, how far the attack pairs get.
 
 | attack seasons at 9+ fiefs | won (20 games) | not won (17) |
 |---|---|---|
