@@ -53,6 +53,92 @@ def one(job):
     return skill, src, tgt, ratio, bool(won), left / men, (after - dmen) / max(1, men) if not won else 0
 
 
+def _arm(m, src, tgt, men):
+    """Give src `men` (gold and rice to send them) and the doctrine's split for tgt -> False if unreachable."""
+    f = m.fief(src)
+    m.w16(f + M.F_HEADER, max(m.r16(f + M.F_HEADER), men + 10))
+    m.w16(f + M.F_MEN, men)
+    m.w16(f + M.F_GOLD, men + 50)
+    m.w16(f + M.F_RICE, men * 2)
+    split = X.desired_split(m, src, tgt)
+    if P.assign_reachable(m, src, split):
+        P.commit_arms_record(m, src, split, 0)
+        return True
+    return False
+
+
+def waves(job):
+    """#77 (Chris: the double attack, priced from the lab): wave 1 from src at r1 x the garrison; if it
+    loses, wave 2 from a second neighbour of tgt (made ours, with src's morale, skill and arms) at r2 x the
+    ORIGINAL garrison, the same season. Against one wave of r1 + r2 from src on the same board and seed.
+    -> (skill, src, tgt, r1, r2, wave1 won, garrison after a lost wave 1 / before, two-wave won,
+        kept share of the total sent, one-wave won, its kept share)"""
+    skill, src, tgt, r1, r2, seed, split1 = job
+    out = []
+    for mode in ("two", "one"):
+        m = setup.build_board(skill=skill, seed=seed, player_fief=src)
+        t = m.fief(tgt)
+        dmen = m.r16(t + M.F_MEN)
+        if mode == "one":
+            men = max(1, int(dmen * (r1 + r2)))
+            _arm(m, src, tgt, men)
+            won = X.player_war(m, src, tgt, men, men * 2, rng=random.Random(seed), fought=True)
+            out += [bool(won), (m.r16(t + M.F_MEN) / men) if won else 0]
+            continue
+        n = m.r16(M.SCENARIO_FIEF_COUNT)
+        src2 = next(b for b in m.neighbor_rows.get(tgt, []) if b < n and b not in (src, tgt)
+                    and m.province_ai_state(b) != M.EMPTY)
+        m1 = max(1, int(dmen * r1))
+        X.SPLIT_MODE = split1                   # the first wave's split (solo: 100/0, no 1% left to capture)
+        reach = _arm(m, src, tgt, m1)
+        stats = [m.r16(m.fief(src) + off) for off in (M.F_MORALE, M.F_SKILL, M.F_ARMS)]   # before the
+        # battle: a lost wave empties src and clear_military_stats_if_no_men zeroes them
+        w1 = X.player_war(m, src, tgt, m1, m1 * 2, rng=random.Random(seed), fought=True)
+        X.SPLIT_MODE = None
+        g1 = m.r16(t + M.F_MEN) / max(1, dmen) if not w1 else None
+        won, kept = bool(w1), (m.r16(t + M.F_MEN) / m1 if w1 else 0)
+        if not w1 and m.fief_owner(tgt) != m.fief_owner(src):
+            fs, f2 = m.fief(src), m.fief(src2)
+            m.w8(M.FIEF_TO_DAIMYO_MAP + src2, m.fief_owner(src))
+            m.w8(M.PROVINCE_AI_STATE + src2, M.PLAYER_DIRECT)
+            m.w8(M.FIEF_IS_CAPITAL + src2, 0)
+            for off, v in zip((M.F_MORALE, M.F_SKILL, M.F_ARMS), stats):
+                m.w16(f2 + off, v)
+            m2 = max(1, int(dmen * r2))
+            _arm(m, src2, tgt, m2)
+            w2 = X.player_war(m, src2, tgt, m2, m2 * 2, rng=random.Random(seed + 7919), fought=True)
+            won, kept = bool(w2), (m.r16(t + M.F_MEN) / (m1 + m2) if w2 else 0)
+        out = [skill, src, tgt, r1, r2, bool(w1), g1, won, kept] + out
+    return tuple(out) + (reach,)
+
+
+def main_waves(a):
+    skills = [int(s) for s in a.skills.split(",")]
+    pairs = [tuple(float(x) for x in w.split("+")) for w in a.waves.split(",")]
+    jobs = [(s, src, tgt, r1, r2, seed, a.split) for s in skills for src, tgt in PAIRS for r1, r2 in pairs
+            for seed in range(a.first, a.first + a.seeds)]
+    with ProcessPoolExecutor(6) as ex:
+        res = list(ex.map(waves, jobs, chunksize=4))
+    N = a.seeds * len(PAIRS)
+    print(f"first wave split: {a.split or 'doctrine (heavy 1/99)'}")
+    print(f"two waves (r1 then r2, each x the original garrison, wave 2 from a second fief) against one wave of "
+          f"r1 + r2; {N} battles each")
+    print("  skill  r1+r2  | wave1 won  garrison left by a lost wave 1 | two waves won  kept/sent | one wave won  kept/sent")
+    for s in skills:
+        for r1, r2 in pairs:
+            rows = [x for x in res if x[0] == s and x[3] == r1 and x[4] == r2]
+            w1 = sum(x[5] for x in rows)
+            g = [x[6] for x in rows if x[6] is not None]
+            tw = [x for x in rows if x[7]]
+            ow = [x for x in rows if x[9]]
+            print(f"  {s:5}  {r1:.2f}+{r2:.2f} | {w1 / N:8.0%}   {sum(g) / max(1, len(g)):5.2f} (n {len(g)})"
+                  f"                | {len(tw) / N:12.0%}  {sum(x[8] for x in tw) / max(1, len(tw)):8.2f}"
+                  f" | {len(ow) / N:11.0%}  {sum(x[10] for x in ow) / max(1, len(ow)):8.2f}")
+    print(f"first-wave splits the Assign could not make (fought with the fief's own): {sum(1 for x in res if not x[-1])} of {len(res)}")
+    if a.out:
+        json.dump(res, open(a.out, "w"))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--skills", default="1,3")
@@ -62,7 +148,10 @@ def main():
     ap.add_argument("--split", help="solo: 100/0/0/0/0, the commander leading; sacrifice: the usual split, the commander charges once the strikers are spent (#62)")
     ap.add_argument("--quantiles", action="store_true", help="the kept share's q10 / q25 / median too")
     ap.add_argument("--out", help="save {skill: {ratio: [kept share of each won battle]}} as JSON")
+    ap.add_argument("--waves", help="#77: two-wave sequences r1+r2 (x the garrison), e.g. 1+1.5,1.5+1.5")
     a = ap.parse_args()
+    if a.waves:
+        return main_waves(a)
     skills = [int(s) for s in a.skills.split(",")]
     ratios = [float(r) for r in a.ratios.split(",")]
     jobs = [(s, src, tgt, r, seed, a.split) for s in skills for src, tgt in PAIRS for r in ratios

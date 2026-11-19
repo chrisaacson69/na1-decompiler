@@ -91,6 +91,27 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #77 — Two waves in the battle lab: a weak 1/99 wave feeds the defender, a commander-only first wave does not, and two waves cost more than one (Chris, 2026-11-19)
+
+#76 found that past the header wall the striker's capped men cannot win at all. Chris: the double attack fits, *but we have to price it from the lab*; two half-strength attacks likely take more than one full one; ways not to feed the defender (100/0 or 1/99, holding the attack until the rice drains, dumping gold on bribes) are each tactical work of their own; *even so, go at no less than 1:2 odds.* `skill_lab --waves r1+r2[,…] [--split solo]`: wave 1 from the source at r1 × the garrison; if it loses, wave 2 from a second neighbour of the target, the same season, at r2 × the ORIGINAL garrison (made ours, with the source's morale, skill and arms as they were before wave 1: a lost wave empties the source and `clear_military_stats_if_no_men` zeroes them, which the first run missed); against one wave of r1 + r2 from the source on the same board and seed. The doctrine's split for wave 2 and the one-wave control; `--split solo` sets wave 1 to 100/0 (reachable by Assign in all 3,360). 7 pairs × 30 seeds = 210 per cell. The table is saved as `na1sim/waves_q.json` (p, kept per man sent, garrison after a lost wave 1, by skill, wave-1 split, r1+r2).
+
+| r1 + r2 | garrison after a lost wave 1: 1/99 / solo (skill 2) | skill 2 two waves won: 1/99 / solo | one wave of r1 + r2 | skill 3 two waves: 1/99 / solo | one wave |
+|---|---|---|---|---|---|
+| 0.5 + 1.5 | **1.21** / 0.82 | 9% / 51% | 73% | 0% / 6% | 19% |
+| 0.75 + 1.5 | — / 0.69 | — / 82% | 100% | — / 35% | 43% |
+| 1.0 + 1.0 | 0.90 / 0.54 | 42% / 60% | 73% | 1% / 3% | 19% |
+| 1.0 + 1.5 | 0.90 / 0.54 | 73% / 86% | 100% | 40% / 54% | 97% |
+| 1.0 + 2.0 | 0.90 / 0.54 | 75% / **100%** | 100% | 70% / **99%** | 100% |
+| 1.5 + 1.0 | 0.27 / 0.28 | 86% / 81% | 100% | 28% / 46% | 97% |
+| 1.5 + 1.5 | 0.27 / 0.28 | 90% / 83% | 100% | 78% / 72% | 100% |
+| 1.8 + 1.8 | 0.16 / 0.16 | 93% / 89% | 100% | 85% / 80% | 100% |
+
+- **A weak 1/99 wave feeds the defender**: at 0.5× the garrison ends 21% larger (both armies' survivors garrison the defender, $E03C); #62's "no loss fed" was measured at 1.5× and up. Under 1/99 a wave wears the garrison down only from about 1.5×.
+- **A commander-only (solo) first wave never feeds** (0.5× → 0.82) and wears twice as hard per man at 1.0× (0.54 against 0.90): the battle ends at the commander's death and no 1% is left to be captured. From 1.5× the two splits wear alike, and solo wins wave 1 outright more often (25% against 3% at skill 2).
+- **Two waves always cost more than one of the same total** (Chris): 1.5 + 1.5 wins 83-90% where one 3.0× wave wins all; but at the wall one wave does not exist, so the comparison is against no attack. The best mix is a solo first wave of about 1.0× and a 1/99 second of 2.0× (100% / 99%), or 0.75 + 1.5 at skill 2 (82%).
+- **What is left is per target**: nearly every two-wave loss is against Mikawa (16 → 7) and Omi (8 → 10), capitals with the lord in the garrison, where wave 2's 1% commander can be killed however few defenders remain (at skill 3, 1.5 + 1.5 solo: 0/30 and 2/30; every other pair 30/30). Wave 2's split per target is open, as #62 left solo against heavy.
+- **Next:** the wall attack in the planner, priced from `waves_q.json`: two owned fiefs adjacent to a target past the wall, first wave solo at no less than 0.5× (Chris's floor), the second from a fief that has not acted, both in one season; MIRR with p and kept from the table and both waves' men as the investment.
+
 ### #76 — The coordinated attack: follow-ups that mend the prize lose; past the header wall the wall is the win, not the hold (Chris, 2026-11-19)
 
 Chris, on #75 (34% of the ready striker's refusals were the prize left COMING or another fief unsafe after): *the result = unsafe might have to be solved with a double attack.* `expand.COORD` (`long_game --coord 1|2`; off): a winning move that `score` would refuse is accepted if the owned fiefs that have not yet acted this season (`m.acted`; the season order is shuffled) can mend the map on their turns, tested by playing their commands on the forecast: Moves of their spare men (over their own line on the post-conquest map) into the fief over the gate (1), and failing that a winning attack on the threat from a SAFE neighbour of it (2). `coord_fix` is greedy, at most `COORD_MAX` = 4 commands, the map re-read after each; a clean move outranks a mended one. After the real battle the plan is recomputed on the real map and the helpers' commands are pledged (`_PLEDGE`), executed first on their turns (`coord_act`). `--coord-min N`: only for an empire of N+ fiefs; `--coord-margin P`: the plan must hold with the prize at P% of the forecast's men; `--coord-wall 1` (Chris: *use it when you have to: when your capped men cannot beat the target; below that, growth, as the ROI of an unachievable invasion is 0*): only for a target past the header wall (every owned neighbour's hold-sized `_stage_line` over its header), and `attack_mirr` prices such a target at the striker's capped line when the survivors plus the neighbours' spare men reach the hold line.
