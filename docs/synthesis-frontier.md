@@ -91,6 +91,26 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #71 — The battle picker's two branches and the empty army's turn: the economy rises, the count stays in noise (Chris, 2026-11-19)
+
+Three items from #70. **`--hub W`** (`expand.EMPIRE_HUB`, `HUB_W`): the big play in reverse. An attack's MIRR also counts the rise in every AI fief's share line when T falls (`ai_bill`: each AI fief against its non-own neighbours, ours included; before the battle with T grown and S at its line, after with T ours at the kept men and S at line − send), at the hire rate × W%. That their cost is our gain is a modelling choice, not a cartridge formula. Because the bill charges a fief's largest neighbour, not the sum, the term is selective: in 5/3009 it lifted 111 of 1,132 attacks priced, by 0.005 / 0.014 / 0.033 a season (quartiles; max 0.076, r about 0.10). **`--loss 1`** (`EMPIRE_LOSS`): the flows are the win's and the loss's weighted by P(win) from the battle lab (`keep_q.json`: won battles of 7 pairs × 30 seeds, so wins / 210, by skill and raw ratio; under 2.0 a linear fall to 0 at 1.0, assumed). A loss keeps the hire's cost and the upkeep to the battle and loses every man sent. At skill 2 the strikes go at about 2.35×, P(win) 0.92. **`--empty-morale 1`** (`reaction.EMPTY_MORALE`): found tracing #70's idle outposts (10/3003, fiefs 9, 13, 16). With no men the cartridge clears morale to 0 (`clear_military_stats_if_no_men`), the reader's first rule read it as a cliff and Gave 60 gold to the men, and `driver_give` refused it (no men): no gold spent, the turn lost, every season, so the outpost never reached its Spring gift (peasants at 868-869 of 1,800 for years, the treasury at the header). The fix is the ladder's own rule (an empty army's morale is no cliff). In 10/3003 the refused Gives fall 324 → 139; the rest are two more sites, not fixed: the reader's Summer rice to the men of a capped empty fief (126) and the topped-out hire's morale floor, which Gives instead of hiring when morale is 0 (13).
+
+| every start, seeds 3000-3019, 70 years, skill 2, strike 8 + capital first + ladder | won | paired | invaded | age | fiefs y20 / y30 / y45 | econ y20 / y30 |
+|---|---|---|---|---|---|---|
+| ladder (#66) | 60 | | 179 | 93 | 4.7 / 7.7 / 7.4 | 0.70 / 0.61 |
+| ladder + empty-morale | 57 | saved 16, lost 19, z −0.5 | 182 | 94 | 4.7 / 7.9 / 7.6 | 0.71 / 0.66 |
+| MIRR (#69) | 57 | | 182 | 90 | 4.8 / 8.8 / 9.2 | 0.67 / 0.64 |
+| MIRR + empty-morale | 63 | saved 25, lost 19, z +0.9 | 183 | 84 | 5.0 / 9.1 / 8.9 | 0.70 / 0.69 |
+| MIRR + loss | 54 | saved 25, lost 28, z −0.4 | 180 | 95 | 4.9 / 9.2 / 9.9 | 0.68 / 0.59 |
+| MIRR + hub 100 | **66** | saved 29, lost 20, z +1.3 | 180 | 88 | 4.9 / 9.2 / 8.2 | 0.70 / 0.61 |
+| MIRR + all three | 55 | saved 29, lost 31, z −0.3 | 184 | 93 | 4.7 / 8.5 / 10.1 | 0.70 / 0.64 |
+
+(fiefs: the mean over the games alive then; econ: the median of the player's to the AI's.)
+
+- **The empty army's turn lifts the economy as Chris expected**, in both players: at year 30, 0.61 → 0.66 (ladder) and 0.64 → 0.69 (MIRR). The win count does not follow (−3, +6).
+- **The hub term is the best single result of the line (66, z +1.3)**, not significant, and it does not stack: all three together are 55. The losing branch (P(win) 0.92 at the strike ratio) moves little and what it moves is down.
+- **Logistics (Chris):** Gold to the front beats men when the front is 2+ steps away: one Send against a hire and a Move per step. The depots already do this once an outpost is empty. A backline fief needs about two commands a year until its peasants top out, then one. A Summer Send can fill the receiver past what its harvest will bring and lose that harvest, unless it spends the Send before the harvest. To check next: how often Summer Sends push a receiver's next harvest over the header. The cap is calculable: header − (gold + forecast Fall income).
+
 ### #70 — The stall, looked at: idle outposts, a hold line blind to the rival's own fiefs, and a rescue; all within noise (Chris, 2026-11-18)
 
 Chris, on #69's stall: *what do the investments look like when we stall? Are the fiefs maxed out, can we not field an army big enough, how many outposts?* Four of `mirr3`'s stalled games (lord died, short of 17: 4/3012, 5/3009, 7/3013, 10/3003), every owned fief and every attack, in Winter of years 30/35/40/45:
