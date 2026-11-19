@@ -818,12 +818,15 @@ def score(m, idx, move):
     from . import ev
     t, men, rice, led = move
     owner = m.fief_owner(idx)
+    before = empire(m, owner) if LOCAL_GATE else {}
     with forecast.held(m):
         if not player_war(m, idx, t, men, rice, led):
             return False, None
         states = empire(m, owner)
         tol = RANK[tolerance(m, owner)]                # the prize may be left up to the tolerance; the rest SAFE
-        if (any(RANK[st] > (tol if i == t else 0) for i, st in states.items())
+        # LOCAL_GATE (#74): the source and the prize as before; every other fief no worse than it was
+        allow = (lambda i: tol if i == t else 0 if i == idx else RANK[before.get(i, SAFE)]) if LOCAL_GATE             else (lambda i: tol if i == t else 0)
+        if (any(RANK[st] > allow(i) for i, st in states.items())
                 or not capital_ok(m, owner)):
             return False, None
         # the fief the army left keeps a full shield (rice >= men): carrying its rice away left
@@ -877,7 +880,9 @@ def best_attack(m, idx):
     best two-conquest outcome leaves the smallest army bill; its split is the greedy best."""
     if getattr(m, "season", 0) not in SEASONS or not war_cap(m, idx):
         return None
-    if any(s != SAFE for s in empire(m, m.fief_owner(idx)).values()):
+    if not LOCAL_GATE and any(s != SAFE for s in empire(m, m.fief_owner(idx)).values()):
+        return None
+    if LOCAL_GATE and fief_state(m, idx) != SAFE:
         return None
     per_target = {}
     goal, strict = pocket_targets(m, m.fief_owner(idx))
@@ -1016,7 +1021,7 @@ def strike_plan(m, idx):
     or None. The fief itself need not be SAFE (its line includes its own gate); every other owned
     fief must be."""
     me = m.fief_owner(idx)
-    if any(s != SAFE for i, s in empire(m, me).items() if i != idx):
+    if not LOCAL_GATE and any(s != SAFE for i, s in empire(m, me).items() if i != idx):
         return None
     f = m.fief(idx)
     men, gold, header = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD), m.r16(f + M.F_HEADER)
@@ -1858,7 +1863,7 @@ def attack_line_mirr(m, owner, r):
     """The ledger's attack line by MIRR, or None if no attack beats r."""
     e = _EMPIRE.setdefault(owner, {"gift": {}})
     bill0 = army_bill(m, owner)[0]
-    allsafe = all(s == SAFE for s in empire(m, owner).values())
+    allsafe = LOCAL_GATE or all(s == SAFE for s in empire(m, owner).values())
     priced = []
     for S in owned(m, owner):
         for T in targets(m, S):
@@ -1953,6 +1958,28 @@ def _mirr_donor(m, idx, e, spare):
     return bool(_do_send(m, idx, e, d, 0, gold))
 
 
+# Safety donors (Chris, 2026-11-19, #74): *a fief that is not SAFE can be lost, and fixing it is usually
+# just sending enough gold to make the hire.* In the 9+ fief census 16% of unsafe fief-seasons ended in the
+# fief lost; the hire cost more than its own gold in 66% and only half got a transfer, because only topped
+# out fiefs Sent to the safety lines. SAFETY_DONORS: any SAFE fief Sends its spare gold (and rice) to the
+# COMING, then HUNTABLE, lines first, receivers that have not acted first; a Send is clamped to the header
+# room, so a full receiver waits for its hire. LOCAL_GATE: an attack no longer needs the whole empire SAFE.
+SAFETY_DONORS = False
+LOCAL_GATE = False
+
+
+def _safety_send(m, idx, e, spare):
+    f = m.fief(idx)
+    gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
+    rice_spare = m.r16(f + M.F_RICE) - 2 * (m.r16(f + M.F_MEN) // 2 + 1)
+    for d in sorted((d for d in e["lines"] if d["rank"] <= 1 and d["fief"] != idx and (d["gold"] > 0 or d["rice"] > 0)),
+                    key=lambda d: (d["rank"], d["fief"] in m.acted)):
+        rice, gold = min(max(0, rice_spare), d["rice"]), min(max(0, gold_spare), d["gold"])
+        if rice + gold >= SEND_MIN and _do_send(m, idx, e, d, rice, gold):
+            return True
+    return False
+
+
 def _hire_for_striker(m, idx, e, men, keep):
     """An adjacent SAFE donor hires the striker's shortfall with its own gold (its Move follows next turn,
     by empire_move's spare-men rule), when the attack line's MIRR beats the donor's own gift."""
@@ -2034,6 +2061,8 @@ def empire_move(m, idx):
                 d["gold"] = max(0, d["gold"] - _hire_gold(m, moved))
                 EMPIRE_LOG.append((yr, m.season, "move", idx, j, 0, 0, moved))
                 return True
+    if SAFETY_DONORS and _safety_send(m, idx, e, spare):
+        return True
     if HIRE_MOVE and EMPIRE_MIRR and _hire_for_striker(m, idx, e, men, keep):
         return True
     if not capped(m, idx):

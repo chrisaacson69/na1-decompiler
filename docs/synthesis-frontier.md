@@ -91,6 +91,34 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #74 — Safety donors: any SAFE fief funds the unsafe ones first. 92, and the local gate does not help (Chris, 2026-11-19)
+
+Chris: *a fief that is not SAFE is one that can be lost, and fixing it is usually just sending enough gold to make the hire. Nothing is wrong with one maxed fief sending to the unsafe fief while another sends to stage an attack, or with fixing several problems a year (Fall a hire after its transfers, Winter more transfers or more men). Late, an underdeveloped fief has 8 others to feed it and should be stood up very quickly.* **The unsafe census** (`unsafe_census.py` in the session scratchpad, the #73 player, 17 starts × 6 seeds): 340 unsafe fief-seasons at 9+ fiefs, gap median 92 men.
+- The next season: 59% SAFE, 25% still unsafe (+46 men median), **16% lost**.
+- The hire cost more than the fief's own gold in 66%, and only about half received a transfer that season.
+- Even a full treasury could not buy the gap in one turn in 42%; in 19 the line exceeds the header (no hire makes it SAFE).
+- Rice was never the limit.
+
+The cause: only topped-out fiefs Sent to the safety lines, and #72's donor gate let growing fiefs fund only the attack line. The ledger already marks what is done: it is built once a season, and each Send or Move shrinks its line, so donors fill one receiver and move on.
+
+- **`--safety-donors 1`** (`expand.SAFETY_DONORS`, `_safety_send`): any SAFE fief Sends its spare gold and rice to the COMING, then HUNTABLE, lines before anything else, receivers that have not acted first, clamped to the receiver's header room. No MIRR test: an unsafe fief can be lost.
+- **`--local-gate 1`** (`LOCAL_GATE`): an attack must leave its source SAFE, the prize within the tolerance, the capital's line, and every other fief no worse than before (`score`). `best_attack`, `strike_plan` and the MIRR attack line no longer require the whole empire SAFE.
+
+| every start, seeds 3000-3019, 70 years, skill 2, the #73 player (MIRR + empty-morale + donor gate + turns + hire-move) | won | paired against #73 | invaded | age |
+|---|---|---|---|---|
+| #73 | 82 | | 168 | 80 |
+| + safety donors | **92** | saved 25, lost 15, z +1.6 | 170 | 67 |
+| + safety donors + rescue (#70) | 84 | z +0.2 | 168 | 79 |
+| + safety donors + rescue + local gate | 74 | z −1.1 | 172 | 85 |
+| + safety donors + local gate | 88 | against safety donors: z −0.6 | 174 | 65 |
+
+Against the ladder (#66) the safety-donor player is saved 57, lost 25, **z +3.5**; against MIRR (#69) z +4.1. Of the empires that reach 9 fiefs, 92 of 156 win (82 of 149 before).
+
+- **Funding the weak fief is the gain:** the safety Sends double (COMING lines 2.1 → 4.1 a game), and the lord's age falls from 80 to 67.
+- **Moving men in hurts** (rescue: 92 → 84). It strips SAFE fiefs that are also the strikers, as in #67.
+- **The local gate does not help** (−4 alone, −10 on top of rescue). Attacks after 9 fiefs stay at 1.4 a year and fiefs lost rise from 0.18 to 0.3 a year: attacking past a weak fief costs the weak fief.
+- **Still open:** the late tempo (1.4 attacks a year after 9 fiefs, unchanged since #72), and the 47 games the lord's age ends.
+
 ### #73 — The striker's turns priced, and the hire-and-Move: honest timing alone costs games, the capacity wins them back (Chris, 2026-11-19)
 
 Chris, on #72's not-ready strikers: *it is usually quicker to send gold and rice and let the front fief hire. But donors near the front can hire and Move, which saves the front fief's turns. A new fief must not get more men than it can feed past the harvest. MIRR should have been the signal for what to do in any situation; maybe the pricing is bad.* **The logistics census** (`logi_census.py` in the session scratchpad, 17 starts × 6 seeds, the donor-gate player):
