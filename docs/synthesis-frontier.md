@@ -91,6 +91,35 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #72 — Why 9+ fief empires stall, and the empty army's last turn: 76, the first significant gain of the line (Chris, 2026-11-19)
+
+Chris: *once a player has 9+ fiefs they should be able to force a win; only age stops them. Why we stall and stay alive is strange.* Across the races, 129-141 of 340 games reach 9 fiefs and about 45% of those win. The rest peak at 13 (median), make 0.8-1.0 attacks a year, win 75-80% of them, and lose about 0.45 fiefs a year: about +0.2 fiefs a year with four left. **The census** (`big_census.py`, MIRR + empty-morale, 17 starts × 6 seeds): at the first player turn of every attack season with 9+ fiefs, how far the attack pairs get.
+
+| attack seasons at 9+ fiefs | won (20 games) | not won (17) |
+|---|---|---|
+| an attack made | 38% | 24% |
+| no target fits a header | 5% | 24% |
+| no striker holds its line | 15% | 20% |
+| a fief not SAFE (median 1) | 20% | 20% |
+| `strike_ok` refuses / approved but not made | 22% | 13% |
+
+In 79 of the 105 no-fit seasons even the bare win (2.35× at skill 2) exceeds every adjacent header: the garrisons left are 800+ (the wall). In the not-ready seasons the striker lacked the gold for its shortfall (median 161 men) in 66 of 88 while the empire held 558 spare men and 12,500 gold and a MIRR attack line stood in 65: only topped-out fiefs Sent. The rivals face the same wall against our fronts, so both sides trade small border fiefs and the clock ends it.
+
+- **The other two Gives to an empty army** (#71's remainder, `--empty-morale` now closes all three): the reader's Summer rice to the men of a capped empty fief, and the topped-out hire, which under its morale floor Gave to the men instead of hiring. An empty army has morale 0, so every empty topped-out fief Gave forever and never hired. In 10/3003 the refused Gives fall 324 → 0.
+- **`--donor-mirr 1`** (`expand.DONOR_MIRR`): a SAFE fief still growing Sends to the attack line when the line's MIRR beats its own gift's IRR (`own_irr`: the harvest formulas, as r) and r. 26,700 gold a game.
+
+| every start, seeds 3000-3019, 70 years, skill 2 | won | paired | invaded | age | fiefs y20 / y30 / y45 | econ y20 / y30 |
+|---|---|---|---|---|---|---|
+| ladder (#66) | 60 | | 179 | 93 | 4.7 / 7.7 / 7.4 | 0.70 / 0.61 |
+| MIRR (#69) | 57 | | 182 | 90 | 4.8 / 8.8 / 9.2 | 0.67 / 0.64 |
+| MIRR + empty-morale, one site (#71) | 63 | z +0.9 | 183 | 84 | 5.0 / 9.1 / 8.9 | 0.70 / 0.69 |
+| **MIRR + empty-morale, all three sites** | **76** | against #69: saved 36, lost 17, **z +2.6** | 176 | 78 | 4.9 / 9.0 / 9.5 | 0.70 / 0.66 |
+| + donor gate | **79** | against the row above: saved 37, lost 34, z +0.4; against the ladder: z +2.3 | 169 | 84 | 4.9 / 9.1 / 9.1 | 0.70 / 0.66 |
+
+- **The empty topped-out fief that now hires is worth 13 games**: the outposts make men again and the depots march them to the front. The first significant gain over both #66 and #69.
+- **The donor gate moves the gold (26,700 a game) but not the count.** Its census (17 × 6): attacks in 32% of the not-won seasons (24% before), the wall down to 4%, but **not ready rises to 25%**, and the striker still lacks the gold for its shortfall (median 216 men) in 123 of 152 of them. Not yet checked: a Send is clamped to the striker's header room, so a shortfall worth more than one treasury (216 men × 18 gold is about 3,900 against a header near 1,900) needs several hire turns whatever the donors send.
+- **Next:** check the header-bound hire; then waves for the wall, fought as a two-wave sequence in the battle lab (Chris: two half-strength attacks likely cost more than one at full strength, so the odds are measured, not assumed).
+
 ### #71 — The battle picker's two branches and the empty army's turn: the economy rises, the count stays in noise (Chris, 2026-11-19)
 
 Three items from #70. **`--hub W`** (`expand.EMPIRE_HUB`, `HUB_W`): the big play in reverse. An attack's MIRR also counts the rise in every AI fief's share line when T falls (`ai_bill`: each AI fief against its non-own neighbours, ours included; before the battle with T grown and S at its line, after with T ours at the kept men and S at line − send), at the hire rate × W%. That their cost is our gain is a modelling choice, not a cartridge formula. Because the bill charges a fief's largest neighbour, not the sum, the term is selective: in 5/3009 it lifted 111 of 1,132 attacks priced, by 0.005 / 0.014 / 0.033 a season (quartiles; max 0.076, r about 0.10). **`--loss 1`** (`EMPIRE_LOSS`): the flows are the win's and the loss's weighted by P(win) from the battle lab (`keep_q.json`: won battles of 7 pairs × 30 seeds, so wins / 210, by skill and raw ratio; under 2.0 a linear fall to 0 at 1.0, assumed). A loss keeps the hire's cost and the upkeep to the battle and loses every man sent. At skill 2 the strikes go at about 2.35×, P(win) 0.92. **`--empty-morale 1`** (`reaction.EMPTY_MORALE`): found tracing #70's idle outposts (10/3003, fiefs 9, 13, 16). With no men the cartridge clears morale to 0 (`clear_military_stats_if_no_men`), the reader's first rule read it as a cliff and Gave 60 gold to the men, and `driver_give` refused it (no men): no gold spent, the turn lost, every season, so the outpost never reached its Spring gift (peasants at 868-869 of 1,800 for years, the treasury at the header). The fix is the ladder's own rule (an empty army's morale is no cliff). In 10/3003 the refused Gives fall 324 → 139; the rest are two more sites, not fixed: the reader's Summer rice to the men of a capped empty fief (126) and the topped-out hire's morale floor, which Gives instead of hiring when morale is 0 (13).

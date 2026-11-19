@@ -115,6 +115,7 @@ def one(job):
     if X.EMPIRE_HUB:
         X.HUB_W = int(job[32])
     reaction.EMPTY_MORALE = bool(len(job) > 33 and job[33])
+    X.DONOR_MIRR = bool(len(job) > 34 and job[34])
     X.STAGE = bool(len(job) > 21 and job[21])            # set every job: the pool reuses workers
     if X.STAGE:
         X.STAGE_MAX = int(job[21])
@@ -217,6 +218,7 @@ def main():
     ap.add_argument("--hold-all", type=int, help="1: the hold line counts the target's own owner's other fiefs (#70)")
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
+    ap.add_argument("--donor-mirr", type=int, help="1: a SAFE fief still growing Sends to the attack line when its MIRR beats the fief's own-gift IRR (#72)")
     ap.add_argument("--empty-morale", type=int, help="1: the reader does not spend a turn on a Give to an empty army's morale (#71)")
     ap.add_argument("--rescue", type=int, help="1: a SAFE fief first moves men into a non-SAFE neighbour, and sends rice to a fief that would buy it for the upkeep (#70)")
     a = ap.parse_args()
@@ -224,7 +226,7 @@ def main():
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

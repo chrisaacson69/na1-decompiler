@@ -1872,6 +1872,39 @@ def _mirr_send(m, idx, e, open_, gold_spare, rice_spare):
     return bool(_do_send(m, idx, e, d, 0, gold))
 
 
+# The donor gate by MIRR (Chris, 2026-11-19, #72): only topped-out fiefs Sent, so in the 9+ fief census the
+# striker lacked the gold for its shortfall in 66 of 88 not-ready seasons while the empire held 12,500
+# gold and a MIRR attack line stood in 65. A SAFE fief that is still growing has its own use for the
+# gold, its own gift; it Sends to the attack line when the line's MIRR beats that gift's IRR (and r).
+DONOR_MIRR = False
+
+
+def own_irr(m, idx):
+    """The IRR of fief idx giving its own peasants its gold above the upkeep now (0 if it cannot)."""
+    g = own_gift(m, idx)
+    if g < SEND_MIN or m.r16(m.fief(idx) + M.F_OUTPUT) <= 0:
+        return 0.0
+    d = harvest_value(m, idx, [g]) - harvest_value(m, idx)
+    return irr(lambda r: _gift_flows(m, m.season, 0, g, d, r)) if d > 0 else 0.0
+
+
+def _mirr_donor(m, idx, e, spare):
+    f = m.fief(idx)
+    lines = [d for d in e["lines"] if d["kind"] == "attack" and d["fief"] != idx and d["gold"] > 0]
+    if not lines:
+        return False
+    gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
+    if gold_spare < SEND_MIN:
+        return False
+    d = max(lines, key=lambda d: d["roi"])
+    own, r = own_irr(m, idx), e.get("r", 0.01)
+    if d["roi"] <= max(own, r):
+        return False
+    gold = min(gold_spare, d["gold"])
+    MIRR_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "donor", d["fief"], round(d["roi"], 4), round(own, 4), gold))
+    return bool(_do_send(m, idx, e, d, 0, gold))
+
+
 def _empire(m, owner):
     e = _EMPIRE.setdefault(owner, {"gift": {}})
     if e.get("t") != _tick(m):
@@ -1932,7 +1965,7 @@ def empire_move(m, idx):
                 EMPIRE_LOG.append((yr, m.season, "move", idx, j, 0, 0, moved))
                 return True
     if not capped(m, idx):
-        return False
+        return EMPIRE_MIRR and DONOR_MIRR and _mirr_donor(m, idx, e, spare)
     gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
     rice_spare = m.r16(f + M.F_RICE) - 2 * (men // 2 + 1)
     open_ = [d for d in e["lines"] if d["fief"] != idx and (d["gold"] > 0 or d["rice"] > 0)
