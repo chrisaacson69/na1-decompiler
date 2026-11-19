@@ -2119,7 +2119,9 @@ def expand_policy(m, idx, rng):
             # Recruits arrive with low morale and dilute the army's: hired season after season, a
             # capital's morale ran 77 -> 31 and the revolt took it (15 of 20 Oda empires died that
             # way, 79 of 100 strong starts). Under the floor, the gold goes to the men instead.
-            if m.r16(f + M.F_MORALE) < MORALE_FLOOR:
+            # (#71, reaction.EMPTY_MORALE) with no men there is no army to dilute and the Give is refused:
+            # an empty topped-out fief hires instead
+            if m.r16(f + M.F_MORALE) < MORALE_FLOOR and not (reaction.EMPTY_MORALE and not m.r16(f + M.F_MEN)):
                 policy.give_men(m, idx, gold * ARMY_SHARE // 100, gold=True)
                 return
             HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, gold * ARMY_SHARE // 100))

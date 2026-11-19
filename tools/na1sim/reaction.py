@@ -349,7 +349,7 @@ def economy(m, idx):
                                        if ai_vm_share(m, n, idx) > GRUDGE):
             keep = min(keep, rice - after_harvest_room(m, idx))
         keep = max(keep, rice - max(0, policy._rice_slack(m, idx, False, sustain=True)))
-        if rice > keep + 1:
+        if rice > keep + 1 and not (EMPTY_MORALE and capped and not men):   # no men to give the rice to
             (policy.give_men if capped else policy.give_peasants)(m, idx, rice - keep - 1)
             return
     if season == 0 and gold > 1 and not capped:
