@@ -50,6 +50,7 @@ CHARGE = True
 SPLIT_FOR = {1: "heavy", 2: "heavy", 4: "heavy", 7: "heavy", 10: "heavy", 16: "heavy"}
 
 
+HIDE = False                            # #78: the held-back commander steps away from enemy units (strike.Charge hide)
 SPLIT_MODE = None                       # "solo": 100/0/0/0/0, the commander leads; "sacrifice": the
                                         # usual split, the commander charges once the strikers are spent
                                         # (#62: a loss should donate no men)
@@ -176,7 +177,7 @@ def player_war(m, idx, tgt, men, rice, led=False, rng=None, fought=None):
         from . import tactical, strike
         keep_human = tactical.HUMAN
         if CHARGE:
-            tactical.HUMAN = strike.Charge(solo=SPLIT_MODE == "solo", sacrifice=SPLIT_MODE == "sacrifice")
+            tactical.HUMAN = strike.Charge(solo=SPLIT_MODE == "solo", sacrifice=SPLIT_MODE == "sacrifice", hide=HIDE)
         try:
             tactical.run_tactical_battle(m, rng)
         finally:

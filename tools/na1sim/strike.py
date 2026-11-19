@@ -326,7 +326,7 @@ class Charge:
     behind can come up beside the lead and both strike). His cell is read each day, so a commander
     who flees is pursued. Terrain choice is not modelled yet."""
 
-    def __init__(self, solo=False, sacrifice=False):
+    def __init__(self, solo=False, sacrifice=False, hide=False):
         # solo (Chris, 2026-11-17): the whole army in the commander (100/0/0/0/0), who leads the strike.
         # A lost battle ends with his unit's death (check_commander_alive_both_sides $AB87; a unit goes
         # at 0 men, $9D03), so no men are left to garrison the defender (apply_conquest_outcome $E03C).
@@ -335,6 +335,10 @@ class Charge:
         # and once every striker is spent send the 1% commander in, so the battle ends with almost
         # no men left to garrison the defender.
         self.sacrifice = sacrifice
+        # hide (Chris, 2026-11-19, #78: "you should be able to hide the leader so it never gets attacked"):
+        # the held-back commander does not stand still; when an enemy unit is within HIDE_R steps it
+        # moves to the free neighbouring cell farthest from the nearest enemy unit (no closer than now).
+        self.hide = hide
         self.log = []
 
     def deploy(self, m):
@@ -368,6 +372,25 @@ class Charge:
                         break
         self.log.append(dict(target=target))
 
+    HIDE_R = 3
+
+    def _hide(self, m, side, es):
+        here = _cell(m, side, 0)
+        foes = [_cell(m, es, s) for s in range(5) if m.is_unit_present(es, s)]
+        if not foes:
+            return None
+        dists = [_distances(m, f) for f in foes]
+        near = lambda c: min(d.get(c, 99) for d in dists)
+        now = near(here)
+        if now > self.HIDE_R:
+            return None
+        best = max(((near(n), n) for n in NB[here] if not T.is_any_unit_at_tile(m, *n)
+                    and not T.is_map_cell_blocked(m, *n) and T.is_coord_in_combat_rect(m, *n)),
+                   default=None)
+        if best and best[0] > now:
+            return ("move",) + best[1]
+        return None
+
     def act(self, m, day, slot):
         side = m.cur_combat_side
         es = side ^ 1
@@ -375,6 +398,10 @@ class Charge:
             return None
         if slot == 0 and not self.solo and not (
                 self.sacrifice and not any(m.is_unit_present(side, s) for s in range(1, 5))):
+            if self.hide:
+                mv = self._hide(m, side, es)
+                if mv:
+                    return mv
             return ("pass",)                          # the commander stays out of the fighting
         target = _cell(m, es, 0)
         here = _cell(m, side, slot)
