@@ -149,6 +149,9 @@ def one(job):
     X.RECOVER_LOG.clear()
     X.DEF_ASSIGN = bool(len(job) > 63 and job[63])                           # #100
     X.DEF_LOG.clear()
+    X.TAX_MIN_STEP = int(job[64]) if len(job) > 64 and job[64] else 0         # #101
+    X.THREAT_COMING = bool(len(job) > 65 and job[65])                        # #102
+    X.TAX_JUMP = int(job[66]) if len(job) > 66 and job[66] else 0             # #103
     X._RISK_OK.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
@@ -269,6 +272,9 @@ def main():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--tax-jump", type=int, help="N: loyalty N+ takes the tax straight to the cap (#103)")
+    ap.add_argument("--threat-coming", type=int, help="1: the opening's threat-first hire also for a COMING fief no one has picked (#102)")
+    ap.add_argument("--tax-min-step", type=int, help="N: the ladder's tax rung fires only for a raise of N+ points or to the cap (#101)")
     ap.add_argument("--def-assign", type=int, help="1: a capital not SAFE, its commander under half the army, Assigns 100/0 (#100)")
     ap.add_argument("--recover", type=int, help="1: disaster cliffs: a fief at output 0 Grows first, donors fund its Grow and any fief's coming upkeep (#98)")
     ap.add_argument("--burn", type=int, help="1: a defence holding under half the attacker's men bribes its gold away (#96)")
@@ -287,7 +293,7 @@ def main():
     ap.add_argument("--rice-logistics", type=int, help="1: Summer rice spare by Chris's rule, and rice rides with gold to the attack line (#83)")
     ap.add_argument("--rice-days", type=int, default=10, help="N: an attack must carry N days of battle ration (#82; default 10 since #84, 0: off)")
     ap.add_argument("--plan", default="default", help="strike|hold|run|gate|none: the start fief's fixed defence plan (Echigo 1, Mino 8; plans.py, #44). Default (#84): strike at Echigo, none elsewhere")
-    ap.add_argument("--preset", help="best: the best measured player's flags (#84: #80's set; #86: + --morale-guard 50 --shield 6; #87: + --threat-first 2; #88: + --clamp-spend 1; #90: + --shield-line 1; #92: + --capital-min 150; #94: + --risk 2; #95: + --striker-morale 1; #99: + --flee 1; --rice-days 10 and the Echigo plan are defaults), set where not given")
+    ap.add_argument("--preset", help="best: the best measured player's flags (#84: #80's set; #86: + --morale-guard 50 --shield 6; #87: + --threat-first 2; #88: + --clamp-spend 1; #90: + --shield-line 1; #92: + --capital-min 150; #94: + --risk 2; #95: + --striker-morale 1; #99: + --flee 1; #101: + --tax-min-step 5; --rice-days 10 and the Echigo plan are defaults), set where not given")
     ap.add_argument("--waves", type=int, help="1: a fief with spare men >= 0.5x a target's garrison attacks first and an unacted neighbour of the target finishes it, priced by MIRR from waves_q.json (#80)")
     ap.add_argument("--dump", type=int, help="1: in the fought attack, the held-back commander bribes away the side's gold over its men (#79)")
     ap.add_argument("--coord-wall", type=int, help="1: follow-ups only for a target past the header wall, and the planner prices such targets at the capped line (#76)")
@@ -312,14 +318,15 @@ def main():
                          capital_min=150,                        # #92: the capital keeps and hires to 150 men
                          risk=2,                                 # #94: attacks priced by outcome, measured hazards
                          striker_morale=1,                       # #95: the striker under the morale floor gives first
-                         flee=1).items():                        # #99: the capital's lord Flees when outmatched
+                         flee=1,                                 # #99: the capital's lord Flees when outmatched
+                         tax_min_step=5).items():                # #101: no two-point tax creep
             if not getattr(a, k):
                 setattr(a, k, v)
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

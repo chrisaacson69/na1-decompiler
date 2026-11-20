@@ -1619,6 +1619,12 @@ def _feedable(m, idx):
     return max(0, policy._rice_slack(m, idx, False, sustain=True))
 
 
+TAX_JUMP = 0                            # #103: loyalty at or over this takes the tax straight to the cap (0: off)
+THREAT_COMING = False                   # #102: threat-first also for a COMING fief no one has picked yet
+TAX_MIN_STEP = 0                        # #101: the tax rung fires only for a raise of at least this many points (or to the
+                                        # cap): at loyalty just under the cliff a 2-point raise drains 0 (the percentage
+                                        # rounds down), so the rung crept 44 -> 55 two points a turn, six turns, while the
+                                        # fief was COMING and a man short of its line (Asai 10/3019)
 LADDER_THREAT_FIRST = False             # #87: a threatened fief short of its line hires before the tax rung (Hojo's
                                         # turn 1: COMING, 70 men against a line of 86, 53 gold; the ladder raised the
                                         # tax, and two attacks came that season)
@@ -1630,7 +1636,10 @@ def ladder(m, idx):
     f = m.fief(idx)
     gold, rice, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
     if (LADDER_THREAT_FIRST and gold > 1 and (LADDER_THREAT_FIRST == 1 or len(owned(m, m.fief_owner(idx))) == 1)
-            and fief_state(m, idx) != SAFE and reaction.threats(m, idx)):   # 2: only the one-fief opening
+            and fief_state(m, idx) != SAFE and (reaction.threats(m, idx)
+                                                or (THREAT_COMING and fief_state(m, idx) == COMING))):
+        # 2: only the one-fief opening. THREAT_COMING (#102): a COMING fief short of its men line hires first even
+        # before anyone has picked it (4/3008, 5/3015, 15/3016: a man short of the line, the turns on tax and gifts)
         line = reaction.men_line(m, idx)
         if line is not None and men < line and m.r16(f + M.F_MORALE) >= policy.CLIFF and policy._hire_up_to(m, idx, line):
             HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "threat"))
@@ -1641,7 +1650,9 @@ def ladder(m, idx):
     tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)
     step = next((s for s in range(cap - tax, 0, -1)
                  if loyalty - policy.P.pct_op(loyalty, s) >= cliff - 1), 0)
-    if step:
+    if TAX_JUMP and loyalty >= TAX_JUMP and tax < cap:
+        step = cap - tax                        # #103 (Chris): straight to the cap, one raise, one point of charisma
+    if step and (not TAX_MIN_STEP or step >= TAX_MIN_STEP or tax + step >= cap):
         policy.set_tax(m, idx, tax + step)
         LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "tax"))
         return True
