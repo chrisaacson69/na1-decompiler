@@ -91,6 +91,22 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #96 — The lord may Flee: the ROM's verb for the human, lethal-only, and the losing defence burns its gold; neutral (Chris, 2026-11-20)
+
+Chris, on 1/3018 (Uesugi at 11 fiefs, the capital lost in year 31): *we need a flee command; capitals should not get invaded, but if they do we do not have to stick around if we can flee; check adjacency, as the engine may not prevent a flee with nowhere to run; and even then, burning gold and fighting to almost the last man is the best way to damage the attacker.* Then: *the lord must not abandon the capital because one unit shows up; flee when we know the attack will wipe the leader unit*; and *burn gold only if we know we are losing: I do not want the enemy coming at us in a battle we can win, burning all the gold on a bribe that cannot work, and then winning*.
+
+**The ROM's Flee** (verb 3, `combat_flee_to_fief_command` $AAA7, decompiled): the commander only; the destinations are the fleeing side's owner's fiefs among the battle fief's neighbours (`load_fief_neighbor_list` $DAAB, `build_daimyo_province_list` $90BB), none and there is no flight; it sets the winner to the fleeing side's own fief, so `apply_conquest_outcome` ($E03C) hands the fief to the attacker, and on a daimyo-led side it relocates the capital (`end_war_relocate_capital` $8F55), which clears the side's bit, so the faction is not handed over ($E117 tests the loser's bit). `tactical.human_command_loop` now takes `("flee", dest)` (`tactical.flee_destinations`). **`strike.Fleeing`** wraps the defence player: the commander Flees only when the blows waiting for him would kill him (on a copy of the battle, `forecast.held`, which restores memory and the RNG, every enemy unit adjacent to him makes its exchange and his unit is gone), from our capital, to the owned neighbour holding the most men (`--flee 1`); with `--burn 1`, once our men are under half the attacker's (the AI's own weak test) and he is not about to die, he bribes away the gold over our men each day, in any fief we defend.
+
+| on #95's player (180), 240 games | won | paired | invaded |
+|---|---|---|---|
+| #95 (`--preset best`) | 180 | | 29 |
+| Flee (#94's player) | 176 | against 178: saved 2, lost 4 | 27 |
+| **Flee + the losing burn** | 179 | saved 10, lost 11, z −0.2 | 26 |
+
+`fleecount.py` (60 games): our capital defended 19 battles to the end; the lethal test fired 10 times, and only once was there an owned neighbour to run to: most capital defences come while the empire is one fief. Correct and harmless, rarely in reach: off.
+
+**Against the 92 player** (#74, on the same 240 games), the best run (180): saved 94, lost 6. Invaded later holding 9+ fiefs 10 → 0; old age stalled at 6-14 fiefs 51 → 14; invaded in year 1 24 → 11; every start better (Uesugi 10 → 19, Hojo 2 → 10, start 5 4 → 16, start 14 7 → 18). Never started 8 → 10. The six lost: 4/3013 (invaded in year 31 at 5 fiefs, our 20 men against 208), 13/3019 (one fief, 121 against 123), 10/3011 (a revolt at 2 fiefs), and three to age (6/3012 at 4, 12/3006 at 13, 15/3004 at 8).
+
 ### #95 — Chris's triage, and Tokugawa's one-fief years: a striker stuck in the morale dead zone. 180 of 240 (Chris, 2026-11-20)
 
 `na1sim.triage RUN.json [--start F]` sorts a run the way Chris reads it: unified set aside; then revolts and riots, invasions before the first turn, in year 1, later, and old age by peak fiefs (5 or fewer: never started; 15+: one short). On #94's run (178) Chris read: Uesugi's 3002 and 3018 say too much risk where 3012 shows it paying; Hojo loses only to turn-1 invasions (tactics, not strategy); Imagawa (start 6, the shortest clock: his lord dies at years 30-32) won 9 under #92 and 6 now; 6/3019 is a win (unified 1582, a revolt after); Tokugawa wins all but 3012, never started.
