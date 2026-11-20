@@ -73,8 +73,8 @@ def waves(job):
     ORIGINAL garrison, the same season. Against one wave of r1 + r2 from src on the same board and seed.
     -> (skill, src, tgt, r1, r2, wave1 won, garrison after a lost wave 1 / before, two-wave won,
         kept share of the total sent, one-wave won, its kept share)"""
-    skill, src, tgt, r1, r2, seed, split1, hide = job
-    X.HIDE = hide
+    skill, src, tgt, r1, r2, seed, split1, hide, dump = job
+    X.HIDE, X.DUMP = hide, dump
     out = []
     for mode in ("two", "one"):
         m = setup.build_board(skill=skill, seed=seed, player_fief=src)
@@ -116,12 +116,12 @@ def waves(job):
 def main_waves(a):
     skills = [int(s) for s in a.skills.split(",")]
     pairs = [tuple(float(x) for x in w.split("+")) for w in a.waves.split(",")]
-    jobs = [(s, src, tgt, r1, r2, seed, a.split, bool(a.hide)) for s in skills for src, tgt in PAIRS for r1, r2 in pairs
+    jobs = [(s, src, tgt, r1, r2, seed, a.split, bool(a.hide), bool(a.dump)) for s in skills for src, tgt in PAIRS for r1, r2 in pairs
             for seed in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(waves, jobs, chunksize=4))
     N = a.seeds * len(PAIRS)
-    print(f"first wave split: {a.split or 'doctrine (heavy 1/99)'}; commander hides: {bool(a.hide)}")
+    print(f"first wave split: {a.split or 'doctrine (heavy 1/99)'}; commander hides: {bool(a.hide)}; dumps gold: {bool(a.dump)}")
     print(f"two waves (r1 then r2, each x the original garrison, wave 2 from a second fief) against one wave of "
           f"r1 + r2; {N} battles each")
     print("  skill  r1+r2  | wave1 won  garrison left by a lost wave 1 | two waves won  kept/sent | one wave won  kept/sent")
@@ -149,6 +149,7 @@ def main():
     ap.add_argument("--split", help="solo: 100/0/0/0/0, the commander leading; sacrifice: the usual split, the commander charges once the strikers are spent (#62)")
     ap.add_argument("--quantiles", action="store_true", help="the kept share's q10 / q25 / median too")
     ap.add_argument("--out", help="save {skill: {ratio: [kept share of each won battle]}} as JSON")
+    ap.add_argument("--dump", type=int, help="#79: the held-back commander bribes away the side's gold over its men")
     ap.add_argument("--hide", type=int, help="#78: the held-back commander steps away from enemy units")
     ap.add_argument("--waves", help="#77: two-wave sequences r1+r2 (x the garrison), e.g. 1+1.5,1.5+1.5")
     a = ap.parse_args()

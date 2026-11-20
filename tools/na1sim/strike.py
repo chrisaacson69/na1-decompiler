@@ -326,7 +326,7 @@ class Charge:
     behind can come up beside the lead and both strike). His cell is read each day, so a commander
     who flees is pursued. Terrain choice is not modelled yet."""
 
-    def __init__(self, solo=False, sacrifice=False, hide=False):
+    def __init__(self, solo=False, sacrifice=False, hide=False, dump=False):
         # solo (Chris, 2026-11-17): the whole army in the commander (100/0/0/0/0), who leads the strike.
         # A lost battle ends with his unit's death (check_commander_alive_both_sides $AB87; a unit goes
         # at 0 men, $9D03), so no men are left to garrison the defender (apply_conquest_outcome $E03C).
@@ -339,6 +339,11 @@ class Charge:
         # the held-back commander does not stand still; when an enemy unit is within HIDE_R steps it
         # moves to the free neighbouring cell farthest from the nearest enemy unit (no closer than now).
         self.hide = hide
+        # dump (Chris, #79: "bribe as much as you can even at 0 results so you dump gold"): the held-back
+        # commander's idle day becomes a Bribe of the side's gold over its men (War carries a gold per man,
+        # so the surplus is what the dead left behind) on the strongest enemy unit. Paid win or lose
+        # ($9E73): a lost wave then leaves the defender no gold to bribe the next wave with ($A721).
+        self.dump = dump
         self.log = []
 
     def deploy(self, m):
@@ -398,6 +403,12 @@ class Charge:
             return None
         if slot == 0 and not self.solo and not (
                 self.sacrifice and not any(m.is_unit_present(side, s) for s in range(1, 5))):
+            if self.dump:
+                sr = m.side_resource_ptr(side)
+                g = m.r16(sr + M.SR_GOLD) - m.r16(sr + M.SR_MEN)
+                foes = [s for s in range(5) if m.is_unit_present(es, s)]
+                if g >= 1 and foes:
+                    return ("bribe", max(foes, key=lambda s: m.r16(m.unit_strength_ptr(es, s))), g)
             if self.hide:
                 mv = self._hide(m, side, es)
                 if mv:
