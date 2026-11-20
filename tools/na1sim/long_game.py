@@ -140,7 +140,8 @@ def one(job):
     X.SIEGE = bool(len(job) > 53 and job[53])                                # #89
     X.SIEGE_LOG.clear()
     X.SHIELD_LINE = bool(len(job) > 54 and job[54])                          # #90
-    X.CAPITAL_MIN = int(job[55]) if len(job) > 55 and job[55] else 0          # #92            # #80: two waves from two fiefs' spare men
+    X.CAPITAL_MIN = int(job[55]) if len(job) > 55 and job[55] else 0          # #92
+    X.PRIZE_TAX = bool(len(job) > 56 and job[56])                            # #93            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
     X._PLEDGE.clear()
@@ -256,6 +257,7 @@ def main():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--prize-tax", type=int, help="1: price a conquest's income at the tax the ladder sets (55), not the conquest's 30 (#93)")
     ap.add_argument("--capital-min", type=int, help="N: a capital keeps and hires to at least N men (#92)")
     ap.add_argument("--shield-line", type=int, help="1: an attack's source keeps rice to its enemies' share line, not to all its men (#90)")
     ap.add_argument("--siege", type=int, help="1: a rich fief waves its men over its keep at a target past the header wall every war season (#89)")
@@ -295,7 +297,7 @@ def main():
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

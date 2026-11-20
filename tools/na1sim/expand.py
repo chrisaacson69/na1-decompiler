@@ -1006,6 +1006,18 @@ def rice_for(men):
     return RICE_DAYS * -(-men // 15) if RICE_DAYS else 1
 
 
+PRIZE_TAX = False                       # #93: price a prize's harvests at the tax the ladder sets (55; Honganji 30), not
+                                        # the conquest's 30 (the ladder raises it within a turn or two): every
+                                        # conquest's income was priced about 45% low (Uesugi 3012, year 20: Sagami's
+                                        # harvest as ours 1,814, priced 1,020)
+
+
+def prize_tax(m, T, owner):
+    if PRIZE_TAX:
+        return 30 if owner == (3 if m.r16(M.SCENARIO_FIEF_COUNT) == 17 else 20) else 55
+    return min(m.r8(M.FIEF_TAX_RATE + T), 30)
+
+
 def score(m, idx, move):
     """(ok, value) of a move. ok: it wins and every owned fief is SAFE after it. value, in order:
     the owned fiefs left with no enemy neighbour, the target's harvest, the rice carried (it lands
@@ -1726,7 +1738,7 @@ def attack_price(m, owner, S, T, bill0):
         m.w8(M.FIEF_TO_DAIMYO_MAP + T, owner)
         m.w8(M.PROVINCE_AI_STATE + T, M.PLAYER_DIRECT)
         m.w8(M.FIEF_IS_CAPITAL + T, 0)
-        m.w8(M.FIEF_TAX_RATE + T, min(m.r8(M.FIEF_TAX_RATE + T), 30))
+        m.w8(M.FIEF_TAX_RATE + T, prize_tax(m, T, owner))
         m.w16(ft + M.F_MEN, kept)
         prize = year_gold(m, T)
         freed = bill0 - (army_bill(m, owner)[0] - share_line(m, T))
@@ -2039,7 +2051,7 @@ def attack_mirr(m, owner, S, T, bill0, r):
         m.w8(M.FIEF_TO_DAIMYO_MAP + T, owner)
         m.w8(M.PROVINCE_AI_STATE + T, M.PLAYER_DIRECT)
         m.w8(M.FIEF_IS_CAPITAL + T, 0)
-        m.w8(M.FIEF_TAX_RATE + T, min(m.r8(M.FIEF_TAX_RATE + T), 30))
+        m.w8(M.FIEF_TAX_RATE + T, prize_tax(m, T, owner))
         m.w16(ft + M.F_MEN, kept)
         inc_t = harvest_value(m, T)
         freed = bill0 - (army_bill(m, owner)[0] - share_line(m, T))
@@ -2152,7 +2164,7 @@ def wave_plan(m, idx, r):
                 m.w8(M.FIEF_TO_DAIMYO_MAP + T, owner)
                 m.w8(M.PROVINCE_AI_STATE + T, M.PLAYER_DIRECT)
                 m.w8(M.FIEF_IS_CAPITAL + T, 0)
-                m.w8(M.FIEF_TAX_RATE + T, min(m.r8(M.FIEF_TAX_RATE + T), 30))
+                m.w8(M.FIEF_TAX_RATE + T, prize_tax(m, T, owner))
                 m.w16(ft + M.F_MEN, kept)
                 tol = RANK[tolerance(m, owner)]
                 states = empire(m, owner)
