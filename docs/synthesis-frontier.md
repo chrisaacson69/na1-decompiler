@@ -91,6 +91,23 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #88 — The big-economy losses: the harvest clamp throws away a fifth of the gold and half the rice; spending it wins sooner. 158 of 240 (Chris, 2026-11-20)
+
+Chris: *the late-game economy is very telling; at 16 fiefs you generate more than you can spend; at best you max out the men everywhere. And the 3 → 0 case: send the full army each turn knowing 15 other fiefs replace the losses; as long as you do not feed the target (100/0, the gold dump), losing 1:100 does not matter: you wear them down.*
+
+On #87's player, **21 of 87 lost games out-earned every rival combined** in some year. Two groups: starts 14 and 15 (10 of the 21), whose lords die at years 32-35, a clock the planner cannot see; and endings at 15-16 fiefs against one small rival (15/3012: 16 fiefs, economy 8,162 against 697). In 15/3012 (`lastfief2.py`) the fiefs facing the last rivals held 1,175-1,840 gold, most at the header, with 150-380 men, and the strikes failed `strike_ok` for want of the men the idle gold would buy.
+
+**The clamp census** (`clampcensus.py`, real harvests only, not the planner's forecasts): the Fall harvest closes with `cap_fief_stats` ($D836), which clamps gold and rice at the header. In six lost big-economy games the player's harvests threw away **10-22% of the gold income and 42-63% of the rice income** (15/3012: 73,648 gold and 147,499 rice; 4/3007: 120,916 and 412,777).
+
+`expand.CLAMP_SPEND` (`long_game --clamp-spend 1`): on its Summer turn, the last before the harvest, a fief whose gold or rice would clamp (its stores + this Fall's harvest from the marks as they stand − the upkeep > the header) spends the larger excess: gold into men (room under the header, morale at the floor), else to the peasants (capped: the men's morale); rice to the men's morale, keeping rice >= men.
+
+| the 12 live starts, 240 games | won | paired | win year (quartiles) | invaded | lord died | lost with the bigger economy |
+|---|---|---|---|---|---|---|
+| #87 (`--preset best`) | 153 | | 27 / 31 / 36 | 38 | 40 | 21 |
+| **+ clamp spend** | **158** | saved 33, lost 28, z +0.6 | **26 / 29 / 35** | 38 | 36 | 21 |
+
+Spent over 240 games: 9.16 million rice to morale (9,078 Gives), 1.84 million gold to men (2,078 hires). Wins come two years sooner; the 21 losses with the bigger economy stay, so spending alone does not finish them. **Promoted:** `--preset best` adds `--clamp-spend 1`. **Next (Chris's 3 → 0):** the siege, repeated waves that do not feed a target past the wall, refilled from the rest of the empire.
+
 ### #87 — Morale against bribes, and the turn-2 invasions: the one-fief opening hires before it taxes. 153 of 240 (Chris, 2026-11-20)
 
 Chris: *bump morale past 100 to stop bribes in combat (morale = men), expensive but maybe a use for excess rice; turn-1 invasions are a coin flip, but some come on turn 2: a delayed attack, or bad policy of not buying men.*

@@ -2587,6 +2587,59 @@ def morale_guard(m, idx):
     return True
 
 
+# Use it or lose it (Chris, 2026-11-20, #88: the big-economy losses; "we are not spending well"). The Fall
+# harvest closes with cap_fief_stats ($D836), which clamps gold and rice at the header: in the lost games that
+# out-earned the board, 10-22% of the gold income and 42-63% of the rice income was thrown away at the clamp.
+# CLAMP_SPEND: on its Summer turn (the last before the harvest), a fief whose gold or rice would clamp spends
+# the larger excess: gold into men (room under the header, the morale floor), else to the peasants (capped:
+# the men's morale); rice to the men's morale (keeping rice >= men).
+CLAMP_SPEND = False
+CLAMP_LOG = []
+
+
+def harvest_forecast(m, idx):
+    """(gold, rice) this Fall's harvest would add, from the marks as they stand."""
+    with forecast.held(m):
+        gy, ry = game.harvest_fief(m, idx, forecast.Mean()) or (0, 0)
+    return gy, ry
+
+
+def clamp_spend(m, idx):
+    if not CLAMP_SPEND or m.season != 1:
+        return False
+    from . import policy
+    f = m.fief(idx)
+    hdr, gold, rice, men = (m.r16(f + o) for o in (M.F_HEADER, M.F_GOLD, M.F_RICE, M.F_MEN))
+    gy, ry = harvest_forecast(m, idx)
+    wg = gold + gy - men // 2 - hdr
+    wr = rice + ry - men // 2 - hdr
+    yr = m.r16(M.CURRENT_GAME_YEAR)
+    if wg >= SEND_MIN and wg >= wr:
+        spend = min(wg, gold - 20)
+        if spend < SEND_MIN:
+            return False
+        if men < hdr and (m.r16(f + M.F_MORALE) >= MORALE_FLOOR or not men):
+            policy.hire_men(m, idx, spend)
+            kind = "hire"
+        elif capped(m, idx):
+            if not men:
+                return False
+            policy.give_men(m, idx, spend, gold=True)
+            kind = "morale-gold"
+        else:
+            policy.give_peasants(m, idx, spend, gold=True)
+            kind = "gift"
+        CLAMP_LOG.append((yr, idx, kind, spend))
+        return True
+    if wr >= SEND_MIN and men:
+        give = min(wr, rice - men)
+        if give >= SEND_MIN:
+            policy.give_men(m, idx, give)
+            CLAMP_LOG.append((yr, idx, "morale-rice", give))
+            return True
+    return False
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -2609,6 +2662,8 @@ def expand_policy(m, idx, rng):
                 send(m, idx, pm[1], pm[2], pm[3])
             return
     if MORALE_GUARD and morale_guard(m, idx):
+        return
+    if CLAMP_SPEND and clamp_spend(m, idx):
         return
     if (COORD or WAVES) and coord_act(m, idx, rng):
         return
