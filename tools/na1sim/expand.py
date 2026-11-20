@@ -1551,11 +1551,23 @@ def _feedable(m, idx):
     return max(0, policy._rice_slack(m, idx, False, sustain=True))
 
 
+LADDER_THREAT_FIRST = False             # #87: a threatened fief short of its line hires before the tax rung (Hojo's
+                                        # turn 1: COMING, 70 men against a line of 86, 53 gold; the ladder raised the
+                                        # tax, and two attacks came that season)
+
+
 def ladder(m, idx):
     """-> True if a rung took the turn."""
     from . import policy
     f = m.fief(idx)
     gold, rice, men = m.r16(f + M.F_GOLD), m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
+    if (LADDER_THREAT_FIRST and gold > 1 and (LADDER_THREAT_FIRST == 1 or len(owned(m, m.fief_owner(idx))) == 1)
+            and fief_state(m, idx) != SAFE and reaction.threats(m, idx)):   # 2: only the one-fief opening
+        line = reaction.men_line(m, idx)
+        if line is not None and men < line and m.r16(f + M.F_MORALE) >= policy.CLIFF and policy._hire_up_to(m, idx, line):
+            HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "threat"))
+            LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "threat"))
+            return True
     loyalty, wealth, morale = m.r16(f + M.F_LOYALTY), m.r16(f + M.F_WEALTH), m.r16(f + M.F_MORALE)
     cliff = policy.CLIFF
     tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)

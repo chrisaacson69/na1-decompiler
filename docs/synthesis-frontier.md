@@ -91,6 +91,22 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #87 — Morale against bribes, and the turn-2 invasions: the one-fief opening hires before it taxes. 153 of 240 (Chris, 2026-11-20)
+
+Chris: *bump morale past 100 to stop bribes in combat (morale = men), expensive but maybe a use for excess rice; turn-1 invasions are a coin flip, but some come on turn 2: a delayed attack, or bad policy of not buying men.*
+
+**The bribes** (`bribecensus.py`, the #86 player, 21 games): the AI tried 1,118 battle bribes on our units ($A721: its commander, when its gold > its men, its men <= half ours and our fief's morale <= 100 × skill), 1,107 of them in our attacks (the fief read is the striker's source). 84 worked, flipping 2,914 men (about 140 a game); none came at our morale above 200, and no fief of ours reached 200. A failed (underpaid) bribe still drops our fief's morale by 2-4 ($9E73), about 1,000 times: a drain the morale guard now covers. Lifting a striker past 200 is about 700 rice of Gives, a turn each, undone by recruits: not built.
+
+**The early invasions** (#86's player, 33 deaths in years 1-2): 6 before our first turn, 11 after one, 16 after two to seven. Hojo (start 2), three seeds traced (`early2.py`): turn 1, COMING (Imagawa), 70 men against a men line of 86, 53 gold; the ladder's first rung raised the tax, the turn passed with no men hired, and two attacks came that season (Imagawa held, 70 → 5-24 men; Takeda or Uesugi took the rest). The reader's `line_first` (hire to the men line when threatened) never ran: the ladder takes the turn first. `expand.LADDER_THREAT_FIRST` (`long_game --threat-first N`): a threatened, not-SAFE fief short of its men line hires to it before the tax rung; 2 only while the empire holds one fief.
+
+| the 12 live starts, 240 games | won | paired | early invasions | expanded | invaded | lord died |
+|---|---|---|---|---|---|---|
+| #86 (`--preset best`, guard + shield 6) | 149 | | 33 | 199 | 46 | 37 |
+| threat first, every fief | 149 | saved 22, lost 22 | 20 | 212 | 41 | 43 |
+| **threat first, one fief only** | **153** | saved 8, lost 4, z +1.2 | 20 | 212 | 38 | 40 |
+
+Hojo 2 → 5 of 20 (7 in a 20-seed test with the every-fief rule). Every fief: the mid-game threatened fiefs hire before taxing, and the slower economy gave back the gain (6 more games to age). **Promoted:** `--preset best` adds `--threat-first 2`.
+
 ### #85-#86 — The revolts and the later invasions: a capital under morale 45, and a Summer gift that left the border on 1 rice. 149 of 240 (Chris, 2026-11-20)
 
 Chris: *revolts and riots look like the easiest fixes that lost games; many early invasions are map coin flips we let go, but there may be later invasions we could have avoided.*
