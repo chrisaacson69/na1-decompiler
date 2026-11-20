@@ -445,6 +445,65 @@ class Charge:
         return ("pass",)
 
 
+BURN = False                            # #96: the losing defence bribes its gold away (Fleeing)
+
+
+class Fleeing:
+    """Chris (2026-11-20, #96): a capital need not die in its castle, but its lord must not abandon it because
+    one unit shows up. Wraps the defence player: the commander Flees ($AAA7) only when the blows waiting for him
+    would kill him: on a copy of the battle, every enemy unit adjacent to him makes its exchange
+    (resolve_attack_apply_mutual_casualties) and his unit is gone; and only from our capital, with an owned
+    neighbour to run to (the one holding the most men). A commander lost at the capital hands over the faction
+    ($E117), so a flight then is never worse. (The gold burn waits until a bribe is known to work.)"""
+
+    def __init__(self, inner):
+        self.inner = inner
+        self.log = getattr(inner, "log", [])
+        self.fled = 0
+        self.burned = 0
+
+    def deploy(self, m):
+        self.inner.deploy(m)
+
+    def _lethal(self, m, side):
+        from . import forecast
+        es = side ^ 1
+        here = _cell(m, side, 0)
+        adj = [s for s in range(5) if m.is_unit_present(es, s) and _cell(m, es, s) in NB[here]]
+        if not adj:
+            return False
+        with forecast.held(m):
+            for s in adj:
+                m.cur_combat_side, m.cur_combat_unit_slot = es, s
+                T.resolve_attack_apply_mutual_casualties(m, 0)
+                if not m.is_unit_present(side, 0):
+                    return True
+        return False
+
+    def act(self, m, day, slot):
+        side = m.cur_combat_side
+        if slot == 0 and m.get_battle_side_province(side) == m.defending:
+            lethal = self._lethal(m, side)
+            if lethal and m.is_capital(m.defending):
+                dests = T.flee_destinations(m)
+                if dests:
+                    self.fled += 1
+                    return ("flee", max(dests, key=lambda d: m.r16(m.fief(d) + M.F_MEN)))
+            # the gold burn (Chris): only once the battle is lost (our men under half the attacker's, the AI's
+            # own weak test), so a defence we can win never spends it; the conqueror inherits no treasury
+            es = side ^ 1
+            ours = m.r16(m.side_resource_ptr(side) + M.SR_MEN)
+            theirs = m.r16(m.side_resource_ptr(es) + M.SR_MEN)
+            if BURN and 2 * ours < theirs and not lethal:
+                sr = m.side_resource_ptr(side)
+                g = m.r16(sr + M.SR_GOLD) - m.r16(sr + M.SR_MEN)
+                foes = [s for s in range(5) if m.is_unit_present(es, s)]
+                if g >= 1 and foes:
+                    self.burned += g
+                    return ("bribe", max(foes, key=lambda s: m.r16(m.unit_strength_ptr(es, s))), g)
+        return self.inner.act(m, day, slot)
+
+
 class KeepAway:
     """The rice drain (Chris, 2026-11-20, #91): a nominal force plays keep-away for the 30 days, so the
     defender eats ceil(men/15) of its own rice a day (consume_daily_battle_rice $830B) and the next wave finds

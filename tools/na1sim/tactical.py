@@ -878,6 +878,21 @@ def deploy_both_sides_units_loop(m) -> None:
         m.cur_combat_side = m.cur_combat_side ^ 1
 
 
+def flee_destinations(m) -> list:
+    """The fiefs a human Flee may choose (combat_flee_to_fief_command $AAA7): load_fief_neighbor_list $DAAB of
+    the defending fief, then build_daimyo_province_list $90BB: the fleeing side's owner's fiefs among them."""
+    from . import ai_vm
+    side_fief = m.get_battle_side_province(m.cur_combat_side)
+    ai_vm.load_daimyo_relation_row(m, m.defending)
+    owner, out, a = m.fief_owner(side_fief), [], M.DEDUPED_OWNER_LIST
+    while m.r8(a) != 0xFF:
+        cand = m.r8(a)
+        if not m.province_state_is_FF(cand) and m.fief_owner(cand) == owner and cand != side_fief:
+            out.append(cand)
+        a += 1
+    return out
+
+
 def human_command_loop(m, day) -> int:
     """combat_command_dispatch_loop_per_unit $AC7F: each present unit, in slot order, takes one
     verb. HUMAN.act(m, day, slot) returns ("move", x, y) (player_move_unit_until_placed_loop $A90E:
@@ -909,6 +924,18 @@ def human_command_loop(m, day) -> int:
                 assert slot == 0 and m.is_unit_present(m.cur_combat_side ^ 1, act[1]), act
                 assert 1 <= act[2] <= m.r16(sr + M.SR_GOLD) - m.r16(sr + M.SR_MEN), act
                 resolve_attack_apply_casualties(m, act[1], act[2])
+            elif act[0] == "flee":
+                # Flee [3] (combat_flee_to_fief_command $AAA7, #96): the commander only, to a fief of the side's
+                # owner bordering the battle fief; the winner is the fleeing side's own fief; a daimyo-led side
+                # relocates its capital there (end_war_relocate_capital $8F55, which clears the bit, so the
+                # faction is not handed over, $E117); the battle is over
+                assert slot == 0 and act[1] in flee_destinations(m), act
+                source = m.get_battle_side_province(m.cur_combat_side)
+                m.w16(M.BATTLE_WINNER_PROV, source)
+                if m.test_6f65_bit7(m.cur_combat_side):
+                    _end_war_relocate_capital(m, source, act[1])
+                    m.w8(M.PROVINCE_AI_STATE + act[1], 5)
+                return 1
             r = check_commander_alive_both_sides(m)
             if r:
                 return r

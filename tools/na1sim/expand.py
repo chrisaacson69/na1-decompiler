@@ -262,6 +262,7 @@ def enemies_within(m, i, steps=2):
     return out
 
 
+CAPITAL_NEED = False                    # #95: a lone capital's own line carries the floor its first conquest triggers
 CAPITAL_MIN = 0                         # #92: a capital never Moves below, and hires up to, this many men (Hojo 3009 and
                                         # 3019: 9-fief empires whose interior capital sat at 0 men with 1,700-1,980
                                         # gold, taken by 5 and 38 men; the line was 0 with no enemy two steps out)
@@ -1450,7 +1451,13 @@ def _stage_line(m, S, T, owner):
     for _ in range(3):                      # the keep depends on the ratio sent
         kr = max(.05, fought_keep(send / max(1, m.r16(m.fief(T) + M.F_MEN)), skill_scale(m), m.skill))
         send = max(need, int(h / kr) + 1)
-    return send, send + own_need(m, S)
+    keep = own_need(m, S)
+    if CAPITAL_NEED and CAPITAL_MIN and m.is_capital(S) and len(owned(m, owner)) == 1:
+        # #95: the first conquest makes the empire two fiefs and the capital floor applies, so a lone capital's
+        # attack line carries it (Tokugawa 3012: Owari, 46 men, MIRR 0.40-0.49, refused in six years for 127
+        # men left against 150). Only the line: in own_need it made every lone capital hoard men (#95's first try)
+        keep = max(keep, min(CAPITAL_MIN, m.r16(m.fief(S) + M.F_HEADER)))
+    return send, send + keep
 
 
 def _stage_pool(m, owner, S):
@@ -1820,10 +1827,27 @@ def attack_line(m, owner, growth_roi=0.0):
                 gold=max(0, _hire_gold(m, p["short"]) + p["send"] - gold), rice=0, men=p["short"], roi=p["roi"])
 
 
+STRIKER_MORALE = False                  # #95: a striker short of its line and under the morale floor gives to its men
+                                        # first (Tokugawa 3012: morale 50-51 for years, the hire needs 55 and the ladder
+                                        # fixes only under 45; 236 men against a line of 259-268, never struck)
+
+
 def striker_hire(m, idx, d):
     """The attack line's striker hires toward its line, keeping the War gold. -> True if it hired."""
     from . import policy
     f = m.fief(idx)
+    if (STRIKER_MORALE and m.r16(f + M.F_MEN) and m.r16(f + M.F_MEN) < d["line"]
+            and m.s16(f + M.F_MORALE) < MORALE_FLOOR):
+        rice = m.r16(f + M.F_RICE) - m.r16(f + M.F_MEN)
+        gold = m.r16(f + M.F_GOLD) - d["send"] - 20
+        if rice >= SEND_MIN:
+            policy.give_men(m, idx, min(rice, 200))
+        elif gold >= SEND_MIN:
+            policy.give_men(m, idx, min(gold, 200), gold=True)
+        else:
+            return False
+        EMPIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, "morale", idx, d["T"], 0, 0, 0))
+        return True
     budget = m.r16(f + M.F_GOLD) - d["send"]
     if (m.r16(f + M.F_MEN) < d["line"] and budget > 20 and m.r16(f + M.F_MORALE) >= MORALE_FLOOR
             and policy._hire_up_to(m, idx, d["line"], budget)):
