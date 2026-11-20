@@ -91,6 +91,17 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #90 — The last fief, again: the source's rice shield asked for all its men. To the share line: 162 of 240 (Chris, 2026-11-20)
+
+Of #88's 21 losses with the bigger economy, seven end at 15-16 fiefs against one rival at 5-28 times its economy. 16/3005 (`lastfief3.py`): year 44, the last rival Noto (0) holds 102 men; Kaga (3) holds 1,081 men, 1,849 gold and **596 rice**, the line is 368 and the MIRR 0.225 against r 0.1, but `strike_ok` refuses and no attack line forms: `score` requires the source to keep **rice >= its men** after the strike (the Tokugawa rule, #48), and Kaga, just filled with men after taking fief 3, cannot also carry its 10 days (#82). That rule guards the AI's gate, which reads min(rice, men) against its share line, so the shield needed is rice up to the share line of the source's enemy neighbours, not all its men (the same reasoning as #86's mode 6; here about 111). `expand.SHIELD_LINE` (`long_game --shield-line 1`): the source keeps rice >= min(its men, its enemies' share line); and `strike_ok`'s top-up now covers the men the fief holds, not the line's (an #82 slip).
+
+| the 12 live starts, 240 games | won | paired | revolts | lost with the bigger economy | attacks won / made |
+|---|---|---|---|---|---|
+| #88 (`--preset best`) | 158 | | 8 | 21 | 3,073 / 3,248 |
+| **+ shield line** | **162** | saved 8, lost 4, z +1.2 | 5 | 15 | 3,100 / 3,267 |
+
+16/3005 unifies (1604). **Promoted:** `--preset best` adds `--shield-line 1`. Over #82-#90 the preset went 93 → 162 of 240 on the live starts; the year-1 coin flips (about 33 games), the old lords of starts 14-15, and the 1-in-1,000 capital revolt are most of what is left.
+
 ### #89 — The siege (Chris's 3 → 0): it wears the target down without feeding it, and is rarely needed (Chris, 2026-11-20)
 
 `expand.SIEGE` (`long_game --siege 1`; off): against a target past the header wall (`past_wall`), a rich source (gold at half its header or more; not the capital; every other owned fief SAFE) strikes every war season with all its men over a keep that counts only its OTHER enemies, at no less than `SIEGE_MIN` = 1.5 × the garrison (#79's lab: a lost 1/99 wave with the dump leaves about a quarter, and the defender no gold), carrying the 10-day rice and keeping rice >= men; it re-hires from its surplus (#88) between waves. On #88's player: **26 sieges in 16 of 240 games, 15 won outright, and every lost wave cut the garrison to 15-35%** (565 → 0 won; 275 → 73, 409 → 79, 544 → 197 lost): it wears down without feeding, as Chris said. 156 of 240 (saved 0, lost 2, z −1.4): the wall is rare now that the empire no longer feeds its last rivals starved armies until they cap (#82). Off.

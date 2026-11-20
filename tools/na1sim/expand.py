@@ -988,6 +988,8 @@ def coord_after_win(m, idx, t, may=True):
         COORD_LOG.append((*key, idx, t, None, "unmended"))
 
 
+SHIELD_LINE = False                     # #90: the source keeps rice to its enemies' share line, not to all its men
+                                        # (16/3005 y44: Kaga, 1,081 men and 596 rice, could not strike a 102-man last fief)
 RICE_DAYS = 0                           # #82: an attack carries at least this many days of ration (rice >= days x
                                         # ceil(men/15), consume_daily_battle_rice $830B); the War command carries at
                                         # most one rice a man (about 15 days). 0: off. 31 of 375 attacks went out
@@ -1025,7 +1027,11 @@ def score(m, idx, move):
         # the fief the army left keeps a full shield (rice >= men): carrying its rice away left
         # Tokugawa's capital at rice 1 beside 276 men, and a 6-man attack took the faction
         fh = m.fief(idx)
-        if m.r16(fh + M.F_RICE) < m.r16(fh + M.F_MEN):
+        shield = m.r16(fh + M.F_MEN)
+        if SHIELD_LINE:                         # #90: the gate reads min(rice, men): rice to the share line is the shield
+            shield = min(shield, max([m.fief_men_if_provisioned(e) * 52 // 48 + 1
+                                      for e in reaction.enemy_neighbours(m, idx)] or [0]))
+        if m.r16(fh + M.F_RICE) < shield:
             return False, None
         inner = sum(1 for i in states if interior(m, i))
         return True, ((clean,) if COORD else ()) + (inner, ev.income_capacity(m, t), rice, -men)
@@ -1268,7 +1274,7 @@ def strike_ok(m, idx, t, line):
         m.w16(f + M.F_MEN, max(m.r16(f + M.F_MEN), line))
         m.w16(f + M.F_GOLD, max(m.r16(f + M.F_GOLD), line))
         if RICE_DAYS:                           # and the rice to carry, beside the shield it keeps
-            m.w16(f + M.F_RICE, max(m.r16(f + M.F_RICE), line + rice_for(line)))
+            m.w16(f + M.F_RICE, max(m.r16(f + M.F_RICE), max(m.r16(f + M.F_MEN), line) + rice_for(line)))
         for mv in candidates(m, idx):
             if mv[0] == t and score(m, idx, mv)[0]:
                 return True
