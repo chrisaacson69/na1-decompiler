@@ -452,8 +452,12 @@ class KeepAway:
     each day every unit steps to the free neighbouring cell farthest from the nearest enemy unit (no closer
     than now), and never attacks."""
 
-    def __init__(self):
+    def __init__(self, charge_at=None):
+        # charge_at (Chris: "attack on the last few turns if you don't want to feed them men"): from this day
+        # the force fights as the Charge doctrine, so it wins or dies and leaves no survivors to the garrison
         self.log = []
+        self.charge_at = charge_at
+        self.charge = Charge(solo=True) if charge_at else None
 
     def deploy(self, m):
         side = m.cur_combat_side
@@ -478,6 +482,8 @@ class KeepAway:
         self.log.append(dict(target=target))
 
     def act(self, m, day, slot):
+        if self.charge_at and day >= self.charge_at:
+            return self.charge.act(m, day, slot)
         side = m.cur_combat_side
         es = side ^ 1
         here = _cell(m, side, slot)

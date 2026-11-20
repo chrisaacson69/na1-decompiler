@@ -114,15 +114,16 @@ def waves(job):
 
 
 DRAIN_SPLIT = None
+DRAIN_CHARGE = None
 
 
 def drain(job):
     """#91 (Chris: the rice drain): a garrison of gm men and gr rice is struck by waves of n men that play
     keep-away (strike.KeepAway), each carrying exactly 30 days of ration, until it falls or k waves.
     -> (skill, src, tgt, seed, [(outcome, days?, defender men after, defender rice after, won) per wave])"""
-    skill, src, tgt, seed, n, gm, gr, k, split = job
-    global DRAIN_SPLIT
-    DRAIN_SPLIT = split
+    skill, src, tgt, seed, n, gm, gr, k, split, charge_at = job
+    global DRAIN_SPLIT, DRAIN_CHARGE
+    DRAIN_SPLIT, DRAIN_CHARGE = split, charge_at
     from . import tactical, strike
     m = setup.build_board(skill=skill, seed=seed, player_fief=src)
     t = m.fief(tgt)
@@ -134,7 +135,7 @@ def drain(job):
     orig = tactical.dispatch_battle_resolution
     tactical.dispatch_battle_resolution = lambda mm, o, rng: (codes.append(o), orig(mm, o, rng))[1]
     keep_c, keep_h = X.CHARGE, tactical.HUMAN
-    X.CHARGE, tactical.HUMAN = False, strike.KeepAway()
+    X.CHARGE, tactical.HUMAN = False, strike.KeepAway(charge_at=DRAIN_CHARGE)
     try:
         for w in range(k):
             f = m.fief(src)
@@ -164,7 +165,7 @@ def drain(job):
 def main_drain(a):
     n, gm, gr, k = (int(x) for x in a.drain.split(","))
     skills = [int(s) for s in a.skills.split(",")]
-    jobs = [(s, src, tgt, seed, n, gm, gr, k, a.split) for s in skills for src, tgt in PAIRS
+    jobs = [(s, src, tgt, seed, n, gm, gr, k, a.split, a.charge_at) for s in skills for src, tgt in PAIRS
             for seed in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(drain, jobs, chunksize=2))
@@ -225,6 +226,7 @@ def main():
     ap.add_argument("--out", help="save {skill: {ratio: [kept share of each won battle]}} as JSON")
     ap.add_argument("--dump", type=int, help="#79: the held-back commander bribes away the side's gold over its men")
     ap.add_argument("--drain", help="#91: N,GM,GR,K: waves of N keep-away men on a garrison of GM men and GR rice, up to K waves")
+    ap.add_argument("--charge-at", type=int, help="#91: the drain force charges from this day (no survivors to feed the garrison)")
     ap.add_argument("--hide", type=int, help="#78: the held-back commander steps away from enemy units")
     ap.add_argument("--waves", help="#77: two-wave sequences r1+r2 (x the garrison), e.g. 1+1.5,1.5+1.5")
     a = ap.parse_args()

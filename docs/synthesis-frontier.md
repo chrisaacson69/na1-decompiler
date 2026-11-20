@@ -104,7 +104,20 @@ Chris: *a capped fief that can be attacked from several fiefs: drain its rice. C
 | 150, solo | 5 | about flat | −68 |
 | 300, solo | 5 | **+20** | **−136** |
 
-**No wave survived to day 30**: the force lasted 1-11 days. `ai_select_unit_combat_action` ($A8CF) advances every non-commander unit toward reachable enemies when the attacker outstrengths the defender, else into free adjacent cells; either way five units hunt one down on the 11 × 5 board. The defender eats a few days of rice, and a lost wave's carried rice garrisons it ($E03C), so a bigger wave raises its rice. (A first build confined the keep-away to the deployment strip and was caught by day 1-10; the whole board did not change the count.) Underneath, the commander-only wave is the siege Chris described (#89): 300 men kill about 136 defenders and give back none, four waves taking 900 to 356, about 0.45 defenders a man sent. Not wired into the game.
+**No wave survived to day 30**: the force lasted 1-11 days. `ai_select_unit_combat_action` ($A8CF) advances every non-commander unit toward reachable enemies when the attacker outstrengths the defender, else into free adjacent cells; either way five units hunt one down on the 11 × 5 board. The defender eats a few days of rice, and a lost wave's carried rice garrisons it ($E03C), so a bigger wave raises its rice. (A first build confined the keep-away to the deployment strip and was caught by day 1-10; the whole board did not change the count.) Underneath, the commander-only wave is the siege Chris described (#89): 300 men kill about 136 defenders and give back none, four waves taking 900 to 356, about 0.45 defenders a man sent.
+
+Chris: *if the defender is larger than the attacker he might pursue instead of turtling: so either one guy staying alive as long as possible, or enough guys to keep the defender from pursuing.* (The ROM: the defender's non-commander units charge when the attacker outstrengths it, else step into free adjacent cells.) The same garrison:
+
+| keep-away force | waves to day 30 (outcome 3) | rice burned a surviving wave | the timeout |
+|---|---|---|---|
+| 600, five-way | 1 of 42 | | |
+| 900, five-way | 6 of 14 (wave 1) | about 650 | survivors garrison it: 900 → 1,437 men |
+| 1,200, five-way | 6 of 14 | about 650 | 900 → 1,571 |
+| 900, solo | 8 of 14 | about 650 | 900 → 1,040 |
+| 1,200, solo | 10 of 14 | about 750 | 900 → 1,357 |
+| 1,200, solo, charge from day 26 / 20 / 15 (`--charge-at`, 5 waves) | | | fell 2 / 4 / 6 of 14; by starvation (outcome 4) 2 / 4 / 0 battles |
+
+**Chris's size threshold holds**: at about the defender's size the force is not hunted down and lasts the 30 days in half or more of the waves, burning about a third of the stores each. But a survivor at the timeout garrisons the defender, and a wave that is lost returns its carried rice, so the stores refill and the garrison grows; the late charge (Chris's fix for feeding men) must start early enough to reach the castle, and then it is an attack. Starvation took 2-4 garrisons in 70 battles. Per man sent the drain costs about a garrison a wave against plain commander-only waves at 0.45 defenders a man with nothing fed: not wired into the game.
 
 ### #90 — The last fief, again: the source's rice shield asked for all its men. To the share line: 162 of 240 (Chris, 2026-11-20)
 
