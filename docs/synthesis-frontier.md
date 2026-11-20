@@ -91,6 +91,19 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #92 — Uesugi and Hojo read game by game: the empty capital; a capital floor of 150 men. 173 of 240 (Chris, 2026-11-20)
+
+Chris read #90's race (162): *Uesugi 16 wins, 1 turn-1 invasion (dice), 1 revolt, 2 old age at peak 5 (he never got started): fix the revolt, and why he cannot get past 5. Hojo 8 wins, 8 turn-1 deaths (grudges in a big neighbourhood, many coin flips; can his defence improve?), and the age-outs, where he has a winning game he does not convert.* Read from the json: Hojo's losses were 9 invasions in year 1, invasions at years 16 (2 fiefs), **23 and 28 (9 fiefs each, the capital at 0 men, taken by 5 and 38 men)**, and one age-out at 15 fiefs. `capprobe.py`: in 3009 the capital, interior (no enemy two steps out, so `capital_line` 0), sat at 0 men for two years holding 1,980 gold and 1,980 rice; in 3019 the empire's Moves took it from 138 to 0 (its keep was the capital line, 0) and it sat empty with 1,700 gold. Uesugi's revolt (3002, year 33) came at morale 721: the 1-in-1,000 roll (#85). Uesugi 3012 (one fief until year 28; `slowstart.py`): the MIRR attack line stood at years 4-8 but he could not afford a line of 410-545 men on 50-80 gold; from year 12 his own gifts' IRR (r 0.24 a season) beat every attack (0.14-0.18), he grew his peasants 515 → 1,720 while the neighbours armed, and by year 24 every attack priced near 0: #61's deadline, which MIRR does not see; several strikes also failed `strike_ok` (the prize left COMING beside Hojo's other fief, not checked).
+
+`expand.CAPITAL_MIN` (`long_game --capital-min N`): `capital_line` is at least N (capped at the header), so the capital never Moves below it and `capital_hire` hires up to it, past the morale gate when empty (as `CAPITAL_GUARD`, #65, did with no floor).
+
+| the 12 live starts, 240 games | won | paired | invaded | empty-capital invasions after y2 | revolts | first conquest (quartiles) |
+|---|---|---|---|---|---|---|
+| #90 (`--preset best`) | 162 | | 37 | 5 | 5 | 10 / 12 / 15 |
+| **+ capital floor 150** | **173** | saved 30, lost 19, z +1.6 | 29 | 2 | 2 | 12 / 13 / 15 |
+
+By start (#90 → floor): Uesugi 16 → 18, Hojo 8 → 11 (3009, 3014, 3019 unify), 4: 14 → 15, 5: 17 → 16, 7: 16 → 19, 10: 17 → 19, 12: 12 → 14, 13: 10 → 13, 14: 16 → 14, 15: 8 → 6, 6 and 16 unchanged. The floor costs a year of first conquest. **Promoted:** `--preset best` adds `--capital-min 150`. **Open:** MIRR's development trap at one fief (Uesugi 3012), and Hojo's year-1 defence (9 of 20).
+
 ### #91 — The rice drain, in the lab: the AI hunts a keep-away force down in days (Chris, 2026-11-20)
 
 Chris: *a capped fief that can be attacked from several fiefs: drain its rice. Come in with a nominal force and play keep-away to burn 30 days of rice (spend your gold, or attack on the last days, so as not to feed it men); attack again the same way; when it no longer has 30 days of rice, go in and wait, and it loses by starvation. Watch that your last battle brings plenty of rice and gold, or that it can be shipped in, so an opponent cannot do the same to you. It might decapitate a capital too: the daimyo might not flee if he does not see the threat.* The mechanism is the morning check (#82, #86: a side with no rice loses, outcome 4), and a big garrison eats ceil(men/15) of its own rice a day (`consume_daily_battle_rice` $830B).

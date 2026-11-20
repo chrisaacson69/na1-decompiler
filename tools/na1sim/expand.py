@@ -262,6 +262,11 @@ def enemies_within(m, i, steps=2):
     return out
 
 
+CAPITAL_MIN = 0                         # #92: a capital never Moves below, and hires up to, this many men (Hojo 3009 and
+                                        # 3019: 9-fief empires whose interior capital sat at 0 men with 1,700-1,980
+                                        # gold, taken by 5 and 38 men; the line was 0 with no enemy two steps out)
+
+
 def capital_line(m, i):
     """The fewest men that keep every enemy within two steps under the share line (0: none). With
     CAPITAL_GUARD, a capital with no enemy within two steps still keeps the line for three (#65: an
@@ -270,7 +275,8 @@ def capital_line(m, i):
     e = enemies_within(m, i)
     if not e and CAPITAL_GUARD:
         e = enemies_within(m, i, 3)
-    return max([m.fief_men_if_provisioned(x) * 52 // 48 + 1 for x in e] or [0])
+    line = max([m.fief_men_if_provisioned(x) * 52 // 48 + 1 for x in e] or [0])
+    return max(line, min(CAPITAL_MIN, m.r16(m.fief(i) + M.F_HEADER))) if CAPITAL_MIN else line
 
 
 def capital_ok(m, owner):
@@ -1517,7 +1523,7 @@ def capital_hire(m, idx):
     f = m.fief(idx)
     # an emptied fief's morale is cleared to 0 (clear_military_stats_if_no_men): with no men there is
     # no army to dilute, so CAPITAL_GUARD lets it hire past the morale gate
-    empty = CAPITAL_GUARD and m.r16(f + M.F_MEN) == 0
+    empty = (CAPITAL_GUARD or CAPITAL_MIN) and m.r16(f + M.F_MEN) == 0
     if (m.is_capital(idx) and len(owned(m, m.fief_owner(idx))) > 1 and m.r16(f + M.F_GOLD) > 1
             and (empty or m.r16(f + M.F_MORALE) >= reaction_cliff())
             and capital_line(m, idx) > m.r16(f + M.F_MEN)):
