@@ -91,6 +91,21 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #95 — Chris's triage, and Tokugawa's one-fief years: a striker stuck in the morale dead zone. 180 of 240 (Chris, 2026-11-20)
+
+`na1sim.triage RUN.json [--start F]` sorts a run the way Chris reads it: unified set aside; then revolts and riots, invasions before the first turn, in year 1, later, and old age by peak fiefs (5 or fewer: never started; 15+: one short). On #94's run (178) Chris read: Uesugi's 3002 and 3018 say too much risk where 3012 shows it paying; Hojo loses only to turn-1 invasions (tactics, not strategy); Imagawa (start 6, the shortest clock: his lord dies at years 30-32) won 9 under #92 and 6 now; 6/3019 is a win (unified 1582, a revolt after); Tokugawa wins all but 3012, never started.
+
+**Tokugawa 3012** (`slowstart2.py`, `owari.py`, `tokuhire.py`): Owari (46 men) priced at MIRR 0.40-0.49 against r 0.09-0.32 in six years (4-10) and was refused every time, for two reasons stacked. (1) The first conquest makes the empire two fiefs and #92's capital floor applies, but the line (`_stage_line`: send + `own_need`) adds the capital's line only from two fiefs: 127 men left against 150, `capital_ok` fails, no attack line forms. (2) With the line fixed, Mikawa sat at 236 men from year 7 to 11 at **morale 50-51**: `striker_hire` needs `MORALE_FLOOR` 55 (recruits arrive at 40-59 and dilute it), the ladder lifts morale only under the cliff (45) and the capital guard only under 50: a dead zone where the striker can neither hire nor raise its morale. `expand.CAPITAL_NEED` (`--capital-need 1`): a lone capital's attack line carries the floor (first tried in `own_need`, where it made every lone capital hoard men: 160, z −3.0). `expand.STRIKER_MORALE` (`--striker-morale 1`): a striker short of its line and under the floor gives rice over its men (else gold) to its men first. Tokugawa 3012 unifies (1598) with both.
+
+| on #94's player, 240 games | won | paired | lord died | invaded |
+|---|---|---|---|---|
+| #94 (`--preset best`) | 178 | | 31 | 27 |
+| both fixes | 166 | saved 18, lost 30, z −1.7 | 36 | 29 |
+| capital floor in the line only | 173 | saved 7, lost 12, z −1.1 | 34 | 27 |
+| **striker morale only** | **180** | saved 20, lost 18, z +0.3 | **25** | 29 |
+
+**Promoted:** `--preset best` adds `--striker-morale 1`; the line fix stays off.
+
 ### #94 — Risk priced, not gated: attacks weighted by measured outcomes, the hazards calibrated from the games. 178 of 240 (Chris, 2026-11-20)
 
 Chris, on #93: *keep the tax fix, it is correct; not assessing risk properly is the stronger signal. The deadline rule is ad hoc. This is like pricing the army size, a wide range of acceptable values; sometimes keeping your neighbours down and the world at war instead of economy lets you grow. The model plays it safe because it can usually find inevitability; many of our hurdles are when inevitability is not there and we do not gamble on our outs. Sometimes starting wars hurts your opponents more than it hurts you.* The principle: price risk as expected cash flows, every probability measured from the sim's own games (as the battle lab priced the battles), and let the price replace the gate.
