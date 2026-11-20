@@ -91,6 +91,20 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #81 — Uesugi's openings: the Echigo plan was never in the whole-game runs; with it, 7 of 8 year-1 invasions are held (Chris, 2026-11-20)
+
+Chris, reading Uesugi's 20 games in #80's race: *7 won (the text says 'lord died'), 8 invaded before he could play, Hojo with a grudge; we have a specific strategy for Echigo, hitters 2 squares from his 2 possible leader starts, which should execute the leader or at least win with plenty of men: why is it not lucky? The other 5 die of age at 3-16 fiefs. We can get most of that 40% to survive; what we have been working on is the last 5.* (A won game is reported by its end, the lord's death at year 41-45, with `unified` the year it held all 17.) The 8 invasions: Hojo (attacker 2) in Spring of year 1 before Uesugi's first command, 91-128 men committed against 59-74 (3003, 3005, 3007, 3016), and attacker 15 or 7 against a garrison of 7-35 (3013, 3014, 3015, 3019).
+
+**`long_game` fought every defence with `strike.Doctrine("control", "contact")`; #44's fixed Echigo plan (`plans.PlanPlayer`, `plans.ECHIGO`) was only ever wired into `deaths.py --combat plan1:MODE`.** `long_game --plan MODE` installs it as `tactical.HUMAN` for a start that has one (Echigo 1, Mino 8); it falls back to the same doctrine for any other battle (the player's attacks, other fiefs, edges without a plan). Uesugi, the #80 player, 20 seeds:
+
+| | won | invaded in year 1 | 
+|---|---|---|
+| doctrine (#80) | 7 | 8 |
+| **plan strike** | **11** | 1 |
+| plan hold | 10 | 1 (and one at year 10) |
+
+Under strike the year-1 invasions came out: won 3003 (y26), 3005 (y27), 3019 (y20); lord died 3013 (2 fiefs), 3014 (14), 3015 (9); revolt 3007 (y26); 3016 still falls (Hojo, 128 against 59). 3018 also turned from age (11 fiefs) to a win (y28); hold lost 3017 at year 10, which strike won. **Mino's plans do not rescue it**: gate 19 of 20 invaded in year 1, hold 20 of 20 (doctrine 20 of 20). Uesugi's remaining losses are early stalls more than late ones: lord died at 1, 2, 6 and 9 fiefs (3009, 3013, 3006, 3015) beside 10-15 (3002, 3012, 3014).
+
 ### #80 — The dump and two waves in the game: both neutral; the waves are priced right and rarely possible (Chris, 2026-11-20)
 
 From here on the races run on the **12 live starts** (Chris: some starts are unrecoverable; 0, 3, 8, 9 and 11 were never won by any of 26 races since #70 and are invaded before year 20 in 17-20 of 20 seeds, so they never flip a paired game): 240 games, the 92 player winning 92 of them.
