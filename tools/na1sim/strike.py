@@ -452,13 +452,17 @@ class KeepAway:
     each day every unit steps to the free neighbouring cell farthest from the nearest enemy unit (no closer
     than now), and never attacks."""
 
-    def __init__(self, charge_at=None, dump=False):
+    def __init__(self, charge_at=None, dump=False, fight_back=False):
         # charge_at (Chris: "attack on the last few turns if you don't want to feed them men"): from this day
         # the force fights as the Charge doctrine, so it wins or dies and leaves no survivors to the garrison
         self.log = []
         self.charge_at = charge_at
         self.charge = Charge(solo=True) if charge_at else None
         self.dump = dump                        # the commander bribes away the side's gold over its men when safe
+        # fight_back (#91's kill probe: the defender's field units 1-4 hunt the force down, its commander stays
+        # in the castle): strike an adjacent field unit unless their commander is adjacent too; keep away from
+        # their commander only
+        self.fight_back = fight_back
 
     def deploy(self, m):
         side = m.cur_combat_side
@@ -491,6 +495,12 @@ class KeepAway:
         foes = [_cell(m, es, s) for s in range(5) if m.is_unit_present(es, s)]
         if not foes:
             return ("pass",)
+        if self.fight_back:
+            cmd = _cell(m, es, 0) if m.is_unit_present(es, 0) else None
+            adj = [s for s in range(1, 5) if m.is_unit_present(es, s) and _cell(m, es, s) in NB[here]]
+            if adj and not (cmd and cmd in NB[here]):
+                return ("attack", min(adj, key=lambda s: m.r16(m.unit_strength_ptr(es, s))))
+            foes = [cmd] if cmd else foes
         dists = [_distances(m, f) for f in foes]
         near = lambda c: min(d.get(c, 99) for d in dists)
         now = near(here)

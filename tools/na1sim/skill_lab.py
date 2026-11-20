@@ -117,18 +117,32 @@ DRAIN_SPLIT = None
 DRAIN_CHARGE = None
 DRAIN_DUMP = False
 DRAIN_AI = False
+DRAIN_FIGHT = False
+DRAIN_KILL = False
 
 
 def drain(job):
     """#91 (Chris: the rice drain): a garrison of gm men and gr rice is struck by waves of n men that play
     keep-away (strike.KeepAway), each carrying exactly 30 days of ration, until it falls or k waves.
     -> (skill, src, tgt, seed, [(outcome, days?, defender men after, defender rice after, won) per wave])"""
-    skill, src, tgt, seed, n, gm, gr, k, split, charge_at, dump, ai_turn = job
-    global DRAIN_SPLIT, DRAIN_CHARGE, DRAIN_DUMP
+    skill, src, tgt, seed, n, gm, gr, k, split, charge_at, dump, ai_turn = job[:12]
+    global DRAIN_SPLIT, DRAIN_CHARGE, DRAIN_DUMP, DRAIN_FIGHT
     DRAIN_SPLIT, DRAIN_CHARGE, DRAIN_DUMP = split, charge_at, dump
+    DRAIN_FIGHT = bool(job[12]) if len(job) > 12 else False
+    global DRAIN_KILL
+    DRAIN_KILL = bool(job[13]) if len(job) > 13 else False
     from . import tactical, strike
     m = setup.build_board(skill=skill, seed=seed, player_fief=src)
     t = m.fief(tgt)
+    foe = m.fief_owner(tgt)
+    cap0 = bool(m.is_capital(tgt))
+    if DRAIN_KILL:                              # give the target's lord a second fief: a kill takes it too
+        nf = m.r16(M.SCENARIO_FIEF_COUNT)
+        b = next((b for b in m.neighbor_rows.get(tgt, []) if b < nf and b not in (src, tgt)
+                  and m.province_ai_state(b) != M.EMPTY), None)
+        if b is not None:
+            m.w8(M.FIEF_TO_DAIMYO_MAP + b, foe)
+            m.w8(M.FIEF_IS_CAPITAL + b, 0)
     m.w16(t + M.F_HEADER, max(m.r16(t + M.F_HEADER), gm + 10, gr + 10))
     m.w16(t + M.F_MEN, gm)
     m.w16(t + M.F_RICE, gr)
@@ -137,15 +151,17 @@ def drain(job):
     orig = tactical.dispatch_battle_resolution
     tactical.dispatch_battle_resolution = lambda mm, o, rng: (codes.append(o), orig(mm, o, rng))[1]
     keep_c, keep_h = X.CHARGE, tactical.HUMAN
-    X.CHARGE, tactical.HUMAN = False, strike.KeepAway(charge_at=DRAIN_CHARGE, dump=DRAIN_DUMP)
+    X.CHARGE, tactical.HUMAN = False, strike.KeepAway(charge_at=DRAIN_CHARGE, dump=DRAIN_DUMP, fight_back=DRAIN_FIGHT)
     from . import ai_vm
     try:
+        seq = n if isinstance(n, (list, tuple)) else [n] * k
         for w in range(k):
+            n_w = seq[min(w, len(seq) - 1)]
             f = m.fief(src)
-            rice = 30 * -(-n // 15)
-            m.w16(f + M.F_HEADER, max(m.r16(f + M.F_HEADER), n + 10, rice + 10))
-            m.w16(f + M.F_MEN, n)
-            m.w16(f + M.F_GOLD, n + 50)
+            rice = 30 * -(-n_w // 15)
+            m.w16(f + M.F_HEADER, max(m.r16(f + M.F_HEADER), n_w + 10, rice + 10))
+            m.w16(f + M.F_MEN, n_w)
+            m.w16(f + M.F_GOLD, n_w + 50)
             m.w16(f + M.F_RICE, rice)
             if DRAIN_SPLIT:                     # the force's split (solo: 100/0, every man in the commander)
                 X.SPLIT_MODE = DRAIN_SPLIT
@@ -155,7 +171,7 @@ def drain(job):
                     P.commit_arms_record(m, src, sp, 0)
             before = (m.r16(t + M.F_MEN), m.r16(t + M.F_RICE))
             codes.clear()
-            won = X.player_war(m, src, tgt, n, rice, rng=random.Random(seed * 31 + w), fought=True)
+            won = X.player_war(m, src, tgt, n_w, rice, rng=random.Random(seed * 31 + w), fought=True)
             after = (m.r16(t + M.F_MEN), m.r16(t + M.F_RICE), m.r16(t + M.F_GOLD))
             if not (won or m.fief_owner(tgt) == m.fief_owner(src)) and ai_turn:
                 ai_vm.econ_action_state0(m, tgt)        # the target's own turn before the next wave (no war)
@@ -166,13 +182,17 @@ def drain(job):
     finally:
         X.CHARGE, tactical.HUMAN = keep_c, keep_h
         tactical.dispatch_battle_resolution = orig
-    return skill, src, tgt, seed, waves
+    nfief = m.r16(M.SCENARIO_FIEF_COUNT)
+    left = sum(1 for i in range(nfief) if m.province_ai_state(i) != M.EMPTY and m.fief_owner(i) == foe)
+    return skill, src, tgt, seed, waves, (cap0, left)
 
 
 def main_drain(a):
-    n, gm, gr, k = (int(x) for x in a.drain.split(","))
+    n, gm, gr, k = a.drain.split(",")
+    gm, gr, k = int(gm), int(gr), int(k)
+    n = [int(x) for x in n.split("/")] if "/" in n else int(n)
     skills = [int(s) for s in a.skills.split(",")]
-    jobs = [(s, src, tgt, seed, n, gm, gr, k, a.split, a.charge_at, bool(a.dump), bool(a.ai_turn)) for s in skills for src, tgt in PAIRS
+    jobs = [(s, src, tgt, seed, n, gm, gr, k, a.split, a.charge_at, bool(a.dump), bool(a.ai_turn), bool(a.fight_back), bool(a.kill_test)) for s in skills for src, tgt in PAIRS
             for seed in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(drain, jobs, chunksize=2))
@@ -190,6 +210,11 @@ def main_drain(a):
             print(f"   wave {w + 1}: {len(ws)} fought, outcomes {dict(oc)}; defender men {sum(x[1][0] for x in ws)//len(ws)} -> {sum(x[2][0] for x in ws)//len(ws)},"
                   f" rice {sum(x[1][1] for x in ws)//len(ws)} -> {sum(x[2][1] for x in ws)//len(ws)}, gold after {sum(x[2][2] for x in ws)//len(ws)}"
                   + (f"; after its turn men/rice/gold {sum(x[4][0] for x in ws)//len(ws)}/{sum(x[4][1] for x in ws)//len(ws)}/{sum(x[4][2] for x in ws)//len(ws)}" if a.ai_turn else ""))
+    fac = collections.Counter()
+    for r in res:
+        if r[4] and r[4][-1][3]:
+            fac[("capital" if r[5][0] else "fief", "faction gone" if r[5][1] == 0 else f"faction keeps {r[5][1]}")] += 1
+    print(" the defending faction after a fall:", dict(fac))
     by = collections.Counter()
     for r in res:
         by[(r[1], r[2])] += bool(r[4] and r[4][-1][3])
@@ -234,6 +259,8 @@ def main():
     ap.add_argument("--out", help="save {skill: {ratio: [kept share of each won battle]}} as JSON")
     ap.add_argument("--dump", type=int, help="#79: the held-back commander bribes away the side's gold over its men")
     ap.add_argument("--drain", help="#91: N,GM,GR,K: waves of N keep-away men on a garrison of GM men and GR rice, up to K waves")
+    ap.add_argument("--kill-test", type=int, help="#91: give the target's lord a second fief, to see whether a fall takes his faction")
+    ap.add_argument("--fight-back", type=int, help="#91: the keep-away force strikes adjacent field units, keeping away from their commander only")
     ap.add_argument("--ai-turn", type=int, help="#91: the target plays its own AI turn between drain waves")
     ap.add_argument("--charge-at", type=int, help="#91: the drain force charges from this day (no survivors to feed the garrison)")
     ap.add_argument("--hide", type=int, help="#78: the held-back commander steps away from enemy units")
