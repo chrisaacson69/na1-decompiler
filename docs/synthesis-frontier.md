@@ -91,6 +91,29 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #85-#86 — The revolts and the later invasions: a capital under morale 45, and a Summer gift that left the border on 1 rice. 149 of 240 (Chris, 2026-11-20)
+
+Chris: *revolts and riots look like the easiest fixes that lost games; many early invasions are map coin flips we let go, but there may be later invasions we could have avoided.*
+
+**The revolts** (`revoltprobe.py`: the capital at each fatal rebel battle and its last 8 turns; #84's player, 8 deaths). A revolt or riot staged at the human capital (`game._revolts` / `_riots`, `_rebel_battle`) is a battle that ends the faction when lost. Eligibility rolls `min(stat, 50)^2 < rng_mod(2025)` (`vmprims._roll_failed`): morale or the lord's charisma for a revolt ($9E21), loyalty, 100 − tax or charisma for a riot ($9DA3), **so a stat of 45 or more never fails**, beside a 1-in-1,000 roll; the rebels take 20-89% of the men, with morale = the header − ours (`spawn_uprising_force`). Three kinds: (1) a capital left at morale 46-51 for two years, then an attack from it took it under 45 (2/3007 at 43; 5/3008 at 48); (2) an interior capital emptied to 0 by hire-and-move, then re-hired with 21-57 recruits at morale 41-49 (10/3007, 14/3013); (3) the 1-in-1,000, at morale 89-354 (5/3011's riot: a capital riot cannot be paid off once loyalty is at its cap, since paying settles only a rise over 5). An uprising sweep comes in about 40% of seasons and checks the capital each time: about a 5% chance a game of the fluke, and the rebels' morale near 1,500 is near unbeatable.
+
+`expand.MORALE_GUARD` (`long_game --morale-guard N`): a capital with more than 2 men and morale under N gives to its men first, rice over its men (else gold over 20), up to 300.
+
+**The later invasions** (#84, 54 invasion deaths): 33 in years 1-2 (the coin flips; all fed), 21 later. **Ten of the later ones were 7-11% armies taking a capital** (13 men against 99, 17 against 188, 47 against 575); traced (`tinyprobe.py`, 13/3007 year 12): outcome 4, the defender out of rice, 188 men on **1 rice**. 8 of the 21 later invasion deaths had under 2 days of rice. `riceflow.py`: every Summer the capital gave all its rice but 1 to its peasants (`reaction.economy`'s Summer gift); `shield_rice` mode 4 (Tokugawa's case, #48) keeps rice only while a neighbour is past the share line, and the gate reads min(rice, men), so the test ran on the rice before the gift and every neighbour was past the line after it. New modes (`long_game --shield N`): **5**, a fief with an enemy neighbour keeps rice >= men unless every enemy neighbour has moved this Summer; **6**, only as much as keeps min(rice, men) over the share line of every enemy neighbour that has not moved (its provisioned men × 52/48 + 1), the rest given as before.
+
+| the 12 live starts, 240 games | won | paired | invaded (starved after y2) | lord died | rebellions | econ y20 |
+|---|---|---|---|---|---|---|
+| `--preset best` (#84) | 140 | | 54 (8) | 38 | 8 | 0.69 |
+| + morale guard 50 | 145 | saved 32, lost 27, z +0.7 | 54 (6) | 38 | 3 | 0.69 |
+| + guard 50 + #65's capital guard | 142 | z +0.2 | 51 | 42 | 5 | 0.70 |
+| + guard 50 + shield 5 | 143 | against guard: z −0.3 | 45 (0) | 45 | 7 | 0.66 |
+| **+ guard 50 + shield 6** | **149** | against #84: saved 34, lost 25, z +1.2 | 46 (0) | 37 | 8 | 0.68 |
+| + guard 65 + shield 6 | 128 | against shield 6: z −2.6 | 52 | 47 | 13 | 0.65 |
+
+- The guard ends the low-morale revolts (8 → 3 alone); at 65 it fires 6.3 times a game and spends the capital's hire turns. The rebellions left are mostly the 1-in-1,000 roll at high morale (two traced at 89 and 354) and swing 3-13 between runs.
+- Shield 5 ends the starved invasions and costs the growth (econ y20 0.66, 7 more games to age); shield 6 keeps the protection (invaded 46, none starved) without the cost.
+- **Promoted:** `--preset best` now adds `--morale-guard 50 --shield 6`. Each gain alone is within noise; together with #84's they are 149 of 240.
+
 ### #84 — The established rules promoted (`--preset best`; rice and the Echigo plan by default): 140 of 240. Rice after men: closer, still slower (Chris, 2026-11-20)
 
 Chris: *bake in the Echigo defence: in h82 Uesugi was back to losing at the start; we should be able to promote established rules.* `long_game` defaults now: `--rice-days 10` (#82; `0` turns it off) and `--plan default` (#81's strike at Echigo, none elsewhere since Mino's plans did not help; `none` turns it off). **`--preset best`** sets #80's flag set (strike 8, capital first, ladder, empire, empire attack, MIRR, empty morale, donor MIRR, MIRR turns, hire-move, safety donors, dump, waves) where not given, so the measured player is `long_game F 20 70 out.json --skill 2 --preset best`. Checked: Uesugi's 20 seeds under the preset reproduce #82's run with `--plan strike` game for game, once a side-effect of #83 was undone (its `_mirr_donor` refused a donor's top-up under `SEND_MIN` even with rice logistics off; restored when off).

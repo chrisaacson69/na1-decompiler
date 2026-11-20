@@ -348,6 +348,21 @@ def economy(m, idx):
         if guard == 4 and keep and all(n in getattr(m, "acted", ()) for n in enemy_neighbours(m, idx)
                                        if ai_vm_share(m, n, idx) > GRUDGE):
             keep = min(keep, rice - after_harvest_room(m, idx))
+        # Mode 5 (Chris, 2026-11-20, #86): the gate reads min(rice, men), so the share test above runs on
+        # the rice BEFORE the gift; after it every neighbour is past the line. 13/3007: each Summer the
+        # capital gave all its rice but 1 (keep 0: nobody past the share line while the rice was there),
+        # and in year 12 a 17-man army took 188 men on 1 rice, starved on day 1 (outcome 4); 8 of the 21
+        # invasion deaths after year 2 were a defender under 2 days of rice. A fief with an enemy neighbour
+        # keeps rice >= men unless every enemy neighbour has moved this Summer (the next is after the harvest).
+        if guard == 5:
+            nb = enemy_neighbours(m, idx)
+            keep = men if nb and not all(n in getattr(m, "acted", ()) for n in nb) else 0
+        # Mode 6: only as much rice as keeps min(rice, men) over the share line of every enemy neighbour
+        # that has not moved this Summer (its provisioned men x 52/48 + 1, expand.share_line's rule).
+        if guard == 6:
+            acted = getattr(m, "acted", ())
+            keep = min(men, max([m.fief_men_if_provisioned(n) * 52 // 48 + 1
+                                 for n in enemy_neighbours(m, idx) if n not in acted] or [0]))
         keep = max(keep, rice - max(0, policy._rice_slack(m, idx, False, sustain=True)))
         if rice > keep + 1 and not (EMPTY_MORALE and capped and not men):   # no men to give the rice to
             (policy.give_men if capped else policy.give_peasants)(m, idx, rice - keep - 1)

@@ -2544,6 +2544,37 @@ def empire_rescue(m, idx):
     return False
 
 
+# The morale guard (Chris, 2026-11-20, #85: the mid-game revolts). A revolt or riot staged at the human
+# capital is a battle that ends the faction when lost; eligibility rolls min(stat, 50)^2 < rng_mod(2025) on
+# morale (revolt) and loyalty / 100 - tax (riot), so a stat of 45 or more never fails (vmprims._roll_failed,
+# $9E21 / $9DA3). Four of #84's seven fatal rebellions were a capital under 45: one left at 46-51 for two
+# years, then an attack from it took it under; interior capitals emptied by hire-and-move and re-hired with
+# recruits at 41-49. MORALE_GUARD: a capital with more than 2 men and morale under the guard gives to its
+# men first, rice over its men (else gold over 20), up to GUARD_GIVE.
+MORALE_GUARD = 0                        # 0: off; else the morale a capital is kept at
+GUARD_GIVE = 300
+GUARD_LOG = []
+
+
+def morale_guard(m, idx):
+    if not (MORALE_GUARD and m.is_capital(idx)):
+        return False
+    from . import policy
+    f = m.fief(idx)
+    men, mor = m.r16(f + M.F_MEN), m.s16(f + M.F_MORALE)
+    if men <= 2 or mor >= MORALE_GUARD:
+        return False
+    rice, gold = m.r16(f + M.F_RICE) - men, m.r16(f + M.F_GOLD) - 20
+    if rice >= 1:
+        policy.give_men(m, idx, min(rice, GUARD_GIVE))
+    elif gold >= 1:
+        policy.give_men(m, idx, min(gold, GUARD_GIVE), gold=True)
+    else:
+        return False
+    GUARD_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, men, mor, m.s16(f + M.F_MORALE)))
+    return True
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -2565,6 +2596,8 @@ def expand_policy(m, idx, rng):
             elif pm[0] == "send":
                 send(m, idx, pm[1], pm[2], pm[3])
             return
+    if MORALE_GUARD and morale_guard(m, idx):
+        return
     if (COORD or WAVES) and coord_act(m, idx, rng):
         return
     mv = best_attack(m, idx)
