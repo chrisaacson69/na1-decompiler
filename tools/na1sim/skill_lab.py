@@ -113,6 +113,80 @@ def waves(job):
     return tuple(out) + (reach,)
 
 
+DRAIN_SPLIT = None
+
+
+def drain(job):
+    """#91 (Chris: the rice drain): a garrison of gm men and gr rice is struck by waves of n men that play
+    keep-away (strike.KeepAway), each carrying exactly 30 days of ration, until it falls or k waves.
+    -> (skill, src, tgt, seed, [(outcome, days?, defender men after, defender rice after, won) per wave])"""
+    skill, src, tgt, seed, n, gm, gr, k, split = job
+    global DRAIN_SPLIT
+    DRAIN_SPLIT = split
+    from . import tactical, strike
+    m = setup.build_board(skill=skill, seed=seed, player_fief=src)
+    t = m.fief(tgt)
+    m.w16(t + M.F_HEADER, max(m.r16(t + M.F_HEADER), gm + 10, gr + 10))
+    m.w16(t + M.F_MEN, gm)
+    m.w16(t + M.F_RICE, gr)
+    m.w16(t + M.F_GOLD, gr)
+    codes, waves = [], []
+    orig = tactical.dispatch_battle_resolution
+    tactical.dispatch_battle_resolution = lambda mm, o, rng: (codes.append(o), orig(mm, o, rng))[1]
+    keep_c, keep_h = X.CHARGE, tactical.HUMAN
+    X.CHARGE, tactical.HUMAN = False, strike.KeepAway()
+    try:
+        for w in range(k):
+            f = m.fief(src)
+            rice = 30 * -(-n // 15)
+            m.w16(f + M.F_HEADER, max(m.r16(f + M.F_HEADER), n + 10, rice + 10))
+            m.w16(f + M.F_MEN, n)
+            m.w16(f + M.F_GOLD, n + 50)
+            m.w16(f + M.F_RICE, rice)
+            if DRAIN_SPLIT:                     # the force's split (solo: 100/0, every man in the commander)
+                X.SPLIT_MODE = DRAIN_SPLIT
+                sp = X.desired_split(m, src, tgt)
+                X.SPLIT_MODE = None
+                if P.assign_reachable(m, src, sp):
+                    P.commit_arms_record(m, src, sp, 0)
+            before = (m.r16(t + M.F_MEN), m.r16(t + M.F_RICE))
+            codes.clear()
+            won = X.player_war(m, src, tgt, n, rice, rng=random.Random(seed * 31 + w), fought=True)
+            waves.append((codes[-1] if codes else None, before, (m.r16(t + M.F_MEN), m.r16(t + M.F_RICE)), bool(won)))
+            if won or m.fief_owner(tgt) == m.fief_owner(src):
+                break
+    finally:
+        X.CHARGE, tactical.HUMAN = keep_c, keep_h
+        tactical.dispatch_battle_resolution = orig
+    return skill, src, tgt, seed, waves
+
+
+def main_drain(a):
+    n, gm, gr, k = (int(x) for x in a.drain.split(","))
+    skills = [int(s) for s in a.skills.split(",")]
+    jobs = [(s, src, tgt, seed, n, gm, gr, k, a.split) for s in skills for src, tgt in PAIRS
+            for seed in range(a.first, a.first + a.seeds)]
+    with ProcessPoolExecutor(6) as ex:
+        res = list(ex.map(drain, jobs, chunksize=2))
+    print(f"rice drain: waves of {n} men (30 days of rice each, keep-away) on a garrison of {gm} men, {gr} rice; up to {k} waves")
+    import collections
+    for s in skills:
+        rows = [r for r in res if r[0] == s]
+        fell = collections.Counter(len(r[4]) for r in rows if r[4] and r[4][-1][3])
+        print(f" skill {s}: fell {sum(fell.values())} of {len(rows)}; by the wave it fell on {dict(sorted(fell.items()))}")
+        for w in range(k):
+            ws = [r[4][w] for r in rows if len(r[4]) > w]
+            if not ws:
+                break
+            oc = collections.Counter(x[0] for x in ws)
+            print(f"   wave {w + 1}: {len(ws)} fought, outcomes {dict(oc)}; defender men {sum(x[1][0] for x in ws)//len(ws)} -> {sum(x[2][0] for x in ws)//len(ws)},"
+                  f" rice {sum(x[1][1] for x in ws)//len(ws)} -> {sum(x[2][1] for x in ws)//len(ws)}")
+    by = collections.Counter()
+    for r in res:
+        by[(r[1], r[2])] += bool(r[4] and r[4][-1][3])
+    print(" fell by pair:", dict(by))
+
+
 def main_waves(a):
     skills = [int(s) for s in a.skills.split(",")]
     pairs = [tuple(float(x) for x in w.split("+")) for w in a.waves.split(",")]
@@ -150,9 +224,12 @@ def main():
     ap.add_argument("--quantiles", action="store_true", help="the kept share's q10 / q25 / median too")
     ap.add_argument("--out", help="save {skill: {ratio: [kept share of each won battle]}} as JSON")
     ap.add_argument("--dump", type=int, help="#79: the held-back commander bribes away the side's gold over its men")
+    ap.add_argument("--drain", help="#91: N,GM,GR,K: waves of N keep-away men on a garrison of GM men and GR rice, up to K waves")
     ap.add_argument("--hide", type=int, help="#78: the held-back commander steps away from enemy units")
     ap.add_argument("--waves", help="#77: two-wave sequences r1+r2 (x the garrison), e.g. 1+1.5,1.5+1.5")
     a = ap.parse_args()
+    if a.drain:
+        return main_drain(a)
     if a.waves:
         return main_waves(a)
     skills = [int(s) for s in a.skills.split(",")]

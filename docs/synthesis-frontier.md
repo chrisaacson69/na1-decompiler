@@ -91,6 +91,21 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #91 — The rice drain, in the lab: the AI hunts a keep-away force down in days (Chris, 2026-11-20)
+
+Chris: *a capped fief that can be attacked from several fiefs: drain its rice. Come in with a nominal force and play keep-away to burn 30 days of rice (spend your gold, or attack on the last days, so as not to feed it men); attack again the same way; when it no longer has 30 days of rice, go in and wait, and it loses by starvation. Watch that your last battle brings plenty of rice and gold, or that it can be shipped in, so an opponent cannot do the same to you. It might decapitate a capital too: the daimyo might not flee if he does not see the threat.* The mechanism is the morning check (#82, #86: a side with no rice loses, outcome 4), and a big garrison eats ceil(men/15) of its own rice a day (`consume_daily_battle_rice` $830B).
+
+`strike.KeepAway` (an attacker player: deploy on the strip cells farthest from the enemy commander; each day every unit steps to the free neighbouring cell farthest from the nearest enemy unit, never attacking) and `skill_lab --drain N,GM,GR,K [--split solo]` (a garrison of GM men and GR rice, waves of N men each carrying exactly 30 days of ration, up to K waves). Skill 2, 7 pairs × 2 seeds, a garrison of 900 men and 1,800 rice, 4 waves:
+
+| wave of | outcome (all 56) | defender rice per wave | defender men per wave |
+|---|---|---|---|
+| 60, five-way split | commander killed (5) | −60 | +9 (fed) |
+| 60, solo | 5 | −58 | −28 |
+| 150, solo | 5 | about flat | −68 |
+| 300, solo | 5 | **+20** | **−136** |
+
+**No wave survived to day 30**: the force lasted 1-11 days. `ai_select_unit_combat_action` ($A8CF) advances every non-commander unit toward reachable enemies when the attacker outstrengths the defender, else into free adjacent cells; either way five units hunt one down on the 11 × 5 board. The defender eats a few days of rice, and a lost wave's carried rice garrisons it ($E03C), so a bigger wave raises its rice. (A first build confined the keep-away to the deployment strip and was caught by day 1-10; the whole board did not change the count.) Underneath, the commander-only wave is the siege Chris described (#89): 300 men kill about 136 defenders and give back none, four waves taking 900 to 356, about 0.45 defenders a man sent. Not wired into the game.
+
 ### #90 — The last fief, again: the source's rice shield asked for all its men. To the share line: 162 of 240 (Chris, 2026-11-20)
 
 Of #88's 21 losses with the bigger economy, seven end at 15-16 fiefs against one rival at 5-28 times its economy. 16/3005 (`lastfief3.py`): year 44, the last rival Noto (0) holds 102 men; Kaga (3) holds 1,081 men, 1,849 gold and **596 rice**, the line is 368 and the MIRR 0.225 against r 0.1, but `strike_ok` refuses and no attack line forms: `score` requires the source to keep **rice >= its men** after the strike (the Tokugawa rule, #48), and Kaga, just filled with men after taking fief 3, cannot also carry its 10 days (#82). That rule guards the AI's gate, which reads min(rice, men) against its share line, so the shield needed is rice up to the share line of the source's enemy neighbours, not all its men (the same reasoning as #86's mode 6; here about 111). `expand.SHIELD_LINE` (`long_game --shield-line 1`): the source keeps rice >= min(its men, its enemies' share line); and `strike_ok`'s top-up now covers the men the fief holds, not the line's (an #82 slip).

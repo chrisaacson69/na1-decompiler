@@ -445,6 +445,55 @@ class Charge:
         return ("pass",)
 
 
+class KeepAway:
+    """The rice drain (Chris, 2026-11-20, #91): a nominal force plays keep-away for the 30 days, so the
+    defender eats ceil(men/15) of its own rice a day (consume_daily_battle_rice $830B) and the next wave finds
+    it starving (the morning check, outcome 4). Deploy on the strip cells farthest from the enemy commander;
+    each day every unit steps to the free neighbouring cell farthest from the nearest enemy unit (no closer
+    than now), and never attacks."""
+
+    def __init__(self):
+        self.log = []
+
+    def deploy(self, m):
+        side = m.cur_combat_side
+        es = side ^ 1
+        T.set_combat_arena_rect_by_approach(m)
+        strip = [c for c in CELLS if T.is_coord_in_combat_rect(m, *c) and not T.is_map_cell_blocked(m, *c)
+                 and not T.tile_blocked_for_placement(m, *c) and not T.is_any_unit_at_tile(m, *c)]
+        target = _cell(m, es, 0) if m.is_unit_present(es, 0) else None
+        if not strip or target is None:
+            T.ai_place_combat_units_random_or_smart(m, T.set_combat_arena_rect_by_approach(m))
+            return
+        dist = _distances(m, target)
+        far = sorted(strip, key=lambda c: (-dist.get(c, 99), c))
+        for slot in range(5):
+            if not m.is_unit_present(side, slot):
+                continue
+            m.cur_combat_unit_slot = slot
+            for c in list(far):
+                if T.commit_unit_dest_tile_if_valid(m, *c):
+                    far.remove(c)
+                    break
+        self.log.append(dict(target=target))
+
+    def act(self, m, day, slot):
+        side = m.cur_combat_side
+        es = side ^ 1
+        here = _cell(m, side, slot)
+        foes = [_cell(m, es, s) for s in range(5) if m.is_unit_present(es, s)]
+        if not foes:
+            return ("pass",)
+        dists = [_distances(m, f) for f in foes]
+        near = lambda c: min(d.get(c, 99) for d in dists)
+        now = near(here)
+        best = max(((near(n), n) for n in NB[here] if not T.is_any_unit_at_tile(m, *n)
+                    and not T.is_map_cell_blocked(m, *n)), default=None)
+        if best and best[0] > now:
+            return ("move",) + best[1]
+        return ("pass",)
+
+
 # ---------------------------------------------------------------------------- Assign
 def assign(split):
     """An Assign made before the battle (effect_assign bank 1 $AC11 -> commit_arms_record_from_buffer
