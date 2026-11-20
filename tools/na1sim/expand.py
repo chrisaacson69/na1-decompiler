@@ -2834,6 +2834,32 @@ def recover_rung(m, idx):
     return True
 
 
+# The defensive Assign (Chris, 2026-11-20, #100: "poor Hojo, he went with the army and lost; reassign if the fief
+# is not SAFE; 100/0 might be fine for now"). A capital left in an attack's 1/99 split defends with a 1%
+# commander, and at the capital his death is the faction (Hojo 3019: 9 men beside a 21-man commander). DEF_ASSIGN:
+# a capital that is not SAFE, its commander row under 10% of the army (an attack's 1/99), Assigns 100/0.
+DEF_ASSIGN = False
+DEF_LOG = []
+
+
+def def_assign(m, idx):
+    if not m.is_capital(idx) or fief_state(m, idx) == SAFE:
+        return False
+    base = M.PROVINCE_UNIT_TYPE_PCT + idx * 5
+    cur = [m.r8(base + i) for i in range(5)]
+    total = sum(cur)
+    if not total or cur[0] * 10 >= total:       # an attack's 1/99, not the scenario's 20x5 (the first try fired on
+        return False                            # turn 1 everywhere and lost 14, z -1.9)
+    from . import vmprims as P
+    split = [total, 0, 0, 0, 0]
+    if not P.assign_reachable(m, idx, split):
+        return False
+    if P.driver_assign(m, idx, split):
+        DEF_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, cur[0]))
+        return True
+    return False
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -2858,6 +2884,8 @@ def expand_policy(m, idx, rng):
     if MORALE_GUARD and morale_guard(m, idx):
         return
     if RECOVER and recover_rung(m, idx):
+        return
+    if DEF_ASSIGN and def_assign(m, idx):
         return
     if CLAMP_SPEND and clamp_spend(m, idx):
         return

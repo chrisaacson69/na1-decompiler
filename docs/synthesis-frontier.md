@@ -91,6 +91,10 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #100 — The defensive Assign: a capital out of an attack's split costs more turns than it saves (Chris, 2026-11-20)
+
+Chris, on Hojo 3019 (#99): *poor Hojo, he went with the army and lost; it brings up reassigning if the fief is not SAFE; 100/0 might be fine for now.* `expand.DEF_ASSIGN` (`long_game --def-assign 1`; off): a capital that is not SAFE spends its turn on an Assign to 100/0 (every man in the lord's unit). First with the commander row under half the army: **169 of 240** (against #99's 183: saved 21, lost 35, z −1.9), 416 Assigns in 228 games, nearly all on turn 1: every capital starts in the scenario's 20 × 5 (the split the defence doctrine does best with, #43) and many are COMING on turn 1, which they then spent reshaping instead of hiring (Hojo 3019 died on turn 1 instead of fleeing at year 18). Then only under 10% (an attack's 1/99): **179** (saved 6, lost 10, z −1.0), 203 Assigns in 148 games: a capital that is also the striker swings between the attack's split and the defence's, each swing a turn. With #99's Flee the 1% commander runs instead of dying, which covers the case at no cost of turns. Off.
+
 ### #99 — The 180 run read by start: the revolts are the fluke, and the Flee that missed. 183 of 240 (Chris, 2026-11-20)
 
 Chris read #95's run (180) start by start: Uesugi a revolt (a won game that revolted after unifying) and a turn-1 invasion, so maxed if the revolt is the 1-in-1,000; Hojo 8 turn-1 invasions (parked until tactics), a revolt, and a year-18 invasion at 2 fiefs (*were they disconnected so he could not flee?*); Asakura 3013's 5-fief invasion (#97's output wipe); Imagawa's early losses and eight age-outs at 2-12 fiefs; *more revolts than I would like*.
