@@ -91,6 +91,17 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #101 — The early one-fief deaths, traced turn by turn: the tax rung crept two points a turn. 185 of 240 (Chris, 2026-11-20)
+
+Chris, reading #99's run (183): *we optimized this pretty hard, but concrete examples can fill in details; we only have to play 3-4 years.* `earlydeaths.py`: every death after our first turn and before year 4 (17), each turn's action and state and every battle at our fief. **The tax rung creeps**: Asai 10/3019 raised the tax 20 → 44 on turn 1 (loyalty 58 → 45, just under the cliff 46), then 2 points a turn, 44 → 55 over six turns, because a 2-point raise on 45 loyalty drains 45 × 2% = 0, which keeps the rung's test (loyalty after the drain at least the cliff − 1) true; all the while COMING, a man short of its line (58 against 59), with 58-138 gold to hire him. The same in 4/3004 (six turns), 4/3008, 5/3015, 15/3016. Chris: *you lose stat points each time you raise it, too* (each raise drains loyalty and wealth, `econ.tax_effect`, and costs the lord a point of charisma, `set_tax` $9A1B); *those struggling to get high taxes need a better player that takes their position into account.* `expand.TAX_MIN_STEP` (`long_game --tax-min-step N`): the rung fires only for a raise of N points or more, or to the cap.
+
+| the 12 live starts, 240 games | won | paired | invaded | win year |
+|---|---|---|---|---|
+| #99 (`--preset best`) | 183 | | 25 | 26 / 30 / 34 |
+| **+ tax step 5** | **185** | saved 5, lost 3, z +0.7 | 23 | 25 / 29 / 34 |
+
+10/3019 and 4/3004 survive their first five years. **Promoted:** `--preset best` adds `--tax-min-step 5`. The second pattern in the traces: 4/3008, 5/3015, 15/3016 were COMING and one man short of the line, and #87's threat-first did not fire because no neighbour had picked them yet (`threats` empty): #102.
+
 ### #100 — The defensive Assign: a capital out of an attack's split costs more turns than it saves (Chris, 2026-11-20)
 
 Chris, on Hojo 3019 (#99): *poor Hojo, he went with the army and lost; it brings up reassigning if the fief is not SAFE; 100/0 might be fine for now.* `expand.DEF_ASSIGN` (`long_game --def-assign 1`; off): a capital that is not SAFE spends its turn on an Assign to 100/0 (every man in the lord's unit). First with the commander row under half the army: **169 of 240** (against #99's 183: saved 21, lost 35, z −1.9), 416 Assigns in 228 games, nearly all on turn 1: every capital starts in the scenario's 20 × 5 (the split the defence doctrine does best with, #43) and many are COMING on turn 1, which they then spent reshaping instead of hiring (Hojo 3019 died on turn 1 instead of fleeing at year 18). Then only under 10% (an attack's 1/99): **179** (saved 6, lost 10, z −1.0), 203 Assigns in 148 games: a capital that is also the striker swings between the attack's split and the defence's, each swing a turn. With #99's Flee the 1% commander runs instead of dying, which covers the case at no cost of turns. Off.
