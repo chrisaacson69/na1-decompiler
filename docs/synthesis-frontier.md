@@ -91,6 +91,21 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #99 — The 180 run read by start: the revolts are the fluke, and the Flee that missed. 183 of 240 (Chris, 2026-11-20)
+
+Chris read #95's run (180) start by start: Uesugi a revolt (a won game that revolted after unifying) and a turn-1 invasion, so maxed if the revolt is the 1-in-1,000; Hojo 8 turn-1 invasions (parked until tactics), a revolt, and a year-18 invasion at 2 fiefs (*were they disconnected so he could not flee?*); Asakura 3013's 5-fief invasion (#97's output wipe); Imagawa's early losses and eight age-outs at 2-12 fiefs; *more revolts than I would like*.
+
+**The revolts** (`capprobe3.py`): past turn 1, all four came to an empire of 1-2 fiefs in years 11-18 (2/3004, 10/3011, 15/3008, 5/3012), at capital morale 52 / 86 / 56 / 401 and charisma 93 / 77 / 125 / 110: neither roll can fail at 45 or more (`_roll_failed`), so each was the 1-in-1,000 draw (#85's estimate, about 5% of games), and a one-fief empire's only fief is its capital, where the rebels' morale (the header less ours, about 1,500) wins.
+
+**Hojo 3019**: Shinano (15) was his and bordered the battle fief, but the Flee never fired (#96's `Fleeing`, on in `h96_fb`). The day-by-day trace: our commander held **9 men** (the capital still in an attack's 1/99 split, #75); the enemy's 21-man commander closed over eight days, and on day 9 the doctrine sent ours to attack him and he died; the lethal test simulated only the enemy's blows. Fixed: units within two cells count (the attacker side acts first each day), and the commander also flees on **the ROM's own flight test for a lord** ($A84D: his men doubled under the enemy men next to him; here 18 against 21, a unit more than twice his strength). Hojo 3019 then flees in year 18, reaches 5 fiefs and lasts to year 43.
+
+| the 12 live starts, 240 games | won | paired | invaded | revolts |
+|---|---|---|---|---|
+| #95 (`--preset best`) | 180 | | 29 | 6 |
+| **+ Flee (lethal, or the ROM's test)** | **183** | saved 5, lost 2, z +1.1 | 25 | 4 |
+
+Tokugawa 20 of 20; start 5 16 → 18. **Promoted:** `--preset best` adds `--flee 1`. **Open:** the capital that keeps an attack's 1/99 split defends with a 1% commander, and at the capital his death is the faction: reshaping it back, priced for the turn it costs.
+
 ### #98 — Disaster cliffs: a recovery that works, and cliffs that are rare (Chris, 2026-11-20)
 
 Chris: *the formula is less useful, but we need recovery.* `expand.RECOVER` (`long_game --recover 1`; off): a fief at output 0 Grows first with the gold over its upkeep reserve (after the wipe the drain takes from a loyalty of 0, so it costs nothing; and the ladder no longer spends the wiped fief's every turn on a peasant Give the cartridge refuses); a rank-0 `recover` ledger line has the donors fund its Grow and upkeep; in Spring and Summer a rank-0 `upkeep` line covers any fief whose gold and this Fall's income will not pay the army's upkeep (4/3013's 397 → 20 men). 4/3013: the capital Grew 685 gold in year 31 (output 0 → 210) and the game ends in old age at year 45 instead of an invasion at 31.

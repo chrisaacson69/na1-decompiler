@@ -469,9 +469,15 @@ class Fleeing:
         from . import forecast
         es = side ^ 1
         here = _cell(m, side, 0)
-        adj = [s for s in range(5) if m.is_unit_present(es, s) and _cell(m, es, s) in NB[here]]
-        if not adj:
+        dist = _distances(m, here)               # the attacker side acts first each day: a unit two cells off
+        adj = [s for s in range(5) if m.is_unit_present(es, s) and dist.get(_cell(m, es, s), 99) <= 2]
+        if not adj:                              # closes and strikes before the commander's next turn
             return False
+        # the ROM's own flight test for a lord ($A84D): his men doubled under the enemy men next to him (Hojo
+        # 3019: a 9-man commander, the capital still in an attack's 1/99 split, beside a 21-man commander)
+        touching = sum(m.r16(m.unit_strength_ptr(es, s)) for s in adj if _cell(m, es, s) in NB[here])
+        if 2 * m.r16(m.unit_strength_ptr(side, 0)) < touching:
+            return True
         with forecast.held(m):
             for s in adj:
                 m.cur_combat_side, m.cur_combat_unit_slot = es, s

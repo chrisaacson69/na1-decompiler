@@ -284,7 +284,7 @@ def main():
     ap.add_argument("--rice-logistics", type=int, help="1: Summer rice spare by Chris's rule, and rice rides with gold to the attack line (#83)")
     ap.add_argument("--rice-days", type=int, default=10, help="N: an attack must carry N days of battle ration (#82; default 10 since #84, 0: off)")
     ap.add_argument("--plan", default="default", help="strike|hold|run|gate|none: the start fief's fixed defence plan (Echigo 1, Mino 8; plans.py, #44). Default (#84): strike at Echigo, none elsewhere")
-    ap.add_argument("--preset", help="best: the best measured player's flags (#84: #80's set; #86: + --morale-guard 50 --shield 6; #87: + --threat-first 2; #88: + --clamp-spend 1; #90: + --shield-line 1; #92: + --capital-min 150; #94: + --risk 2; #95: + --striker-morale 1; --rice-days 10 and the Echigo plan are defaults), set where not given")
+    ap.add_argument("--preset", help="best: the best measured player's flags (#84: #80's set; #86: + --morale-guard 50 --shield 6; #87: + --threat-first 2; #88: + --clamp-spend 1; #90: + --shield-line 1; #92: + --capital-min 150; #94: + --risk 2; #95: + --striker-morale 1; #99: + --flee 1; --rice-days 10 and the Echigo plan are defaults), set where not given")
     ap.add_argument("--waves", type=int, help="1: a fief with spare men >= 0.5x a target's garrison attacks first and an unacted neighbour of the target finishes it, priced by MIRR from waves_q.json (#80)")
     ap.add_argument("--dump", type=int, help="1: in the fought attack, the held-back commander bribes away the side's gold over its men (#79)")
     ap.add_argument("--coord-wall", type=int, help="1: follow-ups only for a target past the header wall, and the planner prices such targets at the capped line (#76)")
@@ -308,7 +308,8 @@ def main():
                          shield_line=1,                          # #90: the source's rice shield to the share line
                          capital_min=150,                        # #92: the capital keeps and hires to 150 men
                          risk=2,                                 # #94: attacks priced by outcome, measured hazards
-                         striker_morale=1).items():              # #95: the striker under the morale floor gives first
+                         striker_morale=1,                       # #95: the striker under the morale floor gives first
+                         flee=1).items():                        # #99: the capital's lord Flees when outmatched
             if not getattr(a, k):
                 setattr(a, k, v)
     fiefs = [int(x) for x in a.fiefs.split(",")]
