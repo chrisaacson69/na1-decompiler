@@ -145,6 +145,8 @@ def one(job):
     X.RISK = int(job[57]) if len(job) > 57 and job[57] else 0                # #94 (2: the second calibration round)
     X.CAPITAL_NEED = bool(len(job) > 58 and job[58])                         # #95
     X.STRIKER_MORALE = bool(len(job) > 59 and job[59])                       # #95
+    X.RECOVER = bool(len(job) > 62 and job[62])                              # #98
+    X.RECOVER_LOG.clear()
     X._RISK_OK.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
@@ -218,7 +220,7 @@ def one(job):
     tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG],
                  stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG],
                  roi=[list(c) for c in X.ROI_LOG], mirr=[list(c) for c in X.MIRR_LOG],
-                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], rice=[list(c) for c in X.RICE_LOG], guard=[list(c) for c in X.GUARD_LOG], clamp=[list(c) for c in X.CLAMP_LOG], siege=[list(c) for c in X.SIEGE_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
+                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], rice=[list(c) for c in X.RICE_LOG], guard=[list(c) for c in X.GUARD_LOG], clamp=[list(c) for c in X.CLAMP_LOG], recover=[list(c) for c in X.RECOVER_LOG], siege=[list(c) for c in X.SIEGE_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0), tally
 
 
@@ -265,6 +267,7 @@ def main():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--recover", type=int, help="1: disaster cliffs: a fief at output 0 Grows first, donors fund its Grow and any fief's coming upkeep (#98)")
     ap.add_argument("--burn", type=int, help="1: a defence holding under half the attacker's men bribes its gold away (#96)")
     ap.add_argument("--flee", type=int, help="1: a losing capital's lord burns the gold and Flees to an owned neighbour ($AAA7, #96)")
     ap.add_argument("--striker-morale", type=int, help="1: a striker short of its line and under the morale floor gives to its men first (#95)")
@@ -312,7 +315,7 @@ def main():
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

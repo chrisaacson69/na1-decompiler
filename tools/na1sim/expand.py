@@ -1729,6 +1729,17 @@ def empire_ledger(m, owner):
         low = min(m.r16(f + M.F_LOYALTY), m.r16(f + M.F_WEALTH))
         fixes = CLIFF_GIVE * ((men > 0 and m.r16(f + M.F_MORALE) < cliff) + (low < cliff))
         st = fief_state(m, i)
+        if RECOVER and (m.r16(f + M.F_OUTPUT) == 0 or m.r16(f + M.F_LOYALTY) == 0):
+            # #98: a disaster cliff (output 0 wipes loyalty and wealth, $D836's clear_econ_stats_if_no_output):
+            # the gold for its Grow and its upkeep, ahead of everything
+            lines.append(dict(rank=0, fief=i, kind="recover", gold=max(0, RECOVER_GROW + men // 2 + 20 - gold),
+                              rice=max(0, men - m.r16(f + M.F_RICE)), men=0, roi=0))
+            continue
+        if RECOVER and m.season in (0, 1) and gold < men // 2 + 20:
+            gy = harvest_forecast(m, i)[0]
+            if gold + gy < men // 2 + 20:       # #98: the Fall's upkeep would cut the army (consume_province_army_upkeep)
+                lines.append(dict(rank=0, fief=i, kind="upkeep", gold=men // 2 + 20 - gold - gy, rice=0, men=0, roi=0))
+                continue
         if st != SAFE and men < own_need(m, i):
             gap = own_need(m, i) - men
             lines.append(dict(rank=0 if st == COMING else 1, fief=i, kind=st.lower(),
@@ -2799,6 +2810,30 @@ def siege_strike(m, idx, rng):
     return True
 
 
+# Disaster cliffs (Chris, 2026-11-20, #98: "we need recovery"). Output worn to 0 by typhoons, plague and riots
+# wipes loyalty and wealth (clear_econ_stats_if_no_output), stops the income and refuses every Give to the
+# peasants (driver_give $AA1F); the Fall's upkeep then cuts the army to what its gold can pay (4/3013: 397 ->
+# 20 men, the capital taken). RECOVER: the fief Grows first (cheap after the wipe: the drain takes from a
+# loyalty of 0), the empire's donors fund its Grow and upkeep (a rank-0 "recover" line), and any fief whose gold
+# and this Fall's income will not cover its upkeep gets the difference (a rank-0 "upkeep" line).
+RECOVER = False
+RECOVER_GROW = 600
+RECOVER_LOG = []
+
+
+def recover_rung(m, idx):
+    from . import policy
+    f = m.fief(idx)
+    if m.r16(f + M.F_OUTPUT):
+        return False
+    spend = min(m.r16(f + M.F_GOLD) - m.r16(f + M.F_MEN) // 2 - 1, RECOVER_GROW * 2)
+    if spend < SEND_MIN:
+        return False
+    policy.grow_output(m, idx, spend)
+    RECOVER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, spend, m.r16(f + M.F_OUTPUT)))
+    return True
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -2821,6 +2856,8 @@ def expand_policy(m, idx, rng):
                 send(m, idx, pm[1], pm[2], pm[3])
             return
     if MORALE_GUARD and morale_guard(m, idx):
+        return
+    if RECOVER and recover_rung(m, idx):
         return
     if CLAMP_SPEND and clamp_spend(m, idx):
         return
