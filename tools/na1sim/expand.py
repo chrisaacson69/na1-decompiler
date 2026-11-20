@@ -955,6 +955,9 @@ def coord_act(m, idx, rng):
     if m.fief_owner(dst) == owner or dst not in targets(m, idx):
         return False
     rice = min(men, m.r16(m.fief(idx) + M.F_RICE))
+    if RICE_DAYS and rice < rice_for(men):
+        COORD_LOG.append((yr, m.season, idx, dst, kind, "no rice"))
+        return False
     with forecast.held(m):                      # a second wave was priced from the lab's table (#80): no re-check
         ok = kind == "wave" or player_war(m, idx, dst, men, rice)
     if not ok:
@@ -985,6 +988,16 @@ def coord_after_win(m, idx, t, may=True):
         COORD_LOG.append((*key, idx, t, None, "unmended"))
 
 
+RICE_DAYS = 0                           # #82: an attack carries at least this many days of ration (rice >= days x
+                                        # ceil(men/15), consume_daily_battle_rice $830B); the War command carries at
+                                        # most one rice a man (about 15 days). 0: off. 31 of 375 attacks went out
+                                        # with under 2 days, all lost by starvation (outcome 4), every man to the defender.
+
+
+def rice_for(men):
+    return RICE_DAYS * -(-men // 15) if RICE_DAYS else 1
+
+
 def score(m, idx, move):
     """(ok, value) of a move. ok: it wins and every owned fief is SAFE after it. value, in order:
     the owned fiefs left with no enemy neighbour, the target's harvest, the rice carried (it lands
@@ -992,6 +1005,8 @@ def score(m, idx, move):
     from . import ev
     t, men, rice, led = move
     owner = m.fief_owner(idx)
+    if RICE_DAYS and min(rice, m.r16(m.fief(idx) + M.F_RICE), men) < rice_for(min(men, war_cap(m, idx))):
+        return False, None
     before = empire(m, owner) if LOCAL_GATE else {}
     may = COORD and _coord_ok(m, owner, t)
     with forecast.held(m):
@@ -1252,6 +1267,8 @@ def strike_ok(m, idx, t, line):
     with forecast.held(m):
         m.w16(f + M.F_MEN, max(m.r16(f + M.F_MEN), line))
         m.w16(f + M.F_GOLD, max(m.r16(f + M.F_GOLD), line))
+        if RICE_DAYS:                           # and the rice to carry, beside the shield it keeps
+            m.w16(f + M.F_RICE, max(m.r16(f + M.F_RICE), line + rice_for(line)))
         for mv in candidates(m, idx):
             if mv[0] == t and score(m, idx, mv)[0]:
                 return True
@@ -2149,6 +2166,8 @@ def wave_strike(m, idx, rng):
     if not plan:
         return False
     T, B, m1, m2, p, x = plan
+    if RICE_DAYS and min(m1, m.r16(m.fief(idx) + M.F_RICE)) < rice_for(m1):
+        return False
     if FOUGHT and CHARGE and not split_ready(m, idx, T):
         from . import vmprims
         if vmprims.driver_assign(m, idx, desired_split(m, idx, T)):
@@ -2199,7 +2218,9 @@ def attack_line_mirr(m, owner, r):
     gold = m.r16(m.fief(S) + M.F_GOLD)
     rate = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10
     return dict(rank=3, fief=S, kind="attack", T=T, line=p["line"], send=p["send"],
-                gold=max(0, int(p["short"] * rate) + 1 + p["send"] - gold), rice=0, men=p["short"], roi=p["mirr"])
+                gold=max(0, int(p["short"] * rate) + 1 + p["send"] - gold),
+                rice=max(0, p["line"] - p["send"] + rice_for(p["send"]) - m.r16(m.fief(S) + M.F_RICE)) if RICE_DAYS else 0,
+                men=p["short"], roi=p["mirr"])
 
 
 def _do_send(m, idx, e, d, rice, gold):

@@ -91,6 +91,21 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #82 — Attacks went out without rice: 40 of 78 lost attacks were starved, every army handed to the defender. Carrying 10 days: 93 → 135 (Chris, 2026-11-20)
+
+Chris, on #81: *total econ is a better measure than the average; I am concerned about the games where the player has a greater econ than the rest of the board and still loses: we are not spending well.* In #80's race (240 games), **51 of 147 lost games had our total economy (fiefs × the mean index) above every rival's combined** in some Winter, for 1-18 years; 13 lost games reached 16 of 17 fiefs, six ending at 16 against one rival. One followed through (`lastfief.py`, `kaga.py`, `kaga2.py`; 12/3012): the last rival held Noto (0), a capital whose one owned neighbour was Kaga (3), Chris's single-entry 0-3 border. Year 32: Noto 242 men, Kaga 1,842, line 872, MIRR 0.136 against r 0.091, `strike_ok`; Kaga struck three times and lost three: Winter y32, 570 men and 228 rice against a lord-led castle at **morale 363**, our strikers ground down, the 30-day timeout (outcome 3); Spring y33, 236 men with **1 rice**, starved (outcome 4) and all 236 joined Noto (40 → 276); Fall y33, 650 with 1 rice, the same (276 → 926 = 276 + 650). Noto capped at 950 against Kaga's header 1,980 and the planner never could again. In the lab Kaga → Noto wins 28-30 of 30 at 2.35× with the spread split (the 1/99 split loses all 30 by our commander's death on Noto's map: Chris's open map that corners the 1).
+
+**The census** (`ricecensus.py`, 375 real attacks in 21 games, rice as days of ration, rice / ceil(men/15)): **under 2 days, 31, all lost by starvation**; 2-10 days 17 won, 16 lost (9 starved); 10-30 days 280 won, 31 lost. **40 of the 78 lost attacks starved**, and a starved army garrisons the defender whole ($E03C). The what-if battle (`player_war` with no rng) never read rice, `candidates` let the rice run down to 1, and the only rice rule was the shield the source keeps.
+
+`expand.RICE_DAYS` (`long_game --rice-days N`; off): `score` refuses a move carrying under N days (`rice_for(men)` = N × ceil(men/15); the War command carries at most a rice a man, about 15 days); `strike_ok` tests the line with that rice in hand beside the shield; the MIRR attack line asks the donors for the rice shortfall with the gold; the two-wave strike and its pledged second wave need it too. At 10 days, the 21 games: 331 attacks, 284 won, none starved.
+
+| the 12 live starts, 240 games, skill 2 | won | paired | invaded | lord died | lost with the bigger economy | lost at 16 fiefs | attacks won / made |
+|---|---|---|---|---|---|---|---|
+| #80 (dump + waves) | 93 | | 71 | 68 | 51 | 13 | 2,775 / 3,332 |
+| **+ rice 10 days** | **135** | **saved 48, lost 6, z +5.7** | 60 | 37 | 23 | 1 | 2,749 / 3,108 |
+
+By start (#80 → rice): Uesugi 7 → 10, 2: 2 → 2, 4: 8 → 13, 5: 6 → 15, 6: 6 → 9, 7: 18 → 19, 10: 11 → 15, 12: 8 → 11, 13: 4 → 7, 14: 7 → 10, 15: 5 → 5, Owari 11 → 19. Uesugi with the Echigo plan (#81) as well: **15 of 20**. Much of what #69-#80 read as the late stall was the empire feeding its last rivals whole starved armies until they capped. **Open:** the defender's morale (363 here) is not in the 2.35× sizing; the mid-game revolts; the 23 games still lost with the bigger economy.
+
 ### #81 — Uesugi's openings: the Echigo plan was never in the whole-game runs; with it, 7 of 8 year-1 invasions are held (Chris, 2026-11-20)
 
 Chris, reading Uesugi's 20 games in #80's race: *7 won (the text says 'lord died'), 8 invaded before he could play, Hojo with a grudge; we have a specific strategy for Echigo, hitters 2 squares from his 2 possible leader starts, which should execute the leader or at least win with plenty of men: why is it not lucky? The other 5 die of age at 3-16 fiefs. We can get most of that 40% to survive; what we have been working on is the last 5.* (A won game is reported by its end, the lord's death at year 41-45, with `unified` the year it held all 17.) The 8 invasions: Hojo (attacker 2) in Spring of year 1 before Uesugi's first command, 91-128 men committed against 59-74 (3003, 3005, 3007, 3016), and attacker 15 or 7 against a garrison of 7-35 (3013, 3014, 3015, 3019).
