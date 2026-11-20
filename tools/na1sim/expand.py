@@ -955,8 +955,8 @@ def coord_act(m, idx, rng):
     if m.fief_owner(dst) == owner or dst not in targets(m, idx):
         return False
     rice = min(men, m.r16(m.fief(idx) + M.F_RICE))
-    with forecast.held(m):
-        ok = player_war(m, idx, dst, men, rice)
+    with forecast.held(m):                      # a second wave was priced from the lab's table (#80): no re-check
+        ok = kind == "wave" or player_war(m, idx, dst, men, rice)
     if not ok:
         COORD_LOG.append((yr, m.season, idx, dst, kind, "no longer wins"))
         return False
@@ -2040,6 +2040,131 @@ def attack_mirr(m, owner, S, T, bill0, r):
     return dict(send=send, line=line, short=short, mirr=mirr(cin, tv, r, cout))
 
 
+# Two waves (Chris, 2026-11-19, #80): a fief that cannot strike alone but holds spare men over its own line of at
+# least WAVE_MIN x the target's garrison attacks first, and an owned neighbour of the target that has not acted
+# yet this season, also from its own spare, attacks what is left on its turn (a pledge, as #76's follow-ups).
+# Each keeps its own line, so the sources keep their garrisons. Priced from the battle lab (waves_q.json,
+# #77/#79: P(the target falls) and the men kept per man sent, by skill and r1 + r2) as one MIRR: both waves'
+# men invested, the prize's treasury, income and freed army bill on a win, every man lost on a loss.
+WAVES = False
+WAVE_MIN = 0.5                          # Chris: no less than 1:2
+WAVE_TABLE = "heavy+dump"               # the lab variant the doctrine fights (1/99, the commander dumps the gold)
+WAVE_LOG = []                           # (year, season, S, helper, T, m1, m2, p, mirr, r)
+_WAVES_Q = {}
+
+
+def _waves_q(skill):
+    if not _WAVES_Q:
+        import json, os
+        _WAVES_Q.update(json.load(open(os.path.join(os.path.dirname(__file__), "waves_q.json"))))
+    cells = _WAVES_Q.get(str(skill), {}).get(WAVE_TABLE, {})
+    return [(tuple(float(x) for x in k.split("+")), v) for k, v in cells.items()]
+
+
+def wave_odds(skill, r1, r2):
+    """The best measured cell no stronger in either wave -> (p, kept per man sent) or None."""
+    best = None
+    for (a1, a2), v in _waves_q(skill):
+        if a1 <= r1 and a2 <= r2 and (best is None or v["p"] > best[0]):
+            best = (v["p"], v["kept"])
+    return best
+
+
+def _spare(m, i):
+    keep = own_need(m, i)
+    if m.is_capital(i) and len(owned(m, m.fief_owner(i))) > 1:
+        keep = max(keep, capital_line(m, i))
+    return min(m.r16(m.fief(i) + M.F_MEN) - keep, war_cap(m, i))
+
+
+def wave_plan(m, idx, r):
+    """-> (T, helper, m1, m2, p, mirr) for the best two-wave attack from idx, or None."""
+    owner = m.fief_owner(idx)
+    acted = getattr(m, "acted", set())
+    s1 = _spare(m, idx)
+    if s1 < MARCH_MIN or not m.r16(m.fief(idx) + M.F_RICE):
+        return None
+    bill0 = army_bill(m, owner)[0]
+    rate, pr = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10, _rice_price(m)
+    best = None
+    for T in targets(m, idx):
+        ft = m.fief(T)
+        dmen = max(1, m.r16(ft + M.F_MEN))
+        r1 = s1 / dmen
+        if r1 < WAVE_MIN:
+            continue
+        for B in m.neighbor_rows.get(T, []):
+            if (B == idx or B in acted or m.fief_owner(B) != owner or m.province_ai_state(B) == M.EMPTY
+                    or fief_state(m, B) != SAFE or not m.r16(m.fief(B) + M.F_RICE)):
+                continue
+            s2 = _spare(m, B)
+            if s2 < MARCH_MIN:
+                continue
+            odds = wave_odds(m.skill, r1, s2 / dmen)
+            if not odds:
+                continue
+            p, ks = odds
+            kept = int((s1 + s2) * ks)
+            with forecast.held(m):              # the prize as ours with the survivors; the sources at their lines
+                m.w16(m.fief(idx) + M.F_MEN, m.r16(m.fief(idx) + M.F_MEN) - s1)
+                m.w16(m.fief(B) + M.F_MEN, m.r16(m.fief(B) + M.F_MEN) - s2)
+                m.w8(M.FIEF_TO_DAIMYO_MAP + T, owner)
+                m.w8(M.PROVINCE_AI_STATE + T, M.PLAYER_DIRECT)
+                m.w8(M.FIEF_IS_CAPITAL + T, 0)
+                m.w8(M.FIEF_TAX_RATE + T, min(m.r8(M.FIEF_TAX_RATE + T), 30))
+                m.w16(ft + M.F_MEN, kept)
+                tol = RANK[tolerance(m, owner)]
+                states = empire(m, owner)
+                if any(RANK[st] > (tol if i == T else 0) for i, st in states.items()) or not capital_ok(m, owner):
+                    continue
+                inc_t = harvest_value(m, T)
+                freed = bill0 - (army_bill(m, owner)[0] - share_line(m, T))
+            sent = s1 + s2
+            cin, cout = [0.0] * (MIRR_H + 1), [0.0] * (MIRR_H + 1)
+            cout[0] += sent * rate
+            cin[0] += p * (m.r16(ft + M.F_GOLD) + m.r16(ft + M.F_RICE) * pr + max(0, freed) * rate)
+            cout[0] += p * max(0, -freed) * rate
+            for k in range(1, MIRR_H + 1):
+                if (m.season + k) % 4 == 2:
+                    cin[k] += p * inc_t
+                    cout[k] += p * kept / 2 * (1 + pr)          # the prize's garrison eats
+            tv = p * (inc_t * _annuity(r) + kept * rate)
+            x = mirr(cin, tv, r, cout)
+            if x > r and (best is None or x > best[5]):
+                best = (T, B, s1, s2, p, x)
+    return best
+
+
+def wave_strike(m, idx, rng):
+    """The first wave and the helper's pledge -> True if the turn was taken."""
+    if getattr(m, "season", 0) not in SEASONS:
+        return False
+    owner = m.fief_owner(idx)
+    if not LOCAL_GATE and any(st != SAFE for st in empire(m, owner).values()):
+        return False
+    if fief_state(m, idx) != SAFE:
+        return False
+    r = _EMPIRE.get(owner, {}).get("r", 0.01) if EMPIRE_MIRR else 0.01
+    plan = wave_plan(m, idx, r)
+    if not plan:
+        return False
+    T, B, m1, m2, p, x = plan
+    if FOUGHT and CHARGE and not split_ready(m, idx, T):
+        from . import vmprims
+        if vmprims.driver_assign(m, idx, desired_split(m, idx, T)):
+            ASSIGNS.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, T))
+            return True
+    yr = m.r16(M.CURRENT_GAME_YEAR)
+    WAVE_LOG.append((yr, m.season, idx, B, T, m1, m2, round(p, 3), round(x, 4), round(r, 4)))
+    rice = min(m1, m.r16(m.fief(idx) + M.F_RICE))
+    LOG.append((yr, m.season, idx, T, m1, rice, False))
+    won = player_war(m, idx, T, m1, rice, rng=rng)
+    CONQ.append((yr, m.season, idx, T, m1, bool(won), fief_state(m, T) if won else None, len(owned(m, owner))))
+    if not won and m.fief_owner(T) != owner:
+        _PLEDGE[owner] = {"key": (yr, m.season), "do": {B: ("wave", T, m2)}}
+    return True
+
+
 def share_line_ai(m, T, me):
     """T's own term in ai_bill (its owner's share line against its non-own neighbours)."""
     n, o = m.r16(M.SCENARIO_FIEF_COUNT), m.fief_owner(T)
@@ -2361,7 +2486,7 @@ def expand_policy(m, idx, rng):
             elif pm[0] == "send":
                 send(m, idx, pm[1], pm[2], pm[3])
             return
-    if COORD and coord_act(m, idx, rng):
+    if (COORD or WAVES) and coord_act(m, idx, rng):
         return
     mv = best_attack(m, idx)
     if mv:
@@ -2377,6 +2502,8 @@ def expand_policy(m, idx, rng):
             coord_after_win(m, idx, mv[0], may)
         CONQ.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, mv[0], mv[1], bool(won),
                      fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
+        return
+    if WAVES and wave_strike(m, idx, rng):
         return
     if CAPITAL_FIRST and capital_hire(m, idx):
         return
