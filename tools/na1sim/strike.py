@@ -452,12 +452,13 @@ class KeepAway:
     each day every unit steps to the free neighbouring cell farthest from the nearest enemy unit (no closer
     than now), and never attacks."""
 
-    def __init__(self, charge_at=None):
+    def __init__(self, charge_at=None, dump=False):
         # charge_at (Chris: "attack on the last few turns if you don't want to feed them men"): from this day
         # the force fights as the Charge doctrine, so it wins or dies and leaves no survivors to the garrison
         self.log = []
         self.charge_at = charge_at
         self.charge = Charge(solo=True) if charge_at else None
+        self.dump = dump                        # the commander bribes away the side's gold over its men when safe
 
     def deploy(self, m):
         side = m.cur_combat_side
@@ -493,6 +494,12 @@ class KeepAway:
         dists = [_distances(m, f) for f in foes]
         near = lambda c: min(d.get(c, 99) for d in dists)
         now = near(here)
+        if self.dump and slot == 0 and now > 2:
+            sr = m.side_resource_ptr(side)
+            g = m.r16(sr + M.SR_GOLD) - m.r16(sr + M.SR_MEN)
+            alive = [s for s in range(5) if m.is_unit_present(es, s)]
+            if g >= 1 and alive:
+                return ("bribe", max(alive, key=lambda s: m.r16(m.unit_strength_ptr(es, s))), g)
         best = max(((near(n), n) for n in NB[here] if not T.is_any_unit_at_tile(m, *n)
                     and not T.is_map_cell_blocked(m, *n)), default=None)
         if best and best[0] > now:
