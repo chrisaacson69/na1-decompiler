@@ -1013,9 +1013,43 @@ PRIZE_TAX = False                       # #93: price a prize's harvests at the t
 
 
 def prize_tax(m, T, owner):
-    if PRIZE_TAX:
+    if PRIZE_TAX or RISK:
         return 30 if owner == (3 if m.r16(M.SCENARIO_FIEF_COUNT) == 17 else 20) else 55
     return min(m.r8(M.FIEF_TAX_RATE + T), 30)
+
+
+# Risk priced (Chris, 2026-11-20, #94: "the model plays it safe because it can usually find inevitability; when
+# inevitability is not there we do not gamble on our outs"; "sometimes starting wars hurts your opponents more
+# than it hurts you"). The attack's flows are weighted by outcome, each probability measured from the game itself
+# (#92's player, 3,299 battles): the battle won (p_win, the lab's table) and the prize kept, by the state it is
+# left in, within a year (SAFE 99%, HUNTABLE 97%, COMING 85% / 77% / 73% at 2-4 / 5-8 / 9+ fiefs); won and the
+# prize lost (its income and the kept men gone); the battle lost (the men sent gone, and the source lost 10%).
+# With RISK the prize may be left past the tolerance when that priced MIRR beats r; the prize is priced at its
+# true tax (55), not the conquest's 30 (#93).
+RISK = False
+RISK_HOLD = {SAFE: (.99, .99, .99), HUNTABLE: (.97, .97, .97), COMING: (.85, .77, .73)}   # round 1 (#92's games)
+RISK_SRC = .10
+RISK_ROUND2 = ({SAFE: (.95, .96, .97), HUNTABLE: (.97, .95, .97), COMING: (.76, .57, .53)}, .12)  # from round 1's own games
+_RISK_OK = {}
+
+
+def p_hold(state, fiefs):
+    table = RISK_ROUND2[0] if RISK == 2 else RISK_HOLD
+    return table[state][0 if fiefs <= 4 else 1 if fiefs <= 8 else 2]
+
+
+def risk_ok(m, idx, t):
+    """With RISK: does the priced attack from idx on t beat r? (cached per owner-season)"""
+    owner = m.fief_owner(idx)
+    key = (m.r16(M.CURRENT_GAME_YEAR), m.season, idx, t, m.r16(m.fief(idx) + M.F_MEN) // 50)
+    if key not in _RISK_OK:
+        if len(_RISK_OK) > 5000:
+            _RISK_OK.clear()
+        r = _EMPIRE.get(owner, {}).get("r", 0.01)
+        with forecast.held(m):
+            p = attack_mirr(m, owner, idx, t, army_bill(m, owner)[0], r)
+        _RISK_OK[key] = bool(p and p["mirr"] > r)
+    return _RISK_OK[key]
 
 
 def score(m, idx, move):
@@ -1029,6 +1063,7 @@ def score(m, idx, move):
         return False, None
     before = empire(m, owner) if LOCAL_GATE else {}
     may = COORD and _coord_ok(m, owner, t)
+    risky = RISK and risk_ok(m, idx, t)
     with forecast.held(m):
         if not player_war(m, idx, t, men, rice, led):
             return False, None
@@ -1037,6 +1072,8 @@ def score(m, idx, move):
         # LOCAL_GATE (#74): the source and the prize as before; every other fief no worse than it was
         allow = (lambda i: tol if i == t else 0 if i == idx else RANK[before.get(i, SAFE)]) if LOCAL_GATE             else (lambda i: tol if i == t else 0)
         clean = 1
+        if risky and RANK[states.get(t, SAFE)] > tol:   # #94: the prize's risk is in the price
+            allow = (lambda a: (lambda i: RANK[COMING] if i == t else a(i)))(allow)
         if (any(RANK[st] > allow(i) for i, st in states.items())
                 or not capital_ok(m, owner)):
             if not may or coord_fix(m, owner, allow, prize=t) is None:
@@ -2055,6 +2092,8 @@ def attack_mirr(m, owner, S, T, bill0, r):
         m.w16(ft + M.F_MEN, kept)
         inc_t = harvest_value(m, T)
         freed = bill0 - (army_bill(m, owner)[0] - share_line(m, T))
+        prize_state = fief_state(m, T) if RISK else SAFE
+        nfiefs = len(owned(m, owner))
         hub = 0
         if EMPIRE_HUB:
             m.w16(fs + M.F_MEN, max(0, line - send))
@@ -2079,7 +2118,26 @@ def attack_mirr(m, owner, S, T, bill0, r):
     tv = inc_t * _annuity(r) + kept * rate
     if EMPIRE_HUB and hub > 0:
         cin[ka] += hub * rate * HUB_W / 100
-    if EMPIRE_LOSS:
+    if RISK:
+        pw = p_win(m.skill, send / max(1, proj))
+        ph = p_hold(prize_state, nfiefs)
+        # won, prize lost: the treasury and freed bill at the conquest stay; the prize's income and men go
+        lcin = list(cin)
+        for k in range(ka + 1, MIRR_H + 1):
+            if (s0 + k) % 4 == 2:
+                lcin[k] = max(0.0, lcin[k] - inc_t)
+        # battle lost: every man sent, and the source lost RISK_SRC of the time (its harvest and men)
+        bin_, bout = [0.0] * (MIRR_H + 1), [0.0] * (MIRR_H + 1)
+        bout[0] += send * rate
+        for k in range(1, MIRR_H + 1):
+            if (s0 + k) % 4 == 2:
+                dm = short if k <= ka else short - send
+                (bout if dm > 0 else bin_)[k] += abs(dm) / 2 * (1 + p)
+        src_val = harvest_value(m, S) * _annuity(r) + max(0, m.r16(fs + M.F_MEN) - send) * rate
+        cin = [pw * (ph * a + (1 - ph) * b) + (1 - pw) * c for a, b, c in zip(cin, lcin, bin_)]
+        cout = [pw * a + (1 - pw) * c for a, c in zip(cout, bout)]
+        tv = pw * ph * tv - (1 - pw) * (RISK_ROUND2[1] if RISK == 2 else RISK_SRC) * src_val
+    if EMPIRE_LOSS and not RISK:
         pw = p_win(m.skill, send / max(1, proj))
         lin, lout = [0.0] * (MIRR_H + 1), [0.0] * (MIRR_H + 1)
         lout[0] += send * rate

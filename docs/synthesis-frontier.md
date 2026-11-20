@@ -91,6 +91,22 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #94 — Risk priced, not gated: attacks weighted by measured outcomes, the hazards calibrated from the games. 178 of 240 (Chris, 2026-11-20)
+
+Chris, on #93: *keep the tax fix, it is correct; not assessing risk properly is the stronger signal. The deadline rule is ad hoc. This is like pricing the army size, a wide range of acceptable values; sometimes keeping your neighbours down and the world at war instead of economy lets you grow. The model plays it safe because it can usually find inevitability; many of our hurdles are when inevitability is not there and we do not gamble on our outs. Sometimes starting wars hurts your opponents more than it hurts you.* The principle: price risk as expected cash flows, every probability measured from the sim's own games (as the battle lab priced the battles), and let the price replace the gate.
+
+**The hazards** (#92's player, 3,299 battles): battle lost 4-5%; prize lost within a year by the state it is left in, SAFE about 1%, HUNTABLE 2-5%, COMING 15% / 23% / 27% at 2-4 / 5-8 / 9+ fiefs; the source lost within two seasons, 0.2-1.1% after a won battle, 7-12% after a lost one. `expand.RISK` (`long_game --risk N`): `attack_mirr` weights its flows by outcome: the battle won (`p_win`, the lab's table) and the prize kept (`p_hold`, by its state after the win and the empire's size); won and the prize lost (its income and men gone, the treasury and freed bill kept); the battle lost (every man sent, and the source lost `RISK_SRC` of the time: its harvest annuity and men); the prize at its true tax (#93). In `score` the prize may be left up to COMING when that priced MIRR beats r (`risk_ok`, read on the map before the move); every other fief must still be SAFE.
+
+| the 12 live starts, 240 games | won | paired | invaded | lord died | win year | first conquest | COMING prizes taken (lost in a year) |
+|---|---|---|---|---|---|---|---|
+| #92 (`--preset best`) | 173 | | 29 | 36 | 27 / 31 / 35 | 12 / 13 / 15 | 346 (80) |
+| risk, round 1 (the hazards above) | 175 | saved 24, lost 22, z +0.3 | 34 | 29 | 26 / 30 / 34 | 10 / 12 / 14 | 1,404 (540) |
+| **risk, round 2** (round 1's own hazards) | **178** | saved 23, lost 18, z +0.8 | 27 | 31 | 26 / 30 / 34 | 11 / 12 / 14 | 1,353 (475) |
+
+- **The first hazards were biased**, as expected: they came from prizes left COMING by accident. Chosen COMING prizes were lost 24% / 43% / 47% (round 1's games); priced so (round 2, with SAFE 95-97% and the source 12%), the games lost them 24% / 37% / 42%: close to a fixed point.
+- **Gambling on the outs**: the first conquest about two years sooner, wins about two years sooner, fewer games to age, and invasions back under the gate's (27 against 29). Start 15 6 → 12; Uesugi 18 → 16, start 6 9 → 6.
+- **Promoted:** `--preset best` adds `--risk 2` (the true prize tax with it). **Open:** the other side of Chris's point, the cost of not attacking (the hazard on our own border as the neighbours arm, and what a war costs the rival), measured the same way; the whole-empire SAFE gate for the other fiefs, still a rule.
+
 ### #93 — Uesugi's development trap: the windows, and the prize priced at the conquest's tax (Chris, 2026-11-20)
 
 Chris: *MIRR is doing its thing right, but it does not know it is so far behind that it cannot catch up. Was there a window to attack from 8 to 24? Maybe we are not pricing conquests properly?* `pricing.py` (Uesugi 3012, the #92 player): **year 16**, Sagami (Hojo, 92 men): send 217, line 434; the flows invest 1,823 (217 men at 8.4 gold) for 364 at the conquest and 1,194 a harvest, terminal 2,826: **MIRR 0.175 against r 0.13, an attack**; `strike_ok` refused it: after the win Sagami is COMING (Hojo's Shinano beside it). **Year 20**, Sagami at 190 men: send 513 (the hold-sized line 785) invests 5,027 (9.8 gold a man) for **1,020** a harvest, terminal 4,218: MIRR 0.047 against r 0.161 (Echigo's own gift: 564 gold for +259 a harvest). Sagami's harvest as ours is **1,814**: the pricing writes the conquest's tax (min(tax, 30), as the cartridge does on a conquest) and keeps it for the whole horizon, while the ladder's first rung raises it toward 55 within a turn or two, so every conquest's income was priced about 45% low.

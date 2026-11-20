@@ -141,7 +141,9 @@ def one(job):
     X.SIEGE_LOG.clear()
     X.SHIELD_LINE = bool(len(job) > 54 and job[54])                          # #90
     X.CAPITAL_MIN = int(job[55]) if len(job) > 55 and job[55] else 0          # #92
-    X.PRIZE_TAX = bool(len(job) > 56 and job[56])                            # #93            # #80: two waves from two fiefs' spare men
+    X.PRIZE_TAX = bool(len(job) > 56 and job[56])                            # #93
+    X.RISK = int(job[57]) if len(job) > 57 and job[57] else 0                # #94 (2: the second calibration round)
+    X._RISK_OK.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
     X._PLEDGE.clear()
@@ -257,6 +259,7 @@ def main():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--risk", type=int, help="1: attacks priced by outcome (battle, prize kept by its state, source), the prize at its true tax; a priced attack may leave the prize COMING (#94)")
     ap.add_argument("--prize-tax", type=int, help="1: price a conquest's income at the tax the ladder sets (55), not the conquest's 30 (#93)")
     ap.add_argument("--capital-min", type=int, help="N: a capital keeps and hires to at least N men (#92)")
     ap.add_argument("--shield-line", type=int, help="1: an attack's source keeps rice to its enemies' share line, not to all its men (#90)")
@@ -268,7 +271,7 @@ def main():
     ap.add_argument("--rice-logistics", type=int, help="1: Summer rice spare by Chris's rule, and rice rides with gold to the attack line (#83)")
     ap.add_argument("--rice-days", type=int, default=10, help="N: an attack must carry N days of battle ration (#82; default 10 since #84, 0: off)")
     ap.add_argument("--plan", default="default", help="strike|hold|run|gate|none: the start fief's fixed defence plan (Echigo 1, Mino 8; plans.py, #44). Default (#84): strike at Echigo, none elsewhere")
-    ap.add_argument("--preset", help="best: the best measured player's flags (#84: #80's set; #86: + --morale-guard 50 --shield 6; #87: + --threat-first 2; #88: + --clamp-spend 1; #90: + --shield-line 1; #92: + --capital-min 150; --rice-days 10 and the Echigo plan are defaults), set where not given")
+    ap.add_argument("--preset", help="best: the best measured player's flags (#84: #80's set; #86: + --morale-guard 50 --shield 6; #87: + --threat-first 2; #88: + --clamp-spend 1; #90: + --shield-line 1; #92: + --capital-min 150; #94: + --risk 2; --rice-days 10 and the Echigo plan are defaults), set where not given")
     ap.add_argument("--waves", type=int, help="1: a fief with spare men >= 0.5x a target's garrison attacks first and an unacted neighbour of the target finishes it, priced by MIRR from waves_q.json (#80)")
     ap.add_argument("--dump", type=int, help="1: in the fought attack, the held-back commander bribes away the side's gold over its men (#79)")
     ap.add_argument("--coord-wall", type=int, help="1: follow-ups only for a target past the header wall, and the planner prices such targets at the capped line (#76)")
@@ -290,14 +293,15 @@ def main():
                          threat_first=2,                         # #87: the threatened one-fief opening hires first
                          clamp_spend=1,                          # #88: spend what the Fall harvest would clamp
                          shield_line=1,                          # #90: the source's rice shield to the share line
-                         capital_min=150).items():               # #92: the capital keeps and hires to 150 men
+                         capital_min=150,                        # #92: the capital keeps and hires to 150 men
+                         risk=2).items():                        # #94: attacks priced by outcome, measured hazards
             if not getattr(a, k):
                 setattr(a, k, v)
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))
