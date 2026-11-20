@@ -2250,6 +2250,9 @@ def rice_feed(m, idx):
     """A maxed fief Sends its spare rice to the owned fief shortest of rice (under a year's upkeep for its men)."""
     if not (RICE_LOGISTICS and capped(m, idx)):
         return False
+    f = m.fief(idx)                             # Chris (#84): men first; rice only once no more men can be hired
+    if m.r16(f + M.F_MEN) < m.r16(f + M.F_HEADER) and m.r16(f + M.F_GOLD) > 20:
+        return False
     give = rice_spare(m, idx)
     if give < SEND_MIN:
         return False
@@ -2341,7 +2344,7 @@ def _mirr_donor(m, idx, e, spare):
         return False
     gold = max(0, min(gold_spare, d["gold"]))
     rice = min(rice_sp, d["rice"])
-    if gold + rice < SEND_MIN:
+    if RICE_LOGISTICS and gold + rice < SEND_MIN:   # off: as before #83 (a top-up under SEND_MIN still goes)
         return False
     MIRR_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "donor", d["fief"], round(d["roi"], 4), round(own, 4), gold))
     return bool(_do_send(m, idx, e, d, rice, gold))

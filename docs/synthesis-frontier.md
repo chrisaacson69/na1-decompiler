@@ -91,6 +91,20 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #84 — The established rules promoted (`--preset best`; rice and the Echigo plan by default): 140 of 240. Rice after men: closer, still slower (Chris, 2026-11-20)
+
+Chris: *bake in the Echigo defence: in h82 Uesugi was back to losing at the start; we should be able to promote established rules.* `long_game` defaults now: `--rice-days 10` (#82; `0` turns it off) and `--plan default` (#81's strike at Echigo, none elsewhere since Mino's plans did not help; `none` turns it off). **`--preset best`** sets #80's flag set (strike 8, capital first, ladder, empire, empire attack, MIRR, empty morale, donor MIRR, MIRR turns, hire-move, safety donors, dump, waves) where not given, so the measured player is `long_game F 20 70 out.json --skill 2 --preset best`. Checked: Uesugi's 20 seeds under the preset reproduce #82's run with `--plan strike` game for game, once a side-effect of #83 was undone (its `_mirr_donor` refused a donor's top-up under `SEND_MIN` even with rice logistics off; restored when off).
+
+Chris, on #83: *a timing issue: buy men first, only send rice after; it adjusts, as the new men require rice, and it can top out.* `rice_feed` now Sends only when the maxed fief can hire no more (men at the header, or gold at 20 or under).
+
+| the 12 live starts, 240 games | won | paired | invaded | lord died | win year (quartiles) |
+|---|---|---|---|---|---|
+| rice 10 days (#82) | 135 | | 60 | 37 | 27 / 31 / 35 |
+| **`--preset best` (+ the Echigo plan)** | **140** | against #82: saved 6, lost 1 | 54 | 38 | 26 / 31 / 35 |
+| + rice logistics 1, men first | 135 | saved 18, lost 23, z −0.8 | 53 | 43 | 29 / 33 / 37 |
+
+Uesugi 15 of 20 under the preset (16 with the rice). Men first cut the cost from 22 games (#83) to 5, within noise, but the wins still come two years later: 1,502 rice Sends (417,000 rice) took turns a maxed fief with no gold left would spend marching men to the front (`depot_move`). Off.
+
 ### #83 — Rice logistics: rice to the attack line is within noise; a maxed fief feeding rice costs its hire turn (Chris, 2026-11-20)
 
 Chris, on #82: *the rice gate will slow some attacks, but Send carries rice and gold in one command: do to rice what we do for gold. Summer rice can all be spent but 1 if SAFE, all of it with no enemy neighbour (the harvest refills it); rice >= men if a target / COMING. And a maxed fief is free to send rice over its men to the smallest fief or a staging fief; its only other use is morale.* Before this the donors' Sends to the attack line carried gold only (`_mirr_send` rank 3, `_mirr_donor`); only the safety Sends carried rice, and every donor kept a year's upkeep. `expand.RICE_LOGISTICS` (`long_game --rice-logistics N`; off), `rice_spare(m, i)`: rice rides beside the gold to the attack line (a rice-only Send when only rice is short); a maxed fief (`capped`) spares all its rice over its men; `rice_feed`: a maxed fief whose Send found no line Sends its spare rice to the owned fief furthest under a year's upkeep for its men; level 2 adds Chris's Summer rule for every fief (interior all, SAFE all but 1, threatened only over its men). On the #82 player (135 of 240):

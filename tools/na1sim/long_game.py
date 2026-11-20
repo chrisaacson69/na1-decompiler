@@ -143,7 +143,9 @@ def one(job):
     policy.OPENING.update(OPENING)
     tactical.HUMAN = strike.Doctrine("control", "contact")
     plan = job[46] if len(job) > 46 else None             # #81: the fixed battle plan for the start (plans.py, #44)
-    if plan and fief in (1, 8):
+    if plan == "default":                                 # #84: promoted: Echigo's plan (strike) is the default;
+        plan = "strike" if fief == 1 else None            # Mino's plans measured no help (#81)
+    if plan and plan != "none" and fief in (1, 8):
         from . import plans
         cells, stations = {1: (plans.ECHIGO, None), 8: (plans.MINO, plans.MINO_GATE)}[fief]
         tactical.HUMAN = plans.PlanPlayer(fief, cells, plan, stations=stations)
@@ -244,8 +246,9 @@ def main():
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
     ap.add_argument("--rice-logistics", type=int, help="1: Summer rice spare by Chris's rule, and rice rides with gold to the attack line (#83)")
-    ap.add_argument("--rice-days", type=int, help="N: an attack must carry N days of battle ration (#82)")
-    ap.add_argument("--plan", help="strike|hold|run|gate: the start fief's fixed defence plan where one exists (Echigo 1, Mino 8; plans.py, #44)")
+    ap.add_argument("--rice-days", type=int, default=10, help="N: an attack must carry N days of battle ration (#82; default 10 since #84, 0: off)")
+    ap.add_argument("--plan", default="default", help="strike|hold|run|gate|none: the start fief's fixed defence plan (Echigo 1, Mino 8; plans.py, #44). Default (#84): strike at Echigo, none elsewhere")
+    ap.add_argument("--preset", help="best: the best measured player's flags (#84: #80's set; --rice-days 10 and the Echigo plan are defaults), set where not given")
     ap.add_argument("--waves", type=int, help="1: a fief with spare men >= 0.5x a target's garrison attacks first and an unacted neighbour of the target finishes it, priced by MIRR from waves_q.json (#80)")
     ap.add_argument("--dump", type=int, help="1: in the fought attack, the held-back commander bribes away the side's gold over its men (#79)")
     ap.add_argument("--coord-wall", type=int, help="1: follow-ups only for a target past the header wall, and the planner prices such targets at the capped line (#76)")
@@ -260,6 +263,11 @@ def main():
     ap.add_argument("--empty-morale", type=int, help="1: the reader does not spend a turn on a Give to an empty army's morale (#71)")
     ap.add_argument("--rescue", type=int, help="1: a SAFE fief first moves men into a non-SAFE neighbour, and sends rice to a fief that would buy it for the upkeep (#70)")
     a = ap.parse_args()
+    if a.preset == "best":                                # #84: the established rules in one switch
+        for k, v in dict(strike=8, capital_first=1, ladder=1, empire=1, empire_attack=1, mirr=1, empty_morale=1,
+                         donor_mirr=1, mirr_turns=1, hire_move=1, safety_donors=1, dump=1, waves=1).items():
+            if not getattr(a, k):
+                setattr(a, k, v)
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
