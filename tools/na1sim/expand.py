@@ -2223,6 +2223,55 @@ def attack_line_mirr(m, owner, r):
                 men=p["short"], roi=p["mirr"])
 
 
+# Rice logistics (Chris, 2026-11-20, #83: *do to rice what we do for gold; Send carries rice and gold in one
+# command. Summer rice can all be spent but 1 if SAFE, all of it with no enemy neighbour; rice >= men if a
+# target / COMING*): the harvest refills the stores in Fall, so rice held through Summer is mostly clamped
+# away. RICE_LOGISTICS: a donor's spare rice is that rule in Summer (otherwise a year's upkeep, and never
+# under its men while threatened), and the Sends to the attack line carry rice beside the gold.
+RICE_LOGISTICS = 0                      # 1: rice rides to the attack line; a maxed fief spares all over its men and
+                                        # feeds the fief shortest of rice. 2: also Chris's Summer rule for every fief.
+RICE_LOG = []                           # (year, season, donor, receiver, rice) of the maxed fiefs' rice Sends
+
+
+def rice_spare(m, i):
+    f = m.fief(i)
+    rice, men = m.r16(f + M.F_RICE), m.r16(f + M.F_MEN)
+    if not RICE_LOGISTICS:
+        return rice - 2 * (men // 2 + 1)
+    st = fief_state(m, i)
+    if RICE_LOGISTICS >= 2 and m.season == 1:
+        return rice if interior(m, i) else rice - 1 if st == SAFE else rice - men
+    if capped(m, i):                            # Chris: a maxed fief's rice over its men has no other use
+        return rice - men
+    return rice - max(2 * (men // 2 + 1), men if st != SAFE else 0)
+
+
+def rice_feed(m, idx):
+    """A maxed fief Sends its spare rice to the owned fief shortest of rice (under a year's upkeep for its men)."""
+    if not (RICE_LOGISTICS and capped(m, idx)):
+        return False
+    give = rice_spare(m, idx)
+    if give < SEND_MIN:
+        return False
+    owner = m.fief_owner(idx)
+    short = []
+    for j in owned(m, owner):
+        if j == idx:
+            continue
+        fj = m.fief(j)
+        need = 2 * (m.r16(fj + M.F_MEN) // 2 + 1) - m.r16(fj + M.F_RICE)
+        room = m.r16(fj + M.F_HEADER) - m.r16(fj + M.F_RICE)
+        if need >= SEND_MIN and room >= SEND_MIN:
+            short.append((need, j, room))
+    if not short:
+        return False
+    need, j, room = max(short)
+    r, _ = send(m, idx, j, min(give, need, room), 0)
+    if r:
+        RICE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, j, r))
+    return bool(r)
+
+
 def _do_send(m, idx, e, d, rice, gold):
     r, g = send(m, idx, d["fief"], rice, gold)
     if r + g:
@@ -2247,16 +2296,17 @@ def _mirr_send(m, idx, e, open_, gold_spare, rice_spare):
         if d["rank"] < 3:
             continue
         gold = min(max(0, gold_spare), d["gold"])
-        if gold < SEND_MIN:
+        rice = min(max(0, rice_spare), d["rice"]) if RICE_LOGISTICS and d["kind"] == "attack" else 0
+        if gold + rice < SEND_MIN:
             continue
         v = d["roi"] if d["kind"] == "attack" else transfer_mirr(m, d["fief"], gold, r)
         if v > r and (best is None or v > best[0]):
-            best = (v, d, gold)
+            best = (v, d, gold, rice)
     if not best:
         return False
-    v, d, gold = best
+    v, d, gold, rice = best
     MIRR_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, d["kind"], d["fief"], round(v, 4), round(r, 4), gold))
-    return bool(_do_send(m, idx, e, d, 0, gold))
+    return bool(_do_send(m, idx, e, d, rice, gold))
 
 
 # The donor gate by MIRR (Chris, 2026-11-19, #72): only topped-out fiefs Sent, so in the 9+ fief census the
@@ -2277,19 +2327,24 @@ def own_irr(m, idx):
 
 def _mirr_donor(m, idx, e, spare):
     f = m.fief(idx)
-    lines = [d for d in e["lines"] if d["kind"] == "attack" and d["fief"] != idx and d["gold"] > 0]
+    lines = [d for d in e["lines"] if d["kind"] == "attack" and d["fief"] != idx
+             and (d["gold"] > 0 or (RICE_LOGISTICS and d["rice"] > 0))]
     if not lines:
         return False
     gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
-    if gold_spare < SEND_MIN:
+    rice_sp = max(0, rice_spare(m, idx)) if RICE_LOGISTICS else 0
+    if max(0, gold_spare) + rice_sp < SEND_MIN:
         return False
     d = max(lines, key=lambda d: d["roi"])
     own, r = own_irr(m, idx), e.get("r", 0.01)
     if d["roi"] <= max(own, r):
         return False
-    gold = min(gold_spare, d["gold"])
+    gold = max(0, min(gold_spare, d["gold"]))
+    rice = min(rice_sp, d["rice"])
+    if gold + rice < SEND_MIN:
+        return False
     MIRR_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "donor", d["fief"], round(d["roi"], 4), round(own, 4), gold))
-    return bool(_do_send(m, idx, e, d, 0, gold))
+    return bool(_do_send(m, idx, e, d, rice, gold))
 
 
 # Safety donors (Chris, 2026-11-19, #74): *a fief that is not SAFE can be lost, and fixing it is usually
@@ -2305,10 +2360,10 @@ LOCAL_GATE = False
 def _safety_send(m, idx, e, spare):
     f = m.fief(idx)
     gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
-    rice_spare = m.r16(f + M.F_RICE) - 2 * (m.r16(f + M.F_MEN) // 2 + 1)
+    rice_sp = rice_spare(m, idx)
     for d in sorted((d for d in e["lines"] if d["rank"] <= 1 and d["fief"] != idx and (d["gold"] > 0 or d["rice"] > 0)),
                     key=lambda d: (d["rank"], d["fief"] in m.acted)):
-        rice, gold = min(max(0, rice_spare), d["rice"]), min(max(0, gold_spare), d["gold"])
+        rice, gold = min(max(0, rice_sp), d["rice"]), min(max(0, gold_spare), d["gold"])
         if rice + gold >= SEND_MIN and _do_send(m, idx, e, d, rice, gold):
             return True
     return False
@@ -2416,15 +2471,15 @@ def empire_move(m, idx):
     if not capped(m, idx):
         return EMPIRE_MIRR and DONOR_MIRR and _mirr_donor(m, idx, e, spare)
     gold_spare = m.r16(f + M.F_GOLD) - 20 - (_hire_gold(m, -spare) if spare < 0 else 0)
-    rice_spare = m.r16(f + M.F_RICE) - 2 * (men // 2 + 1)
+    rice_sp = rice_spare(m, idx)
     open_ = [d for d in e["lines"] if d["fief"] != idx and (d["gold"] > 0 or d["rice"] > 0)
              and (EMPIRE_MIRR or not (d["kind"] == "grow" and m.season == 0 and d["fief"] in m.acted))]
     open_.sort(key=(lambda d: (d["rank"], -d["roi"], d["fief"] in m.acted)) if EMPIRE_ATTACK
                else (lambda d: (d["rank"], d["fief"] in m.acted, -d["roi"])))
     if EMPIRE_MIRR:
-        return _mirr_send(m, idx, e, open_, gold_spare, rice_spare)
+        return _mirr_send(m, idx, e, open_, gold_spare, rice_sp) or rice_feed(m, idx)
     for d in open_:
-        rice, gold = min(max(0, rice_spare), d["rice"]), min(max(0, gold_spare), d["gold"])
+        rice, gold = min(max(0, rice_sp), d["rice"]), min(max(0, gold_spare), d["gold"])
         if rice + gold < SEND_MIN:
             continue
         r, g = send(m, idx, d["fief"], rice, gold)

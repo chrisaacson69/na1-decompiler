@@ -91,6 +91,20 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #83 — Rice logistics: rice to the attack line is within noise; a maxed fief feeding rice costs its hire turn (Chris, 2026-11-20)
+
+Chris, on #82: *the rice gate will slow some attacks, but Send carries rice and gold in one command: do to rice what we do for gold. Summer rice can all be spent but 1 if SAFE, all of it with no enemy neighbour (the harvest refills it); rice >= men if a target / COMING. And a maxed fief is free to send rice over its men to the smallest fief or a staging fief; its only other use is morale.* Before this the donors' Sends to the attack line carried gold only (`_mirr_send` rank 3, `_mirr_donor`); only the safety Sends carried rice, and every donor kept a year's upkeep. `expand.RICE_LOGISTICS` (`long_game --rice-logistics N`; off), `rice_spare(m, i)`: rice rides beside the gold to the attack line (a rice-only Send when only rice is short); a maxed fief (`capped`) spares all its rice over its men; `rice_feed`: a maxed fief whose Send found no line Sends its spare rice to the owned fief furthest under a year's upkeep for its men; level 2 adds Chris's Summer rule for every fief (interior all, SAFE all but 1, threatened only over its men). On the #82 player (135 of 240):
+
+| | won | paired | invaded | lord died | win year (quartiles) | rice |
+|---|---|---|---|---|---|---|
+| rice 10 days (#82) | 135 | | 60 | 37 | 27 / 31 / 35 | |
+| rice to the attack line + the Summer rule (first build) | 129 | saved 11, lost 17, z −1.1 | 62 | 41 | 28 / 31 / 35 | 54,664 to attack lines |
+| level 1 (+ the maxed fief's feed) | 118 | saved 18, lost 35, **z −2.3** | 61 | 52 | 28 / 32 / 37 | 682,457 fed by maxed fiefs |
+| level 2 (+ both) | 117 | saved 17, lost 35, z −2.5 | 61 | 53 | 28 / 33 / 37 | 689,346 |
+
+- **The cost is the turn, not the rice.** A maxed fief that Sends rice spends the turn it would hire men with half its gold (the army builder); fiefs under a year's upkeep are common, so it found a receiver about every turn it had nothing else (2,800 rice a game). Wins came 1.5 years later and 15 more games ran out of years. Attacks won and made hardly moved (2,741 / 3,155 against 2,749 / 3,108).
+- **Rice to the attack line alone does not add wins**: it flows (54,664) and attacks won rise (2,802), within noise of #82. The rice gate's delay was not binding at 10 days. All off; the #82 player stands.
+
 ### #82 — Attacks went out without rice: 40 of 78 lost attacks were starved, every army handed to the defender. Carrying 10 days: 93 → 135 (Chris, 2026-11-20)
 
 Chris, on #81: *total econ is a better measure than the average; I am concerned about the games where the player has a greater econ than the rest of the board and still loses: we are not spending well.* In #80's race (240 games), **51 of 147 lost games had our total economy (fiefs × the mean index) above every rival's combined** in some Winter, for 1-18 years; 13 lost games reached 16 of 17 fiefs, six ending at 16 against one rival. One followed through (`lastfief.py`, `kaga.py`, `kaga2.py`; 12/3012): the last rival held Noto (0), a capital whose one owned neighbour was Kaga (3), Chris's single-entry 0-3 border. Year 32: Noto 242 men, Kaga 1,842, line 872, MIRR 0.136 against r 0.091, `strike_ok`; Kaga struck three times and lost three: Winter y32, 570 men and 228 rice against a lord-led castle at **morale 363**, our strikers ground down, the 30-day timeout (outcome 3); Spring y33, 236 men with **1 rice**, starved (outcome 4) and all 236 joined Noto (40 → 276); Fall y33, 650 with 1 rice, the same (276 → 926 = 276 + 650). Noto capped at 950 against Kaga's header 1,980 and the planner never could again. In the lab Kaga → Noto wins 28-30 of 30 at 2.35× with the spread split (the 1/99 split loses all 30 by our commander's death on Noto's map: Chris's open map that corners the 1).

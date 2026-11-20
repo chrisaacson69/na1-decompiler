@@ -129,7 +129,9 @@ def one(job):
     X.COORD_WALL = bool(len(job) > 43 and job[43])
     X.DUMP = bool(len(job) > 44 and job[44])
     X.WAVES = bool(len(job) > 45 and job[45])
-    X.RICE_DAYS = int(job[47]) if len(job) > 47 and job[47] else 0     # #82            # #80: two waves from two fiefs' spare men
+    X.RICE_DAYS = int(job[47]) if len(job) > 47 and job[47] else 0     # #82
+    X.RICE_LOGISTICS = int(job[48]) if len(job) > 48 and job[48] else 0  # #83
+    X.RICE_LOG.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
     X._PLEDGE.clear()
@@ -194,7 +196,7 @@ def one(job):
     tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG],
                  stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG],
                  roi=[list(c) for c in X.ROI_LOG], mirr=[list(c) for c in X.MIRR_LOG],
-                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
+                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], rice=[list(c) for c in X.RICE_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0), tally
 
 
@@ -241,6 +243,7 @@ def main():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--rice-logistics", type=int, help="1: Summer rice spare by Chris's rule, and rice rides with gold to the attack line (#83)")
     ap.add_argument("--rice-days", type=int, help="N: an attack must carry N days of battle ration (#82)")
     ap.add_argument("--plan", help="strike|hold|run|gate: the start fief's fixed defence plan where one exists (Echigo 1, Mino 8; plans.py, #44)")
     ap.add_argument("--waves", type=int, help="1: a fief with spare men >= 0.5x a target's garrison attacks first and an unacted neighbour of the target finishes it, priced by MIRR from waves_q.json (#80)")
@@ -261,7 +264,7 @@ def main():
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))
