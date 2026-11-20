@@ -91,6 +91,10 @@ Scenario-start values in `17Diamyo.txt`; the strongest assassins by the entry-#1
 
 ## Ledger (newest first)
 
+### #89 — The siege (Chris's 3 → 0): it wears the target down without feeding it, and is rarely needed (Chris, 2026-11-20)
+
+`expand.SIEGE` (`long_game --siege 1`; off): against a target past the header wall (`past_wall`), a rich source (gold at half its header or more; not the capital; every other owned fief SAFE) strikes every war season with all its men over a keep that counts only its OTHER enemies, at no less than `SIEGE_MIN` = 1.5 × the garrison (#79's lab: a lost 1/99 wave with the dump leaves about a quarter, and the defender no gold), carrying the 10-day rice and keeping rice >= men; it re-hires from its surplus (#88) between waves. On #88's player: **26 sieges in 16 of 240 games, 15 won outright, and every lost wave cut the garrison to 15-35%** (565 → 0 won; 275 → 73, 409 → 79, 544 → 197 lost): it wears down without feeding, as Chris said. 156 of 240 (saved 0, lost 2, z −1.4): the wall is rare now that the empire no longer feeds its last rivals starved armies until they cap (#82). Off.
+
 ### #88 — The big-economy losses: the harvest clamp throws away a fifth of the gold and half the rice; spending it wins sooner. 158 of 240 (Chris, 2026-11-20)
 
 Chris: *the late-game economy is very telling; at 16 fiefs you generate more than you can spend; at best you max out the men everywhere. And the 3 → 0 case: send the full army each turn knowing 15 other fiefs replace the losses; as long as you do not feed the target (100/0, the gold dump), losing 1:100 does not matter: you wear them down.*

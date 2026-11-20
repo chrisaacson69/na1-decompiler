@@ -136,7 +136,9 @@ def one(job):
     X.GUARD_LOG.clear()
     X.LADDER_THREAT_FIRST = int(job[51]) if len(job) > 51 and job[51] else 0   # #87 (2: one fief only)
     X.CLAMP_SPEND = bool(len(job) > 52 and job[52])                          # #88
-    X.CLAMP_LOG.clear()            # #80: two waves from two fiefs' spare men
+    X.CLAMP_LOG.clear()
+    X.SIEGE = bool(len(job) > 53 and job[53])                                # #89
+    X.SIEGE_LOG.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
     X._PLEDGE.clear()
@@ -205,7 +207,7 @@ def one(job):
     tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG],
                  stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG],
                  roi=[list(c) for c in X.ROI_LOG], mirr=[list(c) for c in X.MIRR_LOG],
-                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], rice=[list(c) for c in X.RICE_LOG], guard=[list(c) for c in X.GUARD_LOG], clamp=[list(c) for c in X.CLAMP_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
+                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], rice=[list(c) for c in X.RICE_LOG], guard=[list(c) for c in X.GUARD_LOG], clamp=[list(c) for c in X.CLAMP_LOG], siege=[list(c) for c in X.SIEGE_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0), tally
 
 
@@ -252,6 +254,7 @@ def main():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--siege", type=int, help="1: a rich fief waves its men over its keep at a target past the header wall every war season (#89)")
     ap.add_argument("--clamp-spend", type=int, help="1: on its Summer turn a fief spends the gold/rice the Fall harvest would clamp at the header (#88)")
     ap.add_argument("--threat-first", type=int, help="1: a threatened fief short of its men line hires before the ladder's tax rung (#87)")
     ap.add_argument("--shield", type=int, help="N: the Summer rice shield mode (reaction.economy; default 4; 5: a border fief keeps rice >= men unless every enemy neighbour has moved, #86)")
@@ -286,7 +289,7 @@ def main():
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))

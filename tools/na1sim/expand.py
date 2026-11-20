@@ -2640,6 +2640,59 @@ def clamp_spend(m, idx):
     return False
 
 
+# The siege (Chris, 2026-11-20, #89: "the 3 -> 0 case: send in the full army each turn knowing the 15 other fiefs
+# replace the losses; as long as you are not feeding the target, losing 1:100 does not matter: you wear them
+# down"). A target past the header wall (no owned neighbour's hold-sized line fits its header) is struck every
+# war season by a rich source with all its men over a keep that counts only its OTHER enemies, at no less than
+# SIEGE_MIN x the garrison: under the 1/99 split with the dump a lost wave leaves the garrison at about a quarter
+# from 1.5x (#79's lab) and the defender no gold. The source re-hires from its surplus between waves.
+SIEGE = False
+SIEGE_MIN = 1.5
+SIEGE_LOG = []                          # (year, season, S, T, men sent, garrison before, won)
+
+
+def siege_strike(m, idx, rng):
+    if getattr(m, "season", 0) not in SEASONS or m.is_capital(idx):
+        return False
+    owner = m.fief_owner(idx)
+    st = empire(m, owner)
+    if any(v != SAFE for i, v in st.items() if i != idx):
+        return False
+    f = m.fief(idx)
+    men, gold, rice, hdr = (m.r16(f + o) for o in (M.F_MEN, M.F_GOLD, M.F_RICE, M.F_HEADER))
+    if gold * 2 < hdr:
+        return False
+    best = None
+    for T in targets(m, idx):
+        if not past_wall(m, owner, T):
+            continue
+        keep = max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in reaction.enemy_neighbours(m, idx) if e != T] or [0])
+        send = min(war_cap(m, idx), men - keep)
+        tm = max(1, m.r16(m.fief(T) + M.F_MEN))
+        r = send / tm
+        if send < MARCH_MIN or r < SIEGE_MIN:
+            continue
+        carry = min(send, rice - (men - send))          # the rice it carries, the shield kept for the men left
+        if carry < rice_for(send):
+            continue
+        if best is None or r > best[0]:
+            best = (r, T, send, carry, tm)
+    if not best:
+        return False
+    r, T, send, carry, tm = best
+    if FOUGHT and CHARGE and not split_ready(m, idx, T):
+        from . import vmprims
+        if vmprims.driver_assign(m, idx, desired_split(m, idx, T)):
+            ASSIGNS.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, T))
+            return True
+    yr = m.r16(M.CURRENT_GAME_YEAR)
+    LOG.append((yr, m.season, idx, T, send, carry, False))
+    won = player_war(m, idx, T, send, carry, rng=rng)
+    CONQ.append((yr, m.season, idx, T, send, bool(won), fief_state(m, T) if won else None, len(owned(m, owner))))
+    SIEGE_LOG.append((yr, m.season, idx, T, send, tm, bool(won), m.r16(m.fief(T) + M.F_MEN) if not won else 0))
+    return True
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -2683,6 +2736,8 @@ def expand_policy(m, idx, rng):
                      fief_state(m, mv[0]) if won else None, len(owned(m, m.fief_owner(idx)))))
         return
     if WAVES and wave_strike(m, idx, rng):
+        return
+    if SIEGE and siege_strike(m, idx, rng):
         return
     if CAPITAL_FIRST and capital_hire(m, idx):
         return
