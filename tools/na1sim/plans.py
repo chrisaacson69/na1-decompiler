@@ -41,6 +41,12 @@ MINO = {                                                  # fief 8, the spiral (
 MINO_GATE = [(3, 0), (4, 0), (4, 1), (5, 0)]              # slots 1-4: (3,0) is the castle's one gate
                                                           # (its only outside neighbour is (2,0))
 
+MUSASHI = {                                               # fief 2, Hojo (Chris, 2026-11-20, #104): two ways into the
+    1: [(6, 4), (4, 1), (6, 0), (4, 2), (6, 1)],          # castle pocket, the west gap (2,1)/(3,1) held at (4,1)/(4,2)
+    3: [(6, 4), (4, 1), (5, 1), (4, 2), (5, 2)],          # and the north-east gap (7,0) at (6,0)/(6,1); north: 1/3 west,
+}                                                          # 2/4 north-east; west: 1/3 at the west choke, 2/4 behind it
+MUSASHI_REINFORCE = [(5, 0), (5, 1)]                      # the unused pair, once his side is known
+
 ECHIGO = {
     2: [(5, 2), (8, 1), (7, 1), (2, 1), (3, 1)],          # south: slot order 0..4
     3: [(3, 1), (0, 1), (0, 2), (1, 1), (2, 1)],          # west: the commander on (3,1)
@@ -52,10 +58,11 @@ def _free(m, c):
 
 
 class PlanPlayer(Player):
-    def __init__(self, fief, cells_by_edge, mode="strike", k=2, stations=None):
+    def __init__(self, fief, cells_by_edge, mode="strike", k=2, stations=None, reinforce=None):
         super().__init__("plan")
         self.fief, self.cells, self.mode, self.k = fief, cells_by_edge, mode, k
         self.stations = stations
+        self.reinforce = reinforce
         self.fallback = None
 
     # ------------------------------------------------------------------ deployment
@@ -95,6 +102,8 @@ class PlanPlayer(Player):
             return self._home(m, here, es)
         if self.mode == "gate":
             return self._gate(m, here, es, slot)
+        if self.mode == "choke":
+            return self._choke(m, here, es, slot)
         if self.mode == "run":
             return self._run(m, here, enemies)
         if not m.is_unit_present(es, 0):
@@ -140,6 +149,26 @@ class PlanPlayer(Player):
                 return ("move",) + best[1]
         if m.is_unit_present(es, 0) and _cell(m, es, 0) in NB[here]:
             return ("attack", 0)
+        return ("pass",)
+
+    def _choke(self, m, here, es, slot):
+        """Chris's chokepoints (#104): each unit holds its deployed cell; from the north the pair on the side
+        his commander is not on comes to the reinforcing cells. At its cell a unit strikes what is next to it
+        (his commander first, else the weakest); on the way, it strikes what blocks it."""
+        target = self.cells[self.edge][slot]
+        if self.reinforce and self.edge == 1 and m.is_unit_present(es, 0):
+            west = _cell(m, es, 0)[0] <= 5
+            if (slot in (2, 4)) == west:            # the pair on the quiet side
+                target = self.reinforce[0 if slot in (1, 2) else 1]
+        adj = [s for s in range(5) if m.is_unit_present(es, s) and _cell(m, es, s) in NB[here]]
+        if here == target or adj:
+            if adj:
+                return ("attack", 0 if 0 in adj else min(adj, key=lambda s: m.r16(m.unit_strength_ptr(es, s))))
+            return ("pass",)
+        dist = _distances(m, target)
+        best = min(((dist.get(n, 99), n) for n in NB[here] if _free(m, n)), default=None)
+        if best and best[0] < dist.get(here, 99):
+            return ("move",) + best[1]
         return ("pass",)
 
     def _home(self, m, here, es):
