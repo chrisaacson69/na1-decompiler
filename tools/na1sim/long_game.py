@@ -171,8 +171,9 @@ def one(job):
         plan = "strike" if fief == 1 else None            # Mino's plans measured no help (#81)
     if plan and plan != "none" and fief in (1, 2, 8):
         from . import plans
-        if fief == 2:                                     # #104: Musashi's chokepoints (Chris)
-            tactical.HUMAN = plans.PlanPlayer(2, plans.MUSASHI, "choke", reinforce=plans.MUSASHI_REINFORCE)
+        if fief == 2:                                     # #104: Musashi's chokepoints (Chris); chokehit: west hitters
+            tactical.HUMAN = plans.PlanPlayer(2, plans.MUSASHI_HIT if plan == "chokehit" else plans.MUSASHI,
+                                              "chokehit" if plan == "chokehit" else "choke", reinforce=plans.MUSASHI_REINFORCE)
         else:
             cells, stations = {1: (plans.ECHIGO, None), 8: (plans.MINO, plans.MINO_GATE)}[fief]
             tactical.HUMAN = plans.PlanPlayer(fief, cells, plan, stations=stations)

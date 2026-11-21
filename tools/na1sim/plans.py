@@ -46,6 +46,8 @@ MUSASHI = {                                               # fief 2, Hojo (Chris,
     3: [(6, 4), (4, 1), (5, 1), (4, 2), (5, 2)],          # and the north-east gap (7,0) at (6,0)/(6,1); north: 1/3 west,
 }                                                          # 2/4 north-east; west: 1/3 at the west choke, 2/4 behind it
 MUSASHI_REINFORCE = [(5, 0), (5, 1)]                      # the unused pair, once his side is known
+MUSASHI_HIT = {1: MUSASHI[1],                             # #104 (Chris): from the west, three hitters two hexes off
+               3: [(6, 4), (0, 2), (1, 1), (1, 2), (4, 1)]}   # both coin landings (0,0)/(0,4), slot 4 on the choke
 
 ECHIGO = {
     2: [(5, 2), (8, 1), (7, 1), (2, 1), (3, 1)],          # south: slot order 0..4
@@ -102,8 +104,10 @@ class PlanPlayer(Player):
             return self._home(m, here, es)
         if self.mode == "gate":
             return self._gate(m, here, es, slot)
-        if self.mode == "choke":
+        if self.mode == "choke" or (self.mode == "chokehit" and self.edge == 1):
             return self._choke(m, here, es, slot)
+        if self.mode == "chokehit" and slot == 4:
+            return self._choke(m, here, es, slot)       # the west choke stays held
         if self.mode == "run":
             return self._run(m, here, enemies)
         if not m.is_unit_present(es, 0):
