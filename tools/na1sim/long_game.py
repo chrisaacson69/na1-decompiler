@@ -169,13 +169,13 @@ def one(job):
     plan = job[46] if len(job) > 46 else None             # #81: the fixed battle plan for the start (plans.py, #44)
     if plan == "default":                                 # #84: promoted: Echigo's plan (strike) is the default;
         plan = "strike" if fief == 1 else None            # Mino's plans measured no help (#81)
-    if plan and plan != "none" and fief in (1, 2, 8):
+    if plan and plan != "none" and fief in (0, 1, 2, 8):
         from . import plans
         if fief == 2:                                     # #104: Musashi's chokepoints (Chris); chokehit: west hitters
             tactical.HUMAN = plans.PlanPlayer(2, plans.MUSASHI_HIT if plan == "chokehit" else plans.MUSASHI,
                                               "chokehit" if plan == "chokehit" else "choke", reinforce=plans.MUSASHI_REINFORCE)
         else:
-            cells, stations = {1: (plans.ECHIGO, None), 8: (plans.MINO, plans.MINO_GATE)}[fief]
+            cells, stations = {0: (plans.NOTO, None), 1: (plans.ECHIGO, None), 8: (plans.MINO, plans.MINO_GATE)}[fief]
             tactical.HUMAN = plans.PlanPlayer(fief, cells, plan, stations=stations)
     strike.BURN = bool(len(job) > 61 and job[61])          # #96: the losing defence burns its gold
     if flee or strike.BURN:

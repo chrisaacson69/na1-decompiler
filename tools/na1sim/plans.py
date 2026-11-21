@@ -41,6 +41,11 @@ MINO = {                                                  # fief 8, the spiral (
 MINO_GATE = [(3, 0), (4, 0), (4, 1), (5, 0)]              # slots 1-4: (3,0) is the castle's one gate
                                                           # (its only outside neighbour is (2,0))
 
+NOTO = {                                                  # fief 0 (Chris, 2026-11-20, #105): one way in, from the west.
+    3: [(9, 1), (2, 3), (2, 4), (4, 0), (5, 1)],          # Blockers on (2,3)/(2,4) pin his commander's landing to (3,1)
+}                                                          # on all four coins (guards (2,2)/(3,2)); hitters two hexes off
+                                                          # (units beside (3,1) make the scan fail: a random drop)
+
 MUSASHI = {                                               # fief 2, Hojo (Chris, 2026-11-20, #104): two ways into the
     1: [(6, 4), (4, 1), (6, 0), (4, 2), (6, 1)],          # castle pocket, the west gap (2,1)/(3,1) held at (4,1)/(4,2)
     3: [(6, 4), (4, 1), (5, 1), (4, 2), (5, 2)],          # and the north-east gap (7,0) at (6,0)/(6,1); north: 1/3 west,
@@ -108,6 +113,8 @@ class PlanPlayer(Player):
             return self._choke(m, here, es, slot)
         if self.mode == "chokehit" and slot == 4:
             return self._choke(m, here, es, slot)       # the west choke stays held
+        if self.mode == "trap" and slot in (1, 2):
+            return self._run(m, here, enemies)          # #105: the blockers' work ends at the landing
         if self.mode == "run":
             return self._run(m, here, enemies)
         if not m.is_unit_present(es, 0):
