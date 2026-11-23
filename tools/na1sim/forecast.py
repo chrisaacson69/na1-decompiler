@@ -44,15 +44,16 @@ def held(m):
         restore(m, snap)
 
 
-def grow_ai(m):
+def grow_ai(m, p=None, only=None):
     """One projected season of AI recruiting, in expectation (ai_vm.recruit_arm_train): ~90% of AI
     fiefs take the military pass (rng(10) != 0); one under min((year-1559)*40, cap) men recruits with
     probability (skill+3)/10, min(half its gold surplus x10 / rate, room to (year-1559)*100) men,
-    paying the half-surplus whatever it hires. So every New Year lifts every AI target by 40 men."""
+    paying the half-surplus whatever it hires. So every New Year lifts every AI target by 40 men.
+    p=1 is the worst case (every roll hires; expand.aimed_state's look-ahead, #113); `only` limits the fiefs."""
     year, rate, n = m.year, m.r16(M.GOLD_MEN_HIRE_RATE) or 50, m.r16(M.SCENARIO_FIEF_COUNT)
-    p = 0.9 * (m.skill + 3) / 10
+    p = 0.9 * (m.skill + 3) / 10 if p is None else p
     for i in range(n):
-        if m.province_ai_state(i) != 0:
+        if m.province_ai_state(i) != 0 or (only is not None and i not in only):
             continue
         f = m.fief(i)
         men, gold, header = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD), m.r16(f + M.F_HEADER)

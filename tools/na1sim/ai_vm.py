@@ -474,6 +474,46 @@ def ai_try_war_attack(m: "M.Memory", idx: int, resolve=_no_resolve) -> int:
     return 0
 
 
+def ai_war_aim(m: "M.Memory", idx: int):
+    """ai_try_war_attack $949A without its dice (#113): the fief `idx` aims at and whether it can commit,
+    with the rolls at their most aggressive (rng(skill*3) = 0; the relations skip $93DD and the veto $8271
+    never fire); the 1/100 wildcard is left out. No rng is drawn and no state changes. -> (target, can_commit);
+    an AI-held target is reported can_commit False (it needs a coin, and only the player's fiefs matter here)."""
+    sel, saved = m.selected, [m.r8(M.DEDUPED_OWNER_LIST + i) for i in range(9)]
+    try:
+        m.selected = idx
+        fief = m.fief(idx)
+        if P._fief_owner_weakness(m, idx) or not m.r16(fief + M.F_MEN) or not m.r16(fief + M.F_RICE):
+            return None, False
+        compact_relation_list(m)
+        filter_province_list_by_owner(m, 0)
+        L = M.DEDUPED_OWNER_LIST
+        if m.r8(L) == 0xFF:
+            return None, False
+        target = pick_weakest_men_fief(m, L)
+        alt, p = m.r8(L), L                         # pick_ai_attack_target_fief with no skip
+        while m.r8(p) != 0xFF:
+            if m.province_ai_state(alt) and fief_men_ratio_pct(m, alt, m.r8(p)) > 50:
+                alt = m.r8(p)
+            p += 1
+        minority = find_fief_by_owner_men_minority(m, L, m.r8(M.MINORITY_OWNER_TABLE + idx))
+        if minority != 0xFF:
+            target = minority
+        ok = ((fief_men_ratio_pct(m, idx, target) - 10) & 0xFFFF) > 60
+        if m.province_ai_state(alt) and fief_men_ratio_pct(m, idx, alt) > 47:
+            ok, target = True, alt
+        if not m.province_ai_state(target):
+            return target, False
+        deff = m.fief(target)
+        budget = P.min_word(m.r16(fief + M.F_RICE) << 1, P.min_word(m.r16(fief + M.F_MEN), m.r16(fief + M.F_GOLD)))
+        ok = ok and budget >= 5 and P.min_word(m.r16(deff + M.F_RICE), m.r16(deff + M.F_MEN)) <= budget
+        return target, ok
+    finally:
+        m.selected = sel
+        for i, v in enumerate(saved):
+            m.w8(M.DEDUPED_OWNER_LIST + i, v)
+
+
 def war_hook(resolve=_no_resolve):
     """Build a try_war(m, idx) callback for recruit_arm_train / the loop."""
     return lambda m, idx: ai_try_war_attack(m, idx, resolve)

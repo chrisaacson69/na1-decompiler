@@ -130,7 +130,7 @@ def record(job):
         f0 = [m.r16(f + k) for k in FIELDS]
         tgt = _cheapest(m, idx)
         info = dict(state=X.fief_state(m, idx), need=X.own_need(m, idx), capped=bool(X.capped(m, idx)),
-                    allsafe=all(s == X.SAFE for s in X.empire(m, me).values()), tgt=tgt)
+                    allsafe=all(X.quiet(s) for s in X.empire(m, me).values()), tgt=tgt)
         if info["allsafe"] and m.season in X.SEASONS:
             info["block"] = _blockers(m, idx)
             info["warcap"] = X.war_cap(m, idx)
