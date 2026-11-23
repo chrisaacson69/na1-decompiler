@@ -140,7 +140,12 @@ def give_men(m, idx, amount, gold=False):  # rice (or gold) -> morale
         P.driver_give(m, False, gold, amount)
 
 
+GIFT_GUARD = None                           # #115: expand.gift_reserve, (m, idx, amount) -> the gold gift allowed
+
+
 def give_peasants(m, idx, amount, gold=False):   # rice (or gold) -> loyalty AND wealth
+    if gold and GIFT_GUARD is not None:
+        amount = GIFT_GUARD(m, idx, amount)
     m.selected = idx
     if amount >= 1:
         P.driver_give(m, True, gold, amount)

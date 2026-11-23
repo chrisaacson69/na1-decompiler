@@ -2977,6 +2977,109 @@ def rice_sell(m, idx):
     return True
 
 
+# The Fall hire (Chris, 2026-11-23, #114: "a fall hire is the way to stop the flips"). 82% of the AI's hires,
+# 90% of its men, come in the Fall right after the harvest (the census of #113's player: 2,063 of 2,516); of
+# 189 attacks on fiefs COMING at our handover, 54 fell, 50 of them short of their line. FALL_HIRE: in the Fall,
+# a fief the look-ahead flags (not SAFE) and short of its own line hires to it before anything else, as many
+# as its rice feeds (rice bought first when short), the turn the harvest's gold lands.
+FALL_HIRE = False
+
+
+def fall_hire(m, idx):
+    from . import policy
+    if m.season != 2 or fief_state(m, idx) == SAFE:
+        return False
+    f = m.fief(idx)
+    gold, men, morale = m.r16(f + M.F_GOLD), m.r16(f + M.F_MEN), m.r16(f + M.F_MORALE)
+    need = own_need(m, idx)
+    if men >= need or gold <= 1 or (men and morale < policy.CLIFF):
+        return False
+    want = need - men
+    room = _feedable(m, idx)
+    if room < want and policy.buy_rice_to(m, idx, lambda s: policy._rice_slack(m, idx, False, s, sustain=True) - want):
+        LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "fall-rice"))
+        return True
+    if room >= 1 and policy._hire_up_to(m, idx, men + min(want, room)):
+        HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "fall"))
+        return True
+    return False
+
+
+# The reserve (#115): of the 54 COMING fiefs that fell, 35 had not the gold at our handover to hire to their
+# line; the gifts (the reader's Spring gold, MIRR's, the clamp's) had spent it while the fief was SAFE or
+# barely flagged. GIFT_RESERVE: a gold gift from a fief that is not SAFE keeps what its line's shortfall would
+# cost to hire (at least one hire's minimum, the rate); gifts lifting loyalty or wealth off the cliff are exempt.
+GIFT_RESERVE = False
+
+
+def gift_reserve(m, idx, amount):
+    from . import policy
+    if m.province_ai_state(idx) != M.PLAYER_DIRECT:
+        return amount
+    f = m.fief(idx)
+    if min(m.r16(f + M.F_LOYALTY), m.r16(f + M.F_WEALTH)) < policy.CLIFF:
+        return amount
+    if fief_state(m, idx) == SAFE:
+        return amount
+    men, gold = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD)
+    short = own_need(m, idx) - men
+    if short <= 0:
+        return amount
+    rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+    keep = max(rate, -(-short * rate // 10))
+    return max(0, min(amount, gold - keep))
+
+
+# The cascade (Chris, 2026-11-23, #116: "mid to late game, a Send might fix the problem"). Of the 41 attacks on
+# fiefs SAFE at our handover, 20 came from a fief that was ours at the handover: the season's order is shuffled
+# once, a fief taken early in the pass takes its own slot later as an AI fief, with the winner's survivors, and
+# strikes its other neighbours (command_pass reads each fief's state when its slot comes). m.acted shows who
+# has moved. CASCADE: on each of our turns, a fief of ours that an enemy neighbour yet to move aims at
+# (ai_war_aim, every gate clear) and short of its own line is reinforced first: Move spare men in from this fief
+# if adjacent (this fief kept out of COMING), else Send the gold its shortfall costs if it has yet to move.
+CASCADE = False
+CASCADE_LOG = []                        # (year, season, src, dst, kind, amount)
+
+
+def cascade(m, idx):
+    from . import policy
+    owner = m.fief_owner(idx)
+    acted = getattr(m, "acted", set())
+    f = m.fief(idx)
+    rate = m.r16(M.GOLD_MEN_HIRE_RATE) or 50
+    for b in owned(m, owner):
+        if b == idx:
+            continue
+        threat = [n for n in reaction.enemy_neighbours(m, b) if n not in acted and ai_vm.ai_war_aim(m, n) == (b, True)]
+        if not threat:
+            continue
+        short = own_need(m, b) - m.r16(m.fief(b) + M.F_MEN)
+        if short <= 0:
+            continue
+        yr = m.r16(M.CURRENT_GAME_YEAR)
+        if b in m.neighbor_rows.get(idx, []):
+            spare = m.r16(f + M.F_MEN) - own_need(m, idx)
+            n = min(short, spare)
+            if n >= SEND_MIN:
+                with forecast.held(m):
+                    move_men(m, idx, b, n)
+                    bad = fief_state(m, idx) == COMING
+                if not bad and move_men(m, idx, b, n):
+                    CASCADE_LOG.append((yr, m.season, idx, b, "move", n))
+                    return True
+        if b not in acted:
+            cost = -(-short * rate // 10) - m.r16(m.fief(b) + M.F_GOLD)     # what it holds already hires too
+            if cost <= 0:
+                continue
+            g = min(cost, m.r16(f + M.F_GOLD) - m.r16(f + M.F_MEN) // 2 - 1)
+            if g >= max(SEND_MIN, rate) or g >= cost:
+                _r, sent = send(m, idx, b, 0, g)
+                if sent:
+                    CASCADE_LOG.append((yr, m.season, idx, b, "send", sent))
+                    return True
+    return False
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -3001,6 +3104,10 @@ def expand_policy(m, idx, rng):
     if MORALE_GUARD and morale_guard(m, idx):
         return
     if RECOVER and recover_rung(m, idx):
+        return
+    if FALL_HIRE and fall_hire(m, idx):
+        return
+    if CASCADE and cascade(m, idx):
         return
     if DEF_ASSIGN and def_assign(m, idx):
         return

@@ -162,6 +162,12 @@ def one(job):
     X.SECURE_FIRST = bool(len(job) > 71 and job[71])                         # #112
     X.AIM = int(job[72]) if len(job) > 72 and job[72] else 0                  # #113
     X.AIM_MIN = int(job[73]) if len(job) > 73 and job[73] else 0              # #113
+    X.FALL_HIRE = bool(len(job) > 74 and job[74])                            # #114
+    X.GIFT_RESERVE = bool(len(job) > 75 and job[75])                         # #115
+    X.CASCADE = bool(len(job) > 76 and job[76])                              # #116
+    X.CASCADE_LOG.clear()
+    from . import policy as _pol
+    _pol.GIFT_GUARD = X.gift_reserve if X.GIFT_RESERVE else None
     X._RISK_OK.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
@@ -294,6 +300,9 @@ def parser():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--cascade", type=int, help="1: a fief aimed at by an enemy yet to move this season, short of its line, is reinforced first (Move if adjacent, else Send gold) (#116)")
+    ap.add_argument("--fall-hire", type=int, help="1: in the Fall a flagged fief short of its line hires to it first (#114)")
+    ap.add_argument("--gift-reserve", type=int, help="1: a flagged fief's gold gifts keep its line's hire cost (#115)")
     ap.add_argument("--aim-min", type=int, help="N: --aim 3+ only from N fiefs held; the opening keeps the old states (#113)")
     ap.add_argument("--aim", type=int, help="1: COMING only when the neighbour's own war choice (ai_war_aim, $949A without dice) lands here, else SAFE; 2: else HUNTABLE (#113)")
     ap.add_argument("--secure-first", type=int, help="1: an unsafe fief short of its line hires before the ladder's tax rung (#112)")
@@ -359,7 +368,7 @@ def jobs_from(a):
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t, a.march_safety, a.rice_sell, a.secure_first, a.aim, a.aim_min)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t, a.march_safety, a.rice_sell, a.secure_first, a.aim, a.aim_min, a.fall_hire, a.gift_reserve, a.cascade)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     return jobs
 
