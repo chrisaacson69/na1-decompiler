@@ -46,6 +46,8 @@ NOTO = {                                                  # fief 0 (Chris, 2026-
 }                                                          # on all four coins (guards (2,2)/(3,2)); hitters two hexes off
                                                           # (units beside (3,1) make the scan fail: a random drop)
 
+TRAP_RATIO = 100                                          # #109 (Chris): trap only an attacker with at most this % of our men
+
 MUSASHI = {                                               # fief 2, Hojo (Chris, 2026-11-20, #104): two ways into the
     1: [(6, 4), (4, 1), (6, 0), (4, 2), (6, 1)],          # castle pocket, the west gap (2,1)/(3,1) held at (4,1)/(4,2)
     3: [(6, 4), (4, 1), (5, 1), (4, 2), (5, 2)],          # and the north-east gap (7,0) at (6,0)/(6,1); north: 1/3 west,
@@ -81,7 +83,8 @@ class PlanPlayer(Player):
         T.set_combat_arena_rect_by_approach(m)               # ours: the full board
         self.edge = edge
         self.seat = T.find_free_tactical_placement_cell(m)
-        if side == 0 or m.selected == 50 or m.defending != self.fief or edge not in self.cells:
+        weak = (self.mode != "trapif" or m.r16(M.WAR_ATTACKER_MEN) <= m.r16(m.fief(self.fief) + M.F_MEN) * TRAP_RATIO // 100)
+        if side == 0 or m.selected == 50 or m.defending != self.fief or edge not in self.cells or not weak:
             self.fallback = Doctrine()
             self.fallback.deploy(m)
             self.log.append(dict(edge=edge, plan=None))
@@ -113,7 +116,7 @@ class PlanPlayer(Player):
             return self._choke(m, here, es, slot)
         if self.mode == "chokehit" and slot == 4:
             return self._choke(m, here, es, slot)       # the west choke stays held
-        if self.mode == "trap" and slot in (1, 2):
+        if self.mode in ("trap", "trapif") and slot in (1, 2):
             return self._run(m, here, enemies)          # #105: the blockers' work ends at the landing
         if self.mode == "run":
             return self._run(m, here, enemies)
