@@ -249,7 +249,8 @@ def unified_year(yearly):
     return next((y[0] for y in yearly if y[1] == y[2]), None)
 
 
-def main():
+def parser():
+    """long_game's arguments (shared with na1sim.trace, so the stepper plays the raced player)."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("fiefs")
     ap.add_argument("seeds", type=int)
@@ -324,7 +325,11 @@ def main():
     ap.add_argument("--donor-mirr", type=int, help="1: a SAFE fief still growing Sends to the attack line when its MIRR beats the fief's own-gift IRR (#72)")
     ap.add_argument("--empty-morale", type=int, help="1: the reader does not spend a turn on a Give to an empty army's morale (#71)")
     ap.add_argument("--rescue", type=int, help="1: a SAFE fief first moves men into a non-SAFE neighbour, and sends rice to a fief that would buy it for the upkeep (#70)")
-    a = ap.parse_args()
+    return ap
+
+
+def jobs_from(a):
+    """The preset applied and the jobs built from parsed arguments."""
     if a.preset == "best":                                # #84: the established rules in one switch
         for k, v in dict(strike=8, capital_first=1, ladder=1, empire=1, empire_attack=1, mirr=1, empty_morale=1,
                          donor_mirr=1, mirr_turns=1, hire_move=1, safety_donors=1, dump=1, waves=1,
@@ -345,6 +350,12 @@ def main():
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
              a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
+    return jobs
+
+
+def main():
+    a = parser().parse_args()
+    jobs = jobs_from(a)
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))
     json.dump(res, open(a.out or f"long_game_{a.years}.json", "w"), default=str)

@@ -1,7 +1,7 @@
 """One game, season by season, every fief: the board and each of the player's decisions, for stepping
 through where the empire stalls (Chris, 2026-11-17: "I want to step through some games").
 
-  py -3.14 -m na1sim.trace FIEF SEED OUT.json [--skill 2] [--years 70] [long_game flags...]
+  py -3.14 -m na1sim.trace FIEF SEED OUT.json [--years 70] [long_game flags: --skill 2 --preset best ...]
 
 Reuses long_game.one unchanged (the same player, flags and setup), wrapping expand.expand_policy to
 record, at each of the player's turns:
@@ -167,22 +167,21 @@ def record(job):
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("fief", type=int)
-    ap.add_argument("seed", type=int)
-    ap.add_argument("out")
-    ap.add_argument("--skill", type=int, default=2)
-    ap.add_argument("--years", type=int, default=70)
-    ap.add_argument("--strike", type=int, default=8)
-    ap.add_argument("--stage", type=int)
-    ap.add_argument("--combine", type=int)
-    ap.add_argument("--capital-first", type=int)
-    ap.add_argument("--capital-guard", type=int)
-    ap.add_argument("--secure", type=int)
-    ap.add_argument("--ladder", type=int)
-    a = ap.parse_args()
-    job = (a.fief, a.seed, a.years, None, None, None, 0, None, a.skill, False, None, 0, None, None, [],
-           a.strike, 100, 1, None, None, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder)
+    import sys
+    argv = sys.argv[1:]
+    if len(argv) < 3:
+        raise SystemExit("usage: py -3.14 -m na1sim.trace FIEF SEED OUT.json [--years 70] [long_game flags, e.g. --skill 2 --preset best]")
+    fief, seed, outp, rest = argv[0], argv[1], argv[2], argv[3:]
+    years = "70"
+    if "--years" in rest:                                   # long_game takes the years as a positional
+        k = rest.index("--years")
+        years = rest[k + 1]
+        rest = rest[:k] + rest[k + 2:]
+    # #108: the stepper plays exactly the raced player: long_game's own arguments and preset (it had built its
+    # own job with only the #65-era flags, so it stepped through an old player's game)
+    a = L.parser().parse_args([fief, "1", years, outp, "--first", seed] + rest)
+    a.fief, a.seed, a.out = int(fief), int(seed), outp
+    job = L.jobs_from(a)[0]
     res, seasons = record(job)
     fief, seed, fatal, yearly = res[:4]
     provs = {p.idx: getattr(p, "name", str(p.idx)) for p in loader.load_provinces()}
@@ -190,7 +189,7 @@ def main():
     m = setup.build_board(skill=a.skill, seed=a.seed, player_fief=a.fief)
     n = m.r16(M.SCENARIO_FIEF_COUNT)
     m_nb = {i: [b for b in m.neighbor_rows.get(i, []) if b < n] for i in range(n)}
-    out = dict(fief=fief, seed=seed, skill=a.skill, flags=dict(strike=a.strike, stage=a.stage, combine=a.combine, capital_first=a.capital_first, capital_guard=a.capital_guard, secure=a.secure),
+    out = dict(fief=fief, seed=seed, skill=a.skill, flags={k: v for k, v in vars(a).items() if v not in (None, 0, False, '') and k not in ('fief', 'seed', 'out', 'fiefs', 'seeds', 'first')},
                fatal=fatal, unified=L.unified_year(yearly), player=m.fief_owner(a.fief),
                names=[provs.get(i, str(i)) for i in range(n)], clans=deaths.NAMES,
                neighbors=m_nb, fields=["owner", "men", "gold", "rice", "wealth", "loyalty", "town", "output",
