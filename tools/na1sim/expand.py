@@ -262,6 +262,7 @@ def enemies_within(m, i, steps=2):
     return out
 
 
+SECURE_FIRST = False                    # #112: an unsafe fief short of its line hires before the ladder's tax rung
 MARCH_SAFETY = False                    # #110 (Chris): spare men march toward a non-adjacent unsafe fief, not only the striker
 KEEP_EXCL_T = False                     # #107: the attack line's keep leaves out the target itself
 CAPITAL_NEED = False                    # #95: a lone capital's own line carries the floor its first conquest triggers
@@ -1660,6 +1661,15 @@ def ladder(m, idx):
     loyalty, wealth, morale = m.r16(f + M.F_LOYALTY), m.r16(f + M.F_WEALTH), m.r16(f + M.F_MORALE)
     cliff = policy.CLIFF
     tax, cap = m.r8(M.FIEF_TAX_RATE + idx), (30 if m.fief_owner(idx) == 3 else 55)
+    if SECURE_FIRST and gold > 1 and fief_state(m, idx) != SAFE and men < own_need(m, idx):
+        # #112: an unsafe fief short of its line hires before the tax rung (72 of 258 unsafe turns went on the
+        # tax while the fief had the means; each unsafe spell blocks every attack in the empire)
+        room = _feedable(m, idx)
+        want = own_need(m, idx) - men
+        if room >= 1 and (morale >= cliff or not men) and policy._hire_up_to(m, idx, men + min(want, room)):
+            HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "secure-first"))
+            LADDER_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "secure"))
+            return True
     step = next((s for s in range(cap - tax, 0, -1)
                  if loyalty - policy.P.pct_op(loyalty, s) >= cliff - 1), 0)
     if TAX_JUMP and loyalty >= TAX_JUMP and tax < cap:
