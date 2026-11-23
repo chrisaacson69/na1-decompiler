@@ -165,6 +165,9 @@ def one(job):
     X.FALL_HIRE = bool(len(job) > 74 and job[74])                            # #114
     X.GIFT_RESERVE = bool(len(job) > 75 and job[75])                         # #115
     X.CASCADE = bool(len(job) > 76 and job[76])                              # #116
+    X.MIRR_RISK = int(job[77]) if len(job) > 77 and job[77] else 0           # #118: 1 base, +2 attack rival, +4 size hazard
+    X.FLEE_ON = bool(len(job) > 60 and job[60])
+    X.RISK_HIRE_LOG.clear()
     X.CASCADE_LOG.clear()
     from . import policy as _pol
     _pol.GIFT_GUARD = X.gift_reserve if X.GIFT_RESERVE else None
@@ -300,6 +303,7 @@ def parser():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--mirr-risk", type=int, help="1: MIRR prices risk: survival-weighted gifts, and the hire toward the line as an option (#118); +2: the hire's rival includes the best attack line; +4: hazard by empire size")
     ap.add_argument("--cascade", type=int, help="1: a fief aimed at by an enemy yet to move this season, short of its line, is reinforced first (Move if adjacent, else Send gold) (#116)")
     ap.add_argument("--fall-hire", type=int, help="1: in the Fall a flagged fief short of its line hires to it first (#114)")
     ap.add_argument("--gift-reserve", type=int, help="1: a flagged fief's gold gifts keep its line's hire cost (#115)")
@@ -370,7 +374,7 @@ def jobs_from(a):
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t, a.march_safety, a.rice_sell, a.secure_first, a.aim, a.aim_min, a.fall_hire, a.gift_reserve, a.cascade)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t, a.march_safety, a.rice_sell, a.secure_first, a.aim, a.aim_min, a.fall_hire, a.gift_reserve, a.cascade, a.mirr_risk)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     return jobs
 

@@ -2077,7 +2077,11 @@ def reinvest_rate(m, owner):
         d = harvest_value(m, i, [g]) - harvest_value(m, i)
         if d <= 0:
             continue
-        x = irr(lambda r: _gift_flows(m, m.season, 0, g, d, r))
+        if MIRR_RISK:                           # #118: r is a risky fief's gift too
+            h = hazard(m, i)
+            x = irr(lambda r: _survive(_gift_flows(m, m.season, 0, g, d, r), h))
+        else:
+            x = irr(lambda r: _gift_flows(m, m.season, 0, g, d, r))
         best = x if best is None else max(best, x)
     if best is not None:
         e["r"] = best
@@ -2547,12 +2551,136 @@ DONOR_MIRR = False
 
 
 def own_irr(m, idx):
-    """The IRR of fief idx giving its own peasants its gold above the upkeep now (0 if it cannot)."""
+    """The IRR of fief idx giving its own peasants its gold above the upkeep now (0 if it cannot). MIRR_RISK
+    (#118): each harvest the gift lifts counts only as often as the fief is still ours (hazard())."""
     g = own_gift(m, idx)
     if g < SEND_MIN or m.r16(m.fief(idx) + M.F_OUTPUT) <= 0:
         return 0.0
     d = harvest_value(m, idx, [g]) - harvest_value(m, idx)
-    return irr(lambda r: _gift_flows(m, m.season, 0, g, d, r)) if d > 0 else 0.0
+    if d <= 0:
+        return 0.0
+    if MIRR_RISK:
+        h = hazard(m, idx)
+        return irr(lambda r: _survive(_gift_flows(m, m.season, 0, g, d, r), h))
+    return irr(lambda r: _gift_flows(m, m.season, 0, g, d, r))
+
+
+# Risk in MIRR (Chris, 2026-11-23, #118: "MIRR is supposed to pick the turn command with the speediest return;
+# maybe we are not including risk?"). MIRR priced gifts, transfers and attacks, and only the attacks carried
+# risk; a gift in a fief about to fall counted every harvest, and a defensive hire was no option at all (rules
+# fired it off the states). The hazard census (hazard.py, 48 games of #113's player, 67,000 fief-seasons): the
+# chance a fief is lost before our next turn there, by its state and its men against its own line:
+#   COMING   under 50% 49%, 50-80% 34%, 80-100% 2.6%, at the line 4.0%
+#   HUNTABLE 3.9%, 1.9%, 1.1%, 0.26%;  SAFE with a line 4.5%, 0.94%, 0.11%, 0.37%; interior 1.1%
+# MIRR_RISK: (1) a gift's harvests count at (1 - h)^k (own_irr, and so r); (2) the hire is an option: n men
+# to the next band (80% of the line, or the line) cost their gold now and their upkeep each Fall, and return the
+# survival they buy times what the fief is worth: its harvest annuity and its stores; the game itself when its
+# loss ends the game (Chris: "with retreats the capital is not as load bearing; if there is nowhere to run, it
+# is"): the capital with no owned neighbour to Flee to, worth GAME_P (our win rate, 189 of 240) of the whole
+# board's harvest annuity. It hires when that IRR beats the fief's own (risky) gift and r.
+MIRR_RISK = False
+FLEE_ON = False
+GAME_P = 189 / 240
+HAZARD = {COMING: (.49, .34, .03, .03), HUNTABLE: (.039, .019, .011, .0026), SAFE: (.045, .0094, .002, .002)}
+INTERIOR_H = .011
+# MIRR_RISK & 4 (#118b): the same census split by empire size, Laplace-smoothed ((lost + 1) / (seasons + 2); a
+# cell under 30 seasons takes the next size up's) and monotone (more men never raise the hazard). One fief SAFE
+# was lost 0 times in 1,566 seasons; the pooled row priced 4.5% under half the line.
+HAZARD_SIZE = {
+    1: {COMING: (.4412, .375, .05, .05), HUNTABLE: (.05, .04, .0253, .0081), SAFE: (.0077, .0033, .0033, .0013), None: .0213},
+    2: {COMING: (.4412, .375, .05, .05), HUNTABLE: (.0947, .0253, .0253, .0022), SAFE: (.0366, .0085, .0029, .0004), None: .0213},
+    6: {COMING: (.5115, .3333, .0476, .0476), HUNTABLE: (.0467, .0467, .0095, .004), SAFE: (.0644, .0163, .0055, .0055), None: .0109}}
+RISK_HIRE_LOG = []                      # (year, season, fief, men, irr, rival)
+
+
+def _band(men, need):
+    x = men / need
+    return 0 if x < .5 else 1 if x < .8 else 2 if x < 1 else 3
+
+
+def hazard(m, idx, men=None):
+    need = own_need(m, idx)
+    table = HAZARD
+    if MIRR_RISK & 4:
+        n = len(owned(m, m.fief_owner(idx)))
+        table = HAZARD_SIZE[1 if n == 1 else 2 if n <= 5 else 6]
+    if need <= 0:
+        return table.get(None, INTERIOR_H)
+    if men is None:
+        men = m.r16(m.fief(idx) + M.F_MEN)
+    return table[fief_state(m, idx)][_band(men, need)]
+
+
+def _survive(flows, h):
+    cf, tv = flows
+    H = len(cf) - 1
+    return [c * (1 - h) ** k for k, c in enumerate(cf)], tv * (1 - h) ** H
+
+
+def _stores(m, i):
+    f = m.fief(i)
+    return (m.r16(f + M.F_GOLD) + m.r16(f + M.F_RICE) * _rice_price(m)
+            + m.r16(f + M.F_MEN) * (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10)
+
+
+def stake(m, idx, r):
+    """(income each Fall, value at the horizon) lost with fief idx: its own, or the game's when its loss ends it."""
+    owner = m.fief_owner(idx)
+    ends = m.is_capital(idx) and not (FLEE_ON and any(
+        m.fief_owner(b) == owner for b in m.neighbor_rows.get(idx, []) if b < m.r16(M.SCENARIO_FIEF_COUNT)))
+    if ends:
+        board = [i for i in range(m.r16(M.SCENARIO_FIEF_COUNT)) if m.province_ai_state(i) != M.EMPTY]
+        inc = GAME_P * sum(harvest_value(m, i) for i in board)
+        return inc, inc * _annuity(r)
+    inc = harvest_value(m, idx)
+    return inc, inc * _annuity(r) + _stores(m, idx)
+
+
+def risk_hire(m, idx):
+    from . import policy
+    f = m.fief(idx)
+    men, gold = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD)
+    need = own_need(m, idx)
+    if need <= 0 or men >= need or gold <= 1 or (men and m.r16(f + M.F_MORALE) < policy.CLIFF):
+        return False
+    rate = (m.r16(M.GOLD_MEN_HIRE_RATE) or 50) / 10
+    owner = m.fief_owner(idx)
+    r = _EMPIRE.get(owner, {}).get("r", 0.01)
+    h0 = hazard(m, idx)
+    inc, tv0 = stake(m, idx, r)
+    rival = max(own_irr(m, idx), r)
+    if MIRR_RISK & 2:                           # #118b: the cost of not attacking: the best attack line this
+        lines = [d["roi"] for d in _empire(m, owner)["lines"]  # gold could fund (its own strike, or a Send)
+                 if d.get("kind") == "attack" and d.get("roi") is not None]
+        if lines:
+            rival = max(rival, max(lines))
+    room = _feedable(m, idx)
+    best = None
+    for goal in sorted({-(-need * 4 // 5), need}):
+        n = min(goal - men, int((gold - 1) / rate), room)
+        if n < 1 or goal <= men:
+            continue
+        h1 = hazard(m, idx, men + n)
+        if h1 >= h0:
+            continue
+        def flows(rr, n=n, h1=h1):
+            cf = [0.0] * (MIRR_H + 1)
+            cf[0] -= n * rate
+            for k in range(1, MIRR_H + 1):
+                if (m.season + k) % 4 == 2:
+                    cf[k] += ((1 - h1) ** k - (1 - h0) ** k) * inc - (n // 2) * (1 + _rice_price(m))
+            gain = (1 - h1) ** MIRR_H - (1 - h0) ** MIRR_H
+            return cf, gain * tv0 + n * rate * (1 - h1) ** MIRR_H
+        x = irr(flows)
+        if best is None or x > best[0]:
+            best = (x, n)
+    if best is None or best[0] <= rival:
+        return False
+    if policy._hire_up_to(m, idx, men + best[1]):
+        HIRES.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, "risk"))
+        RISK_HIRE_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, best[1], round(best[0], 4), round(rival, 4)))
+        return True
+    return False
 
 
 def _mirr_donor(m, idx, e, spare):
@@ -3149,6 +3277,8 @@ def expand_policy(m, idx, rng):
     if WAVES and wave_strike(m, idx, rng):
         return
     if SIEGE and siege_strike(m, idx, rng):
+        return
+    if MIRR_RISK and risk_hire(m, idx):
         return
     if CAPITAL_FIRST and capital_hire(m, idx):
         return
