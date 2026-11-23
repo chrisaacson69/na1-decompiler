@@ -363,7 +363,8 @@ def jobs_from(a):
                          flee=1,                                 # #99: the capital's lord Flees when outmatched
                          tax_min_step=5,                         # #101: no two-point tax creep
                          aim=4).items():                         # #113: the states off the AI's own war choice, look-ahead
-            if not getattr(a, k):
+            if getattr(a, k) is None or (k == "strike" and not a.strike):   # a flag given, even 0, is kept
+                # (--aim 0 replays #101); --strike defaults to 0, not None
                 setattr(a, k, v)
     fiefs = [int(x) for x in a.fiefs.split(",")]
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,

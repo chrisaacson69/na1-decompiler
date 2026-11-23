@@ -221,8 +221,10 @@ def owned(m, owner):
 def fief_state(m, i):
     """SAFE / HUNTABLE / COMING for one fief (the dashboard's three states): share of provisioned
     men > 47, then whether that neighbour's budget reaches the shield."""
-    if AIM >= 3 and (not AIM_MIN or len(owned(m, m.fief_owner(i))) >= AIM_MIN):
+    if AIM in (3, 4) and (not AIM_MIN or len(owned(m, m.fief_owner(i))) >= AIM_MIN):
         return aimed_state(m, i)
+    if AIM == 5 and AIM_MIN and len(owned(m, m.fief_owner(i))) >= AIM_MIN:
+        return aimed_state(m, i)                # #117: the old local states only in the opening
     me = reaction.live_side(m, i)
     worst = SAFE
     for n in reaction.enemy_neighbours(m, i):
@@ -280,6 +282,18 @@ def grade(st):
     return 0 if quiet(st) else RANK[st]
 
 
+def gate_empire(m, owner):
+    """{fief: state} for the empire-wide gates and the post-strike check. AIM 5 (#117) splits the two questions
+    the states answered: "will they attack us this season" (the AI's own pick, aimed_state with its look-ahead)
+    opens and shuts the gates; "if they turn to us, can we hold" (the share and budget test, fief_state) still
+    drives each fief's own line, its hires and its rice shield, as in #101. Suruga 6/3017 and Hida 5/3011 won
+    under #101 by hiring every Fall toward the line while the old COMING held; under AIM 4 they read SAFE (nobody's
+    pick), gave the Fall's gold away each Spring, and fell when Takeda turned to them."""
+    if AIM == 5:
+        return {i: aimed_state(m, i) for i in owned(m, owner)}
+    return empire(m, owner)
+
+
 def empire(m, owner):
     """{fief: state} for every fief the owner holds."""
     return {i: fief_state(m, i) for i in owned(m, owner)}
@@ -312,7 +326,7 @@ def enemies_within(m, i, steps=2):
 
 
 AIM = 0                                 # #113: COMING only if the neighbour's war (ai_war_aim) aims here; else 1 SAFE, 2 HUNTABLE;
-                                        # 3: the states read off ai_war_aim (aimed_state); 4: + a Summer harvest clearing a gate
+                                        # 3: the states read off ai_war_aim (aimed_state); 4: + the look-ahead; 5: aimed states for the empire gates only (#117)
 SECURE_FIRST = False                    # #112: an unsafe fief short of its line hires before the ladder's tax rung
 MARCH_SAFETY = False                    # #110 (Chris): spare men march toward a non-adjacent unsafe fief, not only the striker
 KEEP_EXCL_T = False                     # #107: the attack line's keep leaves out the target itself
@@ -1116,13 +1130,13 @@ def score(m, idx, move):
     owner = m.fief_owner(idx)
     if RICE_DAYS and min(rice, m.r16(m.fief(idx) + M.F_RICE), men) < rice_for(min(men, war_cap(m, idx))):
         return False, None
-    before = empire(m, owner) if LOCAL_GATE else {}
+    before = gate_empire(m, owner) if LOCAL_GATE else {}
     may = COORD and _coord_ok(m, owner, t)
     risky = RISK and risk_ok(m, idx, t)
     with forecast.held(m):
         if not player_war(m, idx, t, men, rice, led):
             return False, None
-        states = empire(m, owner)
+        states = gate_empire(m, owner)
         tol = RANK[tolerance(m, owner)]                # the prize may be left up to the tolerance; the rest SAFE
         # LOCAL_GATE (#74): the source and the prize as before; every other fief no worse than it was
         allow = (lambda i: tol if i == t else 0 if i == idx else RANK[before.get(i, SAFE)]) if LOCAL_GATE             else (lambda i: tol if i == t else 0)
@@ -1189,7 +1203,7 @@ def best_attack(m, idx):
     best two-conquest outcome leaves the smallest army bill; its split is the greedy best."""
     if getattr(m, "season", 0) not in SEASONS or not war_cap(m, idx):
         return None
-    if not LOCAL_GATE and any(not quiet(s) for s in empire(m, m.fief_owner(idx)).values()):
+    if not LOCAL_GATE and any(not quiet(s) for s in gate_empire(m, m.fief_owner(idx)).values()):
         return None
     if LOCAL_GATE and fief_state(m, idx) != SAFE:
         return None
@@ -1330,7 +1344,7 @@ def strike_plan(m, idx):
     or None. The fief itself need not be SAFE (its line includes its own gate); every other owned
     fief must be."""
     me = m.fief_owner(idx)
-    if not LOCAL_GATE and any(not quiet(s) for i, s in empire(m, me).items() if i != idx):
+    if not LOCAL_GATE and any(not quiet(s) for i, s in gate_empire(m, me).items() if i != idx):
         return None
     f = m.fief(idx)
     men, gold, header = m.r16(f + M.F_MEN), m.r16(f + M.F_GOLD), m.r16(f + M.F_HEADER)
@@ -1424,7 +1438,7 @@ def combine_plan(m, owner):
         return _COMBINE[key]
     _COMBINE.clear()
     plan = None
-    if m.season in SEASONS and all(quiet(s) for s in empire(m, owner).values()):
+    if m.season in SEASONS and all(quiet(s) for s in gate_empire(m, owner).values()):
         mine = set(owned(m, owner))
         acted = getattr(m, "acted", set())
         best = None
@@ -1564,7 +1578,7 @@ def stage_plan(m, owner):
         if why:
             STAGE_LOG.append((yr, se, why, S, T, plan["line"], plan["line"] - m.r16(m.fief(S) + M.F_MEN)))
             plan = None
-    if plan is None and m.season in SEASONS and all(quiet(s) for s in empire(m, owner).values()):
+    if plan is None and m.season in SEASONS and all(quiet(s) for s in gate_empire(m, owner).values()):
         best = None
         for S in owned(m, owner):
             fs = m.fief(S)
@@ -1890,7 +1904,7 @@ def attack_line(m, owner, growth_roi=0.0):
     """The ledger's attack line, or None."""
     e = _EMPIRE.setdefault(owner, {"gift": {}})
     bill0 = army_bill(m, owner)[0]
-    allsafe = all(quiet(s) for s in empire(m, owner).values())
+    allsafe = all(quiet(s) for s in gate_empire(m, owner).values())
     priced = []
     for S in owned(m, owner):
         for T in targets(m, S):
@@ -2370,7 +2384,7 @@ def wave_strike(m, idx, rng):
     if getattr(m, "season", 0) not in SEASONS:
         return False
     owner = m.fief_owner(idx)
-    if not LOCAL_GATE and any(not quiet(st) for st in empire(m, owner).values()):
+    if not LOCAL_GATE and any(not quiet(st) for st in gate_empire(m, owner).values()):
         return False
     if fief_state(m, idx) != SAFE:
         return False
@@ -2408,7 +2422,7 @@ def attack_line_mirr(m, owner, r):
     """The ledger's attack line by MIRR, or None if no attack beats r."""
     e = _EMPIRE.setdefault(owner, {"gift": {}})
     bill0 = army_bill(m, owner)[0]
-    allsafe = LOCAL_GATE or all(quiet(s) for s in empire(m, owner).values())
+    allsafe = LOCAL_GATE or all(quiet(s) for s in gate_empire(m, owner).values())
     priced = []
     for S in owned(m, owner):
         for T in targets(m, S):
@@ -2859,7 +2873,7 @@ def siege_strike(m, idx, rng):
     if getattr(m, "season", 0) not in SEASONS or m.is_capital(idx):
         return False
     owner = m.fief_owner(idx)
-    st = empire(m, owner)
+    st = gate_empire(m, owner)
     if any(not quiet(v) for i, v in st.items() if i != idx):
         return False
     f = m.fief(idx)
