@@ -2598,7 +2598,80 @@ def _band(men, need):
     return 0 if x < .5 else 1 if x < .8 else 2 if x < 1 else 3
 
 
+# The hazard from the cartridge (Chris, 2026-11-23, #119: "the game is fairly deterministic; much of these
+# players is getting the AI to focus on someone else; we just have to price what we can really insure
+# against"). MIRR_RISK & 8: no table. For each enemy neighbour, on a board with our men set to the candidate:
+# aimed at us (ai_war_aim, now or after the look-ahead: every AI fief's biggest recruit, the harvest first in
+# Summer) -> it attacks with P 0.9 (the military pass, econ_command_dispatch) x the relations veto failing
+# ($8271: (1 - rel(owners)/100)(1 - rel(fiefs)/100)); our pick with only the commit-ratio gate shut -> the
+# 1-in-100 wildcard, 0.9 x 0.01 x the veto failing. It commits 59.5% of min(2 rice, men, gold) (67% from a
+# capital: half the time the 60-89% band, $9040); we lose 1 - ev.p_held (#45's defence table: our men x his
+# committed, our lord leading in the capital). Plague is a mixture: with q (1/4 of seasons outside Summer, 1/8
+# in it, x 3/40 a fief, the events planner) our men are cut to 74.5% (50-99%). hazard = 1 - prod(1 - P(lost
+# to n)). The census tables are its check (hazard.py).
+def _veto_fails(m, a, b):
+    rel1 = m.relations_matrix_get(m.fief_owner(a), m.fief_owner(b), 1)
+    rel0 = m.relations_matrix_get(a, b, 0)
+    return max(0.0, 1 - rel1 / 100) * max(0.0, 1 - rel0 / 100)
+
+
+def _hazard_board(m, idx):
+    """P(fief idx is lost to one of its enemy neighbours this season), on the board as it stands."""
+    from . import ev
+    nbs = reaction.enemy_neighbours(m, idx)
+    if not nbs:
+        return 0.0
+    now = {n: ai_vm.ai_war_aim(m, n) for n in nbs}
+    sel = m.selected
+    with forecast.held(m):
+        if m.season == 1:
+            forecast.harvest_all(m)
+        forecast.grow_ai(m, p=1.0)
+        ahead = {n: (ai_vm.ai_war_aim(m, n), m.r16(m.fief(n) + M.F_MEN), m.r16(m.fief(n) + M.F_RICE),
+                     m.r16(m.fief(n) + M.F_GOLD)) for n in nbs}
+    m.selected = sel
+    f = m.fief(idx)
+    ours = m.r16(f + M.F_MEN)
+    led = bool(m.is_capital(idx))
+    keep = 1.0
+    for n in nbs:
+        (t, ok), men_n, rice_n, gold_n = ahead[n]
+        aimed = now[n] == (idx, True) or (t, ok) == (idx, True)
+        picked = now[n][0] == idx or t == idx
+        if aimed:
+            p_att = 0.9 * _veto_fails(m, idx, n)
+        elif picked:
+            p_att = 0.9 * 0.01 * _veto_fails(m, idx, n)
+        else:
+            continue
+        budget = min(2 * rice_n, men_n, gold_n)
+        if budget < 5:
+            continue
+        commit = budget * (0.67 if m.is_capital(n) else 0.595)
+        if not ours:
+            p_lost = 1.0
+        else:
+            p_lost = 1 - ev.p_held(idx, ours, commit, led)
+        keep *= 1 - p_att * p_lost
+    return 1 - keep
+
+
+def hazard_formula(m, idx, men=None):
+    f = m.fief(idx)
+    if men is None:
+        men = m.r16(f + M.F_MEN)
+    q = (1 / 8 if m.season == 1 else 1 / 4) * 3 / 40
+    out = 0.0
+    for w, cut in ((1 - q, 1.0), (q, 0.745)):
+        with forecast.held(m):
+            m.w16(f + M.F_MEN, int(men * cut))
+            out += w * _hazard_board(m, idx)
+    return out
+
+
 def hazard(m, idx, men=None):
+    if MIRR_RISK & 8:
+        return hazard_formula(m, idx, men)
     need = own_need(m, idx)
     table = HAZARD
     if MIRR_RISK & 4:
