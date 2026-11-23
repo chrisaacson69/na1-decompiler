@@ -156,6 +156,9 @@ def one(job):
     X.THREAT_COMING = bool(len(job) > 65 and job[65])                        # #102
     X.TAX_JUMP = int(job[66]) if len(job) > 66 and job[66] else 0             # #103
     X.KEEP_EXCL_T = bool(len(job) > 68 and job[68])                          # #107
+    X.MARCH_SAFETY = bool(len(job) > 69 and job[69])                         # #110
+    X.RICE_SELL = bool(len(job) > 70 and job[70])                            # #111
+    X.SELL_LOG.clear()
     X._RISK_OK.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
@@ -240,7 +243,7 @@ def one(job):
     tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG],
                  stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG],
                  roi=[list(c) for c in X.ROI_LOG], mirr=[list(c) for c in X.MIRR_LOG],
-                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], rice=[list(c) for c in X.RICE_LOG], guard=[list(c) for c in X.GUARD_LOG], clamp=[list(c) for c in X.CLAMP_LOG], recover=[list(c) for c in X.RECOVER_LOG], defassign=[list(c) for c in X.DEF_LOG], siege=[list(c) for c in X.SIEGE_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
+                 rate=[list(c) for c in X.R_LOG], coord=[list(c) for c in X.COORD_LOG], rice=[list(c) for c in X.RICE_LOG], guard=[list(c) for c in X.GUARD_LOG], clamp=[list(c) for c in X.CLAMP_LOG], recover=[list(c) for c in X.RECOVER_LOG], sell=[list(c) for c in X.SELL_LOG], defassign=[list(c) for c in X.DEF_LOG], siege=[list(c) for c in X.SIEGE_LOG], waves=[list(c) for c in X.WAVE_LOG])    # per-game events (#61's walk)
     return fief, seed, rec["fatal"], yearly, len(X.LOG), round(time.time() - t0), tally
 
 
@@ -288,6 +291,8 @@ def parser():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--rice-sell", type=int, help="1: a topped-out fief outside Summer, a merchant here, sells surplus rice for gold up to its treasury's room (#111)")
+    ap.add_argument("--march-safety", type=int, help="1: spare men march toward any unsafe fief up to 4 steps away, not only the striker (#110)")
     ap.add_argument("--keep-excl-t", type=int, help="1: the attack line's keep answers the source's other enemy neighbours, not the target (#107)")
     ap.add_argument("--opening", default="default", help="default: the searched opening where a start has one (Noto: hire,tax,rice>peasants); none; or a comma list of opening steps (#106)")
     ap.add_argument("--tax-jump", type=int, help="N: loyalty N+ takes the tax straight to the cap (#103)")
@@ -348,7 +353,7 @@ def jobs_from(a):
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t, a.march_safety, a.rice_sell)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     return jobs
 

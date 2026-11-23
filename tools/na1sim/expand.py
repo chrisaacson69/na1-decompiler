@@ -262,6 +262,7 @@ def enemies_within(m, i, steps=2):
     return out
 
 
+MARCH_SAFETY = False                    # #110 (Chris): spare men march toward a non-adjacent unsafe fief, not only the striker
 KEEP_EXCL_T = False                     # #107: the attack line's keep leaves out the target itself
 CAPITAL_NEED = False                    # #95: a lone capital's own line carries the floor its first conquest triggers
 CAPITAL_MIN = 0                         # #92: a capital never Moves below, and hires up to, this many men (Hojo 3009 and
@@ -2600,16 +2601,19 @@ def empire_move(m, idx):
     if spare >= MARCH_MIN and m.r16(f + M.F_MORALE) >= policy.CLIFF:
         for d in e["lines"]:
             j = d["fief"]
-            if d["men"] <= 0 or not (d["rank"] == 0 or d["kind"] == "attack"):
+            if d["men"] <= 0 or not (d["rank"] == 0 or d["kind"] == "attack" or (MARCH_SAFETY and d["rank"] == 1)):
                 continue
             if j not in m.neighbor_rows.get(idx, []):
-                if d["kind"] != "attack":
+                if d["kind"] != "attack" and not MARCH_SAFETY:
                     continue
                 dist = distance_to(m, owner, j)    # farther fiefs march a step toward the striker
-                k = dist.get(idx)
+                k = dist.get(idx)                  # (#110: or toward an unsafe fief)
                 steps = [b for b in m.neighbor_rows.get(idx, []) if k and k <= STAGE_ETA and dist.get(b) == k - 1]
-                if steps and move_men(m, idx, steps[0], spare):
-                    EMPIRE_LOG.append((yr, m.season, "march", idx, steps[0], 0, 0, spare))
+                go = spare if d["kind"] == "attack" else min(spare, d["men"])
+                if steps and go >= MARCH_MIN and move_men(m, idx, steps[0], go):
+                    if d["kind"] != "attack":
+                        d["men"] -= go             # pledged: other donors march only the rest
+                    EMPIRE_LOG.append((yr, m.season, "march", idx, steps[0], 0, 0, go))
                     return True
                 continue
             moved = move_men(m, idx, j, min(spare, d["men"]))
@@ -2882,6 +2886,36 @@ def def_assign(m, idx):
     return False
 
 
+# Rice to gold (Chris, 2026-11-23, #111: "we eventually have lots of rice everywhere; we should be able to do
+# something with it; it needs a merchant and the fief low on gold so the cap does not hurt it, and not on a Summer
+# turn, or the gains cap out"). RICE_SELL: a topped-out fief outside Summer, with a merchant here, rice over its
+# upkeep and shield, and gold well under its header, sells the surplus for gold (effect_sell_rice_for_gold
+# $8B0A) up to what fills the treasury; the gold then hires, or rides the Sends.
+RICE_SELL = False
+SELL_LOG = []
+
+
+def rice_sell(m, idx):
+    from . import policy
+    if m.season == 1 or not capped(m, idx) or not policy.merchant_here(m, idx):
+        return False
+    f = m.fief(idx)
+    gold, rice, men, hdr = (m.r16(f + o) for o in (M.F_GOLD, M.F_RICE, M.F_MEN, M.F_HEADER))
+    if gold * 2 >= hdr:
+        return False
+    rate = m.r16(M.GOLD_RICE_EXCHANGE) or 10
+    surplus = rice - men - men // 2 - 1                 # the shield (rice >= men) and a year's upkeep kept
+    room = (hdr - gold) * 10 // rate                    # rice whose gold still fits the treasury
+    n = min(surplus, room)
+    if n < SEND_MIN:
+        return False
+    m.selected = idx
+    P_ = __import__("na1sim.vmprims", fromlist=["x"])
+    P_.effect_sell_rice_for_gold(m, n)
+    SELL_LOG.append((m.r16(M.CURRENT_GAME_YEAR), m.season, idx, n, m.r16(f + M.F_GOLD) - gold))
+    return True
+
+
 def expand_policy(m, idx, rng):
     """Attack when a move keeps everything SAFE; else, once the economy has topped out, buy men with
     half the gold (Chris: when wealth tops out, buy men; the other half pays the War command's gold
@@ -2910,6 +2944,8 @@ def expand_policy(m, idx, rng):
     if DEF_ASSIGN and def_assign(m, idx):
         return
     if CLAMP_SPEND and clamp_spend(m, idx):
+        return
+    if RICE_SELL and rice_sell(m, idx):
         return
     if (COORD or WAVES) and coord_act(m, idx, rng):
         return
