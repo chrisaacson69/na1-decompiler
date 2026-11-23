@@ -262,6 +262,7 @@ def enemies_within(m, i, steps=2):
     return out
 
 
+KEEP_EXCL_T = False                     # #107: the attack line's keep leaves out the target itself
 CAPITAL_NEED = False                    # #95: a lone capital's own line carries the floor its first conquest triggers
 CAPITAL_MIN = 0                         # #92: a capital never Moves below, and hires up to, this many men (Hojo 3009 and
                                         # 3019: 9-fief empires whose interior capital sat at 0 men with 1,700-1,980
@@ -1452,6 +1453,16 @@ def _stage_line(m, S, T, owner):
         kr = max(.05, fought_keep(send / max(1, m.r16(m.fief(T) + M.F_MEN)), skill_scale(m), m.skill))
         send = max(need, int(h / kr) + 1)
     keep = own_need(m, S)
+    if KEEP_EXCL_T:
+        # #107: the keep answers S's OTHER enemy neighbours: a win makes T ours, and a loss is priced by RISK (the
+        # source lost). Counting T made a one-neighbour fief keep its whole line against the fief it attacks
+        # (Noto 3007, year 24: 673 men against a line of 513 + 272; Kaga 1,184 against Noto, #82)
+        others = [e for e in reaction.enemy_neighbours(m, S) if e != T]
+        keep = max([m.fief_men_if_provisioned(e) * 52 // 48 + 1 for e in others] or [0]) * MARGIN // 100
+        if m.is_capital(S) and len(owned(m, owner)) > 1:
+            keep = max(keep, capital_line(m, S))
+        if CAPITAL_MIN and m.is_capital(S):
+            keep = max(keep, min(CAPITAL_MIN, m.r16(m.fief(S) + M.F_HEADER)))
     if CAPITAL_NEED and CAPITAL_MIN and m.is_capital(S) and len(owned(m, owner)) == 1:
         # #95: the first conquest makes the empire two fiefs and the capital floor applies, so a lone capital's
         # attack line carries it (Tokugawa 3012: Owari, 46 men, MIRR 0.40-0.49, refused in six years for 127

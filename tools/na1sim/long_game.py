@@ -48,6 +48,9 @@ from concurrent.futures import ProcessPoolExecutor
 from . import deaths as Dz, ev, policy, reaction, tactical, strike, expand as X, memmap as M
 
 OPENING = dict(no_retreat=1, summer_rice_first=1, line_first=1, shield_rice=4)
+# #106: searched first turns by start (hatakeyama.py): Hatakeyama (Noto): Spring hire with all the gold, Summer the
+# tax to 55, Fall the harvest's rice to the peasants (#4x: 12.7% -> 30.7% alive at year 3, skill 1)
+OPENINGS = {0: ("hire", "tax", "rice>peasants")}
 SKILL = 1
 
 
@@ -152,6 +155,7 @@ def one(job):
     X.TAX_MIN_STEP = int(job[64]) if len(job) > 64 and job[64] else 0         # #101
     X.THREAT_COMING = bool(len(job) > 65 and job[65])                        # #102
     X.TAX_JUMP = int(job[66]) if len(job) > 66 and job[66] else 0             # #103
+    X.KEEP_EXCL_T = bool(len(job) > 68 and job[68])                          # #107
     X._RISK_OK.clear()            # #80: two waves from two fiefs' spare men
     X.WAVE_LOG.clear()            # #79: the held-back commander bribes away spare gold
     X.COORD_LOG.clear()
@@ -225,7 +229,14 @@ def one(job):
                            age, exposed, bill, men,
                            round(sum(econ_index(m, i) for i in mine) / max(1, len(mine)), 1),
                            round(sum(econ_index(m, i) for i in ai) / max(1, len(ai)), 1)))
-    rec = Dz.play(fief, seed, years, ("auto",), tail=pol, skill=skill)
+    opening = job[67] if len(job) > 67 and job[67] else "default"
+    if opening == "default":                              # #106: the searched openings, where a start has one
+        opening = OPENINGS.get(fief)
+    plan = ("auto",)
+    if opening and opening != "none":
+        from . import hatakeyama                          # registers the opening steps (OPENING_ACTIONS)
+        plan = tuple(opening.split(",")) if isinstance(opening, str) else tuple(opening)
+    rec = Dz.play(fief, seed, years, plan, tail=pol, skill=skill)
     tally = dict(conq=[list(c) for c in X.CONQ], losses=losses, combine=[list(c) for c in X.COMBINE_LOG],
                  stage=[list(c) for c in X.STAGE_LOG], empire=[list(c) for c in X.EMPIRE_LOG],
                  roi=[list(c) for c in X.ROI_LOG], mirr=[list(c) for c in X.MIRR_LOG],
@@ -276,6 +287,8 @@ def main():
     ap.add_argument("--loss", type=int, help="1: an attack's MIRR weights the losing branch by the battle lab's odds (#71)")
     ap.add_argument("--hub", type=int, help="W: an attack also counts the rise in the AI's army bill, at W%% of the hire rate (#71)")
     ap.add_argument("--coord", type=int, help="1: an attack that leaves a fief past the gate is accepted if unacted fiefs can Move men in this season; 2: also attack the threat (#76)")
+    ap.add_argument("--keep-excl-t", type=int, help="1: the attack line's keep answers the source's other enemy neighbours, not the target (#107)")
+    ap.add_argument("--opening", default="default", help="default: the searched opening where a start has one (Noto: hire,tax,rice>peasants); none; or a comma list of opening steps (#106)")
     ap.add_argument("--tax-jump", type=int, help="N: loyalty N+ takes the tax straight to the cap (#103)")
     ap.add_argument("--threat-coming", type=int, help="1: the opening's threat-first hire also for a COMING fief no one has picked (#102)")
     ap.add_argument("--tax-min-step", type=int, help="N: the ladder's tax rung fires only for a raise of N+ points or to the cap (#101)")
@@ -330,7 +343,7 @@ def main():
     jobs = [(f, s, a.years, a.topped, a.war_at, a.fought, a.need, a.merchant, a.skill, a.ev, a.gate_hire,
              a.pocket, a.pocket_strict, a.staging,
              [int(x) for x in a.line.split(',') if x], a.strike, a.strike_share,
-             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump)
+             a.hold, tuple(a.tol.split(",")) if a.tol else None, a.keep_q, a.combine, a.stage, a.capital_first, a.capital_guard, a.secure, a.ladder, a.empire, a.empire_attack, a.mirr, a.hold_all, a.rescue, a.loss, a.hub, a.empty_morale, a.donor_mirr, a.mirr_turns, a.hire_move, a.safety_donors, a.local_gate, a.assign_ahead, a.coord, a.coord_min, a.coord_margin, a.coord_wall, a.dump, a.waves, a.plan, a.rice_days, a.rice_logistics, a.morale_guard, a.shield, a.threat_first, a.clamp_spend, a.siege, a.shield_line, a.capital_min, a.prize_tax, a.risk, a.capital_need, a.striker_morale, a.flee, a.burn, a.recover, a.def_assign, a.tax_min_step, a.threat_coming, a.tax_jump, a.opening, a.keep_excl_t)
             for f in fiefs for s in range(a.first, a.first + a.seeds)]
     with ProcessPoolExecutor(6) as ex:
         res = list(ex.map(one, jobs))
